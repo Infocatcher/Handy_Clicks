@@ -1,0 +1,5 @@
+content totalclicks jar:chrome/totalclicks.jar!/content/
+overlay chrome://browser/content/browser.xul chrome://totalclicks/content/totalclicks.xul
+
+locale  totalclicks en-US jar:chrome/totalclicks.jar!/locale/en-US/
+locale  totalclicks ru    jar:chrome/totalclicks.jar!/locale/ru/
