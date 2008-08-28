@@ -1,8 +1,9 @@
 var totalClicksFuncs = {
 	tc: totalClicks,
-	copyItemText: function() { // for all
+	copyItemText: function(stopEvt) { // for all
 		var tc = this.tc;
-		tc.stopEvent(tc.event);
+		// tc.stopEvent(e);
+		stopEvt();
 		var it = tc.item;
 		var txt = it.textContent || it.label;
 		// alert("<" + txt + ">");

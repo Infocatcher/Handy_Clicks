@@ -201,7 +201,11 @@ var totalClicks = {
 		if(!funcObj)
 			return;
 
-		var args = this.argsToArr(funcObj.arguments);
+		var _this = this;
+		var stopEvt = function() {
+			_this.stopEvent(e);
+		};
+		var args = this.argsToArr(funcObj.arguments, stopEvt);
 		if(funcObj.custom) { //~ todo
 			// this.stopEvent(e);
 			// try {
@@ -224,11 +228,12 @@ var totalClicks = {
 			+ "itemType -> " + this.itemType
 		);
 	},
-	argsToArr: function(argsObj) {
+	argsToArr: function(argsObj, stopEvt) {
 		argsObj = argsObj || {};
-		var args = [];
+		var args = stopEvt ? [stopEvt]: [];
 		for(var p in argsObj)
 			args.push(argsObj[p]);
+		return args;
 	},
 	handleEvent: function(e) {
 		switch(e.type) { //~ todo: see https://bugzilla.mozilla.org/show_bug.cgi?id=174320
