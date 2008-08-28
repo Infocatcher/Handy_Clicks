@@ -12,6 +12,7 @@ var totalClicks = {
 	_cMenu: null,
 	cMenuTimeout: null,
 	strOnMousedown: "",
+	hasMousemoveHandler: false,
 	init: function() {
 		window.removeEventListener("load", this, false);
 
@@ -33,8 +34,9 @@ var totalClicks = {
 	},
 	skipTmpDisabled: function() {
 		for(var p in this.disabledBy)
-			if(P != "global")
+			if(p != "global")
 				this.disabledBy[p] = false;
+		this.removeMousemoveHandler();
 	},
 	get cMenu() {
 		var cm = null;
@@ -48,8 +50,9 @@ var totalClicks = {
 		this._cMenu = cm; // cache
 		return cm;
 	},
-	mousedownHandler: function(e) {
-		/*
+	mousedownHandler: function(e) { //~ todo: hide context menu for Linux
+		if(this.disabledBy.global)
+			return;
 		var evtStr = this.getEvtStr(e);
 		this.strOnMousedown = evtStr;
 		var sets = this.getSettings(evtStr);
@@ -59,11 +62,6 @@ var totalClicks = {
 
 		var funcObj = this.getFuncObj(sets);
 		if(!funcObj)
-			return;
-		*/
-
-		this.defineItem(e);
-		if(!this.itemType)
 			return;
 
 		var cm = this.cMenu;
@@ -79,15 +77,20 @@ var totalClicks = {
 				true
 			);
 		}
-		window.addEventListener( // only for right-click?
-			"mousemove",
-			function(e) {
-				_this.disabledBy.mousemove = true;
-				_this.clearCMenuTimeout();
-				window.removeEventListener(e.type, arguments.callee, true);
-			},
-			true
-		);
+		if(!this.hasMousemoveHandler) {
+			window.addEventListener("mousemove", this, true); // only for right-click?
+			this.hasMousemoveHandler = true;
+		}
+	},
+	mousemoveHandler: function(e) {
+		this.disabledBy.mousemove = true;
+		this.clearCMenuTimeout();
+		this._log("mousemoveHandler -> this.disabledBy.mousemove = true;");
+		this.removeMousemoveHandler();
+	},
+	removeMousemoveHandler: function() {
+		window.removeEventListener("mousemove", this, true);
+		this.hasMousemoveHandler = false;
 	},
 	getEvtStr: function(e) {
 		return "button=" + e.button
@@ -129,6 +132,7 @@ var totalClicks = {
 		}
 
 		// Bookmark:
+		//~ todo
 
 		// History item:
 		if(
@@ -175,12 +179,16 @@ var totalClicks = {
 	clearCMenuTimeout: function() {
 		clearTimeout(this.cMenuTimeout);
 	},
+	stopEvent: function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+	},
 	clickHandler: function(e) {
-		/**
 		if(this.disabled) {
 			this.skipTmpDisabled();
 			return;
 		}
+		this.skipTmpDisabled();
 
 		var evtStr = this.getEvtStr(e);
 		var sets = this.getSettings(evtStr);
@@ -195,6 +203,7 @@ var totalClicks = {
 
 		var args = this.argsToArr(funcObj.arguments);
 		if(funcObj.custom) { //~ todo
+			// this.stopEvent(e);
 			// try {
 			// 	var fnc = new Function(unescape(funcObj.action));
 			// 	fnc.apply(totalClicksFuncs, args); // ! totalClicksFuncs is undefined now !
@@ -202,10 +211,11 @@ var totalClicks = {
 		}
 		else {
 			var fnc = totalClicksFuncs[funcObj.action]; // ! totalClicksFuncs is undefined now !
-			if(typeof fnc == "function")
+			if(typeof fnc == "function") {
+				// this.stopEvent(e);
 				fnc.apply(totalClicksFuncs, args);
+			}
 		}
-		**/
 
 		var oit = this.origItem;
 		this._log(
@@ -226,6 +236,7 @@ var totalClicks = {
 			case "unload":    this.destroy(e);          break;
 			case "mousedown": this.mousedownHandler(e); break;
 			case "click":     this.clickHandler(e);     break;
+			case "mousemove": this.mousemoveHandler(e); break;
 		}
 	},
 
