@@ -25,7 +25,7 @@ var totalClicksPrefServ = {
 			jsLoader.loadSubScript(ioServ.newFileURI(prefsFile).spec);
 		}
 		catch(e) {
-			// Bug 418356
+			// Bug 418356 ( https://bugzilla.mozilla.org/show_bug.cgi?id=418356 )
 			var fiStream = Components.classes["@mozilla.org/network/file-input-stream;1"]
 				.createInstance(Components.interfaces.nsIFileInputStream);
 			var siStream = Components.classes["@mozilla.org/scriptableinputstream;1"]

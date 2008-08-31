@@ -40,12 +40,23 @@ var totalClicks = {
 	},
 	get cMenu() {
 		var cm = null;
-		switch(this.itemType) {
+		switch(this.itemType) { // "link", "img", "bookmark", "historyItem", "tab", "submitButton"
 			case "link":
+			case "img":
 				cm = document.getElementById("contentAreaContextMenu");
 			break;
-			//~ todo
-			// ...
+			case "bookmark":
+				cm = document.getElementById("bookmarks-context-menu") || document.getElementById("placesContext");
+			break;
+			case "historyItem":
+				// Ex Bookmark Properties ( https://addons.mozilla.org/firefox/addon/7396 ):
+				cm = "ex2BookmarksProperties" in window && document.getElementById("placesContext"); //~ todo: test!
+			break;
+			case "tab":
+				var cm = document.getAnonymousElementByAttribute(getBrowser(), "anonid", "tabContextMenu"); //~ todo: test!
+			break;
+			case "submitButton":
+				cm = null; //~ todo: SubmitToTab for fx3 => add cm
 		}
 		this._cMenu = cm; // cache
 		return cm;
@@ -205,7 +216,9 @@ var totalClicks = {
 		var stopEvt = function() {
 			_this.stopEvent(e);
 		};
-		var args = this.argsToArr(funcObj.arguments, stopEvt);
+
+		var args = this.argsToArr(funcObj.arguments);
+		args.unshift(e);
 		if(funcObj.custom) { //~ todo
 			// this.stopEvent(e);
 			// try {
@@ -228,9 +241,9 @@ var totalClicks = {
 			+ "itemType -> " + this.itemType
 		);
 	},
-	argsToArr: function(argsObj, stopEvt) {
+	argsToArr: function(argsObj) {
 		argsObj = argsObj || {};
-		var args = stopEvt ? [stopEvt]: [];
+		var args = [];
 		for(var p in argsObj)
 			args.push(argsObj[p]);
 		return args;
