@@ -6,4 +6,9 @@
 	<script type="application/x-javascript" src="chrome://totalclicks/content/totalclicks.js" />
 	<script type="application/x-javascript" src="chrome://totalclicks/content/funcs.js" />
 	<script type="application/x-javascript" src="chrome://totalclicks/content/prefs.js" />
+	<window id="main-window">
+		<tooltip id="totalClicks-tooltip" noautohide="true" orient="vertical"
+			onpopupshowing="return totalClicksFuncs.fillInTooltip(this);"
+			onpopuphidden="totalClicksFuncs.hideAllChilds(this);" />
+	</window>
 </overlay>
