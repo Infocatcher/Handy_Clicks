@@ -3,4 +3,5 @@ pref("extensions.totalclicks@infocatcher.ucoz.net.description", "chrome://totalc
 
 pref("totalclicks.enabled", true);
 pref("totalclicks.forceHideContextMenu", true);
-pref("totalclicks.convertToCP1251", true);
+pref("totalclicks.convertURIs", true);
+pref("totalclicks.convertURIsTo", "");

@@ -1,5 +1,6 @@
 var totalClicksFuncs = {
 	tc: totalClicks,
+	_charset: null,
 	copyItemText: function(e) { // for all
 		var tc = this.tc;
 		var it = tc.item;
@@ -42,12 +43,12 @@ var totalClicksFuncs = {
 		}
 		return popup;
 	},
-	showGeneratedPopup: function(items, e) {
+	showGeneratedPopup: function(items) {
 		var popup = this.createPopup(items);
 		var node = this.tc.origItem;
 		document.popupNode = node;
-		var xy = this.tc.getXY(e || this.tc.event);
-		popup.showPopup(node, xy.x, xy.y, "popup", null, null);
+		var xy = this.tc.getXY(this.tc.event);
+		popup.showPopup(this.tc.isFx3 ? node : getBrowser(), xy.x, xy.y, "popup", null, null);
 		return popup;
 	},
 
@@ -77,12 +78,34 @@ var totalClicksFuncs = {
 		process.init(file);
 		process.run(false, args, args.length);
 	},
-	convertToCP1251: function(str) {
-		if(!this.tc.p_convertToCP1251)
+	get charset() {
+		if(this._charset == null) {
+			this._charset = "";
+			if(this.tc.p_convertURIs)
+				if(this.tc.p_convertURIsTo)
+					this._charset = this.tc.p_convertURIsTo;
+				else { // thanks to IE Tab!
+					var strBundle = Components.classes["@mozilla.org/intl/stringbundle;1"]
+						.getService(Components.interfaces.nsIStringBundleService);
+					try {
+						this._charset =  strBundle.createBundle("chrome://global-platform/locale/intl.properties")
+							.GetStringFromName("intl.charset.default");
+					}
+					catch(e) {
+					}
+				}
+		}
+		return this._charset;
+	},
+	convertStrFromUnicode: function(str) { //~ todo: test (not needed?)
+		var charset = this.charset;
+		this.tc._log("convert");
+		if(!charset)
 			return str;
 		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
 			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-		suc.charset = "windows-1251";
+		suc.charset = charset;
+		this.tc._log("!!! convert");
 		return suc.ConvertFromUnicode(str);
 	},
 	openUriWithApp: function(e, popup) {
@@ -161,13 +184,14 @@ var totalClicksFuncs = {
 		}
 		var popup = this.showGeneratedPopup(items);
 		popup.setAttribute("oncommand", "totalClicksFuncs.openUriWithApp(event, this);");
-		popup._uri = this.convertToCP1251(uri);
+		popup._uri = this.convertStrFromUnicode(uri);
 	},
 
 	///////////////////
 	_test_showOpenUriWithAppPopup: function(e) { //~ del
 		var items = [
 			{ label: "Opera 9.5x", __path: "c:\\Program Files\\Opera 9.5\\opera.exe" },
+			{ label: "IE 7.0", __path: "c:\\Program Files\\Internet Explorer\\iexplore.exe" },
 			{},
 			{ label: "Firefox 2.0.0.x - test", __path: "c:\\Program Files\\Mozilla Firefox 2.0.0.x\\firefox.exe", __args: ["-no-remote", "-p", "fx2.0"] },
 		];

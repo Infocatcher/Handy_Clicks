@@ -9,7 +9,8 @@ var totalClicks = {
 	item: null,
 	itemType: undefined,
 	p_forceHideContextMenu: false, // for Linux (mousedown -> contextmenu -> click)
-	p_convertToCP1251: true, // for Windows
+	p_convertURIs: true, // for Windows
+	p_convertURIsTo: "", // use defaults
 	_isFx3: null,
 	_cMenu: null,
 	cMenuTimeout: null,
@@ -22,7 +23,7 @@ var totalClicks = {
 		window.removeEventListener("load", this, false);
 
 		// this.loadSettings();
-		this.readPrefs(["enabled", "forceHideContextMenu", "convertToCP1251"]);
+		this.readPrefs(["enabled", "forceHideContextMenu", "convertURIs", "convertURIsTo"]);
 
 		window.addEventListener("mousedown", this, true);
 		window.addEventListener("click", this, true);
