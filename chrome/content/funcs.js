@@ -1,6 +1,6 @@
 var totalClicksFuncs = {
 	tc: totalClicks,
-	_charset: null,
+	_defaultCharset: null,
 	copyItemText: function(e) { // for all
 		var tc = this.tc;
 		var it = tc.item;
@@ -64,7 +64,6 @@ var totalClicksFuncs = {
 			{ label: "Label - 2", oncommand: "alert(this.label);", mltt_line_0: "line-0", mltt_line_1: "line-1" },
 		];
 		this.showGeneratedPopup(items);
-		// popup.setAttribute("tooltip", "totalClicks-tooltip");
 	},
 	///////////////////
 
@@ -72,40 +71,47 @@ var totalClicksFuncs = {
 		args = args || [];
 		var file = Components.classes["@mozilla.org/file/local;1"]
 			.createInstance(Components.interfaces.nsILocalFile);
+		file.initWithPath(path);
+		if(!file.exists()) {
+			alert(path + "\nnot found!"); //~todo: promptsService
+			return;
+		}
 		var process = Components.classes["@mozilla.org/process/util;1"]
 			.getService(Components.interfaces.nsIProcess);
-		file.initWithPath(path);
 		process.init(file);
 		process.run(false, args, args.length);
 	},
-	get charset() {
-		if(this._charset == null) {
-			this._charset = "";
-			if(this.tc.p_convertURIs)
-				if(this.tc.p_convertURIsTo)
-					this._charset = this.tc.p_convertURIsTo;
-				else { // thanks to IE Tab!
-					var strBundle = Components.classes["@mozilla.org/intl/stringbundle;1"]
-						.getService(Components.interfaces.nsIStringBundleService);
-					try {
-						this._charset =  strBundle.createBundle("chrome://global-platform/locale/intl.properties")
-							.GetStringFromName("intl.charset.default");
-					}
-					catch(e) {
-					}
-				}
+	get defaultCharset() { // thanks to IE Tab!
+		if(this._defaultCharset == null) {
+			var strBundle = Components.classes["@mozilla.org/intl/stringbundle;1"]
+				.getService(Components.interfaces.nsIStringBundleService);
+			try {
+				this._defaultCharset = strBundle.createBundle("chrome://global-platform/locale/intl.properties")
+					.GetStringFromName("intl.charset.default");
+			}
+			catch(e) {
+				this._defaultCharset = "";
+			}
 		}
-		return this._charset;
+		return this._defaultCharset;
+	},
+	get charset() {
+		return this.tc.getPref("convertURIs")
+			? this.tc.getPref("convertURIsTo")
+				? this.tc.getPref("convertURIsTo")
+				: this.defaultCharset
+			: "";
 	},
 	convertStrFromUnicode: function(str) { //~ todo: test (not needed?)
 		var charset = this.charset;
-		this.tc._log("convert");
+		this.tc._log("convert -> " + charset);
 		if(!charset)
 			return str;
+		str = decodeURIComponent(str); // UTF-8
 		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
 			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
 		suc.charset = charset;
-		this.tc._log("!!! convert");
+		this.tc._log("nsIScriptableUnicodeConverter -> convert to " + charset);
 		return suc.ConvertFromUnicode(str);
 	},
 	openUriWithApp: function(e, popup) {
@@ -207,7 +213,7 @@ var totalClicksFuncs = {
 			lbl = tooltip["_" + attrName];
 			if(!lbl) {
 				lbl = document.createElement("label");
-				tooltip.appendChild(lbl);
+				tooltip.firstChild.appendChild(lbl);
 				tooltip["_" + attrName] = lbl;
 			}
 			lbl.setAttribute("value", tNode.getAttribute(attrName));
@@ -216,8 +222,8 @@ var totalClicksFuncs = {
 		}
 		return tNode.hasAttribute("mltt_line_0");
 	},
-	hideAllChilds: function(tooltip) {
-		var chs = tooltip.childNodes;
+	hideAllLabels: function(tooltip) {
+		var chs = tooltip.firstChild.childNodes;
 		for(var i = 0, len = chs.length; i < len; i++)
 			chs[i].hidden = true;
 	}

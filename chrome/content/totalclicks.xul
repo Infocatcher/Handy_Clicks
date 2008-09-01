@@ -7,8 +7,10 @@
 	<script type="application/x-javascript" src="chrome://totalclicks/content/funcs.js" />
 	<script type="application/x-javascript" src="chrome://totalclicks/content/prefs.js" />
 	<window id="main-window">
-		<tooltip id="totalClicks-tooltip" noautohide="true" orient="vertical"
+		<tooltip id="totalClicks-tooltip" noautohide="true"
 			onpopupshowing="return totalClicksFuncs.fillInTooltip(this);"
-			onpopuphidden="totalClicksFuncs.hideAllChilds(this);" />
+			onpopuphidden="totalClicksFuncs.hideAllLabels(this);">
+			<vbox id="totalClicks-tooltipBox" />
+		</tooltip>
 	</window>
 </overlay>

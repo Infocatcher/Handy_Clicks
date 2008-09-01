@@ -1,16 +1,12 @@
 var totalClicks = {
-	p_enabled: true,
 	disabledBy: {
 		mousemove: false,
 		cMenu: false
 	},
-	event: null, // ???
+	event: null,
 	origItem: null,
 	item: null,
 	itemType: undefined,
-	p_forceHideContextMenu: false, // for Linux (mousedown -> contextmenu -> click)
-	p_convertURIs: true, // for Windows
-	p_convertURIsTo: "", // use defaults
 	_isFx3: null,
 	_cMenu: null,
 	cMenuTimeout: null,
@@ -21,21 +17,14 @@ var totalClicks = {
 	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
 	init: function() {
 		window.removeEventListener("load", this, false);
-
-		// this.loadSettings();
-		this.readPrefs(["enabled", "forceHideContextMenu", "convertURIs", "convertURIsTo"]);
-
 		window.addEventListener("mousedown", this, true);
 		window.addEventListener("click", this, true);
-
 		this.prefs.addObserver("totalclicks.", this, false);
 	},
 	destroy: function() {
 		window.removeEventListener("unload", this, false);
-
 		window.removeEventListener("mousedown", this, true);
 		window.removeEventListener("click", this, true);
-
 		this.prefs.removeObserver("totalclicks.", this);
 	},
 	get isFx3() {
@@ -46,7 +35,7 @@ var totalClicks = {
 		return this._isFx3;
 	},
 	get disabled() {
-		if(!this.p_enabled)
+		if(!this.getPref("enabled"))
 			return true;
 		for(var p in this.disabledBy)
 			if(this.disabledBy[p])
@@ -56,7 +45,8 @@ var totalClicks = {
 	skipTmpDisabled: function() {
 		for(var p in this.disabledBy)
 			this.disabledBy[p] = false;
-		this.removeMousemoveHandler();
+		if(this.hasMousemoveHandler)
+			this.removeMousemoveHandler();
 	},
 	get cMenu() {
 		var cm = null;
@@ -82,7 +72,7 @@ var totalClicks = {
 		return cm;
 	},
 	mousedownHandler: function(e) { //~ todo: hide context menu for Linux
-		if(!this.p_enabled)
+		if(!this.getPref("enabled"))
 			return;
 		var evtStr = this.getEvtStr(e);
 		this.strOnMousedown = evtStr;
@@ -108,19 +98,12 @@ var totalClicks = {
 				true
 			);
 		}
-		if(!this.hasMousemoveHandler) {
+		if(!this.hasMousemoveHandler && this.getPref("disallowMousemoveForButtons").indexOf(e.button) > -1) {
 			window.addEventListener("mousemove", this, true); // only for right-click?
 			this.hasMousemoveHandler = true;
 		}
-		if(this.p_forceHideContextMenu)
-			window.addEventListener(
-				"contextmenu",
-				function(e) {
-					_this.stopEvent(e);
-					window.removeEventListener(e.type, arguments.callee, true);
-				},
-				true
-			);
+		if(this.getPref("forceHideContextMenu"))
+			window.addEventListener("contextmenu", this, true);
 	},
 	mousemoveHandler: function(e) {
 		this.disabledBy.mousemove = true;
@@ -131,6 +114,10 @@ var totalClicks = {
 	removeMousemoveHandler: function() {
 		window.removeEventListener("mousemove", this, true);
 		this.hasMousemoveHandler = false;
+	},
+	stopContextMenu: function(e) {
+		this.stopEvent(e);
+		window.removeEventListener("contextmenu", this, true);
 	},
 	getEvtStr: function(e) {
 		return "button=" + e.button
@@ -264,21 +251,26 @@ var totalClicks = {
 		};
 		***/
 
+		this.stopEvent(e); // this stop "contextmenu" event in Windows
+		if(this.getPref("forceHideContextMenu"))
+			window.removeEventListener("contextmenu", this, true); // and listener is not needed
+
 		var args = this.argsToArr(funcObj.arguments);
 		args.unshift(e);
 		if(funcObj.custom) { //~ todo
-			// this.stopEvent(e);
-			// try {
-			// 	var fnc = new Function(unescape(funcObj.action));
-			// 	fnc.apply(totalClicksFuncs, args); // ! totalClicksFuncs is undefined now !
-			// } catch(e) { alert(e); }
+			try {
+				var fnc = new Function(unescape(funcObj.action));
+				fnc.apply(totalClicksFuncs, args); // ! totalClicksFuncs is undefined now !
+			}
+			catch(e) {
+				Components.utils.reportError(e);
+				alert(e); //~ todo: pop-up message
+			}
 		}
 		else {
 			var fnc = totalClicksFuncs[funcObj.action]; // ! totalClicksFuncs is undefined now !
-			if(typeof fnc == "function") {
-				this.stopEvent(e);
+			if(typeof fnc == "function")
 				fnc.apply(totalClicksFuncs, args);
-			}
 		}
 
 		var oit = this.origItem;
@@ -307,7 +299,8 @@ var totalClicks = {
 			case "unload":      this.destroy(e);          break;
 			case "mousedown":   this.mousedownHandler(e); break;
 			case "click":       this.clickHandler(e);     break;
-			case "mousemove":   this.mousemoveHandler(e);
+			case "mousemove":   this.mousemoveHandler(e); break;
+			case "contextmenu": this.stopContextMenu(e);
 		}
 	},
 	observe: function(subject, topic, prefName) { // prefs observer
@@ -316,11 +309,13 @@ var totalClicks = {
 		this.readPref(prefName.replace(/^totalclicks\./, ""));
 	},
 	readPref: function(prefName) { //~ warn: not use this for UTF-8!
-		this["p_" + prefName] = navigator.preference("totalclicks." + prefName);
+		this["pref_" + prefName] = navigator.preference("totalclicks." + prefName);
 	},
-	readPrefs: function(prefNameArr) {
-		for(var i = 0; i < prefNameArr.length; i++)
-			this.readPref(prefNameArr[i]);
+	getPref: function(prefName) {
+		var propName = "pref_" + prefName;
+		if(typeof this[propName] == "undefined")
+			this[propName] = navigator.preference("totalclicks." + prefName);
+		return this[propName];
 	},
 
 	consoleServ: Components.classes["@mozilla.org/consoleservice;1"]
