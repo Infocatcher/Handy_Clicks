@@ -3,11 +3,11 @@ var handyClicks = {
 		mousemove: false,
 		cMenu: false
 	},
+	disableClickHandler: false,
 	event: null,
 	origItem: null,
 	item: null,
 	itemType: undefined,
-	_isFx3: null,
 	_cMenu: null,
 	cMenuTimeout: null,
 	strOnMousedown: "",
@@ -27,12 +27,15 @@ var handyClicks = {
 		window.removeEventListener("click", this, true);
 		this.prefs.removeObserver("handyclicks.", this);
 	},
-	get isFx3() {
-		if(this._isFx3 == null)
-			this._isFx3 = Components.classes["@mozilla.org/xre/app-info;1"]
+	get fxVersion() {
+		if(typeof this._fxVersion == "undefined")
+			this._fxVersion = Components.classes["@mozilla.org/xre/app-info;1"]
 				.getService(Components.interfaces.nsIXULAppInfo)
-				.version.indexOf("3.") == 0;
-		return this._isFx3;
+				.version;
+		return this._fxVersion;
+	},
+	isFx: function(version) {
+		return this.fxVersion.indexOf(version + ".") == 0;
 	},
 	get disabled() {
 		if(!this.getPref("enabled"))
@@ -92,6 +95,7 @@ var handyClicks = {
 			this.cMenuTimeout = setTimeout(
 				function() {
 					_this.disabledBy.cMenu = true;
+					_this._log("setTimeout -> _this.disabledBy.cMenu -> " + _this.disabledBy.cMenu);
 					_this.showPopupOnCurrentItem(cm);
 				},
 				this.getPref("showContextMenuTimeout")
@@ -127,15 +131,45 @@ var handyClicks = {
 		window.removeEventListener("contextmenu", this, true);
 	},
 	showPopupOnCurrentItem: function(popup) {
-		try {
-			var node = this.origItem;
-			document.popupNode = node;
-			var xy = this.getXY(this.copyOfEvent); //~ todo: test fx < 3.0 (getBrowser() works)
-			popup.showPopup(this.isFx3 ? node : this.copyOfEvent.target, xy.x, xy.y, "popup", null, null);
+		var node = this.origItem;
+		var e = this.copyOfEvent;
+
+		if(this.isFx(2) && this.cMenu.id == "contentAreaContextMenu") { // workaround for spellchecker bug
+			if(this.getPref("forceHideContextMenu"))
+				window.removeEventListener("contextmenu", this, true);
+
+			var evt = document.createEvent("MouseEvents"); // thanks to Tab Scope!
+			evt.initMouseEvent(
+				"click", true, false, node.ownerDocument.defaultView, 1,
+				e.screenX, e.screenY, e.clientX, e.clientY,
+				false, false, false, false,
+				2, null
+			);
+			node.dispatchEvent(evt);
+
+			this.disabledBy.cMenu = true;
+			this.blinkNode();
+			return;
 		}
-		catch(e) { //~ todo
-			alert("fx 2.0 spellchecker bug");
-		}
+		document.popupNode = node;
+		var xy = this.getXY(e);
+		popup.showPopup(this.isFx(3) ? node : e.target, xy.x, xy.y, "popup", null, null);
+	},
+	blinkNode: function(time, node) {
+		node = node || this.origItem;
+		if(!node)
+			return;
+		var hasStl = node.hasAttribute("style");
+		var origVis = node.style.visibility;
+		node.style.visibility = "hidden";
+		setTimeout(
+			function() {
+				node.style.visibility = origVis;
+				if(!hasStl)
+					node.removeAttribute("style");
+			},
+			time || 170
+		);
 	},
 	getEvtStr: function(e) {
 		return "button=" + e.button
@@ -279,6 +313,9 @@ var handyClicks = {
 		e.stopPropagation();
 	},
 	clickHandler: function(e) {
+		this._log("clickHandler -> this.disabledBy.cMenu -> " + this.disabledBy.cMenu);
+		this._log("clickHandler -> this.disabled -> " + this.disabled);
+
 		if(this.disabled) {
 			this.skipTmpDisabled();
 			return;
@@ -341,9 +378,10 @@ var handyClicks = {
 		return args;
 	},
 	getXY: function(e) {
+		var isFx3 = this.isFx(3);
 		return {
-			x: this.isFx3 ? e.screenX : e.clientX,
-			y: this.isFx3 ? e.screenY : e.clientY
+			x: isFx3 ? e.screenX : e.clientX,
+			y: isFx3 ? e.screenY : e.clientY
 		};
 	},
 	handleEvent: function(e) {

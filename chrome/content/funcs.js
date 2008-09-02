@@ -7,7 +7,7 @@ var handyClicksFuncs = {
 		var txt = it.textContent || it.label || it.alt || it.value || "";
 		hc._log("copyItemText -> " + txt);
 		this.copyStr(txt);
-		this.blinkNode();
+		this.hc.blinkNode();
 	},
 	copyStr: function(str) {
 		Components.classes["@mozilla.org/widget/clipboardhelper;1"]
@@ -116,24 +116,23 @@ var handyClicksFuncs = {
 				: this.defaultCharset
 			: "";
 	},
+	convertStrToUnicode: function(str) {
+
+	},
 	convertStrFromUnicode: function(str) {
 		var charset = this.charset;
-		this.hc._log("convert -> " + charset);
 		if(!charset)
 			return str;
-		try {
-			str = decodeURIComponent(str); // UTF-8
-		}
-		catch(e) { // does not work in fx 1.5
-			this.hc._log("convertStrFromUnicode -> decodeURIComponent failed");
-			return str; //~ todo: covert to UTF-8
-		}
-
 		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
 			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-
 		suc.charset = charset;
-		this.hc._log("nsIScriptableUnicodeConverter -> convert to " + charset);
+		try {
+			str = decodeURIComponent(str); // to UTF-8
+		}
+		catch(e) { // does not work in fx 1.5
+			str = suc.ConvertToUnicode(unescape(str)); // Thanks to IE Tab!
+			str = decodeURI(str);
+		}
 		return suc.ConvertFromUnicode(str);
 	},
 	openUriWithApp: function(e, popup) {
@@ -141,7 +140,7 @@ var handyClicksFuncs = {
 		if(mi.nodeName != "menuitem")
 			return;
 		var args = mi.__args || [];
-		args.push(popup._uri);
+		args.push(popup.__uri);
 		this.startProcess(mi.__path, args);
 	},
 	getBookmarkUri:	function(it, usePlacesURIs) {
@@ -213,7 +212,7 @@ var handyClicksFuncs = {
 		}
 		var popup = this.showGeneratedPopup(items);
 		popup.setAttribute("oncommand", "handyClicksFuncs.openUriWithApp(event, this);");
-		popup._uri = this.convertStrFromUnicode(uri);
+		popup.__uri = this.convertStrFromUnicode(uri);
 	},
 
 	///////////////////
