@@ -71,7 +71,7 @@ var handyClicks = {
 		this._cMenu = cm; // cache
 		return cm;
 	},
-	mousedownHandler: function(e) { //~ todo: hide context menu for Linux
+	mousedownHandler: function(e) { //~ todo: test hiding of context menu in Linux
 		if(!this.getPref("enabled"))
 			return;
 		var evtStr = this.getEvtStr(e);
@@ -89,6 +89,13 @@ var handyClicks = {
 		var cm = this.cMenu;
 		//~ todo: show menu after timeout // _this.disabledBy.cMenu = true;
 		if(cm && e.button == 2) {
+			this.cMenuTimeout = setTimeout(
+				function() {
+					_this.disabledBy.cMenu = true;
+					_this.showPopupOnCurrentItem(cm);
+				},
+				this.getPref("showContextMenuTimeout")
+			);
 			cm.addEventListener(
 				"popupshowing",
 				function(e) {
@@ -119,6 +126,17 @@ var handyClicks = {
 		this.stopEvent(e);
 		window.removeEventListener("contextmenu", this, true);
 	},
+	showPopupOnCurrentItem: function(popup) {
+		try {
+			var node = this.origItem;
+			document.popupNode = node;
+			var xy = this.getXY(this.copyOfEvent); //~ todo: test fx < 3.0 (getBrowser() works)
+			popup.showPopup(this.isFx3 ? node : this.copyOfEvent.target, xy.x, xy.y, "popup", null, null);
+		}
+		catch(e) { //~ todo
+			alert("fx 2.0 spellchecker bug");
+		}
+	},
 	getEvtStr: function(e) {
 		return "button=" + e.button
 			+ ",ctrl=" + e.ctrlKey
@@ -129,8 +147,25 @@ var handyClicks = {
 	getSettings: function(str) {
 		return (handyClicksPrefs || {})[str];
 	},
+	cloneObj: function(obj) {
+		obj = obj || {};
+		var clone = {};
+		for(var p in obj)
+			clone[p] = obj[p];
+		return clone;
+	},
 	defineItem: function(e, sets) {
 		this.event = e;
+
+		/* fx < 3.0:
+		 * works:
+		 * alert(uneval(this.getXY(this.event)));
+		 * always return "({x:0, y:0})":
+		 * var _this = this;
+		 * setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
+		 */
+		this.copyOfEvent = this.cloneObj(e);
+
 		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "submitButton"
 		this.item = null;
 
@@ -139,28 +174,33 @@ var handyClicks = {
 		var itnn = it.nodeName.toLowerCase();
 
 		// img:
-		// if(sets["img"])
-		if((itnn == "img" || itnn == "image") && it.src) {
+		if(
+			this.isOkFuncObj(sets["img"])
+			&& (itnn == "img" || itnn == "image") && (it.src || it.hasAttribute("src"))
+		) {
 			this.itemType = "img";
 			this.item = it;
 			return; //~ if(sets["img"].ignoreLinks) return;
 		}
 
 		// Link:
-		var a = it, ann = itnn;
-		while(ann != "#document" && ann != "a") {
-			a = a.parentNode;
-			ann = a.nodeName.toLowerCase();
-		}
-		if(ann == "a" && a.href) {
-			this.itemType = "link";
-			this.item = a;
-			return;
+		if(this.isOkFuncObj(sets["link"])) {
+			var a = it, ann = itnn;
+			while(ann != "#document" && ann != "a") {
+				a = a.parentNode;
+				ann = a.nodeName.toLowerCase();
+			}
+			if(ann == "a" && a.href) {
+				this.itemType = "link";
+				this.item = a;
+				return;
+			}
 		}
 
 		// Bookmark:
 		if(
-			it.namespaceURI == this.XULNS //~ todo: check NS for all?
+			this.isOkFuncObj(sets["bookmark"])
+			&& it.namespaceURI == this.XULNS //~ todo: check NS for all?
 			&& it.type != "menu"
 			&& (
 				(
@@ -178,7 +218,8 @@ var handyClicks = {
 
 		// History item:
 		if(
-			it.statusText
+			this.isOkFuncObj(sets["historyItem"])
+			&& it.statusText
 			&& /(^|\s+)menuitem-iconic(\s+|$)/.test(it.className)
 			&& /(^|\s+)bookmark-item(\s+|$)/.test(it.className)
 			&& it.parentNode.id == "goPopup"
@@ -189,35 +230,43 @@ var handyClicks = {
 		}
 
 		// Tab:
-		var tab = it, tnn = itnn;
-		while(tnn != "#document" && tnn != "tab" && tnn != "xul:tab") {
-			tab = tab.parentNode;
-			tnn = tab.nodeName.toLowerCase();
-		}
-		if(
-			(tnn == "tab" || tnn == "xul:tab")
-			&& /(^|\s+)tabbrowser-tab(\s+|$)/.test(tab.className)
-			&& it.getAttribute("anonid") != "close-button"
-		) {
-			this.itemType = "tab";
-			this.item = tab;
-			return;
+		if(this.isOkFuncObj(sets["tab"])) {
+			var tab = it, tnn = itnn;
+			while(tnn != "#document" && tnn != "tab" && tnn != "xul:tab") {
+				tab = tab.parentNode;
+				tnn = tab.nodeName.toLowerCase();
+			}
+			if(
+				(tnn == "tab" || tnn == "xul:tab")
+				&& /(^|\s+)tabbrowser-tab(\s+|$)/.test(tab.className)
+				&& it.getAttribute("anonid") != "close-button"
+			) {
+				this.itemType = "tab";
+				this.item = tab;
+				return;
+			}
 		}
 
 		// Submit button:
-		if(itnn == "input" && it.type == "button") {
+		if(
+			this.isOkFuncObj(sets["submitButton"])
+			&& itnn == "input" && it.type == "submit"
+		) {
 			this.itemType = "submitButton";
 			this.item = it;
 			return;
 		}
 	},
+	isOkFuncObj: function(fObj) { // funcObj && funcObj.enabled && funcObj.action
+		return typeof fObj == "object"
+			&& fObj.enabled
+			&& typeof fObj.action != "undefined";
+	},
 	getFuncObj: function(sets) {
 		if(!this.itemType) // see .defineItem()
 			return false;
 		var funcObj = sets[this.itemType];
-		return funcObj && funcObj.enabled && funcObj.action
-			? funcObj
-			: false;
+		return this.isOkFuncObj(funcObj) ? funcObj : false;
 	},
 	clearCMenuTimeout: function() {
 		clearTimeout(this.cMenuTimeout);
@@ -254,6 +303,7 @@ var handyClicks = {
 		this.stopEvent(e); // this stop "contextmenu" event in Windows
 		if(this.getPref("forceHideContextMenu"))
 			window.removeEventListener("contextmenu", this, true); // and listener is not needed
+		this.clearCMenuTimeout();
 
 		var args = this.argsToArr(funcObj.arguments);
 		args.unshift(e);

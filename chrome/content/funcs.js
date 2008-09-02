@@ -4,14 +4,31 @@ var handyClicksFuncs = {
 	copyItemText: function(e) { // for all
 		var hc = this.hc;
 		var it = hc.item;
-		var txt = it.textContent || it.label;
+		var txt = it.textContent || it.label || it.alt || it.value || "";
 		hc._log("copyItemText -> " + txt);
 		this.copyStr(txt);
+		this.blinkNode();
 	},
 	copyStr: function(str) {
 		Components.classes["@mozilla.org/widget/clipboardhelper;1"]
 			.getService(Components.interfaces.nsIClipboardHelper)
 			.copyString(str);
+	},
+	blinkNode: function(time, node) {
+		node = node || this.hc.origItem;
+		if(!node)
+			return;
+		var hasStl = node.hasAttribute("style");
+		var origVis = node.style.visibility;
+		node.style.visibility = "hidden";
+		setTimeout(
+			function() {
+				node.style.visibility = origVis;
+				if(!hasStl)
+					node.removeAttribute("style");
+			},
+			time || 170
+		);
 	},
 	get popup() {
 		var pSet = document.getElementById("mainPopupSet");
@@ -45,10 +62,7 @@ var handyClicksFuncs = {
 	},
 	showGeneratedPopup: function(items) {
 		var popup = this.createPopup(items);
-		var node = this.hc.origItem;
-		document.popupNode = node;
-		var xy = this.hc.getXY(this.hc.event);
-		popup.showPopup(this.hc.isFx3 ? node : getBrowser(), xy.x, xy.y, "popup", null, null);
+		this.hc.showPopupOnCurrentItem(popup);
 		return popup;
 	},
 
@@ -102,14 +116,22 @@ var handyClicksFuncs = {
 				: this.defaultCharset
 			: "";
 	},
-	convertStrFromUnicode: function(str) { //~ todo: test (not needed?)
+	convertStrFromUnicode: function(str) {
 		var charset = this.charset;
 		this.hc._log("convert -> " + charset);
 		if(!charset)
 			return str;
-		str = decodeURIComponent(str); // UTF-8
+		try {
+			str = decodeURIComponent(str); // UTF-8
+		}
+		catch(e) { // does not work in fx 1.5
+			this.hc._log("convertStrFromUnicode -> decodeURIComponent failed");
+			return str; //~ todo: covert to UTF-8
+		}
+
 		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
 			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+
 		suc.charset = charset;
 		this.hc._log("nsIScriptableUnicodeConverter -> convert to " + charset);
 		return suc.ConvertFromUnicode(str);
@@ -137,7 +159,8 @@ var handyClicksFuncs = {
 				uri = it.href;
 			break;
 			case "img":
-				uri = it.src;
+				this.hc._log("getUriOfCurrentItem -> img -> !it.src && it.hasAttribute(\"src\") -> " + (!it.src && it.hasAttribute("src")));
+				uri = it.src || it.getAttribute("src");
 			break;
 			case "bookmark":
 			case "historyItem":

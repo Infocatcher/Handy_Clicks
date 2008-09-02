@@ -6,3 +6,4 @@ pref("handyclicks.forceHideContextMenu", true); // for Linux (mousedown -> conte
 pref("handyclicks.disallowMousemoveForButtons", "2");
 pref("handyclicks.convertURIs", true); // for Windows
 pref("handyclicks.convertURIsTo", ""); // use defaults
+pref("handyclicks.showContextMenuTimeout", 500);
