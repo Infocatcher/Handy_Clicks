@@ -90,12 +90,10 @@ var handyClicks = {
 
 		var _this = this;
 		var cm = this.cMenu;
-		//~ todo: show menu after timeout // _this.disabledBy.cMenu = true;
 		if(cm && e.button == 2) {
 			this.cMenuTimeout = setTimeout(
 				function() {
 					_this.disabledBy.cMenu = true;
-					_this._log("setTimeout -> _this.disabledBy.cMenu -> " + _this.disabledBy.cMenu);
 					_this.showPopupOnCurrentItem(cm);
 				},
 				this.getPref("showContextMenuTimeout")
@@ -214,7 +212,8 @@ var handyClicks = {
 		) {
 			this.itemType = "img";
 			this.item = it;
-			return; //~ if(sets["img"].ignoreLinks) return;
+			if(sets["img"].ignoreLinks)
+				return;
 		}
 
 		// Link:
@@ -253,9 +252,8 @@ var handyClicks = {
 		// History item:
 		if(
 			this.isOkFuncObj(sets["historyItem"])
+			&& it.namespaceURI == this.XULNS
 			&& it.statusText
-			&& /(^|\s+)menuitem-iconic(\s+|$)/.test(it.className)
-			&& /(^|\s+)bookmark-item(\s+|$)/.test(it.className)
 			&& it.parentNode.id == "goPopup"
 		) {
 			this.itemType = "historyItem";
@@ -313,9 +311,6 @@ var handyClicks = {
 		e.stopPropagation();
 	},
 	clickHandler: function(e) {
-		this._log("clickHandler -> this.disabledBy.cMenu -> " + this.disabledBy.cMenu);
-		this._log("clickHandler -> this.disabled -> " + this.disabled);
-
 		if(this.disabled) {
 			this.skipTmpDisabled();
 			return;

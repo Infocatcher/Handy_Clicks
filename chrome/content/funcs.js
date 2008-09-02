@@ -9,6 +9,11 @@ var handyClicksFuncs = {
 		this.copyStr(txt);
 		this.hc.blinkNode();
 	},
+	copyItemLink: function(e) {
+		var uri = this.getUriOfCurrentItem() || "";
+		this.copyStr(uri);
+		this.hc.blinkNode();
+	},
 	copyStr: function(str) {
 		Components.classes["@mozilla.org/widget/clipboardhelper;1"]
 			.getService(Components.interfaces.nsIClipboardHelper)
