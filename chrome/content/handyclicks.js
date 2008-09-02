@@ -238,7 +238,10 @@ var handyClicks = {
 			}
 			if(
 				(tnn == "tab" || tnn == "xul:tab")
-				&& /(^|\s+)tabbrowser-tab(\s+|$)/.test(tab.className)
+				&& (
+					/(^|\s+)tabbrowser-tab(\s+|$)/.test(tab.className)
+					|| /(^|\s+)tabbrowser-tabs(\s+|$)/.test(tab.parentNode.className) // >1 tabs in Firefox 1.5
+				)
 				&& it.getAttribute("anonid") != "close-button"
 			) {
 				this.itemType = "tab";
@@ -340,7 +343,7 @@ var handyClicks = {
 	getXY: function(e) {
 		return {
 			x: this.isFx3 ? e.screenX : e.clientX,
-			y: this.isFx3 ? e.screenY : e.clientY,
+			y: this.isFx3 ? e.screenY : e.clientY
 		};
 	},
 	handleEvent: function(e) {
