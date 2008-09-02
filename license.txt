@@ -11,7 +11,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Total Clicks.
+ * The Original Code is Handy Clicks.
  * The Initial Developer of the Original Code is Infocatcher.
  *
  * Portions created by the Initial Developer are Copyright (C) 2008

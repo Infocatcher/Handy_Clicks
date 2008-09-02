@@ -1,5 +1,5 @@
-content totalclicks jar:chrome/totalclicks.jar!/content/
-overlay chrome://browser/content/browser.xul chrome://totalclicks/content/totalclicks.xul
+content handyclicks jar:chrome/handyclicks.jar!/content/
+overlay chrome://browser/content/browser.xul chrome://handyclicks/content/handyclicks.xul
 
-locale  totalclicks en-US jar:chrome/totalclicks.jar!/locale/en-US/
-locale  totalclicks ru    jar:chrome/totalclicks.jar!/locale/ru/
+locale  handyclicks en-US jar:chrome/handyclicks.jar!/locale/en-US/
+locale  handyclicks ru    jar:chrome/handyclicks.jar!/locale/ru/

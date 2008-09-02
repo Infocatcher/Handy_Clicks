@@ -1,4 +1,4 @@
-var totalClicksPrefs = {
+var handyClicksPrefs = {
 	"button=0,ctrl=true,shift=false,alt=false,meta=false": {
 		link: { },
 		img: { },

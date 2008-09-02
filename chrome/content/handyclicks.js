@@ -1,4 +1,4 @@
-var totalClicks = {
+var handyClicks = {
 	disabledBy: {
 		mousemove: false,
 		cMenu: false
@@ -19,13 +19,13 @@ var totalClicks = {
 		window.removeEventListener("load", this, false);
 		window.addEventListener("mousedown", this, true);
 		window.addEventListener("click", this, true);
-		this.prefs.addObserver("totalclicks.", this, false);
+		this.prefs.addObserver("handyclicks.", this, false);
 	},
 	destroy: function() {
 		window.removeEventListener("unload", this, false);
 		window.removeEventListener("mousedown", this, true);
 		window.removeEventListener("click", this, true);
-		this.prefs.removeObserver("totalclicks.", this);
+		this.prefs.removeObserver("handyclicks.", this);
 	},
 	get isFx3() {
 		if(this._isFx3 == null)
@@ -127,7 +127,7 @@ var totalClicks = {
 			+ ",meta=" + e.metaKey;
 	},
 	getSettings: function(str) {
-		return (totalClicksPrefs || {})[str];
+		return (handyClicksPrefs || {})[str];
 	},
 	defineItem: function(e, sets) {
 		this.event = e;
@@ -260,7 +260,7 @@ var totalClicks = {
 		if(funcObj.custom) { //~ todo
 			try {
 				var fnc = new Function(unescape(funcObj.action));
-				fnc.apply(totalClicksFuncs, args); // ! totalClicksFuncs is undefined now !
+				fnc.apply(handyClicksFuncs, args); // ! handyClicksFuncs is undefined now !
 			}
 			catch(e) {
 				Components.utils.reportError(e);
@@ -268,9 +268,9 @@ var totalClicks = {
 			}
 		}
 		else {
-			var fnc = totalClicksFuncs[funcObj.action]; // ! totalClicksFuncs is undefined now !
+			var fnc = handyClicksFuncs[funcObj.action]; // ! handyClicksFuncs is undefined now !
 			if(typeof fnc == "function")
-				fnc.apply(totalClicksFuncs, args);
+				fnc.apply(handyClicksFuncs, args);
 		}
 
 		var oit = this.origItem;
@@ -306,24 +306,24 @@ var totalClicks = {
 	observe: function(subject, topic, prefName) { // prefs observer
 		if(topic != "nsPref:changed") // ???
 			return;
-		this.readPref(prefName.replace(/^totalclicks\./, ""));
+		this.readPref(prefName.replace(/^handyclicks\./, ""));
 	},
 	readPref: function(prefName) { //~ warn: not use this for UTF-8!
-		this["pref_" + prefName] = navigator.preference("totalclicks." + prefName);
+		this["pref_" + prefName] = navigator.preference("handyclicks." + prefName);
 	},
 	getPref: function(prefName) {
 		var propName = "pref_" + prefName;
 		if(typeof this[propName] == "undefined")
-			this[propName] = navigator.preference("totalclicks." + prefName);
+			this[propName] = navigator.preference("handyclicks." + prefName);
 		return this[propName];
 	},
 
 	consoleServ: Components.classes["@mozilla.org/consoleservice;1"]
 		.getService(Components.interfaces.nsIConsoleService),
 	_log: function(msg) {
-		msg = "[Total Clicks]: " + msg + "\n";
+		msg = "[Handy Clicks]: " + msg + "\n";
 		this.consoleServ.logStringMessage(msg);
 	}
 };
-window.addEventListener("load", totalClicks, false);
-window.addEventListener("unload", totalClicks, false);
+window.addEventListener("load", handyClicks, false);
+window.addEventListener("unload", handyClicks, false);

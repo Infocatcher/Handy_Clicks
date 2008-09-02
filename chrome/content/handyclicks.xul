@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://browser/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/handyclicks.css" type="text/css"?>
+
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/x-javascript" src="chrome://handyclicks/content/handyclicks.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/funcs.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
+	<window id="main-window">
+		<tooltip id="handyClicks-tooltip" noautohide="true"
+			onpopupshowing="return handyClicksFuncs.fillInTooltip(this);"
+			onpopuphidden="handyClicksFuncs.hideAllLabels(this);">
+			<vbox id="handyClicks-tooltipBox" />
+		</tooltip>
+	</window>
+</overlay>

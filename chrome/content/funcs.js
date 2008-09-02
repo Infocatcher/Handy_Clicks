@@ -1,11 +1,11 @@
-var totalClicksFuncs = {
-	tc: totalClicks,
+var handyClicksFuncs = {
+	hc: handyClicks,
 	_defaultCharset: null,
 	copyItemText: function(e) { // for all
-		var tc = this.tc;
-		var it = tc.item;
+		var hc = this.hc;
+		var it = hc.item;
 		var txt = it.textContent || it.label;
-		tc._log("copyItemText -> " + txt);
+		hc._log("copyItemText -> " + txt);
 		this.copyStr(txt);
 	},
 	copyStr: function(str) {
@@ -15,13 +15,13 @@ var totalClicksFuncs = {
 	},
 	get popup() {
 		var pSet = document.getElementById("mainPopupSet");
-		var id = "totalClicks-generatedPopup";
+		var id = "handyClicks-generatedPopup";
 		var popup = document.getElementById(id);
 		if(popup)
 			pSet.removeChild(popup);
 		popup = document.createElement("popup");
 		popup.id = id;
-		popup.tooltip = "totalClicks-tooltip";
+		popup.tooltip = "handyClicks-tooltip";
 		pSet.appendChild(popup);
 		return popup;
 	},
@@ -45,17 +45,17 @@ var totalClicksFuncs = {
 	},
 	showGeneratedPopup: function(items) {
 		var popup = this.createPopup(items);
-		var node = this.tc.origItem;
+		var node = this.hc.origItem;
 		document.popupNode = node;
-		var xy = this.tc.getXY(this.tc.event);
-		popup.showPopup(this.tc.isFx3 ? node : getBrowser(), xy.x, xy.y, "popup", null, null);
+		var xy = this.hc.getXY(this.hc.event);
+		popup.showPopup(this.hc.isFx3 ? node : getBrowser(), xy.x, xy.y, "popup", null, null);
 		return popup;
 	},
 
 
 	///////////////////
 	_test: function(e) { //~ del
-		this.tc._log("_test");
+		this.hc._log("_test");
 		var items = [
 			{ label: "Label - 0", oncommand: "alert(this.label);" },
 			{},
@@ -96,22 +96,22 @@ var totalClicksFuncs = {
 		return this._defaultCharset;
 	},
 	get charset() {
-		return this.tc.getPref("convertURIs")
-			? this.tc.getPref("convertURIsTo")
-				? this.tc.getPref("convertURIsTo")
+		return this.hc.getPref("convertURIs")
+			? this.hc.getPref("convertURIsTo")
+				? this.hc.getPref("convertURIsTo")
 				: this.defaultCharset
 			: "";
 	},
 	convertStrFromUnicode: function(str) { //~ todo: test (not needed?)
 		var charset = this.charset;
-		this.tc._log("convert -> " + charset);
+		this.hc._log("convert -> " + charset);
 		if(!charset)
 			return str;
 		str = decodeURIComponent(str); // UTF-8
 		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
 			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
 		suc.charset = charset;
-		this.tc._log("nsIScriptableUnicodeConverter -> convert to " + charset);
+		this.hc._log("nsIScriptableUnicodeConverter -> convert to " + charset);
 		return suc.ConvertFromUnicode(str);
 	},
 	openUriWithApp: function(e, popup) {
@@ -130,9 +130,9 @@ var totalClicksFuncs = {
 		return tab.linkedBrowser.contentDocument.location.href;
 	},
 	getUriOfCurrentItem: function() {
-		var it = this.tc.item;
+		var it = this.hc.item;
 		var uri = null;
-		switch(this.tc.itemType) {
+		switch(this.hc.itemType) {
 			case "link":
 				uri = it.href;
 			break;
@@ -170,7 +170,7 @@ var totalClicksFuncs = {
 		value = value.replace(/[\u200e\u200f\u202a\u202b\u202c\u202d\u202e]/g, encodeURIComponent);
 		return value;
 	},
-	showOpenUriWithAppPopup: function(items) {
+	showOpenUriWithAppsPopup: function(items) {
 		var uri = this.getUriOfCurrentItem();
 		if(!uri) { //~ todo: show pop-up massage
 			return;
@@ -189,19 +189,19 @@ var totalClicksFuncs = {
 			it["mltt_line_" + n++] = this.decodeUri(uri);
 		}
 		var popup = this.showGeneratedPopup(items);
-		popup.setAttribute("oncommand", "totalClicksFuncs.openUriWithApp(event, this);");
+		popup.setAttribute("oncommand", "handyClicksFuncs.openUriWithApp(event, this);");
 		popup._uri = this.convertStrFromUnicode(uri);
 	},
 
 	///////////////////
-	_test_showOpenUriWithAppPopup: function(e) { //~ del
+	_test_showOpenUriWithAppsPopup: function(e) { //~ del
 		var items = [
 			{ label: "Opera 9.5x", __path: "c:\\Program Files\\Opera 9.5\\opera.exe" },
 			{ label: "IE 7.0", __path: "c:\\Program Files\\Internet Explorer\\iexplore.exe" },
 			{},
 			{ label: "Firefox 2.0.0.x - test", __path: "c:\\Program Files\\Mozilla Firefox 2.0.0.x\\firefox.exe", __args: ["-no-remote", "-p", "fx2.0"] },
 		];
-		this.showOpenUriWithAppPopup(items);
+		this.showOpenUriWithAppsPopup(items);
 	},
 	///////////////////
 

@@ -1,5 +1,5 @@
-content totalclicks chrome/content/
-overlay chrome://browser/content/browser.xul chrome://totalclicks/content/totalclicks.xul
+content handyclicks chrome/content/
+overlay chrome://browser/content/browser.xul chrome://handyclicks/content/handyclicks.xul
 
-locale  totalclicks en-US chrome/locale/en-US/
-locale  totalclicks ru    chrome/locale/ru/
+locale  handyclicks en-US chrome/locale/en-US/
+locale  handyclicks ru    chrome/locale/ru/
