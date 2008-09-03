@@ -35,20 +35,26 @@ var handyClicksFuncs = {
 			time || 170
 		);
 	},
-	get popup() {
+	getPopup: function(xml) {
 		var pSet = document.getElementById("mainPopupSet");
 		var id = "handyClicks-generatedPopup";
 		var popup = document.getElementById(id);
 		if(popup)
 			pSet.removeChild(popup);
-		popup = document.createElement("popup");
+		popup = xml
+			? new DOMParser().parseFromString(xml.toXMLString(), "application/xml").documentElement
+			: document.createElement("popup");
+		if(xml) {
+			// Bug: labels of <menu> does not shown.
+			this.hc._log("fixMenuLabels");
+		}
 		popup.id = id;
 		popup.tooltip = "handyClicks-tooltip";
 		pSet.appendChild(popup);
 		return popup;
 	},
 	createPopup: function(items) {
-		var popup = this.popup;
+		var popup = this.getPopup();
 		var it, mi;
 		for(var i = 0; i < items.length; i++) {
 			it = items[i];
@@ -70,6 +76,11 @@ var handyClicksFuncs = {
 		this.hc.showPopupOnCurrentItem(popup);
 		return popup;
 	},
+	showGeneratedFromXMLPopup: function(xml) {
+		var popup = this.getPopup(xml);
+		this.hc.showPopupOnCurrentItem(popup);
+		return popup;
+	},
 
 
 	///////////////////
@@ -83,6 +94,22 @@ var handyClicksFuncs = {
 			{ label: "Label - 2", oncommand: "alert(this.label);", mltt_line_0: "line-0", mltt_line_1: "line-1" },
 		];
 		this.showGeneratedPopup(items);
+	},
+	_xml_test: function(e) {
+		var xml = <popup xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+			oncommand="alert(event.target.label)">
+				<menuitem label="Restart" />
+				<menuitem label="Enlarge" />
+				<menuitem label="Reduce" />
+				<menuseparator />
+				<menu label="XXXXXXXXXXXXx">
+					<menupopup>
+						<menuitem label="Submenu - 1" />
+						<menuitem label="Submenu - 2" />
+					</menupopup>
+				</menu>
+			</popup>;
+		this.showGeneratedFromXMLPopup(xml);
 	},
 	///////////////////
 
@@ -232,6 +259,48 @@ var handyClicksFuncs = {
 	},
 	///////////////////
 
+	setPrefs: function(prefsObj) {
+		var origs = {};
+		for(var p in prefsObj) {
+			origs[p] = navigator.preference(p);
+			navigator.preference(p, prefsObj[p]);
+		}
+		return origs;
+	},
+	restorePrefs: function(prefsObj) {
+		for(var p in prefsObj)
+			navigator.preference(p, prefsObj[p]);
+	},
+
+	submitFormToNewDoc: function(e, toNewWin, node) { // Thanks to SubmitToTab! //~ todo: add URL
+		node = node || this.hc.item;
+		node = new XPCNativeWrapper(node, "form", "click()");
+		var origTarget = node.form.getAttribute("target");
+		node.form.target = "_blank";
+
+		var origPrefs = this.setPrefs(
+			toNewWin
+				? {
+					"browser.link.open_newwindow": 2,
+					"browser.block.target_new_window": false,
+					"dom.disable_open_during_load": false
+				}
+				: {
+					"browser.link.open_newwindow": 3,
+					"browser.tabs.loadDivertedInBackground": true,
+					"dom.disable_open_during_load": false
+				}
+		);
+		node.click();
+
+		if(origTarget)
+			node.form.target = origTarget;
+		else
+			node.form.removeAttribute("target");
+		node.form.target = origTarget ? origTarget : "_self"; //~ todo: removeAttribute ?
+		this.restorePrefs(origPrefs);
+	},
+
 	fillInTooltip: function(tooltip) {
 		var tNode = document.tooltipNode;
 		var attrName = "mltt_line_0";
@@ -240,6 +309,7 @@ var handyClicksFuncs = {
 			lbl = tooltip["_" + attrName];
 			if(!lbl) {
 				lbl = document.createElement("label");
+				lbl.setAttribute("crop", "center");
 				tooltip.firstChild.appendChild(lbl);
 				tooltip["_" + attrName] = lbl;
 			}

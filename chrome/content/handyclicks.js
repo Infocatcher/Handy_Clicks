@@ -283,13 +283,22 @@ var handyClicks = {
 		}
 
 		// Submit button:
-		if(
-			this.isOkFuncObj(sets["submitButton"])
-			&& itnn == "input" && it.type == "submit"
-		) {
-			this.itemType = "submitButton";
-			this.item = it;
-			return;
+		if(this.isOkFuncObj(sets["submitButton"])) {
+			if(itnn == "input" && it.type == "submit") {
+				this.itemType = "submitButton";
+				this.item = it;
+				return;
+			}
+			var but = it, bnn = itnn;
+			while(bnn != "#document" && bnn != "button") {
+				but = but.parentNode;
+				bnn = but.nodeName.toLowerCase();
+			}
+			if(bnn == "button") {
+				this.itemType = "submitButton";
+				this.item = it;
+				return;
+			}
 		}
 	},
 	isOkFuncObj: function(fObj) { // funcObj && funcObj.enabled && funcObj.action
