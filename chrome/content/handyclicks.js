@@ -132,7 +132,7 @@ var handyClicks = {
 		var node = this.origItem;
 		var e = this.copyOfEvent;
 
-		if(this.isFx(2) && this.cMenu.id == "contentAreaContextMenu") { // workaround for spellchecker bug
+		if(this.isFx(2) && popup.id == "contentAreaContextMenu") { // workaround for spellchecker bug
 			if(this.getPref("forceHideContextMenu"))
 				window.removeEventListener("contextmenu", this, true);
 
@@ -152,6 +152,7 @@ var handyClicks = {
 		document.popupNode = node;
 		var xy = this.getXY(e);
 		popup.showPopup(this.isFx(3) ? node : e.target, xy.x, xy.y, "popup", null, null);
+		this.skipTmpDisabled(); // No click event after showPopup() //~ todo: test
 	},
 	blinkNode: function(time, node) {
 		node = node || this.origItem;
@@ -320,6 +321,9 @@ var handyClicks = {
 		e.stopPropagation();
 	},
 	clickHandler: function(e) {
+
+		this._log("clickHandler -> pref enabled -> " + this.getPref("enabled") + "\nmousemove -> " + this.disabledBy.mousemove + "\ncMenu -> " + this.disabledBy.cMenu );
+
 		if(this.disabled) {
 			this.skipTmpDisabled();
 			return;
@@ -367,6 +371,7 @@ var handyClicks = {
 				fnc.apply(handyClicksFuncs, args);
 		}
 
+		return;
 		var oit = this.origItem;
 		this._log(
 			oit + "\n"
