@@ -19,72 +19,57 @@ var handyClicksFuncs = {
 			.getService(Components.interfaces.nsIClipboardHelper)
 			.copyString(str);
 	},
-	blinkNode: function(time, node) {
-		node = node || this.hc.origItem;
-		if(!node)
-			return;
-		var hasStl = node.hasAttribute("style");
-		var origVis = node.style.visibility;
-		node.style.visibility = "hidden";
-		setTimeout(
-			function() {
-				node.style.visibility = origVis;
-				if(!hasStl)
-					node.removeAttribute("style");
-			},
-			time || 170
-		);
-	},
-	getPopup: function(xml) {
-		var pSet = document.getElementById("mainPopupSet");
-		var id = "handyClicks-generatedPopup";
-		var popup = document.getElementById(id);
-		if(popup)
-			pSet.removeChild(popup);
-		popup = xml
-			? new DOMParser().parseFromString(xml.toXMLString(), "application/xml").documentElement
-			: document.createElement("popup");
-		if(xml) {
-			// Bug: labels of <menu> does not shown.
-			this.hc._log("fixMenuLabels");
-		}
-		popup.id = id;
-		popup.tooltip = "handyClicks-tooltip";
-		pSet.appendChild(popup);
-		return popup;
-	},
-	createPopup: function(items) {
-		var popup = this.getPopup();
-		var it, mi;
-		for(var i = 0; i < items.length; i++) {
-			it = items[i];
-			mi = document.createElement(it.label ? "menuitem" : "menuseparator");
-			for(var p in it) {
-				if(!p)
-					continue;
-				if(typeof it[p] != "string" || p.indexOf("__") == 0)
-					mi[p] = it[p]; // not works for "oncommand"
-				else
-					mi.setAttribute(p, it[p]);
-			}
-			popup.appendChild(mi);
-		}
-		return popup;
-	},
 	showGeneratedPopup: function(items) {
 		var popup = this.createPopup(items);
 		this.hc.showPopupOnCurrentItem(popup);
 		return popup;
 	},
-	showGeneratedFromXMLPopup: function(xml) {
-		var popup = this.getPopup(xml);
-		this.hc.showPopupOnCurrentItem(popup);
+	createPopup: function(items) {
+		var popup = this.popup;
+		this.appendChilds(popup, items);
 		return popup;
+	},
+	get popup() {
+		var pSet = document.getElementById("mainPopupSet");
+		var id = "handyClicks-generatedPopup";
+		var popup = document.getElementById(id);
+		if(popup)
+			pSet.removeChild(popup);
+		popup = document.createElement("popup");
+		popup.id = id;
+		popup.tooltip = "handyClicks-tooltip";
+		pSet.appendChild(popup);
+		return popup;
+	},
+	appendChilds: function(parent, childs) {
+		for(var i = 0; i < childs.length; i++)
+			this["appendMenu" + (childs[i] instanceof Array ? "" : "item")](parent, childs[i]);
+	},
+	appendMenu: function(parent, itemsArr) {
+		var menu = document.createElement("menu");
+		this.setAttributes(menu, itemsArr[0]);
+		var mPopup = document.createElement("menupopup");
+		this.appendChilds(mPopup, itemsArr[1]);
+		menu.appendChild(mPopup);
+		parent.appendChild(menu);
+	},
+	appendMenuitem: function(parent, attrs) {
+		var mi = document.createElement(attrs.label ? "menuitem" : "menuseparator");
+		this.setAttributes(mi, attrs);
+		parent.appendChild(mi);
+	},
+	setAttributes: function(item, attrs) {
+		for(var p in attrs) {
+			if(typeof attrs[p] != "string" || p.indexOf("__") == 0)
+				item[p] = attrs[p]; // not works for "oncommand"
+			else
+				item.setAttribute(p, attrs[p]);
+		}
 	},
 
 
 	///////////////////
-	_test: function(e) { //~ del
+	_test_old: function(e) { //~ del
 		this.hc._log("_test");
 		var items = [
 			{ label: "Label - 0", oncommand: "alert(this.label);" },
@@ -95,21 +80,30 @@ var handyClicksFuncs = {
 		];
 		this.showGeneratedPopup(items);
 	},
-	_xml_test: function(e) {
-		var xml = <popup xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-			oncommand="alert(event.target.label)">
-				<menuitem label="Restart" />
-				<menuitem label="Enlarge" />
-				<menuitem label="Reduce" />
-				<menuseparator />
-				<menu label="XXXXXXXXXXXXx">
-					<menupopup>
-						<menuitem label="Submenu - 1" />
-						<menuitem label="Submenu - 2" />
-					</menupopup>
-				</menu>
-			</popup>;
-		this.showGeneratedFromXMLPopup(xml);
+	_test: function(e) {
+		var items = [
+			{ label: "Label - 0" },
+			{},
+			{ label: "Label - 1" },
+			{ label: "Label - 2" },
+			{ label: "Label - 3" },
+			[
+				{ label: "Menu - 4" },
+				[
+					{ label: "Label - 4 - 0" },
+					[
+						{ label: "Menu - 4 - 1" },
+						[
+							{ label: "Label - 4 - 1 - 1" }
+						]
+					],
+					{ label: "Label - 4 - 1" },
+					{ label: "Label - 4 - 2" }
+				]
+			]
+		];
+		var popup = this.showGeneratedPopup(items);
+		popup.setAttribute("oncommand", "alert(event.target.label);");
 	},
 	///////////////////
 
