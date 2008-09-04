@@ -322,7 +322,11 @@ var handyClicks = {
 	},
 	clickHandler: function(e) {
 
-		this._log("clickHandler -> pref enabled -> " + this.getPref("enabled") + "\nmousemove -> " + this.disabledBy.mousemove + "\ncMenu -> " + this.disabledBy.cMenu );
+		/* this._log(
+			"clickHandler -> pref enabled -> " + this.getPref("enabled")
+			+ "\nmousemove -> " + this.disabledBy.mousemove
+			+ "\ncMenu -> " + this.disabledBy.cMenu
+		); */
 
 		if(this.disabled) {
 			this.skipTmpDisabled();
@@ -341,13 +345,6 @@ var handyClicks = {
 		if(!funcObj)
 			return;
 
-		/***
-		var _this = this;
-		var stopEvt = function() {
-			_this.stopEvent(e);
-		};
-		***/
-
 		this.stopEvent(e); // this stop "contextmenu" event in Windows
 		if(this.getPref("forceHideContextMenu"))
 			window.removeEventListener("contextmenu", this, true); // and listener is not needed
@@ -358,7 +355,7 @@ var handyClicks = {
 		if(funcObj.custom) { //~ todo
 			try {
 				var fnc = new Function(unescape(funcObj.action));
-				fnc.apply(handyClicksFuncs, args); // ! handyClicksFuncs is undefined now !
+				fnc.apply(handyClicksFuncs, args);
 			}
 			catch(e) {
 				Components.utils.reportError(e);
@@ -366,15 +363,14 @@ var handyClicks = {
 			}
 		}
 		else {
-			var fnc = handyClicksFuncs[funcObj.action]; // ! handyClicksFuncs is undefined now !
+			var fnc = handyClicksFuncs[funcObj.action];
 			if(typeof fnc == "function")
 				fnc.apply(handyClicksFuncs, args);
 		}
 
-		return;
 		var oit = this.origItem;
 		this._log(
-			oit + "\n"
+			"clickHandler -> " + oit + "\n"
 			+ "nodeName -> " + oit.nodeName + "\n"
 			+ "itemType -> " + this.itemType
 		);

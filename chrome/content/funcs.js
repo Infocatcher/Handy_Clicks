@@ -2,17 +2,45 @@ var handyClicksFuncs = {
 	hc: handyClicks,
 	_defaultCharset: null,
 	copyItemText: function(e) { // for all
-		var hc = this.hc;
-		var it = hc.item;
-		var txt = it.textContent || it.label || it.alt || it.value || "";
-		hc._log("copyItemText -> " + txt);
-		this.copyStr(txt);
+		this.hc._log("copyItemText -> " + this.getTextOfCurrentItem());
+		this.copyStr(this.getTextOfCurrentItem());
 		this.hc.blinkNode();
 	},
 	copyItemLink: function(e) {
-		var uri = this.getUriOfCurrentItem() || "";
-		this.copyStr(uri);
+		this.hc._log("copyItemLink -> " + (this.getUriOfCurrentItem() || ""));
+		this.copyStr(this.getUriOfCurrentItem() || "");
 		this.hc.blinkNode();
+	},
+	getTextOfCurrentItem: function() {
+		var it = this.hc.item;
+		return it.textContent || it.label || it.alt || it.value || "";
+	},
+	getUriOfCurrentItem: function() {
+		var it = this.hc.item;
+		var uri = null;
+		switch(this.hc.itemType) {
+			case "link":
+				uri = it.href;
+			break;
+			case "img":
+				this.hc._log("getUriOfCurrentItem -> img -> !it.src && it.hasAttribute(\"src\") -> " + (!it.src && it.hasAttribute("src")));
+				uri = it.src || it.getAttribute("src");
+			break;
+			case "bookmark":
+			case "historyItem":
+				uri = this.getBookmarkUri(it);
+			break;
+			case "tab":
+				uri = this.getTabUri(it);
+		}
+		return uri;
+	},
+	getBookmarkUri:	function(it, usePlacesURIs) {
+		var uri = it.statusText || (it.node && it.node.uri) || it.getAttribute("siteURI") || "";
+		return !usePlacesURIs && /^place:/.test(uri) ? "" : uri;
+	},
+	getTabUri: function(tab) {
+		return tab.linkedBrowser.contentDocument.location.href;
 	},
 	copyStr: function(str) {
 		Components.classes["@mozilla.org/widget/clipboardhelper;1"]
@@ -169,13 +197,6 @@ var handyClicksFuncs = {
 		args.push(popup.__uri);
 		this.startProcess(mi.__path, args);
 	},
-	getBookmarkUri:	function(it, usePlacesURIs) {
-		var uri = it.statusText || (it.node && it.node.uri) || it.getAttribute("siteURI") || "";
-		return !usePlacesURIs && /^place:/.test(uri) ? "" : uri;
-	},
-	getTabUri: function(tab) {
-		return tab.linkedBrowser.contentDocument.location.href;
-	},
 	getUriOfCurrentItem: function() {
 		var it = this.hc.item;
 		var uri = null;
@@ -195,6 +216,13 @@ var handyClicksFuncs = {
 				uri = this.getTabUri(it);
 		}
 		return uri;
+	},
+	getBookmarkUri:	function(it, usePlacesURIs) {
+		var uri = it.statusText || (it.node && it.node.uri) || it.getAttribute("siteURI") || "";
+		return !usePlacesURIs && /^place:/.test(uri) ? "" : uri;
+	},
+	getTabUri: function(tab) {
+		return tab.linkedBrowser.contentDocument.location.href;
 	},
 	decodeUri: function(value) { // code by Ex Bookmark Properties ( https://addons.mozilla.org/firefox/addon/7396 )
 		// return decodeURIComponent(value);
@@ -265,7 +293,6 @@ var handyClicksFuncs = {
 		for(var p in prefsObj)
 			navigator.preference(p, prefsObj[p]);
 	},
-
 	submitFormToNewDoc: function(e, toNewWin, node) { // Thanks to SubmitToTab! //~ todo: add URL
 		node = node || this.hc.item;
 		node = new XPCNativeWrapper(node, "form", "click()");
@@ -294,7 +321,53 @@ var handyClicksFuncs = {
 		node.form.target = origTarget ? origTarget : "_self"; //~ todo: removeAttribute ?
 		this.restorePrefs(origPrefs);
 	},
+	reloadTab: function(e, skipCache, tab) {
+		tab = tab || this.hc.item;
+		var br = tab.linkedBrowser;
+		if(skipCache)
+			br.reloadWithFlags(
+				nsIWebNavigation.LOAD_FLAGS_BYPASS_PROXY | nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE
+			);
+		else
+			br.reload();
+	},
 
+	reloadImg: function(e, img) {
+		img = img || this.hc.item;
+		var src = img.src || img.getAttribute("src"); // ?
+		if(!src)
+			return;
+		var hasStyle = img.hasAttribute("style");
+		var origStyle = img.getAttribute("style");
+		var w = this.getStyleOfContentItem("width");
+		var h = this.getStyleOfContentItem("height");
+		img.style.width = w;
+		img.style.height = h;
+		this.hc._log("reloadImg -> " + w + " x " + h);
+		// if(parseInt(w) > 32 && parseInt(h) > 32)
+		img.style.background = "url('chrome://handyclicks/content/loading.gif') center no-repeat";
+		img.setAttribute("src", "chrome://handyclicks/content/spacer.gif"); // transparent gif 1x1
+		setTimeout(
+			function() {
+				img.setAttribute("src", src);
+				img.addEventListener(
+					"load",
+					function() {
+						img.removeAttribute("style");
+						if(hasStyle)
+							img.setAttribute("style", origStyle);
+						img.removeEventListener("load", arguments.callee, false);
+					},
+					false
+				);
+			},
+			0
+		);
+	},
+	getStyleOfContentItem: function(name, item) {
+		item = item || this.hc.item;
+		return item.ownerDocument.defaultView.getComputedStyle(item, "")[name];
+	},
 	fillInTooltip: function(tooltip) {
 		var tNode = document.tooltipNode;
 		var attrName = "mltt_line_0";

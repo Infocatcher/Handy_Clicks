@@ -1,4 +1,4 @@
-content handyclicks chrome/content/
+content handyclicks chrome/content/ contentaccessible=yes
 overlay chrome://browser/content/browser.xul chrome://handyclicks/content/handyclicks.xul
 
 locale  handyclicks en-US chrome/locale/en-US/
