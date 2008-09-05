@@ -135,6 +135,35 @@ var handyClicksFuncs = {
 	},
 	///////////////////
 
+	get profileDir() {
+		if(!this._profileDir)
+			this._profileDir = handyClicksPrefServ.profileDir
+				.path.replace(/[\\\/]$/, "");
+		return this._profileDir;
+	},
+	getRelativePath: function(path) {
+		var pathArr = path.match(/^%profile%([\/\\])((?:\.\.[\/\\])*)(.*)$/);
+		if(pathArr) {
+			var pathBegin = this.profileDir + pathArr[1];
+			var pathEnd = pathArr[3];
+			if(pathArr[2]) {
+				var len = pathArr[2].match(/\.\.[\/\\]/g);
+				if(len && len.length) {
+					var pathBeginNew = pathBegin.replace(new RegExp("([^\\/\\\\]+[\\/\\\\]){" + len.length + "}$"), "");
+					if(pathBeginNew == pathBegin) {
+						Components.utils.reportError("[Total Clicks]: invalid relative path:\n" + patch);
+						toJavaScriptConsole();
+						return null;
+					}
+					else
+						pathBegin = pathBeginNew;
+				}
+			}
+			return pathBegin + pathEnd;
+		}
+		else
+			return path;
+	},
 	startProcess: function(path, args) {
 		args = args || [];
 		var file = Components.classes["@mozilla.org/file/local;1"]
@@ -197,33 +226,6 @@ var handyClicksFuncs = {
 		args.push(popup.__uri);
 		this.startProcess(mi.__path, args);
 	},
-	getUriOfCurrentItem: function() {
-		var it = this.hc.item;
-		var uri = null;
-		switch(this.hc.itemType) {
-			case "link":
-				uri = it.href;
-			break;
-			case "img":
-				this.hc._log("getUriOfCurrentItem -> img -> !it.src && it.hasAttribute(\"src\") -> " + (!it.src && it.hasAttribute("src")));
-				uri = it.src || it.getAttribute("src");
-			break;
-			case "bookmark":
-			case "historyItem":
-				uri = this.getBookmarkUri(it);
-			break;
-			case "tab":
-				uri = this.getTabUri(it);
-		}
-		return uri;
-	},
-	getBookmarkUri:	function(it, usePlacesURIs) {
-		var uri = it.statusText || (it.node && it.node.uri) || it.getAttribute("siteURI") || "";
-		return !usePlacesURIs && /^place:/.test(uri) ? "" : uri;
-	},
-	getTabUri: function(tab) {
-		return tab.linkedBrowser.contentDocument.location.href;
-	},
 	decodeUri: function(value) { // code by Ex Bookmark Properties ( https://addons.mozilla.org/firefox/addon/7396 )
 		// return decodeURIComponent(value);
 		// Try to decode as UTF-8 if there's no encoding sequence that we would break.
@@ -251,12 +253,17 @@ var handyClicksFuncs = {
 		if(!uri) { //~ todo: show pop-up massage
 			return;
 		}
-		var it, n, args;
+		var path, it, n, args;
 		for(var i = 0; i < items.length; i++) {
 			it = items[i], n = 0;
-			it.class = "menuitem-iconic";
-			it.image = "moz-icon:file://" + it.__path;
-			it["mltt_line_" + n++] = it.__path;
+			path = it.__path;
+			if(path) {
+				path = this.getRelativePath(path);
+				it.class = "menuitem-iconic";
+				it.image = "moz-icon:file://" + path;
+				it["mltt_line_" + n++] = path;
+				it.__path = path;
+			}
 			if(it.__args instanceof Array) {
 				args = it.__args;
 				for(var j = 0; j < args.length; j++)
@@ -276,6 +283,7 @@ var handyClicksFuncs = {
 			{ label: "IE 7.0", __path: "c:\\Program Files\\Internet Explorer\\iexplore.exe" },
 			{},
 			{ label: "Firefox 2.0.0.x - test", __path: "c:\\Program Files\\Mozilla Firefox 2.0.0.x\\firefox.exe", __args: ["-no-remote", "-p", "fx2.0"] },
+			{ label: "OperaUSB", __path: "%profile%\\..\\..\\..\\..\\OperaUSB\\op.com" }
 		];
 		this.showOpenUriWithAppsPopup(items);
 	},
@@ -321,6 +329,13 @@ var handyClicksFuncs = {
 		node.form.target = origTarget ? origTarget : "_self"; //~ todo: removeAttribute ?
 		this.restorePrefs(origPrefs);
 	},
+	renameTab: function(e, tab) {
+		tab = tab || this.hc.item;
+		var lbl = prompt("New name:", tab.label); //~ todo: promptsService
+		tab.label = lbl === null
+			? tab.linkedBrowser.contentDocument.title
+			: lbl;
+	},
 	reloadTab: function(e, skipCache, tab) {
 		tab = tab || this.hc.item;
 		var br = tab.linkedBrowser;
@@ -331,7 +346,6 @@ var handyClicksFuncs = {
 		else
 			br.reload();
 	},
-
 	reloadImg: function(e, img) {
 		img = img || this.hc.item;
 		var src = img.src || img.getAttribute("src"); // ?

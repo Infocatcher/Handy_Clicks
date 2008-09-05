@@ -4,8 +4,8 @@
 
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<script type="application/x-javascript" src="chrome://handyclicks/content/handyclicks.js" />
-	<script type="application/x-javascript" src="chrome://handyclicks/content/funcs.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/funcs.js" />
 	<window id="main-window">
 		<tooltip id="handyClicks-tooltip" noautohide="true"
 			onpopupshowing="return handyClicksFuncs.fillInTooltip(this);"
