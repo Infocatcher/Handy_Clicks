@@ -1,3 +1,4 @@
+content handyclicks jar:chrome/handyclicks.jar!/content/
 content handyclicks jar:chrome/handyclicks.jar!/content/ contentaccessible=yes
 overlay chrome://browser/content/browser.xul chrome://handyclicks/content/handyclicks.xul
 

@@ -62,8 +62,9 @@ var handyClicks = {
 				cm = document.getElementById("bookmarks-context-menu") || document.getElementById("placesContext");
 			break;
 			case "historyItem":
-				// Ex Bookmark Properties ( https://addons.mozilla.org/firefox/addon/7396 ):
-				cm = "ex2BookmarksProperties" in window && document.getElementById("placesContext"); //~ todo: test!
+				// Ex Bookmark Properties ( https://addons.mozilla.org/firefox/addon/7396 )
+				if("ex2BookmarksProperties" in window)
+					cm = document.getElementById("placesContext"); //~ todo: test!
 			break;
 			case "tab":
 				var cm = document.getAnonymousElementByAttribute(getBrowser(), "anonid", "tabContextMenu"); //~ todo: test!
@@ -74,6 +75,10 @@ var handyClicks = {
 		this._cMenu = cm; // cache
 		return cm;
 	},
+	disallowMousemove: function(but) {
+		return !this.hasMousemoveHandler
+			&& this.getPref("disallowMousemoveForButtons").indexOf(but) > -1;
+	},
 	mousedownHandler: function(e) { //~ todo: test hiding of context menu in Linux
 		if(!this.getPref("enabled"))
 			return;
@@ -82,6 +87,7 @@ var handyClicks = {
 		var sets = this.getSettings(evtStr);
 		if(!sets)
 			return;
+		this.saveEvent(e);
 		this.defineItem(e, sets);
 
 		var funcObj = this.getFuncObj(sets);
@@ -107,7 +113,7 @@ var handyClicks = {
 				true
 			);
 		}
-		if(!this.hasMousemoveHandler && this.getPref("disallowMousemoveForButtons").indexOf(e.button) > -1) {
+		if(this.disallowMousemove(e.button)) {
 			window.addEventListener("mousemove", this, true); // only for right-click?
 			this.hasMousemoveHandler = true;
 		}
@@ -187,7 +193,7 @@ var handyClicks = {
 			clone[p] = obj[p];
 		return clone;
 	},
-	defineItem: function(e, sets) {
+	saveEvent: function(e) {
 		this.event = e;
 
 		/* fx < 3.0:
@@ -198,7 +204,8 @@ var handyClicks = {
 		 * setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
 		 */
 		this.copyOfEvent = this.cloneObj(e);
-
+	},
+	defineItem: function(e, sets) {
 		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "submitButton"
 		this.item = null;
 
@@ -231,10 +238,22 @@ var handyClicks = {
 			}
 		}
 
+		// History item:
+		if(
+			this.isOkFuncObj(sets["historyItem"])
+			&& it.namespaceURI == this.XULNS
+			&& handyClicksFuncs.getBookmarkUri(it)
+			&& it.parentNode.id == "goPopup"
+		) {
+			this.itemType = "historyItem";
+			this.item = it;
+			return;
+		}
+
 		// Bookmark:
 		if(
 			this.isOkFuncObj(sets["bookmark"])
-			&& it.namespaceURI == this.XULNS //~ todo: check NS for all?
+			&& it.namespaceURI == this.XULNS
 			&& it.type != "menu"
 			&& (
 				(
@@ -243,27 +262,16 @@ var handyClicks = {
 				)
 				|| (itnn == "menuitem" && (it.hasAttribute("siteURI")))
 			)
-			&& it.parentNode.id != "historyUndoPopup"
+			// && it.parentNode.id != "historyUndoPopup"
+			&& handyClicksFuncs.getBookmarkUri(it)
 		) {
 			this.itemType = "bookmark";
 			this.item = it;
 			return;
 		}
 
-		// History item:
-		if(
-			this.isOkFuncObj(sets["historyItem"])
-			&& it.namespaceURI == this.XULNS
-			&& it.statusText
-			&& it.parentNode.id == "goPopup"
-		) {
-			this.itemType = "historyItem";
-			this.item = it;
-			return;
-		}
-
 		// Tab:
-		if(this.isOkFuncObj(sets["tab"])) {
+		if(this.isOkFuncObj(sets["tab"]) && it.namespaceURI == this.XULNS) {
 			var tab = it, tnn = itnn;
 			while(tnn != "#document" && tnn != "tab" && tnn != "xul:tab") {
 				tab = tab.parentNode;
@@ -338,6 +346,7 @@ var handyClicks = {
 		var sets = this.getSettings(evtStr);
 		if(!sets)
 			return;
+		this.saveEvent(e);
 		if(evtStr != this.strOnMousedown)
 			this.defineItem(e, sets);
 
