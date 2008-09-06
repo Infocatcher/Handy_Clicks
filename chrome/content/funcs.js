@@ -179,7 +179,6 @@ var handyClicksFuncs = {
 		process.run(false, args, args.length);
 	},
 	get defaultCharset() { // thanks to IE Tab!
-		alert("defaultCharset -> get by nsIStringBundleService (like IE Tab)");
 		if(this._defaultCharset == null) {
 			var strBundle = Components.classes["@mozilla.org/intl/stringbundle;1"]
 				.getService(Components.interfaces.nsIStringBundleService);
@@ -194,11 +193,16 @@ var handyClicksFuncs = {
 		return this._defaultCharset;
 	},
 	get charset() {
-		return this.hc.getPref("convertURIs")
-			? this.hc.getPref("convertURIsTo")
-				? this.hc.getPref("convertURIsTo")
-				: navigator.preference("intl.charset.default") || this.defaultCharset //~ todo: test
-			: "";
+		var charset = "";
+		if(this.hc.getPref("convertURIs")) {
+			charset = this.hc.getPref("convertURIsTo");
+			if(!charset) {
+				charset = navigator.preference("intl.charset.default");
+				if(!charset || charset.indexOf("chrome://") == 0)
+					charset = this.defaultCharset;
+			}
+		}
+		return charset;
 	},
 	convertStrFromUnicode: function(str) {
 		var charset = this.charset;

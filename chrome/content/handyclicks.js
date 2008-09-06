@@ -186,6 +186,17 @@ var handyClicks = {
 	getSettings: function(str) {
 		return (handyClicksPrefs || {})[str];
 	},
+	isOkFuncObj: function(fObj) { // funcObj && funcObj.enabled && funcObj.action
+		return typeof fObj == "object"
+			&& fObj.enabled
+			&& typeof fObj.action != "undefined";
+	},
+	getFuncObj: function(sets) {
+		if(!this.itemType) // see .defineItem()
+			return false;
+		var funcObj = sets.$all || sets[this.itemType];
+		return this.isOkFuncObj(funcObj) ? funcObj : false;
+	},
 	cloneObj: function(obj) {
 		obj = obj || {};
 		var clone = {};
@@ -206,6 +217,7 @@ var handyClicks = {
 		this.copyOfEvent = this.cloneObj(e);
 	},
 	defineItem: function(e, sets) {
+		var all = this.isOkFuncObj(sets.$all);
 		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "submitButton"
 		this.item = null;
 
@@ -215,7 +227,7 @@ var handyClicks = {
 
 		// img:
 		if(
-			this.isOkFuncObj(sets["img"])
+			(all || this.isOkFuncObj(sets.img))
 			&& (itnn == "img" || itnn == "image") && (it.src || it.hasAttribute("src"))
 		) {
 			this.itemType = "img";
@@ -225,7 +237,7 @@ var handyClicks = {
 		}
 
 		// Link:
-		if(this.isOkFuncObj(sets["link"])) {
+		if(all || this.isOkFuncObj(sets.link)) {
 			var a = it, ann = itnn;
 			while(ann != "#document" && ann != "a") {
 				a = a.parentNode;
@@ -240,7 +252,7 @@ var handyClicks = {
 
 		// History item:
 		if(
-			this.isOkFuncObj(sets["historyItem"])
+			(all || this.isOkFuncObj(sets.historyItem))
 			&& it.namespaceURI == this.XULNS
 			&& handyClicksFuncs.getBookmarkUri(it)
 			&& it.parentNode.id == "goPopup"
@@ -252,7 +264,7 @@ var handyClicks = {
 
 		// Bookmark:
 		if(
-			this.isOkFuncObj(sets["bookmark"])
+			(all || this.isOkFuncObj(sets.bookmark))
 			&& it.namespaceURI == this.XULNS
 			&& it.type != "menu"
 			&& (
@@ -271,7 +283,11 @@ var handyClicks = {
 		}
 
 		// Tab:
-		if(this.isOkFuncObj(sets["tab"]) && it.namespaceURI == this.XULNS) {
+		if(
+			(all || this.isOkFuncObj(sets.tab))
+			&& it.namespaceURI == this.XULNS
+			&& it.getAttribute("anonid") != "close-button"
+		) {
 			var tab = it, tnn = itnn;
 			while(tnn != "#document" && tnn != "tab" && tnn != "xul:tab") {
 				tab = tab.parentNode;
@@ -283,7 +299,6 @@ var handyClicks = {
 					/(^|\s+)tabbrowser-tab(\s+|$)/.test(tab.className)
 					|| /(^|\s+)tabbrowser-tabs(\s+|$)/.test(tab.parentNode.className) // >1 tabs in Firefox 1.5
 				)
-				&& it.getAttribute("anonid") != "close-button"
 			) {
 				this.itemType = "tab";
 				this.item = tab;
@@ -291,8 +306,30 @@ var handyClicks = {
 			}
 		}
 
+		// Tab bar:
+		if(
+			// (all || this.isOkFuncObj(sets.tabbar))
+			it.namespaceURI == this.XULNS
+			&& it.className != "tabs-alltabs-button"
+			&& it.getAttribute("anonid") != "close-button"
+		) {
+			var tb = it, tbnn = itnn, tbc = tb.className;
+			var tbre = /(^|\s+)tabbrowser-tabs(\s+|$)/;
+			while(tbnn != "#document" && !tbre.test(tbc) && tbnn != "tab" && tbnn != "xul:tab") {
+				tb = tb.parentNode;
+				tbnn = tb.nodeName.toLowerCase();
+				tbc = tb.className;
+			}
+			if(tbre.test(tbc)) {
+				this._log(">>> tabbar");
+				this.itemType = "tabbar";
+				this.item = tb;
+				return;
+			}
+		}
+
 		// Submit button:
-		if(this.isOkFuncObj(sets["submitButton"])) {
+		if(all || this.isOkFuncObj(sets.submitButton)) {
 			if(itnn == "input" && it.type == "submit") {
 				this.itemType = "submitButton";
 				this.item = it;
@@ -310,17 +347,6 @@ var handyClicks = {
 			}
 		}
 	},
-	isOkFuncObj: function(fObj) { // funcObj && funcObj.enabled && funcObj.action
-		return typeof fObj == "object"
-			&& fObj.enabled
-			&& typeof fObj.action != "undefined";
-	},
-	getFuncObj: function(sets) {
-		if(!this.itemType) // see .defineItem()
-			return false;
-		var funcObj = sets[this.itemType];
-		return this.isOkFuncObj(funcObj) ? funcObj : false;
-	},
 	clearCMenuTimeout: function() {
 		clearTimeout(this.cMenuTimeout);
 	},
@@ -329,13 +355,6 @@ var handyClicks = {
 		e.stopPropagation();
 	},
 	clickHandler: function(e) {
-
-		/* this._log(
-			"clickHandler -> pref enabled -> " + this.getPref("enabled")
-			+ "\nmousemove -> " + this.disabledBy.mousemove
-			+ "\ncMenu -> " + this.disabledBy.cMenu
-		); */
-
 		if(this.disabled) {
 			this.skipTmpDisabled();
 			return;
