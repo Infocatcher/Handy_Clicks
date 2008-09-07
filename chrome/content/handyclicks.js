@@ -53,7 +53,7 @@ var handyClicks = {
 	},
 	get cMenu() {
 		var cm = null;
-		switch(this.itemType) { // "link", "img", "bookmark", "historyItem", "tab", "submitButton"
+		switch(this.itemType) {
 			case "link":
 			case "img":
 				cm = document.getElementById("contentAreaContextMenu");
@@ -67,6 +67,7 @@ var handyClicks = {
 					cm = document.getElementById("placesContext"); //~ todo: test!
 			break;
 			case "tab":
+			case "tabbar":
 				var cm = document.getAnonymousElementByAttribute(getBrowser(), "anonid", "tabContextMenu"); //~ todo: test!
 			break;
 			case "submitButton":
@@ -93,6 +94,9 @@ var handyClicks = {
 		var funcObj = this.getFuncObj(sets);
 		if(!funcObj)
 			return;
+
+		if(this._cMenu)
+			this._cMenu.hidePopup();
 
 		var _this = this;
 		var cm = this.cMenu;
@@ -138,7 +142,14 @@ var handyClicks = {
 		var node = this.origItem;
 		var e = this.copyOfEvent;
 
-		if(this.isFx(2) && popup.id == "contentAreaContextMenu") { // workaround for spellchecker bug
+		if(this.itemType == "tab") {
+			// Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
+			var tabscope = document.getElementById("tabscopePopup");
+			if(tabscope) // mousedown -> ...delay... -> this popup -> Tab Scope popup hide this popup
+				tabscope.hidePopup(); // only for tabs?
+		}
+
+		if((this.isFx(2) && popup.id == "contentAreaContextMenu")) { // workaround for spellchecker bug
 			if(this.getPref("forceHideContextMenu"))
 				window.removeEventListener("contextmenu", this, true);
 
@@ -155,10 +166,19 @@ var handyClicks = {
 			this.blinkNode();
 			return;
 		}
-		document.popupNode = node;
+		document.popupNode = this.itemType == "tab" ? this.item : node;
 		var xy = this.getXY(e);
 		popup.showPopup(this.isFx(3) ? node : e.target, xy.x, xy.y, "popup", null, null);
-		this.skipTmpDisabled(); // No click event after showPopup() //~ todo: test
+
+		var _this = this;
+		window.addEventListener( // No click event after some showPopup() //~ todo: test
+			"mouseup", function(e) {
+				setTimeout(function() { _this.skipTmpDisabled(); }, 0);
+				_this._log(">> mouseup");
+				window.removeEventListener("mouseup", arguments.callee, true);
+			},
+			true
+		);
 	},
 	blinkNode: function(time, node) {
 		node = node || this.origItem;
@@ -355,6 +375,7 @@ var handyClicks = {
 		e.stopPropagation();
 	},
 	clickHandler: function(e) {
+		this._log(">> clickHandler");
 		if(this.disabled) {
 			this.skipTmpDisabled();
 			return;

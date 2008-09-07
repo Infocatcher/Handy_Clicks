@@ -2,13 +2,19 @@ var handyClicksFuncs = {
 	hc: handyClicks,
 	_defaultCharset: null,
 	copyItemText: function(e) { // for all
-		this.hc._log("copyItemText -> " + this.getTextOfCurrentItem());
-		this.copyStr(this.getTextOfCurrentItem());
+		var text = this.hc.itemType == "tabbar"
+			? this.forEachTab(this.getTabUri).join("\n")
+			: this.getTextOfCurrentItem();
+		this.hc._log("copyItemText -> " + text);
+		this.copyStr(text);
 		this.hc.blinkNode();
 	},
 	copyItemLink: function(e) {
-		this.hc._log("copyItemLink -> " + (this.getUriOfCurrentItem() || ""));
-		this.copyStr(this.getUriOfCurrentItem() || "");
+		var link = this.hc.itemType == "tabbar"
+			? this.forEachTab(function(tab) { return tab.label; }).join("\n")
+			: this.getUriOfCurrentItem() || "";
+		this.hc._log("copyItemLink -> " + link);
+		this.copyStr(link);
 		this.hc.blinkNode();
 	},
 	getTextOfCurrentItem: function() {
@@ -41,6 +47,14 @@ var handyClicksFuncs = {
 	},
 	getTabUri: function(tab) {
 		return tab.linkedBrowser.contentDocument.location.href;
+	},
+	forEachTab: function(fnc) {
+		var res = [];
+		var tbr = getBrowser();
+		var tabs = tbr.mTabContainer.childNodes;
+		for(var i = 0, len = tabs.length; i < len; i++)
+			res.push(fnc(tabs[i]));
+		return res;
 	},
 	copyStr: function(str) {
 		Components.classes["@mozilla.org/widget/clipboardhelper;1"]
@@ -336,8 +350,16 @@ var handyClicksFuncs = {
 		tab = tab || this.hc.item;
 		var lbl = prompt("New name:", tab.label); //~ todo: promptsService
 		tab.label = lbl === null
-			? tab.linkedBrowser.contentDocument.title
+			? tab.linkedBrowser.contentDocument.title || getBrowser().mStringBundle.getString("tabs.untitled")
 			: lbl;
+	},
+	reloadAllTabs: function(e, skipCache) {
+		var _this = this;
+		this.forEachTab(
+			function(tab) {
+				_this.reloadTab(e, skipCache, tab);
+			}
+		);
 	},
 	reloadTab: function(e, skipCache, tab) {
 		tab = tab || this.hc.item;
@@ -384,6 +406,66 @@ var handyClicksFuncs = {
 	getStyleOfContentItem: function(name, item) {
 		item = item || this.hc.item;
 		return item.ownerDocument.defaultView.getComputedStyle(item, "")[name];
+	},
+	openSimilarLinksInTabs: function(e, refererPolicy, a) {
+		a = a || this.hc.item;
+		var s = a.innerHTML;
+		var promptServ = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+			.getService(Components.interfaces.nsIPromptService);
+		var onlyUnVisited = {};
+		var cnf = promptServ.confirmCheck(
+			window, "Handy Clicks",
+			"Open similar links in tabs",
+			"Open unvisited links only", onlyUnVisited
+		);
+		if(!cnf)
+			return;
+		onlyUnVisited = onlyUnVisited.value;
+
+		var doc = a.ownerDocument;
+
+		// Based on code by Yan ( http://forum.mozilla-russia.org/viewtopic.php?pid=144109#p144109 )
+		var ar = doc.getElementsByTagName("a");
+		var hrefs = {};
+		var his = Components.classes["@mozilla.org/browser/global-history;2"]
+			.getService(Components.interfaces.nsIGlobalHistory2);
+		var IO = Components. classes["@mozilla.org/network/io-service;1"]
+			.getService(Components.interfaces.nsIIOService);
+		var text, h;
+		for(var i = 0, len = ar.length; i < len; i++) {
+			text = ar[i].innerHTML;
+			h = ar[i].href;
+			if(
+				text == s && h && !/^javascript:/i.test(h)
+				&& (
+					!onlyUnVisited || !his.isVisited(IO.newURI(h, null, null))
+				)
+			)
+				hrefs[h] = 1;
+		}
+		var tbr = getBrowser();
+
+		// Open a new tab as a child of the current tab (Tree Style Tab)
+		if("TreeStyleTabService" in window)
+			TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab, true);
+
+		var ref = this.getRefererForItem(refererPolicy);
+		for(var h in hrefs)
+			tbr.loadOneTab(h, ref, null, null, true, false);
+
+		if("TreeStyleTabService" in window)
+			TreeStyleTabService.stopToOpenChildTab(tbr.selectedTab);
+	},
+	getRefererForItem: function(refPolicy, it) {
+		refPolicy = refPolicy || 0;
+		it = it || this.hc.item;
+		var oDoc = it.ownerDocument;
+		return (oDoc.defaultView.toString() != "[object Window]" && false) // Except items in chrome window
+			|| (refPolicy == 0 && navigator.preference("network.http.sendRefererHeader"))
+			|| refPolicy == 1
+			|| (refPolicy == 2 && false)
+				? makeURI(oDoc.location.href) // see chrome://global/content/contentAreaUtils.js
+				: null;
 	},
 	fillInTooltip: function(tooltip) {
 		var tNode = document.tooltipNode;
