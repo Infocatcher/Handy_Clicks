@@ -83,8 +83,8 @@ var handyClicksFuncs = {
 		return false
 	},
 	openUriInTab: function(e, loadInBackground, refererPolicy, moveTo) { //~ todo: move, etc.
-		var tab = this._openUriInTab(loadInBackground, refererPolicy);
-		if(!moveTo)
+		var tab = this._openUriInTab(loadInBackground, refererPolicy, e);
+		if(!tab || !moveTo)
 			return;
 		var tbr = this.getTabBrowser(true);
 		var curInd = tbr.mCurrentTab._tPos, ind = 0;
@@ -103,25 +103,31 @@ var handyClicksFuncs = {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
-		if(/^javascript:/i.test(uri)) {
-			this.loadJavaScriptLink(loadInBackground, refererPolicy);
+		if(this.testForLinkFeatures(loadInBackground, refererPolicy, e, item, uri))
 			return null;
-		}
-		if(this.testForFileLink(refererPolicy) || this.testForHighlander(uri))
-			return null;
-
 		// Open a new tab as a child of the current tab (Tree Style Tab)
 		// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
-		if(this.isNoChromeDoc()  && "TreeStyleTabService" in window)
+		if(this.isNoChromeDoc(item.ownerDocument)  && "TreeStyleTabService" in window)
 			TreeStyleTabService.readyToOpenChildTab(gBrowser.selectedTab);
-
 		return this.getTabBrowser(true).loadOneTab(
 			uri,
-			this.getRefererForItem(refererPolicy),
+			this.getRefererForItem(refererPolicy, false, item),
 			null, null,
 			loadInBackground,
 			false
 		);
+	},
+	testForLinkFeatures: function(loadInBackground, refererPolicy, e, item, uri) {
+		e = e || this.hc.copyOfEvent;
+		item = item || this.hc.item;
+		uri = uri || this.getUriOfItem(item);
+		if(/^javascript:/i.test(uri)) {
+			this.loadJavaScriptLink(loadInBackground, refererPolicy, e, item, uri);
+			return true;
+		}
+		if(this.testForFileLink(refererPolicy, uri) || this.testForHighlander(uri))
+			return true;
+		return false;
 	},
 	loadJavaScriptLink: function(loadInBackground, refererPolicy, e, item, uri) {
 		e = e || this.hc.copyOfEvent;
@@ -211,18 +217,9 @@ var handyClicksFuncs = {
 		}
 		return false;
 	},
-	openInWindow: function(e, loadInBackground, refererPolicy, moveTo, uri) { //~ todo: move, etc.
-		uri = uri || this.getUriOfItem(this.hc.item);
-		var win = window.openDialog(
-			getBrowserURL(),
-			"_blank",
-			"chrome,all,dialog=no" + (loadInBackground ? ",alwaysLowered" : ""), // Thanks to All-in-One Gestures!
-			uri, null,
-			this.getRefererForItem(refererPolicy), null, false
-		);
-		if(loadInBackground)
-			this.initRestoringOfZLevel(win);
-		if(!moveTo)
+	openUriInWindow: function(e, loadInBackground, refererPolicy, moveTo) {
+		var win = this._openUriInWindow(loadInBackground, refererPolicy, e);
+		if(!win || !moveTo)
 			return;
 		var sal = screen.availLeft, sat = screen.availTop;
 		var saw = screen.availWidth, sah = screen.availHeight;
@@ -262,14 +259,31 @@ var handyClicksFuncs = {
 				wNew = window.outerWidth, hNew = window.outerHeight;
 			break;
 			default:
-				this.ut._error("[Handy Clicks]: openInWindow -> invalid moveTo argument: " + moveTo);
+				this.ut._error("[Handy Clicks]: openUriInWindow -> invalid moveTo argument: " + moveTo);
 				return;
 		}
-		if(xCur && yCur)
+		if(xCur !== undefined && yCur !== undefined)
 			window.moveTo(xCur, yCur);
-		if(wCur && hCur)
+		if(wCur !== undefined && hCur !== undefined)
 			window.resizeTo(wCur, hCur);
 		this.initWindowMoving(win, xNew, yNew, wNew, hNew);
+	},
+	_openUriInWindow: function(loadInBackground, refererPolicy, e, item, uri) {
+		e = e || this.hc.copyOfEvent;
+		item = item || this.hc.item;
+		uri = uri || this.getUriOfItem(item);
+		if(this.testForLinkFeatures(loadInBackground, refererPolicy, e, item, uri))
+			return null;
+		var win = window.openDialog(
+			getBrowserURL(),
+			"_blank",
+			"chrome,all,dialog=no" + (loadInBackground ? ",alwaysLowered" : ""), // Thanks to All-in-One Gestures!
+			uri, null,
+			this.getRefererForItem(refererPolicy), null, false
+		);
+		if(loadInBackground)
+			this.initRestoringOfZLevel(win);
+		return win;
 	},
 	initRestoringOfZLevel: function(win) {
 		var pw = window;
@@ -766,9 +780,9 @@ var handyClicksFuncs = {
 	getRefererPolicy: function(refPolicy) {
 		if(typeof refPolicy == "undefined")
 			refPolicy = -1;
-		return refererPolicy == -1
-			? navigator.prefefence("network.http.sendRefererHeader")
-			: refererPolicy;
+		return refPolicy == -1
+			? navigator.preference("network.http.sendRefererHeader")
+			: refPolicy;
 	},
 	isNoChromeDoc: function(doc) { // Except items in chrome window
 		doc = doc || this.hc.item.ownerDocument;
