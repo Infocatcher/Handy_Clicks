@@ -1,4 +1,5 @@
 var handyClicks = {
+	ut: handyClicksUtils, // shortcut
 	disabledBy: {
 		mousemove: false,
 		cMenu: false
@@ -104,7 +105,7 @@ var handyClicks = {
 			this.cMenuTimeout = setTimeout(
 				function() {
 					_this.disabledBy.cMenu = true;
-					_this.showPopupOnCurrentItem(cm);
+					_this.showPopupOnCurrentItem();
 				},
 				this.getPref("showContextMenuTimeout")
 			);
@@ -127,7 +128,7 @@ var handyClicks = {
 	mousemoveHandler: function(e) {
 		this.disabledBy.mousemove = true;
 		this.clearCMenuTimeout();
-		this._log("mousemoveHandler -> this.disabledBy.mousemove = true;");
+		this.ut._log("mousemoveHandler -> this.disabledBy.mousemove = true;");
 		this.removeMousemoveHandler();
 	},
 	removeMousemoveHandler: function() {
@@ -139,6 +140,7 @@ var handyClicks = {
 		window.removeEventListener("contextmenu", this, true);
 	},
 	showPopupOnCurrentItem: function(popup) {
+		popup = popup || this._cMenu;
 		var node = this.origItem;
 		var e = this.copyOfEvent;
 
@@ -174,7 +176,7 @@ var handyClicks = {
 		window.addEventListener( // No click event after some showPopup() //~ todo: test
 			"mouseup", function(e) {
 				setTimeout(function() { _this.skipTmpDisabled(); }, 0);
-				_this._log(">> mouseup");
+				_this.ut._log(">> mouseup");
 				window.removeEventListener("mouseup", arguments.callee, true);
 			},
 			true
@@ -341,7 +343,7 @@ var handyClicks = {
 				tbc = tb.className;
 			}
 			if(tbre.test(tbc)) {
-				this._log(">>> tabbar");
+				this.ut._log(">>> tabbar");
 				this.itemType = "tabbar";
 				this.item = tb;
 				return;
@@ -375,7 +377,7 @@ var handyClicks = {
 		e.stopPropagation();
 	},
 	clickHandler: function(e) {
-		this._log(">> clickHandler");
+		this.ut._log(">> clickHandler");
 		if(this.disabled) {
 			this.skipTmpDisabled();
 			return;
@@ -418,7 +420,7 @@ var handyClicks = {
 		}
 
 		var oit = this.origItem;
-		this._log(
+		this.ut._log(
 			"clickHandler -> " + oit + "\n"
 			+ "nodeName -> " + oit.nodeName + "\n"
 			+ "itemType -> " + this.itemType
@@ -453,7 +455,7 @@ var handyClicks = {
 			return;
 		this.readPref(prefName.replace(/^handyclicks\./, ""));
 	},
-	readPref: function(prefName) { //~ warn: not use this for UTF-8!
+	readPref: function(prefName) { //~ warn: not for UTF-8 prefs!
 		this["pref_" + prefName] = navigator.preference("handyclicks." + prefName);
 	},
 	getPref: function(prefName) {
@@ -462,12 +464,16 @@ var handyClicks = {
 			this[propName] = navigator.preference("handyclicks." + prefName);
 		return this[propName];
 	},
-
-	consoleServ: Components.classes["@mozilla.org/consoleservice;1"]
-		.getService(Components.interfaces.nsIConsoleService),
-	_log: function(msg) {
-		msg = "[Handy Clicks]: " + msg + "\n";
-		this.consoleServ.logStringMessage(msg);
+	notify: function(ttl, txt, fnc) {
+		var dur = this.getPref("notifyOpenTime");
+		if(dur < 0)
+			 return;
+		window.openDialog(
+			 "chrome://handyclicks/content/notify.xul",
+			 "",
+			 "chrome,dialog=1,titlebar=0,popup=1",
+			 dur, ttl, txt, fnc
+		);
 	}
 };
 window.addEventListener("load", handyClicks, false);

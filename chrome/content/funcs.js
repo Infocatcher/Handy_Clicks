@@ -1,19 +1,23 @@
 var handyClicksFuncs = {
-	hc: handyClicks,
+	ut: handyClicksUtils, // shortcut
+	hc: handyClicks, // shortcut
+	voidURI: /^javascript:(\s|%20)*(|\/\/|void(\s|%20)*((\s|%20)+0|\((\s|%20)*0(\s|%20)*\)))(\s|%20)*;?$/i,
+	promptsServ: Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+		.getService(Components.interfaces.nsIPromptService),
 	_defaultCharset: null,
 	copyItemText: function(e) { // for all
 		var text = this.hc.itemType == "tabbar"
 			? this.forEachTab(this.getTabUri).join("\n")
 			: this.getTextOfCurrentItem();
-		this.hc._log("copyItemText -> " + text);
+		this.ut._log("copyItemText -> " + text);
 		this.copyStr(text);
 		this.hc.blinkNode();
 	},
 	copyItemLink: function(e) {
 		var link = this.hc.itemType == "tabbar"
 			? this.forEachTab(function(tab) { return tab.label; }).join("\n")
-			: this.getUriOfCurrentItem() || "";
-		this.hc._log("copyItemLink -> " + link);
+			: this.getUriOfItem() || "";
+		this.ut._log("copyItemLink -> " + link);
 		this.copyStr(link);
 		this.hc.blinkNode();
 	},
@@ -21,15 +25,15 @@ var handyClicksFuncs = {
 		var it = this.hc.item;
 		return it.textContent || it.label || it.alt || it.value || "";
 	},
-	getUriOfCurrentItem: function() {
-		var it = this.hc.item;
+	getUriOfItem: function(it) {
+		var it = it || this.hc.item;
 		var uri = null;
 		switch(this.hc.itemType) {
 			case "link":
 				uri = it.href;
 			break;
 			case "img":
-				this.hc._log("getUriOfCurrentItem -> img -> !it.src && it.hasAttribute(\"src\") -> " + (!it.src && it.hasAttribute("src")));
+				this.ut._log("getUriOfItem -> img -> !it.src && it.hasAttribute(\"src\") -> " + (!it.src && it.hasAttribute("src")));
 				uri = it.src || it.getAttribute("src");
 			break;
 			case "bookmark":
@@ -50,7 +54,7 @@ var handyClicksFuncs = {
 	},
 	forEachTab: function(fnc) {
 		var res = [];
-		var tbr = getBrowser();
+		var tbr = this.getTabBrowser(true);
 		var tabs = tbr.mTabContainer.childNodes;
 		for(var i = 0, len = tabs.length; i < len; i++)
 			res.push(fnc(tabs[i]));
@@ -60,6 +64,290 @@ var handyClicksFuncs = {
 		Components.classes["@mozilla.org/widget/clipboardhelper;1"]
 			.getService(Components.interfaces.nsIClipboardHelper)
 			.copyString(str);
+	},
+	openUriInCurrentTab: function(e, refererPolicy, uri) {
+		uri = uri || this.getUriOfItem(this.hc.item);
+		if(this.testForHighlander(uri))
+			return;
+		this.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
+	},
+	testForHighlander: function(uri) {
+		// Highlander ( https://addons.mozilla.org/firefox/addon/4086 )
+		if("Highlander" in window) {
+			var tab = Highlander.findTabForURI(makeURI(uri));
+			if(tab) {
+				Highlander.selectTab(tab);
+				return true;
+			}
+		}
+		return false
+	},
+	openUriInTab: function(e, loadInBackground, refererPolicy, moveTo) { //~ todo: move, etc.
+		var tab = this._openUriInTab(loadInBackground, refererPolicy);
+		if(!moveTo)
+			return;
+		var tbr = this.getTabBrowser(true);
+		var curInd = tbr.mCurrentTab._tPos, ind = 0;
+		switch(moveTo) {
+			case "first":  ind = 0;                   break;
+			case "before": ind = curInd;              break;
+			case "after":  ind = curInd + 1;          break;
+			case "last":   ind = tbr.browsers.length; break;
+			default:
+				this.ut._error("[Handy Clicks]: openUriInTab -> invalid moveTo argument: " + moveTo);
+				return;
+		}
+		tbr.moveTabTo(tab, ind);
+	},
+	_openUriInTab: function(loadInBackground, refererPolicy, e, item, uri) {
+		e = e || this.hc.copyOfEvent;
+		item = item || this.hc.item;
+		uri = uri || this.getUriOfItem(item);
+		if(/^javascript:/i.test(uri)) {
+			this.loadJavaScriptLink(loadInBackground, refererPolicy);
+			return null;
+		}
+		if(this.testForFileLink(refererPolicy) || this.testForHighlander(uri))
+			return null;
+
+		// Open a new tab as a child of the current tab (Tree Style Tab)
+		// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
+		if(this.isNoChromeDoc()  && "TreeStyleTabService" in window)
+			TreeStyleTabService.readyToOpenChildTab(gBrowser.selectedTab);
+
+		return this.getTabBrowser(true).loadOneTab(
+			uri,
+			this.getRefererForItem(refererPolicy),
+			null, null,
+			loadInBackground,
+			false
+		);
+	},
+	loadJavaScriptLink: function(loadInBackground, refererPolicy, e, item, uri) {
+		e = e || this.hc.copyOfEvent;
+		item = item || this.hc.item;
+		uri = uri || this.getUriOfItem(item);
+		if( // void links with handlers
+			this.hc.itemType == "link"
+			&& (!uri || this.voidURI.test(uri))
+			&& (
+				item.hasAttribute("onclick")
+				|| item.hasAttribute("onmousedown")
+				|| item.hasAttribute("onmouseup")
+			)
+		)
+			this.loadVoidLinkWithHandler(loadInBackground, refererPolicy);
+		else
+			this.loadNotVoidJavaScriptLink(loadInBackground, refererPolicy);
+	},
+	loadVoidLinkWithHandler: function(loadInBackground, refererPolicy, e, item) {
+		e = e || this.hc.copyOfEvent;
+		item = item || this.hc.item;
+		if(this.hc.getPref("notifyVoidLinksWithHandlers"))
+			this.hc.notify(
+				this.ut.getLocalised("title"),
+				this.ut.getLocalised("voidLinkWithHandler")
+			);
+		var evt = document.createEvent("MouseEvents"); // thanks to Tab Scope!
+		evt.initMouseEvent(
+			"click", true, false, item.ownerDocument.defaultView, 1,
+			e.screenX, e.screenY, e.clientX, e.clientY,
+			false, false, false, false,
+			0, null
+		);
+		var origPrefs = this.setPrefs({
+			"browser.tabs.loadDivertedInBackground": loadInBackground,
+			"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy)
+		});
+		item.dispatchEvent(evt);
+		this.restorePrefs(origPrefs);
+	},
+	loadNotVoidJavaScriptLink: function(loadInBackground, refererPolicy, item, uri) {
+		item = item || this.hc.item;
+		uri = uri || this.getUriOfItem(item);
+		if(this.hc.getPref("notifyJavaScriptLinks"))
+			this.hc.notify(
+				this.ut.getLocalised("title"),
+				this.ut.getLocalised("javaScriptLink")
+			);
+		var origPrefs = this.setPrefs({
+			"dom.disable_open_during_load": false, // allow window.open( ... )
+			"browser.tabs.loadDivertedInBackground": loadInBackground,
+			"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy)
+		});
+
+		var oDoc = item.ownerDocument;
+		if(this.isNoChromeDoc(oDoc))
+			oDoc.location.href = uri;
+		else
+			this.getTabBrowser().loadURI(uri); // bookmarklets
+
+		this.restorePrefs(origPrefs);
+	},
+	testForFileLink: function(refererPolicy, uri) {
+		uri = uri || this.getUriOfItem(this.hc.item);
+		var filesPolicy = this.hc.getPref("filesLinksPolicy");
+		if(filesPolicy < 1)
+			return false;
+		var regexp = this.hc.getPref("filesLinksMask"); //~ todo: UTF-8
+		if(!regexp)
+			return false;
+		try {
+			var _regexp = new RegExp(regexp, "i");
+			if(!_regexp.test(uri))
+				return false;
+			if(filesPolicy == 1) {
+				this.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
+				return true;
+			}
+			this.hc.showPopupOnCurrentItem();
+			return true;
+		}
+		catch(e) {
+			this.alertWithTitle(
+				this.ut.getLocalised("RegExpErrorTitle"),
+				this.ut.getLocalised("RegExpError").replace("%RegExp", regexp) + e
+			);
+		}
+		return false;
+	},
+	openInWindow: function(e, loadInBackground, refererPolicy, moveTo, uri) { //~ todo: move, etc.
+		uri = uri || this.getUriOfItem(this.hc.item);
+		var win = window.openDialog(
+			getBrowserURL(),
+			"_blank",
+			"chrome,all,dialog=no" + (loadInBackground ? ",alwaysLowered" : ""), // Thanks to All-in-One Gestures!
+			uri, null,
+			this.getRefererForItem(refererPolicy), null, false
+		);
+		if(loadInBackground)
+			this.initRestoringOfZLevel(win);
+		if(!moveTo)
+			return;
+		var sal = screen.availLeft, sat = screen.availTop;
+		var saw = screen.availWidth, sah = screen.availHeight;
+		var xCur, yCur, wCur, hCur;
+		var xNew, yNew, wNew, hNew;
+		switch(moveTo) {
+			case "top":
+				xCur = sal,         yCur = sat + sah/2;
+				wCur = saw,         hCur = sah/2;
+
+				xNew = sal,         yNew = sat;
+				wNew = saw,         hNew = sah/2;
+			break;
+			case "right":
+				xCur = sal,         yCur = sat;
+				wCur = saw/2,       hCur = sah;
+
+				xNew = sal + saw/2, yNew = sat;
+				wNew = saw/2,       hNew = sah;
+			break;
+			case "bottom":
+				xCur = sal,         yCur = sat;
+				wCur = saw,         hCur = sah/2;
+
+				xNew = sal,         yNew = sat + sah/2;
+				wNew = saw,         hNew = sah/2;
+			break;
+			case "left":
+				xCur = sal + saw/2, yCur = sat;
+				wCur = saw/2,       hCur = sah;
+
+				xNew = sal,         yNew = sat;
+				wNew = saw/2,       hNew = sah;
+			break;
+			case "sub":
+				xNew = window.screenX,    yNew = window.screenY;
+				wNew = window.outerWidth, hNew = window.outerHeight;
+			break;
+			default:
+				this.ut._error("[Handy Clicks]: openInWindow -> invalid moveTo argument: " + moveTo);
+				return;
+		}
+		if(xCur && yCur)
+			window.moveTo(xCur, yCur);
+		if(wCur && hCur)
+			window.resizeTo(wCur, hCur);
+		this.initWindowMoving(win, xNew, yNew, wNew, hNew);
+	},
+	initRestoringOfZLevel: function(win) {
+		var pw = window;
+		var _this = this;
+		win.addEventListener(
+			"load",
+			function() {
+				win.removeEventListener("load", arguments.callee, false);
+				setTimeout(
+					function() {
+						var fe = pw.document.commandDispatcher.focusedElement;
+						pw.focus();
+						if(fe)
+							fe.focus();
+						_this.restoreZLevel(win);
+					},
+					0
+				);
+			},
+			false
+		);
+	},
+	initWindowMoving: function(win, x, y, w, h) {
+		win.addEventListener(
+			"load",
+			function(e) {
+				win.removeEventListener(e.type, arguments.callee, false);
+				win.moveTo(x, y);
+				win.resizeTo(w, h);
+				setTimeout(
+					function() {
+						win.moveTo(x, y);
+						win.resizeTo(w, h);
+					},
+					0
+				);
+			},
+			false
+		);
+	},
+	restoreZLevel: function(win) {
+		var treeowner = win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+			.getInterface(Components.interfaces.nsIWebNavigation)
+			.QueryInterface(Components.interfaces.nsIDocShellTreeItem)
+			.treeOwner;
+		var xulwin = treeowner.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+			.getInterface(Components.interfaces.nsIXULWindow);
+		xulwin.zLevel = xulwin.normalZ;
+	},
+	openInSidebar: function(e, ttl, uri) {
+		ttl = ttl || "";
+		uri = uri || this.getUriOfItem(this.hc.item);
+		openWebPanel(ttl, uri);
+	},
+	getTabBrowser: function(tabsRequired) {
+		return "SplitBrowser" in window && !(tabsRequired && "TM_init" in window) // Tab Mix Plus
+			? SplitBrowser.activeBrowser
+			: gBrowser || getBrowser();
+	},
+	downloadWithFlashGot: function(item) {
+		item = item || this.hc.item;
+		if(typeof gFlashGot == "undefined") {
+			this.ut._error("[Total Clicks]: missing FlashGot extension ( https://addons.mozilla.org/firefox/addon/220 )");
+			return;
+		}
+		document.popupNode = item;
+		gFlashGot.downloadPopupLink();
+	},
+	openInSplitBrowser: function(position, uri) {
+		uri = uri || this.getUriOfItem(this.hc.item);
+		if(typeof SplitBrowser == "undefined") {
+			this.ut._error("[Total Clicks]: missing Split Browser extension ( https://addons.mozilla.org/firefox/addon/4287 )");
+			return;
+		}
+		SplitBrowser.addSubBrowser(uri, null, SplitBrowser["POSITION_" + position]);
+	},
+	alertWithTitle: function(ttl, txt) {
+		this.promptsServ.alert(window, ttl, txt);
 	},
 	showGeneratedPopup: function(items) {
 		var popup = this.createPopup(items);
@@ -112,7 +400,7 @@ var handyClicksFuncs = {
 
 	///////////////////
 	_test_old: function(e) { //~ del
-		this.hc._log("_test");
+		this.ut._log("_test");
 		var items = [
 			{ label: "Label - 0", oncommand: "alert(this.label);" },
 			{},
@@ -165,8 +453,7 @@ var handyClicksFuncs = {
 				if(len && len.length) {
 					var pathBeginNew = pathBegin.replace(new RegExp("([^\\/\\\\]+[\\/\\\\]){" + len.length + "}$"), "");
 					if(pathBeginNew == pathBegin) {
-						Components.utils.reportError("[Total Clicks]: invalid relative path:\n" + patch);
-						toJavaScriptConsole();
+						this.ut._error("[Total Clicks]: invalid relative path:\n" + patch);
 						return null;
 					}
 					else
@@ -222,7 +509,7 @@ var handyClicksFuncs = {
 		var charset = this.charset;
 		if(!charset)
 			return str;
-		this.hc._log("convertStrFromUnicode -> charset -> " + charset);
+		this.ut._log("convertStrFromUnicode -> charset -> " + charset);
 		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
 			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
 		suc.charset = charset;
@@ -266,7 +553,7 @@ var handyClicksFuncs = {
 		return value;
 	},
 	showOpenUriWithAppsPopup: function(items) {
-		var uri = this.getUriOfCurrentItem();
+		var uri = this.getUriOfItem();
 		if(!uri) { //~ todo: show pop-up massage
 			return;
 		}
@@ -299,14 +586,15 @@ var handyClicksFuncs = {
 			{ label: "Opera 9.5x", __path: "c:\\Program Files\\Opera 9.5\\opera.exe" },
 			{ label: "IE 7.0", __path: "c:\\Program Files\\Internet Explorer\\iexplore.exe" },
 			{},
-			{ label: "Firefox 2.0.0.x - test", __path: "c:\\Program Files\\Mozilla Firefox 2.0.0.x\\firefox.exe", __args: ["-no-remote", "-p", "fx2.0"] },
+			{ label: "Firefox 2.0.0.x - test", __path: "c:\\Program Files\\Mozilla Firefox 2.0.0.x\\firefox.exe",
+				__args: ["-no-remote", "-p", "fx2.0"] },
 			{ label: "OperaUSB", __path: "%profile%\\..\\..\\..\\..\\OperaUSB\\op.com" }
 		];
 		this.showOpenUriWithAppsPopup(items);
 	},
 	///////////////////
 
-	setPrefs: function(prefsObj) {
+	setPrefs: function(prefsObj) { //~ warn: not for UTF-8 prefs!
 		var origs = {};
 		for(var p in prefsObj) {
 			origs[p] = navigator.preference(p);
@@ -316,25 +604,28 @@ var handyClicksFuncs = {
 	},
 	restorePrefs: function(prefsObj) {
 		for(var p in prefsObj)
-			navigator.preference(p, prefsObj[p]);
+			navigator.preference(p, prefsObj[p]); //~ todo: test! (setTimeout for fx3 ?)
 	},
-	submitFormToNewDoc: function(e, toNewWin, node) { // Thanks to SubmitToTab! //~ todo: add URL
+	submitFormToNewDoc: function(e, toNewWin, loadInBackground, refererPolicy, node) {
+		// Thanks to SubmitToTab! ( https://addons.mozilla.org/firefox/addon/483 )
 		node = node || this.hc.item;
 		node = new XPCNativeWrapper(node, "form", "click()");
 		var origTarget = node.form.getAttribute("target");
 		node.form.target = "_blank";
 
-		var origPrefs = this.setPrefs(
+		var origPrefs = this.setPrefs( //~ todo: refererPolicy
 			toNewWin
 				? {
 					"browser.link.open_newwindow": 2,
 					"browser.block.target_new_window": false,
-					"dom.disable_open_during_load": false
+					"dom.disable_open_during_load": false,
+					"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy)
 				}
 				: {
 					"browser.link.open_newwindow": 3,
-					"browser.tabs.loadDivertedInBackground": true,
-					"dom.disable_open_during_load": false
+					"browser.tabs.loadDivertedInBackground": loadInBackground,
+					"dom.disable_open_during_load": false,
+					"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy)
 				}
 		);
 		node.click();
@@ -350,7 +641,7 @@ var handyClicksFuncs = {
 		tab = tab || this.hc.item;
 		var lbl = prompt("New name:", tab.label); //~ todo: promptsService
 		tab.label = lbl === null
-			? tab.linkedBrowser.contentDocument.title || getBrowser().mStringBundle.getString("tabs.untitled")
+			? tab.linkedBrowser.contentDocument.title || this.getTabBrowser(true).mStringBundle.getString("tabs.untitled")
 			: lbl;
 	},
 	reloadAllTabs: function(e, skipCache) {
@@ -378,11 +669,11 @@ var handyClicksFuncs = {
 			return;
 		var hasStyle = img.hasAttribute("style");
 		var origStyle = img.getAttribute("style");
-		var w = this.getStyleOfContentItem("width");
-		var h = this.getStyleOfContentItem("height");
+		var w = this.getComputedStyleOfItem("width");
+		var h = this.getComputedStyleOfItem("height");
 		img.style.width = w;
 		img.style.height = h;
-		this.hc._log("reloadImg -> " + w + " x " + h);
+		this.ut._log("reloadImg -> " + w + " x " + h);
 		// if(parseInt(w) > 32 && parseInt(h) > 32)
 		img.style.background = "url('chrome://handyclicks/content/loading.gif') center no-repeat";
 		img.setAttribute("src", "chrome://handyclicks/content/spacer.gif"); // transparent gif 1x1
@@ -403,20 +694,18 @@ var handyClicksFuncs = {
 			0
 		);
 	},
-	getStyleOfContentItem: function(name, item) {
+	getComputedStyleOfItem: function(name, item) {
 		item = item || this.hc.item;
 		return item.ownerDocument.defaultView.getComputedStyle(item, "")[name];
 	},
 	openSimilarLinksInTabs: function(e, refererPolicy, a) {
 		a = a || this.hc.item;
 		var s = a.innerHTML;
-		var promptServ = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-			.getService(Components.interfaces.nsIPromptService);
 		var onlyUnVisited = {};
-		var cnf = promptServ.confirmCheck(
-			window, "Handy Clicks",
-			"Open similar links in tabs",
-			"Open unvisited links only", onlyUnVisited
+		var cnf = this.promptsServ.confirmCheck(
+			window, this.ut.getLocalised("title"),
+			this.ut.getLocalised("openSimilarLinks"),
+			this.ut.getLocalised("openOnlyVisited"), onlyUnVisited
 		);
 		if(!cnf)
 			return;
@@ -443,7 +732,7 @@ var handyClicksFuncs = {
 			)
 				hrefs[h] = 1;
 		}
-		var tbr = getBrowser();
+		var tbr = this.getTabBrowser(true);
 
 		// Open a new tab as a child of the current tab (Tree Style Tab)
 		if("TreeStyleTabService" in window)
@@ -456,16 +745,34 @@ var handyClicksFuncs = {
 		if("TreeStyleTabService" in window)
 			TreeStyleTabService.stopToOpenChildTab(tbr.selectedTab);
 	},
-	getRefererForItem: function(refPolicy, it) {
-		refPolicy = refPolicy || 0;
+	getRefererForItem: function(refPolicy, imgLoading, it) {
+		if(typeof refPolicy == "undefined")
+			refPolicy = -1;
+		if(typeof imgLoading == "undefined")
+			imgLoading = false;
 		it = it || this.hc.item;
 		var oDoc = it.ownerDocument;
-		return (oDoc.defaultView.toString() != "[object Window]" && false) // Except items in chrome window
-			|| (refPolicy == 0 && navigator.preference("network.http.sendRefererHeader"))
-			|| refPolicy == 1
-			|| (refPolicy == 2 && false)
-				? makeURI(oDoc.location.href) // see chrome://global/content/contentAreaUtils.js
-				: null;
+		if(!this.isNoChromeDoc(oDoc))
+			return null;
+		var refPolicy = this.getRefererPolicy(refPolicy);
+		// http://kb.mozillazine.org/Network.http.sendRefererHeader
+		// 0 - none
+		// 1 - for docs
+		// 2 - for images and docs
+		return (refPolicy == 1 && !imgLoading) || refPolicy == 2
+			? makeURI(oDoc.location.href) // see chrome://global/content/contentAreaUtils.js
+			: null;
+	},
+	getRefererPolicy: function(refPolicy) {
+		if(typeof refPolicy == "undefined")
+			refPolicy = -1;
+		return refererPolicy == -1
+			? navigator.prefefence("network.http.sendRefererHeader")
+			: refererPolicy;
+	},
+	isNoChromeDoc: function(doc) { // Except items in chrome window
+		doc = doc || this.hc.item.ownerDocument;
+		return doc.defaultView.toString().indexOf("[object Window]") > -1; // [object XPCNativeWrapper [object Window]]
 	},
 	fillInTooltip: function(tooltip) {
 		var tNode = document.tooltipNode;

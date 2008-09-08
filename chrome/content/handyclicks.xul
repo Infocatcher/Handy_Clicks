@@ -3,9 +3,13 @@
 <?xml-stylesheet href="chrome://handyclicks/content/handyclicks.css" type="text/css"?>
 
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/handyclicks.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/funcs.js" />
+	<stringbundleset id="stringbundleset">
+		<stringbundle id="handyClicks-strings" src="chrome://handyclicks/locale/hcs.properties" />
+	</stringbundleset>
 	<window id="main-window">
 		<tooltip id="handyClicks-tooltip" noautohide="true"
 			onpopupshowing="return handyClicksFuncs.fillInTooltip(this);"

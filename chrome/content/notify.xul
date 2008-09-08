@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	id="handylinksNotify"
+	windowtype="alert:alert"
+	align="start"
+	onload="hcNotify.init();"
+	onclick="hcNotify.click(event);">
+
+	<script type="application/x-javascript">
+	<![CDATA[
+		var hcNotify = {
+			closeTimeout: null,
+			init: function() {
+				var wa = window.arguments;
+				document.getElementById("hcNotifyHeader").value = wa[1];
+				document.getElementById("hcNotifyDesc").textContent = wa[2];
+				window.sizeToContent();
+				var wo = window.opener;
+				window.moveTo(wo.screenX + wo.outerWidth - window.outerWidth, wo.screenY + wo.outerHeight - window.outerHeight);
+				var nBox = document.getElementById("hcNotifyBox");
+				setTimeout( function() { nBox.style.borderColor = "blue"; }, 150);
+				setTimeout( function() { nBox.style.borderColor = "black"; }, 300);
+				this.closeTimeout = setTimeout("window.close();", wa[0]);
+			},
+			click: function(e) {
+				clearTimeout(this.closeTimeout);
+				if(typeof window.arguments[3] == "function" && e.button == 0)
+					window.arguments[3]();
+				window.close();
+			}
+		};
+	]]>
+	</script>
+
+	<hbox id="hcNotifyBox" style="border: 2px solid black; padding: 10px;">
+		<hbox align="center" valign="top" style="overflow: hidden;">
+			<!-- todo: add image -->
+			<image id="hcNotifyImg" src="chrome://global/skin/icons/Warning.png" autostretch="never" />
+		</hbox>
+		<vbox style="margin-left: 5px;">
+			<label id="hcNotifyHeader" class="header" value="Header" />
+			<description id="hcNotifyDesc" style="white-space: pre;">Description</description>
+		</vbox>
+	</hbox>
+
+</window>
