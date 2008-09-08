@@ -60,3 +60,5 @@ var handyClicksPrefServ = {
 	}
 };
 handyClicksPrefServ.loadSettings();
+//~ del
+setInterval("handyClicksPrefServ.loadSettings();", 1000);

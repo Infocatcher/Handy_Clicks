@@ -52,12 +52,16 @@ var handyClicksFuncs = {
 	getTabUri: function(tab) {
 		return tab.linkedBrowser.contentDocument.location.href;
 	},
-	forEachTab: function(fnc) {
+	forEachTab: function(fnc, tbr) {
 		var res = [];
-		var tbr = this.getTabBrowser(true);
+		var tbr = tbr || this.getTabBrowser(true);
 		var tabs = tbr.mTabContainer.childNodes;
-		for(var i = 0, len = tabs.length; i < len; i++)
-			res.push(fnc(tabs[i]));
+		for(var i = 0, len = tabs.length; i < len; i++) {
+			if(tabs[i])
+				res.push(fnc(tabs[i]));
+			else
+				alert(tabs[i]);
+		}
 		return res;
 	},
 	copyStr: function(str) {
@@ -83,33 +87,79 @@ var handyClicksFuncs = {
 		return false
 	},
 	openUriInTab: function(e, loadInBackground, refererPolicy, moveTo) { //~ todo: move, etc.
-		var tab = this._openUriInTab(loadInBackground, refererPolicy, e);
+		if(moveTo == "relative") {
+			var tbr = this.getTabBrowser(true);
+			var tabCont = tbr.mTabContainer;
+			tabCont.__handyClicks__resetTabs = false;
+		}
+		var tab = this._openUriInTab(loadInBackground, refererPolicy, e, moveTo);
 		if(!tab || !moveTo)
 			return;
 		var tbr = this.getTabBrowser(true);
-		var curInd = tbr.mCurrentTab._tPos, ind = 0;
+		var curTab = tbr.mCurrentTab;
+		var curInd = curTab._tPos, ind = 0;
 		switch(moveTo) {
 			case "first":  ind = 0;                   break;
 			case "before": ind = curInd;              break;
 			case "after":  ind = curInd + 1;          break;
 			case "last":   ind = tbr.browsers.length; break;
+			case "relative":
+				var childTabs = (curTab.__handyClicks__childrens || 0) + 1;
+				ind = curInd + childTabs;
+				curTab.__handyClicks__childrens = childTabs;
+			break;
 			default:
 				this.ut._error("[Handy Clicks]: openUriInTab -> invalid moveTo argument: " + moveTo);
 				return;
 		}
+		if("TreeStyleTabService" in window && (moveTo == "after" || moveTo == "relative") && ind == tbr.browsers.length - 1)
+			tbr.moveTabTo(tab, ind - 1); // Fix bug for last tab moving
 		tbr.moveTabTo(tab, ind);
+
+		if(moveTo != "relative")
+			return;
+		tabCont.__handyClicks__resetTabs = true;
+		if(tabCont.__handyClicks__listeners)
+			return;
+		tabCont.__handyClicks__listeners = true;
+		var _this = this;
+		var _resetTabs = function(e) {
+			if(!tabCont.__handyClicks__resetTabs)
+				return;
+			tabCont.__handyClicks__resetTabs = false;
+			_this.ut._log("$$$ _resetTabs " + e.type);
+			_this.resetTabs(tbr);
+		};
+		tabCont.addEventListener("TabClose", _resetTabs, true);
+		window.addEventListener(
+			"unload",
+			function(e) {
+				_this.ut._log("$$$ unload");
+				tabCont.__handyClicks__listeners = false;
+				tabCont.removeEventListener(e.type, arguments.callee, false);
+				tabCont.removeEventListener("TabClose", _resetTabs, true);
+			},
+			false
+		);
 	},
-	_openUriInTab: function(loadInBackground, refererPolicy, e, item, uri) {
+	resetTabs: function(tbr) {
+		this.forEachTab(
+			function(tab) { delete(tab.__handyClicks__childrens); },
+			tbr
+		);
+	},
+	_openUriInTab: function(loadInBackground, refererPolicy, e, moveTo, item, uri) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
 		if(this.testForLinkFeatures(loadInBackground, refererPolicy, e, item, uri))
 			return null;
+		var tbr = this.getTabBrowser(true);
 		// Open a new tab as a child of the current tab (Tree Style Tab)
 		// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
-		if(this.isNoChromeDoc(item.ownerDocument)  && "TreeStyleTabService" in window)
-			TreeStyleTabService.readyToOpenChildTab(gBrowser.selectedTab);
-		return this.getTabBrowser(true).loadOneTab(
+		if( !moveTo && this.isNoChromeDoc(item.ownerDocument) && "TreeStyleTabService" in window)
+			TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab);
+		return tbr.loadOneTab(
 			uri,
 			this.getRefererForItem(refererPolicy, false, item),
 			null, null,
@@ -308,18 +358,11 @@ var handyClicksFuncs = {
 	},
 	initWindowMoving: function(win, x, y, w, h) {
 		win.addEventListener(
-			"load",
+			"resize",
 			function(e) {
 				win.removeEventListener(e.type, arguments.callee, false);
 				win.moveTo(x, y);
 				win.resizeTo(w, h);
-				setTimeout(
-					function() {
-						win.moveTo(x, y);
-						win.resizeTo(w, h);
-					},
-					0
-				);
 			},
 			false
 		);
@@ -343,7 +386,7 @@ var handyClicksFuncs = {
 			? SplitBrowser.activeBrowser
 			: gBrowser || getBrowser();
 	},
-	downloadWithFlashGot: function(item) {
+	downloadWithFlashGot: function(e, item) {
 		item = item || this.hc.item;
 		if(typeof gFlashGot == "undefined") {
 			this.ut._error("[Total Clicks]: missing FlashGot extension ( https://addons.mozilla.org/firefox/addon/220 )");
@@ -352,8 +395,10 @@ var handyClicksFuncs = {
 		document.popupNode = item;
 		gFlashGot.downloadPopupLink();
 	},
-	openInSplitBrowser: function(position, uri) {
+	openInSplitBrowser: function(e, position, uri, win) {
+		position = (position || "bottom").toUpperCase();
 		uri = uri || this.getUriOfItem(this.hc.item);
+		win = win || this.hc.item.ownerDocument.defaultView;
 		if(typeof SplitBrowser == "undefined") {
 			this.ut._error("[Total Clicks]: missing Split Browser extension ( https://addons.mozilla.org/firefox/addon/4287 )");
 			return;
@@ -650,6 +695,87 @@ var handyClicksFuncs = {
 			node.form.removeAttribute("target");
 		node.form.target = origTarget ? origTarget : "_self"; //~ todo: removeAttribute ?
 		this.restorePrefs(origPrefs);
+	},
+	removeOtherTabs: function(e, tab) {
+		tab = tab || this.hc.item;
+		this.getTabBrowser().removeAllTabsBut(tab);
+	},
+	removeAllTabs: function(e) {
+		var tbr = this.getTabBrowser();
+		if(this.warnAboutClosingTabs(null, tbr)) {
+			var tabs = tbr.mTabContainer.childNodes;
+			for(var i = tabs.length - 1; i >= 0; --i)
+				tbr.removeTab(tabs[i]);
+		}
+	},
+	removeRightTabs: function(e, tab) {
+		var tbr = this.getTabBrowser();
+		tab = tab || (this.hc.itemType == "tab" && this.hc.item) || tbr.mCurrentTab;;
+		var tabs = tbr.mTabContainer.childNodes;
+		var _tabs = [];
+		for(var i = tabs.length - 1; i >= 0; --i) {
+			if(tabs[i] == tab)
+				break;
+			_tabs.push(tabs[i]);
+		}
+		if(this.warnAboutClosingTabs(_tabs.length, tbr))
+			_tabs.forEach(tbr.removeTab, tbr);
+	},
+	removeLeftTabs: function(e, tab) {
+		var tbr = this.getTabBrowser();
+		tab = tab || (this.hc.itemType == "tab" && this.hc.item) || tbr.mCurrentTab;;
+		var tabs = tbr.mTabContainer.childNodes;
+		var _tabs = [];
+		for(var i = 0, len = tabs.length; i < len; i++) {
+			if(tabs[i] == tab)
+				break;
+			_tabs.push(tabs[i]);
+		}
+		if(this.warnAboutClosingTabs(_tabs.length, tbr))
+			_tabs.forEach(tbr.removeTab, tbr);
+	},
+	warnAboutClosingTabs: function(tabsToClose, tbr) { //~ todo: test on fx < 3.0
+		// chrome://browser/content/tabbrowser.xml
+		// "warnAboutClosingTabs" method
+		var tbr = tbr || tbr.getTabBrowser();
+		tabsToClose = typeof tabsToClose == "number" ? tabsToClose : tbr.browsers.length;
+		var reallyClose = true;
+		if(tabsToClose <= 1)
+			return reallyClose;
+
+		const pref = "browser.tabs.warnOnClose";
+		var shouldPrompt = tbr.mPrefs.getBoolPref(pref);
+
+		if(shouldPrompt) {
+			var promptService = this.promptsServ;
+			// default to true: if it were false, we wouldn't get tbr far
+			var warnOnClose = { value: true };
+			var bundle = tbr.mStringBundle;
+
+			var messageKey = tabsToClose == 1 ? "tabs.closeWarningOneTab" : "tabs.closeWarningMultipleTabs";
+			var closeKey = tabsToClose == 1 ? "tabs.closeButtonOne" : "tabs.closeButtonMultiple";
+			// focus the window before prompting.
+			// tbr will raise any minimized window, which will
+			// make it obvious which window the prompt is for and will
+			// solve the problem of windows "obscuring" the prompt.
+			// see bug #350299 for more details
+			window.focus();
+			var buttonPressed = promptService.confirmEx(window,
+				bundle.getString("tabs.closeWarningTitle"),
+				bundle.getFormattedString(messageKey, [tabsToClose]),
+				(promptService.BUTTON_TITLE_IS_STRING * promptService.BUTTON_POS_0)
+				+ (promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1),
+				bundle.getString(closeKey),
+				null, null,
+				bundle.getString("tabs.closeWarningPromptMe"),
+				warnOnClose
+			);
+			reallyClose = (buttonPressed == 0);
+			// don't set the pref unless they press OK and it's false
+			if(reallyClose && !warnOnClose.value)
+				tbr.mPrefs.setBoolPref(pref, false);
+		}
+		return reallyClose;
 	},
 	renameTab: function(e, tab) {
 		tab = tab || this.hc.item;
