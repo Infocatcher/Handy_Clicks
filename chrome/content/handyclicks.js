@@ -409,7 +409,7 @@ var handyClicks = {
 				fnc.apply(handyClicksFuncs, args);
 			}
 			catch(e) {
-				Components.utils.reportError(e);
+				this.ut._error("[Handy Clicks]: custom action error:\n" + e);
 				alert(e); //~ todo: pop-up message
 			}
 		}
@@ -417,6 +417,8 @@ var handyClicks = {
 			var fnc = handyClicksFuncs[funcObj.action];
 			if(typeof fnc == "function")
 				fnc.apply(handyClicksFuncs, args);
+			else
+				this.ut._error("[Handy Clicks]: " + funcObj.action + " not found (" + typeof fnc + ")");
 		}
 
 		var oit = this.origItem;

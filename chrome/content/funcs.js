@@ -4,6 +4,7 @@ var handyClicksFuncs = {
 	voidURI: /^javascript:(\s|%20)*(|\/\/|void(\s|%20)*((\s|%20)+0|\((\s|%20)*0(\s|%20)*\)))(\s|%20)*;?$/i,
 	promptsServ: Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
 		.getService(Components.interfaces.nsIPromptService),
+	relativeIndex: 0,
 	_defaultCharset: null,
 	copyItemText: function(e) { // for all
 		var text = this.hc.itemType == "tabbar"
@@ -87,27 +88,22 @@ var handyClicksFuncs = {
 		return false
 	},
 	openUriInTab: function(e, loadInBackground, refererPolicy, moveTo) { //~ todo: move, etc.
+		var tbr = this.getTabBrowser(true);
 		if(moveTo == "relative") {
-			var tbr = this.getTabBrowser(true);
 			var tabCont = tbr.mTabContainer;
-			tabCont.__handyClicks__resetTabs = false;
+			tabCont.__handyClicks__resetRelativeIndex = false;
 		}
 		var tab = this._openUriInTab(loadInBackground, refererPolicy, e, moveTo);
 		if(!tab || !moveTo)
 			return;
-		var tbr = this.getTabBrowser(true);
 		var curTab = tbr.mCurrentTab;
 		var curInd = curTab._tPos, ind = 0;
 		switch(moveTo) {
-			case "first":  ind = 0;                   break;
-			case "before": ind = curInd;              break;
-			case "after":  ind = curInd + 1;          break;
-			case "last":   ind = tbr.browsers.length; break;
-			case "relative":
-				var childTabs = (curTab.__handyClicks__childrens || 0) + 1;
-				ind = curInd + childTabs;
-				curTab.__handyClicks__childrens = childTabs;
-			break;
+			case "first":    ind = 0;                             break;
+			case "before":   ind = curInd;                        break;
+			case "after":    ind = curInd + 1;                    break;
+			case "last":     ind = tbr.browsers.length;           break;
+			case "relative": ind = curInd + ++this.relativeIndex; break;
 			default:
 				this.ut._error("[Handy Clicks]: openUriInTab -> invalid moveTo argument: " + moveTo);
 				return;
@@ -118,34 +114,30 @@ var handyClicksFuncs = {
 
 		if(moveTo != "relative")
 			return;
-		tabCont.__handyClicks__resetTabs = true;
+		tabCont.__handyClicks__resetRelativeIndex = true;
 		if(tabCont.__handyClicks__listeners)
 			return;
 		tabCont.__handyClicks__listeners = true;
 		var _this = this;
-		var _resetTabs = function(e) {
-			if(!tabCont.__handyClicks__resetTabs)
+		var _resetRelativeIndex = function(e) {
+			if(!tabCont.__handyClicks__resetRelativeIndex)
 				return;
-			tabCont.__handyClicks__resetTabs = false;
+			tabCont.__handyClicks__resetRelativeIndex = false;
 			_this.ut._log("$$$ _resetTabs " + e.type);
-			_this.resetTabs(tbr);
+			_this.relativeIndex = 0;
 		};
-		tabCont.addEventListener("TabClose", _resetTabs, true);
+		tabCont.addEventListener("TabClose", _resetRelativeIndex, true);
+		tabCont.addEventListener("select", _resetRelativeIndex, true);
 		window.addEventListener(
 			"unload",
 			function(e) {
 				_this.ut._log("$$$ unload");
 				tabCont.__handyClicks__listeners = false;
 				tabCont.removeEventListener(e.type, arguments.callee, false);
-				tabCont.removeEventListener("TabClose", _resetTabs, true);
+				tabCont.removeEventListener("TabClose", _resetRelativeIndex, true);
+				tabCont.removeEventListener("select", _resetRelativeIndex, true);
 			},
 			false
-		);
-	},
-	resetTabs: function(tbr) {
-		this.forEachTab(
-			function(tab) { delete(tab.__handyClicks__childrens); },
-			tbr
 		);
 	},
 	_openUriInTab: function(loadInBackground, refererPolicy, e, moveTo, item, uri) {
@@ -734,43 +726,44 @@ var handyClicksFuncs = {
 		if(this.warnAboutClosingTabs(_tabs.length, tbr))
 			_tabs.forEach(tbr.removeTab, tbr);
 	},
-	warnAboutClosingTabs: function(tabsToClose, tbr) { //~ todo: test on fx < 3.0
+	warnAboutClosingTabs: function(tabsToClose, tbr) {
 		// chrome://browser/content/tabbrowser.xml
 		// "warnAboutClosingTabs" method
-		var tbr = tbr || tbr.getTabBrowser();
-		tabsToClose = typeof tabsToClose == "number" ? tabsToClose : tbr.browsers.length;
+		tbr = tbr || this.getTabBrowser();
+		tabsToClose = typeof tabsToClose == "number"
+			? tabsToClose
+			: tbr.mTabContainer.childNodes.length;
 		var reallyClose = true;
 		if(tabsToClose <= 1)
 			return reallyClose;
-
 		const pref = "browser.tabs.warnOnClose";
 		var shouldPrompt = tbr.mPrefs.getBoolPref(pref);
-
 		if(shouldPrompt) {
-			var promptService = this.promptsServ;
-			// default to true: if it were false, we wouldn't get tbr far
+			var promptsServ = this.promptsServ;
+			// default to true: if it were false, we wouldn't get this far
 			var warnOnClose = { value: true };
 			var bundle = tbr.mStringBundle;
-
-			var messageKey = tabsToClose == 1 ? "tabs.closeWarningOneTab" : "tabs.closeWarningMultipleTabs";
+			var messageKey = this.hc.isFx(1)
+				? tabsToClose == 1 ? "tabs.closeWarningOne"    : "tabs.closeWarningMultiple"
+				: tabsToClose == 1 ? "tabs.closeWarningOneTab" : "tabs.closeWarningMultipleTabs";
 			var closeKey = tabsToClose == 1 ? "tabs.closeButtonOne" : "tabs.closeButtonMultiple";
 			// focus the window before prompting.
-			// tbr will raise any minimized window, which will
+			// this will raise any minimized window, which will
 			// make it obvious which window the prompt is for and will
 			// solve the problem of windows "obscuring" the prompt.
 			// see bug #350299 for more details
 			window.focus();
-			var buttonPressed = promptService.confirmEx(window,
+			var buttonPressed = promptsServ.confirmEx(window,
 				bundle.getString("tabs.closeWarningTitle"),
 				bundle.getFormattedString(messageKey, [tabsToClose]),
-				(promptService.BUTTON_TITLE_IS_STRING * promptService.BUTTON_POS_0)
-				+ (promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1),
+				(promptsServ.BUTTON_TITLE_IS_STRING * promptsServ.BUTTON_POS_0)
+				+ (promptsServ.BUTTON_TITLE_CANCEL * promptsServ.BUTTON_POS_1),
 				bundle.getString(closeKey),
 				null, null,
 				bundle.getString("tabs.closeWarningPromptMe"),
 				warnOnClose
 			);
-			reallyClose = (buttonPressed == 0);
+			reallyClose = buttonPressed == 0;
 			// don't set the pref unless they press OK and it's false
 			if(reallyClose && !warnOnClose.value)
 				tbr.mPrefs.setBoolPref(pref, false);
@@ -801,6 +794,25 @@ var handyClicksFuncs = {
 			);
 		else
 			br.reload();
+	},
+	undoCloseTab: function(e) {
+		try { gBrowser.undoRemoveTab(); } // Tab Mix Plus
+		catch(err) { undoCloseTab(0); }
+	},
+	cloneTab: function(e, tab) {
+		var tbr = this.getTabBrowser();
+		tab = tab || tbr.mCurrentTab;
+		var ind = ++tab._tPos;
+		try { // fx 3.0
+			var newTab = tbr.duplicateTab(tab);
+		}
+		catch(err) {
+			var newTab = tbr.addTab(this.getTabUri(tab));
+		}
+		if("TreeStyleTabService" in window && ind == tbr.browsers.length - 1)
+			tbr.moveTabTo(newTab, ind - 1); // Fix bug for last tab moving
+		tbr.moveTabTo(newTab, ind);
+		tbr.selectedTab = newTab;
 	},
 	reloadImg: function(e, img) {
 		img = img || this.hc.item;
