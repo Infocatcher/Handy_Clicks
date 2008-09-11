@@ -11,5 +11,9 @@ var handyClicksUtils = {
 		if(!this.strings[name])
 			this.strings[name] = document.getElementById("handyClicks-strings").getString(name);
 		return this.strings[name];
+	},
+	isNoChromeDoc: function(doc) { // Except items in chrome window
+		doc = doc || handyClicks.item.ownerDocument;
+		return doc.defaultView.toString().indexOf("[object Window]") > -1; // [object XPCNativeWrapper [object Window]]
 	}
 };

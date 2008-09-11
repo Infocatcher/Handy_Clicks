@@ -18,7 +18,21 @@
 				document.getElementById("hcNotifyDesc").textContent = wa[2];
 				window.sizeToContent();
 				var wo = window.opener;
-				window.moveTo(wo.screenX + wo.outerWidth - window.outerWidth, wo.screenY + wo.outerHeight - window.outerHeight);
+				var winW = window.outerWidth, winH = window.outerHeight;
+				var x, y;
+				if(wa[4]) { // in window corner
+					x = wo.screenX + wo.outerWidth - winW;
+					y = wo.screenY + wo.outerHeight - winH;
+				}
+				else {
+					var cursorH = 20, addH = 5;
+					var evt = wo.handyClicks.copyOfEvent;
+					x = evt.screenX - winW/2;
+					y = evt.screenY + cursorH + addH;
+					if(y + winH > screen.availHeight)
+						y = evt.screenY - winH - addH;
+				}
+				window.moveTo(x, y);
 				var nBox = document.getElementById("hcNotifyBox");
 				setTimeout( function() { nBox.style.borderColor = "blue"; }, 150);
 				setTimeout( function() { nBox.style.borderColor = "black"; }, 300);

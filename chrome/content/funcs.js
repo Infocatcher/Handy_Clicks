@@ -123,7 +123,6 @@ var handyClicksFuncs = {
 			if(!tabCont.__handyClicks__resetRelativeIndex)
 				return;
 			tabCont.__handyClicks__resetRelativeIndex = false;
-			_this.ut._log("$$$ _resetTabs " + e.type);
 			_this.relativeIndex = 0;
 		};
 		tabCont.addEventListener("TabClose", _resetRelativeIndex, true);
@@ -131,7 +130,6 @@ var handyClicksFuncs = {
 		window.addEventListener(
 			"unload",
 			function(e) {
-				_this.ut._log("$$$ unload");
 				tabCont.__handyClicks__listeners = false;
 				tabCont.removeEventListener(e.type, arguments.callee, false);
 				tabCont.removeEventListener("TabClose", _resetRelativeIndex, true);
@@ -149,7 +147,7 @@ var handyClicksFuncs = {
 		var tbr = this.getTabBrowser(true);
 		// Open a new tab as a child of the current tab (Tree Style Tab)
 		// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
-		if( !moveTo && this.isNoChromeDoc(item.ownerDocument) && "TreeStyleTabService" in window)
+		if( !moveTo && this.ut.isNoChromeDoc(item.ownerDocument) && "TreeStyleTabService" in window)
 			TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab);
 		return tbr.loadOneTab(
 			uri,
@@ -225,7 +223,7 @@ var handyClicksFuncs = {
 		});
 
 		var oDoc = item.ownerDocument;
-		if(this.isNoChromeDoc(oDoc))
+		if(this.ut.isNoChromeDoc(oDoc))
 			oDoc.location.href = uri;
 		else
 			this.getTabBrowser().loadURI(uri); // bookmarklets
@@ -248,13 +246,13 @@ var handyClicksFuncs = {
 				this.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
 				return true;
 			}
-			this.hc.showPopupOnCurrentItem();
+			this.hc.showPopupOnItem();
 			return true;
 		}
 		catch(e) {
 			this.alertWithTitle(
-				this.ut.getLocalised("RegExpErrorTitle"),
-				this.ut.getLocalised("RegExpError").replace("%RegExp", regexp) + e
+				this.ut.getLocalised("errorTitle"),
+				this.ut.getLocalised("RegExpError").replace("%RegExp%", regexp) + e
 			);
 		}
 		return false;
@@ -402,7 +400,7 @@ var handyClicksFuncs = {
 	},
 	showGeneratedPopup: function(items) {
 		var popup = this.createPopup(items);
-		this.hc.showPopupOnCurrentItem(popup);
+		this.hc.showPopupOnItem(popup);
 		return popup;
 	},
 	createPopup: function(items) {
@@ -904,7 +902,7 @@ var handyClicksFuncs = {
 			imgLoading = false;
 		it = it || this.hc.item;
 		var oDoc = it.ownerDocument;
-		if(!this.isNoChromeDoc(oDoc))
+		if(!this.ut.isNoChromeDoc(oDoc))
 			return null;
 		var refPolicy = this.getRefererPolicy(refPolicy);
 		// http://kb.mozillazine.org/Network.http.sendRefererHeader
@@ -922,9 +920,8 @@ var handyClicksFuncs = {
 			? navigator.preference("network.http.sendRefererHeader")
 			: refPolicy;
 	},
-	isNoChromeDoc: function(doc) { // Except items in chrome window
-		doc = doc || this.hc.item.ownerDocument;
-		return doc.defaultView.toString().indexOf("[object Window]") > -1; // [object XPCNativeWrapper [object Window]]
+	showContextMenu: function(e) {
+		this.hc.showPopupOnItem();
 	},
 	fillInTooltip: function(tooltip) {
 		var tNode = document.tooltipNode;

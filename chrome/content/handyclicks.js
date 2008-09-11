@@ -73,9 +73,29 @@ var handyClicks = {
 			break;
 			case "submitButton":
 				cm = null; //~ todo: SubmitToTab for fx3 => add cm
+			break;
+			default: // custom types
+				cm = handyClicksCustomTypes[this.itemType] && handyClicksCustomTypes[this.itemType]._contextMenu
+					? handyClicksCustomTypes[this.itemType]._contextMenu()
+					: this.getContextMenu();
 		}
 		this._cMenu = cm; // cache
 		return cm;
+	},
+	getContextMenu: function(node) {
+		node = node || this.item;
+		if(!node)
+			return null;
+		var id = null;
+		if(this.ut.isNoChromeDoc(node.ownerDocument))
+			id = "contentAreaContextMenu";
+		else {
+			var nn = node.nodeName;
+			while(nn != "#document" && !node.hasAttribute("context"))
+				node = node.parentNode;
+			id = node.getAttribute("context") || null;
+		}
+		return id ? document.getElementById(id) : null;
 	},
 	disallowMousemove: function(but) {
 		return !this.hasMousemoveHandler
@@ -91,7 +111,6 @@ var handyClicks = {
 			return;
 		this.saveEvent(e);
 		this.defineItem(e, sets);
-
 		var funcObj = this.getFuncObj(sets);
 		if(!funcObj)
 			return;
@@ -101,11 +120,11 @@ var handyClicks = {
 
 		var _this = this;
 		var cm = this.cMenu;
-		if(cm && e.button == 2) {
+		if(cm && e.button == 2) { // Show context menu after delay
 			this.cMenuTimeout = setTimeout(
 				function() {
 					_this.disabledBy.cMenu = true;
-					_this.showPopupOnCurrentItem();
+					_this.showPopupOnItem();
 				},
 				this.getPref("showContextMenuTimeout")
 			);
@@ -119,16 +138,15 @@ var handyClicks = {
 			);
 		}
 		if(this.disallowMousemove(e.button)) {
-			window.addEventListener("mousemove", this, true); // only for right-click?
+			window.addEventListener("mousemove", this, true);
 			this.hasMousemoveHandler = true;
 		}
-		if(this.getPref("forceHideContextMenu"))
+		if(this.getPref("forceHideContextMenu")) // for Linux
 			window.addEventListener("contextmenu", this, true);
 	},
 	mousemoveHandler: function(e) {
 		this.disabledBy.mousemove = true;
 		this.clearCMenuTimeout();
-		this.ut._log("mousemoveHandler -> this.disabledBy.mousemove = true;");
 		this.removeMousemoveHandler();
 	},
 	removeMousemoveHandler: function() {
@@ -139,10 +157,10 @@ var handyClicks = {
 		this.stopEvent(e);
 		window.removeEventListener("contextmenu", this, true);
 	},
-	showPopupOnCurrentItem: function(popup) {
+	showPopupOnItem: function(popup, node, e) {
 		popup = popup || this._cMenu;
-		var node = this.origItem;
-		var e = this.copyOfEvent;
+		node = node || this.origItem;
+		e = e || this.copyOfEvent;
 
 		if(this.itemType == "tab") {
 			// Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
@@ -176,7 +194,6 @@ var handyClicks = {
 		window.addEventListener( // No click event after some showPopup() //~ todo: test
 			"mouseup", function(e) {
 				setTimeout(function() { _this.skipTmpDisabled(); }, 0);
-				_this.ut._log(">> mouseup");
 				window.removeEventListener("mouseup", arguments.callee, true);
 			},
 			true
@@ -230,11 +247,11 @@ var handyClicks = {
 		this.event = e;
 
 		/* fx < 3.0:
-		 * works:
-		 * alert(uneval(this.getXY(this.event)));
-		 * always return "({x:0, y:0})":
-		 * var _this = this;
-		 * setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
+		 * Works:
+		 *   alert(uneval(this.getXY(this.event)));
+		 * Always return "({x:0, y:0})":
+		 *   var _this = this;
+		 *   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
 		 */
 		this.copyOfEvent = this.cloneObj(e);
 	},
@@ -246,6 +263,21 @@ var handyClicks = {
 		var it = e.originalTarget;
 		this.origItem = it;
 		var itnn = it.nodeName.toLowerCase();
+
+		// Custom:
+		if(handyClicksCustomTypes) {
+			var customItem;
+			for(var type in handyClicksCustomTypes) {
+				if(all || this.isOkFuncObj(sets[type])) {
+					customItem = handyClicksCustomTypes[type]._define.call(this, e, it);
+					if(!customItem)
+						continue;
+					this.itemType = type;
+					this.item = customItem;
+					return;
+				}
+			}
+		}
 
 		// img:
 		if(
@@ -343,7 +375,6 @@ var handyClicks = {
 				tbc = tb.className;
 			}
 			if(tbre.test(tbc)) {
-				this.ut._log(">>> tabbar");
 				this.itemType = "tabbar";
 				this.item = tb;
 				return;
@@ -377,12 +408,10 @@ var handyClicks = {
 		e.stopPropagation();
 	},
 	clickHandler: function(e) {
-		this.ut._log(">> clickHandler");
-		if(this.disabled) {
-			this.skipTmpDisabled();
-			return;
-		}
+		var dis = this.disabled;
 		this.skipTmpDisabled();
+		if(dis)
+			return;
 
 		var evtStr = this.getEvtStr(e);
 		var sets = this.getSettings(evtStr);
@@ -403,22 +432,32 @@ var handyClicks = {
 
 		var args = this.argsToArr(funcObj.arguments);
 		args.unshift(e);
-		if(funcObj.custom) { //~ todo
+		if(funcObj.custom) {
 			try {
-				var fnc = new Function(unescape(funcObj.action));
+				var fnc = new Function(decodeURIComponent(funcObj.action));
 				fnc.apply(handyClicksFuncs, args);
 			}
 			catch(e) {
 				this.ut._error("[Handy Clicks]: custom action error:\n" + e);
-				alert(e); //~ todo: pop-up message
+				this.notify(
+					this.ut.getLocalised("errorTitle"),
+					this.ut.getLocalised("customFunctionError").replace("%func%", decodeURIComponent(funcObj.title)),
+					toErrorConsole
+				);
 			}
 		}
 		else {
 			var fnc = handyClicksFuncs[funcObj.action];
 			if(typeof fnc == "function")
 				fnc.apply(handyClicksFuncs, args);
-			else
+			else {
 				this.ut._error("[Handy Clicks]: " + funcObj.action + " not found (" + typeof fnc + ")");
+				this.notify(
+					this.ut.getLocalised("errorTitle"),
+					this.ut.getLocalised("functionNotFound").replace("%func%", funcObj.action),
+					toErrorConsole
+				);
+			}
 		}
 
 		var oit = this.origItem;
@@ -436,6 +475,7 @@ var handyClicks = {
 		return args;
 	},
 	getXY: function(e) {
+		e = e || this.copyOfEvent;
 		var isFx3 = this.isFx(3);
 		return {
 			x: isFx3 ? e.screenX : e.clientX,
@@ -474,7 +514,7 @@ var handyClicks = {
 			 "chrome://handyclicks/content/notify.xul",
 			 "",
 			 "chrome,dialog=1,titlebar=0,popup=1",
-			 dur, ttl, txt, fnc
+			 dur, ttl, txt, fnc, this.getPref("notifyInWindowCorner")
 		);
 	}
 };

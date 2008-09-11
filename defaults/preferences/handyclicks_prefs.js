@@ -9,6 +9,7 @@ pref("handyclicks.convertURIsTo", ""); // use defaults
 pref("handyclicks.showContextMenuTimeout", 500);
 
 pref("handyclicks.notifyOpenTime", 3000);
+pref("handyclicks.notifyInWindowCorner", false);
 pref("handyclicks.notifyVoidLinksWithHandlers", true);
 pref("handyclicks.notifyJavaScriptLinks", true);
 
