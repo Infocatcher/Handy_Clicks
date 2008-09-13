@@ -26,10 +26,16 @@
 				}
 				else {
 					var cursorH = 20, addH = 5;
+					var maxX = screen.availLeft + screen.availWidth;
+					var maxY = screen.availTop + screen.availHeight;
 					var evt = wo.handyClicks.copyOfEvent;
 					x = evt.screenX - winW/2;
 					y = evt.screenY + cursorH + addH;
-					if(y + winH > screen.availHeight)
+					if(x < screen.availLeft) // left overflow
+					       x = screen.availLeft;
+					else if(x + winW > maxX) // right overflow
+						x = maxX - winW;
+					if(y + winH > maxY) // bottom overflow
 						y = evt.screenY - winH - addH;
 				}
 				window.moveTo(x, y);

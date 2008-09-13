@@ -160,6 +160,8 @@ var handyClicks = {
 	showPopupOnItem: function(popup, node, e) {
 		popup = popup || this._cMenu;
 		node = node || this.origItem;
+		if(!popup || !node || !node.ownerDocument.location)
+			return; // e.g. rocker gesture => go back => node.ownerDocument.location == null
 		e = e || this.copyOfEvent;
 
 		if(this.itemType == "tab") {
