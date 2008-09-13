@@ -32,7 +32,7 @@
 					x = evt.screenX - winW/2;
 					y = evt.screenY + cursorH + addH;
 					if(x < screen.availLeft) // left overflow
-					       x = screen.availLeft;
+						x = screen.availLeft;
 					else if(x + winW > maxX) // right overflow
 						x = maxX - winW;
 					if(y + winH > maxY) // bottom overflow

@@ -285,6 +285,7 @@ var handyClicks = {
 		if(
 			(all || this.isOkFuncObj(sets.img))
 			&& (itnn == "img" || itnn == "image") && (it.src || it.hasAttribute("src"))
+			&& this.ut.isNoChromeDoc(it.ownerDocument) // not for interface...
 		) {
 			this.itemType = "img";
 			this.item = it;

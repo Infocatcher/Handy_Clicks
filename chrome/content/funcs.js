@@ -6,21 +6,25 @@ var handyClicksFuncs = {
 		.getService(Components.interfaces.nsIPromptService),
 	relativeIndex: 0,
 	_defaultCharset: null,
-	copyItemText: function(e) { // for all
+	copyItemText: function(e, hidePopup) { // for all
 		var text = this.hc.itemType == "tabbar"
 			? this.forEachTab(this.getTabUri).join("\n")
 			: this.getTextOfCurrentItem();
 		this.ut._log("copyItemText -> " + text);
 		this.copyStr(text);
 		this.hc.blinkNode();
+		if(hidePopup)
+			this.hideItemPopup();
 	},
-	copyItemLink: function(e) {
+	copyItemLink: function(e, hidePopup) {
 		var link = this.hc.itemType == "tabbar"
 			? this.forEachTab(function(tab) { return tab.label; }).join("\n")
 			: this.getUriOfItem() || "";
 		this.ut._log("copyItemLink -> " + link);
 		this.copyStr(link);
 		this.hc.blinkNode();
+		if(hidePopup)
+			this.hideItemPopup();
 	},
 	getTextOfCurrentItem: function() {
 		var it = this.hc.item;
@@ -34,8 +38,7 @@ var handyClicksFuncs = {
 				uri = it.href;
 			break;
 			case "img":
-				this.ut._log("getUriOfItem -> img -> !it.src && it.hasAttribute(\"src\") -> " + (!it.src && it.hasAttribute("src")));
-				uri = it.src || it.getAttribute("src");
+				uri = it.src;
 			break;
 			case "bookmark":
 			case "historyItem":
@@ -70,11 +73,13 @@ var handyClicksFuncs = {
 			.getService(Components.interfaces.nsIClipboardHelper)
 			.copyString(str);
 	},
-	openUriInCurrentTab: function(e, refererPolicy, uri) {
+	openUriInCurrentTab: function(e, refererPolicy, hidePopup, uri) {
 		uri = uri || this.getUriOfItem(this.hc.item);
 		if(this.testForHighlander(uri))
 			return;
 		this.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
+		if(hidePopup)
+			this.hideItemPopup();
 	},
 	testForHighlander: function(uri) {
 		// Highlander ( https://addons.mozilla.org/firefox/addon/4086 )
@@ -87,13 +92,15 @@ var handyClicksFuncs = {
 		}
 		return false
 	},
-	openUriInTab: function(e, loadInBackground, refererPolicy, moveTo) { //~ todo: move, etc.
+	openUriInTab: function(e, loadInBackground, refererPolicy, moveTo, hidePopup) {
 		var tbr = this.getTabBrowser(true);
 		if(moveTo == "relative") {
 			var tabCont = tbr.mTabContainer;
 			tabCont.__handyClicks__resetRelativeIndex = false;
 		}
 		var tab = this._openUriInTab(loadInBackground, refererPolicy, e, moveTo);
+		if(hidePopup)
+			this.hideItemPopup();
 		if(!tab || !moveTo)
 			return;
 		var curTab = tbr.mCurrentTab;
@@ -126,14 +133,16 @@ var handyClicksFuncs = {
 			_this.relativeIndex = 0;
 		};
 		tabCont.addEventListener("TabClose", _resetRelativeIndex, true);
-		tabCont.addEventListener("select", _resetRelativeIndex, true);
+		tabCont.addEventListener("TabSelect", _resetRelativeIndex, true);
+		// tabCont.addEventListener("select", _resetRelativeIndex, true);
 		window.addEventListener(
 			"unload",
 			function(e) {
 				tabCont.__handyClicks__listeners = false;
 				tabCont.removeEventListener(e.type, arguments.callee, false);
 				tabCont.removeEventListener("TabClose", _resetRelativeIndex, true);
-				tabCont.removeEventListener("select", _resetRelativeIndex, true);
+				tabCont.removeEventListener("TabSelect", _resetRelativeIndex, true);
+				// tabCont.removeEventListener("select", _resetRelativeIndex, true);
 			},
 			false
 		);
@@ -257,8 +266,10 @@ var handyClicksFuncs = {
 		}
 		return false;
 	},
-	openUriInWindow: function(e, loadInBackground, refererPolicy, moveTo) {
+	openUriInWindow: function(e, loadInBackground, refererPolicy, moveTo, hidePopup) {
 		var win = this._openUriInWindow(loadInBackground, refererPolicy, e);
+		if(hidePopup)
+			this.hideItemPopup();
 		if(!win || !moveTo)
 			return;
 		var sal = screen.availLeft, sat = screen.availTop;
@@ -366,15 +377,41 @@ var handyClicksFuncs = {
 			.getInterface(Components.interfaces.nsIXULWindow);
 		xulwin.zLevel = xulwin.normalZ;
 	},
-	openInSidebar: function(e, ttl, uri) {
+	openInSidebar: function(e, ttl, hidePopup, uri) {
 		ttl = ttl || "";
 		uri = uri || this.getUriOfItem(this.hc.item);
 		openWebPanel(ttl, uri);
+		if(hidePopup)
+			this.hideItemPopup();
 	},
 	getTabBrowser: function(tabsRequired) {
 		return "SplitBrowser" in window && !(tabsRequired && "TM_init" in window) // Tab Mix Plus
 			? SplitBrowser.activeBrowser
 			: gBrowser || getBrowser();
+	},
+	hideItemPopup: function(it) {
+		it = it || this.hc.item;
+		var mp = this.getMenupopup(it);
+		if(mp && mp.hidePopup) {
+			mp.hidePopup();
+			var mn = mp.parentNode;
+			if(mn && mn.nodeName == "menu")
+				mn.removeAttribute("_moz-menuactive");
+		}
+	},
+	getMenupopup: function(it) {
+		it = it || this.hc.item;
+		if(it.nodeName == "toolbarbutton")
+			return false;
+		var mp, ci = it, nn;
+		do {
+			ci = ci.parentNode;
+			nn = ci.nodeName;
+			if(nn == "menupopup")
+				mp = ci;
+		}
+		while(ci && nn != "toolbar" && nn != "#document")
+		return mp;
 	},
 	downloadWithFlashGot: function(e, item) {
 		item = item || this.hc.item;
@@ -385,7 +422,7 @@ var handyClicksFuncs = {
 		document.popupNode = item;
 		gFlashGot.downloadPopupLink();
 	},
-	openInSplitBrowser: function(e, position, uri, win) {
+	openInSplitBrowser: function(e, position, hidePopup, uri, win) {
 		position = (position || "bottom").toUpperCase();
 		uri = uri || this.getUriOfItem(this.hc.item);
 		win = win || this.hc.item.ownerDocument.defaultView;
@@ -394,6 +431,8 @@ var handyClicksFuncs = {
 			return;
 		}
 		SplitBrowser.addSubBrowser(uri, null, SplitBrowser["POSITION_" + position]);
+		if(hidePopup)
+			this.hideItemPopup();
 	},
 	alertWithTitle: function(ttl, txt) {
 		this.promptsServ.alert(window, ttl, txt);
@@ -603,7 +642,8 @@ var handyClicksFuncs = {
 	},
 	showOpenUriWithAppsPopup: function(items) {
 		var uri = this.getUriOfItem();
-		if(!uri) { //~ todo: show pop-up massage
+		if(!uri) {
+			this.ut._error("[Handy Clicks]: can't get URI of item (" + this.hc.itemType + ")");
 			return;
 		}
 		var path, it, n, args;
@@ -725,6 +765,7 @@ var handyClicksFuncs = {
 			_tabs.forEach(tbr.removeTab, tbr);
 	},
 	warnAboutClosingTabs: function(tabsToClose, tbr) {
+		// Based on code of Firefox 1.5-3.0
 		// chrome://browser/content/tabbrowser.xml
 		// "warnAboutClosingTabs" method
 		tbr = tbr || this.getTabBrowser();
@@ -804,7 +845,7 @@ var handyClicksFuncs = {
 		try { // fx 3.0
 			var newTab = tbr.duplicateTab(tab);
 		}
-		catch(err) {
+		catch(err) { // Not a real "clone"... Just URI's copy
 			var newTab = tbr.addTab(this.getTabUri(tab));
 		}
 		if("TreeStyleTabService" in window && ind == tbr.browsers.length - 1)
@@ -814,7 +855,7 @@ var handyClicksFuncs = {
 	},
 	reloadImg: function(e, img) {
 		img = img || this.hc.item;
-		var src = img.src || img.getAttribute("src"); // ?
+		var src = img.src;
 		if(!src)
 			return;
 		var hasStyle = img.hasAttribute("style");
