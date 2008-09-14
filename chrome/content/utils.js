@@ -9,7 +9,9 @@ var handyClicksUtils = {
 	_error: Components.utils.reportError,
 	getLocalised: function(name) {
 		if(!this.strings[name])
-			this.strings[name] = document.getElementById("handyClicks-strings").getString(name);
+			try {
+				this.strings[name] = document.getElementById("handyClicks-strings").getString(name);
+			} catch(e) { this.strings[name] = name; }
 		return this.strings[name];
 	},
 	isNoChromeDoc: function(doc) { // Except items in chrome window

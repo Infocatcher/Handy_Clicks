@@ -1,5 +1,6 @@
 var handyClicksFuncs = {
 	ut: handyClicksUtils, // shortcut
+	ps: handyClicksPrefServ, // shortcut
 	hc: handyClicks, // shortcut
 	voidURI: /^javascript:(\s|%20)*(|\/\/|void(\s|%20)*((\s|%20)+0|\((\s|%20)*0(\s|%20)*\)))(\s|%20)*;?$/i,
 	promptsServ: Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
@@ -527,7 +528,7 @@ var handyClicksFuncs = {
 
 	get profileDir() {
 		if(!this._profileDir)
-			this._profileDir = handyClicksPrefServ.profileDir
+			this._profileDir = this.ps.profileDir
 				.path.replace(/[\\\/]$/, "");
 		return this._profileDir;
 	},
@@ -866,8 +867,8 @@ var handyClicksFuncs = {
 		img.style.height = h;
 		this.ut._log("reloadImg -> " + w + " x " + h);
 		// if(parseInt(w) > 32 && parseInt(h) > 32)
-		img.style.background = "url('chrome://handyclicks/content/loading.gif') center no-repeat";
-		img.setAttribute("src", "chrome://handyclicks/content/spacer.gif"); // transparent gif 1x1
+		img.style.background = "url('chrome://handyclicks/content/style/loading.gif') center no-repeat";
+		img.setAttribute("src", "chrome://handyclicks/content/style/spacer.gif"); // transparent gif 1x1
 		setTimeout(
 			function() {
 				img.setAttribute("src", src);

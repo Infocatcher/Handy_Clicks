@@ -1,0 +1,20 @@
+@namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
+
+treechildren::-moz-tree-row(selected) {
+	background-color: Highlight !important;
+}
+treechildren::-moz-tree-row(custom) {
+	background-color: #f0fff0;
+}
+treechildren::-moz-tree-row(disabled) {
+	background-color: ThreeDLightShadow;
+}
+treechildren::-moz-tree-row(buggy) {
+	background-color: #faa;
+}
+treechildren::-moz-tree-row(hover) {
+	background-color: ThreeDFace;
+}
+treechildren::-moz-tree-checkbox(checked) {
+	list-style-image: url("checked.gif"); /* Image from Firefox 3.0 defaul theme on Windows XP */
+}

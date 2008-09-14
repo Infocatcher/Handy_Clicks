@@ -6,9 +6,10 @@
 
 		<em:id>handyclicks@infocatcher.ucoz.net</em:id>
 		<em:name>Handy Clicks</em:name>
-		<em:version>0.0.1.0a6pre1</em:version>
+		<em:version>0.0.1.0a6pre2</em:version>
 		<em:description>More clicks options</em:description>
 		<em:creator>Infocatcher</em:creator>
+		<em:optionsURL>chrome://handyclicks/content/sets.xul</em:optionsURL>
 		<!--
 		<em:updateURL>http://infocatcher.ucoz.net/ext/fx/handy_clicks/update.rdf</em:updateURL>
 		<em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLgtEbrhCdZetIAanFNvkT441WwBgXcg1Zzlo5s5

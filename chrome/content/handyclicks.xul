@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://browser/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://handyclicks/content/handyclicks.css" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/handyclicks.css" type="text/css"?>
 
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
-	<script type="application/x-javascript" src="chrome://handyclicks/content/handyclicks.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/handyclicks.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/funcs.js" />
 	<stringbundleset id="stringbundleset">
 		<stringbundle id="handyClicks-strings" src="chrome://handyclicks/locale/hcs.properties" />

@@ -65,6 +65,47 @@ var handyClicksPrefServ = {
 	compileStr: function(str) {
 		return !str ? null : new Function(decodeURIComponent(str));
 	},
+	saveSettingsObjects: function() {
+ 		var res = this.warnComment + "var handyClicksPrefs = {\n";
+		var shortcutObj, itemTypeObj, propVal;
+		for(var shortcut in handyClicksPrefs) { // test for Ok?
+			shortcutObj = handyClicksPrefs[shortcut];
+			res += '\t"' + shortcut + '": {\n';
+			for(var itemType in shortcutObj) {
+				itemTypeObj = shortcutObj[itemType];
+				res += "\t\t" + itemType + ": {\n";
+				for(var propName in itemTypeObj) {
+					propVal = itemTypeObj[propName];
+					res += "\t\t\t" + propName + ": " + this.objToSource(propVal) + ",\n";
+				}
+				res = this.delLastComma(res) + "\t\t},\n";
+			}
+			res = this.delLastComma(res) + "\t},\n";
+		}
+		res = this.delLastComma(res) + "};\n";
+
+		res += "var handyClicksCustomTypes = {\n";
+		for(var itemType in handyClicksCustomTypes) {
+			itemTypeObj = handyClicksCustomTypes[itemType];
+			res += "\t" + itemType + ": {\n";
+			for(var propName in itemTypeObj) {
+				propVal = itemTypeObj[propName];
+				if(propName.indexOf("_") != 0)
+					res += "\t\t" + propName + ": " + this.objToSource(propVal) + ",\n";
+			}
+			res = this.delLastComma(res) + "\t},\n";
+		}
+		res = this.delLastComma(res) + "};";
+
+		if(confirm("Save?"))
+			this.saveSettings(res);
+	},
+	objToSource: function(obj) {
+		return uneval(obj).replace(/^\(|\)$/g, "");
+	},
+	delLastComma: function(str) {
+		return str.replace(/,\n$/, "\n");
+	},
 	saveSettings: function(str, prefsFile) {
 		prefsFile = prefsFile || this.prefsFile;
 		if(prefsFile.exists()) {
@@ -82,5 +123,4 @@ var handyClicksPrefServ = {
 	}
 };
 handyClicksPrefServ.loadSettings();
-//~ del
-setInterval("handyClicksPrefServ.loadSettings();", 2000);
+// setInterval("handyClicksPrefServ.loadSettings();", 2000);
