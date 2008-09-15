@@ -199,7 +199,7 @@ var handyClicksFuncs = {
 	loadVoidLinkWithHandler: function(loadInBackground, refererPolicy, e, item) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
-		if(this.hc.getPref("notifyVoidLinksWithHandlers"))
+		if(this.ut.pref("notifyVoidLinksWithHandlers"))
 			this.hc.notify(
 				this.ut.getLocalised("title"),
 				this.ut.getLocalised("voidLinkWithHandler")
@@ -221,7 +221,7 @@ var handyClicksFuncs = {
 	loadNotVoidJavaScriptLink: function(loadInBackground, refererPolicy, item, uri) {
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
-		if(this.hc.getPref("notifyJavaScriptLinks"))
+		if(this.ut.pref("notifyJavaScriptLinks"))
 			this.hc.notify(
 				this.ut.getLocalised("title"),
 				this.ut.getLocalised("javaScriptLink")
@@ -242,10 +242,10 @@ var handyClicksFuncs = {
 	},
 	testForFileLink: function(refererPolicy, uri) {
 		uri = uri || this.getUriOfItem(this.hc.item);
-		var filesPolicy = this.hc.getPref("filesLinksPolicy");
+		var filesPolicy = this.ut.pref("filesLinksPolicy");
 		if(filesPolicy < 1)
 			return false;
-		var regexp = this.hc.getPref("filesLinksMask"); //~ todo: UTF-8
+		var regexp = this.ut.pref("filesLinksMask"); //~ todo: UTF-8
 		if(!regexp)
 			return false;
 		try {
@@ -378,7 +378,7 @@ var handyClicksFuncs = {
 			.getInterface(Components.interfaces.nsIXULWindow);
 		xulwin.zLevel = xulwin.normalZ;
 	},
-	openInSidebar: function(e, ttl, hidePopup, uri) {
+	openInSidebar: function(e, hidePopup, ttl, uri) {
 		ttl = ttl || "";
 		uri = uri || this.getUriOfItem(this.hc.item);
 		openWebPanel(ttl, uri);
@@ -584,10 +584,10 @@ var handyClicksFuncs = {
 	},
 	get charset() {
 		var charset = "";
-		if(this.hc.getPref("convertURIs")) {
-			charset = this.hc.getPref("convertURIsTo");
+		if(this.ut.pref("convertURIs")) {
+			charset = this.ut.pref("convertURIsTo");
 			if(!charset) {
-				charset = navigator.preference("intl.charset.default");
+				charset = this.ut.getPref("intl.charset.default");
 				if(!charset || charset.indexOf("chrome://") == 0)
 					charset = this.defaultCharset;
 			}
@@ -687,14 +687,14 @@ var handyClicksFuncs = {
 	setPrefs: function(prefsObj) { //~ warn: not for UTF-8 prefs!
 		var origs = {};
 		for(var p in prefsObj) {
-			origs[p] = navigator.preference(p);
-			navigator.preference(p, prefsObj[p]);
+			origs[p] = this.ut.getPref(p);
+			this.ut.setPref(p, prefsObj[p]);
 		}
 		return origs;
 	},
 	restorePrefs: function(prefsObj) {
 		for(var p in prefsObj)
-			navigator.preference(p, prefsObj[p]); //~ todo: test! (setTimeout for fx3 ?)
+			this.ut.setPref(p, prefsObj[p]); //~ todo: test! (setTimeout for fx3 ?)
 	},
 	submitFormToNewDoc: function(e, toNewWin, loadInBackground, refererPolicy, node) {
 		// Thanks to SubmitToTab! ( https://addons.mozilla.org/firefox/addon/483 )

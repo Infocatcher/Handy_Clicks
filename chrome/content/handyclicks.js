@@ -4,7 +4,6 @@ var handyClicks = {
 		mousemove: false,
 		cMenu: false
 	},
-	disableClickHandler: false,
 	event: null,
 	origItem: null,
 	item: null,
@@ -20,13 +19,13 @@ var handyClicks = {
 		window.removeEventListener("load", this, false);
 		window.addEventListener("mousedown", this, true);
 		window.addEventListener("click", this, true);
-		this.prefs.addObserver("handyclicks.", this, false);
+		this.prefs.addObserver("extensions.handyclicks.", this, false);
 	},
 	destroy: function() {
 		window.removeEventListener("unload", this, false);
 		window.removeEventListener("mousedown", this, true);
 		window.removeEventListener("click", this, true);
-		this.prefs.removeObserver("handyclicks.", this);
+		this.prefs.removeObserver("extensions.handyclicks.", this);
 	},
 	get fxVersion() {
 		if(typeof this._fxVersion == "undefined")
@@ -39,7 +38,7 @@ var handyClicks = {
 		return this.fxVersion.indexOf(version + ".") == 0;
 	},
 	get disabled() {
-		if(!this.getPref("enabled"))
+		if(!this.ut.pref("enabled"))
 			return true;
 		for(var p in this.disabledBy)
 			if(this.disabledBy[p])
@@ -99,10 +98,10 @@ var handyClicks = {
 	},
 	disallowMousemove: function(but) {
 		return !this.hasMousemoveHandler
-			&& this.getPref("disallowMousemoveForButtons").indexOf(but) > -1;
+			&& this.ut.pref("disallowMousemoveForButtons").indexOf(but) > -1;
 	},
 	mousedownHandler: function(e) { //~ todo: test hiding of context menu in Linux
-		if(!this.getPref("enabled"))
+		if(!this.ut.pref("enabled"))
 			return;
 		var evtStr = this.getEvtStr(e);
 		this.strOnMousedown = evtStr;
@@ -126,7 +125,7 @@ var handyClicks = {
 					_this.disabledBy.cMenu = true;
 					_this.showPopupOnItem();
 				},
-				this.getPref("showContextMenuTimeout")
+				this.ut.pref("showContextMenuTimeout")
 			);
 			cm.addEventListener(
 				"popupshowing",
@@ -141,7 +140,7 @@ var handyClicks = {
 			window.addEventListener("mousemove", this, true);
 			this.hasMousemoveHandler = true;
 		}
-		if(this.getPref("forceHideContextMenu")) // for Linux
+		if(this.ut.pref("forceHideContextMenu")) // for Linux
 			window.addEventListener("contextmenu", this, true);
 	},
 	mousemoveHandler: function(e) {
@@ -172,7 +171,7 @@ var handyClicks = {
 		}
 
 		if((this.isFx(2) && popup.id == "contentAreaContextMenu")) { // workaround for spellchecker bug
-			if(this.getPref("forceHideContextMenu"))
+			if(this.ut.pref("forceHideContextMenu"))
 				window.removeEventListener("contextmenu", this, true);
 
 			var evt = document.createEvent("MouseEvents"); // thanks to Tab Scope!
@@ -429,7 +428,7 @@ var handyClicks = {
 			return;
 
 		this.stopEvent(e); // this stop "contextmenu" event in Windows
-		if(this.getPref("forceHideContextMenu"))
+		if(this.ut.pref("forceHideContextMenu"))
 			window.removeEventListener("contextmenu", this, true); // and listener is not needed
 		this.clearCMenuTimeout();
 
@@ -496,28 +495,19 @@ var handyClicks = {
 		}
 	},
 	observe: function(subject, topic, prefName) { // prefs observer
-		if(topic != "nsPref:changed") // ???
+		if(topic != "nsPref:changed")
 			return;
-		this.readPref(prefName.replace(/^handyclicks\./, ""));
-	},
-	readPref: function(prefName) { //~ warn: not for UTF-8 prefs!
-		this["pref_" + prefName] = navigator.preference("handyclicks." + prefName);
-	},
-	getPref: function(prefName) {
-		var propName = "pref_" + prefName;
-		if(typeof this[propName] == "undefined")
-			this[propName] = navigator.preference("handyclicks." + prefName);
-		return this[propName];
+		this.ut.readPref(prefName.replace(/^extensions\.handyclicks\./, ""));
 	},
 	notify: function(ttl, txt, fnc) {
-		var dur = this.getPref("notifyOpenTime");
+		var dur = this.ut.pref("notifyOpenTime");
 		if(dur < 0)
 			 return;
 		window.openDialog(
 			 "chrome://handyclicks/content/notify.xul",
 			 "",
 			 "chrome,dialog=1,titlebar=0,popup=1",
-			 dur, ttl, txt, fnc, this.getPref("notifyInWindowCorner")
+			 dur, ttl, txt, fnc, this.ut.pref("notifyInWindowCorner")
 		);
 	}
 };

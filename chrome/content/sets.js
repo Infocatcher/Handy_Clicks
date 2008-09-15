@@ -3,6 +3,14 @@ var handyClicksSets = {
 	ps: handyClicksPrefServ, // shortcut
 	DOMCache: {},
 	okPrefStr: /^button=[0-2],ctrl=(true|false),shift=(true|false),alt=(true|false),meta=(true|false)$/,
+	init: function() {
+		this.initMainPrefs();
+		this.loadPrefs();
+		this.updateAllDependencies();
+		this.showPrefs();
+	},
+
+	/*** Actions pane ***/
 	initMainPrefs: function() {
 		this.initChortcuts();
 		this.drawTree();
@@ -221,5 +229,56 @@ var handyClicksSets = {
 		tCell.setAttribute("value", enabled);
 
 		handyClicksPrefs[tRow.__shortcut][tRow.__itemType].enabled = enabled;
+	},
+
+	/*** Prefs pane ***/
+	loadPrefs: function() {
+		var id = "disallowMousemoveForButtons";
+		var buttons = this.ut.pref(id);
+		for(var i = 0; i <= 2; i++)
+			this.$(id + "-" + i).checked = buttons.indexOf(i) > -1;
+	},
+	savePrefs: function() {
+		var id = "disallowMousemoveForButtons";
+		var val = "";
+		for(var i = 0; i <= 2; i++)
+			if(this.$(id + "-" + i).checked)
+				val += i;
+		this.ut.setPref("extensions.handyclicks." + id, val);
+	},
+	showPrefs: function(enablIt) {
+		enablIt = enablIt || this.$("handyClicks-sets-enabled");
+		enablIt.setAttribute("hideallafter", enablIt.getAttribute("checked") != "true");
+	},
+	updateAllDependencies: function() {
+		var reqs = document.getElementsByAttribute("requiredfor", "*");
+		for(var i = 0, len = reqs.length; i < len; i++)
+			this.updateDependencies(reqs[i]);
+	},
+	updateItemDependencies: function(e) {
+		var tar = e.target;
+		if(tar.nodeName == "menuitem")
+			tar = tar.parentNode.parentNode;
+		if(tar.hasAttribute("requiredfor"))
+			this.updateDependencies(tar);
+	},
+	updateDependencies: function(it) {
+		var dis = it.hasAttribute("requiredvalues")
+			? !new RegExp("(^|\\s+)" + it.value + "(\\s+|$)").test(it.getAttribute("requiredvalues"))
+			: it.getAttribute("checked") != "true";
+		it.getAttribute("requiredfor").split(" ").forEach(
+			function(req) {
+				var deps = document.getElementsByAttribute("dependencies", req);
+				for(var i = 0, len = deps.length; i < len; i++)
+					this.desableChilds(deps[i], dis); // deps[i].disabled = dis;
+			},
+			this
+		);
+	},
+	desableChilds: function(parent, dis) {
+		parent.disabled = dis;
+		var childs = parent.childNodes;
+		for(var i = 0, len = childs.length; i < len; i++)
+			this.desableChilds(childs[i], dis);
 	}
 };
