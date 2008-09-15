@@ -119,13 +119,14 @@ var handyClicks = {
 
 		var _this = this;
 		var cm = this.cMenu;
-		if(cm && e.button == 2) { // Show context menu after delay
+		var cMenuDelay = this.ut.pref("showContextMenuTimeout");
+		if(cMenuDelay > 0 && cm && e.button == 2) { // Show context menu after delay
 			this.cMenuTimeout = setTimeout(
 				function() {
 					_this.disabledBy.cMenu = true;
 					_this.showPopupOnItem();
 				},
-				this.ut.pref("showContextMenuTimeout")
+				cMenuDelay
 			);
 			cm.addEventListener(
 				"popupshowing",
@@ -501,7 +502,7 @@ var handyClicks = {
 	},
 	notify: function(ttl, txt, fnc) {
 		var dur = this.ut.pref("notifyOpenTime");
-		if(dur < 0)
+		if(dur <= 0)
 			 return;
 		window.openDialog(
 			 "chrome://handyclicks/content/notify.xul",

@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
+
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	id="handyClicks-shortcutEditor"
+	windowtype="handyclicks:shortcutEditor"
+	title="Handy Clicks: Chortcut Editor"
+	onload="handyClicksChortcutEditor.init();"
+	ondialogaccept=""
+	width="380"
+	height="260"
+	persist="width height screenX screenY">
+
+	<script type="application/x-javascript">
+	<![CDATA[
+		var handyClicksChortcutEditor = {
+			init: function() {
+				this.code = this.$("handyclicks-shortcutEditor");
+				var wa = window.arguments;
+				if(!wa[0] || !wa[1] || !window.opener)
+					return;
+				var setsObj = window.opener.handyClicksPrefs[wa[0]][wa[1]];
+				if(setsObj.custom) {
+					this.code.value = decodeURIComponent(setsObj.action);
+				}
+			},
+			$: function(id) {
+				return document.getElementById(id);
+			}
+		};
+	]]>
+	</script>
+
+	<menulist id="">
+		<menupopup>
+			<menuitem label="openURIInTab" />
+		</menupopup>
+	</menulist>
+	<textbox id="handyclicks-shortcutEditor" multiline="true" wrap="off" flex="1"
+		value="var event = arguments[0];" />
+
+</dialog>

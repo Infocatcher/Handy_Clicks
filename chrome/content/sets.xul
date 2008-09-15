@@ -5,14 +5,17 @@
 <?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
 
 <prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	title="Test"
+	id="handyClicks-settings"
+	windowtype="handyclicks:settings"
+	title="Handy Clicks: Settings"
 	onload="handyClicksSets.init();"
 	ondialogaccept="handyClicksSets.savePrefs();"
-	oncommand="handyClicksSets.updateItemDependencies(event);"
-	onchange="handyClicksSets.updateItemDependencies(event);"
+	oncommand="handyClicksSets.prefsChanged(event);"
+	onchange="handyClicksSets.prefsChanged(event);"
+	oninput="handyClicksSets.prefsChanged(event);"
 	width="690"
 	height="520"
-	persist="screenX screenY">
+	persist="width height screenX screenY">
 
 	<!--
 	title="Test"
@@ -120,24 +123,25 @@
 			</hbox>
 			<hbox align="center">
 				<label value="Show context menu after" />
-				<textbox preference="showContextMenuTimeout" type="number" min="-1" max="7000" increment="20" style="width: 4.5em;" />
-				<label value="ms" />
+				<textbox preference="showContextMenuTimeout" type="number" min="0" max="7000" increment="20" style="width: 4.5em;" />
+				<label value="ms (0 for disable)" />
 			</hbox>
 			<groupbox>
 				<caption label="Notify" />
 				<hbox align="center">
 					<label value="Open time:" />
-					<textbox preference="notifyOpenTime" type="number" min="-1" max="30000" increment="20" style="width: 5em;" />
-					<label value="ms" />
+					<textbox preference="notifyOpenTime" type="number" min="0" max="30000" increment="20" style="width: 5em;"
+						requiredfor="notify" disabledvalues="0" />
+					<label value="ms (0 for disable)" />
 				</hbox>
-				<checkbox preference="notifyInWindowCorner" label="Show in window corner" />
-				<checkbox preference="notifyVoidLinksWithHandlers" label="Notify &quot;void&quot; links with handlers" />
-				<checkbox preference="notifyJavaScriptLinks" label="Notify JavaScript-links (javascript: ...)" />
+				<checkbox preference="notifyInWindowCorner" dependencies="notify" label="Show in window corner" />
+				<checkbox preference="notifyVoidLinksWithHandlers" dependencies="notify" label="Notify &quot;void&quot; links with handlers" />
+				<checkbox preference="notifyJavaScriptLinks" dependencies="notify" label="Notify JavaScript-links (javascript: ...)" />
 			</groupbox>
 			<groupbox>
 				<caption label="File links" />
 				<hbox align="center">
-					<menulist preference="filesLinksPolicy" requiredfor="regexp" requiredvalues="0 1">
+					<menulist preference="filesLinksPolicy" requiredfor="regexp" disabledvalues="-1">
 						<menupopup>
 							<menuitem value="-1" label="Not check" />
 							<menuitem value="0" label="Show context menu" />

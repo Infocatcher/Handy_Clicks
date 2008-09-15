@@ -212,7 +212,12 @@ var handyClicksSets = {
 		var itemType = tRow.__itemType;
 		if(!shortcut || !itemType)
 			return;
-		alert("[" + shortcut + "]\n[" + itemType + "]");
+		// alert("[" + shortcut + "]\n[" + itemType + "]");
+		window.openDialog(
+			"chrome://handyclicks/content/editor.xul",
+			"",
+			"chrome,resizable,dependent",
+			shortcut, itemType);
 	},
 	toggleEnabled: function(e) {
 		var row = {}, col = {}, obj = {};
@@ -255,16 +260,18 @@ var handyClicksSets = {
 		for(var i = 0, len = reqs.length; i < len; i++)
 			this.updateDependencies(reqs[i]);
 	},
-	updateItemDependencies: function(e) {
+	prefsChanged: function(e) {
 		var tar = e.target;
 		if(tar.nodeName == "menuitem")
 			tar = tar.parentNode.parentNode;
 		if(tar.hasAttribute("requiredfor"))
 			this.updateDependencies(tar);
+		if(this.ut.getPref("browser.preferences.instantApply")) //~ todo: hidden textbox?
+			this.savePrefs();
 	},
 	updateDependencies: function(it) {
-		var dis = it.hasAttribute("requiredvalues")
-			? !new RegExp("(^|\\s+)" + it.value + "(\\s+|$)").test(it.getAttribute("requiredvalues"))
+		var dis = it.hasAttribute("disabledvalues")
+			? new RegExp("(^|\\s+)" + it.value + "(\\s+|$)").test(it.getAttribute("disabledvalues"))
 			: it.getAttribute("checked") != "true";
 		it.getAttribute("requiredfor").split(" ").forEach(
 			function(req) {
