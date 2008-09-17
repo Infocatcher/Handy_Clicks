@@ -187,13 +187,7 @@ var handyClicksSets = {
 		if(shortcut && itemType) {
 			var shortcutObj = handyClicksPrefs[shortcut];
 			delete(shortcutObj[itemType]);
-
-			var hasChilds = false;
-			for(var p in shortcutObj) {
-				hasChilds = true;
-				break;
-			}
-			if(!hasChilds)
+			if(this.isEmptyObj(shortcutObj))
 				delete(handyClicksPrefs[shortcut]);
 
 			var tItem = tRow.parentNode;
@@ -207,6 +201,14 @@ var handyClicksSets = {
 				}
 		}
 	},
+	isEmptyObj: function(obj) {
+		var empty = true;
+		for(var p in obj) {
+			empty = false;
+			break;
+		}
+		return empty;
+	},
 	openEditorWindow: function(tRow) {
 		var shortcut = tRow.__shortcut;
 		var itemType = tRow.__itemType;
@@ -217,7 +219,7 @@ var handyClicksSets = {
 			"chrome://handyclicks/content/editor.xul",
 			"",
 			"chrome,resizable,dependent",
-			shortcut, itemType);
+			"shortcut", shortcut, itemType);
 	},
 	toggleEnabled: function(e) {
 		var row = {}, col = {}, obj = {};

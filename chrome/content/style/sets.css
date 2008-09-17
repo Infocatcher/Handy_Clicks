@@ -11,3 +11,10 @@ radio[pane="handyClicks-sets-pane-prefs"] {
 checkbox[preference="enabled"][hideallafter="true"] ~ * {
 	visibility: hidden;
 }
+
+#hc-editor-customTypesSep {
+	display: none;
+}
+menuitem + #hc-editor-customTypesSep {
+	display: -moz-box;
+}

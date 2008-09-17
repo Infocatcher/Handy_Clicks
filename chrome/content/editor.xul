@@ -4,41 +4,78 @@
 <?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
 
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	id="handyClicks-shortcutEditor"
-	windowtype="handyclicks:shortcutEditor"
-	title="Handy Clicks: Chortcut Editor"
-	onload="handyClicksChortcutEditor.init();"
+	id="handyClicks-editor"
+	windowtype="handyclicks:editor"
+	title="Handy Clicks: Editor"
+	onload="handyClicksEditor.init();"
 	ondialogaccept=""
 	width="380"
 	height="260"
 	persist="width height screenX screenY">
 
-	<script type="application/x-javascript">
-	<![CDATA[
-		var handyClicksChortcutEditor = {
-			init: function() {
-				this.code = this.$("handyclicks-shortcutEditor");
-				var wa = window.arguments;
-				if(!wa[0] || !wa[1] || !window.opener)
-					return;
-				var setsObj = window.opener.handyClicksPrefs[wa[0]][wa[1]];
-				if(setsObj.custom) {
-					this.code.value = decodeURIComponent(setsObj.action);
-				}
-			},
-			$: function(id) {
-				return document.getElementById(id);
-			}
-		};
-	]]>
-	</script>
+	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/editor.js" />
 
-	<menulist id="">
-		<menupopup>
-			<menuitem label="openURIInTab" />
-		</menupopup>
-	</menulist>
-	<textbox id="handyclicks-shortcutEditor" multiline="true" wrap="off" flex="1"
-		value="var event = arguments[0];" />
+	<tabbox id="hc-editor-mainTabbox" flex="1">
+		<tabs>
+			<tab label="Functions" selected="true"/>
+			<tab label="Custom types"/>
+		</tabs>
+		<tabpanels flex="1">
+			<tabpanel flex="1" orient="vertical">
+
+				<hbox>
+					<checkbox label="Ctrl" />
+					<checkbox label="Shift" />
+					<checkbox label="Alt" />
+					<checkbox label="Meta" />
+					<menulist id="hc-editor-itemTypes">
+						<menupopup>
+							<menuseparator id="hc-editor-customTypesSep" />
+							<menuitem value="img" label="img" />
+							<menuitem value="link" label="link" />
+							<menuitem value="historyItem" label="historyItem" />
+							<menuitem value="bookmark" label="bookmark" />
+							<menuitem value="tab" label="tab" />
+							<menuitem value="tabbar" label="tabbar" />
+							<menuitem value="submitButton" label="submitButton" />
+							<menuseparator />
+							<menuitem value="$all" label="$all" />
+						</menupopup>
+					</menulist>
+				</hbox>
+
+				<tabbox id="hc-editor-funcsTabbox" flex="1">
+					<tabs>
+						<tab label="Built-in function" selected="true"/>
+						<tab label="Custom code"/>
+					</tabs>
+					<tabpanels flex="1">
+						<tabpanel flex="1" align="left">
+							<menulist>
+								<menupopup>
+									<menuitem label="openURIInTab" />
+								</menupopup>
+							</menulist>
+						</tabpanel>
+						<tabpanel flex="1">
+							<textbox id="hc-editor-funcField" multiline="true" wrap="off" flex="1"
+								value="var event = arguments[0];" />
+						</tabpanel>
+					</tabpanels>
+				</tabbox>
+
+			</tabpanel>
+			<tabpanel flex="1" orient="vertical">
+				<label value="Define item (return item or null):" />
+				<textbox id="hc-editor-customTypeDefine" multiline="true" wrap="off" flex="1"
+					value="" />
+				<label value="Define context menu of item (empty for autodetect):" />
+				<textbox id="hc-editor-customTypeContext" multiline="true" wrap="off" flex="1"
+					value="" />
+			</tabpanel>
+		</tabpanels>
+	</tabbox>
 
 </dialog>
