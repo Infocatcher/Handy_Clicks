@@ -22,7 +22,7 @@
 				var x, y;
 				if(wa[4]) { // in window corner
 					x = wo.screenX + wo.outerWidth - winW;
-					y = wo.screenY + wo.outerHeight - winH;
+					y = wo.document.getElementById("browser-bottombox").boxObject.screenY - winH;
 				}
 				else {
 					var cursorH = 20, addH = 5;

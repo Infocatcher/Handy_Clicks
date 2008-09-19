@@ -2,7 +2,8 @@ var handyClicks = {
 	ut: handyClicksUtils, // shortcut
 	disabledBy: {
 		mousemove: false,
-		cMenu: false
+		cMenu: false,
+		handlerOnMousedown: false
 	},
 	event: null,
 	origItem: null,
@@ -117,10 +118,17 @@ var handyClicks = {
 		if(this._cMenu)
 			this._cMenu.hidePopup();
 
+		// Experimental:
+		var runOnMousedown = sets[this.itemType].runOnMousedown;
+		if(runOnMousedown) {
+			this.clickHandler(e, true);
+			this.disabledBy.handlerOnMousedown = true;
+		}
+
 		var _this = this;
 		var cm = this.cMenu;
 		var cMenuDelay = this.ut.pref("showContextMenuTimeout");
-		if(cMenuDelay > 0 && cm && e.button == 2) { // Show context menu after delay
+		if(!runOnMousedown && cMenuDelay > 0 && cm && e.button == 2) { // Show context menu after delay
 			this.cMenuTimeout = setTimeout(
 				function() {
 					_this.disabledBy.cMenu = true;
@@ -137,17 +145,21 @@ var handyClicks = {
 				true
 			);
 		}
-		if(this.disallowMousemove(e.button)) {
+		if(!runOnMousedown || this.disallowMousemove(e.button)) {
 			window.addEventListener("mousemove", this, true);
 			this.hasMousemoveHandler = true;
 		}
-		if(this.ut.pref("forceHideContextMenu")) // for Linux
+		if(
+			(runOnMousedown || this.ut.pref("forceHideContextMenu")) // for clicks on Linux
+			&& sets[this.itemType].action != "showContextMenu"
+		)
 			window.addEventListener("contextmenu", this, true);
 	},
 	mousemoveHandler: function(e) {
 		this.disabledBy.mousemove = true;
 		this.clearCMenuTimeout();
 		this.removeMousemoveHandler();
+		this.ut._log("mousemoveHandler");
 	},
 	removeMousemoveHandler: function() {
 		window.removeEventListener("mousemove", this, true);
@@ -410,9 +422,12 @@ var handyClicks = {
 		e.preventDefault();
 		e.stopPropagation();
 	},
-	clickHandler: function(e) {
+	clickHandler: function(e, runOnMousedown) {
+		if(this.disabledBy.handlerOnMousedown)
+			this.stopEvent(e);
 		var dis = this.disabled;
-		this.skipTmpDisabled();
+		if(!runOnMousedown)
+			this.skipTmpDisabled();
 		if(dis)
 			return;
 
@@ -429,7 +444,7 @@ var handyClicks = {
 			return;
 
 		this.stopEvent(e); // this stop "contextmenu" event in Windows
-		if(this.ut.pref("forceHideContextMenu"))
+		if(this.ut.pref("forceHideContextMenu") && !runOnMousedown)
 			window.removeEventListener("contextmenu", this, true); // and listener is not needed
 		this.clearCMenuTimeout();
 

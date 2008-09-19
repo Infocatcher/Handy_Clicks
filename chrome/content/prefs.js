@@ -29,7 +29,10 @@ var handyClicksPrefServ = {
 		}
 		catch(e) {
 			// Bug 418356 ( https://bugzilla.mozilla.org/show_bug.cgi?id=418356 )
-			alert("Bug 418356\nTry eval()");
+			// alert("Bug 418356\nTry eval()");
+			// this.ut.;
+			throw e;
+			/***
 			var fiStream = Components.classes["@mozilla.org/network/file-input-stream;1"]
 				.createInstance(Components.interfaces.nsIFileInputStream);
 			var siStream = Components.classes["@mozilla.org/scriptableinputstream;1"]
@@ -43,6 +46,7 @@ var handyClicksPrefServ = {
 			eval(data);
 			window.handyClicksPrefs = handyClicksPrefs;
 			window.handyClicksCustomTypes = handyClicksCustomTypes;
+			***/
 		}
 		if(typeof handyClicksPrefs != "object")
 			window.handyClicksPrefs = {};
@@ -123,4 +127,10 @@ var handyClicksPrefServ = {
 	}
 };
 handyClicksPrefServ.loadSettings();
-// setInterval("handyClicksPrefServ.loadSettings();", 2000);
+setInterval(
+	function() {
+		try { handyClicksPrefServ.loadSettings(); } // File is now being edited?
+		catch(e) {}
+	},
+	3000
+);
