@@ -9,6 +9,7 @@
 	windowtype="handyclicks:settings"
 	title="Handy Clicks: Settings"
 	onload="handyClicksSets.init();"
+	onunload="handyClicksSets.destroy();"
 	ondialogaccept="handyClicksSets.savePrefs();"
 	oncommand="handyClicksSets.prefsChanged(event);"
 	onchange="handyClicksSets.prefsChanged(event);"

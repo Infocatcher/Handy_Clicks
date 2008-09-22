@@ -9,6 +9,13 @@ var handyClicksSets = {
 		this.updateAllDependencies();
 		this.showPrefs();
 	},
+	destroy: function() {
+		var ed;
+		for(var hash in this.openedEditors) {
+			ed = this.openedEditors[hash];
+			ed.close();
+		}
+	},
 
 	/*** Actions pane ***/
 	initMainPrefs: function() {
@@ -209,17 +216,45 @@ var handyClicksSets = {
 		}
 		return empty;
 	},
+	openedEditors: {},
 	openEditorWindow: function(tRow) {
 		var shortcut = tRow.__shortcut;
 		var itemType = tRow.__itemType;
 		if(!shortcut || !itemType)
 			return;
 		// alert("[" + shortcut + "]\n[" + itemType + "]");
-		window.openDialog(
+
+		var hash = shortcut + "-" + itemType;
+		if(this.openedEditors[hash]) {
+			this.openedEditors[hash].focus();
+			return;
+		}
+		// "browser.preferences.instantApply" -> true
+		// -> "chrome,resizable,dependent"
+		var win = window.opener.openDialog( // window.openDialog => modal windows...
 			"chrome://handyclicks/content/editor.xul",
 			"",
-			"chrome,resizable,dependent",
-			"shortcut", shortcut, itemType);
+			"chrome,resizable,dialog=0,alwaysRaised",
+			"shortcut", shortcut, itemType
+		);
+		// if(!this.ut.getPref("browser.preferences.instantApply"))
+		//	return;
+		this.addProperties(tRow, { edited: true });
+		tRow.blur();
+		var _this = this;
+		win.addEventListener("load", function(e) {
+			win.removeEventListener(e.type, arguments.callee, false);
+			win.addEventListener(
+				"unload",
+				function(e) {
+					win.removeEventListener(e.type, arguments.callee, false);
+					delete(_this.openedEditors[hash]);
+					_this.addProperties(tRow, { edited: false });
+				},
+				false
+			);
+		}, false);
+		this.openedEditors[hash] = win;
 	},
 	toggleEnabled: function(e) {
 		var row = {}, col = {}, obj = {};

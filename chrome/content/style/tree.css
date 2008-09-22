@@ -12,6 +12,9 @@ treechildren::-moz-tree-row(disabled) {
 treechildren::-moz-tree-row(buggy) {
 	background-color: #faa;
 }
+treechildren::-moz-tree-row(edited) {
+	background-color: #f0f0ff;
+}
 treechildren::-moz-tree-row(hover) {
 	background-color: ThreeDFace;
 }
