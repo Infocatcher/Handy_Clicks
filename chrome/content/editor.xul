@@ -9,8 +9,8 @@
 	title="Handy Clicks: Editor"
 	onload="handyClicksEditor.init();"
 	ondialogaccept=""
-	width="380"
-	height="260"
+	width="560"
+	height="420"
 	persist="width height">
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
@@ -24,12 +24,19 @@
 		</tabs>
 		<tabpanels flex="1">
 			<tabpanel flex="1" orient="vertical">
-
-				<hbox>
-					<checkbox label="Ctrl" />
-					<checkbox label="Shift" />
-					<checkbox label="Alt" />
-					<checkbox label="Meta" />
+				<hbox onchange="handyClicksEditor.loadFuncs();"
+					oncommand="handyClicksEditor.loadFuncs();">
+					<menulist id="hc-editor-button">
+						<menupopup>
+							<menuitem value="0" label="Left" />
+							<menuitem value="1" label="Middle" />
+							<menuitem value="2" label="Right" />
+						</menupopup>
+					</menulist>
+					<checkbox id="hc-editor-ctrl" label="Ctrl" />
+					<checkbox id="hc-editor-shift" label="Shift" />
+					<checkbox id="hc-editor-alt" label="Alt" />
+					<checkbox id="hc-editor-meta" label="Meta" />
 					<menulist id="hc-editor-itemTypes">
 						<menupopup>
 							<menuseparator id="hc-editor-customTypesSep" />
@@ -53,9 +60,10 @@
 					</tabs>
 					<tabpanels flex="1">
 						<tabpanel flex="1" align="left">
-							<menulist>
-								<menupopup>
-									<menuitem label="openURIInTab" />
+							<menulist id="hc-editor-func">
+								<menupopup id="hc-editor-funcPopup">
+									<menuseparator id="hc-editor-funcsSep" />
+									<menuitem value="$custom" label="Custom function" />
 								</menupopup>
 							</menulist>
 						</tabpanel>
@@ -68,6 +76,9 @@
 
 			</tabpanel>
 			<tabpanel flex="1" orient="vertical">
+				<menulist id="hc-editor-customType" editable="true">
+					<menupopup id="hc-editor-customTypePopup" />
+				</menulist>
 				<label value="Define item (return item or null):" />
 				<textbox id="hc-editor-customTypeDefine" multiline="true" wrap="off" flex="1"
 					value="" />
