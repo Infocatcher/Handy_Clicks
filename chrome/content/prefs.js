@@ -31,6 +31,7 @@ var handyClicksPrefServ = {
 			// Bug 418356 ( https://bugzilla.mozilla.org/show_bug.cgi?id=418356 )
 			// alert("Bug 418356\nTry eval()");
 			// this.ut.;
+			this.ut._log("Error in Handy Clicks prefs: bad js file");
 			throw e;
 			/***
 			var fiStream = Components.classes["@mozilla.org/network/file-input-stream;1"]

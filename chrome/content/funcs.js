@@ -937,6 +937,8 @@ var handyClicksFuncs = {
 		if("TreeStyleTabService" in window)
 			TreeStyleTabService.stopToOpenChildTab(tbr.selectedTab);
 	},
+	$void: function(e) { // dummy function
+	},
 	getRefererForItem: function(refPolicy, imgLoading, it) {
 		if(typeof refPolicy == "undefined")
 			refPolicy = -1;

@@ -18,6 +18,10 @@ treechildren::-moz-tree-row(edited) {
 treechildren::-moz-tree-row(hover) {
 	background-color: ThreeDFace;
 }
+treechildren::-moz-tree-checkbox(editable) {
+	list-style-image: url("checkbox.png"); /* Image from Adblock Plus extension */
+	-moz-image-region: rect(13px 13px 26px 0);
+}
 treechildren::-moz-tree-checkbox(checked) {
-	list-style-image: url("checked.gif"); /* Image from Firefox 3.0 defaul theme on Windows XP */
+	-moz-image-region: rect(0 13px 13px 0);
 }

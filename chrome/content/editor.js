@@ -1,12 +1,23 @@
 var handyClicksEditor = {
-	funcs: {
-		copyItemText: null,
-		copyItemLink: null,
-		submitFormToNewDoc: ["toNewWin", "loadInBackground", "refererPolicy"],
-		renameTab: null,
-		reloadTab: ["skipCache"],
-		reloadAllTabs: ["skipCache"],
-		reloadImg: null,
+	ut: handyClicksUtils, // shortcut
+	funcs: { //~ todo: add categories
+		// clipboard:
+		copyItemText: {},
+		copyItemLink: {},
+		$sepTabs: 0,
+		// tabs:
+		renameTab: { supports: "tab" },
+		reloadTab: { args: ["skipCache"], supports: "tab" },
+		reloadAllTabs: { args: ["skipCache"], supports: "tab,tabbar" },
+		removeOtherTabs: { supports: "tab" },
+		removeAllTabs: { supports: "tab,tabbar" },
+		removeRightTabs: { supports: "tab" },
+		removeLeftTabs: { supports: "tab" },
+		undoCloseTab: { supports: "tab,tabbar" },
+		cloneTab: { supports: "tab" },
+		$sepLinks: 0,
+		// links:
+		//~ @2009.02.26 12:13 todo, todo, todo...
 		openSimilarLinksInTabs: ["refererPolicy"],
 		openUriInTab: ["loadInBackground", "refererPolicy", "moveTo", "hidePopup"],
 		openUriInCurrentTab: ["refererPolicy", "hidePopup"],
@@ -14,12 +25,10 @@ var handyClicksEditor = {
 		openInSidebar: ["hidePopup"],
 		downloadWithFlashGot: null,
 		openInSplitBrowser: ["position"],
-		removeOtherTabs: null,
-		removeAllTabs: null,
-		removeRightTabs: null,
-		removeLeftTabs: null,
-		undoCloseTab: null,
-		cloneTab: null,
+		$sepMisc: 0,
+		// misc:
+		submitFormToNewDoc: ["toNewWin", "loadInBackground", "refererPolicy"],
+		reloadImg: null,
 		showContextMenu: null
 	},
 	init: function() {
@@ -92,20 +101,32 @@ var handyClicksEditor = {
 		if(!reload) {
 			var mi;
 			for(var f in this.funcs) {
-				mi = document.createElement("menuitem");
-				mi.setAttribute("value", f);
-				mi.setAttribute("label", f); //~ todo: other?
+				if(f.indexOf("$sep") == 0)
+					mi = document.createElement("menuseparator");
+				else {
+					mi = document.createElement("menuitem");
+					mi.setAttribute("value", f);
+					mi.setAttribute("label", f); //~ todo: other?
+				}
 				parent.insertBefore(mi, sep);
 			}
 		}
 		parent.parentNode.value = custom // <menulist>
 			? "$custom"
 			: action;
-		if(!custom && this.funcs[action])
-			this.showArgs();
+		if(!custom && action in this.funcs)
+			this.loadFuncArgs(custom, action);
 	},
-	showArgs: function(action) {
+	loadFuncArgs: function(custom, action) {
+		var box = this.$("hc-editor-funcArgs");
+		while(box.hasChildNodes())
+			box.removeChild(box.lastChild);
+		if(custom)
+			return;
 		var args = this.funcs[action];
+		if(!args) // function has no arguments
+			return;
+
 		//~ todo:
 		// 0) remove all
 		// 1) append arg-specified items

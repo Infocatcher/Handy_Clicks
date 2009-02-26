@@ -105,9 +105,11 @@ var handyClicksSets = {
 			this.appendTreeCell(tRow, "label", isCustom ? decodeURIComponent(it.label) : this.ut.getLocalised(it.action));
 			this.appendTreeCell(tRow, "label", isCustom ? this.ut.getLocalised("customFunction") : it.action);
 			this.appendTreeCell(tRow, "label", this.getArguments(it.arguments || {}));
-			var ch = this.appendTreeCell(tRow, "value", it.enabled);
+			var chBox = this.appendTreeCell(tRow, "value", it.enabled);
+			this.addProperties(chBox, { editable: true });
 
 			this.addProperties(tRow, { disabled: !it.enabled, buggy: this.isBuggyFuncObj(it), custom: isCustom });
+
 			/*
 			var props = "";
 			if(!it.enabled)

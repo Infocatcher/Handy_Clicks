@@ -60,12 +60,13 @@
 					</tabs>
 					<tabpanels flex="1">
 						<tabpanel flex="1" align="left">
-							<menulist id="hc-editor-func">
+							<menulist id="hc-editor-func" oncommand="handyClicksEditor.loadFuncArgs();">
 								<menupopup id="hc-editor-funcPopup">
 									<menuseparator id="hc-editor-funcsSep" />
 									<menuitem value="$custom" label="Custom function" />
 								</menupopup>
 							</menulist>
+							<vbox id="hc-editor-funcArgs" />
 						</tabpanel>
 						<tabpanel flex="1">
 							<textbox id="hc-editor-funcField" multiline="true" wrap="off" flex="1"

@@ -119,7 +119,8 @@ var handyClicks = {
 			this._cMenu.hidePopup();
 
 		// Experimental:
-		var runOnMousedown = sets[this.itemType].runOnMousedown;
+		var cSet = sets[this.itemType];
+		var runOnMousedown = (cSet && cSet.runOnMousedown) || false;
 		if(runOnMousedown) {
 			this.clickHandler(e, true);
 			this.disabledBy.handlerOnMousedown = true;
@@ -151,7 +152,7 @@ var handyClicks = {
 		}
 		if(
 			(runOnMousedown || this.ut.pref("forceHideContextMenu")) // for clicks on Linux
-			&& sets[this.itemType].action != "showContextMenu"
+			&& cSet && cSet.action != "showContextMenu"
 		)
 			window.addEventListener("contextmenu", this, true);
 	},
@@ -301,7 +302,7 @@ var handyClicks = {
 		) {
 			this.itemType = "img";
 			this.item = it;
-			if(sets["img"].ignoreLinks)
+			if(sets.img.ignoreLinks)
 				return;
 		}
 
@@ -482,7 +483,8 @@ var handyClicks = {
 		this.ut._log(
 			"clickHandler -> " + oit + "\n"
 			+ "nodeName -> " + oit.nodeName + "\n"
-			+ "itemType -> " + this.itemType
+			+ "itemType -> " + this.itemType + "\n"
+			+ "=> " + funcObj.action
 		);
 	},
 	argsToArr: function(argsObj) {
