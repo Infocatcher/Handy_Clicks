@@ -1,0 +1,33 @@
+@namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
+#hc-editor-func:not([hc_type="$custom"]) menuitem,
+#hc-editor-func:not([hc_type="$custom"]) menuseparator {
+	display: none;
+}
+
+#hc-editor-func [value="$custom"], /* show always */
+
+#hc-editor-func [hc_supports="$all"], /* supported all types */
+#hc-editor-func [hc_supports="$all"] + menuseparator, /* show separator, if needed */
+
+#hc-editor-func[hc_type="link"] [hc_supports|="link"], /* supported current type */
+#hc-editor-func[hc_type="link"] [hc_supports|="link"] + menuseparator,
+
+#hc-editor-func[hc_type="img"] [hc_supports|="img"],
+#hc-editor-func[hc_type="img"] [hc_supports|="img"] + menuseparator,
+
+#hc-editor-func[hc_type="bookmark"] [hc_supports|="bookmark"],
+#hc-editor-func[hc_type="bookmark"] [hc_supports|="bookmark"] + menuseparator,
+
+#hc-editor-func[hc_type="historyItem"] [hc_supports|="historyItem"],
+#hc-editor-func[hc_type="historyItem"] [hc_supports|="historyItem"] + menuseparator,
+
+#hc-editor-func[hc_type="tab"] [hc_supports|="tab"],
+#hc-editor-func[hc_type="tab"] [hc_supports|="tab"] + menuseparator,
+
+#hc-editor-func[hc_type="tabbar"] [hc_supports|="tabbar"],
+#hc-editor-func[hc_type="tabbar"] [hc_supports|="tabbar"] + menuseparator,
+
+#hc-editor-func[hc_type="submitButton"] [hc_supports|="submitButton"],
+#hc-editor-func[hc_type="submitButton"] [hc_supports|="submitButton"] + menuseparator {
+	display: -moz-box !important;
+}

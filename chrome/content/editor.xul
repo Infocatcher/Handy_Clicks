@@ -2,6 +2,7 @@
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/editor.css" type="text/css"?>
 
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	id="handyClicks-editor"
@@ -37,7 +38,7 @@
 					<checkbox id="hc-editor-shift" label="Shift" />
 					<checkbox id="hc-editor-alt" label="Alt" />
 					<checkbox id="hc-editor-meta" label="Meta" />
-					<menulist id="hc-editor-itemTypes">
+					<menulist id="hc-editor-itemTypes" oncommand="handyClicksEditor.addFuncArgs();">
 						<menupopup>
 							<menuseparator id="hc-editor-customTypesSep" />
 							<menuitem value="img" label="img" />
@@ -59,14 +60,67 @@
 						<tab label="Custom code"/>
 					</tabs>
 					<tabpanels flex="1">
-						<tabpanel flex="1" align="left">
-							<menulist id="hc-editor-func" oncommand="handyClicksEditor.loadFuncArgs();">
+						<tabpanel flex="1" align="left" orient="vertical">
+							<menulist id="hc-editor-func" oncommand="handyClicksEditor.addFuncArgs();">
 								<menupopup id="hc-editor-funcPopup">
-									<menuseparator id="hc-editor-funcsSep" />
-									<menuitem value="$custom" label="Custom function" />
+
+									<!-- ~ todo -->
+<menuitem
+	value="copyItemText" label="hcFunc-copyItemText"
+	hc_args=""
+	hc_supports="$all" />
+<menuitem
+	value="copyItemLink" label="hcFunc-copyItemLink"
+	hc_args=""
+	hc_supports="$all" />
+<menuseparator id="hc-editor-funcsSep-clip" />
+<menuitem
+	value="removeOtherTabs" label="hcFunc-removeOtherTabs"
+	hc_args=""
+	hc_supports="tab" />
+<menuitem
+	value="removeAllTabs" label="hcFunc-removeAllTabs"
+	hc_args=""
+	hc_supports="tab tabbar" />
+<menuitem
+	value="removeRightTabs" label="hcFunc-removeRightTabs"
+	hc_args=""
+	hc_supports="tab" />
+<menuitem
+	value="removeLeftTabs" label="hcFunc-removeLeftTabs"
+	hc_args=""
+	hc_supports="tab" />
+<menuitem
+	value="undoCloseTab" label="hcFunc-undoCloseTab"
+	hc_args=""
+	hc_supports="tab tabbar" />
+<menuitem
+	value="cloneTab" label="hcFunc-cloneTab"
+	hc_args=""
+	hc_supports="tab" />
+<menuitem
+	value="renameTab" label="hcFunc-renameTab"
+	hc_args=""
+	hc_supports="tab" />
+<menuitem
+	value="reloadTab" label="hcFunc-reloadTab"
+	hc_args="skipCache"
+	hc_supports="tab" />
+<menuseparator id="hc-editor-funcsSep-tabs" />
+
+<menuitem
+	value="submitFormToNewDoc" label="hcFunc-submitFormToNewDoc"
+	hc_args="toNewWin, loadInBackground, refererPolicy"
+	hc_supports="submitButton" />
+
+
+<menuseparator id="hc-editor-funcsSep" />
+<menuitem value="$custom" label="hcFunc-$custom" />
+									<!-- ~ todo -->
+
 								</menupopup>
 							</menulist>
-							<vbox id="hc-editor-funcArgs" />
+							<vbox id="hc-editor-funcArgs" flex="1" />
 						</tabpanel>
 						<tabpanel flex="1">
 							<textbox id="hc-editor-funcField" multiline="true" wrap="off" flex="1"

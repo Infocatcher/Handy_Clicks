@@ -1,5 +1,4 @@
 var handyClicksUtils = {
-	strings: {}, // cache of strings from stringbundle
 	consoleServ: Components.classes["@mozilla.org/consoleservice;1"]
 		.getService(Components.interfaces.nsIConsoleService),
 	prefsServ: Components.classes["@mozilla.org/preferences-service;1"]
@@ -55,12 +54,31 @@ var handyClicksUtils = {
 		catch(e) {
 		}
 	},
+
+	_strings: {}, // cache of strings from stringbundle
+	get localeBundle() {
+		if("_localeBundle" in this == false)
+			this._localeBundle = this.$("handyclicks-strings");
+		return this._localeBundle;
+	},
+	get enBundle() {
+		if("_enBundle" in this == false)
+			this._enBundle = Components.classes["@mozilla.org/intl/stringbundle;1"]
+				.getService(Components.interfaces.nsIStringBundleService)
+				.createBundle("chrome://handyclicks/locale/en-US/hcs.properties");
+		return this._enBundle;
+	},
 	getLocalised: function(name) {
-		if(!this.strings[name])
-			try {
-				this.strings[name] = document.getElementById("handyClicks-strings").getString(name);
-			} catch(e) { this.strings[name] = name; }
-		return this.strings[name];
+		//~ temp
+		if(name in this._strings == false)
+			try { this._strings[name] = this.localeBundle(name) || this.enBundle(name) || name; }
+			catch(e) { this._strings[name] = name }
+		return this._strings[name];
+		//~ temp end
+
+		if(name in this._strings == false)
+			this._strings[name] = this.localeBundle(name) || this.enBundle(name) || name;
+		return this._strings[name];
 	},
 	isNoChromeDoc: function(doc) { // Except items in chrome window
 		doc = doc || handyClicks.item.ownerDocument;
