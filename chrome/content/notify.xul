@@ -46,8 +46,10 @@
 			},
 			click: function(e) {
 				clearTimeout(this.closeTimeout);
-				if(typeof window.arguments[3] == "function" && e.button == 0)
-					window.arguments[3]();
+				if(typeof window.arguments[5] == "function" && e.button == 0)
+					window.opener.setTimeout(window.arguments[5], 0);
+					// Strange behavior on
+					// <a onclick="alert(0);" href="javascript: void(0);">...</a>
 				window.close();
 			}
 		};

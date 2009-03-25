@@ -9,11 +9,14 @@ var handyClicksUtils = {
 		this.consoleServ.logStringMessage(msg);
 	},
 	_error: Components.utils.reportError,
-	pref: function(prefName) {
-		var propName = "pref_" + prefName;
-		if(typeof this[propName] == "undefined")
-			this.readPref(prefName);
-		return this[propName];
+	pref: function(prefName, prefValue) {
+		if(typeof prefValue == "undefined") {
+			var propName = "pref_" + prefName;
+			if(typeof this[propName] == "undefined")
+				this.readPref(prefName);
+			return this[propName];
+		}
+		return this.setPref("extensions.rightlinks." + prefName, prefValue);
 	},
 	readPref: function(prefName) {
 		this["pref_" + prefName] = this.getPref("extensions.handyclicks." + prefName);
@@ -56,28 +59,16 @@ var handyClicksUtils = {
 	},
 
 	_strings: {}, // cache of strings from stringbundle
-	get localeBundle() {
+	getLocaleStr: function(name) {
 		if("_localeBundle" in this == false)
-			this._localeBundle = this.$("handyclicks-strings");
-		return this._localeBundle;
-	},
-	get enBundle() {
-		if("_enBundle" in this == false)
-			this._enBundle = Components.classes["@mozilla.org/intl/stringbundle;1"]
-				.getService(Components.interfaces.nsIStringBundleService)
-				.createBundle("chrome://handyclicks/locale/en-US/hcs.properties");
-		return this._enBundle;
+			this._localeBundle = document.getElementById("rightLinks-strings");
+		try { name = this._localeBundle.getString(name); }
+		catch(e) {}
+		return name;
 	},
 	getLocalised: function(name) {
-		//~ temp
 		if(name in this._strings == false)
-			try { this._strings[name] = this.localeBundle(name) || this.enBundle(name) || name; }
-			catch(e) { this._strings[name] = name }
-		return this._strings[name];
-		//~ temp end
-
-		if(name in this._strings == false)
-			this._strings[name] = this.localeBundle(name) || this.enBundle(name) || name;
+			this._strings[name] = this.getLocaleStr(name);
 		return this._strings[name];
 	},
 	isNoChromeDoc: function(doc) { // Except items in chrome window

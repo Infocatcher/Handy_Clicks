@@ -151,7 +151,7 @@ var handyClicks = {
 			this.hasMousemoveHandler = true;
 		}
 		if(
-			(runOnMousedown || this.ut.pref("forceHideContextMenu")) // for clicks on Linux
+			(this.ut.pref("forceHideContextMenu")) // for clicks on Linux
 			&& cSet && cSet.action != "showContextMenu"
 		)
 			window.addEventListener("contextmenu", this, true);
@@ -345,6 +345,7 @@ var handyClicks = {
 				|| (itnn == "menuitem" && (it.hasAttribute("siteURI")))
 			)
 			// && it.parentNode.id != "historyUndoPopup"
+			&& it.parentNode.id != "goPopup"
 			&& handyClicksFuncs.getBookmarkUri(it)
 		) {
 			this.itemType = "bookmark";
@@ -423,11 +424,15 @@ var handyClicks = {
 		e.preventDefault();
 		e.stopPropagation();
 	},
-	clickHandler: function(e, runOnMousedown) {
+	clickHandler: function(e, fromMousedown) {
 		if(this.disabledBy.handlerOnMousedown)
 			this.stopEvent(e);
+
+		if(this.ut.pref("forceHideContextMenu") && !fromMousedown)
+			window.removeEventListener("contextmenu", this, true); // and listener is not needed
+
 		var dis = this.disabled;
-		if(!runOnMousedown)
+		if(!fromMousedown)
 			this.skipTmpDisabled();
 		if(dis)
 			return;
@@ -445,8 +450,6 @@ var handyClicks = {
 			return;
 
 		this.stopEvent(e); // this stop "contextmenu" event in Windows
-		if(this.ut.pref("forceHideContextMenu") && !runOnMousedown)
-			window.removeEventListener("contextmenu", this, true); // and listener is not needed
 		this.clearCMenuTimeout();
 
 		var args = this.argsToArr(funcObj.arguments);

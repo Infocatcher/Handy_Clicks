@@ -116,8 +116,10 @@ var handyClicksFuncs = {
 				this.ut._error("[Handy Clicks]: openUriInTab -> invalid moveTo argument: " + moveTo);
 				return;
 		}
-		if("TreeStyleTabService" in window && (moveTo == "after" || moveTo == "relative") && ind == tbr.browsers.length - 1)
-			tbr.moveTabTo(tab, ind - 1); // Fix bug for last tab moving
+		if("TreeStyleTabService" in window && (moveTo == "after" || moveTo == "relative") && ind == tbr.browsers.length - 1) {
+			tbr.moveTabTo(tab, 0); // Fix bug for last tab moving
+			this.ut._log("Fix for Tree Style Tab...");
+		}
 		tbr.moveTabTo(tab, ind);
 
 		if(moveTo != "relative")
