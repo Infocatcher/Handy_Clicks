@@ -128,10 +128,3 @@ var handyClicksPrefServ = {
 	}
 };
 handyClicksPrefServ.loadSettings();
-setInterval(
-	function() {
-		try { handyClicksPrefServ.loadSettings(); } // File is now being edited?
-		catch(e) {}
-	},
-	3000
-);

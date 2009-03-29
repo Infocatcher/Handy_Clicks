@@ -32,7 +32,7 @@ var handyClicksFuncs = {
 		return it.textContent || it.label || it.alt || it.value || "";
 	},
 	getUriOfItem: function(it) {
-		var it = it || this.hc.item;
+		it = it || this.hc.item;
 		var uri = null;
 		switch(this.hc.itemType) {
 			case "link":
@@ -58,8 +58,8 @@ var handyClicksFuncs = {
 		return tab.linkedBrowser.contentDocument.location.href;
 	},
 	forEachTab: function(fnc, tbr) {
+		tbr = tbr || this.getTabBrowser(true);
 		var res = [];
-		var tbr = tbr || this.getTabBrowser(true);
 		var tabs = tbr.mTabContainer.childNodes;
 		for(var i = 0, len = tabs.length; i < len; i++) {
 			if(tabs[i])
@@ -247,7 +247,7 @@ var handyClicksFuncs = {
 		var filesPolicy = this.ut.pref("filesLinksPolicy");
 		if(filesPolicy < 1)
 			return false;
-		var regexp = this.ut.pref("filesLinksMask"); //~ todo: UTF-8
+		var regexp = this.ut.pref("filesLinksMask");
 		if(!regexp)
 			return false;
 		try {
@@ -562,7 +562,7 @@ var handyClicksFuncs = {
 			.createInstance(Components.interfaces.nsILocalFile);
 		file.initWithPath(path);
 		if(!file.exists()) {
-			alert(path + "\nnot found!"); //~todo: promptsService
+			this.alertWithTitle("Handy Clicks error", path + "\nnot found!");
 			return;
 		}
 		var process = Components.classes["@mozilla.org/process/util;1"]
@@ -686,9 +686,11 @@ var handyClicksFuncs = {
 	},
 	///////////////////
 
-	setPrefs: function(prefsObj) { //~ warn: not for UTF-8 prefs!
+	setPrefs: function(prefsObj) {
 		var origs = {};
 		for(var p in prefsObj) {
+			if(prefsObj[p] == null)
+				continue;
 			origs[p] = this.ut.getPref(p);
 			this.ut.setPref(p, prefsObj[p]);
 		}
@@ -705,7 +707,16 @@ var handyClicksFuncs = {
 		var origTarget = node.form.getAttribute("target");
 		node.form.target = "_blank";
 
-		var origPrefs = this.setPrefs( //~ todo: refererPolicy
+		var origPrefs = this.setPrefs({
+			"browser.link.open_newwindow": toNewWin ? 2 : 3,
+			"browser.block.target_new_window": toNewWin ? false : null,
+			"dom.disable_open_during_load": false,
+			"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy),
+			"browser.tabs.loadDivertedInBackground": toNewWin ? null : loadInBackground
+		});
+
+		/****
+		var origPrefs = this.setPrefs(
 			toNewWin
 				? {
 					"browser.link.open_newwindow": 2,
@@ -720,13 +731,14 @@ var handyClicksFuncs = {
 					"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy)
 				}
 		);
+		****/
 		node.click();
 
 		if(origTarget)
 			node.form.target = origTarget;
 		else
 			node.form.removeAttribute("target");
-		node.form.target = origTarget ? origTarget : "_self"; //~ todo: removeAttribute ?
+		// node.form.target = origTarget ? origTarget : "_self"; //~ todo: removeAttribute ?
 		this.restorePrefs(origPrefs);
 	},
 	removeOtherTabs: function(e, tab) {
@@ -950,7 +962,7 @@ var handyClicksFuncs = {
 		var oDoc = it.ownerDocument;
 		if(!this.ut.isNoChromeDoc(oDoc))
 			return null;
-		var refPolicy = this.getRefererPolicy(refPolicy);
+		refPolicy = this.getRefererPolicy(refPolicy);
 		// http://kb.mozillazine.org/Network.http.sendRefererHeader
 		// 0 - none
 		// 1 - for docs

@@ -5,6 +5,7 @@ var handyClicks = {
 		cMenu: false,
 		handlerOnMousedown: false
 	},
+	isRunOnMousedown: false,
 	event: null,
 	origItem: null,
 	item: null,
@@ -102,6 +103,7 @@ var handyClicks = {
 			&& this.ut.pref("disallowMousemoveForButtons").indexOf(but) > -1;
 	},
 	mousedownHandler: function(e) { //~ todo: test hiding of context menu in Linux
+		this.isRunOnMousedown = false;
 		if(!this.ut.pref("enabled"))
 			return;
 		var evtStr = this.getEvtStr(e);
@@ -119,17 +121,23 @@ var handyClicks = {
 			this._cMenu.hidePopup();
 
 		// Experimental:
-		var cSet = sets[this.itemType];
-		var runOnMousedown = (cSet && cSet.runOnMousedown) || false;
+		var runOnMousedown = (funcObj.runOnMousedown) || false;
 		if(runOnMousedown) {
-			this.clickHandler(e, true);
 			this.disabledBy.handlerOnMousedown = true;
+			this.runFunc(e, true);
 		}
+		if(
+			(this.ut.pref("forceHideContextMenu")) // for clicks on Linux
+			&& funcObj.action != "showContextMenu"
+		)
+			window.addEventListener("contextmenu", this, true);
+		if(runOnMousedown)
+			return;
 
 		var _this = this;
 		var cm = this.cMenu;
 		var cMenuDelay = this.ut.pref("showContextMenuTimeout");
-		if(!runOnMousedown && cMenuDelay > 0 && cm && e.button == 2) { // Show context menu after delay
+		if(cMenuDelay > 0 && cm && e.button == 2) { // Show context menu after delay
 			this.cMenuTimeout = setTimeout(
 				function() {
 					_this.disabledBy.cMenu = true;
@@ -146,17 +154,28 @@ var handyClicks = {
 				true
 			);
 		}
-		if(!runOnMousedown || this.disallowMousemove(e.button)) {
+		if(this.disallowMousemove(e.button)) {
 			window.addEventListener("mousemove", this, true);
 			this.hasMousemoveHandler = true;
+			this.mousemoveParams = { dist: 0 };
 		}
-		if(
-			(this.ut.pref("forceHideContextMenu")) // for clicks on Linux
-			&& cSet && cSet.action != "showContextMenu"
-		)
-			window.addEventListener("contextmenu", this, true);
 	},
 	mousemoveHandler: function(e) {
+		if(this.mousemoveParams.screenX) {
+			this.mousemoveParams.dist +=
+				Math.sqrt(
+					Math.pow(this.mousemoveParams.screenX - e.screenX, 2) +
+					Math.pow(this.mousemoveParams.screenY - e.screenY, 2)
+				)
+		}
+		this.mousemoveParams.screenX = e.screenX;
+		this.mousemoveParams.screenY = e.screenY;
+
+		this.ut._log(this.mousemoveParams.dist);
+
+		if(this.mousemoveParams.dist < this.ut.pref("disallowMousemoveDist"))
+			return;
+
 		this.disabledBy.mousemove = true;
 		this.clearCMenuTimeout();
 		this.removeMousemoveHandler();
@@ -424,24 +443,21 @@ var handyClicks = {
 		e.preventDefault();
 		e.stopPropagation();
 	},
-	clickHandler: function(e, fromMousedown) {
-		if(this.disabledBy.handlerOnMousedown)
-			this.stopEvent(e);
-
-		if(this.ut.pref("forceHideContextMenu") && !fromMousedown)
-			window.removeEventListener("contextmenu", this, true); // and listener is not needed
-
+	clickHandler: function(e) {
 		var dis = this.disabled;
-		if(!fromMousedown)
-			this.skipTmpDisabled();
-		if(dis)
-			return;
-
+		this.skipTmpDisabled();
+		if(!dis)
+			this.runFunc(e);
+		if(this.ut.pref("forceHideContextMenu"))
+			window.removeEventListener("contextmenu", this, true); // and listener is not needed
+		if(this.isRunOnMousedown)
+			this.stopEvent(e); // Stop "contextmenu" event in Windows
+	},
+	runFunc: function(e, isMousedown) {
 		var evtStr = this.getEvtStr(e);
 		var sets = this.getSettings(evtStr);
 		if(!sets)
 			return;
-		this.saveEvent(e);
 		if(evtStr != this.strOnMousedown)
 			this.defineItem(e, sets);
 
@@ -449,6 +465,8 @@ var handyClicks = {
 		if(!funcObj)
 			return;
 
+		this.isRunOnMousedown = isMousedown;
+		this.saveEvent(e);
 		this.stopEvent(e); // this stop "contextmenu" event in Windows
 		this.clearCMenuTimeout();
 
@@ -482,10 +500,9 @@ var handyClicks = {
 			}
 		}
 
-		var oit = this.origItem;
 		this.ut._log(
-			"clickHandler -> " + oit + "\n"
-			+ "nodeName -> " + oit.nodeName + "\n"
+			e.type + " => runFunc -> " + this.origItem + "\n"
+			+ "nodeName -> " + this.origItem.nodeName + "\n"
 			+ "itemType -> " + this.itemType + "\n"
 			+ "=> " + funcObj.action
 		);

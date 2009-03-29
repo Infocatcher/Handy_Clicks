@@ -4,6 +4,7 @@ pref("extensions.handyclicks@infocatcher.ucoz.net.description", "chrome://handyc
 pref("extensions.handyclicks.enabled", true);
 pref("extensions.handyclicks.forceHideContextMenu", true); // for Linux (mousedown -> contextmenu -> click)
 pref("extensions.handyclicks.disallowMousemoveForButtons", "2");
+pref("extensions.handyclicks.disallowMousemoveDist", 12);
 pref("extensions.handyclicks.convertURIs", true); // for Windows
 pref("extensions.handyclicks.convertURIsTo", ""); // use defaults
 pref("extensions.handyclicks.showContextMenuTimeout", 500);
