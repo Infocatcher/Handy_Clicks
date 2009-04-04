@@ -65,6 +65,7 @@
 								<menupopup id="hc-editor-funcPopup">
 
 									<!-- ~ todo -->
+
 <menuitem
 	value="copyItemText" label="hcFunc-copyItemText"
 	hc_args=""
@@ -106,12 +107,60 @@
 	value="reloadTab" label="hcFunc-reloadTab"
 	hc_args="skipCache"
 	hc_supports="tab" />
+<menuitem
+	value="reloadAllTabs" label="hcFunc-reloadAllTabs"
+	hc_args="skipCache"
+	hc_supports="tab tabbar" />
 <menuseparator id="hc-editor-funcsSep-tabs" />
-
+<menuitem
+	value="openUriInTab" label="hcFunc-openUriInTab"
+	hc_args="loadInBackground refererPolicy moveTo hidePopup"
+	hc_supports="link img tab bookmark historyItem" />
+<menuitem
+	value="openUriInCurrentTab" label="hcFunc-openUriInCurrentTab"
+	hc_args="refererPolicy hidePopup"
+	hc_supports="link img tab bookmark historyItem" />
+<menuitem
+	value="openUriInWindow" label="hcFunc-openUriInWindow"
+	hc_args="loadInBackground refererPolicy moveTo hidePopup"
+	hc_supports="link img tab bookmark historyItem" />
+<menuitem
+	value="openInSidebar" label="hcFunc-openInSidebar"
+	hc_args="hidePopup"
+	hc_supports="link img tab bookmark historyItem" />
+<menuseparator id="hc-editor-funcsSep-links" />
+<menuitem
+	value="showContextMenu" label="hcFunc-showContextMenu"
+	hc_args=""
+	hc_supports="$all" />
+<menuitem
+	value="openSimilarLinksInTabs" label="hcFunc-openSimilarLinksInTabs"
+	hc_args="refererPolicy"
+	hc_supports="link" />
+<menuitem
+	value="reloadImg" label="hcFunc-reloadImg"
+	hc_args=""
+	hc_supports="img" />
 <menuitem
 	value="submitFormToNewDoc" label="hcFunc-submitFormToNewDoc"
-	hc_args="toNewWin, loadInBackground, refererPolicy"
+	hc_args="toNewWin loadInBackground refererPolicy"
 	hc_supports="submitButton" />
+<menuseparator id="hc-editor-funcsSep-misc" />
+<menuitem
+	value="downloadWithFlashGot" label="hcFunc-downloadWithFlashGot"
+	hc_required="FlashGot"
+	hc_args=""
+	hc_supports="link" />
+<menuitem
+	value="openInSplitBrowser" label="hcFunc-openInSplitBrowser"
+	hc_required="SplitBrowser"
+	hc_args="position"
+	hc_supports="link img tab bookmark historyItem" />
+<menuseparator id="hc-editor-funcsSep-exts" />
+<menuitem
+	value="$void" label="hcFunc-$void"
+	hc_args=""
+	hc_supports="$all" />
 
 
 <menuseparator id="hc-editor-funcsSep" />
