@@ -257,7 +257,7 @@ var handyClicks = {
 			+ ",meta=" + e.metaKey;
 	},
 	getSettings: function(str) {
-		return (handyClicksPrefs || {})[str];
+		return (window.handyClicksPrefs || {})[str];
 	},
 	isOkFuncObj: function(fObj) { // funcObj && funcObj.enabled && funcObj.action
 		return typeof fObj == "object"

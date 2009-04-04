@@ -42,11 +42,12 @@ var handyClicksEditor = {
 		setsObj = typeof setsObj == "object" //~ todo: isOkFuncObj
 			? setsObj[this.type] || {}
 			: {};
-		this.fBox.selectedIndex = setsObj.custom ? 1 : 0;
-		if(setsObj.custom)
+		var isCustom = setsObj.custom;
+		this.fBox.selectedIndex = isCustom ? 1 : 0;
+		if(isCustom)
 			this.code.value = decodeURIComponent(setsObj.action);
 		this.appendTypesList();
-		this.initFuncsList(setsObj.custom, setsObj.action);
+		this.initFuncsList(isCustom, setsObj.action);
 
 		["ctrl", "shift", "alt", "meta"].forEach(
 			function(mdf) {
@@ -120,7 +121,7 @@ var handyClicksEditor = {
 			return "checkbox";
 		if(arg in this.types.menulists)
 			return "menulist";
-		this.ut._err("Unknown can't get type of " + arg);
+		return this.ut._err("Unknown can't get type of " + arg);
 	},
 	addControl: function(argName, argType, argVal) {
 		var argContainer = document.createElement("vbox");

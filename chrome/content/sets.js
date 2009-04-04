@@ -233,10 +233,18 @@ var handyClicksSets = {
 		}
 		// "browser.preferences.instantApply" -> true
 		// -> "chrome,resizable,dependent"
+		/****
 		var win = window.opener.openDialog( // window.openDialog => modal windows...
 			"chrome://handyclicks/content/editor.xul",
 			"",
 			"chrome,resizable,dialog=0,alwaysRaised",
+			"shortcut", shortcut, itemType
+		);
+		****/
+		var win = window.openDialog(
+			"chrome://handyclicks/content/editor.xul",
+			"",
+			"chrome,resizable,dialog=0,dependent",
 			"shortcut", shortcut, itemType
 		);
 		// if(!this.ut.getPref("browser.preferences.instantApply"))

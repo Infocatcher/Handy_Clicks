@@ -26,6 +26,7 @@
 	ondialogaccept=""
 	persist="screenX screenY"> -->
 
+	<box> <!-- Fix for Firefox 2.0 -->
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/sets.js" />
@@ -43,6 +44,7 @@
 		<key keycode="VK_F4" id="handyClicks-sets-keyEdit" command="handyClicks-sets-cmdEdit" />
 		<key keycode="VK_F5" id="handyClicks-sets-keyDelete" oncommand="handyClicksSets.redrawTree();" />
 	</keyset>
+	</box> <!-- Fix for Firefox 2.0 -->
 
 	<prefpane id="handyClicks-sets-pane-actions" label="Clicks options" flex="1">
 
