@@ -76,20 +76,3 @@ var handyClicksUtils = {
 		return doc.defaultView.toString().indexOf("[object Window]") > -1; // [object XPCNativeWrapper [object Window]]
 	}
 };
-
-function handyClicksReloadScripts() {
-	var jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-		.getService(Components.interfaces.mozIJSSubScriptLoader);
-	var path = "chrome://handyclicks/content/";
-	try {
-		handyClicks.destroy();
-		["utils.js", "prefs.js", "handyclicks.js", "funcs.js"].forEach( // see handyclicks.xul
-			function(n) { jsLoader.loadSubScript(path + n); }
-		);
-		handyClicks.init();
-	}
-	catch(e) {
-		handyClicksUtils._log("[ReloadScripts]: cannt reload scripts");
-	}
-}
-setTimeout(handyClicksReloadScripts, 2500);

@@ -6,6 +6,28 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/handyclicks.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/funcs.js" />
+
+	<script type="application/x-javascript"><![CDATA[
+	function handyClicksReloadScripts() {
+		var jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+			.getService(Components.interfaces.mozIJSSubScriptLoader);
+		var path = "chrome://handyclicks/content/";
+		try {
+			handyClicks.destroy();
+			["utils.js", "prefs.js", "handyclicks.js", "funcs.js"].forEach(
+				function(n) { jsLoader.loadSubScript(path + n); }
+			);
+			handyClicks.init();
+		}
+		catch(e) {
+			handyClicksUtils._log("[ReloadScripts]: cannt reload scripts");
+		}
+	}
+	if(navigator.preference("extensions.handyclicks.devMode"))
+		setInterval(handyClicksReloadScripts, 2500);
+	]]></script>
+
+
 	<stringbundleset id="stringbundleset">
 		<stringbundle id="handyClicks-strings" src="chrome://handyclicks/locale/hcs.properties" />
 	</stringbundleset>
