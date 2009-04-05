@@ -481,6 +481,8 @@ var handyClicksFuncs = {
 	},
 	setAttributes: function(item, attrs) {
 		for(var p in attrs) {
+			if(!attrs.hasOwnProperty(p))
+				continue;
 			if(typeof attrs[p] != "string" || p.indexOf("__") == 0)
 				item[p] = attrs[p]; // not works for "oncommand"
 			else
@@ -689,7 +691,7 @@ var handyClicksFuncs = {
 	setPrefs: function(prefsObj) {
 		var origs = {};
 		for(var p in prefsObj) {
-			if(prefsObj[p] == null)
+			if(!prefsObj.hasOwnProperty(p) || prefsObj[p] == null)
 				continue;
 			origs[p] = this.ut.getPref(p);
 			this.ut.setPref(p, prefsObj[p]);
@@ -698,7 +700,8 @@ var handyClicksFuncs = {
 	},
 	restorePrefs: function(prefsObj) {
 		for(var p in prefsObj)
-			this.ut.setPref(p, prefsObj[p]); //~ todo: test! (setTimeout for fx3 ?)
+			if(prefsObj.hasOwnProperty(p))
+				this.ut.setPref(p, prefsObj[p]); //~ todo: test! (setTimeout for fx3 ?)
 	},
 	submitFormToNewDoc: function(e, toNewWin, loadInBackground, refererPolicy, node) {
 		// Thanks to SubmitToTab! ( https://addons.mozilla.org/firefox/addon/483 )
@@ -946,7 +949,8 @@ var handyClicksFuncs = {
 
 		var ref = this.getRefererForItem(refererPolicy);
 		for(var h in hrefs)
-			tbr.loadOneTab(h, ref, null, null, true, false);
+			if(hrefs.hasOwnProperty(h))
+				tbr.loadOneTab(h, ref, null, null, true, false);
 
 		if("TreeStyleTabService" in window)
 			TreeStyleTabService.stopToOpenChildTab(tbr.selectedTab);

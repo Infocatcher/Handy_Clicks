@@ -43,13 +43,14 @@ var handyClicks = {
 		if(!this.ut.pref("enabled"))
 			return true;
 		for(var p in this.disabledBy)
-			if(this.disabledBy[p])
+			if(this.disabledBy.hasOwnProperty(p) && this.disabledBy[p])
 				return true;
 		return false;
 	},
 	skipTmpDisabled: function() {
 		for(var p in this.disabledBy)
-			this.disabledBy[p] = false;
+			if(this.disabledBy.hasOwnProperty(p))
+				this.disabledBy[p] = false;
 		if(this.hasMousemoveHandler)
 			this.removeMousemoveHandler();
 	},
@@ -76,8 +77,9 @@ var handyClicks = {
 				cm = null; //~ todo: SubmitToTab for fx3 => add cm
 			break;
 			default: // custom types
-				cm = handyClicksCustomTypes[this.itemType] && handyClicksCustomTypes[this.itemType]._contextMenu
-					? handyClicksCustomTypes[this.itemType]._contextMenu()
+				var customTypes = window.handyClicksCustomTypes[this.itemType];
+				cm = customTypes && customTypes._contextMenu
+					? customTypes._contextMenu()
 					: this.getContextMenu();
 		}
 		this._cMenu = cm; // cache
@@ -299,9 +301,11 @@ var handyClicks = {
 		var itnn = it.nodeName.toLowerCase();
 
 		// Custom:
-		if(handyClicksCustomTypes) {
+		if(typeof window.handyClicksCustomTypes == "object") {
 			var customItem;
 			for(var type in handyClicksCustomTypes) {
+				if(!handyClicksCustomTypes.hasOwnProperty(type))
+					continue;
 				if(all || this.isOkFuncObj(sets[type])) {
 					customItem = handyClicksCustomTypes[type]._define.call(this, e, it);
 					if(!customItem)
@@ -511,7 +515,8 @@ var handyClicks = {
 		argsObj = argsObj || {};
 		var args = [];
 		for(var p in argsObj)
-			args.push(argsObj[p]);
+			if(argsObj.hasOwnProperty(p))
+				args.push(argsObj[p]);
 		return args;
 	},
 	getXY: function(e) {

@@ -10,9 +10,11 @@ var handyClicksSets = {
 		this.showPrefs();
 	},
 	destroy: function() {
-		var ed;
-		for(var hash in this.openedEditors) {
-			ed = this.openedEditors[hash];
+		var eds = this.openedEditors, ed;
+		for(var hash in eds) {
+			if(!eds.hasOwnProperty(hash))
+				continue;
+			ed = eds[hash];
 			ed.close();
 		}
 	},
@@ -27,9 +29,12 @@ var handyClicksSets = {
 		return document.getElementById(id);
 	},
 	isBuggyModifiersObj: function(mObj) {
-		for(var p in mObj)
+		for(var p in mObj) {
+			if(!mObj.hasOwnProperty(p))
+				continue;
 			if(!this.isBuggyFuncObj(mObj[p]))
 				return false;
+		}
 		return true;
 	},
 	isBuggyFuncObj: function(fObj) {
@@ -45,6 +50,8 @@ var handyClicksSets = {
 	},
 	drawTree: function() {
 		for(var shortcut in handyClicksPrefs) {
+			if(!handyClicksPrefs.hasOwnProperty(shortcut))
+				continue;
 			if(!this.okPrefStr.test(shortcut)) {
 				this.ut._error("[Handy Clicks]: invalid shortcut in prefs: " + shortcut);
 				continue;
@@ -97,6 +104,8 @@ var handyClicksSets = {
 		// if(items.$all) //~ todo: isOkFuncObj
 		//	items = { $all: items.$all };
 		for(var itemType in items) {
+			if(!items.hasOwnProperty(itemType))
+				continue;
 			tItem = document.createElement("treeitem");
 			tRow = document.createElement("treerow");
 			it = items[itemType];
@@ -128,6 +137,8 @@ var handyClicksSets = {
 	addProperties: function(tar, propsObj) {
 		var propsVal = tar.getAttribute("properties");
 		for(var p in propsObj) {
+			if(!propsObj.hasOwnProperty(p))
+				continue;
 			propsVal = propsVal.replace(p, "");
 			if(propsObj[p])
 				propsVal += " " + p;
@@ -142,7 +153,8 @@ var handyClicksSets = {
 	getArguments: function(argsObj) {
 		var res = [];
 		for(var p in argsObj)
-			res.push(p + " = " + this.convertToString(argsObj[p])); //~ todo: this.ut.getLocalised(p)
+			if(argsObj.hasOwnProperty(p))
+				res.push(p + " = " + this.convertToString(argsObj[p])); //~ todo: this.ut.getLocalised(p)
 		return res.join(", ");
 	},
 	convertToString: function(x) {
@@ -211,12 +223,10 @@ var handyClicksSets = {
 		}
 	},
 	isEmptyObj: function(obj) {
-		var empty = true;
-		for(var p in obj) {
-			empty = false;
-			break;
-		}
-		return empty;
+		for(var p in obj)
+			if(obj.hasOwnProperty(p))
+				return false;
+		return true;
 	},
 	openedEditors: {},
 	openEditorWindow: function(tRow) {
@@ -233,20 +243,57 @@ var handyClicksSets = {
 		}
 		// "browser.preferences.instantApply" -> true
 		// -> "chrome,resizable,dependent"
-		/****
 		var win = window.opener.openDialog( // window.openDialog => modal windows...
 			"chrome://handyclicks/content/editor.xul",
 			"",
 			"chrome,resizable,dialog=0,alwaysRaised",
 			"shortcut", shortcut, itemType
 		);
-		****/
-		var win = window.openDialog(
+
+		/***
+		var args = {};
+		args.type = "shortcut";
+		args.shortcut = shortcut;
+		args.itemType = itemType;
+		args.wrappedJSObject = args;
+
+		var wws = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
+			.getService(Components.interfaces.nsIWindowWatcher);
+		var win = wws.openWindow(
+			null,
 			"chrome://handyclicks/content/editor.xul",
 			"",
 			"chrome,resizable,dialog=0,dependent",
-			"shortcut", shortcut, itemType
+			args
 		);
+		***/
+
+		/***
+		var array = Components.classes["@mozilla.org/array;1"]
+						  .createInstance(Components.interfaces.nsIMutableArray);
+		var variant = Components.classes["@mozilla.org/variant;1"]
+								.createInstance(Components.interfaces.nsIWritableVariant);
+		variant.setFromVariant("shortcut");
+		array.appendElement(variant, false);
+		variant = Components.classes["@mozilla.org/variant;1"]
+								.createInstance(Components.interfaces.nsIWritableVariant);
+		variant.setFromVariant(shortcut);
+		array.appendElement(variant, false);
+		var variant = Components.classes["@mozilla.org/variant;1"]
+								.createInstance(Components.interfaces.nsIWritableVariant);
+		variant.setFromVariant(itemType);
+		array.appendElement(variant, false);
+		var wws = Components. classes ["@mozilla.org/embedcomp/window-watcher;1"]. getService (Components. interfaces. nsIWindowWatcher);
+		var win = wws. openWindow
+		(
+			null,
+			"chrome://handyclicks/content/editor.xul",
+			"",
+			"chrome,resizable,dialog=0,dependent",
+			array
+		);
+		***/
+
 		// if(!this.ut.getPref("browser.preferences.instantApply"))
 		//	return;
 		this.addProperties(tRow, { edited: true });

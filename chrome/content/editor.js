@@ -68,9 +68,11 @@ var handyClicksEditor = {
 		if(this.rebuildCustomTypes) {
 			this.rebuildCustomTypes = false;
 			var tList = this.$("hc-editor-customTypePopup");
-			var cTypes = handyClicksCustomTypes;
+			var cTypes = window.handyClicksCustomTypes || {};
 			var mi;
 			for(var cType in cTypes) {
+				if(!cTypes.hasOwnProperty(cType))
+					continue;
 				mi = document.createElement("menuitem");
 				mi.setAttribute("value", cType);
 				mi.setAttribute("label", cType);

@@ -49,15 +49,17 @@ var handyClicksPrefServ = {
 			window.handyClicksCustomTypes = handyClicksCustomTypes;
 			***/
 		}
-		if(typeof handyClicksPrefs != "object")
+		if(typeof window.handyClicksPrefs != "object")
 			window.handyClicksPrefs = {};
-		if(typeof handyClicksCustomTypes != "object")
+		if(typeof window.handyClicksCustomTypes != "object")
 			window.handyClicksCustomTypes = {};
 		else
 			this.convertCystomTypes();
 	},
 	convertCystomTypes: function() {
 		for(var type in handyClicksCustomTypes) {
+			if(!handyClicksCustomTypes.hasOwnProperty(type))
+				continue;
 			try {
 				handyClicksCustomTypes[type]._define = this.compileStr(handyClicksCustomTypes[type].define);
 				handyClicksCustomTypes[type]._contextMenu = this.compileStr(handyClicksCustomTypes[type].contextMenu);
@@ -74,12 +76,18 @@ var handyClicksPrefServ = {
  		var res = this.warnComment + "var handyClicksPrefs = {\n";
 		var shortcutObj, itemTypeObj, propVal;
 		for(var shortcut in handyClicksPrefs) { // test for Ok?
+			if(!handyClicksPrefs.hasOwnProperty(shortcut))
+				continue;
 			shortcutObj = handyClicksPrefs[shortcut];
 			res += '\t"' + shortcut + '": {\n';
 			for(var itemType in shortcutObj) {
+				if(!shortcutObj.hasOwnProperty(itemType))
+					continue;
 				itemTypeObj = shortcutObj[itemType];
 				res += "\t\t" + itemType + ": {\n";
 				for(var propName in itemTypeObj) {
+					if(!itemTypeObj.hasOwnProperty(propName))
+						continue;
 					propVal = itemTypeObj[propName];
 					res += "\t\t\t" + propName + ": " + this.objToSource(propVal) + ",\n";
 				}
@@ -91,9 +99,13 @@ var handyClicksPrefServ = {
 
 		res += "var handyClicksCustomTypes = {\n";
 		for(var itemType in handyClicksCustomTypes) {
+			if(!handyClicksCustomTypes.hasOwnProperty(itemType))
+				continue;
 			itemTypeObj = handyClicksCustomTypes[itemType];
 			res += "\t" + itemType + ": {\n";
 			for(var propName in itemTypeObj) {
+				if(!itemTypeObj.hasOwnProperty(propName))
+					continue;
 				propVal = itemTypeObj[propName];
 				if(propName.indexOf("_") != 0)
 					res += "\t\t" + propName + ": " + this.objToSource(propVal) + ",\n";
