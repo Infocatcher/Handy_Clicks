@@ -16,7 +16,7 @@ var handyClicksUtils = {
 				this.readPref(prefName);
 			return this[propName];
 		}
-		return this.setPref("extensions.rightlinks." + prefName, prefValue);
+		return this.setPref("extensions.handyclicks." + prefName, prefValue);
 	},
 	readPref: function(prefName) {
 		this["pref_" + prefName] = this.getPref("extensions.handyclicks." + prefName);
@@ -61,9 +61,9 @@ var handyClicksUtils = {
 	_strings: {}, // cache of strings from stringbundle
 	getLocaleStr: function(name) {
 		if("_localeBundle" in this == false)
-			this._localeBundle = document.getElementById("rightLinks-strings");
+			this._localeBundle = document.getElementById("handyClicks-strings");
 		try { name = this._localeBundle.getString(name); }
-		catch(e) {}
+		catch(e) { name = "[" + name + "]"; }
 		return name;
 	},
 	getLocalised: function(name) {

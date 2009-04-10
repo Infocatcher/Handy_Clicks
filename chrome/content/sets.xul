@@ -32,7 +32,7 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/sets.js" />
 
 	<stringbundleset id="handyClicks-stringbundleset">
-		<stringbundle id="handyClicks-strings" src="chrome://handyclicks/locale/hcs.properties" />
+		<stringbundle id="handyClicks-strings" src="chrome://handyclicks/locale/sets.properties" />
 	</stringbundleset>
 
 	<commandset id="handyClicks-setsCommands">
@@ -55,6 +55,8 @@
 				ondblclick="handyClicksSets.editItems(event);">
 				<treecols>
 					<treecol flex="1" label="Shortcut and target" primary="true" persist="width ordinal" />
+					<splitter class="tree-splitter" />
+					<treecol flex="1" label="Event" persist="hidden width ordinal" />
 					<splitter class="tree-splitter" />
 					<treecol flex="1" label="Action" persist="hidden width ordinal" />
 					<splitter class="tree-splitter" />
@@ -94,6 +96,8 @@
 			<preference id="enabled" type="bool" name="extensions.handyclicks.enabled" />
 			<preference id="forceHideContextMenu" type="bool" name="extensions.handyclicks.forceHideContextMenu" />
 
+			<preference id="disallowMousemoveDist" type="int" name="extensions.handyclicks.disallowMousemoveDist" />
+			
 			<preference id="convertURIs" type="bool" name="extensions.handyclicks.convertURIs" />
 			<preference id="convertURIsTo" type="string" name="extensions.handyclicks.convertURIsTo" />
 
@@ -118,6 +122,11 @@
 					<checkbox id="disallowMousemoveForButtons-0" label="Left" />
 					<checkbox id="disallowMousemoveForButtons-1" label="Middle" />
 					<checkbox id="disallowMousemoveForButtons-2" label="Right" />
+					<hbox align="center">
+						<label value="Max distance:" />
+						<textbox preference="disallowMousemoveDist" type="number" min="0" max="60" increment="1" style="width: 4.5em;" />
+						<label value="px" />
+					</hbox>
 				</hbox>
 			</groupbox>
 			<hbox>

@@ -1,6 +1,11 @@
 var handyClicks = {
 	ut: handyClicksUtils, // shortcut
-	disabledBy: {
+	flags: {
+		stopClick: false,
+		runned: false,
+		stopContextMenu: false
+	},
+	disabledBy: { //~ del
 		mousemove: false,
 		cMenu: false,
 		handlerOnMousedown: false
@@ -12,8 +17,9 @@ var handyClicks = {
 	itemType: undefined,
 	_cMenu: null,
 	cMenuTimeout: null,
-	strOnMousedown: "",
+	evtStrOnMousedown: "",
 	hasMousemoveHandler: false,
+	mousemoveParams: { dist: 0 },
 	prefs: Components.classes["@mozilla.org/preferences;1"]
 		.createInstance(Components.interfaces.nsIPref),
 	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
@@ -21,13 +27,20 @@ var handyClicks = {
 		window.removeEventListener("load", this, false);
 		window.addEventListener("mousedown", this, true);
 		window.addEventListener("click", this, true);
+		window.addEventListener("mouseup", this, true);
+		window.addEventListener("contextmenu", this, true);
+		window.addEventListener("dblclick", this, true);
 		this.prefs.addObserver("extensions.handyclicks.", this, false);
 	},
 	destroy: function() {
 		window.removeEventListener("unload", this, false);
 		window.removeEventListener("mousedown", this, true);
 		window.removeEventListener("click", this, true);
+		window.removeEventListener("mouseup", this, true);
+		window.removeEventListener("contextmenu", this, true);
+		window.removeEventListener("dblclick", this, true);
 		this.prefs.removeObserver("extensions.handyclicks.", this);
+		this.clearCMenuTimeout();
 	},
 	get fxVersion() {
 		if(typeof this._fxVersion == "undefined")
@@ -40,19 +53,7 @@ var handyClicks = {
 		return this.fxVersion.indexOf(version + ".") == 0;
 	},
 	get disabled() {
-		if(!this.ut.pref("enabled"))
-			return true;
-		for(var p in this.disabledBy)
-			if(this.disabledBy.hasOwnProperty(p) && this.disabledBy[p])
-				return true;
-		return false;
-	},
-	skipTmpDisabled: function() {
-		for(var p in this.disabledBy)
-			if(this.disabledBy.hasOwnProperty(p))
-				this.disabledBy[p] = false;
-		if(this.hasMousemoveHandler)
-			this.removeMousemoveHandler();
+		return !this.ut.pref("enabled");
 	},
 	get cMenu() {
 		var cm = null;
@@ -104,18 +105,19 @@ var handyClicks = {
 		return !this.hasMousemoveHandler
 			&& this.ut.pref("disallowMousemoveForButtons").indexOf(but) > -1;
 	},
+	skipFlags: function() {
+		var fls = this.flags;
+		for(var p in fls)
+			if(fls.hasOwnProperty(p))
+				fls[p] = false;
+		this.ut._log("!!! skipFlags >> this.flags.runned = " + this.flags.runned);
+	},
 	mousedownHandler: function(e) { //~ todo: test hiding of context menu in Linux
-		this.isRunOnMousedown = false;
-		if(!this.ut.pref("enabled"))
+		// this.skipFlags(); //~ ?
+		if(this.disabled)
 			return;
-		var evtStr = this.getEvtStr(e);
-		this.strOnMousedown = evtStr;
-		var sets = this.getSettings(evtStr);
-		if(!sets)
-			return;
-		this.saveEvent(e);
-		this.defineItem(e, sets);
-		var funcObj = this.getFuncObj(sets);
+
+		var funcObj = this.getFuncObjByEvt(e);
 		if(!funcObj)
 			return;
 
@@ -123,16 +125,16 @@ var handyClicks = {
 			this._cMenu.hidePopup();
 
 		// Experimental:
-		var runOnMousedown = (funcObj.runOnMousedown) || false;
+		var runOnMousedown = funcObj.eventType == "mousedown";
 		if(runOnMousedown) {
-			this.disabledBy.handlerOnMousedown = true;
-			this.runFunc(e, true);
+			this.flags.stopClick = true;
+			this.runFunc(e, funcObj);
 		}
 		if(
-			(this.ut.pref("forceHideContextMenu")) // for clicks on Linux
+			this.ut.pref("forceHideContextMenu") // for clicks on Linux
 			&& funcObj.action != "showContextMenu"
 		)
-			window.addEventListener("contextmenu", this, true);
+			this.flags.stopContextMenu = true;
 		if(runOnMousedown)
 			return;
 
@@ -142,7 +144,6 @@ var handyClicks = {
 		if(cMenuDelay > 0 && cm && e.button == 2) { // Show context menu after delay
 			this.cMenuTimeout = setTimeout(
 				function() {
-					_this.disabledBy.cMenu = true;
 					_this.showPopupOnItem();
 				},
 				cMenuDelay
@@ -157,9 +158,8 @@ var handyClicks = {
 			);
 		}
 		if(this.disallowMousemove(e.button)) {
-			window.addEventListener("mousemove", this, true);
 			this.hasMousemoveHandler = true;
-			this.mousemoveParams = { dist: 0 };
+			window.addEventListener("mousemove", this, true);
 		}
 	},
 	mousemoveHandler: function(e) {
@@ -168,30 +168,41 @@ var handyClicks = {
 				Math.sqrt(
 					Math.pow(this.mousemoveParams.screenX - e.screenX, 2) +
 					Math.pow(this.mousemoveParams.screenY - e.screenY, 2)
-				)
+				);
+			this.mousemoveParams.event = this.cloneObj(e);
 		}
 		this.mousemoveParams.screenX = e.screenX;
 		this.mousemoveParams.screenY = e.screenY;
 
-		this.ut._log(this.mousemoveParams.dist);
+		// this.ut._log("mousemoveHandler >> " + this.mousemoveParams.dist);
 
 		if(this.mousemoveParams.dist < this.ut.pref("disallowMousemoveDist"))
 			return;
 
-		this.disabledBy.mousemove = true;
+		this.ut._log("mousemoveHandler >> this.flags.runned = true;");
+		this.flags.runned = true;
+		this.flags.stopContextMenu = false; //~ ?
+		this.flags.stopClick = false; //~ ?
+
 		this.clearCMenuTimeout();
 		this.removeMousemoveHandler();
-		this.ut._log("mousemoveHandler");
 	},
 	removeMousemoveHandler: function() {
+		if(!this.hasMousemoveHandler)
+			return;
 		window.removeEventListener("mousemove", this, true);
 		this.hasMousemoveHandler = false;
+		this.mousemoveParams = { dist: 0 };
 	},
 	stopContextMenu: function(e) {
-		this.stopEvent(e);
-		window.removeEventListener("contextmenu", this, true);
+		if(this.flags.stopContextMenu)
+			this.stopEvent(e);
+		this.ut._log("stopContextMenu >> " + this.flags.stopContextMenu);
 	},
 	showPopupOnItem: function(popup, node, e) {
+		this.flags.runned = true;
+		this.ut._log("showPopupOnItem >> this.flags.runned = true;");
+
 		popup = popup || this._cMenu;
 		node = node || this.origItem;
 		if(!popup || !node || !node.ownerDocument.location)
@@ -202,12 +213,11 @@ var handyClicks = {
 			// Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
 			var tabscope = document.getElementById("tabscopePopup");
 			if(tabscope) // mousedown -> ...delay... -> this popup -> Tab Scope popup hide this popup
-				tabscope.hidePopup(); // only for tabs?
+				tabscope.hidePopup();
 		}
 
 		if((this.isFx(2) && popup.id == "contentAreaContextMenu")) { // workaround for spellchecker bug
-			if(this.ut.pref("forceHideContextMenu"))
-				window.removeEventListener("contextmenu", this, true);
+			this.flags.stopContextMenu = false;
 
 			var evt = document.createEvent("MouseEvents"); // thanks to Tab Scope!
 			evt.initMouseEvent(
@@ -217,23 +227,15 @@ var handyClicks = {
 				2, null
 			);
 			node.dispatchEvent(evt);
-
-			this.disabledBy.cMenu = true;
 			this.blinkNode();
+
+			this.flags.stopContextMenu = true; // ?
+
 			return;
 		}
 		document.popupNode = this.itemType == "tab" ? this.item : node;
-		var xy = this.getXY(e);
+		var xy = this.getXY();
 		popup.showPopup(this.isFx(3) ? node : e.target, xy.x, xy.y, "popup", null, null);
-
-		var _this = this;
-		window.addEventListener( // No click event after some showPopup() //~ todo: test
-			"mouseup", function(e) {
-				setTimeout(function() { _this.skipTmpDisabled(); }, 0);
-				window.removeEventListener("mouseup", arguments.callee, true);
-			},
-			true
-		);
 	},
 	blinkNode: function(time, node) {
 		node = node || this.origItem;
@@ -265,31 +267,6 @@ var handyClicks = {
 		return typeof fObj == "object"
 			&& fObj.enabled
 			&& typeof fObj.action != "undefined";
-	},
-	getFuncObj: function(sets) {
-		if(!this.itemType) // see .defineItem()
-			return false;
-		var funcObj = sets.$all || sets[this.itemType];
-		return this.isOkFuncObj(funcObj) ? funcObj : false;
-	},
-	cloneObj: function(obj) {
-		obj = obj || {};
-		var clone = {};
-		for(var p in obj)
-			clone[p] = obj[p];
-		return clone;
-	},
-	saveEvent: function(e) {
-		this.event = e;
-
-		/* fx < 3.0:
-		 * Works:
-		 *   alert(uneval(this.getXY(this.event)));
-		 * Always return "({x:0, y:0})":
-		 *   var _this = this;
-		 *   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
-		 */
-		this.copyOfEvent = this.cloneObj(e);
 	},
 	defineItem: function(e, sets) {
 		var all = this.isOkFuncObj(sets.$all);
@@ -440,6 +417,48 @@ var handyClicks = {
 			}
 		}
 	},
+	getFuncObj: function(sets) {
+		if(!this.itemType) // see .defineItem()
+			return false;
+		var funcObj = sets.$all || sets[this.itemType];
+		return this.isOkFuncObj(funcObj) ? funcObj : false;
+	},
+	getFuncObjByEvt: function(e) {
+		var evtStr = this.getEvtStr(e);
+		var isMousedown = e.type == "mousedown";
+		if(isMousedown)
+			this.evtStrOnMousedown = evtStr;
+		var sets = this.getSettings(evtStr);
+		if(!sets)
+			return null;
+		if(
+			isMousedown
+			|| evtStr != this.evtStrOnMousedown
+			|| e.originalTarget != this.origItem
+		)
+			this.defineItem(e, sets);
+		this.saveEvent(e);
+		return this.getFuncObj(sets);
+	},
+	cloneObj: function(obj) {
+		obj = obj || {};
+		var clone = {};
+		for(var p in obj)
+			clone[p] = obj[p];
+		return clone;
+	},
+	saveEvent: function(e) {
+		this.event = e;
+
+		/* fx < 3.0:
+		 * Works:
+		 *   alert(uneval(this.getXY(this.event)));
+		 * Always return "({x:0, y:0})":
+		 *   var _this = this;
+		 *   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
+		 */
+		this.copyOfEvent = this.cloneObj(e);
+	},
 	clearCMenuTimeout: function() {
 		clearTimeout(this.cMenuTimeout);
 	},
@@ -448,31 +467,40 @@ var handyClicks = {
 		e.stopPropagation();
 	},
 	clickHandler: function(e) {
-		var dis = this.disabled;
-		this.skipTmpDisabled();
-		if(!dis)
-			this.runFunc(e);
-		if(this.ut.pref("forceHideContextMenu"))
-			window.removeEventListener("contextmenu", this, true); // and listener is not needed
-		if(this.isRunOnMousedown)
-			this.stopEvent(e); // Stop "contextmenu" event in Windows
-	},
-	runFunc: function(e, isMousedown) {
-		var evtStr = this.getEvtStr(e);
-		var sets = this.getSettings(evtStr);
-		if(!sets)
+		if(this.disabled)
 			return;
-		if(evtStr != this.strOnMousedown)
-			this.defineItem(e, sets);
 
-		var funcObj = this.getFuncObj(sets);
+		this.ut._log("clickHandler >> this.flags.stopClick = " + this.flags.stopClick);
+		if(this.flags.stopClick)
+			this.stopEvent(e); // Stop "contextmenu" event in Windows
+
+		var funcObj = this.getFuncObjByEvt(e);
 		if(!funcObj)
 			return;
+		this.runFunc(e, funcObj);
+	},
+	mouseupHandler: function(e) {
+		if(this.disabled)
+			return;
+		setTimeout(function(_this) { _this.skipFlags(); }, 0, this);
+	},
+	dblclickHandler: function(e) {
+		if(this.disabled)
+			return;
+		var funcObj = this.getFuncObjByEvt(e);
+		if(!funcObj)
+			return;
+		this.runFunc(e, funcObj);
+	},
+	runFunc: function(e, funcObj) {
+		if(this.flags.runned || e.type != funcObj.eventType)
+			return;
+		this.flags.runned = true;
+		this.ut._log("runFunc >> this.flags.runned = true; " + e.type);
 
-		this.isRunOnMousedown = isMousedown;
-		this.saveEvent(e);
 		this.stopEvent(e); // this stop "contextmenu" event in Windows
 		this.clearCMenuTimeout();
+		this.removeMousemoveHandler();
 
 		var args = this.argsToArr(funcObj.arguments);
 		args.unshift(e);
@@ -520,7 +548,7 @@ var handyClicks = {
 		return args;
 	},
 	getXY: function(e) {
-		e = e || this.copyOfEvent;
+		e = e || this.mousemoveParams.event || this.copyOfEvent;
 		var isFx3 = this.isFx(3);
 		return {
 			x: isFx3 ? e.screenX : e.clientX,
@@ -534,7 +562,9 @@ var handyClicks = {
 			case "mousedown":   this.mousedownHandler(e); break;
 			case "click":       this.clickHandler(e);     break;
 			case "mousemove":   this.mousemoveHandler(e); break;
-			case "contextmenu": this.stopContextMenu(e);
+			case "contextmenu": this.stopContextMenu(e);  break;
+			case "mouseup":     this.mouseupHandler(e);   break;
+			case "dblclick":    this.dblclickHandler(e);
 		}
 	},
 	observe: function(subject, topic, prefName) { // prefs observer

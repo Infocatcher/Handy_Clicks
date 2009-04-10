@@ -8,6 +8,10 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/funcs.js" />
 
 	<script type="application/x-javascript"><![CDATA[
+	function handyClicksReloadScripts_() {
+		if(navigator.preference("extensions.handyclicks.devMode"))
+			handyClicksReloadScripts();
+	}
 	function handyClicksReloadScripts() {
 		var jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 			.getService(Components.interfaces.mozIJSSubScriptLoader);
@@ -20,11 +24,11 @@
 			handyClicks.init();
 		}
 		catch(e) {
-			handyClicksUtils._log("[ReloadScripts]: cannt reload scripts");
+			handyClicksUtils._log("[ReloadScripts]: cannt reload scripts\n" + e);
 		}
 	}
 	if(navigator.preference("extensions.handyclicks.devMode"))
-		setInterval(handyClicksReloadScripts, 2500);
+		setInterval(handyClicksReloadScripts_, 2500);
 	]]></script>
 
 

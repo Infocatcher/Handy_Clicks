@@ -11,7 +11,6 @@ var handyClicksFuncs = {
 		var text = this.hc.itemType == "tabbar"
 			? this.forEachTab(this.getTabUri).join("\n")
 			: this.getTextOfCurrentItem();
-		this.ut._log("copyItemText -> " + text);
 		this.copyStr(text);
 		this.hc.blinkNode();
 		if(hidePopup)
@@ -21,7 +20,6 @@ var handyClicksFuncs = {
 		var link = this.hc.itemType == "tabbar"
 			? this.forEachTab(function(tab) { return tab.label; }).join("\n")
 			: this.getUriOfItem() || "";
-		this.ut._log("copyItemLink -> " + link);
 		this.copyStr(link);
 		this.hc.blinkNode();
 		if(hidePopup)

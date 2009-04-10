@@ -110,7 +110,8 @@ var handyClicksSets = {
 			tRow = document.createElement("treerow");
 			it = items[itemType];
 			isCustom = it.custom;
-			this.appendTreeCell(tRow, "label", itemType); //~ todo: this.ut.getLocalised(itemType) || custom
+			this.appendTreeCell(tRow, "label", this.ut.getLocalised(isCustom ? "customItemType" : itemType));
+			this.appendTreeCell(tRow, "label", it.eventType);
 			this.appendTreeCell(tRow, "label", isCustom ? decodeURIComponent(it.label) : this.ut.getLocalised(it.action));
 			this.appendTreeCell(tRow, "label", isCustom ? this.ut.getLocalised("customFunction") : it.action);
 			this.appendTreeCell(tRow, "label", this.getArguments(it.arguments || {}));
