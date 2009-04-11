@@ -96,20 +96,20 @@ var handyClicksEditor = {
 		var hideSep = true;
 		for(var i = 0, len = its.length; i < len; i++) {
 			it = its[i];
-			it.style.display = "";
 			if(it.nodeName == "menuseparator") {
-				if(hideSep)
-					it.style.display = "none";
+				it.style.display = hideSep ? "none" : "";
 				hideSep = true;
 			}
 			else {
-				if(!re.test(it.getAttribute("hc_supports")))
-					it.style.display = "none";
-				else
+				if(re.test(it.getAttribute("hc_supports"))) {
+					it.style.display = "";
 					hideSep = false;
+				}
+				else
+					it.style.display = "none";
 			}
 		}
-		this.setSupportedExts();
+		this.hideUnsupportedExts();
 
 		this.addFuncArgs(custom, action);
 	},
@@ -117,12 +117,12 @@ var handyClicksEditor = {
 		SplitBrowser: "{29c4afe1-db19-4298-8785-fcc94d1d6c1d}",
 		FlashGot: "{19503e42-ca3c-4c27-b1e2-9cdb2170ee34}",
 	},
-	setSupportedExts: function() {
+	hideUnsupportedExts: function() {
 		var mp = this.$("hc-editor-funcPopup");
 		var elts, i, len;
-		for(var e in this.exts)
-			if(this.extNotAvailable(this.exts[e])) {
-				elts = mp.getElementsByAttribute("hc_required", e);
+		for(var ext in this.exts)
+			if(this.extNotAvailable(this.exts[ext])) {
+				elts = mp.getElementsByAttribute("hc_required", ext);
 				for(i = 0, len = elts.length; i < len; i++)
 					elts[i].style.display = "none";
 			}
@@ -165,7 +165,7 @@ var handyClicksEditor = {
 			return "checkbox";
 		if(arg in this.types.menulists)
 			return "menulist";
-		return this.ut._err("Unknown can't get type of " + arg);
+		return this.ut._err("Cannt get type of " + arg);
 	},
 	addControl: function(argName, argType, argVal) {
 		var argContainer = document.createElement("vbox");

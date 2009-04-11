@@ -53,11 +53,11 @@ var handyClicksSets = {
 			if(!handyClicksPrefs.hasOwnProperty(shortcut))
 				continue;
 			if(!this.okPrefStr.test(shortcut)) {
-				this.ut._error("[Handy Clicks]: invalid shortcut in prefs: " + shortcut);
+				this.ut._err("[Handy Clicks]: invalid shortcut in prefs: " + shortcut);
 				continue;
 			}
 			if(this.isBuggyModifiersObj(handyClicksPrefs[shortcut])) {
-				this.ut._error("[Handy Clicks]: invalid modifiers object in prefs: " + shortcut);
+				this.ut._err("[Handy Clicks]: invalid modifiers object in prefs: " + shortcut);
 				continue;
 			}
 			var button = this.getButtonStr(shortcut);

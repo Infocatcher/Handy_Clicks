@@ -111,7 +111,7 @@ var handyClicksFuncs = {
 			case "last":     ind = tbr.browsers.length;           break;
 			case "relative": ind = curInd + ++this.relativeIndex; break;
 			default:
-				this.ut._error("[Right Links]: openUriInTab -> invalid moveTo argument: " + moveTo);
+				this.ut._err("[Right Links]: openUriInTab -> invalid moveTo argument: " + moveTo);
 				return;
 		}
 		if("TreeStyleTabService" in window && (moveTo == "after" || moveTo == "relative") && ind == tbr.browsers.length - 1) {
@@ -200,32 +200,36 @@ var handyClicksFuncs = {
 	loadVoidLinkWithHandler: function(loadJSInBackground, refererPolicy, inWin, e, item) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
+		var evt = document.createEvent("MouseEvents"); // thanks to Tab Scope!
+		evt.initMouseEvent(
+			"click", true, false, item.ownerDocument.defaultView, 1,
+			e.screenX, e.screenY, e.clientX, e.clientY,
+			false, false, false, false,
+			0, null
+		);
 		var _this = this;
 		function _f() {
-			var evt = document.createEvent("MouseEvents"); // thanks to Tab Scope!
-			evt.initMouseEvent(
-				"click", true, false, item.ownerDocument.defaultView, 1,
-				e.screenX, e.screenY, e.clientX, e.clientY,
-				false, false, false, false,
-				0, null
-			);
+			var openWin = _this.ut.pref("openNewWindowRestrictionForTabs");
+			if(openWin == -1)
+				openWin = _this.ut.getPref("browser.link.open_newwindow.restriction");
 			var origPrefs = _this.setPrefs({
-				"browser.link.open_newwindow.restriction": inWin
-					? 1
-					: _this.ut.pref("openNewWindowRestrictionForTabs"),
+				"browser.link.open_newwindow.restriction": inWin ? 1 : openWin,
 				"browser.tabs.loadDivertedInBackground": loadJSInBackground,
 				"network.http.sendRefererHeader": _this.getRefererPolicy(refererPolicy)
 			});
+			var sc = _this.hc.flags.stopClick;
+			_this.hc.flags.stopClick = false; // allow clicks
 			item.dispatchEvent(evt);
+			_this.hc.flags.stopClick = sc;
 			_this.restorePrefs(origPrefs);
 		}
 		var load = this.ut.pref("loadVoidLinksWithHandlers");
 		if(this.ut.pref("notifyVoidLinksWithHandlers"))
-			this.hc.notify(
+			this.ut.notify(
 				this.ut.getLocalised("title"),
 				this.ut.getLocalised("voidLinkWithHandler")
 					+ (load ? "" : this.ut.getLocalised("clickForOpen")),
-				true, null, (load ? null : _f)
+				(load ? null : _f)
 			);
 		if(load)
 			_f();
@@ -257,11 +261,11 @@ var handyClicksFuncs = {
 
 		var load = this.ut.pref("loadJavaScriptLinks");
 		if(this.ut.pref("notifyJavaScriptLinks"))
-			this.hc.notify(
+			this.ut.notify(
 				this.ut.getLocalised("title"),
 				this.ut.getLocalised("JavaScriptLink")
 					+ (load ? "" : this.ut.getLocalised("clickForOpen")),
-				true, null, (load ? null : _f)
+				(load ? null : _f)
 			);
 		if(load)
 			_f();
@@ -337,7 +341,7 @@ var handyClicksFuncs = {
 				wNew = window.outerWidth, hNew = window.outerHeight;
 			break;
 			default:
-				this.ut._error("[Right Links]: openUriInWindow -> invalid moveTo argument: " + moveTo);
+				this.ut._err("[Right Links]: openUriInWindow -> invalid moveTo argument: " + moveTo);
 				return;
 		}
 		if(xCur !== undefined && yCur !== undefined)
@@ -443,7 +447,7 @@ var handyClicksFuncs = {
 	downloadWithFlashGot: function(e, item) {
 		item = item || this.hc.item;
 		if(typeof gFlashGot == "undefined") {
-			this.ut._error("[Total Clicks]: missing FlashGot extension ( https://addons.mozilla.org/firefox/addon/220 )");
+			this.ut._err("[Handy Clicks]: missing FlashGot extension ( https://addons.mozilla.org/firefox/addon/220 )");
 			return;
 		}
 		document.popupNode = item;
@@ -454,7 +458,7 @@ var handyClicksFuncs = {
 		uri = uri || this.getUriOfItem(this.hc.item);
 		win = win || this.hc.item.ownerDocument.defaultView;
 		if(typeof SplitBrowser == "undefined") {
-			this.ut._error("[Total Clicks]: missing Split Browser extension ( https://addons.mozilla.org/firefox/addon/4287 )");
+			this.ut._err("[Handy Clicks]: missing Split Browser extension ( https://addons.mozilla.org/firefox/addon/4287 )");
 			return;
 		}
 		SplitBrowser.addSubBrowser(uri, null, SplitBrowser["POSITION_" + position]);
@@ -570,7 +574,7 @@ var handyClicksFuncs = {
 				if(len && len.length) {
 					var pathBeginNew = pathBegin.replace(new RegExp("([^\\/\\\\]+[\\/\\\\]){" + len.length + "}$"), "");
 					if(pathBeginNew == pathBegin) {
-						this.ut._error("[Total Clicks]: invalid relative path:\n" + patch);
+						this.ut._err("[Handy Clicks]: invalid relative path:\n" + patch);
 						return null;
 					}
 					else
@@ -672,7 +676,7 @@ var handyClicksFuncs = {
 	showOpenUriWithAppsPopup: function(items) {
 		var uri = this.getUriOfItem();
 		if(!uri) {
-			this.ut._error("[Handy Clicks]: can't get URI of item (" + this.hc.itemType + ")");
+			this.ut._err("[Handy Clicks]: can't get URI of item (" + this.hc.itemType + ")");
 			return;
 		}
 		var path, it, n, args;

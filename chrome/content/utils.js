@@ -1,65 +1,81 @@
 var handyClicksUtils = {
-	consoleServ: Components.classes["@mozilla.org/consoleservice;1"]
+	consoleSvc: Components.classes["@mozilla.org/consoleservice;1"]
 		.getService(Components.interfaces.nsIConsoleService),
-	prefsServ: Components.classes["@mozilla.org/preferences-service;1"]
-		.getService(Components.interfaces.nsIPrefBranch),
-	suppStr: Components.interfaces.nsISupportsString,
 	_log: function(msg) {
-		this.consoleServ.logStringMessage("[Handy Clicks]: " + msg + "\n");
+		this.consoleSvc.logStringMessage("[Handy Clicks]: " + msg + "\n");
 	},
-	_error: Components.utils.reportError,
-	pref: function(prefName, prefValue) {
-		if(typeof prefValue == "undefined") {
-			var propName = "pref_" + prefName;
-			if(typeof this[propName] == "undefined")
-				this.readPref(prefName);
-			return this[propName];
+	_err: Components.utils.reportError,
+
+	notify: function(nTitle, msg, fnc, extEnabled, inWindowCorner) {
+		var dur = this.pref("notifyOpenTime");
+		if(dur <= 0)
+			 return;
+		extEnabled = typeof extEnabled == "boolean" ? extEnabled : true;
+		inWindowCorner = typeof inWindowCorner == "boolean"
+			? inWindowCorner
+			: this.pref("notifyInWindowCorner");
+		window.openDialog(
+			 "chrome://handyclicks/content/notify.xul",
+			 "",
+			 "chrome,dialog=1,nTitlebar=0,popup=1",
+			 {
+			 	dur: dur,
+			 	nTitle: nTitle || "", msg: msg || "",
+			 	fnc: fnc, extEnabled: extEnabled, inWindowCorner: inWindowCorner,
+			 	__proto__: null
+			 }
+		);
+	},
+
+	// Preferences:
+	nPrefix: "extensions.handyclicks.",
+	get prefSvc() {
+		return Components.classes["@mozilla.org/preferences-service;1"]
+			.getService(Components.interfaces.nsIPrefBranch);
+	},
+	get ss() { return Components.interfaces.nsISupportsString; },
+	_prefs: { __proto__: null }, // Prefs cache
+	pref: function(pName, pVal) {
+		if(typeof pVal != "undefined")
+			return this.setPref(this.nPrefix + pName, pVal);
+		if(!(pName in this._prefs))
+			this.readPref(pName);
+		return this._prefs[pName];
+	},
+	readPref: function(pName) {
+		this._prefs[pName] = this.getPref(this.nPrefix + pName);
+	},
+	getPref: function(pName) {
+		var pbr = Components.interfaces.nsIPrefBranch;
+		switch(this.prefSvc.getPrefType(pName)) {
+			case pbr.PREF_STRING: return this.prefSvc.getComplexValue(pName, this.ss).data;
+			case pbr.PREF_INT:    return this.prefSvc.getIntPref(pName);
+			case pbr.PREF_BOOL:   return this.prefSvc.getBoolPref(pName);
+			default:              return null;
 		}
-		return this.setPref("extensions.handyclicks." + prefName, prefValue);
 	},
-	readPref: function(prefName) {
-		this["pref_" + prefName] = this.getPref("extensions.handyclicks." + prefName);
-	},
-	getPref: function(prefName) {
-		return this.isStringPref(prefName) ? this.getUnicharPref(prefName) : navigator.preference(prefName);
-	},
-	setPref: function(prefName, prefVal) {
-		if(this.isStringPref(prefName))
-			this.setUnicharPref(prefName, prefVal);
-		else
-			navigator.preference(prefName, prefVal);
-	},
-	isStringPref: function(prefName) {
-		try {
-			return this.prefsServ.getPrefType(prefName) == Components.interfaces.nsIPrefBranch.PREF_STRING;
-		}
-		catch(e) {
-			alert(e);
-			return false;
-		}
-	},
-	getUnicharPref: function(prefName) {
-		try {
-			return this.prefsServ.getComplexValue(prefName, this.suppStr).data;
-		}
-		catch(e) {
-			return "";
-		}
-	},
-	setUnicharPref: function(prefName, prefVal) {
-		try {
+	setPref: function(pName, pVal) {
+		var pbr = Components.interfaces.nsIPrefBranch;
+		var pType = this.prefSvc.getPrefType(pName);
+		var isNew = pType == 0;
+		var vType = typeof pVal;
+		if(pType == pbr.PREF_BOOL || (isNew && vType == "boolean"))
+			this.prefSvc.setBoolPref(pName, pVal);
+		else if(pType == pbr.PREF_INT || (isNew && vType == "number"))
+			this.prefSvc.setIntPref(pName, pVal);
+		else if(pType == pbr.PREF_STRING || isNew) {
+			var ss = this.ss;
 			var str = Components.classes["@mozilla.org/supports-string;1"]
-				.createInstance(this.suppStr);
-			str.data = prefVal;
-			this.prefsServ.setComplexValue(prefName, this.suppStr, str);
-		}
-		catch(e) {
+				.createInstance(ss);
+			str.data = pVal;
+			this.prefSvc.setComplexValue(pName, ss, str);
 		}
 	},
 
+	// Localised strings:
 	_strings: { __proto__: null }, // cache of strings from stringbundle
 	getLocaleStr: function(name) {
-		if("_localeBundle" in this == false)
+		if(!("_localeBundle" in this))
 			this._localeBundle = document.getElementById("handyClicks-strings");
 		try { name = this._localeBundle.getString(name); }
 		catch(e) { name = "[" + name + "]"; }
@@ -70,6 +86,7 @@ var handyClicksUtils = {
 			this._strings[name] = this.getLocaleStr(name);
 		return this._strings[name];
 	},
+
 	isNoChromeDoc: function(doc) { // Except items in chrome window
 		doc = doc || handyClicks.item.ownerDocument;
 		return doc.defaultView.toString().indexOf("[object Window]") > -1; // [object XPCNativeWrapper [object Window]]

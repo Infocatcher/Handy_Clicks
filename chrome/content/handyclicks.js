@@ -505,12 +505,14 @@ var handyClicks = {
 				fnc.apply(handyClicksFuncs, args);
 			}
 			catch(e) {
-				this.notify(
+				this.ut.notify(
 					this.ut.getLocalised("errorTitle"),
-					this.ut.getLocalised("customFunctionError").replace("%func%", decodeURIComponent(funcObj.title)),
+					this.ut.getLocalised("customFunctionError")
+						.replace("%func%", decodeURIComponent(funcObj.title)),
 					toErrorConsole
 				);
-				this.ut._error("[Handy Clicks]: custom action error:\n" + e);
+				this.ut._log("Custom action error");
+				throw e;
 			}
 		}
 		else {
@@ -518,12 +520,12 @@ var handyClicks = {
 			if(typeof fnc == "function")
 				fnc.apply(handyClicksFuncs, args);
 			else {
-				this.ut._error("[Handy Clicks]: " + funcObj.action + " not found (" + typeof fnc + ")");
-				this.notify(
+				this.ut.notify(
 					this.ut.getLocalised("errorTitle"),
 					this.ut.getLocalised("functionNotFound").replace("%func%", funcObj.action),
 					toErrorConsole
 				);
+				this.ut._err("[Handy Clicks]: " + funcObj.action + " not found (" + typeof fnc + ")");
 			}
 		}
 
@@ -566,17 +568,6 @@ var handyClicks = {
 		if(topic != "nsPref:changed")
 			return;
 		this.ut.readPref(prefName.replace(/^extensions\.handyclicks\./, ""));
-	},
-	notify: function(ttl, txt, fnc) {
-		var dur = this.ut.pref("notifyOpenTime");
-		if(dur <= 0)
-			 return;
-		window.openDialog(
-			 "chrome://handyclicks/content/notify.xul",
-			 "",
-			 "chrome,dialog=1,titlebar=0,popup=1",
-			 dur, ttl, txt, fnc, this.ut.pref("notifyInWindowCorner")
-		);
 	}
 };
 window.addEventListener("load", handyClicks, false);

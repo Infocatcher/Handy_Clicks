@@ -12,15 +12,17 @@
 	<![CDATA[
 		var hcNotify = {
 			closeTimeout: null,
+			args: {},
 			init: function() {
-				var wa = window.arguments;
-				document.getElementById("hcNotifyHeader").value = wa[1];
-				document.getElementById("hcNotifyDesc").textContent = wa[2];
+				var wa = window.arguments[0]; // { dur, nTitle, msg, fnc, extEnabled, inWindowCorner }
+				document.getElementById("hcNotifyHeader").value = wa.nTitle;
+				document.getElementById("hcNotifyDesc").textContent = wa.msg;
+				document.getElementById("hcNotifyImg").style["margin" + (wa.extEnabled ? "Right" : "Left")] = "-24px";
 				window.sizeToContent();
 				var wo = window.opener;
 				var winW = window.outerWidth, winH = window.outerHeight;
 				var x, y;
-				if(wa[4]) { // in window corner
+				if(wa.inWindowCorner) {
 					x = wo.screenX + wo.outerWidth - winW;
 					y = wo.document.getElementById("browser-bottombox").boxObject.screenY - winH;
 				}
@@ -42,12 +44,13 @@
 				var nBox = document.getElementById("hcNotifyBox");
 				setTimeout( function() { nBox.style.borderColor = "blue"; }, 150);
 				setTimeout( function() { nBox.style.borderColor = "black"; }, 300);
-				this.closeTimeout = setTimeout("window.close();", wa[0]);
+				this.closeTimeout = setTimeout(window.close, wa.dur);
 			},
 			click: function(e) {
 				clearTimeout(this.closeTimeout);
-				if(typeof window.arguments[5] == "function" && e.button == 0)
-					window.opener.setTimeout(window.arguments[5], 0);
+				var fnc = window.arguments[0].fnc;
+				if(typeof fnc == "function" && e.button == 0)
+					fnc();
 					// Strange behavior on
 					// <a onclick="alert(0);" href="javascript: void(0);">...</a>
 				window.close();
@@ -58,12 +61,11 @@
 
 	<hbox id="hcNotifyBox" style="border: 2px solid black; padding: 10px;">
 		<hbox align="center" valign="top" style="overflow: hidden;">
-			<!-- todo: add image -->
-			<image id="hcNotifyImg" src="chrome://global/skin/icons/Warning.png" autostretch="never" />
+			<image id="hcNotifyImg" src="style/icons24.png" autostretch="never" />
 		</hbox>
 		<vbox style="margin-left: 5px;">
-			<label id="hcNotifyHeader" class="header" value="Header" />
-			<description id="hcNotifyDesc" style="white-space: pre;">Description</description>
+			<label id="hcNotifyHeader" class="header" value="[Header]" />
+			<description id="hcNotifyDesc" style="white-space: pre-wrap;">[Description]</description> <!-- ~ todo: check compatibility -->
 		</vbox>
 	</hbox>
 

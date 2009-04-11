@@ -65,7 +65,7 @@ var handyClicksPrefServ = {
 				handyClicksCustomTypes[type]._contextMenu = this.compileStr(handyClicksCustomTypes[type].contextMenu);
 			}
 			catch(e) {
-				this.ut._error("[Handy Clicks]: error in custom type " + type + "\n" + e);
+				this.ut._err("[Handy Clicks]: error in custom type " + type + "\n" + e);
 			}
 		}
 	},
