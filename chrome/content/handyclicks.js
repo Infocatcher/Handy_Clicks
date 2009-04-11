@@ -5,11 +5,6 @@ var handyClicks = {
 		runned: false,
 		stopContextMenu: false
 	},
-	disabledBy: { //~ del
-		mousemove: false,
-		cMenu: false,
-		handlerOnMousedown: false
-	},
 	isRunOnMousedown: false,
 	event: null,
 	origItem: null,
@@ -450,13 +445,13 @@ var handyClicks = {
 	saveEvent: function(e) {
 		this.event = e;
 
-		/* fx < 3.0:
-		 * Works:
-		 *   alert(uneval(this.getXY(this.event)));
-		 * Always return "({x:0, y:0})":
-		 *   var _this = this;
-		 *   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
-		 */
+		// fx < 3.0:
+		// Works:
+		//   alert(uneval(this.getXY(this.event)));
+		//
+		// Always return "({x:0, y:0})":
+		//   var _this = this;
+		//   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
 		this.copyOfEvent = this.cloneObj(e);
 	},
 	clearCMenuTimeout: function() {
@@ -510,12 +505,12 @@ var handyClicks = {
 				fnc.apply(handyClicksFuncs, args);
 			}
 			catch(e) {
-				this.ut._error("[Handy Clicks]: custom action error:\n" + e);
 				this.notify(
 					this.ut.getLocalised("errorTitle"),
 					this.ut.getLocalised("customFunctionError").replace("%func%", decodeURIComponent(funcObj.title)),
 					toErrorConsole
 				);
+				this.ut._error("[Handy Clicks]: custom action error:\n" + e);
 			}
 		}
 		else {

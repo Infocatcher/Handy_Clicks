@@ -91,13 +91,13 @@ var handyClicksFuncs = {
 		}
 		return false
 	},
-	openUriInTab: function(e, loadInBackground, refererPolicy, moveTo, hidePopup) {
+	openUriInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, hidePopup) {
 		var tbr = this.getTabBrowser(true);
 		if(moveTo == "relative") {
 			var tabCont = tbr.mTabContainer;
 			tabCont.__handyClicks__resetRelativeIndex = false;
 		}
-		var tab = this._openUriInTab(loadInBackground, refererPolicy, e, moveTo);
+		var tab = this._openUriInTab(loadInBackground, loadJSInBackground, refererPolicy, e, moveTo);
 		if(hidePopup)
 			this.hideItemPopup();
 		if(!tab || !moveTo)
@@ -111,7 +111,7 @@ var handyClicksFuncs = {
 			case "last":     ind = tbr.browsers.length;           break;
 			case "relative": ind = curInd + ++this.relativeIndex; break;
 			default:
-				this.ut._error("[Handy Clicks]: openUriInTab -> invalid moveTo argument: " + moveTo);
+				this.ut._error("[Right Links]: openUriInTab -> invalid moveTo argument: " + moveTo);
 				return;
 		}
 		if("TreeStyleTabService" in window && (moveTo == "after" || moveTo == "relative") && ind == tbr.browsers.length - 1) {
@@ -148,16 +148,17 @@ var handyClicksFuncs = {
 			false
 		);
 	},
-	_openUriInTab: function(loadInBackground, refererPolicy, e, moveTo, item, uri) {
+	_openUriInTab: function(loadInBackground, loadJSInBackground, refererPolicy, e, moveTo, item, uri) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
-		if(this.testForLinkFeatures(loadInBackground, refererPolicy, e, item, uri))
+		if(this.testForLinkFeatures(loadInBackground, loadJSInBackground, refererPolicy, e, item, uri))
 			return null;
 		var tbr = this.getTabBrowser(true);
+
 		// Open a new tab as a child of the current tab (Tree Style Tab)
 		// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
-		if( !moveTo && this.ut.isNoChromeDoc(item.ownerDocument) && "TreeStyleTabService" in window)
+		if(!moveTo && this.ut.isNoChromeDoc(item.ownerDocument) && "TreeStyleTabService" in window)
 			TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab);
 		return tbr.loadOneTab(
 			uri,
@@ -167,19 +168,19 @@ var handyClicksFuncs = {
 			false
 		);
 	},
-	testForLinkFeatures: function(loadInBackground, refererPolicy, e, item, uri) {
+	testForLinkFeatures: function(loadInBackground, loadJSInBackground, refererPolicy, e, item, uri, inWin) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
 		if(/^javascript:/i.test(uri)) {
-			this.loadJavaScriptLink(loadInBackground, refererPolicy, e, item, uri);
+			this.loadJavaScriptLink(loadJSInBackground, refererPolicy, e, item, uri, inWin);
 			return true;
 		}
 		if(this.testForFileLink(refererPolicy, uri) || this.testForHighlander(uri))
 			return true;
 		return false;
 	},
-	loadJavaScriptLink: function(loadInBackground, refererPolicy, e, item, uri) {
+	loadJavaScriptLink: function(loadJSInBackground, refererPolicy, e, item, uri, inWin) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
@@ -192,60 +193,85 @@ var handyClicksFuncs = {
 				|| item.hasAttribute("onmouseup")
 			)
 		)
-			this.loadVoidLinkWithHandler(loadInBackground, refererPolicy);
+			this.loadVoidLinkWithHandler(loadJSInBackground, refererPolicy, inWin, e, item);
 		else
-			this.loadNotVoidJavaScriptLink(loadInBackground, refererPolicy);
+			this.loadNotVoidJavaScriptLink(loadJSInBackground, refererPolicy, inWin, e, item, uri);
 	},
-	loadVoidLinkWithHandler: function(loadInBackground, refererPolicy, e, item) {
+	loadVoidLinkWithHandler: function(loadJSInBackground, refererPolicy, inWin, e, item) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
+		var _this = this;
+		function _f() {
+			var evt = document.createEvent("MouseEvents"); // thanks to Tab Scope!
+			evt.initMouseEvent(
+				"click", true, false, item.ownerDocument.defaultView, 1,
+				e.screenX, e.screenY, e.clientX, e.clientY,
+				false, false, false, false,
+				0, null
+			);
+			var origPrefs = _this.setPrefs({
+				"browser.link.open_newwindow.restriction": inWin
+					? 1
+					: _this.ut.pref("openNewWindowRestrictionForTabs"),
+				"browser.tabs.loadDivertedInBackground": loadJSInBackground,
+				"network.http.sendRefererHeader": _this.getRefererPolicy(refererPolicy)
+			});
+			item.dispatchEvent(evt);
+			_this.restorePrefs(origPrefs);
+		}
+		var load = this.ut.pref("loadVoidLinksWithHandlers");
 		if(this.ut.pref("notifyVoidLinksWithHandlers"))
 			this.hc.notify(
 				this.ut.getLocalised("title"),
 				this.ut.getLocalised("voidLinkWithHandler")
+					+ (load ? "" : this.ut.getLocalised("clickForOpen")),
+				true, null, (load ? null : _f)
 			);
-		var evt = document.createEvent("MouseEvents"); // thanks to Tab Scope!
-		evt.initMouseEvent(
-			"click", true, false, item.ownerDocument.defaultView, 1,
-			e.screenX, e.screenY, e.clientX, e.clientY,
-			false, false, false, false,
-			0, null
-		);
-		var origPrefs = this.setPrefs({
-			"browser.tabs.loadDivertedInBackground": loadInBackground,
-			"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy)
-		});
-		item.dispatchEvent(evt);
-		this.restorePrefs(origPrefs);
+		if(load)
+			_f();
 	},
-	loadNotVoidJavaScriptLink: function(loadInBackground, refererPolicy, item, uri) {
+	loadNotVoidJavaScriptLink: function(loadJSInBackground, refererPolicy, inWin, e, item, uri) {
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
+		var _this = this;
+
+		function _f() {
+			var origPrefs = _this.setPrefs({
+				"browser.link.open_newwindow.restriction": inWin
+					? 1
+					: _this.ut.pref("openNewWindowRestrictionForTabs"),
+				"dom.disable_open_during_load": false, // allow window.open( ... )
+				"browser.tabs.loadDivertedInBackground": loadJSInBackground,
+				"network.http.sendRefererHeader": _this.getRefererPolicy(refererPolicy)
+			});
+
+			var oDoc = item.ownerDocument;
+			if(_this.ut.isNoChromeDoc(oDoc))
+				oDoc.location.href = uri;
+			else
+				_this.getTabBrowser().loadURI(uri); // bookmarklets
+
+			setTimeout(function() { _this.restorePrefs(origPrefs); }, 0);
+			// _this.restorePrefs(origPrefs);
+		}
+
+		var load = this.ut.pref("loadJavaScriptLinks");
 		if(this.ut.pref("notifyJavaScriptLinks"))
 			this.hc.notify(
 				this.ut.getLocalised("title"),
-				this.ut.getLocalised("javaScriptLink")
+				this.ut.getLocalised("JavaScriptLink")
+					+ (load ? "" : this.ut.getLocalised("clickForOpen")),
+				true, null, (load ? null : _f)
 			);
-		var origPrefs = this.setPrefs({
-			"dom.disable_open_during_load": false, // allow window.open( ... )
-			"browser.tabs.loadDivertedInBackground": loadInBackground,
-			"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy)
-		});
-
-		var oDoc = item.ownerDocument;
-		if(this.ut.isNoChromeDoc(oDoc))
-			oDoc.location.href = uri;
-		else
-			this.getTabBrowser().loadURI(uri); // bookmarklets
-
-		this.restorePrefs(origPrefs);
+		if(load)
+			_f();
 	},
 	testForFileLink: function(refererPolicy, uri) {
 		uri = uri || this.getUriOfItem(this.hc.item);
 		var filesPolicy = this.ut.pref("filesLinksPolicy");
 		if(filesPolicy < 1)
 			return false;
-		var regexp = this.ut.pref("filesLinksMask");
+		var regexp = this.ut.pref("filesLinksMask"); //~ todo: UTF-8
 		if(!regexp)
 			return false;
 		try {
@@ -267,8 +293,8 @@ var handyClicksFuncs = {
 		}
 		return false;
 	},
-	openUriInWindow: function(e, loadInBackground, refererPolicy, moveTo, hidePopup) {
-		var win = this._openUriInWindow(loadInBackground, refererPolicy, e);
+	openUriInWindow: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, hidePopup) {
+		var win = this._openUriInWindow(loadInBackground, loadJSInBackground, refererPolicy, e);
 		if(hidePopup)
 			this.hideItemPopup();
 		if(!win || !moveTo)
@@ -311,7 +337,7 @@ var handyClicksFuncs = {
 				wNew = window.outerWidth, hNew = window.outerHeight;
 			break;
 			default:
-				this.ut._error("[Handy Clicks]: openUriInWindow -> invalid moveTo argument: " + moveTo);
+				this.ut._error("[Right Links]: openUriInWindow -> invalid moveTo argument: " + moveTo);
 				return;
 		}
 		if(xCur !== undefined && yCur !== undefined)
@@ -320,11 +346,11 @@ var handyClicksFuncs = {
 			window.resizeTo(wCur, hCur);
 		this.initWindowMoving(win, xNew, yNew, wNew, hNew);
 	},
-	_openUriInWindow: function(loadInBackground, refererPolicy, e, item, uri) {
+	_openUriInWindow: function(loadInBackground, loadJSInBackground, refererPolicy, e, item, uri) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
-		if(this.testForLinkFeatures(loadInBackground, refererPolicy, e, item, uri))
+		if(this.testForLinkFeatures(loadInBackground, loadJSInBackground, refererPolicy, e, item, uri, true))
 			return null;
 		var win = window.openDialog(
 			getBrowserURL(),

@@ -2,7 +2,6 @@
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
-<?xml-stylesheet href="chrome://handyclicks/content/style/editor.css" type="text/css"?>
 
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	id="handyClicks-editor"
@@ -114,7 +113,7 @@
 <menuseparator id="hc-editor-funcsSep-tabs" />
 <menuitem
 	value="openUriInTab" label="hcFunc-openUriInTab"
-	hc_args="loadInBackground refererPolicy moveTo hidePopup"
+	hc_args="loadInBackground loadJSInBackground refererPolicy moveTo hidePopup"
 	hc_supports="link img tab bookmark historyItem" />
 <menuitem
 	value="openUriInCurrentTab" label="hcFunc-openUriInCurrentTab"
@@ -122,7 +121,7 @@
 	hc_supports="link img tab bookmark historyItem" />
 <menuitem
 	value="openUriInWindow" label="hcFunc-openUriInWindow"
-	hc_args="loadInBackground refererPolicy moveTo hidePopup"
+	hc_args="loadInBackground loadJSInBackground refererPolicy moveTo hidePopup"
 	hc_supports="link img tab bookmark historyItem" />
 <menuitem
 	value="openInSidebar" label="hcFunc-openInSidebar"
@@ -164,7 +163,7 @@
 
 
 <menuseparator id="hc-editor-funcsSep" />
-<menuitem value="$custom" label="hcFunc-$custom" />
+<menuitem value="$custom" hc_supports="$all" label="hcFunc-$custom" />
 									<!-- ~ todo -->
 
 								</menupopup>

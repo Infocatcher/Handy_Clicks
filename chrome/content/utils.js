@@ -5,8 +5,7 @@ var handyClicksUtils = {
 		.getService(Components.interfaces.nsIPrefBranch),
 	suppStr: Components.interfaces.nsISupportsString,
 	_log: function(msg) {
-		msg = "[Handy Clicks]: " + msg + "\n";
-		this.consoleServ.logStringMessage(msg);
+		this.consoleServ.logStringMessage("[Handy Clicks]: " + msg + "\n");
 	},
 	_error: Components.utils.reportError,
 	pref: function(prefName, prefValue) {
@@ -58,7 +57,7 @@ var handyClicksUtils = {
 		}
 	},
 
-	_strings: {}, // cache of strings from stringbundle
+	_strings: { __proto__: null }, // cache of strings from stringbundle
 	getLocaleStr: function(name) {
 		if("_localeBundle" in this == false)
 			this._localeBundle = document.getElementById("handyClicks-strings");

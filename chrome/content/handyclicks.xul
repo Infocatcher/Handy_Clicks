@@ -8,10 +8,6 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/funcs.js" />
 
 	<script type="application/x-javascript"><![CDATA[
-	function handyClicksReloadScripts_() {
-		if(navigator.preference("extensions.handyclicks.devMode"))
-			handyClicksReloadScripts();
-	}
 	function handyClicksReloadScripts() {
 		var jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 			.getService(Components.interfaces.mozIJSSubScriptLoader);
@@ -22,15 +18,27 @@
 				function(n) { jsLoader.loadSubScript(path + n); }
 			);
 			handyClicks.init();
+			handyClicksUtils._log("Scripts was successfully reloaded!");
 		}
 		catch(e) {
-			handyClicksUtils._log("[ReloadScripts]: cannt reload scripts\n" + e);
+			handyClicksUtils._log("Cannt reload scripts\n" + e);
 		}
 	}
-	if(navigator.preference("extensions.handyclicks.devMode"))
-		setInterval(handyClicksReloadScripts_, 2500);
+	window.addEventListener(
+		"keydown",
+		function(e) {
+			if( // Ctrl+Alt+R
+				String.fromCharCode(e.keyCode) == "R"
+				&& e.ctrlKey && !e.shiftKey && e.altKey
+			) {
+				e.preventDefault();
+				e.stopPropagation();
+				handyClicksReloadScripts();
+			}
+		},
+		true
+	);
 	]]></script>
-
 
 	<stringbundleset id="stringbundleset">
 		<stringbundle id="handyClicks-strings" src="chrome://handyclicks/locale/hcs.properties" />

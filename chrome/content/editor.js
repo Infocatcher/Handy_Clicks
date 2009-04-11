@@ -5,6 +5,7 @@ var handyClicksEditor = {
 		checkboxes: {
 			skipCache: 1,
 			loadInBackground: 1,
+			loadJSInBackground: 1,
 			hidePopup: 1,
 			toNewWin: 1
 		},
@@ -87,8 +88,49 @@ var handyClicksEditor = {
 		fList.value = custom // <menulist>
 			? "$custom"
 			: action;
-		fList.setAttribute("hc_type", this.type);
+
+		var re = new RegExp("(^|[\\s,]+)" + this.type + "([\\s,]+|$)|^\\$all$");
+		var mp = this.$("hc-editor-funcPopup");
+		var its = mp.childNodes;
+		var it;
+		var hideSep = true;
+		for(var i = 0, len = its.length; i < len; i++) {
+			it = its[i];
+			it.style.display = "";
+			if(it.nodeName == "menuseparator") {
+				if(hideSep)
+					it.style.display = "none";
+				hideSep = true;
+			}
+			else {
+				if(!re.test(it.getAttribute("hc_supports")))
+					it.style.display = "none";
+				else
+					hideSep = false;
+			}
+		}
+		this.setSupportedExts();
+
 		this.addFuncArgs(custom, action);
+	},
+	exts: {
+		SplitBrowser: "{29c4afe1-db19-4298-8785-fcc94d1d6c1d}",
+		FlashGot: "{19503e42-ca3c-4c27-b1e2-9cdb2170ee34}",
+	},
+	setSupportedExts: function() {
+		var mp = this.$("hc-editor-funcPopup");
+		var elts, i, len;
+		for(var e in this.exts)
+			if(this.extNotAvailable(this.exts[e])) {
+				elts = mp.getElementsByAttribute("hc_required", e);
+				for(i = 0, len = elts.length; i < len; i++)
+					elts[i].style.display = "none";
+			}
+	},
+	extNotAvailable: function(guid) {
+		return !Components.classes["@mozilla.org/extensions/manager;1"]
+			.getService(Components.interfaces.nsIExtensionManager)
+			.getItemForID(guid);
 	},
 	addFuncArgs: function() { //~ todo: cache
 		var box = this.$("hc-editor-funcArgs");
@@ -106,7 +148,7 @@ var handyClicksEditor = {
 		var cArgs = cMi.getAttribute("hc_args");
 		if(!cArgs)
 			return;
-		cArgs.split(/[\s,;]+/).forEach(this.addArgControls ,this);
+		cArgs.split(/[\s,;]+/).forEach(this.addArgControls, this);
 	},
 	addArgControls: function(arg) {
 		var setsObj = handyClicksPrefs[this.target];
