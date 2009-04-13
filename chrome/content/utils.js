@@ -29,11 +29,59 @@ var handyClicksUtils = {
 
 	// Preferences:
 	nPrefix: "extensions.handyclicks.",
-	get prefSvc() {
-		return Components.classes["@mozilla.org/preferences-service;1"]
-			.getService(Components.interfaces.nsIPrefBranch);
+
+	// Initialization:
+	get nsIPref() {
+		return Components.classes["@mozilla.org/preferences;1"]
+			.createInstance(Components.interfaces.nsIPref);
 	},
-	get ss() { return Components.interfaces.nsISupportsString; },
+	init: function() {
+		window.addEventListener("unload", this, false); // destroy
+		this.nsIPref.addObserver(this.nPrefix, this, false);
+		this.nLength = this.nPrefix.length;
+	},
+	destroy: function() {
+		window.removeEventListener("unload", this, false);
+		this.nsIPref.removeObserver(this.nPrefix, this);
+		this.observers = null;
+	},
+	handleEvent: function(e) {
+		this.destroy();
+	},
+
+	// Preferences observer:
+	observers: [],
+	addPrefsObserver: function(fnc, context) {
+		this.observers.push([fnc, context]);
+		return this.observers.length - 1;
+	},
+	removePrefsObserver: function(oId) {
+		delete(this.observers[oId]);
+	},
+	observe: function(subject, topic, pName) { // prefs observer
+		if(topic != "nsPref:changed")
+			return;
+		pName = pName.substring(this.nLength);
+		this.readPref(pName);
+
+		var obs = this.observers;
+		for(var i = 0, len = obs.length; i < len; i++)
+			if(i in obs)
+				obs[i][0].call(obs[i][1] || this, pName);
+	},
+
+	// API functions:
+	get prefSvc() {
+		if(!this._prefSvc)
+			this._prefSvc = Components.classes["@mozilla.org/preferences-service;1"]
+				.getService(Components.interfaces.nsIPrefBranch);
+		return this._prefSvc;
+	},
+	get ss() {
+		if(!this._ss)
+			this._ss = Components.interfaces.nsISupportsString;
+		return this._ss;
+	},
 	_prefs: { __proto__: null }, // Prefs cache
 	pref: function(pName, pVal) {
 		if(typeof pVal != "undefined")
@@ -92,3 +140,4 @@ var handyClicksUtils = {
 		return doc.defaultView.toString().indexOf("[object Window]") > -1; // [object XPCNativeWrapper [object Window]]
 	}
 };
+handyClicksUtils.init();

@@ -4,10 +4,13 @@ var handyClicksSets = {
 	DOMCache: {},
 	okPrefStr: /^button=[0-2],ctrl=(true|false),shift=(true|false),alt=(true|false),meta=(true|false)$/,
 	init: function() {
-		this.initMainPrefs();
-		this.loadPrefs();
-		this.updateAllDependencies();
-		this.showPrefs();
+		this.initChortcuts();
+
+		this.drawTree();
+		this.updateButtons();
+
+		this.updPrefsUI();
+		this.ut.addPrefsObserver(this.updPrefsUI, this);
 	},
 	destroy: function() {
 		var eds = this.openedEditors, ed;
@@ -20,11 +23,6 @@ var handyClicksSets = {
 	},
 
 	/*** Actions pane ***/
-	initMainPrefs: function() {
-		this.initChortcuts();
-		this.drawTree();
-		this.updateButtons();
-	},
 	$: function(id) {
 		return document.getElementById(id);
 	},
@@ -332,6 +330,11 @@ var handyClicksSets = {
 	},
 
 	/*** Prefs pane ***/
+	updPrefsUI: function() {
+		this.loadPrefs();
+		this.updateAllDependencies();
+		this.showPrefs();
+	},
 	loadPrefs: function() {
 		var id = "disallowMousemoveForButtons";
 		var buttons = this.ut.pref(id);

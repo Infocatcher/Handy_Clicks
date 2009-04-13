@@ -11,7 +11,8 @@ var handyClicksEditor = {
 		},
 		menulists: {
 			refererPolicy: [-1, 0, 1, 2],
-			moveTo: ["first", "before", "after", "last", "relative"],
+			moveTabTo: ["null", "first", "before", "after", "last", "relative"],
+			moveWinTo: ["null", "top", "right", "bottom", "left", "sub"],
 			position: ["top", "right", "bottom", "left"]
 		}
 	},
@@ -50,6 +51,8 @@ var handyClicksEditor = {
 		this.appendTypesList();
 		this.initFuncsList(isCustom, setsObj.action);
 
+		if(/(?:^|,)button=(\d)(?:,|$)/.test(this.target))
+			this.$("hc-editor-button").value = RegExp.$1;
 		["ctrl", "shift", "alt", "meta"].forEach(
 			function(mdf) {
 				this.$("hc-editor-" + mdf).checked
@@ -57,8 +60,8 @@ var handyClicksEditor = {
 			},
 			this
 		);
-		this.$("hc-editor-button").selectedIndex
-			= parseInt(this.target.match(/(?:^|,)button=(\d)(?:,|$)/)[1]);
+		this.$("hc-editor-events").value = setsObj.eventType || "";
+		this.$("hc-editor-enabled").checked = setsObj.enabled;
 	},
 	initCustomTypesEditor: function() {
 		// this.$("hc-editor-customType").selectedIndex =
@@ -183,7 +186,6 @@ var handyClicksEditor = {
 				for(var i = 0, len = vals.length; i < len; i++) {
 					mi = document.createElement("menuitem");
 					mi.value = vals[i];
-					this.ut._log(this.ut.getLocalised(argName + "[" + vals[i] + "]"));
 					mi.setAttribute("label", this.ut.getLocalised(argName + "[" + vals[i] + "]"));
 					mp.appendChild(mi);
 				}

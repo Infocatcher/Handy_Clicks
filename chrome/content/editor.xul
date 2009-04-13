@@ -52,6 +52,17 @@
 						</menupopup>
 					</menulist>
 				</hbox>
+				<hbox align="center">
+					<label value="Event:" />
+					<menulist id="hc-editor-events">
+						<menupopup>
+							<menuitem value="mousedown" label="Mousedown" />
+							<menuitem value="click" label="Click" />
+							<menuitem value="dblclick" label="Dblclick" />
+						</menupopup>
+					</menulist>
+					<checkbox id="hc-editor-enabled" label="Enabled" />
+				</hbox>
 
 				<tabbox id="hc-editor-funcsTabbox" flex="1">
 					<tabs>
@@ -113,7 +124,7 @@
 <menuseparator id="hc-editor-funcsSep-tabs" />
 <menuitem
 	value="openUriInTab" label="hcFunc-openUriInTab"
-	hc_args="loadInBackground loadJSInBackground refererPolicy moveTo hidePopup"
+	hc_args="loadInBackground loadJSInBackground refererPolicy moveTabTo hidePopup"
 	hc_supports="link img tab bookmark historyItem" />
 <menuitem
 	value="openUriInCurrentTab" label="hcFunc-openUriInCurrentTab"
@@ -121,7 +132,7 @@
 	hc_supports="link img tab bookmark historyItem" />
 <menuitem
 	value="openUriInWindow" label="hcFunc-openUriInWindow"
-	hc_args="loadInBackground loadJSInBackground refererPolicy moveTo hidePopup"
+	hc_args="loadInBackground loadJSInBackground refererPolicy moveWinTo hidePopup"
 	hc_supports="link img tab bookmark historyItem" />
 <menuitem
 	value="openInSidebar" label="hcFunc-openInSidebar"

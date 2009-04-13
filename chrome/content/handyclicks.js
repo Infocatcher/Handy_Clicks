@@ -15,8 +15,6 @@ var handyClicks = {
 	evtStrOnMousedown: "",
 	hasMousemoveHandler: false,
 	mousemoveParams: { dist: 0 },
-	prefs: Components.classes["@mozilla.org/preferences;1"]
-		.createInstance(Components.interfaces.nsIPref),
 	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
 	init: function() {
 		window.removeEventListener("load", this, false);
@@ -25,7 +23,6 @@ var handyClicks = {
 		window.addEventListener("mouseup", this, true);
 		window.addEventListener("contextmenu", this, true);
 		window.addEventListener("dblclick", this, true);
-		this.prefs.addObserver("extensions.handyclicks.", this, false);
 	},
 	destroy: function() {
 		window.removeEventListener("unload", this, false);
@@ -34,7 +31,6 @@ var handyClicks = {
 		window.removeEventListener("mouseup", this, true);
 		window.removeEventListener("contextmenu", this, true);
 		window.removeEventListener("dblclick", this, true);
-		this.prefs.removeObserver("extensions.handyclicks.", this);
 		this.clearCMenuTimeout();
 	},
 	get fxVersion() {
@@ -105,7 +101,6 @@ var handyClicks = {
 		for(var p in fls)
 			if(fls.hasOwnProperty(p))
 				fls[p] = false;
-		this.ut._log("!!! skipFlags >> this.flags.runned = " + this.flags.runned);
 	},
 	mousedownHandler: function(e) { //~ todo: test hiding of context menu in Linux
 		// this.skipFlags(); //~ ?
@@ -169,12 +164,9 @@ var handyClicks = {
 		this.mousemoveParams.screenX = e.screenX;
 		this.mousemoveParams.screenY = e.screenY;
 
-		// this.ut._log("mousemoveHandler >> " + this.mousemoveParams.dist);
-
 		if(this.mousemoveParams.dist < this.ut.pref("disallowMousemoveDist"))
 			return;
 
-		this.ut._log("mousemoveHandler >> this.flags.runned = true;");
 		this.flags.runned = true;
 		this.flags.stopContextMenu = false; //~ ?
 		this.flags.stopClick = false; //~ ?
@@ -192,11 +184,9 @@ var handyClicks = {
 	stopContextMenu: function(e) {
 		if(this.flags.stopContextMenu)
 			this.stopEvent(e);
-		this.ut._log("stopContextMenu >> " + this.flags.stopContextMenu);
 	},
 	showPopupOnItem: function(popup, node, e) {
 		this.flags.runned = true;
-		this.ut._log("showPopupOnItem >> this.flags.runned = true;");
 
 		popup = popup || this._cMenu;
 		node = node || this.origItem;
@@ -465,7 +455,6 @@ var handyClicks = {
 		if(this.disabled)
 			return;
 
-		this.ut._log("clickHandler >> this.flags.stopClick = " + this.flags.stopClick);
 		if(this.flags.stopClick)
 			this.stopEvent(e); // Stop "contextmenu" event in Windows
 
@@ -491,7 +480,6 @@ var handyClicks = {
 		if(this.flags.runned || e.type != funcObj.eventType)
 			return;
 		this.flags.runned = true;
-		this.ut._log("runFunc >> this.flags.runned = true; " + e.type);
 
 		this.stopEvent(e); // this stop "contextmenu" event in Windows
 		this.clearCMenuTimeout();
