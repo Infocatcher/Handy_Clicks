@@ -1,5 +1,6 @@
 var handyClicksEditor = {
 	ut: handyClicksUtils, // shortcut
+	ps: handyClicksPrefServ, // shortcut
 	rebuildCustomTypes: true,
 	types: {
 		checkboxes: {
@@ -21,9 +22,13 @@ var handyClicksEditor = {
 		if(!wa[0] || !wa[1] || !window.opener)
 			return;
 		this.initShortcuts();
+		this.initUI();
+		this.mBox.selectedIndex = this.mode == "shortcut" ? 0 : 1;
+		this.ps.addPrefsObserver(this.initUI, this);
+	},
+	initUI: function() {
 		this.initShortcutEditor();
 		this.initCustomTypesEditor();
-		this.mBox.selectedIndex = this.mode == "shortcut" ? 0 : 1;
 	},
 	$: function(id) {
 		return document.getElementById(id);

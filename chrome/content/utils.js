@@ -1,4 +1,21 @@
+var handyClicksObservers = {
+	observers: [],
+	notifyObservers: function() {
+		var obs = this.observers;
+		for(var i = 0, len = obs.length; i < len; i++)
+			if(i in obs)
+				obs[i][0].apply(obs[i][1] || this, arguments);
+	},
+	addPrefsObserver: function(fnc, context) {
+		this.observers.push([fnc, context]);
+		return this.observers.length - 1;
+	},
+	removePrefsObserver: function(oId) {
+		delete(this.observers[oId]);
+	}
+};
 var handyClicksUtils = {
+	__proto__: handyClicksObservers,
 	consoleSvc: Components.classes["@mozilla.org/consoleservice;1"]
 		.getService(Components.interfaces.nsIConsoleService),
 	_log: function(msg) {
@@ -43,31 +60,18 @@ var handyClicksUtils = {
 	destroy: function() {
 		window.removeEventListener("unload", this, false);
 		this.nsIPref.removeObserver(this.nPrefix, this);
-		this.observers = null;
 	},
 	handleEvent: function(e) {
 		this.destroy();
 	},
 
 	// Preferences observer:
-	observers: [],
-	addPrefsObserver: function(fnc, context) {
-		this.observers.push([fnc, context]);
-		return this.observers.length - 1;
-	},
-	removePrefsObserver: function(oId) {
-		delete(this.observers[oId]);
-	},
 	observe: function(subject, topic, pName) { // prefs observer
 		if(topic != "nsPref:changed")
 			return;
 		pName = pName.substring(this.nLength);
 		this.readPref(pName);
-
-		var obs = this.observers;
-		for(var i = 0, len = obs.length; i < len; i++)
-			if(i in obs)
-				obs[i][0].call(obs[i][1] || this, pName);
+		this.notifyObservers(pName);
 	},
 
 	// API functions:
@@ -77,11 +81,7 @@ var handyClicksUtils = {
 				.getService(Components.interfaces.nsIPrefBranch);
 		return this._prefSvc;
 	},
-	get ss() {
-		if(!this._ss)
-			this._ss = Components.interfaces.nsISupportsString;
-		return this._ss;
-	},
+	get ss() { return Components.interfaces.nsISupportsString; },
 	_prefs: { __proto__: null }, // Prefs cache
 	pref: function(pName, pVal) {
 		if(typeof pVal != "undefined")

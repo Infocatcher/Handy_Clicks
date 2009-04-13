@@ -7,7 +7,8 @@ var handyClicksSets = {
 		this.initChortcuts();
 
 		this.drawTree();
-		this.updateButtons();
+		this.updButtons();
+		this.ps.addPrefsObserver(this.updTree, this);
 
 		this.updPrefsUI();
 		this.ut.addPrefsObserver(this.updPrefsUI, this);
@@ -159,7 +160,11 @@ var handyClicksSets = {
 	convertToString: function(x) {
 		return typeof x == "string" ? '"' + x + '"' : x;
 	},
-	updateButtons: function() {
+	updTree: function() {
+		this.redrawTree();
+		this.updButtons();
+	},
+	updButtons: function() {
 		var noSel = !this.selectedRows.length;
 		["cmdDelete", "cmdEdit"].forEach(
 			function(hash) { this[hash].setAttribute("disabled", noSel); },
