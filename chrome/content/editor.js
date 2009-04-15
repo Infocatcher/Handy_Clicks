@@ -44,7 +44,6 @@ var handyClicksEditor = {
 		this.type = wa[2];
 	},
 	initShortcutEditor: function() {
-		// alert(this.target + "\n" + this.type);
 		var setsObj = handyClicksPrefs[this.target];
 		setsObj = typeof setsObj == "object" //~ todo: isOkFuncObj
 			? setsObj[this.type] || {}
@@ -209,7 +208,8 @@ var handyClicksEditor = {
 			this
 		);
 		this.target = target;
-		this.type = this.$("hc-editor-itemTypes").selectedItem.value;
+		var type = this.$("hc-editor-itemTypes").selectedItem;
+		this.type = type ? type.value : null;
 		this.initShortcutEditor();
 	}
 };

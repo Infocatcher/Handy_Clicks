@@ -36,8 +36,9 @@
 	</stringbundleset>
 
 	<commandset id="handyClicks-setsCommands">
-		<command id="handyClicks-sets-cmdDelete" oncommand="handyClicksSets.deleteItems();" label="Delete" />
+		<command id="handyClicks-sets-cmdAdd" oncommand="handyClicksSets.addItems();" label="Add" />
 		<command id="handyClicks-sets-cmdEdit" oncommand="handyClicksSets.editItems();" label="Edit" />
+		<command id="handyClicks-sets-cmdDelete" oncommand="handyClicksSets.deleteItems();" label="Delete" />
 	</commandset>
 	<keyset id="handyClicks-setsKeys">
 		<key keycode="VK_DELETE" id="handyClicks-sets-keyDelete" command="handyClicks-sets-cmdDelete" />
@@ -69,8 +70,9 @@
 				<treechildren id="handyClicks-setsTreeContent" />
 			</tree>
 			<hbox pack="center">
-				<button id="handyClicks-sets-buttonDelete" command="handyClicks-sets-cmdDelete" />
+				<button id="handyClicks-sets-buttonAdd" command="handyClicks-sets-cmdAdd" />
 				<button id="handyClicks-sets-buttonEdit" command="handyClicks-sets-cmdEdit" />
+				<button id="handyClicks-sets-buttonDelete" command="handyClicks-sets-cmdDelete" />
 
 				<button label="Save" oncommand="handyClicksPrefServ.saveSettingsObjects();" />
 
@@ -97,7 +99,7 @@
 			<preference id="forceHideContextMenu" type="bool" name="extensions.handyclicks.forceHideContextMenu" />
 
 			<preference id="disallowMousemoveDist" type="int" name="extensions.handyclicks.disallowMousemoveDist" />
-			
+
 			<preference id="convertURIs" type="bool" name="extensions.handyclicks.convertURIs" />
 			<preference id="convertURIsTo" type="string" name="extensions.handyclicks.convertURIsTo" />
 

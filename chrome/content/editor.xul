@@ -11,7 +11,7 @@
 	ondialogaccept=""
 	width="560"
 	height="420"
-	persist="width height">
+	persist="width height screenX screenY">
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />

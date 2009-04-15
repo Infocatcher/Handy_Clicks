@@ -115,8 +115,7 @@ var handyClicksPrefServ = {
 		}
 		res = this.delLastComma(res) + "};";
 
-		if(confirm("Save?"))
-			this.saveSettings(res);
+		this.saveSettings(res);
 	},
 	objToSource: function(obj) {
 		return uneval(obj).replace(/^\(|\)$/g, "");

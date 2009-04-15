@@ -18,3 +18,9 @@ checkbox[preference="enabled"][hideallafter="true"] ~ * {
 menuitem + #hc-editor-customTypesSep {
 	display: -moz-box;
 }
+
+/* Warning for empty menulists */
+menulist:not([label]) > .menulist-label-box {
+	outline: 2px solid red;
+	outline-offset: -2px;
+}

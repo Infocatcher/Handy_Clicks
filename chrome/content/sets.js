@@ -12,12 +12,11 @@ var handyClicksSets = {
 
 		this.updPrefsUI();
 		this.ut.addPrefsObserver(this.updPrefsUI, this);
+		// <preferences ononchange="handyClicksSets.updPrefsUI();"> return some bugs
 	},
 	destroy: function() {
 		var eds = this.openedEditors, ed;
 		for(var hash in eds) {
-			if(!eds.hasOwnProperty(hash))
-				continue;
 			ed = eds[hash];
 			ed.close();
 		}
@@ -189,8 +188,15 @@ var handyClicksSets = {
 		}
 		return tRowsArr;
 	},
+	addItems: function() {
+		this.openEditorWindow(null);
+	},
 	editItems: function(e) {
-		if(e && ((e.button && e.button != 0) || !this.isClickOnRow(e)))
+		if(e && !this.isClickOnRow(e)) {
+			this.addItems();
+			return;
+		}
+		if(e && e.button && e.button != 0)
 			return;
 		this.selectedRows.forEach(this.openEditorWindow, this);
 	},
@@ -232,76 +238,28 @@ var handyClicksSets = {
 				return false;
 		return true;
 	},
-	openedEditors: {},
-	openEditorWindow: function(tRow) {
-		var shortcut = tRow.__shortcut;
-		var itemType = tRow.__itemType;
-		if(!shortcut || !itemType)
-			return;
-		// alert("[" + shortcut + "]\n[" + itemType + "]");
+	openedEditors: { __proto__: null },
+	openEditorWindow: function(tRow, mode) {
+		var shortcut = tRow ? tRow.__shortcut : Date.now() + "-" + Math.random();
+		var itemType = tRow ? tRow.__itemType : null;
+		//if(!shortcut || !itemType)
+		//	return;
 
 		var hash = shortcut + "-" + itemType;
 		if(this.openedEditors[hash]) {
 			this.openedEditors[hash].focus();
 			return;
 		}
-		// "browser.preferences.instantApply" -> true
-		// -> "chrome,resizable,dependent"
-		var win = window.opener.openDialog( // window.openDialog => modal windows...
+		var win = window.openDialog( // window.openDialog => modal windows...
 			"chrome://handyclicks/content/editor.xul",
 			"",
-			"chrome,resizable,dialog=0,alwaysRaised",
-			"shortcut", shortcut, itemType
+			"chrome,resizable,dependent,centerscreen,dialog=0", // alwaysRaised
+			mode || "shortcut", shortcut, itemType
 		);
 
-		/***
-		var args = {};
-		args.type = "shortcut";
-		args.shortcut = shortcut;
-		args.itemType = itemType;
-		args.wrappedJSObject = args;
+		if(tRow)
+			this.addProperties(tRow, { edited: true });
 
-		var wws = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
-			.getService(Components.interfaces.nsIWindowWatcher);
-		var win = wws.openWindow(
-			null,
-			"chrome://handyclicks/content/editor.xul",
-			"",
-			"chrome,resizable,dialog=0,dependent",
-			args
-		);
-		***/
-
-		/***
-		var array = Components.classes["@mozilla.org/array;1"]
-						  .createInstance(Components.interfaces.nsIMutableArray);
-		var variant = Components.classes["@mozilla.org/variant;1"]
-								.createInstance(Components.interfaces.nsIWritableVariant);
-		variant.setFromVariant("shortcut");
-		array.appendElement(variant, false);
-		variant = Components.classes["@mozilla.org/variant;1"]
-								.createInstance(Components.interfaces.nsIWritableVariant);
-		variant.setFromVariant(shortcut);
-		array.appendElement(variant, false);
-		var variant = Components.classes["@mozilla.org/variant;1"]
-								.createInstance(Components.interfaces.nsIWritableVariant);
-		variant.setFromVariant(itemType);
-		array.appendElement(variant, false);
-		var wws = Components. classes ["@mozilla.org/embedcomp/window-watcher;1"]. getService (Components. interfaces. nsIWindowWatcher);
-		var win = wws. openWindow
-		(
-			null,
-			"chrome://handyclicks/content/editor.xul",
-			"",
-			"chrome,resizable,dialog=0,dependent",
-			array
-		);
-		***/
-
-		// if(!this.ut.getPref("browser.preferences.instantApply"))
-		//	return;
-		this.addProperties(tRow, { edited: true });
-		tRow.blur();
 		var _this = this;
 		win.addEventListener("load", function(e) {
 			win.removeEventListener(e.type, arguments.callee, false);
@@ -310,7 +268,8 @@ var handyClicksSets = {
 				function(e) {
 					win.removeEventListener(e.type, arguments.callee, false);
 					delete(_this.openedEditors[hash]);
-					_this.addProperties(tRow, { edited: false });
+					if(tRow)
+						_this.addProperties(tRow, { edited: false });
 				},
 				false
 			);
@@ -337,6 +296,7 @@ var handyClicksSets = {
 	/*** Prefs pane ***/
 	updPrefsUI: function() {
 		this.loadPrefs();
+		// setTimeout(function(_this) { _this.loadPrefs(); }, 0, this);
 		this.updateAllDependencies();
 		this.showPrefs();
 	},
@@ -353,6 +313,7 @@ var handyClicksSets = {
 			if(this.$(id + "-" + i).checked)
 				val += i;
 		this.ut.setPref("extensions.handyclicks." + id, val);
+		this.ps.saveSettingsObjects();
 	},
 	showPrefs: function(enablIt) {
 		enablIt = enablIt || this.$("handyClicks-sets-enabled");
