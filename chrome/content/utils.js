@@ -43,6 +43,15 @@ var handyClicksUtils = {
 			 }
 		);
 	},
+	get promptsSvc() {
+		if(!this._promptsSvc)
+			this._promptsSvc = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+				.getService(Components.interfaces.nsIPromptService);
+		return this._promptsSvc;
+	},
+	alertWithTitle: function(ttl, txt) {
+		this.promptsSvc.alert(window, ttl, txt);
+	},
 
 	// Preferences:
 	nPrefix: "extensions.handyclicks.",

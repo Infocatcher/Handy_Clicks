@@ -7,8 +7,11 @@
 	id="handyClicks-editor"
 	windowtype="handyclicks:editor"
 	title="Handy Clicks: Editor"
+	buttons="accept, cancel, extra1"
+	buttonlabelextra1="Apply"
 	onload="handyClicksEditor.init();"
-	ondialogaccept=""
+	ondialogaccept="return handyClicksEditor.save();"
+	ondialogextra1="handyClicksEditor.save();"
 	width="560"
 	height="420"
 	persist="width height screenX screenY">
@@ -16,6 +19,10 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/editor.js" />
+
+	<stringbundleset id="handyClicks-stringbundleset">
+		<stringbundle id="handyClicks-strings" src="chrome://handyclicks/locale/sets.properties" />
+	</stringbundleset>
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">
 		<tabs>
@@ -181,16 +188,21 @@
 							</menulist>
 							<vbox id="hc-editor-funcArgs" flex="1" />
 						</tabpanel>
-						<tabpanel flex="1">
-							<textbox id="hc-editor-funcField" multiline="true" wrap="off" flex="1"
-								value="var event = arguments[0];" />
+						<tabpanel flex="1" orient="vertical">
+							<hbox align="center">
+								<label value="Label:" />
+								<textbox id="hc-editor-funcLabel" flex="1" />
+							</hbox>
+							<textbox id="hc-editor-funcField" multiline="true" wrap="off" flex="1" />
+							<splitter />
+							<textbox id="hc-editor-funcExamples" readonly="true" multiline="true" wrap="off" flex="1" />
 						</tabpanel>
 					</tabpanels>
 				</tabbox>
 
 			</tabpanel>
 			<tabpanel flex="1" orient="vertical">
-				<menulist id="hc-editor-customType" editable="true">
+				<menulist id="hc-editor-customType" editable="true" oncommand="handyClicksEditor.initCustomTypesEditor();">
 					<menupopup id="hc-editor-customTypePopup" />
 				</menulist>
 				<label value="Define item (return item or null):" />

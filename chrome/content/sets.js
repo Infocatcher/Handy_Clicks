@@ -13,6 +13,12 @@ var handyClicksSets = {
 		this.updPrefsUI();
 		this.ut.addPrefsObserver(this.updPrefsUI, this);
 		// <preferences ononchange="handyClicksSets.updPrefsUI();"> return some bugs
+
+		this.instantApply = this.ut.getPref("browser.preferences.instantApply");
+		if(this.instantApply)
+			this.applyButton.hidden = true;
+		else
+			this.toggleApply(true);
 	},
 	destroy: function() {
 		var eds = this.openedEditors, ed;
@@ -20,6 +26,15 @@ var handyClicksSets = {
 			ed = eds[hash];
 			ed.close();
 		}
+	},
+
+	get applyButton() {
+		if(!this._applyButton)
+			this._applyButton = document.documentElement.getButton("extra1");
+		return this._applyButton;
+	},
+	toggleApply: function(dis) {
+		this.applyButton.disabled = dis;
 	},
 
 	/*** Actions pane ***/
@@ -50,7 +65,7 @@ var handyClicksSets = {
 		for(var shortcut in handyClicksPrefs) {
 			if(!handyClicksPrefs.hasOwnProperty(shortcut))
 				continue;
-			if(!this.okPrefStr.test(shortcut)) {
+			if(!this.ps.isOkShortcut(shortcut)) {
 				this.ut._err("[Handy Clicks]: invalid shortcut in prefs: " + shortcut);
 				continue;
 			}
@@ -98,7 +113,7 @@ var handyClicksSets = {
 		return tChildren;
 	},
 	appendItems: function(parent, items, shortcut) {
-		var tItem, tRow, it, isCustom;
+		var tItem, tRow, it, isCustom, isCustomType;
 		// if(items.$all) //~ todo: isOkFuncObj
 		//	items = { $all: items.$all };
 		for(var itemType in items) {
@@ -108,7 +123,8 @@ var handyClicksSets = {
 			tRow = document.createElement("treerow");
 			it = items[itemType];
 			isCustom = it.custom;
-			this.appendTreeCell(tRow, "label", this.ut.getLocalised(isCustom ? "customItemType" : itemType));
+			isCustomType = itemType.indexOf("custom_") == 0;
+			this.appendTreeCell(tRow, "label", this.ut.getLocalised(isCustomType ? "customItemType" : itemType));
 			this.appendTreeCell(tRow, "label", it.eventType);
 			this.appendTreeCell(tRow, "label", isCustom ? decodeURIComponent(it.label) : this.ut.getLocalised(it.action));
 			this.appendTreeCell(tRow, "label", isCustom ? this.ut.getLocalised("customFunction") : it.action);
@@ -118,15 +134,6 @@ var handyClicksSets = {
 
 			this.addProperties(tRow, { disabled: !it.enabled, buggy: this.isBuggyFuncObj(it), custom: isCustom });
 
-			/*
-			var props = "";
-			if(!it.enabled)
-				props += "disabled ";
-			if(this.isBuggyFuncObj(it))
-				props += "buggy";
-			if(props)
-				tRow.setAttribute("properties", props);
-			*/
 			tRow.__shortcut = shortcut;
 			tRow.__itemType = itemType;
 			tItem.appendChild(tRow);
@@ -182,14 +189,21 @@ var handyClicksSets = {
 			this.view.selection.getRangeAt(t, start, end);
 			for(var v = start.value; v <= end.value; v++) {
 				tRow = tRows[v];
-				if(tRow.__shortcut && tRow.__itemType)
-					tRowsArr.push(tRows[v]); // for deleting (getElementsByTagName is dinamically)
+				if(tRow.__shortcut && tRow.__itemType) {
+					tRowsArr.push(tRow); // for deleting (getElementsByTagName is dinamically)
+					tRow.__index = v;
+				}
 			}
 		}
 		return tRowsArr;
 	},
+	get isTreePaneSelected() {
+		var prefWin = this.$("handyClicks-settings");
+		return prefWin.currentPane == prefWin.preferencePanes[0];
+	},
 	addItems: function() {
-		this.openEditorWindow(null);
+		if(this.isTreePaneSelected)
+			this.openEditorWindow(null);
 	},
 	editItems: function(e) {
 		if(e && !this.isClickOnRow(e)) {
@@ -197,6 +211,8 @@ var handyClicksSets = {
 			return;
 		}
 		if(e && e.button && e.button != 0)
+			return;
+		if(!this.isTreePaneSelected)
 			return;
 		this.selectedRows.forEach(this.openEditorWindow, this);
 	},
@@ -206,11 +222,15 @@ var handyClicksSets = {
 		return row.value > -1;
 	},
 	deleteItems: function() {
+		if(!this.isTreePaneSelected)
+			return;
 		var tRows = this.selectedRows;
 		if(!tRows.length)
 			return;
-		if(confirm("Are you sure to delete " + tRows.length + " item(s)?")) //~ todo: promptsServ
-			tRows.forEach(this.deleteItem, this);
+		if(!confirm("Are you sure to delete " + tRows.length + " item(s)?")) //~ todo: promptsServ
+			return;
+		tRows.forEach(this.deleteItem, this);
+		this.toggleApply(false);
 	},
 	deleteItem: function(tRow) {
 		var shortcut = tRow.__shortcut;
@@ -277,20 +297,41 @@ var handyClicksSets = {
 		this.openedEditors[hash] = win;
 	},
 	toggleEnabled: function(e) {
-		var row = {}, col = {}, obj = {};
-		this.tree.treeBoxObject.getCellAt(e.clientX, e.clientY, row, col, obj);
-		if(row.value == -1 || col.value == null)
-			return;
-		var checked = this.tree.view.getCellValue(row.value, col.value);
+		var rowIndx, column, tRow;
+		if(e) {
+			var row = {}, col = {}, obj = {};
+			this.tree.treeBoxObject.getCellAt(e.clientX, e.clientY, row, col, obj);
+			if(row.value == -1 || col.value == null)
+				return;
+			rowIndx = row.value;
+			column = col.value;
+		}
+		else { // Space button pressed
+			var fi = document.commandDispatcher.focusedElement;
+			if(fi && fi.nodeName != "tree")
+				return;
+			var rows = this.selectedRows;
+			if(rows.length != 1)
+				return;
+			tRow = rows[0];
+			rowIndx = tRow.__index;
+			var columns = this.tree.columns;
+			column = columns[columns.length - 1];
+		}
+		var checked = this.tree.view.getCellValue(rowIndx, column);
 		if(!checked) // real checked is "true" or "false"
 			return;
 		var enabled = checked != "true";
-		var tRow = this.content.getElementsByTagName("treerow")[row.value];
+		tRow = tRow || this.content.getElementsByTagName("treerow")[rowIndx];
 		this.addProperties(tRow, { disabled: !enabled });
-		var tCell = tRow.getElementsByTagName("treecell")[col.value.index];
+		var tCell = tRow.getElementsByTagName("treecell")[column.index];
 		tCell.setAttribute("value", enabled);
 
 		handyClicksPrefs[tRow.__shortcut][tRow.__itemType].enabled = enabled;
+		if(this.instantApply)
+			this.ps.saveSettingsObjects();
+		else
+			this.toggleApply(false);
 	},
 
 	/*** Prefs pane ***/
@@ -306,7 +347,7 @@ var handyClicksSets = {
 		for(var i = 0; i <= 2; i++)
 			this.$(id + "-" + i).checked = buttons.indexOf(i) > -1;
 	},
-	savePrefs: function() {
+	savePrefs: function(applyFlag) {
 		var id = "disallowMousemoveForButtons";
 		var val = "";
 		for(var i = 0; i <= 2; i++)
@@ -314,6 +355,15 @@ var handyClicksSets = {
 				val += i;
 		this.ut.setPref("extensions.handyclicks." + id, val);
 		this.ps.saveSettingsObjects();
+		if(applyFlag && !this.instantApply) {
+			this.savePrefpanes();
+			this.toggleApply(true);
+		}
+	},
+	savePrefpanes: function() {
+		var pps = document.getElementsByTagName("prefpane");
+		for(var i = 0, len = pps.length; i < len; i++)
+			pps[i].writePreferences(true); // aFlushToDisk
 	},
 	showPrefs: function(enablIt) {
 		enablIt = enablIt || this.$("handyClicks-sets-enabled");
@@ -330,8 +380,12 @@ var handyClicksSets = {
 			tar = tar.parentNode.parentNode;
 		if(tar.hasAttribute("requiredfor"))
 			this.updateDependencies(tar);
-		if(this.ut.getPref("browser.preferences.instantApply")) //~ todo: hidden textbox?
+		if(!tar.hasAttribute("preference"))
+			return;
+		if(this.instantApply)
 			this.savePrefs();
+		else
+			this.toggleApply(false);
 	},
 	updateDependencies: function(it) {
 		var dis = it.hasAttribute("disabledvalues")

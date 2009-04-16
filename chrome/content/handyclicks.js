@@ -46,7 +46,7 @@ var handyClicks = {
 	get disabled() {
 		return !this.ut.pref("enabled");
 	},
-	get cMenu() {
+	getItemContext: function(e) {
 		var cm = null;
 		switch(this.itemType) {
 			case "link":
@@ -71,7 +71,7 @@ var handyClicks = {
 			default: // custom types
 				var customTypes = window.handyClicksCustomTypes[this.itemType];
 				cm = customTypes && customTypes._contextMenu
-					? customTypes._contextMenu()
+					? customTypes._contextMenu.call(handyClicksFuncs, e)
 					: this.getContextMenu();
 		}
 		this._cMenu = cm; // cache
@@ -129,7 +129,7 @@ var handyClicks = {
 			return;
 
 		var _this = this;
-		var cm = this.cMenu;
+		var cm = this.getItemContext(e);
 		var cMenuDelay = this.ut.pref("showContextMenuTimeout");
 		if(cMenuDelay > 0 && cm && e.button == 2) { // Show context menu after delay
 			this.cMenuTimeout = setTimeout(
@@ -480,6 +480,7 @@ var handyClicks = {
 		if(this.flags.runned || e.type != funcObj.eventType)
 			return;
 		this.flags.runned = true;
+		this.flags.stopContextMenu = true;
 
 		this.stopEvent(e); // this stop "contextmenu" event in Windows
 		this.clearCMenuTimeout();

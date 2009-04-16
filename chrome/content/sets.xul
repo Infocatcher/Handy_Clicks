@@ -8,23 +8,18 @@
 	id="handyClicks-settings"
 	windowtype="handyclicks:settings"
 	title="Handy Clicks: Settings"
+	buttons="accept, cancel, extra1"
+	buttonlabelextra1="Apply"
+	ondialogaccept="handyClicksSets.savePrefs();"
+	ondialogextra1="handyClicksSets.savePrefs(true);"
 	onload="handyClicksSets.init();"
 	onunload="handyClicksSets.destroy();"
-	ondialogaccept="handyClicksSets.savePrefs();"
 	oncommand="handyClicksSets.prefsChanged(event);"
 	onchange="handyClicksSets.prefsChanged(event);"
 	oninput="handyClicksSets.prefsChanged(event);"
 	width="690"
 	height="520"
 	persist="width height screenX screenY">
-
-	<!--
-	title="Test"
-	buttons="accept, cancel, extra2"
-	buttonlabelextra2="extra2"
-	onload=""
-	ondialogaccept=""
-	persist="screenX screenY"> -->
 
 	<box> <!-- Fix for Firefox 2.0 -->
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
@@ -41,9 +36,12 @@
 		<command id="handyClicks-sets-cmdDelete" oncommand="handyClicksSets.deleteItems();" label="Delete" />
 	</commandset>
 	<keyset id="handyClicks-setsKeys">
-		<key keycode="VK_DELETE" id="handyClicks-sets-keyDelete" command="handyClicks-sets-cmdDelete" />
+		<key keycode="VK_F3" id="handyClicks-sets-keyAdd" command="handyClicks-sets-cmdAdd" />
 		<key keycode="VK_F4" id="handyClicks-sets-keyEdit" command="handyClicks-sets-cmdEdit" />
-		<key keycode="VK_F5" id="handyClicks-sets-keyDelete" oncommand="handyClicksSets.redrawTree();" />
+		<key keycode="VK_DELETE" id="handyClicks-sets-keyDelete" command="handyClicks-sets-cmdDelete" />
+		<key keycode="VK_F5" id="handyClicks-sets-keyReload" oncommand="handyClicksSets.redrawTree();" />
+		<key key=" " id="handyClicks-sets-keyToggle" oncommand="handyClicksSets.toggleEnabled();" />
+		<key key="S" modifiers="control" id="handyClicks-sets-keyApply" oncommand="handyClicksSets.savePrefs(true);" />
 	</keyset>
 	</box> <!-- Fix for Firefox 2.0 -->
 

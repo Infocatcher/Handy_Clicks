@@ -290,7 +290,7 @@ var handyClicksFuncs = {
 			return true;
 		}
 		catch(e) {
-			this.alertWithTitle(
+			this.ut.alertWithTitle(
 				this.ut.getLocalised("errorTitle"),
 				this.ut.getLocalised("RegExpError").replace("%RegExp%", regexp) + e
 			);
@@ -465,9 +465,6 @@ var handyClicksFuncs = {
 		if(hidePopup)
 			this.hideItemPopup();
 	},
-	alertWithTitle: function(ttl, txt) {
-		this.promptsServ.alert(window, ttl, txt);
-	},
 	showGeneratedPopup: function(items) {
 		var popup = this.createPopup(items);
 		this.hc.showPopupOnItem(popup);
@@ -592,7 +589,7 @@ var handyClicksFuncs = {
 			.createInstance(Components.interfaces.nsILocalFile);
 		file.initWithPath(path);
 		if(!file.exists()) {
-			this.alertWithTitle("Handy Clicks error", path + "\nnot found!");
+			this.ut.alertWithTitle("Handy Clicks error", path + "\nnot found!");
 			return;
 		}
 		var process = Components.classes["@mozilla.org/process/util;1"]
@@ -824,7 +821,7 @@ var handyClicksFuncs = {
 		const pref = "browser.tabs.warnOnClose";
 		var shouldPrompt = tbr.mPrefs.getBoolPref(pref);
 		if(shouldPrompt) {
-			var promptsServ = this.promptsServ;
+			var pSvc = this.ut.promptsSvc;
 			// default to true: if it were false, we wouldn't get this far
 			var warnOnClose = { value: true };
 			var bundle = tbr.mStringBundle;
@@ -838,11 +835,11 @@ var handyClicksFuncs = {
 			// solve the problem of windows "obscuring" the prompt.
 			// see bug #350299 for more details
 			window.focus();
-			var buttonPressed = promptsServ.confirmEx(window,
+			var buttonPressed = pSvc.confirmEx(window,
 				bundle.getString("tabs.closeWarningTitle"),
 				bundle.getFormattedString(messageKey, [tabsToClose]),
-				(promptsServ.BUTTON_TITLE_IS_STRING * promptsServ.BUTTON_POS_0)
-				+ (promptsServ.BUTTON_TITLE_CANCEL * promptsServ.BUTTON_POS_1),
+				(pSvc.BUTTON_TITLE_IS_STRING * pSvc.BUTTON_POS_0)
+				+ (pSvc.BUTTON_TITLE_CANCEL * pSvc.BUTTON_POS_1),
 				bundle.getString(closeKey),
 				null, null,
 				bundle.getString("tabs.closeWarningPromptMe"),
@@ -939,7 +936,7 @@ var handyClicksFuncs = {
 		a = a || this.hc.item;
 		var s = a.innerHTML;
 		var onlyUnVisited = {};
-		var cnf = this.promptsServ.confirmCheck(
+		var cnf = this.ut.promptsSvc.confirmCheck(
 			window, this.ut.getLocalised("title"),
 			this.ut.getLocalised("openSimilarLinks"),
 			this.ut.getLocalised("openOnlyVisited"), onlyUnVisited
