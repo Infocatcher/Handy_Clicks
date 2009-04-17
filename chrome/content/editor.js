@@ -217,7 +217,7 @@ var handyClicksEditor = {
 					mi.setAttribute("label", this.ut.getLocalised(argName + "[" + vals[i] + "]"));
 					mp.appendChild(mi);
 				}
-				elt.value = argVal || "null";
+				elt.value = argVal + "";
 				elt.appendChild(mp);
 		}
 		elt.setAttribute("hc_argname", argName);
