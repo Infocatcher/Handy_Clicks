@@ -1,5 +1,6 @@
 var handyClicks = {
 	ut: handyClicksUtils, // shortcut
+	get fn() { return handyClicksFuncs; },
 	flags: {
 		stopClick: false,
 		runned: false,
@@ -71,7 +72,7 @@ var handyClicks = {
 			default: // custom types
 				var customTypes = window.handyClicksCustomTypes[this.itemType];
 				cm = customTypes && customTypes._contextMenu
-					? customTypes._contextMenu.call(handyClicksFuncs, e)
+					? customTypes._contextMenu.call(this.fn, e)
 					: this.getContextMenu();
 		}
 		this._cMenu = cm; // cache
@@ -249,9 +250,7 @@ var handyClicks = {
 		return (window.handyClicksPrefs || {})[str];
 	},
 	isOkFuncObj: function(fObj) { // funcObj && funcObj.enabled && funcObj.action
-		return typeof fObj == "object"
-			&& fObj.enabled
-			&& typeof fObj.action != "undefined";
+		return handyClicksPrefServ.isOkFuncObj(fObj) && fObj.enabled;
 	},
 	defineItem: function(e, sets) {
 		var all = this.isOkFuncObj(sets.$all);
@@ -263,19 +262,18 @@ var handyClicks = {
 		var itnn = it.nodeName.toLowerCase();
 
 		// Custom:
-		if(typeof window.handyClicksCustomTypes == "object") {
-			var customItem;
-			for(var type in handyClicksCustomTypes) {
-				if(!handyClicksCustomTypes.hasOwnProperty(type))
+		var cItem;
+		var cts = handyClicksCustomTypes;
+		for(var type in cts) {
+			if(!cts.hasOwnProperty(type))
+				continue;
+			if(all || this.isOkFuncObj(sets[type])) {
+				cItem = cts[type]._define.call(this, e, it);
+				if(!cItem)
 					continue;
-				if(all || this.isOkFuncObj(sets[type])) {
-					customItem = handyClicksCustomTypes[type]._define.call(this, e, it);
-					if(!customItem)
-						continue;
-					this.itemType = type;
-					this.item = customItem;
-					return;
-				}
+				this.itemType = type;
+				this.item = cItem;
+				return;
 			}
 		}
 
@@ -309,7 +307,7 @@ var handyClicks = {
 		if(
 			(all || this.isOkFuncObj(sets.historyItem))
 			&& it.namespaceURI == this.XULNS
-			&& handyClicksFuncs.getBookmarkUri(it)
+			&& this.fn.getBookmarkUri(it)
 			&& it.parentNode.id == "goPopup"
 		) {
 			this.itemType = "historyItem";
@@ -331,7 +329,7 @@ var handyClicks = {
 			)
 			// && it.parentNode.id != "historyUndoPopup"
 			&& it.parentNode.id != "goPopup"
-			&& handyClicksFuncs.getBookmarkUri(it)
+			&& this.fn.getBookmarkUri(it)
 		) {
 			this.itemType = "bookmark";
 			this.item = it;
@@ -489,25 +487,25 @@ var handyClicks = {
 		var args = this.argsToArr(funcObj.arguments);
 		args.unshift(e);
 		if(funcObj.custom) {
+			var action = decodeURIComponent(funcObj.action);
+			var aTitle = decodeURIComponent(funcObj.title);
 			try {
-				var fnc = new Function(decodeURIComponent(funcObj.action));
-				fnc.apply(handyClicksFuncs, args);
+				new Function(action).apply(this.fn, args);
 			}
 			catch(e) {
 				this.ut.notify(
 					this.ut.getLocalised("errorTitle"),
-					this.ut.getLocalised("customFunctionError")
-						.replace("%func%", decodeURIComponent(funcObj.title)),
+					this.ut.getLocalised("customFunctionError").replace("%func%", aTitle),
 					toErrorConsole
 				);
-				this.ut._log("Custom action error");
+				this.ut._err("[Handy Clicks]: Error in custom action " + aTitle + ":\n" + action);
 				throw e;
 			}
 		}
 		else {
-			var fnc = handyClicksFuncs[funcObj.action];
+			var fnc = this.fn[funcObj.action];
 			if(typeof fnc == "function")
-				fnc.apply(handyClicksFuncs, args);
+				fnc.apply(this.fn, args);
 			else {
 				this.ut.notify(
 					this.ut.getLocalised("errorTitle"),

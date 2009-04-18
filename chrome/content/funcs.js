@@ -255,7 +255,7 @@ var handyClicksFuncs = {
 			else
 				_this.getTabBrowser().loadURI(uri); // bookmarklets
 
-			setTimeout(function() { _this.restorePrefs(origPrefs); }, 0);
+			setTimeout(function(_this) { _this.restorePrefs(origPrefs); }, 0, _this);
 			// _this.restorePrefs(origPrefs);
 		}
 
@@ -275,7 +275,7 @@ var handyClicksFuncs = {
 		var filesPolicy = this.ut.pref("filesLinksPolicy");
 		if(filesPolicy < 1)
 			return false;
-		var regexp = this.ut.pref("filesLinksMask"); //~ todo: UTF-8
+		var regexp = this.ut.pref("filesLinksMask");
 		if(!regexp)
 			return false;
 		try {
@@ -290,7 +290,7 @@ var handyClicksFuncs = {
 			return true;
 		}
 		catch(e) {
-			this.ut.alertWithTitle(
+			this.ut.alertEx(
 				this.ut.getLocalised("errorTitle"),
 				this.ut.getLocalised("RegExpError").replace("%RegExp%", regexp) + e
 			);
@@ -514,47 +514,6 @@ var handyClicksFuncs = {
 				item.setAttribute(p, attrs[p]);
 		}
 	},
-
-
-	///////////////////
-	_test_old: function(e) { //~ del
-		this.ut._log("_test");
-		var items = [
-			{ label: "Label - 0", oncommand: "alert(this.label);" },
-			{},
-			{ label: "Label - 1", onclick: function() { alert(this.label); } },
-			{ label: "Label - 2", oncommand: "alert(this.label);", mltt_line_0: "line-0" },
-			{ label: "Label - 2", oncommand: "alert(this.label);", mltt_line_0: "line-0", mltt_line_1: "line-1" },
-		];
-		this.showGeneratedPopup(items);
-	},
-	_test: function(e) {
-		var items = [
-			{ label: "Label - 0" },
-			{},
-			{ label: "Label - 1" },
-			{ label: "Label - 2" },
-			{ label: "Label - 3" },
-			[
-				{ label: "Menu - 4" },
-				[
-					{ label: "Label - 4 - 0" },
-					[
-						{ label: "Menu - 4 - 1" },
-						[
-							{ label: "Label - 4 - 1 - 1" }
-						]
-					],
-					{ label: "Label - 4 - 1" },
-					{ label: "Label - 4 - 2" }
-				]
-			]
-		];
-		var popup = this.showGeneratedPopup(items);
-		popup.setAttribute("oncommand", "alert(event.target.label);");
-	},
-	///////////////////
-
 	get profileDir() {
 		if(!this._profileDir)
 			this._profileDir = this.ps.profileDir
@@ -589,7 +548,7 @@ var handyClicksFuncs = {
 			.createInstance(Components.interfaces.nsILocalFile);
 		file.initWithPath(path);
 		if(!file.exists()) {
-			this.ut.alertWithTitle("Handy Clicks error", path + "\nnot found!");
+			this.ut.alertEx("Handy Clicks error", path + "\nnot found!");
 			return;
 		}
 		var process = Components.classes["@mozilla.org/process/util;1"]
@@ -698,21 +657,6 @@ var handyClicksFuncs = {
 		popup.setAttribute("oncommand", "handyClicksFuncs.openUriWithApp(event, this);");
 		popup.__uri = this.convertStrFromUnicode(uri);
 	},
-
-	///////////////////
-	_test_showOpenUriWithAppsPopup: function(e) { //~ del
-		var items = [
-			{ label: "Opera 9.5x", __path: "c:\\Program Files\\Opera 9.5\\opera.exe" },
-			{ label: "IE 7.0", __path: "c:\\Program Files\\Internet Explorer\\iexplore.exe" },
-			{},
-			{ label: "Firefox 2.0.0.x - test", __path: "c:\\Program Files\\Mozilla Firefox 2.0.0.x\\firefox.exe",
-				__args: ["-no-remote", "-p", "fx2.0"] },
-			{ label: "OperaUSB", __path: "%profile%\\..\\..\\..\\..\\OperaUSB\\op.com" }
-		];
-		this.showOpenUriWithAppsPopup(items);
-	},
-	///////////////////
-
 	setPrefs: function(prefsObj) {
 		var origs = {};
 		for(var p in prefsObj) {
@@ -726,7 +670,7 @@ var handyClicksFuncs = {
 	restorePrefs: function(prefsObj) {
 		for(var p in prefsObj)
 			if(prefsObj.hasOwnProperty(p))
-				this.ut.setPref(p, prefsObj[p]); //~ todo: test! (setTimeout for fx3 ?)
+				this.ut.setPref(p, prefsObj[p]);
 	},
 	submitFormToNewDoc: function(e, toNewWin, loadInBackground, refererPolicy, node) {
 		// Thanks to SubmitToTab! ( https://addons.mozilla.org/firefox/addon/483 )
@@ -766,11 +710,16 @@ var handyClicksFuncs = {
 			node.form.target = origTarget;
 		else
 			node.form.removeAttribute("target");
-		// node.form.target = origTarget ? origTarget : "_self"; //~ todo: removeAttribute ?
 		this.restorePrefs(origPrefs);
 	},
-	removeOtherTabs: function(e, tab) {
+	fixTab: function(tab) {
 		tab = tab || this.hc.item;
+		if(!tab || tab.nodeName != "tab")
+			tab = this.getTabBrowser().mCurrentTab;
+		return tab;
+	},
+	removeOtherTabs: function(e, tab) {
+		tab = this.fixTab(tab);
 		this.getTabBrowser().removeAllTabsBut(tab);
 	},
 	removeAllTabs: function(e) {
@@ -782,8 +731,8 @@ var handyClicksFuncs = {
 		}
 	},
 	removeRightTabs: function(e, tab) {
+		tab = this.fixTab(tab);
 		var tbr = this.getTabBrowser();
-		tab = tab || (this.hc.itemType == "tab" && this.hc.item) || tbr.mCurrentTab;;
 		var tabs = tbr.mTabContainer.childNodes;
 		var _tabs = [];
 		for(var i = tabs.length - 1; i >= 0; --i) {
@@ -795,8 +744,8 @@ var handyClicksFuncs = {
 			_tabs.forEach(tbr.removeTab, tbr);
 	},
 	removeLeftTabs: function(e, tab) {
+		tab = this.fixTab(tab);
 		var tbr = this.getTabBrowser();
-		tab = tab || (this.hc.itemType == "tab" && this.hc.item) || tbr.mCurrentTab;;
 		var tabs = tbr.mTabContainer.childNodes;
 		var _tabs = [];
 		for(var i = 0, len = tabs.length; i < len; i++) {
@@ -852,10 +801,18 @@ var handyClicksFuncs = {
 		}
 		return reallyClose;
 	},
+	removeTab: function(e, tab) {
+		tab = this.fixTab(tab);
+		this.getTabBrowser().removeTab(tab);
+	},
 	renameTab: function(e, tab) {
-		tab = tab || this.hc.item;
-		var lbl = prompt("New name:", tab.label); //~ todo: promptsService
-		tab.label = lbl === null
+		tab = this.fixTab(tab);
+		var lbl = this.ut.promptEx(
+			this.ut.getLocalised("renameTab"),
+			this.ut.getLocalised("tabNewName"),
+			tab.label
+		);
+		tab.label = lbl == null
 			? tab.linkedBrowser.contentDocument.title || this.getTabBrowser(true).mStringBundle.getString("tabs.untitled")
 			: lbl;
 	},
@@ -868,7 +825,7 @@ var handyClicksFuncs = {
 		);
 	},
 	reloadTab: function(e, skipCache, tab) {
-		tab = tab || this.hc.item;
+		tab = this.fixTab(tab);
 		var br = tab.linkedBrowser;
 		if(skipCache)
 			br.reloadWithFlags(
@@ -882,8 +839,8 @@ var handyClicksFuncs = {
 		catch(err) { undoCloseTab(0); }
 	},
 	cloneTab: function(e, tab) {
+		tab = this.fixTab(tab);
 		var tbr = this.getTabBrowser();
-		tab = tab || tbr.mCurrentTab;
 		var ind = ++tab._tPos;
 		try { // fx 3.0
 			var newTab = tbr.duplicateTab(tab);

@@ -71,9 +71,6 @@
 				<button id="handyClicks-sets-buttonAdd" command="handyClicks-sets-cmdAdd" />
 				<button id="handyClicks-sets-buttonEdit" command="handyClicks-sets-cmdEdit" />
 				<button id="handyClicks-sets-buttonDelete" command="handyClicks-sets-cmdDelete" />
-
-				<button label="Save" oncommand="handyClicksPrefServ.saveSettingsObjects();" />
-
 			</hbox>
 		</vbox>
 

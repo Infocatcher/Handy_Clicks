@@ -7,11 +7,13 @@
 	id="handyClicks-editor"
 	windowtype="handyclicks:editor"
 	title="Handy Clicks: Editor"
-	buttons="accept, cancel, extra1"
+	buttons="accept, cancel, extra1, extra2"
 	buttonlabelextra1="Apply"
+	buttonlabelextra2="Delete"
 	onload="handyClicksEditor.init();"
-	ondialogaccept="return handyClicksEditor.save();"
-	ondialogextra1="handyClicksEditor.save();"
+	ondialogaccept="return handyClicksEditor.saveSettings();"
+	ondialogextra1="handyClicksEditor.saveSettings();"
+	ondialogextra2="handyClicksEditor.deleteSettings();"
 	width="560"
 	height="420"
 	persist="width height screenX screenY">
@@ -31,8 +33,10 @@
 		</tabs>
 		<tabpanels flex="1">
 			<tabpanel flex="1" orient="vertical">
-				<hbox onchange="handyClicksEditor.loadFuncs();"
+				<hbox align="center"
+					onchange="handyClicksEditor.loadFuncs();"
 					oncommand="handyClicksEditor.loadFuncs();">
+					<button label="Click here" onclick="handyClicksEditor.setClickOptions(event);" />
 					<menulist id="hc-editor-button">
 						<menupopup>
 							<menuitem value="0" label="Left" />
@@ -44,7 +48,8 @@
 					<checkbox id="hc-editor-shift" label="Shift" />
 					<checkbox id="hc-editor-alt" label="Alt" />
 					<checkbox id="hc-editor-meta" label="Meta" />
-					<menulist id="hc-editor-itemTypes" oncommand="handyClicksEditor.addFuncArgs();">
+					<menulist id="hc-editor-itemTypes"
+						oncommand="handyClicksEditor.addFuncArgs(); handyClicksEditor.loadCustomType(this.value);">
 						<menupopup>
 							<menuseparator id="hc-editor-customTypesSep" />
 							<menuitem value="img" label="img" />
@@ -95,7 +100,7 @@
 <menuitem
 	value="removeOtherTabs" label="hcFunc-removeOtherTabs"
 	hc_args=""
-	hc_supports="tab" />
+	hc_supports="tab tabbar" />
 <menuitem
 	value="removeAllTabs" label="hcFunc-removeAllTabs"
 	hc_args=""
@@ -103,11 +108,11 @@
 <menuitem
 	value="removeRightTabs" label="hcFunc-removeRightTabs"
 	hc_args=""
-	hc_supports="tab" />
+	hc_supports="tab tabbar" />
 <menuitem
 	value="removeLeftTabs" label="hcFunc-removeLeftTabs"
 	hc_args=""
-	hc_supports="tab" />
+	hc_supports="tab tabbar" />
 <menuitem
 	value="undoCloseTab" label="hcFunc-undoCloseTab"
 	hc_args=""
@@ -115,15 +120,15 @@
 <menuitem
 	value="cloneTab" label="hcFunc-cloneTab"
 	hc_args=""
-	hc_supports="tab" />
+	hc_supports="tab tabbar" />
 <menuitem
 	value="renameTab" label="hcFunc-renameTab"
 	hc_args=""
-	hc_supports="tab" />
+	hc_supports="tab tabbar" />
 <menuitem
 	value="reloadTab" label="hcFunc-reloadTab"
 	hc_args="skipCache"
-	hc_supports="tab" />
+	hc_supports="tab tabbar" />
 <menuitem
 	value="reloadAllTabs" label="hcFunc-reloadAllTabs"
 	hc_args="skipCache"
@@ -194,23 +199,23 @@
 								<textbox id="hc-editor-funcLabel" flex="1" />
 							</hbox>
 							<textbox id="hc-editor-funcField" multiline="true" wrap="off" flex="1" />
-							<splitter />
-							<textbox id="hc-editor-funcExamples" readonly="true" multiline="true" wrap="off" flex="1" />
 						</tabpanel>
 					</tabpanels>
 				</tabbox>
 
 			</tabpanel>
 			<tabpanel flex="1" orient="vertical">
-				<menulist id="hc-editor-customType" editable="true" oncommand="handyClicksEditor.initCustomTypesEditor();">
+				<menulist id="hc-editor-customType" editable="true"
+					oncommand="handyClicksEditor.updCustomTypesEditor();"
+					oninput="handyClicksEditor.updCustomTypesEditor();"
+					onkeyup="handyClicksEditor.updCustomTypesEditor();"
+					ondragexit="handyClicksEditor.updCustomTypesEditor();">
 					<menupopup id="hc-editor-customTypePopup" />
 				</menulist>
 				<label value="Define item (return item or null):" />
-				<textbox id="hc-editor-customTypeDefine" multiline="true" wrap="off" flex="1"
-					value="" />
-				<label value="Define context menu of item (empty for autodetect):" />
-				<textbox id="hc-editor-customTypeContext" multiline="true" wrap="off" flex="1"
-					value="" />
+				<textbox id="hc-editor-customTypeDefine" multiline="true" wrap="off" flex="1" value="" />
+				<label value="Context menu of item (return item or null), empty for autodetection:" />
+				<textbox id="hc-editor-customTypeContext" multiline="true" wrap="off" flex="1" value="" />
 			</tabpanel>
 		</tabpanels>
 	</tabbox>

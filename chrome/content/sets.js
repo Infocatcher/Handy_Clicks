@@ -41,19 +41,6 @@ var handyClicksSets = {
 	$: function(id) {
 		return document.getElementById(id);
 	},
-	isBuggyModifiersObj: function(mObj) {
-		for(var p in mObj) {
-			if(!mObj.hasOwnProperty(p))
-				continue;
-			if(!this.isBuggyFuncObj(mObj[p]))
-				return false;
-		}
-		return true;
-	},
-	isBuggyFuncObj: function(fObj) {
-		return typeof fObj != "object"
-			|| typeof fObj.action != "string";
-	},
 	initChortcuts: function() {
 		this.tree = this.$("handyClicks-setsTree");
 		this.view = this.tree.view;
@@ -67,10 +54,6 @@ var handyClicksSets = {
 				continue;
 			if(!this.ps.isOkShortcut(shortcut)) {
 				this.ut._err("[Handy Clicks]: invalid shortcut in prefs: " + shortcut);
-				continue;
-			}
-			if(this.isBuggyModifiersObj(handyClicksPrefs[shortcut])) {
-				this.ut._err("[Handy Clicks]: invalid modifiers object in prefs: " + shortcut);
 				continue;
 			}
 			var button = this.getButtonStr(shortcut);
@@ -116,6 +99,7 @@ var handyClicksSets = {
 		var tItem, tRow, it, isCustom, isCustomType;
 		// if(items.$all) //~ todo: isOkFuncObj
 		//	items = { $all: items.$all };
+		var isBuggy = false;
 		for(var itemType in items) {
 			if(!items.hasOwnProperty(itemType))
 				continue;
@@ -124,7 +108,7 @@ var handyClicksSets = {
 			it = items[itemType];
 			isCustom = it.custom;
 			isCustomType = itemType.indexOf("custom_") == 0;
-			this.appendTreeCell(tRow, "label", this.ut.getLocalised(isCustomType ? "customItemType" : itemType));
+			this.appendTreeCell(tRow, "label", isCustomType ? itemType : this.ut.getLocalised(itemType));
 			this.appendTreeCell(tRow, "label", it.eventType);
 			this.appendTreeCell(tRow, "label", isCustom ? decodeURIComponent(it.label) : this.ut.getLocalised(it.action));
 			this.appendTreeCell(tRow, "label", isCustom ? this.ut.getLocalised("customFunction") : it.action);
@@ -132,7 +116,8 @@ var handyClicksSets = {
 			var chBox = this.appendTreeCell(tRow, "value", it.enabled);
 			this.addProperties(chBox, { editable: true });
 
-			this.addProperties(tRow, { disabled: !it.enabled, buggy: this.isBuggyFuncObj(it), custom: isCustom });
+			isBuggy = !this.ps.isOkFuncObj(it) || (isCustomType && !handyClicksCustomTypes.hasOwnProperty(itemType));
+			this.addProperties(tRow, { disabled: !it.enabled, buggy: isBuggy, custom: isCustom });
 
 			tRow.__shortcut = shortcut;
 			tRow.__itemType = itemType;

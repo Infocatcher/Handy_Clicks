@@ -25,3 +25,7 @@ menulist:not([label]) > .menulist-label-box {
 	outline-offset: -2px;
 	min-height: 0.9em;
 }
+
+textbox[multiline="true"] {
+	font-family: "Courier New", monospace;
+}

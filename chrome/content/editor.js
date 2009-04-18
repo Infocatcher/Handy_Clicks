@@ -67,21 +67,30 @@ var handyClicksEditor = {
 			this
 		);
 		this.$("hc-editor-events").value = setsObj.eventType || "";
-		this.$("hc-editor-enabled").checked = setsObj.enabled;
-		this.$("hc-editor-funcExamples").value = "var event = arguments[0];"
-			+ "\nvar item = this.hc.item;"
-			;
+		this.$("hc-editor-enabled").checked = typeof setsObj.enabled != "boolean" || setsObj.enabled;
+	},
+	loadCustomType: function(type) {
+		if(type.indexOf("custom_" == 0))
+			this.initCustomTypesEditor(type);
 	},
 	initCustomTypesEditor: function(cType) {
 		var cList = this.$("hc-editor-customType");
 		cType = cType || cList.value;
+		this._currentCType = cType;
 		if(!cType)
 			return;
-		cType = cType.replace(/^custom_/, "");
+		cType = cType
+			.replace(/\W/, "")
+			.replace(/^custom_/, "");
 		cList.value = cType;
 		var ct = handyClicksCustomTypes["custom_" + cType] || {};
 		this.$("hc-editor-customTypeDefine").value = decodeURIComponent(ct.define || "");
 		this.$("hc-editor-customTypeContext").value = decodeURIComponent(ct.contextMenu || "");
+	},
+	updCustomTypesEditor: function() {
+		var cType = this.$("hc-editor-customType").value;
+		if(cType != this._currentCType)
+			this.initCustomTypesEditor(cType);
 	},
 	delCustomTypes: function() {
 		var prnt, mis, mi;
@@ -244,11 +253,27 @@ var handyClicksEditor = {
 		this.type = this.currentType;
 		this.initShortcutEditor();
 	},
+	setClickOptions: function(e) {
+		this.$("hc-editor-button").value = e.button;
+		["ctrl", "shift", "alt", "meta"].forEach(
+			function(mdf) {
+				this.$("hc-editor-" + mdf).checked = e[mdf + "Key"];
+			},
+			this
+		);
+		handyClicksEditor.loadFuncs();
+	},
 
-	save: function() {
+	saveSettings: function() {
 		switch(this.mBox.selectedIndex) {
 			case 0: return this.saveShortcut();
 			case 1: return this.saveCustomType();
+		}
+	},
+	deleteSettings: function() {
+		switch(this.mBox.selectedIndex) {
+			case 0: return this.deleteShortcut();
+			case 1: return this.deleteCustomType();
 		}
 	},
 	saveShortcut: function() {
@@ -258,7 +283,7 @@ var handyClicksEditor = {
 		var enabled = this.$("hc-editor-enabled").checked;
 		var fnc = this.$("hc-editor-func").value || null;
 		if(!this.ps.isOkShortcut(sh) || !type || !evt || !fnc) {
-			this.ut.alertWithTitle(
+			this.ut.alertEx(
 				this.ut.getLocalised("errorTitle"),
 				this.ut.getLocalised("editorIncomplete")
 			);
@@ -300,11 +325,15 @@ var handyClicksEditor = {
 		this.ps.saveSettingsObjects();
 		return true;
 	},
+	deleteShortcut: function() {
+		delete(handyClicksPrefs[this.currentShortcut]);
+		this.ps.saveSettingsObjects();
+	},
 	saveCustomType: function() {
 		var tName = this.$("hc-editor-customType").value;
 		var def = this.$("hc-editor-customTypeDefine").value;
 		if(!tName || !def) {
-			this.ut.alertWithTitle(
+			this.ut.alertEx(
 				this.ut.getLocalised("errorTitle"),
 				this.ut.getLocalised("editorIncomplete")
 			);
@@ -320,5 +349,9 @@ var handyClicksEditor = {
 		ct.contextMenu = cMenu ? encodeURIComponent(cMenu) : null;
 		this.ps.saveSettingsObjects(true);
 		return true;
+	},
+	deleteCustomType: function() {
+		delete(handyClicksCustomTypes["custom_" + this.$("hc-editor-customType").value]);
+		this.ps.saveSettingsObjects(true);
 	}
 };

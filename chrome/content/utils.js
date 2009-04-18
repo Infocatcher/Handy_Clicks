@@ -49,8 +49,13 @@ var handyClicksUtils = {
 				.getService(Components.interfaces.nsIPromptService);
 		return this._promptsSvc;
 	},
-	alertWithTitle: function(ttl, txt) {
+	alertEx: function(ttl, txt) {
 		this.promptsSvc.alert(window, ttl, txt);
+	},
+	promptEx: function(ttl, txt, defVal) {
+		var ret = { value: defVal };
+		var res = this.promptsSvc.prompt(window, ttl, txt, ret, null, {});
+		return res ? ret.value : null;
 	},
 
 	// Preferences:

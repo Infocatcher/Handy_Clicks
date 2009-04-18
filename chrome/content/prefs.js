@@ -31,26 +31,8 @@ var handyClicksPrefServ = {
 			jsLoader.loadSubScript(ioServ.newFileURI(prefsFile).spec);
 		}
 		catch(e) {
-			// Bug 418356 ( https://bugzilla.mozilla.org/show_bug.cgi?id=418356 )
-			// alert("Bug 418356\nTry eval()");
-			// this.ut.;
-			this.ut._log("Error in Handy Clicks prefs: bad js file");
+			this.ut._err("[Handy Clicks]: Error in Handy Clicks prefs: bad js file");
 			throw e;
-			/***
-			var fiStream = Components.classes["@mozilla.org/network/file-input-stream;1"]
-				.createInstance(Components.interfaces.nsIFileInputStream);
-			var siStream = Components.classes["@mozilla.org/scriptableinputstream;1"]
-				.createInstance(Components.interfaces.nsIScriptableInputStream);
-			fiStream.init(prefsFile, -1, 0, 0);
-			siStream.init(fiStream);
-
-			var data = siStream.read(siStream.available());
-			siStream.close();
-			fiStream.close();
-			eval(data);
-			window.handyClicksPrefs = handyClicksPrefs;
-			window.handyClicksCustomTypes = handyClicksCustomTypes;
-			***/
 		}
 		if(typeof window.handyClicksPrefs != "object")
 			window.handyClicksPrefs = {};
@@ -60,15 +42,16 @@ var handyClicksPrefServ = {
 			this.convertCystomTypes();
 	},
 	convertCystomTypes: function() {
-		for(var type in handyClicksCustomTypes) {
-			if(!handyClicksCustomTypes.hasOwnProperty(type))
+		var cts = handyClicksCustomTypes;
+		for(var type in cts) {
+			if(!cts.hasOwnProperty(type))
 				continue;
 			try {
-				handyClicksCustomTypes[type]._define = this.compileStr(handyClicksCustomTypes[type].define);
-				handyClicksCustomTypes[type]._contextMenu = this.compileStr(handyClicksCustomTypes[type].contextMenu);
+				cts[type]._define = this.compileStr(cts[type].define);
+				cts[type]._contextMenu = this.compileStr(cts[type].contextMenu);
 			}
 			catch(e) {
-				this.ut._err("[Handy Clicks]: error in custom type " + type + "\n" + e);
+				this.ut._err("[Handy Clicks]: Error in custom type " + type + "\n" + e);
 			}
 		}
 	},
@@ -78,8 +61,8 @@ var handyClicksPrefServ = {
 	saveSettingsObjects: function(reloadAll) {
  		var res = this.warnComment + "var handyClicksPrefs = {\n";
 		var shortcutObj, itemTypeObj, propVal;
-		for(var shortcut in handyClicksPrefs) { // test for Ok?
-			if(!handyClicksPrefs.hasOwnProperty(shortcut))
+		for(var shortcut in handyClicksPrefs) {
+			if(!handyClicksPrefs.hasOwnProperty(shortcut) || !this.isOkShortcut(shortcut))
 				continue;
 			shortcutObj = handyClicksPrefs[shortcut];
 			res += '\t"' + shortcut + '": {\n';
@@ -87,12 +70,12 @@ var handyClicksPrefServ = {
 				if(!shortcutObj.hasOwnProperty(itemType))
 					continue;
 				itemTypeObj = shortcutObj[itemType];
-				res += "\t\t" + itemType + ": {\n";
+				res += "\t\t" + this.fixPropName(itemType) + ": {\n";
 				for(var propName in itemTypeObj) {
 					if(!itemTypeObj.hasOwnProperty(propName))
 						continue;
 					propVal = itemTypeObj[propName];
-					res += "\t\t\t" + propName + ": " + this.objToSource(propVal) + ",\n";
+					res += "\t\t\t" + this.fixPropName(propName) + ": " + this.objToSource(propVal) + ",\n";
 				}
 				res = this.delLastComma(res) + "\t\t},\n";
 			}
@@ -102,16 +85,15 @@ var handyClicksPrefServ = {
 
 		res += "var handyClicksCustomTypes = {\n";
 		for(var itemType in handyClicksCustomTypes) {
-			if(!handyClicksCustomTypes.hasOwnProperty(itemType))
+			if(!handyClicksCustomTypes.hasOwnProperty(itemType) || itemType.indexOf("custom_") != 0)
 				continue;
 			itemTypeObj = handyClicksCustomTypes[itemType];
-			res += "\t" + itemType + ": {\n";
+			res += "\t" + this.fixPropName(itemType) + ": {\n";
 			for(var propName in itemTypeObj) {
-				if(!itemTypeObj.hasOwnProperty(propName))
+				if(!itemTypeObj.hasOwnProperty(propName) || propName.indexOf("_") == 0)
 					continue;
 				propVal = itemTypeObj[propName];
-				if(propName.indexOf("_") != 0)
-					res += "\t\t" + propName + ": " + this.objToSource(propVal) + ",\n";
+				res += "\t\t" + propName + ": " + this.objToSource(propVal) + ",\n";
 			}
 			res = this.delLastComma(res) + "\t},\n";
 		}
@@ -122,6 +104,9 @@ var handyClicksPrefServ = {
 	},
 	objToSource: function(obj) {
 		return uneval(obj).replace(/^\(|\)$/g, "");
+	},
+	fixPropName: function(pName) {
+		return /^\d|\W/.test(pName) ? '"' + pName + '"' : pName;
 	},
 	delLastComma: function(str) {
 		return str.replace(/,\n$/, "\n");
@@ -166,6 +151,12 @@ var handyClicksPrefServ = {
 	},
 	isOkShortcut: function(s) {
 		return this.okShortcut.test(s);
+	},
+	isOkFuncObj: function(fObj) {
+		return typeof fObj == "object"
+			&& typeof fObj.enabled == "boolean"
+			&& typeof fObj.eventType == "string"
+			&& typeof fObj.action == "string";
 	}
 };
 handyClicksPrefServ.loadSettings();
