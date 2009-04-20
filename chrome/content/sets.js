@@ -44,6 +44,7 @@ var handyClicksSets = {
 	initChortcuts: function() {
 		this.tree = this.$("handyClicks-setsTree");
 		this.view = this.tree.view;
+		this.selection = this.view.selection;
 		this.content = this.$("handyClicks-setsTreeContent");
 		this.cmdDelete = this.$("handyClicks-sets-cmdDelete");
 		this.cmdEdit = this.$("handyClicks-sets-cmdEdit");
@@ -97,8 +98,6 @@ var handyClicksSets = {
 	},
 	appendItems: function(parent, items, shortcut) {
 		var tItem, tRow, it, isCustom, isCustomType;
-		// if(items.$all) //~ todo: isOkFuncObj
-		//	items = { $all: items.$all };
 		var isBuggy = false;
 		for(var itemType in items) {
 			if(!items.hasOwnProperty(itemType))
@@ -111,7 +110,9 @@ var handyClicksSets = {
 			this.appendTreeCell(tRow, "label", isCustomType ? itemType : this.ut.getLocalised(itemType));
 			this.appendTreeCell(tRow, "label", it.eventType);
 			this.appendTreeCell(tRow, "label", isCustom ? decodeURIComponent(it.label) : this.ut.getLocalised(it.action));
-			this.appendTreeCell(tRow, "label", isCustom ? this.ut.getLocalised("customFunction") : it.action);
+			this.appendTreeCell(tRow, "label",
+				isCustom ? this.ut.getLocalised("customFunction") + decodeURIComponent(it.action) : it.action
+			);
 			this.appendTreeCell(tRow, "label", this.getArguments(it.arguments || {}));
 			var chBox = this.appendTreeCell(tRow, "value", it.enabled);
 			this.addProperties(chBox, { editable: true });
@@ -146,14 +147,29 @@ var handyClicksSets = {
 		for(var p in argsObj)
 			if(argsObj.hasOwnProperty(p))
 				res.push(p + " = " + this.convertToString(argsObj[p])); //~ todo: this.ut.getLocalised(p)
-		return res.join(", ");
+		return res.join(", \n");
 	},
 	convertToString: function(x) {
 		return typeof x == "string" ? '"' + x + '"' : x;
 	},
 	updTree: function() {
+		var tbo = this.tree.treeBoxObject;
+		var fvr = tbo.getFirstVisibleRow();
+		var numRanges = this.selection.getRangeCount();
+		var selRow;
+		if(numRanges > 0) {
+			var start = {}, end = {};
+			this.selection.getRangeAt(0, start, end);
+			selRow = start.value;
+		}
+
 		this.redrawTree();
 		this.updButtons();
+
+		if(selRow)
+			this.selection.select(selRow);
+		if(fvr)
+			tbo.scrollToRow(fvr);
 	},
 	updButtons: function() {
 		var noSel = !this.selectedRows.length;
@@ -163,7 +179,7 @@ var handyClicksSets = {
 		);
 	},
 	get selectedRows() {
-		var numRanges = this.view.selection.getRangeCount();
+		var numRanges = this.selection.getRangeCount();
 		var tRowsArr = [];
 		if(numRanges == 0)
 			return tRowsArr;
@@ -171,7 +187,7 @@ var handyClicksSets = {
 		var end = {};
 		var tRows = this.content.getElementsByTagName("treerow"), tRow;
 		for(var t = 0; t < numRanges; t++) {
-			this.view.selection.getRangeAt(t, start, end);
+			this.selection.getRangeAt(t, start, end);
 			for(var v = start.value; v <= end.value; v++) {
 				tRow = tRows[v];
 				if(tRow.__shortcut && tRow.__itemType) {
@@ -212,7 +228,12 @@ var handyClicksSets = {
 		var tRows = this.selectedRows;
 		if(!tRows.length)
 			return;
-		if(!confirm("Are you sure to delete " + tRows.length + " item(s)?")) //~ todo: promptsServ
+		if(
+			!this.ut.confirmEx(
+				this.ut.getLocalised("title"),
+				this.ut.getLocalised("deleteConfirm").replace("%n", tRows.length)
+			)
+		)
 			return;
 		tRows.forEach(this.deleteItem, this);
 		this.toggleApply(false);
@@ -322,7 +343,6 @@ var handyClicksSets = {
 	/*** Prefs pane ***/
 	updPrefsUI: function() {
 		this.loadPrefs();
-		// setTimeout(function(_this) { _this.loadPrefs(); }, 0, this);
 		this.updateAllDependencies();
 		this.showPrefs();
 	},
@@ -390,5 +410,27 @@ var handyClicksSets = {
 		var childs = parent.childNodes;
 		for(var i = 0, len = childs.length; i < len; i++)
 			this.desableChilds(childs[i], dis);
+	},
+
+	searchInSetsTree: function(sIt) {
+		var sVal = sIt.value.replace(/^\s+|\s+$/g, "");
+		var _sVal = sVal.toLowerCase().split(/\s+/);
+
+		var tmp, t;
+		var tRows = this.content.getElementsByTagName("treerow"), tRow;
+		var its, it;
+		for(var i = 0, len = tRows.length; i < len; i++) {
+			tRow = tRows[i];
+			if(tRow.__shortcut && tRow.__itemType) {
+				tmp = [];
+				its = tRow.getElementsByAttribute("label", "*");
+				for(var j = 0, len2 = its.length; j < len2; j++)
+					tmp.push(its[j].getAttribute("label"));
+				t = tmp.join("\n").toLowerCase();
+				this.addProperties(tRow, {
+					search: sVal && _sVal.every( function(s) { return t.indexOf(s) != -1 } )
+				});
+			}
+		}
 	}
 };

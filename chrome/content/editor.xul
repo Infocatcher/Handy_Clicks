@@ -3,10 +3,17 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
 
+<!DOCTYPE dialog [
+	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/sets.dtd">
+	%locale;
+	<!ENTITY % default SYSTEM "chrome://handyclicks-locale/content/sets.dtd">
+	%default;
+]>
+
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	id="handyClicks-editor"
 	windowtype="handyclicks:editor"
-	title="Handy Clicks: Editor"
+	title="&hc.editor.title;"
 	buttons="accept, cancel, extra1, extra2"
 	buttonlabelextra1="Apply"
 	buttonlabelextra2="Delete"
@@ -21,10 +28,6 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/editor.js" />
-
-	<stringbundleset id="handyClicks-stringbundleset">
-		<stringbundle id="handyClicks-strings" src="chrome://handyclicks/locale/sets.properties" />
-	</stringbundleset>
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">
 		<tabs>
@@ -48,8 +51,7 @@
 					<checkbox id="hc-editor-shift" label="Shift" />
 					<checkbox id="hc-editor-alt" label="Alt" />
 					<checkbox id="hc-editor-meta" label="Meta" />
-					<menulist id="hc-editor-itemTypes"
-						oncommand="handyClicksEditor.addFuncArgs(); handyClicksEditor.loadCustomType(this.value);">
+					<menulist id="hc-editor-itemTypes" oncommand="handyClicksEditor.itemTypeChanged(this.value);">
 						<menupopup>
 							<menuseparator id="hc-editor-customTypesSep" />
 							<menuitem value="img" label="img" />
@@ -74,6 +76,7 @@
 						</menupopup>
 					</menulist>
 					<checkbox id="hc-editor-enabled" label="Enabled" />
+					<checkbox id="hc-editor-imgIgnoreLinks" label="Ignore links" />
 				</hbox>
 
 				<tabbox id="hc-editor-funcsTabbox" flex="1">
@@ -206,10 +209,10 @@
 			</tabpanel>
 			<tabpanel flex="1" orient="vertical">
 				<menulist id="hc-editor-customType" editable="true"
-					oncommand="handyClicksEditor.updCustomTypesEditor();"
-					oninput="handyClicksEditor.updCustomTypesEditor();"
-					onkeyup="handyClicksEditor.updCustomTypesEditor();"
-					ondragexit="handyClicksEditor.updCustomTypesEditor();">
+					oncommand="handyClicksEditor.initCustomTypesEditor();"
+					oninput="handyClicksEditor.initCustomTypesEditor();"
+					onkeyup="handyClicksEditor.initCustomTypesEditor();"
+					ondragexit="handyClicksEditor.initCustomTypesEditor();">
 					<menupopup id="hc-editor-customTypePopup" />
 				</menulist>
 				<label value="Define item (return item or null):" />

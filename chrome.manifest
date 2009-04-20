@@ -1,6 +1,10 @@
 content handyclicks chrome/content/
-content handyclicks chrome/content/ contentaccessible=yes
+resource handyclicks-content chrome/content/res/
+content handyclicks-locale chrome/locale/en-US/
 overlay chrome://browser/content/browser.xul chrome://handyclicks/content/handyclicks.xul
+
+style chrome://handyclicks/content/notify.xul chrome://handyclicks/content/style/notify-old.css
+style chrome://handyclicks/content/notify.xul chrome://handyclicks/content/style/notify.css appversion>=3.0
 
 locale  handyclicks en-US chrome/locale/en-US/
 locale  handyclicks ru    chrome/locale/ru/

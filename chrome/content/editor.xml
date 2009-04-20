@@ -1,0 +1,132 @@
+﻿<?xml version="1.0"?>
+<bindings id="handyClicks-bindings" xmlns="http://www.mozilla.org/xbl">
+	<binding id="codeEditor" extends="chrome://global/content/bindings/textbox.xml#textarea">
+
+		<implementation>
+			<method name="cmdInsert">
+				<parameter name="text" />
+				<body>
+				<![CDATA[
+					var command = "cmd_insertText";
+					var controller = document.commandDispatcher.getControllerForCommand(command);
+					if(controller && controller.isCommandEnabled(command)) {
+						controller = controller.QueryInterface(Components.interfaces.nsICommandController);
+						var params = Components.classes["@mozilla.org/embedcomp/command-params;1"]
+							.createInstance(Components.interfaces.nsICommandParams);
+						params.setStringValue("state_data", text);
+						controller.doCommandWithParams(command, params);
+					}
+				]]>
+				</body>
+			</method>
+
+			<method name="setIndent">
+				<parameter name="indentChar" />
+				<parameter name="removeFlag" />
+				<body>
+				<![CDATA[
+					var val = this.value;
+					var ifi = this.inputField;
+					var startPos = ifi.selectionStart;
+					var endPos = ifi.selectionEnd;
+
+					var sel = val.substring(startPos, endPos);
+					if(!/\n|\r/.test(sel)) {
+						this.cmdInsert(indentChar);
+						return;
+					}
+					var oPosition = ifi.scrollTop;
+					var oHeight = ifi.scrollHeight;
+
+					var startVal = val.substring(0, startPos);
+					var endVal = val.substring(endPos, val.length);
+
+					var selLen = endPos - startPos;
+					var startLine = startVal.search(/(^|\n|\r)[^\n\r]*$/);
+					startLine += RegExp.$1.length;
+					var endLine = startVal.length + selLen + endVal.search(/\r|\n|$/);
+
+					var block = val.substring(startLine, endLine);
+
+					if(removeFlag)
+						block = block.replace(new RegExp("^" + indentChar, "mg"), "");
+					else
+						block = block.replace(/^/mg, indentChar);
+
+					val = val.substring(0, startLine) + block + val.substring(endLine, val.length);
+					startPos = startLine;
+					endPos = startPos + block.length;
+
+					this.value = val;
+					ifi.selectionStart = startPos;
+					ifi.selectionEnd = endPos;
+
+					var nHeight = ifi.scrollHeight - oHeight;
+					ifi.scrollTop = oPosition + nHeight;
+				]]>
+				</body>
+			</method>
+
+			<method name="toggleComments">
+				<body>
+				<![CDATA[
+					var val = this.value;
+					var ifi = this.inputField;
+					var startPos = ifi.selectionStart;
+					var endPos = ifi.selectionEnd;
+					var oPosition = ifi.scrollTop;
+					var oHeight = ifi.scrollHeight;
+
+					var sel = val.substring(startPos, endPos);
+					var isMultiline = /\n|\r/.test(sel);
+
+					var startVal = val.substring(0, startPos);
+					var endVal = val.substring(endPos, val.length);
+
+					var selLen = endPos - startPos;
+					var startLine = startVal.search(/(^|\n|\r)[^\n\r]*$/);
+					startLine += RegExp.$1.length;
+					var endLine = startVal.length + selLen + endVal.search(/\r|\n|$/);
+
+					var block = val.substring(startLine, endLine);
+					var bLen0 = block.length;
+
+					if(/^\/\//m.test(block))
+						block = block.replace(/^\/\//mg, "");
+					else
+						block = block.replace(/^/mg, "//");
+					var bLen1 = block.length;
+
+					val = val.substring(0, startLine) + block + val.substring(endLine, val.length);
+					startPos = isMultiline ? startLine : startPos + bLen1 - bLen0;
+					endPos = isMultiline ? startPos + block.length : endPos + bLen1 - bLen0;
+
+					this.value = val;
+					ifi.selectionStart = startPos;
+					ifi.selectionEnd = endPos;
+
+					var nHeight = ifi.scrollHeight - oHeight;
+					ifi.scrollTop = oPosition + nHeight;
+				]]>
+				</body>
+			</method>
+		</implementation>
+
+		<handlers>
+			<handler event="keydown" phase="capturing">
+				<![CDATA[
+					var kCode = event.keyCode;
+					if(kCode == event.DOM_VK_TAB && !event.ctrlKey && !event.altKey && !event.metaKey)
+						this.setIndent("\t", event.shiftKey);
+					else if(kCode == event.DOM_VK_SPACE && !event.ctrlKey && !event.altKey && !event.metaKey)
+						this.setIndent(" ", event.shiftKey);
+					else if(kCode == event.DOM_VK_A && event.ctrlKey && event.shiftKey && !event.altKey && !event.metaKey)
+						this.toggleComments();
+					else
+						return;
+					event.preventDefault();
+				]]>
+			</handler>
+		</handlers>
+	</binding>
+</bindings>

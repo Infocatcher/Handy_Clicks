@@ -57,6 +57,9 @@ var handyClicksUtils = {
 		var res = this.promptsSvc.prompt(window, ttl, txt, ret, null, {});
 		return res ? ret.value : null;
 	},
+	confirmEx: function(ttl, txt) {
+		return this.promptsSvc.confirm(window, ttl, txt);
+	},
 
 	// Preferences:
 	nPrefix: "extensions.handyclicks.",
@@ -136,16 +139,26 @@ var handyClicksUtils = {
 
 	// Localised strings:
 	_strings: { __proto__: null }, // cache of strings from stringbundle
+	createBundle: function(src) {
+		return Components.classes["@mozilla.org/intl/stringbundle;1"]
+			.getService(Components.interfaces.nsIStringBundleService)
+			.createBundle(src);
+	},
 	getLocaleStr: function(name) {
-		if(!("_localeBundle" in this))
-			this._localeBundle = document.getElementById("handyClicks-strings");
-		try { name = this._localeBundle.getString(name); }
-		catch(e) { name = "[" + name + "]"; }
-		return name;
+		if(!this._localeBundle)
+			this._localeBundle = this.createBundle("chrome://handyclicks/locale/hcs.properties");
+		try { return this._localeBundle.GetStringFromName(name); }
+		catch(e) { return null; }
+	},
+	getDefaultStr: function(name) {
+		if(!this._defaultBundle)
+			this._defaultBundle = this.createBundle("chrome://handyclicks-locale/content/hcs.properties");
+		try { return this._defaultBundle.GetStringFromName(name); }
+		catch(e) { return null; }
 	},
 	getLocalised: function(name) {
-		if(name in this._strings == false)
-			this._strings[name] = this.getLocaleStr(name);
+		if(!(name in this._strings))
+			this._strings[name] = this.getLocaleStr(name) || this.getDefaultStr(name) || "[" + name + "]";
 		return this._strings[name];
 	},
 

@@ -28,4 +28,5 @@ menulist:not([label]) > .menulist-label-box {
 
 textbox[multiline="true"] {
 	font-family: "Courier New", monospace;
+	-moz-binding: url("chrome://handyclicks/content/editor.xml#codeEditor") !important;
 }

@@ -28,6 +28,7 @@ var handyClicksEditor = {
 	initUI: function() {
 		this.initShortcutEditor();
 		this.appendTypesList();
+		this.initImgIgnoreLinks();
 		this.initCustomTypesEditor();
 	},
 	$: function(id) {
@@ -87,11 +88,6 @@ var handyClicksEditor = {
 		this.$("hc-editor-customTypeDefine").value = decodeURIComponent(ct.define || "");
 		this.$("hc-editor-customTypeContext").value = decodeURIComponent(ct.contextMenu || "");
 	},
-	updCustomTypesEditor: function() {
-		var cType = this.$("hc-editor-customType").value;
-		if(cType != this._currentCType)
-			this.initCustomTypesEditor(cType);
-	},
 	delCustomTypes: function() {
 		var prnt, mis, mi;
 		for(var i = 0, aLen = arguments.length; i < aLen; i++) {
@@ -131,7 +127,7 @@ var handyClicksEditor = {
 		var re = new RegExp("(^|[\\s,]+)" + this.type + "([\\s,]+|$)|^\\$all$");
 		var mp = this.$("hc-editor-funcPopup");
 		var its = mp.childNodes;
-		var it;
+		var it, req;
 		var hideSep = true;
 		for(var i = 0, len = its.length; i < len; i++) {
 			it = its[i];
@@ -140,7 +136,11 @@ var handyClicksEditor = {
 				hideSep = true;
 			}
 			else {
-				if(re.test(it.getAttribute("hc_supports"))) {
+				req = it.getAttribute("hc_required");
+				if(
+					re.test(it.getAttribute("hc_supports"))
+					&& (!req || this.extAvailable(req))
+				) {
 					it.style.display = "";
 					hideSep = false;
 				}
@@ -148,28 +148,32 @@ var handyClicksEditor = {
 					it.style.display = "none";
 			}
 		}
-		this.hideUnsupportedExts();
-
 		this.addFuncArgs(custom, action);
 	},
 	exts: {
 		SplitBrowser: "{29c4afe1-db19-4298-8785-fcc94d1d6c1d}",
-		FlashGot: "{19503e42-ca3c-4c27-b1e2-9cdb2170ee34}",
+		FlashGot: "{19503e42-ca3c-4c27-b1e2-9cdb2170ee34}"
 	},
-	hideUnsupportedExts: function() {
-		var mp = this.$("hc-editor-funcPopup");
-		var elts, i, len;
-		for(var ext in this.exts)
-			if(this.extNotAvailable(this.exts[ext])) {
-				elts = mp.getElementsByAttribute("hc_required", ext);
-				for(i = 0, len = elts.length; i < len; i++)
-					elts[i].style.display = "none";
-			}
-	},
-	extNotAvailable: function(guid) {
-		return !Components.classes["@mozilla.org/extensions/manager;1"]
+	extAvailable: function(eName) {
+		var guid = this.exts[eName];
+		return !!Components.classes["@mozilla.org/extensions/manager;1"]
 			.getService(Components.interfaces.nsIExtensionManager)
 			.getItemForID(guid);
+	},
+	itemTypeChanged: function(iType) {
+		this.addFuncArgs();
+		this.loadCustomType(iType);
+		this.initImgIgnoreLinks(iType);
+	},
+	initImgIgnoreLinks: function(iType) {
+		iType = iType || this.$("hc-editor-itemTypes").value;
+		var isImg = iType == "img";
+		var ignoreLinks = this.$("hc-editor-imgIgnoreLinks");
+		ignoreLinks.hidden = !isImg;
+		if(isImg) {
+			var setsObj = (handyClicksPrefs[this.target] || {})[iType] || {};
+			ignoreLinks.checked = typeof setsObj.ignoreLinks == "boolean" ? setsObj.ignoreLinks : false;
+		}
 	},
 	addFuncArgs: function() { //~ todo: cache
 		var box = this.$("hc-editor-funcArgs");
@@ -266,14 +270,16 @@ var handyClicksEditor = {
 
 	saveSettings: function() {
 		switch(this.mBox.selectedIndex) {
-			case 0: return this.saveShortcut();
-			case 1: return this.saveCustomType();
+			case 0:  return this.saveShortcut();
+			case 1:  return this.saveCustomType();
+			default: return false;
 		}
 	},
 	deleteSettings: function() {
 		switch(this.mBox.selectedIndex) {
-			case 0: return this.deleteShortcut();
-			case 1: return this.deleteCustomType();
+			case 0:  return this.deleteShortcut();
+			case 1:  return this.deleteCustomType();
+			default: return false;
 		}
 	},
 	saveShortcut: function() {
@@ -298,6 +304,8 @@ var handyClicksEditor = {
 		so.enabled = enabled;
 		so.eventType = evt;
 		var isCustom = fnc == "$custom";
+		if(type == "img")
+			so.ignoreLinks = this.$("hc-editor-imgIgnoreLinks").checked;
 		if(isCustom) {
 			so.custom = isCustom;
 			so.label = encodeURIComponent(this.$("hc-editor-funcLabel").value);

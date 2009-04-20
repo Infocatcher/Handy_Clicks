@@ -263,7 +263,7 @@ var handyClicksFuncs = {
 		if(this.ut.pref("notifyJavaScriptLinks"))
 			this.ut.notify(
 				this.ut.getLocalised("title"),
-				this.ut.getLocalised("JavaScriptLink")
+				this.ut.getLocalised("javaScriptLink")
 					+ (load ? "" : this.ut.getLocalised("clickForOpen")),
 				(load ? null : _f)
 			);
@@ -292,7 +292,7 @@ var handyClicksFuncs = {
 		catch(e) {
 			this.ut.alertEx(
 				this.ut.getLocalised("errorTitle"),
-				this.ut.getLocalised("RegExpError").replace("%RegExp%", regexp) + e
+				this.ut.getLocalised("RegExpError").replace("%r", regexp).replace("%e", e)
 			);
 		}
 		return false;
@@ -866,8 +866,8 @@ var handyClicksFuncs = {
 		img.style.height = h;
 		this.ut._log("reloadImg -> " + w + " x " + h);
 		// if(parseInt(w) > 32 && parseInt(h) > 32)
-		img.style.background = "url('chrome://handyclicks/content/style/loading.gif') center no-repeat";
-		img.setAttribute("src", "chrome://handyclicks/content/style/spacer.gif"); // transparent gif 1x1
+		img.style.background = "url('resource://handyclicks-content/loading.gif') center no-repeat";
+		img.setAttribute("src", "resource://handyclicks-content/spacer.gif"); // transparent gif 1x1
 		setTimeout(
 			function() {
 				img.setAttribute("src", src);

@@ -8,64 +8,15 @@
 	onload="hcNotify.init();"
 	onclick="hcNotify.click(event);">
 
-	<script type="application/x-javascript">
-	<![CDATA[
-		var hcNotify = {
-			closeTimeout: null,
-			args: {},
-			init: function() {
-				var wa = window.arguments[0]; // { dur, nTitle, msg, fnc, extEnabled, inWindowCorner }
-				document.getElementById("hcNotifyHeader").value = wa.nTitle;
-				document.getElementById("hcNotifyDesc").textContent = wa.msg;
-				document.getElementById("hcNotifyImg").style["margin" + (wa.extEnabled ? "Right" : "Left")] = "-24px";
-				window.sizeToContent();
-				var wo = window.opener;
-				var winW = window.outerWidth, winH = window.outerHeight;
-				var x, y;
-				if(wa.inWindowCorner) {
-					x = wo.screenX + wo.outerWidth - winW;
-					y = wo.document.getElementById("browser-bottombox").boxObject.screenY - winH;
-				}
-				else {
-					var cursorH = 20, addH = 5;
-					var maxX = screen.availLeft + screen.availWidth;
-					var maxY = screen.availTop + screen.availHeight;
-					var evt = wo.handyClicks.copyOfEvent;
-					x = evt.screenX - winW/2;
-					y = evt.screenY + cursorH + addH;
-					if(x < screen.availLeft) // left overflow
-						x = screen.availLeft;
-					else if(x + winW > maxX) // right overflow
-						x = maxX - winW;
-					if(y + winH > maxY) // bottom overflow
-						y = evt.screenY - winH - addH;
-				}
-				window.moveTo(x, y);
-				var nBox = document.getElementById("hcNotifyBox");
-				setTimeout( function() { nBox.style.borderColor = "blue"; }, 150);
-				setTimeout( function() { nBox.style.borderColor = "black"; }, 300);
-				this.closeTimeout = setTimeout(window.close, wa.dur);
-			},
-			click: function(e) {
-				clearTimeout(this.closeTimeout);
-				var fnc = window.arguments[0].fnc;
-				if(typeof fnc == "function" && e.button == 0)
-					fnc();
-					// Strange behavior on
-					// <a onclick="alert(0);" href="javascript: void(0);">...</a>
-				window.close();
-			}
-		};
-	]]>
-	</script>
+	<script type="application/x-javascript" src="chrome://handyclicks/content/notify.js" />
 
-	<hbox id="hcNotifyBox" style="border: 2px solid black; padding: 10px;">
-		<hbox align="center" valign="top" style="overflow: hidden;">
+	<hbox id="hcNotifyBox">
+		<hbox id="hcNotifyImgBox" align="center" valign="top">
 			<image id="hcNotifyImg" src="style/icons24.png" autostretch="never" />
 		</hbox>
-		<vbox style="margin-left: 5px;">
+		<vbox id="hcNotifyContainer">
 			<label id="hcNotifyHeader" class="header" value="[Header]" />
-			<description id="hcNotifyDesc" style="white-space: pre-wrap;">[Description]</description> <!-- ~ todo: check compatibility -->
+			<description id="hcNotifyDesc">[Description]</description>
 		</vbox>
 	</hbox>
 
