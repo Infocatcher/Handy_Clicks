@@ -117,7 +117,8 @@ var handyClicksSets = {
 			var chBox = this.appendTreeCell(tRow, "value", it.enabled);
 			this.addProperties(chBox, { editable: true });
 
-			isBuggy = !this.ps.isOkFuncObj(it) || (isCustomType && !handyClicksCustomTypes.hasOwnProperty(itemType));
+			isBuggy = !this.ps.isOkFuncObj(it)
+				|| (isCustomType && !handyClicksCustomTypes.hasOwnProperty(itemType));
 			this.addProperties(tRow, { disabled: !it.enabled, buggy: isBuggy, custom: isCustom });
 
 			tRow.__shortcut = shortcut;

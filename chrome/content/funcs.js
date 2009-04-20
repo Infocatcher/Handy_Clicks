@@ -60,10 +60,8 @@ var handyClicksFuncs = {
 		var res = [];
 		var tabs = tbr.mTabContainer.childNodes;
 		for(var i = 0, len = tabs.length; i < len; i++) {
-			if(tabs[i])
+			if(tabs[i]) // ?
 				res.push(fnc(tabs[i]));
-			else
-				alert(tabs[i]);
 		}
 		return res;
 	},
@@ -548,13 +546,24 @@ var handyClicksFuncs = {
 			.createInstance(Components.interfaces.nsILocalFile);
 		file.initWithPath(path);
 		if(!file.exists()) {
-			this.ut.alertEx("Handy Clicks error", path + "\nnot found!");
+			this.ut.alertEx(
+				this.ut.getLocalised("errorTitle"),
+				this.ut.getLocalised("fileNotFound").replace("%p", path)
+			);
 			return;
 		}
 		var process = Components.classes["@mozilla.org/process/util;1"]
 			.getService(Components.interfaces.nsIProcess);
 		process.init(file);
-		process.run(false, args, args.length);
+		try {
+			process.run(false, args, args.length);
+		}
+		catch(e) {
+			this.ut.alertEx(
+				this.ut.getLocalised("errorTitle"),
+				this.ut.getLocalised("fileCantRun").replace("%p", path).replace("%e", e)
+			);
+		}
 	},
 	get defaultCharset() { // thanks to IE Tab!
 		if(this._defaultCharset == null) {

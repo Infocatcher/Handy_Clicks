@@ -41,7 +41,21 @@ var hcNotify = {
 		var nBox = document.getElementById("hcNotifyBox");
 		setTimeout( function() { nBox.style.borderColor = "blue"; }, 150);
 		setTimeout( function() { nBox.style.borderColor = "black"; }, 300);
-		this.closeTimeout = setTimeout(window.close, wa.dur);
+		this.delayedClose();
+	},
+	delayedClose: function() {
+		this.closeTimeout = setTimeout(window.close, window.arguments[0].dur);
+	},
+	mouseHandler: function(e) {
+		if(e.relatedTarget)
+			return;
+		var tar = e.target;
+		if(!tar || tar.id != "hcNotifyBox")
+			return;
+		switch(e.type) {
+			case "mouseover": clearTimeout(this.closeTimeout); break;
+			case "mouseout":  this.delayedClose();
+		}
 	},
 	click: function(e) {
 		clearTimeout(this.closeTimeout);

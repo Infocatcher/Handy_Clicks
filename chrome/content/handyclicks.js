@@ -491,7 +491,7 @@ var handyClicks = {
 		args.unshift(e);
 		if(funcObj.custom) {
 			var action = decodeURIComponent(funcObj.action);
-			var aTitle = decodeURIComponent(funcObj.title);
+			var label = '"' + decodeURIComponent(funcObj.label) + '"';
 			try {
 				new Function(action).apply(this.fn, args);
 			}
@@ -499,11 +499,11 @@ var handyClicks = {
 				this.ut.notify(
 					this.ut.getLocalised("errorTitle"),
 					this.ut.getLocalised("customFunctionError")
-						.replace("%f", aTitle)
+						.replace("%f", label)
 						.replace("%e", e),
 					toErrorConsole
 				);
-				this.ut._err("[Handy Clicks]: Error in custom action " + aTitle + ":\n" + action);
+				this.ut._err("[Handy Clicks]: Error in custom action " + label + ":\n" + action);
 				throw e;
 			}
 		}

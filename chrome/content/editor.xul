@@ -79,15 +79,12 @@
 					<checkbox id="hc-editor-imgIgnoreLinks" label="Ignore links" />
 				</hbox>
 
-				<tabbox id="hc-editor-funcsTabbox" flex="1">
-					<tabs>
-						<tab label="Built-in function" selected="true"/>
-						<tab label="Custom code"/>
-					</tabs>
-					<tabpanels flex="1">
-						<tabpanel flex="1" align="left" orient="vertical">
-							<menulist id="hc-editor-func" oncommand="handyClicksEditor.addFuncArgs();">
-								<menupopup id="hc-editor-funcPopup">
+				<groupbox flex="1" pack="left">
+				<caption label="Function" />
+
+					<hbox align="center">
+						<menulist id="hc-editor-func" oncommand="handyClicksEditor.addFuncArgs();">
+							<menupopup id="hc-editor-funcPopup">
 
 									<!-- ~ todo -->
 
@@ -191,20 +188,24 @@
 <menuseparator id="hc-editor-funcsSep" />
 <menuitem value="$custom" hc_supports="$all" label="hcFunc-$custom" />
 									<!-- ~ todo -->
+	
+							</menupopup>
+						</menulist>
+					</hbox>
+					<groupbox id="hc-editor-funcArgsBox">
+						<caption label="Arguments" />
+						<vbox id="hc-editor-funcArgs" flex="1" align="left" />
+					</groupbox>
 
-								</menupopup>
-							</menulist>
-							<vbox id="hc-editor-funcArgs" flex="1" />
-						</tabpanel>
-						<tabpanel flex="1" orient="vertical">
-							<hbox align="center">
-								<label value="Label:" />
-								<textbox id="hc-editor-funcLabel" flex="1" />
-							</hbox>
-							<textbox id="hc-editor-funcField" multiline="true" wrap="off" flex="1" />
-						</tabpanel>
-					</tabpanels>
-				</tabbox>
+					<vbox id="hc-editor-funcCustom" flex="1">
+						<hbox align="center">
+							<label value="Label:" />
+							<textbox id="hc-editor-funcLabel" flex="1" />
+						</hbox>
+						<textbox id="hc-editor-funcField" multiline="true" wrap="off" flex="1" />
+					</vbox>
+
+				</groupbox>
 
 			</tabpanel>
 			<tabpanel flex="1" orient="vertical">

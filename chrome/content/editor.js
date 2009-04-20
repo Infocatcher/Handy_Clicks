@@ -37,7 +37,7 @@ var handyClicksEditor = {
 	initShortcuts: function() {
 		this.op = window.opener;
 		this.mBox = this.$("hc-editor-mainTabbox");
-		this.fBox = this.$("hc-editor-funcsTabbox");
+		// this.fBox = this.$("hc-editor-funcsTabbox");
 		this.code = this.$("hc-editor-funcField");
 		this.cLabel = this.$("hc-editor-funcLabel");
 		var wa = window.arguments;
@@ -51,7 +51,8 @@ var handyClicksEditor = {
 			? setsObj[this.type] || {}
 			: {};
 		var isCustom = setsObj.custom;
-		this.fBox.selectedIndex = isCustom ? 1 : 0;
+		this.customFunction = isCustom;
+		// this.fBox.selectedIndex = isCustom ? 1 : 0;
 		if(isCustom) {
 			this.code.newValue = decodeURIComponent(setsObj.action);
 			this.cLabel.value = decodeURIComponent(setsObj.label);
@@ -69,6 +70,10 @@ var handyClicksEditor = {
 		);
 		this.$("hc-editor-events").value = setsObj.eventType || "";
 		this.$("hc-editor-enabled").checked = typeof setsObj.enabled != "boolean" || setsObj.enabled;
+	},
+	set customFunction(isCustom) {
+		this.$("hc-editor-funcArgsBox").hidden = isCustom;
+		this.$("hc-editor-funcCustom").hidden = !isCustom;
 	},
 	loadCustomType: function(type) {
 		if(type.indexOf("custom_" == 0))
@@ -181,14 +186,15 @@ var handyClicksEditor = {
 			box.removeChild(box.lastChild);
 		var funcs = this.$("hc-editor-func");
 		var cFunc = funcs.value;
-		if(cFunc == "$custom") {
-			this.fBox.selectedIndex = 1; //~ todo: function
+		var isCustom = cFunc == "$custom";
+		this.customFunction = isCustom;
+		if(cFunc == "$custom")
 			return;
-		}
-		var cMi = funcs.getElementsByAttribute("value", cFunc)[0];
+		var cMi = funcs.selectedItem;
 		if(!cMi)
 			return;
 		var cArgs = cMi.getAttribute("hc_args");
+		this.$("hc-editor-funcArgsBox").hidden = !cArgs;
 		if(!cArgs)
 			return;
 		cArgs.split(/[\s,;]+/).forEach(this.addArgControls, this);

@@ -103,10 +103,13 @@ var handyClicksPrefServ = {
 	saveSettingsObjects: function(reloadAll) {
  		var res = this.warnComment + "var handyClicksPrefs = {\n";
 		var shortcutObj, itemTypeObj, propVal;
+		this.sortObj(handyClicksPrefs);
 		for(var shortcut in handyClicksPrefs) {
 			if(!handyClicksPrefs.hasOwnProperty(shortcut) || !this.isOkShortcut(shortcut))
 				continue;
 			shortcutObj = handyClicksPrefs[shortcut];
+			if(!this.sortObj(shortcutObj))
+				continue;
 			res += '\t"' + shortcut + '": {\n';
 			for(var itemType in shortcutObj) {
 				if(!shortcutObj.hasOwnProperty(itemType))
@@ -126,10 +129,13 @@ var handyClicksPrefServ = {
 		res = this.delLastComma(res) + "};\n";
 
 		res += "var handyClicksCustomTypes = {\n";
+		this.sortObj(handyClicksCustomTypes);
 		for(var itemType in handyClicksCustomTypes) {
 			if(!handyClicksCustomTypes.hasOwnProperty(itemType) || itemType.indexOf("custom_") != 0)
 				continue;
 			itemTypeObj = handyClicksCustomTypes[itemType];
+			if(!this.sortObj(itemTypeObj))
+				continue;
 			res += "\t" + this.fixPropName(itemType) + ": {\n";
 			for(var propName in itemTypeObj) {
 				if(!itemTypeObj.hasOwnProperty(propName) || propName.indexOf("_") == 0)
@@ -152,6 +158,25 @@ var handyClicksPrefServ = {
 	},
 	delLastComma: function(str) {
 		return str.replace(/,\n$/, "\n");
+	},
+	sortObj: function(obj) {
+		if(typeof obj != "object")
+			return false;
+		var tmp = [];
+		var p;
+		var res = {};
+		for(p in obj)
+			if(obj.hasOwnProperty(p)) {
+				tmp.push(p);
+				res[p] = obj[p];
+				delete(obj[p]);
+			}
+		tmp.sort();
+		for(var i = 0, len = tmp.length; i < len; i++) {
+			p = tmp[i];
+			obj[p] = res[p];
+		}
+		return true;
 	},
 	get wm() {
 		if(!this._wm)
