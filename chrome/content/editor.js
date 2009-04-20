@@ -53,7 +53,7 @@ var handyClicksEditor = {
 		var isCustom = setsObj.custom;
 		this.fBox.selectedIndex = isCustom ? 1 : 0;
 		if(isCustom) {
-			this.code.value = decodeURIComponent(setsObj.action);
+			this.code.newValue = decodeURIComponent(setsObj.action);
 			this.cLabel.value = decodeURIComponent(setsObj.label);
 		}
 		this.initFuncsList(isCustom, setsObj.action);
@@ -85,8 +85,8 @@ var handyClicksEditor = {
 			.replace(/^custom_/, "");
 		cList.value = cType;
 		var ct = handyClicksCustomTypes["custom_" + cType] || {};
-		this.$("hc-editor-customTypeDefine").value = decodeURIComponent(ct.define || "");
-		this.$("hc-editor-customTypeContext").value = decodeURIComponent(ct.contextMenu || "");
+		this.$("hc-editor-customTypeDefine").newValue = decodeURIComponent(ct.define || "");
+		this.$("hc-editor-customTypeContext").newValue = decodeURIComponent(ct.contextMenu || "");
 	},
 	delCustomTypes: function() {
 		var prnt, mis, mi;

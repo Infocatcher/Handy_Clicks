@@ -1,8 +1,18 @@
 ﻿<?xml version="1.0"?>
 <bindings id="handyClicks-bindings" xmlns="http://www.mozilla.org/xbl">
 	<binding id="codeEditor" extends="chrome://global/content/bindings/textbox.xml#textarea">
-
 		<implementation>
+			<property name="editor" readonly="true"> <!-- Thanks to Custom Buttons! -->
+				<getter>
+					return this.inputField.QueryInterface(Components.interfaces.nsIDOMNSEditableElement).editor;
+				</getter>
+			</property>
+			<property name="newValue">
+				<setter>
+					this.value = val;
+					this.editor.transactionManager.clear();
+				</setter>
+			</property>
 			<method name="cmdInsert">
 				<parameter name="text" />
 				<body>
@@ -19,7 +29,45 @@
 				]]>
 				</body>
 			</method>
+			<method name="insertText">
+				<parameter name="text" />
+				<parameter name="startPos" />
+				<parameter name="endPos" />
+				<parameter name="selectFlag" />
+				<parameter name="selStart" />
+				<parameter name="selEnd" />
+				<body>
+				<![CDATA[
+					var ifi = this.inputField;
 
+					var sTop = ifi.scrollTop;
+					var sHeight = ifi.scrollHeight;
+					var sLeft = ifi.scrollLeft;
+					// var sWidth = ifi.scrollWidth;
+
+					ifi.selectionStart = startPos;
+					ifi.selectionEnd = endPos;
+
+					this.cmdInsert(text);
+
+					switch(selectFlag) {
+						case 0: // select all
+							ifi.selectionStart = startPos;
+							ifi.selectionEnd = startPos + text.length;
+						break;
+						case 1: // move cursor to start
+							ifi.selectionStart = startPos;
+							ifi.selectionEnd = startPos;
+						break;
+						case 2: // custom selection
+							ifi.selectionStart = selStart;
+							ifi.selectionEnd = selEnd;
+					}
+					ifi.scrollTop = sTop + (ifi.scrollHeight - sHeight);
+					ifi.scrollLeft = sLeft; // + (ifi.scrollWidth - sWidth);
+				]]>
+				</body>
+			</method>
 			<method name="setIndent">
 				<parameter name="indentChar" />
 				<parameter name="removeFlag" />
@@ -27,17 +75,18 @@
 				<![CDATA[
 					var val = this.value;
 					var ifi = this.inputField;
+
 					var startPos = ifi.selectionStart;
 					var endPos = ifi.selectionEnd;
 
 					var sel = val.substring(startPos, endPos);
 					if(!/\n|\r/.test(sel)) {
-						this.cmdInsert(indentChar);
+						if(removeFlag)
+							this.insertText(indentChar, startPos, endPos, 1);
+						else
+							this.cmdInsert(indentChar);
 						return;
 					}
-					var oPosition = ifi.scrollTop;
-					var oHeight = ifi.scrollHeight;
-
 					var startVal = val.substring(0, startPos);
 					var endVal = val.substring(endPos, val.length);
 
@@ -47,35 +96,22 @@
 					var endLine = startVal.length + selLen + endVal.search(/\r|\n|$/);
 
 					var block = val.substring(startLine, endLine);
-
 					if(removeFlag)
 						block = block.replace(new RegExp("^" + indentChar, "mg"), "");
 					else
 						block = block.replace(/^/mg, indentChar);
-
-					val = val.substring(0, startLine) + block + val.substring(endLine, val.length);
-					startPos = startLine;
-					endPos = startPos + block.length;
-
-					this.value = val;
-					ifi.selectionStart = startPos;
-					ifi.selectionEnd = endPos;
-
-					var nHeight = ifi.scrollHeight - oHeight;
-					ifi.scrollTop = oPosition + nHeight;
+					this.insertText(block, startLine, endLine, 0);
 				]]>
 				</body>
 			</method>
-
 			<method name="toggleComments">
 				<body>
 				<![CDATA[
 					var val = this.value;
 					var ifi = this.inputField;
+
 					var startPos = ifi.selectionStart;
 					var endPos = ifi.selectionEnd;
-					var oPosition = ifi.scrollTop;
-					var oHeight = ifi.scrollHeight;
 
 					var sel = val.substring(startPos, endPos);
 					var isMultiline = /\n|\r/.test(sel);
@@ -97,21 +133,14 @@
 						block = block.replace(/^/mg, "//");
 					var bLen1 = block.length;
 
-					val = val.substring(0, startLine) + block + val.substring(endLine, val.length);
-					startPos = isMultiline ? startLine : startPos + bLen1 - bLen0;
-					endPos = isMultiline ? startPos + block.length : endPos + bLen1 - bLen0;
-
-					this.value = val;
-					ifi.selectionStart = startPos;
-					ifi.selectionEnd = endPos;
-
-					var nHeight = ifi.scrollHeight - oHeight;
-					ifi.scrollTop = oPosition + nHeight;
+					if(isMultiline)
+						this.insertText(block, startLine, endLine, 0);
+					else
+						this.insertText(block, startLine, endLine, 2, startPos + bLen1 - bLen0, endPos + bLen1 - bLen0);
 				]]>
 				</body>
 			</method>
 		</implementation>
-
 		<handlers>
 			<handler event="keydown" phase="capturing">
 				<![CDATA[
