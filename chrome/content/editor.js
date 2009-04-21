@@ -24,6 +24,7 @@ var handyClicksEditor = {
 		this.initUI();
 		this.mBox.selectedIndex = this.mode == "shortcut" ? 0 : 1;
 		this.ps.addPrefsObserver(this.initUI, this);
+		window.addEventListener("DOMMouseScroll", this, true);
 	},
 	initUI: function() {
 		this.initShortcutEditor();
@@ -31,13 +32,18 @@ var handyClicksEditor = {
 		this.initImgIgnoreLinks();
 		this.initCustomTypesEditor();
 	},
+	destroy: function() {
+		window.removeEventListener("DOMMouseScroll", this, true);
+	},
 	$: function(id) {
 		return document.getElementById(id);
+	},
+	handleEvent: function(e) {
+		this.listScroll(e);
 	},
 	initShortcuts: function() {
 		this.op = window.opener;
 		this.mBox = this.$("hc-editor-mainTabbox");
-		// this.fBox = this.$("hc-editor-funcsTabbox");
 		this.code = this.$("hc-editor-funcField");
 		this.cLabel = this.$("hc-editor-funcLabel");
 		var wa = window.arguments;
@@ -46,10 +52,8 @@ var handyClicksEditor = {
 		this.type = wa[2];
 	},
 	initShortcutEditor: function() {
-		var setsObj = handyClicksPrefs[this.target];
-		setsObj = typeof setsObj == "object" //~ todo: isOkFuncObj
-			? setsObj[this.type] || {}
-			: {};
+		var setsObj = handyClicksPrefs[this.target] || {};
+		setsObj = setsObj[this.type] || {};
 		var isCustom = setsObj.custom;
 		this.customFunction = isCustom;
 		// this.fBox.selectedIndex = isCustom ? 1 : 0;
@@ -57,7 +61,7 @@ var handyClicksEditor = {
 			this.code.newValue = decodeURIComponent(setsObj.action);
 			this.cLabel.value = decodeURIComponent(setsObj.label);
 		}
-		this.initFuncsList(isCustom, setsObj.action);
+		this.initFuncsList(isCustom, setsObj.action || null);
 
 		if(/(?:^|,)button=(\d)(?:,|$)/.test(this.target))
 			this.$("hc-editor-button").value = RegExp.$1;
@@ -81,17 +85,40 @@ var handyClicksEditor = {
 	},
 	initCustomTypesEditor: function(cType) {
 		var cList = this.$("hc-editor-customType");
-		cType = cType || cList.value;
-		this._currentCType = cType;
-		if(!cType)
+		var sItem = cList.selectedItem;
+		cType = cType || (sItem ? sItem.value : null);
+		var cts = handyClicksCustomTypes;
+		if(!cType || !cts.hasOwnProperty(cType))
 			return;
-		cType = cType
-			.replace(/\W/, "")
-			.replace(/^custom_/, "");
-		cList.value = cType;
-		var ct = handyClicksCustomTypes["custom_" + cType] || {};
+		var ct = cts[cType] || {};
+		this.$("hc-editor-customTypeExtId").value = cType.replace(/^custom_/, "");
+		this.$("hc-editor-customTypeEnabled").checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
 		this.$("hc-editor-customTypeDefine").newValue = decodeURIComponent(ct.define || "");
 		this.$("hc-editor-customTypeContext").newValue = decodeURIComponent(ct.contextMenu || "");
+	},
+	customTypeLabel: function(it) {
+		if(it.getElementsByAttribute("label", it.value)[0])
+			this.initCustomTypesEditor();
+	},
+	customTypeIdFilter: function(e) {
+		var tar = e.target;
+		var val = tar.value;
+		if(/\W/.test(val)) {
+			val = val.replace(/\W/g, "");
+			tar.value = val
+		}
+		var val = "custom_" + tar.value;
+		var ml = this.$("hc-editor-customType");
+		var it = ml.getElementsByAttribute("value", val)[0];
+		if(it) {
+			ml.selectedItem = it;
+			this.initCustomTypesEditor(val);
+		}
+		var key = e.charCode;
+		if(!key || e.ctrlKey || e.altKey || e.metaKey || key < 32)
+			return true;
+		key = String.fromCharCode(key);
+		return /\w/.test(key);
 	},
 	delCustomTypes: function() {
 		var prnt, mis, mi;
@@ -111,12 +138,13 @@ var handyClicksEditor = {
 		var tList = this.$("hc-editor-customTypePopup");
 		this.delCustomTypes(parent, tList);
 		var cTypes = window.handyClicksCustomTypes || {};
-		var mi;
+		var mi, typeObj;
 		for(var cType in cTypes) {
 			if(!cTypes.hasOwnProperty(cType))
 				continue;
 			mi = document.createElement("menuitem");
-			mi.setAttribute("label", cType);
+			typeObj = cTypes[cType] || {};
+			mi.setAttribute("label", decodeURIComponent(typeObj.label || "") || cType);
 			mi.setAttribute("value", cType);
 			parent.insertBefore(mi, sep);
 			tList.appendChild(mi.cloneNode(false));
@@ -128,7 +156,8 @@ var handyClicksEditor = {
 		fList.value = custom // <menulist>
 			? "$custom"
 			: action;
-
+		if(!fList.value) // fix for Firefox 2.0
+			fList.selectedIndex = -1;
 		var re = new RegExp("(^|[\\s,]+)" + this.type + "([\\s,]+|$)|^\\$all$");
 		var mp = this.$("hc-editor-funcPopup");
 		var its = mp.childNodes;
@@ -137,7 +166,7 @@ var handyClicksEditor = {
 		for(var i = 0, len = its.length; i < len; i++) {
 			it = its[i];
 			if(it.nodeName == "menuseparator") {
-				it.style.display = hideSep ? "none" : "";
+				it.hidden = hideSep;
 				hideSep = true;
 			}
 			else {
@@ -146,11 +175,11 @@ var handyClicksEditor = {
 					re.test(it.getAttribute("hc_supports"))
 					&& (!req || this.extAvailable(req))
 				) {
-					it.style.display = "";
+					it.hidden = false;
 					hideSep = false;
 				}
 				else
-					it.style.display = "none";
+					it.hidden = true;
 			}
 		}
 		this.addFuncArgs(custom, action);
@@ -185,18 +214,20 @@ var handyClicksEditor = {
 		while(box.hasChildNodes())
 			box.removeChild(box.lastChild);
 		var funcs = this.$("hc-editor-func");
-		var cFunc = funcs.value;
+		var cFunc = funcs.value || null;
 		var isCustom = cFunc == "$custom";
 		this.customFunction = isCustom;
+		var argBox = this.$("hc-editor-funcArgsBox");
+		argBox.hidden = true;
 		if(cFunc == "$custom")
 			return;
 		var cMi = funcs.selectedItem;
 		if(!cMi)
 			return;
 		var cArgs = cMi.getAttribute("hc_args");
-		this.$("hc-editor-funcArgsBox").hidden = !cArgs;
 		if(!cArgs)
 			return;
+		argBox.hidden = false;
 		cArgs.split(/[\s,;]+/).forEach(this.addArgControls, this);
 	},
 	addArgControls: function(arg) {
@@ -344,28 +375,56 @@ var handyClicksEditor = {
 		this.ps.saveSettingsObjects();
 	},
 	saveCustomType: function() {
-		var tName = this.$("hc-editor-customType").value;
+		var label = this.$("hc-editor-customType").value;
+		var cType = this.$("hc-editor-customTypeExtId").value;
 		var def = this.$("hc-editor-customTypeDefine").value;
-		if(!tName || !def) {
+		if(!label || !cType || !def) {
 			this.ut.alertEx(
 				this.ut.getLocalised("errorTitle"),
 				this.ut.getLocalised("editorIncomplete")
 			);
 			return false;
 		}
-		tName = "custom_" + tName;
+		cType = "custom_" + cType;
 		var cMenu = this.$("hc-editor-customTypeContext").value;
 		var cts = handyClicksCustomTypes;
-		if(!cts.hasOwnProperty(tName))
-			cts[tName] = {};
-		var ct = cts[tName];
+		cts[cType] = {};
+		var ct = cts[cType];
+		ct.enabled = this.$("hc-editor-customTypeEnabled").checked;
+		ct.label = encodeURIComponent(label);
 		ct.define = encodeURIComponent(def);
 		ct.contextMenu = cMenu ? encodeURIComponent(cMenu) : null;
 		this.ps.saveSettingsObjects(true);
 		return true;
 	},
 	deleteCustomType: function() {
-		delete(handyClicksCustomTypes["custom_" + this.$("hc-editor-customType").value]);
+		alert("custom_" + this.$("hc-editor-customTypeExtId").value);
+		delete(handyClicksCustomTypes["custom_" + this.$("hc-editor-customTypeExtId").value]);
 		this.ps.saveSettingsObjects(true);
+	},
+	listScroll: function(e) {
+		var ml = e.target;
+		var tn = ml.tagName;
+		if(tn == "menuitem" || tn == "menuseparator") {
+			ml = ml.parentNode.parentNode;
+			tn = ml.tagName;
+		}
+		if(tn != "menulist" || ml.disabled)
+			return;
+		var mp = ml.menupopup;
+		var si = ml.selectedItem;
+		var plus = e.detail > 0;
+		si = plus
+			? !si || si == mp.lastChild
+				? mp.firstChild
+				: si.nextSibling
+			: !si || si == mp.firstChild
+				? mp.lastChild
+				: si.previousSibling;
+		while(si && (si.hidden || si.disabled || si.tagName != "menuitem"))
+			si = plus ? si.nextSibling : si.previousSibling;
+		ml.selectedItem = si || (plus ? mp.firstChild : mp.lastChild);
+		ml.menuBoxObject.activeChild = ml.mSelectedInternal || ml.selectedInternal;
+		ml.doCommand();
 	}
 };

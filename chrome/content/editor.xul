@@ -21,6 +21,7 @@
 	ondialogaccept="return handyClicksEditor.saveSettings();"
 	ondialogextra1="handyClicksEditor.saveSettings();"
 	ondialogextra2="handyClicksEditor.deleteSettings();"
+	onunload="handyClicksEditor.destroy();"
 	width="560"
 	height="420"
 	persist="width height screenX screenY">
@@ -188,7 +189,7 @@
 <menuseparator id="hc-editor-funcsSep" />
 <menuitem value="$custom" hc_supports="$all" label="hcFunc-$custom" />
 									<!-- ~ todo -->
-	
+
 							</menupopup>
 						</menulist>
 					</hbox>
@@ -209,13 +210,20 @@
 
 			</tabpanel>
 			<tabpanel flex="1" orient="vertical">
-				<menulist id="hc-editor-customType" editable="true"
-					oncommand="handyClicksEditor.initCustomTypesEditor();"
-					oninput="handyClicksEditor.initCustomTypesEditor();"
-					onkeyup="handyClicksEditor.initCustomTypesEditor();"
-					ondragexit="handyClicksEditor.initCustomTypesEditor();">
-					<menupopup id="hc-editor-customTypePopup" />
-				</menulist>
+				<hbox align="center">
+					<menulist id="hc-editor-customType" editable="true"
+						oncommand="handyClicksEditor.initCustomTypesEditor();"
+						oninput="handyClicksEditor.customTypeLabel(this);"
+						ondragexit="handyClicksEditor.customTypeLabel(this);">
+						<menupopup id="hc-editor-customTypePopup" />
+					</menulist>
+					<label value="Internal ID:" />
+					<textbox id="hc-editor-customTypeExtId"
+						onkeypress="return handyClicksEditor.customTypeIdFilter(event);"
+						oninput="handyClicksEditor.customTypeIdFilter(event);"
+						ondragexit="handyClicksEditor.customTypeIdFilter(event);" />
+					<checkbox id="hc-editor-customTypeEnabled" label="Enabled" />
+				</hbox>
 				<label value="Define item (return item or null):" />
 				<textbox id="hc-editor-customTypeDefine" multiline="true" wrap="off" flex="1" value="" />
 				<label value="Context menu of item (return item or null), empty for autodetection:" />

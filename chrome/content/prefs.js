@@ -134,7 +134,7 @@ var handyClicksPrefServ = {
 			if(!handyClicksCustomTypes.hasOwnProperty(itemType) || itemType.indexOf("custom_") != 0)
 				continue;
 			itemTypeObj = handyClicksCustomTypes[itemType];
-			if(!this.sortObj(itemTypeObj))
+			if(typeof itemTypeObj != "object")
 				continue;
 			res += "\t" + this.fixPropName(itemType) + ": {\n";
 			for(var propName in itemTypeObj) {

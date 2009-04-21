@@ -23,7 +23,7 @@ menuitem + #hc-editor-customTypesSep {
 menulist:not([label]) > .menulist-label-box {
 	outline: 2px solid red;
 	outline-offset: -2px;
-	min-height: 0.9em;
+	min-height: 15px;
 }
 
 textbox[multiline="true"] {
