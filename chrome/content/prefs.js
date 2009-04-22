@@ -7,6 +7,7 @@ var handyClicksPrefServ = {
 	prefsFileName: "handyclicks_prefs",
 	okShortcut: /^button=[0-2],ctrl=(?:true|false),shift=(?:true|false),alt=(?:true|false),meta=(?:true|false)$/,
 	_doNotReload: false,
+	_isReloader: false,
 	_restoringCounter: 0,
 	get profileDir() {
 		var dirSvc = Components.classes["@mozilla.org/file/directory_service;1"]
@@ -55,7 +56,9 @@ var handyClicksPrefServ = {
 			this.loadSettingsBackup();
 			return;
 		}
-		this.convertCystomTypes();
+		//if("handyClicks" in window)
+		if(window.location.href == "chrome://browser/content/browser.xul")
+			this.convertCystomTypes();
 		this._restoringCounter = 0;
 	},
 	loadSettingsBackup: function() {
@@ -84,16 +87,29 @@ var handyClicksPrefServ = {
 		this.loadSettings();
 	},
 	convertCystomTypes: function() {
-		var cts = handyClicksCustomTypes;
+		var cts = handyClicksCustomTypes, ct;
 		for(var type in cts) {
 			if(!cts.hasOwnProperty(type))
 				continue;
+			ct = cts[type];
+			if(typeof ct != "object" || ct.disabled)
+				continue;
 			try {
-				cts[type]._define = this.compileStr(cts[type].define);
-				cts[type]._contextMenu = this.compileStr(cts[type].contextMenu);
+				ct._define = this.compileStr(cts[type].define);
+				ct._contextMenu = this.compileStr(cts[type].contextMenu);
 			}
 			catch(e) {
-				this.ut._err("[Handy Clicks]: Error in custom type " + type + "\n" + e);
+				this.ut.notify(
+					this.ut.getLocalised("errorTitle"),
+					this.ut.getLocalised("customTypeCompileError")
+						.replace("%l", decodeURIComponent(ct.label || ""))
+						.replace("%id", type)
+						.replace("%e", e)
+					+ this.ut.getLocalised("openConsole"),
+					toErrorConsole
+				);
+				var msg = "[Handy Clicks]: Error in custom type " + type + "\n" + e;
+				this.ut._err(msg);
 			}
 		}
 	},
@@ -184,22 +200,26 @@ var handyClicksPrefServ = {
 				.getService(Components.interfaces.nsIWindowMediator);
 		return this._wm;
 	},
-	reloadSettingsInAllWindows: function(winType) {
-		var wm = this.wm;
-		var ws = wm.getEnumerator(winType);
-		while(ws.hasMoreElements()) {
-			var mw = ws.getNext();
-			if("handyClicksPrefServ" in mw && !mw.handyClicksPrefServ._doNotReload) {
-				mw.handyClicksPrefServ.loadSettings();
-				mw.handyClicksPrefServ.notifyObservers();
-			}
-		}
-	},
 	reloadSettings: function(reloadAll) {
 		this._doNotReload = reloadAll ? false : true;
-		["navigator:browser", "handyclicks:settings", "handyclicks:editor"]
-			.forEach(this.reloadSettingsInAllWindows, this);
+		this._isReloader = true;
+
+		var wTypes = ["navigator:browser", "handyclicks:settings", "handyclicks:editor"];
+		var wm = this.wm;
+		var ws, w;
+		for(var i = 0, len = wTypes.length; i < len; i++) {
+			ws = wm.getEnumerator(wTypes[i]);
+			while(ws.hasMoreElements()) {
+				w = ws.getNext();
+				if("handyClicksPrefServ" in w && !w.handyClicksPrefServ._doNotReload) {
+					w.handyClicksPrefServ.loadSettings();
+					w.handyClicksPrefServ.notifyObservers();
+				}
+			}
+		}
+
 		this._doNotReload = false;
+		this._isReloader = false;
 	},
 	moveFiles: function(mFile, nAdd, maxNum) {
 		if(maxNum < 0)

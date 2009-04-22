@@ -23,6 +23,7 @@
 		}
 		catch(e) {
 			handyClicksUtils._log("Cannt reload scripts\n" + e);
+			throw e;
 		}
 	}
 	window.addEventListener(

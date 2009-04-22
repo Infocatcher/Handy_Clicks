@@ -25,6 +25,7 @@ var handyClicksEditor = {
 		this.mBox.selectedIndex = this.mode == "shortcut" ? 0 : 1;
 		this.ps.addPrefsObserver(this.initUI, this);
 		window.addEventListener("DOMMouseScroll", this, true);
+		this.toggleApply(true);
 	},
 	initUI: function() {
 		this.initShortcutEditor();
@@ -34,6 +35,20 @@ var handyClicksEditor = {
 	},
 	destroy: function() {
 		window.removeEventListener("DOMMouseScroll", this, true);
+	},
+	get applyButton() {
+		if(!this._applyButton)
+			this._applyButton = document.documentElement.getButton("extra1");
+		return this._applyButton;
+	},
+	toggleApply: function(dis) {
+		this.applyButton.disabled = dis;
+	},
+	alloyApply: function(e) {
+		var nn = e.target.nodeName;
+		if(nn == "tab" || nn == "dialog")
+			return;
+		this.toggleApply(false);
 	},
 	$: function(id) {
 		return document.getElementById(id);
@@ -114,6 +129,8 @@ var handyClicksEditor = {
 			ml.selectedItem = it;
 			this.initCustomTypesEditor(val);
 		}
+		else
+			ml.selectedItem = null;
 		var key = e.charCode;
 		if(!key || e.ctrlKey || e.altKey || e.metaKey || key < 32)
 			return true;
@@ -302,7 +319,8 @@ var handyClicksEditor = {
 			},
 			this
 		);
-		handyClicksEditor.loadFuncs();
+		this.loadFuncs();
+		this.alloyApply(e);
 	},
 
 	saveSettings: function() {
@@ -368,11 +386,13 @@ var handyClicksEditor = {
 		}
 		// alert( uneval( handyClicksPrefs[sh] ) );
 		this.ps.saveSettingsObjects();
+		this.toggleApply(true);
 		return true;
 	},
 	deleteShortcut: function() {
 		delete(handyClicksPrefs[this.currentShortcut]);
 		this.ps.saveSettingsObjects();
+		this.toggleApply(true);
 	},
 	saveCustomType: function() {
 		var label = this.$("hc-editor-customType").value;
@@ -395,12 +415,13 @@ var handyClicksEditor = {
 		ct.define = encodeURIComponent(def);
 		ct.contextMenu = cMenu ? encodeURIComponent(cMenu) : null;
 		this.ps.saveSettingsObjects(true);
+		this.toggleApply(true);
 		return true;
 	},
 	deleteCustomType: function() {
-		alert("custom_" + this.$("hc-editor-customTypeExtId").value);
 		delete(handyClicksCustomTypes["custom_" + this.$("hc-editor-customTypeExtId").value]);
 		this.ps.saveSettingsObjects(true);
+		this.toggleApply(true);
 	},
 	listScroll: function(e) {
 		var ml = e.target;

@@ -18,7 +18,7 @@ var hcNotify = {
 		}
 		var wo = window.opener;
 		var x, y;
-		if(wa.inWindowCorner || !wo.handyClicks) {
+		if(wa.inWindowCorner || !("handyClicks" in wo) || !("copyOfEvent" in wo.handyClicks)) {
 			x = wo.screenX + wo.outerWidth - winW;
 			var sBar = wo.document.getElementById("browser-bottombox") || wo.document.getElementById("status-bar");
 			y = (sBar ? sBar.boxObject.screenY : wo.screenY + wo.outerHeight) - winH;
@@ -46,6 +46,9 @@ var hcNotify = {
 	delayedClose: function() {
 		this.closeTimeout = setTimeout(window.close, window.arguments[0].dur);
 	},
+	cancelDelayedClose: function() {
+		clearTimeout(this.closeTimeout);
+	},
 	mouseHandler: function(e) {
 		if(e.relatedTarget)
 			return;
@@ -53,12 +56,12 @@ var hcNotify = {
 		if(!tar || tar.id != "hcNotifyBox")
 			return;
 		switch(e.type) {
-			case "mouseover": clearTimeout(this.closeTimeout); break;
+			case "mouseover": this.cancelDelayedClose(); break;
 			case "mouseout":  this.delayedClose();
 		}
 	},
 	click: function(e) {
-		clearTimeout(this.closeTimeout);
+		this.cancelDelayedClose();
 		var fnc = window.arguments[0].fnc;
 		if(typeof fnc == "function" && e.button == 0)
 			fnc();

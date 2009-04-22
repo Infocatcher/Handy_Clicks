@@ -8,7 +8,8 @@
 	onload="hcNotify.init();"
 	onclick="hcNotify.click(event);"
 	onmouseover="hcNotify.mouseHandler(event);"
-	onmouseout="hcNotify.mouseHandler(event);">
+	onmouseout="hcNotify.mouseHandler(event);"
+	onmousemove="hcNotify.cancelDelayedClose();">
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/notify.js" />
 

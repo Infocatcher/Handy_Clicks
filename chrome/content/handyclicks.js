@@ -70,10 +70,33 @@ var handyClicks = {
 				cm = null; //~ todo: SubmitToTab for fx3 => add cm
 			break;
 			default: // custom types
-				var customTypes = window.handyClicksCustomTypes[this.itemType];
-				cm = customTypes && customTypes._contextMenu
-					? customTypes._contextMenu.call(this.fn, e)
-					: this.getContextMenu();
+				if(!this.isOkCustomType(this.itemType))
+					break;
+				var ct = handyClicksCustomTypes[this.itemType];
+				var _cm = ct._contextMenu;
+				if(_cm) {
+					try { cm = _cm.call(this.fn, e); }
+					catch(e) {
+						this.ut.notify(
+							this.ut.getLocalised("errorTitle"),
+							this.ut.getLocalised("customTypeContextMenuError")
+								.replace("%l", decodeURIComponent(ct.label || ""))
+								.replace("%id", this.itemType)
+								.replace("%e", e)
+							+ this.ut.getLocalised("openConsole"),
+							toErrorConsole
+						);
+						this.ut._err(
+							"[Handy Clicks]: Error in custom function for context menu detection."
+							+ "\nid: " + this.itemType
+							+ "\nLabel: " + decodeURIComponent(ct.label || "")
+							+ "\nCode:\n" + decodeURIComponent(ct.contextMenu || "")
+						);
+						throw e;
+					}
+				}
+				else
+					cm = this.getContextMenu();
 		}
 		this._cMenu = cm; // cache
 		return cm;
@@ -252,11 +275,22 @@ var handyClicks = {
 	isOkFuncObj: function(fObj) { // funcObj && funcObj.enabled && funcObj.action
 		return handyClicksPrefServ.isOkFuncObj(fObj) && fObj.enabled;
 	},
-	isOkItemType: function(sets, iType) {
+	itemTypeInSets: function(sets, iType) {
 		return sets.hasOwnProperty(iType) && this.isOkFuncObj(sets[iType]);
 	},
+	isOkCustomType: function(cType) {
+		var cts = handyClicksCustomTypes;
+		if(!cts.hasOwnProperty(cType))
+			return false;
+		var ct = cts[cType];
+		return typeof ct == "object"
+			&& ct.hasOwnProperty("enabled")
+			&& ct.enabled
+			&& ct.hasOwnProperty("_define")
+			&& ct.hasOwnProperty("_contextMenu");
+	},
 	defineItem: function(e, sets) {
-		var all = this.isOkItemType(sets, "$all");
+		var all = this.itemTypeInSets(sets, "$all");
 		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "submitButton"
 		this.item = null;
 
@@ -266,12 +300,26 @@ var handyClicks = {
 
 		// Custom:
 		var cItem;
-		var cts = handyClicksCustomTypes;
+		var cts = handyClicksCustomTypes, ct;
+		var errors = [];
 		for(var type in cts) {
 			if(!cts.hasOwnProperty(type))
 				continue;
-			if(all || this.isOkItemType(sets, type)) {
-				cItem = cts[type]._define.call(this, e, it);
+			ct = cts[type];
+			if(
+				(all || this.itemTypeInSets(sets, type))
+				&& this.isOkCustomType(type)
+			) {
+				try { cItem = ct._define.call(this, e, it); }
+				catch(e) {
+					var eId = this.ut.getLocalised("id") + " " + type
+						+ "\n" + this.ut.getLocalised("label") + " " + decodeURIComponent(ct.label || "");
+					errors.push(eId + "\n" + this.ut.getLocalised("details") + "\n" + e);
+					var _err = this.ut._err;
+					var _msg = "[Handy Clicks]: "
+						+ this.ut.getLocalised("customTypeDefineError").replace("%e", eId);
+					setTimeout(function() { _err(_msg); throw e; }, 0);
+				}
 				if(!cItem)
 					continue;
 				this.itemType = type;
@@ -279,10 +327,19 @@ var handyClicks = {
 				return;
 			}
 		}
+		if(errors.length) {
+			this.ut.notify(
+				this.ut.getLocalised("errorTitle"),
+				this.ut.getLocalised("customTypeDefineError" + (errors.length == 1 ? "" : "s"))
+					.replace("%e", errors.join("\n\n"))
+				+ this.ut.getLocalised("openConsole"),
+				toErrorConsole
+			);
+		}
 
 		// img:
 		if(
-			(all || this.isOkItemType(sets, "img"))
+			(all || this.itemTypeInSets(sets, "img"))
 			&& (itnn == "img" || itnn == "image") && (it.src || it.hasAttribute("src"))
 			&& this.ut.isNoChromeDoc(it.ownerDocument) // not for interface...
 		) {
@@ -293,7 +350,7 @@ var handyClicks = {
 		}
 
 		// Link:
-		if(all || this.isOkItemType(sets, "link")) {
+		if(all || this.itemTypeInSets(sets, "link")) {
 			var a = it, ann = itnn;
 			while(ann != "#document" && ann != "a") {
 				a = a.parentNode;
@@ -308,7 +365,7 @@ var handyClicks = {
 
 		// History item:
 		if(
-			(all || this.isOkItemType(sets, "historyItem"))
+			(all || this.itemTypeInSets(sets, "historyItem"))
 			&& it.namespaceURI == this.XULNS
 			&& this.fn.getBookmarkUri(it)
 			&& it.parentNode.id == "goPopup"
@@ -320,7 +377,7 @@ var handyClicks = {
 
 		// Bookmark:
 		if(
-			(all || this.isOkItemType(sets, "bookmark"))
+			(all || this.itemTypeInSets(sets, "bookmark"))
 			&& it.namespaceURI == this.XULNS
 			&& it.type != "menu"
 			&& (
@@ -341,7 +398,7 @@ var handyClicks = {
 
 		// Tab:
 		if(
-			(all || this.isOkItemType(sets, "tab"))
+			(all || this.itemTypeInSets(sets, "tab"))
 			&& it.namespaceURI == this.XULNS
 			&& it.getAttribute("anonid") != "close-button"
 		) {
@@ -365,7 +422,7 @@ var handyClicks = {
 
 		// Tab bar:
 		if(
-			(all || this.isOkItemType(sets, "tabbar"))
+			(all || this.itemTypeInSets(sets, "tabbar"))
 			&& it.namespaceURI == this.XULNS
 			&& it.className != "tabs-alltabs-button"
 			&& it.getAttribute("anonid") != "close-button"
@@ -385,7 +442,7 @@ var handyClicks = {
 		}
 
 		// Submit button:
-		if(all || this.isOkItemType(sets, "submitButton")) {
+		if(all || this.itemTypeInSets(sets, "submitButton")) {
 			if(itnn == "input" && it.type == "submit") {
 				this.itemType = "submitButton";
 				this.item = it;
@@ -500,10 +557,11 @@ var handyClicks = {
 					this.ut.getLocalised("errorTitle"),
 					this.ut.getLocalised("customFunctionError")
 						.replace("%f", label)
-						.replace("%e", e),
+						.replace("%e", e)
+					+ this.ut.getLocalised("openConsole"),
 					toErrorConsole
 				);
-				this.ut._err("[Handy Clicks]: Error in custom action " + label + ":\n" + action);
+				this.ut._err("[Handy Clicks]: Error in custom function " + label + ":\n" + action);
 				throw e;
 			}
 		}
