@@ -16,6 +16,7 @@ var handyClicks = {
 	evtStrOnMousedown: "",
 	hasMousemoveHandler: false,
 	mousemoveParams: { dist: 0 },
+	_tabOnMousedown: null,
 	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
 	init: function() {
 		window.removeEventListener("load", this, false);
@@ -156,13 +157,22 @@ var handyClicks = {
 
 		var _this = this;
 		var cm = this.getItemContext(e);
+
+		// Fix for switching tabs by Mouse Gestures
+		this._tabOnMousedown = cm && cm.id == "contentAreaContextMenu"
+			? this.fn.getTabBrowser(true).mCurrentTab
+			: null;
+
 		var cMenuDelay = this.ut.pref("showContextMenuTimeout");
 		if(cMenuDelay > 0 && cm && e.button == 2) { // Show context menu after delay
+			this.clearCMenuTimeout(); // only one timeout... (for dblclick event)
 			this.cMenuTimeout = setTimeout(
-				function() {
-					_this.showPopupOnItem();
+				function(_this) {
+					if(_this.tabNotChanged)
+						_this.showPopupOnItem();
 				},
-				cMenuDelay
+				cMenuDelay,
+				this
 			);
 			cm.addEventListener(
 				"popupshowing",
@@ -177,6 +187,10 @@ var handyClicks = {
 			this.hasMousemoveHandler = true;
 			window.addEventListener("mousemove", this, true);
 		}
+	},
+	get tabNotChanged() {
+		var tab = this._tabOnMousedown;
+		return !tab || tab == this.fn.getTabBrowser(true).mCurrentTab;
 	},
 	mousemoveHandler: function(e) {
 		if(this.mousemoveParams.screenX) {
@@ -538,6 +552,8 @@ var handyClicks = {
 	},
 	runFunc: function(e, funcObj) {
 		if(this.flags.runned || e.type != funcObj.eventType)
+			return;
+		if(!this.tabNotChanged)
 			return;
 		this.flags.runned = true;
 		this.flags.stopContextMenu = true;

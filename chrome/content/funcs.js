@@ -864,12 +864,10 @@ var handyClicksFuncs = {
 		tab = this.fixTab(tab);
 		var tbr = this.getTabBrowser();
 		var ind = ++tab._tPos;
-		try { // fx 3.0
+		if("duplicateTab" in tbr) // fx 3.0
 			var newTab = tbr.duplicateTab(tab);
-		}
-		catch(err) { // Not a real "clone"... Just URI's copy
+		else // Not a real "clone"... Just URI's copy
 			var newTab = tbr.addTab(this.getTabUri(tab));
-		}
 		if("TreeStyleTabService" in window && ind == tbr.browsers.length - 1)
 			tbr.moveTabTo(newTab, ind - 1); // Fix bug for last tab moving
 		tbr.moveTabTo(newTab, ind);
