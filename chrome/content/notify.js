@@ -1,5 +1,12 @@
 var hcNotify = {
-	closeTimeout: null,
+	startColor: 0, // >= 0 (black)
+	endColor: 255, // <= 255 (white)
+	_colorDelta: null,
+	_startTime: null,
+	_dur: null,
+	_closeTimeout: null,
+	_highlightInterval: null,
+	_nBox: null,
 	init: function() {
 		var wa = window.arguments[0]; // { dur, nTitle, msg, fnc, extEnabled, inWindowCorner }
 		document.getElementById("hcNotifyHeader").value = wa.nTitle;
@@ -38,16 +45,41 @@ var hcNotify = {
 				y = evt.screenY - winH - addH;
 		}
 		window.moveTo(x, y);
-		var nBox = document.getElementById("hcNotifyBox");
-		setTimeout( function() { nBox.style.borderColor = "blue"; }, 150);
-		setTimeout( function() { nBox.style.borderColor = "black"; }, 300);
+		this._nBox = document.getElementById("hcNotifyBox");
+		this._colorDelta = this.endColor - this.startColor;
+		this._dur = wa.dur;
 		this.delayedClose();
 	},
+	setColor: function() {
+		var persent = (Date.now() - this._startTime)/this._dur;
+		if(persent > 1) {
+			clearInterval(this._highlightInterval);
+			return;
+		}
+		var c = this.startColor + Math.round(this._colorDelta*persent);
+		var h = Number(c).toString(16);
+		if(h.length == 1)
+			h = "0" + h;
+		h = "#" + h + h + h;
+		// setTimeout(function() { throw c + " >> " + h; }, 0);
+		this._nBox.style.borderColor = h;
+	},
 	delayedClose: function() {
-		this.closeTimeout = setTimeout(window.close, window.arguments[0].dur);
+		this._closeTimeout = setTimeout(window.close, this._dur);
+
+		this._startTime = Date.now();
+
+		var _this = this;
+		this._highlightInterval = setInterval(
+			function() { _this.setColor(); },
+			Math.round(this._dur/this._colorDelta) + 4
+		);
+		this._nBox.style.borderColor = "black";
 	},
 	cancelDelayedClose: function() {
-		clearTimeout(this.closeTimeout);
+		clearTimeout(this._closeTimeout);
+		clearInterval(this._highlightInterval);
+		this._nBox.style.borderColor = "blue";
 	},
 	mouseHandler: function(e) {
 		if(e.relatedTarget)
@@ -60,7 +92,7 @@ var hcNotify = {
 			case "mouseout":  this.delayedClose();
 		}
 	},
-	click: function(e) {
+	clickHandler: function(e) {
 		this.cancelDelayedClose();
 		var fnc = window.arguments[0].fnc;
 		if(typeof fnc == "function" && e.button == 0)

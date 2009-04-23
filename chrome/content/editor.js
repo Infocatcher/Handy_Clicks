@@ -98,6 +98,18 @@ var handyClicksEditor = {
 		if(type.indexOf("custom_" == 0))
 			this.initCustomTypesEditor(type);
 	},
+	editCustomType: function(e) {
+		if(e.button != 2)
+			return;
+		var tar = e.target;
+		cType = tar.value;
+		if(cType.indexOf("custom_") == 0)
+			this.initCustomTypesEditor(cType);
+		this.mBox.selectedIndex = 1;
+		var mp = tar.parentNode;
+		if("hidePopup" in mp)
+			mp.hidePopup();
+	},
 	initCustomTypesEditor: function(cType) {
 		var cList = this.$("hc-editor-customType");
 		var sItem = cList.selectedItem;
@@ -106,6 +118,7 @@ var handyClicksEditor = {
 		if(!cType || !cts.hasOwnProperty(cType))
 			return;
 		var ct = cts[cType] || {};
+		cList.value = decodeURIComponent(ct.label || ""); //~ todo: test!
 		this.$("hc-editor-customTypeExtId").value = cType.replace(/^custom_/, "");
 		this.$("hc-editor-customTypeEnabled").checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
 		this.$("hc-editor-customTypeDefine").newValue = decodeURIComponent(ct.define || "");

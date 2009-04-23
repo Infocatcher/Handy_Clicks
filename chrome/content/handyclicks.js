@@ -127,7 +127,6 @@ var handyClicks = {
 				fls[p] = false;
 	},
 	mousedownHandler: function(e) { //~ todo: test hiding of context menu in Linux
-		// this.skipFlags(); //~ ?
 		if(this.disabled)
 			return;
 

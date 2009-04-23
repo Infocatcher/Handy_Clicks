@@ -9,7 +9,7 @@ var handyClicksFuncs = {
 	_defaultCharset: null,
 	copyItemText: function(e, hidePopup) { // for all
 		var text = this.hc.itemType == "tabbar"
-			? this.forEachTab(this.getTabUri).join("\n")
+			? this.forEachTab(function(tab) { return tab.label; }).join("\n")
 			: this.getTextOfCurrentItem();
 		this.copyStr(text);
 		this.hc.blinkNode();
@@ -18,7 +18,7 @@ var handyClicksFuncs = {
 	},
 	copyItemLink: function(e, hidePopup) {
 		var link = this.hc.itemType == "tabbar"
-			? this.forEachTab(function(tab) { return tab.label; }).join("\n")
+			? this.forEachTab(this.getTabUri).join("\n")
 			: this.getUriOfItem() || "";
 		this.copyStr(link);
 		this.hc.blinkNode();
@@ -660,7 +660,7 @@ var handyClicksFuncs = {
 				for(var j = 0; j < args.length; j++)
 					it["mltt_line_" + n++] = args[j];
 			}
-			it["mltt_line_" + n++] = this.decodeUri(uri);
+			it["hc_tooltip_" + n++] = this.decodeUri(uri);
 		}
 		var popup = this.showGeneratedPopup(items);
 		popup.setAttribute("oncommand", "handyClicksFuncs.openUriWithApp(event, this);");
@@ -978,7 +978,7 @@ var handyClicksFuncs = {
 	},
 	fillInTooltip: function(tooltip) {
 		var tNode = document.tooltipNode;
-		var attrName = "mltt_line_0";
+		var attrName = "hc_tooltip_0";
 		var i = 0, lbl;
 		while(tNode.hasAttribute(attrName)) {
 			lbl = tooltip["_" + attrName];
@@ -990,9 +990,9 @@ var handyClicksFuncs = {
 			}
 			lbl.setAttribute("value", tNode.getAttribute(attrName));
 			lbl.hidden = false;
-			attrName = "mltt_line_" + ++i;
+			attrName = "hc_tooltip_" + ++i;
 		}
-		return tNode.hasAttribute("mltt_line_0");
+		return tNode.hasAttribute("hc_tooltip_0");
 	},
 	hideAllLabels: function(tooltip) {
 		var chs = tooltip.firstChild.childNodes;
