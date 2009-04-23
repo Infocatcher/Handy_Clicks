@@ -30,6 +30,7 @@
 
 	<box> <!-- Fix for Firefox 2.0 -->
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/sets.js" />
 

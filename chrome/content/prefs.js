@@ -194,18 +194,12 @@ var handyClicksPrefServ = {
 		}
 		return true;
 	},
-	get wm() {
-		if(!this._wm)
-			this._wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
-				.getService(Components.interfaces.nsIWindowMediator);
-		return this._wm;
-	},
 	reloadSettings: function(reloadAll) {
 		this._doNotReload = reloadAll ? false : true;
 		this._isReloader = true;
 
 		var wTypes = ["navigator:browser", "handyclicks:settings", "handyclicks:editor"];
-		var wm = this.wm;
+		var wm = handyClicksWinUtils.wm;
 		var ws, w;
 		for(var i = 0, len = wTypes.length; i < len; i++) {
 			ws = wm.getEnumerator(wTypes[i]);

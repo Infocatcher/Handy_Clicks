@@ -31,6 +31,7 @@
 	persist="width height screenX screenY">
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/editor.js" />
 
@@ -140,6 +141,14 @@
 	value="reloadAllTabs" label="hcFunc-reloadAllTabs"
 	hc_args="skipCache"
 	hc_supports="tab tabbar" />
+<menuitem
+	value="stopTabLoading" label="hcFunc-stopTabLoading"
+	hc_args=""
+	hc_supports="tab tabbar" />
+<menuitem
+	value="stopAllTabsLoading" label="hcFunc-stopAllTabsLoading"
+	hc_args=""
+	hc_supports="tab tabbar" />
 <menuseparator id="hc-editor-funcsSep-tabs" />
 <menuitem
 	value="openUriInTab" label="hcFunc-openUriInTab"
@@ -148,7 +157,7 @@
 <menuitem
 	value="openUriInCurrentTab" label="hcFunc-openUriInCurrentTab"
 	hc_args="refererPolicy hidePopup"
-	hc_supports="link img tab bookmark historyItem" />
+	hc_supports="link img bookmark historyItem" />
 <menuitem
 	value="openUriInWindow" label="hcFunc-openUriInWindow"
 	hc_args="loadInBackground loadJSInBackground refererPolicy moveWinTo hidePopup"

@@ -24,6 +24,9 @@ var handyClicks = {
 		window.addEventListener("mouseup", this, true);
 		window.addEventListener("contextmenu", this, true);
 		window.addEventListener("dblclick", this, true);
+
+		this.setStatus();
+		this.ut.addPrefsObserver(this.updUI, this);
 	},
 	destroy: function() {
 		window.removeEventListener("unload", this, false);
@@ -617,6 +620,33 @@ var handyClicks = {
 		if(topic != "nsPref:changed")
 			return;
 		this.ut.readPref(prefName.replace(/^extensions\.handyclicks\./, ""));
+	},
+
+	// GUI:
+	toggleStatus: function() {
+		this.ut.pref("enabled", !this.ut.pref("enabled"));
+	},
+	doSettings: function(e) {
+		switch(e.button) {
+			case 0:
+				this.toggleStatus();
+			break;
+			case 1:
+			case 2:
+				handyClicksWinUtils.openWindowByType(
+					"chrome://handyclicks/content/sets.xul",
+					"handyclicks:settings",
+					"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
+				);
+		}
+	},
+	updUI: function(pName) {
+		if(pName == "enabled")
+			this.setStatus();
+	},
+	setStatus: function() {
+		document.getElementById("handyClicks-toggleStatus-sBarIcon")
+			.setAttribute("hc_enabled", this.ut.pref("enabled"));
 	}
 };
 window.addEventListener("load", handyClicks, false);

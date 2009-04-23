@@ -1,8 +1,17 @@
 <?xml version="1.0"?>
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	id="handyClicks-settingsOpener" width="0" height="0">
+	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
 	<script type="application/x-javascript"><![CDATA[
 	// Prevent modal windows
+	handyClicksWinUtils.openWindowByType(
+		"chrome://handyclicks/content/sets.xul",
+		"handyclicks:settings",
+		"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0",
+		window.opener
+	);
+	window.close();
+	/***
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
 		.getService(Components.interfaces.nsIWindowMediator);
 	var setsWin = wm.getMostRecentWindow("handyclicks:settings");
@@ -14,5 +23,6 @@
 			"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
 		);
 	window.close();
+	****/
 	]]></script>
 </window>

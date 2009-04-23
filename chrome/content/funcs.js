@@ -644,21 +644,23 @@ var handyClicksFuncs = {
 			this.ut._err("[Handy Clicks]: can't get URI of item (" + this.hc.itemType + ")");
 			return;
 		}
-		var path, it, n, args;
+		var path, it, n, args, img;
 		for(var i = 0; i < items.length; i++) {
 			it = items[i], n = 0;
 			path = it.__path;
+			img = it.__image;
 			if(path) {
 				path = this.getRelativePath(path);
 				it.class = "menuitem-iconic";
-				it.image = "moz-icon:file://" + path;
-				it["mltt_line_" + n++] = path;
+				img = (img && this.getRelativePath(img) || path);
+				it.image = "moz-icon:file://" + img;
+				it["hc_tooltip_" + n++] = path;
 				it.__path = path;
 			}
 			if(it.__args instanceof Array) {
 				args = it.__args;
 				for(var j = 0; j < args.length; j++)
-					it["mltt_line_" + n++] = args[j];
+					it["hc_tooltip_" + n++] = args[j];
 			}
 			it["hc_tooltip_" + n++] = this.decodeUri(uri);
 		}
@@ -842,6 +844,17 @@ var handyClicksFuncs = {
 			);
 		else
 			br.reload();
+	},
+	stopAllTabsLoading: function(e) {
+		var _this = this;
+		this.forEachTab(
+			function(tab) { _this.stopTabLoading(e, tab); }
+		);
+	},
+	stopTabLoading: function(e, tab) {
+		tab = this.fixTab(tab);
+		var br = tab.linkedBrowser;
+		br.stop();
 	},
 	undoCloseTab: function(e) {
 		try { gBrowser.undoRemoveTab(); } // Tab Mix Plus
