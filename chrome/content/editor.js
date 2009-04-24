@@ -102,7 +102,7 @@ var handyClicksEditor = {
 		if(e.button != 2)
 			return;
 		var tar = e.target;
-		cType = tar.value;
+		var cType = tar.value;
 		if(cType.indexOf("custom_") == 0)
 			this.initCustomTypesEditor(cType);
 		this.mBox.selectedIndex = 1;
@@ -168,7 +168,8 @@ var handyClicksEditor = {
 		var tList = this.$("hc-editor-customTypePopup");
 		this.delCustomTypes(parent, tList);
 		var cTypes = window.handyClicksCustomTypes || {};
-		var mi, typeObj;
+		var mi, _mi, typeObj, dis;
+		var hideSep = true;
 		for(var cType in cTypes) {
 			if(!cTypes.hasOwnProperty(cType))
 				continue;
@@ -176,9 +177,15 @@ var handyClicksEditor = {
 			typeObj = cTypes[cType] || {};
 			mi.setAttribute("label", decodeURIComponent(typeObj.label || "") || cType);
 			mi.setAttribute("value", cType);
+			_mi = mi.cloneNode(true);
+			dis = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
+			mi.setAttribute("disabled", dis);
+			_mi.setAttribute("hc_disabled", dis);
 			parent.insertBefore(mi, sep);
-			tList.appendChild(mi.cloneNode(false));
+			tList.appendChild(_mi);
+			hideSep = false;
 		}
+		sep.hidden = hideSep;
 		parent.parentNode.value = this.type; // <menulist>
 	},
 	initFuncsList: function(custom, action) {
@@ -455,7 +462,7 @@ var handyClicksEditor = {
 			: !si || si == mp.firstChild
 				? mp.lastChild
 				: si.previousSibling;
-		while(si && (si.hidden || si.disabled || si.tagName != "menuitem"))
+		while(si && (si.hidden || si.getAttribute("disabled") == "true" || si.tagName != "menuitem"))
 			si = plus ? si.nextSibling : si.previousSibling;
 		ml.selectedItem = si || (plus ? mp.firstChild : mp.lastChild);
 		ml.menuBoxObject.activeChild = ml.mSelectedInternal || ml.selectedInternal;

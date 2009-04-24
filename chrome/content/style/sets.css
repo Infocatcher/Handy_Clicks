@@ -12,11 +12,8 @@ checkbox[preference="enabled"][hideallafter="true"] ~ * {
 	visibility: hidden;
 }
 
-#hc-editor-customTypesSep {
-	display: none;
-}
-menuitem + #hc-editor-customTypesSep {
-	display: -moz-box;
+menuitem[hc_disabled="true"] {
+	color: graytext; /* Style like disabled, but without accessibility restrictions */
 }
 
 /* Warning for empty menulists */

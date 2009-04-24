@@ -661,8 +661,10 @@ var handyClicks = {
 			this.setStatus();
 	},
 	setStatus: function() {
-		document.getElementById("handyClicks-toggleStatus-sBarIcon")
-			.setAttribute("hc_enabled", this.ut.pref("enabled"));
+		var sbi = document.getElementById("handyClicks-toggleStatus-sBarIcon");
+		var enabled = this.ut.pref("enabled");
+		sbi.setAttribute("hc_enabled", enabled);
+		sbi.tooltipText = this.ut.getLocalised(enabled ? "enabled" : "disabled");
 	}
 };
 window.addEventListener("load", handyClicks, false);

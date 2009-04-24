@@ -92,8 +92,13 @@
 					var endLine = startVal.length + selLen + endVal.search(/\r|\n|$/);
 
 					var block = val.substring(startLine, endLine);
-					if(removeFlag)
-						block = block.replace(new RegExp("^" + indentChar, "mg"), "");
+					if(removeFlag) {
+						var re = new RegExp("^" + indentChar, "mg");
+						if(re.test(block))
+							block = block.replace(re, "");
+						else
+							return;
+					}
 					else
 						block = block.replace(/^/mg, indentChar);
 					this.insertText(block, startLine, endLine, 0);
@@ -136,22 +141,46 @@
 				]]>
 				</body>
 			</method>
+			<method name="formatNewLine">
+				<body>
+				<![CDATA[
+					var val = this.value;
+					var ifi = this.inputField;
+
+					var startPos = ifi.selectionStart;
+					var endPos = ifi.selectionEnd;
+
+					var startVal = val.substring(0, startPos);
+					var endVal = val.substring(endPos, val.length);
+
+					var startLine = startVal.search(/(^|\n|\r)[^\n\r]*$/);
+					startLine += RegExp.$1.length;
+
+					var line = val.substring(startLine, startPos);
+
+					var indent = /^([ \t]+)/.test(line) ? RegExp.$1 : "";
+					var ins = "\n" + indent;
+					var hasOpenBracket = /[{(\[]\s*$/.test(line);
+					ins += hasOpenBracket ? "\t" : "";
+					if(/^\s*[})\]]/.test(endVal)) {
+ 						ins = hasOpenBracket ? ins : "";
+						var pos = startPos + ins.length;
+						ins += hasOpenBracket ? "\n" + indent : "\n" + indent.replace(/\t$/, "");
+						this.insertText(ins, startPos, endPos, 2, pos, pos);
+					}
+					else
+						this.cmdInsert(ins);
+				]]>
+				</body>
+			</method>
 		</implementation>
 		<handlers>
-			<handler event="keydown" phase="capturing">
-				<![CDATA[
-					var kCode = event.keyCode;
-					if(kCode == event.DOM_VK_TAB && !event.ctrlKey && !event.altKey && !event.metaKey)
-						this.setIndent("\t", event.shiftKey);
-					else if(kCode == event.DOM_VK_SPACE && !event.ctrlKey && !event.altKey && !event.metaKey)
-						this.setIndent(" ", event.shiftKey);
-					else if(kCode == event.DOM_VK_A && event.ctrlKey && event.shiftKey && !event.altKey && !event.metaKey)
-						this.toggleComments();
-					else
-						return;
-					event.preventDefault();
-				]]>
-			</handler>
+			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent('\t', false);" />
+			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent('\t', true);" modifiers="shift" />
+			<handler event="keypress" preventdefault="true" key=" " action="this.setIndent(' ', false);" />
+			<handler event="keypress" preventdefault="true" key=" " action="this.setIndent(' ', true);" modifiers="shift" />
+			<handler event="keypress" preventdefault="true" key="a" action="this.toggleComments();" modifiers="control,shift" />
+			<handler event="keypress" preventdefault="true" keycode="VK_RETURN" action="this.formatNewLine();" />
 		</handlers>
 	</binding>
 </bindings>

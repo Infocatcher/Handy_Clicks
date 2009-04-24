@@ -170,7 +170,8 @@ var handyClicksPrefServ = {
 		return uneval(obj).replace(/^\(|\)$/g, "");
 	},
 	fixPropName: function(pName) {
-		return /^\d|\W/.test(pName) ? '"' + pName + '"' : pName;
+		var o = {}; o[pName] = 0;
+		return /'|"/.test(uneval(o)) ? '"' + pName + '"' : pName;
 	},
 	delLastComma: function(str) {
 		return str.replace(/,\n$/, "\n");
