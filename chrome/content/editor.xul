@@ -218,7 +218,7 @@
 							<label value="Label:" />
 							<textbox id="hc-editor-funcLabel" flex="1" />
 						</hbox>
-						<textbox id="hc-editor-funcField" multiline="true" wrap="off" flex="1" />
+						<textbox class="hcEditor" id="hc-editor-funcField" wrap="off" flex="1" />
 					</vbox>
 
 				</groupbox>
@@ -240,9 +240,9 @@
 					<checkbox id="hc-editor-customTypeEnabled" label="Enabled" />
 				</hbox>
 				<label value="Define item (return item or null):" />
-				<textbox id="hc-editor-customTypeDefine" multiline="true" wrap="off" flex="1" value="" />
+				<textbox class="hcEditor" id="hc-editor-customTypeDefine" wrap="off" flex="1" value="" />
 				<label value="Context menu of item (return item or null), empty for autodetection:" />
-				<textbox id="hc-editor-customTypeContext" multiline="true" wrap="off" flex="1" value="" />
+				<textbox class="hcEditor" id="hc-editor-customTypeContext" wrap="off" flex="1" value="" />
 			</tabpanel>
 		</tabpanels>
 	</tabbox>

@@ -48,6 +48,7 @@ var handyClicksSets = {
 		this.content = this.$("handyClicks-setsTreeContent");
 		this.cmdDelete = this.$("handyClicks-sets-cmdDelete");
 		this.cmdEdit = this.$("handyClicks-sets-cmdEdit");
+		this.searcher._tree = this.tree;
 	},
 	drawTree: function() {
 		for(var shortcut in handyClicksPrefs) {
@@ -383,11 +384,15 @@ var handyClicksSets = {
 	},
 	prefsChanged: function(e) {
 		var tar = e.target;
+		if(tar.nodeName == "prefwindow") {
+			this.focusSearch(e);
+			return;
+		}
 		if(tar.nodeName == "menuitem")
 			tar = tar.parentNode.parentNode;
 		if(tar.hasAttribute("requiredfor"))
 			this.updateDependencies(tar);
-		if(!tar.hasAttribute("preference"))
+		if(!tar.hasAttribute("preference") && tar.nodeName != "checkbox")
 			return;
 		if(this.instantApply)
 			this.savePrefs();
@@ -414,22 +419,72 @@ var handyClicksSets = {
 			this.desableChilds(childs[i], dis);
 	},
 
+	focusSearch: function(e) {
+		var sIt = this.$("handyClicks-setsTreeSearch");
+		sIt.select();
+		sIt.focus();
+	},
+
 	_alloySearch: true,
 	_searchTimeout: null,
 	_searchDelay: 50,
 	_tryInterval: 20,
-	searchInSetsTree: function(sIt) {
-		if(sIt && !this._alloySearch) {
-			var _a = arguments;
-			var _f = _a.callee;
-			clearTimeout(this._searchTimeout);
-			this._searchTimeout = setTimeout(function(_this) {
-				_f.apply(_this, _a);
-			}, this._tryInterval, this);
-			return;
+	searcher: {
+		_res: [], // row numbers
+		_tree: null,
+		_current: 0,
+		clear: function() { this._res = []; this._current = 0; },
+		add: function(r) { this._res.push(r); },
+		get _length() { return this._res.length; },
+		next: function() {
+			if(++this._current >= this._length)
+				this._current = 0;
+			this.select();
+		},
+		prev: function() {
+			if(--this._current < 0)
+				this._current = this._length - 1;
+			this.select();
+		},
+		select: function(i) {
+			if(typeof i != "number") {
+				if(!this._length)
+					return;
+				i = this._res[this._current];
+			}
+			this._tree.view.selection.select(i);
+			// this._tree.treeBoxObject.scrollToRow(i);
+			this._tree.treeBoxObject.ensureRowIsVisible(i);
+		}
+	},
+	_searchInSetsTree: function(e) {
+		var _e = {}; // Workaround for Firefox 1.5 and 2.0 bug
+		for(var p in e)
+			_e[p] = e[p];
+		setTimeout(function(_this, _e) { _this.searchInSetsTree(_e); }, 0, this, _e);
+	},
+	searchInSetsTree: function(e) {
+		if(e) {
+			if(e.type == "keypress") {
+				if(e.keyCode == e.DOM_VK_DOWN)
+					this.searcher.next();
+				else if(e.keyCode == e.DOM_VK_UP)
+					this.searcher.prev();
+				return;
+			}
+			if(!this._alloySearch) {
+				var _a = arguments;
+				var _f = _a.callee;
+				clearTimeout(this._searchTimeout);
+				this._searchTimeout = setTimeout(function(_this) {
+					_f.apply(_this, _a);
+				}, this._tryInterval, this);
+				return;
+			}
 		}
 		this._alloySearch = false;
-		sIt = sIt || this.$("handyClicks-setsTreeSearch");
+		this.searcher.clear();
+		var sIt = (e && e.target) || this.$("handyClicks-setsTreeSearch");
 		var sVal = sIt.value.replace(/^\s+|\s+$/g, "");
 		var _sVal = sVal.toLowerCase().split(/\s+/);
 		var sLen = _sVal.length;
@@ -438,7 +493,7 @@ var handyClicksSets = {
 		var tmp, t;
 		var tRows = this.content.getElementsByTagName("treerow"), tRow;
 		var its, it;
-		var tRes, firstRes = true;
+		var tRes, notFound = true;
 		for(var i = 0, rLen = tRows.length; i < rLen; i++) {
 			tRow = tRows[i];
 			if(tRow.__shortcut && tRow.__itemType) {
@@ -453,13 +508,17 @@ var handyClicksSets = {
 						if(t.indexOf(_sVal[k]) == -1)
 							tRes = false;
 				this.addProperties(tRow, { search: tRes });
-				if(firstRes && tRes) {
-					firstRes = false;
-					this.selection.select(i);
-					this.tree.treeBoxObject.scrollToRow(i);
+				if(tRes) {
+					this.searcher.add(i);
+					if(notFound) {
+						notFound = false;
+						this.searcher.select(i);
+					}
 				}
 			}
 		}
+		sIt.setAttribute("hc_notfound", hasVal && notFound);
+		// sIt.setAttribute("style", "color: red;");
 		setTimeout(function(_this) { _this._alloySearch = true; }, this._searchDelay, this);
 	}
 };

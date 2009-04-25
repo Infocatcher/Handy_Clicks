@@ -16,7 +16,7 @@
 	windowtype="handyclicks:settings"
 	title="&hc.sets.title;"
 	buttons="accept, cancel, extra1"
-	buttonlabelextra1="Apply"
+	buttonlabelextra1="&hc.sets.apply;"
 	ondialogaccept="handyClicksSets.savePrefs();"
 	ondialogextra1="handyClicksSets.savePrefs(true);"
 	onload="handyClicksSets.init();"
@@ -28,33 +28,17 @@
 	height="520"
 	persist="width height screenX screenY">
 
-	<box> <!-- Fix for Firefox 2.0 -->
-	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
-	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
-	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
-	<script type="application/x-javascript" src="chrome://handyclicks/content/sets.js" />
-
-	<commandset id="handyClicks-setsCommands">
-		<command id="handyClicks-sets-cmdAdd" oncommand="handyClicksSets.addItems();" label="Add" />
-		<command id="handyClicks-sets-cmdEdit" oncommand="handyClicksSets.editItems();" label="Edit" />
-		<command id="handyClicks-sets-cmdDelete" oncommand="handyClicksSets.deleteItems();" label="Delete" />
-	</commandset>
-	<keyset id="handyClicks-setsKeys">
-		<key keycode="VK_F3" id="handyClicks-sets-keyAdd" command="handyClicks-sets-cmdAdd" />
-		<key keycode="VK_F4" id="handyClicks-sets-keyEdit" command="handyClicks-sets-cmdEdit" />
-		<key keycode="VK_DELETE" id="handyClicks-sets-keyDelete" command="handyClicks-sets-cmdDelete" />
-		<key keycode="VK_F5" id="handyClicks-sets-keyReload" oncommand="handyClicksSets.redrawTree();" />
-		<key key=" " id="handyClicks-sets-keyToggle" oncommand="handyClicksSets.toggleEnabled();" />
-		<key key="S" modifiers="control" id="handyClicks-sets-keyApply" oncommand="handyClicksSets.savePrefs(true);" />
-	</keyset>
-	</box> <!-- Fix for Firefox 2.0 -->
-
-	<prefpane id="handyClicks-sets-pane-actions" label="Clicks Options" flex="1">
+	<prefpane id="handyClicks-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1" onpaneload="handyClicksSets.focusSearch();">
 		<vbox flex="1">
 
 			<hbox align="center">
-				<label value="Search:" />
-				<textbox id="handyClicks-setsTreeSearch" flex="1" oninput="handyClicksSets.searchInSetsTree(this);" />
+				<label value="&hc.sets.search;" />
+				<hbox id="handyClicks-setsTreeSearchContainer" flex="1">
+					<textbox id="handyClicks-setsTreeSearch" hc_notfound="false" flex="1"
+						onkeypress="handyClicksSets._searchInSetsTree(event);"
+						oninput="handyClicksSets._searchInSetsTree(event);"
+						ondragexit="handyClicksSets._searchInSetsTree(event);" />
+				</hbox>
 			</hbox>
 
 			<tree id="handyClicks-setsTree" flex="1" enableColumnDrag="true"
@@ -84,16 +68,7 @@
 		</vbox>
 	</prefpane>
 
-	<prefpane id="handyClicks-sets-pane-customTypes" label="Custom Types" flex="1">
-		<preferences>
-			<preference id="cSites" type="string" name="custombb.constrain.sites" />
-			<preference id="cLinks" type="bool" name="custombb.constrain.links" />
-		</preferences>
-
-		<label value="Coming soon..." />
-	</prefpane>
-
-	<prefpane id="handyClicks-sets-pane-prefs" label="Preferences" flex="1">
+	<prefpane id="handyClicks-sets-pane-prefs" label="&hc.sets.clickPrefsTitle;" flex="1">
 		<preferences>
 			<preference id="enabled" type="bool" name="extensions.handyclicks.enabled" />
 			<preference id="forceHideContextMenu" type="bool" name="extensions.handyclicks.forceHideContextMenu" />
@@ -164,5 +139,24 @@
 			</groupbox>
 		</vbox>
 	</prefpane>
+
+	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/sets.js" />
+
+	<commandset id="handyClicks-setsCommands">
+		<command id="handyClicks-sets-cmdAdd" oncommand="handyClicksSets.addItems();" label="&hc.sets.cmdAdd;" />
+		<command id="handyClicks-sets-cmdEdit" oncommand="handyClicksSets.editItems();" label="&hc.sets.cmdEdit;" />
+		<command id="handyClicks-sets-cmdDelete" oncommand="handyClicksSets.deleteItems();" label="&hc.sets.cmdDel;" />
+	</commandset>
+	<keyset id="handyClicks-setsKeys">
+		<key keycode="VK_F3" id="handyClicks-sets-keyAdd" command="handyClicks-sets-cmdAdd" />
+		<key keycode="VK_F4" id="handyClicks-sets-keyEdit" command="handyClicks-sets-cmdEdit" />
+		<key keycode="VK_DELETE" id="handyClicks-sets-keyDelete" command="handyClicks-sets-cmdDelete" />
+		<key keycode="VK_F5" id="handyClicks-sets-keyReload" oncommand="handyClicksSets.redrawTree();" />
+		<key key=" " id="handyClicks-sets-keyToggle" oncommand="handyClicksSets.toggleEnabled();" />
+		<key key="S" modifiers="control" id="handyClicks-sets-keyApply" oncommand="handyClicksSets.savePrefs(true);" />
+	</keyset>
 
 </prefwindow>

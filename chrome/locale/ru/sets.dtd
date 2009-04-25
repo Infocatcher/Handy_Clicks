@@ -1,3 +1,14 @@
+<!-- Options dialog -->
 <!ENTITY hc.sets.title "Handy Clicks: настройки">
+<!ENTITY hc.sets.apply "Применить">
 
+<!ENTITY hc.sets.clickOptionsTitle "Настройки кликов">
+<!ENTITY hc.sets.search "Найти:">
+<!ENTITY hc.sets.cmdAdd "Добавить">
+<!ENTITY hc.sets.cmdEdit "Редактировать">
+<!ENTITY hc.sets.cmdDel "Удалить">
+
+<!ENTITY hc.sets.clickPrefsTitle "Настройки">
+
+<!-- Editor -->
 <!ENTITY hc.editor.title "Handy Clicks: редактор">

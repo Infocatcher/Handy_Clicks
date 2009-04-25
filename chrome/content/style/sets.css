@@ -2,14 +2,25 @@
 radio[pane="handyClicks-sets-pane-actions"] {
 	list-style-image: url("mouse.png");
 }
-radio[pane="handyClicks-sets-pane-customTypes"] {
-	list-style-image: url("custom_types.png");
-}
 radio[pane="handyClicks-sets-pane-prefs"] {
 	list-style-image: url("prefs.png");
 }
-checkbox[preference="enabled"][hideallafter="true"] ~ * {
+[hideallafter="true"] ~ * {
 	visibility: hidden;
+}
+#handyClicks-setsTreeSearchContainer {
+	-moz-appearance: textfield;
+	margin: 2px;
+}
+#handyClicks-setsTreeSearch {
+	-moz-appearance: none;
+	margin: 0;
+	border: none;
+}
+[hc_notfound="true"], [hc_notfound="true"] * {
+	/* Colors from chrome://global/skin/findBar.css in Firefox 3.0 */
+	background-color: #f66;
+	color: #fff;
 }
 
 menuitem[hc_disabled="true"] {
@@ -23,7 +34,7 @@ menulist:not([label]) > .menulist-label-box {
 	min-height: 15px;
 }
 
-textbox[multiline="true"] {
+textbox.hcEditor {
 	font-family: "Courier New", monospace;
-	-moz-binding: url("chrome://handyclicks/content/editor.xml#codeEditor") !important;
+	-moz-binding: url("chrome://handyclicks/content/editor.xml#codeEditor");
 }
