@@ -453,38 +453,36 @@ var handyClicksSets = {
 				i = this._res[this._current];
 			}
 			this._tree.view.selection.select(i);
-			// this._tree.treeBoxObject.scrollToRow(i);
 			this._tree.treeBoxObject.ensureRowIsVisible(i);
 		}
 	},
-	_searchInSetsTree: function(e) {
-		var _e = {}; // Workaround for Firefox 1.5 and 2.0 bug
-		for(var p in e)
-			_e[p] = e[p];
-		setTimeout(function(_this, _e) { _this.searchInSetsTree(_e); }, 0, this, _e);
+	navigateSearchResults: function(e) {
+		if(e.keyCode == e.DOM_VK_DOWN)
+			this.searcher.next();
+		else if(e.keyCode == e.DOM_VK_UP)
+			this.searcher.prev();
+		else
+			return;
+		e.preventDefault();
 	},
-	searchInSetsTree: function(e) {
-		if(e) {
-			if(e.type == "keypress") {
-				if(e.keyCode == e.DOM_VK_DOWN)
-					this.searcher.next();
-				else if(e.keyCode == e.DOM_VK_UP)
-					this.searcher.prev();
-				return;
-			}
-			if(!this._alloySearch) {
-				var _a = arguments;
-				var _f = _a.callee;
-				clearTimeout(this._searchTimeout);
-				this._searchTimeout = setTimeout(function(_this) {
-					_f.apply(_this, _a);
-				}, this._tryInterval, this);
-				return;
-			}
+	_searchInSetsTree: function(sIt) {
+		setTimeout(function(_this, sIt) { _this.searchInSetsTree(sIt); }, 0, this, sIt);
+	},
+	searchInSetsTree: function(sIt) {
+		if(sIt && !this._alloySearch) {
+			clearTimeout(this._searchTimeout);
+			this._searchTimeout = setTimeout(
+				function(_this, _a) {
+					_a.callee.apply(_this, _a);
+				},
+				this._tryInterval,
+				this, arguments
+			);
+			return;
 		}
 		this._alloySearch = false;
 		this.searcher.clear();
-		var sIt = (e && e.target) || this.$("handyClicks-setsTreeSearch");
+		sIt = sIt || this.$("handyClicks-setsTreeSearch");
 		var sVal = sIt.value.replace(/^\s+|\s+$/g, "");
 		var _sVal = sVal.toLowerCase().split(/\s+/);
 		var sLen = _sVal.length;
@@ -518,7 +516,6 @@ var handyClicksSets = {
 			}
 		}
 		sIt.setAttribute("hc_notfound", hasVal && notFound);
-		// sIt.setAttribute("style", "color: red;");
 		setTimeout(function(_this) { _this._alloySearch = true; }, this._searchDelay, this);
 	}
 };
