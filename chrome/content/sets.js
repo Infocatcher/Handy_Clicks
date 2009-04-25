@@ -171,6 +171,7 @@ var handyClicksSets = {
 			this.selection.select(selRow);
 		if(fvr)
 			tbo.scrollToRow(fvr);
+		this.searchInSetsTree();
 	},
 	updButtons: function() {
 		var noSel = !this.selectedRows.length;
@@ -413,25 +414,52 @@ var handyClicksSets = {
 			this.desableChilds(childs[i], dis);
 	},
 
+	_alloySearch: true,
+	_searchTimeout: null,
+	_searchDelay: 50,
+	_tryInterval: 20,
 	searchInSetsTree: function(sIt) {
+		if(sIt && !this._alloySearch) {
+			var _a = arguments;
+			var _f = _a.callee;
+			clearTimeout(this._searchTimeout);
+			this._searchTimeout = setTimeout(function(_this) {
+				_f.apply(_this, _a);
+			}, this._tryInterval, this);
+			return;
+		}
+		this._alloySearch = false;
+		sIt = sIt || this.$("handyClicks-setsTreeSearch");
 		var sVal = sIt.value.replace(/^\s+|\s+$/g, "");
 		var _sVal = sVal.toLowerCase().split(/\s+/);
+		var sLen = _sVal.length;
+		var hasVal = !!sVal;
 
 		var tmp, t;
 		var tRows = this.content.getElementsByTagName("treerow"), tRow;
 		var its, it;
-		for(var i = 0, len = tRows.length; i < len; i++) {
+		var tRes, firstRes = true;
+		for(var i = 0, rLen = tRows.length; i < rLen; i++) {
 			tRow = tRows[i];
 			if(tRow.__shortcut && tRow.__itemType) {
+				tRes = hasVal;
 				tmp = [];
 				its = tRow.getElementsByAttribute("label", "*");
-				for(var j = 0, len2 = its.length; j < len2; j++)
+				for(var j = 0, lLen = its.length; j < lLen; j++)
 					tmp.push(its[j].getAttribute("label"));
 				t = tmp.join("\n").toLowerCase();
-				this.addProperties(tRow, {
-					search: sVal && _sVal.every( function(s) { return t.indexOf(s) != -1 } )
-				});
+				if(hasVal)
+					for(var k = 0; k < sLen; k++)
+						if(t.indexOf(_sVal[k]) == -1)
+							tRes = false;
+				this.addProperties(tRow, { search: tRes });
+				if(firstRes && tRes) {
+					firstRes = false;
+					this.selection.select(i);
+					this.tree.treeBoxObject.scrollToRow(i);
+				}
 			}
 		}
+		setTimeout(function(_this) { _this._alloySearch = true; }, this._searchDelay, this);
 	}
 };

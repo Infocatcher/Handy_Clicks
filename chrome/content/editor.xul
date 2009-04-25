@@ -38,7 +38,7 @@
 	<tabbox id="hc-editor-mainTabbox" flex="1">
 		<tabs>
 			<tab label="Functions" selected="true"/>
-			<tab label="Custom types"/>
+			<tab label="Custom Types"/>
 		</tabs>
 		<tabpanels flex="1">
 			<tabpanel flex="1" orient="vertical">
@@ -237,7 +237,7 @@
 						onkeypress="return handyClicksEditor.customTypeIdFilter(event);"
 						oninput="handyClicksEditor.customTypeIdFilter(event);"
 						ondragexit="handyClicksEditor.customTypeIdFilter(event);" />
-					<checkbox id="hc-editor-customTypeEnabled" label="Enabled" checked="true" />
+					<checkbox id="hc-editor-customTypeEnabled" label="Enabled" />
 				</hbox>
 				<label value="Define item (return item or null):" />
 				<textbox id="hc-editor-customTypeDefine" multiline="true" wrap="off" flex="1" value="" />

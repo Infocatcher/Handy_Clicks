@@ -159,17 +159,7 @@
 					var line = val.substring(startLine, startPos);
 
 					var indent = /^([ \t]+)/.test(line) ? RegExp.$1 : "";
-					var ins = "\n" + indent;
-					var hasOpenBracket = /[{(\[]\s*$/.test(line);
-					ins += hasOpenBracket ? "\t" : "";
-					if(/^\s*[})\]]/.test(endVal)) {
- 						ins = hasOpenBracket ? ins : "";
-						var pos = startPos + ins.length;
-						ins += hasOpenBracket ? "\n" + indent : "\n" + indent.replace(/\t$/, "");
-						this.insertText(ins, startPos, endPos, 2, pos, pos);
-					}
-					else
-						this.cmdInsert(ins);
+					this.cmdInsert("\n" + indent);
 				]]>
 				</body>
 			</method>

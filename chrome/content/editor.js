@@ -71,7 +71,6 @@ var handyClicksEditor = {
 		setsObj = setsObj[this.type] || {};
 		var isCustom = setsObj.custom;
 		this.customFunction = isCustom;
-		// this.fBox.selectedIndex = isCustom ? 1 : 0;
 		if(isCustom) {
 			this.code.newValue = decodeURIComponent(setsObj.action);
 			this.cLabel.value = decodeURIComponent(setsObj.label);
@@ -114,13 +113,15 @@ var handyClicksEditor = {
 		var cList = this.$("hc-editor-customType");
 		var sItem = cList.selectedItem;
 		cType = cType || (sItem ? sItem.value : null);
+		var enabledElt = this.$("hc-editor-customTypeEnabled");
+		enabledElt.checked = true;
 		var cts = handyClicksCustomTypes;
 		if(!cType || !cts.hasOwnProperty(cType))
 			return;
 		var ct = cts[cType] || {};
 		cList.value = decodeURIComponent(ct.label || ""); //~ todo: test!
 		this.$("hc-editor-customTypeExtId").value = cType.replace(/^custom_/, "");
-		this.$("hc-editor-customTypeEnabled").checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
+		enabledElt.checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
 		this.$("hc-editor-customTypeDefine").newValue = decodeURIComponent(ct.define || "");
 		this.$("hc-editor-customTypeContext").newValue = decodeURIComponent(ct.contextMenu || "");
 	},
@@ -142,8 +143,10 @@ var handyClicksEditor = {
 			ml.selectedItem = it;
 			this.initCustomTypesEditor(val);
 		}
-		else
+		else {
 			ml.selectedItem = null;
+			this.$("hc-editor-customTypeEnabled").checked = true;
+		}
 		var key = e.charCode;
 		if(!key || e.ctrlKey || e.altKey || e.metaKey || key < 32)
 			return true;
@@ -299,8 +302,8 @@ var handyClicksEditor = {
 				var mi;
 				for(var i = 0, len = vals.length; i < len; i++) {
 					mi = document.createElement("menuitem");
-					mi.setAttribute("value", vals[i]);
 					// mi.value = vals[i];
+					mi.setAttribute("value", vals[i]);
 					mi.setAttribute("label", this.ut.getLocalised(argName + "[" + vals[i] + "]"));
 					mp.appendChild(mi);
 				}
