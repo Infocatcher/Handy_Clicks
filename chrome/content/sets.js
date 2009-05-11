@@ -1,6 +1,9 @@
 var handyClicksSets = {
-	ut: handyClicksUtils, // shortcut
-	ps: handyClicksPrefServ, // shortcut
+	// Shortcuts:
+	ut: handyClicksUtils,
+	pu: handyClicksPrefUtils,
+	ps: handyClicksPrefSvc,
+
 	DOMCache: {},
 	okPrefStr: /^button=[0-2],ctrl=(true|false),shift=(true|false),alt=(true|false),meta=(true|false)$/,
 	init: function() {
@@ -11,10 +14,10 @@ var handyClicksSets = {
 		this.ps.addPrefsObserver(this.updTree, this);
 
 		this.updPrefsUI();
-		this.ut.addPrefsObserver(this.updPrefsUI, this);
+		this.pu.addPrefsObserver(this.updPrefsUI, this);
 		// <preferences ononchange="handyClicksSets.updPrefsUI();"> return some bugs
 
-		this.instantApply = this.ut.getPref("browser.preferences.instantApply");
+		this.instantApply = this.pu.getPref("browser.preferences.instantApply");
 		if(this.instantApply)
 			this.applyButton.hidden = true;
 		else
@@ -192,6 +195,8 @@ var handyClicksSets = {
 		for(var t = 0; t < numRanges; t++) {
 			this.selection.getRangeAt(t, start, end);
 			for(var v = start.value; v <= end.value; v++) {
+				if(this.view.isContainer(v))
+					continue;
 				tRow = tRows[v];
 				if(tRow.__shortcut && tRow.__itemType) {
 					tRowsArr.push(tRow); // for deleting (getElementsByTagName is dinamically)
@@ -246,9 +251,9 @@ var handyClicksSets = {
 		var itemType = tRow.__itemType;
 		if(shortcut && itemType) {
 			var shortcutObj = handyClicksPrefs[shortcut];
-			delete(shortcutObj[itemType]);
+			delete shortcutObj[itemType];
 			if(this.isEmptyObj(shortcutObj))
-				delete(handyClicksPrefs[shortcut]);
+				delete handyClicksPrefs[shortcut];
 
 			var tItem = tRow.parentNode;
 			var tChld = tItem.parentNode;
@@ -296,7 +301,7 @@ var handyClicksSets = {
 				"unload",
 				function(e) {
 					win.removeEventListener(e.type, arguments.callee, false);
-					delete(_this.openedEditors[hash]);
+					delete _this.openedEditors[hash];
 					if(tRow)
 						_this.addProperties(tRow, { edited: false });
 				},
@@ -327,7 +332,7 @@ var handyClicksSets = {
 			var columns = this.tree.columns;
 			column = columns[columns.length - 1];
 		}
-		var checked = this.tree.view.getCellValue(rowIndx, column);
+		var checked = this.view.getCellValue(rowIndx, column);
 		if(!checked) // real checked is "true" or "false"
 			return;
 		var enabled = checked != "true";
@@ -351,7 +356,7 @@ var handyClicksSets = {
 	},
 	loadPrefs: function() {
 		var id = "disallowMousemoveForButtons";
-		var buttons = this.ut.pref(id);
+		var buttons = this.pu.pref(id);
 		for(var i = 0; i <= 2; i++)
 			this.$(id + "-" + i).checked = buttons.indexOf(i) > -1;
 	},
@@ -361,7 +366,7 @@ var handyClicksSets = {
 		for(var i = 0; i <= 2; i++)
 			if(this.$(id + "-" + i).checked)
 				val += i;
-		this.ut.setPref("extensions.handyclicks." + id, val);
+		this.pu.setPref("extensions.handyclicks." + id, val);
 		this.ps.saveSettingsObjects();
 		if(applyFlag && !this.instantApply) {
 			this.savePrefpanes();
@@ -378,7 +383,7 @@ var handyClicksSets = {
 		enablIt.setAttribute("hideallafter", enablIt.getAttribute("checked") != "true");
 	},
 	updateAllDependencies: function() {
-		var reqs = document.getElementsByAttribute("requiredfor", "*");
+		var reqs = document.getElementsByAttribute("hc_requiredfor", "*");
 		for(var i = 0, len = reqs.length; i < len; i++)
 			this.updateDependencies(reqs[i]);
 	},
@@ -390,7 +395,7 @@ var handyClicksSets = {
 		}
 		if(tar.nodeName == "menuitem")
 			tar = tar.parentNode.parentNode;
-		if(tar.hasAttribute("requiredfor"))
+		if(tar.hasAttribute("hc_requiredfor"))
 			this.updateDependencies(tar);
 		if(!tar.hasAttribute("preference") && tar.nodeName != "checkbox")
 			return;
@@ -400,12 +405,12 @@ var handyClicksSets = {
 			this.toggleApply(false);
 	},
 	updateDependencies: function(it) {
-		var dis = it.hasAttribute("disabledvalues")
-			? new RegExp("(^|\\s+)" + it.value + "(\\s+|$)").test(it.getAttribute("disabledvalues"))
+		var dis = it.hasAttribute("hc_disabledvalues")
+			? new RegExp("(^|\\s+)" + it.value + "(\\s+|$)").test(it.getAttribute("hc_disabledvalues"))
 			: it.getAttribute("checked") != "true";
-		it.getAttribute("requiredfor").split(" ").forEach(
+		it.getAttribute("hc_requiredfor").split(/\s+/).forEach(
 			function(req) {
-				var deps = document.getElementsByAttribute("dependencies", req);
+				var deps = document.getElementsByAttribute("hc_depends", req);
 				for(var i = 0, len = deps.length; i < len; i++)
 					this.desableChilds(deps[i], dis); // deps[i].disabled = dis;
 			},
@@ -488,25 +493,25 @@ var handyClicksSets = {
 		var sLen = _sVal.length;
 		var hasVal = !!sVal;
 
-		var tmp, t;
 		var tRows = this.content.getElementsByTagName("treerow"), tRow;
-		var its, it;
-		var tRes, notFound = true;
-		for(var i = 0, rLen = tRows.length; i < rLen; i++) {
+		var labels, tmpArr, rowText;
+		var okRow, notFound = true;
+		var i, j, k, rLen, lLen;
+		for(i = 0, rLen = tRows.length; i < rLen; i++) {
 			tRow = tRows[i];
 			if(tRow.__shortcut && tRow.__itemType) {
-				tRes = hasVal;
-				tmp = [];
-				its = tRow.getElementsByAttribute("label", "*");
-				for(var j = 0, lLen = its.length; j < lLen; j++)
-					tmp.push(its[j].getAttribute("label"));
-				t = tmp.join("\n").toLowerCase();
+				okRow = hasVal;
+				tmpArr = [];
+				labels = tRow.getElementsByAttribute("label", "*");
+				for(j = 0, lLen = labels.length; j < lLen; j++)
+					tmpArr.push(labels[j].getAttribute("label"));
+				rowText = tmpArr.join("\n").toLowerCase();
 				if(hasVal)
-					for(var k = 0; k < sLen; k++)
-						if(t.indexOf(_sVal[k]) == -1)
-							tRes = false;
-				this.addProperties(tRow, { search: tRes });
-				if(tRes) {
+					for(k = 0; k < sLen; k++)
+						if(rowText.indexOf(_sVal[k]) == -1)
+							okRow = false;
+				this.addProperties(tRow, { search: okRow });
+				if(okRow) {
 					this.searcher.add(i);
 					if(notFound) {
 						notFound = false;

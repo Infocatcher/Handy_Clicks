@@ -42,6 +42,7 @@
 			</hbox>
 
 			<tree id="handyClicks-setsTree" flex="1" enableColumnDrag="true"
+				context="handyClicks-setsTreeContext"
 				onclick="handyClicksSets.toggleEnabled(event);"
 				onselect="handyClicksSets.updButtons();"
 				ondblclick="handyClicksSets.editItems(event);">
@@ -101,8 +102,8 @@
 				</hbox>
 			</groupbox>
 			<hbox>
-				<checkbox preference="convertURIs" requiredfor="convert" label="Convert URIs to (empty for automatically detection):" />
-				<textbox preference="convertURIsTo" dependencies="convert" />
+				<checkbox preference="convertURIs" hc_requiredfor="convert" label="Convert URIs to (empty for automatically detection):" />
+				<textbox preference="convertURIsTo" hc_depends="convert" />
 			</hbox>
 			<hbox align="center">
 				<label value="Show context menu after" />
@@ -114,17 +115,17 @@
 				<hbox align="center">
 					<label value="Open time:" />
 					<textbox preference="notifyOpenTime" type="number" min="0" max="30000" increment="20" style="width: 5em;"
-						requiredfor="notify" disabledvalues="0" />
+						hc_requiredfor="notify" hc_disabledvalues="0" />
 					<label value="ms (0 for disable)" />
 				</hbox>
-				<checkbox preference="notifyInWindowCorner" dependencies="notify" label="Show in window corner" />
-				<checkbox preference="notifyVoidLinksWithHandlers" dependencies="notify" label="Notify &quot;void&quot; links with handlers" />
-				<checkbox preference="notifyJavaScriptLinks" dependencies="notify" label="Notify JavaScript-links (javascript: ...)" />
+				<checkbox preference="notifyInWindowCorner" hc_depends="notify" label="Show in window corner" />
+				<checkbox preference="notifyVoidLinksWithHandlers" hc_depends="notify" label="Notify &quot;void&quot; links with handlers" />
+				<checkbox preference="notifyJavaScriptLinks" hc_depends="notify" label="Notify JavaScript-links (javascript: ...)" />
 			</groupbox>
 			<groupbox>
 				<caption label="File links" />
 				<hbox align="center">
-					<menulist preference="filesLinksPolicy" requiredfor="regexp" disabledvalues="-1">
+					<menulist preference="filesLinksPolicy" hc_requiredfor="regexp" hc_disabledvalues="-1">
 						<menupopup>
 							<menuitem value="-1" label="Not check" />
 							<menuitem value="0" label="Show context menu" />
@@ -132,7 +133,7 @@
 						</menupopup>
 					</menulist>
 				</hbox>
-				<hbox align="center" dependencies="regexp">
+				<hbox align="center" hc_depends="regexp">
 					<label value="RegExp filter:" />
 					<textbox preference="filesLinksMask" flex="1000" />
 				</hbox>
@@ -142,6 +143,7 @@
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/prefUtils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/sets.js" />
 
@@ -151,12 +153,20 @@
 		<command id="handyClicks-sets-cmdDelete" oncommand="handyClicksSets.deleteItems();" label="&hc.sets.cmdDel;" />
 	</commandset>
 	<keyset id="handyClicks-setsKeys">
-		<key keycode="VK_F3" id="handyClicks-sets-keyAdd" command="handyClicks-sets-cmdAdd" />
+		<key keycode="VK_INSERT" id="handyClicks-sets-keyAdd" command="handyClicks-sets-cmdAdd" />
 		<key keycode="VK_F4" id="handyClicks-sets-keyEdit" command="handyClicks-sets-cmdEdit" />
 		<key keycode="VK_DELETE" id="handyClicks-sets-keyDelete" command="handyClicks-sets-cmdDelete" />
 		<key keycode="VK_F5" id="handyClicks-sets-keyReload" oncommand="handyClicksSets.redrawTree();" />
 		<key key=" " id="handyClicks-sets-keyToggle" oncommand="handyClicksSets.toggleEnabled();" />
 		<key key="S" modifiers="control" id="handyClicks-sets-keyApply" oncommand="handyClicksSets.savePrefs(true);" />
 	</keyset>
+	<popupset id="handyClicks-setsPopupset">
+		<popup id="handyClicks-setsTreeContext">
+			<menuitem command="handyClicks-sets-cmdEdit" key="handyClicks-sets-keyEdit" />
+			<menuitem command="handyClicks-sets-cmdDelete" key="handyClicks-sets-keyDelete" />
+			<menuseparator />
+			<menuitem command="handyClicks-sets-cmdAdd" key="handyClicks-sets-keyAdd" />
+		</popup>
+	</popupset>
 
 </prefwindow>

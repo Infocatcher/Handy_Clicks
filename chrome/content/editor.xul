@@ -83,7 +83,7 @@
 							<menuitem value="dblclick" label="Dblclick" />
 						</menupopup>
 					</menulist>
-					<checkbox id="hc-editor-enabled" label="Enabled" />
+					<checkbox id="hc-editor-enabled" class="warn" label="Enabled" />
 					<checkbox id="hc-editor-imgIgnoreLinks" label="Ignore links" />
 				</hbox>
 
@@ -237,7 +237,7 @@
 						onkeypress="return handyClicksEditor.customTypeIdFilter(event);"
 						oninput="handyClicksEditor.customTypeIdFilter(event);"
 						ondragexit="handyClicksEditor.customTypeIdFilter(event);" />
-					<checkbox id="hc-editor-customTypeEnabled" label="Enabled" />
+					<checkbox id="hc-editor-customTypeEnabled" class="warn" label="Enabled" />
 				</hbox>
 				<label value="Define item (return item or null):" />
 				<textbox class="hcEditor" id="hc-editor-customTypeDefine" wrap="off" flex="1" value="" />

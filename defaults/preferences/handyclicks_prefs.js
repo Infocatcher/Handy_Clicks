@@ -24,4 +24,4 @@ pref("extensions.handyclicks.notifyVoidLinksWithHandlers", true);
 pref("extensions.handyclicks.filesLinksPolicy", -1);
 pref("extensions.handyclicks.filesLinksMask", "^[^\\?]*\.(zip|rar|7z|gz|tar|iso|cab|exe|msi|xpi|jar)$");
 
-pref("extensions.handyclicks.devMode", false);
+pref("extensions.handyclicks.devMode", true);

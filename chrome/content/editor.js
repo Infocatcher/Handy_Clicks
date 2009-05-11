@@ -1,6 +1,7 @@
 var handyClicksEditor = {
-	ut: handyClicksUtils, // shortcut
-	ps: handyClicksPrefServ, // shortcut
+	// Shortcuts:
+	ut: handyClicksUtils,
+	ps: handyClicksPrefSvc,
 	types: {
 		checkboxes: {
 			skipCache: 1,
@@ -86,7 +87,7 @@ var handyClicksEditor = {
 			},
 			this
 		);
-		this.$("hc-editor-events").value = setsObj.eventType || "";
+		this.$("hc-editor-events").value = setsObj.eventType || "click";
 		this.$("hc-editor-enabled").checked = typeof setsObj.enabled != "boolean" || setsObj.enabled;
 	},
 	set customFunction(isCustom) {
@@ -326,7 +327,7 @@ var handyClicksEditor = {
 	},
 	get currentType() {
 		var type = this.$("hc-editor-itemTypes").selectedItem;
-		return type ? type.value : null;
+		return type && type.value || null;
 	},
 	loadFuncs: function() {
 		var target = this.currentShortcut;
@@ -413,7 +414,7 @@ var handyClicksEditor = {
 		return true;
 	},
 	deleteShortcut: function() {
-		delete(handyClicksPrefs[this.currentShortcut]);
+		delete handyClicksPrefs[this.currentShortcut];
 		this.ps.saveSettingsObjects();
 		this.toggleApply(true);
 	},
@@ -442,7 +443,7 @@ var handyClicksEditor = {
 		return true;
 	},
 	deleteCustomType: function() {
-		delete(handyClicksCustomTypes["custom_" + this.$("hc-editor-customTypeExtId").value]);
+		delete handyClicksCustomTypes["custom_" + this.$("hc-editor-customTypeExtId").value];
 		this.ps.saveSettingsObjects(true);
 		this.toggleApply(true);
 	},

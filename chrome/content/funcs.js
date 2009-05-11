@@ -1,7 +1,10 @@
 var handyClicksFuncs = {
-	ut: handyClicksUtils, // shortcut
-	ps: handyClicksPrefServ, // shortcut
-	hc: handyClicks, // shortcut
+	// Shortcuts:
+	ut: handyClicksUtils,
+	pu: handyClicksPrefUtils,
+	ps: handyClicksPrefSvc,
+	hc: handyClicks,
+
 	voidURI: /^javascript:(\s|%20)*(|\/\/|void(\s|%20)*((\s|%20)+0|\((\s|%20)*0(\s|%20)*\)))(\s|%20)*;?$/i,
 	promptsServ: Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
 		.getService(Components.interfaces.nsIPromptService),
@@ -207,9 +210,9 @@ var handyClicksFuncs = {
 		);
 		var _this = this;
 		function _f() {
-			var openWin = _this.ut.pref("openNewWindowRestrictionForTabs");
+			var openWin = _this.pu.pref("openNewWindowRestrictionForTabs");
 			if(openWin == -1)
-				openWin = _this.ut.getPref("browser.link.open_newwindow.restriction");
+				openWin = _this.pu.getPref("browser.link.open_newwindow.restriction");
 			var origPrefs = _this.setPrefs({
 				"browser.link.open_newwindow.restriction": inWin ? 1 : openWin,
 				"browser.tabs.loadDivertedInBackground": loadJSInBackground,
@@ -221,8 +224,8 @@ var handyClicksFuncs = {
 			_this.hc.flags.stopClick = sc;
 			_this.restorePrefs(origPrefs);
 		}
-		var load = this.ut.pref("loadVoidLinksWithHandlers");
-		if(this.ut.pref("notifyVoidLinksWithHandlers"))
+		var load = this.pu.pref("loadVoidLinksWithHandlers");
+		if(this.pu.pref("notifyVoidLinksWithHandlers"))
 			this.ut.notify(
 				this.ut.getLocalised("title"),
 				this.ut.getLocalised("voidLinkWithHandler")
@@ -241,7 +244,7 @@ var handyClicksFuncs = {
 			var origPrefs = _this.setPrefs({
 				"browser.link.open_newwindow.restriction": inWin
 					? 1
-					: _this.ut.pref("openNewWindowRestrictionForTabs"),
+					: _this.pu.pref("openNewWindowRestrictionForTabs"),
 				"dom.disable_open_during_load": false, // allow window.open( ... )
 				"browser.tabs.loadDivertedInBackground": loadJSInBackground,
 				"network.http.sendRefererHeader": _this.getRefererPolicy(refererPolicy)
@@ -257,8 +260,8 @@ var handyClicksFuncs = {
 			// _this.restorePrefs(origPrefs);
 		}
 
-		var load = this.ut.pref("loadJavaScriptLinks");
-		if(this.ut.pref("notifyJavaScriptLinks"))
+		var load = this.pu.pref("loadJavaScriptLinks");
+		if(this.pu.pref("notifyJavaScriptLinks"))
 			this.ut.notify(
 				this.ut.getLocalised("title"),
 				this.ut.getLocalised("javaScriptLink")
@@ -270,10 +273,10 @@ var handyClicksFuncs = {
 	},
 	testForFileLink: function(refererPolicy, uri) {
 		uri = uri || this.getUriOfItem(this.hc.item);
-		var filesPolicy = this.ut.pref("filesLinksPolicy");
+		var filesPolicy = this.pu.pref("filesLinksPolicy");
 		if(filesPolicy < 1)
 			return false;
-		var regexp = this.ut.pref("filesLinksMask");
+		var regexp = this.pu.pref("filesLinksMask");
 		if(!regexp)
 			return false;
 		try {
@@ -581,10 +584,10 @@ var handyClicksFuncs = {
 	},
 	get charset() {
 		var charset = "";
-		if(this.ut.pref("convertURIs")) {
-			charset = this.ut.pref("convertURIsTo");
+		if(this.pu.pref("convertURIs")) {
+			charset = this.pu.pref("convertURIsTo");
 			if(!charset) {
-				charset = this.ut.getPref("intl.charset.default");
+				charset = this.pu.getPref("intl.charset.default");
 				if(!charset || charset.indexOf("chrome://") == 0)
 					charset = this.defaultCharset;
 			}
@@ -673,15 +676,15 @@ var handyClicksFuncs = {
 		for(var p in prefsObj) {
 			if(!prefsObj.hasOwnProperty(p) || prefsObj[p] == null)
 				continue;
-			origs[p] = this.ut.getPref(p);
-			this.ut.setPref(p, prefsObj[p]);
+			origs[p] = this.pu.getPref(p);
+			this.pu.setPref(p, prefsObj[p]);
 		}
 		return origs;
 	},
 	restorePrefs: function(prefsObj) {
 		for(var p in prefsObj)
 			if(prefsObj.hasOwnProperty(p))
-				this.ut.setPref(p, prefsObj[p]);
+				this.pu.setPref(p, prefsObj[p]);
 	},
 	submitFormToNewDoc: function(e, toNewWin, loadInBackground, refererPolicy, node) {
 		// Thanks to SubmitToTab! ( https://addons.mozilla.org/firefox/addon/483 )
@@ -957,8 +960,7 @@ var handyClicksFuncs = {
 		if("TreeStyleTabService" in window)
 			TreeStyleTabService.stopToOpenChildTab(tbr.selectedTab);
 	},
-	$void: function(e) { // dummy function
-	},
+	$void: function(e) {}, // dummy function
 	getRefererForItem: function(refPolicy, imgLoading, it) {
 		if(typeof refPolicy == "undefined")
 			refPolicy = -1;
@@ -981,7 +983,7 @@ var handyClicksFuncs = {
 		if(typeof refPolicy == "undefined")
 			refPolicy = -1;
 		return refPolicy == -1
-			? navigator.preference("network.http.sendRefererHeader")
+			? this.pu.getPref("network.http.sendRefererHeader")
 			: refPolicy;
 	},
 	showContextMenu: function(e) {

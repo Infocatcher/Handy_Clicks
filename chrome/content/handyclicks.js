@@ -1,6 +1,9 @@
 var handyClicks = {
-	ut: handyClicksUtils, // shortcut
+	// Shortcuts:
+	ut: handyClicksUtils,
+	pu: handyClicksPrefUtils,
 	get fn() { return handyClicksFuncs; },
+
 	flags: {
 		stopClick: false,
 		runned: false,
@@ -27,7 +30,7 @@ var handyClicks = {
 		window.addEventListener("dblclick", this, true);
 
 		this.setStatus();
-		this.ut.addPrefsObserver(this.updUI, this);
+		this.pu.addPrefsObserver(this.updUI, this);
 	},
 	destroy: function() {
 		window.removeEventListener("unload", this, false);
@@ -49,7 +52,7 @@ var handyClicks = {
 		return this.fxVersion.indexOf(version + ".") == 0;
 	},
 	get disabled() {
-		return !this.ut.pref("enabled");
+		return !this.pu.pref("enabled");
 	},
 	getItemContext: function(e) {
 		var cm = null;
@@ -122,7 +125,7 @@ var handyClicks = {
 	},
 	disallowMousemove: function(but) {
 		return !this.hasMousemoveHandler
-			&& this.ut.pref("disallowMousemoveForButtons").indexOf(but) > -1;
+			&& this.pu.pref("disallowMousemoveForButtons").indexOf(but) > -1;
 	},
 	skipFlags: function() {
 		var fls = this.flags;
@@ -148,7 +151,7 @@ var handyClicks = {
 			this.runFunc(e, funcObj);
 		}
 		if(
-			this.ut.pref("forceHideContextMenu") // for clicks on Linux
+			this.pu.pref("forceHideContextMenu") // for clicks on Linux
 			&& funcObj.action != "showContextMenu"
 		)
 			this.flags.stopContextMenu = true;
@@ -163,7 +166,7 @@ var handyClicks = {
 			? this.fn.getTabBrowser(true).mCurrentTab
 			: null;
 
-		var cMenuDelay = this.ut.pref("showContextMenuTimeout");
+		var cMenuDelay = this.pu.pref("showContextMenuTimeout");
 		if(cMenuDelay > 0 && cm && e.button == 2) { // Show context menu after delay
 			this.clearCMenuTimeout(); // only one timeout... (for dblclick event)
 			this.cMenuTimeout = setTimeout(
@@ -204,7 +207,7 @@ var handyClicks = {
 		this.mousemoveParams.screenX = e.screenX;
 		this.mousemoveParams.screenY = e.screenY;
 
-		if(this.mousemoveParams.dist < this.ut.pref("disallowMousemoveDist"))
+		if(this.mousemoveParams.dist < this.pu.pref("disallowMousemoveDist"))
 			return;
 
 		this.flags.runned = true;
@@ -289,7 +292,7 @@ var handyClicks = {
 		return handyClicksPrefs.hasOwnProperty(str) ? handyClicksPrefs[str] : null;
 	},
 	isOkFuncObj: function(fObj) { // funcObj && funcObj.enabled && funcObj.action
-		return handyClicksPrefServ.isOkFuncObj(fObj) && fObj.enabled;
+		return handyClicksPrefSvc.isOkFuncObj(fObj) && fObj.enabled;
 	},
 	itemTypeInSets: function(sets, iType) {
 		return sets.hasOwnProperty(iType) && this.isOkFuncObj(sets[iType]);
@@ -635,12 +638,12 @@ var handyClicks = {
 	observe: function(subject, topic, prefName) { // prefs observer
 		if(topic != "nsPref:changed")
 			return;
-		this.ut.readPref(prefName.replace(/^extensions\.handyclicks\./, ""));
+		this.pu.readPref(prefName.replace(/^extensions\.handyclicks\./, ""));
 	},
 
 	// GUI:
 	toggleStatus: function() {
-		this.ut.pref("enabled", !this.ut.pref("enabled"));
+		this.pu.pref("enabled", !this.pu.pref("enabled"));
 	},
 	doSettings: function(e) {
 		switch(e.button) {
@@ -662,7 +665,7 @@ var handyClicks = {
 	},
 	setStatus: function() {
 		var sbi = document.getElementById("handyClicks-toggleStatus-sBarIcon");
-		var enabled = this.ut.pref("enabled");
+		var enabled = this.pu.pref("enabled");
 		sbi.setAttribute("hc_enabled", enabled);
 		sbi.tooltipText = this.ut.getLocalised(enabled ? "enabled" : "disabled");
 	}
