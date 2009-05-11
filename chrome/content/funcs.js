@@ -5,7 +5,11 @@ var handyClicksFuncs = {
 	ps: handyClicksPrefSvc,
 	hc: handyClicks,
 
-	voidURI: /^javascript:(\s|%20)*(|\/\/|void(\s|%20)*((\s|%20)+0|\((\s|%20)*0(\s|%20)*\)))(\s|%20)*;?$/i,
+	voidURIMask: /^javascript: *(?:|\/\/|void *(?: +0|\( *0 *\))) *;? *$/i,
+	isVoidURI: function(uri) {
+		uri = (uri || "").replace(/(?:\s|%20)+/g, " ");
+		return this.voidURIMask.test(uri);
+	},
 	promptsServ: Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
 		.getService(Components.interfaces.nsIPromptService),
 	relativeIndex: 0,
@@ -187,7 +191,7 @@ var handyClicksFuncs = {
 		uri = uri || this.getUriOfItem(item);
 		if( // void links with handlers
 			this.hc.itemType == "link"
-			&& (!uri || this.voidURI.test(uri))
+			&& (!uri || this.isVoidURI(uri))
 			&& (
 				item.hasAttribute("onclick")
 				|| item.hasAttribute("onmousedown")
@@ -203,7 +207,7 @@ var handyClicksFuncs = {
 		item = item || this.hc.item;
 		var evt = document.createEvent("MouseEvents"); // thanks to Tab Scope!
 		evt.initMouseEvent(
-			"click", true, false, item.ownerDocument.defaultView, 1,
+			"click", false, false, item.ownerDocument.defaultView, 1,
 			e.screenX, e.screenY, e.clientX, e.clientY,
 			false, false, false, false,
 			0, null

@@ -140,7 +140,7 @@ var handyClicksSets = {
 			if(propsObj[p])
 				propsVal += " " + p;
 		}
-		tar.setAttribute("properties", propsVal.replace(/^\s+|\s+$/, "").replace(/\s+/, " "));
+		tar.setAttribute("properties", propsVal.replace(/^\s+|\s+$/g, "").replace(/\s+/g, " "));
 	},
 	appendTreeCell: function(parent, attrName, attrValue) {
 		var cell = document.createElement("treecell");
@@ -406,7 +406,7 @@ var handyClicksSets = {
 	},
 	updateDependencies: function(it) {
 		var dis = it.hasAttribute("hc_disabledvalues")
-			? new RegExp("(^|\\s+)" + it.value + "(\\s+|$)").test(it.getAttribute("hc_disabledvalues"))
+			? new RegExp("(^|\\s)" + it.value + "(\\s|$)").test(it.getAttribute("hc_disabledvalues"))
 			: it.getAttribute("checked") != "true";
 		it.getAttribute("hc_requiredfor").split(/\s+/).forEach(
 			function(req) {

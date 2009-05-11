@@ -387,7 +387,8 @@ var handyClicks = {
 			(all || this.itemTypeInSets(sets, "historyItem"))
 			&& it.namespaceURI == this.XULNS
 			&& this.fn.getBookmarkUri(it)
-			&& it.parentNode.id == "goPopup"
+			// && it.parentNode.id == "goPopup"
+			&& this.hasParent(it, "goPopup")
 		) {
 			this.itemType = "historyItem";
 			this.item = it;
@@ -401,13 +402,14 @@ var handyClicks = {
 			&& it.type != "menu"
 			&& (
 				(
-					/(^|\s+)bookmark-item(\s+|$)/.test(it.className)
+					/(^|\s)bookmark-item(\s|$)/.test(it.className)
 					&& (itnn == "toolbarbutton" || itnn == "menuitem")
 				)
 				|| (itnn == "menuitem" && (it.hasAttribute("siteURI")))
 			)
 			// && it.parentNode.id != "historyUndoPopup"
-			&& it.parentNode.id != "goPopup"
+			// && it.parentNode.id != "goPopup"
+			&& !this.hasParent(it, "goPopup")
 			&& this.fn.getBookmarkUri(it)
 		) {
 			this.itemType = "bookmark";
@@ -429,8 +431,8 @@ var handyClicks = {
 			if(
 				(tnn == "tab" || tnn == "xul:tab")
 				&& (
-					/(^|\s+)tabbrowser-tab(\s+|$)/.test(tab.className)
-					|| /(^|\s+)tabbrowser-tabs(\s+|$)/.test(tab.parentNode.className) // >1 tabs in Firefox 1.5
+					/(^|\s)tabbrowser-tab(\s|$)/.test(tab.className)
+					|| /(^|\s)tabbrowser-tabs(\s|$)/.test(tab.parentNode.className) // >1 tabs in Firefox 1.5
 				)
 			) {
 				this.itemType = "tab";
@@ -447,7 +449,7 @@ var handyClicks = {
 			&& it.getAttribute("anonid") != "close-button"
 		) {
 			var tb = it, tbnn = itnn, tbc = tb.className;
-			var tbre = /(^|\s+)tabbrowser-tabs(\s+|$)/;
+			var tbre = /(^|\s)tabbrowser-tabs(\s|$)/;
 			while(tbnn != "#document" && !tbre.test(tbc) && tbnn != "tab" && tbnn != "xul:tab") {
 				tb = tb.parentNode;
 				tbnn = tb.nodeName.toLowerCase();
@@ -478,6 +480,15 @@ var handyClicks = {
 				return;
 			}
 		}
+	},
+	hasParent: function(it, id) {
+		it = it.parentNode;
+		while(it) {
+			if(it.id == id)
+				return true;
+			it = it.parentNode;
+		}
+		return false;
 	},
 	getFuncObj: function(sets) {
 		if(!this.itemType) // see .defineItem()
