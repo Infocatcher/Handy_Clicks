@@ -44,10 +44,9 @@ var handyClicksUtils = {
 		);
 	},
 	get promptsSvc() {
-		if(!this._promptsSvc)
-			this._promptsSvc = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-				.getService(Components.interfaces.nsIPromptService);
-		return this._promptsSvc;
+		delete this.promptsSvc;
+		return this.promptsSvc = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+			.getService(Components.interfaces.nsIPromptService);
 	},
 	alertEx: function(ttl, txt) {
 		this.promptsSvc.alert(window, ttl, txt);

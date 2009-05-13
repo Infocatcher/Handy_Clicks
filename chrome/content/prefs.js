@@ -33,7 +33,7 @@ var handyClicksPrefSvc = {
 	},
 	get prefsFile() {
 		if(!this._prefsFile)
-			this._prefsFile = this.getFile(this.prefsFileName + ".js");
+			return this._prefsFile = this.getFile(this.prefsFileName + ".js");
 		return this._prefsFile.clone();
 	},
 	loadSettings: function() {

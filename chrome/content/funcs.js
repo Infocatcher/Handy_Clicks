@@ -13,7 +13,6 @@ var handyClicksFuncs = {
 	promptsServ: Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
 		.getService(Components.interfaces.nsIPromptService),
 	relativeIndex: 0,
-	_defaultCharset: null,
 	copyItemText: function(e, hidePopup) { // for all
 		var text = this.hc.itemType == "tabbar"
 			? this.forEachTab(function(tab) { return tab.label; }).join("\n")
@@ -41,7 +40,7 @@ var handyClicksFuncs = {
 		var uri = null;
 		switch(this.hc.itemType) {
 			case "link":
-				uri = it.href;
+				uri = this.getLinkUri(it);
 			break;
 			case "img":
 				uri = it.src;
@@ -54,6 +53,12 @@ var handyClicksFuncs = {
 				uri = this.getTabUri(it);
 		}
 		return uri;
+	},
+	getLinkUri: function(it) {
+		var xLink = it.getAttributeNS("http://www.w3.org/1999/xlink", "href");
+		return xLink
+			? makeURLAbsolute(it.baseURI, xLink) // See chrome://browser/content/utilityOverlay.js
+			: it.href;
 	},
 	getBookmarkUri:	function(it, usePlacesURIs) {
 		var uri = it.statusText || (it.node && it.node.uri) || it.getAttribute("siteURI") || "";
@@ -520,10 +525,8 @@ var handyClicksFuncs = {
 		}
 	},
 	get profileDir() {
-		if(!this._profileDir)
-			this._profileDir = this.ps.profileDir
-				.path.replace(/[\\\/]$/, "");
-		return this._profileDir;
+		delete this.profileDir;
+		return this.profileDir = this.ps.profileDir.path.replace(/[\\\/]$/, "");
 	},
 	getRelativePath: function(path) {
 		var pathArr = path.match(/^%profile%([\/\\])((?:\.\.[\/\\])*)(.*)$/);
@@ -573,18 +576,17 @@ var handyClicksFuncs = {
 		}
 	},
 	get defaultCharset() { // thanks to IE Tab!
-		if(this._defaultCharset == null) {
-			var strBundle = Components.classes["@mozilla.org/intl/stringbundle;1"]
-				.getService(Components.interfaces.nsIStringBundleService);
-			try {
-				this._defaultCharset = strBundle.createBundle("chrome://global-platform/locale/intl.properties")
-					.GetStringFromName("intl.charset.default");
-			}
-			catch(e) {
-				this._defaultCharset = "";
-			}
+		delete this.defaultCharset;
+		var strBundle = Components.classes["@mozilla.org/intl/stringbundle;1"]
+			.getService(Components.interfaces.nsIStringBundleService);
+		var dch = "";
+		try {
+			dch = strBundle.createBundle("chrome://global-platform/locale/intl.properties")
+				.GetStringFromName("intl.charset.default");
 		}
-		return this._defaultCharset;
+		catch(e) {
+		}
+		return this.defaultCharset = dch || "";
 	},
 	get charset() {
 		var charset = "";

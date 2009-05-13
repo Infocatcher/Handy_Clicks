@@ -32,9 +32,8 @@ var handyClicksSets = {
 	},
 
 	get applyButton() {
-		if(!this._applyButton)
-			this._applyButton = document.documentElement.getButton("extra1");
-		return this._applyButton;
+		delete this.applyButton;
+		return this.applyButton = document.documentElement.getButton("extra1");
 	},
 	toggleApply: function(dis) {
 		this.applyButton.disabled = dis;

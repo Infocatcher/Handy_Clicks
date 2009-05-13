@@ -42,11 +42,10 @@ var handyClicks = {
 		this.clearCMenuTimeout();
 	},
 	get fxVersion() {
-		if(typeof this._fxVersion == "undefined")
-			this._fxVersion = Components.classes["@mozilla.org/xre/app-info;1"]
-				.getService(Components.interfaces.nsIXULAppInfo)
-				.version;
-		return this._fxVersion;
+		delete this.fxVersion;
+		return this.fxVersion = Components.classes["@mozilla.org/xre/app-info;1"]
+			.getService(Components.interfaces.nsIXULAppInfo)
+			.version;
 	},
 	isFx: function(version) {
 		return this.fxVersion.indexOf(version + ".") == 0;
@@ -370,15 +369,20 @@ var handyClicks = {
 
 		// Link:
 		if(all || this.itemTypeInSets(sets, "link")) {
-			var a = it, ann = itnn;
-			while(ann != "#document" && ann != "a") {
+			var a = it;
+			while(a) {
+				if(
+					(a.nodeName.toLowerCase() == "a" && a.href)
+					|| (
+						a.nodeType == Node.ELEMENT_NODE
+						&& a.hasAttributeNS("http://www.w3.org/1999/xlink", "href")
+					)
+				) {
+					this.itemType = "link";
+					this.item = a;
+					return;
+				}
 				a = a.parentNode;
-				ann = a.nodeName.toLowerCase();
-			}
-			if(ann == "a" && a.href) {
-				this.itemType = "link";
-				this.item = a;
-				return;
 			}
 		}
 
@@ -450,7 +454,7 @@ var handyClicks = {
 		) {
 			var tb = it, tbnn = itnn, tbc = tb.className;
 			var tbre = /(^|\s)tabbrowser-tabs(\s|$)/;
-			while(tbnn != "#document" && !tbre.test(tbc) && tbnn != "tab" && tbnn != "xul:tab") {
+			while(tb && !tbre.test(tbc) && tbnn != "tab" && tbnn != "xul:tab") {
 				tb = tb.parentNode;
 				tbnn = tb.nodeName.toLowerCase();
 				tbc = tb.className;
@@ -470,14 +474,13 @@ var handyClicks = {
 				return;
 			}
 			var but = it, bnn = itnn;
-			while(bnn != "#document" && bnn != "button") {
+			while(but) {
+				if(but.nodeName.toLowerCase() == "button") {
+					this.itemType = "submitButton";
+					this.item = it;
+					return;
+				}
 				but = but.parentNode;
-				bnn = but.nodeName.toLowerCase();
-			}
-			if(bnn == "button") {
-				this.itemType = "submitButton";
-				this.item = it;
-				return;
 			}
 		}
 	},
