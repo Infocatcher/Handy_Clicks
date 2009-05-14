@@ -38,3 +38,7 @@ textbox.hcEditor {
 	font-family: "Courier New", monospace;
 	-moz-binding: url("chrome://handyclicks/content/editor.xml#codeEditor");
 }
+
+#hc-editor-funcSets {
+	overflow: auto;
+}

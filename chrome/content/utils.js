@@ -15,8 +15,11 @@ var handyClicksObservers = {
 	}
 };
 var handyClicksUtils = {
-	consoleSvc: Components.classes["@mozilla.org/consoleservice;1"]
-		.getService(Components.interfaces.nsIConsoleService),
+	get consoleSvc() {
+		delete this.consoleSvc;
+		return this.consoleSvc = Components.classes["@mozilla.org/consoleservice;1"]
+			.getService(Components.interfaces.nsIConsoleService);
+	},
 	_log: function(msg) {
 		this.consoleSvc.logStringMessage("[Handy Clicks]: " + msg + "\n");
 	},

@@ -5,14 +5,14 @@ var handyClicksFuncs = {
 	ps: handyClicksPrefSvc,
 	hc: handyClicks,
 
+	relativeIndex: 0,
+
 	voidURIMask: /^javascript: *(?:|\/\/|void *(?: +0|\( *0 *\))) *;? *$/i,
 	isVoidURI: function(uri) {
 		uri = (uri || "").replace(/(?:\s|%20)+/g, " ");
 		return this.voidURIMask.test(uri);
 	},
-	promptsServ: Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-		.getService(Components.interfaces.nsIPromptService),
-	relativeIndex: 0,
+
 	copyItemText: function(e, hidePopup) { // for all
 		var text = this.hc.itemType == "tabbar"
 			? this.forEachTab(function(tab) { return tab.label; }).join("\n")
@@ -101,13 +101,13 @@ var handyClicksFuncs = {
 		}
 		return false
 	},
-	openUriInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, hidePopup) {
+	openUriInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, hidePopup, inWin) {
 		var tbr = this.getTabBrowser(true);
 		if(moveTo == "relative") {
 			var tabCont = tbr.mTabContainer;
 			tabCont.__handyClicks__resetRelativeIndex = false;
 		}
-		var tab = this._openUriInTab(loadInBackground, loadJSInBackground, refererPolicy, e, moveTo);
+		var tab = this._openUriInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, inWin);
 		if(hidePopup)
 			this.hideItemPopup();
 		if(!tab || !moveTo)
@@ -124,10 +124,13 @@ var handyClicksFuncs = {
 				this.ut._err("[Right Links]: openUriInTab -> invalid moveTo argument: " + moveTo);
 				return;
 		}
-		if("TreeStyleTabService" in window && (moveTo == "after" || moveTo == "relative") && ind == tbr.browsers.length - 1) {
+		this.ut._log(this.relativeIndex);
+		if(
+			"TreeStyleTabService" in window
+			&& (moveTo == "after" || moveTo == "relative")
+			&& ind == tbr.browsers.length - 1
+		)
 			tbr.moveTabTo(tab, 0); // Fix bug for last tab moving
-			this.ut._log("Fix for Tree Style Tab...");
-		}
 		tbr.moveTabTo(tab, ind);
 
 		if(moveTo != "relative")
@@ -158,11 +161,11 @@ var handyClicksFuncs = {
 			false
 		);
 	},
-	_openUriInTab: function(loadInBackground, loadJSInBackground, refererPolicy, e, moveTo, item, uri) {
+	_openUriInTab: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, moveTo, inWin) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
-		if(this.testForLinkFeatures(loadInBackground, loadJSInBackground, refererPolicy, e, item, uri))
+		if(this.testForLinkFeatures(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, inWin))
 			return null;
 		var tbr = this.getTabBrowser(true);
 
@@ -178,19 +181,19 @@ var handyClicksFuncs = {
 			false
 		);
 	},
-	testForLinkFeatures: function(loadInBackground, loadJSInBackground, refererPolicy, e, item, uri, inWin) {
+	testForLinkFeatures: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, inWin) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
 		if(/^javascript:/i.test(uri)) {
-			this.loadJavaScriptLink(loadJSInBackground, refererPolicy, e, item, uri, inWin);
+			this.loadJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin);
 			return true;
 		}
-		if(this.testForFileLink(refererPolicy, uri) || this.testForHighlander(uri))
+		if(this.testForFileLink(uri, refererPolicy) || this.testForHighlander(uri))
 			return true;
 		return false;
 	},
-	loadJavaScriptLink: function(loadJSInBackground, refererPolicy, e, item, uri, inWin) {
+	loadJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, inWin) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
@@ -203,11 +206,11 @@ var handyClicksFuncs = {
 				|| item.hasAttribute("onmouseup")
 			)
 		)
-			this.loadVoidLinkWithHandler(loadJSInBackground, refererPolicy, inWin, e, item);
+			this.loadVoidLinkWithHandler(e, item, loadJSInBackground, refererPolicy, inWin);
 		else
-			this.loadNotVoidJavaScriptLink(loadJSInBackground, refererPolicy, inWin, e, item, uri);
+			this.loadNotVoidJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin);
 	},
-	loadVoidLinkWithHandler: function(loadJSInBackground, refererPolicy, inWin, e, item) {
+	loadVoidLinkWithHandler: function(e, item, loadJSInBackground, refererPolicy, inWin) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		var evt = document.createEvent("MouseEvents"); // thanks to Tab Scope!
@@ -219,11 +222,8 @@ var handyClicksFuncs = {
 		);
 		var _this = this;
 		function _f() {
-			var openWin = _this.pu.pref("openNewWindowRestrictionForTabs");
-			if(openWin == -1)
-				openWin = _this.pu.getPref("browser.link.open_newwindow.restriction");
 			var origPrefs = _this.setPrefs({
-				"browser.link.open_newwindow.restriction": inWin ? 1 : openWin,
+				"browser.link.open_newwindow.restriction": _this.getWinRestriction(inWin),
 				"browser.tabs.loadDivertedInBackground": loadJSInBackground,
 				"network.http.sendRefererHeader": _this.getRefererPolicy(refererPolicy)
 			});
@@ -244,16 +244,20 @@ var handyClicksFuncs = {
 		if(load)
 			_f();
 	},
-	loadNotVoidJavaScriptLink: function(loadJSInBackground, refererPolicy, inWin, e, item, uri) {
+	getWinRestriction: function(inWin) {
+		return inWin == true
+			? 1 // Open in new window
+			: inWin == -1 // -1 - global value, other - override
+				? this.pu.getPref("browser.link.open_newwindow.restriction")
+				: inWin;
+	},
+	loadNotVoidJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, inWin) {
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
 		var _this = this;
-
 		function _f() {
 			var origPrefs = _this.setPrefs({
-				"browser.link.open_newwindow.restriction": inWin
-					? 1
-					: _this.pu.pref("openNewWindowRestrictionForTabs"),
+				"browser.link.open_newwindow.restriction": _this.getWinRestriction(inWin),
 				"dom.disable_open_during_load": false, // allow window.open( ... )
 				"browser.tabs.loadDivertedInBackground": loadJSInBackground,
 				"network.http.sendRefererHeader": _this.getRefererPolicy(refererPolicy)
@@ -268,7 +272,6 @@ var handyClicksFuncs = {
 			setTimeout(function(_this) { _this.restorePrefs(origPrefs); }, 0, _this);
 			// _this.restorePrefs(origPrefs);
 		}
-
 		var load = this.pu.pref("loadJavaScriptLinks");
 		if(this.pu.pref("notifyJavaScriptLinks"))
 			this.ut.notify(
@@ -280,7 +283,7 @@ var handyClicksFuncs = {
 		if(load)
 			_f();
 	},
-	testForFileLink: function(refererPolicy, uri) {
+	testForFileLink: function(uri, refererPolicy) {
 		uri = uri || this.getUriOfItem(this.hc.item);
 		var filesPolicy = this.pu.pref("filesLinksPolicy");
 		if(filesPolicy < 1)
@@ -308,7 +311,7 @@ var handyClicksFuncs = {
 		return false;
 	},
 	openUriInWindow: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, hidePopup) {
-		var win = this._openUriInWindow(loadInBackground, loadJSInBackground, refererPolicy, e);
+		var win = this._openUriInWindow(e, null, null, loadInBackground, loadJSInBackground, refererPolicy);
 		if(hidePopup)
 			this.hideItemPopup();
 		if(!win || !moveTo)
@@ -360,11 +363,11 @@ var handyClicksFuncs = {
 			window.resizeTo(wCur, hCur);
 		this.initWindowMoving(win, xNew, yNew, wNew, hNew);
 	},
-	_openUriInWindow: function(loadInBackground, loadJSInBackground, refererPolicy, e, item, uri) {
+	_openUriInWindow: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
-		if(this.testForLinkFeatures(loadInBackground, loadJSInBackground, refererPolicy, e, item, uri, true))
+		if(this.testForLinkFeatures(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, true))
 			return null;
 		var win = window.openDialog(
 			getBrowserURL(),
@@ -678,7 +681,7 @@ var handyClicksFuncs = {
 		popup.__uri = this.convertStrFromUnicode(uri);
 	},
 	setPrefs: function(prefsObj) {
-		var origs = {};
+		var origs = { __proto__: null };
 		for(var p in prefsObj) {
 			if(!prefsObj.hasOwnProperty(p) || prefsObj[p] == null)
 				continue;
@@ -689,8 +692,7 @@ var handyClicksFuncs = {
 	},
 	restorePrefs: function(prefsObj) {
 		for(var p in prefsObj)
-			if(prefsObj.hasOwnProperty(p))
-				this.pu.setPref(p, prefsObj[p]);
+			this.pu.setPref(p, prefsObj[p]);
 	},
 	submitFormToNewDoc: function(e, toNewWin, loadInBackground, refererPolicy, node) {
 		// Thanks to SubmitToTab! ( https://addons.mozilla.org/firefox/addon/483 )
@@ -777,7 +779,7 @@ var handyClicksFuncs = {
 			_tabs.forEach(tbr.removeTab, tbr);
 	},
 	warnAboutClosingTabs: function(tabsToClose, tbr) {
-		// Based on code of Firefox 1.5-3.0
+		// Based on code of Firefox 1.5 - 3.0
 		// chrome://browser/content/tabbrowser.xml
 		// "warnAboutClosingTabs" method
 		tbr = tbr || this.getTabBrowser();
@@ -833,7 +835,8 @@ var handyClicksFuncs = {
 			tab.label
 		);
 		tab.label = lbl == null
-			? tab.linkedBrowser.contentDocument.title || this.getTabBrowser(true).mStringBundle.getString("tabs.untitled")
+			? tab.linkedBrowser.contentDocument.title
+				|| this.getTabBrowser(true).mStringBundle.getString("tabs.untitled")
 			: lbl;
 	},
 	reloadAllTabs: function(e, skipCache) {
@@ -873,7 +876,7 @@ var handyClicksFuncs = {
 		tab = this.fixTab(tab);
 		var tbr = this.getTabBrowser();
 		var ind = ++tab._tPos;
-		if("duplicateTab" in tbr) // fx 3.0
+		if("duplicateTab" in tbr) // fx 3.0+
 			var newTab = tbr.duplicateTab(tab);
 		else // Not a real "clone"... Just URI's copy
 			var newTab = tbr.addTab(this.getTabUri(tab));
@@ -889,11 +892,11 @@ var handyClicksFuncs = {
 			return;
 		var hasStyle = img.hasAttribute("style");
 		var origStyle = img.getAttribute("style");
-		var w = this.getComputedStyleOfItem("width");
-		var h = this.getComputedStyleOfItem("height");
+		var w = this.getComputedStyleOfItem(img, "width");
+		var h = this.getComputedStyleOfItem(img, "height");
 		img.style.width = w;
 		img.style.height = h;
-		this.ut._log("reloadImg -> " + w + " x " + h);
+		// this.ut._log("reloadImg -> " + w + " x " + h);
 		// if(parseInt(w) > 32 && parseInt(h) > 32)
 		img.style.background = "url('resource://handyclicks-content/loading.gif') center no-repeat";
 		img.setAttribute("src", "resource://handyclicks-content/spacer.gif"); // transparent gif 1x1
@@ -914,9 +917,9 @@ var handyClicksFuncs = {
 			0
 		);
 	},
-	getComputedStyleOfItem: function(name, item) {
+	getComputedStyleOfItem: function(item, propName) {
 		item = item || this.hc.item;
-		return item.ownerDocument.defaultView.getComputedStyle(item, "")[name];
+		return item.ownerDocument.defaultView.getComputedStyle(item, "")[propName];
 	},
 	openSimilarLinksInTabs: function(e, refererPolicy, a) {
 		a = a || this.hc.item;

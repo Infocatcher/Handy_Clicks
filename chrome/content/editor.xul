@@ -97,128 +97,130 @@
 									<!-- ~ todo -->
 
 <menuitem
-	value="copyItemText" label="hcFunc-copyItemText"
+	value="copyItemText" label="copyItemText"
 	hc_args=""
 	hc_supports="$all" />
 <menuitem
-	value="copyItemLink" label="hcFunc-copyItemLink"
+	value="copyItemLink" label="copyItemLink"
 	hc_args=""
 	hc_supports="$all" />
 <menuseparator id="hc-editor-funcsSep-clip" />
 <menuitem
-	value="removeOtherTabs" label="hcFunc-removeOtherTabs"
+	value="removeOtherTabs" label="removeOtherTabs"
 	hc_args=""
 	hc_supports="tab tabbar" />
 <menuitem
-	value="removeAllTabs" label="hcFunc-removeAllTabs"
+	value="removeAllTabs" label="removeAllTabs"
 	hc_args=""
 	hc_supports="tab tabbar" />
 <menuitem
-	value="removeRightTabs" label="hcFunc-removeRightTabs"
+	value="removeRightTabs" label="removeRightTabs"
 	hc_args=""
 	hc_supports="tab tabbar" />
 <menuitem
-	value="removeLeftTabs" label="hcFunc-removeLeftTabs"
+	value="removeLeftTabs" label="removeLeftTabs"
 	hc_args=""
 	hc_supports="tab tabbar" />
 <menuitem
-	value="undoCloseTab" label="hcFunc-undoCloseTab"
+	value="undoCloseTab" label="undoCloseTab"
 	hc_args=""
 	hc_supports="tab tabbar" />
 <menuitem
-	value="cloneTab" label="hcFunc-cloneTab"
+	value="cloneTab" label="cloneTab"
 	hc_args=""
 	hc_supports="tab tabbar" />
 <menuitem
-	value="renameTab" label="hcFunc-renameTab"
+	value="renameTab" label="renameTab"
 	hc_args=""
 	hc_supports="tab tabbar" />
 <menuitem
-	value="reloadTab" label="hcFunc-reloadTab"
+	value="reloadTab" label="reloadTab"
 	hc_args="skipCache"
 	hc_supports="tab tabbar" />
 <menuitem
-	value="reloadAllTabs" label="hcFunc-reloadAllTabs"
+	value="reloadAllTabs" label="reloadAllTabs"
 	hc_args="skipCache"
 	hc_supports="tab tabbar" />
 <menuitem
-	value="stopTabLoading" label="hcFunc-stopTabLoading"
+	value="stopTabLoading" label="stopTabLoading"
 	hc_args=""
 	hc_supports="tab tabbar" />
 <menuitem
-	value="stopAllTabsLoading" label="hcFunc-stopAllTabsLoading"
+	value="stopAllTabsLoading" label="stopAllTabsLoading"
 	hc_args=""
 	hc_supports="tab tabbar" />
 <menuseparator id="hc-editor-funcsSep-tabs" />
 <menuitem
-	value="openUriInTab" label="hcFunc-openUriInTab"
-	hc_args="loadInBackground loadJSInBackground refererPolicy moveTabTo hidePopup"
+	value="openUriInTab" label="openUriInTab"
+	hc_args="loadInBackground loadJSInBackground refererPolicy moveTabTo hidePopup inWin"
 	hc_supports="link img tab bookmark historyItem" />
 <menuitem
-	value="openUriInCurrentTab" label="hcFunc-openUriInCurrentTab"
+	value="openUriInCurrentTab" label="openUriInCurrentTab"
 	hc_args="refererPolicy hidePopup"
 	hc_supports="link img bookmark historyItem" />
 <menuitem
-	value="openUriInWindow" label="hcFunc-openUriInWindow"
+	value="openUriInWindow" label="openUriInWindow"
 	hc_args="loadInBackground loadJSInBackground refererPolicy moveWinTo hidePopup"
 	hc_supports="link img tab bookmark historyItem" />
 <menuitem
-	value="openInSidebar" label="hcFunc-openInSidebar"
+	value="openInSidebar" label="openInSidebar"
 	hc_args="hidePopup"
 	hc_supports="link img tab bookmark historyItem" />
 <menuseparator id="hc-editor-funcsSep-links" />
 <menuitem
-	value="showContextMenu" label="hcFunc-showContextMenu"
+	value="showContextMenu" label="showContextMenu"
 	hc_args=""
 	hc_supports="$all" />
 <menuitem
-	value="openSimilarLinksInTabs" label="hcFunc-openSimilarLinksInTabs"
+	value="openSimilarLinksInTabs" label="openSimilarLinksInTabs"
 	hc_args="refererPolicy"
 	hc_supports="link" />
 <menuitem
-	value="reloadImg" label="hcFunc-reloadImg"
+	value="reloadImg" label="reloadImg"
 	hc_args=""
 	hc_supports="img" />
 <menuitem
-	value="submitFormToNewDoc" label="hcFunc-submitFormToNewDoc"
+	value="submitFormToNewDoc" label="submitFormToNewDoc"
 	hc_args="toNewWin loadInBackground refererPolicy"
 	hc_supports="submitButton" />
 <menuseparator id="hc-editor-funcsSep-misc" />
 <menuitem
-	value="downloadWithFlashGot" label="hcFunc-downloadWithFlashGot"
+	value="downloadWithFlashGot" label="downloadWithFlashGot"
 	hc_required="FlashGot"
 	hc_args=""
 	hc_supports="link" />
 <menuitem
-	value="openInSplitBrowser" label="hcFunc-openInSplitBrowser"
+	value="openInSplitBrowser" label="openInSplitBrowser"
 	hc_required="SplitBrowser"
 	hc_args="position"
 	hc_supports="link img tab bookmark historyItem" />
 <menuseparator id="hc-editor-funcsSep-exts" />
 <menuitem
-	value="$void" label="hcFunc-$void"
+	value="$void" label="$void"
 	hc_args=""
 	hc_supports="$all" />
 
 
 <menuseparator id="hc-editor-funcsSep" />
-<menuitem value="$custom" hc_supports="$all" label="hcFunc-$custom" />
+<menuitem value="$custom" hc_supports="$all" label="$custom" />
 									<!-- ~ todo -->
 
 							</menupopup>
 						</menulist>
 					</hbox>
-					<groupbox id="hc-editor-funcArgsBox">
-						<caption label="Arguments" />
-						<vbox id="hc-editor-funcArgs" flex="1" align="left" />
-					</groupbox>
-
-					<vbox id="hc-editor-funcCustom" flex="1">
-						<hbox align="center">
-							<label value="Label:" />
-							<textbox id="hc-editor-funcLabel" flex="1" />
-						</hbox>
-						<textbox class="hcEditor" id="hc-editor-funcField" wrap="off" flex="1" />
+					<vbox id="hc-editor-funcSets" flex="1">
+						<groupbox id="hc-editor-funcArgsBox">
+							<caption label="Arguments" />
+							<vbox id="hc-editor-funcArgs" flex="1" align="left" />
+						</groupbox>
+	
+						<vbox id="hc-editor-funcCustom" flex="1">
+							<hbox align="center">
+								<label value="Label:" />
+								<textbox id="hc-editor-funcLabel" flex="1" />
+							</hbox>
+							<textbox class="hcEditor" id="hc-editor-funcField" wrap="off" flex="1" />
+						</vbox>
 					</vbox>
 
 				</groupbox>

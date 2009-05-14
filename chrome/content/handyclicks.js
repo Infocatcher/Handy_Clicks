@@ -28,7 +28,6 @@ var handyClicks = {
 		window.addEventListener("mouseup", this, true);
 		window.addEventListener("contextmenu", this, true);
 		window.addEventListener("dblclick", this, true);
-
 		this.setStatus();
 		this.pu.addPrefsObserver(this.updUI, this);
 	},
@@ -115,10 +114,13 @@ var handyClicks = {
 		if(this.ut.isNoChromeDoc(node.ownerDocument))
 			id = "contentAreaContextMenu";
 		else {
-			var nn = node.nodeName;
-			while(nn != "#document" && !node.hasAttribute("context"))
+			while(node) {
+				if(node.hasAttribute("context")) {
+					id = node.getAttribute("context");
+					break;
+				}
 				node = node.parentNode;
-			id = node.getAttribute("context") || null;
+			}
 		}
 		return id ? document.getElementById(id) : null;
 	},
@@ -519,17 +521,15 @@ var handyClicks = {
 	cloneObj: function(obj) {
 		obj = obj || {};
 		var clone = {};
-		for(var p in obj)
+		for(var p in obj) // Important: this is not real recursive copying of properties!
 			clone[p] = obj[p];
 		return clone;
 	},
 	saveEvent: function(e) {
 		this.event = e;
-
 		// fx < 3.0:
-		// Works:
+		// Following works:
 		//   alert(uneval(this.getXY(this.event)));
-		//
 		// Always return "({x:0, y:0})":
 		//   var _this = this;
 		//   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
@@ -648,11 +648,6 @@ var handyClicks = {
 			case "mouseup":     this.mouseupHandler(e);   break;
 			case "dblclick":    this.dblclickHandler(e);
 		}
-	},
-	observe: function(subject, topic, prefName) { // prefs observer
-		if(topic != "nsPref:changed")
-			return;
-		this.pu.readPref(prefName.replace(/^extensions\.handyclicks\./, ""));
 	},
 
 	// GUI:

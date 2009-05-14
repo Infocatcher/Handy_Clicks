@@ -9,9 +9,6 @@ pref("extensions.handyclicks.convertURIs", true); // for Windows
 pref("extensions.handyclicks.convertURIsTo", ""); // use defaults
 pref("extensions.handyclicks.showContextMenuTimeout", 500);
 
-// browser.link.open_newwindow.restriction
-pref("extensions.handyclicks.openNewWindowRestrictionForTabs", 2); // -1 - global value, other - override
-
 pref("extensions.handyclicks.notifyOpenTime", 3000);
 pref("extensions.handyclicks.notifyInWindowCorner", false);
 

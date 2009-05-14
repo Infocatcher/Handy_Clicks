@@ -11,9 +11,10 @@ var handyClicksEditor = {
 			toNewWin: 1
 		},
 		menulists: {
-			refererPolicy: [-1, 0, 1, 2],
+			refererPolicy: [-1, 0, /*1,*/ 2],
 			moveTabTo: ["null", "first", "before", "after", "last", "relative"],
 			moveWinTo: ["null", "top", "right", "bottom", "left", "sub"],
+			inWin: [-1, 0, 1, 2], // browser.link.open_newwindow.restriction
 			position: ["top", "right", "bottom", "left"]
 		}
 	},
@@ -21,12 +22,21 @@ var handyClicksEditor = {
 		var wa = window.arguments;
 		if(!wa[0] || !wa[1] || !window.opener)
 			return;
+		this.loadFuncsLabels();
 		this.initShortcuts();
 		this.initUI();
 		this.mBox.selectedIndex = this.mode == "shortcut" ? 0 : 1;
 		this.ps.addPrefsObserver(this.initUI, this);
 		window.addEventListener("DOMMouseScroll", this, true);
 		this.toggleApply(true);
+	},
+	loadFuncsLabels: function() {
+		var mp = this.$("hc-editor-funcPopup");
+		var mis = mp.getElementsByTagName("menuitem"), mi;
+		for(var i = 0, len = mis.length; i < len; i++) {
+			mi = mis[i];
+			mi.setAttribute("label", this.ut.getLocalised(mi.getAttribute("label")));
+		}
 	},
 	initUI: function() {
 		this.initShortcutEditor();
@@ -154,11 +164,11 @@ var handyClicksEditor = {
 		return /\w/.test(key);
 	},
 	delCustomTypes: function() {
-		var prnt, mis, mi;
+		var prnt, mis, mi, j;
 		for(var i = 0, aLen = arguments.length; i < aLen; i++) {
 			prnt = arguments[i];
 			mis = prnt.getElementsByTagName("menuitem");
-			for(var j = mis.length - 1; j >= 0; j--) {
+			for(j = mis.length - 1; j >= 0; j--) {
 				mi = mis[j];
 				if(mi.getAttribute("value").indexOf("custom_") == 0)
 					mi.parentNode.removeChild(mi);
@@ -276,8 +286,7 @@ var handyClicksEditor = {
 			? setsObj[this.type] || {}
 			: {};
 		var cArgVal = (setsObj.arguments || {})[arg];
-		var aType = this.getArgType(arg);
-		this.addControl(arg, aType, cArgVal); // "loadInBackground", "checkbox", true
+		this.addControl(arg, this.getArgType(arg), cArgVal); // "loadInBackground", "checkbox", true
 	},
 	getArgType: function(arg) {
 		var types = this.argsTypes;
@@ -288,7 +297,8 @@ var handyClicksEditor = {
 		return this.ut._err("Cannt get type of " + arg);
 	},
 	addControl: function(argName, argType, argVal) {
-		var argContainer = document.createElement("vbox");
+		var argContainer = document.createElement("hbox");
+		argContainer.setAttribute("align", "center");
 		argContainer.className = "hc-editor-argsContainer";
 		var elt = document.createElement(argType);
 		switch(argType) {
@@ -297,6 +307,11 @@ var handyClicksEditor = {
 				elt.setAttribute("label", this.ut.getLocalised(argName));
 			break;
 			case "menulist":
+				// Description:
+				var desc = document.createElement("label");
+				desc.setAttribute("value", this.ut.getLocalised(argName));
+				argContainer.appendChild(desc);
+				// List of values:
 				var mp = document.createElement("menupopup");
 				var vals = this.types.menulists[argName];
 				var mi;
