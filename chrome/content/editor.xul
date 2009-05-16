@@ -213,11 +213,14 @@
 							<caption label="Arguments" />
 							<vbox id="hc-editor-funcArgs" flex="1" align="left" />
 						</groupbox>
-	
+
 						<vbox id="hc-editor-funcCustom" flex="1">
 							<hbox align="center">
 								<label value="Label:" />
 								<textbox id="hc-editor-funcLabel" flex="1" />
+							</hbox>
+							<hbox>
+								<textbox readonly="true" value="Arguments: event, item, origItem" />
 							</hbox>
 							<textbox class="hcEditor" id="hc-editor-funcField" wrap="off" flex="1" />
 						</vbox>
@@ -241,9 +244,17 @@
 						ondragexit="handyClicksEditor.customTypeIdFilter(event);" />
 					<checkbox id="hc-editor-customTypeEnabled" class="warn" label="Enabled" />
 				</hbox>
-				<label value="Define item (return item or null):" />
+				<label class="header" value="Define item" />
+				<hbox>
+					<textbox readonly="true" value="Arguments: event, item" />
+					<textbox readonly="true" value="Return: item or null" />
+				</hbox>
 				<textbox class="hcEditor" id="hc-editor-customTypeDefine" wrap="off" flex="1" value="" />
-				<label value="Context menu of item (return item or null), empty for autodetection:" />
+				<label class="header" value="Context menu of item (empty for autodetection)" />
+				<hbox>
+					<textbox readonly="true" value="Arguments: event, item, origItem" />
+					<textbox readonly="true" value="Return: item or null" />
+				</hbox>
 				<textbox class="hcEditor" id="hc-editor-customTypeContext" wrap="off" flex="1" value="" />
 			</tabpanel>
 		</tabpanels>

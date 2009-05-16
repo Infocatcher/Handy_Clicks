@@ -23,6 +23,19 @@ radio[pane="handyClicks-sets-pane-prefs"] {
 	color: #fff;
 }
 
+textbox[readonly="true"] {
+	background: transparent !important;
+	border: none;
+	padding: 0;
+	margin-top: 1px;
+	-moz-appearance: none;
+	-moz-box-flex: 1;
+}
+label.header {
+	font-weight: bold;
+	margin-left: 2em;
+}
+
 menuitem[hc_disabled="true"] {
 	color: graytext; /* Style like disabled, but without accessibility restrictions */
 }

@@ -23,6 +23,16 @@ var handyClicksSets = {
 		else
 			this.toggleApply(true);
 	},
+	initChortcuts: function() {
+		this.tree = this.$("handyClicks-setsTree");
+		this.view = this.tree.view;
+		this.selection = this.view.selection;
+		this.content = this.$("handyClicks-setsTreeContent");
+		this.cmdDelete = this.$("handyClicks-sets-cmdDelete");
+		this.cmdEdit = this.$("handyClicks-sets-cmdEdit");
+		this.cmdEditType = this.$("handyClicks-sets-cmdEditType");
+		this.searcher._tree = this.tree;
+	},
 	destroy: function() {
 		var eds = this.openedEditors, ed;
 		for(var hash in eds) {
@@ -42,15 +52,6 @@ var handyClicksSets = {
 	/*** Actions pane ***/
 	$: function(id) {
 		return document.getElementById(id);
-	},
-	initChortcuts: function() {
-		this.tree = this.$("handyClicks-setsTree");
-		this.view = this.tree.view;
-		this.selection = this.view.selection;
-		this.content = this.$("handyClicks-setsTreeContent");
-		this.cmdDelete = this.$("handyClicks-sets-cmdDelete");
-		this.cmdEdit = this.$("handyClicks-sets-cmdEdit");
-		this.searcher._tree = this.tree;
 	},
 	drawTree: function() {
 		for(var shortcut in handyClicksPrefs) {
@@ -100,7 +101,7 @@ var handyClicksSets = {
 		return tChildren;
 	},
 	appendItems: function(parent, items, shortcut) {
-		var tItem, tRow, it, isCustom, isCustomType;
+		var tItem, tRow, it, typeLabel, isCustom, isCustomType;
 		var isBuggy = false;
 		for(var itemType in items) {
 			if(!items.hasOwnProperty(itemType))
@@ -110,7 +111,13 @@ var handyClicksSets = {
 			it = items[itemType];
 			isCustom = it.custom;
 			isCustomType = itemType.indexOf("custom_") == 0;
-			this.appendTreeCell(tRow, "label", isCustomType ? itemType : this.ut.getLocalised(itemType));
+			if(isCustomType) {
+				typeLabel = handyClicksCustomTypes[itemType] || null;
+				typeLabel = decodeURIComponent(typeLabel && typeLabel.label) + " (" + itemType + ")";
+			}
+			else
+				typeLabel = this.ut.getLocalised(itemType);
+			this.appendTreeCell(tRow, "label", typeLabel);
 			this.appendTreeCell(tRow, "label", it.eventType);
 			this.appendTreeCell(tRow, "label", isCustom ? decodeURIComponent(it.label) : this.ut.getLocalised(it.action));
 			this.appendTreeCell(tRow, "label",
@@ -122,10 +129,11 @@ var handyClicksSets = {
 
 			isBuggy = !this.ps.isOkFuncObj(it)
 				|| (isCustomType && !handyClicksCustomTypes.hasOwnProperty(itemType));
-			this.addProperties(tRow, { disabled: !it.enabled, buggy: isBuggy, custom: isCustom });
+			this.addProperties(tRow, { disabled: !it.enabled, buggy: isBuggy, custom: isCustom || isCustomType });
 
 			tRow.__shortcut = shortcut;
 			tRow.__itemType = itemType;
+			tRow.__isCustomType = isCustomType;
 			tItem.appendChild(tRow);
 			parent.appendChild(tItem);
 		}
@@ -177,11 +185,13 @@ var handyClicksSets = {
 		this.searchInSetsTree();
 	},
 	updButtons: function() {
-		var noSel = !this.selectedRows.length;
+		var selRows = this.selectedRows;
+		var noSel = !selRows.length;
 		["cmdDelete", "cmdEdit"].forEach(
 			function(hash) { this[hash].setAttribute("disabled", noSel); },
 			this
 		);
+		this.cmdEditType.setAttribute("disabled", noSel || selRows.some(function(row) { return !row.__isCustomType }));
 	},
 	get selectedRows() {
 		var numRanges = this.selection.getRangeCount();
@@ -223,6 +233,11 @@ var handyClicksSets = {
 		if(!this.isTreePaneSelected)
 			return;
 		this.selectedRows.forEach(this.openEditorWindow, this);
+	},
+	editItemsTypes: function() {
+		if(!this.isTreePaneSelected)
+			return;
+		this.selectedRows.forEach(function(row) { this.openEditorWindow(row, "itemType"); }, this);
 	},
 	isClickOnRow: function(e) {
 		var row = {}, col = {}, obj = {};
@@ -272,15 +287,14 @@ var handyClicksSets = {
 		return true;
 	},
 	openedEditors: { __proto__: null },
-	openEditorWindow: function(tRow, mode) {
+	openEditorWindow: function(tRow, mode) { // mode: "shortcut" or "itemType"
 		var shortcut = tRow ? tRow.__shortcut : Date.now() + "-" + Math.random();
 		var itemType = tRow ? tRow.__itemType : null;
-		//if(!shortcut || !itemType)
-		//	return;
+		var editType = mode == "itemType";
+		var winId = editType ? itemType : shortcut + "-" + itemType;
 
-		var hash = shortcut + "-" + itemType;
-		if(this.openedEditors[hash]) {
-			this.openedEditors[hash].focus();
+		if(this.openedEditors[winId]) {
+			this.openedEditors[winId].focus();
 			return;
 		}
 		var win = window.openDialog( // window.openDialog => modal windows...
@@ -290,7 +304,8 @@ var handyClicksSets = {
 			mode || "shortcut", shortcut, itemType
 		);
 
-		if(tRow)
+		var addProp = tRow && !editType;
+		if(addProp)
 			this.addProperties(tRow, { edited: true });
 
 		var _this = this;
@@ -300,14 +315,14 @@ var handyClicksSets = {
 				"unload",
 				function(e) {
 					win.removeEventListener(e.type, arguments.callee, false);
-					delete _this.openedEditors[hash];
-					if(tRow)
+					delete _this.openedEditors[winId];
+					if(addProp)
 						_this.addProperties(tRow, { edited: false });
 				},
 				false
 			);
 		}, false);
-		this.openedEditors[hash] = win;
+		this.openedEditors[winId] = win;
 	},
 	toggleEnabled: function(e) {
 		var rowIndx, column, tRow;
@@ -366,7 +381,7 @@ var handyClicksSets = {
 			if(this.$(id + "-" + i).checked)
 				val += i;
 		this.pu.setPref("extensions.handyclicks." + id, val);
-		this.ps.saveSettingsObjects();
+		this.ps.saveSettingsObjects(applyFlag);
 		if(applyFlag && !this.instantApply) {
 			this.savePrefpanes();
 			this.toggleApply(true);

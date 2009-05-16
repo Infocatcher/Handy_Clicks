@@ -18,6 +18,10 @@ var handyClicksEditor = {
 			position: ["top", "right", "bottom", "left"]
 		}
 	},
+	tabs: {
+		shortcut: 0,
+		itemType: 1
+	},
 	init: function() {
 		var wa = window.arguments;
 		if(!wa[0] || !wa[1] || !window.opener)
@@ -25,10 +29,21 @@ var handyClicksEditor = {
 		this.loadFuncsLabels();
 		this.initShortcuts();
 		this.initUI();
-		this.mBox.selectedIndex = this.mode == "shortcut" ? 0 : 1;
+		this.loadCustomType(this.type);
+		this.mBox.selectedIndex = this.tabs[this.mode];
 		this.ps.addPrefsObserver(this.initUI, this);
 		window.addEventListener("DOMMouseScroll", this, true);
 		this.toggleApply(true);
+	},
+	initShortcuts: function() {
+		this.op = window.opener;
+		this.mBox = this.$("hc-editor-mainTabbox");
+		this.code = this.$("hc-editor-funcField");
+		this.cLabel = this.$("hc-editor-funcLabel");
+		var wa = window.arguments;
+		this.mode = wa[0];
+		this.target = wa[1];
+		this.type = wa[2];
 	},
 	loadFuncsLabels: function() {
 		var mp = this.$("hc-editor-funcPopup");
@@ -66,16 +81,6 @@ var handyClicksEditor = {
 	handleEvent: function(e) {
 		this.listScroll(e);
 	},
-	initShortcuts: function() {
-		this.op = window.opener;
-		this.mBox = this.$("hc-editor-mainTabbox");
-		this.code = this.$("hc-editor-funcField");
-		this.cLabel = this.$("hc-editor-funcLabel");
-		var wa = window.arguments;
-		this.mode = wa[0];
-		this.target = wa[1];
-		this.type = wa[2];
-	},
 	initShortcutEditor: function() {
 		var setsObj = handyClicksPrefs[this.target] || {};
 		setsObj = setsObj[this.type] || {};
@@ -112,8 +117,7 @@ var handyClicksEditor = {
 			return;
 		var tar = e.target;
 		var cType = tar.value;
-		if(cType.indexOf("custom_") == 0)
-			this.initCustomTypesEditor(cType);
+		this.loadCustomType(cType);
 		this.mBox.selectedIndex = 1;
 		var mp = tar.parentNode;
 		if("hidePopup" in mp)
@@ -344,8 +348,7 @@ var handyClicksEditor = {
 		return type && type.value || null;
 	},
 	loadFuncs: function() {
-		var target = this.currentShortcut;
-		this.target = target;
+		this.target = this.currentShortcut;
 		this.type = this.currentType;
 		this.initShortcutEditor();
 	},
@@ -449,6 +452,9 @@ var handyClicksEditor = {
 		cts[cType] = {};
 		var ct = cts[cType];
 		ct.enabled = this.$("hc-editor-customTypeEnabled").checked;
+		if(!ct.enabled) {
+			//~ todo: notify user
+		}
 		ct.label = encodeURIComponent(label);
 		ct.define = encodeURIComponent(def);
 		ct.contextMenu = cMenu ? encodeURIComponent(cMenu) : null;

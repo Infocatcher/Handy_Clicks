@@ -88,6 +88,7 @@ var handyClicksPrefSvc = {
 	},
 	convertCystomTypes: function() {
 		var cts = handyClicksCustomTypes, ct;
+		var df, cm;
 		for(var type in cts) {
 			if(!cts.hasOwnProperty(type))
 				continue;
@@ -95,8 +96,10 @@ var handyClicksPrefSvc = {
 			if(typeof ct != "object" || ct.disabled)
 				continue;
 			try {
-				ct._define = this.compileStr(cts[type].define);
-				ct._contextMenu = this.compileStr(cts[type].contextMenu);
+				df = cts[type].define;
+				cm = cts[type].contextMenu;
+				ct._define      = df ? new Function("event,item",          decodeURIComponent(df)) : null;
+				ct._contextMenu = cm ? new Function("event,item,origItem", decodeURIComponent(cm)) : null;
 			}
 			catch(e) {
 				this.ut.notify(
@@ -113,12 +116,33 @@ var handyClicksPrefSvc = {
 			}
 		}
 	},
-	compileStr: function(str) {
-		return !str ? null : new Function(decodeURIComponent(str));
-	},
 	saveSettingsObjects: function(reloadAll) {
- 		var res = this.warnComment + "var handyClicksPrefs = {\n";
+ 		var res = this.warnComment;
 		var shortcutObj, itemTypeObj, propVal;
+		var forceDis = { __proto__: null };
+
+		res += "var handyClicksCustomTypes = {\n";
+		this.sortObj(handyClicksCustomTypes);
+		for(var itemType in handyClicksCustomTypes) {
+			if(!handyClicksCustomTypes.hasOwnProperty(itemType) || itemType.indexOf("custom_") != 0)
+				continue;
+			itemTypeObj = handyClicksCustomTypes[itemType];
+			if(typeof itemTypeObj != "object")
+				continue;
+			res += "\t" + this.fixPropName(itemType) + ": {\n";
+			for(var propName in itemTypeObj) {
+				if(!itemTypeObj.hasOwnProperty(propName) || propName.indexOf("_") == 0)
+					continue;
+				propVal = itemTypeObj[propName];
+				res += "\t\t" + propName + ": " + this.objToSource(propVal) + ",\n";
+				if(propName == "enabled" && propVal == false)
+					forceDis[itemType] = true;
+			}
+			res = this.delLastComma(res) + "\t},\n";
+		}
+		res = this.delLastComma(res) + "};\n";
+
+		res += "var handyClicksPrefs = {\n";
 		this.sortObj(handyClicksPrefs);
 		for(var shortcut in handyClicksPrefs) {
 			if(!handyClicksPrefs.hasOwnProperty(shortcut) || !this.isOkShortcut(shortcut))
@@ -136,28 +160,11 @@ var handyClicksPrefSvc = {
 					if(!itemTypeObj.hasOwnProperty(propName))
 						continue;
 					propVal = itemTypeObj[propName];
+					if(propName == "enabled" && itemType in forceDis)
+						propVal = false;
 					res += "\t\t\t" + this.fixPropName(propName) + ": " + this.objToSource(propVal) + ",\n";
 				}
 				res = this.delLastComma(res) + "\t\t},\n";
-			}
-			res = this.delLastComma(res) + "\t},\n";
-		}
-		res = this.delLastComma(res) + "};\n";
-
-		res += "var handyClicksCustomTypes = {\n";
-		this.sortObj(handyClicksCustomTypes);
-		for(var itemType in handyClicksCustomTypes) {
-			if(!handyClicksCustomTypes.hasOwnProperty(itemType) || itemType.indexOf("custom_") != 0)
-				continue;
-			itemTypeObj = handyClicksCustomTypes[itemType];
-			if(typeof itemTypeObj != "object")
-				continue;
-			res += "\t" + this.fixPropName(itemType) + ": {\n";
-			for(var propName in itemTypeObj) {
-				if(!itemTypeObj.hasOwnProperty(propName) || propName.indexOf("_") == 0)
-					continue;
-				propVal = itemTypeObj[propName];
-				res += "\t\t" + propName + ": " + this.objToSource(propVal) + ",\n";
 			}
 			res = this.delLastComma(res) + "\t},\n";
 		}

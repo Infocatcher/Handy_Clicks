@@ -80,7 +80,9 @@ var handyClicks = {
 				var ct = handyClicksCustomTypes[this.itemType];
 				var _cm = ct._contextMenu;
 				if(_cm) {
-					try { cm = _cm.call(this.fn, e); }
+					try {
+						cm = _cm.call(this.fn, e, this.item, this.origItem);
+					}
 					catch(e) {
 						this.ut.notify(
 							this.ut.getLocalised("errorTitle"),
@@ -330,7 +332,9 @@ var handyClicks = {
 				(all || this.itemTypeInSets(sets, type))
 				&& this.isOkCustomType(type)
 			) {
-				try { cItem = ct._define.call(this, e, it); }
+				try {
+					cItem = ct._define.call(this, e, it);
+				}
 				catch(e) {
 					var eId = this.ut.getLocalised("id") + " " + type
 						+ "\n" + this.ut.getLocalised("label") + " " + decodeURIComponent(ct.label || "");
@@ -582,10 +586,11 @@ var handyClicks = {
 		var args = this.argsToArr(funcObj.arguments);
 		args.unshift(e);
 		if(funcObj.custom) {
+			args.unshift(this.item, this.origItem);
 			var action = decodeURIComponent(funcObj.action);
 			var label = '"' + decodeURIComponent(funcObj.label) + '"';
 			try {
-				new Function(action).apply(this.fn, args);
+				new Function("event,item,origItem", action).apply(this.fn, args);
 			}
 			catch(e) {
 				this.ut.notify(

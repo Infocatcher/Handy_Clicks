@@ -6,6 +6,7 @@
 <!ENTITY hc.sets.search "Найти:">
 <!ENTITY hc.sets.cmdAdd "Добавить">
 <!ENTITY hc.sets.cmdEdit "Редактировать">
+<!ENTITY hc.sets.cmdEditType "Редактировать тип">
 <!ENTITY hc.sets.cmdDel "Удалить">
 
 <!ENTITY hc.sets.clickPrefsTitle "Настройки">
