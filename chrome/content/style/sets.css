@@ -55,3 +55,9 @@ textbox.hcEditor {
 #hc-editor-funcSets {
 	overflow: auto;
 }
+#hc-editor-customType {
+	min-width: 12em;
+}
+#hc-editor-customTypeExtId {
+	min-width: 9em;
+}

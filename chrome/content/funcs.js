@@ -71,10 +71,8 @@ var handyClicksFuncs = {
 		tbr = tbr || this.getTabBrowser(true);
 		var res = [];
 		var tabs = tbr.mTabContainer.childNodes;
-		for(var i = 0, len = tabs.length; i < len; i++) {
-			if(tabs[i]) // ?
-				res.push(fnc(tabs[i]));
-		}
+		for(var i = 0, len = tabs.length; i < len; i++)
+			res.push(fnc(tabs[i]));
 		return res;
 	},
 	copyStr: function(str) {
@@ -736,7 +734,7 @@ var handyClicksFuncs = {
 	},
 	fixTab: function(tab) {
 		tab = tab || this.hc.item;
-		if(!tab || tab.nodeName != "tab")
+		if(!tab || !/^(?:\w+:)?tab$/.test(tab.nodeName)) // <tab> or <namespace:tab>
 			tab = this.getTabBrowser().mCurrentTab;
 		return tab;
 	},

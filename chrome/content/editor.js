@@ -109,7 +109,7 @@ var handyClicksEditor = {
 		this.$("hc-editor-funcCustom").hidden = !isCustom;
 	},
 	loadCustomType: function(type) {
-		if(type.indexOf("custom_" == 0))
+		if(type && type.indexOf("custom_" == 0))
 			this.initCustomTypesEditor(type);
 	},
 	editCustomType: function(e) {
@@ -364,9 +364,9 @@ var handyClicksEditor = {
 		this.alloyApply(e);
 	},
 
-	saveSettings: function() {
+	saveSettings: function(applyFlag) {
 		switch(this.mBox.selectedIndex) {
-			case 0:  return this.saveShortcut();
+			case 0:  return this.saveShortcut(applyFlag);
 			case 1:  return this.saveCustomType();
 			default: return false;
 		}
@@ -378,7 +378,7 @@ var handyClicksEditor = {
 			default: return false;
 		}
 	},
-	saveShortcut: function() {
+	saveShortcut: function(applyFlag) {
 		var sh = this.currentShortcut;
 		var type = this.currentType;
 		var evt = this.$("hc-editor-events").value || null;
@@ -426,7 +426,7 @@ var handyClicksEditor = {
 			}
 		}
 		// alert( uneval( handyClicksPrefs[sh] ) );
-		this.ps.saveSettingsObjects();
+		this.ps.saveSettingsObjects(applyFlag);
 		this.toggleApply(true);
 		return true;
 	},
@@ -447,14 +447,24 @@ var handyClicksEditor = {
 			return false;
 		}
 		cType = "custom_" + cType;
-		var cMenu = this.$("hc-editor-customTypeContext").value;
+
 		var cts = handyClicksCustomTypes;
+		var ct = cts[cType] || {};
+		var curEnabl = ct.enabled || false;
+		var newEnabl = this.$("hc-editor-customTypeEnabled").checked;
+		if(
+			!newEnabl
+			&& newEnabl != curEnabl
+			&& !this.ut.confirmEx(
+				this.ut.getLocalised("warningTitle"),
+				this.ut.getLocalised("typeDisablingWarning")
+			)
+		)
+			return false;
 		cts[cType] = {};
-		var ct = cts[cType];
-		ct.enabled = this.$("hc-editor-customTypeEnabled").checked;
-		if(!ct.enabled) {
-			//~ todo: notify user
-		}
+		ct = cts[cType];
+		ct.enabled = newEnabl;
+		var cMenu = this.$("hc-editor-customTypeContext").value;
 		ct.label = encodeURIComponent(label);
 		ct.define = encodeURIComponent(def);
 		ct.contextMenu = cMenu ? encodeURIComponent(cMenu) : null;

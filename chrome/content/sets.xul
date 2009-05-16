@@ -160,12 +160,16 @@
 		<key keycode="VK_DELETE" id="handyClicks-sets-keyDelete" command="handyClicks-sets-cmdDelete" />
 		<key keycode="VK_F5" id="handyClicks-sets-keyReload" oncommand="handyClicksSets.redrawTree();" />
 		<key key=" " id="handyClicks-sets-keyToggle" oncommand="handyClicksSets.toggleEnabled();" />
-		<key key="S" modifiers="control" id="handyClicks-sets-keyApply" oncommand="handyClicksSets.savePrefs(true);" />
+		<key key="a" modifiers="control" id="handyClicks-sets-keySelectAll" oncommand="handyClicksSets.selectAll();" />
+		<key key="f" modifiers="control" id="handyClicks-sets-keyFocusSearch" oncommand="handyClicksSets.focusSearch();" />
+		<key keycode="VK_TAB" modifiers="control" id="handyClicks-sets-keySwitchPanes" oncommand="handyClicksSets.switchPanes(true);" />
+		<key keycode="VK_TAB" modifiers="control,shift" id="handyClicks-sets-keySwitchPanes" oncommand="handyClicksSets.switchPanes(false);" />
+		<key key="s" modifiers="control" id="handyClicks-sets-keyApply" oncommand="handyClicksSets.savePrefs(true);" />
 	</keyset>
 	<popupset id="handyClicks-setsPopupset">
 		<popup id="handyClicks-setsTreeContext">
 			<menuitem command="handyClicks-sets-cmdEdit" key="handyClicks-sets-keyEdit" />
-			<menuitem command="handyClicks-sets-cmdEditType" key="handyClicks-sets-keyEditType" />
+			<menuitem id="handyClicks-sets-miEditType" command="handyClicks-sets-cmdEditType" key="handyClicks-sets-keyEditType" />
 			<menuitem command="handyClicks-sets-cmdDelete" key="handyClicks-sets-keyDelete" />
 			<menuseparator />
 			<menuitem command="handyClicks-sets-cmdAdd" key="handyClicks-sets-keyAdd" />

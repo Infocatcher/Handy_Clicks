@@ -255,7 +255,7 @@ var handyClicksPrefSvc = {
 		stream.close();
 	},
 	isOkShortcut: function(s) {
-		return this.okShortcut.test(s);
+		return s && this.okShortcut.test(s);
 	},
 	isOkFuncObj: function(fObj) {
 		return typeof fObj == "object"

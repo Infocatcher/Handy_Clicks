@@ -6,7 +6,7 @@
 <!ENTITY hc.sets.search "Search:">
 <!ENTITY hc.sets.cmdAdd "Add">
 <!ENTITY hc.sets.cmdEdit "Edit">
-<!ENTITY hc.sets.cmdEditType "Edit type">
+<!ENTITY hc.sets.cmdEditType "Edit custom type">
 <!ENTITY hc.sets.cmdDel "Delete">
 
 <!ENTITY hc.sets.clickPrefsTitle "Preferences">
