@@ -17,8 +17,10 @@ var handyClicksFuncs = {
 		var text = this.hc.itemType == "tabbar"
 			? this.forEachTab(function(tab) { return tab.label; }).join("\n")
 			: this.getTextOfItem();
-		this.copyStr(text);
-		this.hc.blinkNode();
+		if(text) {
+			this.copyStr(text);
+			this.hc.blinkNode();
+		}
 		if(hidePopup)
 			this.hideItemPopup();
 	},
@@ -26,8 +28,10 @@ var handyClicksFuncs = {
 		var link = this.hc.itemType == "tabbar"
 			? this.forEachTab(this.getTabUri).join("\n")
 			: this.getUriOfItem() || "";
-		this.copyStr(link);
-		this.hc.blinkNode();
+		if(link) {
+			this.copyStr(link);
+			this.hc.blinkNode();
+		}
 		if(hidePopup)
 			this.hideItemPopup();
 	},
@@ -35,10 +39,10 @@ var handyClicksFuncs = {
 		it = it || this.hc.item;
 		return it.textContent || it.label || it.alt || it.value || "";
 	},
-	getUriOfItem: function(it) {
+	getUriOfItem: function(it, itemType) {
 		it = it || this.hc.item;
 		var uri = null;
-		switch(this.hc.itemType) {
+		switch(itemType || this.hc.itemType) {
 			case "link":
 				uri = this.getLinkUri(it);
 			break;
@@ -51,6 +55,12 @@ var handyClicksFuncs = {
 			break;
 			case "tab":
 				uri = this.getTabUri(it);
+			break;
+			default: // Support for custom types
+				uri = this.getLinkUri(it)
+					|| it.src
+					|| this.getBookmarkUri(it)
+					|| this.getTabUri(it);
 		}
 		return uri;
 	},
@@ -65,7 +75,9 @@ var handyClicksFuncs = {
 		return !usePlacesURIs && /^place:/.test(uri) ? "" : uri;
 	},
 	getTabUri: function(tab) {
-		return tab.linkedBrowser.contentDocument.location.href;
+		return "linkedBrowser" in tab
+			? tab.linkedBrowser.contentDocument.location.href
+			: "";
 	},
 	forEachTab: function(fnc, tbr) {
 		tbr = tbr || this.getTabBrowser(true);
@@ -97,7 +109,7 @@ var handyClicksFuncs = {
 				return true;
 			}
 		}
-		return false
+		return false;
 	},
 	openUriInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, hidePopup, inWin) {
 		var tbr = this.getTabBrowser(true);
@@ -375,10 +387,10 @@ var handyClicksFuncs = {
 			this.getRefererForItem(refererPolicy), null, false
 		);
 		if(loadInBackground)
-			this.initRestoringOfZLevel(win);
+			this.initZLevelRestoring(win);
 		return win;
 	},
-	initRestoringOfZLevel: function(win) {
+	initZLevelRestoring: function(win) {
 		var pw = window;
 		var _this = this;
 		win.addEventListener(
@@ -655,6 +667,7 @@ var handyClicksFuncs = {
 			return;
 		}
 		var path, it, n, args, img;
+		var attrBase = this.tooltipAttrBase;
 		for(var i = 0; i < items.length; i++) {
 			it = items[i], n = 0;
 			path = it.__path;
@@ -664,15 +677,15 @@ var handyClicksFuncs = {
 				it.class = "menuitem-iconic";
 				img = (img && this.getRelativePath(img) || path);
 				it.image = "moz-icon:file://" + img;
-				it["hc_tooltip_" + n++] = path;
+				it[attrBase + n++] = path;
 				it.__path = path;
 			}
 			if(it.__args instanceof Array) {
 				args = it.__args;
 				for(var j = 0; j < args.length; j++)
-					it["hc_tooltip_" + n++] = args[j];
+					it[attrBase + n++] = args[j];
 			}
-			it["hc_tooltip_" + n++] = this.decodeUri(uri);
+			it[attrBase + n++] = this.decodeUri(uri);
 		}
 		var popup = this.showGeneratedPopup(items);
 		popup.setAttribute("oncommand", "handyClicksFuncs.openUriWithApp(event, this);");
@@ -794,7 +807,7 @@ var handyClicksFuncs = {
 			// default to true: if it were false, we wouldn't get this far
 			var warnOnClose = { value: true };
 			var bundle = tbr.mStringBundle;
-			var messageKey = this.hc.isFx(1)
+			var messageKey = this.hc.fxVersion == 1.5
 				? tabsToClose == 1 ? "tabs.closeWarningOne"    : "tabs.closeWarningMultiple"
 				: tabsToClose == 1 ? "tabs.closeWarningOneTab" : "tabs.closeWarningMultipleTabs";
 			var closeKey = tabsToClose == 1 ? "tabs.closeButtonOne" : "tabs.closeButtonMultiple";
@@ -890,8 +903,8 @@ var handyClicksFuncs = {
 			return;
 		var hasStyle = img.hasAttribute("style");
 		var origStyle = img.getAttribute("style");
-		var w = this.getComputedStyleOfItem(img, "width");
-		var h = this.getComputedStyleOfItem(img, "height");
+		var w = this.getStyle(img, "width");
+		var h = this.getStyle(img, "height");
 		img.style.width = w;
 		img.style.height = h;
 		// this.ut._log("reloadImg -> " + w + " x " + h);
@@ -915,7 +928,7 @@ var handyClicksFuncs = {
 			0
 		);
 	},
-	getComputedStyleOfItem: function(item, propName) {
+	getStyle: function(item, propName) {
 		item = item || this.hc.item;
 		return item.ownerDocument.defaultView.getComputedStyle(item, "")[propName];
 	},
@@ -996,10 +1009,12 @@ var handyClicksFuncs = {
 	showContextMenu: function(e) {
 		this.hc.showPopupOnItem();
 	},
+	tooltipAttrBase: "hc_tooltip_",
 	fillInTooltip: function(tooltip) {
 		var tNode = document.tooltipNode;
-		var attrName = "hc_tooltip_0";
+		var attrBase = this.tooltipAttrBase;
 		var i = 0, lbl;
+		var attrName = attrBase + i;
 		while(tNode.hasAttribute(attrName)) {
 			lbl = tooltip["_" + attrName];
 			if(!lbl) {
@@ -1010,7 +1025,7 @@ var handyClicksFuncs = {
 			}
 			lbl.setAttribute("value", tNode.getAttribute(attrName));
 			lbl.hidden = false;
-			attrName = "hc_tooltip_" + ++i;
+			attrName = attrBase + ++i;
 		}
 		return tNode.hasAttribute("hc_tooltip_0");
 	},

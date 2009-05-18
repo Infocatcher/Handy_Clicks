@@ -42,12 +42,11 @@ var handyClicks = {
 	},
 	get fxVersion() {
 		delete this.fxVersion;
-		return this.fxVersion = Components.classes["@mozilla.org/xre/app-info;1"]
+		return this.fxVersion = parseFloat( // 3.0 for "3.0.10"
+			Components.classes["@mozilla.org/xre/app-info;1"]
 			.getService(Components.interfaces.nsIXULAppInfo)
-			.version;
-	},
-	isFx: function(version) {
-		return this.fxVersion.indexOf(version + ".") == 0;
+			.version
+		);
 	},
 	get disabled() {
 		return !this.pu.pref("enabled");
@@ -247,7 +246,7 @@ var handyClicks = {
 				tabscope.hidePopup();
 		}
 
-		if(this.isFx(2) && popup.id == "contentAreaContextMenu") { // workaround for spellchecker bug
+		if(this.fxVersion == 2 && popup.id == "contentAreaContextMenu") { // workaround for spellchecker bug
 			this.flags.stopContextMenu = false;
 			this.flags.stopClick = true;
 
@@ -266,7 +265,7 @@ var handyClicks = {
 		}
 		document.popupNode = this.itemType == "tab" ? this.item : node;
 		var xy = this.getXY();
-		popup.showPopup(this.isFx(3) ? node : e.target, xy.x, xy.y, "popup", null, null);
+		popup.showPopup(this.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "popup", null, null);
 	},
 	blinkNode: function(time, node) {
 		node = node || this.origItem;
@@ -636,11 +635,9 @@ var handyClicks = {
 	},
 	getXY: function(e) {
 		e = e || this.mousemoveParams.event || this.copyOfEvent;
-		var isFx3 = this.isFx(3);
-		return {
-			x: isFx3 ? e.screenX : e.clientX,
-			y: isFx3 ? e.screenY : e.clientY
-		};
+		return this.fxVersion >= 3
+			? { x: e.screenX, y: e.screenY }
+			: { x: e.clientX, y: e.clientY };
 	},
 	handleEvent: function(e) {
 		switch(e.type) { //~ todo: see https://bugzilla.mozilla.org/show_bug.cgi?id=174320

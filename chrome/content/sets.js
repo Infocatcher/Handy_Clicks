@@ -76,7 +76,7 @@ var handyClicksSets = {
 		this.drawTree();
 	},
 	getButtonStr: function(str) {
-		return str.substr(0, 8).replace("=", "");
+		return /button=([0-2])/.test(str) ? "button" + RegExp.$1 : "?";
 	},
 	convertModifiersStr: function(str) {
 		str = str

@@ -19,7 +19,8 @@ var handyClicksPrefUtils = {
 		this.nsIPref.removeObserver(this.nPrefix, this);
 	},
 	handleEvent: function(e) {
-		this.destroy();
+		if(e.type == "unload")
+			this.destroy();
 	},
 
 	// Preferences observer:

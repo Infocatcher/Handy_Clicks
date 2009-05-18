@@ -24,7 +24,7 @@
 	oncommand="handyClicksSets.prefsChanged(event);"
 	onchange="handyClicksSets.prefsChanged(event);"
 	oninput="handyClicksSets.prefsChanged(event);"
-	width="690"
+	width="720"
 	height="520"
 	persist="width height screenX screenY">
 

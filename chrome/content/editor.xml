@@ -2,15 +2,12 @@
 <bindings id="handyClicks-bindings" xmlns="http://www.mozilla.org/xbl">
 	<binding id="codeEditor" extends="chrome://global/content/bindings/textbox.xml#textarea">
 		<implementation>
-			<field name="_editor">null</field>
-			<property name="editor" readonly="true"> <!-- Thanks to Custom Buttons! -->
-				<getter>
-					if(!this._editor)
-						this._editor = this.inputField
-							.QueryInterface(Components.interfaces.nsIDOMNSEditableElement).editor;
-					return this._editor;
-				</getter>
-			</property>
+			<constructor>
+				this.editor = this.inputField // Thanks to Custom Buttons!
+					.QueryInterface(Components.interfaces.nsIDOMNSEditableElement)
+					.editor;
+			</constructor>
+			<field name="editor">null</field>
 			<property name="newValue">
 				<setter>
 					this.value = val;

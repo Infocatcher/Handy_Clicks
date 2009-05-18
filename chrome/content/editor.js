@@ -26,7 +26,7 @@ var handyClicksEditor = {
 		var wa = window.arguments;
 		if(!wa[0] || !wa[1] || !window.opener)
 			return;
-		this.loadFuncsLabels();
+		this.loadLabels();
 		this.initShortcuts();
 		this.initUI();
 		this.loadCustomType(this.type);
@@ -45,9 +45,15 @@ var handyClicksEditor = {
 		this.target = wa[1];
 		this.type = wa[2];
 	},
-	loadFuncsLabels: function() {
-		var mp = this.$("hc-editor-funcPopup");
-		var mis = mp.getElementsByTagName("menuitem"), mi;
+	loadLabels: function() {
+		["hc-editor-button", "hc-editor-itemTypes", "hc-editor-funcPopup"].forEach(
+			this.localiseLabels,
+			this
+		);
+	},
+	localiseLabels: function(parentId) {
+		var p = this.$(parentId);
+		var mis = p.getElementsByTagName("menuitem"), mi;
 		for(var i = 0, len = mis.length; i < len; i++) {
 			mi = mis[i];
 			mi.setAttribute("label", this.ut.getLocalised(mi.getAttribute("label")));
@@ -79,7 +85,8 @@ var handyClicksEditor = {
 		return document.getElementById(id);
 	},
 	handleEvent: function(e) {
-		this.listScroll(e);
+		if(e.type == "DOMMouseScroll")
+			this.listScroll(e);
 	},
 	initShortcutEditor: function() {
 		var setsObj = handyClicksPrefs[this.target] || {};
