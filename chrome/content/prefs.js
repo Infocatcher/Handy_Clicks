@@ -19,7 +19,7 @@ var handyClicksPrefSvc = {
 			var dir = this.profileDir;
 			dir.append(this.prefsDirName);
 			if(!dir.exists()) {
-				try { dir.create(1, 0755); }
+				try { dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755); }
 				catch(e) { this.ut._err("[Handy Clicks]: Cannt create directory\n" + e); }
 			}
 			this._prefsDir = dir;
@@ -49,6 +49,7 @@ var handyClicksPrefSvc = {
 		}
 		catch(e) {
 			this.ut._err("[Handy Clicks]: Error in Handy Clicks prefs: bad js file\n" + e);
+			this.ut._throw(e);
 			this.loadSettingsBackup();
 			return;
 		}
@@ -111,8 +112,8 @@ var handyClicksPrefSvc = {
 					+ this.ut.getLocalised("openConsole"),
 					toErrorConsole
 				);
-				var msg = "[Handy Clicks]: Error in custom type " + type + "\n" + e;
-				this.ut._err(msg);
+				this.ut._err("[Handy Clicks]: Error in custom type " + type + "\n" + e);
+				this.ut._throw(e);
 			}
 		}
 	},

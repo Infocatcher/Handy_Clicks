@@ -24,6 +24,9 @@ var handyClicksUtils = {
 		this.consoleSvc.logStringMessage("[Handy Clicks]: " + msg + "\n");
 	},
 	_err: Components.utils.reportError,
+	_throw: function(err) {
+		setTimeout(function() { throw err; }, 0);
+	},
 
 	get pu() { return handyClicksPrefUtils; },
 	notify: function(nTitle, msg, fnc, extEnabled, inWindowCorner) {

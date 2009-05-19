@@ -549,7 +549,7 @@ var handyClicksSets = {
 	},
 	updateDependencies: function(it) {
 		var dis = it.hasAttribute("hc_disabledvalues")
-			? new RegExp("(^|\\s)" + it.value + "(\\s|$)").test(it.getAttribute("hc_disabledvalues"))
+			? new RegExp("(?:^|\\s)" + it.value + "(?:\\s|$)").test(it.getAttribute("hc_disabledvalues"))
 			: it.getAttribute("checked") != "true";
 		it.getAttribute("hc_requiredfor").split(/\s+/).forEach(
 			function(req) {

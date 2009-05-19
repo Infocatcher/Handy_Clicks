@@ -542,32 +542,41 @@ var handyClicksFuncs = {
 		return this.profileDir = this.ps.profileDir.path.replace(/[\\\/]$/, "");
 	},
 	getRelativePath: function(path) {
-		var pathArr = path.match(/^%profile%([\/\\])((?:\.\.[\/\\])*)(.*)$/);
-		if(pathArr) {
-			var pathBegin = this.profileDir + pathArr[1];
-			var pathEnd = pathArr[3];
-			if(pathArr[2]) {
-				var len = pathArr[2].match(/\.\.[\/\\]/g);
-				if(len && len.length) {
-					var pathBeginNew = pathBegin.replace(new RegExp("([^\\/\\\\]+[\\/\\\\]){" + len.length + "}$"), "");
-					if(pathBeginNew == pathBegin) {
-						this.ut._err("[Handy Clicks]: invalid relative path:\n" + patch);
-						return null;
-					}
-					else
-						pathBegin = pathBeginNew;
-				}
-			}
-			return pathBegin + pathEnd;
-		}
-		else
+		// Example:
+		//   %profile%\..\..\..\OperaUSB\op.com
+		// for
+		//   x:\FirefoxPortable\Data\profile\
+		//   x:\OperaUSB\op.com
+		if(!/^%profile%([\/\\])((?:\.\.[\/\\])*)(.*)$/.test(path))
 			return path;
+		var pathStart = this.profileDir + RegExp.$1;
+		var dirUp = RegExp.$2;
+		var pathEnd = RegExp.$3;
+		var _path = pathStart;
+		var upCount = dirUp && dirUp.match(/\.\.[\/\\]/g).length;
+		if(upCount) {
+			_path = pathStart.replace(new RegExp("(?:[^\\/\\\\]+[\\/\\\\]){" + upCount + "}$"), "");
+			if(!_path || _path == pathStart) {
+				this.ut._err("[Handy Clicks]: Invalid relative path:\n" + path);
+				return null;
+			}
+		}
+		return _path + pathEnd;
 	},
 	startProcess: function(path, args) {
 		args = args || [];
 		var file = Components.classes["@mozilla.org/file/local;1"]
 			.createInstance(Components.interfaces.nsILocalFile);
-		file.initWithPath(path);
+		try { file.initWithPath(path); }
+		catch(e) { // E.g. this can be invalid relative path
+			this.ut.notify(
+				this.ut.getLocalised("errorTitle"),
+				this.ut.getLocalised("invalidFilePath").replace("%p", path)
+				+ this.ut.getLocalised("openConsole"),
+				toErrorConsole
+			);
+			throw e;
+		}
 		if(!file.exists()) {
 			this.ut.alertEx(
 				this.ut.getLocalised("errorTitle"),
@@ -578,9 +587,7 @@ var handyClicksFuncs = {
 		var process = Components.classes["@mozilla.org/process/util;1"]
 			.getService(Components.interfaces.nsIProcess);
 		process.init(file);
-		try {
-			process.run(false, args, args.length);
-		}
+		try { process.run(false, args, args.length); }
 		catch(e) {
 			this.ut.alertEx(
 				this.ut.getLocalised("errorTitle"),

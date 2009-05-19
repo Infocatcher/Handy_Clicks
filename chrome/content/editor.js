@@ -4,6 +4,7 @@ var handyClicksEditor = {
 	ps: handyClicksPrefSvc,
 	types: {
 		checkboxes: {
+			__proto__: null,
 			skipCache: 1,
 			loadInBackground: 1,
 			loadJSInBackground: 1,
@@ -11,6 +12,7 @@ var handyClicksEditor = {
 			toNewWin: 1
 		},
 		menulists: {
+			__proto__: null,
 			refererPolicy: [-1, 0, /*1,*/ 2],
 			moveTabTo: ["null", "first", "before", "after", "last", "relative"],
 			moveWinTo: ["null", "top", "right", "bottom", "left", "sub"],
@@ -98,13 +100,12 @@ var handyClicksEditor = {
 			this.cLabel.value = decodeURIComponent(setsObj.label);
 		}
 		this.initFuncsList(isCustom, setsObj.action || null);
-
 		if(/(?:^|,)button=(\d)(?:,|$)/.test(this.target))
 			this.$("hc-editor-button").value = RegExp.$1;
 		["ctrl", "shift", "alt", "meta"].forEach(
 			function(mdf) {
 				this.$("hc-editor-" + mdf).checked
-					= new RegExp("(^|,)" + mdf + "=true(,|$)").test(this.target);
+					= new RegExp("(?:^|,)" + mdf + "=true(?:,|$)").test(this.target);
 			},
 			this
 		);
@@ -140,7 +141,7 @@ var handyClicksEditor = {
 		if(!cType || !cts.hasOwnProperty(cType))
 			return;
 		var ct = cts[cType] || {};
-		cList.value = decodeURIComponent(ct.label || ""); //~ todo: test!
+		cList.value = decodeURIComponent(ct.label || "");
 		this.$("hc-editor-customTypeExtId").value = cType.replace(/^custom_/, "");
 		enabledElt.checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
 		this.$("hc-editor-customTypeDefine").newValue = decodeURIComponent(ct.define || "");
@@ -219,7 +220,7 @@ var handyClicksEditor = {
 			: action;
 		if(!fList.value) // fix for Firefox 2.0
 			fList.selectedIndex = -1;
-		var re = new RegExp("(^|[\\s,]+)" + this.type + "([\\s,]+|$)|^\\$all$");
+		var re = new RegExp("(?:^|[\\s,;]+)" + this.type + "(?:[\\s,;]+|$)|^\\$all$");
 		var mp = this.$("hc-editor-funcPopup");
 		var its = mp.childNodes;
 		var it, req;
@@ -270,7 +271,7 @@ var handyClicksEditor = {
 			ignoreLinks.checked = typeof setsObj.ignoreLinks == "boolean" ? setsObj.ignoreLinks : false;
 		}
 	},
-	addFuncArgs: function() { //~ todo: cache
+	addFuncArgs: function() {
 		var box = this.$("hc-editor-funcArgs");
 		while(box.hasChildNodes())
 			box.removeChild(box.lastChild);
@@ -293,7 +294,7 @@ var handyClicksEditor = {
 	},
 	addArgControls: function(arg) {
 		var setsObj = handyClicksPrefs[this.target];
-		setsObj = typeof setsObj == "object" //~ todo: isOkFuncObj
+		setsObj = typeof setsObj == "object" //~ todo: isOkFuncObj ?
 			? setsObj[this.type] || {}
 			: {};
 		var cArgVal = (setsObj.arguments || {})[arg];
@@ -305,7 +306,7 @@ var handyClicksEditor = {
 			return "checkbox";
 		if(arg in this.types.menulists)
 			return "menulist";
-		return this.ut._err("Cannt get type of " + arg);
+		return this.ut._err("Can't get type of " + arg);
 	},
 	addControl: function(argName, argType, argVal) {
 		var argContainer = document.createElement("hbox");
@@ -328,7 +329,6 @@ var handyClicksEditor = {
 				var mi;
 				for(var i = 0, len = vals.length; i < len; i++) {
 					mi = document.createElement("menuitem");
-					// mi.value = vals[i];
 					mi.setAttribute("value", vals[i]);
 					mi.setAttribute("label", this.ut.getLocalised(argName + "[" + vals[i] + "]"));
 					mp.appendChild(mi);
@@ -432,7 +432,6 @@ var handyClicksEditor = {
 				args[aIt.getAttribute("hc_argname")] = aVal;
 			}
 		}
-		// alert( uneval( handyClicksPrefs[sh] ) );
 		this.ps.saveSettingsObjects(applyFlag);
 		this.toggleApply(true);
 		return true;

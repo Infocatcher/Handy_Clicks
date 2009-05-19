@@ -98,7 +98,7 @@ var handyClicks = {
 							+ "\nLabel: " + decodeURIComponent(ct.label || "")
 							+ "\nCode:\n" + decodeURIComponent(ct.contextMenu || "")
 						);
-						throw e;
+						this.ut._throw(e);
 					}
 				}
 				else
@@ -339,8 +339,8 @@ var handyClicks = {
 						+ "\n" + this.ut.getLocalised("label") + " " + decodeURIComponent(ct.label || "");
 					errors.push(eId + "\n" + this.ut.getLocalised("details") + "\n" + e);
 					var _err = this.ut._err;
-					var _msg = "[Handy Clicks]: "
-						+ this.ut.getLocalised("customTypeDefineError").replace("%e", eId);
+					var _msg = "[Handy Clicks]: " + this.ut.getLocalised("customTypeDefineError")
+						.replace("%e", eId);
 					setTimeout(function() { _err(_msg); throw e; }, 0);
 				}
 				if(!cItem)
@@ -592,15 +592,15 @@ var handyClicks = {
 				new Function("event,item,origItem", action).apply(this.fn, args);
 			}
 			catch(e) {
+				var eMsg = this.ut.getLocalised("customFunctionError")
+					.replace("%f", label)
+					.replace("%e", e);
 				this.ut.notify(
 					this.ut.getLocalised("errorTitle"),
-					this.ut.getLocalised("customFunctionError")
-						.replace("%f", label)
-						.replace("%e", e)
-					+ this.ut.getLocalised("openConsole"),
+					eMsg + this.ut.getLocalised("openConsole"),
 					toErrorConsole
 				);
-				this.ut._err("[Handy Clicks]: Error in custom function " + label + ":\n" + action);
+				this.ut._err("[Handy Clicks]: " + eMsg);
 				throw e;
 			}
 		}
