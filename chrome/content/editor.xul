@@ -16,7 +16,7 @@
 	title="&hc.editor.title;"
 	buttons="accept, cancel, extra1, extra2"
 	buttonlabelextra1="&hc.sets.apply;"
-	buttonlabelextra2="Delete"
+	buttonlabelextra2="&hc.editor.delete;"
 	onload="handyClicksEditor.init();"
 	ondialogaccept="return handyClicksEditor.saveSettings();"
 	ondialogextra1="handyClicksEditor.saveSettings(true);"

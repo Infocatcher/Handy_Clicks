@@ -37,7 +37,12 @@ var handyClicksFuncs = {
 	},
 	getTextOfItem: function(it) {
 		it = it || this.hc.item;
-		return it.textContent || it.label || it.alt || it.value || "";
+		return it.textContent || it.label || it.alt || it.value
+			|| (
+				it.getAttribute
+				&& (it.getAttribute("label") || it.getAttribute("value"))
+			)
+			|| "";
 	},
 	getUriOfItem: function(it, itemType) {
 		it = it || this.hc.item;
@@ -79,13 +84,12 @@ var handyClicksFuncs = {
 			? tab.linkedBrowser.contentDocument.location.href
 			: "";
 	},
-	forEachTab: function(fnc, tbr) {
-		tbr = tbr || this.getTabBrowser(true);
-		var res = [];
-		var tabs = tbr.mTabContainer.childNodes;
-		for(var i = 0, len = tabs.length; i < len; i++)
-			res.push(fnc(tabs[i]));
-		return res;
+	forEachTab: function(fnc, _this, tbr) {
+		return Array.prototype.map.call(
+			tbr || this.getTabBrowser(true),
+			fnc,
+			_this || this
+		);
 	},
 	copyStr: function(str) {
 		Components.classes["@mozilla.org/widget/clipboardhelper;1"]
@@ -754,7 +758,7 @@ var handyClicksFuncs = {
 	},
 	fixTab: function(tab) {
 		tab = tab || this.hc.item;
-		if(!tab || !/^(?:\w+:)?tab$/.test(tab.nodeName)) // <tab> or <namespace:tab>
+		if(!tab || tab.localName != "tab")
 			tab = this.getTabBrowser().mCurrentTab;
 		return tab;
 	},

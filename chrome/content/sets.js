@@ -239,6 +239,8 @@ var handyClicksSets = {
 			this.openEditorWindow(null);
 	},
 	editItems: function(e) {
+		if(e && e.originalTarget.localName != "treechildren") //~ todo: test in fx < 3.0
+			return;
 		if(e && !this.isClickOnRow(e)) {
 			this.addItems();
 			return;

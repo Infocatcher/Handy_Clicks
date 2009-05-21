@@ -3,6 +3,14 @@
 <!ENTITY hc.sets.apply "Применить">
 
 <!ENTITY hc.sets.clickOptionsTitle "Настройки кликов">
+
+<!ENTITY hc.sets.columnShortcutAndTarget "Кнопки мыши и цель">
+<!ENTITY hc.sets.columnEvent "Событие">
+<!ENTITY hc.sets.columnAction "Действие">
+<!ENTITY hc.sets.columnFunction "Функция">
+<!ENTITY hc.sets.columnArguments "Аргументы">
+<!ENTITY hc.sets.columnEnabled "Включено">
+
 <!ENTITY hc.sets.search "Найти:">
 <!ENTITY hc.sets.cmdAdd "Добавить">
 <!ENTITY hc.sets.cmdEdit "Редактировать">
@@ -13,3 +21,5 @@
 
 <!-- Editor -->
 <!ENTITY hc.editor.title "Handy Clicks: редактор">
+
+<!ENTITY hc.editor.delete "Удалить">

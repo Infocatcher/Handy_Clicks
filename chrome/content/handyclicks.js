@@ -104,6 +104,11 @@ var handyClicks = {
 				else
 					cm = this.getContextMenu();
 		}
+		if(cm && typeof cm.hidePopup != "function") {
+			// Try open XUL document with custom context in tab...
+			this.ut._err("[Handy Clicks]: Strange error: context menu has no hidePopup method\n" + cm.id);
+			cm = null;
+		}
 		this._cMenu = cm; // cache
 		return cm;
 	},
@@ -112,18 +117,67 @@ var handyClicks = {
 		if(!node)
 			return null;
 		var id = null;
-		if(this.ut.isNoChromeDoc(node.ownerDocument))
-			id = "contentAreaContextMenu";
-		else {
-			while(node) {
+		var doc = document;
+		var isNoChrome = this.ut.isNoChromeDoc(node.ownerDocument);
+		if(!isNoChrome || node.namespaceURI == this.XULNS) {
+			var docNode = Node.DOCUMENT_NODE; // 9
+			while(node && node.nodeType != docNode) {
 				if(node.hasAttribute("context")) {
 					id = node.getAttribute("context");
+					doc = node.ownerDocument;
 					break;
 				}
 				node = node.parentNode;
 			}
 		}
-		return id ? document.getElementById(id) : null;
+		if(!id) {
+			//id = "contentAreaContextMenu";
+			var brObj = this.getBrowserForNode(node);
+			if(brObj) {
+				id = this.getContextOfNode(brObj.browser);
+				doc = brObj.document;
+			}
+		}
+
+		this.ut._log("getContextMenu -> " + id + " -> " + (doc && id && doc.getElementById(id)));
+		return id ? doc.getElementById(id) : null;
+	},
+	getBrowserForNode: function(node) {
+		return this.getBrowserForWindow(node.ownerDocument.defaultView.top); // Frames!
+	},
+	getBrowserForWindow: function(targetWin, doc) {
+		doc = doc || document;
+		var br;
+		["tabbrowser", "browser", "iframe"].some(
+			function(tag) {
+				var browsers = doc.getElementsByTagNameNS(this.XULNS, tag);
+				var win, brObj;
+				for(var i = 0, len = browsers.length; i < len; i++) {
+					win = browsers[i].contentWindow;
+					if(win == targetWin) {
+						br = browsers[i];
+						break;
+					}
+					if(!this.ut.isNoChromeWin(win)) {
+						brObj = this.getBrowserForWindow(targetWin, win.document);
+						if(brObj) {
+							br = brObj.browser
+							break;
+						}
+					}
+				}
+				return br;
+			},
+			this
+		);
+		return br
+			? { browser: br, document: doc }
+			: null;
+	},
+	getContextOfNode: function(node) {
+		return node.getAttribute("contentcontextmenu")
+			|| node.getAttribute("contextmenu")
+			|| node.getAttribute("context");
 	},
 	disallowMousemove: function(but) {
 		return !this.hasMousemoveHandler
@@ -143,7 +197,7 @@ var handyClicks = {
 		if(!funcObj)
 			return;
 
-		if(this._cMenu)
+		if(this._cMenu && typeof this._cMenu.hidePopup == "function")
 			this._cMenu.hidePopup();
 
 		// Experimental:
@@ -317,10 +371,10 @@ var handyClicks = {
 
 		var it = e.originalTarget;
 		this.origItem = it;
-		var itnn = it.nodeName.toLowerCase();
+		var itln = it.localName.toLowerCase();
+		var _it;
 
 		// Custom:
-		var cItem;
 		var cts = handyClicksCustomTypes, ct;
 		var errors = [];
 		for(var type in cts) {
@@ -332,7 +386,7 @@ var handyClicks = {
 				&& this.isOkCustomType(type)
 			) {
 				try {
-					cItem = ct._define.call(this, e, it);
+					_it = ct._define.call(this, e, it);
 				}
 				catch(e) {
 					var eId = this.ut.getLocalised("id") + " " + type
@@ -343,10 +397,10 @@ var handyClicks = {
 						.replace("%e", eId);
 					setTimeout(function() { _err(_msg); throw e; }, 0);
 				}
-				if(!cItem)
+				if(!_it)
 					continue;
 				this.itemType = type;
-				this.item = cItem;
+				this.item = _it;
 				return;
 			}
 		}
@@ -360,11 +414,13 @@ var handyClicks = {
 			);
 		}
 
+		var docNode = Node.DOCUMENT_NODE; // 9
+
 		// img:
 		if(
 			(all || this.itemTypeInSets(sets, "img"))
-			&& (itnn == "img" || itnn == "image") && (it.src || it.hasAttribute("src"))
-			&& this.ut.isNoChromeDoc(it.ownerDocument) // not for interface...
+			&& (itln == "img" || itln == "image") && (it.src || it.hasAttribute("src"))
+			&& this.ut.isNoChromeDoc(it.ownerDocument) // Not for interface...
 		) {
 			this.itemType = "img";
 			this.item = it;
@@ -374,20 +430,22 @@ var handyClicks = {
 
 		// Link:
 		if(all || this.itemTypeInSets(sets, "link")) {
-			var a = it;
-			while(a) {
+			_it = it;
+			while(_it && _it.nodeType != docNode) {
+				if(!_it.localName)
+					alert(_it.nodeName);
 				if(
-					(a.nodeName.toLowerCase() == "a" && a.href)
+					(_it.localName.toLowerCase() == "a" && _it.href)
 					|| (
-						a.nodeType == Node.ELEMENT_NODE
-						&& a.hasAttributeNS("http://www.w3.org/1999/xlink", "href")
+						_it.nodeType == Node.ELEMENT_NODE
+						&& _it.hasAttributeNS("http://www.w3.org/1999/xlink", "href")
 					)
 				) {
 					this.itemType = "link";
-					this.item = a;
+					this.item = _it;
 					return;
 				}
-				a = a.parentNode;
+				_it = _it.parentNode;
 			}
 		}
 
@@ -411,10 +469,10 @@ var handyClicks = {
 			&& it.type != "menu"
 			&& (
 				(
-					/(^|\s)bookmark-item(\s|$)/.test(it.className)
-					&& (itnn == "toolbarbutton" || itnn == "menuitem")
+					/(?:^|\s)bookmark-item(?:\s|$)/.test(it.className)
+					&& (itln == "toolbarbutton" || itln == "menuitem")
 				)
-				|| (itnn == "menuitem" && (it.hasAttribute("siteURI")))
+				|| (itln == "menuitem" && (it.hasAttribute("siteURI")))
 			)
 			// && it.parentNode.id != "historyUndoPopup"
 			// && it.parentNode.id != "goPopup"
@@ -432,21 +490,20 @@ var handyClicks = {
 			&& it.namespaceURI == this.XULNS
 			&& it.getAttribute("anonid") != "close-button"
 		) {
-			var tab = it, tnn = itnn;
-			while(tnn != "#document" && tnn != "tab" && tnn != "xul:tab") {
-				tab = tab.parentNode;
-				tnn = tab.nodeName.toLowerCase();
-			}
-			if(
-				(tnn == "tab" || tnn == "xul:tab")
-				&& (
-					/(^|\s)tabbrowser-tab(\s|$)/.test(tab.className)
-					|| /(^|\s)tabbrowser-tabs(\s|$)/.test(tab.parentNode.className) // >1 tabs in Firefox 1.5
-				)
-			) {
-				this.itemType = "tab";
-				this.item = tab;
-				return;
+			_it = it;
+			while(_it && _it.nodeType != docNode) {
+				if(
+					_it.localName.toLowerCase() == "tab"
+					&& (
+						/(?:^|\s)tabbrowser-tab(?:\s|$)/.test(_it.className)
+						|| /(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(_it.parentNode.className) // >1 tabs in Firefox 1.5
+					)
+				) {
+					this.itemType = "tab";
+					this.item = _it;
+					return;
+				}
+				_it = _it.parentNode;
 			}
 		}
 
@@ -457,35 +514,34 @@ var handyClicks = {
 			&& it.className != "tabs-alltabs-button"
 			&& it.getAttribute("anonid") != "close-button"
 		) {
-			var tb = it, tbnn = itnn, tbc = tb.className;
-			var tbre = /(^|\s)tabbrowser-tabs(\s|$)/;
-			while(tb && !tbre.test(tbc) && tbnn != "tab" && tbnn != "xul:tab") {
-				tb = tb.parentNode;
-				tbnn = tb.nodeName.toLowerCase();
-				tbc = tb.className;
-			}
-			if(tbre.test(tbc)) {
-				this.itemType = "tabbar";
-				this.item = tb;
-				return;
+			_it = it;
+			while(_it && _it.nodeType != docNode && _it.localName.toLowerCase() != "tab") {
+				if(
+					/(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(_it.className)
+				) {
+					this.itemType = "tabbar";
+					this.item = _it;
+					return;
+				}
+				_it = _it.parentNode;
 			}
 		}
 
 		// Submit button:
 		if(all || this.itemTypeInSets(sets, "submitButton")) {
-			if(itnn == "input" && it.type == "submit") {
+			if(itln == "input" && it.type == "submit") {
 				this.itemType = "submitButton";
 				this.item = it;
 				return;
 			}
-			var but = it, bnn = itnn;
-			while(but) {
-				if(but.nodeName.toLowerCase() == "button") {
+			_it = it;
+			while(_it && _it.nodeType != docNode) {
+				if(_it.localName.toLowerCase() == "button") {
 					this.itemType = "submitButton";
-					this.item = it;
+					this.item = _it;
 					return;
 				}
-				but = but.parentNode;
+				_it = _it.parentNode;
 			}
 		}
 	},
@@ -620,7 +676,7 @@ var handyClicks = {
 
 		this.ut._log(
 			e.type + " => runFunc -> " + this.origItem + "\n"
-			+ "nodeName -> " + this.origItem.nodeName + "\n"
+			+ "localName -> " + this.origItem.localName + "\n"
 			+ "itemType -> " + this.itemType + "\n"
 			+ "=> " + (funcObj.custom ? action : funcObj.action)
 		);

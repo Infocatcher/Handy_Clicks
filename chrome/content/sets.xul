@@ -47,17 +47,17 @@
 				onselect="handyClicksSets.updButtons();"
 				ondblclick="handyClicksSets.editItems(event);">
 				<treecols>
-					<treecol flex="1" label="Shortcut and target" primary="true" persist="width ordinal" />
+					<treecol flex="1" label="&hc.sets.columnShortcutAndTarget;" primary="true" persist="width ordinal" />
 					<splitter class="tree-splitter" />
-					<treecol flex="1" label="Event" persist="hidden width ordinal" />
+					<treecol flex="1" label="&hc.sets.columnEvent;" persist="hidden width ordinal" />
 					<splitter class="tree-splitter" />
-					<treecol flex="1" label="Action" persist="hidden width ordinal" />
+					<treecol flex="1" label="&hc.sets.columnAction;" persist="hidden width ordinal" />
 					<splitter class="tree-splitter" />
-					<treecol flex="1" label="Function" persist="hidden width ordinal" />
+					<treecol flex="1" label="&hc.sets.columnFunction;" persist="hidden width ordinal" />
 					<splitter class="tree-splitter" />
-					<treecol flex="1" label="Arguments" persist="hidden width ordinal" />
+					<treecol flex="1" label="&hc.sets.columnArguments;" persist="hidden width ordinal" />
 					<splitter class="tree-splitter" />
-					<treecol label="Enabled" type="checkbox" width="18" persist="hidden width ordinal" />
+					<treecol label="&hc.sets.columnEnabled;" type="checkbox" width="18" persist="hidden width ordinal" />
 				</treecols>
 				<treechildren id="handyClicks-setsTreeContent" />
 			</tree>

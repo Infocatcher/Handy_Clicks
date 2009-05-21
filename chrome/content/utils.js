@@ -91,8 +91,11 @@ var handyClicksUtils = {
 		return this._strings[name];
 	},
 
-	isNoChromeDoc: function(doc) { // Except items in chrome window
+	isNoChromeWin: function(win) {
+		return win.toString().indexOf("[object Window]") > -1; // [object XPCNativeWrapper [object Window]]
+	},
+	isNoChromeDoc: function(doc) {
 		doc = doc || handyClicks.item.ownerDocument;
-		return doc.defaultView.toString().indexOf("[object Window]") > -1; // [object XPCNativeWrapper [object Window]]
+		return this.isNoChromeWin(doc.defaultView);
 	}
 };
