@@ -120,7 +120,6 @@ var handyClicksPrefSvc = {
 	saveSettingsObjects: function(reloadAll) {
  		var res = this.warnComment;
 		var shortcutObj, itemTypeObj, propVal;
-		var forceDis = { __proto__: null };
 
 		res += "var handyClicksCustomTypes = {\n";
 		this.sortObj(handyClicksCustomTypes);
@@ -136,8 +135,6 @@ var handyClicksPrefSvc = {
 					continue;
 				propVal = itemTypeObj[propName];
 				res += "\t\t" + propName + ": " + this.objToSource(propVal) + ",\n";
-				if(propName == "enabled" && propVal == false)
-					forceDis[itemType] = true;
 			}
 			res = this.delLastComma(res) + "\t},\n";
 		}
@@ -161,8 +158,6 @@ var handyClicksPrefSvc = {
 					if(!itemTypeObj.hasOwnProperty(propName))
 						continue;
 					propVal = itemTypeObj[propName];
-					if(propName == "enabled" && itemType in forceDis)
-						propVal = false;
 					res += "\t\t\t" + this.fixPropName(propName) + ": " + this.objToSource(propVal) + ",\n";
 				}
 				res = this.delLastComma(res) + "\t\t},\n";

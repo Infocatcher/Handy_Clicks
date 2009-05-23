@@ -33,7 +33,7 @@ var handyClicksEditor = {
 		this.initUI();
 		this.loadCustomType(this.type);
 		this.mBox.selectedIndex = this.tabs[this.mode];
-		this.ps.addPrefsObserver(this.initUI, this);
+		//this.ps.addPrefsObserver(this.initUI, this);
 		window.addEventListener("DOMMouseScroll", this, true);
 		this.toggleApply(true);
 	},
@@ -371,9 +371,9 @@ var handyClicksEditor = {
 		this.alloyApply(e);
 	},
 
-	saveSettings: function(applyFlag) {
+	saveSettings: function() {
 		switch(this.mBox.selectedIndex) {
-			case 0:  return this.saveShortcut(applyFlag);
+			case 0:  return this.saveShortcut();
 			case 1:  return this.saveCustomType();
 			default: return false;
 		}
@@ -385,7 +385,7 @@ var handyClicksEditor = {
 			default: return false;
 		}
 	},
-	saveShortcut: function(applyFlag) {
+	saveShortcut: function() {
 		var sh = this.currentShortcut;
 		var type = this.currentType;
 		var evt = this.$("hc-editor-events").value || null;
@@ -398,10 +398,33 @@ var handyClicksEditor = {
 			);
 			return false;
 		}
+
+		var disOther = enabled && type == "$all";
+		if(
+			disOther
+			&& !this.getProperty(sh, "$all", "enabled")
+			&& !this.ut.confirmEx(
+				this.ut.getLocalised("warningTitle"),
+				this.ut.getLocalised("$allWarning")
+			)
+		)
+			return false;
 		var p = handyClicksPrefs;
-		if(!p.hasOwnProperty(sh))
+		if(!p.hasOwnProperty(sh) || typeof p[sh] != "object")
 			p[sh] = {};
 		var po = p[sh];
+
+		if(disOther) { // Disable all other types for this shortcut (not real needed, but good for user)
+			var _type, to;
+			for(_type in po) {
+				if(!po.hasOwnProperty(_type) || _type == "$all")
+					continue;
+				to = po[_type];
+				if(typeof to == "object")
+					to.enabled = false;
+			}
+		}
+
 		po[type] = {}; // rewrite
 		var so = po[type];
 		so.enabled = enabled;
@@ -432,9 +455,22 @@ var handyClicksEditor = {
 				args[aIt.getAttribute("hc_argname")] = aVal;
 			}
 		}
-		this.ps.saveSettingsObjects(applyFlag);
+		this.ps.saveSettingsObjects();
 		this.toggleApply(true);
 		return true;
+	},
+	getProperty: function(sh, type, pName) {
+		var p = handyClicksPrefs;
+		var u = undefined;
+		if(!p.hasOwnProperty(sh))
+			return u;
+		var so = p[sh];
+		if(typeof so != "object" || !so.hasOwnProperty(type))
+			return u;
+		var to = so[type];
+		if(typeof to != "object" || !to.hasOwnProperty(pName))
+			return u;
+		return to[pName];
 	},
 	deleteShortcut: function() {
 		delete handyClicksPrefs[this.currentShortcut];
@@ -467,6 +503,26 @@ var handyClicksEditor = {
 			)
 		)
 			return false;
+
+		if(!newEnabl) { // Disable all settings with this disabled custom type (not real needed, but good for user)
+			var p = handyClicksPrefs;
+			var sh, so, type, to;
+			for(sh in p) {
+				if(!p.hasOwnProperty(sh))
+					continue;
+				so = p[sh];
+				if(typeof so != "object")
+					continue;
+				for(type in so) {
+					if(!so.hasOwnProperty(type) || type != cType)
+						continue;
+					to = so[type];
+					if(typeof to == "object")
+						to.enabled = false;
+				}
+			}
+		}
+
 		cts[cType] = {};
 		ct = cts[cType];
 		ct.enabled = newEnabl;
@@ -474,13 +530,13 @@ var handyClicksEditor = {
 		ct.label = encodeURIComponent(label);
 		ct.define = encodeURIComponent(def);
 		ct.contextMenu = cMenu ? encodeURIComponent(cMenu) : null;
-		this.ps.saveSettingsObjects(true);
+		this.ps.saveSettingsObjects();
 		this.toggleApply(true);
 		return true;
 	},
 	deleteCustomType: function() {
 		delete handyClicksCustomTypes["custom_" + this.$("hc-editor-customTypeExtId").value];
-		this.ps.saveSettingsObjects(true);
+		this.ps.saveSettingsObjects();
 		this.toggleApply(true);
 	},
 	listScroll: function(e) {

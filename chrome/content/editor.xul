@@ -19,7 +19,7 @@
 	buttonlabelextra2="&hc.editor.delete;"
 	onload="handyClicksEditor.init();"
 	ondialogaccept="return handyClicksEditor.saveSettings();"
-	ondialogextra1="handyClicksEditor.saveSettings(true);"
+	ondialogextra1="handyClicksEditor.saveSettings();"
 	ondialogextra2="handyClicksEditor.deleteSettings();"
 	onchange="handyClicksEditor.alloyApply(event);"
 	oncommand="handyClicksEditor.alloyApply(event);"
