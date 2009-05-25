@@ -16,6 +16,12 @@ var handyClicksSets = {
 		this.pu.addPrefsObserver(this.updPrefsUI, this);
 		// <preferences ononchange="handyClicksSets.updPrefsUI();"> return some bugs
 
+		if(this.ut.fxVersion >= 3.5) {
+			var s = this.$("handyClicks-setsTreeSearch");
+			s.type = "search";
+			s._clearSearch = function() { this.value = ""; this.oninput(); };
+		}
+
 		this.instantApply = this.pu.getPref("browser.preferences.instantApply");
 		if(this.instantApply)
 			this.applyButton.hidden = true;
@@ -168,18 +174,22 @@ var handyClicksSets = {
 		var tbo = this.tree.treeBoxObject;
 		var fvr = tbo.getFirstVisibleRow();
 		var numRanges = this.selection.getRangeCount();
-		var selRow;
-		if(numRanges > 0) {
-			var start = {}, end = {};
-			this.selection.getRangeAt(0, start, end);
-			selRow = start.value;
+		var selRows = [];
+		var start = {}, end = {};
+		for(var i = 0; i < numRanges; i++) {
+			this.selection.getRangeAt(i, start, end);
+			selRows.push([start.value, end.value]);
 		}
 
 		this.redrawTree();
 		this.updButtons();
 
-		if(typeof selRow == "number")
-			this.selection.select(selRow);
+		selRows.forEach(
+			function(range) {
+				this.selection.rangedSelect(range[0], range[1], true);
+			},
+			this
+		);
 		if(typeof fvr == "number")
 			tbo.scrollToRow(fvr);
 		this.searchInSetsTree(null, true);
@@ -349,6 +359,7 @@ var handyClicksSets = {
 	},
 	toggleEnabled: function(e) {
 		var rowIndx, column, tRow;
+		var changed = true;
 		if(e) {
 			var row = {}, col = {}, obj = {};
 			this.tree.treeBoxObject.getCellAt(e.clientX, e.clientY, row, col, obj);
@@ -356,33 +367,42 @@ var handyClicksSets = {
 				return;
 			rowIndx = row.value;
 			column = col.value;
+			changed = this.toggleRowEnabled(rowIndx, column, tRow);
 		}
 		else { // Space button pressed
 			var fi = document.commandDispatcher.focusedElement;
-			if(fi && fi.nodeName != "tree")
+			if(fi && fi.localName != "tree")
 				return;
 			var rows = this.selectedRows;
-			if(rows.length != 1)
+			if(!rows.length)
 				return;
-			tRow = rows[0];
-			rowIndx = tRow.__index;
 			var columns = this.tree.columns;
 			column = columns[columns.length - 1];
+			rows.forEach(
+				function(tRow) {
+					this.toggleRowEnabled(tRow.__index, column, tRow);
+				},
+				this
+			);
 		}
+		if(!changed)
+			return;
+		if(this.instantApply)
+			this.ps.saveSettingsObjects(true);
+		else
+			this.toggleApply(false);
+	},
+	toggleRowEnabled: function(rowIndx, column, tRow) {
 		var checked = this.view.getCellValue(rowIndx, column);
 		if(!checked) // real checked is "true" or "false"
-			return;
+			return false;
 		var enabled = checked != "true";
 		tRow = tRow || this.content.getElementsByTagName("treerow")[rowIndx];
 		this.addProperties(tRow, { disabled: !enabled });
 		var tCell = tRow.getElementsByTagName("treecell")[column.index];
 		tCell.setAttribute("value", enabled);
-
 		handyClicksPrefs[tRow.__shortcut][tRow.__itemType].enabled = enabled;
-		if(this.instantApply)
-			this.ps.saveSettingsObjects(true);
-		else
-			this.toggleApply(false);
+		return true;
 	},
 	selectAll: function() {
 		if(this.isTreePaneSelected)
@@ -390,6 +410,9 @@ var handyClicksSets = {
 	},
 
 	/*** Search in tree ***/
+	_focusSearch: function() { // For Firefox 3.5pre
+		setTimeout(function(_this) { _this.focusSearch(); }, 50, this);
+	},
 	focusSearch: function(e) {
 		if(!this.isTreePaneSelected)
 			return;
@@ -534,15 +557,15 @@ var handyClicksSets = {
 	},
 	prefsChanged: function(e) {
 		var tar = e.target;
-		if(tar.nodeName == "prefwindow") {
+		if(tar.localName == "prefwindow") {
 			this.focusSearch(e);
 			return;
 		}
-		if(tar.nodeName == "menuitem")
+		if(tar.localName == "menuitem")
 			tar = tar.parentNode.parentNode;
 		if(tar.hasAttribute("hc_requiredfor"))
 			this.updateDependencies(tar);
-		if(!tar.hasAttribute("preference") && tar.nodeName != "checkbox")
+		if(!tar.hasAttribute("preference") && tar.localName != "checkbox")
 			return;
 		if(this.instantApply)
 			this.savePrefs();

@@ -28,7 +28,7 @@
 	height="520"
 	persist="width height screenX screenY">
 
-	<prefpane id="handyClicks-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1" onpaneload="handyClicksSets.focusSearch();">
+	<prefpane id="handyClicks-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1" onpaneload="handyClicksSets._focusSearch();">
 		<vbox flex="1">
 
 			<hbox align="center">

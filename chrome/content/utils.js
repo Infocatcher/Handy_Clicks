@@ -97,5 +97,29 @@ var handyClicksUtils = {
 	isNoChromeDoc: function(doc) {
 		doc = doc || handyClicks.item.ownerDocument;
 		return this.isNoChromeWin(doc.defaultView);
+	},
+
+	get fxVersion() {
+		delete this.fxVersion;
+		return this.fxVersion = parseFloat( // 3.0 for "3.0.10"
+			Components.classes["@mozilla.org/xre/app-info;1"]
+			.getService(Components.interfaces.nsIXULAppInfo)
+			.version
+		);
+	},
+
+	getProperty: function(obj) { // this.getProperty(obj, "a", "b", "propName") instead of obj.a.b.propName
+		var a = arguments, p, u;
+		for(var i = 1, len = a.length - 1; i <= len; i++) {
+			p = a[i];
+			if(!obj.hasOwnProperty(p))
+				return u;
+			obj = obj[p];
+			if(i == len)
+				return obj;
+			if(typeof obj != "object")
+				return u;
+		}
+		return u;
 	}
 };

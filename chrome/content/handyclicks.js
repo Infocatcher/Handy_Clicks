@@ -40,14 +40,6 @@ var handyClicks = {
 		window.removeEventListener("dblclick", this, true);
 		this.clearCMenuTimeout();
 	},
-	get fxVersion() {
-		delete this.fxVersion;
-		return this.fxVersion = parseFloat( // 3.0 for "3.0.10"
-			Components.classes["@mozilla.org/xre/app-info;1"]
-			.getService(Components.interfaces.nsIXULAppInfo)
-			.version
-		);
-	},
 	get disabled() {
 		return !this.pu.pref("enabled");
 	},
@@ -300,7 +292,7 @@ var handyClicks = {
 				tabscope.hidePopup();
 		}
 
-		if(this.fxVersion == 2 && popup.id == "contentAreaContextMenu") { // workaround for spellchecker bug
+		if(this.ut.fxVersion == 2 && popup.id == "contentAreaContextMenu") { // workaround for spellchecker bug
 			this.flags.stopContextMenu = false;
 			this.flags.stopClick = true;
 
@@ -319,7 +311,7 @@ var handyClicks = {
 		}
 		document.popupNode = this.itemType == "tab" ? this.item : node;
 		var xy = this.getXY();
-		popup.showPopup(this.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "popup", null, null);
+		popup.showPopup(this.ut.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "popup", null, null);
 	},
 	blinkNode: function(time, node) {
 		node = node || this.origItem;
@@ -691,7 +683,7 @@ var handyClicks = {
 	},
 	getXY: function(e) {
 		e = e || this.mousemoveParams.event || this.copyOfEvent;
-		return this.fxVersion >= 3
+		return this.ut.fxVersion >= 3
 			? { x: e.screenX, y: e.screenY }
 			: { x: e.clientX, y: e.clientY };
 	},

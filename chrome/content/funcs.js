@@ -818,7 +818,7 @@ var handyClicksFuncs = {
 			// default to true: if it were false, we wouldn't get this far
 			var warnOnClose = { value: true };
 			var bundle = tbr.mStringBundle;
-			var messageKey = this.hc.fxVersion == 1.5
+			var messageKey = this.ut.fxVersion == 1.5
 				? tabsToClose == 1 ? "tabs.closeWarningOne"    : "tabs.closeWarningMultiple"
 				: tabsToClose == 1 ? "tabs.closeWarningOneTab" : "tabs.closeWarningMultipleTabs";
 			var closeKey = tabsToClose == 1 ? "tabs.closeButtonOne" : "tabs.closeButtonMultiple";
