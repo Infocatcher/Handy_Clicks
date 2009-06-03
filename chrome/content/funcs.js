@@ -12,6 +12,9 @@ var handyClicksFuncs = {
 		uri = (uri || "").replace(/(?:\s|%20)+/g, " ");
 		return this.voidURIMask.test(uri);
 	},
+	isJSURI: function(uri) {
+		return typeof uri == "string" && /^javascript:/i.test(uri);
+	},
 
 	copyItemText: function(e, hidePopup) { // for all
 		var text = this.hc.itemType == "tabbar"
@@ -67,6 +70,9 @@ var handyClicksFuncs = {
 					|| this.getBookmarkUri(it)
 					|| this.getTabUri(it);
 		}
+		if(this.isJSURI(uri))
+			try { uri = decodeURI(uri); }
+			catch(e) {}
 		return uri;
 	},
 	getLinkUri: function(it) {
@@ -199,7 +205,7 @@ var handyClicksFuncs = {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
-		if(/^javascript:/i.test(uri)) {
+		if(this.isJSURI(uri)) {
 			this.loadJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin);
 			return true;
 		}
@@ -453,22 +459,22 @@ var handyClicksFuncs = {
 		if(mp && mp.hidePopup) {
 			mp.hidePopup();
 			var mn = mp.parentNode;
-			if(mn && mn.nodeName == "menu")
+			if(mn && mn.localName == "menu")
 				mn.removeAttribute("_moz-menuactive");
 		}
 	},
 	getMenupopup: function(it) {
-		it = it || this.hc.item;
-		if(it.nodeName == "toolbarbutton")
-			return false;
-		var mp, ci = it, nn;
+		it = it || this.hc.item || this.hc.origItem;
+		if(it.localName == "toolbarbutton")
+			return null;
+		var mp, ci = it, ln;
 		do {
 			ci = ci.parentNode;
-			nn = ci.nodeName;
-			if(nn == "menupopup")
+			ln = ci.localName;
+			if(ln == "menupopup")
 				mp = ci;
 		}
-		while(ci && nn != "toolbar" && nn != "#document")
+		while(ci && ln && ln != "toolbar")
 		return mp;
 	},
 	downloadWithFlashGot: function(e, item) {
@@ -535,7 +541,7 @@ var handyClicksFuncs = {
 		for(var p in attrs) {
 			if(!attrs.hasOwnProperty(p))
 				continue;
-			if(typeof attrs[p] != "string" || p.indexOf("__") == 0)
+			if(typeof attrs[p] != "string" || p.indexOf("__") == 0 || p == "className")
 				item[p] = attrs[p]; // not works for "oncommand"
 			else
 				item.setAttribute(p, attrs[p]);
@@ -685,7 +691,7 @@ var handyClicksFuncs = {
 			img = it.__image;
 			if(path) {
 				path = this.getRelativePath(path);
-				it.class = "menuitem-iconic";
+				it.className = "menuitem-iconic";
 				img = (img && this.getRelativePath(img) || path);
 				it.image = "moz-icon:file://" + img;
 				it[attrBase + n++] = path;
@@ -970,7 +976,7 @@ var handyClicksFuncs = {
 			text = ar[i].innerHTML;
 			h = ar[i].href;
 			if(
-				text == s && h && !/^javascript:/i.test(h)
+				text == s && h && !this.isJSURI(h)
 				&& (
 					!onlyUnVisited || !his.isVisited(IO.newURI(h, null, null))
 				)

@@ -20,7 +20,6 @@
 	ondialogaccept="handyClicksSets.savePrefs();"
 	ondialogextra1="handyClicksSets.savePrefs(true);"
 	onload="handyClicksSets.init();"
-	onunload="handyClicksSets.destroy();"
 	oncommand="handyClicksSets.prefsChanged(event);"
 	onchange="handyClicksSets.prefsChanged(event);"
 	oninput="handyClicksSets.prefsChanged(event);"
@@ -28,7 +27,7 @@
 	height="520"
 	persist="width height screenX screenY">
 
-	<prefpane id="handyClicks-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1" onpaneload="handyClicksSets._focusSearch();">
+	<prefpane id="handyClicks-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1">
 		<vbox flex="1">
 
 			<hbox align="center">

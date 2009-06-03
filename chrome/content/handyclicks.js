@@ -1,6 +1,7 @@
 var handyClicks = {
 	// Shortcuts:
 	ut: handyClicksUtils,
+	wu: handyClicksWinUtils,
 	pu: handyClicksPrefUtils,
 	get fn() { return handyClicksFuncs; },
 
@@ -9,6 +10,7 @@ var handyClicks = {
 		runned: false,
 		stopContextMenu: false
 	},
+	editMode: false,
 	isRunOnMousedown: false,
 	event: null,
 	origItem: null,
@@ -337,27 +339,27 @@ var handyClicks = {
 			+ ",meta=" + e.metaKey;
 	},
 	getSettings: function(str) {
-		return handyClicksPrefs.hasOwnProperty(str) ? handyClicksPrefs[str] : null;
+		return handyClicksPrefs.hasOwnProperty(str)
+			? handyClicksPrefs[str]
+			: this.editMode
+				? {}
+				: null;
 	},
 	isOkFuncObj: function(fObj) { // funcObj && funcObj.enabled && funcObj.action
 		return handyClicksPrefSvc.isOkFuncObj(fObj) && fObj.enabled;
-	},
-	itemTypeInSets: function(sets, iType) {
-		return sets.hasOwnProperty(iType) && this.isOkFuncObj(sets[iType]);
 	},
 	isOkCustomType: function(cType) {
 		var cts = handyClicksCustomTypes;
 		if(!cts.hasOwnProperty(cType))
 			return false;
 		var ct = cts[cType];
-		return typeof ct == "object"
-			&& ct.hasOwnProperty("enabled")
-			&& ct.enabled
-			&& ct.hasOwnProperty("_define")
-			&& ct.hasOwnProperty("_contextMenu");
+		return typeof ct == "object" && ct.hasOwnProperty("_initialized");
+	},
+	itemTypeInSets: function(sets, iType) {
+		return sets.hasOwnProperty(iType) && this.isOkFuncObj(sets[iType]);
 	},
 	defineItem: function(e, sets) {
-		var all = this.itemTypeInSets(sets, "$all");
+		var all = this.editMode || this.itemTypeInSets(sets, "$all");
 		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "submitButton"
 		this.item = null;
 
@@ -424,8 +426,6 @@ var handyClicks = {
 		if(all || this.itemTypeInSets(sets, "link")) {
 			_it = it;
 			while(_it && _it.nodeType != docNode) {
-				if(!_it.localName)
-					alert(_it.nodeName);
 				if(
 					(_it.localName.toLowerCase() == "a" && _it.href)
 					|| (
@@ -547,10 +547,11 @@ var handyClicks = {
 		return false;
 	},
 	getFuncObj: function(sets) {
-		if(!this.itemType) // see .defineItem()
-			return false;
-		var funcObj = sets.$all || sets[this.itemType];
-		return this.isOkFuncObj(funcObj) ? funcObj : false;
+		return this.itemType // see .defineItem()
+			&& (
+				(this.itemTypeInSets(sets, "$all") && sets.$all)
+				|| (this.itemTypeInSets(sets, this.itemType) && sets[this.itemType])
+			);
 	},
 	getFuncObjByEvt: function(e) {
 		var evtStr = this.getEvtStr(e);
@@ -567,7 +568,7 @@ var handyClicks = {
 		)
 			this.defineItem(e, sets);
 		this.saveEvent(e);
-		return this.getFuncObj(sets);
+		return this.getFuncObj(sets) || (this.editMode ? {} : null);
 	},
 	cloneObj: function(obj) {
 		obj = obj || {};
@@ -619,16 +620,28 @@ var handyClicks = {
 		this.runFunc(e, funcObj);
 	},
 	runFunc: function(e, funcObj) {
-		if(this.flags.runned || e.type != funcObj.eventType)
+		if(
+			this.flags.runned
+			|| (!this.editMode && e.type != funcObj.eventType)
+			//|| !this.itemType
+			|| !this.tabNotChanged
+		) {
+			this.editMode = false;
 			return;
-		if(!this.tabNotChanged)
-			return;
+		}
+
 		this.flags.runned = true;
 		this.flags.stopContextMenu = true;
 
 		this.stopEvent(e); // this stop "contextmenu" event in Windows
 		this.clearCMenuTimeout();
 		this.removeMousemoveHandler();
+
+		if(this.editMode) {
+			this.openEditor(e);
+			this.editMode = false;
+			return;
+		}
 
 		var args = this.argsToArr(funcObj.arguments);
 		args.unshift(e);
@@ -668,9 +681,9 @@ var handyClicks = {
 
 		this.ut._log(
 			e.type + " => runFunc -> " + this.origItem + "\n"
-			+ "localName -> " + this.origItem.localName + "\n"
+			+ "localName -> " + this.origItem.localName + ", "
 			+ "itemType -> " + this.itemType + "\n"
-			+ "=> " + (funcObj.custom ? action : funcObj.action)
+			+ "=> " + (funcObj.custom ? (decodeURIComponent(funcObj.label || "") || action) : funcObj.action)
 		);
 	},
 	argsToArr: function(argsObj) {
@@ -706,17 +719,24 @@ var handyClicks = {
 	},
 	doSettings: function(e) {
 		switch(e.button) {
-			case 0:
-				this.toggleStatus();
-			break;
-			case 1:
-			case 2:
-				handyClicksWinUtils.openWindowByType(
-					"chrome://handyclicks/content/sets.xul",
-					"handyclicks:settings",
-					"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
-				);
+			case 0: this.toggleStatus(); break;
+			case 1: this.openSettings();
 		}
+	},
+	openSettings: function() {
+		this.wu.openWindowByType(
+			"chrome://handyclicks/content/sets.xul",
+			"handyclicks:settings",
+			"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
+		);
+	},
+	editModeOn: function() {
+		setTimeout(function(_this) { _this.editMode = true; }, 10, this);
+	},
+	openEditor: function(e) {
+		e = e || this.copyOfEvent;
+		this.fn.hideItemPopup();
+		this.wu.openEditor("shortcut", this.getEvtStr(e), this.itemType);
 	},
 	updUI: function(pName) {
 		if(pName == "enabled")
@@ -727,6 +747,7 @@ var handyClicks = {
 		var enabled = this.pu.pref("enabled");
 		sbi.setAttribute("hc_enabled", enabled);
 		sbi.tooltipText = this.ut.getLocalised(enabled ? "enabled" : "disabled");
+		document.getElementById("handyClicks-clickEdit").setAttribute("disabled", !enabled);
 	}
 };
 window.addEventListener("load", handyClicks, false);

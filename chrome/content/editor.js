@@ -33,7 +33,7 @@ var handyClicksEditor = {
 		this.initUI();
 		this.loadCustomType(this.type);
 		this.mBox.selectedIndex = this.tabs[this.mode];
-		//this.ps.addPrefsObserver(this.initUI, this);
+		this.ps.addPrefsObserver(this.appendTypesList, this);
 		window.addEventListener("DOMMouseScroll", this, true);
 		this.toggleApply(true);
 	},
@@ -60,6 +60,12 @@ var handyClicksEditor = {
 			mi = mis[i];
 			mi.setAttribute("label", this.ut.getLocalised(mi.getAttribute("label")));
 		}
+		if(this.ut.fxVersion >= 3) // Fix bug in Firefox 1.5 and 2.0
+			return;
+		var ml = mi.parentNode.parentNode;
+		var si = ml.selectedIndex;
+		ml.selectedIndex = null;
+		ml.selectedIndex = si;
 	},
 	initUI: function() {
 		this.initShortcutEditor();
@@ -126,7 +132,7 @@ var handyClicksEditor = {
 		var tar = e.target;
 		var cType = tar.value;
 		this.loadCustomType(cType);
-		this.mBox.selectedIndex = 1;
+		this.mBox.selectedIndex = this.tabs.itemType;
 		var mp = tar.parentNode;
 		if("hidePopup" in mp)
 			mp.hidePopup();
@@ -175,23 +181,11 @@ var handyClicksEditor = {
 		key = String.fromCharCode(key);
 		return /\w/.test(key);
 	},
-	delCustomTypes: function() {
-		var prnt, mis, mi, j;
-		for(var i = 0, aLen = arguments.length; i < aLen; i++) {
-			prnt = arguments[i];
-			mis = prnt.getElementsByTagName("menuitem");
-			for(j = mis.length - 1; j >= 0; j--) {
-				mi = mis[j];
-				if(mi.getAttribute("value").indexOf("custom_") == 0)
-					mi.parentNode.removeChild(mi);
-			}
-		}
-	},
 	appendTypesList: function() {
 		var sep = this.$("hc-editor-customTypesSep");
 		var parent = sep.parentNode;
 		var tList = this.$("hc-editor-customTypePopup");
-		this.delCustomTypes(parent, tList);
+		this.delCustomTypes();
 		var cTypes = window.handyClicksCustomTypes || {};
 		var mi, _mi, typeObj, dis;
 		var hideSep = true;
@@ -212,6 +206,20 @@ var handyClicksEditor = {
 		}
 		sep.hidden = hideSep;
 		parent.parentNode.value = this.type; // <menulist>
+	},
+	delCustomTypes: function() {
+		var mis, mi, j;
+		["hc-editor-itemTypes", "hc-editor-customTypePopup"].forEach(
+			function(pId) {
+				mis = this.$(pId).getElementsByTagName("menuitem");
+				for(j = mis.length - 1; j >= 0; j--) {
+					mi = mis[j];
+					if(mi.getAttribute("value").indexOf("custom_") == 0)
+						mi.parentNode.removeChild(mi);
+				}
+			},
+			this
+		);
 	},
 	initFuncsList: function(custom, action) {
 		var fList = this.$("hc-editor-func");
@@ -373,15 +381,15 @@ var handyClicksEditor = {
 
 	saveSettings: function() {
 		switch(this.mBox.selectedIndex) {
-			case 0:  return this.saveShortcut();
-			case 1:  return this.saveCustomType();
+			case this.tabs.shortcut: return this.saveShortcut();
+			case this.tabs.itemType: return this.saveCustomType();
 			default: return false;
 		}
 	},
 	deleteSettings: function() {
 		switch(this.mBox.selectedIndex) {
-			case 0:  return this.deleteShortcut();
-			case 1:  return this.deleteCustomType();
+			case this.tabs.shortcut: return this.deleteShortcut();
+			case this.tabs.itemType: return this.deleteCustomType();
 			default: return false;
 		}
 	},
@@ -478,12 +486,20 @@ var handyClicksEditor = {
 		ct.contextMenu = cMenu ? encodeURIComponent(cMenu) : null;
 		this.ps.saveSettingsObjects();
 		this.toggleApply(true);
+
+//		var cti = this.$("hc-editor-itemTypes").getElementsByAttribute("value", cType)[0];
+//		if(cti)
+//			cti.setAttribute("disabled", !newEnabl);
+
+		this.appendTypesList();
+
 		return true;
 	},
 	deleteCustomType: function() {
 		delete handyClicksCustomTypes["custom_" + this.$("hc-editor-customTypeExtId").value];
 		this.ps.saveSettingsObjects();
 		this.toggleApply(true);
+		this.appendTypesList();
 	},
 	listScroll: function(e) {
 		var ml = e.target;

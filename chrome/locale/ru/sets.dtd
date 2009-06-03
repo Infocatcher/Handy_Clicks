@@ -22,4 +22,21 @@
 <!-- Editor -->
 <!ENTITY hc.editor.title "Handy Clicks: редактор">
 
+<!ENTITY hc.sets.tabFuncs "Функции">
+<!ENTITY hc.sets.clickHere "Кликните здесь">
+<!ENTITY hc.sets.event "Событие:">
+<!ENTITY hc.sets.enabled "Включено">
+<!ENTITY hc.sets.ignoreLinks "Игнорировать ссылки">
+<!ENTITY hc.sets.captionFunc "Функция">
+<!ENTITY hc.sets.captionArgs "Аргументы">
+<!ENTITY hc.sets.label "Название:">
+<!ENTITY hc.sets.args "Аргументы:">
+
+<!ENTITY hc.sets.tabCustomTypes "Добавленные типы">
+<!ENTITY hc.sets.internalId "Внутренний id:">
+<!ENTITY hc.sets.defineItem "Определение элемента">
+<!ENTITY hc.sets.defineReturn "Должно возвращить: элемент или null"> <!-- Do not translate "null"! -->
+<!ENTITY hc.sets.defineContext "Контекстное меню элемента (для автоопределения оставьте пустым)">
+
+
 <!ENTITY hc.editor.delete "Удалить">

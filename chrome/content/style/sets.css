@@ -5,7 +5,7 @@ radio[pane="handyClicks-sets-pane-actions"] {
 radio[pane="handyClicks-sets-pane-prefs"] {
 	list-style-image: url("prefs.png");
 }
-[hideallafter="true"] ~ * {
+[hc_hideallafter="true"] ~ * {
 	visibility: hidden;
 }
 #handyClicks-setsTreeSearchContainer {
@@ -23,7 +23,7 @@ radio[pane="handyClicks-sets-pane-prefs"] {
 	color: #fff;
 }
 
-textbox[readonly="true"] {
+textbox.hcText {
 	background: transparent !important;
 	border: none;
 	padding: 0;

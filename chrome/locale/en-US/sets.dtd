@@ -22,4 +22,20 @@
 <!-- Editor -->
 <!ENTITY hc.editor.title "Handy Clicks: Editor">
 
+<!ENTITY hc.sets.tabFuncs "Functions">
+<!ENTITY hc.sets.clickHere "Click here">
+<!ENTITY hc.sets.event "Event:">
+<!ENTITY hc.sets.enabled "Enabled">
+<!ENTITY hc.sets.ignoreLinks "Ignore links">
+<!ENTITY hc.sets.func "Function">
+<!ENTITY hc.sets.args "Arguments">
+<!ENTITY hc.sets.label "Label:">
+<!ENTITY hc.sets.args "Arguments:">
+
+<!ENTITY hc.sets.tabCustomTypes "Custom Types">
+<!ENTITY hc.sets.internalId "Internal id:">
+<!ENTITY hc.sets.defineItem "Item definition">
+<!ENTITY hc.sets.defineReturn "Return: item or null"> <!-- Do not translate "null"! -->
+<!ENTITY hc.sets.defineContext "Context menu of item (empty for autodetection)">
+
 <!ENTITY hc.editor.delete "Delete">

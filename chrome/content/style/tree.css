@@ -3,25 +3,25 @@
 treechildren::-moz-tree-row(selected) {
 	background-color: Highlight !important;
 }
-treechildren::-moz-tree-row(custom) {
+treechildren::-moz-tree-row(hc_custom) {
 	background-color: #f0fff0;
 }
-treechildren::-moz-tree-row(disabled) {
+treechildren::-moz-tree-row(hc_disabled) {
 	background-color: ThreeDLightShadow;
 }
-treechildren::-moz-tree-row(buggy) {
+treechildren::-moz-tree-row(hc_buggy) {
 	background-color: #faa;
 }
-treechildren::-moz-tree-row(edited) {
+treechildren::-moz-tree-row(hc_edited) {
 	background-color: #f0f0ff;
 }
-treechildren::-moz-tree-row(search) {
+treechildren::-moz-tree-row(hc_search) {
 	background-color: #d0fff0;
 }
 treechildren::-moz-tree-row(hover) {
 	background-color: ThreeDFace;
 }
-treechildren::-moz-tree-checkbox(editable) {
+treechildren::-moz-tree-checkbox(hc_editable) {
 	list-style-image: url("checkbox.png"); /* Image from Adblock Plus extension */
 	-moz-image-region: rect(13px 13px 26px 0);
 }

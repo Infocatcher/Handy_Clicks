@@ -1,6 +1,7 @@
 var handyClicksSets = {
 	// Shortcuts:
 	ut: handyClicksUtils,
+	wu: handyClicksWinUtils,
 	pu: handyClicksPrefUtils,
 	ps: handyClicksPrefSvc,
 
@@ -27,6 +28,7 @@ var handyClicksSets = {
 			this.applyButton.hidden = true;
 		else
 			this.toggleApply(true);
+		this.focusSearch();
 	},
 	initChortcuts: function() {
 		this.tree = this.$("handyClicks-setsTree");
@@ -38,13 +40,6 @@ var handyClicksSets = {
 		this.cmdEditType = this.$("handyClicks-sets-cmdEditType");
 		this.miEditType = this.$("handyClicks-sets-miEditType");
 		this.searcher._tree = this.tree;
-	},
-	destroy: function() {
-		var eds = this.openedEditors, ed;
-		for(var hash in eds) {
-			ed = eds[hash];
-			ed.close();
-		}
 	},
 
 	get applyButton() {
@@ -131,11 +126,11 @@ var handyClicksSets = {
 			);
 			this.appendTreeCell(tRow, "label", this.getArguments(it.arguments || {}));
 			var chBox = this.appendTreeCell(tRow, "value", it.enabled);
-			this.addProperties(chBox, { editable: true });
+			this.addProperties(chBox, { hc_editable: true });
 
 			isBuggy = !this.ps.isOkFuncObj(it)
 				|| (isCustomType && !handyClicksCustomTypes.hasOwnProperty(itemType));
-			this.addProperties(tRow, { disabled: !it.enabled, buggy: isBuggy, custom: isCustom || isCustomType });
+			this.addProperties(tRow, { hc_disabled: !it.enabled, hc_buggy: isBuggy, hc_custom: isCustom || isCustomType });
 
 			tRow.__shortcut = shortcut;
 			tRow.__itemType = itemType;
@@ -319,43 +314,28 @@ var handyClicksSets = {
 				return false;
 		return true;
 	},
-	openedEditors: { __proto__: null },
 	openEditorWindow: function(tRow, mode) { // mode: "shortcut" or "itemType"
 		var shortcut = tRow ? tRow.__shortcut : Date.now() + "-" + Math.random();
 		var itemType = tRow ? tRow.__itemType : null;
-		var editType = mode == "itemType";
-		var winId = editType ? itemType : shortcut + "-" + itemType;
-
-		if(this.openedEditors[winId]) {
-			this.openedEditors[winId].focus();
+		var win = this.wu.openEditor(mode, shortcut, itemType);
+		if(!tRow || mode == "itemType")
 			return;
-		}
-		var win = window.openDialog( // window.openDialog => modal windows...
-			"chrome://handyclicks/content/editor.xul",
-			"",
-			"chrome,resizable,dependent,centerscreen,dialog=0", // alwaysRaised
-			mode || "shortcut", shortcut, itemType
-		);
-
-		var addProp = tRow && !editType;
-		if(addProp)
-			this.addProperties(tRow, { edited: true });
-
+		if("__handyClicksUnloadHandler" in win)
+			return;
+		win.__handyClicksUnloadHandler = true;
+		this.addProperties(tRow, { hc_edited: true });
 		var _this = this;
-		win.addEventListener("load", function(e) {
-			win.removeEventListener(e.type, arguments.callee, false);
-			win.addEventListener(
-				"unload",
-				function(e) {
-					win.removeEventListener(e.type, arguments.callee, false);
-					delete _this.openedEditors[winId];
-					if(addProp)
-						_this.addProperties(tRow, { edited: false });
-				},
-				false
-			);
-		}, false);
-		this.openedEditors[winId] = win;
+		win.addEventListener(
+			"unload",
+			function(e) {
+				if(e.target.location.href.indexOf("chrome://") != 0)
+					return;
+				win.removeEventListener(e.type, arguments.callee, false);
+				if(tRow)
+					_this.addProperties(tRow, { hc_edited: false });
+			},
+			false
+		);
 	},
 	toggleEnabled: function(e) {
 		var rowIndx, column, tRow;
@@ -410,13 +390,12 @@ var handyClicksSets = {
 	},
 
 	/*** Search in tree ***/
-	_focusSearch: function() { // For Firefox 3.5pre
-		setTimeout(function(_this) { _this.focusSearch(); }, 50, this);
-	},
 	focusSearch: function(e) {
 		if(!this.isTreePaneSelected)
 			return;
 		var sIt = this.$("handyClicks-setsTreeSearch");
+		if(!sIt)
+			return;
 		sIt.select();
 		sIt.focus();
 	},
@@ -501,7 +480,7 @@ var handyClicksSets = {
 					for(k = 0; k < sLen; k++)
 						if(rowText.indexOf(_sVal[k]) == -1)
 							okRow = false;
-				this.addProperties(tRow, { search: okRow });
+				this.addProperties(tRow, { hc_search: okRow });
 				if(okRow) {
 					this.searcher.add(i);
 					if(notFound) {
@@ -548,7 +527,7 @@ var handyClicksSets = {
 	},
 	showPrefs: function(enablIt) {
 		enablIt = enablIt || this.$("handyClicks-sets-enabled");
-		enablIt.setAttribute("hideallafter", enablIt.getAttribute("checked") != "true");
+		enablIt.setAttribute("hc_hideallafter", enablIt.getAttribute("checked") != "true");
 	},
 	updateAllDependencies: function() {
 		var reqs = document.getElementsByAttribute("hc_requiredfor", "*");

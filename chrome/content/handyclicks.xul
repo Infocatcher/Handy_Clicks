@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/handyclicks.css" type="text/css"?>
 
+<!DOCTYPE dialog [
+	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/main.dtd">
+	%locale;
+	<!ENTITY % default SYSTEM "chrome://handyclicks-locale/content/main.dtd">
+	%default;
+]>
+
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
@@ -45,15 +52,19 @@
 	);
 	]]></script>
 
-	<stringbundleset id="stringbundleset">
-		<stringbundle id="handyClicks-strings" src="chrome://handyclicks/locale/hcs.properties" />
-	</stringbundleset>
 	<statusbar id="status-bar">
 		<statusbarpanel id="handyClicks-toggleStatus-sBarIcon" class="statusbarpanel-iconic"
 			insertafter="page-report-button"
 			hc_enabled="true"
+			context="handyClicks-settingsPopup"
 			onclick="handyClicks.doSettings(event);" />
 	</statusbar>
+	<popupset id="mainPopupSet">
+		<menupopup id="handyClicks-settingsPopup">
+			<menuitem id="handyClicks-settingsMenuitem" label="&handyClicks.settingsLabel;" oncommand="handyClicks.openSettings();" />
+			<menuitem id="handyClicks-clickEdit" label="&handyClicks.clickEditLabel;" oncommand="handyClicks.editModeOn();" />
+		</menupopup>
+	</popupset>
 	<window id="main-window">
 		<tooltip id="handyClicks-tooltip" noautohide="true"
 			onpopupshowing="return handyClicksFuncs.fillInTooltip(this);"
