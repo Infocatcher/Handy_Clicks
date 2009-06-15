@@ -12,14 +12,23 @@ treechildren::-moz-tree-row(hc_disabled) {
 treechildren::-moz-tree-row(hc_buggy) {
 	background-color: #faa;
 }
+/*
 treechildren::-moz-tree-row(hc_edited) {
-	background-color: #f0f0ff;
+	background-color: #ededff;
+}
+treechildren::-moz-tree-row(selected,hc_edited) {
+	background-color: #bbf !important;
+}
+*/
+treechildren::-moz-tree-cell-text(hc_edited) {
+	font-weight: bold;
 }
 treechildren::-moz-tree-row(hc_search) {
-	background-color: #d0fff0;
+	background-color: #cffff8;
 }
 treechildren::-moz-tree-row(hover) {
-	background-color: ThreeDFace;
+	/*background-color: ThreeDFace;*/
+	border: 1px dotted black;
 }
 treechildren::-moz-tree-checkbox(hc_editable) {
 	list-style-image: url("checkbox.png"); /* Image from Adblock Plus extension */

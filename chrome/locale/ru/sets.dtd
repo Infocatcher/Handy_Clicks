@@ -38,5 +38,4 @@
 <!ENTITY hc.sets.defineReturn "Должно возвращить: элемент или null"> <!-- Do not translate "null"! -->
 <!ENTITY hc.sets.defineContext "Контекстное меню элемента (для автоопределения оставьте пустым)">
 
-
 <!ENTITY hc.editor.delete "Удалить">

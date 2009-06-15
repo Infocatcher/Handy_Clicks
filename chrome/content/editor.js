@@ -1,6 +1,7 @@
 var handyClicksEditor = {
 	// Shortcuts:
 	ut: handyClicksUtils,
+	wu: handyClicksWinUtils,
 	ps: handyClicksPrefSvc,
 	types: {
 		checkboxes: {
@@ -75,6 +76,7 @@ var handyClicksEditor = {
 	},
 	destroy: function() {
 		window.removeEventListener("DOMMouseScroll", this, true);
+		this.wu.highlightAllOpened();
 	},
 	get applyButton() {
 		delete this.applyButton;
@@ -95,6 +97,17 @@ var handyClicksEditor = {
 	handleEvent: function(e) {
 		if(e.type == "DOMMouseScroll")
 			this.listScroll(e);
+	},
+	setWinId: function() {
+		var winId;
+		var cType = this.currentType || this.type; // For deleted custom types
+		switch(this.mBox.selectedIndex) {
+			case this.tabs.shortcut: winId = this.currentShortcut + "-" + cType; break;
+			case this.tabs.itemType: winId = cType;                              break;
+			default: return;
+		}
+		window[this.wu.winId] = winId;
+		this.wu.highlightAllOpened();
 	},
 	initShortcutEditor: function() {
 		var setsObj = handyClicksPrefs[this.target] || {};
@@ -152,6 +165,7 @@ var handyClicksEditor = {
 		enabledElt.checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
 		this.$("hc-editor-customTypeDefine").newValue = decodeURIComponent(ct.define || "");
 		this.$("hc-editor-customTypeContext").newValue = decodeURIComponent(ct.contextMenu || "");
+		this.setWinId();
 	},
 	customTypeLabel: function(it) {
 		if(it.getElementsByAttribute("label", it.value)[0])
@@ -366,6 +380,7 @@ var handyClicksEditor = {
 		this.target = this.currentShortcut;
 		this.type = this.currentType;
 		this.initShortcutEditor();
+		this.setWinId();
 	},
 	setClickOptions: function(e) {
 		this.$("hc-editor-button").value = e.button;

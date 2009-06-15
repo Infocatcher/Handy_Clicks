@@ -27,8 +27,8 @@
 <!ENTITY hc.sets.event "Event:">
 <!ENTITY hc.sets.enabled "Enabled">
 <!ENTITY hc.sets.ignoreLinks "Ignore links">
-<!ENTITY hc.sets.func "Function">
-<!ENTITY hc.sets.args "Arguments">
+<!ENTITY hc.sets.captionFunc "Function">
+<!ENTITY hc.sets.captionArgs "Arguments">
 <!ENTITY hc.sets.label "Label:">
 <!ENTITY hc.sets.args "Arguments:">
 

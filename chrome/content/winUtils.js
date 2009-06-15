@@ -14,10 +14,12 @@ var handyClicksWinUtils = {
 			);
 		return w;
 	},
+	winId: "__handyClicksWinId",
 	openEditor: function(mode, shortcut, itemType) {
 		var winId = mode == "itemType" ? itemType : shortcut + "-" + itemType;
-		var pId = "__handyClicksWinId";
-		var ws = this.wm.getEnumerator("handyclicks:editor");
+		var pId = this.winId;
+		var wm = this.wm;
+		var ws = wm.getEnumerator("handyclicks:editor");
 		var w;
 		while(ws.hasMoreElements()) {
 			w = ws.getNext();
@@ -33,6 +35,17 @@ var handyClicksWinUtils = {
 			mode || "shortcut", shortcut, itemType
 		);
 		w[pId] = winId;
+		this.highlightOpened(winId, true);
 		return w;
+	},
+	highlightOpened: function(winId, editStat) {
+		var wSet = this.wm.getMostRecentWindow("handyclicks:settings");
+		if(wSet)
+			wSet.handyClicksSets.setRowStatus(winId, editStat);
+	},
+	highlightAllOpened: function() {
+		var wSet = this.wm.getMostRecentWindow("handyclicks:settings");
+		if(wSet)
+			wSet.handyClicksSets.highlightAllOpened();
 	}
 };

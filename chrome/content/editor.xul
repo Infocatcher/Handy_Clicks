@@ -36,7 +36,7 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/editor.js" />
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">
-		<tabs>
+		<tabs onselect="handyClicksEditor.setWinId();">
 			<tab label="&hc.sets.tabFuncs;" selected="true"/>
 			<tab label="&hc.sets.tabCustomTypes;"/>
 		</tabs>

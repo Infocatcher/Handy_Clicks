@@ -6,6 +6,7 @@ var handyClicksSets = {
 	ps: handyClicksPrefSvc,
 
 	DOMCache: { __proto__: null },
+	rowsCache: { __proto__: null },
 	init: function() {
 		this.initChortcuts();
 
@@ -68,9 +69,24 @@ var handyClicksSets = {
 			var modifiersContainer = this.DOMCache[shortcut] || this.appendContainerItem(buttonContainer, shortcut, modifiers);
 			this.appendItems(modifiersContainer, handyClicksPrefs[shortcut], shortcut);
 		}
+		this.highlightAllOpened();
+	},
+	highlightAllOpened: function() {
+		for(var rowId in this.rowsCache)
+			this.setRowStatus(rowId, false);
+
+		var pId = this.wu.winId;
+		var ws = this.wu.wm.getEnumerator("handyclicks:editor");
+		var w;
+		while(ws.hasMoreElements()) {
+			w = ws.getNext();
+			if(pId in w)
+				this.setRowStatus(w[pId], true);
+		}
 	},
 	redrawTree: function() {
 		this.DOMCache = { __proto__: null };
+		this.rowsCache = { __proto__: null };
 		var cnt = this.content;
 		while(cnt.hasChildNodes())
 			cnt.removeChild(cnt.lastChild);
@@ -137,6 +153,7 @@ var handyClicksSets = {
 			tRow.__isCustomType = isCustomType;
 			tItem.appendChild(tRow);
 			parent.appendChild(tItem);
+			this.rowsCache[shortcut + "-" + itemType] = tRow;
 		}
 	},
 	addProperties: function(tar, propsObj) {
@@ -318,24 +335,36 @@ var handyClicksSets = {
 		var shortcut = tRow ? tRow.__shortcut : Date.now() + "-" + Math.random();
 		var itemType = tRow ? tRow.__itemType : null;
 		var win = this.wu.openEditor(mode, shortcut, itemType);
-		if(!tRow || mode == "itemType")
+//		if(!tRow || mode == "itemType")
+//			return;
+//		if("__handyClicksUnloadHandler" in win)
+//			return;
+//		win.__handyClicksUnloadHandler = true;
+//		this.addProperties(tRow, { hc_edited: true });
+//		var _this = this;
+//		win.addEventListener(
+//			"unload",
+//			function(e) {
+//				if(e.target.location.href.indexOf("chrome://") != 0)
+//					return;
+//				win.removeEventListener(e.type, arguments.callee, false);
+//				if(tRow)
+//					_this.addProperties(tRow, { hc_edited: false });
+//			},
+//			false
+//		);
+	},
+	setRowStatus: function(rowId, editStat) {
+		if(!(rowId in this.rowsCache))
 			return;
-		if("__handyClicksUnloadHandler" in win)
-			return;
-		win.__handyClicksUnloadHandler = true;
-		this.addProperties(tRow, { hc_edited: true });
-		var _this = this;
-		win.addEventListener(
-			"unload",
-			function(e) {
-				if(e.target.location.href.indexOf("chrome://") != 0)
-					return;
-				win.removeEventListener(e.type, arguments.callee, false);
-				if(tRow)
-					_this.addProperties(tRow, { hc_edited: false });
+		Array.prototype.forEach.call(
+			this.rowsCache[rowId].getElementsByTagName("treecell"),
+			function(cell) {
+				this.addProperties(cell, { hc_edited: editStat });
 			},
-			false
+			this
 		);
+		// this.addProperties(this.rowsCache[rowId], { hc_edited: editStat });
 	},
 	toggleEnabled: function(e) {
 		var rowIndx, column, tRow;

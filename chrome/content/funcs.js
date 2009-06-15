@@ -594,8 +594,10 @@ var handyClicksFuncs = {
 			);
 			return;
 		}
+//		var process = Components.classes["@mozilla.org/process/util;1"]
+//			.getService(Components.interfaces.nsIProcess);
 		var process = Components.classes["@mozilla.org/process/util;1"]
-			.getService(Components.interfaces.nsIProcess);
+			.createInstance(Components.interfaces.nsIProcess);
 		process.init(file);
 		try { process.run(false, args, args.length); }
 		catch(e) {
