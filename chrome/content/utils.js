@@ -1,5 +1,4 @@
 var handyClicksObservers = {
-	observers: [],
 	notifyObservers: function() {
 		var obs = this.observers;
 		for(var i = 0, len = obs.length; i < len; i++)

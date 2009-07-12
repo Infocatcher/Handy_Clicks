@@ -1,5 +1,6 @@
 var handyClicksPrefUtils = {
 	__proto__: handyClicksObservers, // Add observers interface
+	observers: [],
 
 	// Preferences:
 	nPrefix: "extensions.handyclicks.",
@@ -34,16 +35,14 @@ var handyClicksPrefUtils = {
 
 	// API functions:
 	get prefBr() {
-		if(!this._prefBr)
-			this._prefBr = Components.classes["@mozilla.org/preferences-service;1"]
-				.getService(Components.interfaces.nsIPrefBranch);
-		return this._prefBr;
+		delete this.prefBr;
+		return this.prefBr = Components.classes["@mozilla.org/preferences-service;1"]
+			.getService(Components.interfaces.nsIPrefBranch);
 	},
 	get prefSvc() {
-		if(!this._prefSvc)
-			this._prefSvc = Components.classes["@mozilla.org/preferences-service;1"]
-				.getService(Components.interfaces.nsIPrefService);
-		return this._prefSvc;
+		delete this.prefSvc;
+		return this.prefSvc = Components.classes["@mozilla.org/preferences-service;1"]
+			.getService(Components.interfaces.nsIPrefService);
 	},
 	get ss() { return Components.interfaces.nsISupportsString; },
 	_prefs: { __proto__: null }, // Prefs cache
@@ -84,6 +83,11 @@ var handyClicksPrefUtils = {
 		}
 		if(saveFlag)
 			this.savePrefFile();
+	},
+	resetPref: function(pName) {
+		if(this.prefBr.prefHasUserValue(pName))
+			this.prefBr.clearUserPref(pName);
+		return this;
 	},
 	savePrefFile: function() {
 		this.prefSvc.savePrefFile(null);

@@ -217,6 +217,10 @@ var handyClicks = {
 			: null;
 
 		var cMenuDelay = this.pu.pref("showContextMenuTimeout");
+		/*** todo:
+		var delayedAction = funcObj.hasOwnProperty("delayedAction") ? funcObj.delayedAction : null;
+		if(cMenuDelay > 0 && (delayedAction || (cm && e.button == 2)))
+		***/
 		if(cMenuDelay > 0 && cm && e.button == 2) { // Show context menu after delay
 			this.clearCMenuTimeout(); // only one timeout... (for dblclick event)
 			this.cMenuTimeout = setTimeout(

@@ -1,5 +1,7 @@
 var handyClicksPrefSvc = {
 	__proto__: handyClicksObservers, // Add observers interface
+	observers: [],
+
 	ut: handyClicksUtils, // shortcut
 	version: 0.1,
 	backupDepth: 4,

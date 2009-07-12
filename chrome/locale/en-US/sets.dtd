@@ -35,7 +35,7 @@
 <!ENTITY hc.sets.tabCustomTypes "Custom Types">
 <!ENTITY hc.sets.internalId "Internal id:">
 <!ENTITY hc.sets.defineItem "Item definition">
-<!ENTITY hc.sets.defineReturn "Return: item or null"> <!-- Do not translate "null"! -->
+<!ENTITY hc.sets.defineReturn "Return: node or null"> <!-- Do not translate "null"! -->
 <!ENTITY hc.sets.defineContext "Context menu of item (empty for autodetection)">
 
 <!ENTITY hc.editor.delete "Delete">
