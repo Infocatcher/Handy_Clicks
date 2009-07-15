@@ -14,7 +14,8 @@ var hcNotify = {
 		descElt.textContent = wa.msg;
 		var maxW = Math.round(screen.availWidth*0.6);
 		descElt.style.maxWidth = maxW + "px";
-		document.getElementById("hcNotifyImg").style["margin" + (wa.extEnabled ? "Right" : "Left")] = "-24px";
+		if(!wa.extEnabled)
+			document.getElementById("hcNotifyImg").style.marginLeft = "-24px";
 		window.sizeToContent();
 		var winW = window.outerWidth, winH = window.outerHeight;
 		var maxW = Math.round(screen.availWidth*0.65);
@@ -82,15 +83,8 @@ var hcNotify = {
 		this._nBox.style.borderColor = "blue";
 	},
 	mouseHandler: function(e) {
-		if(e.relatedTarget)
-			return;
-		var tar = e.target;
-		if(!tar || tar.id != "hcNotifyBox")
-			return;
-		switch(e.type) {
-			case "mouseover": this.cancelDelayedClose(); break;
-			case "mouseout":  this.delayedClose();
-		}
+		if(!e.relatedTarget)
+			this[e.type == "mouseover" ? "cancelDelayedClose" : "delayedClose"]();
 	},
 	clickHandler: function(e) {
 		this.cancelDelayedClose();

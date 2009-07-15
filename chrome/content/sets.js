@@ -60,7 +60,7 @@ var handyClicksSets = {
 			if(!handyClicksPrefs.hasOwnProperty(shortcut))
 				continue;
 			if(!this.ps.isOkShortcut(shortcut)) {
-				this.ut._err("[Handy Clicks]: invalid shortcut in prefs: " + shortcut);
+				this.ut._err(this.ut.errPrefix + "Invalid shortcut in prefs: " + shortcut);
 				continue;
 			}
 			var button = this.getButtonStr(shortcut);
@@ -130,15 +130,15 @@ var handyClicksSets = {
 			isCustomType = itemType.indexOf("custom_") == 0;
 			if(isCustomType) {
 				typeLabel = handyClicksCustomTypes[itemType] || null;
-				typeLabel = decodeURIComponent(typeLabel && typeLabel.label) + " (" + itemType + ")";
+				typeLabel = this.ps.dec(typeLabel && typeLabel.label) + " (" + itemType + ")";
 			}
 			else
 				typeLabel = this.ut.getLocalised(itemType);
 			this.appendTreeCell(tRow, "label", typeLabel);
 			this.appendTreeCell(tRow, "label", it.eventType);
-			this.appendTreeCell(tRow, "label", isCustom ? decodeURIComponent(it.label) : this.ut.getLocalised(it.action));
+			this.appendTreeCell(tRow, "label", isCustom ? this.ps.dec(it.label) : this.ut.getLocalised(it.action));
 			this.appendTreeCell(tRow, "label",
-				isCustom ? this.ut.getLocalised("customFunction") + decodeURIComponent(it.action) : it.action
+				isCustom ? this.ut.getLocalised("customFunction") + this.ps.dec(it.action) : it.action
 			);
 			this.appendTreeCell(tRow, "label", this.getArguments(it.arguments || {}));
 			var chBox = this.appendTreeCell(tRow, "value", it.enabled);

@@ -3,6 +3,7 @@ var handyClicks = {
 	ut: handyClicksUtils,
 	wu: handyClicksWinUtils,
 	pu: handyClicksPrefUtils,
+	ps: handyClicksPrefSvc,
 	get fn() { return handyClicksFuncs; },
 
 	flags: {
@@ -80,19 +81,19 @@ var handyClicks = {
 						this.ut.notify(
 							this.ut.getLocalised("errorTitle"),
 							this.ut.getLocalised("customTypeContextMenuError")
-								.replace("%l", decodeURIComponent(ct.label || ""))
+								.replace("%l", this.ps.dec(ct.label))
 								.replace("%id", this.itemType)
 								.replace("%e", e)
 							+ this.ut.getLocalised("openConsole"),
 							toErrorConsole
 						);
 						this.ut._err(
-							"[Handy Clicks]: Error in custom function for context menu detection."
+							this.ut.errPrefix + "Error in custom function for context menu detection."
 							+ "\nid: " + this.itemType
-							+ "\nLabel: " + decodeURIComponent(ct.label || "")
-							+ "\nCode:\n" + decodeURIComponent(ct.contextMenu || "")
+							+ "\nLabel: " + this.ps.dec(ct.label)
+							+ "\nCode:\n" + this.ps.dec(ct.contextMenu)
 						);
-						this.ut._throw(e);
+						this.ut._err(e);
 					}
 				}
 				else
@@ -100,7 +101,7 @@ var handyClicks = {
 		}
 		if(cm && typeof cm.hidePopup != "function") {
 			// Try open XUL document with custom context in tab...
-			this.ut._err("[Handy Clicks]: Strange error: context menu has no hidePopup method\n" + cm.id);
+			this.ut._err(this.ut.errPrefix + "Strange error: context menu has no hidePopup method\n" + cm.id);
 			cm = null;
 		}
 		this._cMenu = cm; // cache
@@ -350,7 +351,7 @@ var handyClicks = {
 				: null;
 	},
 	isOkFuncObj: function(fObj) { // funcObj && funcObj.enabled && funcObj.action
-		return handyClicksPrefSvc.isOkFuncObj(fObj) && fObj.enabled;
+		return this.ps.isOkFuncObj(fObj) && fObj.enabled;
 	},
 	isOkCustomType: function(cType) {
 		var cts = handyClicksCustomTypes;
@@ -388,12 +389,10 @@ var handyClicks = {
 				}
 				catch(e) {
 					var eId = this.ut.getLocalised("id") + " " + type
-						+ "\n" + this.ut.getLocalised("label") + " " + decodeURIComponent(ct.label || "");
+						+ "\n" + this.ut.getLocalised("label") + " " + this.ps.dec(ct.label);
 					errors.push(eId + "\n" + this.ut.getLocalised("details") + "\n" + e);
-					var _err = this.ut._err;
-					var _msg = "[Handy Clicks]: " + this.ut.getLocalised("customTypeDefineError")
-						.replace("%e", eId);
-					setTimeout(function() { _err(_msg); throw e; }, 0);
+					this.ut._err(this.ut.errPrefix + this.ut.getLocalised("customTypeDefineError").replace("%e", eId));
+					this.ut._err(e);
 				}
 				if(!_it)
 					continue;
@@ -651,8 +650,8 @@ var handyClicks = {
 		args.unshift(e);
 		if(funcObj.custom) {
 			args.unshift(this.item, this.origItem);
-			var action = decodeURIComponent(funcObj.action);
-			var label = '"' + decodeURIComponent(funcObj.label) + '"';
+			var action = this.ps.dec(funcObj.action);
+			var label = '"' + this.ps.dec(funcObj.label) + '"';
 			try {
 				new Function("event,item,origItem", action).apply(this.fn, args);
 			}
@@ -665,7 +664,7 @@ var handyClicks = {
 					eMsg + this.ut.getLocalised("openConsole"),
 					toErrorConsole
 				);
-				this.ut._err("[Handy Clicks]: " + eMsg);
+				this.ut._err(this.ut.errPrefix + eMsg);
 				throw e;
 			}
 		}
@@ -679,15 +678,16 @@ var handyClicks = {
 					this.ut.getLocalised("functionNotFound").replace("%f", funcObj.action),
 					toErrorConsole
 				);
-				this.ut._err("[Handy Clicks]: " + funcObj.action + " not found (" + typeof fnc + ")");
+				this.ut._err(this.ut.errPrefix + funcObj.action + " not found (" + typeof fnc + ")");
 			}
 		}
 
 		this.ut._log(
-			e.type + " => runFunc -> " + this.origItem + "\n"
-			+ "localName -> " + this.origItem.localName + ", "
-			+ "itemType -> " + this.itemType + "\n"
-			+ "=> " + (funcObj.custom ? (decodeURIComponent(funcObj.label || "") || action) : funcObj.action)
+			e.type + " => runFunc -> " + this.origItem
+			+ "\nlocalName -> " + this.origItem.localName
+			+ ", itemType -> " + this.itemType
+			+ ", button -> " + e.button
+			+ "\n=> " + (funcObj.custom ? (this.ps.dec(funcObj.label) || action) : funcObj.action)
 		);
 	},
 	argsToArr: function(argsObj) {
@@ -729,6 +729,7 @@ var handyClicks = {
 	},
 	openSettings: function() {
 		this.wu.openWindowByType(
+			window,
 			"chrome://handyclicks/content/sets.xul",
 			"handyclicks:settings",
 			"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"

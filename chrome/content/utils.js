@@ -14,20 +14,21 @@ var handyClicksObservers = {
 	}
 };
 var handyClicksUtils = {
+	get pu() { return handyClicksPrefUtils; },
+	errPrefix: "[Handy Clicks]: ",
+
 	get consoleSvc() {
 		delete this.consoleSvc;
 		return this.consoleSvc = Components.classes["@mozilla.org/consoleservice;1"]
 			.getService(Components.interfaces.nsIConsoleService);
 	},
-	_log: function(msg) {
-		this.consoleSvc.logStringMessage("[Handy Clicks]: " + msg + "\n");
+	_log: function() {
+		this.consoleSvc.logStringMessage(this.errPrefix + Array.prototype.join.call(arguments, "\n") + "\n");
 	},
-	_err: Components.utils.reportError,
-	_throw: function(err) {
-		setTimeout(function() { throw err; }, 0);
+	get _err() {
+		return Components.utils.reportError;
 	},
 
-	get pu() { return handyClicksPrefUtils; },
 	notify: function(nTitle, msg, fnc, extEnabled, inWindowCorner) {
 		var dur = this.pu.pref("notifyOpenTime");
 		if(dur <= 0)
@@ -38,7 +39,7 @@ var handyClicksUtils = {
 			: this.pu.pref("notifyInWindowCorner");
 		window.openDialog(
 			 "chrome://handyclicks/content/notify.xul",
-			 "",
+			 "_blank",
 			 "chrome,dialog=1,nTitlebar=0,popup=1",
 			 {
 			 	dur: dur,

@@ -32,7 +32,7 @@
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
-	<script type="application/x-javascript" src="chrome://handyclicks/content/prefs.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/prefSvc.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/editor.js" />
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">

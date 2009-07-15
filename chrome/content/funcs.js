@@ -7,13 +7,28 @@ var handyClicksFuncs = {
 
 	relativeIndex: 0,
 
-	voidURIMask: /^javascript: *(?:|\/\/|void *(?: +0|\( *0 *\))) *;? *$/i,
 	isVoidURI: function(uri) {
 		uri = (uri || "").replace(/(?:\s|%20)+/g, " ");
-		return this.voidURIMask.test(uri);
+		return /^javascript: *(?:|\/\/|void *(?: +0|\( *0 *\))) *;? *$/i.test(uri);
 	},
 	isJSURI: function(uri) {
 		return typeof uri == "string" && /^javascript:/i.test(uri);
+	},
+	isDummyURI: function(item, uri) {
+		uri = uri || this.getUriOfItem(item);
+
+		var doc = item.ownerDocument;
+		var loc = doc.location.href.replace(/#.*$/, "");
+		//this.ut._log(doc, loc, uri);
+		if(uri.indexOf(loc) != 0)
+			return false;
+		var _uri = uri.substr(loc.length);
+		if(_uri == "" && item.getAttribute && !item.getAttribute("href")) // <a href="">
+			return true;
+		if(_uri.indexOf("#") != 0)
+			return false;
+		var anchor = _uri.substr(1);
+		return !anchor || (!doc.getElementById(anchor) && !doc.getElementsByName(anchor).length);
 	},
 
 	copyItemText: function(e, hidePopup) { // for all
@@ -205,11 +220,11 @@ var handyClicksFuncs = {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
-		if(this.isJSURI(uri)) {
-			this.loadJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin);
-			return true;
-		}
-		if(this.testForFileLink(uri, refererPolicy) || this.testForHighlander(uri))
+		if(
+			this.loadJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin)
+			|| this.testForFileLink(uri, refererPolicy)
+			|| this.testForHighlander(uri)
+		)
 			return true;
 		return false;
 	},
@@ -217,6 +232,19 @@ var handyClicksFuncs = {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
+
+		var voidURI = this.isVoidURI(uri);
+		if(!voidURI && this.isJSURI(uri)) {
+			this.loadNotVoidJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin);
+			return true;
+		}
+		else if(voidURI || this.isDummyURI(item, uri)) {
+			this.loadVoidLinkWithHandler(e, item, loadJSInBackground, refererPolicy, inWin);
+			return true;
+		}
+		return false;
+
+		//=== Old code:
 		if( // void links with handlers
 			this.hc.itemType == "link"
 			&& (!uri || this.isVoidURI(uri))
@@ -234,8 +262,8 @@ var handyClicksFuncs = {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		var evt = document.createEvent("MouseEvents"); // thanks to Tab Scope!
-		evt.initMouseEvent(
-			"click", false, false, item.ownerDocument.defaultView, 1,
+		evt.initMouseEvent( // https://developer.mozilla.org/en/DOM/event.initMouseEvent
+			"click", false, true, item.ownerDocument.defaultView, 1,
 			e.screenX, e.screenY, e.clientX, e.clientY,
 			false, false, false, false,
 			0, null
@@ -249,7 +277,10 @@ var handyClicksFuncs = {
 			});
 			var sc = _this.hc.flags.stopClick;
 			_this.hc.flags.stopClick = false; // allow clicks
-			item.dispatchEvent(evt);
+
+			item.dispatchEvent(evt); // Strange bug: Firefox 3.5 load links like <a href="#id">
+
+			_this.hc.flags.handleClick = true;
 			_this.hc.flags.stopClick = sc;
 			_this.restorePrefs(origPrefs);
 		}
@@ -257,7 +288,7 @@ var handyClicksFuncs = {
 		if(this.pu.pref("notifyVoidLinksWithHandlers"))
 			this.ut.notify(
 				this.ut.getLocalised("title"),
-				this.ut.getLocalised("voidLinkWithHandler")
+				this.ut.getLocalised("voidLinkWithHandler") //~ todo: other message
 					+ (load ? "" : this.ut.getLocalised("clickForOpen")),
 				(load ? null : _f)
 			);
@@ -480,7 +511,7 @@ var handyClicksFuncs = {
 	downloadWithFlashGot: function(e, item) {
 		item = item || this.hc.item;
 		if(typeof gFlashGot == "undefined") {
-			this.ut._err("[Handy Clicks]: missing FlashGot extension ( https://addons.mozilla.org/firefox/addon/220 )");
+			this.ut._err(this.ut.errPrefix + "Missing FlashGot extension ( https://addons.mozilla.org/firefox/addon/220 )");
 			return;
 		}
 		document.popupNode = item;
@@ -491,7 +522,7 @@ var handyClicksFuncs = {
 		uri = uri || this.getUriOfItem(this.hc.item);
 		win = win || this.hc.item.ownerDocument.defaultView;
 		if(typeof SplitBrowser == "undefined") {
-			this.ut._err("[Handy Clicks]: missing Split Browser extension ( https://addons.mozilla.org/firefox/addon/4287 )");
+			this.ut._err(this.ut.errPrefix + "Missing Split Browser extension ( https://addons.mozilla.org/firefox/addon/4287 )");
 			return;
 		}
 		SplitBrowser.addSubBrowser(uri, null, SplitBrowser["POSITION_" + position]);
@@ -567,7 +598,7 @@ var handyClicksFuncs = {
 		if(upCount) {
 			_path = pathStart.replace(new RegExp("(?:[^\\/\\\\]+[\\/\\\\]){" + upCount + "}$"), "");
 			if(!_path || _path == pathStart) {
-				this.ut._err("[Handy Clicks]: Invalid relative path:\n" + path);
+				this.ut._err(this.ut.errPrefix + "Invalid relative path:\n" + path);
 				return null;
 			}
 		}
@@ -594,8 +625,6 @@ var handyClicksFuncs = {
 			);
 			return;
 		}
-//		var process = Components.classes["@mozilla.org/process/util;1"]
-//			.getService(Components.interfaces.nsIProcess);
 		var process = Components.classes["@mozilla.org/process/util;1"]
 			.createInstance(Components.interfaces.nsIProcess);
 		process.init(file);
@@ -682,7 +711,7 @@ var handyClicksFuncs = {
 	showOpenUriWithAppsPopup: function(items) {
 		var uri = this.getUriOfItem();
 		if(!uri) {
-			this.ut._err("[Handy Clicks]: can't get URI of item (" + this.hc.itemType + ")");
+			this.ut._err(this.ut.errPrefix + "Can't get URI of item (" + this.hc.itemType + ")");
 			return;
 		}
 		var path, it, n, args, img;
@@ -928,8 +957,8 @@ var handyClicksFuncs = {
 		img.style.height = h;
 		// this.ut._log("reloadImg -> " + w + " x " + h);
 		// if(parseInt(w) > 32 && parseInt(h) > 32)
-		img.style.background = "url('resource://handyclicks-content/loading.gif') center no-repeat";
-		img.setAttribute("src", "resource://handyclicks-content/spacer.gif"); // transparent gif 1x1
+		img.style.background = "url('" + this.resPath + "loading.gif') center no-repeat";
+		img.setAttribute("src", this.resPath + "spacer.gif"); // transparent gif 1x1
 		setTimeout(
 			function() {
 				img.setAttribute("src", src);
@@ -946,6 +975,12 @@ var handyClicksFuncs = {
 			},
 			0
 		);
+	},
+	get resPath() {
+		delete this.resPath;
+		return this.resPath = this.ut.fxVersion < 3
+			? "chrome://handyclicks/content/res/"
+			: "resource://handyclicks-content/";
 	},
 	getStyle: function(item, propName) {
 		item = item || this.hc.item;

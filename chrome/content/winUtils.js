@@ -4,16 +4,19 @@ var handyClicksWinUtils = {
 		return this.wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
 			.getService(Components.interfaces.nsIWindowMediator);
 	},
-	openWindowByType: function(uri, type, features, win) {
+	openWindowByType: function(win, uri, type, features/*, arg0, arg1, ...*/) {
 		var w = this.wm.getMostRecentWindow(type);
-		w && w.focus();
- 		if(w)
+ 		if(w) {
  			w.focus();
-		else
-			w = (win || window).openDialog(
-				uri, "", features || "chrome,centerscreen,resizable,dialog=0"
-			);
-		return w;
+ 			return w;
+ 		}
+		else {
+			var args = [uri, "_blank", features || "chrome,centerscreen,resizable,dialog=0"];
+			for(var i = 4, len = arguments.length; i < len; i++)
+				args.push(arguments[i]);
+			win = win || window;
+			return win.openDialog.apply(win, args);
+		}
 	},
 	winId: "__handyClicksWinId",
 	openEditor: function(mode, shortcut, itemType) {
@@ -31,7 +34,7 @@ var handyClicksWinUtils = {
 		}
 		w = window.openDialog(
 			"chrome://handyclicks/content/editor.xul",
-			"",
+			"_blank",
 			"chrome,resizable,centerscreen,dialog=0",
 			mode || "shortcut", shortcut, itemType
 		);

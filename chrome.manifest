@@ -3,7 +3,7 @@ resource handyclicks-content chrome/content/res/
 content handyclicks-locale chrome/locale/en-US/
 overlay chrome://browser/content/browser.xul chrome://handyclicks/content/handyclicks.xul
 
-style chrome://handyclicks/content/notify.xul chrome://handyclicks/content/style/notify-old.css
+style chrome://handyclicks/content/notify.xul chrome://handyclicks/content/style/notify-old.css appversion<3.0
 style chrome://handyclicks/content/notify.xul chrome://handyclicks/content/style/notify.css appversion>=3.0
 
 locale  handyclicks en-US chrome/locale/en-US/

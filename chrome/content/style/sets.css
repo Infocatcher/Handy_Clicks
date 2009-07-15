@@ -1,4 +1,5 @@
 @namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
+
 radio[pane="handyClicks-sets-pane-actions"] {
 	list-style-image: url("mouse.png");
 }

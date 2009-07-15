@@ -3,6 +3,7 @@ var handyClicksEditor = {
 	ut: handyClicksUtils,
 	wu: handyClicksWinUtils,
 	ps: handyClicksPrefSvc,
+
 	types: {
 		checkboxes: {
 			__proto__: null,
@@ -115,8 +116,8 @@ var handyClicksEditor = {
 		var isCustom = setsObj.custom;
 		this.customFunction = isCustom;
 		if(isCustom) {
-			this.code.newValue = decodeURIComponent(setsObj.action);
-			this.cLabel.value = decodeURIComponent(setsObj.label);
+			this.code.newValue = this.ps.dec(setsObj.action);
+			this.cLabel.value = this.ps.dec(setsObj.label);
 		}
 		this.initFuncsList(isCustom, setsObj.action || null);
 		if(/(?:^|,)button=(\d)(?:,|$)/.test(this.target))
@@ -160,11 +161,11 @@ var handyClicksEditor = {
 		if(!cType || !cts.hasOwnProperty(cType))
 			return;
 		var ct = cts[cType] || {};
-		cList.value = decodeURIComponent(ct.label || "");
+		cList.value = this.ps.dec(ct.label);
 		this.$("hc-editor-customTypeExtId").value = cType.replace(/^custom_/, "");
 		enabledElt.checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
-		this.$("hc-editor-customTypeDefine").newValue = decodeURIComponent(ct.define || "");
-		this.$("hc-editor-customTypeContext").newValue = decodeURIComponent(ct.contextMenu || "");
+		this.$("hc-editor-customTypeDefine").newValue = this.ps.dec(ct.define);
+		this.$("hc-editor-customTypeContext").newValue = this.ps.dec(ct.contextMenu);
 		this.setWinId();
 	},
 	customTypeLabel: function(it) {
@@ -208,7 +209,7 @@ var handyClicksEditor = {
 				continue;
 			mi = document.createElement("menuitem");
 			typeObj = cTypes[cType] || {};
-			mi.setAttribute("label", decodeURIComponent(typeObj.label || "") || cType);
+			mi.setAttribute("label", this.ps.dec(typeObj.label) || cType);
 			mi.setAttribute("value", cType);
 			_mi = mi.cloneNode(true);
 			dis = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
@@ -435,8 +436,8 @@ var handyClicksEditor = {
 			so.ignoreLinks = this.$("hc-editor-imgIgnoreLinks").checked;
 		if(isCustom) {
 			so.custom = isCustom;
-			so.label = encodeURIComponent(this.$("hc-editor-funcLabel").value);
-			so.action = encodeURIComponent(this.code.value);
+			so.label = this.ps.enc(this.$("hc-editor-funcLabel").value);
+			so.action = this.ps.enc(this.code.value);
 		}
 		else {
 			so.action = fnc;
@@ -496,9 +497,9 @@ var handyClicksEditor = {
 		ct = cts[cType];
 		ct.enabled = newEnabl;
 		var cMenu = this.$("hc-editor-customTypeContext").value;
-		ct.label = encodeURIComponent(label);
-		ct.define = encodeURIComponent(def);
-		ct.contextMenu = cMenu ? encodeURIComponent(cMenu) : null;
+		ct.label = this.ps.enc(label);
+		ct.define = this.ps.enc(def);
+		ct.contextMenu = cMenu ? this.ps.enc(cMenu) : null;
 		this.ps.saveSettingsObjects();
 		this.toggleApply(true);
 

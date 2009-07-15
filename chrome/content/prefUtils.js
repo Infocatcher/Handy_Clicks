@@ -65,7 +65,7 @@ var handyClicksPrefUtils = {
 			default:              return null;
 		}
 	},
-	setPref: function(pName, pVal, saveFlag) {
+	setPref: function(pName, pVal) {
 		var pbr = Components.interfaces.nsIPrefBranch;
 		var pType = this.prefBr.getPrefType(pName);
 		var isNew = pType == 0;
@@ -81,8 +81,7 @@ var handyClicksPrefUtils = {
 			str.data = pVal;
 			this.prefBr.setComplexValue(pName, ss, str);
 		}
-		if(saveFlag)
-			this.savePrefFile();
+		return this;
 	},
 	resetPref: function(pName) {
 		if(this.prefBr.prefHasUserValue(pName))
