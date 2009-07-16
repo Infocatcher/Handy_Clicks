@@ -112,15 +112,15 @@ var handyClicksPrefSvc = {
 			try {
 				df = cts[type].define;
 				cm = cts[type].contextMenu;
-				ct._define = new Function("event,item", this.ps.dec(df));
-				ct._contextMenu = cm ? new Function("event,item,origItem", this.ps.dec(cm)) : null;
+				ct._define = new Function("event,item", this.dec(df));
+				ct._contextMenu = cm ? new Function("event,item,origItem", this.dec(cm)) : null;
 				ct._initialized = true;
 			}
 			catch(e) {
 				this.ut.notify(
 					this.ut.getLocalised("errorTitle"),
 					this.ut.getLocalised("customTypeCompileError")
-						.replace("%l", this.ps.dec(ct.label))
+						.replace("%l", this.dec(ct.label))
 						.replace("%id", type)
 						.replace("%e", e)
 					+ this.ut.getLocalised("openConsole"),

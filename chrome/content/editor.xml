@@ -1,11 +1,14 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <bindings id="handyClicks-bindings" xmlns="http://www.mozilla.org/xbl">
 	<binding id="codeEditor" extends="chrome://global/content/bindings/textbox.xml#textarea">
 		<implementation>
 			<constructor>
+			<![CDATA[
 				this.editor = this.inputField // Thanks to Custom Buttons!
 					.QueryInterface(Components.interfaces.nsIDOMNSEditableElement)
-					.editor;
+					.editor
+					.QueryInterface(Components.interfaces.nsIPlaintextEditor);
+			]]>
 			</constructor>
 			<field name="editor">null</field>
 			<property name="newValue">
@@ -17,9 +20,7 @@
 			<method name="cmdInsert">
 				<parameter name="text" />
 				<body>
-					this.editor
-						.QueryInterface(Components.interfaces.nsIPlaintextEditor)
-						.insertText(text);
+					this.editor.insertText(text);
 				</body>
 			</method>
 			<method name="insertText">

@@ -57,6 +57,15 @@
 	);
 	]]></script>
 
+	<commandset id="mainCommandSet">
+		<command id="handyClicks-cmd-openSettings" oncommand="handyClicks.openSettings();" label="&handyClicks.settingsLabel;" />
+		<command id="handyClicks-cmd-editMode" oncommand="handyClicks.startEditMode();" label="&handyClicks.editModeLabel;" />
+	</commandset>
+	<keyset id="mainKeyset">
+		<key id="handyClicks-key-toggleStatus" oncommand="handyClicks.toggleStatus();" disabled="true" />
+		<key id="handyClicks-key-openSettings"  command="handyClicks-cmd-openSettings" disabled="true" />
+		<key id="handyClicks-key-editMode" command="handyClicks-cmd-editMode" disabled="true" />
+	</keyset>
 	<statusbar id="status-bar">
 		<statusbarpanel id="handyClicks-toggleStatus-sBarIcon" class="statusbarpanel-iconic"
 			insertafter="page-report-button"
@@ -66,8 +75,8 @@
 	</statusbar>
 	<popupset id="mainPopupSet">
 		<menupopup id="handyClicks-settingsPopup">
-			<menuitem id="handyClicks-settingsMenuitem" label="&handyClicks.settingsLabel;" oncommand="handyClicks.openSettings();" />
-			<menuitem id="handyClicks-clickEdit" label="&handyClicks.clickEditLabel;" oncommand="handyClicks.editModeOn();" />
+			<menuitem id="handyClicks-settingsMenuitem" command="handyClicks-cmd-openSettings" key="handyClicks-key-editMode" />
+			<menuitem id="handyClicks-editMode" command="handyClicks-cmd-editMode" key="handyClicks-key-openSettings" />
 		</menupopup>
 	</popupset>
 	<window id="main-window">

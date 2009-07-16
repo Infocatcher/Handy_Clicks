@@ -133,8 +133,8 @@ var handyClicksEditor = {
 		this.$("hc-editor-enabled").checked = typeof setsObj.enabled != "boolean" || setsObj.enabled;
 	},
 	set customFunction(isCustom) {
-		this.$("hc-editor-funcArgsBox").hidden = isCustom;
-		this.$("hc-editor-funcCustom").hidden = !isCustom;
+		this.$("hc-editor-funcArgsBox").collapsed = isCustom;
+		this.$("hc-editor-funcCustom").collapsed = !isCustom;
 	},
 	loadCustomType: function(type) {
 		if(type && type.indexOf("custom_" == 0))

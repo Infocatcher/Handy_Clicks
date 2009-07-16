@@ -33,6 +33,7 @@ var handyClicks = {
 		window.addEventListener("dblclick", this, true);
 		this.setStatus();
 		this.pu.addPrefsObserver(this.updUI, this);
+		this.registerHotkeys();
 	},
 	destroy: function() {
 		window.removeEventListener("unload", this, false);
@@ -516,7 +517,8 @@ var handyClicks = {
 		if(
 			(all || this.itemTypeInSets(sets, "tabbar"))
 			&& it.namespaceURI == this.XULNS
-			&& it.className != "tabs-alltabs-button"
+			&& !(it.className && /^tabs-.+-button$/.test(it.className))
+			//&& it.className != "tabs-alltabs-button"
 			&& it.getAttribute("anonid") != "close-button"
 		) {
 			_it = it;
@@ -750,7 +752,7 @@ var handyClicks = {
 			"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
 		);
 	},
-	editModeOn: function() {
+	startEditMode: function() {
 		setTimeout(function(_this) { _this.editMode = true; }, 10, this);
 	},
 	openEditor: function(e) {
@@ -767,7 +769,25 @@ var handyClicks = {
 		var enabled = this.enabled;
 		sbi.setAttribute("hc_enabled", enabled);
 		sbi.tooltipText = this.ut.getLocalised(enabled ? "enabled" : "disabled");
-		document.getElementById("handyClicks-clickEdit").setAttribute("disabled", !enabled);
+		document.getElementById("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
+	},
+
+	registerHotkeys: function() {
+		this.pu.prefBr.getBranch(this.pu.nPrefix + "key.")
+			.getChildList("", {})
+			.forEach(this.registerHotkey, this);
+	},
+	registerHotkey: function(kId) {
+		var keyStr = this.pu.pref("key." + kId);
+		if(!keyStr) // Key is disabled
+			return;
+		var tokens = keyStr.split(" ");
+		var key = tokens.pop() || " ";
+		var modifiers = tokens.join(",");
+		var kElt = document.getElementById("handyClicks-key-" + kId);
+		kElt.removeAttribute("disabled");
+		kElt.setAttribute(key.indexOf("VK_") == 0 ? "keycode" : "key", key);
+		kElt.setAttribute("modifiers", modifiers);
 	}
 };
 window.addEventListener("load", handyClicks, false);
