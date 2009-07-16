@@ -17,7 +17,17 @@
 <!ENTITY hc.sets.cmdEditType "Редактировать добавленный тип">
 <!ENTITY hc.sets.cmdDel "Удалить">
 
+
 <!ENTITY hc.sets.clickPrefsTitle "Настройки">
+
+<!ENTITY hc.sets.enabled "Включено">
+<!ENTITY hc.sets.forceHideContextMenu "Принудительно скрывать контекстное меню">
+<!ENTITY hc.sets.stopMousedownEvent 'Останавливать событие "mousedown"'>
+<!ENTITY hc.sets.disallowMousemove "Прекращать обработку кликов при перемещении мыши с зажатыми кнопками (жесты мышью)">
+<!ENTITY hc.sets.left "Левая">
+<!ENTITY hc.sets.middle "Средняя">
+<!ENTITY hc.sets.right "Правая">
+<!ENTITY hc.sets.maxDistance "Максимальное перемещение:">
 
 <!-- Editor -->
 <!ENTITY hc.editor.title "Handy Clicks: редактор">

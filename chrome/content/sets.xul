@@ -72,6 +72,7 @@
 		<preferences>
 			<preference id="enabled" type="bool" name="extensions.handyclicks.enabled" />
 			<preference id="forceHideContextMenu" type="bool" name="extensions.handyclicks.forceHideContextMenu" />
+			<preference id="stopMousedownEvent" type="bool" name="extensions.handyclicks.stopMousedownEvent" />
 			<preference id="disallowMousemoveDist" type="int" name="extensions.handyclicks.disallowMousemoveDist" />
 			<preference id="convertURIs" type="bool" name="extensions.handyclicks.convertURIs" />
 			<preference id="convertURIsTo" type="string" name="extensions.handyclicks.convertURIsTo" />
@@ -84,17 +85,18 @@
 			<preference id="filesLinksMask" type="string" name="extensions.handyclicks.filesLinksMask" />
 		</preferences>
 
-		<checkbox preference="enabled" id="handyClicks-sets-enabled" label="Enabled" oncommand="handyClicksSets.showPrefs(this);" />
+		<checkbox preference="enabled" id="handyClicks-sets-enabled" label="&hc.sets.enabled;" oncommand="handyClicksSets.showPrefs(this);" />
 		<vbox>
-			<checkbox preference="forceHideContextMenu" label="Force hide context menu" />
+			<checkbox preference="forceHideContextMenu" label="&hc.sets.forceHideContextMenu;" />
+			<checkbox preference="stopMousedownEvent" label="&hc.sets.stopMousedownEvent;" />
 			<groupbox>
-				<caption label="Disallow mousemove for buttons" />
+				<caption label="&hc.sets.disallowMousemove;" />
 				<hbox>
-					<checkbox id="disallowMousemoveForButtons-0" label="Left" />
-					<checkbox id="disallowMousemoveForButtons-1" label="Middle" />
-					<checkbox id="disallowMousemoveForButtons-2" label="Right" />
+					<checkbox id="disallowMousemoveForButtons-0" label="&hc.sets.left;" />
+					<checkbox id="disallowMousemoveForButtons-1" label="&hc.sets.middle;" />
+					<checkbox id="disallowMousemoveForButtons-2" label="&hc.sets.right;" />
 					<hbox align="center">
-						<label value="Max distance:" />
+						<label value="&hc.sets.maxDistance;" />
 						<textbox preference="disallowMousemoveDist" type="number" min="0" max="60" increment="1" style="width: 4.5em;" />
 						<label value="px" />
 					</hbox>

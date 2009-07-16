@@ -43,8 +43,12 @@ var handyClicks = {
 		window.removeEventListener("dblclick", this, true);
 		this.clearCMenuTimeout();
 	},
-	get disabled() {
-		return !this.pu.pref("enabled");
+	_enabled: true,
+	get enabled() {
+		return this._enabled && this.pu.pref("enabled");
+	},
+	set enabled(val) {
+		this.pu.pref("enabled", val);
 	},
 	getItemContext: function(e) {
 		var cm = null;
@@ -184,13 +188,19 @@ var handyClicks = {
 			if(fls.hasOwnProperty(p))
 				fls[p] = false;
 	},
+	skipFlagsDelay: function() {
+		setTimeout(function(_this) { _this.skipFlags(); }, 0, this);
+	},
 	mousedownHandler: function(e) { //~ todo: test hiding of context menu in Linux
-		if(this.disabled)
+		if(!this.enabled)
 			return;
 
 		var funcObj = this.getFuncObjByEvt(e);
 		if(!funcObj)
 			return;
+
+		if(this.pu.pref("stopMousedownEvent"))
+			this.stopEvent(e);
 
 		if(this._cMenu && typeof this._cMenu.hidePopup == "function")
 			this._cMenu.hidePopup();
@@ -557,6 +567,7 @@ var handyClicks = {
 			);
 	},
 	getFuncObjByEvt: function(e) {
+		this.hasSettings = false;
 		var evtStr = this.getEvtStr(e);
 		var isMousedown = e.type == "mousedown";
 		if(isMousedown)
@@ -571,7 +582,9 @@ var handyClicks = {
 		)
 			this.defineItem(e, sets);
 		this.saveEvent(e);
-		return this.getFuncObj(sets) || (this.editMode ? {} : null);
+		var funcObj = this.getFuncObj(sets) || (this.editMode ? {} : null);
+		this.hasSettings = !!funcObj;
+		return funcObj;
 	},
 	cloneObj: function(obj) {
 		obj = obj || {};
@@ -598,10 +611,10 @@ var handyClicks = {
 		e.stopPropagation();
 	},
 	clickHandler: function(e) {
-		if(this.disabled)
+		if(!this.enabled)
 			return;
 
-		if(this.flags.stopClick)
+		if(this.flags.stopClick || (!this.flags.runned && this.hasSettings))
 			this.stopEvent(e); // Stop "contextmenu" event in Windows
 
 		var funcObj = this.getFuncObjByEvt(e);
@@ -610,12 +623,14 @@ var handyClicks = {
 		this.runFunc(e, funcObj);
 	},
 	mouseupHandler: function(e) {
-		if(this.disabled)
+		if(!this.enabled)
 			return;
-		setTimeout(function(_this) { _this.skipFlags(); }, 0, this);
+		if(this.flags.runned || this.hasSettings)
+			this.stopEvent(e);
+		this.skipFlagsDelay();
 	},
 	dblclickHandler: function(e) {
-		if(this.disabled)
+		if(!this.enabled)
 			return;
 		var funcObj = this.getFuncObjByEvt(e);
 		if(!funcObj)
@@ -719,7 +734,7 @@ var handyClicks = {
 
 	// GUI:
 	toggleStatus: function() {
-		this.pu.pref("enabled", !this.pu.pref("enabled"));
+		this.enabled = !this.enabled;
 	},
 	doSettings: function(e) {
 		switch(e.button) {
@@ -749,7 +764,7 @@ var handyClicks = {
 	},
 	setStatus: function() {
 		var sbi = document.getElementById("handyClicks-toggleStatus-sBarIcon");
-		var enabled = this.pu.pref("enabled");
+		var enabled = this.enabled;
 		sbi.setAttribute("hc_enabled", enabled);
 		sbi.tooltipText = this.ut.getLocalised(enabled ? "enabled" : "disabled");
 		document.getElementById("handyClicks-clickEdit").setAttribute("disabled", !enabled);

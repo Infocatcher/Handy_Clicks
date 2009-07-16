@@ -159,7 +159,6 @@ var handyClicksFuncs = {
 				this.ut._err("[Right Links]: openUriInTab -> invalid moveTo argument: " + moveTo);
 				return;
 		}
-		this.ut._log(this.relativeIndex);
 		if(
 			"TreeStyleTabService" in window
 			&& (moveTo == "after" || moveTo == "relative")
@@ -261,13 +260,9 @@ var handyClicksFuncs = {
 	loadVoidLinkWithHandler: function(e, item, loadJSInBackground, refererPolicy, inWin) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
-		var evt = document.createEvent("MouseEvents"); // thanks to Tab Scope!
-		evt.initMouseEvent( // https://developer.mozilla.org/en/DOM/event.initMouseEvent
-			"click", false, true, item.ownerDocument.defaultView, 1,
-			e.screenX, e.screenY, e.clientX, e.clientY,
-			false, false, false, false,
-			0, null
-		);
+
+		var evts = this.createEvents(e, item, ["mousedown", "mouseup", "click"]);
+
 		var _this = this;
 		function _f() {
 			var origPrefs = _this.setPrefs({
@@ -275,25 +270,56 @@ var handyClicksFuncs = {
 				"browser.tabs.loadDivertedInBackground": loadJSInBackground,
 				"network.http.sendRefererHeader": _this.getRefererPolicy(refererPolicy)
 			});
-			var sc = _this.hc.flags.stopClick;
-			_this.hc.flags.stopClick = false; // allow clicks
+			_this.hc._enabled = false;
+			_this.hc.clearCMenuTimeout();
+			_this.hc.flags.stopContextMenu = true;
 
-			item.dispatchEvent(evt); // Strange bug: Firefox 3.5 load links like <a href="#id">
+			evts.forEach(function(evt) { evt(); });
 
-			_this.hc.flags.handleClick = true;
-			_this.hc.flags.stopClick = sc;
+			_this.hc._enabled = true;
+			_this.hc.skipFlagsDelay();
 			_this.restorePrefs(origPrefs);
 		}
 		var load = this.pu.pref("loadVoidLinksWithHandlers");
 		if(this.pu.pref("notifyVoidLinksWithHandlers"))
 			this.ut.notify(
 				this.ut.getLocalised("title"),
-				this.ut.getLocalised("voidLinkWithHandler") //~ todo: other message
+				this.ut.getLocalised("voidLinkWithHandler").replace(/\s*%h/, this.getItemHandlers(item))
 					+ (load ? "" : this.ut.getLocalised("clickForOpen")),
 				(load ? null : _f)
 			);
 		if(load)
 			_f();
+	},
+	createEvents: function(origEvent, item, evtTypes) {
+		return evtTypes.map(
+			function(evtType) {
+				return this.createEvent(origEvent, item, evtType);
+			},
+			this
+		);
+	},
+	createEvent: function(origEvent, item, evtType) {
+		item = item || origEvent.originalTarget;
+		var evt = document.createEvent("MouseEvents");
+		evt.initMouseEvent( // https://developer.mozilla.org/en/DOM/event.initMouseEvent
+			evtType, false, true, item.ownerDocument.defaultView, 1,
+			origEvent.screenX, origEvent.screenY, origEvent.clientX, origEvent.clientY,
+			false, false, false, false,
+			0, null
+		);
+		return function() { item.dispatchEvent(evt) };
+	},
+	getItemHandlers: function(item) {
+		item = (item || this.hc.item).wrappedJSObject;
+		var hnds = [];
+		["onmousedown", "onmouseup", "onclick"].forEach(
+			function(h) {
+				if(h in item && typeof item[h] == "function")
+					hnds.push(h);
+			}
+		);
+		return hnds.length ? " (" + hnds.join(", ") + ")" : "";
 	},
 	getWinRestriction: function(inWin) {
 		return inWin == true
