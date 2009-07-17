@@ -8,7 +8,7 @@ var handyClicksSets = {
 	DOMCache: { __proto__: null },
 	rowsCache: { __proto__: null },
 	init: function() {
-		this.initChortcuts();
+		this.initShortcuts();
 
 		this.drawTree();
 		this.updButtons();
@@ -31,7 +31,7 @@ var handyClicksSets = {
 			this.toggleApply(true);
 		this.focusSearch();
 	},
-	initChortcuts: function() {
+	initShortcuts: function() {
 		this.tree = this.$("handyClicks-setsTree");
 		this.view = this.tree.view;
 		this.selection = this.view.selection;

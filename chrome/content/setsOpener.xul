@@ -6,10 +6,10 @@
 	// Prevent modal windows
 	window.resizeTo(0, 0);
 	handyClicksWinUtils.openWindowByType(
+		window.opener,
 		"chrome://handyclicks/content/sets.xul",
 		"handyclicks:settings",
-		"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0",
-		window.opener
+		"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
 	);
 	window.close();
 	]]></script>

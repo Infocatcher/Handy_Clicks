@@ -243,7 +243,7 @@ var handyClicksFuncs = {
 		}
 		return false;
 
-		//=== Old code:
+		/*** Old code:
 		if( // void links with handlers
 			this.hc.itemType == "link"
 			&& (!uri || this.isVoidURI(uri))
@@ -256,6 +256,7 @@ var handyClicksFuncs = {
 			this.loadVoidLinkWithHandler(e, item, loadJSInBackground, refererPolicy, inWin);
 		else
 			this.loadNotVoidJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin);
+		***/
 	},
 	loadVoidLinkWithHandler: function(e, item, loadJSInBackground, refererPolicy, inWin) {
 		e = e || this.hc.copyOfEvent;

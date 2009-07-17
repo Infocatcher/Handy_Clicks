@@ -2,15 +2,18 @@
 <bindings id="handyClicks-bindings" xmlns="http://www.mozilla.org/xbl">
 	<binding id="codeEditor" extends="chrome://global/content/bindings/textbox.xml#textarea">
 		<implementation>
-			<constructor>
-			<![CDATA[
-				this.editor = this.inputField // Thanks to Custom Buttons!
-					.QueryInterface(Components.interfaces.nsIDOMNSEditableElement)
-					.editor
-					.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-			]]>
-			</constructor>
-			<field name="editor">null</field>
+			<field name="tabSymbol">"\t"</field>
+			<field name="_editor">null</field>
+			<property name="editor" readonly="true">
+				<getter>
+					if(!this._editor)
+						this._editor = this.inputField // Thanks to Custom Buttons!
+							.QueryInterface(Components.interfaces.nsIDOMNSEditableElement)
+							.editor
+							.QueryInterface(Components.interfaces.nsIPlaintextEditor);
+					return this._editor;
+				</getter>
+			</property>
 			<property name="newValue">
 				<setter>
 					this.value = val;
@@ -163,8 +166,8 @@
 			</method>
 		</implementation>
 		<handlers>
-			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent('\t', false);" />
-			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent('\t', true);" modifiers="shift" />
+			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent(this.tabSymbol, false);" />
+			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent(this.tabSymbol, true);" modifiers="shift" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.setIndent(' ', false);" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.setIndent(' ', true);" modifiers="shift" />
 			<handler event="keypress" preventdefault="true" key="a" action="this.toggleComments();" modifiers="control,shift" />
