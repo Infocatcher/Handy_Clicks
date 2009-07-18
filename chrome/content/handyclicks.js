@@ -200,7 +200,7 @@ var handyClicks = {
 		if(!funcObj)
 			return;
 
-		if(this.pu.pref("stopMousedownEvent"))
+		if(this.pu.pref("stopMousedownEvent") || this.editMode)
 			this.stopEvent(e);
 
 		if(this._cMenu && typeof this._cMenu.hidePopup == "function")
@@ -432,7 +432,7 @@ var handyClicks = {
 		) {
 			this.itemType = "img";
 			this.item = it;
-			if(sets.img.ignoreLinks)
+			if(this.ut.getProperty(sets, "img", "ignoreLinks"))
 				return;
 		}
 
@@ -616,7 +616,7 @@ var handyClicks = {
 		if(!this.enabled)
 			return;
 
-		if(this.flags.stopClick || (!this.flags.runned && this.hasSettings))
+		if(this.flags.stopClick || (!this.flags.runned && this.hasSettings) || this.editMode)
 			this.stopEvent(e); // Stop "contextmenu" event in Windows
 
 		var funcObj = this.getFuncObjByEvt(e);
@@ -627,7 +627,7 @@ var handyClicks = {
 	mouseupHandler: function(e) {
 		if(!this.enabled)
 			return;
-		if(this.flags.runned || this.hasSettings)
+		if(this.flags.runned || this.hasSettings || this.editMode)
 			this.stopEvent(e);
 		this.skipFlagsDelay();
 	},

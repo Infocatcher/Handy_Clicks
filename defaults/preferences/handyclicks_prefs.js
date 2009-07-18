@@ -1,5 +1,5 @@
 // Description:
-pref("extensions.handyclicks@infocatcher.ucoz.net.description", "chrome://handyclicks/locale/hcs.properties");
+pref("extensions.handyclicks@infocatcher.description", "chrome://handyclicks/locale/hcs.properties");
 
 pref("extensions.handyclicks.enabled", true);
 pref("extensions.handyclicks.stopMousedownEvent", false);
@@ -25,5 +25,7 @@ pref("extensions.handyclicks.filesLinksMask", "^[^\\?]*\.(zip|rar|7z|gz|tar|bz2|
 pref("extensions.handyclicks.key.toggleStatus", "VK_F2");
 pref("extensions.handyclicks.key.openSettings", "shift VK_F2");
 pref("extensions.handyclicks.key.editMode", "accel VK_F2");
+
+pref("extensions.handyclicks.editor.tabSymbol", "	");
 
 pref("extensions.handyclicks.devMode", true);

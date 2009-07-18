@@ -557,6 +557,12 @@ var handyClicksFuncs = {
 			this.hideItemPopup();
 	},
 
+	// Generated popup:
+	createPopup: function(items) {
+		var popup = this.popup;
+		this.appendItems(popup, items);
+		return popup;
+	},
 	get popup() {
 		var pSet = document.getElementById("mainPopupSet");
 		var id = "handyClicks-generatedPopup";
@@ -569,11 +575,40 @@ var handyClicksFuncs = {
 		pSet.appendChild(popup);
 		return popup;
 	},
-	createPopup: function(items) {
-		var popup = this.popup;
-		this.appendChilds(popup, items);
-		return popup;
+	isArray: function(arr) {
+		return arr instanceof Array
+			|| Object.prototype.toString.call(arr) === "[object Array]";
 	},
+	appendItems: function(parent, items) {
+		items.forEach(function(item) { this.appendItem(parent, item); }, this);
+
+		/***
+		for(var i = 0; i < items.length; i++)
+			this["appendMenu" + (this.isArray(items[i]) ? "" : "item")](parent, items[i]);
+		***/
+	},
+	appendItem: function(parent, item) {
+		var tag = this.ut.getProperty(item, "tagName");
+		delete item.tagName;
+		var childs = this.ut.getProperty(item, "childNodes");
+		delete item.childNodes;
+
+		var node = parent.appendChild(document.createElement(tag));
+		var type, pName;
+		for(var rawName in item) {
+			if(!/^(attr|prop)_(.+)$/.test(rawName))
+				continue;
+			type = RegExp.$1;
+			pName = RegExp.$2;
+			if(type == "attr")
+				node.setAttribute(pName, item[rawName]);
+			else
+				node[pName] = item[rawName];
+		}
+		if(this.isArray(childs))
+			this.appendItems(node, childs);
+	},
+
 	showGeneratedPopup: function(items) {
 		var popup = this.createPopup(items);
 		this.hc.showPopupOnItem(popup);
@@ -586,74 +621,44 @@ var handyClicksFuncs = {
 			this.ut._err(this.ut.errPrefix + "Can't get URI of item (" + this.hc.itemType + ")");
 			return;
 		}
-		this.addAppsProps(items, uri, checkFiles);
+		this.addAppsProps(items, this.decodeUri(uri), checkFiles);
 		var popup = this.showGeneratedPopup(items);
 		popup.setAttribute("oncommand", "handyClicksFuncs.openUriWithApp(event, this);");
-		popup.__uri = this.convertStrFromUnicode(uri);
+		popup.hc_uri = this.convertStrFromUnicode(uri);
 	},
 	addAppsProps: function(items, uri, checkFiles) {
-		var path, it, n, args, img;
-		var attrBase = this.tooltipAttrBase;
-		for(var i = 0; i < items.length; i++) {
-			it = items[i];
-			if(this.isArray(it)) {
-				this.addAppsProps(it[1], uri, checkFiles);
-				continue;
-			}
-			n = 0;
-			path = it.__path;
-			img = it.__image;
-			if(path) {
-				path = this.getRelativePath(path);
-				it.className = "menuitem-iconic";
-				if(checkFiles && !this.fileExists(path))
-					it.className += " handyClicks-invalidPath";
-				img = (img && this.getRelativePath(img) || path);
-				it.image = "moz-icon:file://" + img;
-				it[attrBase + n++] = path;
-				it.__path = path;
-			}
-			if(this.isArray(it.__args)) {
-				args = it.__args;
-				for(var j = 0; j < args.length; j++)
-					it[attrBase + n++] = args[j];
-			}
-			if(it.hasOwnProperty("label"))
-				it[attrBase + n++] = this.decodeUri(uri);
-		}
+		items.forEach(function(item) { this.addAppProps(item, uri, checkFiles); }, this);
+	},
+	addAppProps: function(item, uri, checkFiles) {
+		var childs = this.ut.getProperty(item, "childNodes");
+		if(this.isArray(childs))
+			this.addAppsProps(childs, uri, checkFiles);
+		var path = this.ut.getProperty(item, "prop_hc_path");
+		if(!path)
+			return;
+		var icon = this.ut.getProperty(item, "prop_hc_icon");
+		delete item.prop_hc_icon;
+
+		var ttBase = "attr_" + this.tooltipAttrBase;
+		var n = 0;
+
+		path = this.getRelativePath(path);
+		this.ut._log(path);
+		item.prop_className = (item.hasOwnProperty("prop_className") ? item.prop_className + " " : "")
+			+ "menuitem-iconic";
+		if(checkFiles && !this.fileExists(path))
+			item.prop_className += " handyClicks-invalidPath";
+		item.attr_image = "moz-icon:file://" + (icon && this.getRelativePath(icon) || path);
+		item[ttBase + n++] = path;
+		item.prop_hc_path = path;
+		
+		var args = this.ut.getProperty(item, "prop_hc_args");
+		if(this.isArray(args))
+			for(var j = 0, len = args.length; j < len; j++)
+				item[ttBase + n++] = args[j];
+		item[ttBase + n++] = uri;
 	},
 
-	isArray: function(arr) {
-		return arr instanceof Array
-			|| Object.prototype.toString.call(arr) === "[object Array]";
-	},
-	appendChilds: function(parent, childs) {
-		for(var i = 0; i < childs.length; i++)
-			this["appendMenu" + (this.isArray(childs[i]) ? "" : "item")](parent, childs[i]);
-	},
-	appendMenu: function(parent, itemsArr) {
-		var menu = document.createElement("menu");
-		this.setAttributes(menu, itemsArr[0]);
-		var mPopup = document.createElement("menupopup");
-		this.appendChilds(mPopup, itemsArr[1]);
-		menu.appendChild(mPopup);
-		parent.appendChild(menu);
-	},
-	appendMenuitem: function(parent, attrs) {
-		var mi = document.createElement(attrs.hasOwnProperty("label") ? "menuitem" : "menuseparator");
-		this.setAttributes(mi, attrs);
-		parent.appendChild(mi);
-	},
-	setAttributes: function(item, attrs) {
-		for(var p in attrs) {
-			if(!attrs.hasOwnProperty(p))
-				continue;
-			if(typeof attrs[p] != "string" || p.indexOf("__") == 0 || p == "className")
-				item[p] = attrs[p]; // not works for "oncommand"
-			else
-				item.setAttribute(p, attrs[p]);
-		}
-	},
 	get profileDir() {
 		delete this.profileDir;
 		return this.profileDir = this.ps.profileDir.path.replace(/[\\\/]$/, "");
@@ -765,12 +770,12 @@ var handyClicksFuncs = {
 		return suc.ConvertFromUnicode(str);
 	},
 	openUriWithApp: function(e, popup) {
-		var mi = e.target;
-		if(mi.nodeName != "menuitem")
+		var tar = e.target;
+		if(!tar.hasOwnProperty("hc_path"))
 			return;
-		var args = mi.__args || [];
-		args.push(popup.__uri);
-		this.startProcess(mi.__path, args);
+		var args = tar.hc_args || [];
+		args.push(popup.hc_uri);
+		this.startProcess(tar.hc_path, args);
 	},
 	decodeUri: function(value) { // code by Ex Bookmark Properties ( https://addons.mozilla.org/firefox/addon/7396 )
 		if(!value)

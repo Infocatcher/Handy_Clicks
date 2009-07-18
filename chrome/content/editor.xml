@@ -2,7 +2,7 @@
 <bindings id="handyClicks-bindings" xmlns="http://www.mozilla.org/xbl">
 	<binding id="codeEditor" extends="chrome://global/content/bindings/textbox.xml#textarea">
 		<implementation>
-			<field name="tabSymbol">"\t"</field>
+			<field name="tabSymbol">handyClicksPrefUtils.pref("editor.tabSymbol") || "\t";</field>
 			<field name="_editor">null</field>
 			<property name="editor" readonly="true">
 				<getter>
@@ -94,6 +94,8 @@
 
 					var block = val.substring(startLine, endLine);
 					if(removeFlag) {
+						if(/^ {2,}$/.test(indentChar))
+							indentChar = "( {1," + indentChar.length + "}|\\t)";
 						var re = new RegExp("^" + indentChar, "mg");
 						if(re.test(block))
 							block = block.replace(re, "");
