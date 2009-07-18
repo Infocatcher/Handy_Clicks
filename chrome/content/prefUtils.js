@@ -5,19 +5,21 @@ var handyClicksPrefUtils = {
 	// Preferences:
 	nPrefix: "extensions.handyclicks.",
 
-	// Initialization:
-	get nsIPref() {
-		return Components.classes["@mozilla.org/preferences;1"]
-			.createInstance(Components.interfaces.nsIPref);
+	get prefBr() {
+		delete this.prefBr;
+		return this.prefBr = Components.classes["@mozilla.org/preferences-service;1"]
+			.getService(Components.interfaces.nsIPrefBranch2);
 	},
+
+	// Initialization:
 	init: function() {
 		window.addEventListener("unload", this, false); // destroy
-		this.nsIPref.addObserver(this.nPrefix, this, false);
+		this.prefBr.addObserver(this.nPrefix, this, false);
 		this.nLength = this.nPrefix.length;
 	},
 	destroy: function() {
 		window.removeEventListener("unload", this, false);
-		this.nsIPref.removeObserver(this.nPrefix, this);
+		this.prefBr.removeObserver(this.nPrefix, this);
 	},
 	handleEvent: function(e) {
 		if(e.type == "unload")
@@ -34,11 +36,6 @@ var handyClicksPrefUtils = {
 	},
 
 	// API functions:
-	get prefBr() {
-		delete this.prefBr;
-		return this.prefBr = Components.classes["@mozilla.org/preferences-service;1"]
-			.getService(Components.interfaces.nsIPrefBranch);
-	},
 	get prefSvc() {
 		delete this.prefSvc;
 		return this.prefSvc = Components.classes["@mozilla.org/preferences-service;1"]

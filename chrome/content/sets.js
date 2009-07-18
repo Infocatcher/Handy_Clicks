@@ -28,7 +28,7 @@ var handyClicksSets = {
 		if(this.instantApply)
 			this.applyButton.hidden = true;
 		else
-			this.toggleApply(true);
+			this.applyButton.disabled = true;
 		this.focusSearch();
 	},
 	initShortcuts: function() {
@@ -41,14 +41,7 @@ var handyClicksSets = {
 		this.cmdEditType = this.$("handyClicks-sets-cmdEditType");
 		this.miEditType = this.$("handyClicks-sets-miEditType");
 		this.searcher._tree = this.tree;
-	},
-
-	get applyButton() {
-		delete this.applyButton;
-		return this.applyButton = document.documentElement.getButton("extra1");
-	},
-	toggleApply: function(dis) {
-		this.applyButton.disabled = dis;
+		this.applyButton = document.documentElement.getButton("extra1");
 	},
 
 	/*** Actions pane ***/
@@ -75,13 +68,13 @@ var handyClicksSets = {
 		for(var rowId in this.rowsCache)
 			this.setRowStatus(rowId, false);
 
-		var pId = this.wu.winId;
+		var wProp = this.wu.winIdProp;
 		var ws = this.wu.wm.getEnumerator("handyclicks:editor");
 		var w;
 		while(ws.hasMoreElements()) {
 			w = ws.getNext();
-			if(pId in w)
-				this.setRowStatus(w[pId], true);
+			if(wProp in w)
+				this.setRowStatus(w[wProp], true);
 		}
 	},
 	redrawTree: function() {
@@ -303,7 +296,7 @@ var handyClicksSets = {
 		)
 			return;
 		tRows.forEach(this.deleteItem, this);
-		this.toggleApply(false);
+		this.applyButton.disabled = false;
 	},
 	deleteItem: function(tRow) {
 		var shortcut = tRow.__shortcut;
@@ -334,30 +327,12 @@ var handyClicksSets = {
 	openEditorWindow: function(tRow, mode) { // mode: "shortcut" or "itemType"
 		var shortcut = tRow ? tRow.__shortcut : Date.now() + "-" + Math.random();
 		var itemType = tRow ? tRow.__itemType : null;
-		var win = this.wu.openEditor(mode, shortcut, itemType);
-//		if(!tRow || mode == "itemType")
-//			return;
-//		if("__handyClicksUnloadHandler" in win)
-//			return;
-//		win.__handyClicksUnloadHandler = true;
-//		this.addProperties(tRow, { hc_edited: true });
-//		var _this = this;
-//		win.addEventListener(
-//			"unload",
-//			function(e) {
-//				if(e.target.location.href.indexOf("chrome://") != 0)
-//					return;
-//				win.removeEventListener(e.type, arguments.callee, false);
-//				if(tRow)
-//					_this.addProperties(tRow, { hc_edited: false });
-//			},
-//			false
-//		);
+		this.wu.openEditor(mode, shortcut, itemType);
 	},
 	setRowStatus: function(rowId, editStat) {
 		if(!(rowId in this.rowsCache))
 			return;
-		Array.prototype.forEach.call(
+		Array.prototype.forEach.call( // Status for all cells in row
 			this.rowsCache[rowId].getElementsByTagName("treecell"),
 			function(cell) {
 				this.addProperties(cell, { hc_edited: editStat });
@@ -399,7 +374,7 @@ var handyClicksSets = {
 		if(this.instantApply)
 			this.ps.saveSettingsObjects(true);
 		else
-			this.toggleApply(false);
+			this.applyButton.disabled = false;
 	},
 	toggleRowEnabled: function(rowIndx, column, tRow) {
 		var checked = this.view.getCellValue(rowIndx, column);
@@ -546,7 +521,7 @@ var handyClicksSets = {
 		this.ps.saveSettingsObjects(applyFlag);
 		if(applyFlag && !this.instantApply) {
 			this.savePrefpanes();
-			this.toggleApply(true);
+			this.applyButton.disabled = true;
 		}
 	},
 	savePrefpanes: function() {
@@ -578,7 +553,7 @@ var handyClicksSets = {
 		if(this.instantApply)
 			this.savePrefs();
 		else
-			this.toggleApply(false);
+			this.applyButton.disabled = false;
 	},
 	updateDependencies: function(it) {
 		var dis = it.hasAttribute("hc_disabledvalues")

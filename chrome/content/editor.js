@@ -37,10 +37,9 @@ var handyClicksEditor = {
 		this.mBox.selectedIndex = this.tabs[this.mode];
 		this.ps.addPrefsObserver(this.appendTypesList, this);
 		window.addEventListener("DOMMouseScroll", this, true);
-		this.toggleApply(true);
+		this.applyButton.disabled = true;
 	},
 	initShortcuts: function() {
-		this.op = window.opener;
 		this.mBox = this.$("hc-editor-mainTabbox");
 		this.code = this.$("hc-editor-funcField");
 		this.cLabel = this.$("hc-editor-funcLabel");
@@ -48,6 +47,7 @@ var handyClicksEditor = {
 		this.mode = wa[0];
 		this.target = wa[1];
 		this.type = wa[2];
+		this.applyButton = document.documentElement.getButton("extra1");
 	},
 	loadLabels: function() {
 		["hc-editor-button", "hc-editor-itemTypes", "hc-editor-funcPopup"].forEach(
@@ -79,18 +79,11 @@ var handyClicksEditor = {
 		window.removeEventListener("DOMMouseScroll", this, true);
 		this.wu.highlightAllOpened();
 	},
-	get applyButton() {
-		delete this.applyButton;
-		return this.applyButton = document.documentElement.getButton("extra1");
-	},
-	toggleApply: function(dis) {
-		this.applyButton.disabled = dis;
-	},
 	alloyApply: function(e) {
-		var nn = e.target.nodeName;
-		if(nn == "tab" || nn == "dialog")
+		var ln = e.target.localName;
+		if(ln == "tab" || ln == "dialog")
 			return;
-		this.toggleApply(false);
+		this.applyButton.disabled = false;
 	},
 	$: function(id) {
 		return document.getElementById(id);
@@ -107,7 +100,7 @@ var handyClicksEditor = {
 			case this.tabs.itemType: winId = cType;                              break;
 			default: return;
 		}
-		window[this.wu.winId] = winId;
+		window[this.wu.winIdProp] = winId;
 		this.wu.highlightAllOpened();
 	},
 	initShortcutEditor: function() {
@@ -436,7 +429,7 @@ var handyClicksEditor = {
 			so.ignoreLinks = this.$("hc-editor-imgIgnoreLinks").checked;
 		if(isCustom) {
 			so.custom = isCustom;
-			so.label = this.ps.enc(this.$("hc-editor-funcLabel").value);
+			so.label = this.ps.enc(this.cLabel.value);
 			so.action = this.ps.enc(this.code.value);
 		}
 		else {
@@ -459,13 +452,13 @@ var handyClicksEditor = {
 		}
 		this.ps.saveSettingsObjects(true);
 		enabledElt.checked = this.ut.getProperty(handyClicksPrefs, sh, type, "enabled");
-		this.toggleApply(true);
+		this.applyButton.disabled = true;
 		return true;
 	},
 	deleteShortcut: function() {
 		delete handyClicksPrefs[this.currentShortcut];
 		this.ps.saveSettingsObjects();
-		this.toggleApply(true);
+		this.applyButton.disabled = true;
 	},
 	saveCustomType: function() {
 		var label = this.$("hc-editor-customType").value;
@@ -501,7 +494,7 @@ var handyClicksEditor = {
 		ct.define = this.ps.enc(def);
 		ct.contextMenu = cMenu ? this.ps.enc(cMenu) : null;
 		this.ps.saveSettingsObjects();
-		this.toggleApply(true);
+		this.applyButton.disabled = true;
 
 //		var cti = this.$("hc-editor-itemTypes").getElementsByAttribute("value", cType)[0];
 //		if(cti)
@@ -514,7 +507,7 @@ var handyClicksEditor = {
 	deleteCustomType: function() {
 		delete handyClicksCustomTypes["custom_" + this.$("hc-editor-customTypeExtId").value];
 		this.ps.saveSettingsObjects();
-		this.toggleApply(true);
+		this.applyButton.disabled = true;
 		this.appendTypesList();
 	},
 	listScroll: function(e) {

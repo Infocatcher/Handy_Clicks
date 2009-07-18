@@ -20,3 +20,7 @@
 #handyClicks-settingsMenuitem {
 	font-weight: bold;
 }
+
+.handyClicks-invalidPath {
+	opacity: 0.5;
+}

@@ -156,7 +156,7 @@ var handyClicksFuncs = {
 			case "last":     ind = tbr.browsers.length;           break;
 			case "relative": ind = curInd + ++this.relativeIndex; break;
 			default:
-				this.ut._err("[Right Links]: openUriInTab -> invalid moveTo argument: " + moveTo);
+				this.ut._err(this.ut.errPrefix + "openUriInTab -> invalid moveTo argument: " + moveTo);
 				return;
 		}
 		if(
@@ -432,7 +432,7 @@ var handyClicksFuncs = {
 				wNew = window.outerWidth, hNew = window.outerHeight;
 			break;
 			default:
-				this.ut._err("[Right Links]: openUriInWindow -> invalid moveTo argument: " + moveTo);
+				this.ut._err(this.ut.errPrefix + "openUriInWindow -> invalid moveTo argument: " + moveTo);
 				return;
 		}
 		if(xCur !== undefined && yCur !== undefined)
@@ -556,16 +556,7 @@ var handyClicksFuncs = {
 		if(hidePopup)
 			this.hideItemPopup();
 	},
-	showGeneratedPopup: function(items) {
-		var popup = this.createPopup(items);
-		this.hc.showPopupOnItem(popup);
-		return popup;
-	},
-	createPopup: function(items) {
-		var popup = this.popup;
-		this.appendChilds(popup, items);
-		return popup;
-	},
+
 	get popup() {
 		var pSet = document.getElementById("mainPopupSet");
 		var id = "handyClicks-generatedPopup";
@@ -578,9 +569,67 @@ var handyClicksFuncs = {
 		pSet.appendChild(popup);
 		return popup;
 	},
+	createPopup: function(items) {
+		var popup = this.popup;
+		this.appendChilds(popup, items);
+		return popup;
+	},
+	showGeneratedPopup: function(items) {
+		var popup = this.createPopup(items);
+		this.hc.showPopupOnItem(popup);
+		return popup;
+	},
+
+	showOpenUriWithAppsPopup: function(items, checkFiles) {
+		var uri = this.getUriOfItem();
+		if(!uri) {
+			this.ut._err(this.ut.errPrefix + "Can't get URI of item (" + this.hc.itemType + ")");
+			return;
+		}
+		this.addAppsProps(items, uri, checkFiles);
+		var popup = this.showGeneratedPopup(items);
+		popup.setAttribute("oncommand", "handyClicksFuncs.openUriWithApp(event, this);");
+		popup.__uri = this.convertStrFromUnicode(uri);
+	},
+	addAppsProps: function(items, uri, checkFiles) {
+		var path, it, n, args, img;
+		var attrBase = this.tooltipAttrBase;
+		for(var i = 0; i < items.length; i++) {
+			it = items[i];
+			if(this.isArray(it)) {
+				this.addAppsProps(it[1], uri, checkFiles);
+				continue;
+			}
+			n = 0;
+			path = it.__path;
+			img = it.__image;
+			if(path) {
+				path = this.getRelativePath(path);
+				it.className = "menuitem-iconic";
+				if(checkFiles && !this.fileExists(path))
+					it.className += " handyClicks-invalidPath";
+				img = (img && this.getRelativePath(img) || path);
+				it.image = "moz-icon:file://" + img;
+				it[attrBase + n++] = path;
+				it.__path = path;
+			}
+			if(this.isArray(it.__args)) {
+				args = it.__args;
+				for(var j = 0; j < args.length; j++)
+					it[attrBase + n++] = args[j];
+			}
+			if(it.hasOwnProperty("label"))
+				it[attrBase + n++] = this.decodeUri(uri);
+		}
+	},
+
+	isArray: function(arr) {
+		return arr instanceof Array
+			|| Object.prototype.toString.call(arr) === "[object Array]";
+	},
 	appendChilds: function(parent, childs) {
 		for(var i = 0; i < childs.length; i++)
-			this["appendMenu" + (childs[i] instanceof Array ? "" : "item")](parent, childs[i]);
+			this["appendMenu" + (this.isArray(childs[i]) ? "" : "item")](parent, childs[i]);
 	},
 	appendMenu: function(parent, itemsArr) {
 		var menu = document.createElement("menu");
@@ -591,7 +640,7 @@ var handyClicksFuncs = {
 		parent.appendChild(menu);
 	},
 	appendMenuitem: function(parent, attrs) {
-		var mi = document.createElement(attrs.label ? "menuitem" : "menuseparator");
+		var mi = document.createElement(attrs.hasOwnProperty("label") ? "menuitem" : "menuseparator");
 		this.setAttributes(mi, attrs);
 		parent.appendChild(mi);
 	},
@@ -630,6 +679,16 @@ var handyClicksFuncs = {
 			}
 		}
 		return _path + pathEnd;
+	},
+	fileExists: function(path) {
+		var file = Components.classes["@mozilla.org/file/local;1"]
+			.createInstance(Components.interfaces.nsILocalFile);
+		try { file.initWithPath(path); }
+		catch(e) {
+			this.ut._err(this.ut.errPrefix + "Invalid path: " + path);
+			return false;
+		}
+		return file.exists();
 	},
 	startProcess: function(path, args) {
 		args = args || [];
@@ -714,6 +773,8 @@ var handyClicksFuncs = {
 		this.startProcess(mi.__path, args);
 	},
 	decodeUri: function(value) { // code by Ex Bookmark Properties ( https://addons.mozilla.org/firefox/addon/7396 )
+		if(!value)
+			return "";
 		// return decodeURIComponent(value);
 		// Try to decode as UTF-8 if there's no encoding sequence that we would break.
 		if(!/%25(?:3B|2F|3F|3A|40|26|3D|2B|24|2C|23)/i.test(value))
@@ -735,41 +796,11 @@ var handyClicksFuncs = {
 		value = value.replace(/[\u200e\u200f\u202a\u202b\u202c\u202d\u202e]/g, encodeURIComponent);
 		return value;
 	},
-	showOpenUriWithAppsPopup: function(items) {
-		var uri = this.getUriOfItem();
-		if(!uri) {
-			this.ut._err(this.ut.errPrefix + "Can't get URI of item (" + this.hc.itemType + ")");
-			return;
-		}
-		var path, it, n, args, img;
-		var attrBase = this.tooltipAttrBase;
-		for(var i = 0; i < items.length; i++) {
-			it = items[i], n = 0;
-			path = it.__path;
-			img = it.__image;
-			if(path) {
-				path = this.getRelativePath(path);
-				it.className = "menuitem-iconic";
-				img = (img && this.getRelativePath(img) || path);
-				it.image = "moz-icon:file://" + img;
-				it[attrBase + n++] = path;
-				it.__path = path;
-			}
-			if(it.__args instanceof Array) {
-				args = it.__args;
-				for(var j = 0; j < args.length; j++)
-					it[attrBase + n++] = args[j];
-			}
-			it[attrBase + n++] = this.decodeUri(uri);
-		}
-		var popup = this.showGeneratedPopup(items);
-		popup.setAttribute("oncommand", "handyClicksFuncs.openUriWithApp(event, this);");
-		popup.__uri = this.convertStrFromUnicode(uri);
-	},
+
 	setPrefs: function(prefsObj) {
 		var origs = { __proto__: null };
 		for(var p in prefsObj) {
-			if(!prefsObj.hasOwnProperty(p) || prefsObj[p] == null)
+			if(!prefsObj.hasOwnProperty(p) || prefsObj[p] === null)
 				continue;
 			origs[p] = this.pu.getPref(p);
 			this.pu.setPref(p, prefsObj[p]);
@@ -937,9 +968,7 @@ var handyClicksFuncs = {
 		tab = this.fixTab(tab);
 		var br = tab.linkedBrowser;
 		if(skipCache)
-			br.reloadWithFlags(
-				nsIWebNavigation.LOAD_FLAGS_BYPASS_PROXY | nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE
-			);
+			br.reloadWithFlags(nsIWebNavigation.LOAD_FLAGS_BYPASS_PROXY | nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE);
 		else
 			br.reload();
 	},
@@ -992,10 +1021,10 @@ var handyClicksFuncs = {
 				img.addEventListener(
 					"load",
 					function() {
+						img.removeEventListener("load", arguments.callee, false);
 						img.removeAttribute("style");
 						if(hasStyle)
 							img.setAttribute("style", origStyle);
-						img.removeEventListener("load", arguments.callee, false);
 					},
 					false
 				);
@@ -1016,6 +1045,10 @@ var handyClicksFuncs = {
 	openSimilarLinksInTabs: function(e, refererPolicy, a) {
 		a = a || this.hc.item;
 		var s = a.innerHTML;
+		if(!s) {
+			this.ut._err(this.ut.errPrefix + "openSimilarLinksInTabs() not supported: a.innerHTML is " + s);
+			return;
+		}
 		var onlyUnVisited = {};
 		var cnf = this.ut.promptsSvc.confirmCheck(
 			window, this.ut.getLocalised("title"),
@@ -1030,7 +1063,7 @@ var handyClicksFuncs = {
 
 		// Based on code by Yan ( http://forum.mozilla-russia.org/viewtopic.php?pid=144109#p144109 )
 		var ar = doc.getElementsByTagName("a");
-		var hrefs = {};
+		var hrefs = { __proto__: null };
 		var his = Components.classes["@mozilla.org/browser/global-history;2"]
 			.getService(Components.interfaces.nsIGlobalHistory2);
 		var IO = Components. classes["@mozilla.org/network/io-service;1"]
@@ -1045,7 +1078,7 @@ var handyClicksFuncs = {
 					!onlyUnVisited || !his.isVisited(IO.newURI(h, null, null))
 				)
 			)
-				hrefs[h] = 1;
+				hrefs[h] = true;
 		}
 		var tbr = this.getTabBrowser(true);
 
@@ -1055,8 +1088,7 @@ var handyClicksFuncs = {
 
 		var ref = this.getRefererForItem(refererPolicy);
 		for(var h in hrefs)
-			if(hrefs.hasOwnProperty(h))
-				tbr.loadOneTab(h, ref, null, null, true, false);
+			tbr.loadOneTab(h, ref, null, null, true, false);
 
 		if("TreeStyleTabService" in window)
 			TreeStyleTabService.stopToOpenChildTab(tbr.selectedTab);
@@ -1108,7 +1140,7 @@ var handyClicksFuncs = {
 			lbl.hidden = false;
 			attrName = attrBase + ++i;
 		}
-		return tNode.hasAttribute("hc_tooltip_0");
+		return i > 0;
 	},
 	hideAllLabels: function(tooltip) {
 		var chs = tooltip.firstChild.childNodes;

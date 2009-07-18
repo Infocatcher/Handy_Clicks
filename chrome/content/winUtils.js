@@ -18,16 +18,15 @@ var handyClicksWinUtils = {
 			return win.openDialog.apply(win, args);
 		}
 	},
-	winId: "__handyClicksWinId",
+	winIdProp: "__handyClicksWinId",
 	openEditor: function(mode, shortcut, itemType) {
 		var winId = mode == "itemType" ? itemType : shortcut + "-" + itemType;
-		var pId = this.winId;
-		var wm = this.wm;
-		var ws = wm.getEnumerator("handyclicks:editor");
+		var wProp = this.winIdProp;
+		var ws = this.wm.getEnumerator("handyclicks:editor");
 		var w;
 		while(ws.hasMoreElements()) {
 			w = ws.getNext();
-			if(pId in w && w[pId] == winId) {
+			if(wProp in w && w[wProp] == winId) {
 				w.focus();
 				return w;
 			}
@@ -38,7 +37,7 @@ var handyClicksWinUtils = {
 			"chrome,resizable,centerscreen,dialog=0",
 			mode || "shortcut", shortcut, itemType
 		);
-		w[pId] = winId;
+		w[wProp] = winId;
 		this.highlightOpened(winId, true);
 		return w;
 	},
