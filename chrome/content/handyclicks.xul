@@ -9,9 +9,8 @@
 ]>
 
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<script type="application/x-javascript"><![CDATA[
-		var handyclicksD0 = new Date();
-	]]></script>
+	<script type="application/x-javascript" src="chrome://handyclicks/content/~migration.js" /> <!-- Temp -->
+	<script type="application/x-javascript"><![CDATA[ var handyclicksD0 = new Date(); ]]></script>
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefUtils.js" />
