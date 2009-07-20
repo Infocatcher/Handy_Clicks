@@ -7,11 +7,11 @@ var handyClicksEditor = {
 	types: {
 		checkboxes: {
 			__proto__: null,
-			skipCache: 1,
-			loadInBackground: 1,
-			loadJSInBackground: 1,
-			hidePopup: 1,
-			toNewWin: 1
+			skipCache: true,
+			loadInBackground: true,
+			loadJSInBackground: true,
+			closePopups: true,
+			toNewWin: true
 		},
 		menulists: {
 			__proto__: null,
@@ -166,13 +166,20 @@ var handyClicksEditor = {
 			this.initCustomTypesEditor();
 	},
 	customTypeIdFilter: function(e) {
-		var tar = e.target;
-		var val = tar.value;
-		if(/\W/.test(val)) {
-			val = val.replace(/\W/g, "");
-			tar.value = val
+		setTimeout(function(_this, node) { _this._customTypeIdFilter(node); }, 0, this, e.target);
+		if(e.type != "keypress")
+			return false;
+		var key = e.charCode;
+		return !key || key < 32 || e.ctrlKey || e.altKey || e.metaKey || !/[^\w$]/.test(String.fromCharCode(key));
+	},
+	_customTypeIdFilter: function(node) {
+		var val = node.value;
+		var re = /[^\w$]/g;
+		if(re.test(val)) {
+			val = val.replace(re, "");
+			node.value = val;
 		}
-		var val = "custom_" + tar.value;
+		val = "custom_" + val;
 		var ml = this.$("hc-editor-customType");
 		var it = ml.getElementsByAttribute("value", val)[0];
 		if(it) {
@@ -183,11 +190,6 @@ var handyClicksEditor = {
 			ml.selectedItem = null;
 			this.$("hc-editor-customTypeEnabled").checked = true;
 		}
-		var key = e.charCode;
-		if(!key || e.ctrlKey || e.altKey || e.metaKey || key < 32)
-			return true;
-		key = String.fromCharCode(key);
-		return /\w/.test(key);
 	},
 	appendTypesList: function() {
 		var sep = this.$("hc-editor-customTypesSep");

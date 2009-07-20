@@ -74,8 +74,8 @@
 	</statusbar>
 	<popupset id="mainPopupSet">
 		<menupopup id="handyClicks-settingsPopup">
-			<menuitem id="handyClicks-settingsMenuitem" command="handyClicks-cmd-openSettings" key="handyClicks-key-editMode" />
-			<menuitem id="handyClicks-editMode" command="handyClicks-cmd-editMode" key="handyClicks-key-openSettings" />
+			<menuitem id="handyClicks-settingsMenuitem" command="handyClicks-cmd-openSettings" key="handyClicks-key-openSettings" />
+			<menuitem id="handyClicks-editMode" command="handyClicks-cmd-editMode" key="handyClicks-key-editMode" />
 		</menupopup>
 	</popupset>
 	<window id="main-window">

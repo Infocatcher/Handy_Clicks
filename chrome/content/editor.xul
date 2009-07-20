@@ -151,19 +151,19 @@
 								<menuseparator id="hc-editor-funcsSep-tabs" />
 								<menuitem
 									value="openUriInTab" label="openUriInTab"
-									hc_args="loadInBackground loadJSInBackground refererPolicy moveTabTo hidePopup inWin"
+									hc_args="loadInBackground loadJSInBackground refererPolicy moveTabTo closePopups inWin"
 									hc_supports="link img tab bookmark historyItem" />
 								<menuitem
 									value="openUriInCurrentTab" label="openUriInCurrentTab"
-									hc_args="refererPolicy hidePopup"
+									hc_args="refererPolicy closePopups"
 									hc_supports="link img bookmark historyItem" />
 								<menuitem
 									value="openUriInWindow" label="openUriInWindow"
-									hc_args="loadInBackground loadJSInBackground refererPolicy moveWinTo hidePopup"
+									hc_args="loadInBackground loadJSInBackground refererPolicy moveWinTo closePopups"
 									hc_supports="link img tab bookmark historyItem" />
 								<menuitem
 									value="openInSidebar" label="openInSidebar"
-									hc_args="hidePopup"
+									hc_args="closePopups"
 									hc_supports="link img tab bookmark historyItem" />
 								<menuseparator id="hc-editor-funcsSep-links" />
 								<menuitem
@@ -217,7 +217,7 @@
 								<textbox id="hc-editor-funcLabel" flex="1" />
 							</hbox>
 							<hbox>
-								<textbox class="hcText" readonly="true" value="&hc.sets.args; event, item, origItem" />
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.sets.args; event, item, origItem" />
 							</hbox>
 							<textbox class="hcEditor" id="hc-editor-funcField" wrap="off" flex="1" value="" />
 						</vbox>
@@ -244,14 +244,14 @@
 				</hbox>
 				<label class="header" value="&hc.sets.defineItem;" />
 				<hbox>
-					<textbox class="hcText" readonly="true" value="&hc.sets.args; event, item" />
-					<textbox class="hcText" readonly="true" value="&hc.sets.defineReturn;" />
+					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.sets.args; event, item" />
+					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.sets.defineReturn;" />
 				</hbox>
 				<textbox class="hcEditor" id="hc-editor-customTypeDefine" wrap="off" flex="1" value="" />
 				<label class="header" value="&hc.sets.defineContext;" />
 				<hbox>
-					<textbox class="hcText" readonly="true" value="&hc.sets.args; event, item, origItem" />
-					<textbox class="hcText" readonly="true" value="&hc.sets.defineReturn;" />
+					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.sets.args; event, item, origItem" />
+					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.sets.defineReturn;" />
 				</hbox>
 				<textbox class="hcEditor" id="hc-editor-customTypeContext" wrap="off" flex="1" value="" />
 			</tabpanel>

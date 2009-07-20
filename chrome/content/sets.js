@@ -21,7 +21,7 @@ var handyClicksSets = {
 		if(this.ut.fxVersion >= 3.5) {
 			var s = this.$("handyClicks-setsTreeSearch");
 			s.type = "search";
-			s._clearSearch = function() { this.value = ""; this.oninput(); };
+			s._clearSearch = function() { this.value = ""; this.oninput && this.oninput(); };
 		}
 
 		this.instantApply = this.pu.getPref("browser.preferences.instantApply");
@@ -49,18 +49,19 @@ var handyClicksSets = {
 		return document.getElementById(id);
 	},
 	drawTree: function() {
-		for(var shortcut in handyClicksPrefs) {
-			if(!handyClicksPrefs.hasOwnProperty(shortcut))
+		var p = handyClicksPrefs;
+		for(var sh in p) {
+			if(!p.hasOwnProperty(sh))
 				continue;
-			if(!this.ps.isOkShortcut(shortcut)) {
-				this.ut._err(this.ut.errPrefix + "Invalid shortcut in prefs: " + shortcut);
+			if(!this.ps.isOkShortcut(sh) || typeof p[sh] != "object") {
+				this.ut._err(this.ut.errPrefix + "Invalid shortcut in prefs: " + sh);
 				continue;
 			}
-			var button = this.getButtonStr(shortcut);
+			var button = this.getButtonStr(sh);
 			var buttonContainer = this.DOMCache[button] || this.appendContainerItem(null, button, this.ut.getLocalised(button));
-			var modifiers = this.convertModifiersStr(shortcut);
-			var modifiersContainer = this.DOMCache[shortcut] || this.appendContainerItem(buttonContainer, shortcut, modifiers);
-			this.appendItems(modifiersContainer, handyClicksPrefs[shortcut], shortcut);
+			var modifiers = this.convertModifiersStr(sh);
+			var modifiersContainer = this.DOMCache[sh] || this.appendContainerItem(buttonContainer, sh, modifiers);
+			this.appendItems(modifiersContainer, p[sh], sh);
 		}
 		this.highlightAllOpened();
 	},
@@ -119,14 +120,11 @@ var handyClicksSets = {
 			tItem = document.createElement("treeitem");
 			tRow = document.createElement("treerow");
 			it = items[itemType];
-			isCustom = it.custom;
+			isCustom = !!it.custom;
 			isCustomType = itemType.indexOf("custom_") == 0;
-			if(isCustomType) {
-				typeLabel = handyClicksCustomTypes[itemType] || null;
-				typeLabel = this.ps.dec(typeLabel && typeLabel.label) + " (" + itemType + ")";
-			}
-			else
-				typeLabel = this.ut.getLocalised(itemType);
+			typeLabel = isCustomType
+				? this.getCustomTypeLabel(itemType)
+				: this.ut.getLocalised(itemType);
 			this.appendTreeCell(tRow, "label", typeLabel);
 			this.appendTreeCell(tRow, "label", it.eventType);
 			this.appendTreeCell(tRow, "label", isCustom ? this.ps.dec(it.label) : this.ut.getLocalised(it.action));
@@ -149,6 +147,11 @@ var handyClicksSets = {
 			this.rowsCache[shortcut + "-" + itemType] = tRow;
 		}
 	},
+	getCustomTypeLabel: function(type) {
+		var ct = this.ut.getProperty(handyClicksCustomTypes, type) || {};
+		var label = this.ut.getProperty(ct, "label");
+		return (label ? this.ps.dec(label) + " " : "") + "(" + type + ")";
+	},
 	addProperties: function(tar, propsObj) {
 		var propsVal = tar.getAttribute("properties");
 		for(var p in propsObj) {
@@ -169,11 +172,8 @@ var handyClicksSets = {
 		var res = [];
 		for(var p in argsObj)
 			if(argsObj.hasOwnProperty(p))
-				res.push(p + " = " + this.convertToString(argsObj[p])); //~ todo: this.ut.getLocalised(p)
+				res.push(p + " = " + uneval(argsObj[p])); //~ todo: this.ut.getLocalised(p) ?
 		return res.join(", \n");
-	},
-	convertToString: function(x) {
-		return typeof x == "string" ? '"' + x + '"' : x;
 	},
 	updTree: function() {
 		var tbo = this.tree.treeBoxObject;
@@ -288,10 +288,30 @@ var handyClicksSets = {
 		var tRows = this.selectedRows;
 		if(!tRows.length)
 			return;
+
+		var del = [];
+		var tRow;
+		for(var i = 0, len = tRows.length; i < len; i++) {
+			tRow = tRows[i];
+			var mdfs = this.convertModifiersStr(tRow.__shortcut);
+			var button = this.ut.getLocalised(this.getButtonStr(tRow.__shortcut));
+			var type = tRow.__itemType.indexOf("custom_") == 0
+				? this.getCustomTypeLabel(tRow.__itemType)
+				: this.ut.getLocalised(tRow.__itemType);
+			var fObj = this.ut.getProperty(handyClicksPrefs, tRow.__shortcut, tRow.__itemType);
+			var label = typeof fObj == "object"
+				? this.ut.getProperty(fObj, "custom")
+					? this.ps.dec(fObj.label || "")
+					: this.ut.getLocalised(fObj.action || "")
+				: "?";
+			del.push(mdfs + " + " + button + " + " + type + " => " + label.substr(0, 42));
+		}
+
 		if(
 			!this.ut.confirmEx(
 				this.ut.getLocalised("title"),
 				this.ut.getLocalised("deleteConfirm").replace("%n", tRows.length)
+					+ "\n\n" + del.join("\n")
 			)
 		)
 			return;

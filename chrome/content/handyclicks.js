@@ -26,23 +26,22 @@ var handyClicks = {
 	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
 	init: function() {
 		window.removeEventListener("load", this, false);
-		window.addEventListener("mousedown", this, true);
-		window.addEventListener("click", this, true);
-		window.addEventListener("mouseup", this, true);
-		window.addEventListener("contextmenu", this, true);
-		window.addEventListener("dblclick", this, true);
+		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], true);
 		this.setStatus();
 		this.pu.addPrefsObserver(this.updUI, this);
 		this.registerHotkeys();
 	},
 	destroy: function() {
 		window.removeEventListener("unload", this, false);
-		window.removeEventListener("mousedown", this, true);
-		window.removeEventListener("click", this, true);
-		window.removeEventListener("mouseup", this, true);
-		window.removeEventListener("contextmenu", this, true);
-		window.removeEventListener("dblclick", this, true);
+		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
 		this.clearCMenuTimeout();
+	},
+	setListeners: function(evtTypes, addFlag) {
+		var act = addFlag ? "addEventListener" : "removeEventListener";
+		evtTypes.forEach(
+			function(evtType) { window[act](evtType, this, true); },
+			this
+		);
 	},
 	_enabled: true,
 	get enabled() {
@@ -62,16 +61,16 @@ var handyClicks = {
 				cm = document.getElementById("bookmarks-context-menu") || document.getElementById("placesContext");
 			break;
 			case "historyItem":
-				// Ex Bookmark Properties ( https://addons.mozilla.org/firefox/addon/7396 )
-				if("ex2BookmarksProperties" in window)
-					cm = document.getElementById("placesContext"); //~ todo: test!
+				// http://forums.mozillazine.org/viewtopic.php?p=6850975#p6850975
+				if("ex2BookmarksProperties" in window) // Ex Bookmark Properties extension
+					cm = document.getElementById("placesContext");
 			break;
 			case "tab":
 			case "tabbar":
-				var cm = document.getAnonymousElementByAttribute(getBrowser(), "anonid", "tabContextMenu"); //~ todo: test!
+				var cm = document.getAnonymousElementByAttribute(getBrowser(), "anonid", "tabContextMenu");
 			break;
 			case "submitButton":
-				cm = null; //~ todo: SubmitToTab for fx3 => add cm
+				cm = null; //~ todo: SubmitToTab for Firefox 3+ => add cm
 			break;
 			default: // custom types
 				if(!this.isOkCustomType(this.itemType))
@@ -106,7 +105,7 @@ var handyClicks = {
 		}
 		if(cm && typeof cm.hidePopup != "function") {
 			// Try open XUL document with custom context in tab...
-			this.ut._err(this.ut.errPrefix + "Strange error: context menu has no hidePopup method\n" + cm.id);
+			this.ut._err(this.ut.errPrefix + "Strange error: context menu has no hidePopup() method\n" + cm.id);
 			cm = null;
 		}
 		this._cMenu = cm; // cache
@@ -134,11 +133,10 @@ var handyClicks = {
 			//id = "contentAreaContextMenu";
 			var brObj = this.getBrowserForNode(node);
 			if(brObj) {
-				id = this.getContextOfNode(brObj.browser);
+				id = this.getNodeContextMenu(brObj.browser);
 				doc = brObj.document;
 			}
 		}
-
 		this.ut._log("getContextMenu -> " + id + " -> " + (doc && id && doc.getElementById(id)));
 		return id ? doc.getElementById(id) : null;
 	},
@@ -174,7 +172,7 @@ var handyClicks = {
 			? { browser: br, document: doc }
 			: null;
 	},
-	getContextOfNode: function(node) {
+	getNodeContextMenu: function(node) {
 		return node.getAttribute("contentcontextmenu")
 			|| node.getAttribute("contextmenu")
 			|| node.getAttribute("context");
@@ -609,6 +607,7 @@ var handyClicks = {
 		clearTimeout(this.cMenuTimeout);
 	},
 	stopEvent: function(e) {
+		//this.ut._log(e.type + " -> stopEvent()");
 		e.preventDefault();
 		e.stopPropagation();
 	},
@@ -627,9 +626,17 @@ var handyClicks = {
 	mouseupHandler: function(e) {
 		if(!this.enabled)
 			return;
+
 		if(this.flags.runned || this.hasSettings || this.editMode)
 			this.stopEvent(e);
 		this.skipFlagsDelay();
+	},
+	commandHandler: function(e) {
+		if(!this.enabled)
+			return;
+
+		if(this.flags.runned || this.hasSettings || this.editMode)
+			this.stopEvent(e);
 	},
 	dblclickHandler: function(e) {
 		if(!this.enabled)
@@ -722,11 +729,12 @@ var handyClicks = {
 			: { x: e.clientX, y: e.clientY };
 	},
 	handleEvent: function(e) {
-		switch(e.type) { //~ todo: see https://bugzilla.mozilla.org/show_bug.cgi?id=174320
+		switch(e.type) {
 			case "load":        this.init(e);             break;
 			case "unload":      this.destroy(e);          break;
 			case "mousedown":   this.mousedownHandler(e); break;
 			case "click":       this.clickHandler(e);     break;
+			case "command":     this.commandHandler(e);   break;
 			case "mousemove":   this.mousemoveHandler(e); break;
 			case "contextmenu": this.stopContextMenu(e);  break;
 			case "mouseup":     this.mouseupHandler(e);   break;
@@ -757,7 +765,7 @@ var handyClicks = {
 	},
 	openEditor: function(e) {
 		e = e || this.copyOfEvent;
-		this.fn.hideItemPopup();
+		this.fn.closeMenus();
 		this.wu.openEditor("shortcut", this.getEvtStr(e), this.itemType);
 	},
 	updUI: function(pName) {

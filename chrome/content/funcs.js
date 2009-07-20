@@ -31,7 +31,7 @@ var handyClicksFuncs = {
 		return !anchor || (!doc.getElementById(anchor) && !doc.getElementsByName(anchor).length);
 	},
 
-	copyItemText: function(e, hidePopup) { // for all
+	copyItemText: function(e, closePopups) { // for all
 		var text = this.hc.itemType == "tabbar"
 			? this.forEachTab(function(tab) { return tab.label; }).join("\n")
 			: this.getTextOfItem();
@@ -39,10 +39,10 @@ var handyClicksFuncs = {
 			this.copyStr(text);
 			this.hc.blinkNode();
 		}
-		if(hidePopup)
-			this.hideItemPopup();
+		if(closePopups)
+			this.closeMenus();
 	},
-	copyItemLink: function(e, hidePopup) {
+	copyItemLink: function(e, closePopups) {
 		var link = this.hc.itemType == "tabbar"
 			? this.forEachTab(this.getTabUri).join("\n")
 			: this.getUriOfItem() || "";
@@ -50,8 +50,8 @@ var handyClicksFuncs = {
 			this.copyStr(link);
 			this.hc.blinkNode();
 		}
-		if(hidePopup)
-			this.hideItemPopup();
+		if(closePopups)
+			this.closeMenus();
 	},
 	getTextOfItem: function(it) {
 		it = it || this.hc.item;
@@ -117,13 +117,13 @@ var handyClicksFuncs = {
 			.getService(Components.interfaces.nsIClipboardHelper)
 			.copyString(str);
 	},
-	openUriInCurrentTab: function(e, refererPolicy, hidePopup, uri) {
+	openUriInCurrentTab: function(e, refererPolicy, closePopups, uri) {
 		uri = uri || this.getUriOfItem(this.hc.item);
 		if(this.testForHighlander(uri))
 			return;
 		this.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
-		if(hidePopup)
-			this.hideItemPopup();
+		if(closePopups)
+			this.closeMenus();
 	},
 	testForHighlander: function(uri) {
 		// Highlander ( https://addons.mozilla.org/firefox/addon/4086 )
@@ -136,15 +136,15 @@ var handyClicksFuncs = {
 		}
 		return false;
 	},
-	openUriInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, hidePopup, inWin) {
+	openUriInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, closePopups, inWin) {
 		var tbr = this.getTabBrowser(true);
 		if(moveTo == "relative") {
 			var tabCont = tbr.mTabContainer;
 			tabCont.__handyClicks__resetRelativeIndex = false;
 		}
 		var tab = this._openUriInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, inWin);
-		if(hidePopup)
-			this.hideItemPopup();
+		if(closePopups)
+			this.closeMenus();
 		if(!tab || !moveTo)
 			return;
 		var curTab = tbr.mCurrentTab;
@@ -364,34 +364,33 @@ var handyClicksFuncs = {
 	testForFileLink: function(uri, refererPolicy) {
 		uri = uri || this.getUriOfItem(this.hc.item);
 		var filesPolicy = this.pu.pref("filesLinksPolicy");
-		if(filesPolicy < 1)
+		if(filesPolicy == -1)
 			return false;
 		var regexp = this.pu.pref("filesLinksMask");
 		if(!regexp)
 			return false;
 		try {
 			var _regexp = new RegExp(regexp, "i");
-			if(!_regexp.test(uri))
-				return false;
-			if(filesPolicy == 1) {
-				this.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
-				return true;
-			}
-			this.hc.showPopupOnItem();
-			return true;
 		}
 		catch(e) {
 			this.ut.alertEx(
 				this.ut.getLocalised("errorTitle"),
 				this.ut.getLocalised("RegExpError").replace("%r", regexp).replace("%e", e)
 			);
+			return false;
 		}
-		return false;
+		if(!_regexp.test(uri))
+			return false;
+		if(filesPolicy == 0)
+			this.hc.showPopupOnItem();
+		else
+			this.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
+		return true;
 	},
-	openUriInWindow: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, hidePopup) {
+	openUriInWindow: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, closePopups) {
 		var win = this._openUriInWindow(e, null, null, loadInBackground, loadJSInBackground, refererPolicy);
-		if(hidePopup)
-			this.hideItemPopup();
+		if(closePopups)
+			this.closeMenus();
 		if(!win || !moveTo)
 			return;
 		var sal = screen.availLeft, sat = screen.availTop;
@@ -499,41 +498,21 @@ var handyClicksFuncs = {
 			.getInterface(Components.interfaces.nsIXULWindow);
 		xulwin.zLevel = xulwin.normalZ;
 	},
-	openInSidebar: function(e, hidePopup, ttl, uri) {
+	openInSidebar: function(e, closePopups, ttl, uri) {
 		ttl = ttl || "";
 		uri = uri || this.getUriOfItem(this.hc.item);
 		openWebPanel(ttl, uri);
-		if(hidePopup)
-			this.hideItemPopup();
+		if(closePopups)
+			this.closeMenus();
 	},
 	getTabBrowser: function(tabsRequired) {
 		return "SplitBrowser" in window && !(tabsRequired && "TM_init" in window) // Tab Mix Plus
 			? SplitBrowser.activeBrowser
 			: gBrowser || getBrowser();
 	},
-	hideItemPopup: function(it) {
+	closeMenus: function(it) {
 		it = it || this.hc.item;
-		var mp = this.getMenupopup(it);
-		if(mp && mp.hidePopup) {
-			mp.hidePopup();
-			var mn = mp.parentNode;
-			if(mn && mn.localName == "menu")
-				mn.removeAttribute("_moz-menuactive");
-		}
-	},
-	getMenupopup: function(it) {
-		it = it || this.hc.item || this.hc.origItem;
-		if(it.localName == "toolbarbutton")
-			return null;
-		var mp, ci = it, ln;
-		do {
-			ci = ci.parentNode;
-			ln = ci.localName;
-			if(ln == "menupopup")
-				mp = ci;
-		}
-		while(ci && ln && ln != "toolbar")
-		return mp;
+		closeMenus(it); // chrome://browser/content/utilityOverlay.js
 	},
 	downloadWithFlashGot: function(e, item) {
 		item = item || this.hc.item;
@@ -544,7 +523,7 @@ var handyClicksFuncs = {
 		document.popupNode = item;
 		gFlashGot.downloadPopupLink();
 	},
-	openInSplitBrowser: function(e, position, hidePopup, uri, win) {
+	openInSplitBrowser: function(e, position, closePopups, uri, win) {
 		position = (position || "bottom").toUpperCase();
 		uri = uri || this.getUriOfItem(this.hc.item);
 		win = win || this.hc.item.ownerDocument.defaultView;
@@ -553,8 +532,8 @@ var handyClicksFuncs = {
 			return;
 		}
 		SplitBrowser.addSubBrowser(uri, null, SplitBrowser["POSITION_" + position]);
-		if(hidePopup)
-			this.hideItemPopup();
+		if(closePopups)
+			this.closeMenus();
 	},
 
 	// Generated popup:
@@ -651,7 +630,7 @@ var handyClicksFuncs = {
 		item.attr_image = "moz-icon:file://" + (icon && this.getRelativePath(icon) || path);
 		item[ttBase + n++] = path;
 		item.prop_hc_path = path;
-		
+
 		var args = this.ut.getProperty(item, "prop_hc_args");
 		if(this.isArray(args))
 			for(var j = 0, len = args.length; j < len; j++)
