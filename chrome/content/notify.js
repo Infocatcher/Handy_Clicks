@@ -26,7 +26,7 @@ var hcNotify = {
 		}
 		var wo = window.opener;
 		var x, y;
-		if(wa.inWindowCorner || !("handyClicks" in wo) || !("copyOfEvent" in wo.handyClicks)) {
+		if(wa.inWindowCorner || !("handyClicks" in wo) || !wo.handyClicks.copyOfEvent) {
 			x = wo.screenX + wo.outerWidth - winW;
 			var sBar = wo.document.getElementById("browser-bottombox") || wo.document.getElementById("status-bar");
 			y = (sBar ? sBar.boxObject.screenY : wo.screenY + wo.outerHeight) - winH;

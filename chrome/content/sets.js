@@ -290,6 +290,7 @@ var handyClicksSets = {
 			return;
 
 		var del = [];
+		var maxRows = 12;
 		var tRow;
 		for(var i = 0, len = tRows.length; i < len; i++) {
 			tRow = tRows[i];
@@ -304,8 +305,10 @@ var handyClicksSets = {
 					? this.ps.dec(fObj.label || "")
 					: this.ut.getLocalised(fObj.action || "")
 				: "?";
-			del.push(mdfs + " + " + button + " + " + type + " => " + label.substr(0, 42));
+			del.push(mdfs + " + " + button + " + " + type + " \u21d2 " + label.substr(0, 42));
 		}
+		if(del.length > maxRows)
+			del.splice(maxRows - 2, del.length - maxRows + 1, "\x85");
 
 		if(
 			!this.ut.confirmEx(

@@ -23,10 +23,20 @@ var handyClicksUtils = {
 			.getService(Components.interfaces.nsIConsoleService);
 	},
 	_log: function() {
-		this.consoleSvc.logStringMessage(this.errPrefix + Array.prototype.join.call(arguments, "\n") + "\n");
+		this.consoleSvc.logStringMessage(this.errPrefix + Array.prototype.join.call(arguments, "\n"));
 	},
 	get _err() {
 		return Components.utils.reportError;
+	},
+
+	timers: { __proto__: null },
+	timer: function(tId) {
+		if(tId in this.timers) {
+			this._log("[timer] " + tId + " -> " + (Date.now() - this.timers[tId]) + " ms");
+			delete this.timers[tId];
+		}
+		else
+			this.timers[tId] = Date.now();
 	},
 
 	notify: function(nTitle, msg, fnc, extEnabled, inWindowCorner) {

@@ -13,7 +13,7 @@ var handyClicks = {
 	},
 	editMode: false,
 	isRunOnMousedown: false,
-	event: null,
+	copyOfEvent: null,
 	origItem: null,
 	item: null,
 	itemType: undefined,
@@ -137,7 +137,7 @@ var handyClicks = {
 				doc = brObj.document;
 			}
 		}
-		this.ut._log("getContextMenu -> " + id + " -> " + (doc && id && doc.getElementById(id)));
+		this.ut._log("getContextMenu() -> " + id + " -> " + (doc && id && doc.getElementById(id)));
 		return id ? doc.getElementById(id) : null;
 	},
 	getBrowserForNode: function(node) {
@@ -152,23 +152,24 @@ var handyClicks = {
 				var win, brObj;
 				for(var i = 0, len = browsers.length; i < len; i++) {
 					win = browsers[i].contentWindow;
-					if(win == targetWin) {
+					if(win === targetWin) {
 						br = browsers[i];
-						break;
+						return true;
 					}
 					if(!this.ut.isNoChromeWin(win)) {
 						brObj = this.getBrowserForWindow(targetWin, win.document);
 						if(brObj) {
 							br = brObj.browser
-							break;
+							doc = brObj.document;
+							return true;
 						}
 					}
 				}
-				return br;
+				return false;
 			},
 			this
 		);
-		return br
+		return br && doc
 			? { browser: br, document: doc }
 			: null;
 	},
@@ -325,7 +326,10 @@ var handyClicks = {
 			// this.flags.stopContextMenu = true; // ?
 			return;
 		}
-		document.popupNode = this.itemType == "tab" ? this.item : node;
+		//this.ut._log(popup.ownerDocument.location, document === popup.ownerDocument);
+		//document.popupNode = this.itemType == "tab" ? this.item : node;
+		popup.ownerDocument.popupNode = this.itemType == "tab" ? this.item : node;
+
 		var xy = this.getXY();
 		popup.showPopup(this.ut.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "popup", null, null);
 	},
@@ -378,7 +382,8 @@ var handyClicks = {
 		this.item = null;
 
 		var it = e.originalTarget;
-		this.origItem = it;
+		//this.origItem = it;
+
 		var itln = it.localName.toLowerCase();
 		var _it;
 
@@ -578,12 +583,26 @@ var handyClicks = {
 		if(
 			isMousedown
 			|| evtStr != this.evtStrOnMousedown
-			|| e.originalTarget != this.origItem
+			//|| e.originalTarget != this.origItem
 		)
 			this.defineItem(e, sets);
-		this.saveEvent(e);
 		var funcObj = this.getFuncObj(sets) || (this.editMode ? {} : null);
 		this.hasSettings = !!funcObj;
+		if(this.hasSettings) {
+			// fx < 3.0:
+			// Following works:
+			//   this.event = e;
+			//   alert(uneval(this.getXY(this.event)));
+			// Always return "({x:0, y:0})":
+			//   var _this = this;
+			//   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
+			this.copyOfEvent = this.cloneObj(e);
+			this.origItem = e.originalTarget;
+		}
+		else {
+			this.copyOfEvent = null;
+			this.origItem = null;
+		}
 		return funcObj;
 	},
 	cloneObj: function(obj) {
@@ -592,16 +611,6 @@ var handyClicks = {
 		for(var p in obj) // Important: this is not real recursive copying of properties!
 			clone[p] = obj[p];
 		return clone;
-	},
-	saveEvent: function(e) {
-		this.event = e;
-		// fx < 3.0:
-		// Following works:
-		//   alert(uneval(this.getXY(this.event)));
-		// Always return "({x:0, y:0})":
-		//   var _this = this;
-		//   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
-		this.copyOfEvent = this.cloneObj(e);
 	},
 	clearCMenuTimeout: function() {
 		clearTimeout(this.cMenuTimeout);
@@ -626,16 +635,20 @@ var handyClicks = {
 	mouseupHandler: function(e) {
 		if(!this.enabled)
 			return;
-
-		if(this.flags.runned || this.hasSettings || this.editMode)
+		if(
+			(this.flags.runned || this.hasSettings || this.editMode)
+			&& (e.originalTarget === this.origItem)
+		)
 			this.stopEvent(e);
 		this.skipFlagsDelay();
 	},
 	commandHandler: function(e) {
 		if(!this.enabled)
 			return;
-
-		if(this.flags.runned || this.hasSettings || this.editMode)
+		if(
+			(this.flags.runned || this.hasSettings || this.editMode)
+			&& (e.originalTarget === this.origItem)
+		)
 			this.stopEvent(e);
 	},
 	dblclickHandler: function(e) {

@@ -232,7 +232,7 @@
 					<menulist id="hc-editor-customType" editable="true"
 						oncommand="handyClicksEditor.initCustomTypesEditor();"
 						oninput="handyClicksEditor.customTypeLabel(this);"
-						ondragexit="handyClicksEditor.customTypeLabel(this);">
+						ondragexit="handyClicksEditor.customTypeLabelDelay(this);">
 						<menupopup id="hc-editor-customTypePopup" />
 					</menulist>
 					<label value="&hc.sets.internalId;" />

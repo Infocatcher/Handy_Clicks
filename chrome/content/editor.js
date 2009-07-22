@@ -30,6 +30,8 @@ var handyClicksEditor = {
 		var wa = window.arguments;
 		if(!wa[0] || !wa[1] || !window.opener)
 			return;
+		if(this.ut.fxVersion == 1.5) // "relative" is not supported
+			this.types.menulists.moveTabTo.pop();
 		this.loadLabels();
 		this.initShortcuts();
 		this.initUI();
@@ -165,6 +167,9 @@ var handyClicksEditor = {
 		if(it.getElementsByAttribute("label", it.value)[0])
 			this.initCustomTypesEditor();
 	},
+	customTypeLabelDelay: function(it) {
+		setTimeout(function(_this, it) { _this.customTypeLabel(it); }, 0, this, it);
+	},
 	customTypeIdFilter: function(e) {
 		setTimeout(function(_this, node) { _this._customTypeIdFilter(node); }, 0, this, e.target);
 		if(e.type != "keypress")
@@ -272,7 +277,7 @@ var handyClicksEditor = {
 		var guid = this.exts[eName];
 		return !!Components.classes["@mozilla.org/extensions/manager;1"]
 			.getService(Components.interfaces.nsIExtensionManager)
-			.getItemForID(guid);
+			.getInstallLocation(guid);
 	},
 	itemTypeChanged: function(iType) {
 		this.addFuncArgs();

@@ -149,6 +149,8 @@ var handyClicksFuncs = {
 			return;
 		var curTab = tbr.mCurrentTab;
 		var curInd = curTab._tPos, ind = 0;
+		if(this.ut.fxVersion == 1.5 && moveTo == "relative")
+			moveTo = "after"; // Tab* events is not supported
 		switch(moveTo) {
 			case "first":    ind = 0;                             break;
 			case "before":   ind = curInd;                        break;
@@ -177,7 +179,6 @@ var handyClicksFuncs = {
 		var _resetRelativeIndex = function(e) {
 			if(!tabCont.__handyClicks__resetRelativeIndex)
 				return;
-			tabCont.__handyClicks__resetRelativeIndex = false;
 			_this.relativeIndex = 0;
 		};
 		tabCont.addEventListener("TabClose", _resetRelativeIndex, true);
@@ -622,7 +623,6 @@ var handyClicksFuncs = {
 		var n = 0;
 
 		path = this.getRelativePath(path);
-		this.ut._log(path);
 		item.prop_className = (item.hasOwnProperty("prop_className") ? item.prop_className + " " : "")
 			+ "menuitem-iconic";
 		if(checkFiles && !this.fileExists(path))
