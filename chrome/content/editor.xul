@@ -91,6 +91,20 @@
 				<groupbox flex="1" pack="left">
 				<caption label="&hc.sets.captionFunc;" />
 
+
+
+					<!--
+					<tabbox flex="1">
+						<tabs>
+							<tab label="Normal" selected="true"/>
+							<tab label="Delayed"/>
+						</tabs>
+						<tabpanels flex="1">
+							<tabpanel flex="1" orient="vertical">
+					-->
+
+
+
 					<hbox align="center">
 						<menulist id="hc-editor-func" oncommand="handyClicksEditor.addFuncArgs();">
 							<menupopup id="hc-editor-funcPopup">
@@ -198,6 +212,10 @@
 									value="$void" label="$void"
 									hc_args=""
 									hc_supports="$all" />
+								<menuitem
+									value="$ignore" label="$ignore"
+									hc_args=""
+									hc_supports="$all" />
 
 								<!-- Custom code -->
 								<menuseparator id="hc-editor-funcsSep" />
@@ -222,6 +240,16 @@
 							<textbox class="hcEditor" id="hc-editor-funcField" wrap="off" flex="1" value="" />
 						</vbox>
 					</vbox>
+
+
+
+					<!--
+							</tabpanel>
+						</tabpanels>
+					</tabbox>
+					-->
+
+
 
 				</groupbox>
 

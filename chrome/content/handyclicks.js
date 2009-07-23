@@ -6,24 +6,28 @@ var handyClicks = {
 	ps: handyClicksPrefSvc,
 	get fn() { return handyClicksFuncs; },
 
-	flags: {
-		stopClick: false,
-		runned: false,
-		stopContextMenu: false
-	},
 	editMode: false,
-	isRunOnMousedown: false,
 	copyOfEvent: null,
 	origItem: null,
 	item: null,
 	itemType: undefined,
+	flags: {
+		runned: false, // => stop click events
+		stopContextMenu: false, // => stop "contextmenu" event
+		allowEvents: false, // => allow all events while (flags.runned == false)
+	},
+
 	_cMenu: null,
-	cMenuTimeout: null,
+	daTimeout: null, // Delayed Action Timeout
 	evtStrOnMousedown: "",
 	hasMousemoveHandler: false,
 	mousemoveParams: { dist: 0 },
 	_tabOnMousedown: null,
+
 	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
+	ignoreAction: "$ignore",
+
+	// Initialization:
 	init: function() {
 		window.removeEventListener("load", this, false);
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], true);
@@ -34,7 +38,7 @@ var handyClicks = {
 	destroy: function() {
 		window.removeEventListener("unload", this, false);
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
-		this.clearCMenuTimeout();
+		this.cancelDelayedAction();
 	},
 	setListeners: function(evtTypes, addFlag) {
 		var act = addFlag ? "addEventListener" : "removeEventListener";
@@ -43,6 +47,7 @@ var handyClicks = {
 			this
 		);
 	},
+
 	_enabled: true,
 	get enabled() {
 		return this._enabled && this.pu.pref("enabled");
@@ -50,147 +55,8 @@ var handyClicks = {
 	set enabled(val) {
 		this.pu.pref("enabled", val);
 	},
-	getItemContext: function(e) {
-		var cm = null;
-		switch(this.itemType) {
-			case "link":
-			case "img":
-				cm = document.getElementById("contentAreaContextMenu");
-			break;
-			case "bookmark":
-				cm = document.getElementById("bookmarks-context-menu") || document.getElementById("placesContext");
-			break;
-			case "historyItem":
-				// http://forums.mozillazine.org/viewtopic.php?p=6850975#p6850975
-				if("ex2BookmarksProperties" in window) // Ex Bookmark Properties extension
-					cm = document.getElementById("placesContext");
-			break;
-			case "tab":
-			case "tabbar":
-				var cm = document.getAnonymousElementByAttribute(getBrowser(), "anonid", "tabContextMenu");
-			break;
-			case "submitButton":
-				cm = null; //~ todo: SubmitToTab for Firefox 3+ => add cm
-			break;
-			default: // custom types
-				if(!this.isOkCustomType(this.itemType))
-					break;
-				var ct = handyClicksCustomTypes[this.itemType];
-				var _cm = ct._contextMenu;
-				if(_cm) {
-					try {
-						cm = _cm.call(this.fn, e, this.item, this.origItem);
-					}
-					catch(e) {
-						this.ut.notify(
-							this.ut.getLocalised("errorTitle"),
-							this.ut.getLocalised("customTypeContextMenuError")
-								.replace("%l", this.ps.dec(ct.label))
-								.replace("%id", this.itemType)
-								.replace("%e", e)
-							+ this.ut.getLocalised("openConsole"),
-							toErrorConsole
-						);
-						this.ut._err(
-							this.ut.errPrefix + "Error in custom function for context menu detection."
-							+ "\nid: " + this.itemType
-							+ "\nLabel: " + this.ps.dec(ct.label)
-							+ "\nCode:\n" + this.ps.dec(ct.contextMenu)
-						);
-						this.ut._err(e);
-					}
-				}
-				else
-					cm = this.getContextMenu();
-		}
-		if(cm && typeof cm.hidePopup != "function") {
-			// Try open XUL document with custom context in tab...
-			this.ut._err(this.ut.errPrefix + "Strange error: context menu has no hidePopup() method\n" + cm.id);
-			cm = null;
-		}
-		this._cMenu = cm; // cache
-		return cm;
-	},
-	getContextMenu: function(node) {
-		node = node || this.item;
-		if(!node)
-			return null;
-		var id = null;
-		var doc = document;
-		var isNoChrome = this.ut.isNoChromeDoc(node.ownerDocument);
-		if(!isNoChrome || node.namespaceURI == this.XULNS) {
-			var docNode = Node.DOCUMENT_NODE; // 9
-			while(node && node.nodeType != docNode) {
-				if(node.hasAttribute("context")) {
-					id = node.getAttribute("context");
-					doc = node.ownerDocument;
-					break;
-				}
-				node = node.parentNode;
-			}
-		}
-		if(!id) {
-			//id = "contentAreaContextMenu";
-			var brObj = this.getBrowserForNode(node);
-			if(brObj) {
-				id = this.getNodeContextMenu(brObj.browser);
-				doc = brObj.document;
-			}
-		}
-		this.ut._log("getContextMenu() -> " + id + " -> " + (doc && id && doc.getElementById(id)));
-		return id ? doc.getElementById(id) : null;
-	},
-	getBrowserForNode: function(node) {
-		return this.getBrowserForWindow(node.ownerDocument.defaultView.top); // Frames!
-	},
-	getBrowserForWindow: function(targetWin, doc) {
-		doc = doc || document;
-		var br;
-		["tabbrowser", "browser", "iframe"].some(
-			function(tag) {
-				var browsers = doc.getElementsByTagNameNS(this.XULNS, tag);
-				var win, brObj;
-				for(var i = 0, len = browsers.length; i < len; i++) {
-					win = browsers[i].contentWindow;
-					if(win === targetWin) {
-						br = browsers[i];
-						return true;
-					}
-					if(!this.ut.isNoChromeWin(win)) {
-						brObj = this.getBrowserForWindow(targetWin, win.document);
-						if(brObj) {
-							br = brObj.browser
-							doc = brObj.document;
-							return true;
-						}
-					}
-				}
-				return false;
-			},
-			this
-		);
-		return br && doc
-			? { browser: br, document: doc }
-			: null;
-	},
-	getNodeContextMenu: function(node) {
-		return node.getAttribute("contentcontextmenu")
-			|| node.getAttribute("contextmenu")
-			|| node.getAttribute("context");
-	},
-	disallowMousemove: function(but) {
-		return !this.hasMousemoveHandler
-			&& this.pu.pref("disallowMousemoveForButtons").indexOf(but) > -1;
-	},
-	skipFlags: function() {
-		var fls = this.flags;
-		for(var p in fls)
-			if(fls.hasOwnProperty(p))
-				fls[p] = false;
-	},
-	skipFlagsDelay: function() {
-		setTimeout(function(_this) { _this.skipFlags(); }, 0, this);
-	},
+
+	// Handlers:
 	mousedownHandler: function(e) { //~ todo: test hiding of context menu in Linux
 		if(!this.enabled)
 			return;
@@ -199,23 +65,22 @@ var handyClicks = {
 		if(!funcObj)
 			return;
 
+		this.flags.allowEvents = funcObj.action == this.ignoreAction; //~ todo
+
 		if(this.pu.pref("stopMousedownEvent") || this.editMode)
 			this.stopEvent(e);
 
 		if(this._cMenu && typeof this._cMenu.hidePopup == "function")
 			this._cMenu.hidePopup();
 
-		// Experimental:
-		var runOnMousedown = funcObj.eventType == "mousedown";
-		if(runOnMousedown) {
-			this.flags.stopClick = true;
-			this.runFunc(e, funcObj);
-		}
+		var runOnMousedown = funcObj.eventType == "mousedown" && !this.flags.allowEvents;
+		if(runOnMousedown)
+			this.functionEvent(funcObj, e);
 		if(
 			this.pu.pref("forceHideContextMenu") // for clicks on Linux
 			&& funcObj.action != "showContextMenu"
 		)
-			this.flags.stopContextMenu = true;
+			this.flags.stopContextMenu = true; //~ Remove "forceHideContextMenu" pref ?
 		if(runOnMousedown)
 			return;
 
@@ -227,38 +92,96 @@ var handyClicks = {
 			? this.fn.getTabBrowser(true).mCurrentTab
 			: null;
 
-		var cMenuDelay = this.pu.pref("showContextMenuTimeout");
-		/*** todo:
-		var delayedAction = funcObj.hasOwnProperty("delayedAction") ? funcObj.delayedAction : null;
-		if(cMenuDelay > 0 && (delayedAction || (cm && e.button == 2)))
-		***/
-		if(cMenuDelay > 0 && cm && e.button == 2) { // Show context menu after delay
-			this.clearCMenuTimeout(); // only one timeout... (for dblclick event)
-			this.cMenuTimeout = setTimeout(
-				function(_this) {
-					if(_this.tabNotChanged)
+		var delay = this.pu.pref("delayedActionTimeout");
+
+		var delayedAction = funcObj.hasOwnProperty("delayedAction") && this.isOkFuncObj(funcObj.delayedAction)
+			? funcObj.delayedAction
+			: null;
+
+		if(
+			delay > 0
+			&& !this.editMode
+			&& (
+				(cm && e.button == 2) // Show context menu after delay
+				|| delayedAction // Other action after delay
+			)
+		) {
+			this.cancelDelayedAction(); // only one timeout... (for dblclick event)
+			this.daTimeout = setTimeout(
+				function(_this, da) {
+					if(!_this.tabNotChanged)
+						return;
+					_this.flags.runned = true;
+					if(!da)
 						_this.showPopupOnItem();
+					else
+						_this.executeFunction(da);
 				},
-				cMenuDelay,
-				this
+				delay,
+				this,
+				delayedAction
 			);
-			cm.addEventListener(
-				"popupshowing",
-				function(e) {
-					_this.clearCMenuTimeout();
-					window.removeEventListener(e.type, arguments.callee, true);
-				},
-				true
-			);
+			if(
+				(cm && e.button == 2 && !delayedAction)
+				|| delayedAction.action == "showContextMenu"
+			) {
+				cm.addEventListener(
+					"popupshowing",
+					function(e) {
+						window.removeEventListener(e.type, arguments.callee, true);
+						_this.cancelDelayedAction();
+					},
+					true
+				);
+			}
 		}
-		if(this.disallowMousemove(e.button)) {
+		if(
+			!this.hasMousemoveHandler
+			&& this.pu.pref("disallowMousemoveForButtons").indexOf(e.button) > -1
+		) {
 			this.hasMousemoveHandler = true;
 			window.addEventListener("mousemove", this, true);
 		}
 	},
-	get tabNotChanged() {
-		var tab = this._tabOnMousedown;
-		return !tab || tab == this.fn.getTabBrowser(true).mCurrentTab;
+	clickHandler: function(e) {
+		if(!this.enabled)
+			return;
+		this.checkForStopEvent(e); // Can stop "contextmenu" event in Windows
+		if(this.flags.allowEvents)
+			return;
+		var funcObj = this.getFuncObjByEvt(e);
+		if(!funcObj)
+			return;
+		this.functionEvent(funcObj, e);
+	},
+	mouseupHandler: function(e) {
+		if(!this.enabled)
+			return;
+		this.checkForStopEvent(e);
+		if(this.flags.allowEvents)
+			this.cancelDelayedAction();
+		this.skipFlagsDelay();
+	},
+	commandHandler: function(e) {
+		if(!this.enabled)
+			return;
+		this.checkForStopEvent(e);
+	},
+	dblclickHandler: function(e) {
+		if(!this.enabled)
+			return;
+		if(this.flags.allowEvents)
+			return;
+		var funcObj = this.getFuncObjByEvt(e);
+		if(!funcObj)
+			return;
+		this.functionEvent(funcObj, e);
+	},
+
+	// Special handlers:
+	contextmenuHandler: function(e) {
+		if(this.flags.stopContextMenu)
+			this.stopEvent(e);
 	},
 	mousemoveHandler: function(e) {
 		if(this.mousemoveParams.screenX) {
@@ -277,9 +200,8 @@ var handyClicks = {
 
 		this.flags.runned = true;
 		this.flags.stopContextMenu = false; //~ ?
-		this.flags.stopClick = false; //~ ?
 
-		this.clearCMenuTimeout();
+		this.cancelDelayedAction();
 		this.removeMousemoveHandler();
 	},
 	removeMousemoveHandler: function() {
@@ -289,65 +211,66 @@ var handyClicks = {
 		this.hasMousemoveHandler = false;
 		this.mousemoveParams = { dist: 0 };
 	},
-	stopContextMenu: function(e) {
-		if(this.flags.stopContextMenu)
+
+	// Utils for handlers:
+	checkForStopEvent: function(e) {
+		if(
+			(this.flags.runned || (this.hasSettings && !this.flags.allowEvents) || this.editMode)
+			&& (e.originalTarget === this.origItem)
+		)
 			this.stopEvent(e);
 	},
-	showPopupOnItem: function(popup, node, e) {
-		this.flags.runned = true;
-
-		popup = popup || this._cMenu;
-		node = node || this.origItem;
-		if(!popup || !node || !node.ownerDocument.location)
-			return; // e.g. rocker gesture => go back => node.ownerDocument.location == null
-		e = e || this.copyOfEvent;
-
-		if(this.itemType == "tab") {
-			// Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
-			var tabscope = document.getElementById("tabscopePopup");
-			if(tabscope) // mousedown -> ...delay... -> this popup -> Tab Scope popup hide this popup
-				tabscope.hidePopup();
-		}
-
-		if(this.ut.fxVersion == 2 && popup.id == "contentAreaContextMenu") { // workaround for spellchecker bug
-			this.flags.stopContextMenu = false;
-			this.flags.stopClick = true;
-
-			var evt = document.createEvent("MouseEvents");
-			evt.initMouseEvent(
-				"click", true, false, node.ownerDocument.defaultView, 1,
-				e.screenX, e.screenY, e.clientX, e.clientY,
-				false, false, false, false,
-				2, null
-			);
-			node.dispatchEvent(evt);
-			this.blinkNode();
-
-			// this.flags.stopContextMenu = true; // ?
-			return;
-		}
-		//this.ut._log(popup.ownerDocument.location, document === popup.ownerDocument);
-		//document.popupNode = this.itemType == "tab" ? this.item : node;
-		popup.ownerDocument.popupNode = this.itemType == "tab" ? this.item : node;
-
-		var xy = this.getXY();
-		popup.showPopup(this.ut.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "popup", null, null);
+	skipFlags: function() {
+		var fls = this.flags;
+		for(var p in fls)
+			if(fls.hasOwnProperty(p))
+				fls[p] = false;
 	},
-	blinkNode: function(time, node) {
-		node = node || this.origItem;
-		if(!node)
-			return;
-		var hasStl = node.hasAttribute("style");
-		var origVis = node.style.visibility;
-		node.style.visibility = "hidden";
-		setTimeout(
-			function() {
-				node.style.visibility = origVis;
-				if(!hasStl)
-					node.removeAttribute("style");
-			},
-			time || 170
-		);
+	skipFlagsDelay: function() {
+		setTimeout(function(_this) { _this.skipFlags(); }, 0, this);
+	},
+	get tabNotChanged() {
+		var tab = this._tabOnMousedown;
+		return !tab || tab == this.fn.getTabBrowser(true).mCurrentTab;
+	},
+	cancelDelayedAction: function() {
+		clearTimeout(this.daTimeout);
+	},
+
+	// Settings service:
+	getFuncObjByEvt: function(e) {
+		this.hasSettings = false;
+		var evtStr = this.getEvtStr(e);
+		var isMousedown = e.type == "mousedown";
+		if(isMousedown)
+			this.evtStrOnMousedown = evtStr;
+		var sets = this.getSettings(evtStr);
+		if(!sets)
+			return null;
+		if(
+			isMousedown
+			|| evtStr != this.evtStrOnMousedown
+			//|| e.originalTarget != this.origItem
+		)
+			this.defineItem(e, sets);
+		var funcObj = this.getFuncObj(sets) || (this.editMode ? {} : null);
+		this.hasSettings = !!funcObj;
+		if(this.hasSettings) {
+			// fx < 3.0:
+			// Following works:
+			//   this.event = e;
+			//   alert(uneval(this.getXY(this.event)));
+			// Always return "({x:0, y:0})":
+			//   var _this = this;
+			//   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
+			this.copyOfEvent = this.cloneObj(e);
+			this.origItem = e.originalTarget;
+		}
+		else {
+			this.copyOfEvent = null;
+			this.origItem = null;
+		}
+		return funcObj;
 	},
 	getEvtStr: function(e) {
 		return "button=" + e.button
@@ -362,19 +285,6 @@ var handyClicks = {
 			: this.editMode
 				? {}
 				: null;
-	},
-	isOkFuncObj: function(fObj) { // funcObj && funcObj.enabled && funcObj.action
-		return this.ps.isOkFuncObj(fObj) && fObj.enabled;
-	},
-	isOkCustomType: function(cType) {
-		var cts = handyClicksCustomTypes;
-		if(!cts.hasOwnProperty(cType))
-			return false;
-		var ct = cts[cType];
-		return typeof ct == "object" && ct.hasOwnProperty("_initialized");
-	},
-	itemTypeInSets: function(sets, iType) {
-		return sets.hasOwnProperty(iType) && this.isOkFuncObj(sets[iType]);
 	},
 	defineItem: function(e, sets) {
 		var all = this.editMode || this.itemTypeInSets(sets, "$all");
@@ -555,6 +465,19 @@ var handyClicks = {
 			}
 		}
 	},
+	itemTypeInSets: function(sets, iType) {
+		return sets.hasOwnProperty(iType) && this.isOkFuncObj(sets[iType]);
+	},
+	isOkFuncObj: function(fObj) { // funcObj && funcObj.enabled && funcObj.action
+		return this.ps.isOkFuncObj(fObj) && fObj.enabled;
+	},
+	isOkCustomType: function(cType) {
+		var cts = handyClicksCustomTypes;
+		if(!cts.hasOwnProperty(cType))
+			return false;
+		var ct = cts[cType];
+		return typeof ct == "object" && ct.hasOwnProperty("_initialized");
+	},
 	hasParent: function(it, id) {
 		it = it.parentNode;
 		while(it) {
@@ -571,39 +494,136 @@ var handyClicks = {
 				|| (this.itemTypeInSets(sets, this.itemType) && sets[this.itemType])
 			);
 	},
-	getFuncObjByEvt: function(e) {
-		this.hasSettings = false;
-		var evtStr = this.getEvtStr(e);
-		var isMousedown = e.type == "mousedown";
-		if(isMousedown)
-			this.evtStrOnMousedown = evtStr;
-		var sets = this.getSettings(evtStr);
-		if(!sets)
-			return null;
-		if(
-			isMousedown
-			|| evtStr != this.evtStrOnMousedown
-			//|| e.originalTarget != this.origItem
-		)
-			this.defineItem(e, sets);
-		var funcObj = this.getFuncObj(sets) || (this.editMode ? {} : null);
-		this.hasSettings = !!funcObj;
-		if(this.hasSettings) {
-			// fx < 3.0:
-			// Following works:
-			//   this.event = e;
-			//   alert(uneval(this.getXY(this.event)));
-			// Always return "({x:0, y:0})":
-			//   var _this = this;
-			//   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
-			this.copyOfEvent = this.cloneObj(e);
-			this.origItem = e.originalTarget;
+
+	// Context menu:
+	getItemContext: function(e) {
+		var cm = null;
+		switch(this.itemType) {
+			case "link":
+			case "img":
+				cm = document.getElementById("contentAreaContextMenu");
+			break;
+			case "bookmark":
+				cm = document.getElementById("bookmarks-context-menu") || document.getElementById("placesContext");
+			break;
+			case "historyItem":
+				// http://forums.mozillazine.org/viewtopic.php?p=6850975#p6850975
+				if("ex2BookmarksProperties" in window) // Ex Bookmark Properties extension
+					cm = document.getElementById("placesContext");
+			break;
+			case "tab":
+			case "tabbar":
+				var cm = document.getAnonymousElementByAttribute(getBrowser(), "anonid", "tabContextMenu");
+			break;
+			case "submitButton":
+				cm = null; //~ todo: SubmitToTab for Firefox 3+ => add cm
+			break;
+			default: // custom types
+				if(!this.isOkCustomType(this.itemType))
+					break;
+				var ct = handyClicksCustomTypes[this.itemType];
+				var _cm = ct._contextMenu;
+				if(_cm) {
+					try {
+						cm = _cm.call(this.fn, e, this.item, this.origItem);
+					}
+					catch(e) {
+						this.ut.notify(
+							this.ut.getLocalised("errorTitle"),
+							this.ut.getLocalised("customTypeContextMenuError")
+								.replace("%l", this.ps.dec(ct.label))
+								.replace("%id", this.itemType)
+								.replace("%e", e)
+							+ this.ut.getLocalised("openConsole"),
+							toErrorConsole
+						);
+						this.ut._err(
+							this.ut.errPrefix + "Error in custom function for context menu detection."
+							+ "\nid: " + this.itemType
+							+ "\nLabel: " + this.ps.dec(ct.label)
+							+ "\nCode:\n" + this.ps.dec(ct.contextMenu)
+						);
+						this.ut._err(e);
+					}
+				}
+				else
+					cm = this.getContextMenu();
 		}
-		else {
-			this.copyOfEvent = null;
-			this.origItem = null;
+		if(cm && typeof cm.hidePopup != "function") {
+			// Try open XUL document with custom context in tab...
+			this.ut._err(this.ut.errPrefix + "Strange error: context menu has no hidePopup() method\n" + cm.id);
+			cm = null;
 		}
-		return funcObj;
+		this._cMenu = cm; // cache
+		return cm;
+	},
+
+	// Show context menu:
+	showPopupOnItem: function(popup, node, e) {
+		popup = popup || this._cMenu;
+		node = node || this.origItem;
+		if(!popup || !node || !node.ownerDocument.location)
+			return; // e.g. rocker gesture => go back => node.ownerDocument.location == null
+		e = e || this.copyOfEvent;
+
+		if(this.itemType == "tab") {
+			// Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
+			var tabscope = document.getElementById("tabscopePopup");
+			if(tabscope) // mousedown -> ...delay... -> this popup -> Tab Scope popup hide this popup
+				tabscope.hidePopup();
+		}
+
+		if(this.ut.fxVersion == 2 && popup.id == "contentAreaContextMenu") { // workaround for spellchecker bug
+			this.flags.stopContextMenu = false;
+
+			var evt = document.createEvent("MouseEvents");
+			evt.initMouseEvent(
+				"click", true, false, node.ownerDocument.defaultView, 1,
+				e.screenX, e.screenY, e.clientX, e.clientY,
+				false, false, false, false,
+				2, null
+			);
+			node.dispatchEvent(evt);
+			this.blinkNode();
+
+			// this.flags.stopContextMenu = true; // ?
+			return;
+		}
+		//this.ut._log(popup.ownerDocument.location, document === popup.ownerDocument);
+		//document.popupNode = this.itemType == "tab" ? this.item : node;
+		popup.ownerDocument.popupNode = this.itemType == "tab" ? this.item : node;
+
+		var xy = this.getXY();
+		popup.showPopup(this.ut.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "popup", null, null);
+	},
+	getXY: function(e) {
+		e = e || this.mousemoveParams.event || this.copyOfEvent;
+		return this.ut.fxVersion >= 3
+			? { x: e.screenX, y: e.screenY }
+			: { x: e.clientX, y: e.clientY };
+	},
+	blinkNode: function(time, node) {
+		node = node || this.origItem;
+		if(!node)
+			return;
+		var hasStl = node.hasAttribute("style");
+		var origVis = node.style.visibility;
+		node.style.visibility = "hidden";
+		setTimeout(
+			function() {
+				node.style.visibility = origVis;
+				if(!hasStl)
+					node.removeAttribute("style");
+			},
+			time || 170
+		);
+	},
+
+	// Utils:
+	stopEvent: function(e) {
+		//this.ut._log(e.type + " -> stopEvent()");
+		e.preventDefault();
+		e.stopPropagation();
 	},
 	cloneObj: function(obj) {
 		obj = obj || {};
@@ -612,54 +632,78 @@ var handyClicks = {
 			clone[p] = obj[p];
 		return clone;
 	},
-	clearCMenuTimeout: function() {
-		clearTimeout(this.cMenuTimeout);
-	},
-	stopEvent: function(e) {
-		//this.ut._log(e.type + " -> stopEvent()");
-		e.preventDefault();
-		e.stopPropagation();
-	},
-	clickHandler: function(e) {
-		if(!this.enabled)
-			return;
 
-		if(this.flags.stopClick || (!this.flags.runned && this.hasSettings) || this.editMode)
-			this.stopEvent(e); // Stop "contextmenu" event in Windows
+	// Custom types:
+	getContextMenu: function(node) {
+		node = node || this.item;
+		if(!node)
+			return null;
+		var id = null;
+		var doc = document;
+		var isNoChrome = this.ut.isNoChromeDoc(node.ownerDocument);
+		if(!isNoChrome || node.namespaceURI == this.XULNS) {
+			var docNode = Node.DOCUMENT_NODE; // 9
+			while(node && node.nodeType != docNode) {
+				if(node.hasAttribute("context")) {
+					id = node.getAttribute("context");
+					doc = node.ownerDocument;
+					break;
+				}
+				node = node.parentNode;
+			}
+		}
+		if(!id) {
+			//id = "contentAreaContextMenu";
+			var brObj = this.getBrowserForNode(node);
+			if(brObj) {
+				id = this.getNodeContextMenu(brObj.browser);
+				doc = brObj.document;
+			}
+		}
+		this.ut._log("getContextMenu() -> " + id + " -> " + (doc && id && doc.getElementById(id)));
+		return id ? doc.getElementById(id) : null;
+	},
+	getBrowserForNode: function(node) {
+		return this.getBrowserForWindow(node.ownerDocument.defaultView.top); // Frames!
+	},
+	getBrowserForWindow: function(targetWin, doc) {
+		doc = doc || document;
+		var br;
+		["tabbrowser", "browser", "iframe"].some(
+			function(tag) {
+				var browsers = doc.getElementsByTagNameNS(this.XULNS, tag);
+				var win, brObj;
+				for(var i = 0, len = browsers.length; i < len; i++) {
+					win = browsers[i].contentWindow;
+					if(win === targetWin) {
+						br = browsers[i];
+						return true;
+					}
+					if(!this.ut.isNoChromeWin(win)) {
+						brObj = this.getBrowserForWindow(targetWin, win.document);
+						if(brObj) {
+							br = brObj.browser
+							doc = brObj.document;
+							return true;
+						}
+					}
+				}
+				return false;
+			},
+			this
+		);
+		return br && doc
+			? { browser: br, document: doc }
+			: null;
+	},
+	getNodeContextMenu: function(node) {
+		return node.getAttribute("contentcontextmenu")
+			|| node.getAttribute("contextmenu")
+			|| node.getAttribute("context");
+	},
 
-		var funcObj = this.getFuncObjByEvt(e);
-		if(!funcObj)
-			return;
-		this.runFunc(e, funcObj);
-	},
-	mouseupHandler: function(e) {
-		if(!this.enabled)
-			return;
-		if(
-			(this.flags.runned || this.hasSettings || this.editMode)
-			&& (e.originalTarget === this.origItem)
-		)
-			this.stopEvent(e);
-		this.skipFlagsDelay();
-	},
-	commandHandler: function(e) {
-		if(!this.enabled)
-			return;
-		if(
-			(this.flags.runned || this.hasSettings || this.editMode)
-			&& (e.originalTarget === this.origItem)
-		)
-			this.stopEvent(e);
-	},
-	dblclickHandler: function(e) {
-		if(!this.enabled)
-			return;
-		var funcObj = this.getFuncObjByEvt(e);
-		if(!funcObj)
-			return;
-		this.runFunc(e, funcObj);
-	},
-	runFunc: function(e, funcObj) {
+	// Execute function:
+	functionEvent: function(funcObj, e) {
 		if(
 			this.flags.runned
 			|| (!this.editMode && e.type != funcObj.eventType)
@@ -669,22 +713,24 @@ var handyClicks = {
 			this.editMode = false;
 			return;
 		}
-
 		this.flags.runned = true;
 		this.flags.stopContextMenu = true;
 
 		this.stopEvent(e); // this stop "contextmenu" event in Windows
-		this.clearCMenuTimeout();
-		this.removeMousemoveHandler();
 
 		if(this.editMode) {
 			this.openEditor(e);
 			this.editMode = false;
 			return;
 		}
+		this.executeFunction(funcObj, e);
+	},
+	executeFunction: function(funcObj, e) {
+		this.cancelDelayedAction();
+		this.removeMousemoveHandler();
 
 		var args = this.argsToArr(funcObj.arguments);
-		args.unshift(e);
+		args.unshift(e || null);
 		if(funcObj.custom) {
 			args.unshift(this.item, this.origItem);
 			var action = this.ps.dec(funcObj.action);
@@ -720,10 +766,11 @@ var handyClicks = {
 		}
 
 		this.ut._log(
-			e.type + " => runFunc -> " + this.origItem
+			(e ? e.type : "delayedAction")
+			+ " => executeFunction() -> " + this.origItem
 			+ "\nlocalName -> " + this.origItem.localName
 			+ ", itemType -> " + this.itemType
-			+ ", button -> " + e.button
+			+ (e ? ", button -> " + e.button : "")
 			+ "\n=> " + (funcObj.custom ? (this.ps.dec(funcObj.label) || action) : funcObj.action)
 		);
 	},
@@ -735,23 +782,19 @@ var handyClicks = {
 				args.push(argsObj[p]);
 		return args;
 	},
-	getXY: function(e) {
-		e = e || this.mousemoveParams.event || this.copyOfEvent;
-		return this.ut.fxVersion >= 3
-			? { x: e.screenX, y: e.screenY }
-			: { x: e.clientX, y: e.clientY };
-	},
+
+	// Events interface:
 	handleEvent: function(e) {
 		switch(e.type) {
-			case "load":        this.init(e);             break;
-			case "unload":      this.destroy(e);          break;
-			case "mousedown":   this.mousedownHandler(e); break;
-			case "click":       this.clickHandler(e);     break;
-			case "command":     this.commandHandler(e);   break;
-			case "mousemove":   this.mousemoveHandler(e); break;
-			case "contextmenu": this.stopContextMenu(e);  break;
-			case "mouseup":     this.mouseupHandler(e);   break;
-			case "dblclick":    this.dblclickHandler(e);
+			case "load":        this.init(e);               break;
+			case "unload":      this.destroy(e);            break;
+			case "mousedown":   this.mousedownHandler(e);   break;
+			case "click":       this.clickHandler(e);       break;
+			case "mouseup":     this.mouseupHandler(e);     break;
+			case "command":     this.commandHandler(e);     break;
+			case "dblclick":    this.dblclickHandler(e);    break;
+			case "contextmenu": this.contextmenuHandler(e); break;
+			case "mousemove":   this.mousemoveHandler(e);
 		}
 	},
 
@@ -793,6 +836,7 @@ var handyClicks = {
 		document.getElementById("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
 	},
 
+	// Hotkeys:
 	registerHotkeys: function() {
 		this.pu.prefBr.getBranch(this.pu.nPrefix + "key.")
 			.getChildList("", {})

@@ -16,7 +16,6 @@ var handyClicksFuncs = {
 	},
 	isDummyURI: function(item, uri) {
 		uri = uri || this.getUriOfItem(item);
-
 		var doc = item.ownerDocument;
 		var loc = doc.location.href.replace(/#.*$/, "");
 		//this.ut._log(doc, loc, uri);
