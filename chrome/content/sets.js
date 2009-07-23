@@ -57,9 +57,9 @@ var handyClicksSets = {
 				this.ut._err(this.ut.errPrefix + "Invalid shortcut in prefs: " + sh);
 				continue;
 			}
-			var button = this.getButtonStr(sh);
+			var button = this.ps.getButtonStr(sh);
 			var buttonContainer = this.DOMCache[button] || this.appendContainerItem(null, button, this.ut.getLocalised(button));
-			var modifiers = this.convertModifiersStr(sh);
+			var modifiers = this.ps.getModifiersStr(sh);
 			var modifiersContainer = this.DOMCache[sh] || this.appendContainerItem(buttonContainer, sh, modifiers);
 			this.appendItems(modifiersContainer, p[sh], sh);
 		}
@@ -85,17 +85,6 @@ var handyClicksSets = {
 		while(cnt.hasChildNodes())
 			cnt.removeChild(cnt.lastChild);
 		this.drawTree();
-	},
-	getButtonStr: function(str) {
-		return /button=([0-2])/.test(str) ? "button" + RegExp.$1 : "?";
-	},
-	convertModifiersStr: function(str) {
-		str = str
-			.replace(/^button=[0-2],|,?[a-z]+=false/g, "")
-			.replace(/([a-z])([a-z]+)=true/g, function($0, $1, $2) { return $1.toUpperCase() + $2 })
-			.replace(/^,|,$/g, "")
-			.replace(/,/g, "+");
-		return str ? str : this.ut.getLocalised("none");
 	},
 	appendContainerItem: function(parent, hash, label) {
 		var tItem = document.createElement("treeitem");
@@ -294,8 +283,8 @@ var handyClicksSets = {
 		var tRow;
 		for(var i = 0, len = tRows.length; i < len; i++) {
 			tRow = tRows[i];
-			var mdfs = this.convertModifiersStr(tRow.__shortcut);
-			var button = this.ut.getLocalised(this.getButtonStr(tRow.__shortcut));
+			var mdfs = this.ps.getModifiersStr(tRow.__shortcut);
+			var button = this.ps.getLocaleButtonStr(tRow.__shortcut, true);
 			var type = tRow.__itemType.indexOf("custom_") == 0
 				? this.getCustomTypeLabel(tRow.__itemType)
 				: this.ut.getLocalised(tRow.__itemType);
@@ -305,10 +294,10 @@ var handyClicksSets = {
 					? this.ps.dec(fObj.label || "")
 					: this.ut.getLocalised(fObj.action || "")
 				: "?";
-			del.push(mdfs + " + " + button + " + " + type + " \u21d2 " + label.substr(0, 42));
+			del.push(mdfs + " + " + button + " + " + type + " \u21d2 " + label.substr(0, 42)); // =>
 		}
 		if(del.length > maxRows)
-			del.splice(maxRows - 2, del.length - maxRows + 1, "\x85");
+			del.splice(maxRows - 2, del.length - maxRows + 1, "\u2026"); // ...
 
 		if(
 			!this.ut.confirmEx(
@@ -368,6 +357,8 @@ var handyClicksSets = {
 		var rowIndx, column, tRow;
 		var changed = true;
 		if(e) {
+			if(e.button != 0)
+				return;
 			var row = {}, col = {}, obj = {};
 			this.tree.treeBoxObject.getCellAt(e.clientX, e.clientY, row, col, obj);
 			if(row.value == -1 || col.value == null)

@@ -102,8 +102,8 @@ var handyClicks = {
 			delay > 0
 			&& !this.editMode
 			&& (
-				(cm && e.button == 2) // Show context menu after delay
-				|| delayedAction // Other action after delay
+				(!delayedAction && cm && e.button == 2) // Show context menu after delay
+				|| (delayedAction && delayedAction.enabled) // Other action after delay
 			)
 		) {
 			this.cancelDelayedAction(); // only one timeout... (for dblclick event)

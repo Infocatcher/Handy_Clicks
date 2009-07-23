@@ -172,7 +172,7 @@ var handyClicksPrefSvc = {
 	},
 	saveSettingsObjects: function(reloadAll) {
  		var res = this.warnComment + this.versionInfo;
-		var sh, so, type, to, pName, pVal;
+		var sh, so, type, to, pName, pVal, dName;
 		var forcedDisByType = { __proto__: null };
 		var forcedDis;
 
@@ -228,7 +228,18 @@ var handyClicksPrefSvc = {
 						)
 					)
 						pVal = false;
-					res += "\t\t\t" + this.fixPropName(pName) + ": " + this.objToSource(pVal) + ",\n";
+					if(pName == "delayedAction") {
+						if(typeof pVal != "object")
+							continue;
+						res += "\t\t\t" + pName + ": {\n";
+						for(dName in pVal) {
+							if(pVal.hasOwnProperty(dName))
+								res += "\t\t\t\t" + this.fixPropName(dName) + ": " + this.objToSource(pVal[dName]) + ",\n";
+						}
+						res = this.delLastComma(res) + "\t\t\t},\n";
+					}
+					else
+						res += "\t\t\t" + this.fixPropName(pName) + ": " + this.objToSource(pVal) + ",\n";
 				}
 				res = this.delLastComma(res) + "\t\t},\n";
 			}
@@ -354,6 +365,20 @@ var handyClicksPrefSvc = {
 			this.ut._err(this.ut.errPrefix + "Can't decode: " + s + "\n" + e);
 			return "[invalid value]";
 		}
+	},
+	getButtonStr: function(sh, short) {
+		return /button=([0-2])/.test(sh) ? "button" + RegExp.$1 + (short ? "short" : "") : "?";
+	},
+	getLocaleButtonStr: function(sh, short) {
+		return this.ut.getLocalised(this.getButtonStr(sh, short));
+	},
+	getModifiersStr: function(sh) {
+		sh = sh
+			.replace(/^button=[0-2],|,?[a-z]+=false/g, "")
+			.replace(/([a-z])([a-z]+)=true/g, function($0, $1, $2) { return $1.toUpperCase() + $2 })
+			.replace(/^,|,$/g, "")
+			.replace(/,/g, "+");
+		return sh ? sh : this.ut.getLocalised("none");
 	}
 };
 handyClicksPrefSvc.loadSettings();

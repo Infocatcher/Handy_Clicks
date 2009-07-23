@@ -62,3 +62,8 @@ textbox.hcEditor {
 #hc-editor-customTypeExtId {
 	min-width: 9em;
 }
+
+#hc-editor-funcTab-delay [hc_notdelay="true"],
+#hc-editor-funcTab [hc_notfunc="true"] {
+	display: none;
+}

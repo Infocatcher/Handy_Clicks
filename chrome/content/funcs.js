@@ -118,7 +118,7 @@ var handyClicksFuncs = {
 	},
 	openUriInCurrentTab: function(e, refererPolicy, closePopups, uri) {
 		uri = uri || this.getUriOfItem(this.hc.item);
-		if(this.testForHighlander(uri))
+		if(this.testForLinkFeatures(e, this.hc.item, uri, false, false, refererPolicy, 0, true))
 			return;
 		this.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
 		if(closePopups)
@@ -215,26 +215,26 @@ var handyClicksFuncs = {
 			false
 		);
 	},
-	testForLinkFeatures: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, inWin) {
+	testForLinkFeatures: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, inWin, inCurTab) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
 		if(
-			this.loadJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin)
+			this.loadJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin, inCurTab)
 			|| this.testForFileLink(uri, refererPolicy)
 			|| this.testForHighlander(uri)
 		)
 			return true;
 		return false;
 	},
-	loadJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, inWin) {
+	loadJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, inWin, inCurTab) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
 
 		var voidURI = this.isVoidURI(uri);
 		if(!voidURI && this.isJSURI(uri)) {
-			this.loadNotVoidJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin);
+			this.loadNotVoidJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin, inCurTab);
 			return true;
 		}
 		else if(voidURI || this.isDummyURI(item, uri)) {
@@ -242,21 +242,6 @@ var handyClicksFuncs = {
 			return true;
 		}
 		return false;
-
-		/*** Old code:
-		if( // void links with handlers
-			this.hc.itemType == "link"
-			&& (!uri || this.isVoidURI(uri))
-			&& (
-				item.hasAttribute("onclick")
-				|| item.hasAttribute("onmousedown")
-				|| item.hasAttribute("onmouseup")
-			)
-		)
-			this.loadVoidLinkWithHandler(e, item, loadJSInBackground, refererPolicy, inWin);
-		else
-			this.loadNotVoidJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin);
-		***/
 	},
 	loadVoidLinkWithHandler: function(e, item, loadJSInBackground, refererPolicy, inWin) {
 		e = e || this.hc.copyOfEvent;
@@ -329,7 +314,7 @@ var handyClicksFuncs = {
 				? this.pu.getPref("browser.link.open_newwindow.restriction")
 				: inWin;
 	},
-	loadNotVoidJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, inWin) {
+	loadNotVoidJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, inWin, inCurTab) {
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
 		var _this = this;
@@ -338,7 +323,8 @@ var handyClicksFuncs = {
 				"browser.link.open_newwindow.restriction": _this.getWinRestriction(inWin),
 				"dom.disable_open_during_load": false, // allow window.open( ... )
 				"browser.tabs.loadDivertedInBackground": loadJSInBackground,
-				"network.http.sendRefererHeader": _this.getRefererPolicy(refererPolicy)
+				"network.http.sendRefererHeader": _this.getRefererPolicy(refererPolicy),
+				"browser.link.open_newwindow": inCurTab ? 1 : 3 //~ todo: test
 			});
 
 			var oDoc = item.ownerDocument;

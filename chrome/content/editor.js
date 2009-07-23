@@ -26,6 +26,8 @@ var handyClicksEditor = {
 		shortcut: 0,
 		itemType: 1
 	},
+	delayId: "-delay",
+
 	init: function() {
 		var wa = window.arguments;
 		if(!wa[0] || !wa[1] || !window.opener)
@@ -33,6 +35,7 @@ var handyClicksEditor = {
 		if(this.ut.fxVersion == 1.5) // "relative" is not supported
 			this.types.menulists.moveTabTo.pop();
 		this.loadLabels();
+		this.createDelayedFuncTab();
 		this.initShortcuts();
 		this.initUI();
 		this.loadCustomType(this.type);
@@ -63,6 +66,8 @@ var handyClicksEditor = {
 		for(var i = 0, len = mis.length; i < len; i++) {
 			mi = mis[i];
 			mi.setAttribute("label", this.ut.getLocalised(mi.getAttribute("label")));
+			if(mi.hasAttribute("tooltiptext"))
+				mi.setAttribute("tooltiptext", this.ut.getLocalised(mi.getAttribute("tooltiptext")));
 		}
 		if(this.ut.fxVersion >= 3) // Fix bug in Firefox 1.5 and 2.0
 			return;
@@ -71,11 +76,26 @@ var handyClicksEditor = {
 		ml.selectedIndex = null;
 		ml.selectedIndex = si;
 	},
+	createDelayedFuncTab: function() {
+		var dTab = this.$("hc-editor-funcTab").cloneNode(true);
+		this.$("hc-editor-funcsTab").appendChild(
+			this.addIds(dTab, this.delayId)
+		);
+	},
+	addIds: function(node, id) {
+		node.id += id;
+		Array.prototype.forEach.call(
+			node.getElementsByTagName("*"),
+			function(node) { if(node.id) node.id += id; }
+		);
+		return node;
+	},
 	initUI: function() {
 		this.initShortcutEditor();
 		this.appendTypesList();
 		this.initImgIgnoreLinks();
 		this.initCustomTypesEditor();
+		this.setWinTitle();
 	},
 	destroy: function() {
 		window.removeEventListener("DOMMouseScroll", this, true);
@@ -105,16 +125,23 @@ var handyClicksEditor = {
 		window[this.wu.winIdProp] = winId;
 		this.wu.highlightAllOpened();
 	},
+	setWinTitle: function() {
+		var sh = this.currentShortcut;
+		var ft = this.ps.getModifiersStr(sh)
+			+ " + " + this.ps.getLocaleButtonStr(sh, true)
+			+ " + " + (this.$("hc-editor-itemTypes").getAttribute("label") || "?");
+		var ct = this.$("hc-editor-customType").value || this.$("hc-editor-customTypeExtId").value;
+		var t = " [" + ft + (ct ? " | " + ct : "") + "]";
+		document.title = document.title.replace(/\s+\[.+\]$/, "") + t;
+	},
 	initShortcutEditor: function() {
-		var setsObj = handyClicksPrefs[this.target] || {};
-		setsObj = setsObj[this.type] || {};
-		var isCustom = setsObj.custom;
-		this.customFunction = isCustom;
-		if(isCustom) {
-			this.code.newValue = this.ps.dec(setsObj.action);
-			this.cLabel.value = this.ps.dec(setsObj.label);
-		}
-		this.initFuncsList(isCustom, setsObj.action || null);
+		var setsObj = this.ut.getProperty(handyClicksPrefs, this.target, this.type) || {};
+		this.initFuncEditor(setsObj, "");
+		this.$("hc-editor-events").value = setsObj.eventType || "click";
+
+		setsObj = this.ut.getProperty(setsObj, "delayedAction") || {};
+		this.initFuncEditor(setsObj, this.delayId);
+
 		if(/(?:^|,)button=(\d)(?:,|$)/.test(this.target))
 			this.$("hc-editor-button").value = RegExp.$1;
 		["ctrl", "shift", "alt", "meta"].forEach(
@@ -124,12 +151,21 @@ var handyClicksEditor = {
 			},
 			this
 		);
-		this.$("hc-editor-events").value = setsObj.eventType || "click";
-		this.$("hc-editor-enabled").checked = typeof setsObj.enabled != "boolean" || setsObj.enabled;
 	},
-	set customFunction(isCustom) {
-		this.$("hc-editor-funcArgsBox").collapsed = isCustom;
-		this.$("hc-editor-funcCustom").collapsed = !isCustom;
+	initFuncEditor: function(setsObj, delayed) {
+		var isCustom = !!setsObj.custom;
+		this.selectCustomFunc(isCustom, delayed);
+		if(isCustom) {
+			this.$("hc-editor-funcField" + delayed).newValue = this.ps.dec(setsObj.action);
+			this.$("hc-editor-funcLabel" + delayed).value = this.ps.dec(setsObj.label);
+		}
+		this.initFuncsList(isCustom, setsObj.action || null, delayed);
+		this.$("hc-editor-enabled" + delayed).checked = typeof setsObj.enabled != "boolean" || setsObj.enabled;
+	},
+	selectCustomFunc: function(isCustom, delayed) {
+		delayed = delayed || "";
+		this.$("hc-editor-funcArgsBox" + delayed).collapsed = isCustom;
+		this.$("hc-editor-funcCustom" + delayed).collapsed = !isCustom;
 	},
 	loadCustomType: function(type) {
 		if(type && type.indexOf("custom_" == 0))
@@ -162,10 +198,12 @@ var handyClicksEditor = {
 		this.$("hc-editor-customTypeDefine").newValue = this.ps.dec(ct.define);
 		this.$("hc-editor-customTypeContext").newValue = this.ps.dec(ct.contextMenu);
 		this.setWinId();
+		this.setWinTitle();
 	},
 	customTypeLabel: function(it) {
 		if(it.getElementsByAttribute("label", it.value)[0])
 			this.initCustomTypesEditor();
+		//this.setWinTitle();
 	},
 	customTypeLabelDelay: function(it) {
 		setTimeout(function(_this, it) { _this.customTypeLabel(it); }, 0, this, it);
@@ -236,15 +274,18 @@ var handyClicksEditor = {
 			this
 		);
 	},
-	initFuncsList: function(custom, action) {
-		var fList = this.$("hc-editor-func");
+	initFuncsList: function(custom, action, delayed) {
+		delayed = delayed || "";
+		var fList = this.$("hc-editor-func" + delayed);
 		fList.value = custom // <menulist>
 			? "$custom"
-			: action;
+			: delayed && !action
+				? "$auto"
+				: action;
 		if(!fList.value) // fix for Firefox 2.0
 			fList.selectedIndex = -1;
 		var re = new RegExp("(?:^|[\\s,;]+)" + this.type + "(?:[\\s,;]+|$)|^\\$all$");
-		var mp = this.$("hc-editor-funcPopup");
+		var mp = this.$("hc-editor-funcPopup" + delayed);
 		var its = mp.childNodes;
 		var it, req;
 		var hideSep = true;
@@ -267,7 +308,7 @@ var handyClicksEditor = {
 					it.hidden = true;
 			}
 		}
-		this.addFuncArgs(custom, action);
+		this.addFuncArgs(delayed);
 	},
 	exts: {
 		SplitBrowser: "{29c4afe1-db19-4298-8785-fcc94d1d6c1d}",
@@ -294,15 +335,16 @@ var handyClicksEditor = {
 			ignoreLinks.checked = typeof setsObj.ignoreLinks == "boolean" ? setsObj.ignoreLinks : false;
 		}
 	},
-	addFuncArgs: function() {
-		var box = this.$("hc-editor-funcArgs");
+	addFuncArgs: function(delayed) {
+		delayed = delayed || "";
+		var box = this.$("hc-editor-funcArgs" + delayed);
 		while(box.hasChildNodes())
 			box.removeChild(box.lastChild);
-		var funcs = this.$("hc-editor-func");
+		var funcs = this.$("hc-editor-func" + delayed);
 		var cFunc = funcs.value || null;
 		var isCustom = cFunc == "$custom";
-		this.customFunction = isCustom;
-		var argBox = this.$("hc-editor-funcArgsBox");
+		this.selectCustomFunc(isCustom, delayed);
+		var argBox = this.$("hc-editor-funcArgsBox" + delayed);
 		argBox.hidden = true;
 		if(cFunc == "$custom")
 			return;
@@ -313,15 +355,25 @@ var handyClicksEditor = {
 		if(!cArgs)
 			return;
 		argBox.hidden = false;
-		cArgs.split(/[\s,;]+/).forEach(this.addArgControls, this);
+		cArgs.split(/[\s,;]+/).forEach(
+			function(arg) {
+				this.addArgControls(arg, delayed);
+			},
+			this
+		);
 	},
-	addArgControls: function(arg) {
-		var setsObj = handyClicksPrefs[this.target];
-		setsObj = typeof setsObj == "object" //~ todo: isOkFuncObj ?
-			? setsObj[this.type] || {}
+	addArgControls: function(arg, delayed) {
+		var setsObj = this.ut.getProperty(handyClicksPrefs, this.target, this.type) || {};
+		if(delayed)
+			setsObj = this.ut.getProperty(setsObj, "delayedAction") || {};
+		var cArgVal = typeof setsObj == "object"
+			?  this.ut.getProperty(setsObj, "arguments") || {}
 			: {};
-		var cArgVal = (setsObj.arguments || {})[arg];
-		this.addControl(arg, this.getArgType(arg), cArgVal); // "loadInBackground", "checkbox", true
+		cArgVal = this.ut.getProperty(setsObj, "arguments", arg);
+		var argType = this.getArgType(arg);
+		if(!argType)
+			return;
+		this.addControl(arg, argType, cArgVal, delayed); // "loadInBackground", "checkbox", true
 	},
 	getArgType: function(arg) {
 		var types = this.argsTypes;
@@ -329,9 +381,10 @@ var handyClicksEditor = {
 			return "checkbox";
 		if(arg in this.types.menulists)
 			return "menulist";
-		return this.ut._err("Can't get type of " + arg);
+		this.ut._err("Can't get type of " + arg);
+		return null;
 	},
-	addControl: function(argName, argType, argVal) {
+	addControl: function(argName, argType, argVal, delayed) {
 		var argContainer = document.createElement("hbox");
 		argContainer.setAttribute("align", "center");
 		argContainer.className = "hc-editor-argsContainer";
@@ -361,7 +414,7 @@ var handyClicksEditor = {
 		}
 		elt.setAttribute("hc_argname", argName);
 		argContainer.appendChild(elt);
-		this.$("hc-editor-funcArgs").appendChild(argContainer);
+		this.$("hc-editor-funcArgs" + delayed).appendChild(argContainer);
 	},
 	get currentShortcut() {
 		var s = "button=" + this.$("hc-editor-button").selectedIndex;
@@ -382,6 +435,7 @@ var handyClicksEditor = {
 		this.type = this.currentType;
 		this.initShortcutEditor();
 		this.setWinId();
+		this.setWinTitle();
 	},
 	setClickOptions: function(e) {
 		this.$("hc-editor-button").value = e.button;
@@ -393,6 +447,7 @@ var handyClicksEditor = {
 		);
 		this.loadFuncs();
 		this.alloyApply(e);
+		this.$("hc-editor-funcTabbox").selectedIndex = 0;
 	},
 
 	saveSettings: function() {
@@ -413,37 +468,58 @@ var handyClicksEditor = {
 		var sh = this.currentShortcut;
 		var type = this.currentType;
 		var evt = this.$("hc-editor-events").value || null;
-		var enabledElt = this.$("hc-editor-enabled");
-		var enabled = enabledElt.checked;
-		var fnc = this.$("hc-editor-func").value || null;
-		if(!this.ps.isOkShortcut(sh) || !type || !evt || !fnc) {
+
+		var so = this.getFuncObj();
+		if(!this.ps.isOkShortcut(sh) || !type || !evt || !so) {
 			this.ut.alertEx(
 				this.ut.getLocalised("errorTitle"),
 				this.ut.getLocalised("editorIncomplete")
 			);
 			return false;
 		}
+
 		var p = handyClicksPrefs;
 		if(!p.hasOwnProperty(sh) || typeof p[sh] != "object")
 			p[sh] = {};
 		var po = p[sh];
-		po[type] = {}; // rewrite
-		var so = po[type];
-		so.enabled = enabled;
+		po[type] = so; // rewrite
+		so = po[type];
 		so.eventType = evt;
-		var isCustom = fnc == "$custom";
+
 		if(type == "img")
 			so.ignoreLinks = this.$("hc-editor-imgIgnoreLinks").checked;
+
+		var dso = this.getFuncObj(this.delayId);
+		if(dso) {
+			so.delayedAction = dso;
+			so.delayedAction.eventType = "_delayed_"; // Required for handyClicksPrefSvc.isOkFuncObj()
+		}
+
+		this.ps.saveSettingsObjects(true);
+		this.$("hc-editor-enabled").checked = this.ut.getProperty(handyClicksPrefs, sh, type, "enabled");
+		var dae = this.ut.getProperty(handyClicksPrefs, sh, type, "delayedAction", "enabled");
+		this.$("hc-editor-enabled" + this.delayId).checked = typeof dae == "boolean" ? dae : true;
+		this.applyButton.disabled = true;
+		return true;
+	},
+	getFuncObj: function(delayed) {
+		delayed = delayed || "";
+		var fnc = this.$("hc-editor-func" + delayed).value || null;
+		var enabled = this.$("hc-editor-enabled" + delayed).checked;
+		if(!fnc || (delayed && fnc == "$auto" && enabled))
+			return null;
+		var so = { enabled: enabled };
+		var isCustom = fnc == "$custom";
 		if(isCustom) {
 			so.custom = isCustom;
-			so.label = this.ps.enc(this.cLabel.value);
-			so.action = this.ps.enc(this.code.value);
+			so.label = this.ps.enc(this.$("hc-editor-funcLabel" + delayed).value);
+			so.action = this.ps.enc(this.$("hc-editor-funcField" + delayed).value);
 		}
 		else {
 			so.action = fnc;
 			so.arguments = {};
 			var args = so.arguments;
-			var aIts = this.$("hc-editor-funcArgs").getElementsByAttribute("hc_argname", "*");
+			var aIts = this.$("hc-editor-funcArgs" + delayed).getElementsByAttribute("hc_argname", "*");
 			var aIt, aVal;
 			for(var i = 0, len = aIts.length; i < len; i++) {
 				aIt = aIts[i];
@@ -457,10 +533,7 @@ var handyClicksEditor = {
 				args[aIt.getAttribute("hc_argname")] = aVal;
 			}
 		}
-		this.ps.saveSettingsObjects(true);
-		enabledElt.checked = this.ut.getProperty(handyClicksPrefs, sh, type, "enabled");
-		this.applyButton.disabled = true;
-		return true;
+		return so;
 	},
 	deleteShortcut: function() {
 		delete handyClicksPrefs[this.currentShortcut];
@@ -502,10 +575,6 @@ var handyClicksEditor = {
 		ct.contextMenu = cMenu ? this.ps.enc(cMenu) : null;
 		this.ps.saveSettingsObjects();
 		this.applyButton.disabled = true;
-
-//		var cti = this.$("hc-editor-itemTypes").getElementsByAttribute("value", cType)[0];
-//		if(cti)
-//			cti.setAttribute("disabled", !newEnabl);
 
 		this.appendTypesList();
 

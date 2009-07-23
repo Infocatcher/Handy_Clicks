@@ -6,7 +6,7 @@
 
 		<em:id>handyclicks@infocatcher</em:id>
 		<em:name>Handy Clicks</em:name>
-		<em:version>0.1.0.0a5pre1</em:version>
+		<em:version>0.1.0.0a5pre2</em:version>
 		<em:description>More clicks options</em:description>
 		<em:creator>Infocatcher</em:creator>
 		<em:optionsURL>chrome://handyclicks/content/setsOpener.xul</em:optionsURL>
