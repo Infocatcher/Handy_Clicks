@@ -1,6 +1,7 @@
 <!-- Options dialog -->
 <!ENTITY hc.sets.title "Handy Clicks: Settings">
 <!ENTITY hc.sets.apply "Apply">
+<!ENTITY hc.sets.defaults "Reset to defaults">
 
 <!ENTITY hc.sets.clickOptionsTitle "Clicks Options">
 
@@ -16,6 +17,9 @@
 <!ENTITY hc.sets.cmdEdit "Edit">
 <!ENTITY hc.sets.cmdEditType "Edit custom type">
 <!ENTITY hc.sets.cmdDel "Delete">
+
+<!ENTITY hc.sets.export "Export">
+<!ENTITY hc.sets.import "Import">
 
 
 <!ENTITY hc.sets.clickPrefsTitle "Preferences">

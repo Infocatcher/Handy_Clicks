@@ -334,6 +334,67 @@ var handyClicksPrefSvc = {
 		stream.write(str, str.length);
 		stream.close();
 	},
+
+	exportSets: function() {
+		var file = this.pickFile(this.ut.getLocalised("export"), true);
+		if(!file)
+			return;
+		if(file.exists())
+			file.remove(true);
+		this.prefsFile.copyTo(file.parent, file.leafName);
+	},
+	importSets: function() {
+		var file = this.pickFile(this.ut.getLocalised("import"), false);
+		if(!file)
+			return;
+		if(!this.checkPrefsFile(file)) {
+			this.ut.alertEx(
+				this.ut.getLocalised("importErrorTitle"),
+				this.ut.getLocalised("invalidConfigFile")
+			);
+			return;
+		}
+		this.moveFiles(this.prefsFile, "-before_import-");
+		file.copyTo(this.prefsDir, this.prefsFileName + ".js");
+		this.reloadSettings(true);
+	},
+	pickFile: function(pTitle, modeSave) {
+		var fp = Components.classes["@mozilla.org/filepicker;1"]
+			.createInstance(Components.interfaces.nsIFilePicker);
+		fp.defaultString = this.prefsFileName + (modeSave ? this.date : "") + ".js";
+		fp.defaultExtension = "js";
+		fp.appendFilters(fp.filterAll);
+		fp.init(window, pTitle, fp[modeSave ? "modeSave" : "modeOpen"]);
+		return fp.show() == fp.returnCancel ? null : fp.file;
+	},
+	get date() {
+		return new Date().toLocaleFormat("_%Y-%m-%d_%H-%M");
+	},
+	readFile: function(file) { // Not for UTF-8!
+		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
+			.createInstance(Components.interfaces.nsIFileInputStream);
+		var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]
+			.createInstance(Components.interfaces.nsIScriptableInputStream);
+		fis.init(file, -1, 0, 0);
+		sis.init(fis);
+		var data = sis.read(sis.available());
+		sis.close();
+		fis.close();
+		return data;
+	},
+	checkPrefsFile: function(file) {
+		var data = this.readFile(file);
+		if(!/^var handyClicks[\w$]/m.test(data))
+			return false;
+		data = data.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/g, "");
+		if(/\/\/|\/\*|\*\//.test(data)) // no other comments
+			return false;
+		data = data.replace(/"[^"]*"/g, "_dummy_"); // replace strings
+		if(/['"()]/.test(data))
+			return false;
+		return !/\W(?:[Ff]unction|eval|Components)\W/.test(data);
+	},
+
 	isOkShortcut: function(s) {
 		return s && this.okShortcut.test(s);
 	},
@@ -366,11 +427,11 @@ var handyClicksPrefSvc = {
 			return "[invalid value]";
 		}
 	},
-	getButtonStr: function(sh, short) {
-		return /button=([0-2])/.test(sh) ? "button" + RegExp.$1 + (short ? "short" : "") : "?";
+	getButtonStr: function(sh, _short) {
+		return /button=([0-2])/.test(sh) ? "button" + RegExp.$1 + (_short ? "short" : "") : "?";
 	},
-	getLocaleButtonStr: function(sh, short) {
-		return this.ut.getLocalised(this.getButtonStr(sh, short));
+	getLocaleButtonStr: function(sh, _short) {
+		return this.ut.getLocalised(this.getButtonStr(sh, _short));
 	},
 	getModifiersStr: function(sh) {
 		sh = sh

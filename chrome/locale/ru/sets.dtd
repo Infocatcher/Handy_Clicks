@@ -1,6 +1,7 @@
 <!-- Options dialog -->
 <!ENTITY hc.sets.title "Handy Clicks: Настройки">
 <!ENTITY hc.sets.apply "Применить">
+<!ENTITY hc.sets.defaults "Сбросить настройки">
 
 <!ENTITY hc.sets.clickOptionsTitle "Настройки кликов">
 
@@ -22,6 +23,9 @@
 <!ENTITY hc.sets.cmdEdit "Редактировать">
 <!ENTITY hc.sets.cmdEditType "Редактировать добавленный тип">
 <!ENTITY hc.sets.cmdDel "Удалить">
+
+<!ENTITY hc.sets.export "Экспорт">
+<!ENTITY hc.sets.import "Импорт">
 
 
 <!ENTITY hc.sets.clickPrefsTitle "Настройки">

@@ -15,10 +15,12 @@
 	id="handyClicks-settings"
 	windowtype="handyclicks:settings"
 	title="&hc.sets.title;"
-	buttons="accept, cancel, extra1"
+	buttons="accept,cancel,extra1,extra2"
 	buttonlabelextra1="&hc.sets.apply;"
+	buttonlabelextra2="&hc.sets.defaults;"
 	ondialogaccept="handyClicksSets.savePrefs();"
 	ondialogextra1="handyClicksSets.savePrefs(true);"
+	ondialogextra2="handyClicksSets.resetPrefs();"
 	onload="handyClicksSets.init();"
 	oncommand="handyClicksSets.prefsChanged(event);"
 	onchange="handyClicksSets.prefsChanged(event);"
@@ -60,10 +62,13 @@
 				</treecols>
 				<treechildren id="handyClicks-setsTreeContent" />
 			</tree>
-			<hbox pack="center">
+			<hbox id="handyClicks-sets-treeButtons" pack="center">
 				<button id="handyClicks-sets-buttonAdd" command="handyClicks-sets-cmdAdd" />
 				<button id="handyClicks-sets-buttonEdit" command="handyClicks-sets-cmdEdit" />
 				<button id="handyClicks-sets-buttonDelete" command="handyClicks-sets-cmdDelete" />
+
+				<button id="handyClicks-sets-buttonExport" oncommand="handyClicksPrefSvc.exportSets();" label="&hc.sets.export;" />
+				<button id="handyClicks-sets-buttonImport" oncommand="handyClicksPrefSvc.importSets();" label="&hc.sets.import;" />
 			</hbox>
 		</vbox>
 	</prefpane>
@@ -74,9 +79,9 @@
 			<preference id="forceHideContextMenu" type="bool" name="extensions.handyclicks.forceHideContextMenu" />
 			<preference id="stopMousedownEvent" type="bool" name="extensions.handyclicks.stopMousedownEvent" />
 			<preference id="disallowMousemoveDist" type="int" name="extensions.handyclicks.disallowMousemoveDist" />
+			<preference id="delayedActionTimeout" type="int" name="extensions.handyclicks.delayedActionTimeout" />
 			<preference id="convertURIs" type="bool" name="extensions.handyclicks.convertURIs" />
 			<preference id="convertURIsTo" type="string" name="extensions.handyclicks.convertURIsTo" />
-			<preference id="showContextMenuTimeout" type="int" name="extensions.handyclicks.showContextMenuTimeout" />
 			<preference id="notifyOpenTime" type="int" name="extensions.handyclicks.notifyOpenTime" />
 			<preference id="notifyInWindowCorner" type="bool" name="extensions.handyclicks.notifyInWindowCorner" />
 			<preference id="notifyVoidLinksWithHandlers" type="bool" name="extensions.handyclicks.notifyVoidLinksWithHandlers" />
@@ -102,14 +107,14 @@
 					</hbox>
 				</hbox>
 			</groupbox>
+			<hbox align="center">
+				<label value="Timeout for delayed action:" />
+				<textbox preference="delayedActionTimeout" type="number" min="0" max="7000" increment="20" style="width: 4.5em;" />
+				<label value="ms (0 for disable)" />
+			</hbox>
 			<hbox>
 				<checkbox preference="convertURIs" hc_requiredfor="convert" label="Convert URIs to (empty for automatically detection):" />
 				<textbox preference="convertURIsTo" hc_depends="convert" />
-			</hbox>
-			<hbox align="center">
-				<label value="Show context menu after" />
-				<textbox preference="showContextMenuTimeout" type="number" min="0" max="7000" increment="20" style="width: 4.5em;" />
-				<label value="ms (0 for disable)" />
 			</hbox>
 			<groupbox>
 				<caption label="Notify" />

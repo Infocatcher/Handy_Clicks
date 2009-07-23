@@ -14,7 +14,7 @@ var handyClicks = {
 	flags: {
 		runned: false, // => stop click events
 		stopContextMenu: false, // => stop "contextmenu" event
-		allowEvents: false, // => allow all events while (flags.runned == false)
+		allowEvents: false // => allow all events while (flags.runned == false)
 	},
 
 	_cMenu: null,

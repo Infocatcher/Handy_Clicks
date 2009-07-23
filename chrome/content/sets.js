@@ -543,6 +543,14 @@ var handyClicksSets = {
 		for(var i = 0, len = pps.length; i < len; i++)
 			pps[i].writePreferences(true); // aFlushToDisk
 	},
+	resetPrefs: function() {
+		this.pu.prefBr.getBranch(this.pu.nPrefix)
+			.getChildList("", {})
+			.forEach(this.resetPref, this);
+	},
+	resetPref: function(pName) {
+		this.pu.resetPref(this.pu.nPrefix + pName);
+	},
 	showPrefs: function(enablIt) {
 		enablIt = enablIt || this.$("handyClicks-sets-enabled");
 		enablIt.setAttribute("hc_hideallafter", enablIt.getAttribute("checked") != "true");

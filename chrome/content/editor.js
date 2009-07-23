@@ -605,7 +605,15 @@ var handyClicksEditor = {
 			: !si || si == mp.firstChild
 				? mp.lastChild
 				: si.previousSibling;
-		while(si && (si.hidden || si.getAttribute("disabled") == "true" || si.tagName != "menuitem"))
+		var win = si.ownerDocument.defaultView;
+		while(
+			si && (
+				si.getAttribute("disabled") == "true"
+				|| si.tagName != "menuitem"
+				|| win.getComputedStyle(si, "").display == "none"
+				|| win.getComputedStyle(si, "").visibility == "collapse"
+			)
+		)
 			si = plus ? si.nextSibling : si.previousSibling;
 		ml.selectedItem = si || (plus ? mp.firstChild : mp.lastChild);
 		ml.menuBoxObject.activeChild = ml.mSelectedInternal || ml.selectedInternal;
