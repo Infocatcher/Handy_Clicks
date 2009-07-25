@@ -543,14 +543,6 @@ var handyClicksSets = {
 		for(var i = 0, len = pps.length; i < len; i++)
 			pps[i].writePreferences(true); // aFlushToDisk
 	},
-	resetPrefs: function() {
-		this.pu.prefBr.getBranch(this.pu.nPrefix)
-			.getChildList("", {})
-			.forEach(this.resetPref, this);
-	},
-	resetPref: function(pName) {
-		this.pu.resetPref(this.pu.nPrefix + pName);
-	},
 	showPrefs: function(enablIt) {
 		enablIt = enablIt || this.$("handyClicks-sets-enabled");
 		enablIt.setAttribute("hc_hideallafter", enablIt.getAttribute("checked") != "true");
@@ -595,5 +587,94 @@ var handyClicksSets = {
 		var childs = parent.childNodes;
 		for(var i = 0, len = childs.length; i < len; i++)
 			this.desableChilds(childs[i], dis);
+	},
+
+	// Reset prefs:
+	resetPrefs: function() {
+		this.pu.prefSvc.getBranch(this.pu.nPrefix)
+			.getChildList("", {})
+			.forEach(this.resetPref, this);
+	},
+	resetPref: function(pName) {
+		this.pu.resetPref(this.pu.nPrefix + pName);
+	},
+
+	// Export/import:
+	exportSets: function() {
+		var file = this.pickFile(this.ut.getLocalised("export"), true);
+		if(!file)
+			return;
+		if(file.exists())
+			file.remove(true);
+		this.ps.prefsFile.copyTo(file.parent, file.leafName);
+		this.backupsDir = file.parent.path;
+	},
+	importSets: function() {
+		var file = this.pickFile(this.ut.getLocalised("import"), false);
+		if(!file)
+			return;
+		if(!this.checkPrefsFile(file)) {
+			this.ut.alertEx(
+				this.ut.getLocalised("importErrorTitle"),
+				this.ut.getLocalised("invalidConfigFile")
+			);
+			return;
+		}
+		this.ps.moveFiles(this.ps.prefsFile, "-before_import-");
+		file.copyTo(this.ps.prefsDir, this.ps.prefsFileName + ".js");
+		this.ps.reloadSettings(true);
+		this.backupsDir = file.parent.path;
+	},
+	pickFile: function(pTitle, modeSave) {
+		var fp = Components.classes["@mozilla.org/filepicker;1"]
+			.createInstance(Components.interfaces.nsIFilePicker);
+		fp.defaultString = this.ps.prefsFileName + (modeSave ? this.date : "") + ".js";
+		fp.defaultExtension = "js";
+		fp.appendFilter(this.ut.getLocalised("hcPrefsFiles"), "handyclicks_prefs*.js");
+		fp.appendFilter(this.ut.getLocalised("jsFiles"), "*.js");
+		fp.appendFilters(fp.filterAll);
+		var bDir = this.backupsDir;
+		if(bDir)
+			fp.displayDirectory = bDir;
+		fp.init(window, pTitle, fp[modeSave ? "modeSave" : "modeOpen"]);
+		return fp.show() == fp.returnCancel ? null : fp.file;
+	},
+	get backupsDir() {
+		var path = this.pu.pref("sets.backupsDir");
+		var file = Components.classes["@mozilla.org/file/local;1"]
+			.createInstance(Components.interfaces.nsILocalFile);
+		try { file.initWithPath(path); }
+		catch(e) { return null; }
+		return file.exists() ? file : null;
+	},
+	set backupsDir(path) {
+		this.pu.pref("sets.backupsDir", path);
+	},
+	get date() {
+		return new Date().toLocaleFormat("_%Y-%m-%d_%H-%M");
+	},
+	checkPrefsFile: function(file) {
+		var data = this.readFile(file);
+		if(!/^var handyClicks[\w$]/m.test(data))
+			return false;
+		data = data.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/g, "");
+		if(/\/\/|\/\*|\*\//.test(data)) // no other comments
+			return false;
+		data = data.replace(/"[^"]*"/g, "_dummy_"); // replace strings
+		if(/['"()]/.test(data))
+			return false;
+		return !/\W(?:[Ff]unction|eval|Components)\W/.test(data);
+	},
+	readFile: function(file) { // Not for UTF-8!
+		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
+			.createInstance(Components.interfaces.nsIFileInputStream);
+		var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]
+			.createInstance(Components.interfaces.nsIScriptableInputStream);
+		fis.init(file, -1, 0, 0);
+		sis.init(fis);
+		var data = sis.read(sis.available());
+		sis.close();
+		fis.close();
+		return data;
 	}
 };

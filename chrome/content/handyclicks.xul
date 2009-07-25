@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/handyclicks.css" type="text/css"?>
 
-<!DOCTYPE dialog [
+<!DOCTYPE overlay [
 	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/main.dtd">
 	%locale;
 	<!ENTITY % default SYSTEM "chrome://handyclicks-locale/content/main.dtd">
@@ -58,7 +58,7 @@
 
 	<commandset id="mainCommandSet">
 		<command id="handyClicks-cmd-openSettings" oncommand="handyClicks.openSettings();" label="&handyClicks.settingsLabel;" />
-		<command id="handyClicks-cmd-editMode" oncommand="handyClicks.startEditMode();" label="&handyClicks.editModeLabel;" />
+		<command id="handyClicks-cmd-editMode" oncommand="handyClicks.toggleEditMode();" label="&handyClicks.editModeLabel;" />
 	</commandset>
 	<keyset id="mainKeyset">
 		<key id="handyClicks-key-toggleStatus" oncommand="handyClicks.toggleStatus();" disabled="true" />

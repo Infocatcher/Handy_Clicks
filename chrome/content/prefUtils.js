@@ -10,6 +10,12 @@ var handyClicksPrefUtils = {
 		return this.prefBr = Components.classes["@mozilla.org/preferences-service;1"]
 			.getService(Components.interfaces.nsIPrefBranch2);
 	},
+	get prefSvc() {
+		delete this.prefSvc;
+		return this.prefSvc = Components.classes["@mozilla.org/preferences-service;1"]
+			.getService(Components.interfaces.nsIPrefService);
+	},
+	get ss() { return Components.interfaces.nsISupportsString; },
 
 	// Initialization:
 	init: function() {
@@ -36,12 +42,6 @@ var handyClicksPrefUtils = {
 	},
 
 	// API functions:
-	get prefSvc() {
-		delete this.prefSvc;
-		return this.prefSvc = Components.classes["@mozilla.org/preferences-service;1"]
-			.getService(Components.interfaces.nsIPrefService);
-	},
-	get ss() { return Components.interfaces.nsISupportsString; },
 	_prefs: { __proto__: null }, // Prefs cache
 	pref: function(pName, pVal) {
 		if(typeof pVal != "undefined")

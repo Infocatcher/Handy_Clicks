@@ -17,6 +17,10 @@
 #handyClicks-toggleStatus-tbButton[hc_enabled="false"] {
 	-moz-image-region: rect(0 48px 24px 24px);
 }
+[id^="handyClicks-"][hc_editmode="true"] {
+	outline: 1px solid red !important;
+	outline-offset: -1px !important;
+}
 #handyClicks-settingsMenuitem {
 	font-weight: bold;
 }

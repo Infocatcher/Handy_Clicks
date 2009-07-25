@@ -39,18 +39,16 @@ var handyClicksEditor = {
 		this.initShortcuts();
 		this.initUI();
 		this.loadCustomType(this.type);
-		this.mBox.selectedIndex = this.tabs[this.mode];
+		this.mBox.selectedIndex = this.tabs[this.editorMode];
 		this.ps.addPrefsObserver(this.appendTypesList, this);
 		window.addEventListener("DOMMouseScroll", this, true);
 		this.applyButton.disabled = true;
 	},
 	initShortcuts: function() {
 		this.mBox = this.$("hc-editor-mainTabbox");
-		this.code = this.$("hc-editor-funcField");
-		this.cLabel = this.$("hc-editor-funcLabel");
 		var wa = window.arguments;
-		this.mode = wa[0];
-		this.target = wa[1];
+		this.editorMode = wa[0];
+		this.shortcut = wa[1];
 		this.type = wa[2];
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
@@ -135,19 +133,19 @@ var handyClicksEditor = {
 		document.title = document.title.replace(/\s+\[.+\]$/, "") + t;
 	},
 	initShortcutEditor: function() {
-		var setsObj = this.ut.getProperty(handyClicksPrefs, this.target, this.type) || {};
+		var setsObj = this.ut.getProperty(handyClicksPrefs, this.shortcut, this.type) || {};
 		this.initFuncEditor(setsObj, "");
 		this.$("hc-editor-events").value = setsObj.eventType || "click";
 
 		setsObj = this.ut.getProperty(setsObj, "delayedAction") || {};
 		this.initFuncEditor(setsObj, this.delayId);
 
-		if(/(?:^|,)button=(\d)(?:,|$)/.test(this.target))
+		if(/(?:^|,)button=(\d)(?:,|$)/.test(this.shortcut))
 			this.$("hc-editor-button").value = RegExp.$1;
 		["ctrl", "shift", "alt", "meta"].forEach(
 			function(mdf) {
 				this.$("hc-editor-" + mdf).checked
-					= new RegExp("(?:^|,)" + mdf + "=true(?:,|$)").test(this.target);
+					= new RegExp("(?:^|,)" + mdf + "=true(?:,|$)").test(this.shortcut);
 			},
 			this
 		);
@@ -284,7 +282,7 @@ var handyClicksEditor = {
 				: action;
 		if(!fList.value) // fix for Firefox 2.0
 			fList.selectedIndex = -1;
-		var re = new RegExp("(?:^|[\\s,;]+)" + this.type + "(?:[\\s,;]+|$)|^\\$all$");
+		var re = new RegExp("(?:^|[\\s,;]+)" + this.escapeRegExp(this.type) + "(?:[\\s,;]+|$)|^\\$all$");
 		var mp = this.$("hc-editor-funcPopup" + delayed);
 		var its = mp.childNodes;
 		var it, req;
@@ -310,6 +308,9 @@ var handyClicksEditor = {
 		}
 		this.addFuncArgs(delayed);
 	},
+	escapeRegExp: function(s) {
+		return ("" + s).replace(/[\\^$+*?()\[\]{}]/g, "\\$&");
+	},
 	exts: {
 		SplitBrowser: "{29c4afe1-db19-4298-8785-fcc94d1d6c1d}",
 		FlashGot: "{19503e42-ca3c-4c27-b1e2-9cdb2170ee34}"
@@ -331,7 +332,7 @@ var handyClicksEditor = {
 		var ignoreLinks = this.$("hc-editor-imgIgnoreLinks");
 		ignoreLinks.hidden = !isImg;
 		if(isImg) {
-			var setsObj = (handyClicksPrefs[this.target] || {})[iType] || {};
+			var setsObj = (handyClicksPrefs[this.shortcut] || {})[iType] || {};
 			ignoreLinks.checked = typeof setsObj.ignoreLinks == "boolean" ? setsObj.ignoreLinks : false;
 		}
 	},
@@ -363,7 +364,7 @@ var handyClicksEditor = {
 		);
 	},
 	addArgControls: function(arg, delayed) {
-		var setsObj = this.ut.getProperty(handyClicksPrefs, this.target, this.type) || {};
+		var setsObj = this.ut.getProperty(handyClicksPrefs, this.shortcut, this.type) || {};
 		if(delayed)
 			setsObj = this.ut.getProperty(setsObj, "delayedAction") || {};
 		var cArgVal = typeof setsObj == "object"
@@ -417,7 +418,7 @@ var handyClicksEditor = {
 		this.$("hc-editor-funcArgs" + delayed).appendChild(argContainer);
 	},
 	get currentShortcut() {
-		var s = "button=" + this.$("hc-editor-button").selectedIndex;
+		var s = "button=" + this.$("hc-editor-button").value;
 		["ctrl", "shift", "alt", "meta"].forEach(
 			function(mdf) {
 				s += "," + mdf + "=" + this.$("hc-editor-" + mdf).checked;
@@ -427,11 +428,10 @@ var handyClicksEditor = {
 		return s;
 	},
 	get currentType() {
-		var type = this.$("hc-editor-itemTypes").selectedItem;
-		return type && type.value || null;
+		return this.$("hc-editor-itemTypes").value || null;
 	},
 	loadFuncs: function() {
-		this.target = this.currentShortcut;
+		this.shortcut = this.currentShortcut;
 		this.type = this.currentType;
 		this.initShortcutEditor();
 		this.setWinId();

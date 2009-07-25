@@ -12,14 +12,6 @@ treechildren::-moz-tree-row(hc_disabled) {
 treechildren::-moz-tree-row(hc_buggy) {
 	background-color: #faa;
 }
-/*
-treechildren::-moz-tree-row(hc_edited) {
-	background-color: #ededff;
-}
-treechildren::-moz-tree-row(selected,hc_edited) {
-	background-color: #bbf !important;
-}
-*/
 treechildren::-moz-tree-cell-text(hc_edited) {
 	font-weight: bold;
 }

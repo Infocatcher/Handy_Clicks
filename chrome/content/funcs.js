@@ -498,7 +498,8 @@ var handyClicksFuncs = {
 	},
 	closeMenus: function(it) {
 		it = it || this.hc.item;
-		closeMenus(it); // chrome://browser/content/utilityOverlay.js
+		if(it && typeof it == "object")
+			closeMenus(it); // chrome://browser/content/utilityOverlay.js
 	},
 	downloadWithFlashGot: function(e, item) {
 		item = item || this.hc.item;
@@ -707,7 +708,7 @@ var handyClicksFuncs = {
 	get charset() {
 		var charset = "";
 		if(this.pu.pref("convertURIs")) {
-			charset = this.pu.pref("convertURIsTo");
+			charset = this.pu.pref("convertURIsCharset");
 			if(!charset) {
 				charset = this.pu.getPref("intl.charset.default");
 				if(!charset || charset.indexOf("chrome://") == 0)

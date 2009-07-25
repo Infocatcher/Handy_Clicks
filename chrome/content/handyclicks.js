@@ -6,7 +6,15 @@ var handyClicks = {
 	ps: handyClicksPrefSvc,
 	get fn() { return handyClicksFuncs; },
 
-	editMode: false,
+	_editMode: false,
+	get editMode() {
+		return this._editMode;
+	},
+	set editMode(val) {
+		this._editMode = val;
+		this.setEditModeStatus(val);
+	},
+
 	copyOfEvent: null,
 	origItem: null,
 	item: null,
@@ -707,12 +715,12 @@ var handyClicks = {
 		if(
 			this.flags.runned
 			|| (!this.editMode && e.type != funcObj.eventType)
-			//|| !this.itemType
+			|| !this.itemType // (!this.editMode && !this.itemType)
 			|| !this.tabNotChanged
 		) {
-			this.editMode = false;
+			//this.editMode = false;
 			return;
-		}
+		}		
 		this.flags.runned = true;
 		this.flags.stopContextMenu = true;
 
@@ -816,12 +824,16 @@ var handyClicks = {
 			"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
 		);
 	},
-	startEditMode: function() {
-		setTimeout(function(_this) { _this.editMode = true; }, 10, this);
+	toggleEditMode: function() {
+		this.editMode = !this.editMode;;
+	},
+	setEditModeStatus: function(em) {
+		//~ todo: this.ut.notify() ?
+		document.getElementById("handyClicks-toggleStatus-sBarIcon").setAttribute("hc_editmode", em);
 	},
 	openEditor: function(e) {
 		e = e || this.copyOfEvent;
-		this.fn.closeMenus();
+		this.fn.closeMenus(e.originalTarget);
 		this.wu.openEditor("shortcut", this.getEvtStr(e), this.itemType);
 	},
 	updUI: function(pName) {
@@ -838,7 +850,7 @@ var handyClicks = {
 
 	// Hotkeys:
 	registerHotkeys: function() {
-		this.pu.prefBr.getBranch(this.pu.nPrefix + "key.")
+		this.pu.prefSvc.getBranch(this.pu.nPrefix + "key.")
 			.getChildList("", {})
 			.forEach(this.registerHotkey, this);
 	},

@@ -86,7 +86,6 @@
 
 							<groupbox orient="horizontal" align="center">
 								<caption label="&hc.sets.funcSets;" />
-
 								<label value="&hc.sets.event;" hc_notdelay="true" />
 								<menulist id="hc-editor-events" hc_notdelay="true">
 									<menupopup>
@@ -98,7 +97,6 @@
 								<checkbox id="hc-editor-enabled" class="warn" label="&hc.sets.enabled;" />
 								<checkbox id="hc-editor-imgIgnoreLinks" hc_notdelay="true" label="&hc.sets.ignoreLinks;" />
 							</groupbox>
-
 
 							<hbox align="center">
 								<label value="&hc.sets.func;" />
@@ -242,14 +240,10 @@
 								</vbox>
 							</vbox>
 
-
-
 						</tabpanel>
+						<!-- <tabpanel id="hc-editor-funcTab-delay" flex="1" orient="vertical"> ... </tabpanel> -->
 					</tabpanels>
 				</tabbox>
-
-
-
 			</tabpanel>
 			<tabpanel flex="1" orient="vertical">
 				<hbox align="center">
