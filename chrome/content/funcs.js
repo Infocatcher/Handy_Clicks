@@ -541,22 +541,18 @@ var handyClicksFuncs = {
 		pSet.appendChild(popup);
 		return popup;
 	},
-	isArray: function(arr) {
-		return arr instanceof Array
-			|| Object.prototype.toString.call(arr) === "[object Array]";
-	},
 	appendItems: function(parent, items) {
 		items.forEach(function(item) { this.appendItem(parent, item); }, this);
 
 		/***
 		for(var i = 0; i < items.length; i++)
-			this["appendMenu" + (this.isArray(items[i]) ? "" : "item")](parent, items[i]);
+			this["appendMenu" + (this.ut.isArray(items[i]) ? "" : "item")](parent, items[i]);
 		***/
 	},
 	appendItem: function(parent, item) {
-		var tag = this.ut.getProperty(item, "tagName");
+		var tag = this.ut.getOwnProperty(item, "tagName");
 		delete item.tagName;
-		var childs = this.ut.getProperty(item, "childNodes");
+		var childs = this.ut.getOwnProperty(item, "childNodes");
 		delete item.childNodes;
 
 		var node = parent.appendChild(document.createElement(tag));
@@ -571,7 +567,7 @@ var handyClicksFuncs = {
 			else
 				node[pName] = item[rawName];
 		}
-		if(this.isArray(childs))
+		if(this.ut.isArray(childs))
 			this.appendItems(node, childs);
 	},
 
@@ -596,13 +592,13 @@ var handyClicksFuncs = {
 		items.forEach(function(item) { this.addAppProps(item, uri, checkFiles); }, this);
 	},
 	addAppProps: function(item, uri, checkFiles) {
-		var childs = this.ut.getProperty(item, "childNodes");
-		if(this.isArray(childs))
+		var childs = this.ut.getOwnProperty(item, "childNodes");
+		if(this.ut.isArray(childs))
 			this.addAppsProps(childs, uri, checkFiles);
-		var path = this.ut.getProperty(item, "prop_hc_path");
+		var path = this.ut.getOwnProperty(item, "prop_hc_path");
 		if(!path)
 			return;
-		var icon = this.ut.getProperty(item, "prop_hc_icon");
+		var icon = this.ut.getOwnProperty(item, "prop_hc_icon");
 		delete item.prop_hc_icon;
 
 		var ttBase = "attr_" + this.tooltipAttrBase;
@@ -617,8 +613,8 @@ var handyClicksFuncs = {
 		item[ttBase + n++] = path;
 		item.prop_hc_path = path;
 
-		var args = this.ut.getProperty(item, "prop_hc_args");
-		if(this.isArray(args))
+		var args = this.ut.getOwnProperty(item, "prop_hc_args");
+		if(this.ut.isArray(args))
 			for(var j = 0, len = args.length; j < len; j++)
 				item[ttBase + n++] = args[j];
 		item[ttBase + n++] = uri;

@@ -118,16 +118,43 @@ var handyClicksUtils = {
 		);
 	},
 
-	getProperty: function(obj) { // this.getProperty(obj, "a", "b", "propName") instead of obj.a.b.propName
-		var a = arguments, p, u;
+	isObject: function(obj) {
+		return typeof obj == "object" && obj !== null;
+	},
+	isArray: function(arr) {
+		return arr instanceof Array
+			|| Object.prototype.toString.call(arr) === "[object Array]";
+	},
+	getOwnProperty: function(obj) { // this.getOwnProperty(obj, "a", "b", "propName") instead of obj.a.b.propName
+		var u;
+		if(!this.isObject(obj))
+			return u;
+		var a = arguments, p;
 		for(var i = 1, len = a.length - 1; i <= len; i++) {
 			p = a[i];
-			if(!obj.hasOwnProperty(p))
+			if(obj.__proto__ !== u && !obj.hasOwnProperty(p))
 				return u;
 			obj = obj[p];
 			if(i == len)
 				return obj;
-			if(typeof obj != "object")
+			if(!this.isObject(obj))
+				return u;
+		}
+		return u;
+	},
+	getProperty: function(obj) {
+		var u;
+		if(!this.isObject(obj))
+			return u;
+		var a = arguments, p;
+		for(var i = 1, len = a.length - 1; i <= len; i++) {
+			p = a[i];
+			if(!(p in obj))
+				return u;
+			obj = obj[p];
+			if(i == len)
+				return obj;
+			if(!this.isObject(obj))
 				return u;
 		}
 		return u;

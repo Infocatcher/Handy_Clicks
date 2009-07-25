@@ -151,12 +151,13 @@ var handyClicks = {
 			window.addEventListener("mousemove", this, true);
 		}
 	},
-	clickHandler: function(e) {
+	clickHandler: function _ch(e) {
 		if(!this.enabled)
 			return;
 		this.checkForStopEvent(e); // Can stop "contextmenu" event in Windows
 		if(this.flags.allowEvents)
 			return;
+		_ch.time = Date.now();
 		var funcObj = this.getFuncObjByEvt(e);
 		if(!funcObj)
 			return;
@@ -224,7 +225,16 @@ var handyClicks = {
 	checkForStopEvent: function(e) {
 		if(
 			(this.flags.runned || (this.hasSettings && !this.flags.allowEvents) || this.editMode)
-			&& (e.originalTarget === this.origItem)
+			&& (
+				e.originalTarget === this.origItem
+				|| (
+					e.type == "command" // e.originalTarget.localName == "command" for some "command" events...
+					&& (
+						Date.now() - this.clickHandler.time < 50
+						|| (e.originalTarget.localName == "command" && e.originalTarget.id === this.clickHandler.cmd)
+					)
+				)
+			)
 		)
 			this.stopEvent(e);
 	},
@@ -353,7 +363,7 @@ var handyClicks = {
 		) {
 			this.itemType = "img";
 			this.item = it;
-			if(this.ut.getProperty(sets, "img", "ignoreLinks"))
+			if(this.ut.getOwnProperty(sets, "img", "ignoreLinks"))
 				return;
 		}
 
@@ -720,15 +730,16 @@ var handyClicks = {
 		) {
 			//this.editMode = false;
 			return;
-		}		
+		}
 		this.flags.runned = true;
 		this.flags.stopContextMenu = true;
 
 		this.stopEvent(e); // this stop "contextmenu" event in Windows
 
 		if(this.editMode) {
-			this.openEditor(e);
 			this.editMode = false;
+			this.blinkNode();
+			this.openEditor(e);
 			return;
 		}
 		this.executeFunction(funcObj, e);

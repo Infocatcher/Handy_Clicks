@@ -210,7 +210,7 @@ var handyClicksPrefSvc = {
 			if(!this.sortObj(so))
 				continue;
 			res += '\t"' + sh + '": {\n';
-			forcedDis = this.ut.getProperty(p, sh, "$all", "enabled") == true;
+			forcedDis = this.ut.getOwnProperty(p, sh, "$all", "enabled") == true;
 			for(type in so) {
 				if(!so.hasOwnProperty(type))
 					continue;
@@ -263,7 +263,7 @@ var handyClicksPrefSvc = {
 		return str.replace(/,\n$/, "\n");
 	},
 	sortObj: function(obj) {
-		if(typeof obj != "object")
+		if(!this.ut.isObject(obj))
 			return false;
 		var tmp = [];
 		var p;

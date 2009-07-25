@@ -133,11 +133,11 @@ var handyClicksEditor = {
 		document.title = document.title.replace(/\s+\[.+\]$/, "") + t;
 	},
 	initShortcutEditor: function() {
-		var setsObj = this.ut.getProperty(handyClicksPrefs, this.shortcut, this.type) || {};
+		var setsObj = this.ut.getOwnProperty(handyClicksPrefs, this.shortcut, this.type) || {};
 		this.initFuncEditor(setsObj, "");
 		this.$("hc-editor-events").value = setsObj.eventType || "click";
 
-		setsObj = this.ut.getProperty(setsObj, "delayedAction") || {};
+		setsObj = this.ut.getOwnProperty(setsObj, "delayedAction") || {};
 		this.initFuncEditor(setsObj, this.delayId);
 
 		if(/(?:^|,)button=(\d)(?:,|$)/.test(this.shortcut))
@@ -364,13 +364,13 @@ var handyClicksEditor = {
 		);
 	},
 	addArgControls: function(arg, delayed) {
-		var setsObj = this.ut.getProperty(handyClicksPrefs, this.shortcut, this.type) || {};
+		var setsObj = this.ut.getOwnProperty(handyClicksPrefs, this.shortcut, this.type) || {};
 		if(delayed)
-			setsObj = this.ut.getProperty(setsObj, "delayedAction") || {};
+			setsObj = this.ut.getOwnProperty(setsObj, "delayedAction") || {};
 		var cArgVal = typeof setsObj == "object"
-			?  this.ut.getProperty(setsObj, "arguments") || {}
+			?  this.ut.getOwnProperty(setsObj, "arguments") || {}
 			: {};
-		cArgVal = this.ut.getProperty(setsObj, "arguments", arg);
+		cArgVal = this.ut.getOwnProperty(setsObj, "arguments", arg);
 		var argType = this.getArgType(arg);
 		if(!argType)
 			return;
@@ -496,8 +496,8 @@ var handyClicksEditor = {
 		}
 
 		this.ps.saveSettingsObjects(true);
-		this.$("hc-editor-enabled").checked = this.ut.getProperty(handyClicksPrefs, sh, type, "enabled");
-		var dae = this.ut.getProperty(handyClicksPrefs, sh, type, "delayedAction", "enabled");
+		this.$("hc-editor-enabled").checked = this.ut.getOwnProperty(handyClicksPrefs, sh, type, "enabled");
+		var dae = this.ut.getOwnProperty(handyClicksPrefs, sh, type, "delayedAction", "enabled");
 		this.$("hc-editor-enabled" + this.delayId).checked = typeof dae == "boolean" ? dae : true;
 		this.applyButton.disabled = true;
 		return true;

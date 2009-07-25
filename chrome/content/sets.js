@@ -137,8 +137,8 @@ var handyClicksSets = {
 		}
 	},
 	getCustomTypeLabel: function(type) {
-		var ct = this.ut.getProperty(handyClicksCustomTypes, type) || {};
-		var label = this.ut.getProperty(ct, "label");
+		var ct = this.ut.getOwnProperty(handyClicksCustomTypes, type) || {};
+		var label = this.ut.getOwnProperty(ct, "label");
 		return (label ? this.ps.dec(label) + " " : "") + "(" + type + ")";
 	},
 	addProperties: function(tar, propsObj) {
@@ -288,9 +288,9 @@ var handyClicksSets = {
 			var type = tRow.__itemType.indexOf("custom_") == 0
 				? this.getCustomTypeLabel(tRow.__itemType)
 				: this.ut.getLocalised(tRow.__itemType);
-			var fObj = this.ut.getProperty(handyClicksPrefs, tRow.__shortcut, tRow.__itemType);
+			var fObj = this.ut.getOwnProperty(handyClicksPrefs, tRow.__shortcut, tRow.__itemType);
 			var label = typeof fObj == "object"
-				? this.ut.getProperty(fObj, "custom")
+				? this.ut.getOwnProperty(fObj, "custom")
 					? this.ps.dec(fObj.label || "")
 					: this.ut.getLocalised(fObj.action || "")
 				: "?";
