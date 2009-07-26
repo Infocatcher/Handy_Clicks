@@ -1,6 +1,7 @@
 var handyClicksFuncs = {
 	// Shortcuts:
 	ut: handyClicksUtils,
+	cs: handyClicksCleanupSvc,
 	pu: handyClicksPrefUtils,
 	ps: handyClicksPrefSvc,
 	hc: handyClicks,
@@ -182,17 +183,14 @@ var handyClicksFuncs = {
 		};
 		tabCont.addEventListener("TabClose", _resetRelativeIndex, true);
 		tabCont.addEventListener("TabSelect", _resetRelativeIndex, true);
-		// tabCont.addEventListener("select", _resetRelativeIndex, true);
-		window.addEventListener(
-			"unload",
-			function(e) {
-				tabCont.__handyClicks__listeners = false;
-				tabCont.removeEventListener(e.type, arguments.callee, false);
-				tabCont.removeEventListener("TabClose", _resetRelativeIndex, true);
-				tabCont.removeEventListener("TabSelect", _resetRelativeIndex, true);
-				// tabCont.removeEventListener("select", _resetRelativeIndex, true);
+
+		this.cs.registerCleanup(
+			function(f) {
+				this.__handyClicks__listeners = false;
+				this.removeEventListener("TabClose", f, true);
+				this.removeEventListener("TabSelect", f, true);
 			},
-			false
+			tabCont, [_resetRelativeIndex], tbr
 		);
 	},
 	_openUriInTab: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, moveTo, inWin) {

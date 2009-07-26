@@ -1,18 +1,3 @@
-var handyClicksObservers = {
-	notifyObservers: function() {
-		var obs = this.observers;
-		for(var i = 0, len = obs.length; i < len; i++)
-			if(i in obs)
-				obs[i][0].apply(obs[i][1] || this, arguments);
-	},
-	addPrefsObserver: function(fnc, context) {
-		this.observers.push([fnc, context]);
-		return this.observers.length - 1;
-	},
-	removePrefsObserver: function(oId) {
-		delete this.observers[oId];
-	}
-};
 var handyClicksUtils = {
 	get pu() { return handyClicksPrefUtils; },
 	errPrefix: "[Handy Clicks]: ",
@@ -158,5 +143,81 @@ var handyClicksUtils = {
 				return u;
 		}
 		return u;
+	}
+};
+
+var handyClicksObservers = {
+	notifyObservers: function() {
+		var obs = this.observers;
+		for(var i = 0, len = obs.length; i < len; i++)
+			if(i in obs)
+				obs[i][0].apply(obs[i][1] || this, arguments);
+	},
+	addPrefsObserver: function(fnc, context) {
+		this.observers.push([fnc, context]);
+		return this.observers.length - 1;
+	},
+	removePrefsObserver: function(oId) {
+		delete this.observers[oId];
+	}
+};
+
+var handyClicksCleanupSvc = {
+	ut: handyClicksUtils,
+	get storage() {
+		window.addEventListener("unload", this, false);
+		delete this.storage;
+		return this.storage = [];
+	},
+	registerCleanup: function(cFunc, context, args, node) {
+		this.storage.push([cFunc, context, args]);
+		var cId = this.storage.length - 1;
+		if(node)
+			this.registerNodeCleanup(cId, node);
+		return cId;
+	},
+	registerNodeCleanup: function(cId, node) {
+		node.addEventListener("DOMNodeRemoved", ncu, true);
+		var nId = this.registerCleanup(
+			function(node, ncu) {
+				node.removeEventListener("DOMNodeRemoved", ncu, true);
+			},
+			null, [node, ncu]
+		);
+		var _this = this;
+		function ncu(e) {
+			if(e.originalTarget !== node)
+				return;
+			_this.doCleanup(nId);
+			_this.doCleanup(cId);
+		};
+	},
+	unregisterCleanup: function(cId) {
+		delete this.observers[cId];
+	},
+	doCleanup: function(cId) {
+		var strg = this.storage;
+		if(!(cId in strg))
+			return;
+		var cu = strg[cId];
+		delete strg[cId];
+		this.cleanupEntry(cu);
+	},
+	cleanupEntry: function(cArr) {
+		try {
+			cArr[0].apply(cArr[1] || this, cArr[2] || []);
+		}
+		catch(e) {
+			this.ut._err(e);
+		}
+	},
+	cleanup: function() {
+		window.removeEventListener("unload", this, false);
+		this.storage.forEach(this.cleanupEntry, this);
+		this.storage = null;
+	},
+	handleEvent: function(e) {
+		if(e.type == "unload")
+			this.cleanup(e);
 	}
 };

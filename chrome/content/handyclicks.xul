@@ -10,7 +10,7 @@
 
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<script type="application/x-javascript" src="chrome://handyclicks/content/~migration.js" /> <!-- Temp -->
-	<script type="application/x-javascript"><![CDATA[ var handyclicksD0 = new Date(); ]]></script>
+	<script type="application/x-javascript"><![CDATA[ var handyclicksStartTime = Date.now(); ]]></script>
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefUtils.js" />
@@ -19,20 +19,20 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/funcs.js" />
 
 	<script type="application/x-javascript"><![CDATA[
-	handyClicksUtils._log("Loading time: " + (new Date() - handyclicksD0) + "ms");
+	handyClicksUtils._log("Loading time: " + (Date.now() - handyclicksStartTime) + "ms");
+	delete window.handyclicksStartTime;
 	function handyClicksReloadScripts() {
 		var jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 			.getService(Components.interfaces.mozIJSSubScriptLoader);
 		var path = "chrome://handyclicks/content/";
 		try {
-			handyClicks.destroy();
-			handyClicksPrefUtils.destroy();
-			var d0 = new Date();
+			handyClicksCleanupSvc.cleanup();
+			var t = Date.now();
 			["utils", "winUtils", "prefUtils", "prefSvc", "handyclicks", "funcs"].forEach(
 				function(n) { jsLoader.loadSubScript(path + n + ".js"); }
 			);
 			handyClicks.init();
-			handyClicksUtils._log("Scripts was successfully reloaded! " + (new Date() - d0) + "ms");
+			handyClicksUtils._log("Scripts was successfully reloaded! " + (Date.now() - t) + "ms");
 		}
 		catch(e) {
 			handyClicksUtils._log("Can't reload scripts");

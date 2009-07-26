@@ -6,7 +6,7 @@ pref("extensions.handyclicks.stopMousedownEvent", false);
 pref("extensions.handyclicks.forceHideContextMenu", true); // for Linux (mousedown -> contextmenu -> click)
 pref("extensions.handyclicks.disallowMousemoveForButtons", "2");
 pref("extensions.handyclicks.disallowMousemoveDist", 12);
-pref("extensions.handyclicks.convertURIs", true); // for Windows
+pref("extensions.handyclicks.convertURIs", false); // for Windows
 pref("extensions.handyclicks.convertURIsCharset", ""); // use defaults
 pref("extensions.handyclicks.delayedActionTimeout", 500);
 

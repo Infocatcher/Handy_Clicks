@@ -2,6 +2,8 @@ var handyClicksPrefUtils = {
 	__proto__: handyClicksObservers, // Add observers interface
 	observers: [],
 
+	cs: handyClicksCleanupSvc,
+
 	// Preferences:
 	nPrefix: "extensions.handyclicks.",
 
@@ -19,17 +21,12 @@ var handyClicksPrefUtils = {
 
 	// Initialization:
 	init: function() {
-		window.addEventListener("unload", this, false); // destroy
 		this.prefBr.addObserver(this.nPrefix, this, false);
 		this.nLength = this.nPrefix.length;
+		this.cs.registerCleanup(this.destroy, this);
 	},
 	destroy: function() {
-		window.removeEventListener("unload", this, false);
 		this.prefBr.removeObserver(this.nPrefix, this);
-	},
-	handleEvent: function(e) {
-		if(e.type == "unload")
-			this.destroy();
 	},
 
 	// Preferences observer:

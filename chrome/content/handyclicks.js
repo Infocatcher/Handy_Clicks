@@ -1,6 +1,7 @@
 var handyClicks = {
 	// Shortcuts:
 	ut: handyClicksUtils,
+	cs: handyClicksCleanupSvc,
 	wu: handyClicksWinUtils,
 	pu: handyClicksPrefUtils,
 	ps: handyClicksPrefSvc,
@@ -42,9 +43,9 @@ var handyClicks = {
 		this.setStatus();
 		this.pu.addPrefsObserver(this.updUI, this);
 		this.registerHotkeys();
+		this.cs.registerCleanup(this.destroy, this);
 	},
 	destroy: function() {
-		window.removeEventListener("unload", this, false);
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
 		this.cancelDelayedAction();
 	},
@@ -751,7 +752,7 @@ var handyClicks = {
 		var args = this.argsToArr(funcObj.arguments);
 		args.unshift(e || null);
 		if(funcObj.custom) {
-			args.unshift(this.item, this.origItem);
+			args.splice(1, 0, this.item, this.origItem);
 			var action = this.ps.dec(funcObj.action);
 			var label = '"' + this.ps.dec(funcObj.label) + '"';
 			try {
@@ -806,7 +807,6 @@ var handyClicks = {
 	handleEvent: function(e) {
 		switch(e.type) {
 			case "load":        this.init(e);               break;
-			case "unload":      this.destroy(e);            break;
 			case "mousedown":   this.mousedownHandler(e);   break;
 			case "click":       this.clickHandler(e);       break;
 			case "mouseup":     this.mouseupHandler(e);     break;
@@ -879,4 +879,3 @@ var handyClicks = {
 	}
 };
 window.addEventListener("load", handyClicks, false);
-window.addEventListener("unload", handyClicks, false);
