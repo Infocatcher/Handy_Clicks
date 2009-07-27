@@ -607,6 +607,7 @@ var handyClicksEditor = {
 	},
 	deleteShortcut: function() {
 		delete handyClicksPrefs[this.currentShortcut];
+		alert(0);
 		this.ps.saveSettingsObjects();
 		this.applyButton.disabled = true;
 	},

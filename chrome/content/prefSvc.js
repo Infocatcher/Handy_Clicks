@@ -5,6 +5,7 @@ var handyClicksPrefSvc = {
 	// Shortcuts:
 	ut: handyClicksUtils,
 	pu: handyClicksPrefUtils,
+	wu: handyClicksWinUtils,
 
 	version: 0.11,
 	get currentVersion() {
@@ -20,8 +21,6 @@ var handyClicksPrefSvc = {
 	prefsDirName: "handyclicks",
 	prefsFileName: "handyclicks_prefs",
 	okShortcut: /^button=[0-2],ctrl=(?:true|false),shift=(?:true|false),alt=(?:true|false),meta=(?:true|false)$/,
-	_doNotReload: false,
-	_isReloader: false,
 	_restoringCounter: 0,
 	get profileDir() {
 		var dirSvc = Components.classes["@mozilla.org/file/directory_service;1"]
@@ -311,42 +310,34 @@ var handyClicksPrefSvc = {
 	sortObj: function(obj) {
 		if(!this.ut.isObject(obj))
 			return false;
-		var tmp = [];
-		var p;
-		var res = {};
-		for(p in obj)
-			if(obj.hasOwnProperty(p)) {
-				tmp.push(p);
-				res[p] = obj[p];
-				delete obj[p];
-			}
-		tmp.sort();
-		for(var i = 0, len = tmp.length; i < len; i++) {
-			p = tmp[i];
-			obj[p] = res[p];
+		var arr = [], ex = {}, p;
+		for(p in obj) {
+			if(!obj.hasOwnProperty(p))
+				continue;
+			arr.push(p);
+			ex[p] = obj[p];
+			delete obj[p];
 		}
+		arr.sort().forEach(
+			function(p) { obj[p] = ex[p]; }
+		);
 		return true;
 	},
 	reloadSettings: function(reloadAll) {
-		this._doNotReload = reloadAll ? false : true;
-		this._isReloader = true;
-
-		var wTypes = ["navigator:browser", "handyclicks:settings", "handyclicks:editor"];
-		var wm = handyClicksWinUtils.wm;
-		var ws, w;
-		for(var i = 0, len = wTypes.length; i < len; i++) {
-			ws = wm.getEnumerator(wTypes[i]);
-			while(ws.hasMoreElements()) {
-				w = ws.getNext();
-				if("handyClicksPrefSvc" in w && !w.handyClicksPrefSvc._doNotReload) {
-					w.handyClicksPrefSvc.loadSettings();
-					w.handyClicksPrefSvc.notifyObservers();
+		var wm = this.wu.wm;
+		var pSvc = "handyClicksPrefSvc";
+		["navigator:browser", "handyclicks:settings", "handyclicks:editor"].forEach(
+			function(winType) {
+				var ws = wm.getEnumerator(winType), w;
+				while(ws.hasMoreElements()) {
+					w = ws.getNext();
+					if(!(pSvc in w) || (!reloadAll && w === window))
+						continue;
+					w[pSvc].loadSettings();
+					w[pSvc].notifyObservers();
 				}
 			}
-		}
-
-		this._doNotReload = false;
-		this._isReloader = false;
+		);
 	},
 	moveFiles: function(mFile, nAdd, maxNum) {
 		maxNum = typeof maxNum == "number" ? maxNum : this.backupDepth;
