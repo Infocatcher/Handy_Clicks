@@ -164,13 +164,13 @@
 		<key keycode="VK_F4" id="handyClicks-sets-keyEdit" command="handyClicks-sets-cmdEdit" />
 		<key keycode="VK_F4" modifiers="shift" id="handyClicks-sets-keyEditType" command="handyClicks-sets-cmdEditType" />
 		<key keycode="VK_DELETE" id="handyClicks-sets-keyDelete" command="handyClicks-sets-cmdDelete" />
-		<key keycode="VK_F5" id="handyClicks-sets-keyReload" oncommand="handyClicksSets.redrawTree();" />
 		<key key=" " id="handyClicks-sets-keyToggle" oncommand="handyClicksSets.toggleEnabled();" />
 		<key key="a" modifiers="control" id="handyClicks-sets-keySelectAll" oncommand="handyClicksSets.selectAll();" />
 		<key key="f" modifiers="control" id="handyClicks-sets-keyFocusSearch" oncommand="handyClicksSets.focusSearch();" />
 		<key keycode="VK_TAB" modifiers="control" id="handyClicks-sets-keySwitchPanes" oncommand="handyClicksSets.switchPanes(true);" />
 		<key keycode="VK_TAB" modifiers="control,shift" id="handyClicks-sets-keySwitchPanes" oncommand="handyClicksSets.switchPanes(false);" />
 		<key key="s" modifiers="control" id="handyClicks-sets-keyApply" oncommand="handyClicksSets.savePrefs(true);" />
+		<key keycode="VK_F5" id="handyClicks-sets-keyReload" oncommand="handyClicksSets.forceUpdTree();" />
 	</keyset>
 	<popupset id="handyClicks-setsPopupset">
 		<popup id="handyClicks-setsTreeContext">

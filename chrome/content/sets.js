@@ -5,8 +5,6 @@ var handyClicksSets = {
 	pu: handyClicksPrefUtils,
 	ps: handyClicksPrefSvc,
 
-	DOMCache: { __proto__: null },
-	rowsCache: { __proto__: null },
 	init: function() {
 		this.initShortcuts();
 
@@ -49,6 +47,8 @@ var handyClicksSets = {
 		return document.getElementById(id);
 	},
 	drawTree: function() {
+		this.DOMCache = { __proto__: null };
+		this.rowsCache = { __proto__: null };
 		var p = handyClicksPrefs;
 		for(var sh in p) {
 			if(!p.hasOwnProperty(sh))
@@ -79,8 +79,6 @@ var handyClicksSets = {
 		}
 	},
 	redrawTree: function() {
-		this.DOMCache = { __proto__: null };
-		this.rowsCache = { __proto__: null };
 		var cnt = this.content;
 		while(cnt.hasChildNodes())
 			cnt.removeChild(cnt.lastChild);
@@ -176,7 +174,7 @@ var handyClicksSets = {
 		}
 
 		this.redrawTree();
-		this.updButtons();
+		//this.updButtons();
 
 		selRows.forEach(
 			function(range) {
@@ -187,6 +185,10 @@ var handyClicksSets = {
 		if(typeof fvr == "number")
 			tbo.scrollToRow(fvr);
 		this.searchInSetsTree(null, true);
+	},
+	forceUpdTree: function() {
+		this.ps.loadSettings();
+		this.updTree();
 	},
 	updButtons: function() {
 		var selRows = this.selectedRows;
@@ -655,13 +657,19 @@ var handyClicksSets = {
 	},
 	checkPrefsFile: function(file) {
 		var data = this.readFile(file);
-		if(!/^var handyClicks[\w$]/m.test(data))
+		if(data.substr(0, 2) != "//")
 			return false;
-		data = data.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/g, "");
-		if(/\/\/|\/\*|\*\//.test(data)) // no other comments
+		var hc = /^var handyClicks[\w$]+\s*=.*$/mg;
+		if(!hc.test(data))
 			return false;
-		data = data.replace(/"[^"]*"/g, "_dummy_"); // replace strings
-		if(/['"()]/.test(data))
+		data = data.replace(hc, ""); // Replace handyClicks* vars
+		data = data.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/g, ""); // Replace comments
+		if(/\/\/|\/\*|\*\//.test(data)) // No other comments
+			return false;
+		data = data.replace(/"[^"]*"/g, "_dummy_"); // Replace strings
+		if(/\Wvar\s+/.test(data)) // No other vars
+			return false;
+		if(/['"()=]/.test(data))
 			return false;
 		return !/\W(?:[Ff]unction|eval|Components)\W/.test(data);
 	},

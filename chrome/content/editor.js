@@ -79,6 +79,10 @@ var handyClicksEditor = {
 		this.$("hc-editor-funcsTab").appendChild(
 			this.addIds(dTab, this.delayId)
 		);
+		var fOpts = this.$("hc-editor-funcOpts");
+		var f = "handyClicksEditor.disableDelayedAction();";
+		fOpts.setAttribute("onchange", f);
+		fOpts.setAttribute("oncommand", f);
 	},
 	addIds: function(node, id) {
 		node.id += id;
@@ -92,6 +96,7 @@ var handyClicksEditor = {
 		this.initShortcutEditor();
 		this.appendTypesList();
 		this.initImgIgnoreLinks();
+		this.disableDelayedAction();
 		this.initCustomTypesEditor();
 		this.setWinTitle();
 	},
@@ -101,7 +106,7 @@ var handyClicksEditor = {
 	},
 	alloyApply: function(e) {
 		var ln = e.target.localName;
-		if(ln == "tab" || ln == "dialog")
+		if(ln == "tab" || ln == "dialog" || ln == "key")
 			return;
 		this.applyButton.disabled = false;
 	},
@@ -155,6 +160,7 @@ var handyClicksEditor = {
 		this.selectCustomFunc(isCustom, delayed);
 		if(isCustom) {
 			this.$("hc-editor-funcField" + delayed).newValue = this.ps.dec(setsObj.action);
+			this.$("hc-editor-funcInitField" + delayed).newValue = this.ps.dec(setsObj.init);
 			this.$("hc-editor-funcLabel" + delayed).value = this.ps.dec(setsObj.label);
 		}
 		this.initFuncsList(isCustom, setsObj.action || null, delayed);
@@ -449,6 +455,67 @@ var handyClicksEditor = {
 		this.alloyApply(e);
 		this.$("hc-editor-funcTabbox").selectedIndex = 0;
 	},
+	disableDelayedAction: function() {
+		var dis = this.$("hc-editor-events").value == "mousedown" || !this.$("hc-editor-enabled").checked;
+		this.$("hc-editor-funcTabDelay").setAttribute("disabled", dis);
+	},
+	fixFocusedElement: function _ffe(e) {
+		if(e.type == "select") {
+			_ffe.time = Date.now();
+			return;
+		}
+		else if(Date.now() - _ffe.time > 50)
+			return;
+		// tab seleted ... < 50 ms ... textbox focused
+		var fe = document.commandDispatcher.focusedElement;
+		if(!fe || fe.localName != "input")
+			return;
+		var elt = fe.parentNode.parentNode; // <textbox>
+		if(!elt || elt.className != "hcText")
+			return;
+		e.preventDefault();
+		e.stopPropagation();
+		while(elt) {
+			if(elt.localName == "tabpanel") {
+				var t = elt.getElementsByTagName("textbox")[1];
+				if(!t)
+					break;
+				t.focus();
+				break;
+			}
+			elt = elt.parentNode;
+		}
+
+		return;
+		alert(tabs);
+		tabs.addEventListener(
+			"focus",
+			function(e) {
+				tabs.removeEventListener("focus", arguments.callee, true);
+				alert(e.target.localName);
+			},
+			true
+		);
+		return;
+
+
+		setTimeout(function() {
+			var fe = document.commandDispatcher.focusedElement;
+			if(!fe || fe.localName != "input")
+				return;
+			var elt = fe.parentNode.parentNode; // <textbox>
+			if(!elt || elt.className != "hcText")
+				return;
+			while(elt) {
+				if(elt.localName == "tabpanel") {
+					var t = elt.getElementsByTagName("textbox")[1];
+					t && t.focus();
+					break;
+				}
+				elt = elt.parentNode;
+			}
+		}, 0);
+	},
 
 	saveSettings: function() {
 		switch(this.mBox.selectedIndex) {
@@ -514,6 +581,9 @@ var handyClicksEditor = {
 			so.custom = isCustom;
 			so.label = this.ps.enc(this.$("hc-editor-funcLabel" + delayed).value);
 			so.action = this.ps.enc(this.$("hc-editor-funcField" + delayed).value);
+			var init = this.$("hc-editor-funcInitField" + delayed).value;
+			if(init)
+				so.init = this.ps.enc(init);
 		}
 		else {
 			so.action = fnc;

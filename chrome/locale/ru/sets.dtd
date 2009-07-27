@@ -41,21 +41,30 @@
 
 <!-- Editor -->
 <!ENTITY hc.editor.title "Handy Clicks: Редактор">
-
-<!ENTITY hc.sets.tabFuncs "Функции">
-<!ENTITY hc.sets.clickHere "Кликните здесь">
-<!ENTITY hc.sets.event "Событие:">
-<!ENTITY hc.sets.enabled "Включено">
-<!ENTITY hc.sets.ignoreLinks "Игнорировать ссылки">
-<!ENTITY hc.sets.captionFunc "Функция">
-<!ENTITY hc.sets.captionArgs "Аргументы">
-<!ENTITY hc.sets.label "Название:">
-<!ENTITY hc.sets.args "Аргументы:">
-
-<!ENTITY hc.sets.tabCustomTypes "Добавленные типы">
-<!ENTITY hc.sets.internalId "Внутренний id:">
-<!ENTITY hc.sets.defineItem "Определение элемента">
-<!ENTITY hc.sets.defineReturn "Должно возвращить: элемент или null"> <!-- Do not translate "null"! -->
-<!ENTITY hc.sets.defineContext "Контекстное меню элемента (для автоопределения оставьте пустым)">
-
+<!ENTITY hc.editor.apply "Применить">
 <!ENTITY hc.editor.delete "Удалить">
+
+<!ENTITY hc.editor.mainTabFuncs "Функции">
+<!ENTITY hc.editor.clickHere "Кликните здесь">
+
+<!ENTITY hc.editor.event "Событие:">
+<!ENTITY hc.editor.enabled "Включено">
+<!ENTITY hc.editor.ignoreLinks "Игнорировать ссылки">
+
+<!ENTITY hc.editor.tabFunc "Функция">
+<!ENTITY hc.editor.tabFuncDelay "Отложенная функция">
+
+<!ENTITY hc.editor.func "Функция:">
+<!ENTITY hc.editor.funcArgsCaption "Аргументы">
+<!ENTITY hc.editor.funcLabel "Название:">
+<!ENTITY hc.editor.funcArgs "Аргументы:">
+<!ENTITY hc.editor.funcCode "Код">
+<!ENTITY hc.editor.funcCodeTip "Выполняется при клике">
+<!ENTITY hc.editor.funcInit "Инициализация">
+<!ENTITY hc.editor.funcInitTip "Выполняется при (пере)загрузке настроек">
+
+<!ENTITY hc.editor.mainTabCustomTypes "Добавленные типы">
+<!ENTITY hc.editor.internalId "Внутренний id:">
+<!ENTITY hc.editor.defineItem "Определение элемента">
+<!ENTITY hc.editor.defineReturn "Должно возвращить: элемент или null"> <!-- Do not translate "null"! -->
+<!ENTITY hc.editor.defineContext "Контекстное меню элемента (для автоопределения оставьте пустым)">

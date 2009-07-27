@@ -15,7 +15,7 @@
 	windowtype="handyclicks:editor"
 	title="&hc.editor.title;"
 	buttons="accept,cancel,extra1,extra2"
-	buttonlabelextra1="&hc.sets.apply;"
+	buttonlabelextra1="&hc.editor.apply;"
 	buttonlabelextra2="&hc.editor.delete;"
 	onload="handyClicksEditor.init();"
 	ondialogaccept="return handyClicksEditor.saveSettings();"
@@ -36,17 +36,22 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefSvc.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/editor.js" />
 
+	<keyset id="hc-editor-keys">
+		<key key="s" modifiers="control" id="hc-editor-keyApply" oncommand="handyClicksEditor.saveSettings();" />
+		<key keycode="VK_F5" id="hc-editor-keyReload" oncommand="handyClicksEditor.initUI();" />
+	</keyset>
+
 	<tabbox id="hc-editor-mainTabbox" flex="1">
 		<tabs onselect="handyClicksEditor.setWinId(); handyClicksEditor.setWinTitle();">
-			<tab label="&hc.sets.tabFuncs;" selected="true" />
-			<tab label="&hc.sets.tabCustomTypes;" />
+			<tab label="&hc.editor.mainTabFuncs;" selected="true" />
+			<tab label="&hc.editor.mainTabCustomTypes;" />
 		</tabs>
 		<tabpanels flex="1">
 			<tabpanel flex="1" orient="vertical">
 				<hbox id="hc-editor-targetBox" align="center"
 					onchange="handyClicksEditor.loadFuncs();"
 					oncommand="handyClicksEditor.loadFuncs();">
-					<button label="&hc.sets.clickHere;" onclick="handyClicksEditor.setClickOptions(event);" />
+					<button label="&hc.editor.clickHere;" onclick="handyClicksEditor.setClickOptions(event);" />
 					<menulist id="hc-editor-button">
 						<menupopup>
 							<menuitem value="0" label="button0short" tooltiptext="button0" />
@@ -78,15 +83,14 @@
 
 				<tabbox id="hc-editor-funcTabbox" flex="1">
 					<tabs>
-						<tab label="&hc.sets.tabFunc;" selected="true" />
-						<tab label="&hc.sets.tabFuncDelay;" />
+						<tab label="&hc.editor.tabFunc;" selected="true" />
+						<tab id="hc-editor-funcTabDelay" label="&hc.editor.tabFuncDelay;" />
 					</tabs>
 					<tabpanels id="hc-editor-funcsTab" flex="1">
 						<tabpanel id="hc-editor-funcTab" flex="1" orient="vertical">
 
-							<groupbox orient="horizontal" align="center">
-								<caption label="&hc.sets.funcSets;" />
-								<label value="&hc.sets.event;" hc_notdelay="true" />
+							<hbox id="hc-editor-funcOpts" align="center">
+								<label value="&hc.editor.event;" hc_notdelay="true" />
 								<menulist id="hc-editor-events" hc_notdelay="true">
 									<menupopup>
 										<menuitem value="mousedown" label="Mousedown" />
@@ -94,12 +98,12 @@
 										<menuitem value="dblclick" label="Dblclick" />
 									</menupopup>
 								</menulist>
-								<checkbox id="hc-editor-enabled" class="warn" label="&hc.sets.enabled;" />
-								<checkbox id="hc-editor-imgIgnoreLinks" hc_notdelay="true" label="&hc.sets.ignoreLinks;" />
-							</groupbox>
+								<checkbox id="hc-editor-enabled" label="&hc.editor.enabled;" />
+								<checkbox id="hc-editor-imgIgnoreLinks" hc_notdelay="true" label="&hc.editor.ignoreLinks;" />
+							</hbox>
 
 							<hbox align="center">
-								<label value="&hc.sets.func;" />
+								<label value="&hc.editor.func;" />
 								<menulist id="hc-editor-func"
 									oncommand="handyClicksEditor.addFuncArgs(this.id.replace(/^hc-editor-func/, ''));">
 									<menupopup id="hc-editor-funcPopup">
@@ -224,19 +228,33 @@
 							</hbox>
 							<vbox id="hc-editor-funcSets" flex="1">
 								<groupbox id="hc-editor-funcArgsBox">
-									<caption label="&hc.sets.captionArgs;" />
+									<caption label="&hc.editor.funcArgsCaption;" />
 									<vbox id="hc-editor-funcArgs" flex="1" align="left" />
 								</groupbox>
 
 								<vbox id="hc-editor-funcCustom" flex="1">
 									<hbox align="center">
-										<label value="&hc.sets.label;" />
+										<label value="&hc.editor.funcLabel;" />
 										<textbox id="hc-editor-funcLabel" flex="1" />
 									</hbox>
-									<hbox>
-										<textbox class="hcText" readonly="true" tabindex="1" value="&hc.sets.args; event, item, origItem" />
-									</hbox>
-									<textbox class="hcEditor" id="hc-editor-funcField" wrap="off" flex="1" value="" />
+									<tabbox id="hc-editor-funcVarsTabbox" flex="1">
+										<tabs onselect="handyClicksEditor.fixFocusedElement(event);">
+											<tab label="&hc.editor.funcCode;" tooltiptext="&hc.editor.funcCodeTip;" selected="true" />
+											<tab label="&hc.editor.funcInit;" tooltiptext="&hc.editor.funcInitTip;" />
+										</tabs>
+										<tabpanels flex="1">
+											<tabpanel flex="1" orient="vertical">
+												<hbox>
+													<textbox class="hcText" readonly="true" value="&hc.editor.funcArgs; event, item, origItem"
+														onfocus="handyClicksEditor.fixFocusedElement(event);" />
+												</hbox>
+												<textbox class="hcEditor" id="hc-editor-funcField" wrap="off" flex="1" value="" />
+											</tabpanel>
+											<tabpanel flex="1" orient="vertical">
+												<textbox class="hcEditor" id="hc-editor-funcInitField" wrap="off" flex="1" value="" />
+											</tabpanel>
+										</tabpanels>
+									</tabbox>
 								</vbox>
 							</vbox>
 
@@ -247,30 +265,30 @@
 			</tabpanel>
 			<tabpanel flex="1" orient="vertical">
 				<hbox align="center">
-					<label value="&hc.sets.label;" />
+					<label value="&hc.editor.funcLabel;" />
 					<menulist id="hc-editor-customType" editable="true"
 						oncommand="handyClicksEditor.initCustomTypesEditor();"
 						oninput="handyClicksEditor.customTypeLabel(this);"
 						ondragexit="handyClicksEditor.customTypeLabelDelay(this);">
 						<menupopup id="hc-editor-customTypePopup" />
 					</menulist>
-					<label value="&hc.sets.internalId;" />
+					<label value="&hc.editor.internalId;" />
 					<textbox id="hc-editor-customTypeExtId"
 						onkeypress="return handyClicksEditor.customTypeIdFilter(event);"
 						oninput="handyClicksEditor.customTypeIdFilter(event);"
 						ondragexit="handyClicksEditor.customTypeIdFilter(event);" />
-					<checkbox id="hc-editor-customTypeEnabled" class="warn" label="&hc.sets.enabled;" />
+					<checkbox id="hc-editor-customTypeEnabled" label="&hc.editor.enabled;" />
 				</hbox>
-				<label class="header" value="&hc.sets.defineItem;" />
+				<label class="header" value="&hc.editor.defineItem;" />
 				<hbox>
-					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.sets.args; event, item" />
-					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.sets.defineReturn;" />
+					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.funcArgs; event, item" />
+					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
 				</hbox>
 				<textbox class="hcEditor" id="hc-editor-customTypeDefine" wrap="off" flex="1" value="" />
-				<label class="header" value="&hc.sets.defineContext;" />
+				<label class="header" value="&hc.editor.defineContext;" />
 				<hbox>
-					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.sets.args; event, item, origItem" />
-					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.sets.defineReturn;" />
+					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.funcArgs; event, item, origItem" />
+					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
 				</hbox>
 				<textbox class="hcEditor" id="hc-editor-customTypeContext" wrap="off" flex="1" value="" />
 			</tabpanel>
