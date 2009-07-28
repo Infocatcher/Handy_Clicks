@@ -41,7 +41,7 @@ var handyClicksPrefUtils = {
 	// API functions:
 	_prefs: { __proto__: null }, // Prefs cache
 	pref: function(pName, pVal) {
-		if(typeof pVal != "undefined")
+		if(pVal !== undefined)
 			return this.setPref(this.nPrefix + pName, pVal);
 		if(!(pName in this._prefs))
 			this.readPref(pName);

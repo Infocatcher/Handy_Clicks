@@ -314,7 +314,7 @@ var handyClicks = {
 		//this.origItem = it;
 
 		var itln = it.localName.toLowerCase();
-		var _it;
+		var _it, _itln;
 
 		// Custom:
 		var cts = handyClicksCustomTypes, ct;
@@ -331,10 +331,10 @@ var handyClicks = {
 					_it = ct._define.call(this, e, it);
 				}
 				catch(e) {
-					var eId = this.ut.getLocalised("id") + " " + type
-						+ "\n" + this.ut.getLocalised("label") + " " + this.ps.dec(ct.label);
-					errors.push(eId + "\n" + this.ut.getLocalised("details") + "\n" + e);
-					this.ut._err(this.ut.errPrefix + this.ut.getLocalised("customTypeDefineError").replace("%e", eId));
+					var eId = this.ut.getLocalized("id") + " " + type
+						+ "\n" + this.ut.getLocalized("label") + " " + this.ps.dec(ct.label);
+					errors.push(eId + "\n" + this.ut.getLocalized("details") + "\n" + e);
+					this.ut._err(this.ut.errPrefix + this.ut.getLocalized("customTypeDefineError").replace("%e", eId));
 					this.ut._err(e);
 				}
 				if(!_it)
@@ -346,10 +346,10 @@ var handyClicks = {
 		}
 		if(errors.length) {
 			this.ut.notify(
-				this.ut.getLocalised("errorTitle"),
-				this.ut.getLocalised("customTypeDefineError" + (errors.length == 1 ? "" : "s"))
+				this.ut.getLocalized("errorTitle"),
+				this.ut.getLocalized("customTypeDefineError" + (errors.length == 1 ? "" : "s"))
 					.replace("%e", errors.join("\n\n"))
-				+ this.ut.getLocalised("openConsole"),
+				+ this.ut.getLocalized("openConsole"),
 				toErrorConsole
 			);
 		}
@@ -426,7 +426,7 @@ var handyClicks = {
 		if(
 			(all || this.itemTypeInSets(sets, "tab"))
 			&& it.namespaceURI == this.XULNS
-			&& it.getAttribute("anonid") != "close-button"
+			&& itln != "toolbarbutton"
 		) {
 			_it = it;
 			while(_it && _it.nodeType != docNode) {
@@ -449,20 +449,17 @@ var handyClicks = {
 		if(
 			(all || this.itemTypeInSets(sets, "tabbar"))
 			&& it.namespaceURI == this.XULNS
-			&& !(it.className && /^tabs-.+-button$/.test(it.className))
-			//&& it.className != "tabs-alltabs-button"
-			&& it.getAttribute("anonid") != "close-button"
+			&& itln != "toolbarbutton"
 		) {
-			_it = it;
-			while(_it && _it.nodeType != docNode && _it.localName.toLowerCase() != "tab") {
-				if(
-					/(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(_it.className)
-				) {
+			_it = it, _itln = itln;
+			while(_it && _it.nodeType != docNode && _itln != "tab" && _itln != "toolbarbutton") {
+				if(/(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(_it.className)) {
 					this.itemType = "tabbar";
 					this.item = _it;
 					return;
 				}
 				_it = _it.parentNode;
+				_itln = _it.localName.toLowerCase();
 			}
 		}
 
@@ -548,12 +545,12 @@ var handyClicks = {
 					}
 					catch(e) {
 						this.ut.notify(
-							this.ut.getLocalised("errorTitle"),
-							this.ut.getLocalised("customTypeContextMenuError")
+							this.ut.getLocalized("errorTitle"),
+							this.ut.getLocalized("customTypeContextMenuError")
 								.replace("%l", this.ps.dec(ct.label))
 								.replace("%id", this.itemType)
 								.replace("%e", e)
-							+ this.ut.getLocalised("openConsole"),
+							+ this.ut.getLocalized("openConsole"),
 							toErrorConsole
 						);
 						this.ut._err(
@@ -675,7 +672,7 @@ var handyClicks = {
 			//id = "contentAreaContextMenu";
 			var brObj = this.getBrowserForNode(node);
 			if(brObj) {
-				id = this.getNodeContextMenu(brObj.browser);
+				id = this.getContextAttr(brObj.browser);
 				doc = brObj.document;
 			}
 		}
@@ -715,7 +712,7 @@ var handyClicks = {
 			? { browser: br, document: doc }
 			: null;
 	},
-	getNodeContextMenu: function(node) {
+	getContextAttr: function(node) {
 		return node.getAttribute("contentcontextmenu")
 			|| node.getAttribute("contextmenu")
 			|| node.getAttribute("context");
@@ -759,12 +756,12 @@ var handyClicks = {
 				new Function("event,item,origItem", action).apply(this.fn, args);
 			}
 			catch(e) {
-				var eMsg = this.ut.getLocalised("customFunctionError")
+				var eMsg = this.ut.getLocalized("customFunctionError")
 					.replace("%f", label)
 					.replace("%e", e);
 				this.ut.notify(
-					this.ut.getLocalised("errorTitle"),
-					eMsg + this.ut.getLocalised("openConsole"),
+					this.ut.getLocalized("errorTitle"),
+					eMsg + this.ut.getLocalized("openConsole"),
 					toErrorConsole
 				);
 				this.ut._err(this.ut.errPrefix + eMsg);
@@ -777,8 +774,8 @@ var handyClicks = {
 				fnc.apply(this.fn, args);
 			else {
 				this.ut.notify(
-					this.ut.getLocalised("errorTitle"),
-					this.ut.getLocalised("functionNotFound").replace("%f", funcObj.action),
+					this.ut.getLocalized("errorTitle"),
+					this.ut.getLocalized("functionNotFound").replace("%f", funcObj.action),
 					toErrorConsole
 				);
 				this.ut._err(this.ut.errPrefix + funcObj.action + " not found (" + typeof fnc + ")");
@@ -855,7 +852,7 @@ var handyClicks = {
 		var sbi = document.getElementById("handyClicks-toggleStatus-sBarIcon");
 		var enabled = this.enabled;
 		sbi.setAttribute("hc_enabled", enabled);
-		sbi.tooltipText = this.ut.getLocalised(enabled ? "enabled" : "disabled");
+		sbi.tooltipText = this.ut.getLocalized(enabled ? "enabled" : "disabled");
 		document.getElementById("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
 	},
 

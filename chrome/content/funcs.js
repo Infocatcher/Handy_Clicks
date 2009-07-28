@@ -128,7 +128,7 @@ var handyClicksFuncs = {
 	testForHighlander: function(uri) {
 		// Highlander ( https://addons.mozilla.org/firefox/addon/4086 )
 		if("Highlander" in window) {
-			var tab = Highlander.findTabForURI(makeURI(uri));
+			var tab = Highlander.findTabForURI(makeURI(uri)); // chrome://global/content/contentAreaUtils.js
 			if(tab) {
 				Highlander.selectTab(tab);
 				return true;
@@ -267,9 +267,9 @@ var handyClicksFuncs = {
 		var load = this.pu.pref("loadVoidLinksWithHandlers");
 		if(this.pu.pref("notifyVoidLinksWithHandlers"))
 			this.ut.notify(
-				this.ut.getLocalised("title"),
-				this.ut.getLocalised("voidLinkWithHandler").replace(/\s*%h/, this.getItemHandlers(item))
-					+ (load ? "" : this.ut.getLocalised("clickForOpen")),
+				this.ut.getLocalized("title"),
+				this.ut.getLocalized("voidLinkWithHandler").replace(/\s*%h/, this.getItemHandlers(item))
+					+ (load ? "" : this.ut.getLocalized("clickForOpen")),
 				(load ? null : _f)
 			);
 		if(load)
@@ -337,9 +337,9 @@ var handyClicksFuncs = {
 		var load = this.pu.pref("loadJavaScriptLinks");
 		if(this.pu.pref("notifyJavaScriptLinks"))
 			this.ut.notify(
-				this.ut.getLocalised("title"),
-				this.ut.getLocalised("javaScriptLink")
-					+ (load ? "" : this.ut.getLocalised("clickForOpen")),
+				this.ut.getLocalized("title"),
+				this.ut.getLocalized("javaScriptLink")
+					+ (load ? "" : this.ut.getLocalized("clickForOpen")),
 				(load ? null : _f)
 			);
 		if(load)
@@ -358,8 +358,8 @@ var handyClicksFuncs = {
 		}
 		catch(e) {
 			this.ut.alertEx(
-				this.ut.getLocalised("errorTitle"),
-				this.ut.getLocalised("RegExpError").replace("%r", regexp).replace("%e", e)
+				this.ut.getLocalized("errorTitle"),
+				this.ut.getLocalized("RegExpError").replace("%r", regexp).replace("%e", e)
 			);
 			return false;
 		}
@@ -661,17 +661,17 @@ var handyClicksFuncs = {
 		try { file.initWithPath(path); }
 		catch(e) { // E.g. this can be invalid relative path
 			this.ut.notify(
-				this.ut.getLocalised("errorTitle"),
-				this.ut.getLocalised("invalidFilePath").replace("%p", path)
-				+ this.ut.getLocalised("openConsole"),
+				this.ut.getLocalized("errorTitle"),
+				this.ut.getLocalized("invalidFilePath").replace("%p", path)
+				+ this.ut.getLocalized("openConsole"),
 				toErrorConsole
 			);
 			throw e;
 		}
 		if(!file.exists()) {
 			this.ut.alertEx(
-				this.ut.getLocalised("errorTitle"),
-				this.ut.getLocalised("fileNotFound").replace("%p", path)
+				this.ut.getLocalized("errorTitle"),
+				this.ut.getLocalized("fileNotFound").replace("%p", path)
 			);
 			return;
 		}
@@ -681,8 +681,8 @@ var handyClicksFuncs = {
 		try { process.run(false, args, args.length); }
 		catch(e) {
 			this.ut.alertEx(
-				this.ut.getLocalised("errorTitle"),
-				this.ut.getLocalised("fileCantRun").replace("%p", path).replace("%e", e)
+				this.ut.getLocalized("errorTitle"),
+				this.ut.getLocalized("fileCantRun").replace("%p", path).replace("%e", e)
 			);
 		}
 	},
@@ -911,8 +911,8 @@ var handyClicksFuncs = {
 	renameTab: function(e, tab) {
 		tab = this.fixTab(tab);
 		var lbl = this.ut.promptEx(
-			this.ut.getLocalised("renameTab"),
-			this.ut.getLocalised("tabNewName"),
+			this.ut.getLocalized("renameTab"),
+			this.ut.getLocalized("tabNewName"),
 			tab.label
 		);
 		tab.label = lbl == null
@@ -1015,9 +1015,9 @@ var handyClicksFuncs = {
 		}
 		var onlyUnVisited = {};
 		var cnf = this.ut.promptsSvc.confirmCheck(
-			window, this.ut.getLocalised("title"),
-			this.ut.getLocalised("openSimilarLinks"),
-			this.ut.getLocalised("openOnlyVisited"), onlyUnVisited
+			window, this.ut.getLocalized("title"),
+			this.ut.getLocalized("openSimilarLinks"),
+			this.ut.getLocalized("openOnlyVisited"), onlyUnVisited
 		);
 		if(!cnf)
 			return;
@@ -1030,17 +1030,13 @@ var handyClicksFuncs = {
 		var hrefs = { __proto__: null };
 		var his = Components.classes["@mozilla.org/browser/global-history;2"]
 			.getService(Components.interfaces.nsIGlobalHistory2);
-		var IO = Components. classes["@mozilla.org/network/io-service;1"]
-			.getService(Components.interfaces.nsIIOService);
 		var text, h;
 		for(var i = 0, len = ar.length; i < len; i++) {
 			text = ar[i].innerHTML;
 			h = ar[i].href;
 			if(
 				text == s && h && !this.isJSURI(h)
-				&& (
-					!onlyUnVisited || !his.isVisited(IO.newURI(h, null, null))
-				)
+				&& (!onlyUnVisited || !his.isVisited(makeURI(h))) // chrome://global/content/contentAreaUtils.js
 			)
 				hrefs[h] = true;
 		}
@@ -1059,9 +1055,9 @@ var handyClicksFuncs = {
 	},
 	$void: function(e) {}, // dummy function
 	getRefererForItem: function(refPolicy, imgLoading, it) {
-		if(typeof refPolicy == "undefined")
+		if(refPolicy === undefined)
 			refPolicy = -1;
-		if(typeof imgLoading == "undefined")
+		if(imgLoading === undefined)
 			imgLoading = false;
 		it = it || this.hc.item;
 		var oDoc = it.ownerDocument;
@@ -1073,11 +1069,11 @@ var handyClicksFuncs = {
 		// 1 - for docs
 		// 2 - for images and docs
 		return (refPolicy == 1 && !imgLoading) || refPolicy == 2
-			? makeURI(oDoc.location.href) // see chrome://global/content/contentAreaUtils.js
+			? makeURI(oDoc.location.href) // chrome://global/content/contentAreaUtils.js
 			: null;
 	},
 	getRefererPolicy: function(refPolicy) {
-		if(typeof refPolicy == "undefined")
+		if(refPolicy === undefined)
 			refPolicy = -1;
 		return refPolicy == -1
 			? this.pu.getPref("network.http.sendRefererHeader")

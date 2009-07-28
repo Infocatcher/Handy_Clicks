@@ -1,19 +1,24 @@
 @namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
 
-radio[pane="handyClicks-sets-pane-actions"] {
+/* Options dialog */
+radio[pane="hc-sets-pane-actions"] {
 	list-style-image: url("mouse.png");
 }
-radio[pane="handyClicks-sets-pane-prefs"] {
+radio[pane="hc-sets-pane-prefs"] {
 	list-style-image: url("prefs.png");
 }
-[hc_hideallafter="true"] ~ * {
-	visibility: hidden;
+#hc-sets-tree-buttons > button {
+	margin-left: 3px;
+	margin-right: 3px;
 }
-#handyClicks-setsTreeSearchContainer {
+#hc-sets-enabled {
+	font-weight: bold;
+}
+#hc-sets-tree-searchContainer {
 	-moz-appearance: textfield;
 	margin: 2px;
 }
-#handyClicks-setsTreeSearch {
+#hc-sets-tree-searchField {
 	-moz-appearance: none;
 	margin: 0;
 	border: none;
@@ -24,6 +29,11 @@ radio[pane="handyClicks-sets-pane-prefs"] {
 	color: #fff;
 }
 
+/* Editor */
+[id^="hc-editor-enabled"],
+#hc-editor-customTypeEnabled {
+	font-weight: bold;
+}
 textbox.hcText {
 	background: transparent !important;
 	border: none;

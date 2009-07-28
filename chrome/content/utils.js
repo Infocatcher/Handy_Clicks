@@ -68,21 +68,25 @@ var handyClicksUtils = {
 			.getService(Components.interfaces.nsIStringBundleService)
 			.createBundle(src);
 	},
+	get localeBundle() {
+		delete this.localeBundle;
+		return this.localeBundle = this.createBundle("chrome://handyclicks/locale/hcs.properties");
+	},
+	get defaultBundle() {
+		delete this.defaultBundle;
+		return this.defaultBundle = this.createBundle("chrome://handyclicks-locale/content/hcs.properties");
+	},
 	getLocaleStr: function(name) {
-		if(!this._localeBundle)
-			this._localeBundle = this.createBundle("chrome://handyclicks/locale/hcs.properties");
-		try { return this._localeBundle.GetStringFromName(name); }
+		try { return this.localeBundle.GetStringFromName(name); }
 		catch(e) { return null; }
 	},
 	getDefaultStr: function(name) {
-		if(!this._defaultBundle)
-			this._defaultBundle = this.createBundle("chrome://handyclicks-locale/content/hcs.properties");
-		try { return this._defaultBundle.GetStringFromName(name); }
+		try { return this.defaultBundle.GetStringFromName(name); }
 		catch(e) { return null; }
 	},
-	getLocalised: function(name) {
+	getLocalized: function(name) {
 		if(!(name in this._strings))
-			this._strings[name] = this.getLocaleStr(name) || this.getDefaultStr(name) || "[" + name + "]";
+			this._strings[name] = this.getLocaleStr(name) || this.getDefaultStr(name) || "(" + name + ")";
 		return this._strings[name];
 	},
 

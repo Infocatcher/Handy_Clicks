@@ -63,9 +63,9 @@ var handyClicksEditor = {
 		var mis = p.getElementsByTagName("menuitem"), mi;
 		for(var i = 0, len = mis.length; i < len; i++) {
 			mi = mis[i];
-			mi.setAttribute("label", this.ut.getLocalised(mi.getAttribute("label")));
+			mi.setAttribute("label", this.ut.getLocalized(mi.getAttribute("label")));
 			if(mi.hasAttribute("tooltiptext"))
-				mi.setAttribute("tooltiptext", this.ut.getLocalised(mi.getAttribute("tooltiptext")));
+				mi.setAttribute("tooltiptext", this.ut.getLocalized(mi.getAttribute("tooltiptext")));
 		}
 		if(this.ut.fxVersion >= 3) // Fix bug in Firefox 1.5 and 2.0
 			return;
@@ -130,11 +130,11 @@ var handyClicksEditor = {
 	},
 	setWinTitle: function() {
 		var sh = this.currentShortcut;
-		var ft = this.ps.getModifiersStr(sh)
-			+ " + " + this.ps.getLocaleButtonStr(sh, true)
-			+ " + " + (this.$("hc-editor-itemTypes").getAttribute("label") || "?");
+		var t = this.ps.getModifiersStr(sh)
+			+ " + " + this.ps.getLocaleButtonStr(sh, true);
+		var type = this.$("hc-editor-itemTypes").getAttribute("label");
 		var ct = this.$("hc-editor-customType").value || this.$("hc-editor-customTypeExtId").value;
-		var t = " [" + ft + (ct ? " | " + ct : "") + "]";
+		t = " [" + t + (type ? " + " + type : "") + (ct ? " | " + ct : "") + "]";
 		document.title = document.title.replace(/\s+\[.+\]$/, "") + t;
 	},
 	initShortcutEditor: function() {
@@ -207,7 +207,6 @@ var handyClicksEditor = {
 	customTypeLabel: function(it) {
 		if(it.getElementsByAttribute("label", it.value)[0])
 			this.initCustomTypesEditor();
-		//this.setWinTitle();
 	},
 	customTypeLabelDelay: function(it) {
 		setTimeout(function(_this, it) { _this.customTypeLabel(it); }, 0, this, it);
@@ -399,12 +398,12 @@ var handyClicksEditor = {
 		switch(argType) {
 			case "checkbox":
 				elt.setAttribute("checked", !!argVal);
-				elt.setAttribute("label", this.ut.getLocalised(argName));
+				elt.setAttribute("label", this.ut.getLocalized(argName));
 			break;
 			case "menulist":
 				// Description:
 				var desc = document.createElement("label");
-				desc.setAttribute("value", this.ut.getLocalised(argName));
+				desc.setAttribute("value", this.ut.getLocalized(argName));
 				argContainer.appendChild(desc);
 				// List of values:
 				var mp = document.createElement("menupopup");
@@ -413,7 +412,7 @@ var handyClicksEditor = {
 				for(var i = 0, len = vals.length; i < len; i++) {
 					mi = document.createElement("menuitem");
 					mi.setAttribute("value", vals[i]);
-					mi.setAttribute("label", this.ut.getLocalised(argName + "[" + vals[i] + "]"));
+					mi.setAttribute("label", this.ut.getLocalized(argName + "[" + vals[i] + "]"));
 					mp.appendChild(mi);
 				}
 				elt.value = argVal + "";
@@ -539,8 +538,8 @@ var handyClicksEditor = {
 		var so = this.getFuncObj();
 		if(!this.ps.isOkShortcut(sh) || !type || !evt || !so) {
 			this.ut.alertEx(
-				this.ut.getLocalised("errorTitle"),
-				this.ut.getLocalised("editorIncomplete")
+				this.ut.getLocalized("errorTitle"),
+				this.ut.getLocalized("editorIncomplete")
 			);
 			return false;
 		}
@@ -617,8 +616,8 @@ var handyClicksEditor = {
 		var def = this.$("hc-editor-customTypeDefine").value;
 		if(!label || !cType || !def) {
 			this.ut.alertEx(
-				this.ut.getLocalised("errorTitle"),
-				this.ut.getLocalised("editorIncomplete")
+				this.ut.getLocalized("errorTitle"),
+				this.ut.getLocalized("editorIncomplete")
 			);
 			return false;
 		}
@@ -632,8 +631,8 @@ var handyClicksEditor = {
 			!newEnabl
 			&& newEnabl != curEnabl
 			&& !this.ut.confirmEx(
-				this.ut.getLocalised("warningTitle"),
-				this.ut.getLocalised("typeDisablingWarning")
+				this.ut.getLocalized("warningTitle"),
+				this.ut.getLocalized("typeDisablingWarning")
 			)
 		)
 			return false;

@@ -98,9 +98,9 @@ var handyClicksPrefSvc = {
 				this.moveFiles(bFile, "-restored-");
 			}
 			this.ut.alertEx(
-				this.ut.getLocalised("errorTitle"),
-				this.ut.getLocalised("badJSFile").replace("%f", this._cPath)
-					+ (hasBak ? this.ut.getLocalised("restoredFromBackup").replace("%b", bFile.path) : "")
+				this.ut.getLocalized("errorTitle"),
+				this.ut.getLocalized("badJSFile").replace("%f", this._cPath)
+					+ (hasBak ? this.ut.getLocalized("restoredFromBackup").replace("%b", bFile.path) : "")
 			);
 			this._restoringCounter++;
 		}
@@ -160,12 +160,12 @@ var handyClicksPrefSvc = {
 			}
 			catch(e) {
 				this.ut.notify(
-					this.ut.getLocalised("errorTitle"),
-					this.ut.getLocalised("customTypeCompileError")
+					this.ut.getLocalized("errorTitle"),
+					this.ut.getLocalized("customTypeCompileError")
 						.replace("%l", this.dec(ct.label))
 						.replace("%id", type)
 						.replace("%e", e)
-					+ this.ut.getLocalised("openConsole"),
+					+ this.ut.getLocalized("openConsole"),
 					toErrorConsole
 				);
 				this.ut._err(this.ut.errPrefix + "Error in custom type " + type);
@@ -301,7 +301,7 @@ var handyClicksPrefSvc = {
 		return uneval(obj).replace(/^\(|\)$/g, "");
 	},
 	fixPropName: function(pName) {
-		var o = {}; o[pName] = 0;
+		var o = {}; o[pName] = true;
 		return /'|"/.test(uneval(o)) ? '"' + pName + '"' : pName;
 	},
 	delLastComma: function(str) {
@@ -410,7 +410,7 @@ var handyClicksPrefSvc = {
 		return /button=([0-2])/.test(sh) ? "button" + RegExp.$1 + (_short ? "short" : "") : "?";
 	},
 	getLocaleButtonStr: function(sh, _short) {
-		return this.ut.getLocalised(this.getButtonStr(sh, _short));
+		return this.ut.getLocalized(this.getButtonStr(sh, _short));
 	},
 	getModifiersStr: function(sh) {
 		sh = sh
@@ -418,7 +418,7 @@ var handyClicksPrefSvc = {
 			.replace(/([a-z])([a-z]+)=true/g, function($0, $1, $2) { return $1.toUpperCase() + $2 })
 			.replace(/^,|,$/g, "")
 			.replace(/,/g, "+");
-		return sh ? sh : this.ut.getLocalised("none");
+		return sh ? sh : this.ut.getLocalized("none");
 	}
 };
 handyClicksPrefSvc.loadSettings();

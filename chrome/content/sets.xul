@@ -29,21 +29,21 @@
 	height="520"
 	persist="width height screenX screenY">
 
-	<prefpane id="handyClicks-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1">
+	<prefpane id="hc-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1">
 		<vbox flex="1">
 
 			<hbox align="center">
 				<label value="&hc.sets.search;" />
-				<hbox id="handyClicks-setsTreeSearchContainer" flex="1">
-					<textbox id="handyClicks-setsTreeSearch" hc_notfound="false" flex="1"
+				<hbox id="hc-sets-tree-searchContainer" flex="1">
+					<textbox id="hc-sets-tree-searchField" hc_notfound="false" flex="1"
 						onkeypress="handyClicksSets.navigateSearchResults(event);"
 						oninput="handyClicksSets._searchInSetsTree(this);"
 						ondragexit="handyClicksSets._searchInSetsTree(this);" />
 				</hbox>
 			</hbox>
 
-			<tree id="handyClicks-setsTree" flex="1" enableColumnDrag="true"
-				context="handyClicks-setsTreeContext"
+			<tree id="hc-sets-tree" flex="1" enableColumnDrag="true"
+				context="hc-sets-tree-context"
 				onclick="handyClicksSets.toggleEnabled(event);"
 				onselect="handyClicksSets.updButtons();"
 				ondblclick="handyClicksSets.editItems(event);">
@@ -60,20 +60,20 @@
 					<splitter class="tree-splitter" />
 					<treecol label="&hc.sets.columnEnabled;" type="checkbox" width="18" persist="hidden width ordinal" />
 				</treecols>
-				<treechildren id="handyClicks-setsTreeContent" />
+				<treechildren id="hc-sets-tree-content" />
 			</tree>
-			<hbox id="handyClicks-sets-treeButtons" pack="center">
-				<button id="handyClicks-sets-buttonAdd" command="handyClicks-sets-cmdAdd" />
-				<button id="handyClicks-sets-buttonEdit" command="handyClicks-sets-cmdEdit" />
-				<button id="handyClicks-sets-buttonDelete" command="handyClicks-sets-cmdDelete" />
-
-				<button id="handyClicks-sets-buttonExport" oncommand="handyClicksSets.exportSets();" label="&hc.sets.export;" />
-				<button id="handyClicks-sets-buttonImport" oncommand="handyClicksSets.importSets();" label="&hc.sets.import;" />
+			<hbox id="hc-sets-tree-buttons" pack="center">
+				<button id="hc-sets-tree-buttonAdd" command="hc-sets-cmd-add" />
+				<button id="hc-sets-tree-buttonEdit" command="hc-sets-cmd-edit" />
+				<button id="hc-sets-tree-buttonDelete" command="hc-sets-cmd-delete" />
+				<spacer id="hc-sets-tree-buttonsSpacer" width="16" />
+				<button id="hc-sets-tree-buttonExport" oncommand="handyClicksSets.exportSets();" label="&hc.sets.export;" />
+				<button id="hc-sets-tree-buttonImport" oncommand="handyClicksSets.importSets();" label="&hc.sets.import;" />
 			</hbox>
 		</vbox>
 	</prefpane>
 
-	<prefpane id="handyClicks-sets-pane-prefs" label="&hc.sets.clickPrefsTitle;" flex="1">
+	<prefpane id="hc-sets-pane-prefs" label="&hc.sets.clickPrefsTitle;" flex="1">
 		<preferences>
 			<preference id="enabled" type="bool" name="extensions.handyclicks.enabled" />
 			<preference id="forceHideContextMenu" type="bool" name="extensions.handyclicks.forceHideContextMenu" />
@@ -90,61 +90,59 @@
 			<preference id="convertURIsCharset" type="string" name="extensions.handyclicks.convertURIsCharset" />
 		</preferences>
 
-		<checkbox preference="enabled" id="handyClicks-sets-enabled" label="&hc.sets.enabled;" oncommand="handyClicksSets.showPrefs(this);" />
-		<vbox>
-			<checkbox preference="forceHideContextMenu" label="&hc.sets.forceHideContextMenu;" />
-			<checkbox preference="stopMousedownEvent" label="&hc.sets.stopMousedownEvent;" />
-			<groupbox>
-				<caption label="&hc.sets.disallowMousemove;" />
-				<hbox>
-					<checkbox id="disallowMousemoveForButtons-0" label="&hc.sets.left;" />
-					<checkbox id="disallowMousemoveForButtons-1" label="&hc.sets.middle;" />
-					<checkbox id="disallowMousemoveForButtons-2" label="&hc.sets.right;" />
-					<hbox align="center">
-						<label value="&hc.sets.maxDistance;" />
-						<textbox preference="disallowMousemoveDist" type="number" min="0" max="60" increment="1" style="width: 4.5em;" />
-						<label value="px" />
-					</hbox>
+		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" />
+		<checkbox preference="forceHideContextMenu" label="&hc.sets.forceHideContextMenu;" />
+		<checkbox preference="stopMousedownEvent" label="&hc.sets.stopMousedownEvent;" />
+		<groupbox>
+			<caption label="&hc.sets.disallowMousemove;" />
+			<hbox>
+				<checkbox id="hc-sets-disallowMousemove-0" label="&hc.sets.left;" />
+				<checkbox id="hc-sets-disallowMousemove-1" label="&hc.sets.middle;" />
+				<checkbox id="hc-sets-disallowMousemove-2" label="&hc.sets.right;" />
+				<hbox align="center">
+					<label value="&hc.sets.maxDistance;" />
+					<textbox preference="disallowMousemoveDist" type="number" min="0" max="60" increment="1" style="width: 4.5em;" />
+					<label value="px" />
 				</hbox>
-			</groupbox>
+			</hbox>
+		</groupbox>
+		<hbox align="center">
+			<label value="Timeout for delayed action:" />
+			<textbox preference="delayedActionTimeout" type="number" min="0" max="7000" increment="20" style="width: 4.5em;" />
+			<label value="ms (0 for disable)" />
+		</hbox>
+		<groupbox>
+			<caption label="Notify" />
 			<hbox align="center">
-				<label value="Timeout for delayed action:" />
-				<textbox preference="delayedActionTimeout" type="number" min="0" max="7000" increment="20" style="width: 4.5em;" />
+				<label value="Open time:" />
+				<textbox preference="notifyOpenTime" type="number" min="0" max="30000" increment="20" style="width: 5em;"
+					hc_requiredfor="notify" hc_disabledvalues="0" />
 				<label value="ms (0 for disable)" />
 			</hbox>
-			<groupbox>
-				<caption label="Notify" />
-				<hbox align="center">
-					<label value="Open time:" />
-					<textbox preference="notifyOpenTime" type="number" min="0" max="30000" increment="20" style="width: 5em;"
-						hc_requiredfor="notify" hc_disabledvalues="0" />
-					<label value="ms (0 for disable)" />
-				</hbox>
-				<checkbox preference="notifyInWindowCorner" hc_depends="notify" label="Show in window corner" />
-				<checkbox preference="notifyVoidLinksWithHandlers" hc_depends="notify" label="Notify &quot;void&quot; links with handlers" />
-				<checkbox preference="notifyJavaScriptLinks" hc_depends="notify" label="Notify JavaScript-links (javascript: ...)" />
-			</groupbox>
-			<groupbox>
-				<caption label="File links" />
-				<hbox align="center">
-					<menulist preference="filesLinksPolicy" hc_requiredfor="regexp" hc_disabledvalues="-1">
-						<menupopup>
-							<menuitem value="-1" label="Not check" />
-							<menuitem value="0" label="Show context menu" />
-							<menuitem value="1" label="Open in current tab" />
-						</menupopup>
-					</menulist>
-				</hbox>
-				<hbox align="center" hc_depends="regexp">
-					<label value="RegExp filter:" />
-					<textbox preference="filesLinksMask" flex="1000" />
-				</hbox>
-			</groupbox>
-			<hbox>
-				<checkbox preference="convertURIs" hc_requiredfor="convert" label="Convert URIs to following charset (empty for automatically detection):" />
-				<textbox preference="convertURIsCharset" hc_depends="convert" />
+			<checkbox preference="notifyInWindowCorner" hc_depends="notify" label="Show in window corner" />
+			<checkbox preference="notifyVoidLinksWithHandlers" hc_depends="notify" label="Notify &quot;void&quot; links with handlers" />
+			<checkbox preference="notifyJavaScriptLinks" hc_depends="notify" label="Notify JavaScript-links (javascript: ...)" />
+		</groupbox>
+		<groupbox>
+			<caption label="File links" />
+			<hbox align="center">
+				<menulist preference="filesLinksPolicy" hc_requiredfor="regexp" hc_disabledvalues="-1">
+					<menupopup>
+						<menuitem value="-1" label="Not check" />
+						<menuitem value="0" label="Show context menu" />
+						<menuitem value="1" label="Open in current tab" />
+					</menupopup>
+				</menulist>
 			</hbox>
-		</vbox>
+			<hbox align="center" hc_depends="regexp">
+				<label value="RegExp filter:" />
+				<textbox preference="filesLinksMask" flex="1000" />
+			</hbox>
+		</groupbox>
+		<hbox>
+			<checkbox preference="convertURIs" hc_requiredfor="convert" label="Convert URIs to following charset (empty for automatically detection):" />
+			<textbox preference="convertURIsCharset" hc_depends="convert" />
+		</hbox>
 	</prefpane>
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
@@ -153,32 +151,32 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefSvc.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/sets.js" />
 
-	<commandset id="handyClicks-setsCommands">
-		<command id="handyClicks-sets-cmdAdd" oncommand="handyClicksSets.addItems();" label="&hc.sets.cmdAdd;" />
-		<command id="handyClicks-sets-cmdEdit" oncommand="handyClicksSets.editItems();" label="&hc.sets.cmdEdit;" />
-		<command id="handyClicks-sets-cmdEditType" oncommand="handyClicksSets.editItemsTypes();" label="&hc.sets.cmdEditType;" />
-		<command id="handyClicks-sets-cmdDelete" oncommand="handyClicksSets.deleteItems();" label="&hc.sets.cmdDel;" />
+	<commandset id="hc-sets-cmds">
+		<command id="hc-sets-cmd-add" oncommand="handyClicksSets.addItems();" label="&hc.sets.cmdAdd;" />
+		<command id="hc-sets-cmd-edit" oncommand="handyClicksSets.editItems();" label="&hc.sets.cmdEdit;" />
+		<command id="hc-sets-cmd-editType" oncommand="handyClicksSets.editItemsTypes();" label="&hc.sets.cmdEditType;" />
+		<command id="hc-sets-cmd-delete" oncommand="handyClicksSets.deleteItems();" label="&hc.sets.cmdDel;" />
 	</commandset>
-	<keyset id="handyClicks-setsKeys">
-		<key keycode="VK_INSERT" id="handyClicks-sets-keyAdd" command="handyClicks-sets-cmdAdd" />
-		<key keycode="VK_F4" id="handyClicks-sets-keyEdit" command="handyClicks-sets-cmdEdit" />
-		<key keycode="VK_F4" modifiers="shift" id="handyClicks-sets-keyEditType" command="handyClicks-sets-cmdEditType" />
-		<key keycode="VK_DELETE" id="handyClicks-sets-keyDelete" command="handyClicks-sets-cmdDelete" />
-		<key key=" " id="handyClicks-sets-keyToggle" oncommand="handyClicksSets.toggleEnabled();" />
-		<key key="a" modifiers="control" id="handyClicks-sets-keySelectAll" oncommand="handyClicksSets.selectAll();" />
-		<key key="f" modifiers="control" id="handyClicks-sets-keyFocusSearch" oncommand="handyClicksSets.focusSearch();" />
-		<key keycode="VK_TAB" modifiers="control" id="handyClicks-sets-keySwitchPanes" oncommand="handyClicksSets.switchPanes(true);" />
-		<key keycode="VK_TAB" modifiers="control,shift" id="handyClicks-sets-keySwitchPanes" oncommand="handyClicksSets.switchPanes(false);" />
-		<key key="s" modifiers="control" id="handyClicks-sets-keyApply" oncommand="handyClicksSets.savePrefs(true);" />
-		<key keycode="VK_F5" id="handyClicks-sets-keyReload" oncommand="handyClicksSets.forceUpdTree();" />
+	<keyset id="hc-sets-keys">
+		<key keycode="VK_INSERT" id="hc-sets-key-add" command="hc-sets-cmd-add" />
+		<key keycode="VK_F4" id="hc-sets-key-edit" command="hc-sets-cmd-edit" />
+		<key keycode="VK_F4" modifiers="shift" id="hc-sets-key-editType" command="hc-sets-cmd-editType" />
+		<key keycode="VK_DELETE" id="hc-sets-key-delete" command="hc-sets-cmd-delete" />
+		<key key=" " id="hc-sets-key-toggle" oncommand="handyClicksSets.toggleEnabled();" />
+		<key key="a" modifiers="control" id="hc-sets-key-selectAll" oncommand="handyClicksSets.selectAll();" />
+		<key key="f" modifiers="control" id="hc-sets-key-focusSearch" oncommand="handyClicksSets.focusSearch();" />
+		<key keycode="VK_TAB" modifiers="control" id="hc-sets-key-switchPanes-ltr" oncommand="handyClicksSets.switchPanes(true);" />
+		<key keycode="VK_TAB" modifiers="control,shift" id="hc-sets-key-switchPanes-rtl" oncommand="handyClicksSets.switchPanes(false);" />
+		<key key="s" modifiers="control" id="hc-sets-key-apply" oncommand="handyClicksSets.savePrefs(true);" />
+		<key keycode="VK_F5" id="hc-sets-key-reload" oncommand="handyClicksSets.forceUpdTree();" />
 	</keyset>
-	<popupset id="handyClicks-setsPopupset">
-		<popup id="handyClicks-setsTreeContext">
-			<menuitem command="handyClicks-sets-cmdEdit" key="handyClicks-sets-keyEdit" />
-			<menuitem id="handyClicks-sets-miEditType" command="handyClicks-sets-cmdEditType" key="handyClicks-sets-keyEditType" />
-			<menuitem command="handyClicks-sets-cmdDelete" key="handyClicks-sets-keyDelete" />
+	<popupset id="hc-sets-popupset">
+		<popup id="hc-sets-tree-context">
+			<menuitem command="hc-sets-cmd-edit" key="hc-sets-key-edit" />
+			<menuitem id="hc-sets-editType" command="hc-sets-cmd-editType" key="hc-sets-key-editType" />
+			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" />
 			<menuseparator />
-			<menuitem command="handyClicks-sets-cmdAdd" key="handyClicks-sets-keyAdd" />
+			<menuitem command="hc-sets-cmd-add" key="hc-sets-key-add" />
 		</popup>
 	</popupset>
 

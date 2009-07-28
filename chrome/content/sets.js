@@ -17,7 +17,7 @@ var handyClicksSets = {
 		// <preferences ononchange="handyClicksSets.updPrefsUI();"> return some bugs
 
 		if(this.ut.fxVersion >= 3.5) {
-			var s = this.$("handyClicks-setsTreeSearch");
+			var s = this.$("hc-sets-tree-searchField");
 			s.type = "search";
 			s._clearSearch = function() { this.value = ""; this.oninput && this.oninput(); };
 		}
@@ -30,14 +30,14 @@ var handyClicksSets = {
 		this.focusSearch();
 	},
 	initShortcuts: function() {
-		this.tree = this.$("handyClicks-setsTree");
+		this.tree = this.$("hc-sets-tree");
 		this.view = this.tree.view;
 		this.selection = this.view.selection;
-		this.content = this.$("handyClicks-setsTreeContent");
-		this.cmdDelete = this.$("handyClicks-sets-cmdDelete");
-		this.cmdEdit = this.$("handyClicks-sets-cmdEdit");
-		this.cmdEditType = this.$("handyClicks-sets-cmdEditType");
-		this.miEditType = this.$("handyClicks-sets-miEditType");
+		this.content = this.$("hc-sets-tree-content");
+		this.cmdDelete = this.$("hc-sets-cmd-delete");
+		this.cmdEdit = this.$("hc-sets-cmd-edit");
+		this.cmdEditType = this.$("hc-sets-cmd-editType");
+		this.miEditType = this.$("hc-sets-editType");
 		this.searcher._tree = this.tree;
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
@@ -58,7 +58,7 @@ var handyClicksSets = {
 				continue;
 			}
 			var button = this.ps.getButtonStr(sh);
-			var buttonContainer = this.DOMCache[button] || this.appendContainerItem(null, button, this.ut.getLocalised(button));
+			var buttonContainer = this.DOMCache[button] || this.appendContainerItem(null, button, this.ut.getLocalized(button));
 			var modifiers = this.ps.getModifiersStr(sh);
 			var modifiersContainer = this.DOMCache[sh] || this.appendContainerItem(buttonContainer, sh, modifiers);
 			this.appendItems(modifiersContainer, p[sh], sh);
@@ -111,12 +111,12 @@ var handyClicksSets = {
 			isCustomType = itemType.indexOf("custom_") == 0;
 			typeLabel = isCustomType
 				? this.getCustomTypeLabel(itemType)
-				: this.ut.getLocalised(itemType);
+				: this.ut.getLocalized(itemType);
 			this.appendTreeCell(tRow, "label", typeLabel);
 			this.appendTreeCell(tRow, "label", it.eventType);
-			this.appendTreeCell(tRow, "label", isCustom ? this.ps.dec(it.label) : this.ut.getLocalised(it.action));
+			this.appendTreeCell(tRow, "label", isCustom ? this.ps.dec(it.label) : this.ut.getLocalized(it.action));
 			this.appendTreeCell(tRow, "label",
-				isCustom ? this.ut.getLocalised("customFunction") + this.ps.dec(it.action) : it.action
+				isCustom ? this.ut.getLocalized("customFunction") + this.ps.dec(it.action) : it.action
 			);
 			this.appendTreeCell(tRow, "label", this.getArguments(it.arguments || {}));
 			var chBox = this.appendTreeCell(tRow, "value", it.enabled);
@@ -159,7 +159,7 @@ var handyClicksSets = {
 		var res = [];
 		for(var p in argsObj)
 			if(argsObj.hasOwnProperty(p))
-				res.push(p + " = " + uneval(argsObj[p])); //~ todo: this.ut.getLocalised(p) ?
+				res.push(p + " = " + uneval(argsObj[p])); //~ todo: this.ut.getLocalized(p) ?
 		return res.join(", \n");
 	},
 	updTree: function() {
@@ -289,12 +289,12 @@ var handyClicksSets = {
 			var button = this.ps.getLocaleButtonStr(tRow.__shortcut, true);
 			var type = tRow.__itemType.indexOf("custom_") == 0
 				? this.getCustomTypeLabel(tRow.__itemType)
-				: this.ut.getLocalised(tRow.__itemType);
+				: this.ut.getLocalized(tRow.__itemType);
 			var fObj = this.ut.getOwnProperty(handyClicksPrefs, tRow.__shortcut, tRow.__itemType);
 			var label = typeof fObj == "object"
 				? this.ut.getOwnProperty(fObj, "custom")
 					? this.ps.dec(fObj.label || "")
-					: this.ut.getLocalised(fObj.action || "")
+					: this.ut.getLocalized(fObj.action || "")
 				: "?";
 			del.push(mdfs + " + " + button + " + " + type + " \u21d2 " + label.substr(0, 42)); // =>
 		}
@@ -303,8 +303,8 @@ var handyClicksSets = {
 
 		if(
 			!this.ut.confirmEx(
-				this.ut.getLocalised("title"),
-				this.ut.getLocalised("deleteConfirm").replace("%n", tRows.length)
+				this.ut.getLocalized("title"),
+				this.ut.getLocalized("deleteConfirm").replace("%n", tRows.length)
 					+ "\n\n" + del.join("\n")
 			)
 		)
@@ -413,7 +413,7 @@ var handyClicksSets = {
 	focusSearch: function(e) {
 		if(!this.isTreePaneSelected)
 			return;
-		var sIt = this.$("handyClicks-setsTreeSearch");
+		var sIt = this.$("hc-sets-tree-searchField");
 		if(!sIt)
 			return;
 		sIt.select();
@@ -477,7 +477,7 @@ var handyClicksSets = {
 		}
 		this._alloySearch = false;
 		this.searcher.clear();
-		sIt = sIt || this.$("handyClicks-setsTreeSearch");
+		sIt = sIt || this.$("hc-sets-tree-searchField");
 		var sVal = sIt.value.replace(/^\s+|\s+$/g, "");
 		var _sVal = sVal.toLowerCase().split(/\s+/);
 		var sLen = _sVal.length;
@@ -519,21 +519,18 @@ var handyClicksSets = {
 	updPrefsUI: function() {
 		this.loadPrefs();
 		this.updateAllDependencies();
-		this.showPrefs();
 	},
 	loadPrefs: function() {
-		var id = "disallowMousemoveForButtons";
-		var buttons = this.pu.pref(id);
+		var buttons = this.pu.pref("disallowMousemoveForButtons");
 		for(var i = 0; i <= 2; i++)
-			this.$(id + "-" + i).checked = buttons.indexOf(i) > -1;
+			this.$("hc-sets-disallowMousemove-" + i).checked = buttons.indexOf(i) > -1;
 	},
 	savePrefs: function(applyFlag) {
-		var id = "disallowMousemoveForButtons";
 		var val = "";
 		for(var i = 0; i <= 2; i++)
-			if(this.$(id + "-" + i).checked)
+			if(this.$("hc-sets-disallowMousemove-" + i).checked)
 				val += i;
-		this.pu.setPref("extensions.handyclicks." + id, val);
+		this.pu.pref("disallowMousemoveForButtons", val);
 		this.ps.saveSettingsObjects(applyFlag);
 		if(applyFlag && !this.instantApply) {
 			this.savePrefpanes();
@@ -544,10 +541,6 @@ var handyClicksSets = {
 		var pps = document.getElementsByTagName("prefpane");
 		for(var i = 0, len = pps.length; i < len; i++)
 			pps[i].writePreferences(true); // aFlushToDisk
-	},
-	showPrefs: function(enablIt) {
-		enablIt = enablIt || this.$("handyClicks-sets-enabled");
-		enablIt.setAttribute("hc_hideallafter", enablIt.getAttribute("checked") != "true");
 	},
 	updateAllDependencies: function() {
 		var reqs = document.getElementsByAttribute("hc_requiredfor", "*");
@@ -603,7 +596,7 @@ var handyClicksSets = {
 
 	// Export/import:
 	exportSets: function() {
-		var file = this.pickFile(this.ut.getLocalised("export"), true);
+		var file = this.pickFile(this.ut.getLocalized("export"), true);
 		if(!file)
 			return;
 		if(file.exists())
@@ -612,13 +605,13 @@ var handyClicksSets = {
 		this.backupsDir = file.parent.path;
 	},
 	importSets: function() {
-		var file = this.pickFile(this.ut.getLocalised("import"), false);
+		var file = this.pickFile(this.ut.getLocalized("import"), false);
 		if(!file)
 			return;
 		if(!this.checkPrefsFile(file)) {
 			this.ut.alertEx(
-				this.ut.getLocalised("importErrorTitle"),
-				this.ut.getLocalised("invalidConfigFile")
+				this.ut.getLocalized("importErrorTitle"),
+				this.ut.getLocalized("invalidConfigFile")
 			);
 			return;
 		}
@@ -632,8 +625,8 @@ var handyClicksSets = {
 			.createInstance(Components.interfaces.nsIFilePicker);
 		fp.defaultString = this.ps.prefsFileName + (modeSave ? this.date : "") + ".js";
 		fp.defaultExtension = "js";
-		fp.appendFilter(this.ut.getLocalised("hcPrefsFiles"), "handyclicks_prefs*.js");
-		fp.appendFilter(this.ut.getLocalised("jsFiles"), "*.js");
+		fp.appendFilter(this.ut.getLocalized("hcPrefsFiles"), "handyclicks_prefs*.js");
+		fp.appendFilter(this.ut.getLocalized("jsFiles"), "*.js");
 		fp.appendFilters(fp.filterAll);
 		var bDir = this.backupsDir;
 		if(bDir)
