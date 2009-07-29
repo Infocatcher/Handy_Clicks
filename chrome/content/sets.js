@@ -6,6 +6,7 @@ var handyClicksSets = {
 	ps: handyClicksPrefSvc,
 
 	init: function() {
+		this.ps.loadSettings();
 		this.initShortcuts();
 
 		this.drawTree();
@@ -14,7 +15,7 @@ var handyClicksSets = {
 
 		this.updPrefsUI();
 		this.pu.addPrefsObserver(this.updPrefsUI, this);
-		// <preferences ononchange="handyClicksSets.updPrefsUI();"> return some bugs
+		// <preferences onchange="handyClicksSets.updPrefsUI();"> return some bugs
 
 		if(this.ut.fxVersion >= 3.5) {
 			var s = this.$("hc-sets-tree-searchField");
@@ -545,11 +546,6 @@ var handyClicksSets = {
 		for(var i = 0, len = pps.length; i < len; i++)
 			pps[i].writePreferences(true); // aFlushToDisk
 	},
-	updateAllDependencies: function() {
-		var reqs = document.getElementsByAttribute("hc_requiredfor", "*");
-		for(var i = 0, len = reqs.length; i < len; i++)
-			this.updateDependencies(reqs[i]);
-	},
 	prefsChanged: function(e) {
 		var tar = e.target;
 		if(tar.localName == "prefwindow") {
@@ -566,6 +562,11 @@ var handyClicksSets = {
 			this.savePrefs();
 		else
 			this.applyButton.disabled = false;
+	},
+	updateAllDependencies: function() {
+		var reqs = document.getElementsByAttribute("hc_requiredfor", "*");
+		for(var i = 0, len = reqs.length; i < len; i++)
+			this.updateDependencies(reqs[i]);
 	},
 	updateDependencies: function(it) {
 		var dis = it.hasAttribute("hc_disabledvalues")
@@ -627,13 +628,14 @@ var handyClicksSets = {
 			);
 			return;
 		}
-		str.split(/[\r\n]+/)
+		this.backupsDir = file.parent.path;
+		str.replace(/[\r\n]{1,100}/g, "\n").split(/[\r\n]+/)
 			.splice(1) // Remove header
 			.forEach(
-				function(line) {
+				function(line, i) {
 					var indx = line.indexOf("=");
 					if(indx == -1) {
-						this.ut._err(this.ut.errPrefix + "[Import INI] Skipped invalid line: " + line);
+						this.ut._err(this.ut.errPrefix + "[Import INI] Skipped invalid line #" + i + ": " + line);
 						return;
 					}
 					var pName = line.substring(0, indx);
@@ -652,7 +654,6 @@ var handyClicksSets = {
 				},
 				this
 			);
-		this.backupsDir = file.parent.path;
 	},
 
 	// Clicking options management
@@ -731,7 +732,10 @@ var handyClicksSets = {
 			return false;
 		if(/['"()=]/.test(data))
 			return false;
-		return !/\W(?:[Ff]unction|eval|Components)\W/.test(data);
+		if(/\W(?:[Ff]unction|eval|Components)\W/.test(data))
+			return false;
+		this.ps._savedStr = data; // Update cache - see this.ps.saveSettings()
+		return true;
 	},
 	readFromFile: function(file) { // Not for UTF-8!
 		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]

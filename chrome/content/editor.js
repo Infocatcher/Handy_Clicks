@@ -29,9 +29,7 @@ var handyClicksEditor = {
 	delayId: "-delay",
 
 	init: function() {
-		var wa = window.arguments;
-		if(!wa[0] || !wa[1] || !window.opener)
-			return;
+		this.ps.loadSettings();
 		if(this.ut.fxVersion == 1.5) // "relative" is not supported
 			this.types.menulists.moveTabTo.pop();
 		this.loadLabels();
@@ -46,7 +44,7 @@ var handyClicksEditor = {
 	},
 	initShortcuts: function() {
 		this.mBox = this.$("hc-editor-mainTabbox");
-		var wa = window.arguments;
+		var wa = window.arguments || [];
 		this.editorMode = wa[0];
 		this.shortcut = wa[1];
 		this.type = wa[2];

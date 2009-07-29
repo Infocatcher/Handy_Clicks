@@ -150,6 +150,8 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefSvc.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/sets.js" />
 
+	<script type="application/x-javascript" src="chrome://handyclicks/content/__leaksTest.js" />
+
 	<commandset id="hc-sets-cmds">
 		<command id="hc-sets-cmd-add" oncommand="handyClicksSets.addItems();" label="&hc.sets.cmdAdd;" />
 		<command id="hc-sets-cmd-edit" oncommand="handyClicksSets.editItems();" label="&hc.sets.cmdEdit;" />

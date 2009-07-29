@@ -104,15 +104,26 @@ var handyClicksUtils = {
 	readFromFile: function(file) { // UTF-8
 		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
 			.createInstance(Components.interfaces.nsIFileInputStream);
-		var cis = Components.classes["@mozilla.org/intl/converter-input-stream;1"]
-			.createInstance(Components.interfaces.nsIConverterInputStream);
-		fis.init(file, -1, 0, 0);
-		cis.init(fis, "UTF-8", 0, 0);
-		var str = {};
-		cis.readString(-1, str);
-		str = str.value;
-		cis.close(); // this closes fis
-		return str;
+		var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]
+			.createInstance(Components.interfaces.nsIScriptableInputStream);
+		fis.init(file, 0x01, 0444, null);
+		sis.init(fis);
+		var str = sis.read(fis.available());
+		sis.close();
+		fis.close();
+		return this.convertToUnicode(str);
+	},
+	convertToUnicode: function(str) {
+		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+		suc.charset = "utf8";
+		try {
+			return suc.ConvertToUnicode(str);
+		}
+		catch(e) {
+			this._err(this.errPrefix + "Can't convert UTF-8 to unicode\n" + e);
+		}
+		return "";
 	},
 
 	isNoChromeWin: function(win) {

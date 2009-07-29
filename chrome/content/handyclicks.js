@@ -39,9 +39,10 @@ var handyClicks = {
 	// Initialization:
 	init: function() {
 		window.removeEventListener("load", this, false);
+		this.ps.loadSettings();
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], true);
-		this.setStatus();
 		this.pu.addPrefsObserver(this.updUI, this);
+		this.setStatus();
 		this.registerHotkeys();
 		this.cs.registerCleanup(this.destroy, this);
 	},
@@ -229,10 +230,11 @@ var handyClicks = {
 			&& (
 				e.originalTarget === this.origItem
 				|| (
-					e.type == "command" // e.originalTarget.localName == "command" for some "command" events...
+					e.type == "command"
+					&& e.originalTarget.localName == "command"
 					&& (
-						Date.now() - this.clickHandler.time < 50
-						|| (e.originalTarget.localName == "command" && e.originalTarget.id === this.clickHandler.cmd)
+						e.originalTarget.id === this.clickHandler.cmd
+						|| Date.now() - this.clickHandler.time < 5
 					)
 				)
 			)

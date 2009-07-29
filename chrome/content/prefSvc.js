@@ -86,7 +86,7 @@ var handyClicksPrefSvc = {
 		this._restoringCounter = 0;
 		if(window.location.href.indexOf("chrome://browser/content/browser.xul") != 0)
 			return;
-		this.loadCystomTypes();
+		this.compileCystomTypes();
 		this.initCustomFuncs();
 	},
 	loadSettingsBackup: function() {
@@ -163,7 +163,7 @@ var handyClicksPrefSvc = {
 		}
 		this.ut._log("Format of prefs file updated: " + vers + " => " + this.version);
 	},
-	loadCystomTypes: function() {
+	compileCystomTypes: function() {
 		var cts = handyClicksCustomTypes, ct;
 		var df, cm;
 		for(var type in cts) {
@@ -444,4 +444,4 @@ var handyClicksPrefSvc = {
 		return sh ? sh : this.ut.getLocalized("none");
 	}
 };
-handyClicksPrefSvc.loadSettings();
+//handyClicksPrefSvc.loadSettings();
