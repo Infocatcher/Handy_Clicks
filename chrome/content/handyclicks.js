@@ -391,9 +391,11 @@ var handyClicks = {
 		if(
 			(all || this.itemTypeInSets(sets, "historyItem"))
 			&& it.namespaceURI == this.XULNS
-			&& this.fn.getBookmarkUri(it)
-			// && it.parentNode.id == "goPopup"
-			&& this.hasParent(it, "goPopup")
+			&& (
+				this.hasParent(it, "goPopup")
+				|| (itln == "treechildren" && (it.className || "").indexOf("places") != -1) // Sidebar
+			)
+			&& this.fn.getBookmarkUri(it, e)
 		) {
 			this.itemType = "historyItem";
 			this.item = it;
@@ -411,11 +413,10 @@ var handyClicks = {
 					&& (itln == "toolbarbutton" || itln == "menuitem")
 				)
 				|| (itln == "menuitem" && (it.hasAttribute("siteURI")))
+				|| (itln == "treechildren" && (it.id || "").indexOf("bookmark") != -1) // Sidebar
 			)
-			// && it.parentNode.id != "historyUndoPopup"
-			// && it.parentNode.id != "goPopup"
 			&& !this.hasParent(it, "goPopup")
-			&& this.fn.getBookmarkUri(it)
+			&& this.fn.getBookmarkUri(it, e)
 		) {
 			this.itemType = "bookmark";
 			this.item = it;
@@ -451,15 +452,17 @@ var handyClicks = {
 			&& it.namespaceURI == this.XULNS
 			&& itln != "toolbarbutton"
 		) {
-			_it = it, _itln = itln;
-			while(_it && _it.nodeType != docNode && _itln != "tab" && _itln != "toolbarbutton") {
+			_it = it;
+			while(_it && _it.nodeType != docNode) {
+				_itln = _it.localName.toLowerCase();
+				if(_itln != "tab" || _itln != "toolbarbutton")
+					break;
 				if(/(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(_it.className)) {
 					this.itemType = "tabbar";
 					this.item = _it;
 					return;
 				}
 				_it = _it.parentNode;
-				_itln = _it.localName.toLowerCase();
 			}
 		}
 
@@ -520,12 +523,11 @@ var handyClicks = {
 				cm = document.getElementById("contentAreaContextMenu");
 			break;
 			case "bookmark":
-				cm = document.getElementById("bookmarks-context-menu") || document.getElementById("placesContext");
+				cm = document.getElementById("placesContext") || document.getElementById("bookmarks-context-menu");
 			break;
 			case "historyItem":
-				// http://forums.mozillazine.org/viewtopic.php?p=6850975#p6850975
-				if("ex2BookmarksProperties" in window) // Ex Bookmark Properties extension
-					cm = document.getElementById("placesContext");
+				cm = document.getElementById("placesContext"); // Firefox 3.0+
+				// It not shown by default in History meny, but...
 			break;
 			case "tab":
 			case "tabbar":

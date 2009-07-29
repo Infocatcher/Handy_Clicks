@@ -17,10 +17,9 @@
 	title="&hc.sets.title;"
 	buttons="accept,cancel,extra1,extra2"
 	buttonlabelextra1="&hc.sets.apply;"
-	buttonlabelextra2="&hc.sets.defaults;"
+	buttonlabelextra2="&hc.sets.settings;"
 	ondialogaccept="handyClicksSets.savePrefs();"
 	ondialogextra1="handyClicksSets.savePrefs(true);"
-	ondialogextra2="handyClicksSets.resetPrefs();"
 	onload="handyClicksSets.init();"
 	oncommand="handyClicksSets.prefsChanged(event);"
 	onchange="handyClicksSets.prefsChanged(event);"
@@ -108,14 +107,14 @@
 		</groupbox>
 		<hbox align="center">
 			<label value="Timeout for delayed action:" />
-			<textbox preference="delayedActionTimeout" type="number" min="0" max="7000" increment="20" style="width: 4.5em;" />
+			<textbox preference="delayedActionTimeout" type="number" min="0" max="7000" increment="10" style="width: 4.5em;" />
 			<label value="ms (0 for disable)" />
 		</hbox>
 		<groupbox>
 			<caption label="Notify" />
 			<hbox align="center">
 				<label value="Open time:" />
-				<textbox preference="notifyOpenTime" type="number" min="0" max="30000" increment="20" style="width: 5em;"
+				<textbox preference="notifyOpenTime" type="number" min="0" max="30000" increment="50" style="width: 5em;"
 					hc_requiredfor="notify" hc_disabledvalues="0" />
 				<label value="ms (0 for disable)" />
 			</hbox>
@@ -177,6 +176,12 @@
 			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" />
 			<menuseparator />
 			<menuitem command="hc-sets-cmd-add" key="hc-sets-key-add" />
+		</popup>
+		<popup id="hc-sets-prefsManagementPopup" position="before_start">
+			<menuitem oncommand="handyClicksSets.resetPrefs();" label="&hc.sets.defaults;" />
+			<menuseparator />
+			<menuitem oncommand="handyClicksSets.exportPrefs();" label="&hc.sets.exportPrefs;" />
+			<menuitem oncommand="handyClicksSets.importPrefs();" label="&hc.sets.importPrefs;" />
 		</popup>
 	</popupset>
 

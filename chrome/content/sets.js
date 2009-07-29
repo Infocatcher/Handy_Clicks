@@ -27,6 +27,9 @@ var handyClicksSets = {
 			this.applyButton.hidden = true;
 		else
 			this.applyButton.disabled = true;
+		var prefsButt = document.documentElement.getButton("extra2");
+		prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
+		prefsButt.setAttribute("accesskey", prefsButt.getAttribute("label").charAt(0));
 		this.focusSearch();
 	},
 	initShortcuts: function() {
@@ -584,6 +587,7 @@ var handyClicksSets = {
 			this.desableChilds(childs[i], dis);
 	},
 
+	// about:config entries
 	// Reset prefs:
 	resetPrefs: function() {
 		this.pu.prefSvc.getBranch(this.pu.nPrefix)
@@ -593,19 +597,75 @@ var handyClicksSets = {
 	resetPref: function(pName) {
 		this.pu.resetPref(this.pu.nPrefix + pName);
 	},
-
 	// Export/import:
-	exportSets: function() {
-		var file = this.pickFile(this.ut.getLocalized("export"), true);
+	exportPrefsHeader: "[Handy Clicks settings]",
+	exportPrefs: function() {
+		var file = this.pickFile(this.ut.getLocalized("exportPrefs"), true, "ini");
 		if(!file)
 			return;
-		if(file.exists())
-			file.remove(true);
+		var data = this.exportPrefsHeader + "\n"
+			+ this.pu.prefSvc.getBranch(this.pu.nPrefix)
+				.getChildList("", {})
+				.map(
+					function(pName) {
+						return this.pu.nPrefix + pName + "=" + this.pu.pref(pName);
+					},
+					this
+				).sort().join("\n");
+		this.ut.writeToFile(data, file);
+		this.backupsDir = file.parent.path;
+	},
+	importPrefs: function() {
+		var file = this.pickFile(this.ut.getLocalized("importPrefs"), false, "ini");
+		if(!file)
+			return;
+		var str = this.ut.readFromFile(file);
+		if(str.indexOf(this.exportPrefsHeader) != 0) {
+			this.ut.alertEx(
+				this.ut.getLocalized("importErrorTitle"),
+				this.ut.getLocalized("invalidConfigFile")
+			);
+			return;
+		}
+		str.split(/[\r\n]+/)
+			.splice(1) // Remove header
+			.forEach(
+				function(line) {
+					var indx = line.indexOf("=");
+					if(indx == -1) {
+						this.ut._err(this.ut.errPrefix + "[Import INI] Skipped invalid line: " + line);
+						return;
+					}
+					var pName = line.substring(0, indx);
+					var pbr = Components.interfaces.nsIPrefBranch;
+					var pType = this.pu.prefBr.getPrefType(pName);
+					if(pType == pbr.PREF_INVALID || pName.indexOf(this.pu.nPrefix) != 0) {
+						this.ut._err(this.ut.errPrefix + "[Import INI] Skipped pref with invalid name: " + pName);
+						return;
+					}
+					var pVal = line.substring(indx + 1);
+					if(pType == pbr.PREF_INT) // Convert string to number or boolean
+						pVal = parseInt(pVal);
+					else if(pType == pbr.PREF_BOOL)
+						pVal = pVal == "true";
+					this.pu.setPref(pName, pVal);
+				},
+				this
+			);
+		this.backupsDir = file.parent.path;
+	},
+
+	// Clicking options management
+	// Export/import:
+	exportSets: function() {
+		var file = this.pickFile(this.ut.getLocalized("exportSets"), true, "js");
+		if(!file)
+			return;
 		this.ps.prefsFile.copyTo(file.parent, file.leafName);
 		this.backupsDir = file.parent.path;
 	},
 	importSets: function() {
-		var file = this.pickFile(this.ut.getLocalized("import"), false);
+		var file = this.pickFile(this.ut.getLocalized("importSets"), false, "js");
 		if(!file)
 			return;
 		if(!this.checkPrefsFile(file)) {
@@ -615,24 +675,31 @@ var handyClicksSets = {
 			);
 			return;
 		}
-		this.ps.moveFiles(this.ps.prefsFile, "-before_import-");
+		this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport);
 		file.copyTo(this.ps.prefsDir, this.ps.prefsFileName + ".js");
 		this.ps.reloadSettings(true);
 		this.backupsDir = file.parent.path;
 	},
-	pickFile: function(pTitle, modeSave) {
+
+	// Export/import utils:
+	pickFile: function(pTitle, modeSave, ext) {
 		var fp = Components.classes["@mozilla.org/filepicker;1"]
 			.createInstance(Components.interfaces.nsIFilePicker);
-		fp.defaultString = this.ps.prefsFileName + (modeSave ? this.date : "") + ".js";
+		fp.defaultString = this.ps.prefsFileName + (modeSave ? this.date : "") + "." + ext;
 		fp.defaultExtension = "js";
-		fp.appendFilter(this.ut.getLocalized("hcPrefsFiles"), "handyclicks_prefs*.js");
-		fp.appendFilter(this.ut.getLocalized("jsFiles"), "*.js");
+		fp.appendFilter(this.ut.getLocalized("hcPrefsFiles"), "handyclicks_prefs*." + ext);
+		fp.appendFilter(this.ut.getLocalized(ext + "Files"), "*." + ext);
 		fp.appendFilters(fp.filterAll);
 		var bDir = this.backupsDir;
 		if(bDir)
 			fp.displayDirectory = bDir;
 		fp.init(window, pTitle, fp[modeSave ? "modeSave" : "modeOpen"]);
-		return fp.show() == fp.returnCancel ? null : fp.file;
+		if(fp.show() == fp.returnCancel)
+			return null;
+		var file = fp.file;
+		if(modeSave && file.exists())
+			file.remove(true);
+		return file;
 	},
 	get backupsDir() {
 		var path = this.pu.pref("sets.backupsDir");
@@ -649,7 +716,7 @@ var handyClicksSets = {
 		return new Date().toLocaleFormat("_%Y-%m-%d_%H-%M");
 	},
 	checkPrefsFile: function(file) {
-		var data = this.readFile(file);
+		var data = this.readFromFile(file);
 		if(data.substr(0, 2) != "//")
 			return false;
 		var hc = /^var handyClicks[\w$]+\s*=.*$/mg;
@@ -666,7 +733,7 @@ var handyClicksSets = {
 			return false;
 		return !/\W(?:[Ff]unction|eval|Components)\W/.test(data);
 	},
-	readFile: function(file) { // Not for UTF-8!
+	readFromFile: function(file) { // Not for UTF-8!
 		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
 			.createInstance(Components.interfaces.nsIFileInputStream);
 		var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]

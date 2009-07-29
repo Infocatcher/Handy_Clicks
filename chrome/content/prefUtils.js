@@ -62,7 +62,7 @@ var handyClicksPrefUtils = {
 	setPref: function(pName, pVal) {
 		var pbr = Components.interfaces.nsIPrefBranch;
 		var pType = this.prefBr.getPrefType(pName);
-		var isNew = pType == 0;
+		var isNew = pType == pbr.PREF_INVALID;
 		var vType = typeof pVal;
 		if(pType == pbr.PREF_BOOL || (isNew && vType == "boolean"))
 			this.prefBr.setBoolPref(pName, pVal);
@@ -81,6 +81,9 @@ var handyClicksPrefUtils = {
 		if(this.prefBr.prefHasUserValue(pName))
 			this.prefBr.clearUserPref(pName);
 		return this;
+	},
+	existPref: function(pName) {
+		return this.prefBr.getPrefType(pName) != Components.interfaces.nsIPrefBranch.PREF_INVALID;
 	},
 	savePrefFile: function() {
 		this.prefSvc.savePrefFile(null);

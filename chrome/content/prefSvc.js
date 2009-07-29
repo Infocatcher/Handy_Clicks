@@ -7,7 +7,7 @@ var handyClicksPrefSvc = {
 	pu: handyClicksPrefUtils,
 	wu: handyClicksWinUtils,
 
-	version: 0.11,
+	version: 0.12,
 	get currentVersion() {
 		return "handyClicksPrefsVersion" in window ? handyClicksPrefsVersion : 0;
 	},
@@ -20,6 +20,14 @@ var handyClicksPrefSvc = {
 	defaultPrefs: "var handyClicksCustomTypes = {};\nvar handyClicksPrefs = {};",
 	prefsDirName: "handyclicks",
 	prefsFileName: "handyclicks_prefs",
+	names: {
+		backup: "_backup-",
+		corrupted: "_corrupted-",
+		restored: "_restored-",
+		version: "_version-",
+		beforeImport: "_before_import-"
+	},
+
 	okShortcut: /^button=[0-2],ctrl=(?:true|false),shift=(?:true|false),alt=(?:true|false),meta=(?:true|false)$/,
 	_restoringCounter: 0,
 	get profileDir() {
@@ -61,7 +69,7 @@ var handyClicksPrefSvc = {
 			jsLoader.loadSubScript(ioSvc.newFileURI(pFile).spec);
 		}
 		catch(e) {
-			this.ut._err(this.ut.errPrefix + "Error in Handy Clicks prefs: bad js file\n" + e);
+			this.ut._err(this.ut.errPrefix + "Error in prefs: bad js file");
 			this.ut._err(e);
 			this.loadSettingsBackup();
 			return;
@@ -83,9 +91,9 @@ var handyClicksPrefSvc = {
 	},
 	loadSettingsBackup: function() {
 		var pFile = this.prefsFile;
-		this._cPath = this.moveFiles(pFile, "-corrupted-") || this._cPath;
+		this._cPath = this.moveFiles(pFile, this.names.corrupted) || this._cPath;
 		if(this._restoringCounter <= this.backupDepth) {
-			var bName = this.prefsFileName + "-backup-" + this._restoringCounter + ".js";
+			var bName = this.prefsFileName + this.names.backup + this._restoringCounter + ".js";
 			var bFile = this.getFile(bName);
 			var hasBak = bFile.exists();
 			if(!hasBak) {
@@ -95,7 +103,7 @@ var handyClicksPrefSvc = {
 			}
 			else {
 				bFile.copyTo(null, this.prefsFileName + ".js");
-				this.moveFiles(bFile, "-restored-");
+				this.moveFiles(bFile, this.names.restored);
 			}
 			this.ut.alertEx(
 				this.ut.getLocalized("errorTitle"),
@@ -107,9 +115,9 @@ var handyClicksPrefSvc = {
 		this.loadSettings();
 	},
 	convertSetsFormat: function(vers) {
-		this.prefsFile.moveTo(null, this.prefsFileName + "-version-" + vers + ".js");
+		this.prefsFile.moveTo(null, this.prefsFileName + this.names.version + vers + ".js");
 		if(vers < 0.11) { // "closePopups" instead of "hidePopup" in arguments
-			//= Expires after 2009.08.20
+			//= Expires after 2009.08.30
 			var p = handyClicksPrefs;
 			var sh, so, type, to, pName, pVal;
 			for(sh in p) {
@@ -134,6 +142,23 @@ var handyClicksPrefSvc = {
 						}
 					}
 				}
+			}
+		}
+		if(vers < 0.12) { // New file names format
+			//= Expires after 2009.09.10
+			var convertName = function(s) {
+				return s.replace(/^(handyclicks_prefs)-(\w+-\d+(?:\.\d+)?\.js)$/, "$1_$2");
+			};
+			var entries = this.prefsDir.directoryEntries;
+			var entry, newName;
+			while(entries.hasMoreElements()) {
+				entry = entries.getNext();
+				entry.QueryInterface(Components.interfaces.nsIFile);
+				if(!entry.isFile())
+					continue;
+				newName = convertName(entry.leafName);
+				if(newName != entry.leafName)
+					entry.moveTo(null, newName);
 			}
 		}
 		this.ut._log("Format of prefs file updated: " + vers + " => " + this.version);
@@ -174,7 +199,6 @@ var handyClicksPrefSvc = {
 		}
 	},
 	initCustomFuncs: function() {
-		this.ut.timer("initCustomFuncs"); //~ temp
 		var p = handyClicksPrefs;
 		var sh, so, type, to, da;
 		var errors = [];
@@ -199,23 +223,20 @@ var handyClicksPrefSvc = {
 				this.initCustomFunc(this.ut.getOwnProperty(da, "init"), errors);
 			}
 		}
-		this.ut.timer("initCustomFuncs"); //~ temp
 		if(!errors.length)
 			return;
 		//~ todo
 	},
 	initCustomFunc: function(rawCode, errors) {
 		if(!rawCode)
-			return null;
+			return;
 		try {
 			new Function(this.dec(rawCode)).call(this.ut);
 		}
 		catch(e) {
 			errors.push(e);
 			this.ut._err(e);
-			return e;
 		}
-		return null;
 	},
 	saveSettingsObjects: function(reloadAll) {
  		var res = this.warnComment + this.versionInfo;
@@ -362,16 +383,16 @@ var handyClicksPrefSvc = {
 		if(str == this._savedStr)
 			return;
 		var pFile = this.prefsFile;
-		this.moveFiles(pFile, "-backup-");
+		this.moveFiles(pFile, this.names.backup);
 		this.writeToFile(str, pFile);
 		this._savedStr = str;
 	},
-	writeToFile: function(str, file) {
-		var stream = Components.classes["@mozilla.org/network/file-output-stream;1"]
+	writeToFile: function(str, file) { // Write as ANSI (mozIJSSubScriptLoader can't read non-ASCII characters)
+		var fos = Components.classes["@mozilla.org/network/file-output-stream;1"]
 			.createInstance(Components.interfaces.nsIFileOutputStream);
-		stream.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
-		stream.write(str, str.length);
-		stream.close();
+		fos.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
+		fos.write(str, str.length);
+		fos.close();
 	},
 
 	isOkShortcut: function(s) {
@@ -379,6 +400,7 @@ var handyClicksPrefSvc = {
 	},
 	isOkFuncObj: function(fObj) {
 		return typeof fObj == "object"
+			&& fObj !== null
 			&& typeof fObj.enabled == "boolean"
 			&& typeof fObj.eventType == "string"
 			&& typeof fObj.action == "string";
@@ -389,6 +411,7 @@ var handyClicksPrefSvc = {
 			return false;
 		var ct = cts[cType];
 		return typeof ct == "object"
+			&& ct !== null
 			&& ct.hasOwnProperty("enabled")
 			&& ct.hasOwnProperty("define")
 			&& typeof ct.define == "string"

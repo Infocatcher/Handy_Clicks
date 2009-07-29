@@ -90,6 +90,31 @@ var handyClicksUtils = {
 		return this._strings[name];
 	},
 
+	// File I/O:
+	writeToFile: function(str, file) { // UTF-8
+		var fos = Components.classes["@mozilla.org/network/file-output-stream;1"]
+			.createInstance(Components.interfaces.nsIFileOutputStream);
+		fos.init(file, 0x02 | 0x08 | 0x20, 0666, 0);
+		var cos = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+			.createInstance(Components.interfaces.nsIConverterOutputStream);
+		cos.init(fos, "UTF-8", 0, 0);
+		cos.writeString(str);
+		cos.close(); // this closes fos
+	},
+	readFromFile: function(file) { // UTF-8
+		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
+			.createInstance(Components.interfaces.nsIFileInputStream);
+		var cis = Components.classes["@mozilla.org/intl/converter-input-stream;1"]
+			.createInstance(Components.interfaces.nsIConverterInputStream);
+		fis.init(file, -1, 0, 0);
+		cis.init(fis, "UTF-8", 0, 0);
+		var str = {};
+		cis.readString(-1, str);
+		str = str.value;
+		cis.close(); // this closes fis
+		return str;
+	},
+
 	isNoChromeWin: function(win) {
 		return win.toString().indexOf("[object Window]") > -1; // [object XPCNativeWrapper [object Window]]
 	},

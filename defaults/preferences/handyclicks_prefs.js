@@ -28,4 +28,6 @@ pref("extensions.handyclicks.key.editMode", "accel VK_F2");
 
 pref("extensions.handyclicks.editor.tabSymbol", "	");
 
+pref("extensions.handyclicks.sets.backupsDir", ""); // Allow import this value
+
 pref("extensions.handyclicks.devMode", true);

@@ -53,12 +53,16 @@ var handyClicksFuncs = {
 		if(closePopups)
 			this.closeMenus();
 	},
-	getTextOfItem: function(it) {
+	getTextOfItem: function(it, e) {
 		it = it || this.hc.item;
 		return it.textContent || it.label || it.alt || it.value
 			|| (
 				it.getAttribute
 				&& (it.getAttribute("label") || it.getAttribute("value"))
+			)
+			|| (
+				it.localName && it.localName.toLowerCase() == "treechildren"
+				&& this.getTreeInfo(it, e, "title")
 			)
 			|| "";
 	},
@@ -96,9 +100,29 @@ var handyClicksFuncs = {
 			? makeURLAbsolute(it.baseURI, xLink) // See chrome://browser/content/utilityOverlay.js
 			: it.href;
 	},
-	getBookmarkUri:	function(it, usePlacesURIs) {
-		var uri = it.statusText || (it.node && it.node.uri) || it.getAttribute("siteURI") || "";
+	getBookmarkUri:	function(it, e, usePlacesURIs) {
+		var ln = it.localName;
+		var uri = ln && ln.toLowerCase() == "treechildren"
+			? this.getTreeInfo(it, e, "uri")
+			: it.statusText || (it.node && it.node.uri) || it.getAttribute("siteURI") || "";
 		return !usePlacesURIs && /^place:/.test(uri) ? "" : uri;
+	},
+	getTreeInfo: function(treechildren, e, prop) { // "uri" or "title"
+		if(!("PlacesUtils" in window)) // For Firefox 3.0+
+			return "";
+		var tree = (treechildren || this.hc.item).parentNode
+		e = e || this.hc.copyOfEvent;
+
+		// Based on code of Places' Tooltips ( https://addons.mozilla.org/firefox/addon/7314 )
+		var row = {}, column = {}, part = {};
+		var tbo = tree.treeBoxObject;
+		tbo.getCellAt(e.clientX, e.clientY, row, column, part);
+		if(row.value == -1)
+			return "";
+		var node = tree.view.nodeForTreeIndex(row.value);
+		if(!PlacesUtils.nodeIsURI(node))
+			return "";
+		return node[prop];
 	},
 	getTabUri: function(tab) {
 		return "linkedBrowser" in tab
