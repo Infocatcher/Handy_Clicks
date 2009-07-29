@@ -159,7 +159,6 @@ var handyClicks = {
 		this.checkForStopEvent(e); // Can stop "contextmenu" event in Windows
 		if(this.flags.allowEvents)
 			return;
-		_ch.time = Date.now();
 		var funcObj = this.getFuncObjByEvt(e);
 		if(!funcObj)
 			return;
@@ -224,19 +223,17 @@ var handyClicks = {
 	},
 
 	// Utils for handlers:
-	checkForStopEvent: function(e) {
+	checkForStopEvent: function _cs(e) {
+		var canStop = this.flags.runned || (this.hasSettings && !this.flags.allowEvents) || this.editMode;
+		var same = e.originalTarget === this.origItem;
+		var stop = canStop && same;
+		if(stop && e.type == "mouseup")
+			_cs.time = Date.now();
 		if(
-			(this.flags.runned || (this.hasSettings && !this.flags.allowEvents) || this.editMode)
-			&& (
-				e.originalTarget === this.origItem
-				|| (
-					e.type == "command"
-					&& e.originalTarget.localName == "command"
-					&& (
-						e.originalTarget.id === this.clickHandler.cmd
-						|| Date.now() - this.clickHandler.time < 5
-					)
-				)
+			stop
+			|| (
+				canStop && e.type == "command" && e.originalTarget.localName == "command"
+				&& (Date.now() - _cs.time < 100)
 			)
 		)
 			this.stopEvent(e);
@@ -246,6 +243,7 @@ var handyClicks = {
 		for(var p in fls)
 			if(fls.hasOwnProperty(p))
 				fls[p] = false;
+		this.removeMousemoveHandler();
 	},
 	skipFlagsDelay: function() {
 		setTimeout(function(_this) { _this.skipFlags(); }, 0, this);
@@ -395,7 +393,7 @@ var handyClicks = {
 			&& it.namespaceURI == this.XULNS
 			&& (
 				this.hasParent(it, "goPopup")
-				|| (itln == "treechildren" && (it.className || "").indexOf("places") != -1) // Sidebar
+				|| (itln == "treechildren" && (it.parentNode.id || "").indexOf("history") != -1) // Sidebar
 			)
 			&& this.fn.getBookmarkUri(it, e)
 		) {
@@ -415,7 +413,7 @@ var handyClicks = {
 					&& (itln == "toolbarbutton" || itln == "menuitem")
 				)
 				|| (itln == "menuitem" && (it.hasAttribute("siteURI")))
-				|| (itln == "treechildren" && (it.id || "").indexOf("bookmark") != -1) // Sidebar
+				|| (itln == "treechildren" && (it.parentNode.id || "").indexOf("bookmark") != -1) // Sidebar
 			)
 			&& !this.hasParent(it, "goPopup")
 			&& this.fn.getBookmarkUri(it, e)
@@ -457,7 +455,7 @@ var handyClicks = {
 			_it = it;
 			while(_it && _it.nodeType != docNode) {
 				_itln = _it.localName.toLowerCase();
-				if(_itln != "tab" || _itln != "toolbarbutton")
+				if(_itln == "tab" || _itln == "toolbarbutton")
 					break;
 				if(/(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(_it.className)) {
 					this.itemType = "tabbar";
@@ -470,14 +468,14 @@ var handyClicks = {
 
 		// Submit button:
 		if(all || this.itemTypeInSets(sets, "submitButton")) {
-			if(itln == "input" && it.type == "submit") {
+			if(itln == "input" && it.type == "submit" && "form" in it.wrappedJSObject) {
 				this.itemType = "submitButton";
 				this.item = it;
 				return;
 			}
 			_it = it;
 			while(_it && _it.nodeType != docNode) {
-				if(_it.localName.toLowerCase() == "button") {
+				if(_it.localName.toLowerCase() == "button" && "form" in _it.wrappedJSObject) {
 					this.itemType = "submitButton";
 					this.item = _it;
 					return;
@@ -837,9 +835,10 @@ var handyClicks = {
 		);
 	},
 	toggleEditMode: function() {
-		this.editMode = !this.editMode;;
+		setTimeout(function(_this) { _this.editMode = !_this.editMode; }, 0, this);
 	},
 	setEditModeStatus: function(em) {
+		em = em === undefined ? this.editMode : em;
 		//~ todo: this.ut.notify() ?
 		document.getElementById("handyClicks-toggleStatus-sBarIcon").setAttribute("hc_editmode", em);
 	},

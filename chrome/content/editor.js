@@ -482,36 +482,6 @@ var handyClicksEditor = {
 			}
 			elt = elt.parentNode;
 		}
-
-		return;
-		alert(tabs);
-		tabs.addEventListener(
-			"focus",
-			function(e) {
-				tabs.removeEventListener("focus", arguments.callee, true);
-				alert(e.target.localName);
-			},
-			true
-		);
-		return;
-
-
-		setTimeout(function() {
-			var fe = document.commandDispatcher.focusedElement;
-			if(!fe || fe.localName != "input")
-				return;
-			var elt = fe.parentNode.parentNode; // <textbox>
-			if(!elt || elt.className != "hcText")
-				return;
-			while(elt) {
-				if(elt.localName == "tabpanel") {
-					var t = elt.getElementsByTagName("textbox")[1];
-					t && t.focus();
-					break;
-				}
-				elt = elt.parentNode;
-			}
-		}, 0);
 	},
 
 	saveSettings: function() {
@@ -604,7 +574,6 @@ var handyClicksEditor = {
 	},
 	deleteShortcut: function() {
 		delete handyClicksPrefs[this.currentShortcut];
-		alert(0);
 		this.ps.saveSettingsObjects();
 		this.applyButton.disabled = true;
 	},
