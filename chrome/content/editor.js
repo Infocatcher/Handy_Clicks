@@ -260,6 +260,7 @@ var handyClicksEditor = {
 		}
 		sep.hidden = hideSep;
 		parent.parentNode.value = this.type; // <menulist>
+		this.highlightUsedTypes();
 	},
 	delCustomTypes: function() {
 		var mis, mi, j;
@@ -274,6 +275,25 @@ var handyClicksEditor = {
 			},
 			this
 		);
+	},
+	highlightUsedTypes: function() {
+		var so = this.ut.getOwnProperty(handyClicksPrefs, this.currentShortcut);
+		var ml = this.$("hc-editor-itemTypes");
+		Array.prototype.forEach.call(
+			ml.getElementsByTagName("menuitem"),
+			function(mi) {
+				var to = this.ut.getOwnProperty(so, mi.value);
+				var val = this.ps.isOkFuncObj(to)
+					? this.ut.getOwnProperty(to, "enabled")
+						? "enabled"
+						: "disabled"
+					: "none";
+				mi.setAttribute("hc_sets", val);
+			},
+			this
+		);
+		var si = ml.selectedItem;
+		si && ml.setAttribute("hc_sets", si.getAttribute("hc_sets"));
 	},
 	initFuncsList: function(custom, action, delayed) {
 		delayed = delayed || "";
@@ -439,6 +459,7 @@ var handyClicksEditor = {
 		this.initShortcutEditor();
 		this.setWinId();
 		this.setWinTitle();
+		this.highlightUsedTypes();
 	},
 	setClickOptions: function(e) {
 		this.$("hc-editor-button").value = e.button;
@@ -468,17 +489,22 @@ var handyClicksEditor = {
 		if(!fe || fe.localName != "input")
 			return;
 		var elt = fe.parentNode.parentNode; // <textbox>
-		if(!elt || elt.className != "hcText")
+		var cre = /(?:^|\s)hcText(?:\s|$)/;
+		if(!elt || !cre.test(elt.className || ""))
 			return;
 		e.preventDefault();
 		e.stopPropagation();
+		w:
 		while(elt) {
 			if(elt.localName == "tabpanel") {
-				var t = elt.getElementsByTagName("textbox")[1];
-				if(!t)
-					break;
-				t.focus();
-				break;
+				var ts = elt.getElementsByTagName("textbox"), t;
+				for(var i = 1, len = ts.length; i < len; i++) {
+					t = ts[i];
+					if(!cre.test(t.className || "")) {
+						t.focus();
+						break w;
+					}
+				}
 			}
 			elt = elt.parentNode;
 		}

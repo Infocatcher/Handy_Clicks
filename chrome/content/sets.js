@@ -252,12 +252,15 @@ var handyClicksSets = {
 		this.focusSearch();
 	},
 	addItems: function() {
-		if(this.isTreePaneSelected)
-			this.openEditorWindow(null);
+		if(!this.isTreePaneSelected)
+			return;
+		var rows = this.selectedRows;
+		if(rows.length == 1)
+			this.openEditorWindow(rows[0], "shortcut", true);
+		else
+			this.openEditorWindow();
 	},
 	editItems: function(e) {
-		if(e && e.originalTarget.localName != "treechildren") //~ todo: test in fx < 3.0
-			return;
 		if(e && !this.isClickOnRow(e)) {
 			this.addItems();
 			return;
@@ -349,9 +352,9 @@ var handyClicksSets = {
 				return false;
 		return true;
 	},
-	openEditorWindow: function(tRow, mode) { // mode: "shortcut" or "itemType"
+	openEditorWindow: function(tRow, mode, add) { // mode: "shortcut" or "itemType"
 		var shortcut = tRow ? tRow.__shortcut : Date.now() + "-" + Math.random();
-		var itemType = tRow ? tRow.__itemType : null;
+		var itemType = tRow && add !== true ? tRow.__itemType : null;
 		this.wu.openEditor(mode, shortcut, itemType);
 	},
 	setRowStatus: function(rowId, editStat) {

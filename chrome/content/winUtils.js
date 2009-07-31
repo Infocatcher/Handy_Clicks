@@ -18,6 +18,20 @@ var handyClicksWinUtils = {
 			return win.openDialog.apply(win, args);
 		}
 	},
+	maximizeWindow: function(win) {
+		win = win || top;
+		if("fullScreen" in win)
+			win.fullScreen = false;
+		switch(win.windowState) {
+			case 1: win.restore(); break;
+			case 3: win.maximize();
+		}
+	},
+	toggleFullscreen: function(win) {
+		win = win || top;
+		if("fullScreen" in win)
+			win.fullScreen = !win.fullScreen; // Firefox 3.0+
+	},
 	winIdProp: "__handyClicksWinId",
 	openEditor: function(mode, shortcut, itemType) {
 		var winId = mode == "itemType" ? itemType : shortcut + "-" + itemType;

@@ -3,8 +3,8 @@
 <!ENTITY hc.sets.apply "Применить">
 <!ENTITY hc.sets.settings "Настройки">
 
-<!ENTITY hc.sets.exportPrefs "Экспорт настроек в файл">
-<!ENTITY hc.sets.importPrefs "Импорт настроек из файла">
+<!ENTITY hc.sets.exportPrefs "Экспорт настроек в файл…">
+<!ENTITY hc.sets.importPrefs "Импорт настроек из файла…">
 <!ENTITY hc.sets.defaults "Сбросить настройки">
 
 <!ENTITY hc.sets.clickOptionsTitle "Настройки кликов">
@@ -64,5 +64,6 @@
 <!ENTITY hc.editor.mainTabCustomTypes "Добавленные типы">
 <!ENTITY hc.editor.internalId "Внутренний id:">
 <!ENTITY hc.editor.defineItem "Определение элемента">
-<!ENTITY hc.editor.defineReturn "Должно возвращить: элемент или null"> <!-- Do not translate "null"! -->
-<!ENTITY hc.editor.defineContext "Контекстное меню элемента (для автоопределения оставьте пустым)">
+<!ENTITY hc.editor.defineReturn "Должно возвращать: элемент или null"> <!-- Do not translate "null"! -->
+<!ENTITY hc.editor.defineContext "Контекстное меню элемента">
+<!ENTITY hc.editor.defineContextTip "Для автоопределения оставьте поле пустым">

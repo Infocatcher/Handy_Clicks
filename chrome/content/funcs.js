@@ -55,7 +55,7 @@ var handyClicksFuncs = {
 	},
 	getTextOfItem: function(it, e) {
 		it = it || this.hc.item;
-		return it.textContent || it.label || it.alt || it.value
+		return it.textContent || it.label || it.alt || it.title || it.value
 			|| (
 				it.getAttribute
 				&& (it.getAttribute("label") || it.getAttribute("value"))
@@ -131,7 +131,7 @@ var handyClicksFuncs = {
 	},
 	forEachTab: function(fnc, _this, tbr) {
 		return Array.prototype.map.call(
-			tbr || this.getTabBrowser(true),
+			(tbr || this.getTabBrowser(true)).mTabContainer.childNodes,
 			fnc,
 			_this || this
 		);
@@ -242,9 +242,9 @@ var handyClicksFuncs = {
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
 		if(
-			this.loadJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin, inCurTab)
+			this.testForHighlander(uri)
+			|| this.loadJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin, inCurTab)
 			|| this.testForFileLink(uri, refererPolicy)
-			|| this.testForHighlander(uri)
 		)
 			return true;
 		return false;
@@ -279,7 +279,7 @@ var handyClicksFuncs = {
 				"network.http.sendRefererHeader": _this.getRefererPolicy(refererPolicy)
 			});
 			_this.hc._enabled = false;
-			_this.hc.clearCMenuTimeout();
+			_this.hc.cancelDelayedAction();
 			_this.hc.flags.stopContextMenu = true;
 
 			evts.forEach(function(evt) { evt(); });
@@ -507,7 +507,7 @@ var handyClicksFuncs = {
 		xulwin.zLevel = xulwin.normalZ;
 	},
 	openInSidebar: function(e, closePopups, ttl, uri) {
-		ttl = ttl || "";
+		ttl = ttl || this.getTextOfItem(this.hc.item);
 		uri = uri || this.getUriOfItem(this.hc.item);
 		openWebPanel(ttl, uri);
 		if(closePopups)
@@ -803,8 +803,9 @@ var handyClicksFuncs = {
 		// Thanks to SubmitToTab! ( https://addons.mozilla.org/firefox/addon/483 )
 		node = node || this.hc.item;
 		node = new XPCNativeWrapper(node, "form", "click()");
-		var origTarget = node.form.getAttribute("target");
-		node.form.target = "_blank";
+		var form = node.form;
+		var origTarget = form.getAttribute("target");
+		form.target = "_blank";
 
 		var origPrefs = this.setPrefs({
 			"browser.link.open_newwindow": toNewWin ? 2 : 3,
@@ -814,29 +815,14 @@ var handyClicksFuncs = {
 			"browser.tabs.loadDivertedInBackground": toNewWin ? null : loadInBackground
 		});
 
-		/****
-		var origPrefs = this.setPrefs(
-			toNewWin
-				? {
-					"browser.link.open_newwindow": 2,
-					"browser.block.target_new_window": false,
-					"dom.disable_open_during_load": false,
-					"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy)
-				}
-				: {
-					"browser.link.open_newwindow": 3,
-					"browser.tabs.loadDivertedInBackground": loadInBackground,
-					"dom.disable_open_during_load": false,
-					"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy)
-				}
-		);
-		****/
+		this.hc._enabled = false; // Don't stop this "click"
 		node.click();
+		this.hc._enabled = true;
 
 		if(origTarget)
-			node.form.target = origTarget;
+			form.target = origTarget;
 		else
-			node.form.removeAttribute("target");
+			form.removeAttribute("target");
 		this.restorePrefs(origPrefs);
 	},
 	fixTab: function(tab) {
@@ -935,7 +921,7 @@ var handyClicksFuncs = {
 	renameTab: function(e, tab) {
 		tab = this.fixTab(tab);
 		var lbl = this.ut.promptEx(
-			this.ut.getLocalized("renameTab"),
+			this.ut.getLocalized("renameTabTitle"),
 			this.ut.getLocalized("tabNewName"),
 			tab.label
 		);
@@ -945,11 +931,11 @@ var handyClicksFuncs = {
 			: lbl;
 	},
 	reloadAllTabs: function(e, skipCache) {
-		var _this = this;
 		this.forEachTab(
 			function(tab) {
-				_this.reloadTab(e, skipCache, tab);
-			}
+				this.reloadTab(e, skipCache, tab);
+			},
+			this
 		);
 	},
 	reloadTab: function(e, skipCache, tab) {

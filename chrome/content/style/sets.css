@@ -42,13 +42,17 @@ textbox.hcText {
 	-moz-appearance: none;
 	-moz-box-flex: 1;
 }
-label.header {
-	font-weight: bold;
-	margin-left: 2em;
-}
 
 menuitem[hc_disabled="true"] {
 	color: graytext; /* Style like disabled, but without accessibility restrictions */
+}
+menuitem[hc_sets="enabled"],
+menulist[hc_sets="enabled"] .menulist-label {
+	color: -moz-hyperlinktext;
+}
+menuitem[hc_sets="disabled"],
+menulist[hc_sets="disabled"] .menulist-label {
+	color: -moz-visitedhyperlinktext;
 }
 
 /* Warning for empty menulists */
@@ -58,9 +62,24 @@ menulist:not([label]) > .menulist-label-box {
 	min-height: 15px;
 }
 
-textbox.hcEditor {
+.hcEditor {
 	font-family: "Courier New", monospace;
 	-moz-binding: url("chrome://handyclicks/content/editor.xml#codeEditor");
+}
+:root[hc_maximized="true"] > * :not([hc_maximized="true"]):not(autorepeatbutton) {
+	visibility: collapse !important;
+}
+:root[hc_maximized="true"] > * .hcEditor :not(autorepeatbutton) {
+	visibility: visible !important; /* For anonymous nodes inside textbox.hcEditor */
+}
+[hc_maximized="true"]:not(.hcEditor) { /* Hide all borders */
+	margin: 0 !important;
+	padding: 0 !important;
+	border: none !important;
+	-moz-appearance: none !important;
+}
+.hcEditor[hc_maximized="true"] {
+	margin: 0 !important;
 }
 
 #hc-editor-funcSets {

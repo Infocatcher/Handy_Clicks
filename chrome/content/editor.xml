@@ -3,15 +3,12 @@
 	<binding id="codeEditor" extends="chrome://global/content/bindings/textbox.xml#textarea">
 		<implementation>
 			<field name="tabSymbol">handyClicksPrefUtils.pref("editor.tabSymbol") || "\t";</field>
-			<field name="_editor">null</field>
 			<property name="editor" readonly="true">
 				<getter>
-					if(!this._editor)
-						this._editor = this.inputField // Thanks to Custom Buttons!
-							.QueryInterface(Components.interfaces.nsIDOMNSEditableElement)
-							.editor
-							.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-					return this._editor;
+					return this.inputField // Thanks to Custom Buttons!
+						.QueryInterface(Components.interfaces.nsIDOMNSEditableElement)
+						.editor
+						.QueryInterface(Components.interfaces.nsIPlaintextEditor);
 				</getter>
 			</property>
 			<property name="newValue">
@@ -166,6 +163,19 @@
 				]]>
 				</body>
 			</method>
+			<method name="maximizeEditor">
+				<body>
+				<![CDATA[
+					var mm = this.getAttribute("hc_maximized") == "true";
+					var node = this;
+					while(node && "setAttribute" in node) {
+						if(mm) node.removeAttribute("hc_maximized");
+						else   node.setAttribute("hc_maximized", "true");
+						node = node.parentNode;
+					}
+				]]>
+				</body>
+			</method>
 		</implementation>
 		<handlers>
 			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent(this.tabSymbol, false);" />
@@ -174,6 +184,7 @@
 			<handler event="keypress" preventdefault="true" key=" " action="this.setIndent(' ', true);" modifiers="shift" />
 			<handler event="keypress" preventdefault="true" key="a" action="this.toggleComments();" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" keycode="VK_RETURN" action="this.formatNewLine();" />
+			<handler event="keypress" preventdefault="true" keycode="VK_F12" action="this.maximizeEditor();" />
 		</handlers>
 	</binding>
 </bindings>

@@ -3,8 +3,8 @@
 <!ENTITY hc.sets.apply "Apply">
 <!ENTITY hc.sets.settings "Settings">
 
-<!ENTITY hc.sets.exportPrefs "Export preferences to file">
-<!ENTITY hc.sets.importPrefs "Import preferences from file">
+<!ENTITY hc.sets.exportPrefs "Export preferences to file…">
+<!ENTITY hc.sets.importPrefs "Import preferences from file…">
 <!ENTITY hc.sets.defaults "Reset to defaults">
 
 <!ENTITY hc.sets.clickOptionsTitle "Clicks Options">
@@ -65,4 +65,5 @@
 <!ENTITY hc.editor.internalId "Internal id:">
 <!ENTITY hc.editor.defineItem "Item definition">
 <!ENTITY hc.editor.defineReturn "Return: node or null"> <!-- Do not translate "null"! -->
-<!ENTITY hc.editor.defineContext "Context menu of item (empty for autodetection)">
+<!ENTITY hc.editor.defineContext "Context menu of item">
+<!ENTITY hc.editor.defineContextTip "Leave this field empty for autodetection">

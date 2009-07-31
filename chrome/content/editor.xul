@@ -39,6 +39,9 @@
 	<keyset id="hc-editor-keys">
 		<key key="s" modifiers="control" id="hc-editor-keyApply" oncommand="handyClicksEditor.saveSettings();" />
 		<key keycode="VK_F5" id="hc-editor-keyReload" oncommand="handyClicksEditor.initUI();" />
+
+		<key keycode="VK_F10" id="hc-editor-maximizeWindow" oncommand="handyClicksWinUtils.maximizeWindow();" />
+		<key keycode="VK_F11" id="hc-editor-toggleFullscreen" oncommand="handyClicksWinUtils.toggleFullscreen();" />
 	</keyset>
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">
@@ -117,6 +120,10 @@
 											hc_args=""
 											hc_supports="$all" />
 										<menuseparator id="hc-editor-funcsSep-clip" />
+										<menuitem
+											value="removeTab" label="removeTab"
+											hc_args=""
+											hc_supports="tab tabbar" />
 										<menuitem
 											value="removeOtherTabs" label="removeOtherTabs"
 											hc_args=""
@@ -279,18 +286,32 @@
 						ondragexit="handyClicksEditor.customTypeIdFilter(event);" />
 					<checkbox id="hc-editor-customTypeEnabled" label="&hc.editor.enabled;" />
 				</hbox>
-				<label class="header" value="&hc.editor.defineItem;" />
-				<hbox>
-					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.funcArgs; event, item" />
-					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
-				</hbox>
-				<textbox class="hcEditor" id="hc-editor-customTypeDefine" wrap="off" flex="1" value="" />
-				<label class="header" value="&hc.editor.defineContext;" />
-				<hbox>
-					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.funcArgs; event, item, origItem" />
-					<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
-				</hbox>
-				<textbox class="hcEditor" id="hc-editor-customTypeContext" wrap="off" flex="1" value="" />
+
+				<tabbox id="hc-editor-customTypeFuncs" flex="1">
+					<tabs onselect="handyClicksEditor.fixFocusedElement(event);">
+						<tab label="&hc.editor.defineItem;" selected="true" />
+						<tab label="&hc.editor.defineContext;" tooltiptext="&hc.editor.defineContextTip;" />
+					</tabs>
+					<tabpanels flex="1">
+						<tabpanel id="hc-editor-customTypeDefinePanel" flex="1" orient="vertical">
+							<hbox>
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.funcArgs; event, item"
+									onfocus="handyClicksEditor.fixFocusedElement(event);" />
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
+							</hbox>
+							<textbox class="hcEditor" id="hc-editor-customTypeDefine" wrap="off" flex="1" value="" />
+						</tabpanel>
+						<tabpanel id="hc-editor-customTypeContextPanel" flex="1" orient="vertical">
+							<hbox>
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.funcArgs; event, item, origItem"
+									onfocus="handyClicksEditor.fixFocusedElement(event);" />
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
+							</hbox>
+							<textbox class="hcEditor" id="hc-editor-customTypeContext" wrap="off" flex="1" value="" />
+						</tabpanel>
+					</tabpanels>
+				</tabbox>
+
 			</tabpanel>
 		</tabpanels>
 	</tabbox>
