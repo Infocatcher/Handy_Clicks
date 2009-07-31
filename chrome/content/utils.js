@@ -8,20 +8,44 @@ var handyClicksUtils = {
 			.getService(Components.interfaces.nsIConsoleService);
 	},
 	_log: function() {
-		this.consoleSvc.logStringMessage(this.errPrefix + Array.prototype.join.call(arguments, "\n"));
+		this.consoleSvc.logStringMessage(
+			this.errPrefix +
+			Array.prototype.join.call(
+				Array.prototype.map.call(
+					arguments,
+					function(s) { return "" + s; } // Convert all arguments to strings
+				),
+				"\n"
+			)
+		);
 	},
 	get _err() {
 		return Components.utils.reportError;
 	},
+	objProps: function(o) {
+		if(!this.isObject(o))
+			return o;
+		var r = [], own;
+		for(var p in o) {
+			own = o.hasOwnProperty(p) ? " [own]" : "";
+			try {
+				r.push(p + own + " = " + o[p]);
+			}
+			catch(e) { // var obj = { __proto__: null }; => obj.toString() is missing
+				r.push(p + own + " -> error\n\t" + e + "\n\t__proto__ = " + o[p].__proto__);
+			}
+		}
+		return r.join("\n");
+	},
 
-	timers: { __proto__: null },
+	_timers: { __proto__: null },
 	timer: function(tId) {
-		if(tId in this.timers) {
-			this._log("[timer] " + tId + " -> " + (Date.now() - this.timers[tId]) + " ms");
-			delete this.timers[tId];
+		if(tId in this._timers) {
+			this._log("[timer] " + tId + " -> " + (Date.now() - this._timers[tId]) + " ms");
+			delete this._timers[tId];
 		}
 		else
-			this.timers[tId] = Date.now();
+			this._timers[tId] = Date.now();
 	},
 
 	notify: function(nTitle, msg, fnc, extEnabled, inWindowCorner) {
@@ -186,7 +210,10 @@ var handyClicksUtils = {
 	}
 };
 
-var handyClicksObservers = {
+function HandyClicksObservers() {
+	this.observers = [];
+}
+HandyClicksObservers.prototype = {
 	notifyObservers: function() {
 		var obs = this.observers;
 		for(var i = 0, len = obs.length; i < len; i++)

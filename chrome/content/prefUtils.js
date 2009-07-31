@@ -1,6 +1,5 @@
 var handyClicksPrefUtils = {
-	__proto__: handyClicksObservers, // Add observers interface
-	observers: [],
+	__proto__: new HandyClicksObservers(), // Add observers interface
 
 	cs: handyClicksCleanupSvc,
 

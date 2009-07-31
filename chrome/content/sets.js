@@ -196,6 +196,7 @@ var handyClicksSets = {
 		if(typeof fvr == "number")
 			tbo.scrollToRow(fvr);
 		this.searchInSetsTree(null, true);
+		this.applyButton.disabled = true;
 	},
 	forceUpdTree: function() {
 		this.ps.loadSettings();
@@ -294,26 +295,27 @@ var handyClicksSets = {
 		if(!tRows.length)
 			return;
 
-		var del = [];
+		var del = tRows.map(
+			function(tRow, i) {
+				tRow = tRows[i];
+				var mdfs = this.ps.getModifiersStr(tRow.__shortcut);
+				var button = this.ps.getLocaleButtonStr(tRow.__shortcut, true);
+				var type = tRow.__itemType.indexOf("custom_") == 0
+					? this.getCustomTypeLabel(tRow.__itemType)
+					: this.ut.getLocalized(tRow.__itemType);
+				var fObj = this.ut.getOwnProperty(handyClicksPrefs, tRow.__shortcut, tRow.__itemType);
+				var label = typeof fObj == "object"
+					? this.ut.getOwnProperty(fObj, "custom")
+						? this.ps.dec(fObj.label || "")
+						: this.ut.getLocalized(fObj.action || "")
+					: "?";
+				return mdfs + " + " + button + " + " + type + " \u21d2 " + label.substr(0, 42); // "=>" symbol
+			},
+			this
+		);
 		var maxRows = 12;
-		var tRow;
-		for(var i = 0, len = tRows.length; i < len; i++) {
-			tRow = tRows[i];
-			var mdfs = this.ps.getModifiersStr(tRow.__shortcut);
-			var button = this.ps.getLocaleButtonStr(tRow.__shortcut, true);
-			var type = tRow.__itemType.indexOf("custom_") == 0
-				? this.getCustomTypeLabel(tRow.__itemType)
-				: this.ut.getLocalized(tRow.__itemType);
-			var fObj = this.ut.getOwnProperty(handyClicksPrefs, tRow.__shortcut, tRow.__itemType);
-			var label = typeof fObj == "object"
-				? this.ut.getOwnProperty(fObj, "custom")
-					? this.ps.dec(fObj.label || "")
-					: this.ut.getLocalized(fObj.action || "")
-				: "?";
-			del.push(mdfs + " + " + button + " + " + type + " \u21d2 " + label.substr(0, 42)); // =>
-		}
 		if(del.length > maxRows)
-			del.splice(maxRows - 2, del.length - maxRows + 1, "\u2026"); // ...
+			del.splice(maxRows - 2, del.length - maxRows + 1, "\u2026"); // "..." symbol
 
 		if(
 			!this.ut.confirmEx(
@@ -327,23 +329,24 @@ var handyClicksSets = {
 		this.applyButton.disabled = false;
 	},
 	deleteItem: function(tRow) {
-		var shortcut = tRow.__shortcut;
-		var itemType = tRow.__itemType;
-		if(shortcut && itemType) {
-			var shortcutObj = handyClicksPrefs[shortcut];
-			delete shortcutObj[itemType];
-			if(this.isEmptyObj(shortcutObj))
-				delete handyClicksPrefs[shortcut];
-
-			var tItem = tRow.parentNode;
-			var tChld = tItem.parentNode;
+		var sh = tRow.__shortcut;
+		var type = tRow.__itemType;
+		if(!sh || !type)
+			return;
+		var p = handyClicksPrefs;
+		var so = p[sh];
+		delete so[type];
+		if(this.isEmptyObj(so))
+			delete p[sh];
+		var tItem = tRow.parentNode;
+		var tChld = tItem.parentNode;
+		tChld.removeChild(tItem);
+		for(var i = 0; i < 2; i++) {
+			if(tChld.hasChildNodes())
+				break;
+			tItem = tChld.parentNode;
+			tChld = tItem.parentNode;
 			tChld.removeChild(tItem);
-			for(var i = 0; i < 2; i++)
-				if(!tChld.hasChildNodes()) {
-					tItem = tChld.parentNode;
-					tChld = tItem.parentNode;
-					tChld.removeChild(tItem);
-				}
 		}
 	},
 	isEmptyObj: function(obj) {
@@ -574,9 +577,11 @@ var handyClicksSets = {
 			this.applyButton.disabled = false;
 	},
 	updateAllDependencies: function() {
-		var reqs = document.getElementsByAttribute("hc_requiredfor", "*");
-		for(var i = 0, len = reqs.length; i < len; i++)
-			this.updateDependencies(reqs[i]);
+		Array.prototype.forEach.call(
+			document.getElementsByAttribute("hc_requiredfor", "*"),
+			this.updateDependencies,
+			this
+		);
 	},
 	updateDependencies: function(it) {
 		var dis = it.hasAttribute("hc_disabledvalues")
