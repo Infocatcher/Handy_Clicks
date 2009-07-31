@@ -2,7 +2,7 @@
 pref("extensions.handyclicks@infocatcher.description", "chrome://handyclicks/locale/hcs.properties");
 
 pref("extensions.handyclicks.enabled", true);
-pref("extensions.handyclicks.stopMousedownEvent", false);
+pref("extensions.handyclicks.forceStopMousedownEvent", false);
 pref("extensions.handyclicks.forceHideContextMenu", true); // for Linux (mousedown -> contextmenu -> click)
 pref("extensions.handyclicks.disallowMousemoveForButtons", "2");
 pref("extensions.handyclicks.disallowMousemoveDist", 12);

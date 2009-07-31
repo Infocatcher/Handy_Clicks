@@ -30,7 +30,6 @@
 
 <!ENTITY hc.sets.enabled "Enabled">
 <!ENTITY hc.sets.forceHideContextMenu "Force hide context menu">
-<!ENTITY hc.sets.stopMousedownEvent 'Stop "mousedown" event'>
 <!ENTITY hc.sets.disallowMousemove "Stop click handling when mouse mowing with holding buttons (mouse gestures)">
 <!ENTITY hc.sets.left "Left">
 <!ENTITY hc.sets.middle "Middle">

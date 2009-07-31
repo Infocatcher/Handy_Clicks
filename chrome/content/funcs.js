@@ -278,14 +278,14 @@ var handyClicksFuncs = {
 				"browser.tabs.loadDivertedInBackground": loadJSInBackground,
 				"network.http.sendRefererHeader": _this.getRefererPolicy(refererPolicy)
 			});
+
+			//not needed?//_this.hc.flags.stopContextMenu = true;
+
 			_this.hc._enabled = false;
-			_this.hc.cancelDelayedAction();
-			_this.hc.flags.stopContextMenu = true;
-
 			evts.forEach(function(evt) { evt(); });
-
 			_this.hc._enabled = true;
-			_this.hc.skipFlagsDelay();
+
+			//not needed?//_this.hc.skipFlagsDelay();
 			_this.restorePrefs(origPrefs);
 		}
 		var load = this.pu.pref("loadVoidLinksWithHandlers");

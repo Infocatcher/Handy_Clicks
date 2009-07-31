@@ -75,10 +75,23 @@ var handyClicks = {
 		if(!funcObj)
 			return;
 
-		this.flags.allowEvents = funcObj.action == this.ignoreAction; //~ todo
+		this.flags.allowEvents = funcObj.action == this.ignoreAction;
 
-		if(this.pu.pref("stopMousedownEvent") || this.editMode)
+		var isContent = e.view.top === content;
+		if(this.pu.pref("forceStopMousedownEvent") || this.editMode || !isContent)
 			this.stopEvent(e);
+		else { // Prevent page handlers, but don't stop Mouse Gestures
+			var cWin = gBrowser.mCurrentBrowser;
+			var _this = this;
+			cWin.addEventListener(
+				"mousedown",
+				function(e) {
+					cWin.removeEventListener("mousedown", arguments.callee, true);
+					_this.stopEvent(e);
+				},
+				true
+			);
+		}
 
 		if(this._cMenu && typeof this._cMenu.hidePopup == "function")
 			this._cMenu.hidePopup();
@@ -95,7 +108,7 @@ var handyClicks = {
 			return;
 
 		var _this = this;
-		var cm = this.getItemContext(e);
+		var cm = this.getItemContext(e); //~ todo: get cm only if needed
 
 		// Fix for switching tabs by Mouse Gestures
 		this._tabOnMousedown = cm && cm.id == "contentAreaContextMenu"
@@ -153,7 +166,7 @@ var handyClicks = {
 			window.addEventListener("mousemove", this, true);
 		}
 	},
-	clickHandler: function _ch(e) {
+	clickHandler: function(e) {
 		if(!this.enabled)
 			return;
 		this.checkForStopEvent(e); // Can stop "contextmenu" event in Windows

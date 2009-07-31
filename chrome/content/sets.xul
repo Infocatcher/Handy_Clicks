@@ -75,7 +75,6 @@
 		<preferences>
 			<preference id="enabled" type="bool" name="extensions.handyclicks.enabled" />
 			<preference id="forceHideContextMenu" type="bool" name="extensions.handyclicks.forceHideContextMenu" />
-			<preference id="stopMousedownEvent" type="bool" name="extensions.handyclicks.stopMousedownEvent" />
 			<preference id="disallowMousemoveDist" type="int" name="extensions.handyclicks.disallowMousemoveDist" />
 			<preference id="delayedActionTimeout" type="int" name="extensions.handyclicks.delayedActionTimeout" />
 			<preference id="notifyOpenTime" type="int" name="extensions.handyclicks.notifyOpenTime" />
@@ -90,7 +89,6 @@
 
 		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" />
 		<checkbox preference="forceHideContextMenu" label="&hc.sets.forceHideContextMenu;" />
-		<checkbox preference="stopMousedownEvent" label="&hc.sets.stopMousedownEvent;" />
 		<groupbox>
 			<caption label="&hc.sets.disallowMousemove;" />
 			<hbox>
