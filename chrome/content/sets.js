@@ -538,7 +538,7 @@ var handyClicksSets = {
 		this.updateAllDependencies();
 	},
 	loadPrefs: function() {
-		var buttons = this.pu.pref("disallowMousemoveForButtons");
+		var buttons = this.pu.pref("disallowMousemoveButtons");
 		for(var i = 0; i <= 2; i++)
 			this.$("hc-sets-disallowMousemove-" + i).checked = buttons.indexOf(i) > -1;
 	},
@@ -547,7 +547,7 @@ var handyClicksSets = {
 		for(var i = 0; i <= 2; i++)
 			if(this.$("hc-sets-disallowMousemove-" + i).checked)
 				val += i;
-		this.pu.pref("disallowMousemoveForButtons", val);
+		this.pu.pref("disallowMousemoveButtons", val);
 		this.ps.saveSettingsObjects(applyFlag);
 		if(applyFlag && !this.instantApply) {
 			this.savePrefpanes();
@@ -655,7 +655,7 @@ var handyClicksSets = {
 					}
 					var pName = line.substring(0, indx);
 					var pbr = Components.interfaces.nsIPrefBranch;
-					var pType = this.pu.prefBr.getPrefType(pName);
+					var pType = this.pu.prefSvc.getPrefType(pName);
 					if(pType == pbr.PREF_INVALID || pName.indexOf(this.pu.nPrefix) != 0) {
 						this.ut._err(this.ut.errPrefix + "[Import INI] Skipped pref with invalid name: " + pName);
 						return;

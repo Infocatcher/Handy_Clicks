@@ -29,7 +29,6 @@
 <!ENTITY hc.sets.clickPrefsTitle "Настройки">
 
 <!ENTITY hc.sets.enabled "Включено">
-<!ENTITY hc.sets.forceHideContextMenu "Принудительно скрывать контекстное меню">
 <!ENTITY hc.sets.disallowMousemove "Прекращать обработку кликов при перемещении мыши с зажатыми кнопками (жесты мышью)">
 <!ENTITY hc.sets.left "Левая">
 <!ENTITY hc.sets.middle "Средняя">

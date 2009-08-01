@@ -22,7 +22,7 @@ var handyClicks = {
 	itemType: undefined,
 	flags: {
 		runned: false, // => stop click events
-		stopContextMenu: false, // => stop "contextmenu" event
+		stopContextMenu: false, // => stop "contextmenu" event (in Linux: mousedown -> contextmenu -> ... delay ... -> click)
 		allowEvents: false // => allow all events while (flags.runned == false)
 	},
 
@@ -67,7 +67,7 @@ var handyClicks = {
 	},
 
 	// Handlers:
-	mousedownHandler: function(e) { //~ todo: test hiding of context menu in Linux
+	mousedownHandler: function(e) {
 		if(!this.enabled)
 			return;
 
@@ -77,11 +77,10 @@ var handyClicks = {
 
 		this.flags.allowEvents = funcObj.action == this.ignoreAction;
 
-		var isContent = e.view.top === content;
-		if(this.pu.pref("forceStopMousedownEvent") || this.editMode || !isContent)
+		if(this.pu.pref("forceStopMousedownEvent") || this.editMode)
 			this.stopEvent(e);
 		else { // Prevent page handlers, but don't stop Mouse Gestures
-			var cWin = gBrowser.mCurrentBrowser;
+			var cWin = e.view.top === content ? gBrowser.mCurrentBrowser : e.view.top;
 			var _this = this;
 			cWin.addEventListener(
 				"mousedown",
@@ -99,11 +98,8 @@ var handyClicks = {
 		var runOnMousedown = funcObj.eventType == "mousedown" && !this.flags.allowEvents;
 		if(runOnMousedown)
 			this.functionEvent(funcObj, e);
-		if(
-			this.pu.pref("forceHideContextMenu") // for clicks on Linux
-			&& funcObj.action != "showContextMenu"
-		)
-			this.flags.stopContextMenu = true; //~ Remove "forceHideContextMenu" pref ?
+		if(funcObj.action != "showContextMenu")
+			this.flags.stopContextMenu = true;
 		if(runOnMousedown)
 			return;
 
@@ -160,7 +156,7 @@ var handyClicks = {
 		}
 		if(
 			!this.hasMousemoveHandler
-			&& this.pu.pref("disallowMousemoveForButtons").indexOf(e.button) > -1
+			&& this.pu.pref("disallowMousemoveButtons").indexOf(e.button) > -1
 		) {
 			this.hasMousemoveHandler = true;
 			window.addEventListener("mousemove", this, true);

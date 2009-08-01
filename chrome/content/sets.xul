@@ -74,7 +74,6 @@
 	<prefpane id="hc-sets-pane-prefs" label="&hc.sets.clickPrefsTitle;" flex="1">
 		<preferences>
 			<preference id="enabled" type="bool" name="extensions.handyclicks.enabled" />
-			<preference id="forceHideContextMenu" type="bool" name="extensions.handyclicks.forceHideContextMenu" />
 			<preference id="disallowMousemoveDist" type="int" name="extensions.handyclicks.disallowMousemoveDist" />
 			<preference id="delayedActionTimeout" type="int" name="extensions.handyclicks.delayedActionTimeout" />
 			<preference id="notifyOpenTime" type="int" name="extensions.handyclicks.notifyOpenTime" />
@@ -88,7 +87,6 @@
 		</preferences>
 
 		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" />
-		<checkbox preference="forceHideContextMenu" label="&hc.sets.forceHideContextMenu;" />
 		<groupbox>
 			<caption label="&hc.sets.disallowMousemove;" />
 			<hbox>

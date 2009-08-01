@@ -3,8 +3,7 @@ pref("extensions.handyclicks@infocatcher.description", "chrome://handyclicks/loc
 
 pref("extensions.handyclicks.enabled", true);
 pref("extensions.handyclicks.forceStopMousedownEvent", false);
-pref("extensions.handyclicks.forceHideContextMenu", true); // for Linux (mousedown -> contextmenu -> click)
-pref("extensions.handyclicks.disallowMousemoveForButtons", "2");
+pref("extensions.handyclicks.disallowMousemoveButtons", "2");
 pref("extensions.handyclicks.disallowMousemoveDist", 12);
 pref("extensions.handyclicks.convertURIs", false); // for Windows
 pref("extensions.handyclicks.convertURIsCharset", ""); // use defaults
