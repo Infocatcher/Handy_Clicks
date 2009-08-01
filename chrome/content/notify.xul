@@ -6,9 +6,7 @@
 	windowtype="alert:alert"
 	align="start"
 	onload="hcNotify.init();"
-	onclick="hcNotify.clickHandler(event);"
-	onmouseover="hcNotify.mouseHandler(event);"
-	onmouseout="hcNotify.mouseHandler(event);">
+	onclick="hcNotify.clickHandler(event);">
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/notify.js" />
 

@@ -8,7 +8,7 @@ var hcNotify = {
 	_highlightInterval: null,
 	_nBox: null,
 	init: function() {
-		var wa = window.arguments[0]; // { dur, nTitle, msg, fnc, extEnabled, inWindowCorner }
+		var wa = window.arguments[0]; // { dur, nTitle, msg, fnc, extEnabled, inWindowCorner, dontCloseUnderCursor }
 		document.getElementById("hcNotifyHeader").value = wa.nTitle;
 		var descElt = document.getElementById("hcNotifyDesc");
 		descElt.textContent = wa.msg;
@@ -50,6 +50,12 @@ var hcNotify = {
 		this._colorDelta = this.endColor - this.startColor;
 		this._dur = wa.dur;
 		this.delayedClose();
+		if(!wa.dontCloseUnderCursor)
+			return;
+		var _this = this;
+		var f = function(e) { _this.mouseHandler(e); };
+		window.onmouseover = f;
+		window.onmouseout = f;
 	},
 	setColor: function() {
 		var persent = (Date.now() - this._startTime)/this._dur;
@@ -62,14 +68,11 @@ var hcNotify = {
 		if(h.length == 1)
 			h = "0" + h;
 		h = "#" + h + h + h;
-		// setTimeout(function() { throw c + " >> " + h; }, 0);
 		this._nBox.style.borderColor = h;
 	},
 	delayedClose: function() {
 		this._closeTimeout = setTimeout(window.close, this._dur);
-
 		this._startTime = Date.now();
-
 		var _this = this;
 		this._highlightInterval = setInterval(
 			function() { _this.setColor(); },

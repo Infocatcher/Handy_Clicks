@@ -787,8 +787,8 @@ var handyClicksFuncs = {
 
 	setPrefs: function(prefsObj) {
 		var origs = { __proto__: null };
-		for(var p in prefsObj) {
-			if(!prefsObj.hasOwnProperty(p) || prefsObj[p] === null)
+		for(var p in prefsObj) if(prefsObj.hasOwnProperty(p)) {
+			if(prefsObj[p] === null)
 				continue;
 			origs[p] = this.pu.getPref(p);
 			this.pu.setPref(p, prefsObj[p]);

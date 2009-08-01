@@ -79,7 +79,7 @@ var handyClicks = {
 
 		if(this.pu.pref("forceStopMousedownEvent") || this.editMode)
 			this.stopEvent(e);
-		else { // Prevent page handlers, but don't stop Mouse Gestures
+		else if(this.ut.isNoChromeWin(e.view.top)) { // Prevent page handlers, but don't stop Mouse Gestures
 			var cWin = e.view.top === content ? gBrowser.mCurrentBrowser : e.view.top;
 			var _this = this;
 			cWin.addEventListener(
@@ -249,9 +249,8 @@ var handyClicks = {
 	},
 	skipFlags: function() {
 		var fls = this.flags;
-		for(var p in fls)
-			if(fls.hasOwnProperty(p))
-				fls[p] = false;
+		for(var p in fls) if(fls.hasOwnProperty(p))
+			fls[p] = false;
 		this.removeMousemoveHandler();
 	},
 	skipFlagsDelay: function() {
@@ -328,9 +327,7 @@ var handyClicks = {
 		// Custom:
 		var cts = handyClicksCustomTypes, ct;
 		var errors = [];
-		for(var type in cts) {
-			if(!cts.hasOwnProperty(type))
-				continue;
+		for(var type in cts) if(cts.hasOwnProperty(type)) {
 			ct = cts[type];
 			if(
 				(all || this.itemTypeInSets(sets, type))

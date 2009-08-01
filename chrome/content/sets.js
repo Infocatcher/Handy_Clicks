@@ -54,10 +54,8 @@ var handyClicksSets = {
 		this.DOMCache = { __proto__: null };
 		this.rowsCache = { __proto__: null };
 		var p = handyClicksPrefs;
-		for(var sh in p) {
-			if(!p.hasOwnProperty(sh))
-				continue;
-			if(!this.ps.isOkShortcut(sh) || typeof p[sh] != "object") {
+		for(var sh in p) if(p.hasOwnProperty(sh)) {
+			if(!this.ps.isOkShortcut(sh) || !this.ut.isObject(p[sh])) {
 				this.ut._err(this.ut.errPrefix + "Invalid shortcut in prefs: " + sh);
 				continue;
 			}
@@ -105,9 +103,7 @@ var handyClicksSets = {
 	appendItems: function(parent, items, shortcut) {
 		var tItem, tRow, it, typeLabel, isCustom, isCustomType;
 		var isBuggy = false;
-		for(var itemType in items) {
-			if(!items.hasOwnProperty(itemType))
-				continue;
+		for(var itemType in items) if(items.hasOwnProperty(itemType)) {
 			tItem = document.createElement("treeitem");
 			tRow = document.createElement("treerow");
 			it = items[itemType];
@@ -147,10 +143,8 @@ var handyClicksSets = {
 	},
 	addProperties: function(tar, propsObj) {
 		var propsVal = tar.getAttribute("properties");
-		for(var p in propsObj) {
-			if(!propsObj.hasOwnProperty(p))
-				continue;
-			propsVal = propsVal.replace(p, "");
+		for(var p in propsObj) if(propsObj.hasOwnProperty(p)) {
+			propsVal = propsVal.replace(new RegExp("(?:^|\\s)" + p + "(?:\\s|$)"), " ");
 			if(propsObj[p])
 				propsVal += " " + p;
 		}
@@ -168,9 +162,8 @@ var handyClicksSets = {
 	},
 	getArguments: function(argsObj) {
 		var res = [];
-		for(var p in argsObj)
-			if(argsObj.hasOwnProperty(p))
-				res.push(p + " = " + uneval(argsObj[p])); //~ todo: this.ut.getLocalized(p) ?
+		for(var p in argsObj) if(argsObj.hasOwnProperty(p))
+			res.push(p + " = " + uneval(argsObj[p])); //~ todo: this.ut.getLocalized(p) ?
 		return res.join(this.fixOldTree(",\n"));
 	},
 	updTree: function() {
@@ -350,9 +343,8 @@ var handyClicksSets = {
 		}
 	},
 	isEmptyObj: function(obj) {
-		for(var p in obj)
-			if(obj.hasOwnProperty(p))
-				return false;
+		for(var p in obj) if(obj.hasOwnProperty(p))
+			return false;
 		return true;
 	},
 	openEditorWindow: function(tRow, mode, add) { // mode: "shortcut" or "itemType"

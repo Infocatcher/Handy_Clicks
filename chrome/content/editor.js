@@ -243,9 +243,7 @@ var handyClicksEditor = {
 		var cTypes = window.handyClicksCustomTypes || {};
 		var mi, _mi, typeObj, dis;
 		var hideSep = true;
-		for(var cType in cTypes) {
-			if(!cTypes.hasOwnProperty(cType))
-				continue;
+		for(var cType in cTypes) if(cTypes.hasOwnProperty(cType)) {
 			mi = document.createElement("menuitem");
 			typeObj = cTypes[cType] || {};
 			mi.setAttribute("label", this.ps.dec(typeObj.label) || cType);
@@ -539,7 +537,7 @@ var handyClicksEditor = {
 		}
 
 		var p = handyClicksPrefs;
-		if(!p.hasOwnProperty(sh) || typeof p[sh] != "object")
+		if(!p.hasOwnProperty(sh) || !this.ut.isObject(p[sh]))
 			p[sh] = {};
 		var po = p[sh];
 		po[type] = so; // rewrite

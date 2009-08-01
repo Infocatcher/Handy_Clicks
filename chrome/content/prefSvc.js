@@ -119,20 +119,18 @@ var handyClicksPrefSvc = {
 			//= Expires after 2009.08.30
 			var p = handyClicksPrefs;
 			var sh, so, type, to, pName, pVal;
-			for(sh in p) {
-				if(!p.hasOwnProperty(sh) || !this.isOkShortcut(sh))
+			for(sh in p) if(p.hasOwnProperty(sh)) {
+				if(!this.isOkShortcut(sh))
 					continue;
 				so = p[sh];
 				if(typeof so != "object")
 					continue;
-				for(type in so) {
-					if(!so.hasOwnProperty(type))
-						continue;
+				for(type in so) if(so.hasOwnProperty(type)) {
 					to = so[type];
 					if(typeof to != "object")
 						continue;
-					for(pName in to) {
-						if(!to.hasOwnProperty(pName) || pName != "arguments")
+					for(pName in to) if(to.hasOwnProperty(pName)) {
+						if(pName != "arguments")
 							continue;
 						pVal = to[pName];
 						if(pVal.hasOwnProperty("hidePopup")) {
@@ -165,9 +163,7 @@ var handyClicksPrefSvc = {
 	compileCystomTypes: function() {
 		var cts = handyClicksCustomTypes, ct;
 		var df, cm;
-		for(var type in cts) {
-			if(!cts.hasOwnProperty(type))
-				continue;
+		for(var type in cts) if(cts.hasOwnProperty(type)) {
 			if(!this.isOkCustomType(type)) {
 				this.ut._err(this.ut.errPrefix + "Invalid custom type: " + type);
 				continue;
@@ -201,15 +197,13 @@ var handyClicksPrefSvc = {
 		var p = handyClicksPrefs;
 		var sh, so, type, to, da;
 		var errors = [];
-		for(sh in p) {
-			if(!p.hasOwnProperty(sh) || !this.isOkShortcut(sh))
+		for(sh in p) if(p.hasOwnProperty(sh)) {
+			if(!this.isOkShortcut(sh))
 				continue;
 			so = p[sh];
 			if(typeof so != "object")
 				continue;
-			for(type in so) {
-				if(!so.hasOwnProperty(type))
-					continue;
+			for(type in so) if(so.hasOwnProperty(type)) {
 				to = so[type];
 				if(!this.ut.getOwnProperty(to, "enabled") || !this.ut.getOwnProperty(to, "custom"))
 					continue;
@@ -246,15 +240,15 @@ var handyClicksPrefSvc = {
 		res += "var handyClicksCustomTypes = {\n";
 		var cts = handyClicksCustomTypes;
 		this.sortObj(cts);
-		for(type in cts) {
-			if(!cts.hasOwnProperty(type) || type.indexOf("custom_") != 0)
+		for(type in cts) if(cts.hasOwnProperty(type)) {
+			if(type.indexOf("custom_") != 0)
 				continue;
 			to = cts[type];
 			if(typeof to != "object")
 				continue;
 			res += "\t" + this.fixPropName(type) + ": {\n";
-			for(pName in to) {
-				if(!to.hasOwnProperty(pName) || pName.indexOf("_") == 0)
+			for(pName in to) if(to.hasOwnProperty(pName)) {
+				if(pName.indexOf("_") == 0)
 					continue;
 				pVal = to[pName];
 				res += "\t\t" + pName + ": " + this.objToSource(pVal) + ",\n";
@@ -268,24 +262,20 @@ var handyClicksPrefSvc = {
 		res += "var handyClicksPrefs = {\n";
 		var p = handyClicksPrefs;
 		this.sortObj(p);
-		for(sh in p) {
-			if(!p.hasOwnProperty(sh) || !this.isOkShortcut(sh))
+		for(sh in p) if(p.hasOwnProperty(sh)) {
+			if(!this.isOkShortcut(sh))
 				continue;
 			so = p[sh];
 			if(!this.sortObj(so))
 				continue;
 			res += '\t"' + sh + '": {\n';
 			forcedDis = this.ut.getOwnProperty(p, sh, "$all", "enabled") == true;
-			for(type in so) {
-				if(!so.hasOwnProperty(type))
-					continue;
+			for(type in so) if(so.hasOwnProperty(type)) {
 				to = so[type];
 				if(typeof to != "object")
 					continue;
 				res += "\t\t" + this.fixPropName(type) + ": {\n";
-				for(pName in to) {
-					if(!to.hasOwnProperty(pName))
-						continue;
+				for(pName in to) if(to.hasOwnProperty(pName)) {
 					pVal = to[pName];
 					if(
 						pName == "enabled"
@@ -299,10 +289,8 @@ var handyClicksPrefSvc = {
 						if(typeof pVal != "object")
 							continue;
 						res += "\t\t\t" + pName + ": {\n";
-						for(dName in pVal) {
-							if(pVal.hasOwnProperty(dName))
+						for(dName in pVal) if(pVal.hasOwnProperty(dName))
 								res += "\t\t\t\t" + this.fixPropName(dName) + ": " + this.objToSource(pVal[dName]) + ",\n";
-						}
 						res = this.delLastComma(res) + "\t\t\t},\n";
 					}
 					else
@@ -331,9 +319,7 @@ var handyClicksPrefSvc = {
 		if(!this.ut.isObject(obj))
 			return false;
 		var arr = [], ex = {}, p;
-		for(p in obj) {
-			if(!obj.hasOwnProperty(p))
-				continue;
+		for(p in obj) if(obj.hasOwnProperty(p)) {
 			arr.push(p);
 			ex[p] = obj[p];
 			delete obj[p];

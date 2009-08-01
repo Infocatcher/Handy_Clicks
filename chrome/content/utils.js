@@ -64,6 +64,7 @@ var handyClicksUtils = {
 			 	dur: dur,
 			 	nTitle: nTitle || "", msg: msg || "",
 			 	fnc: fnc, extEnabled: extEnabled, inWindowCorner: inWindowCorner,
+			 	dontCloseUnderCursor: this.pu.pref("notifyDontCloseUnderCursor"),
 			 	__proto__: null
 			 }
 		);
@@ -280,7 +281,7 @@ var handyClicksCleanupSvc = {
 	},
 	cleanup: function() {
 		window.removeEventListener("unload", this, false);
-		this.storage.forEach(this.cleanupEntry, this);
+		this.storage && this.storage.forEach(this.cleanupEntry, this);
 		this.storage = null;
 	},
 	handleEvent: function(e) {
