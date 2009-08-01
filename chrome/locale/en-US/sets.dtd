@@ -29,11 +29,22 @@
 <!ENTITY hc.sets.clickPrefsTitle "Preferences">
 
 <!ENTITY hc.sets.enabled "Enabled">
+
 <!ENTITY hc.sets.disallowMousemove "Stop click handling when mouse mowing with holding buttons (mouse gestures)">
 <!ENTITY hc.sets.left "Left">
 <!ENTITY hc.sets.middle "Middle">
 <!ENTITY hc.sets.right "Right">
-<!ENTITY hc.sets.maxDistance "Max distance:">
+<!ENTITY hc.sets.maxDistance "Allowed distance:">
+
+<!ENTITY hc.sets.delayedActionTimeout "Timeout for delayed action:">
+<!ENTITY hc.sets.zeroForDisable "ms (0 for disable)">
+
+<!ENTITY hc.sets.notify "Notify">
+<!ENTITY hc.sets.notifyÑloseAfter "Close after">
+<!ENTITY hc.sets.notifyInWindowCorner "Show in window corner">
+<!ENTITY hc.sets.notifyDontClose "Don't close under cursor">
+
+<!ENTITY hc.sets.builtInFuncsSetsTitle "Built-in functions">
 
 <!-- Editor -->
 <!ENTITY hc.editor.title "Handy Clicks: Editor">

@@ -29,11 +29,22 @@
 <!ENTITY hc.sets.clickPrefsTitle "Настройки">
 
 <!ENTITY hc.sets.enabled "Включено">
+
 <!ENTITY hc.sets.disallowMousemove "Прекращать обработку кликов при перемещении мыши с зажатыми кнопками (жесты мышью)">
 <!ENTITY hc.sets.left "Левая">
 <!ENTITY hc.sets.middle "Средняя">
 <!ENTITY hc.sets.right "Правая">
-<!ENTITY hc.sets.maxDistance "Максимальное перемещение:">
+<!ENTITY hc.sets.maxDistance "Допустимое перемещение:">
+
+<!ENTITY hc.sets.delayedActionTimeout "Задержка отложенного действия:">
+<!ENTITY hc.sets.zeroForDisable "мс (0 для отключения)">
+
+<!ENTITY hc.sets.notify "Всплывающие сообщения">
+<!ENTITY hc.sets.closeNotifyAfter "Закрывать через">
+<!ENTITY hc.sets.notifyInWindowCorner "Показывать в углу окна">
+<!ENTITY hc.sets.notifyDontClose "Не закрывать под курсором">
+
+<!ENTITY hc.sets.builtInFuncsSetsTitle "Встроенные функции">
 
 <!-- Editor -->
 <!ENTITY hc.editor.title "Handy Clicks: Редактор">

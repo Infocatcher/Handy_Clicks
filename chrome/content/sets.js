@@ -217,9 +217,9 @@ var handyClicksSets = {
 		for(var t = 0; t < numRanges; t++) {
 			this.selection.getRangeAt(t, start, end);
 			for(var v = start.value; v <= end.value; v++) {
-				if(this.view.isContainer(v))
-					continue;
 				tRow = tRows[v];
+				if(!tRow || this.view.isContainer(v))
+					continue;
 				if(tRow.__shortcut && tRow.__itemType) {
 					tRowsArr.push(tRow); // for deleting (getElementsByTagName is dinamically)
 					tRow.__index = v;
@@ -560,7 +560,7 @@ var handyClicksSets = {
 		if(tar.localName == "menuitem")
 			tar = tar.parentNode.parentNode;
 		if(tar.hasAttribute("hc_requiredfor"))
-			this.updateDependencies(tar);
+			this.updateDependencies(tar, true);
 		if(!tar.hasAttribute("preference") && tar.localName != "checkbox")
 			return;
 		if(this.instantApply)
@@ -575,10 +575,18 @@ var handyClicksSets = {
 			this
 		);
 	},
-	updateDependencies: function(it) {
+	updateDependencies: function(it, checkAll) {
+		var checkParent = it.getAttribute("hc_checkparent") == "true";
+		if(checkParent && checkAll !== true)
+			return;
 		var dis = it.hasAttribute("hc_disabledvalues")
 			? new RegExp("(?:^|\\s)" + it.value + "(?:\\s|$)").test(it.getAttribute("hc_disabledvalues"))
-			: it.getAttribute("checked") != "true";
+			: it.hasAttribute("checked") && !checkParent
+				? it.getAttribute("checked") != "true"
+				: Array.prototype.every.call(
+					(checkParent ? it.parentNode : it).getElementsByTagName("checkbox"),
+					function(ch) { return ch.getAttribute("checked") != "true"; }
+				);
 		it.getAttribute("hc_requiredfor").split(/\s+/).forEach(
 			function(req) {
 				var deps = document.getElementsByAttribute("hc_depends", req);
@@ -725,6 +733,7 @@ var handyClicksSets = {
 	},
 	checkPrefsFile: function(file) {
 		var data = this.readFromFile(file);
+		var _data = data;
 		if(data.substr(0, 2) != "//")
 			return false;
 		var hc = /^var handyClicks[\w$]+\s*=.*$/mg;
@@ -741,7 +750,7 @@ var handyClicksSets = {
 			return false;
 		if(/\W(?:[Ff]unction|eval|Components)\W/.test(data))
 			return false;
-		this.ps._savedStr = data; // Update cache - see this.ps.saveSettings()
+		this.ps._savedStr = _data; // Update cache - see this.ps.saveSettings()
 		return true;
 	},
 	readFromFile: function(file) { // Not for UTF-8!

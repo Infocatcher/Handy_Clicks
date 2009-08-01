@@ -5,8 +5,6 @@ pref("extensions.handyclicks.enabled", true);
 pref("extensions.handyclicks.forceStopMousedownEvent", false);
 pref("extensions.handyclicks.disallowMousemoveButtons", "2");
 pref("extensions.handyclicks.disallowMousemoveDist", 12);
-pref("extensions.handyclicks.convertURIs", false); // for Windows
-pref("extensions.handyclicks.convertURIsCharset", ""); // use defaults
 pref("extensions.handyclicks.delayedActionTimeout", 500);
 
 pref("extensions.handyclicks.notifyOpenTime", 3000);
@@ -21,6 +19,9 @@ pref("extensions.handyclicks.notifyVoidLinksWithHandlers", true);
 
 pref("extensions.handyclicks.filesLinksPolicy", -1);
 pref("extensions.handyclicks.filesLinksMask", "^[^\\?]*\.(?:zip|rar|7z|gz|tar|bz2|iso|cab|exe|msi|xpi|jar)$");
+
+pref("extensions.handyclicks.convertURIs", false); // for Windows
+pref("extensions.handyclicks.convertURIsCharset", ""); // use defaults
 
 pref("extensions.handyclicks.key.toggleStatus", "VK_F2");
 pref("extensions.handyclicks.key.openSettings", "shift VK_F2");

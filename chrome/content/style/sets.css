@@ -7,6 +7,9 @@ radio[pane="hc-sets-pane-actions"] {
 radio[pane="hc-sets-pane-prefs"] {
 	list-style-image: url("prefs.png");
 }
+radio[pane="hc-sets-pane-builtInFuncsSets"] {
+	list-style-image: url("prefs2.png");
+}
 #hc-sets-tree-buttons > button {
 	margin-left: 3px;
 	margin-right: 3px;

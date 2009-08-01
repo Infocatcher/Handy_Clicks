@@ -78,44 +78,65 @@
 			<preference id="delayedActionTimeout" type="int" name="extensions.handyclicks.delayedActionTimeout" />
 			<preference id="notifyOpenTime" type="int" name="extensions.handyclicks.notifyOpenTime" />
 			<preference id="notifyInWindowCorner" type="bool" name="extensions.handyclicks.notifyInWindowCorner" />
-			<preference id="notifyVoidLinksWithHandlers" type="bool" name="extensions.handyclicks.notifyVoidLinksWithHandlers" />
+			<preference id="notifyDontCloseUnderCursor" type="bool" name="extensions.handyclicks.notifyDontCloseUnderCursor" />
+		</preferences>
+
+		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" />
+		<groupbox>
+			<caption label="&hc.sets.disallowMousemove;" />
+			<vbox>
+				<hbox hc_requiredfor="disallowMousemove">
+					<checkbox id="hc-sets-disallowMousemove-0" label="&hc.sets.left;" hc_requiredfor="disallowMousemove" hc_checkparent="true" />
+					<checkbox id="hc-sets-disallowMousemove-1" label="&hc.sets.middle;" hc_requiredfor="disallowMousemove" hc_checkparent="true" />
+					<checkbox id="hc-sets-disallowMousemove-2" label="&hc.sets.right;" hc_requiredfor="disallowMousemove" hc_checkparent="true" />
+				</hbox>
+				<hbox align="center" hc_depends="disallowMousemove">
+					<label value="&hc.sets.maxDistance;" />
+					<textbox preference="disallowMousemoveDist" type="number" min="0" max="60" increment="1" style="width: 4.5em;" />
+					<label value="px" />
+				</hbox>
+			</vbox>
+		</groupbox>
+		<hbox align="center">
+			<label value="&hc.sets.delayedActionTimeout;" hc_depends="delayedTimeout" />
+			<textbox preference="delayedActionTimeout" type="number" min="0" max="7000" increment="10" style="width: 4.5em;"
+				hc_requiredfor="delayedTimeout" hc_disabledvalues="0" />
+			<label value="&hc.sets.zeroForDisable;" hc_depends="delayedTimeout" />
+		</hbox>
+		<groupbox>
+			<caption label="&hc.sets.notify;" />
+			<hbox align="center">
+				<label value="&hc.sets.closeNotifyAfter;" hc_depends="notify" />
+				<textbox preference="notifyOpenTime" type="number" min="0" max="30000" increment="50" style="width: 5em;"
+					hc_requiredfor="notify" hc_disabledvalues="0" />
+				<label value="&hc.sets.zeroForDisable;" hc_depends="notify" />
+			</hbox>
+			<checkbox preference="notifyInWindowCorner" hc_depends="notify" label="&hc.sets.notifyInWindowCorner;" />
+			<checkbox preference="notifyDontCloseUnderCursor" hc_depends="notify" label="&hc.sets.notifyDontClose;" />
+		</groupbox>
+	</prefpane>
+
+	<prefpane id="hc-sets-pane-builtInFuncsSets" label="&hc.sets.builtInFuncsSetsTitle;" flex="1">
+		<preferences>
+			<preference id="loadJavaScriptLinks" type="bool" name="extensions.handyclicks.loadJavaScriptLinks" />
 			<preference id="notifyJavaScriptLinks" type="bool" name="extensions.handyclicks.notifyJavaScriptLinks" />
+			<preference id="loadVoidLinksWithHandlers" type="bool" name="extensions.handyclicks.loadVoidLinksWithHandlers" />
+			<preference id="notifyVoidLinksWithHandlers" type="bool" name="extensions.handyclicks.notifyVoidLinksWithHandlers" />
 			<preference id="filesLinksPolicy" type="int" name="extensions.handyclicks.filesLinksPolicy" />
 			<preference id="filesLinksMask" type="string" name="extensions.handyclicks.filesLinksMask" />
 			<preference id="convertURIs" type="bool" name="extensions.handyclicks.convertURIs" />
 			<preference id="convertURIsCharset" type="string" name="extensions.handyclicks.convertURIsCharset" />
 		</preferences>
 
-		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" />
-		<groupbox>
-			<caption label="&hc.sets.disallowMousemove;" />
-			<hbox>
-				<checkbox id="hc-sets-disallowMousemove-0" label="&hc.sets.left;" />
-				<checkbox id="hc-sets-disallowMousemove-1" label="&hc.sets.middle;" />
-				<checkbox id="hc-sets-disallowMousemove-2" label="&hc.sets.right;" />
-				<hbox align="center">
-					<label value="&hc.sets.maxDistance;" />
-					<textbox preference="disallowMousemoveDist" type="number" min="0" max="60" increment="1" style="width: 4.5em;" />
-					<label value="px" />
-				</hbox>
-			</hbox>
+		<groupbox orient="horizontal">
+			<caption label="JavaScript-links (javascript: ...)" />
+			<checkbox preference="loadJavaScriptLinks" label="Load" />
+			<checkbox preference="notifyJavaScriptLinks" hc_depends="notify" label="Notify" />
 		</groupbox>
-		<hbox align="center">
-			<label value="Timeout for delayed action:" />
-			<textbox preference="delayedActionTimeout" type="number" min="0" max="7000" increment="10" style="width: 4.5em;" />
-			<label value="ms (0 for disable)" />
-		</hbox>
-		<groupbox>
-			<caption label="Notify" />
-			<hbox align="center">
-				<label value="Open time:" />
-				<textbox preference="notifyOpenTime" type="number" min="0" max="30000" increment="50" style="width: 5em;"
-					hc_requiredfor="notify" hc_disabledvalues="0" />
-				<label value="ms (0 for disable)" />
-			</hbox>
-			<checkbox preference="notifyInWindowCorner" hc_depends="notify" label="Show in window corner" />
-			<checkbox preference="notifyVoidLinksWithHandlers" hc_depends="notify" label="Notify &quot;void&quot; links with handlers" />
-			<checkbox preference="notifyJavaScriptLinks" hc_depends="notify" label="Notify JavaScript-links (javascript: ...)" />
+		<groupbox orient="horizontal">
+			<caption label="&quot;Void&quot; links with handlers" />
+			<checkbox preference="loadVoidLinksWithHandlers" label="Load" />
+			<checkbox preference="notifyVoidLinksWithHandlers" hc_depends="notify" label="Notify" />
 		</groupbox>
 		<groupbox>
 			<caption label="File links" />
