@@ -537,7 +537,7 @@ var handyClicks = {
 			break;
 			case "tab":
 			case "tabbar":
-				var cm = document.getAnonymousElementByAttribute(getBrowser(), "anonid", "tabContextMenu");
+				var cm = document.getAnonymousElementByAttribute(gBrowser || getBrowser(), "anonid", "tabContextMenu");
 			break;
 			case "submitButton":
 				cm = null; //~ todo: SubmitToTab for Firefox 3+ => add cm

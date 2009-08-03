@@ -11,10 +11,7 @@ var handyClicksUtils = {
 		this.consoleSvc.logStringMessage(
 			this.errPrefix +
 			Array.prototype.join.call(
-				Array.prototype.map.call(
-					arguments,
-					function(s) { return "" + s; } // Convert all arguments to strings
-				),
+				Array.prototype.map.call(arguments, this.safeToString), // Convert all arguments to strings
 				"\n"
 			)
 		);
@@ -25,17 +22,28 @@ var handyClicksUtils = {
 	objProps: function(o) {
 		if(!this.isObject(o))
 			return o;
-		var r = [], own;
-		for(var p in o) {
-			own = o.hasOwnProperty(p) ? " [own]" : "";
-			try {
-				r.push(p + own + " = " + o[p]);
-			}
-			catch(e) { // var obj = { __proto__: null }; => obj.toString() is missing
-				r.push(p + own + " -> error\n\t" + e + "\n\t__proto__ = " + o[p].__proto__);
-			}
-		}
-		return r.join("\n");
+		var r = [];
+		var has = "hasOwnProperty" in o;
+		for(var p in o)
+			r.push(p + (has && o.hasOwnProperty(p) ? " [own]" : "") + " = " + this.safeToString(o[p]));
+		return r.join("\n\n");
+	},
+	objPropsMask: function(o, mask) { // mask like "id, nodeName, parentNode.id"
+		if(!this.isObject(o))
+			return o;
+		if(!mask)
+			return this.objProps(o);
+		var r = mask.split(/[,;\s]+/).map(
+			function(p) {
+				return p + " = " + this.getProperty.apply(this, [o].concat(p.split(/\s*\.\s*/)));
+			},
+			this
+		);
+		return r.join("\n\n");
+	},
+	safeToString: function(object) { // var obj = { __proto__: null }; => obj.toString() is missing
+		try { return "" + object; }
+		catch(e) { return "" + e; }
 	},
 
 	_timers: { __proto__: null },
@@ -148,7 +156,7 @@ var handyClicksUtils = {
 		catch(e) {
 			this._err(this.errPrefix + "Can't convert UTF-8 to unicode\n" + e);
 		}
-		return "";
+		return str;
 	},
 
 	isNoChromeWin: function(win) {
@@ -182,7 +190,7 @@ var handyClicksUtils = {
 		var a = arguments, p;
 		for(var i = 1, len = a.length - 1; i <= len; i++) {
 			p = a[i];
-			if(obj.__proto__ !== u && !obj.hasOwnProperty(p))
+			if(!(p in obj) || "hasOwnProperty" in obj && !obj.hasOwnProperty(p))
 				return u;
 			obj = obj[p];
 			if(i == len)

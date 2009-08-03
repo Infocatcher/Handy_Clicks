@@ -20,6 +20,8 @@ pref("extensions.handyclicks.notifyVoidLinksWithHandlers", true);
 pref("extensions.handyclicks.filesLinksPolicy", -1);
 pref("extensions.handyclicks.filesLinksMask", "^[^\\?]*\.(?:zip|rar|7z|gz|tar|bz2|iso|cab|exe|msi|xpi|jar)$");
 
+pref("extensions.handyclicks.decodeURIs", true);
+
 pref("extensions.handyclicks.convertURIs", false); // for Windows
 pref("extensions.handyclicks.convertURIsCharset", ""); // use defaults
 

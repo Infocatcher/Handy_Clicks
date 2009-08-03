@@ -40,7 +40,7 @@
 <!ENTITY hc.sets.zeroForDisable "ms (0 for disable)">
 
 <!ENTITY hc.sets.notify "Notify">
-<!ENTITY hc.sets.notifyÑloseAfter "Close after">
+<!ENTITY hc.sets.notifyCloseAfter "Close after">
 <!ENTITY hc.sets.notifyInWindowCorner "Show in window corner">
 <!ENTITY hc.sets.notifyDontClose "Don't close under cursor">
 

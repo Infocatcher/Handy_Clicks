@@ -40,7 +40,7 @@
 <!ENTITY hc.sets.zeroForDisable "мс (0 для отключения)">
 
 <!ENTITY hc.sets.notify "Всплывающие сообщения">
-<!ENTITY hc.sets.closeNotifyAfter "Закрывать через">
+<!ENTITY hc.sets.notifyCloseAfter "Закрывать через">
 <!ENTITY hc.sets.notifyInWindowCorner "Показывать в углу окна">
 <!ENTITY hc.sets.notifyDontClose "Не закрывать под курсором">
 

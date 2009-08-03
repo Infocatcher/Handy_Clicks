@@ -106,7 +106,7 @@
 		<groupbox>
 			<caption label="&hc.sets.notify;" />
 			<hbox align="center">
-				<label value="&hc.sets.closeNotifyAfter;" hc_depends="notify" />
+				<label value="&hc.sets.notifyCloseAfter;" hc_depends="notify" />
 				<textbox preference="notifyOpenTime" type="number" min="0" max="30000" increment="50" style="width: 5em;"
 					hc_requiredfor="notify" hc_disabledvalues="0" />
 				<label value="&hc.sets.zeroForDisable;" hc_depends="notify" />

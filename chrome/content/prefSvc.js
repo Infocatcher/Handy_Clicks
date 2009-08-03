@@ -363,7 +363,24 @@ var handyClicksPrefSvc = {
 		mFile.moveTo(pDir, fName + "0.js");
 		return mFile.path;
 	},
-	_savedStr: null,
+	__savedStr: null,
+	get _savedStr() {
+		return this.__savedStr;
+	},
+	set _savedStr(str) {
+		var pSvc = "handyClicksPrefSvc";
+		var wm = this.wu.wm;
+		["handyclicks:settings", "handyclicks:editor"].forEach(
+			function(winType) {
+				var ws = wm.getEnumerator(winType), w;
+				while(ws.hasMoreElements()) {
+					w = ws.getNext();
+					if(pSvc in w)
+						w[pSvc].__savedStr = str;
+				}
+			}
+		);
+	},
 	saveSettings: function(str) {
 		if(str == this._savedStr)
 			return;

@@ -480,7 +480,7 @@ var handyClicksEditor = {
 			_ffe.time = Date.now();
 			return;
 		}
-		else if(Date.now() - _ffe.time > 50)
+		else if(!("time" in _ffe) || Date.now() - _ffe.time > 50)
 			return;
 		// tab seleted ... < 50 ms ... textbox focused
 		var fe = document.commandDispatcher.focusedElement;

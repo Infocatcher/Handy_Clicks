@@ -47,6 +47,8 @@ var handyClicksFuncs = {
 			? this.forEachTab(this.getTabUri).join("\n")
 			: this.getUriOfItem() || "";
 		if(link) {
+			if(this.pu.pref("decodeURIs"))
+				link = this.losslessDecodeURI(link);
 			this.copyStr(link);
 			this.hc.blinkNode();
 		}
@@ -605,7 +607,7 @@ var handyClicksFuncs = {
 			this.ut._err(this.ut.errPrefix + "Can't get URI of item (" + this.hc.itemType + ")");
 			return;
 		}
-		this.addAppsProps(items, this.decodeUri(uri), checkFiles);
+		this.addAppsProps(items, this.losslessDecodeURI(uri), checkFiles);
 		var popup = this.showGeneratedPopup(items);
 		popup.setAttribute("oncommand", "handyClicksFuncs.openUriWithApp(event, this);");
 		popup.hc_uri = this.convertStrFromUnicode(uri);
@@ -760,10 +762,11 @@ var handyClicksFuncs = {
 		args.push(popup.hc_uri);
 		this.startProcess(tar.hc_path, args);
 	},
-	decodeUri: function(value) { // code by Ex Bookmark Properties ( https://addons.mozilla.org/firefox/addon/7396 )
+	losslessDecodeURI: function(value) {
 		if(!value)
 			return "";
-		// return decodeURIComponent(value);
+		// chrome://browser/content/browser.js, function losslessDecodeURI() in Firefox 3.0+
+
 		// Try to decode as UTF-8 if there's no encoding sequence that we would break.
 		if(!/%25(?:3B|2F|3F|3A|40|26|3D|2B|24|2C|23)/i.test(value))
 			try {
@@ -776,15 +779,18 @@ var handyClicksFuncs = {
 					// 2. Re-encode whitespace so that it doesn't get eaten away
 					//    by the location bar (bug 410726).
 					.replace(/%(?!3B|2F|3F|3A|40|26|3D|2B|24|2C|23)|[\r\n\t]/ig, encodeURIComponent);
-			}
-			catch (e) {
-			}
+			} catch (e) {}
+
+		// Encode invisible characters (soft hyphen, zero-width space, BOM,
+		// line and paragraph separator, word joiner, invisible times,
+		// invisible separator, object replacement character) (bug 452979)
+		value = value.replace(/[\v\x0c\x1c\x1d\x1e\x1f\u00ad\u200b\ufeff\u2028\u2029\u2060\u2062\u2063\ufffc]/g, encodeURIComponent);
+
 		// Encode bidirectional formatting characters.
 		// (RFC 3987 sections 3.2 and 4.1 paragraph 6)
 		value = value.replace(/[\u200e\u200f\u202a\u202b\u202c\u202d\u202e]/g, encodeURIComponent);
 		return value;
 	},
-
 	setPrefs: function(prefsObj) {
 		var origs = { __proto__: null };
 		for(var p in prefsObj) if(prefsObj.hasOwnProperty(p)) {
