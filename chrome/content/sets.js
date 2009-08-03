@@ -70,15 +70,15 @@ var handyClicksSets = {
 	highlightAllOpened: function() {
 		for(var rowId in this.rowsCache)
 			this.setRowStatus(rowId, false);
-
 		var wProp = this.wu.winIdProp;
-		var ws = this.wu.wm.getEnumerator("handyclicks:editor");
-		var w;
-		while(ws.hasMoreElements()) {
-			w = ws.getNext();
-			if(wProp in w)
-				this.setRowStatus(w[wProp], true);
-		}
+		this.wu.forEachWindow(
+			"handyclicks:editor",
+			function(w) {
+				if(wProp in w)
+					this.setRowStatus(w[wProp], true);
+			},
+			this
+		);
 	},
 	redrawTree: function() {
 		var cnt = this.content;

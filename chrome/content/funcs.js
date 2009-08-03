@@ -325,7 +325,7 @@ var handyClicksFuncs = {
 		var hnds = [];
 		["onmousedown", "onmouseup", "onclick"].forEach(
 			function(h) {
-				if(h in item && typeof item[h] == "function")
+				if(h in item)
 					hnds.push(h);
 			}
 		);

@@ -330,18 +330,14 @@ var handyClicksPrefSvc = {
 		return true;
 	},
 	reloadSettings: function(reloadAll) {
-		var wm = this.wu.wm;
 		var pSvc = "handyClicksPrefSvc";
-		["navigator:browser", "handyclicks:settings", "handyclicks:editor"].forEach(
-			function(winType) {
-				var ws = wm.getEnumerator(winType), w;
-				while(ws.hasMoreElements()) {
-					w = ws.getNext();
-					if(!(pSvc in w) || (!reloadAll && w === window))
-						continue;
-					w[pSvc].loadSettings();
-					w[pSvc].notifyObservers();
-				}
+		this.wu.forEachWindow(
+			["navigator:browser", "handyclicks:settings", "handyclicks:editor"],
+			function(w) {
+				if(!(pSvc in w) || (!reloadAll && w === window))
+					return;
+				w[pSvc].loadSettings();
+				w[pSvc].notifyObservers();
 			}
 		);
 	},
@@ -369,15 +365,11 @@ var handyClicksPrefSvc = {
 	},
 	set _savedStr(str) {
 		var pSvc = "handyClicksPrefSvc";
-		var wm = this.wu.wm;
-		["handyclicks:settings", "handyclicks:editor"].forEach(
-			function(winType) {
-				var ws = wm.getEnumerator(winType), w;
-				while(ws.hasMoreElements()) {
-					w = ws.getNext();
-					if(pSvc in w)
-						w[pSvc].__savedStr = str;
-				}
+		this.wu.forEachWindow(
+			["handyclicks:settings", "handyclicks:editor"],
+			function(w) {
+				if(pSvc in w)
+					w[pSvc].__savedStr = str;
 			}
 		);
 	},

@@ -1,4 +1,5 @@
 var handyClicksWinUtils = {
+	ut: handyClicksUtils,
 	get wm() {
 		delete this.wm;
 		return this.wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
@@ -18,13 +19,25 @@ var handyClicksWinUtils = {
 			return win.openDialog.apply(win, args);
 		}
 	},
+	forEachWindow: function(winTypes, func, context) {
+		var wm = this.wm;
+		(this.ut.isArray(winTypes) ? winTypes : [winTypes]).forEach(
+			function(winType) {
+				var ws = wm.getEnumerator(winType), w;
+				while(ws.hasMoreElements()) {
+					w = ws.getNext();
+					func.call(context || w, w);
+				}
+			}
+		);
+	},
 	maximizeWindow: function(win) {
 		win = win || top;
 		if("fullScreen" in win)
 			win.fullScreen = false;
 		switch(win.windowState) {
-			case 1: win.restore(); break;
-			case 3: win.maximize();
+			case win.STATE_MAXIMIZED: win.restore(); break;
+			case win.STATE_NORMAL:    win.maximize();
 		}
 	},
 	toggleFullscreen: function(win) {
@@ -32,7 +45,7 @@ var handyClicksWinUtils = {
 		if("fullScreen" in win)
 			win.fullScreen = !win.fullScreen; // Firefox 3.0+
 	},
-	winIdProp: "__handyClicksWinId",
+	winIdProp: "__handyClicks__winId",
 	openEditor: function(mode, shortcut, itemType) {
 		var winId = mode == "itemType" ? itemType : shortcut + "-" + itemType;
 		var wProp = this.winIdProp;
