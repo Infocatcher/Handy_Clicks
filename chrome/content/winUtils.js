@@ -1,11 +1,10 @@
 var handyClicksWinUtils = {
-	ut: handyClicksUtils,
 	get wm() {
 		delete this.wm;
 		return this.wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
 			.getService(Components.interfaces.nsIWindowMediator);
 	},
-	openWindowByType: function(win, uri, type, features/*, arg0, arg1, ...*/) {
+	openWindowByType: function _ow(win, uri, type, features/*, arg0, arg1, ...*/) {
 		var w = this.wm.getMostRecentWindow(type);
  		if(w) {
  			w.focus();
@@ -13,7 +12,7 @@ var handyClicksWinUtils = {
  		}
 		else {
 			var args = [uri, "_blank", features || "chrome,centerscreen,resizable,dialog=0"];
-			for(var i = 4, len = arguments.length; i < len; i++)
+			for(var i = _ow.length, len = arguments.length; i < len; i++)
 				args.push(arguments[i]);
 			win = win || window;
 			return win.openDialog.apply(win, args);

@@ -1,12 +1,4 @@
 var handyClicks = {
-	// Shortcuts:
-	ut: handyClicksUtils,
-	cs: handyClicksCleanupSvc,
-	wu: handyClicksWinUtils,
-	pu: handyClicksPrefUtils,
-	ps: handyClicksPrefSvc,
-	get fn() { return handyClicksFuncs; },
-
 	_editMode: false,
 	get editMode() {
 		return this._editMode;
@@ -38,13 +30,11 @@ var handyClicks = {
 
 	// Initialization:
 	init: function() {
-		window.removeEventListener("load", this, false);
 		this.ps.loadSettings();
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], true);
 		this.pu.addPrefsObserver(this.updUI, this);
 		this.setStatus();
 		this.registerHotkeys();
-		this.cs.registerCleanup(this.destroy, this);
 	},
 	destroy: function() {
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
@@ -307,8 +297,8 @@ var handyClicks = {
 			+ ",meta=" + e.metaKey;
 	},
 	getSettings: function(str) {
-		return handyClicksPrefs.hasOwnProperty(str)
-			? handyClicksPrefs[str]
+		return this.ps.prefs.hasOwnProperty(str)
+			? this.ps.prefs[str]
 			: this.editMode
 				? {}
 				: null;
@@ -325,14 +315,14 @@ var handyClicks = {
 		var _it, _itln;
 
 		// Custom:
-		var cts = handyClicksCustomTypes, ct;
+		var cts = this.ps.types, ct;
 		var errors = [];
 		for(var type in cts) if(cts.hasOwnProperty(type)) {
-			ct = cts[type];
 			if(
 				(all || this.itemTypeInSets(sets, type))
 				&& this.isOkCustomType(type)
 			) {
+				ct = cts[type];
 				try {
 					_it = ct._define.call(this, e, it);
 				}
@@ -493,15 +483,11 @@ var handyClicks = {
 	itemTypeInSets: function(sets, iType) {
 		return sets.hasOwnProperty(iType) && this.isOkFuncObj(sets[iType]);
 	},
-	isOkFuncObj: function(fObj) { // funcObj && funcObj.enabled && funcObj.action
+	isOkFuncObj: function(fObj) {
 		return this.ps.isOkFuncObj(fObj) && fObj.enabled;
 	},
 	isOkCustomType: function(cType) {
-		var cts = handyClicksCustomTypes;
-		if(!cts.hasOwnProperty(cType))
-			return false;
-		var ct = cts[cType];
-		return typeof ct == "object" && ct.hasOwnProperty("_initialized");
+		return this.ps.isOkCustomType(cType) && this.ps.types[cType].hasOwnProperty("_initialized");
 	},
 	hasParent: function(it, id) {
 		it = it.parentNode;
@@ -545,7 +531,7 @@ var handyClicks = {
 			default: // custom types
 				if(!this.isOkCustomType(this.itemType))
 					break;
-				var ct = handyClicksCustomTypes[this.itemType];
+				var ct = this.ps.types[this.itemType];
 				var _cm = ct._contextMenu;
 				if(_cm) {
 					try {
@@ -790,12 +776,13 @@ var handyClicks = {
 			}
 		}
 
+		var eStr = this.getEvtStr(e || this.copyOfEvent);
 		this.ut._log(
 			(e ? e.type : "delayedAction")
-			+ " => executeFunction() -> " + this.origItem
-			+ "\nlocalName -> " + this.origItem.localName
-			+ ", itemType -> " + this.itemType
-			+ (e ? ", button -> " + e.button : "")
+			+ " -> " + this.ps.getModifiersStr(eStr) + " + " + this.ps.getLocaleButtonStr(eStr, true)
+			+ "\n=> executeFunction()"
+			+ "\nnodeName = " + this.origItem.nodeName
+			+ ", itemType = " + this.itemType
 			+ "\n=> " + (funcObj.custom ? (this.ps.dec(funcObj.label) || action) : funcObj.action)
 		);
 	},
@@ -884,4 +871,3 @@ var handyClicks = {
 		kElt.setAttribute("modifiers", modifiers);
 	}
 };
-window.addEventListener("load", handyClicks, false);

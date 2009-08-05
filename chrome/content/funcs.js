@@ -1,11 +1,4 @@
 var handyClicksFuncs = {
-	// Shortcuts:
-	ut: handyClicksUtils,
-	cs: handyClicksCleanupSvc,
-	pu: handyClicksPrefUtils,
-	ps: handyClicksPrefSvc,
-	hc: handyClicks,
-
 	relativeIndex: 0,
 
 	isVoidURI: function(uri) {

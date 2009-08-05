@@ -17,7 +17,6 @@
 	buttons="accept,cancel,extra1,extra2"
 	buttonlabelextra1="&hc.editor.apply;"
 	buttonlabelextra2="&hc.editor.delete;"
-	onload="handyClicksEditor.init();"
 	ondialogaccept="return handyClicksEditor.saveSettings();"
 	ondialogextra1="handyClicksEditor.saveSettings();"
 	ondialogextra2="handyClicksEditor.deleteSettings();"
@@ -25,7 +24,6 @@
 	oncommand="handyClicksEditor.alloyApply(event);"
 	oninput="handyClicksEditor.alloyApply(event);"
 	ondragexit="handyClicksEditor.alloyApply(event);"
-	onunload="handyClicksEditor.destroy();"
 	width="700"
 	height="450"
 	persist="width height screenX screenY">
@@ -35,6 +33,7 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefUtils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefSvc.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/editor.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/regSvc.js" />
 
 	<keyset id="hc-editor-keys">
 		<key key="s" modifiers="control" id="hc-editor-keyApply" oncommand="handyClicksEditor.saveSettings();" />

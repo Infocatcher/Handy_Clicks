@@ -17,6 +17,7 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefSvc.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/handyclicks.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/funcs.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/regSvc.js" />
 
 	<script type="application/x-javascript"><![CDATA[
 	function handyClicksReloadScripts() {
@@ -24,13 +25,13 @@
 			.getService(Components.interfaces.mozIJSSubScriptLoader);
 		var path = "chrome://handyclicks/content/";
 		try {
-			handyClicksCleanupSvc.cleanup();
+			handyClicksRegSvc.destroy();
 			var t = Date.now();
-			["utils", "winUtils", "prefUtils", "prefSvc", "handyclicks", "funcs"].forEach(
+			["utils", "winUtils", "prefUtils", "prefSvc", "handyclicks", "funcs", "regSvc"].forEach(
 				function(n) { jsLoader.loadSubScript(path + n + ".js"); }
 			);
-			handyClicks.init();
-			handyClicks.setEditModeStatus();
+			handyClicksRegSvc.init();
+			handyClicks.setEditModeStatus(); // upd UI
 			handyClicksUtils._log("Scripts was successfully reloaded! " + (Date.now() - t) + "ms");
 		}
 		catch(e) {

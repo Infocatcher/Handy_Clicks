@@ -20,7 +20,6 @@
 	buttonlabelextra2="&hc.sets.settings;"
 	ondialogaccept="handyClicksSets.savePrefs();"
 	ondialogextra1="handyClicksSets.savePrefs(true);"
-	onload="handyClicksSets.init();"
 	oncommand="handyClicksSets.prefsChanged(event);"
 	onchange="handyClicksSets.prefsChanged(event);"
 	oninput="handyClicksSets.prefsChanged(event);"
@@ -165,6 +164,7 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefUtils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefSvc.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/sets.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/regSvc.js" />
 
 	<commandset id="hc-sets-cmds">
 		<command id="hc-sets-cmd-add" oncommand="handyClicksSets.addItems();" label="&hc.sets.cmdAdd;" />

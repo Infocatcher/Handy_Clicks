@@ -1,11 +1,4 @@
 var handyClicksPrefSvc = {
-	__proto__: new HandyClicksObservers(), // Add observers interface
-
-	// Shortcuts:
-	ut: handyClicksUtils,
-	pu: handyClicksPrefUtils,
-	wu: handyClicksWinUtils,
-
 	version: 0.12,
 	get currentVersion() {
 		return "handyClicksPrefsVersion" in window ? handyClicksPrefsVersion : 0;
@@ -73,10 +66,15 @@ var handyClicksPrefSvc = {
 			this.loadSettingsBackup();
 			return;
 		}
-		if(typeof window.handyClicksPrefs != "object" || typeof window.handyClicksCustomTypes != "object") {
+		if(
+			!("handyClicksPrefs" in window) || !this.ut.isObject(handyClicksPrefs)
+			|| !("handyClicksCustomTypes" in window) || !this.ut.isObject(handyClicksCustomTypes)
+		) {
 			this.loadSettingsBackup();
 			return;
 		}
+		this.prefs = handyClicksPrefs;
+		this.types = handyClicksCustomTypes;
 		var vers = this.currentVersion;
 		if(vers < this.version) {
 			this.convertSetsFormat(vers);
@@ -117,7 +115,7 @@ var handyClicksPrefSvc = {
 		this.prefsFile.moveTo(null, this.prefsFileName + this.names.version + vers + ".js");
 		if(vers < 0.11) { // "closePopups" instead of "hidePopup" in arguments
 			//= Expires after 2009.08.30
-			var p = handyClicksPrefs;
+			var p = this.prefs;
 			var sh, so, type, to, pName, pVal;
 			for(sh in p) if(p.hasOwnProperty(sh)) {
 				if(!this.isOkShortcut(sh))
@@ -161,7 +159,7 @@ var handyClicksPrefSvc = {
 		this.ut._log("Format of prefs file updated: " + vers + " => " + this.version);
 	},
 	compileCystomTypes: function() {
-		var cts = handyClicksCustomTypes, ct;
+		var cts = this.types, ct;
 		var df, cm;
 		for(var type in cts) if(cts.hasOwnProperty(type)) {
 			if(!this.isOkCustomType(type)) {
@@ -194,7 +192,7 @@ var handyClicksPrefSvc = {
 		}
 	},
 	initCustomFuncs: function() {
-		var p = handyClicksPrefs;
+		var p = this.prefs;
 		var sh, so, type, to, da;
 		var errors = [];
 		for(sh in p) if(p.hasOwnProperty(sh)) {
@@ -238,7 +236,7 @@ var handyClicksPrefSvc = {
 		var forcedDis;
 
 		res += "var handyClicksCustomTypes = {\n";
-		var cts = handyClicksCustomTypes;
+		var cts = this.types;
 		this.sortObj(cts);
 		for(type in cts) if(cts.hasOwnProperty(type)) {
 			if(type.indexOf("custom_") != 0)
@@ -260,7 +258,7 @@ var handyClicksPrefSvc = {
 		res = this.delLastComma(res) + "};\n";
 
 		res += "var handyClicksPrefs = {\n";
-		var p = handyClicksPrefs;
+		var p = this.prefs;
 		this.sortObj(p);
 		for(sh in p) if(p.hasOwnProperty(sh)) {
 			if(!this.isOkShortcut(sh))
@@ -395,18 +393,24 @@ var handyClicksPrefSvc = {
 	isOkFuncObj: function(fObj) {
 		return typeof fObj == "object"
 			&& fObj !== null
+			&& "hasOwnProperty" in fObj
+			&& fObj.hasOwnProperty("enabled")
 			&& typeof fObj.enabled == "boolean"
+			&& fObj.hasOwnProperty("eventType")
 			&& typeof fObj.eventType == "string"
+			&& fObj.hasOwnProperty("action")
 			&& typeof fObj.action == "string";
 	},
 	isOkCustomType: function(cType) {
-		var cts = handyClicksCustomTypes;
-		if(!cts.hasOwnProperty(cType))
+		var cts = this.types;
+		if(!("hasOwnProperty" in cts) || !cts.hasOwnProperty(cType))
 			return false;
 		var ct = cts[cType];
 		return typeof ct == "object"
 			&& ct !== null
+			&& "hasOwnProperty" in ct
 			&& ct.hasOwnProperty("enabled")
+			&& typeof ct.enabled == "boolean"
 			&& ct.hasOwnProperty("define")
 			&& typeof ct.define == "string"
 			&& ct.hasOwnProperty("contextMenu");
@@ -438,4 +442,3 @@ var handyClicksPrefSvc = {
 		return sh ? sh : this.ut.getLocalized("none");
 	}
 };
-//handyClicksPrefSvc.loadSettings();

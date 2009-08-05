@@ -1,9 +1,4 @@
 var handyClicksEditor = {
-	// Shortcuts:
-	ut: handyClicksUtils,
-	wu: handyClicksWinUtils,
-	ps: handyClicksPrefSvc,
-
 	types: {
 		checkboxes: {
 			__proto__: null,
@@ -136,7 +131,7 @@ var handyClicksEditor = {
 		document.title = document.title.replace(/\s+\[.+\]$/, "") + t;
 	},
 	initShortcutEditor: function() {
-		var setsObj = this.ut.getOwnProperty(handyClicksPrefs, this.shortcut, this.type) || {};
+		var setsObj = this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
 		this.initFuncEditor(setsObj, "");
 		this.$("hc-editor-events").value = setsObj.eventType || "click";
 
@@ -190,7 +185,7 @@ var handyClicksEditor = {
 		cType = cType || (sItem ? sItem.value : null);
 		var enabledElt = this.$("hc-editor-customTypeEnabled");
 		enabledElt.checked = true;
-		var cts = handyClicksCustomTypes;
+		var cts = this.ps.types;
 		if(!cType || !cts.hasOwnProperty(cType))
 			return;
 		var ct = cts[cType] || {};
@@ -240,7 +235,7 @@ var handyClicksEditor = {
 		var parent = sep.parentNode;
 		var tList = this.$("hc-editor-customTypePopup");
 		this.delCustomTypes();
-		var cTypes = window.handyClicksCustomTypes || {};
+		var cTypes = this.ps.types;
 		var mi, _mi, typeObj, dis;
 		var hideSep = true;
 		for(var cType in cTypes) if(cTypes.hasOwnProperty(cType)) {
@@ -275,7 +270,7 @@ var handyClicksEditor = {
 		);
 	},
 	highlightUsedTypes: function() {
-		var so = this.ut.getOwnProperty(handyClicksPrefs, this.currentShortcut);
+		var so = this.ut.getOwnProperty(this.ps.prefs, this.currentShortcut);
 		var ml = this.$("hc-editor-itemTypes");
 		Array.prototype.forEach.call(
 			ml.getElementsByTagName("menuitem"),
@@ -353,7 +348,7 @@ var handyClicksEditor = {
 		var ignoreLinks = this.$("hc-editor-imgIgnoreLinks");
 		ignoreLinks.hidden = !isImg;
 		if(isImg) {
-			var setsObj = (handyClicksPrefs[this.shortcut] || {})[iType] || {};
+			var setsObj = (this.ps.prefs[this.shortcut] || {})[iType] || {};
 			ignoreLinks.checked = typeof setsObj.ignoreLinks == "boolean" ? setsObj.ignoreLinks : false;
 		}
 	},
@@ -385,7 +380,7 @@ var handyClicksEditor = {
 		);
 	},
 	addArgControls: function(arg, delayed) {
-		var setsObj = this.ut.getOwnProperty(handyClicksPrefs, this.shortcut, this.type) || {};
+		var setsObj = this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
 		if(delayed)
 			setsObj = this.ut.getOwnProperty(setsObj, "delayedAction") || {};
 		var cArgVal = typeof setsObj == "object"
@@ -536,7 +531,7 @@ var handyClicksEditor = {
 			return false;
 		}
 
-		var p = handyClicksPrefs;
+		var p = this.ps.prefs;
 		if(!p.hasOwnProperty(sh) || !this.ut.isObject(p[sh]))
 			p[sh] = {};
 		var po = p[sh];
@@ -554,8 +549,8 @@ var handyClicksEditor = {
 		}
 
 		this.ps.saveSettingsObjects(true);
-		this.$("hc-editor-enabled").checked = this.ut.getOwnProperty(handyClicksPrefs, sh, type, "enabled");
-		var dae = this.ut.getOwnProperty(handyClicksPrefs, sh, type, "delayedAction", "enabled");
+		this.$("hc-editor-enabled").checked = this.ut.getOwnProperty(this.ps.prefs, sh, type, "enabled");
+		var dae = this.ut.getOwnProperty(this.ps.prefs, sh, type, "delayedAction", "enabled");
 		this.$("hc-editor-enabled" + this.delayId).checked = typeof dae == "boolean" ? dae : true;
 		this.applyButton.disabled = true;
 		return true;
@@ -597,7 +592,7 @@ var handyClicksEditor = {
 		return so;
 	},
 	deleteShortcut: function() {
-		delete handyClicksPrefs[this.currentShortcut];
+		delete this.ps.prefs[this.currentShortcut];
 		this.ps.saveSettingsObjects();
 		this.applyButton.disabled = true;
 	},
@@ -614,7 +609,7 @@ var handyClicksEditor = {
 		}
 		cType = "custom_" + cType;
 
-		var cts = handyClicksCustomTypes;
+		var cts = this.ps.types;
 		var ct = cts[cType] || {};
 		var curEnabl = ct.enabled || false;
 		var newEnabl = this.$("hc-editor-customTypeEnabled").checked;
@@ -642,7 +637,7 @@ var handyClicksEditor = {
 		return true;
 	},
 	deleteCustomType: function() {
-		delete handyClicksCustomTypes["custom_" + this.$("hc-editor-customTypeExtId").value];
+		delete this.ps.types["custom_" + this.$("hc-editor-customTypeExtId").value];
 		this.ps.saveSettingsObjects();
 		this.applyButton.disabled = true;
 		this.appendTypesList();

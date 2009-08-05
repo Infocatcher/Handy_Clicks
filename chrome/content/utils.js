@@ -1,5 +1,4 @@
 var handyClicksUtils = {
-	get pu() { return handyClicksPrefUtils; },
 	errPrefix: "[Handy Clicks]: ",
 
 	get consoleSvc() {
@@ -19,26 +18,24 @@ var handyClicksUtils = {
 	get _err() {
 		return Components.utils.reportError;
 	},
-	objProps: function(o) {
-		if(!this.isObject(o))
-			return o;
-		var r = [];
-		var has = "hasOwnProperty" in o;
-		for(var p in o)
-			r.push(p + (has && o.hasOwnProperty(p) ? " [own]" : "") + " = " + this.safeToString(o[p]));
-		return r.join("\n\n");
-	},
-	objPropsMask: function(o, mask) { // mask like "id, nodeName, parentNode.id"
+	objProps: function(o, mask) { // mask like "id, nodeName, parentNode.id"
 		if(!this.isObject(o))
 			return o;
 		if(!mask)
-			return this.objProps(o);
+			return this._objProps(o);
 		var r = mask.split(/[,;\s]+/).map(
 			function(p) {
 				return p + " = " + this.getProperty.apply(this, [o].concat(p.split(/\s*\.\s*/)));
 			},
 			this
 		);
+		return r.join("\n\n");
+	},
+	_objProps: function(o) {
+		var r = [];
+		var has = "hasOwnProperty" in o;
+		for(var p in o)
+			r.push(p + (has && o.hasOwnProperty(p) ? " [own]" : "") + " = " + this.safeToString(o[p]));
 		return r.join("\n\n");
 	},
 	safeToString: function(object) { // var obj = { __proto__: null }; => obj.toString() is missing
@@ -239,11 +236,10 @@ HandyClicksObservers.prototype = {
 };
 
 var handyClicksCleanupSvc = {
-	ut: handyClicksUtils,
-	get storage() {
-		window.addEventListener("unload", this, false);
-		delete this.storage;
-		return this.storage = [];
+	storage: [],
+	destroy: function() {
+		this.storage.forEach(this.cleanupEntry, this);
+		this.storage = [];
 	},
 	registerCleanup: function(cFunc, context, args, node) {
 		this.storage.push([cFunc, context, args]);
@@ -286,14 +282,5 @@ var handyClicksCleanupSvc = {
 		catch(e) {
 			this.ut._err(e);
 		}
-	},
-	cleanup: function() {
-		window.removeEventListener("unload", this, false);
-		this.storage && this.storage.forEach(this.cleanupEntry, this);
-		this.storage = null;
-	},
-	handleEvent: function(e) {
-		if(e.type == "unload")
-			this.cleanup(e);
 	}
 };

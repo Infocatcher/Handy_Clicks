@@ -1,10 +1,4 @@
 var handyClicksSets = {
-	// Shortcuts:
-	ut: handyClicksUtils,
-	wu: handyClicksWinUtils,
-	pu: handyClicksPrefUtils,
-	ps: handyClicksPrefSvc,
-
 	init: function() {
 		this.ps.loadSettings();
 		this.initShortcuts();
@@ -53,7 +47,7 @@ var handyClicksSets = {
 	drawTree: function() {
 		this.DOMCache = { __proto__: null };
 		this.rowsCache = { __proto__: null };
-		var p = handyClicksPrefs;
+		var p = this.ps.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
 			if(!this.ps.isOkShortcut(sh) || !this.ut.isObject(p[sh])) {
 				this.ut._err(this.ut.errPrefix + "Invalid shortcut in prefs: " + sh);
@@ -125,7 +119,7 @@ var handyClicksSets = {
 			this.addProperties(chBox, { hc_editable: true });
 
 			isBuggy = !this.ps.isOkFuncObj(it)
-				|| (isCustomType && !handyClicksCustomTypes.hasOwnProperty(itemType));
+				|| (isCustomType && !this.ps.types.hasOwnProperty(itemType));
 			this.addProperties(tRow, { hc_disabled: !it.enabled, hc_buggy: isBuggy, hc_custom: isCustom || isCustomType });
 
 			tRow.__shortcut = shortcut;
@@ -137,7 +131,7 @@ var handyClicksSets = {
 		}
 	},
 	getCustomTypeLabel: function(type) {
-		var ct = this.ut.getOwnProperty(handyClicksCustomTypes, type) || {};
+		var ct = this.ut.getOwnProperty(this.ps.types, type) || {};
 		var label = this.ut.getOwnProperty(ct, "label");
 		return (label ? this.ps.dec(label) + " " : "") + "(" + type + ")";
 	},
@@ -296,7 +290,7 @@ var handyClicksSets = {
 				var type = tRow.__itemType.indexOf("custom_") == 0
 					? this.getCustomTypeLabel(tRow.__itemType)
 					: this.ut.getLocalized(tRow.__itemType);
-				var fObj = this.ut.getOwnProperty(handyClicksPrefs, tRow.__shortcut, tRow.__itemType);
+				var fObj = this.ut.getOwnProperty(this.ps.prefs, tRow.__shortcut, tRow.__itemType);
 				var label = typeof fObj == "object"
 					? this.ut.getOwnProperty(fObj, "custom")
 						? this.ps.dec(fObj.label || "")
@@ -326,7 +320,7 @@ var handyClicksSets = {
 		var type = tRow.__itemType;
 		if(!sh || !type)
 			return;
-		var p = handyClicksPrefs;
+		var p = this.ps.prefs;
 		var so = p[sh];
 		delete so[type];
 		if(this.isEmptyObj(so))
@@ -410,7 +404,7 @@ var handyClicksSets = {
 		this.addProperties(tRow, { disabled: !enabled });
 		var tCell = tRow.getElementsByTagName("treecell")[column.index];
 		tCell.setAttribute("value", enabled);
-		handyClicksPrefs[tRow.__shortcut][tRow.__itemType].enabled = enabled;
+		this.ps.prefs[tRow.__shortcut][tRow.__itemType].enabled = enabled;
 		return true;
 	},
 	selectAll: function() {
