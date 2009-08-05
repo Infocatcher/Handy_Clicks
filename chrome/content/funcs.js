@@ -177,7 +177,7 @@ var handyClicksFuncs = {
 			case "last":     ind = tbr.browsers.length;           break;
 			case "relative": ind = curInd + ++this.relativeIndex; break;
 			default:
-				this.ut._err(this.ut.errPrefix + "openUriInTab -> invalid moveTo argument: " + moveTo);
+				this.ut._err(new Error("openUriInTab -> invalid moveTo argument: " + moveTo));
 				return;
 		}
 		if(
@@ -277,10 +277,10 @@ var handyClicksFuncs = {
 			//not needed?//_this.hc.flags.stopContextMenu = true;
 
 			_this.hc._enabled = false;
-			evts.forEach(function(evt) { evt(); });
+			evts();
 			_this.hc._enabled = true;
+			_this.hc.skipFlagsDelay();
 
-			//not needed?//_this.hc.skipFlagsDelay();
 			_this.restorePrefs(origPrefs);
 		}
 		var load = this.pu.pref("loadVoidLinksWithHandlers");
@@ -295,12 +295,15 @@ var handyClicksFuncs = {
 			_f();
 	},
 	createEvents: function(origEvent, item, evtTypes) {
-		return evtTypes.map(
+		var evts = evtTypes.map(
 			function(evtType) {
 				return this.createEvent(origEvent, item, evtType);
 			},
 			this
 		);
+		return function() {
+			evts.forEach(function(evt) { item.dispatchEvent(evt); });
+		};
 	},
 	createEvent: function(origEvent, item, evtType) {
 		item = item || origEvent.originalTarget;
@@ -311,7 +314,7 @@ var handyClicksFuncs = {
 			false, false, false, false,
 			0, null
 		);
-		return function() { item.dispatchEvent(evt) };
+		return evt;
 	},
 	getItemHandlers: function(item) {
 		item = (item || this.hc.item).wrappedJSObject;
@@ -434,7 +437,7 @@ var handyClicksFuncs = {
 				wNew = window.outerWidth, hNew = window.outerHeight;
 			break;
 			default:
-				this.ut._err(this.ut.errPrefix + "openUriInWindow -> invalid moveTo argument: " + moveTo);
+				this.ut._err(new Error("openUriInWindow -> invalid moveTo argument: " + moveTo));
 				return;
 		}
 		if(xCur !== undefined && yCur !== undefined)
@@ -521,7 +524,7 @@ var handyClicksFuncs = {
 	downloadWithFlashGot: function(e, item) {
 		item = item || this.hc.item;
 		if(typeof gFlashGot == "undefined") {
-			this.ut._err(this.ut.errPrefix + "Missing FlashGot extension ( https://addons.mozilla.org/firefox/addon/220 )");
+			this.ut._err(new Error("Missing FlashGot extension ( https://addons.mozilla.org/firefox/addon/220 )"), true);
 			return;
 		}
 		document.popupNode = item;
@@ -532,7 +535,7 @@ var handyClicksFuncs = {
 		uri = uri || this.getUriOfItem(this.hc.item);
 		win = win || this.hc.item.ownerDocument.defaultView;
 		if(typeof SplitBrowser == "undefined") {
-			this.ut._err(this.ut.errPrefix + "Missing Split Browser extension ( https://addons.mozilla.org/firefox/addon/4287 )");
+			this.ut._err(new Error("Missing Split Browser extension ( https://addons.mozilla.org/firefox/addon/4287 )"), true);
 			return;
 		}
 		SplitBrowser.addSubBrowser(uri, null, SplitBrowser["POSITION_" + position]);
@@ -597,7 +600,7 @@ var handyClicksFuncs = {
 	showOpenUriWithAppsPopup: function(items, checkFiles) {
 		var uri = this.getUriOfItem();
 		if(!uri) {
-			this.ut._err(this.ut.errPrefix + "Can't get URI of item (" + this.hc.itemType + ")");
+			this.ut._err(new Error("Can't get URI of item (" + this.hc.itemType + ")"));
 			return;
 		}
 		this.addAppsProps(items, this.losslessDecodeURI(uri), checkFiles);
@@ -657,7 +660,7 @@ var handyClicksFuncs = {
 		if(upCount) {
 			_path = pathStart.replace(new RegExp("(?:[^\\/\\\\]+[\\/\\\\]){" + upCount + "}$"), "");
 			if(!_path || _path == pathStart) {
-				this.ut._err(this.ut.errPrefix + "Invalid relative path:\n" + path);
+				this.ut._err(new Error("Invalid relative path:\n" + path));
 				return null;
 			}
 		}
@@ -668,7 +671,8 @@ var handyClicksFuncs = {
 			.createInstance(Components.interfaces.nsILocalFile);
 		try { file.initWithPath(path); }
 		catch(e) {
-			this.ut._err(this.ut.errPrefix + "Invalid path: " + path);
+			this.ut._err(new Error("Invalid path: " + path));
+			this.ut._err(e);
 			return false;
 		}
 		return file.exists();
@@ -1019,7 +1023,7 @@ var handyClicksFuncs = {
 		a = a || this.hc.item;
 		var s = a.innerHTML;
 		if(!s) {
-			this.ut._err(this.ut.errPrefix + "openSimilarLinksInTabs() not supported: a.innerHTML is " + s);
+			this.ut._err(new Error("openSimilarLinksInTabs() not supported: a.innerHTML is " + s));
 			return;
 		}
 		var onlyUnVisited = {};

@@ -15,8 +15,25 @@ var handyClicksUtils = {
 			)
 		);
 	},
-	get _err() {
-		return Components.utils.reportError;
+	_err: function(e, warn, fileName, lineNumber) {
+		if(typeof e == "string")
+			e = new Error(e);
+		if(e.constructor !== Error) {
+			Components.utils.reportError(e);
+			return;
+		}
+		var cErr = Components.classes["@mozilla.org/scripterror;1"]
+			.createInstance(Components.interfaces.nsIScriptError);
+		cErr.init(
+			this.errPrefix + e.message,
+			fileName || e.fileName,
+			null,
+			lineNumber || e.lineNumber,
+			e.columnNumber,
+			warn ? 1 : 0,
+			null
+		);
+		this.consoleSvc.logMessage(cErr);
 	},
 	objProps: function(o, mask) { // mask like "id, nodeName, parentNode.id"
 		if(!this.isObject(o))

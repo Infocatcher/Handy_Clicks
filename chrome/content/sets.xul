@@ -91,7 +91,7 @@
 				</hbox>
 				<hbox align="center" hc_depends="disallowMousemove">
 					<label value="&hc.sets.maxDistance;" />
-					<textbox preference="disallowMousemoveDist" type="number" min="0" max="60" increment="1" style="width: 4.5em;" />
+					<textbox preference="disallowMousemoveDist" type="number" min="0" max="100" increment="1" style="width: 4.5em;" />
 					<label value="px" />
 				</hbox>
 			</vbox>

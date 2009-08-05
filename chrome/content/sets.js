@@ -50,7 +50,7 @@ var handyClicksSets = {
 		var p = this.ps.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
 			if(!this.ps.isOkShortcut(sh) || !this.ut.isObject(p[sh])) {
-				this.ut._err(this.ut.errPrefix + "Invalid shortcut in prefs: " + sh);
+				this.ut._err(new Error("Invalid shortcut in prefs: " + sh), true);
 				continue;
 			}
 			var button = this.ps.getButtonStr(sh);
@@ -644,14 +644,14 @@ var handyClicksSets = {
 				function(line, i) {
 					var indx = line.indexOf("=");
 					if(indx == -1) {
-						this.ut._err(this.ut.errPrefix + "[Import INI] Skipped invalid line #" + i + ": " + line);
+						this.ut._err(new Error("[Import INI] Skipped invalid line #" + i + ": " + line), true);
 						return;
 					}
 					var pName = line.substring(0, indx);
 					var pbr = Components.interfaces.nsIPrefBranch;
 					var pType = this.pu.prefSvc.getPrefType(pName);
 					if(pType == pbr.PREF_INVALID || pName.indexOf(this.pu.nPrefix) != 0) {
-						this.ut._err(this.ut.errPrefix + "[Import INI] Skipped pref with invalid name: " + pName);
+						this.ut._err(new Error("[Import INI] Skipped pref with invalid name: " + pName), true);
 						return;
 					}
 					var pVal = line.substring(indx + 1);
@@ -675,6 +675,17 @@ var handyClicksSets = {
 		this.backupsDir = file.parent.path;
 	},
 	importSets: function() {
+		if(this.pu.pref("sets.importJSWarning")) {
+			var ack = { value: false };
+			var cnf = this.ut.promptsSvc.confirmCheck(
+				window, this.ut.getLocalized("warningTitle"),
+				this.ut.getLocalized("importSetsWarning"),
+				this.ut.getLocalized("importSetsWarningNotShowAgain"), ack
+			);
+			if(!cnf)
+				return;
+			this.pu.pref("sets.importJSWarning", !ack.value);
+		}
 		var file = this.pickFile(this.ut.getLocalized("importSets"), false, "js");
 		if(!file)
 			return;

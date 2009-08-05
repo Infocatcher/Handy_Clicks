@@ -26,24 +26,24 @@ var hcNotify = {
 		}
 		var wo = window.opener;
 		var x, y;
-		if(wa.inWindowCorner || !("handyClicks" in wo) || !wo.handyClicks.copyOfEvent) {
+		if(wa.inWindowCorner || !("handyClicks" in wo) || !wo.handyClicks._xy) {
 			x = wo.screenX + wo.outerWidth - winW;
 			var sBar = wo.document.getElementById("browser-bottombox") || wo.document.getElementById("status-bar");
 			y = (sBar ? sBar.boxObject.screenY : wo.screenY + wo.outerHeight) - winH;
 		}
 		else {
-			var cursorH = 20, addH = 5;
+			var cursorH = 20, addH = 8;
 			var maxX = screen.availLeft + screen.availWidth;
 			var maxY = screen.availTop + screen.availHeight;
-			var evt = wo.handyClicks.copyOfEvent;
-			x = evt.screenX - winW/2;
-			y = evt.screenY + cursorH + addH;
+			var xy = wo.handyClicks._xy;
+			x = xy.screenX - winW/2;
+			y = xy.screenY + cursorH + addH;
 			if(x < screen.availLeft) // left overflow
 				x = screen.availLeft;
 			else if(x + winW > maxX) // right overflow
 				x = maxX - winW;
 			if(y + winH > maxY) // bottom overflow
-				y = evt.screenY - winH - addH;
+				y = xy.screenY - winH - addH;
 		}
 		window.moveTo(x, y);
 		this._nBox = document.getElementById("hcNotifyBox");

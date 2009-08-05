@@ -22,7 +22,7 @@ var handyClicks = {
 	daTimeout: null, // Delayed Action Timeout
 	evtStrOnMousedown: "",
 	hasMousemoveHandler: false,
-	mousemoveParams: { dist: 0 },
+	mousemoveParams: null,
 	_tabOnMousedown: null,
 
 	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
@@ -76,7 +76,8 @@ var handyClicks = {
 				"mousedown",
 				function(e) {
 					cWin.removeEventListener("mousedown", arguments.callee, true);
-					_this.stopEvent(e);
+					if(_this._enabled)
+						_this.stopEvent(e);
 				},
 				true
 			);
@@ -144,11 +145,9 @@ var handyClicks = {
 				);
 			}
 		}
-		if(
-			!this.hasMousemoveHandler
-			&& this.pu.pref("disallowMousemoveButtons").indexOf(e.button) > -1
-		) {
+		if(!this.hasMousemoveHandler) {
 			this.hasMousemoveHandler = true;
+			this.disallowMousemove = this.pu.pref("disallowMousemoveButtons").indexOf(e.button) != -1;
 			window.addEventListener("mousemove", this, true);
 		}
 	},
@@ -170,6 +169,7 @@ var handyClicks = {
 		if(this.flags.allowEvents)
 			this.cancelDelayedAction();
 		this.skipFlagsDelay();
+		this.saveXY(e);
 	},
 	commandHandler: function(e) {
 		if(!this.enabled)
@@ -193,13 +193,17 @@ var handyClicks = {
 			this.stopEvent(e);
 	},
 	mousemoveHandler: function(e) {
-		if(this.mousemoveParams.screenX) {
+		this.saveXY(e);
+		if(!this.disallowMousemove)
+			return;
+		if(!this.mousemoveParams)
+			this.mousemoveParams = { dist: 0 };
+		if("screenX" in this.mousemoveParams) {
 			this.mousemoveParams.dist +=
 				Math.sqrt(
 					Math.pow(this.mousemoveParams.screenX - e.screenX, 2) +
 					Math.pow(this.mousemoveParams.screenY - e.screenY, 2)
 				);
-			this.mousemoveParams.event = this.cloneObj(e);
 		}
 		this.mousemoveParams.screenX = e.screenX;
 		this.mousemoveParams.screenY = e.screenY;
@@ -218,7 +222,7 @@ var handyClicks = {
 			return;
 		window.removeEventListener("mousemove", this, true);
 		this.hasMousemoveHandler = false;
-		this.mousemoveParams = { dist: 0 };
+		this.mousemoveParams = null;
 	},
 
 	// Utils for handlers:
@@ -280,7 +284,8 @@ var handyClicks = {
 			// Always return "({x:0, y:0})":
 			//   var _this = this;
 			//   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
-			this.copyOfEvent = this.cloneObj(e);
+			this.copyOfEvent = e;//this.cloneObj(e);
+			this.saveXY(e);
 			this.origItem = e.originalTarget;
 		}
 		else {
@@ -327,10 +332,11 @@ var handyClicks = {
 					_it = ct._define.call(this, e, it);
 				}
 				catch(e) {
+					this.ut._log("[define item] Line: " + (e.lineNumber - ct._defineLine + 1));
 					var eId = this.ut.getLocalized("id") + " " + type
 						+ "\n" + this.ut.getLocalized("label") + " " + this.ps.dec(ct.label);
 					errors.push(eId + "\n" + this.ut.getLocalized("details") + "\n" + e);
-					this.ut._err(this.ut.errPrefix + this.ut.getLocalized("customTypeDefineError").replace("%e", eId));
+					this.ut._err(new Error(this.ut.getLocalized("customTypeDefineError").replace("%e", eId)));
 					this.ut._err(e);
 				}
 				if(!_it)
@@ -538,6 +544,7 @@ var handyClicks = {
 						cm = _cm.call(this.fn, e, this.item, this.origItem);
 					}
 					catch(e) {
+						this.ut._log("[context menu] Line: " + (e.lineNumber - ct._contextMenuLine + 1));
 						this.ut.notify(
 							this.ut.getLocalized("errorTitle"),
 							this.ut.getLocalized("customTypeContextMenuError")
@@ -547,12 +554,12 @@ var handyClicks = {
 							+ this.ut.getLocalized("openConsole"),
 							toErrorConsole
 						);
-						this.ut._err(
+						this.ut._err(new Error(
 							this.ut.errPrefix + "Error in custom function for context menu detection."
 							+ "\nid: " + this.itemType
 							+ "\nLabel: " + this.ps.dec(ct.label)
 							+ "\nCode:\n" + this.ps.dec(ct.contextMenu)
-						);
+						));
 						this.ut._err(e);
 					}
 				}
@@ -561,7 +568,7 @@ var handyClicks = {
 		}
 		if(cm && typeof cm.hidePopup != "function") {
 			// Try open XUL document with custom context in tab...
-			this.ut._err(this.ut.errPrefix + "Strange error: context menu has no hidePopup() method\n" + cm.id);
+			this.ut._err(new Error("Strange error: context menu has no hidePopup() method\n" + cm.id), true);
 			cm = null;
 		}
 		this._cMenu = cm; // cache
@@ -606,8 +613,18 @@ var handyClicks = {
 		var xy = this.getXY();
 		popup.showPopup(this.ut.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "popup", null, null);
 	},
+	_xy: null,
+	saveXY: function(e) {
+		this._xy = { __proto__: null };
+		["screenX", "screenY", "clientX", "clientY"].forEach(
+			function(p) {
+				this._xy[p] = e[p];
+			},
+			this
+		);
+	},
 	getXY: function(e) {
-		e = e || this.mousemoveParams.event || this.copyOfEvent;
+		e = e || this._xy || this.copyOfEvent;
 		return this.ut.fxVersion >= 3
 			? { x: e.screenX, y: e.screenY }
 			: { x: e.clientX, y: e.clientY };
@@ -747,9 +764,11 @@ var handyClicks = {
 			var action = this.ps.dec(funcObj.action);
 			var label = '"' + this.ps.dec(funcObj.label) + '"';
 			try {
+				var line = new Error().lineNumber + 1;
 				new Function("event,item,origItem", action).apply(this.fn, args);
 			}
 			catch(e) {
+				this.ut._log("[func] Line: " + (e.lineNumber - line + 1));
 				var eMsg = this.ut.getLocalized("customFunctionError")
 					.replace("%f", label)
 					.replace("%e", e);
@@ -758,7 +777,7 @@ var handyClicks = {
 					eMsg + this.ut.getLocalized("openConsole"),
 					toErrorConsole
 				);
-				this.ut._err(this.ut.errPrefix + eMsg);
+				this.ut._err(new Error(eMsg));
 				throw e;
 			}
 		}
@@ -772,7 +791,7 @@ var handyClicks = {
 					this.ut.getLocalized("functionNotFound").replace("%f", funcObj.action),
 					toErrorConsole
 				);
-				this.ut._err(this.ut.errPrefix + funcObj.action + " not found (" + typeof fnc + ")");
+				this.ut._err(new Error(funcObj.action + " not found (" + typeof fnc + ")"));
 			}
 		}
 

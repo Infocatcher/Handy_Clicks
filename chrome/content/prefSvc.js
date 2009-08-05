@@ -33,7 +33,7 @@ var handyClicksPrefSvc = {
 			dir.append(this.prefsDirName);
 			if(!dir.exists()) {
 				try { dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755); }
-				catch(e) { this.ut._err(this.ut.errPrefix + "Can't create directory\n" + e); }
+				catch(e) { this.ut._err(new Error("Can't create directory\n" + e)); }
 			}
 			this._prefsDir = dir;
 		}
@@ -61,7 +61,7 @@ var handyClicksPrefSvc = {
 			jsLoader.loadSubScript(ioSvc.newFileURI(pFile).spec);
 		}
 		catch(e) {
-			this.ut._err(this.ut.errPrefix + "Error in prefs: bad js file");
+			this.ut._err(new Error("Error in prefs: bad js file"));
 			this.ut._err(e);
 			this.loadSettingsBackup();
 			return;
@@ -163,7 +163,7 @@ var handyClicksPrefSvc = {
 		var df, cm;
 		for(var type in cts) if(cts.hasOwnProperty(type)) {
 			if(!this.isOkCustomType(type)) {
-				this.ut._err(this.ut.errPrefix + "Invalid custom type: " + type);
+				this.ut._err(new Error("Invalid custom type: " + type), true);
 				continue;
 			}
 			ct = cts[type];
@@ -172,11 +172,15 @@ var handyClicksPrefSvc = {
 			try {
 				df = cts[type].define;
 				cm = cts[type].contextMenu;
+				ct._defineLine = new Error().lineNumber + 1;
 				ct._define = new Function("event,item", this.dec(df));
+				ct._contextMenuLine = new Error().lineNumber + 1;
 				ct._contextMenu = cm ? new Function("event,item,origItem", this.dec(cm)) : null;
 				ct._initialized = true;
 			}
 			catch(e) {
+				var line = ct._defineLine || ct._contextMenuLine || 0;
+				this.ut._log("[type compile] Line: " + (e.lineNumber - line + 1));
 				this.ut.notify(
 					this.ut.getLocalized("errorTitle"),
 					this.ut.getLocalized("customTypeCompileError")
@@ -186,7 +190,7 @@ var handyClicksPrefSvc = {
 					+ this.ut.getLocalized("openConsole"),
 					toErrorConsole
 				);
-				this.ut._err(this.ut.errPrefix + "Error in custom type " + type);
+				this.ut._err(new Error("Error in custom type " + type));
 				this.ut._err(e);
 			}
 		}
@@ -222,9 +226,11 @@ var handyClicksPrefSvc = {
 		if(!rawCode)
 			return;
 		try {
+			var line = new Error().lineNumber + 1;
 			new Function(this.dec(rawCode)).call(this.ut);
 		}
 		catch(e) {
+			this.ut._log("[func init] Line: " + (e.lineNumber - line + 1));
 			errors.push(e);
 			this.ut._err(e);
 		}
@@ -423,7 +429,8 @@ var handyClicksPrefSvc = {
 			return decodeURIComponent(s || "");
 		}
 		catch(e) {
-			this.ut._err(this.ut.errPrefix + "Can't decode: " + s + "\n" + e);
+			this.ut._err(new Error("Can't decode: " + s));
+			this.ut._err(e);
 			return "[invalid value]";
 		}
 	},
