@@ -8,7 +8,7 @@ var hcNotify = {
 	_highlightInterval: null,
 	_nBox: null,
 	init: function() {
-		var wa = window.arguments[0]; // { dur, nTitle, msg, fnc, extEnabled, inWindowCorner, dontCloseUnderCursor }
+		var wa = window.arguments[0]; // { dur, nTitle, msg, fnc0, fnc1, extEnabled, inWindowCorner, dontCloseUnderCursor }
 		document.getElementById("hcNotifyHeader").value = wa.nTitle;
 		var descElt = document.getElementById("hcNotifyDesc");
 		descElt.textContent = wa.msg;
@@ -91,11 +91,17 @@ var hcNotify = {
 	},
 	clickHandler: function(e) {
 		this.cancelDelayedClose();
-		var fnc = window.arguments[0].fnc;
-		if(typeof fnc == "function" && e.button == 0)
-			fnc();
-			// Strange behavior on
-			// <a onclick="alert(0);" href="javascript: void(0);">...</a>
+		var wa = window.arguments[0];
+		if(
+			e.button == 0 && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey
+			&& typeof wa.fnc0 == "function"
+		)
+			wa.fnc0();
+		else if(
+			(e.button == 1 || (e.button == 0 && (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey)))
+			&& typeof wa.fnc1 == "function"
+		)
+			wa.fnc1();
 		window.close();
 	}
 };

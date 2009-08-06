@@ -687,7 +687,7 @@ var handyClicksFuncs = {
 				this.ut.getLocalized("errorTitle"),
 				this.ut.getLocalized("invalidFilePath").replace("%p", path)
 				+ this.ut.getLocalized("openConsole"),
-				toErrorConsole
+				this.ut.console
 			);
 			throw e;
 		}

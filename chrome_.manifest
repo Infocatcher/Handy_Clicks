@@ -1,10 +1,13 @@
 content handyclicks jar:chrome/handyclicks.jar!/content/
 resource handyclicks-content jar:chrome/handyclicks.jar!/content/res/
 content handyclicks-locale jar:chrome/handyclicks.jar!/locale/en-US/
-overlay chrome://browser/content/browser.xul chrome://handyclicks/content/handyclicks.xul
+
+overlay chrome://browser/content/browser.xul   chrome://handyclicks/content/handyclicks.xul
+overlay chrome://global/content/console.xul    chrome://handyclicks/content/console.xul
+overlay chrome://console2/content/console2.xul chrome://handyclicks/content/console.xul
 
 style chrome://handyclicks/content/notify.xul chrome://handyclicks/content/style/notify-old.css appversion<3.0
-style chrome://handyclicks/content/notify.xul chrome://handyclicks/content/style/notify.css appversion>=3.0
+style chrome://handyclicks/content/notify.xul chrome://handyclicks/content/style/notify.css     appversion>=3.0
 
 locale  handyclicks en-US jar:chrome/handyclicks.jar!/locale/en-US/
 locale  handyclicks ru    jar:chrome/handyclicks.jar!/locale/ru/

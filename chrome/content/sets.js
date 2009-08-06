@@ -111,7 +111,7 @@ var handyClicksSets = {
 			this.appendTreeCell(tRow, "label", isCustom ? this.ps.dec(it.label) : this.ut.getLocalized(it.action));
 			this.appendTreeCell(tRow, "label",
 				isCustom
-					? this.fixOldTree(this.ut.getLocalized("customFunction") + this.ps.dec(it.action))
+					? this.fixOldTree(this.ut.getLocalized("customFunction") + "\n" + this.ps.dec(it.action))
 					: it.action
 			);
 			this.appendTreeCell(tRow, "label", this.getArguments(it.arguments || {}));

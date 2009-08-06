@@ -67,6 +67,39 @@ var handyClicksWinUtils = {
 		this.highlightOpened(winId, true);
 		return w;
 	},
+	openLink: function(href, line) {
+		var hc = "handyclicks://editor/";
+		if(!href || href.indexOf(hc) != 0)
+			return false;
+		var tokens = href.substr(hc.length).split("/");
+		var mode = tokens[0];
+		if(mode == "shortcut") {
+			var shortcut = tokens[1];
+			var itemType = tokens[2];
+			var delayed = tokens[3] == "delayed";
+			var src = tokens[4];
+		}
+		else if(mode == "itemType") {
+			var shortcut = null;
+			var itemType = tokens[1];
+			var delayed = false;
+			var src = tokens[2];
+		}
+		var w = this.openEditor(mode, shortcut, itemType);
+		var ed = "handyClicksEditor";
+		setTimeout(function() {
+			if(ed in w && "editorMode" in w[ed]) {
+				w.handyClicksEditor.selectTargetTab(delayed, src, line);
+				return;
+			}
+			setTimeout(arguments.callee, 5);
+		}, 0);
+		return true
+	},
+	getOpenLink: function(href, line) {
+		var _this = this;
+		return function() { _this.openLink(href, line); };
+	},
 	highlightOpened: function(winId, editStat) {
 		var wSet = this.wm.getMostRecentWindow("handyclicks:settings");
 		if(wSet)

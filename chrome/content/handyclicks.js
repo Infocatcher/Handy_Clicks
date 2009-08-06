@@ -61,6 +61,7 @@ var handyClicks = {
 		if(!this.enabled)
 			return;
 
+		this.saveXY(e);
 		var funcObj = this.getFuncObjByEvt(e);
 		if(!funcObj)
 			return;
@@ -309,7 +310,9 @@ var handyClicks = {
 				: null;
 	},
 	defineItem: function(e, sets) {
-		var all = this.editMode || this.itemTypeInSets(sets, "$all");
+		var all = this.itemTypeInSets(sets, "$all");
+		this._all = all;
+		all = this.editMode || all;
 		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "submitButton"
 		this.item = null;
 
@@ -321,7 +324,6 @@ var handyClicks = {
 
 		// Custom:
 		var cts = this.ps.types, ct;
-		var errors = [];
 		for(var type in cts) if(cts.hasOwnProperty(type)) {
 			if(
 				(all || this.itemTypeInSets(sets, type))
@@ -333,10 +335,19 @@ var handyClicks = {
 				}
 				catch(e) {
 					this.ut._log("[define item] Line: " + (e.lineNumber - ct._defineLine + 1));
-					var eId = this.ut.getLocalized("id") + " " + type
-						+ "\n" + this.ut.getLocalized("label") + " " + this.ps.dec(ct.label);
-					errors.push(eId + "\n" + this.ut.getLocalized("details") + "\n" + e);
-					this.ut._err(new Error(this.ut.getLocalized("customTypeDefineError").replace("%e", eId)));
+					var eLine = this.ut.mmLine(e.lineNumber - ct._defineLine + 1);
+					var href = "handyclicks://editor/itemType/" + type + "/define";
+					var eMsg = this.ut.getLocalized("customTypeDefineError")
+						+ this.ut.getLocalized("errorDetails")
+							.replace("%l", this.ps.dec(ct.label))
+							.replace("%id", type)
+							.replace("%e", e);
+					this.ut.notify(
+						this.ut.getLocalized("errorTitle"),
+						eMsg + this.ut.getLocalized("openConsole"),
+						this.ut.console, this.wu.getOpenLink(href, eLine)
+					);
+					this.ut._err(new Error(eMsg), false, href, eLine);
 					this.ut._err(e);
 				}
 				if(!_it)
@@ -345,15 +356,6 @@ var handyClicks = {
 				this.item = _it;
 				return;
 			}
-		}
-		if(errors.length) {
-			this.ut.notify(
-				this.ut.getLocalized("errorTitle"),
-				this.ut.getLocalized("customTypeDefineError" + (errors.length == 1 ? "" : "s"))
-					.replace("%e", errors.join("\n\n"))
-				+ this.ut.getLocalized("openConsole"),
-				toErrorConsole
-			);
 		}
 
 		var docNode = Node.DOCUMENT_NODE; // 9
@@ -545,21 +547,19 @@ var handyClicks = {
 					}
 					catch(e) {
 						this.ut._log("[context menu] Line: " + (e.lineNumber - ct._contextMenuLine + 1));
-						this.ut.notify(
-							this.ut.getLocalized("errorTitle"),
-							this.ut.getLocalized("customTypeContextMenuError")
+						var eLine = this.ut.mmLine(e.lineNumber - ct._contextMenuLine + 1);
+						var href = "handyclicks://editor/itemType/" + this.itemType + "/context";
+						var eMsg = this.ut.getLocalized("customTypeContextMenuError")
+							+ this.ut.getLocalized("errorDetails")
 								.replace("%l", this.ps.dec(ct.label))
 								.replace("%id", this.itemType)
-								.replace("%e", e)
-							+ this.ut.getLocalized("openConsole"),
-							toErrorConsole
+								.replace("%e", e);
+						this.ut.notify(
+							this.ut.getLocalized("errorTitle"),
+							eMsg + this.ut.getLocalized("openConsole"),
+							this.ut.console, this.wu.getOpenLink(href, eLine)
 						);
-						this.ut._err(new Error(
-							this.ut.errPrefix + "Error in custom function for context menu detection."
-							+ "\nid: " + this.itemType
-							+ "\nLabel: " + this.ps.dec(ct.label)
-							+ "\nCode:\n" + this.ps.dec(ct.contextMenu)
-						));
+						this.ut._err(new Error(eMsg), false, href, eLine);
 						this.ut._err(e);
 					}
 				}
@@ -762,23 +762,27 @@ var handyClicks = {
 		if(funcObj.custom) {
 			args.splice(1, 0, this.item, this.origItem);
 			var action = this.ps.dec(funcObj.action);
-			var label = '"' + this.ps.dec(funcObj.label) + '"';
 			try {
 				var line = new Error().lineNumber + 1;
 				new Function("event,item,origItem", action).apply(this.fn, args);
 			}
-			catch(e) {
-				this.ut._log("[func] Line: " + (e.lineNumber - line + 1));
+			catch(err) {
+				this.ut._log("[func] Line: " + (err.lineNumber - line + 1));
+				var eLine = this.ut.mmLine(err.lineNumber - line + 1);
+				var href = "handyclicks://editor/shortcut/" + this.getEvtStr(e || this.copyOfEvent) + "/"
+					+ (this._all ? "$all" : this.itemType) + "/" + (!e ? "delayed" : "normal") + "/code";
 				var eMsg = this.ut.getLocalized("customFunctionError")
-					.replace("%f", label)
-					.replace("%e", e);
+					+ this.ut.getLocalized("errorDetails")
+						.replace("%l", this.ps.dec(funcObj.label))
+						.replace("%id", this.itemType)
+						.replace("%e", err);
 				this.ut.notify(
 					this.ut.getLocalized("errorTitle"),
 					eMsg + this.ut.getLocalized("openConsole"),
-					toErrorConsole
+					this.ut.console, this.wu.getOpenLink(href, eLine)
 				);
-				this.ut._err(new Error(eMsg));
-				throw e;
+				this.ut._err(new Error(eMsg), false, href, eLine);
+				throw err;
 			}
 		}
 		else {
@@ -789,7 +793,7 @@ var handyClicks = {
 				this.ut.notify(
 					this.ut.getLocalized("errorTitle"),
 					this.ut.getLocalized("functionNotFound").replace("%f", funcObj.action),
-					toErrorConsole
+					this.ut.console
 				);
 				this.ut._err(new Error(funcObj.action + " not found (" + typeof fnc + ")"));
 			}

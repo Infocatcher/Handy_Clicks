@@ -163,6 +163,50 @@
 				]]>
 				</body>
 			</method>
+			<method name="scrollTo">
+				<parameter name="lineNumber" />
+				<body>
+				<![CDATA[
+					// Thanks to Custom Buttons!
+					this.editor.beginningOfDocument();
+					var brs = this.editor.rootElement.getElementsByTagName("br");
+					if(lineNumber > brs.length)
+						this.editor.endOfDocument();
+					else
+						while(lineNumber-- > 1)
+							this.editor.selectionController.lineMove(true, false);
+					this.scrollSelectionIntoView();
+					this.focus();
+				]]>
+				</body>
+			</method>
+			<method name="selectLine">
+				<parameter name="lineNumber" />
+				<body>
+				<![CDATA[
+					// Thanks to Custom Buttons!
+					this.scrollTo(lineNumber);
+					this.editor.selectionController.intraLineMove(true, true);
+					this.focus();
+				]]>
+				</body>
+			</method>
+			<method name="scrollSelectionIntoView">
+				<body>
+				<![CDATA[
+					// Thanks to Custom Buttons!
+					try {
+						var sc = Components.interfaces.nsISelectionController;
+						this.editor.selectionController.scrollSelectionIntoView(
+							sc.SELECTION_NORMAL,
+							sc.SELECTION_ANCHOR_REGION,
+							true
+						);
+					}
+					catch(e) {}
+				]]>
+				</body>
+			</method>
 			<method name="maximizeEditor">
 				<body>
 				<![CDATA[

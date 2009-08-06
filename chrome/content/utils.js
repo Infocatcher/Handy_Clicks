@@ -70,7 +70,7 @@ var handyClicksUtils = {
 			this._timers[tId] = Date.now();
 	},
 
-	notify: function(nTitle, msg, fnc, extEnabled, inWindowCorner) {
+	notify: function(nTitle, msg, fnc0, fnc1, extEnabled, inWindowCorner) {
 		var dur = this.pu.pref("notifyOpenTime");
 		if(dur <= 0)
 			 return;
@@ -85,11 +85,15 @@ var handyClicksUtils = {
 			 {
 			 	dur: dur,
 			 	nTitle: nTitle || "", msg: msg || "",
-			 	fnc: fnc, extEnabled: extEnabled, inWindowCorner: inWindowCorner,
+			 	fnc0: fnc0, fnc1: fnc1,
+			 	extEnabled: extEnabled, inWindowCorner: inWindowCorner,
 			 	dontCloseUnderCursor: this.pu.pref("notifyDontCloseUnderCursor"),
 			 	__proto__: null
 			 }
 		);
+	},
+	get console() {
+		return window.toErrorConsole || window.toJavaScriptConsole;
 	},
 	get promptsSvc() {
 		delete this.promptsSvc;
@@ -230,6 +234,12 @@ var handyClicksUtils = {
 				return u;
 		}
 		return u;
+	},
+	mm: function(n, minVal, maxVal) {
+		return Math.max(Math.min(n, maxVal), minVal);
+	},
+	mmLine: function(n) {
+		return this.mm(n, 1, 100000);
 	}
 };
 

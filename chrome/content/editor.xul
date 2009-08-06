@@ -25,7 +25,7 @@
 	oninput="handyClicksEditor.alloyApply(event);"
 	ondragexit="handyClicksEditor.alloyApply(event);"
 	width="700"
-	height="450"
+	height="500"
 	persist="width height screenX screenY">
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />

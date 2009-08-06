@@ -1,10 +1,13 @@
 content handyclicks chrome/content/
 resource handyclicks-content chrome/content/res/
 content handyclicks-locale chrome/locale/en-US/
-overlay chrome://browser/content/browser.xul chrome://handyclicks/content/handyclicks.xul
+
+overlay chrome://browser/content/browser.xul   chrome://handyclicks/content/handyclicks.xul
+overlay chrome://global/content/console.xul    chrome://handyclicks/content/console.xul
+overlay chrome://console2/content/console2.xul chrome://handyclicks/content/console.xul
 
 style chrome://handyclicks/content/notify.xul chrome://handyclicks/content/style/notify-old.css appversion<3.0
-style chrome://handyclicks/content/notify.xul chrome://handyclicks/content/style/notify.css appversion>=3.0
+style chrome://handyclicks/content/notify.xul chrome://handyclicks/content/style/notify.css     appversion>=3.0
 
 locale  handyclicks en-US chrome/locale/en-US/
 locale  handyclicks ru    chrome/locale/ru/

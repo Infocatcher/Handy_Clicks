@@ -10,6 +10,7 @@ var handyClicksRegSvc = {
 	},
 	get s() {
 		var s = {
+			cn: "handyClicksConsole",
 			cs: "handyClicksCleanupSvc",
 			ed: "handyClicksEditor",
 			fn: "handyClicksFuncs",
@@ -46,7 +47,7 @@ var handyClicksRegSvc = {
 		for(var p in s) if(s.hasOwnProperty(p)) {
 			o = s[p];
 			o.__proto__ = proto;
-			if(regFlag)
+			if(regFlag && "HandyClicksObservers" in window)
 				o.__proto__.__proto__ = new HandyClicksObservers(); // Add observers interface
 		}
 	},

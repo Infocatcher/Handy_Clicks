@@ -32,10 +32,38 @@ var handyClicksEditor = {
 		this.initShortcuts();
 		this.initUI();
 		this.loadCustomType(this.type);
-		this.mBox.selectedIndex = this.tabs[this.editorMode];
+		this.selectTargetTab();
 		this.ps.addPrefsObserver(this.appendTypesList, this);
 		window.addEventListener("DOMMouseScroll", this, true);
 		this.applyButton.disabled = true;
+	},
+	selectTargetTab: function(delayed, src, line) {
+		this.mBox.selectedIndex = this.tabs[this.editorMode];
+		if(!src)
+			return;
+		switch(this.editorMode) {
+			case "shortcut":
+				var mTab = this.$("hc-editor-funcTabbox");
+				mTab.selectedIndex = delayed ? 1 : 0;
+				var tab = this.$("hc-editor-funcVarsTabbox" + (delayed ? this.delayId : ""));
+				tab.selectedIndex = src == "code" ? 0 : 1;
+			break;
+			case "itemType":
+				var tab = this.$("hc-editor-customTypeFuncs");
+				tab.selectedIndex = src == "define" ? 0 : 1;
+		}
+		var panel = tab.selectedPanel
+			|| tab.getElementsByTagName("tabpanels")[0]
+				.getElementsByTagName("tabpanel")[tab.selectedIndex];
+		var tbs = panel.getElementsByTagName("textbox"), tb;
+		var cre = /(?:^|\s)hcEditor(?:\s|$)/;
+		for(var i = 0, len = tbs.length; i < len; i++) {
+			var tb = tbs[i];
+			if(cre.test(tb.className || "")) {
+				tb.selectLine(line);
+				break;
+			}
+		}
 	},
 	initShortcuts: function() {
 		this.mBox = this.$("hc-editor-mainTabbox");
@@ -594,7 +622,8 @@ var handyClicksEditor = {
 	deleteShortcut: function() {
 		delete this.ps.prefs[this.currentShortcut];
 		this.ps.saveSettingsObjects();
-		this.applyButton.disabled = true;
+		this.highlightUsedTypes();
+		this.applyButton.disabled = false;
 	},
 	saveCustomType: function() {
 		var label = this.$("hc-editor-customType").value;
@@ -639,8 +668,8 @@ var handyClicksEditor = {
 	deleteCustomType: function() {
 		delete this.ps.types["custom_" + this.$("hc-editor-customTypeExtId").value];
 		this.ps.saveSettingsObjects();
-		this.applyButton.disabled = true;
 		this.appendTypesList();
+		this.applyButton.disabled = false;
 	},
 	listScroll: function(e) {
 		var ml = e.target;

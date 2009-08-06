@@ -179,18 +179,22 @@ var handyClicksPrefSvc = {
 				ct._initialized = true;
 			}
 			catch(e) {
-				var line = ct._defineLine || ct._contextMenuLine || 0;
+				var line = ct._contextMenuLine || ct._defineLine;
 				this.ut._log("[type compile] Line: " + (e.lineNumber - line + 1));
-				this.ut.notify(
-					this.ut.getLocalized("errorTitle"),
-					this.ut.getLocalized("customTypeCompileError")
+				var eLine = this.ut.mmLine(e.lineNumber - line + 1);
+				var href = "handyclicks://editor/itemType/" + type + "/" + ("_contextMenuLine" in ct ? "context" : "define");
+				var eMsg = this.ut.getLocalized("customTypeCompileError")
+					+ this.ut.getLocalized("errorDetails")
 						.replace("%l", this.dec(ct.label))
 						.replace("%id", type)
-						.replace("%e", e)
-					+ this.ut.getLocalized("openConsole"),
-					toErrorConsole
+						.replace("%e", e);
+				this.ut.notify(
+					this.ut.getLocalized("errorTitle"),
+					eMsg + this.ut.getLocalized("openConsole"),
+					this.ut.console, this.wu.getOpenLink(href, eLine),
+					true, true
 				);
-				this.ut._err(new Error("Error in custom type " + type));
+				this.ut._err(new Error(eMsg), false, href, eLine);
 				this.ut._err(e);
 			}
 		}
@@ -198,7 +202,6 @@ var handyClicksPrefSvc = {
 	initCustomFuncs: function() {
 		var p = this.prefs;
 		var sh, so, type, to, da;
-		var errors = [];
 		for(sh in p) if(p.hasOwnProperty(sh)) {
 			if(!this.isOkShortcut(sh))
 				continue;
@@ -207,22 +210,17 @@ var handyClicksPrefSvc = {
 				continue;
 			for(type in so) if(so.hasOwnProperty(type)) {
 				to = so[type];
-				if(!this.ut.getOwnProperty(to, "enabled") || !this.ut.getOwnProperty(to, "custom"))
+				if(!this.isOkFuncObj(to) || !to.enabled || !this.ut.getOwnProperty(to, "custom"))
 					continue;
-				this.initCustomFunc(this.ut.getOwnProperty(to, "init"), errors);
+				this.initCustomFunc(this.ut.getOwnProperty(to, "init"), to, sh, type, false);
 				da = this.ut.getOwnProperty(to, "delayedAction");
-				if(!da)
+				if(!this.isOkFuncObj(da) || !da.enabled || !this.ut.getOwnProperty(da, "custom"))
 					continue;
-				if(!this.ut.getOwnProperty(da, "enabled") || !this.ut.getOwnProperty(da, "custom"))
-					continue;
-				this.initCustomFunc(this.ut.getOwnProperty(da, "init"), errors);
+				this.initCustomFunc(this.ut.getOwnProperty(da, "init"), da, sh, type, true);
 			}
 		}
-		if(!errors.length)
-			return;
-		//~ todo
 	},
-	initCustomFunc: function(rawCode, errors) {
+	initCustomFunc: function(rawCode, fObj, sh, type, delayed) {
 		if(!rawCode)
 			return;
 		try {
@@ -231,7 +229,20 @@ var handyClicksPrefSvc = {
 		}
 		catch(e) {
 			this.ut._log("[func init] Line: " + (e.lineNumber - line + 1));
-			errors.push(e);
+			var eLine = this.ut.mmLine(e.lineNumber - line + 1);
+			var href = "handyclicks://editor/shortcut/" + sh + "/" + type + "/" + (delayed ? "delayed" : "normal") + "/init";
+			var eMsg = this.ut.getLocalized("funcInitError")
+				+ this.ut.getLocalized("errorDetails")
+					.replace("%l", this.dec(fObj.label))
+					.replace("%id", type)
+					.replace("%e", e);
+			this.ut.notify(
+				this.ut.getLocalized("errorTitle"),
+				eMsg + this.ut.getLocalized("openConsole"),
+				this.ut.console, this.wu.getOpenLink(href, eLine),
+				true, true
+			);
+			this.ut._err(eMsg, false, href, eLine);
 			this.ut._err(e);
 		}
 	},
