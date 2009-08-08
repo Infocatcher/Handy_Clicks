@@ -1,22 +1,50 @@
 @namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
 
-/* Options dialog */
+/* Icons */
+radio[pane] {
+	list-style-image: url("prefs32.png");
+}
 radio[pane="hc-sets-pane-actions"] {
-	list-style-image: url("mouse.png");
+	-moz-image-region: rect(0 32px 32px 0);
 }
 radio[pane="hc-sets-pane-prefs"] {
-	list-style-image: url("prefs.png");
+	-moz-image-region: rect(0 64px 32px 32px);
 }
 radio[pane="hc-sets-pane-builtInFuncsSets"] {
-	list-style-image: url("prefs2.png");
+	-moz-image-region: rect(0 96px 32px 64px);
 }
-#hc-sets-tree-buttons > button {
-	margin-left: 3px;
-	margin-right: 3px;
+
+/* Tree style */
+treechildren::-moz-tree-row(selected) {
+	background-color: Highlight !important;
 }
-#hc-sets-enabled {
+treechildren::-moz-tree-row(hc_custom) {
+	background-color: #f0fff0;
+}
+treechildren::-moz-tree-row(hc_disabled) {
+	background-color: ThreeDLightShadow;
+}
+treechildren::-moz-tree-row(hc_buggy) {
+	background-color: #faa;
+}
+treechildren::-moz-tree-cell-text(hc_edited) {
 	font-weight: bold;
 }
+treechildren::-moz-tree-row(hc_search) {
+	background-color: #cffff8;
+}
+treechildren::-moz-tree-row(hover) {
+	/*background-color: ThreeDFace;*/
+	border: 1px dotted black;
+}
+treechildren::-moz-tree-checkbox(hc_editable) {
+	list-style-image: url("checkbox.png"); /* Image from Adblock Plus extension */
+	-moz-image-region: rect(13px 13px 26px 0);
+}
+treechildren::-moz-tree-checkbox(checked) {
+	-moz-image-region: rect(0 13px 13px 0);
+}
+
 #hc-sets-tree-searchContainer {
 	-moz-appearance: textfield;
 	margin: 2px;
@@ -32,70 +60,10 @@ radio[pane="hc-sets-pane-builtInFuncsSets"] {
 	color: #fff;
 }
 
-/* Editor */
-[id^="hc-editor-enabled"],
-#hc-editor-customTypeEnabled {
+#hc-sets-tree-buttons > button {
+	margin-left: 3px;
+	margin-right: 3px;
+}
+#hc-sets-enabled {
 	font-weight: bold;
-}
-textbox.hcText {
-	background: transparent !important;
-	border: none;
-	padding: 0;
-	margin-top: 1px;
-	-moz-appearance: none;
-	-moz-box-flex: 1;
-}
-
-menuitem[hc_disabled="true"] {
-	color: graytext; /* Style like disabled, but without accessibility restrictions */
-}
-menuitem[hc_sets="enabled"],
-menulist[hc_sets="enabled"] .menulist-label {
-	color: -moz-hyperlinktext;
-}
-menuitem[hc_sets="disabled"],
-menulist[hc_sets="disabled"] .menulist-label {
-	color: -moz-visitedhyperlinktext;
-}
-
-/* Warning for empty menulists */
-menulist:not([label]) > .menulist-label-box {
-	outline: 2px solid red;
-	outline-offset: -2px;
-	min-height: 15px;
-}
-
-.hcEditor {
-	font-family: "Courier New", monospace;
-	-moz-binding: url("chrome://handyclicks/content/editor.xml#codeEditor");
-}
-:root[hc_maximized="true"] > * :not([hc_maximized="true"]):not(autorepeatbutton) {
-	visibility: collapse !important;
-}
-:root[hc_maximized="true"] > * .hcEditor :not(autorepeatbutton) {
-	visibility: visible !important; /* For anonymous nodes inside textbox.hcEditor */
-}
-[hc_maximized="true"]:not(.hcEditor) { /* Hide all borders */
-	margin: 0 !important;
-	padding: 0 !important;
-	border: none !important;
-	-moz-appearance: none !important;
-}
-.hcEditor[hc_maximized="true"] {
-	margin: 0 !important;
-}
-
-#hc-editor-funcSets {
-	overflow: auto;
-}
-#hc-editor-customType {
-	min-width: 12em;
-}
-#hc-editor-customTypeExtId {
-	min-width: 9em;
-}
-
-#hc-editor-funcTab-delay [hc_notdelay="true"],
-#hc-editor-funcTab [hc_notfunc="true"] {
-	display: none;
 }

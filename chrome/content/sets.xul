@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://handyclicks/content/style/tree.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
 
 <!DOCTYPE prefwindow [
@@ -24,6 +23,7 @@
 	oncommand="handyClicksSets.prefsChanged(event);"
 	onchange="handyClicksSets.prefsChanged(event);"
 	oninput="handyClicksSets.prefsChanged(event);"
+	ondragexit="handyClicksSets.prefsChanged(event);"
 	width="720"
 	height="520"
 	persist="width height screenX screenY">
@@ -186,8 +186,8 @@
 		<key key="s" modifiers="control" id="hc-sets-key-apply" oncommand="handyClicksSets.savePrefs(true);" />
 		<key keycode="VK_F5" id="hc-sets-key-reload" oncommand="handyClicksSets.forceUpdTree();" />
 
-		<key keycode="VK_F10" id="hc-sets-maximizeWindow" oncommand="handyClicksWinUtils.maximizeWindow();" />
-		<key keycode="VK_F11" id="hc-sets-toggleFullscreen" oncommand="handyClicksWinUtils.toggleFullscreen();" />
+		<key keycode="VK_F10" id="hc-sets-key-maximizeWindow" oncommand="handyClicksWinUtils.maximizeWindow();" />
+		<key keycode="VK_F11" id="hc-sets-key-toggleFullscreen" oncommand="handyClicksWinUtils.toggleFullscreen();" />
 	</keyset>
 	<popupset id="hc-sets-popupset">
 		<popup id="hc-sets-tree-context" onpopupshowing="return document.popupNode.localName == 'treechildren';">

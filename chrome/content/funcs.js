@@ -620,6 +620,8 @@ var handyClicksFuncs = {
 			return;
 		var icon = this.ut.getOwnProperty(item, "prop_hc_icon");
 		delete item.prop_hc_icon;
+		var img = this.ut.getOwnProperty(item, "prop_hc_image");
+		delete item.prop_hc_image;
 
 		var ttBase = "attr_" + this.tooltipAttrBase;
 		var n = 0;
@@ -629,7 +631,7 @@ var handyClicksFuncs = {
 			+ "menuitem-iconic";
 		if(checkFiles && !this.fileExists(path))
 			item.prop_className += " handyClicks-invalidPath";
-		item.attr_image = "moz-icon:file://" + (icon && this.getRelativePath(icon) || path);
+		item.attr_image = this.getFileURI(this.getRelativePath(img)) || "moz-icon:file://" + (this.getRelativePath(icon) || path);
 		item[ttBase + n++] = path;
 		item.prop_hc_path = path;
 
@@ -650,7 +652,7 @@ var handyClicksFuncs = {
 		// for
 		//   x:\FirefoxPortable\Data\profile\
 		//   x:\OperaUSB\op.com
-		if(!/^%profile%([\/\\])((?:\.\.[\/\\])*)(.*)$/.test(path))
+		if(!path || !/^%profile%([\/\\])((?:\.\.[\/\\])*)(.*)$/.test(path))
 			return path;
 		var pathStart = this.profileDir + RegExp.$1;
 		var dirUp = RegExp.$2;
@@ -665,6 +667,11 @@ var handyClicksFuncs = {
 			}
 		}
 		return _path + pathEnd;
+	},
+	getFileURI: function(path) {
+		if(!path || /^\w{2,}:\/\//.test(path)) // Has protocol
+			return path;
+		return "file://" + path.replace(/\\/g, "/");
 	},
 	fileExists: function(path) {
 		var file = Components.classes["@mozilla.org/file/local;1"]

@@ -542,19 +542,22 @@ var handyClicksSets = {
 	savePrefpanes: function() {
 		var pps = document.getElementsByTagName("prefpane");
 		for(var i = 0, len = pps.length; i < len; i++)
-			pps[i].writePreferences(true); // aFlushToDisk
+			pps[i].writePreferences(true /* aFlushToDisk */);
 	},
 	prefsChanged: function(e) {
 		var tar = e.target;
-		if(tar.localName == "prefwindow") {
+		if(!("hasAttribute" in tar))
+			return;
+		var ln = tar.localName;
+		if(ln == "prefwindow") {
 			this.focusSearch(e);
 			return;
 		}
-		if(tar.localName == "menuitem")
-			tar = tar.parentNode.parentNode;
+		//if(tar.localName == "menuitem")
+		//	tar = tar.parentNode.parentNode;
 		if(tar.hasAttribute("hc_requiredfor"))
 			this.updateDependencies(tar, true);
-		if(!tar.hasAttribute("preference") && tar.localName != "checkbox")
+		if(!tar.hasAttribute("preference") && ln != "checkbox")
 			return;
 		if(this.instantApply)
 			this.savePrefs();

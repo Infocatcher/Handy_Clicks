@@ -249,6 +249,15 @@
 			<handler event="keypress" preventdefault="true" keycode="VK_F12" action="this.maximizeEditor();" />
 			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
 			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />
+			<handler event="blur">
+			<![CDATA[
+				if(
+					event.target == this && this.getAttribute("hc_maximized") == "true"
+					&& document.commandDispatcher.focusedElement != this.inputField
+				)
+					this.maximizeEditor();
+			]]>
+			</handler>
 		</handlers>
 	</binding>
 </bindings>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/editor.css" type="text/css"?>
 
 <!DOCTYPE dialog [
 	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/sets.dtd">
@@ -37,11 +37,11 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/regSvc.js" />
 
 	<keyset id="hc-editor-keys">
-		<key key="s" modifiers="control" id="hc-editor-keyApply" oncommand="handyClicksEditor.saveSettings();" />
-		<key keycode="VK_F5" id="hc-editor-keyReload" oncommand="handyClicksEditor.initUI();" />
+		<key key="s" modifiers="control" id="hc-editor-key-apply" oncommand="handyClicksEditor.saveSettings();" />
+		<key keycode="VK_F5" id="hc-editor-key-reload" oncommand="handyClicksEditor.initUI();" />
 
-		<key keycode="VK_F10" id="hc-editor-maximizeWindow" oncommand="handyClicksWinUtils.maximizeWindow();" />
-		<key keycode="VK_F11" id="hc-editor-toggleFullscreen" oncommand="handyClicksWinUtils.toggleFullscreen();" />
+		<key keycode="VK_F10" id="hc-editor-key-maximizeWindow" oncommand="handyClicksWinUtils.maximizeWindow();" />
+		<key keycode="VK_F11" id="hc-editor-key-toggleFullscreen" oncommand="handyClicksWinUtils.toggleFullscreen();" />
 	</keyset>
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">

@@ -1,0 +1,68 @@
+@namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
+
+[id^="hc-editor-enabled"], #hc-editor-customTypeEnabled {
+	font-weight: bold;
+}
+textbox.hcText {
+	background: transparent !important;
+	border: none;
+	padding: 0;
+	margin-top: 1px;
+	-moz-appearance: none;
+	-moz-box-flex: 1;
+}
+
+menuitem[hc_disabled="true"] {
+	color: graytext; /* Style like disabled, but without accessibility restrictions */
+}
+menuitem[hc_sets="enabled"],
+menulist[hc_sets="enabled"] .menulist-label {
+	color: -moz-hyperlinktext;
+}
+menuitem[hc_sets="disabled"],
+menulist[hc_sets="disabled"] .menulist-label {
+	color: -moz-visitedhyperlinktext;
+}
+
+/* Warning for empty menulists */
+menulist:not([label]) > .menulist-label-box {
+	outline: 2px solid red;
+	outline-offset: -2px;
+	min-height: 15px;
+}
+
+.hcEditor {
+	font-family: "Courier New", monospace;
+	-moz-binding: url("chrome://handyclicks/content/editor.xml#codeEditor");
+}
+/* "Fullwindow" feature */
+:root[hc_maximized="true"] > * :not([hc_maximized="true"]):not(autorepeatbutton) {
+	visibility: collapse !important;
+}
+:root[hc_maximized="true"] > * .hcEditor :not(autorepeatbutton) {
+	visibility: visible !important; /* For anonymous nodes inside textbox.hcEditor */
+}
+[hc_maximized="true"]:not(.hcEditor) { /* Hide all borders */
+	margin: 0 !important;
+	padding: 0 !important;
+	border: none !important;
+	-moz-appearance: none !important;
+}
+.hcEditor[hc_maximized="true"] {
+	margin: 0 !important;
+}
+
+#hc-editor-funcSets {
+	overflow: auto;
+}
+#hc-editor-customType {
+	min-width: 12em;
+}
+#hc-editor-customTypeExtId {
+	min-width: 9em;
+}
+
+#hc-editor-funcTab-delay [hc_notdelay="true"],
+#hc-editor-funcTab [hc_notfunc="true"] {
+	display: none;
+}
