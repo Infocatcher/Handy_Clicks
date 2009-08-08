@@ -24,7 +24,6 @@ var handyClicksSets = {
 			this.applyButton.disabled = true;
 		var prefsButt = document.documentElement.getButton("extra2");
 		prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
-		prefsButt.setAttribute("accesskey", prefsButt.getAttribute("label").charAt(0));
 		this.focusSearch();
 	},
 	initShortcuts: function() {
@@ -53,7 +52,7 @@ var handyClicksSets = {
 				this.ut._err(new Error("Invalid shortcut in prefs: " + sh), true);
 				continue;
 			}
-			var button = this.ps.getButtonStr(sh);
+			var button = this.ps.getButtonId(sh);
 			var buttonContainer = this.DOMCache[button] || this.appendContainerItem(null, button, this.ut.getLocalized(button));
 			var modifiers = this.ps.getModifiersStr(sh);
 			var modifiersContainer = this.DOMCache[sh] || this.appendContainerItem(buttonContainer, sh, modifiers);
@@ -286,7 +285,7 @@ var handyClicksSets = {
 			function(tRow, i) {
 				tRow = tRows[i];
 				var mdfs = this.ps.getModifiersStr(tRow.__shortcut);
-				var button = this.ps.getLocaleButtonStr(tRow.__shortcut, true);
+				var button = this.ps.getButtonStr(tRow.__shortcut, true);
 				var type = tRow.__itemType.indexOf("custom_") == 0
 					? this.getCustomTypeLabel(tRow.__itemType)
 					: this.ut.getLocalized(tRow.__itemType);
@@ -737,7 +736,7 @@ var handyClicksSets = {
 		return new Date().toLocaleFormat("_%Y-%m-%d_%H-%M");
 	},
 	checkPrefsFile: function(file) {
-		var data = this.readFromFile(file);
+		var data = this.ut.readFromFile(file);
 		var _data = data;
 		if(data.substr(0, 2) != "//")
 			return false;
@@ -757,17 +756,5 @@ var handyClicksSets = {
 			return false;
 		this.ps._savedStr = _data; // Update cache - see this.ps.saveSettings()
 		return true;
-	},
-	readFromFile: function(file) { // Not for UTF-8!
-		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
-			.createInstance(Components.interfaces.nsIFileInputStream);
-		var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]
-			.createInstance(Components.interfaces.nsIScriptableInputStream);
-		fis.init(file, -1, 0, 0);
-		sis.init(fis);
-		var data = sis.read(sis.available());
-		sis.close();
-		fis.close();
-		return data;
 	}
 };

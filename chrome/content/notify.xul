@@ -3,7 +3,8 @@
 
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	id="handylinksNotify"
-	windowtype="alert:alert"
+	windowtype="handyclicks:notify"
+	hidechrome="true"
 	align="start"
 	onload="hcNotify.init();"
 	onclick="hcNotify.clickHandler(event);">

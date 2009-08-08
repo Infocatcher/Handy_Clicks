@@ -2,6 +2,7 @@
 <!ENTITY hc.sets.title "Handy Clicks: Settings">
 <!ENTITY hc.sets.apply "Apply">
 <!ENTITY hc.sets.settings "Settings">
+<!ENTITY hc.sets.settingsAccesskey "s">
 
 <!ENTITY hc.sets.exportPrefs "Export preferences to file…">
 <!ENTITY hc.sets.importPrefs "Import preferences from file…">
@@ -50,6 +51,7 @@
 <!ENTITY hc.editor.title "Handy Clicks: Editor">
 <!ENTITY hc.editor.apply "Apply">
 <!ENTITY hc.editor.delete "Delete">
+<!ENTITY hc.editor.deleteAccesskey "d">
 
 <!ENTITY hc.editor.mainTabFuncs "Functions">
 <!ENTITY hc.editor.clickHere "Click here">

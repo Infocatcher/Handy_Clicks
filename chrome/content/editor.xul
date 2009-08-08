@@ -17,6 +17,7 @@
 	buttons="accept,cancel,extra1,extra2"
 	buttonlabelextra1="&hc.editor.apply;"
 	buttonlabelextra2="&hc.editor.delete;"
+	buttonaccesskeyextra2="&hc.editor.deleteAccesskey;"
 	ondialogaccept="return handyClicksEditor.saveSettings();"
 	ondialogextra1="handyClicksEditor.saveSettings();"
 	ondialogextra2="handyClicksEditor.deleteSettings();"
@@ -61,10 +62,10 @@
 							<menuitem value="2" label="button2short" tooltiptext="button2" />
 						</menupopup>
 					</menulist>
-					<checkbox id="hc-editor-ctrl" label="Ctrl" />
-					<checkbox id="hc-editor-shift" label="Shift" />
-					<checkbox id="hc-editor-alt" label="Alt" />
-					<checkbox id="hc-editor-meta" label="Meta" />
+					<checkbox id="hc-editor-ctrl" label="ctrl" />
+					<checkbox id="hc-editor-shift" label="shift" />
+					<checkbox id="hc-editor-alt" label="alt" />
+					<checkbox id="hc-editor-meta" label="meta" />
 					<menulist id="hc-editor-itemTypes"
 						oncommand="handyClicksEditor.itemTypeChanged(this.value);"
 						onclick="handyClicksEditor.editCustomType(event);">

@@ -78,6 +78,13 @@ var handyClicksEditor = {
 			this.localiseLabels,
 			this
 		);
+		["ctrl", "shift", "alt", "meta"].forEach(
+			function(mdf) {
+				var elt = this.$("hc-editor-" + mdf);
+				elt.setAttribute("label", this.ps.keys[elt.getAttribute("label")]);
+			},
+			this
+		);
 	},
 	localiseLabels: function(parentId) {
 		var p = this.$(parentId);
@@ -152,7 +159,7 @@ var handyClicksEditor = {
 	setWinTitle: function() {
 		var sh = this.currentShortcut;
 		var t = this.ps.getModifiersStr(sh)
-			+ " + " + this.ps.getLocaleButtonStr(sh, true);
+			+ " + " + this.ps.getButtonStr(sh, true);
 		var type = this.$("hc-editor-itemTypes").getAttribute("label");
 		var ct = this.$("hc-editor-customType").value || this.$("hc-editor-customTypeExtId").value;
 		t = " [" + t + (type ? " + " + type : "") + (ct ? " | " + ct : "") + "]";

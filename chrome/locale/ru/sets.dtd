@@ -2,6 +2,7 @@
 <!ENTITY hc.sets.title "Handy Clicks: Настройки">
 <!ENTITY hc.sets.apply "Применить">
 <!ENTITY hc.sets.settings "Настройки">
+<!ENTITY hc.sets.settingsAccesskey "н">
 
 <!ENTITY hc.sets.exportPrefs "Экспорт настроек в файл…">
 <!ENTITY hc.sets.importPrefs "Импорт настроек из файла…">
@@ -50,6 +51,7 @@
 <!ENTITY hc.editor.title "Handy Clicks: Редактор">
 <!ENTITY hc.editor.apply "Применить">
 <!ENTITY hc.editor.delete "Удалить">
+<!ENTITY hc.editor.deleteAccesskey "у">
 
 <!ENTITY hc.editor.mainTabFuncs "Функции">
 <!ENTITY hc.editor.clickHere "Кликните здесь">

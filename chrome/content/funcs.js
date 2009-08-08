@@ -711,16 +711,7 @@ var handyClicksFuncs = {
 	},
 	get defaultCharset() { // thanks to IE Tab!
 		delete this.defaultCharset;
-		var strBundle = Components.classes["@mozilla.org/intl/stringbundle;1"]
-			.getService(Components.interfaces.nsIStringBundleService);
-		var dch = "";
-		try {
-			dch = strBundle.createBundle("chrome://global-platform/locale/intl.properties")
-				.GetStringFromName("intl.charset.default");
-		}
-		catch(e) {
-		}
-		return this.defaultCharset = dch || "";
+		return this.defaultCharset = this.ut.getStr("chrome://global-platform/locale/intl.properties", "intl.charset.default");
 	},
 	get charset() {
 		var charset = "";

@@ -18,6 +18,7 @@
 	buttons="accept,cancel,extra1,extra2"
 	buttonlabelextra1="&hc.sets.apply;"
 	buttonlabelextra2="&hc.sets.settings;"
+	buttonaccesskeyextra2="&hc.sets.settingsAccesskey;"
 	ondialogaccept="handyClicksSets.savePrefs();"
 	ondialogextra1="handyClicksSets.savePrefs(true);"
 	oncommand="handyClicksSets.prefsChanged(event);"

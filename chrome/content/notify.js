@@ -1,6 +1,7 @@
 var hcNotify = {
 	startColor: 0, // >= 0 (black)
 	endColor: 255, // <= 255 (white)
+	hoverColor: "blue",
 	_colorDelta: null,
 	_startTime: null,
 	_dur: null,
@@ -8,8 +9,8 @@ var hcNotify = {
 	_highlightInterval: null,
 	_nBox: null,
 	init: function() {
-		var wa = window.arguments[0]; // { dur, nTitle, msg, fnc0, fnc1, extEnabled, inWindowCorner, dontCloseUnderCursor }
-		document.getElementById("hcNotifyHeader").value = wa.nTitle;
+		var wa = window.arguments[0]; // { dur, header, msg, fnc0, fnc1, extEnabled, inWindowCorner, dontCloseUnderCursor }
+		document.getElementById("hcNotifyHeader").value = wa.header;
 		var descElt = document.getElementById("hcNotifyDesc");
 		descElt.textContent = wa.msg;
 		var maxW = Math.round(screen.availWidth*0.6);
@@ -26,12 +27,12 @@ var hcNotify = {
 		}
 		var wo = window.opener;
 		var x, y;
-		if(wa.inWindowCorner || !("handyClicks" in wo) || !wo.handyClicks._xy) {
+		if(wa.inWindowCorner || !("handyClicks" in wo) || !wo.handyClicks._xy) { // Show in window corner
 			x = wo.screenX + wo.outerWidth - winW;
 			var sBar = wo.document.getElementById("browser-bottombox") || wo.document.getElementById("status-bar");
 			y = (sBar ? sBar.boxObject.screenY : wo.screenY + wo.outerHeight) - winH;
 		}
-		else {
+		else { // Show under cursor
 			var cursorH = 20, addH = 8;
 			var maxX = screen.availLeft + screen.availWidth;
 			var maxY = screen.availTop + screen.availHeight;
@@ -59,16 +60,14 @@ var hcNotify = {
 	},
 	setColor: function() {
 		var persent = (Date.now() - this._startTime)/this._dur;
-		if(persent > 1) {
+		if(persent >= 1) {
 			clearInterval(this._highlightInterval);
 			return;
 		}
-		var c = this.startColor + Math.round(this._colorDelta*persent);
-		var h = Number(c).toString(16);
+		var h = (this.startColor + Math.round(this._colorDelta*persent)).toString(16);
 		if(h.length == 1)
 			h = "0" + h;
-		h = "#" + h + h + h;
-		this._nBox.style.borderColor = h;
+		this._nBox.style.borderColor = "#" + h + h + h;
 	},
 	delayedClose: function() {
 		this._closeTimeout = setTimeout(window.close, this._dur);
@@ -83,7 +82,7 @@ var hcNotify = {
 	cancelDelayedClose: function() {
 		clearTimeout(this._closeTimeout);
 		clearInterval(this._highlightInterval);
-		this._nBox.style.borderColor = "blue";
+		this._nBox.style.borderColor = this.hoverColor;
 	},
 	mouseHandler: function(e) {
 		if(!e.relatedTarget)

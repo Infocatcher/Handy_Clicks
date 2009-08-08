@@ -237,7 +237,8 @@ var handyClicks = {
 			stop
 			|| (
 				canStop && e.type == "command" && e.originalTarget.localName == "command"
-				&& (Date.now() - _cs.time < 100)
+				&& _cs.hasOwnProperty("time")
+				&& Date.now() - _cs.time < 100
 			)
 		)
 			this.stopEvent(e);
@@ -337,11 +338,7 @@ var handyClicks = {
 					this.ut._log("[define item] Line: " + (e.lineNumber - ct._defineLine + 1));
 					var eLine = this.ut.mmLine(e.lineNumber - ct._defineLine + 1);
 					var href = "handyclicks://editor/itemType/" + type + "/define";
-					var eMsg = this.ut.getLocalized("customTypeDefineError")
-						+ this.ut.getLocalized("errorDetails")
-							.replace("%l", this.ps.dec(ct.label))
-							.replace("%id", type)
-							.replace("%e", e);
+					var eMsg = this.ut.errInfo("customTypeDefineError", this.ps.dec(ct.label), type, e);
 					this.ut.notify(
 						this.ut.getLocalized("errorTitle"),
 						eMsg + this.ut.getLocalized("openConsole"),
@@ -549,11 +546,7 @@ var handyClicks = {
 						this.ut._log("[context menu] Line: " + (e.lineNumber - ct._contextMenuLine + 1));
 						var eLine = this.ut.mmLine(e.lineNumber - ct._contextMenuLine + 1);
 						var href = "handyclicks://editor/itemType/" + this.itemType + "/context";
-						var eMsg = this.ut.getLocalized("customTypeContextMenuError")
-							+ this.ut.getLocalized("errorDetails")
-								.replace("%l", this.ps.dec(ct.label))
-								.replace("%id", this.itemType)
-								.replace("%e", e);
+						var eMsg = this.ut.errInfo("customTypeContextMenuError", this.ps.dec(ct.label), this.itemType, e);
 						this.ut.notify(
 							this.ut.getLocalized("errorTitle"),
 							eMsg + this.ut.getLocalized("openConsole"),
@@ -771,11 +764,7 @@ var handyClicks = {
 				var eLine = this.ut.mmLine(err.lineNumber - line + 1);
 				var href = "handyclicks://editor/shortcut/" + this.getEvtStr(e || this.copyOfEvent) + "/"
 					+ (this._all ? "$all" : this.itemType) + "/" + (!e ? "delayed" : "normal") + "/code";
-				var eMsg = this.ut.getLocalized("customFunctionError")
-					+ this.ut.getLocalized("errorDetails")
-						.replace("%l", this.ps.dec(funcObj.label))
-						.replace("%id", this.itemType)
-						.replace("%e", err);
+				var eMsg = this.ut.errInfo("customFunctionError", this.ps.dec(funcObj.label), this.itemType, err);
 				this.ut.notify(
 					this.ut.getLocalized("errorTitle"),
 					eMsg + this.ut.getLocalized("openConsole"),
@@ -802,7 +791,7 @@ var handyClicks = {
 		var eStr = this.getEvtStr(e || this.copyOfEvent);
 		this.ut._log(
 			(e ? e.type : "delayedAction")
-			+ " -> " + this.ps.getModifiersStr(eStr) + " + " + this.ps.getLocaleButtonStr(eStr, true)
+			+ " -> " + this.ps.getModifiersStr(eStr) + " + " + this.ps.getButtonStr(eStr, true)
 			+ "\n=> executeFunction()"
 			+ "\nnodeName = " + this.origItem.nodeName
 			+ ", itemType = " + this.itemType
@@ -855,8 +844,16 @@ var handyClicks = {
 	},
 	setEditModeStatus: function(em) {
 		em = em === undefined ? this.editMode : em;
-		//~ todo: this.ut.notify() ?
 		document.getElementById("handyClicks-toggleStatus-sBarIcon").setAttribute("hc_editmode", em);
+		if(!em)
+			return;
+		var _this = this;
+		this.ut.notify(
+			this.ut.getLocalized("editModeTitle"),
+			this.ut.getLocalized("editModeNote"),
+			function() { _this.editMode = false; },
+			null, true, true
+		);
 	},
 	openEditor: function(e) {
 		e = e || this.copyOfEvent;

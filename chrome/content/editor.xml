@@ -220,6 +220,24 @@
 				]]>
 				</body>
 			</method>
+			<method name="moveCaret">
+				<parameter name="moveLeft" />
+				<parameter name="event" />
+				<body>
+				<![CDATA[
+					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
+					if(ss == se)
+						return;
+					event.preventDefault();
+					if(moveLeft)
+						ifi.selectionStart = ifi.selectionEnd = ss;
+					else
+						ifi.selectionStart = ifi.selectionEnd = se;
+				]]>
+				</body>
+			</method>
 		</implementation>
 		<handlers>
 			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent(this.tabSymbol, false);" />
@@ -229,6 +247,8 @@
 			<handler event="keypress" preventdefault="true" key="a" action="this.toggleComments();" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" keycode="VK_RETURN" action="this.formatNewLine();" />
 			<handler event="keypress" preventdefault="true" keycode="VK_F12" action="this.maximizeEditor();" />
+			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
+			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />
 		</handlers>
 	</binding>
 </bindings>

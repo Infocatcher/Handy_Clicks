@@ -70,23 +70,21 @@ var handyClicksUtils = {
 			this._timers[tId] = Date.now();
 	},
 
-	notify: function(nTitle, msg, fnc0, fnc1, extEnabled, inWindowCorner) {
+	notify: function(header, msg, fnc0, fnc1, extEnabled, inWindowCorner) {
 		var dur = this.pu.pref("notifyOpenTime");
 		if(dur <= 0)
-			 return;
-		extEnabled = typeof extEnabled == "boolean" ? extEnabled : true;
-		inWindowCorner = typeof inWindowCorner == "boolean"
-			? inWindowCorner
-			: this.pu.pref("notifyInWindowCorner");
-		window.openDialog(
+			 return null;
+		return window.openDialog(
 			 "chrome://handyclicks/content/notify.xul",
 			 "_blank",
-			 "chrome,dialog=1,nTitlebar=0,popup=1",
+			 "chrome,dialog=1,titlebar=0,popup=1",
 			 {
 			 	dur: dur,
-			 	nTitle: nTitle || "", msg: msg || "",
+			 	header: header || this.ut.getLocalized("title"),
+			 	msg: msg || "",
 			 	fnc0: fnc0, fnc1: fnc1,
-			 	extEnabled: extEnabled, inWindowCorner: inWindowCorner,
+			 	extEnabled: extEnabled === undefined ? true : extEnabled,
+			 	inWindowCorner: inWindowCorner === undefined ? this.pu.pref("notifyInWindowCorner") : inWindowCorner,
 			 	dontCloseUnderCursor: this.pu.pref("notifyDontCloseUnderCursor"),
 			 	__proto__: null
 			 }
@@ -112,33 +110,34 @@ var handyClicksUtils = {
 		return this.promptsSvc.confirm(window, ttl, txt);
 	},
 
-	// Localised strings:
+	// Localized strings:
 	_strings: { __proto__: null }, // cache of strings from stringbundle
-	createBundle: function(src) {
-		return Components.classes["@mozilla.org/intl/stringbundle;1"]
+	_bundles: { __proto__: null },
+	getBundle: function(src) {
+		return this._bundles[src] || (
+			this._bundles[src] = Components.classes["@mozilla.org/intl/stringbundle;1"]
 			.getService(Components.interfaces.nsIStringBundleService)
-			.createBundle(src);
+			.createBundle(src)
+		);
 	},
-	get localeBundle() {
-		delete this.localeBundle;
-		return this.localeBundle = this.createBundle("chrome://handyclicks/locale/hcs.properties");
+	getStr: function(src, sName) {
+		try { return this.getBundle(src).GetStringFromName(sName); }
+		catch(e) { return ""; }
 	},
-	get defaultBundle() {
-		delete this.defaultBundle;
-		return this.defaultBundle = this.createBundle("chrome://handyclicks-locale/content/hcs.properties");
+	getLocalized: function(sName) {
+		return this._strings[sName] || (
+			this._strings[sName] = this.getStr("chrome://handyclicks/locale/hcs.properties", sName)
+				|| this.getStr("chrome://handyclicks-locale/content/hcs.properties", sName)
+				|| "(" + sName + ")"
+		);
 	},
-	getLocaleStr: function(name) {
-		try { return this.localeBundle.GetStringFromName(name); }
-		catch(e) { return null; }
-	},
-	getDefaultStr: function(name) {
-		try { return this.defaultBundle.GetStringFromName(name); }
-		catch(e) { return null; }
-	},
-	getLocalized: function(name) {
-		if(!(name in this._strings))
-			this._strings[name] = this.getLocaleStr(name) || this.getDefaultStr(name) || "(" + name + ")";
-		return this._strings[name];
+
+	errInfo: function(textId, label, type, err) {
+		return this.ut.getLocalized(textId)
+			+ this.ut.getLocalized("errorDetails")
+				.replace("%l", label)
+				.replace("%id", type)
+				.replace("%e", err);
 	},
 
 	// File I/O:
