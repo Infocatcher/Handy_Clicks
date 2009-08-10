@@ -750,14 +750,11 @@ var handyClicks = {
 		this.cancelDelayedAction();
 		this.removeMousemoveHandler();
 
-		var args = this.argsToArr(funcObj.arguments);
-		args.unshift(e || null);
 		if(funcObj.custom) {
-			args.splice(1, 0, this.item, this.origItem);
 			var action = this.ps.dec(funcObj.action);
 			try {
 				var line = new Error().lineNumber + 1;
-				new Function("event,item,origItem", action).apply(this.fn, args);
+				new Function("event,item,origItem", action).apply(this.fn, [e, this.item, this.origItem]);
 			}
 			catch(err) {
 				this.ut._log("[func] Line: " + (err.lineNumber - line + 1));
@@ -776,8 +773,13 @@ var handyClicks = {
 		}
 		else {
 			var fnc = this.fn[funcObj.action];
-			if(typeof fnc == "function")
+			if(typeof fnc == "function") {
+				var args = [e];
+				var argsObj = funcObj.arguments;
+				for(var p in argsObj) if(argsObj.hasOwnProperty(p))
+					args.push(argsObj[p]);
 				fnc.apply(this.fn, args);
+			}
 			else {
 				this.ut.notify(
 					this.ut.getLocalized("errorTitle"),
@@ -797,14 +799,6 @@ var handyClicks = {
 			+ ", itemType = " + this.itemType
 			+ "\n=> " + (funcObj.custom ? (this.ps.dec(funcObj.label) || action) : funcObj.action)
 		);
-	},
-	argsToArr: function(argsObj) {
-		argsObj = argsObj || {};
-		var args = [];
-		for(var p in argsObj)
-			if(argsObj.hasOwnProperty(p))
-				args.push(argsObj[p]);
-		return args;
 	},
 
 	// Events interface:

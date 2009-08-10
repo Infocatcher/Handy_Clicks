@@ -190,7 +190,7 @@
 		<key keycode="VK_F11" id="hc-sets-key-toggleFullscreen" oncommand="handyClicksWinUtils.toggleFullscreen();" />
 	</keyset>
 	<popupset id="hc-sets-popupset">
-		<popup id="hc-sets-tree-context" onpopupshowing="return document.popupNode.localName == 'treechildren';">
+		<popup id="hc-sets-tree-context">
 			<menuitem command="hc-sets-cmd-edit" key="hc-sets-key-edit" />
 			<menuitem id="hc-sets-editType" command="hc-sets-cmd-editType" key="hc-sets-key-editType" />
 			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" />

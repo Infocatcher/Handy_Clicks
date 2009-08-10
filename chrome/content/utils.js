@@ -28,8 +28,8 @@ var handyClicksUtils = {
 			this.errPrefix + e.message,
 			fileName || e.fileName,
 			null,
-			lineNumber || e.lineNumber,
-			e.columnNumber,
+			lineNumber || e.lineNumber || 0,
+			e.columnNumber || 0,
 			warn ? 1 : 0,
 			null
 		);

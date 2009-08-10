@@ -54,7 +54,7 @@
 				<hbox id="hc-editor-targetBox" align="center"
 					onchange="handyClicksEditor.loadFuncs();"
 					oncommand="handyClicksEditor.loadFuncs();">
-					<button label="&hc.editor.clickHere;" onclick="handyClicksEditor.setClickOptions(event);" />
+					<button id="hc-editor-clickButton" label="&hc.editor.clickHere;" onclick="handyClicksEditor.setClickOptions(event);" />
 					<menulist id="hc-editor-button">
 						<menupopup>
 							<menuitem value="0" label="button0short" tooltiptext="button0" />
@@ -171,7 +171,7 @@
 										<menuseparator id="hc-editor-funcsSep-tabs" />
 										<menuitem
 											value="openUriInTab" label="openUriInTab"
-											hc_args="loadInBackground loadJSInBackground refererPolicy moveTabTo closePopups inWin"
+											hc_args="loadInBackground loadJSInBackground refererPolicy moveTabTo closePopups winRestriction"
 											hc_supports="link img tab bookmark historyItem" />
 										<menuitem
 											value="openUriInCurrentTab" label="openUriInCurrentTab"
@@ -179,7 +179,7 @@
 											hc_supports="link img bookmark historyItem" />
 										<menuitem
 											value="openUriInWindow" label="openUriInWindow"
-											hc_args="loadInBackground loadJSInBackground refererPolicy moveWinTo closePopups"
+											hc_args="loadInBackground refererPolicy moveWinTo closePopups"
 											hc_supports="link img tab bookmark historyItem" />
 										<menuitem
 											value="openInSidebar" label="openInSidebar"
@@ -199,8 +199,8 @@
 											hc_args=""
 											hc_supports="img" />
 										<menuitem
-											value="submitFormToNewDoc" label="submitFormToNewDoc"
-											hc_args="toNewWin loadInBackground refererPolicy"
+											value="submitForm" label="submitForm"
+											hc_args="target loadInBackground refererPolicy"
 											hc_supports="submitButton" />
 										<menuseparator id="hc-editor-funcsSep-misc" />
 										<menuitem

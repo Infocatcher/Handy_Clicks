@@ -2,7 +2,7 @@
 <!ENTITY hc.sets.title "Handy Clicks: Настройки">
 <!ENTITY hc.sets.apply "Применить">
 <!ENTITY hc.sets.settings "Настройки">
-<!ENTITY hc.sets.settingsAccesskey "н">
+<!ENTITY hc.sets.settingsAccesskey "Н">
 
 <!ENTITY hc.sets.exportPrefs "Экспорт настроек в файл…">
 <!ENTITY hc.sets.importPrefs "Импорт настроек из файла…">

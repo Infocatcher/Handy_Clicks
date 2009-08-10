@@ -13,7 +13,8 @@ var handyClicksEditor = {
 			refererPolicy: [-1, 0, /*1,*/ 2],
 			moveTabTo: ["null", "first", "before", "after", "last", "relative"],
 			moveWinTo: ["null", "top", "right", "bottom", "left", "sub"],
-			inWin: [-1, 0, 1, 2], // browser.link.open_newwindow.restriction
+			winRestriction: [-1, 0, 1, 2], // browser.link.open_newwindow.restriction
+			target: ["cur", "win", "tab"], // browser.link.open_newwindow
 			position: ["top", "right", "bottom", "left"]
 		}
 	},

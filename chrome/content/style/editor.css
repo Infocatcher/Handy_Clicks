@@ -1,5 +1,9 @@
 @namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
 
+#hc-editor-clickButton {
+	-moz-user-focus: ignore;
+}
+/*tabpanels { -moz-appearance: button; }*/
 [id^="hc-editor-enabled"], #hc-editor-customTypeEnabled {
 	font-weight: bold;
 }

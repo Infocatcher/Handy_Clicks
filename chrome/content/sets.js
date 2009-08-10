@@ -110,7 +110,7 @@ var handyClicksSets = {
 			this.appendTreeCell(tRow, "label", isCustom ? this.ps.dec(it.label) : this.ut.getLocalized(it.action));
 			this.appendTreeCell(tRow, "label",
 				isCustom
-					? this.fixOldTree(this.ut.getLocalized("customFunction") + "\n" + this.ps.dec(it.action))
+					? this.ut.getLocalized("customFunction") + (this.oldTree ? " " : "\n") + this.ps.dec(it.action)
 					: it.action
 			);
 			this.appendTreeCell(tRow, "label", this.getArguments(it.arguments || {}));
@@ -148,16 +148,15 @@ var handyClicksSets = {
 		cell.setAttribute(attrName, attrValue);
 		return parent.appendChild(cell);
 	},
-	fixOldTree: function(s) {
-		return this.ut.fxVersion <= 2
-			? ("" + s).replace(/\r\n|\r|\n|\t/g, " ")
-			: s;
+	get oldTree() {
+		delete this.oldTree;
+		return this.oldTree = this.ut.fxVersion <= 2;
 	},
 	getArguments: function(argsObj) {
 		var res = [];
 		for(var p in argsObj) if(argsObj.hasOwnProperty(p))
 			res.push(p + " = " + uneval(argsObj[p])); //~ todo: this.ut.getLocalized(p) ?
-		return res.join(this.fixOldTree(",\n"));
+		return res.join(this.oldTree ? ", " : ",\n ");
 	},
 	updTree: function() {
 		var tbo = this.tree.treeBoxObject;

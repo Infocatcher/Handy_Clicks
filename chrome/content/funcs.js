@@ -136,32 +136,23 @@ var handyClicksFuncs = {
 			.getService(Components.interfaces.nsIClipboardHelper)
 			.copyString(str);
 	},
+
+	// Open URI in...
 	openUriInCurrentTab: function(e, refererPolicy, closePopups, uri) {
 		uri = uri || this.getUriOfItem(this.hc.item);
-		if(this.testForLinkFeatures(e, this.hc.item, uri, false, false, refererPolicy, 0, true))
+		if(this.testForLinkFeatures(e, this.hc.item, uri, false, false, refererPolicy, undefined, "cur"))
 			return;
 		this.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
 		if(closePopups)
 			this.closeMenus();
 	},
-	testForHighlander: function(uri) {
-		// Highlander ( https://addons.mozilla.org/firefox/addon/4086 )
-		if("Highlander" in window) {
-			var tab = Highlander.findTabForURI(makeURI(uri)); // chrome://global/content/contentAreaUtils.js
-			if(tab) {
-				Highlander.selectTab(tab);
-				return true;
-			}
-		}
-		return false;
-	},
-	openUriInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, closePopups, inWin) {
+	openUriInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, closePopups, winRestriction) {
 		var tbr = this.getTabBrowser(true);
 		if(moveTo == "relative") {
 			var tabCont = tbr.mTabContainer;
 			tabCont.__handyClicks__resetRelativeIndex = false;
 		}
-		var tab = this._openUriInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, inWin);
+		var tab = this._openUriInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction);
 		if(closePopups)
 			this.closeMenus();
 		if(!tab || !moveTo)
@@ -212,11 +203,11 @@ var handyClicksFuncs = {
 			tabCont, [_resetRelativeIndex], tbr
 		);
 	},
-	_openUriInTab: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, moveTo, inWin) {
+	_openUriInTab: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
-		if(this.testForLinkFeatures(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, inWin))
+		if(this.testForLinkFeatures(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, winRestriction, "tab"))
 			return null;
 		var tbr = this.getTabBrowser(true);
 
@@ -232,35 +223,46 @@ var handyClicksFuncs = {
 			false
 		);
 	},
-	testForLinkFeatures: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, inWin, inCurTab) {
+	testForLinkFeatures: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, winRestriction, target) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
 		if(
 			this.testForHighlander(uri)
-			|| this.loadJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin, inCurTab)
+			|| this.loadJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target)
 			|| this.testForFileLink(uri, refererPolicy)
 		)
 			return true;
 		return false;
 	},
-	loadJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, inWin, inCurTab) {
+	testForHighlander: function(uri) {
+		// Highlander ( https://addons.mozilla.org/firefox/addon/4086 )
+		if("Highlander" in window) {
+			var tab = Highlander.findTabForURI(makeURI(uri)); // chrome://global/content/contentAreaUtils.js
+			if(tab) {
+				Highlander.selectTab(tab);
+				return true;
+			}
+		}
+		return false;
+	},
+	loadJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
 
 		var voidURI = this.isVoidURI(uri);
 		if(!voidURI && this.isJSURI(uri)) {
-			this.loadNotVoidJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, inWin, inCurTab);
+			this.loadNotVoidJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target);
 			return true;
 		}
 		else if(voidURI || this.isDummyURI(item, uri)) {
-			this.loadVoidLinkWithHandler(e, item, loadJSInBackground, refererPolicy, inWin);
+			this.loadVoidLinkWithHandler(e, item, loadJSInBackground, refererPolicy, winRestriction, target);
 			return true;
 		}
 		return false;
 	},
-	loadVoidLinkWithHandler: function(e, item, loadJSInBackground, refererPolicy, inWin) {
+	loadVoidLinkWithHandler: function(e, item, loadJSInBackground, refererPolicy, winRestriction, target) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 
@@ -268,11 +270,9 @@ var handyClicksFuncs = {
 
 		var _this = this;
 		function _f() {
-			var origPrefs = _this.setPrefs({
-				"browser.link.open_newwindow.restriction": _this.getWinRestriction(inWin),
-				"browser.tabs.loadDivertedInBackground": loadJSInBackground,
-				"network.http.sendRefererHeader": _this.getRefererPolicy(refererPolicy)
-			});
+			var origPrefs = _this.setPrefs(
+				_this.getOpenLinksPrefs(target, loadJSInBackground, refererPolicy, winRestriction, false /* winOpenFix */)
+			);
 
 			//not needed?//_this.hc.flags.stopContextMenu = true;
 
@@ -327,25 +327,14 @@ var handyClicksFuncs = {
 		);
 		return hnds.length ? " (" + hnds.join(", ") + ")" : "";
 	},
-	getWinRestriction: function(inWin) {
-		return inWin == true
-			? 1 // Open in new window
-			: inWin == -1 // -1 - global value, other - override
-				? this.pu.getPref("browser.link.open_newwindow.restriction")
-				: inWin;
-	},
-	loadNotVoidJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, inWin, inCurTab) {
+	loadNotVoidJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target) {
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
 		var _this = this;
 		function _f() {
-			var origPrefs = _this.setPrefs({
-				"browser.link.open_newwindow.restriction": _this.getWinRestriction(inWin),
-				"dom.disable_open_during_load": false, // allow window.open( ... )
-				"browser.tabs.loadDivertedInBackground": loadJSInBackground,
-				"network.http.sendRefererHeader": _this.getRefererPolicy(refererPolicy),
-				"browser.link.open_newwindow": inCurTab ? 1 : 3 //~ todo: test
-			});
+			var origPrefs = _this.setPrefs(
+				_this.getOpenLinksPrefs(target, loadJSInBackground, refererPolicy, winRestriction, true /* winOpenFix */)
+			);
 
 			var oDoc = item.ownerDocument;
 			if(_this.ut.isNoChromeDoc(oDoc))
@@ -393,8 +382,8 @@ var handyClicksFuncs = {
 			this.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
 		return true;
 	},
-	openUriInWindow: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, closePopups) {
-		var win = this._openUriInWindow(e, null, null, loadInBackground, loadJSInBackground, refererPolicy);
+	openUriInWindow: function(e, loadInBackground, refererPolicy, moveTo, closePopups) {
+		var win = this._openUriInWindow(e, null, null, loadInBackground, refererPolicy);
 		if(closePopups)
 			this.closeMenus();
 		if(!win || !moveTo)
@@ -446,11 +435,11 @@ var handyClicksFuncs = {
 			window.resizeTo(wCur, hCur);
 		this.initWindowMoving(win, xNew, yNew, wNew, hNew);
 	},
-	_openUriInWindow: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy) {
+	_openUriInWindow: function(e, item, uri, loadInBackground, refererPolicy) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
-		if(this.testForLinkFeatures(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, true))
+		if(this.testForLinkFeatures(e, item, uri, loadInBackground, false /* loadJSInBackground */, refererPolicy, undefined, "win"))
 			return null;
 		var win = window.openDialog(
 			getBrowserURL(),
@@ -504,10 +493,14 @@ var handyClicksFuncs = {
 			.getInterface(Components.interfaces.nsIXULWindow);
 		xulwin.zLevel = xulwin.normalZ;
 	},
+
 	openInSidebar: function(e, closePopups, ttl, uri) {
-		ttl = ttl || this.getTextOfItem(this.hc.item);
-		uri = uri || this.getUriOfItem(this.hc.item);
-		openWebPanel(ttl, uri);
+		var item = this.hc.item;
+		ttl = ttl || this.getTextOfItem(item);
+		uri = uri || this.getUriOfItem(item);
+		if(this.loadJavaScriptLink(e, item, uri, false, -1 /* refererPolicy */, undefined, "tab")) // ?
+			return;
+		openWebPanel(ttl, uri); //~ todo: refererPolicy
 		if(closePopups)
 			this.closeMenus();
 	},
@@ -786,35 +779,53 @@ var handyClicksFuncs = {
 		value = value.replace(/[\u200e\u200f\u202a\u202b\u202c\u202d\u202e]/g, encodeURIComponent);
 		return value;
 	},
-	setPrefs: function(prefsObj) {
+	getOpenLinksPrefs: function(target /* "cur", "win" or "tab" */, bg, refererPolicy, winRestriction, winOpenFix) {
+		return {
+			"browser.tabs.loadDivertedInBackground": target == "tab" && bg || null,
+			"browser.link.open_newwindow.restriction": winRestriction === undefined ? 0 : this.getWinRestriction(winRestriction),
+			"browser.link.open_newwindow": target == "cur" && 1 || target == "win" && 2 || target == "tab" && 3,
+			"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy),
+			"dom.disable_open_during_load": winOpenFix ? false : null
+		};
+	},
+	getWinRestriction: function(inWin) {
+		return inWin === true
+			? 1 // Open in new window
+			: inWin === -1 // -1 - global value, other - override
+				? this.pu.getPref("browser.link.open_newwindow.restriction")
+				: inWin;
+	},
+	setPrefs: function() {
 		var origs = { __proto__: null };
-		for(var p in prefsObj) if(prefsObj.hasOwnProperty(p)) {
-			if(prefsObj[p] === null)
-				continue;
-			origs[p] = this.pu.getPref(p);
-			this.pu.setPref(p, prefsObj[p]);
-		}
+		Array.prototype.forEach.call(
+			arguments,
+			function(prefsObj) {
+				for(var p in prefsObj) if(prefsObj.hasOwnProperty(p)) {
+					if(prefsObj[p] === null)
+						continue;
+					origs[p] = this.pu.getPref(p);
+					this.pu.setPref(p, prefsObj[p]);
+				}
+			},
+			this
+		);
 		return origs;
 	},
 	restorePrefs: function(prefsObj) {
 		for(var p in prefsObj)
 			this.pu.setPref(p, prefsObj[p]);
 	},
-	submitFormToNewDoc: function(e, toNewWin, loadInBackground, refererPolicy, node) {
+	submitForm: function(e, target, loadInBackground, refererPolicy, node) {
 		// Thanks to SubmitToTab! ( https://addons.mozilla.org/firefox/addon/483 )
 		node = node || this.hc.item;
-		node = new XPCNativeWrapper(node, "form", "click()");
+		node = new XPCNativeWrapper(node, "form", "click()"); // ?
 		var form = node.form;
 		var origTarget = form.getAttribute("target");
-		form.target = "_blank";
+		form.target = target == "cur" ? "" : "_blank";
 
-		var origPrefs = this.setPrefs({
-			"browser.link.open_newwindow": toNewWin ? 2 : 3,
-			"browser.block.target_new_window": toNewWin ? false : null,
-			"dom.disable_open_during_load": false,
-			"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy),
-			"browser.tabs.loadDivertedInBackground": toNewWin ? null : loadInBackground
-		});
+		var origPrefs = this.setPrefs(
+			this.getOpenLinksPrefs(target, loadInBackground, refererPolicy, undefined /* winRestriction */, true /* winOpenFix */)
+		);
 
 		this.hc._enabled = false; // Don't stop this "click"
 		node.click();
