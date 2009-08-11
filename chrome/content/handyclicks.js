@@ -25,7 +25,6 @@ var handyClicks = {
 	mousemoveParams: null,
 	_tabOnMousedown: null,
 
-	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
 	ignoreAction: "$ignore",
 
 	// Initialization:
@@ -310,10 +309,10 @@ var handyClicks = {
 				? {}
 				: null;
 	},
-	defineItem: function(e, sets) {
-		var all = this.itemTypeInSets(sets, "$all");
+	defineItem: function(e, sets, forcedAll) {
+		var all = forcedAll || this.itemTypeInSets(sets, "$all");
 		this._all = all;
-		all = this.editMode || all;
+		//all = this.editMode || all;
 		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "submitButton"
 		this.item = null;
 
@@ -391,7 +390,7 @@ var handyClicks = {
 		// History item:
 		if(
 			(all || this.itemTypeInSets(sets, "historyItem"))
-			&& it.namespaceURI == this.XULNS
+			&& it.namespaceURI == this.ut.XULNS
 			&& (
 				this.hasParent(it, "goPopup")
 				|| (itln == "treechildren" && (it.parentNode.id || "").indexOf("history") != -1) // Sidebar
@@ -406,7 +405,7 @@ var handyClicks = {
 		// Bookmark:
 		if(
 			(all || this.itemTypeInSets(sets, "bookmark"))
-			&& it.namespaceURI == this.XULNS
+			&& it.namespaceURI == this.ut.XULNS
 			&& it.type != "menu"
 			&& (
 				(
@@ -427,7 +426,7 @@ var handyClicks = {
 		// Tab:
 		if(
 			(all || this.itemTypeInSets(sets, "tab"))
-			&& it.namespaceURI == this.XULNS
+			&& it.namespaceURI == this.ut.XULNS
 			&& itln != "toolbarbutton"
 		) {
 			_it = it;
@@ -450,7 +449,7 @@ var handyClicks = {
 		// Tab bar:
 		if(
 			(all || this.itemTypeInSets(sets, "tabbar"))
-			&& it.namespaceURI == this.XULNS
+			&& it.namespaceURI == this.ut.XULNS
 			&& itln != "toolbarbutton"
 		) {
 			_it = it;
@@ -484,6 +483,9 @@ var handyClicks = {
 				_it = _it.parentNode;
 			}
 		}
+
+		if(!forcedAll && this.editMode) // Nothing found?
+			this.defineItem(e, sets, true); // Try again with disabled types.
 	},
 	itemTypeInSets: function(sets, iType) {
 		return sets.hasOwnProperty(iType) && this.isOkFuncObj(sets[iType]);
@@ -561,7 +563,7 @@ var handyClicks = {
 		}
 		if(cm && typeof cm.hidePopup != "function") {
 			// Try open XUL document with custom context in tab...
-			this.ut._err(new Error("Strange error: context menu has no hidePopup() method\n" + cm.id), true);
+			this.ut._err(new Error("Strange error: context menu has no hidePopup() method\nid: " + cm.id), true);
 			cm = null;
 		}
 		this._cMenu = cm; // cache
@@ -661,7 +663,7 @@ var handyClicks = {
 		var id = null;
 		var doc = document;
 		var isNoChrome = this.ut.isNoChromeDoc(node.ownerDocument);
-		if(!isNoChrome || node.namespaceURI == this.XULNS) {
+		if(!isNoChrome || node.namespaceURI == this.ut.XULNS) {
 			var docNode = Node.DOCUMENT_NODE; // 9
 			while(node && node.nodeType != docNode) {
 				if(node.hasAttribute("context")) {
@@ -691,7 +693,7 @@ var handyClicks = {
 		var br;
 		["tabbrowser", "browser", "iframe"].some(
 			function(tag) {
-				var browsers = doc.getElementsByTagNameNS(this.XULNS, tag);
+				var browsers = doc.getElementsByTagNameNS(this.ut.XULNS, tag);
 				var win, brObj;
 				for(var i = 0, len = browsers.length; i < len; i++) {
 					win = browsers[i].contentWindow;

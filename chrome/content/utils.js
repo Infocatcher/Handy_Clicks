@@ -1,5 +1,6 @@
 var handyClicksUtils = {
 	errPrefix: "[Handy Clicks]: ",
+	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
 
 	get consoleSvc() {
 		delete this.consoleSvc;
@@ -239,6 +240,15 @@ var handyClicksUtils = {
 	},
 	mmLine: function(n) {
 		return this.mm(n, 1, 100000);
+	},
+
+	// E4X
+	fromXML: function(xml) {
+		var pp = XML.prettyPrinting;
+		XML.prettyPrinting = false;
+		var elt = new DOMParser().parseFromString(xml.toXMLString(), "application/xml").documentElement;
+		XML.prettyPrinting = pp;
+		return elt;
 	}
 };
 

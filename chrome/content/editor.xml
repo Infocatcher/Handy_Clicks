@@ -128,8 +128,8 @@
 					var block = val.substring(startLine, endLine);
 					var bLen0 = block.length;
 
-					if(/^\/\//m.test(block))
-						block = block.replace(/^\/\//mg, "");
+					if(/^\s*\/\//m.test(block))
+						block = block.replace(/^(\s*)\/\//mg, "$1");
 					else
 						block = block.replace(/^/mg, "//");
 					var bLen1 = block.length;

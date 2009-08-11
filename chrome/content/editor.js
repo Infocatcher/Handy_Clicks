@@ -272,19 +272,21 @@ var handyClicksEditor = {
 		var tList = this.$("hc-editor-customTypePopup");
 		this.delCustomTypes();
 		var cTypes = this.ps.types;
-		var mi, _mi, typeObj, dis;
+		var typeObj, mi, _mi, dis;
 		var hideSep = true;
 		for(var cType in cTypes) if(cTypes.hasOwnProperty(cType)) {
-			mi = document.createElement("menuitem");
-			typeObj = cTypes[cType] || {};
-			mi.setAttribute("label", this.ps.dec(typeObj.label) || cType);
-			mi.setAttribute("value", cType);
-			_mi = mi.cloneNode(true);
+			typeObj = cTypes[cType];
+			if(!this.ut.isObject(typeObj)) {
+				this.ut._err(new Error("Invalid custom type: " + cType + "\nvalue: " + typeObj), true);
+				continue;
+			}
+			mi = <menuitem xmlns={this.ut.XULNS} value={cType} label={this.ps.dec(typeObj.label) || cType} />;
+			_mi = mi.copy();
 			dis = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
-			mi.setAttribute("disabled", dis);
-			_mi.setAttribute("hc_disabled", dis);
-			parent.insertBefore(mi, sep);
-			tList.appendChild(_mi);
+			mi.@disabled = dis;
+			_mi.@hc_disabled = dis;
+			parent.insertBefore(this.ut.fromXML(mi), sep);
+			tList.appendChild(this.ut.fromXML(_mi));
 			hideSep = false;
 		}
 		sep.hidden = hideSep;
@@ -419,9 +421,7 @@ var handyClicksEditor = {
 		var setsObj = this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
 		if(delayed)
 			setsObj = this.ut.getOwnProperty(setsObj, "delayedAction") || {};
-		var cArgVal = typeof setsObj == "object"
-			?  this.ut.getOwnProperty(setsObj, "arguments") || {}
-			: {};
+		var cArgVal = this.ut.getOwnProperty(setsObj, "arguments") || {};
 		cArgVal = this.ut.getOwnProperty(setsObj, "arguments", arg);
 		var argType = this.getArgType(arg);
 		if(!argType)
@@ -438,36 +438,31 @@ var handyClicksEditor = {
 		return null;
 	},
 	addControl: function(argName, argType, argVal, delayed) {
-		var argContainer = document.createElement("hbox");
-		argContainer.setAttribute("align", "center");
-		argContainer.className = "hc-editor-argsContainer";
-		var elt = document.createElement(argType);
+		var ns = this.ut.XULNS;
+		var argContainer = <hbox xmlns={ns} align="center" class="hc-editor-argsContainer" />;
+		var elt = <{argType} xmlns={ns} hc_argname={argName} />;
 		switch(argType) {
 			case "checkbox":
-				elt.setAttribute("checked", !!argVal);
-				elt.setAttribute("label", this.ut.getLocalized(argName));
+				elt.@checked = !!argVal;
+				elt.@label = this.ut.getLocalized(argName);
 			break;
 			case "menulist":
 				// Description:
-				var desc = document.createElement("label");
-				desc.setAttribute("value", this.ut.getLocalized(argName));
-				argContainer.appendChild(desc);
+				argContainer.appendChild(<label xmlns={ns} value={this.ut.getLocalized(argName)} />);
 				// List of values:
-				var mp = document.createElement("menupopup");
-				var vals = this.types.menulists[argName];
-				var mi;
-				for(var i = 0, len = vals.length; i < len; i++) {
-					mi = document.createElement("menuitem");
-					mi.setAttribute("value", vals[i]);
-					mi.setAttribute("label", this.ut.getLocalized(argName + "[" + vals[i] + "]"));
-					mp.appendChild(mi);
-				}
-				elt.value = argVal + "";
+				var mp = <menupopup xmlns={ns} />;
+				this.types.menulists[argName].forEach(
+					function(val) {
+						var l = this.ut.getLocalized(argName + "[" + val + "]");
+						mp.appendChild(<menuitem xmlns={ns} value={val} label={l} />);
+					},
+					this
+				);
+				elt.@value = "" + argVal;
 				elt.appendChild(mp);
 		}
-		elt.setAttribute("hc_argname", argName);
 		argContainer.appendChild(elt);
-		this.$("hc-editor-funcArgs" + delayed).appendChild(argContainer);
+		this.$("hc-editor-funcArgs" + delayed).appendChild(this.ut.fromXML(argContainer));
 	},
 	get currentShortcut() {
 		var s = "button=" + this.$("hc-editor-button").value;

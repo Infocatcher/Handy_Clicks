@@ -538,26 +538,25 @@ var handyClicksFuncs = {
 
 	// Generated popup:
 	createPopup: function(items) {
-		var popup = this.popup;
-		this.appendItems(popup, items);
-		return popup;
+		if(typeof items == "xml")
+			return this.getPopup(items);
+		return this.appendItems(this.getPopup(), items);
 	},
-	get popup() {
+	getPopup: function(xml) {
 		var pSet = document.getElementById("mainPopupSet");
 		var id = "handyClicks-generatedPopup";
 		var popup = document.getElementById(id);
-		if(popup)
-			pSet.removeChild(popup);
-		popup = document.createElement("popup");
-		popup.id = id;
-		popup.tooltip = "handyClicks-tooltip";
-		pSet.appendChild(popup);
-		return popup;
+		popup && pSet.removeChild(popup);
+		popup = xml || <popup xmlns={this.ut.XULNS} />;
+		popup.@id = id;
+		popup.@tooltip = "handyClicks-tooltip";
+		return pSet.appendChild(this.ut.fromXML(popup));
 	},
 	appendItems: function(parent, items) {
 		items.forEach(function(item) {
 			this.appendItem(parent, item);
 		}, this);
+		return parent;
 	},
 	appendItem: function(parent, item) {
 		var tag = this.ut.getOwnProperty(item, "tagName");
