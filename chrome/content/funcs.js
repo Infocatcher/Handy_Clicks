@@ -485,11 +485,11 @@ var handyClicksFuncs = {
 		);
 	},
 	restoreZLevel: function(win) {
-		var treeowner = win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+		var xulwin = win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
 			.getInterface(Components.interfaces.nsIWebNavigation)
 			.QueryInterface(Components.interfaces.nsIDocShellTreeItem)
-			.treeOwner;
-		var xulwin = treeowner.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+			.treeOwner
+			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
 			.getInterface(Components.interfaces.nsIXULWindow);
 		xulwin.zLevel = xulwin.normalZ;
 	},
@@ -555,12 +555,9 @@ var handyClicksFuncs = {
 		return popup;
 	},
 	appendItems: function(parent, items) {
-		items.forEach(function(item) { this.appendItem(parent, item); }, this);
-
-		/***
-		for(var i = 0; i < items.length; i++)
-			this["appendMenu" + (this.ut.isArray(items[i]) ? "" : "item")](parent, items[i]);
-		***/
+		items.forEach(function(item) {
+			this.appendItem(parent, item);
+		}, this);
 	},
 	appendItem: function(parent, item) {
 		var tag = this.ut.getOwnProperty(item, "tagName");
@@ -602,7 +599,9 @@ var handyClicksFuncs = {
 		popup.hc_uri = this.convertStrFromUnicode(uri);
 	},
 	addAppsProps: function(items, uri, checkFiles) {
-		items.forEach(function(item) { this.addAppProps(item, uri, checkFiles); }, this);
+		items.forEach(function(item) {
+			this.addAppProps(item, uri, checkFiles);
+		}, this);
 	},
 	addAppProps: function(item, uri, checkFiles) {
 		var childs = this.ut.getOwnProperty(item, "childNodes");
@@ -1105,11 +1104,13 @@ var handyClicksFuncs = {
 		this.hc.showPopupOnItem();
 	},
 	tooltipAttrBase: "hc_tooltip_",
+	tooltipAttrStyle: "hc_tooltip_style_",
 	fillInTooltip: function(tooltip) {
 		var tNode = document.tooltipNode;
 		var attrBase = this.tooltipAttrBase;
 		var i = 0, lbl;
 		var attrName = attrBase + i;
+		var styleAttr;
 		while(tNode.hasAttribute(attrName)) {
 			lbl = tooltip["_" + attrName];
 			if(!lbl) {
@@ -1119,6 +1120,11 @@ var handyClicksFuncs = {
 				tooltip["_" + attrName] = lbl;
 			}
 			lbl.setAttribute("value", tNode.getAttribute(attrName));
+			styleAttr = this.tooltipAttrStyle + i;
+			if(tNode.hasAttribute(styleAttr))
+				lbl.setAttribute("style", tNode.getAttribute(styleAttr));
+			else
+				lbl.removeAttribute("style");
 			lbl.hidden = false;
 			attrName = attrBase + ++i;
 		}
