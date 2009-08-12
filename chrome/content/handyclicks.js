@@ -57,7 +57,7 @@ var handyClicks = {
 
 	// Handlers:
 	mousedownHandler: function(e) {
-		if(!this.enabled)
+		if(!this.enabled) //~ if(e.detail > 1) return; ?
 			return;
 
 		this.saveXY(e);
@@ -83,7 +83,7 @@ var handyClicks = {
 			);
 		}
 
-		if(this._cMenu && typeof this._cMenu.hidePopup == "function")
+		if(this._cMenu && typeof this._cMenu.hidePopup == "function") // ?
 			this._cMenu.hidePopup();
 
 		var runOnMousedown = funcObj.eventType == "mousedown" && !this.flags.allowEvents;
@@ -95,11 +95,11 @@ var handyClicks = {
 			return;
 
 		var _this = this;
-		var cm = this.getItemContext(e); //~ todo: get cm only if needed
+		//var cm = this.getItemContext(e); //~ todo: get cm only if needed
 
 		// Fix for switching tabs by Mouse Gestures
-		this._tabOnMousedown = cm && cm.id == "contentAreaContextMenu"
-			? this.fn.getTabBrowser(true).mCurrentTab
+		this._tabOnMousedown = e.view.top === content
+			? this.getTabBrowser(true).mCurrentTab
 			: null;
 
 		var delay = this.pu.pref("delayedActionTimeout");
@@ -112,7 +112,7 @@ var handyClicks = {
 			delay > 0
 			&& !this.editMode
 			&& (
-				(!delayedAction && cm && e.button == 2) // Show context menu after delay
+				(!delayedAction /*&& cm */&& e.button == 2) // Show context menu after delay
 				|| (delayedAction && delayedAction.enabled) // Other action after delay
 			)
 		) {
@@ -131,6 +131,7 @@ var handyClicks = {
 				this,
 				delayedAction
 			);
+			/****
 			if(
 				(cm && e.button == 2 && !delayedAction)
 				|| delayedAction.action == "showContextMenu"
@@ -144,6 +145,7 @@ var handyClicks = {
 					true
 				);
 			}
+			****/
 		}
 		if(!this.hasMousemoveHandler) {
 			this.hasMousemoveHandler = true;
@@ -152,7 +154,7 @@ var handyClicks = {
 		}
 	},
 	clickHandler: function(e) {
-		if(!this.enabled)
+		if(!this.enabled) //~ if(e.detail > 1) return; ?
 			return;
 		this.checkForStopEvent(e); // Can stop "contextmenu" event in Windows
 		if(this.flags.allowEvents)
@@ -163,7 +165,7 @@ var handyClicks = {
 		this.functionEvent(funcObj, e);
 	},
 	mouseupHandler: function(e) {
-		if(!this.enabled)
+		if(!this.enabled) //~ if(e.detail > 1) return; ?
 			return;
 		this.checkForStopEvent(e);
 		if(this.flags.allowEvents)
@@ -172,7 +174,7 @@ var handyClicks = {
 		this.saveXY(e);
 	},
 	commandHandler: function(e) {
-		if(!this.enabled)
+		if(!this.enabled) //~ if(e.detail > 1) return; ?
 			return;
 		this.checkForStopEvent(e);
 	},
@@ -253,7 +255,7 @@ var handyClicks = {
 	},
 	get tabNotChanged() {
 		var tab = this._tabOnMousedown;
-		return !tab || tab == this.fn.getTabBrowser(true).mCurrentTab;
+		return !tab || tab == this.getTabBrowser(true).mCurrentTab;
 	},
 	cancelDelayedAction: function() {
 		clearTimeout(this.daTimeout);
@@ -395,7 +397,7 @@ var handyClicks = {
 				this.hasParent(it, "goPopup")
 				|| (itln == "treechildren" && (it.parentNode.id || "").indexOf("history") != -1) // Sidebar
 			)
-			&& this.fn.getBookmarkUri(it, e)
+			&& this.getBookmarkUri(it, e)
 		) {
 			this.itemType = "historyItem";
 			this.item = it;
@@ -416,7 +418,7 @@ var handyClicks = {
 				|| (itln == "treechildren" && (it.parentNode.id || "").indexOf("bookmark") != -1) // Sidebar
 			)
 			&& !this.hasParent(it, "goPopup")
-			&& this.fn.getBookmarkUri(it, e)
+			&& this.getBookmarkUri(it, e)
 		) {
 			this.itemType = "bookmark";
 			this.item = it;
@@ -516,54 +518,38 @@ var handyClicks = {
 	// Context menu:
 	getItemContext: function(e) {
 		var cm = null;
-		switch(this.itemType) {
-			case "link":
-			case "img":
-				cm = document.getElementById("contentAreaContextMenu");
-			break;
-			case "bookmark":
-				cm = document.getElementById("placesContext") || document.getElementById("bookmarks-context-menu");
-			break;
-			case "historyItem":
-				cm = document.getElementById("placesContext"); // Firefox 3.0+
-				// It not shown by default in History meny, but...
-			break;
-			case "tab":
-			case "tabbar":
-				var cm = document.getAnonymousElementByAttribute(gBrowser || getBrowser(), "anonid", "tabContextMenu");
-			break;
-			case "submitButton":
-				cm = null; //~ todo: SubmitToTab for Firefox 3+ => add cm
-			break;
-			default: // custom types
-				if(!this.isOkCustomType(this.itemType))
-					break;
-				var ct = this.ps.types[this.itemType];
-				var _cm = ct._contextMenu;
-				if(_cm) {
-					try {
-						cm = _cm.call(this.fn, e, this.item, this.origItem);
-					}
-					catch(e) {
-						this.ut._log("[context menu] Line: " + (e.lineNumber - ct._contextMenuLine + 1));
-						var eLine = this.ut.mmLine(e.lineNumber - ct._contextMenuLine + 1);
-						var href = "handyclicks://editor/itemType/" + this.itemType + "/context";
-						var eMsg = this.ut.errInfo("customTypeContextMenuError", this.ps.dec(ct.label), this.itemType, e);
-						this.ut.notify(
-							this.ut.getLocalized("errorTitle"),
-							eMsg + this.ut.getLocalized("openConsole"),
-							this.ut.console, this.wu.getOpenLink(href, eLine)
-						);
-						this.ut._err(new Error(eMsg), false, href, eLine);
-						this.ut._err(e);
-					}
-				}
-				else
-					cm = this.getContextMenu();
+		var type = this.itemType;
+		if(type && type.indexOf("custom_") != 0) //~ todo: this.ps.isCustomType(type)
+			return null; // Simulate "contextmenu" event
+
+		if(!this.isOkCustomType(type))
+			return null;
+		var ct = this.ps.types[type];
+		var _cm = ct._contextMenu;
+		if(_cm) {
+			try {
+				cm = _cm.call(this.fn, e, this.item, this.origItem);
+			}
+			catch(e) {
+				this.ut._log("[context menu] Line: " + (e.lineNumber - ct._contextMenuLine + 1));
+				var eLine = this.ut.mmLine(e.lineNumber - ct._contextMenuLine + 1);
+				var href = "handyclicks://editor/itemType/" + this.itemType + "/context";
+				var eMsg = this.ut.errInfo("customTypeContextMenuError", this.ps.dec(ct.label), this.itemType, e);
+				this.ut.notify(
+					this.ut.getLocalized("errorTitle"),
+					eMsg + this.ut.getLocalized("openConsole"),
+					this.ut.console, this.wu.getOpenLink(href, eLine)
+				);
+				this.ut._err(new Error(eMsg), false, href, eLine);
+				this.ut._err(e);
+			}
+			if(cm === "auto")
+				cm = this.getContextMenu();
 		}
-		if(cm && typeof cm.hidePopup != "function") {
-			// Try open XUL document with custom context in tab...
-			this.ut._err(new Error("Strange error: context menu has no hidePopup() method\nid: " + cm.id), true);
+
+		if(cm && typeof cm == "object" && typeof cm.hidePopup != "function") {
+			// XUL document with custom context...
+			this.ut._err(new Error("Error: context menu has no hidePopup() method\nid: " + cm.id), true);
 			cm = null;
 		}
 		this._cMenu = cm; // cache
@@ -572,11 +558,9 @@ var handyClicks = {
 
 	// Show context menu:
 	showPopupOnItem: function(popup, node, e) {
-		popup = popup || this._cMenu;
 		node = node || this.origItem;
-		if(!popup || !node || !node.ownerDocument.location)
-			return; // e.g. rocker gesture => go back => node.ownerDocument.location == null
-		e = e || this.copyOfEvent;
+		if(!node || !node.ownerDocument.location)
+			return; // e.g. rocker gesture => go back => node.ownerDocument.location === null
 
 		if(this.itemType == "tab") {
 			// Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
@@ -585,25 +569,18 @@ var handyClicks = {
 				tabscope.hidePopup();
 		}
 
-		if(this.ut.fxVersion == 2 && popup.id == "contentAreaContextMenu") { // workaround for spellchecker bug
+		popup = !popup && this.getItemContext();
+
+		if(!popup || (this.ut.fxVersion == 2 && popup.id == "contentAreaContextMenu")) {
+			// Some strange things happens in Firefox 2 for "contentAreaContextMenu"... Spellchecker bug?
 			this.flags.stopContextMenu = false;
-
-			var evt = document.createEvent("MouseEvents");
-			evt.initMouseEvent(
-				"click", true, false, node.ownerDocument.defaultView, 1,
-				e.screenX, e.screenY, e.clientX, e.clientY,
-				false, false, false, false,
-				2, null
-			);
-			node.dispatchEvent(evt);
-			this.blinkNode();
-
-			// this.flags.stopContextMenu = true; // ?
+			this.createMouseEvents(this._xy, node, ["mousedown", "mouseup", "contextmenu"], 2)();
 			return;
 		}
-		//this.ut._log(popup.ownerDocument.location, document === popup.ownerDocument);
-		//document.popupNode = this.itemType == "tab" ? this.item : node;
-		popup.ownerDocument.popupNode = this.itemType == "tab" ? this.item : node;
+
+		popup = popup || this._cMenu;
+		e = e || this.copyOfEvent;
+		document.popupNode = popup.ownerDocument.popupNode = this.itemType == "tab" ? this.item : node;
 
 		var xy = this.getXY();
 		popup.showPopup(this.ut.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "popup", null, null);
@@ -654,8 +631,69 @@ var handyClicks = {
 			clone[p] = obj[p];
 		return clone;
 	},
+	getTabBrowser: function(tabsRequired) {
+		return "SplitBrowser" in window && !(tabsRequired && "TM_init" in window) // Tab Mix Plus
+			? SplitBrowser.activeBrowser
+			: window.gBrowser || getBrowser();
+	},
+	closeMenus: function(it) {
+		it = it || this.item;
+		if(it && typeof it == "object")
+			closeMenus(it); // chrome://browser/content/utilityOverlay.js
+	},
+	getBookmarkUri:	function(it, e, usePlacesURIs) {
+		var ln = it.localName;
+		var uri = ln && ln.toLowerCase() == "treechildren"
+			? this.getTreeInfo(it, e, "uri")
+			: it.statusText || (it.node && it.node.uri) || it.getAttribute("siteURI") || "";
+		return !usePlacesURIs && /^place:/.test(uri) ? "" : uri;
+	},
+	getTreeInfo: function(treechildren, e, prop) { // "uri" or "title"
+		if(!("PlacesUtils" in window)) // For Firefox 3.0+
+			return "";
+		var tree = (treechildren || this.item).parentNode
+		e = e || this.copyOfEvent;
+
+		// Based on code of Places' Tooltips ( https://addons.mozilla.org/firefox/addon/7314 )
+		var row = {}, column = {}, part = {};
+		var tbo = tree.treeBoxObject;
+		tbo.getCellAt(e.clientX, e.clientY, row, column, part);
+		if(row.value == -1)
+			return "";
+		var node = tree.view.nodeForTreeIndex(row.value);
+		if(!PlacesUtils.nodeIsURI(node))
+			return "";
+		return node[prop];
+	},
+	createMouseEvents: function(origEvt, item, evtTypes, button) {
+		var evts = evtTypes.map(
+			function(evtType) {
+				return this.createMouseEvent(origEvt, item, evtType, button);
+			},
+			this
+		);
+		var _this = this;
+		return function() {
+			_this._enabled = false;
+			evts.forEach(function(evt) { item.dispatchEvent(evt); });
+			_this._enabled = true;
+		};
+	},
+	createMouseEvent: function(origEvt, item, evtType, button) {
+		item = item || origEvt.originalTarget;
+		var doc = item.ownerDocument;
+		var evt = doc.createEvent("MouseEvents");
+		evt.initMouseEvent( // https://developer.mozilla.org/en/DOM/event.initMouseEvent
+			evtType, true /* canBubble */, true /* cancelable */, doc.defaultView, 1,
+			origEvt.screenX, origEvt.screenY, origEvt.clientX, origEvt.clientY,
+			false, false, false, false,
+			button, null
+		);
+		return evt;
+	},
 
 	// Custom types:
+	//~ todo: move to separate file?
 	getContextMenu: function(node) {
 		node = node || this.item;
 		if(!node)
@@ -853,7 +891,7 @@ var handyClicks = {
 	},
 	openEditor: function(e) {
 		e = e || this.copyOfEvent;
-		this.fn.closeMenus(e.originalTarget);
+		this.closeMenus(e.originalTarget);
 		this.wu.openEditor("shortcut", this.getEvtStr(e), this.itemType);
 	},
 	updUI: function(pName) {

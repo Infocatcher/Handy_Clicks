@@ -33,7 +33,7 @@ var handyClicksFuncs = {
 			this.hc.blinkNode();
 		}
 		if(closePopups)
-			this.closeMenus();
+			this.hc.closeMenus();
 	},
 	copyItemLink: function(e, closePopups) {
 		var link = this.hc.itemType == "tabbar"
@@ -46,7 +46,7 @@ var handyClicksFuncs = {
 			this.hc.blinkNode();
 		}
 		if(closePopups)
-			this.closeMenus();
+			this.hc.closeMenus();
 	},
 	getTextOfItem: function(it, e) {
 		it = it || this.hc.item;
@@ -57,7 +57,7 @@ var handyClicksFuncs = {
 			)
 			|| (
 				it.localName && it.localName.toLowerCase() == "treechildren"
-				&& this.getTreeInfo(it, e, "title")
+				&& this.hc.getTreeInfo(it, e, "title")
 			)
 			|| "";
 	},
@@ -73,7 +73,7 @@ var handyClicksFuncs = {
 			break;
 			case "bookmark":
 			case "historyItem":
-				uri = this.getBookmarkUri(it);
+				uri = this.hc.getBookmarkUri(it);
 			break;
 			case "tab":
 				uri = this.getTabUri(it);
@@ -81,7 +81,7 @@ var handyClicksFuncs = {
 			default: // Support for custom types
 				uri = this.getLinkUri(it)
 					|| it.src
-					|| this.getBookmarkUri(it)
+					|| this.hc.getBookmarkUri(it)
 					|| this.getTabUri(it);
 		}
 		if(this.isJSURI(uri))
@@ -95,30 +95,6 @@ var handyClicksFuncs = {
 			? makeURLAbsolute(it.baseURI, xLink) // See chrome://browser/content/utilityOverlay.js
 			: it.href;
 	},
-	getBookmarkUri:	function(it, e, usePlacesURIs) {
-		var ln = it.localName;
-		var uri = ln && ln.toLowerCase() == "treechildren"
-			? this.getTreeInfo(it, e, "uri")
-			: it.statusText || (it.node && it.node.uri) || it.getAttribute("siteURI") || "";
-		return !usePlacesURIs && /^place:/.test(uri) ? "" : uri;
-	},
-	getTreeInfo: function(treechildren, e, prop) { // "uri" or "title"
-		if(!("PlacesUtils" in window)) // For Firefox 3.0+
-			return "";
-		var tree = (treechildren || this.hc.item).parentNode
-		e = e || this.hc.copyOfEvent;
-
-		// Based on code of Places' Tooltips ( https://addons.mozilla.org/firefox/addon/7314 )
-		var row = {}, column = {}, part = {};
-		var tbo = tree.treeBoxObject;
-		tbo.getCellAt(e.clientX, e.clientY, row, column, part);
-		if(row.value == -1)
-			return "";
-		var node = tree.view.nodeForTreeIndex(row.value);
-		if(!PlacesUtils.nodeIsURI(node))
-			return "";
-		return node[prop];
-	},
 	getTabUri: function(tab) {
 		return "linkedBrowser" in tab
 			? tab.linkedBrowser.contentDocument.location.href
@@ -126,7 +102,7 @@ var handyClicksFuncs = {
 	},
 	forEachTab: function(fnc, _this, tbr) {
 		return Array.prototype.map.call(
-			(tbr || this.getTabBrowser(true)).mTabContainer.childNodes,
+			(tbr || this.hc.getTabBrowser(true)).mTabContainer.childNodes,
 			fnc,
 			_this || this
 		);
@@ -142,19 +118,19 @@ var handyClicksFuncs = {
 		uri = uri || this.getUriOfItem(this.hc.item);
 		if(this.testForLinkFeatures(e, this.hc.item, uri, false, false, refererPolicy, undefined, "cur"))
 			return;
-		this.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
+		this.hc.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
 		if(closePopups)
-			this.closeMenus();
+			this.hc.closeMenus();
 	},
 	openUriInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, closePopups, winRestriction) {
-		var tbr = this.getTabBrowser(true);
+		var tbr = this.hc.getTabBrowser(true);
 		if(moveTo == "relative") {
 			var tabCont = tbr.mTabContainer;
 			tabCont.__handyClicks__resetRelativeIndex = false;
 		}
 		var tab = this._openUriInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction);
 		if(closePopups)
-			this.closeMenus();
+			this.hc.closeMenus();
 		if(!tab || !moveTo)
 			return;
 		var curTab = tbr.mCurrentTab;
@@ -209,7 +185,7 @@ var handyClicksFuncs = {
 		uri = uri || this.getUriOfItem(item);
 		if(this.testForLinkFeatures(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, winRestriction, "tab"))
 			return null;
-		var tbr = this.getTabBrowser(true);
+		var tbr = this.hc.getTabBrowser(true);
 
 		// Open a new tab as a child of the current tab (Tree Style Tab)
 		// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
@@ -266,7 +242,7 @@ var handyClicksFuncs = {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 
-		var evts = this.createEvents(e, item, ["mousedown", "mouseup", "click"]);
+		var evts = this.hc.createMouseEvents(e, item, ["mousedown", "mouseup", "click"], 0);
 
 		var _this = this;
 		function _f() {
@@ -276,9 +252,7 @@ var handyClicksFuncs = {
 
 			//not needed?//_this.hc.flags.stopContextMenu = true;
 
-			_this.hc._enabled = false;
 			evts();
-			_this.hc._enabled = true;
 			_this.hc.skipFlagsDelay();
 
 			_this.restorePrefs(origPrefs);
@@ -293,28 +267,6 @@ var handyClicksFuncs = {
 			);
 		if(load)
 			_f();
-	},
-	createEvents: function(origEvent, item, evtTypes) {
-		var evts = evtTypes.map(
-			function(evtType) {
-				return this.createEvent(origEvent, item, evtType);
-			},
-			this
-		);
-		return function() {
-			evts.forEach(function(evt) { item.dispatchEvent(evt); });
-		};
-	},
-	createEvent: function(origEvent, item, evtType) {
-		item = item || origEvent.originalTarget;
-		var evt = document.createEvent("MouseEvents");
-		evt.initMouseEvent( // https://developer.mozilla.org/en/DOM/event.initMouseEvent
-			evtType, false, true, item.ownerDocument.defaultView, 1,
-			origEvent.screenX, origEvent.screenY, origEvent.clientX, origEvent.clientY,
-			false, false, false, false,
-			0, null
-		);
-		return evt;
 	},
 	getItemHandlers: function(item) {
 		item = (item || this.hc.item).wrappedJSObject;
@@ -340,7 +292,7 @@ var handyClicksFuncs = {
 			if(_this.ut.isNoChromeDoc(oDoc))
 				oDoc.location.href = uri;
 			else
-				_this.getTabBrowser().loadURI(uri); // bookmarklets
+				_this.hc.getTabBrowser().loadURI(uri); // bookmarklets
 
 			setTimeout(function(_this) { _this.restorePrefs(origPrefs); }, 0, _this);
 			// _this.restorePrefs(origPrefs);
@@ -379,13 +331,13 @@ var handyClicksFuncs = {
 		if(filesPolicy == 0)
 			this.hc.showPopupOnItem();
 		else
-			this.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
+			this.hc.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
 		return true;
 	},
 	openUriInWindow: function(e, loadInBackground, refererPolicy, moveTo, closePopups) {
 		var win = this._openUriInWindow(e, null, null, loadInBackground, refererPolicy);
 		if(closePopups)
-			this.closeMenus();
+			this.hc.closeMenus();
 		if(!win || !moveTo)
 			return;
 		var sal = screen.availLeft, sat = screen.availTop;
@@ -502,17 +454,7 @@ var handyClicksFuncs = {
 			return;
 		openWebPanel(ttl, uri); //~ todo: refererPolicy
 		if(closePopups)
-			this.closeMenus();
-	},
-	getTabBrowser: function(tabsRequired) {
-		return "SplitBrowser" in window && !(tabsRequired && "TM_init" in window) // Tab Mix Plus
-			? SplitBrowser.activeBrowser
-			: gBrowser || getBrowser();
-	},
-	closeMenus: function(it) {
-		it = it || this.hc.item;
-		if(it && typeof it == "object")
-			closeMenus(it); // chrome://browser/content/utilityOverlay.js
+			this.hc.closeMenus();
 	},
 	downloadWithFlashGot: function(e, item) {
 		item = item || this.hc.item;
@@ -533,7 +475,7 @@ var handyClicksFuncs = {
 		}
 		SplitBrowser.addSubBrowser(uri, null, SplitBrowser["POSITION_" + position]);
 		if(closePopups)
-			this.closeMenus();
+			this.hc.closeMenus();
 	},
 
 	// Generated popup:
@@ -838,15 +780,15 @@ var handyClicksFuncs = {
 	fixTab: function(tab) {
 		tab = tab || this.hc.item;
 		if(!tab || tab.localName != "tab")
-			tab = this.getTabBrowser().mCurrentTab;
+			tab = this.hc.getTabBrowser().mCurrentTab;
 		return tab;
 	},
 	removeOtherTabs: function(e, tab) {
 		tab = this.fixTab(tab);
-		this.getTabBrowser().removeAllTabsBut(tab);
+		this.hc.getTabBrowser().removeAllTabsBut(tab);
 	},
 	removeAllTabs: function(e) {
-		var tbr = this.getTabBrowser();
+		var tbr = this.hc.getTabBrowser();
 		if(this.warnAboutClosingTabs(null, tbr)) {
 			var tabs = tbr.mTabContainer.childNodes;
 			for(var i = tabs.length - 1; i >= 0; --i)
@@ -855,7 +797,7 @@ var handyClicksFuncs = {
 	},
 	removeRightTabs: function(e, tab) {
 		tab = this.fixTab(tab);
-		var tbr = this.getTabBrowser();
+		var tbr = this.hc.getTabBrowser();
 		var tabs = tbr.mTabContainer.childNodes;
 		var _tabs = [];
 		for(var i = tabs.length - 1; i >= 0; --i) {
@@ -868,7 +810,7 @@ var handyClicksFuncs = {
 	},
 	removeLeftTabs: function(e, tab) {
 		tab = this.fixTab(tab);
-		var tbr = this.getTabBrowser();
+		var tbr = this.hc.getTabBrowser();
 		var tabs = tbr.mTabContainer.childNodes;
 		var _tabs = [];
 		for(var i = 0, len = tabs.length; i < len; i++) {
@@ -883,7 +825,7 @@ var handyClicksFuncs = {
 		// Based on code of Firefox 1.5 - 3.0
 		// chrome://browser/content/tabbrowser.xml
 		// "warnAboutClosingTabs" method
-		tbr = tbr || this.getTabBrowser();
+		tbr = tbr || this.hc.getTabBrowser();
 		tabsToClose = typeof tabsToClose == "number"
 			? tabsToClose
 			: tbr.mTabContainer.childNodes.length;
@@ -926,7 +868,7 @@ var handyClicksFuncs = {
 	},
 	removeTab: function(e, tab) {
 		tab = this.fixTab(tab);
-		this.getTabBrowser().removeTab(tab);
+		this.hc.getTabBrowser().removeTab(tab);
 	},
 	renameTab: function(e, tab) {
 		tab = this.fixTab(tab);
@@ -937,7 +879,7 @@ var handyClicksFuncs = {
 		);
 		tab.label = lbl == null
 			? tab.linkedBrowser.contentDocument.title
-				|| this.getTabBrowser(true).mStringBundle.getString("tabs.untitled")
+				|| this.hc.getTabBrowser(true).mStringBundle.getString("tabs.untitled")
 			: lbl;
 	},
 	reloadAllTabs: function(e, skipCache) {
@@ -973,7 +915,7 @@ var handyClicksFuncs = {
 	},
 	cloneTab: function(e, tab) {
 		tab = this.fixTab(tab);
-		var tbr = this.getTabBrowser();
+		var tbr = this.hc.getTabBrowser();
 		var ind = ++tab._tPos;
 		if("duplicateTab" in tbr) // fx 3.0+
 			var newTab = tbr.duplicateTab(tab);
@@ -1060,7 +1002,7 @@ var handyClicksFuncs = {
 			)
 				hrefs[h] = true;
 		}
-		var tbr = this.getTabBrowser(true);
+		var tbr = this.hc.getTabBrowser(true);
 
 		// Open a new tab as a child of the current tab (Tree Style Tab)
 		if("TreeStyleTabService" in window)

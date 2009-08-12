@@ -106,6 +106,7 @@
 				</body>
 			</method>
 			<method name="toggleComments">
+				<parameter name="onlyInLineStart" />
 				<body>
 				<![CDATA[
 					var val = this.value;
@@ -128,8 +129,12 @@
 					var block = val.substring(startLine, endLine);
 					var bLen0 = block.length;
 
-					if(/^\s*\/\//m.test(block))
-						block = block.replace(/^(\s*)\/\//mg, "$1");
+					if(onlyInLineStart)
+						var re = /^\/\//mg, subst = "";
+					else
+						var re = /^(\s*)\/\//mg, subst = "$1";
+					if(re.test(block))
+						block = block.replace(re, subst);
 					else
 						block = block.replace(/^/mg, "//");
 					var bLen1 = block.length;
@@ -244,7 +249,8 @@
 			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent(this.tabSymbol, true);" modifiers="shift" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.setIndent(' ', false);" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.setIndent(' ', true);" modifiers="shift" />
-			<handler event="keypress" preventdefault="true" key="a" action="this.toggleComments();" modifiers="control,shift" />
+			<handler event="keypress" preventdefault="true" key="a" action="this.toggleComments(true);" modifiers="control,shift" />
+			<handler event="keypress" preventdefault="true" key="q" action="this.toggleComments(false);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" keycode="VK_RETURN" action="this.formatNewLine();" />
 			<handler event="keypress" preventdefault="true" keycode="VK_F12" action="this.maximizeEditor();" />
 			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
