@@ -280,7 +280,7 @@ var handyClicksPrefSvc = {
 		var cts = this.types;
 		this.sortObj(cts);
 		for(type in cts) if(cts.hasOwnProperty(type)) {
-			if(type.indexOf("custom_") != 0)
+			if(!this.isCustomType(type))
 				continue;
 			to = cts[type];
 			if(typeof to != "object")
@@ -448,6 +448,11 @@ var handyClicksPrefSvc = {
 			&& ct.hasOwnProperty("define")
 			&& typeof ct.define == "string"
 			&& ct.hasOwnProperty("contextMenu");
+	},
+	customPrefix: "custom_",
+	customMask: /^custom_/,
+	isCustomType: function(type) {
+		return typeof type == "string" && type.indexOf(this.customPrefix) == 0;
 	},
 	enc: function(s) {
 		return encodeURIComponent(s || "");

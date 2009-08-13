@@ -201,7 +201,7 @@ var handyClicksEditor = {
 		this.$("hc-editor-funcCustom" + delayed).collapsed = !isCustom;
 	},
 	loadCustomType: function(type) {
-		if(type && type.indexOf("custom_" == 0))
+		if(this.ps.isCustomType(type))
 			this.initCustomTypesEditor(type);
 	},
 	editCustomType: function(e) {
@@ -226,7 +226,7 @@ var handyClicksEditor = {
 			return;
 		var ct = cts[cType] || {};
 		cList.value = this.ps.dec(ct.label);
-		this.$("hc-editor-customTypeExtId").value = cType.replace(/^custom_/, "");
+		this.$("hc-editor-customTypeExtId").value = cType.replace(this.ps.customMask, "");
 		enabledElt.checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
 		this.$("hc-editor-customTypeDefine").newValue = this.ps.dec(ct.define);
 		this.$("hc-editor-customTypeContext").newValue = this.ps.dec(ct.contextMenu);
@@ -254,7 +254,7 @@ var handyClicksEditor = {
 			val = val.replace(re, "");
 			node.value = val;
 		}
-		val = "custom_" + val;
+		val = this.ps.customPrefix + val;
 		var ml = this.$("hc-editor-customType");
 		var it = ml.getElementsByAttribute("value", val)[0];
 		if(it) {
@@ -300,7 +300,7 @@ var handyClicksEditor = {
 				mis = this.$(pId).getElementsByTagName("menuitem");
 				for(j = mis.length - 1; j >= 0; j--) {
 					mi = mis[j];
-					if(mi.getAttribute("value").indexOf("custom_") == 0)
+					if(this.ps.isCustomType(mi.getAttribute("value")))
 						mi.parentNode.removeChild(mi);
 				}
 			},
@@ -639,7 +639,7 @@ var handyClicksEditor = {
 			);
 			return false;
 		}
-		cType = "custom_" + cType;
+		cType = this.ps.customPrefix + cType;
 
 		var cts = this.ps.types;
 		var ct = cts[cType] || {};
@@ -669,7 +669,7 @@ var handyClicksEditor = {
 		return true;
 	},
 	deleteCustomType: function() {
-		delete this.ps.types["custom_" + this.$("hc-editor-customTypeExtId").value];
+		delete this.ps.types[this.ps.customPrefix + this.$("hc-editor-customTypeExtId").value];
 		this.ps.saveSettingsObjects();
 		this.appendTypesList();
 		this.applyButton.disabled = false;

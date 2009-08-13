@@ -3,6 +3,7 @@ pref("extensions.handyclicks@infocatcher.description", "chrome://handyclicks/loc
 
 pref("extensions.handyclicks.enabled", true);
 pref("extensions.handyclicks.forceStopMousedownEvent", false);
+pref("extensions.handyclicks.focusOnItems", true);
 pref("extensions.handyclicks.disallowMousemoveButtons", "2");
 pref("extensions.handyclicks.disallowMousemoveDist", 12);
 pref("extensions.handyclicks.delayedActionTimeout", 500);

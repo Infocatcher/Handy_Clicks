@@ -101,7 +101,7 @@ var handyClicksSets = {
 			tRow = document.createElement("treerow");
 			it = items[itemType];
 			isCustom = !!it.custom;
-			isCustomType = itemType.indexOf("custom_") == 0;
+			isCustomType = this.ps.isCustomType(itemType);
 			typeLabel = isCustomType
 				? this.getCustomTypeLabel(itemType)
 				: this.ut.getLocalized(itemType);
@@ -285,7 +285,7 @@ var handyClicksSets = {
 				tRow = tRows[i];
 				var mdfs = this.ps.getModifiersStr(tRow.__shortcut);
 				var button = this.ps.getButtonStr(tRow.__shortcut, true);
-				var type = tRow.__itemType.indexOf("custom_") == 0
+				var type = this.ps.isCustomType(type)
 					? this.getCustomTypeLabel(tRow.__itemType)
 					: this.ut.getLocalized(tRow.__itemType);
 				var fObj = this.ut.getOwnProperty(this.ps.prefs, tRow.__shortcut, tRow.__itemType);

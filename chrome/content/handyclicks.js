@@ -57,7 +57,7 @@ var handyClicks = {
 
 	// Handlers:
 	mousedownHandler: function(e) {
-		if(!this.enabled) //~ if(e.detail > 1) return; ?
+		if(!this.enabled)
 			return;
 
 		this.saveXY(e);
@@ -69,7 +69,7 @@ var handyClicks = {
 
 		if(this.pu.pref("forceStopMousedownEvent") || this.editMode)
 			this.stopEvent(e);
-		else if(this.ut.isNoChromeWin(e.view.top)) { // Prevent page handlers, but don't stop Mouse Gestures
+		else if(!this.ut.isChromeWin(e.view.top)) { // Prevent page handlers, but don't stop Mouse Gestures
 			var cWin = e.view.top === content ? gBrowser.mCurrentBrowser : e.view.top;
 			var _this = this;
 			cWin.addEventListener(
@@ -154,7 +154,7 @@ var handyClicks = {
 		}
 	},
 	clickHandler: function(e) {
-		if(!this.enabled) //~ if(e.detail > 1) return; ?
+		if(!this.enabled)
 			return;
 		this.checkForStopEvent(e); // Can stop "contextmenu" event in Windows
 		if(this.flags.allowEvents)
@@ -165,7 +165,7 @@ var handyClicks = {
 		this.functionEvent(funcObj, e);
 	},
 	mouseupHandler: function(e) {
-		if(!this.enabled) //~ if(e.detail > 1) return; ?
+		if(!this.enabled)
 			return;
 		this.checkForStopEvent(e);
 		if(this.flags.allowEvents)
@@ -174,7 +174,7 @@ var handyClicks = {
 		this.saveXY(e);
 	},
 	commandHandler: function(e) {
-		if(!this.enabled) //~ if(e.detail > 1) return; ?
+		if(!this.enabled)
 			return;
 		this.checkForStopEvent(e);
 	},
@@ -251,7 +251,9 @@ var handyClicks = {
 		this.removeMousemoveHandler();
 	},
 	skipFlagsDelay: function() {
-		setTimeout(function(_this) { _this.skipFlags(); }, 0, this);
+		setTimeout(function(_this) {
+			_this.skipFlags();
+		}, 0, this);
 	},
 	get tabNotChanged() {
 		var tab = this._tabOnMousedown;
@@ -362,7 +364,7 @@ var handyClicks = {
 		if(
 			(all || this.itemTypeInSets(sets, "img"))
 			&& (itln == "img" || itln == "image") && (it.src || it.hasAttribute("src"))
-			&& this.ut.isNoChromeDoc(it.ownerDocument) // Not for interface...
+			&& !this.ut.isChromeDoc(it.ownerDocument) // Not for interface...
 		) {
 			this.itemType = "img";
 			this.item = it;
@@ -519,7 +521,7 @@ var handyClicks = {
 	getItemContext: function(e) {
 		var cm = null;
 		var type = this.itemType;
-		if(type && type.indexOf("custom_") != 0) //~ todo: this.ps.isCustomType(type)
+		if(!this.ps.isCustomType(type))
 			return null; // Simulate "contextmenu" event
 
 		if(!this.isOkCustomType(type))
@@ -569,7 +571,8 @@ var handyClicks = {
 				tabscope.hidePopup();
 		}
 
-		popup = !popup && this.getItemContext();
+		if(!popup)
+			popup = this.getItemContext();
 
 		if(!popup || (this.ut.fxVersion == 2 && popup.id == "contentAreaContextMenu")) {
 			// Some strange things happens in Firefox 2 for "contentAreaContextMenu"... Spellchecker bug?
@@ -584,6 +587,7 @@ var handyClicks = {
 
 		var xy = this.getXY();
 		popup.showPopup(this.ut.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "popup", null, null);
+		this.focusOnItem();
 	},
 	_xy: null,
 	saveXY: function(e) {
@@ -634,7 +638,7 @@ var handyClicks = {
 	getTabBrowser: function(tabsRequired) {
 		return "SplitBrowser" in window && !(tabsRequired && "TM_init" in window) // Tab Mix Plus
 			? SplitBrowser.activeBrowser
-			: window.gBrowser || getBrowser();
+			: gBrowser || getBrowser();
 	},
 	closeMenus: function(it) {
 		it = it || this.item;
@@ -691,6 +695,13 @@ var handyClicks = {
 		);
 		return evt;
 	},
+	focusOnItem: function(forced, it) {
+		if(!forced && !this.pu.pref("focusOnItems"))
+			return;
+		it = it || this.origItem;
+		if(this.ut.isObject(it) && typeof it.focus == "function")
+			it.focus();
+	},
 
 	// Custom types:
 	//~ todo: move to separate file?
@@ -700,8 +711,7 @@ var handyClicks = {
 			return null;
 		var id = null;
 		var doc = document;
-		var isNoChrome = this.ut.isNoChromeDoc(node.ownerDocument);
-		if(!isNoChrome || node.namespaceURI == this.ut.XULNS) {
+		if(this.ut.isChromeDoc(node.ownerDocument) || node.namespaceURI == this.ut.XULNS) {
 			var docNode = Node.DOCUMENT_NODE; // 9
 			while(node && node.nodeType != docNode) {
 				if(node.hasAttribute("context")) {
@@ -739,7 +749,7 @@ var handyClicks = {
 						br = browsers[i];
 						return true;
 					}
-					if(!this.ut.isNoChromeWin(win)) {
+					if(this.ut.isChromeWin(win)) {
 						brObj = this.getBrowserForWindow(targetWin, win.document);
 						if(brObj) {
 							br = brObj.browser
@@ -808,7 +818,7 @@ var handyClicks = {
 					this.ut.console, this.wu.getOpenLink(href, eLine)
 				);
 				this.ut._err(new Error(eMsg), false, href, eLine);
-				throw err;
+				this.ut._err(err);
 			}
 		}
 		else {
@@ -829,6 +839,8 @@ var handyClicks = {
 				this.ut._err(new Error(funcObj.action + " not found (" + typeof fnc + ")"));
 			}
 		}
+
+		this.focusOnItem();
 
 		var eStr = this.getEvtStr(e || this.copyOfEvent);
 		this.ut._log(
@@ -874,7 +886,9 @@ var handyClicks = {
 		);
 	},
 	toggleEditMode: function() {
-		setTimeout(function(_this) { _this.editMode = !_this.editMode; }, 0, this);
+		setTimeout(function(_this) {
+			_this.editMode = !_this.editMode;
+		}, 0, this);
 	},
 	setEditModeStatus: function(em) {
 		em = em === undefined ? this.editMode : em;

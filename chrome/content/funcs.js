@@ -189,7 +189,7 @@ var handyClicksFuncs = {
 
 		// Open a new tab as a child of the current tab (Tree Style Tab)
 		// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
-		if(!moveTo && this.ut.isNoChromeDoc(item.ownerDocument) && "TreeStyleTabService" in window)
+		if(!moveTo && !this.ut.isChromeDoc(item.ownerDocument) && "TreeStyleTabService" in window)
 			TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab);
 		return tbr.loadOneTab(
 			uri,
@@ -289,13 +289,15 @@ var handyClicksFuncs = {
 			);
 
 			var oDoc = item.ownerDocument;
-			if(_this.ut.isNoChromeDoc(oDoc))
-				oDoc.location.href = uri;
-			else
+			if(_this.ut.isChromeDoc(oDoc))
 				_this.hc.getTabBrowser().loadURI(uri); // bookmarklets
+			else
+				oDoc.location.href = uri;
 
-			setTimeout(function(_this) { _this.restorePrefs(origPrefs); }, 0, _this);
-			// _this.restorePrefs(origPrefs);
+			setTimeout(function(_this) {
+				_this.restorePrefs(origPrefs);
+			}, 0, _this);
+			//_this.restorePrefs(origPrefs);
 		}
 		var load = this.pu.pref("loadJavaScriptLinks");
 		if(this.pu.pref("notifyJavaScriptLinks"))
@@ -1023,7 +1025,7 @@ var handyClicksFuncs = {
 			imgLoading = false;
 		it = it || this.hc.item;
 		var oDoc = it.ownerDocument;
-		if(!this.ut.isNoChromeDoc(oDoc))
+		if(this.ut.isChromeDoc(oDoc))
 			return null;
 		refPolicy = this.getRefererPolicy(refPolicy);
 		// http://kb.mozillazine.org/Network.http.sendRefererHeader

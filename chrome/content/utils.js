@@ -177,12 +177,13 @@ var handyClicksUtils = {
 		return str;
 	},
 
-	isNoChromeWin: function(win) {
-		return win.toString().indexOf("[object Window]") > -1; // [object XPCNativeWrapper [object Window]]
+	isChromeWin: function(win) {
+		//return win.toString() == "[object ChromeWindow]";
+		return win instanceof Components.interfaces.nsIDOMChromeWindow;
 	},
-	isNoChromeDoc: function(doc) {
-		doc = doc || handyClicks.item.ownerDocument;
-		return this.isNoChromeWin(doc.defaultView);
+	isChromeDoc: function(doc) {
+		doc = doc || this.hc.item.ownerDocument;
+		return this.isChromeWin(doc.defaultView);
 	},
 
 	get fxVersion() {
