@@ -31,6 +31,10 @@
 
 <!ENTITY hc.sets.enabled "Enabled">
 
+<!ENTITY hc.sets.appearance "Appearance">
+<!ENTITY hc.sets.showInToolsMenu "Show in Tools menu">
+<!ENTITY hc.sets.showInStatusbar "Show in statusbar">
+
 <!ENTITY hc.sets.disallowMousemove "Stop click handling when mouse mowing with holding buttons (mouse gestures)">
 <!ENTITY hc.sets.left "Left">
 <!ENTITY hc.sets.middle "Middle">

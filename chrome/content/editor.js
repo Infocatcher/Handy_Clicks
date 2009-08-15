@@ -34,7 +34,7 @@ var handyClicksEditor = {
 		this.initUI();
 		this.loadCustomType(this.type);
 		this.selectTargetTab();
-		this.ps.addPrefsObserver(this.appendTypesList, this);
+		this.ps.oSvc.addPrefsObserver(this.appendTypesList, this);
 		window.addEventListener("DOMMouseScroll", this, true);
 		this.applyButton.disabled = true;
 	},
@@ -534,10 +534,10 @@ var handyClicksEditor = {
 		}
 	},
 
-	saveSettings: function() {
+	saveSettings: function(applyFlag) {
 		switch(this.mBox.selectedIndex) {
-			case this.tabs.shortcut: return this.saveShortcut();
-			case this.tabs.itemType: return this.saveCustomType();
+			case this.tabs.shortcut: return this.saveShortcut(applyFlag);
+			case this.tabs.itemType: return this.saveCustomType(applyFlag);
 			default: return false;
 		}
 	},
@@ -548,7 +548,7 @@ var handyClicksEditor = {
 			default: return false;
 		}
 	},
-	saveShortcut: function() {
+	saveShortcut: function(applyFlag) {
 		var sh = this.currentShortcut;
 		var type = this.currentType;
 		var evt = this.$("hc-editor-events").value || null;
@@ -579,7 +579,9 @@ var handyClicksEditor = {
 			so.delayedAction.eventType = "_delayed_"; // Required for handyClicksPrefSvc.isOkFuncObj()
 		}
 
-		this.ps.saveSettingsObjects(true);
+		this.ps.saveSettingsObjects(applyFlag);
+		if(!applyFlag) // ondialogaccept
+			return true;
 		this.$("hc-editor-enabled").checked = this.ut.getOwnProperty(this.ps.prefs, sh, type, "enabled");
 		var dae = this.ut.getOwnProperty(this.ps.prefs, sh, type, "delayedAction", "enabled");
 		this.$("hc-editor-enabled" + this.delayId).checked = typeof dae == "boolean" ? dae : true;
@@ -628,7 +630,7 @@ var handyClicksEditor = {
 		this.highlightUsedTypes();
 		this.applyButton.disabled = false;
 	},
-	saveCustomType: function() {
+	saveCustomType: function(applyFlag) {
 		var label = this.$("hc-editor-customType").value;
 		var cType = this.$("hc-editor-customTypeExtId").value;
 		var def = this.$("hc-editor-customTypeDefine").value;
@@ -661,11 +663,11 @@ var handyClicksEditor = {
 		ct.label = this.ps.enc(label);
 		ct.define = this.ps.enc(def);
 		ct.contextMenu = cMenu ? this.ps.enc(cMenu) : null;
-		this.ps.saveSettingsObjects();
+		this.ps.saveSettingsObjects(applyFlag);
+		if(!applyFlag) // ondialogaccept
+			return true;
 		this.applyButton.disabled = true;
-
 		this.appendTypesList();
-
 		return true;
 	},
 	deleteCustomType: function() {

@@ -1,3 +1,5 @@
 <!-- Main window -->
+<!ENTITY handyClicks.menuitemLabel "Handy Clicks">
+<!ENTITY handyClicks.toolbarbuttonLabel "Handy Clicks">
 <!ENTITY handyClicks.settingsLabel "Settings…">
 <!ENTITY handyClicks.editModeLabel "Start edit mode">

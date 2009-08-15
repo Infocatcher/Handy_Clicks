@@ -1,13 +1,4 @@
 var handyClicks = {
-	_editMode: false,
-	get editMode() {
-		return this._editMode;
-	},
-	set editMode(val) {
-		this._editMode = val;
-		this.setEditModeStatus(val);
-	},
-
 	copyOfEvent: null,
 	origItem: null,
 	item: null,
@@ -31,9 +22,10 @@ var handyClicks = {
 	init: function() {
 		this.ps.loadSettings();
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], true);
-		this.pu.addPrefsObserver(this.updUI, this);
+		this.pu.oSvc.addPrefsObserver(this.updUI, this);
 		this.setStatus();
 		this.registerHotkeys();
+		this.showHideControls();
 	},
 	destroy: function() {
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
@@ -53,6 +45,15 @@ var handyClicks = {
 	},
 	set enabled(val) {
 		this.pu.pref("enabled", val);
+	},
+
+	_editMode: false,
+	get editMode() {
+		return this._editMode;
+	},
+	set editMode(val) {
+		this._editMode = val;
+		this.setEditModeStatus(val);
 	},
 
 	// Handlers:
@@ -638,7 +639,7 @@ var handyClicks = {
 	getTabBrowser: function(tabsRequired) {
 		return "SplitBrowser" in window && !(tabsRequired && "TM_init" in window) // Tab Mix Plus
 			? SplitBrowser.activeBrowser
-			: gBrowser || getBrowser();
+			: window.gBrowser || getBrowser();
 	},
 	closeMenus: function(it) {
 		it = it || this.item;
@@ -872,9 +873,11 @@ var handyClicks = {
 		this.enabled = !this.enabled;
 	},
 	doSettings: function(e) {
-		switch(e.button) {
-			case 0: this.toggleStatus(); break;
-			case 1: this.openSettings();
+		if(e.type == "command" || e.button == 0)
+			this.toggleStatus();
+		else if(e.button == 1) {
+			this.openSettings();
+			this.closeMenus(e.target);
 		}
 	},
 	openSettings: function() {
@@ -892,7 +895,11 @@ var handyClicks = {
 	},
 	setEditModeStatus: function(em) {
 		em = em === undefined ? this.editMode : em;
-		document.getElementById("handyClicks-toggleStatus-sBarIcon").setAttribute("hc_editmode", em);
+		this.setControls(
+			function(elt) {
+				elt.setAttribute("hc_editmode", em);
+			}
+		);
 		if(!em)
 			return;
 		var _this = this;
@@ -911,13 +918,31 @@ var handyClicks = {
 	updUI: function(pName) {
 		if(pName == "enabled")
 			this.setStatus();
+		else if(pName.indexOf("ui.showIn") == 0)
+			this.showHideControls();
 	},
 	setStatus: function() {
-		var sbi = document.getElementById("handyClicks-toggleStatus-sBarIcon");
 		var enabled = this.enabled;
-		sbi.setAttribute("hc_enabled", enabled);
-		sbi.tooltipText = this.ut.getLocalized(enabled ? "enabled" : "disabled");
+		var tt = this.ut.getLocalized(enabled ? "enabled" : "disabled");
+		this.setControls(
+			function(elt) {
+				elt.setAttribute("hc_enabled", enabled);
+				elt.tooltipText = tt;
+			}
+		);
 		document.getElementById("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
+	},
+	showHideControls: function() {
+		document.getElementById("handyClicks-toggleStatus-menuitem").hidden = !this.pu.pref("ui.showInToolsMenu");
+		document.getElementById("handyClicks-toggleStatus-sBarIcon").hidden = !this.pu.pref("ui.showInStatusbar");
+	},
+	setControls: function(func, context) {
+		["sBarIcon", "tbButton", "menuitem"].forEach(
+			function(id) {
+				var elt = document.getElementById("handyClicks-toggleStatus-" + id);
+				elt && func.call(this, elt);
+			}
+		);
 	},
 
 	// Hotkeys:

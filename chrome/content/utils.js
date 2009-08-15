@@ -240,6 +240,8 @@ var handyClicksUtils = {
 		return Math.max(Math.min(n, maxVal), minVal);
 	},
 	mmLine: function(n) {
+		if(n == 0xFFFFFFFF) // Max int number
+			n = 1;
 		return this.mm(n, 1, 100000);
 	},
 

@@ -43,13 +43,8 @@ var handyClicksRegSvc = {
 	},
 	registerShortcuts: function(s, regFlag) {
 		var proto = regFlag ? s : Object.prototype;
-		var o;
-		for(var p in s) if(s.hasOwnProperty(p)) {
-			o = s[p];
-			o.__proto__ = proto;
-			if(regFlag && "HandyClicksObservers" in window)
-				o.__proto__.__proto__ = new HandyClicksObservers(); // Add observers interface
-		}
+		for(var p in s) if(s.hasOwnProperty(p))
+			s[p].__proto__ = proto;
 	},
 	callMethods: function(s, meth) {
 		var o;

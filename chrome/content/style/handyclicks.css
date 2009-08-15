@@ -3,11 +3,15 @@
 #handyClicks-toggleStatus-sBarIcon {
 	cursor: pointer;
 }
-#handyClicks-toggleStatus-sBarIcon, toolbar[iconsize="small"] #handyClicks-toggleStatus-tbButton {
+#handyClicks-toggleStatus-sBarIcon,
+toolbar[iconsize="small"] #handyClicks-toggleStatus-tbButton,
+#handyClicks-toggleStatus-menuitem {
 	list-style-image: url("icons16.png");
 	-moz-image-region: rect(0 16px 16px 0);
 }
-#handyClicks-toggleStatus-sBarIcon[hc_enabled="false"], toolbar[iconsize="small"] #handyClicks-toggleStatus-tbButton[hc_enabled="false"] {
+#handyClicks-toggleStatus-sBarIcon[hc_enabled="false"],
+toolbar[iconsize="small"] #handyClicks-toggleStatus-tbButton[hc_enabled="false"],
+#handyClicks-toggleStatus-menuitem[hc_enabled="false"] {
 	-moz-image-region: rect(0 32px 16px 16px);
 }
 #handyClicks-toggleStatus-tbButton {

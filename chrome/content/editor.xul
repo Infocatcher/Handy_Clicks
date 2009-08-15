@@ -19,7 +19,7 @@
 	buttonlabelextra2="&hc.editor.delete;"
 	buttonaccesskeyextra2="&hc.editor.deleteAccesskey;"
 	ondialogaccept="return handyClicksEditor.saveSettings();"
-	ondialogextra1="handyClicksEditor.saveSettings();"
+	ondialogextra1="handyClicksEditor.saveSettings(true);"
 	ondialogextra2="handyClicksEditor.deleteSettings();"
 	onchange="handyClicksEditor.alloyApply(event);"
 	oncommand="handyClicksEditor.alloyApply(event);"
@@ -37,7 +37,7 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/regSvc.js" />
 
 	<keyset id="hc-editor-keys">
-		<key key="s" modifiers="control" id="hc-editor-key-apply" oncommand="handyClicksEditor.saveSettings();" />
+		<key key="s" modifiers="control" id="hc-editor-key-apply" oncommand="handyClicksEditor.saveSettings(true);" />
 		<key keycode="VK_F5" id="hc-editor-key-reload" oncommand="handyClicksEditor.initUI();" />
 
 		<key keycode="VK_F10" id="hc-editor-key-maximizeWindow" oncommand="handyClicksWinUtils.maximizeWindow();" />

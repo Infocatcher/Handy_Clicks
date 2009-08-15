@@ -5,10 +5,10 @@ var handyClicksSets = {
 
 		this.drawTree();
 		this.updButtons();
-		this.ps.addPrefsObserver(this.updTree, this);
+		this.ps.oSvc.addPrefsObserver(this.updTree, this);
 
 		this.updPrefsUI();
-		this.pu.addPrefsObserver(this.updPrefsUI, this);
+		this.pu.oSvc.addPrefsObserver(this.updPrefsUI, this);
 		// <preferences onchange="handyClicksSets.updPrefsUI();"> return some bugs
 
 		if(this.ut.fxVersion >= 3.5) {
@@ -519,7 +519,9 @@ var handyClicksSets = {
 	/*** Prefs pane ***/
 	updPrefsUI: function() {
 		this.loadPrefs();
-		this.updateAllDependencies();
+		setTimeout(function(_this) { // Wait for prefpanes update
+			_this.updateAllDependencies();
+		}, 0, this);
 	},
 	loadPrefs: function() {
 		var buttons = this.pu.pref("disallowMousemoveButtons");

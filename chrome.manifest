@@ -9,5 +9,7 @@ overlay chrome://console2/content/console2.xul chrome://handyclicks/content/cons
 style chrome://handyclicks/content/notify.xul chrome://handyclicks/content/style/notify-old.css appversion<3.0
 style chrome://handyclicks/content/notify.xul chrome://handyclicks/content/style/notify.css     appversion>=3.0
 
+style chrome://global/content/customizeToolbar.xul chrome://handyclicks/content/style/handyclicks.css
+
 locale  handyclicks en-US chrome/locale/en-US/
 locale  handyclicks ru    chrome/locale/ru/

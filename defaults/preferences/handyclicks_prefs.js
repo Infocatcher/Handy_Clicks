@@ -8,6 +8,9 @@ pref("extensions.handyclicks.disallowMousemoveButtons", "2");
 pref("extensions.handyclicks.disallowMousemoveDist", 12);
 pref("extensions.handyclicks.delayedActionTimeout", 500);
 
+pref("extensions.handyclicks.ui.showInToolsMenu", true);
+pref("extensions.handyclicks.ui.showInStatusbar", true);
+
 pref("extensions.handyclicks.notifyOpenTime", 3000);
 pref("extensions.handyclicks.notifyInWindowCorner", false);
 pref("extensions.handyclicks.notifyDontCloseUnderCursor", true);

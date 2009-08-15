@@ -1,4 +1,6 @@
 var handyClicksPrefUtils = {
+	oSvc: new HandyClicksObservers(),
+
 	// Preferences:
 	nPrefix: "extensions.handyclicks.",
 
@@ -25,7 +27,7 @@ var handyClicksPrefUtils = {
 			return;
 		pName = pName.substring(this.nLength);
 		this.readPref(pName);
-		this.notifyObservers(pName);
+		this.oSvc.notifyObservers(pName);
 	},
 
 	// API functions:

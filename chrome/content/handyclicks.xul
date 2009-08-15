@@ -65,10 +65,23 @@
 		<key id="handyClicks-key-openSettings"  command="handyClicks-cmd-openSettings" disabled="true" />
 		<key id="handyClicks-key-editMode" command="handyClicks-cmd-editMode" disabled="true" />
 	</keyset>
+	<menupopup id="menu_ToolsPopup">
+		<menuitem id="handyClicks-toggleStatus-menuitem" insertbefore="sanitizeSeparator" class="menuitem-iconic"
+			label="&handyClicks.menuitemLabel;"
+			key="handyClicks-key-toggleStatus"
+			context="handyClicks-settingsPopup"
+			oncommand="handyClicks.doSettings(event);"
+			onclick="if(event.button != 0) handyClicks.doSettings(event);" />
+	</menupopup>
+	<toolbarpalette id="BrowserToolbarPalette">
+		<toolbarbutton id="handyClicks-toggleStatus-tbButton" class="chromeclass-toolbar-additional toolbarbutton-1"
+			label="&handyClicks.toolbarbuttonLabel;"
+			context="handyClicks-settingsPopup"
+			onclick="handyClicks.doSettings(event);" />
+	</toolbarpalette>
 	<statusbar id="status-bar">
-		<statusbarpanel id="handyClicks-toggleStatus-sBarIcon" class="statusbarpanel-iconic"
+		<statusbarpanel id="handyClicks-toggleStatus-sBarIcon" class="statusbarpanel-menu-iconic"
 			insertafter="page-report-button"
-			hc_enabled="true"
 			context="handyClicks-settingsPopup"
 			onclick="handyClicks.doSettings(event);" />
 	</statusbar>
