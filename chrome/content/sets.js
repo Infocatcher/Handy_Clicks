@@ -651,7 +651,7 @@ var handyClicksSets = {
 						return;
 					}
 					var pName = line.substring(0, indx);
-					var pbr = Components.interfaces.nsIPrefBranch;
+					var pbr = this.pu.pBr;
 					var pType = this.pu.prefSvc.getPrefType(pName);
 					if(pType == pbr.PREF_INVALID || pName.indexOf(this.pu.nPrefix) != 0) {
 						this.ut._err(new Error("[Import INI] Skipped pref with invalid name: " + pName), true);

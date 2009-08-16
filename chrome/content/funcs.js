@@ -564,8 +564,10 @@ var handyClicksFuncs = {
 		path = this.getRelativePath(path);
 		item.prop_className = (item.hasOwnProperty("prop_className") ? item.prop_className + " " : "")
 			+ "menuitem-iconic";
-		if(checkFiles && !this.fileExists(path))
+		if(checkFiles && !this.fileExists(path)) {
 			item.prop_className += " handyClicks-invalidPath";
+			item["attr_" + this.tooltipAttrStyle + "0"] = "color: red;";
+		}
 		item.attr_image = this.getFileURI(this.getRelativePath(img)) || "moz-icon:file://" + (this.getRelativePath(icon) || path);
 		item[ttBase + n++] = path;
 		item.prop_hc_path = path;
@@ -1051,7 +1053,7 @@ var handyClicksFuncs = {
 	fillInTooltip: function(tooltip) {
 		var tNode = document.tooltipNode;
 		var attrBase = this.tooltipAttrBase;
-		var i = 0, lbl;
+		var i = 0, lbl, val;
 		var attrName = attrBase + i;
 		var styleAttr;
 		while(tNode.hasAttribute(attrName)) {
@@ -1062,20 +1064,24 @@ var handyClicksFuncs = {
 				tooltip.firstChild.appendChild(lbl);
 				tooltip["_" + attrName] = lbl;
 			}
-			lbl.setAttribute("value", tNode.getAttribute(attrName));
+			var val = tNode.getAttribute(attrName);
+			lbl.setAttribute("value", val);
 			styleAttr = this.tooltipAttrStyle + i;
 			if(tNode.hasAttribute(styleAttr))
 				lbl.setAttribute("style", tNode.getAttribute(styleAttr));
 			else
 				lbl.removeAttribute("style");
-			lbl.hidden = false;
+			lbl.hidden = !val; // Hide empty lines
 			attrName = attrBase + ++i;
 		}
 		return i > 0;
 	},
 	hideAllLabels: function(tooltip) {
-		var chs = tooltip.firstChild.childNodes;
-		for(var i = 0, len = chs.length; i < len; i++)
-			chs[i].hidden = true;
+		Array.prototype.forEach.call(
+			tooltip.firstChild.childNodes,
+			function(ch) {
+				ch.hidden = true;
+			}
+		);
 	}
 };

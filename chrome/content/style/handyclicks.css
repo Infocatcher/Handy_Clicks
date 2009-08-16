@@ -29,6 +29,9 @@ toolbar[iconsize="small"] #handyClicks-toggleStatus-tbButton[hc_enabled="false"]
 	font-weight: bold;
 }
 
+#handyClicks-tooltip {
+	padding: 0;
+}
 .handyClicks-invalidPath {
 	opacity: 0.5;
 }

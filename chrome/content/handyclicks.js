@@ -34,7 +34,9 @@ var handyClicks = {
 	setListeners: function(evtTypes, addFlag) {
 		var act = addFlag ? "addEventListener" : "removeEventListener";
 		evtTypes.forEach(
-			function(evtType) { window[act](evtType, this, true); },
+			function(evtType) {
+				window[act](evtType, this, true);
+			},
 			this
 		);
 	},
@@ -51,9 +53,10 @@ var handyClicks = {
 	get editMode() {
 		return this._editMode;
 	},
-	set editMode(val) {
-		this._editMode = val;
-		this.setEditModeStatus(val);
+	set editMode(em) {
+		this._editMode = em;
+		this.setListeners(["keydown"], em);
+		this.setEditModeStatus(em);
 	},
 
 	// Handlers:
@@ -864,7 +867,10 @@ var handyClicks = {
 			case "command":     this.commandHandler(e);     break;
 			case "dblclick":    this.dblclickHandler(e);    break;
 			case "contextmenu": this.contextmenuHandler(e); break;
-			case "mousemove":   this.mousemoveHandler(e);
+			case "mousemove":   this.mousemoveHandler(e);   break;
+			case "keydown":
+				if(e.keyCode == e.DOM_VK_ESCAPE)
+					this.editMode = false;
 		}
 	},
 
@@ -895,9 +901,15 @@ var handyClicks = {
 	},
 	setEditModeStatus: function(em) {
 		em = em === undefined ? this.editMode : em;
+		var exitKey = this.ut.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE") || "Esc";
+		var tt = em
+			? this.ut.getLocalized("editModeTip").replace("%k", exitKey)
+			: "";
+		var ttAttr = this.fn.tooltipAttrBase + "1";
 		this.setControls(
 			function(elt) {
 				elt.setAttribute("hc_editmode", em);
+				elt.setAttribute(ttAttr, tt);
 			}
 		);
 		if(!em)
@@ -905,7 +917,7 @@ var handyClicks = {
 		var _this = this;
 		this.ut.notify(
 			this.ut.getLocalized("editModeTitle"),
-			this.ut.getLocalized("editModeNote"),
+			this.ut.getLocalized("editModeNote").replace("%k", exitKey),
 			function() { _this.editMode = false; },
 			null, true, true
 		);
@@ -924,10 +936,12 @@ var handyClicks = {
 	setStatus: function() {
 		var enabled = this.enabled;
 		var tt = this.ut.getLocalized(enabled ? "enabled" : "disabled");
+		var ttAttr = this.fn.tooltipAttrBase + "0";
 		this.setControls(
 			function(elt) {
 				elt.setAttribute("hc_enabled", enabled);
-				elt.tooltipText = tt;
+				elt.setAttribute(ttAttr, tt);
+				//elt.tooltipText = tt;
 			}
 		);
 		document.getElementById("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
@@ -940,7 +954,7 @@ var handyClicks = {
 		["sBarIcon", "tbButton", "menuitem"].forEach(
 			function(id) {
 				var elt = document.getElementById("handyClicks-toggleStatus-" + id);
-				elt && func.call(this, elt);
+				elt && func.call(context || this, elt);
 			}
 		);
 	},

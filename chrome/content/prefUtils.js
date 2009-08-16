@@ -10,7 +10,8 @@ var handyClicksPrefUtils = {
 			.getService(Components.interfaces.nsIPrefService)
 			.QueryInterface(Components.interfaces.nsIPrefBranch2);
 	},
-	get ss() { return Components.interfaces.nsISupportsString; },
+	pBr: Components.interfaces.nsIPrefBranch,
+	ss: Components.interfaces.nsISupportsString,
 
 	// Initialization:
 	init: function() {
@@ -42,17 +43,17 @@ var handyClicksPrefUtils = {
 	readPref: function(pName) {
 		this._prefs[pName] = this.getPref(this.nPrefix + pName);
 	},
-	getPref: function(pName) {
-		var pbr = Components.interfaces.nsIPrefBranch;
+	getPref: function(pName, defaultVal) {
+		var pbr = this.pBr;
 		switch(this.prefSvc.getPrefType(pName)) {
 			case pbr.PREF_STRING: return this.prefSvc.getComplexValue(pName, this.ss).data;
 			case pbr.PREF_INT:    return this.prefSvc.getIntPref(pName);
 			case pbr.PREF_BOOL:   return this.prefSvc.getBoolPref(pName);
-			default:              return null;
+			default:              return defaultVal;
 		}
 	},
 	setPref: function(pName, pVal) {
-		var pbr = Components.interfaces.nsIPrefBranch;
+		var pbr = this.pBr;
 		var pType = this.prefSvc.getPrefType(pName);
 		var isNew = pType == pbr.PREF_INVALID;
 		var vType = typeof pVal;
@@ -75,7 +76,7 @@ var handyClicksPrefUtils = {
 		return this;
 	},
 	existPref: function(pName) {
-		return this.prefSvc.getPrefType(pName) != Components.interfaces.nsIPrefBranch.PREF_INVALID;
+		return this.prefSvc.getPrefType(pName) != this.pBr.PREF_INVALID;
 	},
 	savePrefFile: function() {
 		this.prefSvc.savePrefFile(null);
