@@ -236,7 +236,8 @@ var handyClicks = {
 		var canStop = this.flags.runned || (this.hasSettings && !this.flags.allowEvents) || this.editMode;
 		var same = e.originalTarget === this.origItem;
 		var stop = canStop && same;
-		if(stop && e.type == "mouseup")
+		var isMouseup = e.type == "mouseup";
+		if(stop && isMouseup)
 			_cs.time = Date.now();
 		if(
 			stop
@@ -245,8 +246,23 @@ var handyClicks = {
 				&& _cs.hasOwnProperty("time")
 				&& Date.now() - _cs.time < 100
 			)
-		)
+		) {
+			if(isMouseup && e.view.top === content) { // Prevent page handlers, but don't stop FireGestures extension
+				var cWin = gBrowser.mCurrentBrowser;
+				var _this = this;
+				cWin.addEventListener(
+					"mouseup",
+					function(e) {
+						cWin.removeEventListener("mouseup", arguments.callee, true);
+						if(_this._enabled)
+							_this.stopEvent(e);
+					},
+					true
+				);
+				return;
+			}
 			this.stopEvent(e);
+		}
 	},
 	skipFlags: function() {
 		var fls = this.flags;

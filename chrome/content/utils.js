@@ -10,8 +10,8 @@ var handyClicksUtils = {
 	_log: function() {
 		this.consoleSvc.logStringMessage(
 			this.errPrefix +
-			Array.prototype.join.call(
-				Array.prototype.map.call(arguments, this.safeToString), // Convert all arguments to strings
+			Array.join(
+				Array.map(arguments, this.safeToString), // Convert all arguments to strings
 				"\n"
 			)
 		);

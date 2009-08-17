@@ -115,7 +115,7 @@ var handyClicksEditor = {
 	},
 	addIds: function(node, id) {
 		node.id += id;
-		Array.prototype.forEach.call(
+		Array.forEach(
 			node.getElementsByTagName("*"),
 			function(node) { if(node.id) node.id += id; }
 		);
@@ -310,7 +310,7 @@ var handyClicksEditor = {
 	highlightUsedTypes: function() {
 		var so = this.ut.getOwnProperty(this.ps.prefs, this.currentShortcut);
 		var ml = this.$("hc-editor-itemTypes");
-		Array.prototype.forEach.call(
+		Array.forEach(
 			ml.getElementsByTagName("menuitem"),
 			function(mi) {
 				var to = this.ut.getOwnProperty(so, mi.value);
@@ -439,6 +439,7 @@ var handyClicksEditor = {
 	},
 	addControl: function(argName, argType, argVal, delayed) {
 		var ns = this.ut.XULNS;
+		//default xml namespace = this.ut.XULNS;
 		var argContainer = <hbox xmlns={ns} align="center" class="hc-editor-argsContainer" />;
 		var elt = <{argType} xmlns={ns} hc_argname={argName} />;
 		switch(argType) {

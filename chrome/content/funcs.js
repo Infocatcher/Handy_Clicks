@@ -101,7 +101,7 @@ var handyClicksFuncs = {
 			: "";
 	},
 	forEachTab: function(fnc, _this, tbr) {
-		return Array.prototype.map.call(
+		return Array.map(
 			(tbr || this.hc.getTabBrowser(true)).mTabContainer.childNodes,
 			fnc,
 			_this || this
@@ -741,7 +741,7 @@ var handyClicksFuncs = {
 	},
 	setPrefs: function() {
 		var origs = { __proto__: null };
-		Array.prototype.forEach.call(
+		Array.forEach(
 			arguments,
 			function(prefsObj) {
 				for(var p in prefsObj) if(prefsObj.hasOwnProperty(p)) {
@@ -1077,7 +1077,7 @@ var handyClicksFuncs = {
 		return i > 0;
 	},
 	hideAllLabels: function(tooltip) {
-		Array.prototype.forEach.call(
+		Array.forEach(
 			tooltip.firstChild.childNodes,
 			function(ch) {
 				ch.hidden = true;

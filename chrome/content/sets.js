@@ -80,18 +80,16 @@ var handyClicksSets = {
 		this.drawTree();
 	},
 	appendContainerItem: function(parent, hash, label) {
-		var tItem = document.createElement("treeitem");
-		tItem.setAttribute("container", "true");
-		tItem.setAttribute("open", "true");
-		var tRow = document.createElement("treerow");
-		var tSell = document.createElement("treecell");
-		tSell.setAttribute("label", label);
-		tRow.appendChild(tSell);
-		tItem.appendChild(tRow);
-		var tChildren = tItem.appendChild(document.createElement("treechildren"));
+		var tItem =
+			<treeitem xmlns={this.ut.XULNS} container="true" open="true">
+				<treerow>
+					<treecell label={label} />
+				</treerow>
+				<treechildren />
+			</treeitem>;
+		tItem = this.ut.fromXML(tItem);
 		(parent || this.content).appendChild(tItem);
-		this.DOMCache[hash] = tChildren;
-		return tChildren;
+		return this.DOMCache[hash] = tItem.getElementsByTagName("treechildren")[0];
 	},
 	appendItems: function(parent, items, shortcut) {
 		var tItem, tRow, it, typeLabel, isCustom, isCustomType;
@@ -114,8 +112,10 @@ var handyClicksSets = {
 					: it.action
 			);
 			this.appendTreeCell(tRow, "label", this.getArguments(it.arguments || {}));
-			var chBox = this.appendTreeCell(tRow, "value", it.enabled);
-			this.addProperties(chBox, { hc_editable: true });
+			this.addProperties(
+				this.appendTreeCell(tRow, "value", it.enabled), // checkbox
+				{ hc_editable: true }
+			);
 
 			isBuggy = !this.ps.isOkFuncObj(it)
 				|| (isCustomType && !this.ps.types.hasOwnProperty(itemType));
@@ -130,8 +130,7 @@ var handyClicksSets = {
 		}
 	},
 	getCustomTypeLabel: function(type) {
-		var ct = this.ut.getOwnProperty(this.ps.types, type) || {};
-		var label = this.ut.getOwnProperty(ct, "label");
+		var label = this.ut.getOwnProperty(this.ps.types, type, "label");
 		return (label ? this.ps.dec(label) + " " : "") + "(" + type + ")";
 	},
 	addProperties: function(tar, propsObj) {
@@ -170,7 +169,6 @@ var handyClicksSets = {
 		}
 
 		this.redrawTree();
-		//this.updButtons();
 
 		selRows.forEach(
 			function(range) {
@@ -203,19 +201,16 @@ var handyClicksSets = {
 		var tRowsArr = [];
 		if(numRanges == 0)
 			return tRowsArr;
-		var start = {};
-		var end = {};
+		var start = {}, end = {};
 		var tRows = this.content.getElementsByTagName("treerow"), tRow;
 		for(var t = 0; t < numRanges; t++) {
 			this.selection.getRangeAt(t, start, end);
 			for(var v = start.value; v <= end.value; v++) {
 				tRow = tRows[v];
-				if(!tRow || this.view.isContainer(v))
+				if(!tRow || this.view.isContainer(v) || !("__shortcut" in tRow) || !("__itemType" in tRow))
 					continue;
-				if(tRow.__shortcut && tRow.__itemType) {
-					tRowsArr.push(tRow); // for deleting (getElementsByTagName is dinamically)
-					tRow.__index = v;
-				}
+				tRowsArr.push(tRow); // for deleting (getElementsByTagName is dinamically)
+				tRow.__index = v;
 			}
 		}
 		return tRowsArr;
@@ -347,7 +342,7 @@ var handyClicksSets = {
 	setRowStatus: function(rowId, editStat) {
 		if(!(rowId in this.rowsCache))
 			return;
-		Array.prototype.forEach.call( // Status for all cells in row
+		Array.forEach( // Status for all cells in row
 			this.rowsCache[rowId].getElementsByTagName("treecell"),
 			function(cell) {
 				this.addProperties(cell, { hc_edited: editStat });
@@ -566,7 +561,7 @@ var handyClicksSets = {
 			this.applyButton.disabled = false;
 	},
 	updateAllDependencies: function() {
-		Array.prototype.forEach.call(
+		Array.forEach(
 			document.getElementsByAttribute("hc_requiredfor", "*"),
 			this.updateDependencies,
 			this
@@ -580,7 +575,7 @@ var handyClicksSets = {
 			? new RegExp("(?:^|\\s)" + it.value + "(?:\\s|$)").test(it.getAttribute("hc_disabledvalues"))
 			: it.hasAttribute("checked") && !checkParent
 				? it.getAttribute("checked") != "true"
-				: Array.prototype.every.call(
+				: Array.every(
 					(checkParent ? it.parentNode : it).getElementsByTagName("checkbox"),
 					function(ch) { return ch.getAttribute("checked") != "true"; }
 				);
