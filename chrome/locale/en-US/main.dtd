@@ -3,3 +3,4 @@
 <!ENTITY handyClicks.toolbarbuttonLabel "Handy Clicks">
 <!ENTITY handyClicks.settingsLabel "Settings…">
 <!ENTITY handyClicks.editModeLabel "Start edit mode">
+<!ENTITY handyClicks.importFromClipboardLabel "Import settings from clipboard…">

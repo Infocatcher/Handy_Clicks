@@ -18,13 +18,24 @@
 <!ENTITY hc.sets.columnEnabled "Включено">
 
 <!ENTITY hc.sets.search "Найти:">
-<!ENTITY hc.sets.cmdAdd "Добавить">
-<!ENTITY hc.sets.cmdEdit "Редактировать">
-<!ENTITY hc.sets.cmdEditType "Редактировать добавленный тип">
+<!ENTITY hc.sets.cmdAdd "Добавить…">
+<!ENTITY hc.sets.cmdEdit "Редактировать…">
+<!ENTITY hc.sets.cmdEditType "Редактировать добавленный тип…">
 <!ENTITY hc.sets.cmdDel "Удалить">
 
 <!ENTITY hc.sets.export "Экспорт">
+<!ENTITY hc.sets.exportAccesskey "Э">
+<!ENTITY hc.sets.exportFullToFile "Экспорт в файл…">
+<!ENTITY hc.sets.exportSelectedToFile "Экспорт выделенного в файл…">
+<!ENTITY hc.sets.exportSelectedToClipboard "Экспорт выделенного в буфер обмена">
+
 <!ENTITY hc.sets.import "Импорт">
+<!ENTITY hc.sets.importAccesskey "И">
+<!ENTITY hc.sets.importFullFromFile "Импорт из файла…">
+<!ENTITY hc.sets.importIncrementFromFile "Инкрементный импорт из файла…">
+<!ENTITY hc.sets.importIncrementFromClipboard "Инкрементный импорт из буфера обмена">
+<!ENTITY hc.sets.importOk "Завершить инкрементный импорт">
+<!ENTITY hc.sets.importCancel "Отменить инкрементный импорт">
 
 
 <!ENTITY hc.sets.clickPrefsTitle "Настройки">

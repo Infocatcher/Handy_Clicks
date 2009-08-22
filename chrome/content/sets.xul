@@ -18,7 +18,7 @@
 	buttonlabelextra1="&hc.sets.apply;"
 	buttonlabelextra2="&hc.sets.settings;"
 	buttonaccesskeyextra2="&hc.sets.settingsAccesskey;"
-	ondialogaccept="handyClicksSets.savePrefs();"
+	ondialogaccept="return handyClicksSets.savePrefs();"
 	ondialogextra1="handyClicksSets.savePrefs(true);"
 	oncommand="handyClicksSets.prefsChanged(event);"
 	onchange="handyClicksSets.prefsChanged(event);"
@@ -60,14 +60,34 @@
 					onclick="handyClicksSets.toggleEnabled(event);"
 					ondblclick="handyClicksSets.editItems(event);" />
 			</tree>
-			<hbox id="hc-sets-tree-buttons" pack="center">
-				<button id="hc-sets-tree-buttonAdd" command="hc-sets-cmd-add" />
-				<button id="hc-sets-tree-buttonEdit" command="hc-sets-cmd-edit" />
-				<button id="hc-sets-tree-buttonDelete" command="hc-sets-cmd-delete" />
-				<spacer id="hc-sets-tree-buttonsSpacer" width="16" />
-				<button id="hc-sets-tree-buttonExport" oncommand="handyClicksSets.exportSets();" label="&hc.sets.export;" />
-				<button id="hc-sets-tree-buttonImport" oncommand="handyClicksSets.importSets();" label="&hc.sets.import;" />
-			</hbox>
+			<vbox id="hc-sets-tree-buttons">
+				<hbox id="hc-sets-tree-partialImportPanel" hidden="true" pack="center">
+					<button id="hc-sets-tree-buttonPartialImport" oncommand="handyClicksSets.partialImportDone(true);" label="&hc.sets.importOk;" />
+					<button id="hc-sets-tree-buttonCancelPartialImport" oncommand="handyClicksSets.partialImportDone(false);" label="&hc.sets.importCancel;" />
+				</hbox>
+				<hbox pack="center">
+					<button id="hc-sets-tree-buttonAdd" command="hc-sets-cmd-add" />
+					<button id="hc-sets-tree-buttonEdit" command="hc-sets-cmd-edit" />
+					<button id="hc-sets-tree-buttonDelete" command="hc-sets-cmd-delete" />
+					<spacer id="hc-sets-tree-buttonsSpacer" width="16" />
+					<button id="hc-sets-tree-buttonExport" type="menu" label="&hc.sets.export;" accesskey="&hc.sets.exportAccesskey;">
+						<menupopup>
+							<menuitem oncommand="handyClicksSets.exportSets();" label="&hc.sets.exportFullToFile;" />
+							<menuseparator />
+							<menuitem key="hc-sets-key-partialExportToFile" command="hc-sets-cmd-partialExportToFile" />
+							<menuitem key="hc-sets-key-partialExportToClipboard" command="hc-sets-cmd-partialExportToClipboard" />
+						</menupopup>
+					</button>
+					<button id="hc-sets-tree-buttonImport" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;">
+						<menupopup onpopupshowing="handyClicksSets.checkClipboard();">
+							<menuitem oncommand="handyClicksSets.importSets();" label="&hc.sets.importFullFromFile;" />
+							<menuseparator />
+							<menuitem oncommand="handyClicksSets.importSets(true, false);" label="&hc.sets.importIncrementFromFile;" />
+							<menuitem command="hc-sets-cmd-partialImportFromClipboard" key="hc-sets-key-partialImportFromClipboard" />
+						</menupopup>
+					</button>
+				</hbox>
+			</vbox>
 		</vbox>
 	</prefpane>
 
@@ -179,28 +199,41 @@
 		<command id="hc-sets-cmd-edit" oncommand="handyClicksSets.editItems();" label="&hc.sets.cmdEdit;" />
 		<command id="hc-sets-cmd-editType" oncommand="handyClicksSets.editItemsTypes();" label="&hc.sets.cmdEditType;" />
 		<command id="hc-sets-cmd-delete" oncommand="handyClicksSets.deleteItems();" label="&hc.sets.cmdDel;" />
+
+		<command id="hc-sets-cmd-partialExportToFile" oncommand="handyClicksSets.exportSets(true, false);" label="&hc.sets.exportSelectedToFile;" />
+		<command id="hc-sets-cmd-partialExportToClipboard" oncommand="handyClicksSets.exportSets(true, true);" label="&hc.sets.exportSelectedToClipboard;" />
+		<command id="hc-sets-cmd-partialImportFromClipboard" oncommand="handyClicksSets.importSets(true, true);" label="&hc.sets.importIncrementFromClipboard;" />
 	</commandset>
 	<keyset id="hc-sets-keys">
-		<key keycode="VK_INSERT" id="hc-sets-key-add" command="hc-sets-cmd-add" />
-		<key keycode="VK_F4" id="hc-sets-key-edit" command="hc-sets-cmd-edit" />
-		<key keycode="VK_F4" modifiers="shift" id="hc-sets-key-editType" command="hc-sets-cmd-editType" />
-		<key keycode="VK_DELETE" id="hc-sets-key-delete" command="hc-sets-cmd-delete" />
-		<key key=" " id="hc-sets-key-toggle" oncommand="handyClicksSets.toggleEnabled();" />
-		<key key="a" modifiers="control" id="hc-sets-key-selectAll" oncommand="handyClicksSets.selectAll();" />
-		<key key="f" modifiers="control" id="hc-sets-key-focusSearch" oncommand="handyClicksSets.focusSearch();" />
-		<key keycode="VK_TAB" modifiers="control" id="hc-sets-key-switchPanes-ltr" oncommand="handyClicksSets.switchPanes(true);" />
-		<key keycode="VK_TAB" modifiers="control,shift" id="hc-sets-key-switchPanes-rtl" oncommand="handyClicksSets.switchPanes(false);" />
-		<key key="s" modifiers="control" id="hc-sets-key-apply" oncommand="handyClicksSets.savePrefs(true);" />
-		<key keycode="VK_F5" id="hc-sets-key-reload" oncommand="handyClicksSets.forceUpdTree();" />
+		<key id="hc-sets-key-add" keycode="VK_INSERT" command="hc-sets-cmd-add" />
+		<key id="hc-sets-key-edit" keycode="VK_F4" command="hc-sets-cmd-edit" />
+		<key id="hc-sets-key-editType" keycode="VK_F4" modifiers="shift" command="hc-sets-cmd-editType" />
+		<key id="hc-sets-key-delete" keycode="VK_DELETE" command="hc-sets-cmd-delete" />
 
-		<key keycode="VK_F10" id="hc-sets-key-maximizeWindow" oncommand="handyClicksWinUtils.maximizeWindow();" />
-		<key keycode="VK_F11" id="hc-sets-key-toggleFullscreen" oncommand="handyClicksWinUtils.toggleFullscreen();" />
+		<key id="hc-sets-key-partialExportToFile" key="e" modifiers="control" command="hc-sets-cmd-partialExportToFile" />
+		<key id="hc-sets-key-partialExportToClipboard" key="c" modifiers="control,shift" command="hc-sets-cmd-partialExportToClipboard" />
+		<key id="hc-sets-key-partialImportFromClipboard" key="v" modifiers="control,shift" command="hc-sets-cmd-partialImportFromClipboard" />
+
+		<key id="hc-sets-key-toggle" key=" " oncommand="handyClicksSets.toggleEnabled();" />
+		<key id="hc-sets-key-selectAll" key="a" modifiers="control" oncommand="handyClicksSets.selectAll();" />
+		<key id="hc-sets-key-focusSearch" key="f" modifiers="control" oncommand="handyClicksSets.focusSearch();" />
+		<key id="hc-sets-key-switchPanes-ltr" keycode="VK_TAB" modifiers="control" oncommand="handyClicksSets.switchPanes(true);" />
+		<key id="hc-sets-key-switchPanes-rtl" keycode="VK_TAB" modifiers="control,shift" oncommand="handyClicksSets.switchPanes(false);" />
+		<key id="hc-sets-key-apply" key="s" modifiers="control" oncommand="handyClicksSets.savePrefs(true);" />
+		<key id="hc-sets-key-reload" keycode="VK_F5" oncommand="handyClicksSets.forceUpdTree();" />
+
+		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksWinUtils.maximizeWindow();" />
+		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksWinUtils.toggleFullscreen();" />
 	</keyset>
 	<popupset id="hc-sets-popupset">
-		<popup id="hc-sets-tree-context">
+		<popup id="hc-sets-tree-context" onpopupshowing="handyClicksSets.checkClipboard();">
 			<menuitem command="hc-sets-cmd-edit" key="hc-sets-key-edit" />
 			<menuitem id="hc-sets-editType" command="hc-sets-cmd-editType" key="hc-sets-key-editType" />
 			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" />
+			<menuseparator />
+			<menuitem key="hc-sets-key-partialExportToFile" command="hc-sets-cmd-partialExportToFile" />
+			<menuitem key="hc-sets-key-partialExportToClipboard" command="hc-sets-cmd-partialExportToClipboard" />
+			<menuitem command="hc-sets-cmd-partialImportFromClipboard" key="hc-sets-key-partialImportFromClipboard" />
 			<menuseparator />
 			<menuitem command="hc-sets-cmd-add" key="hc-sets-key-add" />
 		</popup>

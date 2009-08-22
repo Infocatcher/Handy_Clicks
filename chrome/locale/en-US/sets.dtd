@@ -18,13 +18,24 @@
 <!ENTITY hc.sets.columnEnabled "Enabled">
 
 <!ENTITY hc.sets.search "Search:">
-<!ENTITY hc.sets.cmdAdd "Add">
-<!ENTITY hc.sets.cmdEdit "Edit">
-<!ENTITY hc.sets.cmdEditType "Edit custom type">
+<!ENTITY hc.sets.cmdAdd "Add…">
+<!ENTITY hc.sets.cmdEdit "Edit…">
+<!ENTITY hc.sets.cmdEditType "Edit custom type…">
 <!ENTITY hc.sets.cmdDel "Delete">
 
 <!ENTITY hc.sets.export "Export">
+<!ENTITY hc.sets.exportAccesskey "E">
+<!ENTITY hc.sets.exportFullToFile "Export to file…">
+<!ENTITY hc.sets.exportSelectedToFile "Export selected to file…">
+<!ENTITY hc.sets.exportSelectedToClipboard "Export selected to clipboard">
+
 <!ENTITY hc.sets.import "Import">
+<!ENTITY hc.sets.importAccesskey "I">
+<!ENTITY hc.sets.importFullFromFile "Import from file…">
+<!ENTITY hc.sets.importIncrementFromFile "Incremental import from file…">
+<!ENTITY hc.sets.importIncrementFromClipboard "Incremental import from clipboard">
+<!ENTITY hc.sets.importOk "Incremental import done">
+<!ENTITY hc.sets.importCancel "Cancel incremental import">
 
 
 <!ENTITY hc.sets.clickPrefsTitle "Preferences">

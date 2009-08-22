@@ -2,6 +2,7 @@ var handyClicksRegSvc = {
 	init: function() { // window "load"
 		window.removeEventListener("load", this, false);
 		this.registerServices(true);
+		window._handyClicksInitialized = true;
 		window.addEventListener("unload", this, false);
 	},
 	destroy: function() { // window "unlod"

@@ -3,3 +3,4 @@
 <!ENTITY handyClicks.toolbarbuttonLabel "Handy Clicks">
 <!ENTITY handyClicks.settingsLabel "Настройки…">
 <!ENTITY handyClicks.editModeLabel "Режим редактирования">
+<!ENTITY handyClicks.importFromClipboardLabel "Импортировать настройки из буфера обмена…">

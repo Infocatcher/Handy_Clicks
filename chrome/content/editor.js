@@ -25,12 +25,12 @@ var handyClicksEditor = {
 	delayId: "-delay",
 
 	init: function() {
-		this.ps.loadSettings();
 		if(this.ut.fxVersion == 1.5) // "relative" is not supported
 			this.types.menulists.moveTabTo.pop();
 		this.loadLabels();
 		this.createDelayedFuncTab();
 		this.initShortcuts();
+		this.ps.loadSettings(this.src || null);
 		this.initUI();
 		this.loadCustomType(this.type);
 		this.selectTargetTab();
@@ -69,9 +69,10 @@ var handyClicksEditor = {
 	initShortcuts: function() {
 		this.mBox = this.$("hc-editor-mainTabbox");
 		var wa = window.arguments || [];
-		this.editorMode = wa[0];
-		this.shortcut = wa[1];
-		this.type = wa[2];
+		this.src = wa[0];
+		this.editorMode = wa[1];
+		this.shortcut = wa[2];
+		this.type = wa[3];
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
 	loadLabels: function() {

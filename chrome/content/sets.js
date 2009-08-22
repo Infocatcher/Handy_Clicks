@@ -7,7 +7,7 @@ var handyClicksSets = {
 		this.updButtons();
 		this.ps.oSvc.addPrefsObserver(this.updTree, this);
 
-		this.updPrefsUI();
+		this.updPrefsUI(true);
 		this.pu.oSvc.addPrefsObserver(this.updPrefsUI, this);
 		// <preferences onchange="handyClicksSets.updPrefsUI();"> return some bugs
 
@@ -24,6 +24,7 @@ var handyClicksSets = {
 			this.applyButton.disabled = true;
 		var prefsButt = document.documentElement.getButton("extra2");
 		prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
+		prefsButt.setAttribute("type", "menu");
 		this.focusSearch();
 	},
 	initShortcuts: function() {
@@ -34,12 +35,18 @@ var handyClicksSets = {
 		this.cmdDelete = this.$("hc-sets-cmd-delete");
 		this.cmdEdit = this.$("hc-sets-cmd-edit");
 		this.cmdEditType = this.$("hc-sets-cmd-editType");
+		this.cmdPExpFile = this.$("hc-sets-cmd-partialExportToFile");
+		this.cmdPExpClip = this.$("hc-sets-cmd-partialExportToClipboard");
 		this.miEditType = this.$("hc-sets-editType");
 		this.searcher._tree = this.tree;
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
 
 	/*** Actions pane ***/
+	_prefsSaved: true,
+	get prefsSaved() {
+		return this.instantApply || this._prefsSaved;
+	},
 	$: function(id) {
 		return document.getElementById(id);
 	},
@@ -78,6 +85,9 @@ var handyClicksSets = {
 		while(cnt.hasChildNodes())
 			cnt.removeChild(cnt.lastChild);
 		this.drawTree();
+		this.searchInSetsTree(null, true);
+		if(this.prefsSaved)
+			this.applyButton.disabled = true;
 	},
 	appendContainerItem: function(parent, hash, label) {
 		var tItem =
@@ -142,6 +152,21 @@ var handyClicksSets = {
 		}
 		tar.setAttribute("properties", propsVal.replace(/^\s+|\s+$/g, "").replace(/\s+/g, " "));
 	},
+	addCellsProperties: function(rows, propsObj) {
+		Array.forEach(
+			rows,
+			function(row) {
+				Array.forEach(
+					row.getElementsByTagName("treecell"),
+					function(cell) {
+						this.addProperties(cell, propsObj);
+					},
+					this
+				);
+			},
+			this
+		);
+	},
 	appendTreeCell: function(parent, attrName, attrValue) {
 		var cell = document.createElement("treecell");
 		cell.setAttribute(attrName, attrValue);
@@ -169,17 +194,20 @@ var handyClicksSets = {
 		}
 
 		this.redrawTree();
+		var rowsCount = this.content.getElementsByTagName("treerow").length;
+		if(!rowsCount)
+			return;
+		var maxRowsIndx = rowsCount - 1;
 
 		selRows.forEach(
 			function(range) {
-				this.selection.rangedSelect(range[0], range[1], true);
+				if(range[0] <= maxRowsIndx)
+					this.selection.rangedSelect(range[0], this.ut.mm(range[1], 0, maxRowsIndx), true);
 			},
 			this
 		);
-		if(typeof fvr == "number")
-			tbo.scrollToRow(fvr);
-		this.searchInSetsTree(null, true);
-		this.applyButton.disabled = true;
+		if(typeof fvr == "number" && fvr < rowsCount)
+			tbo.scrollToRow(this.ut.mm(fvr, 0, maxRowsIndx));
 	},
 	forceUpdTree: function() {
 		this.ps.loadSettings();
@@ -188,7 +216,7 @@ var handyClicksSets = {
 	updButtons: function() {
 		var selRows = this.selectedRows;
 		var noSel = !selRows.length;
-		["cmdDelete", "cmdEdit"].forEach(
+		["cmdDelete", "cmdEdit", "cmdPExpFile", "cmdPExpClip"].forEach(
 			function(hash) { this[hash].setAttribute("disabled", noSel); },
 			this
 		);
@@ -216,8 +244,12 @@ var handyClicksSets = {
 		return tRowsArr;
 	},
 	get isTreePaneSelected() {
-		var prefWin = this.$("handyClicks-settings");
+		var prefWin = document.documentElement;
 		return prefWin.currentPane == prefWin.preferencePanes[0];
+	},
+	selectTreePane: function() {
+		var prefWin = document.documentElement;
+		prefWin.showPane(prefWin.preferencePanes[0]);
 	},
 	switchPanes: function(nextFlag) {
 		var prefWin = this.$("handyClicks-settings");
@@ -284,7 +316,7 @@ var handyClicksSets = {
 					? this.getCustomTypeLabel(tRow.__itemType)
 					: this.ut.getLocalized(tRow.__itemType);
 				var fObj = this.ut.getOwnProperty(this.ps.prefs, tRow.__shortcut, tRow.__itemType);
-				var label = typeof fObj == "object"
+				var label = this.ut.isObject(fObj)
 					? this.ut.getOwnProperty(fObj, "custom")
 						? this.ps.dec(fObj.label || "")
 						: this.ut.getLocalized(fObj.action || "")
@@ -337,19 +369,11 @@ var handyClicksSets = {
 	openEditorWindow: function(tRow, mode, add) { // mode: "shortcut" or "itemType"
 		var shortcut = tRow ? tRow.__shortcut : Date.now() + "-" + Math.random();
 		var itemType = tRow && add !== true ? tRow.__itemType : null;
-		this.wu.openEditor(mode, shortcut, itemType);
+		this.wu.openEditor(this.ps.currentSrc, mode, shortcut, itemType);
 	},
 	setRowStatus: function(rowId, editStat) {
-		if(!(rowId in this.rowsCache))
-			return;
-		Array.forEach( // Status for all cells in row
-			this.rowsCache[rowId].getElementsByTagName("treecell"),
-			function(cell) {
-				this.addProperties(cell, { hc_edited: editStat });
-			},
-			this
-		);
-		// this.addProperties(this.rowsCache[rowId], { hc_edited: editStat });
+		if(rowId in this.rowsCache)
+			this.addCellsProperties([this.rowsCache[rowId]], { hc_edited: editStat });
 	},
 	toggleEnabled: function(e) {
 		var rowIndx, column, tRow;
@@ -383,7 +407,7 @@ var handyClicksSets = {
 		}
 		if(!changed)
 			return;
-		if(this.instantApply)
+		if(this.instantApply && !this.ps.otherSrc)
 			this.ps.saveSettingsObjects(true);
 		else
 			this.applyButton.disabled = false;
@@ -512,11 +536,15 @@ var handyClicksSets = {
 	},
 
 	/*** Prefs pane ***/
-	updPrefsUI: function() {
+	updPrefsUI: function(loadFlag) {
 		this.loadPrefs();
-		setTimeout(function(_this) { // Wait for prefpanes update
-			_this.updateAllDependencies();
-		}, 0, this);
+		if(loadFlag)
+			this.updateAllDependencies();
+		else {
+			setTimeout(function(_this) { // Wait for prefpanes update
+				_this.updateAllDependencies();
+			}, 0, this);
+		}
 	},
 	loadPrefs: function() {
 		var buttons = this.pu.pref("disallowMousemoveButtons");
@@ -529,11 +557,19 @@ var handyClicksSets = {
 			if(this.$("hc-sets-disallowMousemove-" + i).checked)
 				val += i;
 		this.pu.pref("disallowMousemoveButtons", val);
-		this.ps.saveSettingsObjects(applyFlag);
 		if(applyFlag && !this.instantApply) {
 			this.savePrefpanes();
 			this.applyButton.disabled = true;
+			this._prefsSaved = true;
 		}
+		if(!this.ps.otherSrc)
+			this.ps.saveSettingsObjects(applyFlag);
+		if(
+			!applyFlag && this.ps.otherSrc
+			&& !this.ut.confirmEx(this.ut.getLocalized("title"), this.ut.getLocalized("partialImportIncomplete"))
+		)
+			return false;
+		return true;
 	},
 	savePrefpanes: function() {
 		var pps = document.getElementsByTagName("prefpane");
@@ -549,16 +585,18 @@ var handyClicksSets = {
 			this.focusSearch(e);
 			return;
 		}
-		//if(tar.localName == "menuitem")
-		//	tar = tar.parentNode.parentNode;
+		if(tar.localName == "menuitem")
+			tar = tar.parentNode.parentNode;
 		if(tar.hasAttribute("hc_requiredfor"))
 			this.updateDependencies(tar, true);
 		if(!tar.hasAttribute("preference") && ln != "checkbox")
 			return;
 		if(this.instantApply)
 			this.savePrefs();
-		else
+		else {
 			this.applyButton.disabled = false;
+			this._prefsSaved = false;
+		}
 	},
 	updateAllDependencies: function() {
 		Array.forEach(
@@ -631,7 +669,7 @@ var handyClicksSets = {
 		if(str.indexOf(this.exportPrefsHeader) != 0) {
 			this.ut.alertEx(
 				this.ut.getLocalized("importErrorTitle"),
-				this.ut.getLocalized("invalidConfigFile")
+				this.ut.getLocalized("invalidConfigFormat")
 			);
 			return;
 		}
@@ -665,14 +703,79 @@ var handyClicksSets = {
 
 	// Clicking options management
 	// Export/import:
-	exportSets: function() {
-		var file = this.pickFile(this.ut.getLocalized("exportSets"), true, "js");
-		if(!file)
-			return;
-		this.ps.prefsFile.copyTo(file.parent, file.leafName);
-		this.backupsDir = file.parent.path;
+	exportSets: function(partialExport, toClipboard) {
+		this.selectTreePane();
+		if(!toClipboard) {
+			var file = this.pickFile(this.ut.getLocalized("exportSets"), true, "js");
+			if(!file)
+				return;
+			this.backupsDir = file.parent.path;
+		}
+		if(partialExport) {
+			var pStr = this.extractPrefs();
+			if(toClipboard)
+				this.ut.copyStr(pStr);
+			else
+				this.ut.writeToFile(pStr, file);
+		}
+		else // Do not start full export to clipboard!
+			this.ps.prefsFile.copyTo(file.parent, file.leafName);
 	},
-	importSets: function() {
+	extractPrefs: function() {
+		var exCts = { __proto__: null };
+		var exSh = { __proto__: null };
+		var rows = this.selectedRows;
+		rows.forEach(
+			function(row) {
+				if(row.__isCustomType)
+					exCts[row.__itemType] = true;
+				exSh[row.__shortcut] = exSh[row.__shortcut] || { __proto__: null };
+				exSh[row.__shortcut][row.__itemType] = true;
+			},
+			this
+		);
+
+		var cts = this.ps.types, newTypes = {};
+		var p = this.ps.prefs, newPrefs = {};
+
+		var type, to;
+		var sh, so, exTypes;
+
+		for(type in cts) if(cts.hasOwnProperty(type)) {
+			if(!(type in exCts) || !this.ps.isCustomType(type))
+				continue;
+			to = cts[type];
+			if(!this.ps.isOkCustomObj(to))
+				continue;
+			this.ut.setOwnProperty(newTypes, type, to);
+		}
+
+		for(sh in p) if(p.hasOwnProperty(sh)) {
+			if(!(sh in exSh) || !this.ps.isOkShortcut(sh))
+				continue;
+			so = p[sh];
+			if(!this.ut.isObject(so))
+				continue;
+			exTypes = exSh[sh];
+			for(type in so) if(so.hasOwnProperty(type)) {
+				if(!(type in exTypes))
+					continue;
+				to = so[type];
+				if(!this.ut.isObject(to))
+					continue;
+				this.ut.setOwnProperty(newPrefs, sh, type, to);
+			}
+		}
+
+		this.addCellsProperties(rows, { hc_copied: true });
+		setTimeout(function(_this, rows) {
+			_this.addCellsProperties(rows, { hc_copied: false });
+		}, 200, this, rows);
+
+		return this.ps.saveSettingsObjects(null, newTypes, newPrefs, true);
+	},
+	importSets: function(partialImport, fromClipboard) {
+		this.selectTreePane();
 		if(this.pu.pref("sets.importJSWarning")) {
 			var ack = { value: false };
 			var cnf = this.ut.promptsSvc.confirmCheck(
@@ -684,20 +787,77 @@ var handyClicksSets = {
 				return;
 			this.pu.pref("sets.importJSWarning", !ack.value);
 		}
-		var file = this.pickFile(this.ut.getLocalized("importSets"), false, "js");
-		if(!file)
+		var pSrc = fromClipboard
+			? this.ut.readFromClipboard()
+			: this.pickFile(this.ut.getLocalized("importSets"), false, "js");
+		if(!pSrc)
 			return;
-		if(!this.checkPrefsFile(file)) {
+		if(!this.checkPrefs(pSrc, partialImport)) {
 			this.ut.alertEx(
 				this.ut.getLocalized("importErrorTitle"),
-				this.ut.getLocalized("invalidConfigFile")
+				this.ut.getLocalized("invalidConfigFormat")
 			);
 			return;
 		}
-		this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport);
-		file.copyTo(this.ps.prefsDir, this.ps.prefsFileName + ".js");
-		this.ps.reloadSettings(true);
-		this.backupsDir = file.parent.path;
+		if(partialImport) {
+			!this.ps.otherSrc && this.ps.saveSettingsObjects(true); // Save current state
+			this.ps.loadSettings(pSrc);
+			if(this.ps._loadError)
+				return;
+			this.ps.reloadSettings(false);
+			this.redrawTree();
+			this.$("hc-sets-tree-partialImportPanel").hidden = false;
+		}
+		else {
+			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport);
+			// Do not start full import from clipboard!
+			pSrc.copyTo(this.ps.prefsDir, this.ps.prefsFileName + ".js");
+			this.ps.reloadSettings(true);
+		}
+		if(pSrc instanceof Components.interfaces.nsILocalFile)
+			this.backupsDir = pSrc.parent.path;
+	},
+	partialImportDone: function(ok) {
+		if(ok)
+			this.mergePrefs();
+		else {
+			this.ps.loadSettings();
+			this.updTree();
+		}
+		this.$("hc-sets-tree-partialImportPanel").hidden = true;
+	},
+	mergePrefs: function() {
+		var cts = this.ps.types;
+		var p = this.ps.prefs;
+		this.ps.loadSettings();
+
+		var type, to;
+		var sh, so;
+
+		for(type in cts) if(cts.hasOwnProperty(type)) {
+			if(!this.ps.isCustomType(type))
+				continue;
+			to = cts[type];
+			if(!this.ps.isOkCustomObj(to))
+				continue;
+			this.ut.setOwnProperty(this.ps.types, type, to);
+		}
+
+		for(sh in p) if(p.hasOwnProperty(sh)) {
+			if(!this.ps.isOkShortcut(sh))
+				continue;
+			so = p[sh];
+			if(!this.ut.isObject(so))
+				continue;
+			for(type in so) if(so.hasOwnProperty(type)) {
+				to = so[type];
+				if(!this.ut.isObject(to))
+					continue;
+				this.ut.setOwnProperty(this.ps.prefs, sh, type, to);
+			}
+		}
+
+		this.ps.saveSettingsObjects(true);
 	},
 
 	// Export/import utils:
@@ -734,26 +894,17 @@ var handyClicksSets = {
 	get date() {
 		return new Date().toLocaleFormat("_%Y-%m-%d_%H-%M");
 	},
-	checkPrefsFile: function(file) {
-		var data = this.ut.readFromFile(file);
-		var _data = data;
-		if(data.substr(0, 2) != "//")
+	checkPrefs: function(pSrc, partialImport) {
+		if(pSrc instanceof Components.interfaces.nsILocalFile)
+			pSrc = this.ut.readFromFile(pSrc);
+		if(!this.ps.checkPrefsStr(pSrc))
 			return false;
-		var hc = /^var handyClicks[\w$]+\s*=.*$/mg;
-		if(!hc.test(data))
-			return false;
-		data = data.replace(hc, ""); // Replace handyClicks* vars
-		data = data.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/g, ""); // Replace comments
-		if(/\/\/|\/\*|\*\//.test(data)) // No other comments
-			return false;
-		data = data.replace(/"[^"]*"/g, "_dummy_"); // Replace strings
-		if(/\Wvar\s+/.test(data)) // No other vars
-			return false;
-		if(/['"()=]/.test(data))
-			return false;
-		if(/\W(?:[Ff]unction|eval|Components)\W/.test(data))
-			return false;
-		this.ps._savedStr = _data; // Update cache - see this.ps.saveSettings()
+		if(!partialImport)
+			this.ps._savedStr = pSrc; // Update cache - see this.ps.saveSettings()
 		return true;
+	},
+	checkClipboard: function() {
+		this.$("hc-sets-cmd-partialImportFromClipboard")
+			.setAttribute("disabled", !this.ps.checkPrefsStr(this.ut.readFromClipboard()));
 	}
 };

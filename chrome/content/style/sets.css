@@ -37,6 +37,9 @@ treechildren::-moz-tree-row(hover) {
 	/*background-color: ThreeDFace;*/
 	border: 1px dotted black;
 }
+treechildren::-moz-tree-cell-text(hc_copied) {
+	color: Highlight !important;
+}
 treechildren::-moz-tree-checkbox(hc_editable) {
 	list-style-image: url("checkbox.png"); /* Image from Adblock Plus extension */
 	-moz-image-region: rect(13px 13px 26px 0);
@@ -60,9 +63,15 @@ treechildren::-moz-tree-checkbox(checked) {
 	color: #fff;
 }
 
-#hc-sets-tree-buttons > button {
+#hc-sets-tree-buttons button {
 	margin-left: 3px;
 	margin-right: 3px;
+}
+button[type="menu"] dropmarker {
+	min-width: 11px !important;
+	min-height: 11px !important;
+	width: auto !important;
+	height: auto !important;
 }
 #hc-sets-enabled {
 	font-weight: bold;

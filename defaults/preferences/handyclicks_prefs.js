@@ -32,6 +32,7 @@ pref("extensions.handyclicks.convertURIsCharset", ""); // use defaults
 pref("extensions.handyclicks.key.toggleStatus", "VK_F2");
 pref("extensions.handyclicks.key.openSettings", "shift VK_F2");
 pref("extensions.handyclicks.key.editMode", "accel VK_F2");
+pref("extensions.handyclicks.key.importFromClipboard", "accel shift VK_F2");
 
 pref("extensions.handyclicks.editor.tabSymbol", "	");
 

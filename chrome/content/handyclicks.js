@@ -569,7 +569,7 @@ var handyClicks = {
 				cm = this.getContextMenu();
 		}
 
-		if(cm && typeof cm == "object" && typeof cm.hidePopup != "function") {
+		if(this.ut.isObject(cm) && typeof cm.hidePopup != "function") {
 			// XUL document with custom context...
 			this.ut._err(new Error("Error: context menu has no hidePopup() method\nid: " + cm.id), true);
 			cm = null;
@@ -662,7 +662,7 @@ var handyClicks = {
 	},
 	closeMenus: function(it) {
 		it = it || this.item;
-		if(it && typeof it == "object")
+		if(this.ut.isObject(it))
 			closeMenus(it); // chrome://browser/content/utilityOverlay.js
 	},
 	getBookmarkUri:	function(it, e, usePlacesURIs) {
@@ -894,6 +894,9 @@ var handyClicks = {
 	toggleStatus: function() {
 		this.enabled = !this.enabled;
 	},
+	checkClipboard: function() {
+		document.getElementById("handyClicks-importFromClipboard").hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard());
+	},
 	doSettings: function(e) {
 		if(e.type == "command" || e.button == 0)
 			this.toggleStatus();
@@ -902,13 +905,20 @@ var handyClicks = {
 			this.closeMenus(e.target);
 		}
 	},
-	openSettings: function() {
-		this.wu.openWindowByType(
+	openSettings: function(importFlag) {
+		var w = this.wu.openWindowByType(
 			window,
 			"chrome://handyclicks/content/sets.xul",
 			"handyclicks:settings",
 			"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
 		);
+		importFlag && setTimeout(function() {
+			if("_handyClicksInitialized" in w) {
+				w.handyClicksSets.importSets(true, true);
+				return;
+			}
+			setTimeout(arguments.callee, 5);
+		}, 0);
 	},
 	toggleEditMode: function() {
 		setTimeout(function(_this) {
@@ -941,7 +951,7 @@ var handyClicks = {
 	openEditor: function(e) {
 		e = e || this.copyOfEvent;
 		this.closeMenus(e.originalTarget);
-		this.wu.openEditor("shortcut", this.getEvtStr(e), this.itemType);
+		this.wu.openEditor(null, "shortcut", this.getEvtStr(e), this.itemType);
 	},
 	updUI: function(pName) {
 		if(pName == "enabled")

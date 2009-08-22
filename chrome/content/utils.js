@@ -177,6 +177,46 @@ var handyClicksUtils = {
 		return str;
 	},
 
+	// Clipboard:
+	copyStr: function(str) {
+		Components.classes["@mozilla.org/widget/clipboardhelper;1"]
+			.getService(Components.interfaces.nsIClipboardHelper)
+			.copyString(str);
+	},
+	readFromClipboard: function() {
+		// function readFromClipboard() chrome://browser/content/browser.js
+		var url;
+
+		try {
+			// Get clipboard.
+			var clipboard = Components.classes["@mozilla.org/widget/clipboard;1"]
+				.getService(Components.interfaces.nsIClipboard);
+
+			// Create tranferable that will transfer the text.
+			var trans = Components.classes["@mozilla.org/widget/transferable;1"]
+				.createInstance(Components.interfaces.nsITransferable);
+
+			trans.addDataFlavor("text/unicode");
+
+			// If available, use selection clipboard, otherwise global one
+			if(clipboard.supportsSelectionClipboard())
+				clipboard.getData(trans, clipboard.kSelectionClipboard);
+			else
+				clipboard.getData(trans, clipboard.kGlobalClipboard);
+
+			var data = {};
+			var dataLen = {};
+			trans.getTransferData("text/unicode", data, dataLen);
+
+			if(data) {
+				data = data.value.QueryInterface(Components.interfaces.nsISupportsString);
+				url = data.data.substring(0, dataLen.value / 2);
+			}
+		}
+		catch (ex) {}
+		return url || "";
+	},
+
 	isChromeWin: function(win) {
 		//return win.toString() == "[object ChromeWindow]";
 		return win instanceof Components.interfaces.nsIDOMChromeWindow;
@@ -235,6 +275,17 @@ var handyClicksUtils = {
 				return u;
 		}
 		return u;
+	},
+	setOwnProperty: function(obj) { // obj, "x", "y", value
+		var a = arguments, p, len = a.length - 2;
+		for(var i = 1; i <= len; i++) {
+			p = a[i];
+			if(!(p in obj) || "hasOwnProperty" in obj && !obj.hasOwnProperty(p) || !this.isObject(obj[p]))
+				obj[p] = {};
+			if(i != len)
+				obj = obj[p];
+		}
+		obj[a[len]] = a[len + 1];
 	},
 	mm: function(n, minVal, maxVal) {
 		return Math.max(Math.min(n, maxVal), minVal);

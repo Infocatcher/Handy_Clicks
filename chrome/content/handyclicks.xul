@@ -59,11 +59,13 @@
 	<commandset id="mainCommandSet">
 		<command id="handyClicks-cmd-openSettings" oncommand="handyClicks.openSettings();" label="&handyClicks.settingsLabel;" />
 		<command id="handyClicks-cmd-editMode" oncommand="handyClicks.toggleEditMode();" label="&handyClicks.editModeLabel;" />
+		<command id="handyClicks-cmd-importFromClipboard" oncommand="handyClicks.openSettings(true);" label="&handyClicks.importFromClipboardLabel;" />
 	</commandset>
 	<keyset id="mainKeyset">
 		<key id="handyClicks-key-toggleStatus" oncommand="handyClicks.toggleStatus();" disabled="true" />
 		<key id="handyClicks-key-openSettings"  command="handyClicks-cmd-openSettings" disabled="true" />
 		<key id="handyClicks-key-editMode" command="handyClicks-cmd-editMode" disabled="true" />
+		<key id="handyClicks-key-importFromClipboard" command="handyClicks-cmd-importFromClipboard" disabled="true" />
 	</keyset>
 	<menupopup id="menu_ToolsPopup">
 		<menuitem id="handyClicks-toggleStatus-menuitem" insertbefore="sanitizeSeparator" class="menuitem-iconic"
@@ -88,9 +90,10 @@
 			onclick="handyClicks.doSettings(event);" />
 	</statusbar>
 	<popupset id="mainPopupSet">
-		<menupopup id="handyClicks-settingsPopup">
+		<menupopup id="handyClicks-settingsPopup" onpopupshowing="handyClicks.checkClipboard();">
 			<menuitem id="handyClicks-settingsMenuitem" command="handyClicks-cmd-openSettings" key="handyClicks-key-openSettings" />
 			<menuitem id="handyClicks-editMode" command="handyClicks-cmd-editMode" key="handyClicks-key-editMode" />
+			<menuitem id="handyClicks-importFromClipboard" command="handyClicks-cmd-importFromClipboard" key="handyClicks-key-importFromClipboard" />
 		</menupopup>
 	</popupset>
 	<window id="main-window">

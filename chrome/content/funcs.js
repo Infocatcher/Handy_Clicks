@@ -29,7 +29,7 @@ var handyClicksFuncs = {
 			? this.forEachTab(function(tab) { return tab.label; }).join("\n")
 			: this.getTextOfItem();
 		if(text) {
-			this.copyStr(text);
+			this.ut.copyStr(text);
 			this.hc.blinkNode();
 		}
 		if(closePopups)
@@ -42,7 +42,7 @@ var handyClicksFuncs = {
 		if(link) {
 			if(this.pu.pref("decodeURIs"))
 				link = this.losslessDecodeURI(link);
-			this.copyStr(link);
+			this.ut.copyStr(link);
 			this.hc.blinkNode();
 		}
 		if(closePopups)
@@ -106,11 +106,6 @@ var handyClicksFuncs = {
 			fnc,
 			_this || this
 		);
-	},
-	copyStr: function(str) {
-		Components.classes["@mozilla.org/widget/clipboardhelper;1"]
-			.getService(Components.interfaces.nsIClipboardHelper)
-			.copyString(str);
 	},
 
 	// Open URI in...
