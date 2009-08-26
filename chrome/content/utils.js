@@ -37,7 +37,7 @@ var handyClicksUtils = {
 		this.consoleSvc.logMessage(cErr);
 	},
 	objProps: function(o, mask) { // mask like "id, nodeName, parentNode.id"
-		if(!this.isObject(o))
+		if(!this.canHasProps(o))
 			return o;
 		if(!mask)
 			return this._objProps(o);
@@ -242,9 +242,21 @@ var handyClicksUtils = {
 		return arr instanceof Array
 			|| Object.prototype.toString.call(arr) === "[object Array]";
 	},
+	canHasProps: function(o) {
+		if(!o)
+			return false;
+		var t = typeof o;
+		return t !== "string" && t !== "number" && t !== "boolean";
+	},
+	isEmptyObj: function(o) { // Error console says "Warning: deprecated __count__ usage" for obj.__count__
+		for(var p in o) if(o.hasOwnProperty(p))
+			return false;
+		return true;
+	},
+
 	getOwnProperty: function(obj) { // this.getOwnProperty(obj, "a", "b", "propName") instead of obj.a.b.propName
 		var u;
-		if(!this.isObject(obj))
+		if(!this.canHasProps(obj))
 			return u;
 		var a = arguments, p;
 		for(var i = 1, len = a.length - 1; i <= len; i++) {
@@ -254,14 +266,14 @@ var handyClicksUtils = {
 			obj = obj[p];
 			if(i == len)
 				return obj;
-			if(!this.isObject(obj))
+			if(!this.canHasProps(obj))
 				return u;
 		}
 		return u;
 	},
 	getProperty: function(obj) {
 		var u;
-		if(!this.isObject(obj))
+		if(!this.canHasProps(obj))
 			return u;
 		var a = arguments, p;
 		for(var i = 1, len = a.length - 1; i <= len; i++) {
@@ -271,7 +283,7 @@ var handyClicksUtils = {
 			obj = obj[p];
 			if(i == len)
 				return obj;
-			if(!this.isObject(obj))
+			if(!this.canHasProps(obj))
 				return u;
 		}
 		return u;
@@ -287,6 +299,7 @@ var handyClicksUtils = {
 		}
 		obj[a[len]] = a[len + 1];
 	},
+
 	mm: function(n, minVal, maxVal) {
 		return Math.max(Math.min(n, maxVal), minVal);
 	},

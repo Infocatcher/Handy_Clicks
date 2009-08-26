@@ -46,7 +46,8 @@ var handyClicksWinUtils = {
 	},
 	winIdProp: "__handyClicks__winId",
 	openEditor: function(pSrc, mode, shortcut, itemType) {
-		var winId = mode == "itemType" ? itemType : shortcut + "-" + itemType;
+		var winId = (mode == "itemType" ? itemType : shortcut + "-" + itemType)
+			+ (this.ps.otherSrc ? "-otherSrc" : "");
 		var wProp = this.winIdProp;
 		var ws = this.wm.getEnumerator("handyclicks:editor");
 		var w;

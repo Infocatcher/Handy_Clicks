@@ -356,7 +356,7 @@ var handyClicksPrefSvc = {
 			forcedDis = this.ut.getOwnProperty(so, "$all", "enabled") == true;
 			for(type in so) if(so.hasOwnProperty(type)) {
 				to = so[type];
-				if(!this.ut.isObject(to))
+				if(!this.isOkFuncObj(to))
 					continue;
 				res += "\t\t" + this.fixPropName(type) + ": {\n";
 				for(pName in to) if(to.hasOwnProperty(pName)) {
@@ -370,11 +370,11 @@ var handyClicksPrefSvc = {
 					)
 						pVal = false;
 					if(pName == "delayedAction") {
-						if(!this.ut.isObject(pVal))
+						if(!this.isOkFuncObj(pVal))
 							continue;
 						res += "\t\t\t" + pName + ": {\n";
 						for(dName in pVal) if(pVal.hasOwnProperty(dName))
-								res += "\t\t\t\t" + this.fixPropName(dName) + ": " + this.objToSource(pVal[dName]) + ",\n";
+							res += "\t\t\t\t" + this.fixPropName(dName) + ": " + this.objToSource(pVal[dName]) + ",\n";
 						res = this.delLastComma(res) + "\t\t\t},\n";
 					}
 					else
@@ -414,7 +414,7 @@ var handyClicksPrefSvc = {
 		arr.sort().forEach(
 			function(p) { obj[p] = ex[p]; }
 		);
-		return true;
+		return arr.length > 0;
 	},
 	reloadSettings: function(reloadAll) {
 		var pSvc = "handyClicksPrefSvc";

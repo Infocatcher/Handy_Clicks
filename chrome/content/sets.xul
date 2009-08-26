@@ -58,7 +58,11 @@
 				</treecols>
 				<treechildren id="hc-sets-tree-content"
 					onclick="handyClicksSets.toggleEnabled(event);"
-					ondblclick="handyClicksSets.editItems(event);" />
+					ondblclick="handyClicksSets.editItems(event);"
+					onmousedown="handyClicksSets.smartSelect(event);"
+					onmousemove="handyClicksSets.smartSelect(event);"
+					onmouseup="handyClicksSets.smartSelect(event);"
+					onmouseout="handyClicksSets.smartSelect(event);" />
 			</tree>
 			<vbox id="hc-sets-tree-buttons">
 				<hbox id="hc-sets-tree-partialImportPanel" hidden="true" pack="center">

@@ -41,6 +41,19 @@ var handyClicksSets = {
 		this.searcher._tree = this.tree;
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
+	destroy: function() {
+		this.closeEditors();
+	},
+	closeEditors: function() {
+		var pSvc = "handyClicksPrefSvc";
+		this.wu.forEachWindow(
+			"handyclicks:editor",
+			function(w) {
+				if(!("_handyClicksInitialized" in w) || w[pSvc].otherSrc)
+					w.close();
+			}
+		);
+	},
 
 	/*** Actions pane ***/
 	_prefsSaved: true,
@@ -71,11 +84,12 @@ var handyClicksSets = {
 		for(var rowId in this.rowsCache)
 			this.setRowStatus(rowId, false);
 		var wProp = this.wu.winIdProp;
+		var otherSrc = this.ps.otherSrc;
 		this.wu.forEachWindow(
 			"handyclicks:editor",
 			function(w) {
 				if(wProp in w)
-					this.setRowStatus(w[wProp], true);
+					this.setRowStatus(w[wProp], w.handyClicksPrefSvc.otherSrc == otherSrc);
 			},
 			this
 		);
@@ -234,6 +248,8 @@ var handyClicksSets = {
 		for(var t = 0; t < numRanges; t++) {
 			this.selection.getRangeAt(t, start, end);
 			for(var v = start.value; v <= end.value; v++) {
+				if(v == -1)
+					continue;
 				tRow = tRows[v];
 				if(!tRow || this.view.isContainer(v) || !("__shortcut" in tRow) || !("__itemType" in tRow))
 					continue;
@@ -282,18 +298,45 @@ var handyClicksSets = {
 			return;
 		if(!this.isTreePaneSelected)
 			return;
+		var rows = this.selectedRows;
+		if(this.editorsLimit(rows.length))
+			return;
 		this.selectedRows.forEach(this.openEditorWindow, this);
 	},
 	editItemsTypes: function() {
 		if(!this.isTreePaneSelected)
 			return;
-		this.selectedRows.forEach(
+		var cRows = [], rows = this.selectedRows;
+		rows.forEach(
 			function(row) {
-				if(row.__isCustomType)
-					this.openEditorWindow(row, "itemType");
+				row.__isCustomType && cRows.push(row);
 			},
 			this
 		);
+		if(this.editorsLimit(cRows.length))
+			return;
+		cRows.forEach(
+			function(row) {
+				this.openEditorWindow(row, "itemType");
+			},
+			this
+		);
+	},
+	editorsLimit: function(count) {
+		var lim = this.pu.pref("sets.openEditorsLinit");
+		if(lim <= 0 || count <= lim)
+			return false;
+		var ack = { value: false };
+		var cnf = this.ut.promptsSvc.confirmCheck(
+			window, this.ut.getLocalized("warningTitle"),
+			this.ut.getLocalized("openEditorsWarning").replace("%n", count),
+			this.ut.getLocalized("openEditorsWarningNotShowAgain"), ack
+		);
+		if(!cnf)
+			return true;
+		if(ack.value)
+			this.pu.pref("sets.openEditorsLinit", 0);
+		return false;
 	},
 	isClickOnRow: function(e) {
 		var row = {}, col = {}, obj = {};
@@ -348,7 +391,7 @@ var handyClicksSets = {
 		var p = this.ps.prefs;
 		var so = p[sh];
 		delete so[type];
-		if(this.isEmptyObj(so))
+		if(this.ut.isEmptyObj(so))
 			delete p[sh];
 		var tItem = tRow.parentNode;
 		var tChld = tItem.parentNode;
@@ -361,17 +404,13 @@ var handyClicksSets = {
 			tChld.removeChild(tItem);
 		}
 	},
-	isEmptyObj: function(obj) {
-		for(var p in obj) if(obj.hasOwnProperty(p))
-			return false;
-		return true;
-	},
 	openEditorWindow: function(tRow, mode, add) { // mode: "shortcut" or "itemType"
 		var shortcut = tRow ? tRow.__shortcut : Date.now() + "-" + Math.random();
 		var itemType = tRow && add !== true ? tRow.__itemType : null;
 		this.wu.openEditor(this.ps.currentSrc, mode, shortcut, itemType);
 	},
 	setRowStatus: function(rowId, editStat) {
+		rowId = rowId.replace(/-otherSrc$/, "");
 		if(rowId in this.rowsCache)
 			this.addCellsProperties([this.rowsCache[rowId]], { hc_edited: editStat });
 	},
@@ -427,6 +466,42 @@ var handyClicksSets = {
 	selectAll: function() {
 		if(this.isTreePaneSelected)
 			this.selection.selectAll();
+	},
+	smartSelect: function _ss(e) {
+		var row = this.tree.treeBoxObject.getRowAt(e.clientX, e.clientY);
+		var et = e.type;
+		if(et == "mouseout")
+			return _ss.row0 = _ss.row1 = undefined;
+		if(row == -1)
+			return false;
+		if(et == "mousedown")
+			return _ss.row0 = row;
+		// mouseup or mousemove:
+		var row0 = this.ut.getOwnProperty(_ss, "row0");
+		if(row0 === undefined)
+			return false;
+		var row1 = this.ut.getOwnProperty(_ss, "row1");
+		_ss.row1 = row;
+
+		setTimeout(function(_this, row0, row1, row) {
+			if(row1 !== undefined)
+				_this.selection.clearRange(row0, row1);
+			if(row0 != row)
+				_this.selection.rangedSelect(row0, row, true);
+		}, 0, this, row0, row1, row);
+
+		if(et == "mouseup")
+			return _ss.row0 = _ss.row1 = undefined;
+		// mousemove:
+		_ss.row1 = row;
+		if(row <= this.tree.treeBoxObject.getFirstVisibleRow() + 2)
+			var visRow = row - 2;
+		else if(row >= this.tree.treeBoxObject.getLastVisibleRow() - 2)
+			var visRow = row + 2;
+		else
+			return false;
+		var maxRowsIndx = this.content.getElementsByTagName("treerow").length - 1;
+		this.tree.treeBoxObject.ensureRowIsVisible(this.ut.mm(visRow, 0, maxRowsIndx));
 	},
 
 	/*** Search in tree ***/
@@ -562,7 +637,9 @@ var handyClicksSets = {
 			this.applyButton.disabled = true;
 			this._prefsSaved = true;
 		}
-		if(!this.ps.otherSrc)
+		if(this.ps.otherSrc)
+			this.ps.reloadSettings(applyFlag);
+		else
 			this.ps.saveSettingsObjects(applyFlag);
 		if(
 			!applyFlag && this.ps.otherSrc
@@ -812,7 +889,10 @@ var handyClicksSets = {
 			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport);
 			// Do not start full import from clipboard!
 			pSrc.copyTo(this.ps.prefsDir, this.ps.prefsFileName + ".js");
-			this.ps.reloadSettings(true);
+			//this.ps.reloadSettings(true);
+			this.ps.loadSettings();
+			this.updTree();
+			this.applyButton.disabled = false;
 		}
 		if(pSrc instanceof Components.interfaces.nsILocalFile)
 			this.backupsDir = pSrc.parent.path;
@@ -825,6 +905,7 @@ var handyClicksSets = {
 			this.updTree();
 		}
 		this.$("hc-sets-tree-partialImportPanel").hidden = true;
+		this.closeEditors();
 	},
 	mergePrefs: function() {
 		var cts = this.ps.types;

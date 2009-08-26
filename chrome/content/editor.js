@@ -165,7 +165,7 @@ var handyClicksEditor = {
 		var type = this.$("hc-editor-itemTypes").getAttribute("label");
 		var ct = this.$("hc-editor-customType").value || this.$("hc-editor-customTypeExtId").value;
 		t = " [" + t + (type ? " + " + type : "") + (ct ? " | " + ct : "") + "]";
-		document.title = document.title.replace(/\s+\[.+\]$/, "") + t;
+		document.title = document.title.replace(/\s+\[.+\]\*?$/, "") + t + (this.ps.otherSrc ? "*" : "");
 	},
 	initShortcutEditor: function() {
 		var setsObj = this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
@@ -581,7 +581,10 @@ var handyClicksEditor = {
 			so.delayedAction.eventType = "_delayed_"; // Required for handyClicksPrefSvc.isOkFuncObj()
 		}
 
-		this.ps.saveSettingsObjects(applyFlag);
+		if(this.ps.otherSrc)
+			this.ps.reloadSettings(applyFlag);
+		else
+			this.ps.saveSettingsObjects(applyFlag);
 		if(!applyFlag) // ondialogaccept
 			return true;
 		this.$("hc-editor-enabled").checked = this.ut.getOwnProperty(this.ps.prefs, sh, type, "enabled");
@@ -628,7 +631,10 @@ var handyClicksEditor = {
 	},
 	deleteShortcut: function() {
 		delete this.ps.prefs[this.currentShortcut];
-		this.ps.saveSettingsObjects();
+		if(this.ps.otherSrc)
+			this.ps.reloadSettings();
+		else
+			this.ps.saveSettingsObjects();
 		this.highlightUsedTypes();
 		this.applyButton.disabled = false;
 	},
@@ -665,7 +671,10 @@ var handyClicksEditor = {
 		ct.label = this.ps.enc(label);
 		ct.define = this.ps.enc(def);
 		ct.contextMenu = cMenu ? this.ps.enc(cMenu) : null;
-		this.ps.saveSettingsObjects(applyFlag);
+		if(this.ps.otherSrc)
+			this.ps.reloadSettings(applyFlag);
+		else
+			this.ps.saveSettingsObjects(applyFlag);
 		if(!applyFlag) // ondialogaccept
 			return true;
 		this.applyButton.disabled = true;
@@ -674,7 +683,10 @@ var handyClicksEditor = {
 	},
 	deleteCustomType: function() {
 		delete this.ps.types[this.ps.customPrefix + this.$("hc-editor-customTypeExtId").value];
-		this.ps.saveSettingsObjects();
+		if(this.ps.otherSrc)
+			this.ps.reloadSettings();
+		else
+			this.ps.saveSettingsObjects();
 		this.appendTypesList();
 		this.applyButton.disabled = false;
 	},
