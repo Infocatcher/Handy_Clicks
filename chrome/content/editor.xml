@@ -243,6 +243,22 @@
 				]]>
 				</body>
 			</method>
+			<method name="textZoom">
+				<parameter name="add" />
+				<body>
+				<![CDATA[
+					this.style.fontSize = add == 0
+						? ""
+						: Math.min(
+							Math.max(
+								parseInt(this.ownerDocument.defaultView.getComputedStyle(this, "").fontSize) + add,
+								2
+							),
+							36
+						) + "px";
+				]]>
+				</body>
+			</method>
 		</implementation>
 		<handlers>
 			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent(this.tabSymbol, false);" />
@@ -255,6 +271,9 @@
 			<handler event="keypress" preventdefault="true" keycode="VK_F12" action="this.maximizeEditor();" />
 			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
 			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />
+			<handler event="keypress" preventdefault="true" key="+" action="this.textZoom(1);" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key="-" action="this.textZoom(-1);" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key="0" action="this.textZoom(0);" modifiers="control" />
 			<handler event="blur">
 			<![CDATA[
 				if(

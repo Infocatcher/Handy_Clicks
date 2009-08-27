@@ -123,10 +123,8 @@ var handyClicksPrefSvc = {
 		this.importSrc(this, sandbox);
 
 		var vers = this.currentVersion = this.currentVersion || 0;
-		if(vers < this.version) {
+		if(vers < this.version)
 			this.convertSetsFormat(vers);
-			this.saveSettingsObjects();
-		}
 		this._restoringCounter = 0;
 		if(window.location.href.indexOf("chrome://browser/content/browser.xul") != 0)
 			return;
@@ -234,6 +232,7 @@ var handyClicksPrefSvc = {
 			}
 		}
 		this.ut._log("Format of prefs file updated: " + vers + " => " + this.version);
+		this.saveSettingsObjects();
 	},
 	compileCystomTypes: function() {
 		var cts = this.types, ct;

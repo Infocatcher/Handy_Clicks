@@ -116,7 +116,7 @@ var handyClicksSets = {
 		return this.DOMCache[hash] = tItem.getElementsByTagName("treechildren")[0];
 	},
 	appendItems: function(parent, items, shortcut) {
-		var tItem, tRow, it, typeLabel, isCustom, isCustomType;
+		var tItem, tRow, it, typeLabel, isCustom, isCustomType, actLabel;
 		var isBuggy = false;
 		for(var itemType in items) if(items.hasOwnProperty(itemType)) {
 			tItem = document.createElement("treeitem");
@@ -129,7 +129,8 @@ var handyClicksSets = {
 				: this.ut.getLocalized(itemType);
 			this.appendTreeCell(tRow, "label", typeLabel);
 			this.appendTreeCell(tRow, "label", it.eventType);
-			this.appendTreeCell(tRow, "label", isCustom ? this.ps.dec(it.label) : this.ut.getLocalized(it.action));
+			actLabel = isCustom ? this.ps.dec(it.label) : this.ut.getLocalized(it.action);
+			this.appendTreeCell(tRow, "label", actLabel);
 			this.appendTreeCell(tRow, "label",
 				isCustom
 					? this.ut.getLocalized("customFunction") + (this.oldTree ? " " : "\n") + this.ps.dec(it.action)
@@ -142,7 +143,8 @@ var handyClicksSets = {
 			);
 
 			isBuggy = !this.ps.isOkFuncObj(it)
-				|| (isCustomType && !this.ps.types.hasOwnProperty(itemType));
+				|| (isCustomType && !this.ps.isOkCustomType(itemType))
+				|| (!isCustom && /^\(.+\)$/.test(actLabel)); // See handyClicksUtils.getLocalized()
 			this.addProperties(tRow, { hc_disabled: !it.enabled, hc_buggy: isBuggy, hc_custom: isCustom || isCustomType });
 
 			tRow.__shortcut = shortcut;
@@ -719,6 +721,49 @@ var handyClicksSets = {
 	},
 	resetPref: function(pName) {
 		this.pu.resetPref(this.pu.nPrefix + pName);
+	},
+	openAboutConfig: function() {
+		var brWin = this.wu.wm.getMostRecentWindow("navigator:browser");
+		if(brWin) {
+			this.openAboutConfigFilter(brWin);
+			return;
+		}
+		brWin = window.openDialog(
+			"chrome://browser/content/", "_blank", "chrome,all,dialog=no",
+			"about:blank",
+			null, null, null, false
+		);
+		var _this = this;
+		brWin.addEventListener(
+			"load",
+			function f(e) {
+				brWin.removeEventListener("load", f, true);
+				_this.openAboutConfigFilter(brWin);
+			},
+			true
+		);
+	},
+	openAboutConfigFilter: function(brWin) {
+		brWin.focus();
+		var br = brWin.gBrowser;
+		if(br.currentURI.spec == "about:blank" && !br.webProgress.isLoadingDocument) {
+			var tab = br.mCurrentTab;
+			br.loadURI("about:config");
+		}
+		else
+			var tab = br.selectedTab = br.addTab("about:config");
+		var win = tab.linkedBrowser;
+		var filter = this.pu.nPrefix;
+		win.addEventListener(
+			"load",
+			function f(e) {
+				win.removeEventListener("load", f, true);
+				var cWin = win.contentWindow;
+				var tb = cWin.document.getElementById("textbox");
+				tb && tb.setAttribute("value", filter);
+			},
+			true
+		);
 	},
 	// Export/import:
 	exportPrefsHeader: "[Handy Clicks settings]",

@@ -7,6 +7,7 @@
 <!ENTITY hc.sets.exportPrefs "Export preferences to file…">
 <!ENTITY hc.sets.importPrefs "Import preferences from file…">
 <!ENTITY hc.sets.defaults "Reset to defaults">
+<!ENTITY hc.sets.allPrefs "All preferences…">
 
 <!ENTITY hc.sets.clickOptionsTitle "Clicks Options">
 
@@ -25,13 +26,13 @@
 
 <!ENTITY hc.sets.export "Export">
 <!ENTITY hc.sets.exportAccesskey "E">
-<!ENTITY hc.sets.exportFullToFile "Export to file…">
+<!ENTITY hc.sets.fullExportToFile "Export to file…">
 <!ENTITY hc.sets.exportSelectedToFile "Export selected to file…">
 <!ENTITY hc.sets.exportSelectedToClipboard "Export selected to clipboard">
 
 <!ENTITY hc.sets.import "Import">
 <!ENTITY hc.sets.importAccesskey "I">
-<!ENTITY hc.sets.importFullFromFile "Import from file…">
+<!ENTITY hc.sets.fullImportFromFile "Import from file…">
 <!ENTITY hc.sets.importIncrementFromFile "Incremental import from file…">
 <!ENTITY hc.sets.importIncrementFromClipboard "Incremental import from clipboard">
 <!ENTITY hc.sets.importOk "Incremental import done">

@@ -44,17 +44,17 @@
 			<tree id="hc-sets-tree" flex="1" enableColumnDrag="true" context="hc-sets-tree-context"
 				onselect="handyClicksSets.updButtons();">
 				<treecols>
-					<treecol flex="1" label="&hc.sets.columnShortcutAndTarget;" primary="true" persist="width ordinal" />
+					<treecol id="hc-sets-tree-columnShortcutAndTarget" flex="1" label="&hc.sets.columnShortcutAndTarget;" primary="true" persist="width ordinal" />
 					<splitter class="tree-splitter" />
-					<treecol flex="1" label="&hc.sets.columnEvent;" persist="hidden width ordinal" />
+					<treecol id="hc-sets-tree-columnEvent" flex="1" label="&hc.sets.columnEvent;" persist="hidden width ordinal" />
 					<splitter class="tree-splitter" />
-					<treecol flex="1" label="&hc.sets.columnAction;" persist="hidden width ordinal" />
+					<treecol id="hc-sets-tree-columnAction" flex="1" label="&hc.sets.columnAction;" persist="hidden width ordinal" />
 					<splitter class="tree-splitter" />
-					<treecol flex="1" label="&hc.sets.columnFunction;" persist="hidden width ordinal" />
+					<treecol id="hc-sets-tree-columnFunction" flex="1" label="&hc.sets.columnFunction;" persist="hidden width ordinal" />
 					<splitter class="tree-splitter" />
-					<treecol flex="1" label="&hc.sets.columnArguments;" persist="hidden width ordinal" />
+					<treecol id="hc-sets-tree-columnArguments" flex="1" label="&hc.sets.columnArguments;" persist="hidden width ordinal" />
 					<splitter class="tree-splitter" />
-					<treecol label="&hc.sets.columnEnabled;" type="checkbox" width="18" persist="hidden width ordinal" />
+					<treecol id="hc-sets-tree-columnEnabled" label="&hc.sets.columnEnabled;" type="checkbox" width="18" persist="hidden width ordinal" />
 				</treecols>
 				<treechildren id="hc-sets-tree-content"
 					onclick="handyClicksSets.toggleEnabled(event);"
@@ -76,7 +76,7 @@
 					<spacer id="hc-sets-tree-buttonsSpacer" width="16" />
 					<button id="hc-sets-tree-buttonExport" type="menu" label="&hc.sets.export;" accesskey="&hc.sets.exportAccesskey;">
 						<menupopup>
-							<menuitem oncommand="handyClicksSets.exportSets();" label="&hc.sets.exportFullToFile;" />
+							<menuitem command="hc-sets-cmd-fullExportToFile" key="hc-sets-key-fullExportToFile" />
 							<menuseparator />
 							<menuitem key="hc-sets-key-partialExportToFile" command="hc-sets-cmd-partialExportToFile" />
 							<menuitem key="hc-sets-key-partialExportToClipboard" command="hc-sets-cmd-partialExportToClipboard" />
@@ -84,9 +84,9 @@
 					</button>
 					<button id="hc-sets-tree-buttonImport" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;">
 						<menupopup onpopupshowing="handyClicksSets.checkClipboard();">
-							<menuitem oncommand="handyClicksSets.importSets();" label="&hc.sets.importFullFromFile;" />
+							<menuitem command="hc-sets-cmd-fullImportFromFile" key="hc-sets-key-fullImportFromFile" />
 							<menuseparator />
-							<menuitem oncommand="handyClicksSets.importSets(true, false);" label="&hc.sets.importIncrementFromFile;" />
+							<menuitem command="hc-sets-cmd-partialImportFromFile" key="hc-sets-key-partialImportFromFile" />
 							<menuitem command="hc-sets-cmd-partialImportFromClipboard" key="hc-sets-key-partialImportFromClipboard" />
 						</menupopup>
 					</button>
@@ -204,8 +204,12 @@
 		<command id="hc-sets-cmd-editType" oncommand="handyClicksSets.editItemsTypes();" label="&hc.sets.cmdEditType;" />
 		<command id="hc-sets-cmd-delete" oncommand="handyClicksSets.deleteItems();" label="&hc.sets.cmdDel;" />
 
+		<command id="hc-sets-cmd-fullExportToFile" oncommand="handyClicksSets.exportSets();" label="&hc.sets.fullExportToFile;" />
 		<command id="hc-sets-cmd-partialExportToFile" oncommand="handyClicksSets.exportSets(true, false);" label="&hc.sets.exportSelectedToFile;" />
 		<command id="hc-sets-cmd-partialExportToClipboard" oncommand="handyClicksSets.exportSets(true, true);" label="&hc.sets.exportSelectedToClipboard;" />
+
+		<command id="hc-sets-cmd-fullImportFromFile" oncommand="handyClicksSets.importSets();" label="&hc.sets.fullImportFromFile;" />
+		<command id="hc-sets-cmd-partialImportFromFile" oncommand="handyClicksSets.importSets(true, false);" label="&hc.sets.importIncrementFromFile;" />
 		<command id="hc-sets-cmd-partialImportFromClipboard" oncommand="handyClicksSets.importSets(true, true);" label="&hc.sets.importIncrementFromClipboard;" />
 	</commandset>
 	<keyset id="hc-sets-keys">
@@ -214,8 +218,12 @@
 		<key id="hc-sets-key-editType" keycode="VK_F4" modifiers="shift" command="hc-sets-cmd-editType" />
 		<key id="hc-sets-key-delete" keycode="VK_DELETE" command="hc-sets-cmd-delete" />
 
-		<key id="hc-sets-key-partialExportToFile" key="e" modifiers="control" command="hc-sets-cmd-partialExportToFile" />
+		<key id="hc-sets-key-fullExportToFile" key="e" modifiers="control" command="hc-sets-cmd-fullExportToFile" />
+		<key id="hc-sets-key-partialExportToFile" key="e" modifiers="control,shift" command="hc-sets-cmd-partialExportToFile" />
 		<key id="hc-sets-key-partialExportToClipboard" key="c" modifiers="control,shift" command="hc-sets-cmd-partialExportToClipboard" />
+
+		<key id="hc-sets-key-fullImportFromFile" key="i" modifiers="control" command="hc-sets-cmd-fullImportFromFile" />
+		<key id="hc-sets-key-partialImportFromFile" key="i" modifiers="control,shift" command="hc-sets-cmd-partialImportFromFile" />
 		<key id="hc-sets-key-partialImportFromClipboard" key="v" modifiers="control,shift" command="hc-sets-cmd-partialImportFromClipboard" />
 
 		<key id="hc-sets-key-toggle" key=" " oncommand="handyClicksSets.toggleEnabled();" />
@@ -242,6 +250,8 @@
 			<menuitem command="hc-sets-cmd-add" key="hc-sets-key-add" />
 		</popup>
 		<popup id="hc-sets-prefsManagementPopup" position="before_start">
+			<menuitem oncommand="handyClicksSets.openAboutConfig();" label="&hc.sets.allPrefs;" />
+			<menuseparator />
 			<menuitem oncommand="handyClicksSets.resetPrefs();" label="&hc.sets.defaults;" />
 			<menuseparator />
 			<menuitem oncommand="handyClicksSets.exportPrefs();" label="&hc.sets.exportPrefs;" />

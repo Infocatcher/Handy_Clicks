@@ -7,6 +7,7 @@
 <!ENTITY hc.sets.exportPrefs "Экспорт настроек в файл…">
 <!ENTITY hc.sets.importPrefs "Импорт настроек из файла…">
 <!ENTITY hc.sets.defaults "Сбросить настройки">
+<!ENTITY hc.sets.allPrefs "Все настройки…">
 
 <!ENTITY hc.sets.clickOptionsTitle "Настройки кликов">
 
@@ -25,13 +26,13 @@
 
 <!ENTITY hc.sets.export "Экспорт">
 <!ENTITY hc.sets.exportAccesskey "Э">
-<!ENTITY hc.sets.exportFullToFile "Экспорт в файл…">
+<!ENTITY hc.sets.fullExportToFile "Экспорт в файл…">
 <!ENTITY hc.sets.exportSelectedToFile "Экспорт выделенного в файл…">
 <!ENTITY hc.sets.exportSelectedToClipboard "Экспорт выделенного в буфер обмена">
 
 <!ENTITY hc.sets.import "Импорт">
 <!ENTITY hc.sets.importAccesskey "И">
-<!ENTITY hc.sets.importFullFromFile "Импорт из файла…">
+<!ENTITY hc.sets.fullImportFromFile "Импорт из файла…">
 <!ENTITY hc.sets.importIncrementFromFile "Инкрементный импорт из файла…">
 <!ENTITY hc.sets.importIncrementFromClipboard "Инкрементный импорт из буфера обмена">
 <!ENTITY hc.sets.importOk "Завершить инкрементный импорт">
