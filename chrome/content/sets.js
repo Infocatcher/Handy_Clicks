@@ -28,17 +28,21 @@ var handyClicksSets = {
 		this.focusSearch();
 	},
 	initShortcuts: function() {
-		this.tree = this.$("hc-sets-tree");
-		this.view = this.tree.view;
-		this.selection = this.view.selection;
-		this.content = this.$("hc-sets-tree-content");
+		var tree = this.$("hc-sets-tree");
+		this.tree = tree;
+		this.tbo = tree.treeBoxObject;
+		this.tView = tree.view;
+		this.tSel = this.tView.selection;
+		this.tBody = tree.body;
+		this.searcher.init(this, tree);
+
 		this.cmdDelete = this.$("hc-sets-cmd-delete");
 		this.cmdEdit = this.$("hc-sets-cmd-edit");
 		this.cmdEditType = this.$("hc-sets-cmd-editType");
 		this.cmdPExpFile = this.$("hc-sets-cmd-partialExportToFile");
 		this.cmdPExpClip = this.$("hc-sets-cmd-partialExportToClipboard");
 		this.miEditType = this.$("hc-sets-editType");
-		this.searcher._tree = this.tree;
+
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
 	destroy: function() {
@@ -95,7 +99,7 @@ var handyClicksSets = {
 		);
 	},
 	redrawTree: function() {
-		var cnt = this.content;
+		var cnt = this.tBody;
 		while(cnt.hasChildNodes())
 			cnt.removeChild(cnt.lastChild);
 		this.drawTree();
@@ -112,7 +116,7 @@ var handyClicksSets = {
 				<treechildren />
 			</treeitem>;
 		tItem = this.ut.fromXML(tItem);
-		(parent || this.content).appendChild(tItem);
+		(parent || this.tBody).appendChild(tItem);
 		return this.DOMCache[hash] = tItem.getElementsByTagName("treechildren")[0];
 	},
 	appendItems: function(parent, items, shortcut) {
@@ -199,18 +203,18 @@ var handyClicksSets = {
 		return res.join(this.oldTree ? ", " : ",\n ");
 	},
 	updTree: function() {
-		var tbo = this.tree.treeBoxObject;
+		var tbo = this.tbo;
 		var fvr = tbo.getFirstVisibleRow();
-		var numRanges = this.selection.getRangeCount();
+		var numRanges = this.tSel.getRangeCount();
 		var selRows = [];
 		var start = {}, end = {};
 		for(var i = 0; i < numRanges; i++) {
-			this.selection.getRangeAt(i, start, end);
+			this.tSel.getRangeAt(i, start, end);
 			selRows.push([start.value, end.value]);
 		}
 
 		this.redrawTree();
-		var rowsCount = this.content.getElementsByTagName("treerow").length;
+		var rowsCount = this.tView.rowCount;
 		if(!rowsCount)
 			return;
 		var maxRowsIndx = rowsCount - 1;
@@ -218,7 +222,7 @@ var handyClicksSets = {
 		selRows.forEach(
 			function(range) {
 				if(range[0] <= maxRowsIndx)
-					this.selection.rangedSelect(range[0], this.ut.mm(range[1], 0, maxRowsIndx), true);
+					this.tSel.rangedSelect(range[0], this.ut.mm(range[1], 0, maxRowsIndx), true);
 			},
 			this
 		);
@@ -233,7 +237,9 @@ var handyClicksSets = {
 		var selRows = this.selectedRows;
 		var noSel = !selRows.length;
 		["cmdDelete", "cmdEdit", "cmdPExpFile", "cmdPExpClip"].forEach(
-			function(hash) { this[hash].setAttribute("disabled", noSel); },
+			function(hash) {
+				this[hash].setAttribute("disabled", noSel);
+			},
 			this
 		);
 		var noTypes = noSel || !selRows.some(function(row) { return row.__isCustomType; });
@@ -241,25 +247,27 @@ var handyClicksSets = {
 		this.miEditType.hidden = noTypes;
 	},
 	get selectedRows() {
-		var numRanges = this.selection.getRangeCount();
+		var numRanges = this.tSel.getRangeCount();
 		var tRowsArr = [];
 		if(numRanges == 0)
 			return tRowsArr;
-		var start = {}, end = {};
-		var tRows = this.content.getElementsByTagName("treerow"), tRow;
+		var start = {}, end = {}, tRow;
 		for(var t = 0; t < numRanges; t++) {
-			this.selection.getRangeAt(t, start, end);
+			this.tSel.getRangeAt(t, start, end);
 			for(var v = start.value; v <= end.value; v++) {
-				if(v == -1)
-					continue;
-				tRow = tRows[v];
-				if(!tRow || this.view.isContainer(v) || !("__shortcut" in tRow) || !("__itemType" in tRow))
+				tRow = this.getRowAtIndex(v);
+				if(!tRow || this.tView.isContainer(v) || !("__shortcut" in tRow) || !("__itemType" in tRow))
 					continue;
 				tRowsArr.push(tRow); // for deleting (getElementsByTagName is dinamically)
 				tRow.__index = v;
 			}
 		}
 		return tRowsArr;
+	},
+	getRowAtIndex: function(indx) {
+		if(indx == -1 || indx >= this.tView.rowCount)
+			return null;
+		return this.tView.getItemAtIndex(indx).getElementsByTagName("treerow")[0] || null;
 	},
 	get isTreePaneSelected() {
 		var prefWin = document.documentElement;
@@ -342,7 +350,7 @@ var handyClicksSets = {
 	},
 	isClickOnRow: function(e) {
 		var row = {}, col = {}, obj = {};
-		this.tree.treeBoxObject.getCellAt(e.clientX, e.clientY, row, col, obj);
+		this.tbo.getCellAt(e.clientX, e.clientY, row, col, obj);
 		return row.value > -1;
 	},
 	deleteItems: function() {
@@ -423,7 +431,7 @@ var handyClicksSets = {
 			if(e.button != 0)
 				return;
 			var row = {}, col = {}, obj = {};
-			this.tree.treeBoxObject.getCellAt(e.clientX, e.clientY, row, col, obj);
+			this.tbo.getCellAt(e.clientX, e.clientY, row, col, obj);
 			if(row.value == -1 || col.value == null)
 				return;
 			rowIndx = row.value;
@@ -431,14 +439,14 @@ var handyClicksSets = {
 			changed = this.toggleRowEnabled(rowIndx, column, tRow);
 		}
 		else { // Space button pressed
-			var fi = document.commandDispatcher.focusedElement;
-			if(fi && fi.localName != "tree")
+			var fe = document.commandDispatcher.focusedElement;
+			if(!fe || fe.localName != "tree")
 				return;
 			var rows = this.selectedRows;
 			if(!rows.length)
 				return;
 			var columns = this.tree.columns;
-			column = columns[columns.length - 1];
+			column = columns[(columns.count || columns.length) - 1];
 			rows.forEach(
 				function(tRow) {
 					this.toggleRowEnabled(tRow.__index, column, tRow);
@@ -454,11 +462,11 @@ var handyClicksSets = {
 			this.applyButton.disabled = false;
 	},
 	toggleRowEnabled: function(rowIndx, column, tRow) {
-		var checked = this.view.getCellValue(rowIndx, column);
+		var checked = this.tView.getCellValue(rowIndx, column);
 		if(!checked) // real checked is "true" or "false"
 			return false;
 		var enabled = checked != "true";
-		tRow = tRow || this.content.getElementsByTagName("treerow")[rowIndx];
+		tRow = tRow || this.getRowAtIndex(rowIndx);
 		this.addProperties(tRow, { disabled: !enabled });
 		var tCell = tRow.getElementsByTagName("treecell")[column.index];
 		tCell.setAttribute("value", enabled);
@@ -467,43 +475,82 @@ var handyClicksSets = {
 	},
 	selectAll: function() {
 		if(this.isTreePaneSelected)
-			this.selection.selectAll();
+			this.tSel.selectAll();
 	},
 	smartSelect: function _ss(e) {
-		var row = this.tree.treeBoxObject.getRowAt(e.clientX, e.clientY);
+		if(e.button == 1)
+			return;
+		var row = this.tbo.getRowAt(e.clientX, e.clientY);
 		var et = e.type;
-		if(et == "mouseout")
-			return _ss.row0 = _ss.row1 = undefined;
+		if(et == "mouseout") {
+			_ss.row0 = _ss.row1 = undefined;
+			return;
+		}
 		if(row == -1)
-			return false;
-		if(et == "mousedown")
-			return _ss.row0 = row;
+			return;
+		if(et == "mousedown") {
+			_ss.row0 = row;
+			return;
+		}
 		// mouseup or mousemove:
 		var row0 = this.ut.getOwnProperty(_ss, "row0");
 		if(row0 === undefined)
-			return false;
+			return;
 		var row1 = this.ut.getOwnProperty(_ss, "row1");
 		_ss.row1 = row;
 
 		setTimeout(function(_this, row0, row1, row) {
 			if(row1 !== undefined)
-				_this.selection.clearRange(row0, row1);
+				_this.tSel.clearRange(row0, row1);
 			if(row0 != row)
-				_this.selection.rangedSelect(row0, row, true);
+				_this.tSel.rangedSelect(row0, row, true);
 		}, 0, this, row0, row1, row);
 
-		if(et == "mouseup")
-			return _ss.row0 = _ss.row1 = undefined;
+		if(et == "mouseup") {
+			_ss.row0 = _ss.row1 = undefined;
+			return;
+		}
 		// mousemove:
 		_ss.row1 = row;
-		if(row <= this.tree.treeBoxObject.getFirstVisibleRow() + 2)
+		if(row <= this.tbo.getFirstVisibleRow() + 2)
 			var visRow = row - 2;
-		else if(row >= this.tree.treeBoxObject.getLastVisibleRow() - 2)
+		else if(row >= this.tbo.getLastVisibleRow() - 2)
 			var visRow = row + 2;
 		else
-			return false;
-		var maxRowsIndx = this.content.getElementsByTagName("treerow").length - 1;
-		this.tree.treeBoxObject.ensureRowIsVisible(this.ut.mm(visRow, 0, maxRowsIndx));
+			return;
+		var maxRowsIndx = this.tView.rowCount - 1;
+		this.tbo.ensureRowIsVisible(this.ut.mm(visRow, 0, maxRowsIndx));
+	},
+
+	toggleTreeContainers: function(oFlag) {
+		var tis = this.tBody.getElementsByTagName("treeitem"), ti;
+		var isFunc = typeof oFlag == "function";
+		isFunc && this.toggleTreeContainers(true);
+		for(var i = tis.length - 1; i >= 0; i--) {
+			ti = tis[i];
+			ti.setAttribute(
+				"open",
+				isFunc
+					? oFlag(this.tView.getLevel(this.tView.getIndexOfItem(ti)))
+					: oFlag
+			);
+		}
+	},
+	toggleTreeContainersClick: function(e) {
+		var oFlag;
+		switch(e.button) {
+			case 0:
+				oFlag = false;
+			break;
+			case 1:
+				oFlag = function(level) {
+					return level < 1;
+				};
+			break;
+			case 2:
+				oFlag = true;
+		}
+		this.toggleTreeContainers(oFlag);
 	},
 
 	/*** Search in tree ***/
@@ -517,17 +564,27 @@ var handyClicksSets = {
 		sIt.focus();
 	},
 
-	_alloySearch: true,
-	_searchTimeout: null,
+	_lastSearch: 0,
 	_searchDelay: 50,
-	_tryInterval: 20,
+	_searchTimeout: null,
+
 	searcher: {
 		_res: [], // row numbers
-		_tree: null,
 		_current: 0,
-		clear: function() { this._res = []; this._current = 0; },
-		add: function(r) { this._res.push(r); },
-		get _length() { return this._res.length; },
+		init: function(parent, tree) {
+			this.parent = parent;
+			this.tree = tree;
+		},
+		reset: function() {
+			this._res = [];
+			this._current = 0;
+		},
+		add: function(r) {
+			this._res.push(r);
+		},
+		get _length() {
+			return this._res.length;
+		},
 		next: function() {
 			if(++this._current >= this._length)
 				this._current = 0;
@@ -544,43 +601,42 @@ var handyClicksSets = {
 					return;
 				i = this._res[this._current];
 			}
-			this._tree.view.selection.select(i);
-			this._tree.treeBoxObject.ensureRowIsVisible(i);
+			this.parent.toggleTreeContainers(true);
+			this.tree.view.selection.select(i);
+			this.tree.treeBoxObject.ensureRowIsVisible(i);
 		}
 	},
 	navigateSearchResults: function(e) {
-		if(e.keyCode == e.DOM_VK_DOWN)
+		var code = e.keyCode;
+		if(code == e.DOM_VK_DOWN || code == e.DOM_VK_RETURN && !e.shiftKey)
 			this.searcher.next();
-		else if(e.keyCode == e.DOM_VK_UP)
+		else if(code == e.DOM_VK_UP || code == e.DOM_VK_RETURN && e.shiftKey)
 			this.searcher.prev();
 		else
 			return;
 		e.preventDefault();
 	},
-	_searchInSetsTree: function(sIt) {
-		setTimeout(function(_this, sIt) { _this.searchInSetsTree(sIt); }, 0, this, sIt);
-	},
 	searchInSetsTree: function(sIt, notSelect) {
-		if(sIt && !this._alloySearch) {
-			clearTimeout(this._searchTimeout);
+		var remTime = this._lastSearch + this._searchDelay - Date.now();
+		if(sIt && this._searchTimeout === null && remTime > 0) {
 			this._searchTimeout = setTimeout(
 				function(_this, _a) {
 					_a.callee.apply(_this, _a);
+					_this._searchTimeout = null;
 				},
-				this._tryInterval,
+				remTime,
 				this, arguments
 			);
 			return;
 		}
-		this._alloySearch = false;
-		this.searcher.clear();
+		this.searcher.reset();
 		sIt = sIt || this.$("hc-sets-tree-searchField");
 		var sVal = sIt.value.replace(/^\s+|\s+$/g, "");
 		var _sVal = sVal.toLowerCase().split(/\s+/);
 		var sLen = _sVal.length;
 		var hasVal = !!sVal;
 
-		var tRows = this.content.getElementsByTagName("treerow"), tRow;
+		var tRows = this.tBody.getElementsByTagName("treerow"), tRow;
 		var labels, tmpArr, rowText;
 		var okRow, notFound = true;
 		var i, j, k, rLen, lLen;
@@ -602,14 +658,17 @@ var handyClicksSets = {
 					this.searcher.add(i);
 					if(notFound) {
 						notFound = false;
-						if(!notSelect) // Don't select for redraw
+						if(!notSelect) { // Don't select for redraw
 							this.searcher.select(i);
+							//this.searcher.select(this.tView.getIndexOfItem(tRow.parentNode));
+						}
 					}
 				}
 			}
 		}
 		sIt.setAttribute("hc_notfound", hasVal && notFound);
-		setTimeout(function(_this) { _this._alloySearch = true; }, this._searchDelay, this);
+
+		this._lastSearch = Date.now();
 	},
 
 	/*** Prefs pane ***/
@@ -694,7 +753,9 @@ var handyClicksSets = {
 				? it.getAttribute("checked") != "true"
 				: Array.every(
 					(checkParent ? it.parentNode : it).getElementsByTagName("checkbox"),
-					function(ch) { return ch.getAttribute("checked") != "true"; }
+					function(ch) {
+						return ch.getAttribute("checked") != "true";
+					}
 				);
 		it.getAttribute("hc_requiredfor").split(/\s+/).forEach(
 			function(req) {
@@ -710,6 +771,10 @@ var handyClicksSets = {
 		var childs = parent.childNodes;
 		for(var i = 0, len = childs.length; i < len; i++)
 			this.desableChilds(childs[i], dis);
+	},
+	checkTreeContext: function() {
+		var ln = document.popupNode.localName;
+		return ln == "treechildren" || ln == "tree";
 	},
 
 	// about:config entries
