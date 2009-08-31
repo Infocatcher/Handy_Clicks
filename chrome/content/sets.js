@@ -993,7 +993,7 @@ var handyClicksSets = {
 				return;
 			this.ps.reloadSettings(false);
 			this.redrawTree();
-			this.$("hc-sets-tree-partialImportPanel").hidden = false;
+			this.partialImportActive = true;
 		}
 		else {
 			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport);
@@ -1007,6 +1007,10 @@ var handyClicksSets = {
 		if(pSrc instanceof Components.interfaces.nsILocalFile)
 			this.backupsDir = pSrc.parent.path;
 	},
+	set partialImportActive(a) {
+		this.$("hc-sets-tree-partialImportPanel").hidden = !a;
+		document.title = document.title.replace(/\*$/, "") + (a ? "*" : "");
+	},
 	partialImportDone: function(ok) {
 		if(ok)
 			this.mergePrefs();
@@ -1014,7 +1018,7 @@ var handyClicksSets = {
 			this.ps.loadSettings();
 			this.updTree();
 		}
-		this.$("hc-sets-tree-partialImportPanel").hidden = true;
+		this.partialImportActive = false;
 		this.closeEditors();
 	},
 	mergePrefs: function() {

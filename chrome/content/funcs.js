@@ -985,7 +985,7 @@ var handyClicksFuncs = {
 		var onlyUnVisited = {};
 		var cnf = this.ut.promptsSvc.confirmCheck(
 			window, this.ut.getLocalized("title"),
-			this.ut.getLocalized("openSimilarLinks"),
+			this.ut.getLocalized("openSimilarLinksConfirm"),
 			this.ut.getLocalized("openOnlyVisited"), onlyUnVisited
 		);
 		if(!cnf)
