@@ -227,7 +227,7 @@ var handyClicksFuncs = {
 			this.loadNotVoidJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target);
 			return true;
 		}
-		else if(voidURI || this.isDummyURI(item, uri)) {
+		else if(voidURI || this.isDummyURI(item, uri) || target == "cur" && this.hasHandlers(item)) {
 			this.loadVoidLinkWithHandler(e, item, loadJSInBackground, refererPolicy, winRestriction, target);
 			return true;
 		}
@@ -262,6 +262,14 @@ var handyClicksFuncs = {
 			);
 		if(load)
 			_f();
+	},
+	hasHandlers: function(it) {
+		it = (it || this.hc.item).wrappedJSObject;
+		return ["onmousedown", "onmouseup", "onclick"].some(
+			function(h) {
+				return h in it;
+			}
+		);
 	},
 	getItemHandlers: function(item) {
 		item = (item || this.hc.item).wrappedJSObject;

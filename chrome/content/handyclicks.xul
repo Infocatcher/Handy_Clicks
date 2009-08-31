@@ -62,7 +62,7 @@
 		<command id="handyClicks-cmd-importFromClipboard" oncommand="handyClicks.openSettings(true);" label="&handyClicks.importFromClipboardLabel;" />
 	</commandset>
 	<keyset id="mainKeyset">
-		<key id="handyClicks-key-toggleStatus" oncommand="handyClicks.toggleStatus();" disabled="true" />
+		<key id="handyClicks-key-toggleStatus" oncommand="handyClicks.toggleStatus(true);" disabled="true" />
 		<key id="handyClicks-key-openSettings"  command="handyClicks-cmd-openSettings" disabled="true" />
 		<key id="handyClicks-key-editMode" command="handyClicks-cmd-editMode" disabled="true" />
 		<key id="handyClicks-key-importFromClipboard" command="handyClicks-cmd-importFromClipboard" disabled="true" />

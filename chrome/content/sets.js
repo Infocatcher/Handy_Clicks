@@ -333,7 +333,7 @@ var handyClicksSets = {
 		);
 	},
 	editorsLimit: function(count) {
-		var lim = this.pu.pref("sets.openEditorsLinit");
+		var lim = this.pu.pref("sets.openEditorsLimit");
 		if(lim <= 0 || count <= lim)
 			return false;
 		var ack = { value: false };
@@ -345,7 +345,7 @@ var handyClicksSets = {
 		if(!cnf)
 			return true;
 		if(ack.value)
-			this.pu.pref("sets.openEditorsLinit", 0);
+			this.pu.pref("sets.openEditorsLimit", 0);
 		return false;
 	},
 	isClickOnRow: function(e) {

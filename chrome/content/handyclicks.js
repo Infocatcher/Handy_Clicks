@@ -891,8 +891,11 @@ var handyClicks = {
 	},
 
 	// GUI:
-	toggleStatus: function() {
-		this.enabled = !this.enabled;
+	toggleStatus: function(fromKey) {
+		var en = !this.enabled;
+		this.enabled = en;
+		if(fromKey && !document.getElementById("handyClicks-toggleStatus-tbButton") && !this.pu.pref("ui.showInStatusbar"))
+			this.ut.notify(null, this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, en, true);
 	},
 	checkClipboard: function() {
 		document.getElementById("handyClicks-importFromClipboard").hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard());
@@ -961,7 +964,7 @@ var handyClicks = {
 	},
 	setStatus: function() {
 		var enabled = this.enabled;
-		var tt = this.ut.getLocalized(enabled ? "enabled" : "disabled");
+		var tt = this.ut.getLocalized(enabled ? "enabledTip" : "disabledTip");
 		var ttAttr = this.fn.tooltipAttrBase + "0";
 		this.setControls(
 			function(elt) {
