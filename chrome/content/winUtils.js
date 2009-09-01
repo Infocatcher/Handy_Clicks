@@ -20,7 +20,7 @@ var handyClicksWinUtils = {
 	},
 	forEachWindow: function(winTypes, func, context) {
 		var wm = this.wm;
-		(this.ut.isArray(winTypes) ? winTypes : [winTypes]).forEach(
+		winTypes.forEach(
 			function(winType) {
 				var ws = wm.getEnumerator(winType), w;
 				while(ws.hasMoreElements()) {
@@ -46,8 +46,7 @@ var handyClicksWinUtils = {
 	},
 	winIdProp: "__handyClicks__winId",
 	openEditor: function(pSrc, mode, shortcut, itemType) {
-		var winId = (mode == "itemType" ? itemType : shortcut + "-" + itemType)
-			+ (this.ps.otherSrc ? "-otherSrc" : "");
+		var winId = (mode == "itemType" ? itemType : shortcut + "-" + itemType) + (pSrc ? "@otherSrc" : "");
 		var wProp = this.winIdProp;
 		var ws = this.wm.getEnumerator("handyclicks:editor");
 		var w;
@@ -94,11 +93,13 @@ var handyClicksWinUtils = {
 			}
 			setTimeout(arguments.callee, 5);
 		}, 0);
-		return true
+		return true;
 	},
 	getOpenLink: function(href, line) {
 		var _this = this;
-		return function() { _this.openLink(href, line); };
+		return function() {
+			_this.openLink(href, line);
+		};
 	},
 	highlightOpened: function(winId, editStat) {
 		var wSet = this.wm.getMostRecentWindow("handyclicks:settings");

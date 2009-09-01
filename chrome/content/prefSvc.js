@@ -256,7 +256,6 @@ var handyClicksPrefSvc = {
 			}
 			catch(e) {
 				var line = ct._contextMenuLine || ct._defineLine;
-				this.ut._log("[type compile] Line: " + (e.lineNumber - line + 1));
 				var eLine = this.ut.mmLine(e.lineNumber - line + 1);
 				var href = "handyclicks://editor/itemType/" + type + "/" + ("_contextMenuLine" in ct ? "context" : "define");
 				var eMsg = this.ut.errInfo("customTypeCompileError", this.dec(ct.label), type, e);
@@ -300,7 +299,6 @@ var handyClicksPrefSvc = {
 			new Function(this.dec(rawCode)).call(this.ut);
 		}
 		catch(e) {
-			this.ut._log("[func init] Line: " + (e.lineNumber - line + 1));
 			var eLine = this.ut.mmLine(e.lineNumber - line + 1);
 			var href = "handyclicks://editor/shortcut/" + sh + "/" + type + "/" + (delayed ? "delayed" : "normal") + "/init";
 			var eMsg = this.ut.errInfo("funcInitError", this.dec(fObj.label), type, e);

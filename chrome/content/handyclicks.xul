@@ -9,7 +9,7 @@
 ]>
 
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<script type="application/x-javascript" src="chrome://handyclicks/content/~migration.js" /> <!-- Temp -->
+	<script type="application/x-javascript" src="chrome://handyclicks/content/_migration.js" /> <!-- Temp -->
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
@@ -18,43 +18,6 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/handyclicks.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/funcs.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/regSvc.js" />
-
-	<script type="application/x-javascript"><![CDATA[
-	function handyClicksReloadScripts() {
-		var jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-			.getService(Components.interfaces.mozIJSSubScriptLoader);
-		var path = "chrome://handyclicks/content/";
-		try {
-			handyClicksRegSvc.destroy();
-			var t = Date.now();
-			["utils", "winUtils", "prefUtils", "prefSvc", "handyclicks", "funcs", "regSvc"].forEach(
-				function(n) { jsLoader.loadSubScript(path + n + ".js"); }
-			);
-			handyClicksRegSvc.init();
-			handyClicks.setEditModeStatus(); // upd UI
-			handyClicksUtils._log("Scripts was successfully reloaded! " + (Date.now() - t) + "ms");
-		}
-		catch(e) {
-			handyClicksUtils._log("Can't reload scripts");
-			throw e;
-		}
-	}
-	window.addEventListener(
-		"keydown",
-		function(e) {
-			if( // Ctrl+Alt+R
-				String.fromCharCode(e.keyCode) == "R"
-				&& e.ctrlKey && !e.shiftKey && e.altKey && !e.metaKey
-				&& navigator.preference("extensions.handyclicks.devMode")
-			) {
-				e.preventDefault();
-				e.stopPropagation();
-				handyClicksReloadScripts();
-			}
-		},
-		true
-	);
-	]]></script>
 
 	<commandset id="mainCommandSet">
 		<command id="handyClicks-cmd-openSettings" oncommand="handyClicks.openSettings();" label="&handyClicks.settingsLabel;" />

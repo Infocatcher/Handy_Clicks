@@ -1,9 +1,15 @@
 var handyClicksSets = {
-	init: function() {
+	init: function(reloadFlag) {
 		this.ps.loadSettings();
 		this.initShortcuts();
 
-		this.drawTree();
+		if(reloadFlag) {
+			this.redrawTree();
+			this.partialImportActive = false;
+		}
+		else
+			this.drawTree();
+
 		this.updButtons();
 		this.ps.oSvc.addPrefsObserver(this.updTree, this);
 
@@ -45,13 +51,13 @@ var handyClicksSets = {
 
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
-	destroy: function() {
+	destroy: function(reloadFlag) {
 		this.closeEditors();
 	},
 	closeEditors: function() {
 		var pSvc = "handyClicksPrefSvc";
 		this.wu.forEachWindow(
-			"handyclicks:editor",
+			["handyclicks:editor"],
 			function(w) {
 				if(!("_handyClicksInitialized" in w) || w[pSvc].otherSrc)
 					w.close();
@@ -90,7 +96,7 @@ var handyClicksSets = {
 		var wProp = this.wu.winIdProp;
 		var otherSrc = this.ps.otherSrc;
 		this.wu.forEachWindow(
-			"handyclicks:editor",
+			["handyclicks:editor"],
 			function(w) {
 				if(wProp in w)
 					this.setRowStatus(w[wProp], w.handyClicksPrefSvc.otherSrc == otherSrc);
@@ -420,7 +426,7 @@ var handyClicksSets = {
 		this.wu.openEditor(this.ps.currentSrc, mode, shortcut, itemType);
 	},
 	setRowStatus: function(rowId, editStat) {
-		rowId = rowId.replace(/-otherSrc$/, "");
+		rowId = rowId.replace(/@otherSrc$/, "");
 		if(rowId in this.rowsCache)
 			this.addCellsProperties([this.rowsCache[rowId]], { hc_edited: editStat });
 	},

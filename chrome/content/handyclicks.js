@@ -19,15 +19,16 @@ var handyClicks = {
 	ignoreAction: "$ignore",
 
 	// Initialization:
-	init: function() {
+	init: function(reloadFlag) {
 		this.ps.loadSettings();
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], true);
 		this.pu.oSvc.addPrefsObserver(this.updUI, this);
 		this.setStatus();
 		this.registerHotkeys();
 		this.showHideControls();
+		reloadFlag && this.setEditModeStatus();
 	},
-	destroy: function() {
+	destroy: function(reloadFlag) {
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
 		this.cancelDelayedAction();
 	},
@@ -164,9 +165,8 @@ var handyClicks = {
 		if(this.flags.allowEvents)
 			return;
 		var funcObj = this.getFuncObjByEvt(e);
-		if(!funcObj)
-			return;
-		this.functionEvent(funcObj, e);
+		if(funcObj)
+			this.functionEvent(funcObj, e);
 	},
 	mouseupHandler: function(e) {
 		if(!this.enabled)
@@ -181,6 +181,9 @@ var handyClicks = {
 		if(!this.enabled)
 			return;
 		this.checkForStopEvent(e);
+		var funcObj = this.getFuncObjByEvt(e);
+		if(funcObj)
+			this.functionEvent(funcObj, e);
 	},
 	dblclickHandler: function(e) {
 		if(!this.enabled)
@@ -188,9 +191,8 @@ var handyClicks = {
 		if(this.flags.allowEvents)
 			return;
 		var funcObj = this.getFuncObjByEvt(e);
-		if(!funcObj)
-			return;
-		this.functionEvent(funcObj, e);
+		if(funcObj)
+			this.functionEvent(funcObj, e);
 	},
 
 	// Special handlers:
@@ -296,7 +298,7 @@ var handyClicks = {
 		if(
 			isMousedown
 			|| evtStr != this.evtStrOnMousedown
-			//|| e.originalTarget != this.origItem
+			|| e.originalTarget !== this.origItem // For "command" event
 		)
 			this.defineItem(e, sets);
 		var funcObj = this.getFuncObj(sets) || (this.editMode ? {} : null);
@@ -310,7 +312,7 @@ var handyClicks = {
 			//   var _this = this;
 			//   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
 			this.copyOfEvent = e;//this.cloneObj(e);
-			this.saveXY(e);
+			//this.saveXY(e); // Saves incorrect coordinates...
 			this.origItem = e.originalTarget;
 		}
 		else {
@@ -320,7 +322,7 @@ var handyClicks = {
 		return funcObj;
 	},
 	getEvtStr: function(e) {
-		return "button=" + e.button
+		return "button=" + (e.button || 0)
 			+ ",ctrl=" + e.ctrlKey
 			+ ",shift=" + e.shiftKey
 			+ ",alt=" + e.altKey
@@ -358,7 +360,6 @@ var handyClicks = {
 					_it = ct._define.call(this, e, it);
 				}
 				catch(e) {
-					this.ut._log("[define item] Line: " + (e.lineNumber - ct._defineLine + 1));
 					var eLine = this.ut.mmLine(e.lineNumber - ct._defineLine + 1);
 					var href = "handyclicks://editor/itemType/" + type + "/define";
 					var eMsg = this.ut.errInfo("customTypeDefineError", this.ps.dec(ct.label), type, e);
@@ -530,6 +531,8 @@ var handyClicks = {
 		return false;
 	},
 	getFuncObj: function(sets) {
+		if(this.pu.pref("devMode") && this.itemType)
+			this.ut._log("this.itemType = " + this.itemType);
 		return this.itemType // see .defineItem()
 			&& (
 				(this.itemTypeInSets(sets, "$all") && sets.$all)
@@ -553,7 +556,6 @@ var handyClicks = {
 				cm = _cm.call(this.fn, e, this.item, this.origItem);
 			}
 			catch(e) {
-				this.ut._log("[context menu] Line: " + (e.lineNumber - ct._contextMenuLine + 1));
 				var eLine = this.ut.mmLine(e.lineNumber - ct._contextMenuLine + 1);
 				var href = "handyclicks://editor/itemType/" + this.itemType + "/context";
 				var eMsg = this.ut.errInfo("customTypeContextMenuError", this.ps.dec(ct.label), this.itemType, e);
@@ -811,7 +813,8 @@ var handyClicks = {
 		if(this.editMode) {
 			this.editMode = false;
 			this.blinkNode();
-			this.openEditor(e);
+			this.closeMenus(e.originalTarget);
+			this.wu.openEditor(null, "shortcut", this.getEvtStr(e), this.itemType);
 			return;
 		}
 		this.executeFunction(funcObj, e);
@@ -827,7 +830,6 @@ var handyClicks = {
 				new Function("event,item,origItem", action).apply(this.fn, [e, this.item, this.origItem]);
 			}
 			catch(err) {
-				this.ut._log("[func] Line: " + (err.lineNumber - line + 1));
 				var eLine = this.ut.mmLine(err.lineNumber - line + 1);
 				var href = "handyclicks://editor/shortcut/" + this.getEvtStr(e || this.copyOfEvent) + "/"
 					+ (this._all ? "$all" : this.itemType) + "/" + (!e ? "delayed" : "normal") + "/code";
@@ -862,15 +864,17 @@ var handyClicks = {
 
 		this.focusOnItem();
 
-		var eStr = this.getEvtStr(e || this.copyOfEvent);
-		this.ut._log(
-			(e ? e.type : "delayedAction")
-			+ " -> " + this.ps.getModifiersStr(eStr) + " + " + this.ps.getButtonStr(eStr, true)
-			+ "\n=> executeFunction()"
-			+ "\nnodeName = " + this.origItem.nodeName
-			+ ", itemType = " + this.itemType
-			+ "\n=> " + (funcObj.custom ? (this.ps.dec(funcObj.label) || action) : funcObj.action)
-		);
+		if(this.pu.pref("devMode")) {
+			var eStr = this.getEvtStr(e || this.copyOfEvent);
+			this.ut._log(
+				(e ? e.type : "delayedAction")
+				+ " -> " + this.ps.getModifiersStr(eStr) + " + " + this.ps.getButtonStr(eStr, true)
+				+ "\n=> executeFunction()"
+				+ "\nnodeName = " + this.origItem.nodeName
+				+ ", itemType = " + this.itemType
+				+ "\n=> " + (funcObj.custom ? (this.ps.dec(funcObj.label) || action) : funcObj.action)
+			);
+		}
 	},
 
 	// Events interface:
@@ -950,11 +954,6 @@ var handyClicks = {
 			function() { _this.editMode = false; },
 			null, true, true
 		);
-	},
-	openEditor: function(e) {
-		e = e || this.copyOfEvent;
-		this.closeMenus(e.originalTarget);
-		this.wu.openEditor(null, "shortcut", this.getEvtStr(e), this.itemType);
 	},
 	updUI: function(pName) {
 		if(pName == "enabled")

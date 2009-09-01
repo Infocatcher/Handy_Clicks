@@ -53,8 +53,12 @@ var handyClicksUtils = {
 		var r = [];
 		var has = "hasOwnProperty" in o;
 		for(var p in o)
-			r.push(p + (has && o.hasOwnProperty(p) ? " [own]" : "") + " = " + this.safeToString(o[p]));
+			r.push(p + (has && o.hasOwnProperty(p) ? " [own]" : "") + " = " + this.safeToString(this.safeGet(o, p)));
 		return r.join("\n\n");
+	},
+	safeGet: function(o, p) {
+		try { return o[p]; }
+		catch(e) { return "" + e; }
 	},
 	safeToString: function(object) { // var obj = { __proto__: null }; => obj.toString() is missing
 		try { return "" + object; }

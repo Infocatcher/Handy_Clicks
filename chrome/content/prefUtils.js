@@ -14,11 +14,11 @@ var handyClicksPrefUtils = {
 	ss: Components.interfaces.nsISupportsString,
 
 	// Initialization:
-	init: function() {
+	init: function(reloadFlag) {
 		this.prefSvc.addObserver(this.nPrefix, this, false);
 		this.nLength = this.nPrefix.length;
 	},
-	destroy: function() {
+	destroy: function(reloadFlag) {
 		this.prefSvc.removeObserver(this.nPrefix, this);
 	},
 

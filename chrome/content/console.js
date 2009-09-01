@@ -1,8 +1,8 @@
 var handyClicksConsole = {
-	init: function() {
+	init: function(reloadFlag) {
 		window.addEventListener("click", this, true);
 	},
-	destroy: function() {
+	destroy: function(reloadFlag) {
 		window.removeEventListener("click", this, true);
 	},
 	clickHandler: function(e) {

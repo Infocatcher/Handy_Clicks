@@ -24,11 +24,13 @@ var handyClicksEditor = {
 	},
 	delayId: "-delay",
 
-	init: function() {
+	init: function(reloadFlag) {
 		if(this.ut.fxVersion == 1.5) // "relative" is not supported
 			this.types.menulists.moveTabTo.pop();
-		this.loadLabels();
-		this.createDelayedFuncTab();
+		if(!reloadFlag) {
+			this.loadLabels();
+			this.createDelayedFuncTab();
+		}
 		this.initShortcuts();
 		this.ps.loadSettings(this.src || null);
 		this.initUI();
@@ -37,6 +39,19 @@ var handyClicksEditor = {
 		this.ps.oSvc.addPrefsObserver(this.appendTypesList, this);
 		window.addEventListener("DOMMouseScroll", this, true);
 		this.applyButton.disabled = true;
+	},
+	destroy: function(reloadFlag) {
+		window.removeEventListener("DOMMouseScroll", this, true);
+		this.wu.highlightAllOpened();
+	},
+	initShortcuts: function() {
+		this.mBox = this.$("hc-editor-mainTabbox");
+		var wa = window.arguments || [];
+		this.src = wa[0];
+		this.editorMode = wa[1];
+		this.shortcut = wa[2];
+		this.type = wa[3];
+		this.applyButton = document.documentElement.getButton("extra1");
 	},
 	selectTargetTab: function(delayed, src, line) {
 		this.mBox.selectedIndex = this.tabs[this.editorMode];
@@ -65,15 +80,6 @@ var handyClicksEditor = {
 				break;
 			}
 		}
-	},
-	initShortcuts: function() {
-		this.mBox = this.$("hc-editor-mainTabbox");
-		var wa = window.arguments || [];
-		this.src = wa[0];
-		this.editorMode = wa[1];
-		this.shortcut = wa[2];
-		this.type = wa[3];
-		this.applyButton = document.documentElement.getButton("extra1");
 	},
 	loadLabels: function() {
 		["hc-editor-button", "hc-editor-itemTypes", "hc-editor-funcPopup"].forEach(
@@ -130,10 +136,6 @@ var handyClicksEditor = {
 		this.initCustomTypesEditor();
 		this.setWinTitle();
 	},
-	destroy: function() {
-		window.removeEventListener("DOMMouseScroll", this, true);
-		this.wu.highlightAllOpened();
-	},
 	alloyApply: function(e) {
 		var ln = e.target.localName;
 		if(ln == "tab" || ln == "dialog" || ln == "key")
@@ -175,8 +177,9 @@ var handyClicksEditor = {
 		setsObj = this.ut.getOwnProperty(setsObj, "delayedAction") || {};
 		this.initFuncEditor(setsObj, this.delayId);
 
-		if(/(?:^|,)button=(\d)(?:,|$)/.test(this.shortcut))
-			this.$("hc-editor-button").value = RegExp.$1;
+		var butt = /(?:^|,)button=(\d)(?:,|$)/.test(this.shortcut) && RegExp.$1 || "0";
+		this.$("hc-editor-button").value = butt;
+		this.$("hc-editor-events-command").disabled = butt != "0";
 		["ctrl", "shift", "alt", "meta"].forEach(
 			function(mdf) {
 				this.$("hc-editor-" + mdf).checked

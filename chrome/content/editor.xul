@@ -98,6 +98,7 @@
 									<menupopup>
 										<menuitem value="mousedown" label="Mousedown" />
 										<menuitem value="click" label="Click" />
+										<menuitem id="hc-editor-events-command" value="command" label="Command" />
 										<menuitem value="dblclick" label="Dblclick" />
 									</menupopup>
 								</menulist>
