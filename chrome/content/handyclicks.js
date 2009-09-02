@@ -70,7 +70,19 @@ var handyClicks = {
 		if(!funcObj)
 			return;
 
+		if(this._cMenu && typeof this._cMenu.hidePopup == "function") // ?
+			this._cMenu.hidePopup();
+
 		this.flags.allowEvents = funcObj.action == this.ignoreAction;
+		this.flags.stopContextMenu = funcObj.action != "showContextMenu";
+
+		// Fix for switching tabs by Mouse Gestures
+		this._tabOnMousedown = e.view.top === content && this.getTabBrowser(true).mCurrentTab;
+
+		if(funcObj.eventType == "mousedown" && !this.flags.allowEvents) {
+			this.functionEvent(funcObj, e);
+			return;
+		}
 
 		if(this.pu.pref("forceStopMousedownEvent") || this.editMode)
 			this.stopEvent(e);
@@ -88,27 +100,10 @@ var handyClicks = {
 			);
 		}
 
-		if(this._cMenu && typeof this._cMenu.hidePopup == "function") // ?
-			this._cMenu.hidePopup();
-
-		var runOnMousedown = funcObj.eventType == "mousedown" && !this.flags.allowEvents;
-		if(runOnMousedown)
-			this.functionEvent(funcObj, e);
-		if(funcObj.action != "showContextMenu")
-			this.flags.stopContextMenu = true;
-		if(runOnMousedown)
-			return;
-
 		var _this = this;
 		//var cm = this.getItemContext(e); //~ todo: get cm only if needed
 
-		// Fix for switching tabs by Mouse Gestures
-		this._tabOnMousedown = e.view.top === content
-			? this.getTabBrowser(true).mCurrentTab
-			: null;
-
 		var delay = this.pu.pref("delayedActionTimeout");
-
 		var delayedAction = funcObj.hasOwnProperty("delayedAction") && this.isOkFuncObj(funcObj.delayedAction)
 			? funcObj.delayedAction
 			: null;
