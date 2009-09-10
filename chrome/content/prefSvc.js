@@ -470,6 +470,13 @@ var handyClicksPrefSvc = {
 		this._savedStr = str;
 	},
 
+	getEvtStr: function(e) {
+		return "button=" + (e.button || 0)
+			+ ",ctrl=" + e.ctrlKey
+			+ ",shift=" + e.shiftKey
+			+ ",alt=" + e.altKey
+			+ ",meta=" + e.metaKey;
+	},
 	isOkShortcut: function(s) {
 		return s && this.okShortcut.test(s);
 	},

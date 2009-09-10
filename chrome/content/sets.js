@@ -153,9 +153,16 @@ var handyClicksSets = {
 			);
 
 			isBuggy = !this.ps.isOkFuncObj(it)
-				|| (isCustomType && !this.ps.isOkCustomType(itemType))
-				|| (!isCustom && /^\(.+\)$/.test(actLabel)); // See handyClicksUtils.getLocalized()
-			this.addProperties(tRow, { hc_disabled: !it.enabled, hc_buggy: isBuggy, hc_custom: isCustom || isCustomType });
+				|| (
+					isCustomType && !this.ps.isOkCustomType(itemType)
+					|| /^\(.+\)$/.test(typeLabel) // See handyClicksUtils.getLocalized()
+				)
+				|| (!isCustom && /^\(.+\)$/.test(actLabel));
+			this.addProperties(tRow, {
+				hc_disabled: !it.enabled, hc_buggy: isBuggy,
+				hc_custom: isCustom,
+				hc_customType: isCustomType
+			});
 
 			tRow.__shortcut = shortcut;
 			tRow.__itemType = itemType;
@@ -296,14 +303,20 @@ var handyClicksSets = {
 		prefWin.showPane(panes[n]);
 		this.focusSearch();
 	},
-	addItems: function() {
+	addItems: function(e) {
 		if(!this.isTreePaneSelected)
 			return;
+		if(e) {
+			if(e.type == "command" || e.button > 0)
+				this.openEditorWindow({ __shortcut: this.ps.getEvtStr(e) }, "shortcut", true);
+			return;
+		}
 		var rows = this.selectedRows;
-		if(rows.length == 1)
+		if(rows.length == 1) {
 			this.openEditorWindow(rows[0], "shortcut", true);
-		else
-			this.openEditorWindow();
+			return;
+		}
+		this.openEditorWindow();
 	},
 	editItems: function(e) {
 		if(e && !this.isClickOnRow(e)) {
@@ -317,7 +330,12 @@ var handyClicksSets = {
 		var rows = this.selectedRows;
 		if(this.editorsLimit(rows.length))
 			return;
-		this.selectedRows.forEach(this.openEditorWindow, this);
+		this.selectedRows.forEach(
+			function(row) {
+				this.openEditorWindow(row, "shortcut");
+			},
+			this
+		);
 	},
 	editItemsTypes: function() {
 		if(!this.isTreePaneSelected)
@@ -421,9 +439,13 @@ var handyClicksSets = {
 		}
 	},
 	openEditorWindow: function(tRow, mode, add) { // mode: "shortcut" or "itemType"
-		var shortcut = tRow ? tRow.__shortcut : Date.now() + "-" + Math.random();
-		var itemType = tRow && add !== true ? tRow.__itemType : null;
-		this.wu.openEditor(this.ps.currentSrc, mode, shortcut, itemType);
+		var shortcut = tRow
+			? tRow.__shortcut
+			: Date.now() + "-" + Math.random();
+		var itemType = tRow && add !== true
+			? tRow.__itemType
+			: Math.random();
+		this.wu.openEditor(this.ps.currentSrc, mode || "shortcut", shortcut, itemType);
 	},
 	setRowStatus: function(rowId, editStat) {
 		rowId = rowId.replace(/@otherSrc$/, "");
@@ -543,19 +565,10 @@ var handyClicksSets = {
 		}
 	},
 	toggleTreeContainersClick: function(e) {
-		var oFlag;
-		switch(e.button) {
-			case 0:
-				oFlag = false;
-			break;
-			case 1:
-				oFlag = function(level) {
-					return level < 1;
-				};
-			break;
-			case 2:
-				oFlag = true;
-		}
+		var b = e.button;
+		var oFlag = b == 1 || b == 0 && (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey)
+			? function(level) { return level < 1; }
+			: b == 2;
 		this.toggleTreeContainers(oFlag);
 	},
 
@@ -680,7 +693,7 @@ var handyClicksSets = {
 	/*** Prefs pane ***/
 	updPrefsUI: function(loadFlag) {
 		this.loadPrefs();
-		if(loadFlag)
+		if(loadFlag === true)
 			this.updateAllDependencies();
 		else {
 			setTimeout(function(_this) { // Wait for prefpanes update

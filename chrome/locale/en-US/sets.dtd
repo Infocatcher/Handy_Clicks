@@ -61,7 +61,24 @@
 <!ENTITY hc.sets.notifyInWindowCorner "Show in window corner">
 <!ENTITY hc.sets.notifyDontClose "Don't close under cursor">
 
+
 <!ENTITY hc.sets.builtInFuncsSetsTitle "Built-in functions">
+
+<!ENTITY hc.sets.jsLinks "JavaScript-links (javascript: …)">
+<!ENTITY hc.sets.voidLinks '"Void" links with click handlers'>
+<!ENTITY hc.sets.linkLoad "Load">
+<!ENTITY hc.sets.linkNotify "Notify">
+
+<!ENTITY hc.sets.fileLinks "File links">
+<!ENTITY hc.sets.fileLinksNotCheck "Not check">
+<!ENTITY hc.sets.fileLinksShowContext "Show context menu">
+<!ENTITY hc.sets.fileLinksOpen "Open in current tab">
+<!ENTITY hc.sets.fileLinksFilter "Filter (RegExp):">
+
+<!ENTITY hc.sets.openURIsInApps "Opening URIs in other applications">
+<!ENTITY hc.sets.convertURIs "Convert URIs to following charset:">
+<!ENTITY hc.sets.emptyForAutodetect "(empty for autodetection)">
+
 
 <!-- Editor -->
 <!ENTITY hc.editor.title "Handy Clicks: Editor">

@@ -71,7 +71,7 @@
 					<button id="hc-sets-tree-buttonCancelPartialImport" oncommand="handyClicksSets.partialImportDone(false);" label="&hc.sets.importCancel;" />
 				</hbox>
 				<hbox pack="center">
-					<button id="hc-sets-tree-buttonAdd" command="hc-sets-cmd-add" />
+					<button id="hc-sets-tree-buttonAdd" label="&hc.sets.cmdAdd;" onclick="handyClicksSets.addItems(event);" oncommand="handyClicksSets.addItems(event);" />
 					<button id="hc-sets-tree-buttonEdit" command="hc-sets-cmd-edit" />
 					<button id="hc-sets-tree-buttonDelete" command="hc-sets-cmd-delete" />
 					<spacer id="hc-sets-tree-buttonsSpacer" width="16" />
@@ -161,35 +161,39 @@
 		</preferences>
 
 		<groupbox orient="horizontal">
-			<caption label="JavaScript-links (javascript: ...)" />
-			<checkbox preference="loadJavaScriptLinks" label="Load" />
-			<checkbox preference="notifyJavaScriptLinks" hc_depends="notify" label="Notify" />
+			<caption label="&hc.sets.jsLinks;" />
+			<checkbox preference="loadJavaScriptLinks" label="&hc.sets.linkLoad;" />
+			<checkbox preference="notifyJavaScriptLinks" hc_depends="notify" label="&hc.sets.linkNotify;" />
 		</groupbox>
 		<groupbox orient="horizontal">
-			<caption label="&quot;Void&quot; links with handlers" />
-			<checkbox preference="loadVoidLinksWithHandlers" label="Load" />
-			<checkbox preference="notifyVoidLinksWithHandlers" hc_depends="notify" label="Notify" />
+			<caption label="&hc.sets.voidLinks;" />
+			<checkbox preference="loadVoidLinksWithHandlers" label="&hc.sets.linkLoad;" />
+			<checkbox preference="notifyVoidLinksWithHandlers" hc_depends="notify" label="&hc.sets.linkNotify;" />
 		</groupbox>
 		<groupbox>
-			<caption label="File links" />
+			<caption label="&hc.sets.fileLinks;" />
 			<hbox align="center">
 				<menulist preference="filesLinksPolicy" hc_requiredfor="regexp" hc_disabledvalues="-1">
 					<menupopup>
-						<menuitem value="-1" label="Not check" />
-						<menuitem value="0" label="Show context menu" />
-						<menuitem value="1" label="Open in current tab" />
+						<menuitem value="-1" label="&hc.sets.fileLinksNotCheck;" />
+						<menuitem value="0" label="&hc.sets.fileLinksShowContext;" />
+						<menuitem value="1" label="&hc.sets.fileLinksOpen;" />
 					</menupopup>
 				</menulist>
 			</hbox>
 			<hbox align="center" hc_depends="regexp">
-				<label value="RegExp filter:" />
-				<textbox preference="filesLinksMask" flex="1000" />
+				<label value="&hc.sets.fileLinksFilter;" />
+				<textbox preference="filesLinksMask" flex="1" />
 			</hbox>
 		</groupbox>
-		<hbox>
-			<checkbox preference="convertURIs" hc_requiredfor="convert" label="Convert URIs to following charset (empty for autodetection):" />
-			<textbox preference="convertURIsCharset" hc_depends="convert" />
-		</hbox>
+		<groupbox>
+			<caption label="&hc.sets.openURIsInApps;" />
+			<checkbox preference="convertURIs" hc_requiredfor="convert" label="&hc.sets.convertURIs;" />
+			<hbox align="center" hc_depends="convert">
+				<textbox preference="convertURIsCharset" style="width: 10em;" />
+				<label value="&hc.sets.emptyForAutodetect;" />
+			</hbox>
+		</groupbox>
 	</prefpane>
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />

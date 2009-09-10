@@ -18,24 +18,29 @@ radio[pane="hc-sets-pane-builtInFuncsSets"] {
 treechildren::-moz-tree-row(selected) {
 	background-color: Highlight !important;
 }
+treechildren::-moz-tree-row(hc_customType) {
+	background-color: #dff9ff;
+}
 treechildren::-moz-tree-row(hc_custom) {
-	background-color: #f0fff0;
+	background-color: #dfffdf;
 }
 treechildren::-moz-tree-row(hc_disabled) {
-	background-color: ThreeDLightShadow;
+	/*background-color: ThreeDLightShadow;*/
+	background-color: #f1efe2;
 }
 treechildren::-moz-tree-row(hc_buggy) {
 	background-color: #faa;
 }
-treechildren::-moz-tree-cell-text(hc_edited) {
-	font-weight: bold;
-}
 treechildren::-moz-tree-row(hc_search) {
-	background-color: #cffff8;
+	/*background-color: #cffff8;*/
+	background-color: #e7e3ff;
 }
 treechildren::-moz-tree-row(hover) {
 	/*background-color: ThreeDFace;*/
 	border: 1px dotted black;
+}
+treechildren::-moz-tree-cell-text(hc_edited) {
+	font-weight: bold;
 }
 treechildren::-moz-tree-cell-text(hc_copied) {
 	color: Highlight !important;

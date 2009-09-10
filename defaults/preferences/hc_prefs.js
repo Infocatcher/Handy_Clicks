@@ -22,7 +22,7 @@ pref("extensions.handyclicks.loadVoidLinksWithHandlers", true);
 pref("extensions.handyclicks.notifyVoidLinksWithHandlers", true);
 
 pref("extensions.handyclicks.filesLinksPolicy", -1);
-pref("extensions.handyclicks.filesLinksMask", "^[^#?]+\.(?:zip|rar|7z|gz|tar|bz2|iso|cab|exe|msi|xpi|jar)$");
+pref("extensions.handyclicks.filesLinksMask", "^[^?&=#]+\.(?:zip|rar|7z|gz|tar|bz2|iso|cab|exe|msi|xpi|jar)$");
 
 pref("extensions.handyclicks.decodeURIs", true);
 

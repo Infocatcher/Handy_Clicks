@@ -283,7 +283,7 @@ var handyClicks = {
 	// Settings service:
 	getFuncObjByEvt: function(e) {
 		this.hasSettings = false;
-		var evtStr = this.getEvtStr(e);
+		var evtStr = this.ps.getEvtStr(e);
 		var isMousedown = e.type == "mousedown";
 		if(isMousedown)
 			this.evtStrOnMousedown = evtStr;
@@ -315,13 +315,6 @@ var handyClicks = {
 			this.origItem = null;
 		}
 		return funcObj;
-	},
-	getEvtStr: function(e) {
-		return "button=" + (e.button || 0)
-			+ ",ctrl=" + e.ctrlKey
-			+ ",shift=" + e.shiftKey
-			+ ",alt=" + e.altKey
-			+ ",meta=" + e.metaKey;
 	},
 	getSettings: function(str) {
 		return this.ps.prefs.hasOwnProperty(str)
@@ -809,7 +802,7 @@ var handyClicks = {
 			this.editMode = false;
 			this.blinkNode();
 			this.closeMenus(e.originalTarget);
-			this.wu.openEditor(null, "shortcut", this.getEvtStr(e), this.itemType);
+			this.wu.openEditor(null, "shortcut", this.ps.getEvtStr(e), this.itemType);
 			return;
 		}
 		this.executeFunction(funcObj, e);
@@ -826,7 +819,7 @@ var handyClicks = {
 			}
 			catch(err) {
 				var eLine = this.ut.mmLine(err.lineNumber - line + 1);
-				var href = "handyclicks://editor/shortcut/" + this.getEvtStr(e || this.copyOfEvent) + "/"
+				var href = "handyclicks://editor/shortcut/" + this.ps.getEvtStr(e || this.copyOfEvent) + "/"
 					+ (this._all ? "$all" : this.itemType) + "/" + (!e ? "delayed" : "normal") + "/code";
 				var eMsg = this.ut.errInfo("customFunctionError", this.ps.dec(funcObj.label), this.itemType, err);
 				this.ut.notify(
@@ -860,7 +853,7 @@ var handyClicks = {
 		this.focusOnItem();
 
 		if(this.pu.pref("devMode")) {
-			var eStr = this.getEvtStr(e || this.copyOfEvent);
+			var eStr = this.ps.getEvtStr(e || this.copyOfEvent);
 			this.ut._log(
 				(e ? e.type : "delayedAction")
 				+ " -> " + this.ps.getModifiersStr(eStr) + " + " + this.ps.getButtonStr(eStr, true)

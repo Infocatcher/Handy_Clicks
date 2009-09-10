@@ -285,6 +285,7 @@ var handyClicksFuncs = {
 	loadNotVoidJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target) {
 		item = item || this.hc.item;
 		uri = uri || this.getUriOfItem(item);
+
 		var _this = this;
 		function _f() {
 			var origPrefs = _this.setPrefs(
@@ -455,9 +456,8 @@ var handyClicksFuncs = {
 		var item = this.hc.item;
 		ttl = ttl || this.getTextOfItem(item);
 		uri = uri || this.getUriOfItem(item);
-		if(this.loadJavaScriptLink(e, item, uri, false, -1 /* refererPolicy */, undefined, "tab")) // ?
-			return;
-		openWebPanel(ttl, uri); //~ todo: refererPolicy
+		if(uri && !this.isVoidURI(uri))
+			openWebPanel(ttl, uri); //~ todo: refererPolicy ?
 		if(closePopups)
 			this.hc.closeMenus();
 	},
