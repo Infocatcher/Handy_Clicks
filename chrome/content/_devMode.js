@@ -12,6 +12,7 @@ function handyClicksReloadScripts() {
 		"sets.js":        "handyClicksSets",
 		"utils.js":       "handyClicksUtils",
 		"winUtils.js":    "handyClicksWinUtils",
+		// Must be last:
 		"regSvc.js":      "handyClicksRegSvc",
 		__proto__: null
 	};
@@ -29,7 +30,7 @@ function handyClicksReloadScripts() {
 				jsLoader.loadSubScript(path + f);
 		}
 		handyClicksRegSvc.init(true);
-		_log("Scripts from " + location.href + " was successfully reloaded! " + (Date.now() - t) + "ms");
+		_log("Scripts from " + location.href + " was successfully reloaded! " + (Date.now() - t) + " ms");
 	}
 	catch(e) {
 		_log("Can't reload scripts");

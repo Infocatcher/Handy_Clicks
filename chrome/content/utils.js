@@ -391,3 +391,39 @@ var handyClicksCleanupSvc = {
 		}
 	}
 };
+
+var handyClicksExtensionsHelper = {
+	get em() {
+		delete this.em;
+		return this.em = Components.classes["@mozilla.org/extensions/manager;1"]
+			.getService(Components.interfaces.nsIExtensionManager);
+	},
+	get rdf() {
+		delete this.rdf;
+		return this.rdf = Components.classes["@mozilla.org/rdf/rdf-service;1"]
+			.getService(Components.interfaces.nsIRDFService);
+	},
+	isAvailable : function(guid) {
+		return this.isInstalled(guid) && this.isEnabled(guid);
+	},
+	isInstalled : function(guid) {
+		return this.em.getInstallLocation(guid);
+	},
+	isEnabled : function(guid) {
+		var res  = this.rdf.GetResource("urn:mozilla:item:" + guid);
+		var opType = this.getRes(res, "opType");
+		return opType != "needs-install" && opType != "needs-uninstall"
+			&& opType != "needs-disable" && opType != "needs-enable"
+			&& this.getRes(res, "userDisabled") != "true"
+			&& this.getRes(res, "appDisabled") != "true";
+	},
+	getRes: function(res, type) {
+		var tar = this.em.datasource.GetTarget(
+			res, this.rdf.GetResource("http://www.mozilla.org/2004/em-rdf#" + type), true
+		);
+		return (
+			tar instanceof Components.interfaces.nsIRDFLiteral
+			|| tar instanceof Components.interfaces.nsIRDFInt
+		) && tar.Value;
+	}
+};

@@ -374,10 +374,7 @@ var handyClicksEditor = {
 		FlashGot: "{19503e42-ca3c-4c27-b1e2-9cdb2170ee34}"
 	},
 	extAvailable: function(eName) {
-		var guid = this.exts[eName];
-		return !!Components.classes["@mozilla.org/extensions/manager;1"]
-			.getService(Components.interfaces.nsIExtensionManager)
-			.getInstallLocation(guid);
+		return this.eh.isAvailable(this.exts[eName]);
 	},
 	itemTypeChanged: function(iType) {
 		this.addFuncArgs();

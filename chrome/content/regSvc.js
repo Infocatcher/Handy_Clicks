@@ -19,6 +19,7 @@ var handyClicksRegSvc = {
 			cn: "handyClicksConsole",
 			cs: "handyClicksCleanupSvc",
 			ed: "handyClicksEditor",
+			eh: "handyClicksExtensionsHelper",
 			fn: "handyClicksFuncs",
 			hc: "handyClicks",
 			ps: "handyClicksPrefSvc",
