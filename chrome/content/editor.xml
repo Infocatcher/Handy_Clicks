@@ -168,18 +168,54 @@
 				]]>
 				</body>
 			</method>
+			<method name="goToLine">
+				<body>
+				<![CDATA[
+					var ps = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+						.getService(Components.interfaces.nsIPromptService);
+					var curNum = this.value.substring(0, this.inputField.selectionStart).match(/^.*$/mg).length;
+					var num = { value: curNum };
+					var ut = "handyClicksUtils" in window && handyClicksUtils;
+					var res = ps.prompt(
+						window,
+						ut ? ut.getLocalized("goToLineTitle") : "Go to line\u2026",
+						(ut ? ut.getLocalized("goToLineMessage") : "Line number (1 \u2026 %max):")
+							.replace("%max", this.linesCount),
+						num,
+						null, {}
+					);
+					num = parseInt(num.value);
+					if(isFinite(num))
+						this.scrollTo(num, true);
+				]]>
+				</body>
+			</method>
+			<property name="linesCount" readonly="true">
+				<getter>
+				<![CDATA[
+					return this.editor.rootElement.getElementsByTagName("br").length;
+				]]>
+				</getter>
+			</property>
 			<method name="scrollTo">
 				<parameter name="lineNumber" />
+				<parameter name="allowOverflow" />
 				<body>
 				<![CDATA[
 					// Thanks to Custom Buttons!
-					this.editor.beginningOfDocument();
-					var brs = this.editor.rootElement.getElementsByTagName("br");
-					if(lineNumber > brs.length)
-						this.editor.endOfDocument();
-					else
-						while(lineNumber-- > 1)
-							this.editor.selectionController.lineMove(true, false);
+					var editor = this.editor;
+					var maxNumber = this.linesCount;
+					var overflow = lineNumber > maxNumber;
+					if(overflow && !allowOverflow)
+						editor.endOfDocument();
+					else {
+						if(overflow)
+							lineNumber = maxNumber;
+						editor.beginningOfDocument();
+						var sc = editor.selectionController;
+						while(--lineNumber > 0)
+							sc.lineMove(true, false);
+					}
 					this.scrollSelectionIntoView();
 					this.focus();
 				]]>
@@ -187,10 +223,11 @@
 			</method>
 			<method name="selectLine">
 				<parameter name="lineNumber" />
+				<parameter name="allowOverflow" />
 				<body>
 				<![CDATA[
 					// Thanks to Custom Buttons!
-					this.scrollTo(lineNumber);
+					this.scrollTo(lineNumber, allowOverflow);
 					this.editor.selectionController.intraLineMove(true, true);
 					this.focus();
 				]]>
@@ -212,10 +249,23 @@
 				]]>
 				</body>
 			</method>
-			<method name="maximizeEditor">
+			<property name="maximized">
+				<getter>
+				<![CDATA[
+					return this.getAttribute("hc_maximized") == "true";
+				]]>
+				</getter>
+				<setter>
+				<![CDATA[
+					this.setAttribute("hc_maximized", !val);
+					this.toggleMaximized();
+				]]>
+				</setter>
+			</property>
+			<method name="toggleMaximized">
 				<body>
 				<![CDATA[
-					var mm = this.getAttribute("hc_maximized") == "true";
+					var mm = this.maximized;
 					var node = this;
 					while(node && "setAttribute" in node) {
 						if(mm) node.removeAttribute("hc_maximized");
@@ -268,19 +318,21 @@
 			<handler event="keypress" preventdefault="true" key="a" action="this.toggleComments(true);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" key="q" action="this.toggleComments(false);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" keycode="VK_RETURN" action="this.formatNewLine();" />
-			<handler event="keypress" preventdefault="true" keycode="VK_F12" action="this.maximizeEditor();" />
+			<handler event="keypress" preventdefault="true" keycode="VK_F12" action="this.toggleMaximized();" />
 			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
 			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />
 			<handler event="keypress" preventdefault="true" key="+" action="this.textZoom(1);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="-" action="this.textZoom(-1);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="0" action="this.textZoom(0);" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key="G" action="this.goToLine();" modifiers="control" />
 			<handler event="blur">
 			<![CDATA[
 				if(
-					event.target == this && this.getAttribute("hc_maximized") == "true"
-					&& document.commandDispatcher.focusedElement != this.inputField
+					event.target === this
+					&& document.commandDispatcher.focusedElement !== this.inputField
+					&& this.maximized
 				)
-					this.maximizeEditor();
+					this.maximized = false;
 			]]>
 			</handler>
 		</handlers>

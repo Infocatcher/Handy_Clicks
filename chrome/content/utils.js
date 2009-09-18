@@ -403,19 +403,18 @@ var handyClicksExtensionsHelper = {
 		return this.rdf = Components.classes["@mozilla.org/rdf/rdf-service;1"]
 			.getService(Components.interfaces.nsIRDFService);
 	},
-	isAvailable : function(guid) {
+	isAvailable: function(guid) {
 		return this.isInstalled(guid) && this.isEnabled(guid);
 	},
-	isInstalled : function(guid) {
+	isInstalled: function(guid) {
 		return this.em.getInstallLocation(guid);
 	},
-	isEnabled : function(guid) {
+	isEnabled: function(guid) {
 		var res  = this.rdf.GetResource("urn:mozilla:item:" + guid);
 		var opType = this.getRes(res, "opType");
-		return opType != "needs-install" && opType != "needs-uninstall"
-			&& opType != "needs-disable" && opType != "needs-enable"
-			&& this.getRes(res, "userDisabled") != "true"
-			&& this.getRes(res, "appDisabled") != "true";
+		return opType != "needs-disable" && opType != "needs-enable"
+			&& opType != "needs-uninstall" && opType != "needs-install"
+			&& !this.getRes(res, "userDisabled") && !this.getRes(res, "appDisabled");
 	},
 	getRes: function(res, type) {
 		var tar = this.em.datasource.GetTarget(

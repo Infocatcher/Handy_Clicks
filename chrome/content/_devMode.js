@@ -30,7 +30,8 @@ function handyClicksReloadScripts() {
 				jsLoader.loadSubScript(path + f);
 		}
 		handyClicksRegSvc.init(true);
-		_log("Scripts from " + location.href + " was successfully reloaded! " + (Date.now() - t) + " ms");
+		var h = location.href.test(/([^\/]+)$/) ? RegExp.$1 : location.href;
+		_log("Scripts from " + h + " was successfully reloaded! " + (Date.now() - t) + " ms");
 	}
 	catch(e) {
 		_log("Can't reload scripts");

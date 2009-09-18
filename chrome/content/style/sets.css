@@ -18,14 +18,11 @@ radio[pane="hc-sets-pane-builtInFuncsSets"] {
 treechildren::-moz-tree-row(selected) {
 	background-color: Highlight !important;
 }
-treechildren::-moz-tree-row(hc_custom) {
-	background-color: #dfffdf;
-}
 treechildren::-moz-tree-row(hc_customType) {
 	background-color: #dff9ff;
 }
-treechildren::-moz-tree-row(hc_custom, hc_customType) {
-	background-color: #dffff7;
+treechildren::-moz-tree-row(hc_custom) {
+	background-color: #dfffdf;
 }
 treechildren::-moz-tree-row(hc_disabled) {
 	/*background-color: ThreeDLightShadow;*/
