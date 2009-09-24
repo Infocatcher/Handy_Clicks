@@ -35,3 +35,6 @@ toolbar[iconsize="small"] #handyClicks-toggleStatus-tbButton[hc_enabled="false"]
 .handyClicks-invalidPath {
 	opacity: 0.5;
 }
+.handyClicks-invalidPathTip {
+	color: red;
+}

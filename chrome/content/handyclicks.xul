@@ -58,12 +58,10 @@
 			<menuitem id="handyClicks-editMode" command="handyClicks-cmd-editMode" key="handyClicks-key-editMode" />
 			<menuitem id="handyClicks-importFromClipboard" command="handyClicks-cmd-importFromClipboard" key="handyClicks-key-importFromClipboard" />
 		</menupopup>
-	</popupset>
-	<window id="main-window">
 		<tooltip id="handyClicks-tooltip" noautohide="true"
 			onpopupshowing="return handyClicksFuncs.fillInTooltip(this);"
 			onpopuphidden="handyClicksFuncs.hideAllLabels(this);">
 			<vbox id="handyClicks-tooltipBox" />
 		</tooltip>
-	</window>
+	</popupset>
 </overlay>

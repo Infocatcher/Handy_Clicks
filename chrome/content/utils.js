@@ -414,7 +414,8 @@ var handyClicksExtensionsHelper = {
 		var opType = this.getRes(res, "opType");
 		return opType != "needs-disable" && opType != "needs-enable"
 			&& opType != "needs-uninstall" && opType != "needs-install"
-			&& !this.getRes(res, "userDisabled") && !this.getRes(res, "appDisabled");
+			&& this.getRes(res, "userDisabled") != "true"
+			&& this.getRes(res, "appDisabled") != "true";
 	},
 	getRes: function(res, type) {
 		var tar = this.em.datasource.GetTarget(

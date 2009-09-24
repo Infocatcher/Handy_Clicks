@@ -1017,6 +1017,8 @@ var handyClicksSets = {
 		else {
 			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport);
 			// Do not start full import from clipboard!
+			var pf = this.ps.prefsFile;
+			pf.exists() && pf.remove(true); // backups disabled
 			pSrc.copyTo(this.ps.prefsDir, this.ps.prefsFileName + ".js");
 			//this.ps.reloadSettings(true);
 			this.ps.loadSettings();

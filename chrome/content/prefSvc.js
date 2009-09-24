@@ -2,7 +2,6 @@ var handyClicksPrefSvc = {
 	oSvc: new HandyClicksObservers(),
 	otherSrc: false,
 	version: 0.13,
-	backupDepth: 4,
 	prefsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
 	get versionInfo() {
 		delete this.versionInfo;
@@ -71,7 +70,6 @@ var handyClicksPrefSvc = {
 	},
 	_loadError: 0,
 	loadSettings: function(pSrc) {
-		//alert("loadSettings ->\n" + pSrc + "\n-----------\n" + arguments.callee.caller);
 		this.otherSrc = !!pSrc;
 		this._loadError = 0;
 		pSrc = pSrc || this.prefsFile;
@@ -134,7 +132,7 @@ var handyClicksPrefSvc = {
 	loadSettingsBackup: function() {
 		var pFile = this.prefsFile;
 		this._cPath = this.moveFiles(pFile, this.names.corrupted) || this._cPath;
-		if(this._restoringCounter <= this.backupDepth) {
+		if(this._restoringCounter <= this.pu.pref("sets.backupDepth")) {
 			var bName = this.prefsFileName + this.names.backup + this._restoringCounter + ".js";
 			var bFile = this.getFile(bName);
 			var hasBak = bFile.exists();
@@ -159,7 +157,7 @@ var handyClicksPrefSvc = {
 	convertSetsFormat: function(vers) {
 		this.prefsFile.moveTo(null, this.prefsFileName + this.names.version + vers + ".js");
 		if(vers < 0.12) { // New file names format
-			//= Expires after 2009.09.15
+			//= Expires after 2009-09-15
 			var convertName = function(s) {
 				return s.replace(/^(handyclicks_prefs)-(\w+-\d+(?:\.\d+)?\.js)$/, "$1_$2");
 			};
@@ -183,7 +181,7 @@ var handyClicksPrefSvc = {
 			//   "toNewWin"  -> "target"
 			// Functions:
 			//   submitFormToNewDoc -> submitForm
-			//= Expires after 2009.09.15
+			//= Expires after 2009-09-15
 			function changeArg(args, curName, newName, valConv) {
 				var a = {}, aName;
 				for(aName in args) if(args.hasOwnProperty(aName)) {
@@ -409,7 +407,9 @@ var handyClicksPrefSvc = {
 			delete obj[p];
 		}
 		arr.sort().forEach(
-			function(p) { obj[p] = ex[p]; }
+			function(p) {
+				obj[p] = ex[p];
+			}
 		);
 		return arr.length > 0;
 	},
@@ -430,7 +430,7 @@ var handyClicksPrefSvc = {
 		);
 	},
 	moveFiles: function(mFile, nAdd, maxNum) {
-		maxNum = typeof maxNum == "number" ? maxNum : this.backupDepth;
+		maxNum = typeof maxNum == "number" ? maxNum : this.pu.pref("sets.backupDepth");
 		if(maxNum < 0)
 			return null;
 		if(!mFile.exists())

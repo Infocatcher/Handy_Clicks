@@ -43,11 +43,10 @@ var handyClicksRegSvc = {
 		if(regFlag) {
 			this.registerShortcuts(s, true);
 			this.callMethods(s, "init", reloadFlag);
+			return;
 		}
-		else {
-			this.callMethods(s, "destroy", reloadFlag);
-			this.registerShortcuts(s, false);
-		}
+		this.callMethods(s, "destroy", reloadFlag);
+		this.registerShortcuts(s, false);
 	},
 	registerShortcuts: function(s, regFlag) {
 		var proto = regFlag ? s : Object.prototype;

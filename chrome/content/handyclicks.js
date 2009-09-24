@@ -957,7 +957,6 @@ var handyClicks = {
 			function(elt) {
 				elt.setAttribute("hc_enabled", enabled);
 				elt.setAttribute(ttAttr, tt);
-				//elt.tooltipText = tt;
 			}
 		);
 		document.getElementById("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);

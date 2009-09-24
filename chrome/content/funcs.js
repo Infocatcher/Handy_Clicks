@@ -26,7 +26,9 @@ var handyClicksFuncs = {
 
 	copyItemText: function(e, closePopups) { // for all
 		var text = this.hc.itemType == "tabbar"
-			? this.forEachTab(function(tab) { return tab.label; }).join("\n")
+			? this.forEachTab(function(tab) {
+					return tab.label;
+				}).join("\n")
 			: this.getTextOfItem();
 		if(text) {
 			this.ut.copyStr(text);
@@ -569,7 +571,7 @@ var handyClicksFuncs = {
 			+ "menuitem-iconic";
 		if(checkFiles && !this.fileExists(path)) {
 			item.prop_className += " handyClicks-invalidPath";
-			item["attr_" + this.tooltipAttrStyle + "0"] = "color: red;";
+			item["attr_" + this.tooltipAttrClass + "0"] = "handyClicks-invalidPathTip";
 		}
 		item.attr_image = this.getFileURI(this.getRelativePath(img)) || "moz-icon:file://" + (this.getRelativePath(icon) || path);
 		item[ttBase + n++] = path;
@@ -1001,8 +1003,8 @@ var handyClicksFuncs = {
 			.getService(Components.interfaces.nsIGlobalHistory2);
 		var text, h;
 		for(var i = 0, len = ar.length; i < len; i++) {
-			text = ar[i].innerHTML;
-			h = ar[i].href;
+			a = ar[i];
+			text = a.innerHTML, h = a.href;
 			if(
 				text == s && h && !this.isJSURI(h)
 				&& (!onlyUnVisited || !his.isVisited(makeURI(h))) // chrome://global/content/contentAreaUtils.js
@@ -1051,29 +1053,40 @@ var handyClicksFuncs = {
 	showContextMenu: function(e) {
 		this.hc.showPopupOnItem();
 	},
+
 	tooltipAttrBase: "hc_tooltip_",
 	tooltipAttrStyle: "hc_tooltip_style_",
+	tooltipAttrClass: "hc_tooltip_class_",
 	fillInTooltip: function(tooltip) {
 		var tNode = document.tooltipNode;
 		var attrBase = this.tooltipAttrBase;
-		var i = 0, lbl, val;
+		var i = 0, cache, lbl, val;
 		var attrName = attrBase + i;
-		var styleAttr;
+		var styleAttr, classAttr;
 		while(tNode.hasAttribute(attrName)) {
-			lbl = tooltip["_" + attrName];
+			cache = "_" + attrName;
+			lbl = cache in tooltip && tooltip[cache];
 			if(!lbl) {
 				lbl = document.createElement("label");
 				lbl.setAttribute("crop", "center");
 				tooltip.firstChild.appendChild(lbl);
-				tooltip["_" + attrName] = lbl;
+				tooltip[cache] = lbl;
 			}
 			var val = tNode.getAttribute(attrName);
 			lbl.setAttribute("value", val);
+
 			styleAttr = this.tooltipAttrStyle + i;
 			if(tNode.hasAttribute(styleAttr))
 				lbl.setAttribute("style", tNode.getAttribute(styleAttr));
 			else
 				lbl.removeAttribute("style");
+
+			classAttr = this.tooltipAttrClass + i;
+			if(tNode.hasAttribute(classAttr))
+				lbl.className = tNode.getAttribute(classAttr);
+			else
+				lbl.removeAttribute("class");
+
 			lbl.hidden = !val; // Hide empty lines
 			attrName = attrBase + ++i;
 		}

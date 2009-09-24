@@ -327,12 +327,12 @@
 			<handler event="keypress" preventdefault="true" key="G" action="this.goToLine();" modifiers="control" />
 			<handler event="blur">
 			<![CDATA[
-				if(
-					event.target === this
-					&& document.commandDispatcher.focusedElement !== this.inputField
-					&& this.maximized
-				)
-					this.maximized = false;
+				if(event.originalTarget !== this.inputField || !this.maximized)
+					return;
+				setTimeout(function(_this) {
+					if(document.commandDispatcher.focusedElement !== _this.inputField)
+						_this.maximized = false;
+				}, 0, this);
 			]]>
 			</handler>
 		</handlers>
