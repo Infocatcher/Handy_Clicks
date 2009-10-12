@@ -15,8 +15,32 @@ var handyClicksPrefUtils = {
 
 	// Initialization:
 	init: function(reloadFlag) {
-		this.prefSvc.addObserver(this.nPrefix, this, false);
-		this.nLength = this.nPrefix.length;
+		var np = this.nPrefix;
+		var v = this.pref("prefsVersion") || 0;
+		if(v < 1) { // Added 2009-09-24
+			// Move prefs to "extensions.handyclicks.funcs." branch:
+			[
+				"loadJavaScriptLinks", "notifyJavaScriptLinks",
+				"loadVoidLinksWithHandlers", "notifyVoidLinksWithHandlers",
+				"filesLinksPolicy", "filesLinksMask",
+				"decodeURIs",
+				"convertURIs", "convertURIsCharset"
+			].forEach(
+				function(pId) {
+					var fullId = np + pId;
+					if(!this.existPref(fullId))
+						return;
+					this.pref("funcs." + pId, this.getPref(fullId));
+					this.prefSvc.deleteBranch(fullId);
+				},
+				this
+			);
+			this.pref("prefsVersion", 1);
+			this.savePrefFile();
+		}
+
+		this.prefSvc.addObserver(np, this, false);
+		this.nLength = np.length;
 	},
 	destroy: function(reloadFlag) {
 		this.prefSvc.removeObserver(this.nPrefix, this);

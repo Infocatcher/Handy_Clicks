@@ -619,16 +619,13 @@ var handyClicks = {
 		node = node || this.origItem;
 		if(!node)
 			return;
-		var hasStl = node.hasAttribute("style");
-		var origVis = node.style.visibility;
-		node.style.visibility = "hidden";
+		var origStyle = node.hasAttribute("style") && node.getAttribute("style");
+		node.style.setProperty("visibility", "hidden", "important");
 		setTimeout(
-			function() {
-				node.style.visibility = origVis;
-				if(!hasStl)
-					node.removeAttribute("style");
+			function(_this) {
+				_this.ut.attribute(node, "style", origStyle, true);
 			},
-			time || 170
+			time || 170, this
 		);
 	},
 
@@ -708,8 +705,12 @@ var handyClicks = {
 	focusOnItem: function(forced, it) {
 		if(!forced && !this.pu.pref("focusOnItems"))
 			return;
-		it = it || this.origItem;
-		if(this.ut.isObject(it) && typeof it.focus == "function")
+		it = it || this.item;
+		if(
+			this.ut.isObject(it)
+			&& it.ownerDocument.defaultView.getComputedStyle(it, "").MozUserFocus != "ignore"
+			&& typeof it.focus == "function"
+		)
 			it.focus();
 	},
 

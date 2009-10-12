@@ -42,7 +42,7 @@ var handyClicksFuncs = {
 			? this.forEachTab(this.getTabUri).join("\n")
 			: this.getUriOfItem() || "";
 		if(link) {
-			if(this.pu.pref("decodeURIs"))
+			if(this.pu.pref("funcs.decodeURIs"))
 				link = this.losslessDecodeURI(link);
 			this.ut.copyStr(link);
 			this.hc.blinkNode();
@@ -254,8 +254,8 @@ var handyClicksFuncs = {
 
 			_this.restorePrefs(origPrefs);
 		}
-		var load = this.pu.pref("loadVoidLinksWithHandlers");
-		if(this.pu.pref("notifyVoidLinksWithHandlers"))
+		var load = this.pu.pref("funcs.loadVoidLinksWithHandlers");
+		if(this.pu.pref("funcs.notifyVoidLinksWithHandlers"))
 			this.ut.notify(
 				this.ut.getLocalized("title"),
 				this.ut.getLocalized("voidLinkWithHandler").replace(/\s*%h/, this.getItemHandlers(item))
@@ -305,8 +305,8 @@ var handyClicksFuncs = {
 			}, 0, _this);
 			//_this.restorePrefs(origPrefs);
 		}
-		var load = this.pu.pref("loadJavaScriptLinks");
-		if(this.pu.pref("notifyJavaScriptLinks"))
+		var load = this.pu.pref("funcs.loadJavaScriptLinks");
+		if(this.pu.pref("funcs.notifyJavaScriptLinks"))
 			this.ut.notify(
 				this.ut.getLocalized("title"),
 				this.ut.getLocalized("javaScriptLink")
@@ -318,10 +318,10 @@ var handyClicksFuncs = {
 	},
 	testForFileLink: function(uri, refererPolicy) {
 		uri = uri || this.getUriOfItem(this.hc.item);
-		var filesPolicy = this.pu.pref("filesLinksPolicy");
+		var filesPolicy = this.pu.pref("funcs.filesLinksPolicy");
 		if(filesPolicy == -1)
 			return false;
-		var regexp = this.pu.pref("filesLinksMask");
+		var regexp = this.pu.pref("funcs.filesLinksMask");
 		if(!regexp)
 			return false;
 		try {
@@ -664,8 +664,8 @@ var handyClicksFuncs = {
 	},
 	get charset() {
 		var charset = "";
-		if(this.pu.pref("convertURIs")) {
-			charset = this.pu.pref("convertURIsCharset");
+		if(this.pu.pref("funcs.convertURIs")) {
+			charset = this.pu.pref("funcs.convertURIsCharset");
 			if(!charset) {
 				charset = this.pu.getPref("intl.charset.default");
 				if(!charset || charset.indexOf("chrome://") == 0)
@@ -769,7 +769,7 @@ var handyClicksFuncs = {
 		node = node || this.hc.item;
 		node = new XPCNativeWrapper(node, "form", "click()"); // ?
 		var form = node.form;
-		var origTarget = form.getAttribute("target");
+		var origTarget = form.hasAttribute("target") && form.getAttribute("target");
 		form.target = target == "cur" ? "" : "_blank";
 
 		var origPrefs = this.setPrefs(
@@ -780,10 +780,7 @@ var handyClicksFuncs = {
 		node.click();
 		this.hc._enabled = true;
 
-		if(origTarget)
-			form.target = origTarget;
-		else
-			form.removeAttribute("target");
+		this.ut.attribute(form, "target", origTarget, true);
 		this.restorePrefs(origPrefs);
 	},
 	fixTab: function(tab) {
@@ -940,31 +937,27 @@ var handyClicksFuncs = {
 		var src = img.src;
 		if(!src)
 			return;
-		var hasStyle = img.hasAttribute("style");
-		var origStyle = img.getAttribute("style");
+		var origStyle = img.hasAttribute("style") && img.getAttribute("style");
 		var w = this.getStyle(img, "width");
 		var h = this.getStyle(img, "height");
-		img.style.width = w;
-		img.style.height = h;
-		// this.ut._log("reloadImg -> " + w + " x " + h);
-		// if(parseInt(w) > 32 && parseInt(h) > 32)
-		img.style.background = "url('" + this.resPath + "loading.gif') center no-repeat";
+		img.style.setProperty("width", w, "important");
+		img.style.setProperty("height", h, "important");
+		if(parseInt(w) > 24 || parseInt(h) > 24)
+			img.style.setProperty("background", "url(\"" + this.resPath + "loading.gif\") center no-repeat", "important");
 		img.setAttribute("src", this.resPath + "spacer.gif"); // transparent gif 1x1
 		setTimeout(
-			function() {
+			function(_this) {
 				img.setAttribute("src", src);
 				img.addEventListener(
 					"load",
-					function() {
-						img.removeEventListener("load", arguments.callee, false);
-						img.removeAttribute("style");
-						if(hasStyle)
-							img.setAttribute("style", origStyle);
+					function f() {
+						img.removeEventListener("load", f, false);
+						_this.ut.attribute(img, "style", origStyle, true);
 					},
 					false
 				);
 			},
-			0
+			0, this
 		);
 	},
 	get resPath() {
@@ -1075,17 +1068,8 @@ var handyClicksFuncs = {
 			var val = tNode.getAttribute(attrName);
 			lbl.setAttribute("value", val);
 
-			styleAttr = this.tooltipAttrStyle + i;
-			if(tNode.hasAttribute(styleAttr))
-				lbl.setAttribute("style", tNode.getAttribute(styleAttr));
-			else
-				lbl.removeAttribute("style");
-
-			classAttr = this.tooltipAttrClass + i;
-			if(tNode.hasAttribute(classAttr))
-				lbl.className = tNode.getAttribute(classAttr);
-			else
-				lbl.removeAttribute("class");
+			this.ut.attribute(lbl, "style", tNode.getAttribute(this.tooltipAttrStyle + i));
+			this.ut.attribute(lbl, "class", tNode.getAttribute(this.tooltipAttrClass + i));
 
 			lbl.hidden = !val; // Hide empty lines
 			attrName = attrBase + ++i;

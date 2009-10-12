@@ -64,4 +64,15 @@
 			<vbox id="handyClicks-tooltipBox" />
 		</tooltip>
 	</popupset>
+
+	<!-- SeaMonkey -->
+	<menupopup id="taskPopup">
+		<menuitem id="handyClicks-toggleStatus-menuitem" insertafter="downloadmgr" class="menuitem-iconic"
+			label="&handyClicks.menuitemLabel;"
+			tooltip="handyClicks-tooltip"
+			key="handyClicks-key-toggleStatus"
+			context="handyClicks-settingsPopup"
+			oncommand="handyClicks.doSettings(event);"
+			onclick="if(event.button != 0) handyClicks.doSettings(event);" />
+	</menupopup>
 </overlay>

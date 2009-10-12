@@ -150,14 +150,14 @@
 
 	<prefpane id="hc-sets-pane-builtInFuncsSets" label="&hc.sets.builtInFuncsSetsTitle;" flex="1">
 		<preferences>
-			<preference id="loadJavaScriptLinks" type="bool" name="extensions.handyclicks.loadJavaScriptLinks" />
-			<preference id="notifyJavaScriptLinks" type="bool" name="extensions.handyclicks.notifyJavaScriptLinks" />
-			<preference id="loadVoidLinksWithHandlers" type="bool" name="extensions.handyclicks.loadVoidLinksWithHandlers" />
-			<preference id="notifyVoidLinksWithHandlers" type="bool" name="extensions.handyclicks.notifyVoidLinksWithHandlers" />
-			<preference id="filesLinksPolicy" type="int" name="extensions.handyclicks.filesLinksPolicy" />
-			<preference id="filesLinksMask" type="string" name="extensions.handyclicks.filesLinksMask" />
-			<preference id="convertURIs" type="bool" name="extensions.handyclicks.convertURIs" />
-			<preference id="convertURIsCharset" type="string" name="extensions.handyclicks.convertURIsCharset" />
+			<preference id="loadJavaScriptLinks" type="bool" name="extensions.handyclicks.funcs.loadJavaScriptLinks" />
+			<preference id="notifyJavaScriptLinks" type="bool" name="extensions.handyclicks.funcs.notifyJavaScriptLinks" />
+			<preference id="loadVoidLinksWithHandlers" type="bool" name="extensions.handyclicks.funcs.loadVoidLinksWithHandlers" />
+			<preference id="notifyVoidLinksWithHandlers" type="bool" name="extensions.handyclicks.funcs.notifyVoidLinksWithHandlers" />
+			<preference id="filesLinksPolicy" type="int" name="extensions.handyclicks.funcs.filesLinksPolicy" />
+			<preference id="filesLinksMask" type="string" name="extensions.handyclicks.funcs.filesLinksMask" />
+			<preference id="convertURIs" type="bool" name="extensions.handyclicks.funcs.convertURIs" />
+			<preference id="convertURIsCharset" type="string" name="extensions.handyclicks.funcs.convertURIsCharset" />
 		</preferences>
 
 		<groupbox orient="horizontal">

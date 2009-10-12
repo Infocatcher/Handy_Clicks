@@ -1108,7 +1108,8 @@ var handyClicksSets = {
 		this.pu.pref("sets.backupsDir", path);
 	},
 	get date() {
-		return new Date().toLocaleFormat("_%Y-%m-%d_%H-%M");
+		var df = this.pu.pref("sets.dateFormat") || "";
+		return df && new Date().toLocaleFormat(df);
 	},
 	checkPrefs: function(pSrc, partialImport) {
 		if(pSrc instanceof Components.interfaces.nsILocalFile)
