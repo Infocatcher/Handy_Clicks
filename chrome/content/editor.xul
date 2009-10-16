@@ -21,10 +21,10 @@
 	ondialogaccept="return handyClicksEditor.saveSettings();"
 	ondialogextra1="handyClicksEditor.saveSettings(true);"
 	ondialogextra2="handyClicksEditor.deleteSettings();"
-	onchange="handyClicksEditor.alloyApply(event);"
-	oncommand="handyClicksEditor.alloyApply(event);"
-	oninput="handyClicksEditor.alloyApply(event);"
-	ondragexit="handyClicksEditor.alloyApply(event);"
+	onchange="handyClicksEditor.allowApply(event);"
+	oncommand="handyClicksEditor.allowApply(event);"
+	oninput="handyClicksEditor.allowApply(event);"
+	ondragexit="handyClicksEditor.allowApply(event);"
 	width="700"
 	height="500"
 	persist="width height screenX screenY">
@@ -103,6 +103,7 @@
 									</menupopup>
 								</menulist>
 								<checkbox id="hc-editor-enabled" label="&hc.editor.enabled;" />
+								<checkbox id="hc-editor-allowMousedown" hc_notdelay="true" label="&hc.editor.allowMousedown;" />
 								<checkbox id="hc-editor-imgIgnoreLinks" hc_notdelay="true" label="&hc.editor.ignoreLinks;" />
 							</hbox>
 

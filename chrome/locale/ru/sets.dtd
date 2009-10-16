@@ -92,6 +92,7 @@
 <!ENTITY hc.editor.event "Событие:">
 <!ENTITY hc.editor.enabled "Включено">
 <!ENTITY hc.editor.ignoreLinks "Игнорировать ссылки">
+<!ENTITY hc.editor.allowMousedown "Разрешить mousedown">
 
 <!ENTITY hc.editor.tabFunc "Функция">
 <!ENTITY hc.editor.tabFuncDelay "Отложенная функция">

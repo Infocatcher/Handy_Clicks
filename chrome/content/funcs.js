@@ -188,13 +188,11 @@ var handyClicksFuncs = {
 		// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
 		if(!moveTo && !this.ut.isChromeDoc(item.ownerDocument) && "TreeStyleTabService" in window)
 			TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab);
-		return tbr.loadOneTab(
-			uri,
-			this.getRefererForItem(refererPolicy, false, item),
-			null, null,
-			loadInBackground,
-			false
-		);
+
+		var tab = tbr.addTab(uri, this.getRefererForItem(refererPolicy, false, item));
+		if(!loadInBackground)
+			tbr.selectedTab = tab;
+		return tab;
 	},
 	testForLinkFeatures: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, winRestriction, target) {
 		e = e || this.hc.copyOfEvent;
@@ -845,10 +843,14 @@ var handyClicksFuncs = {
 			// default to true: if it were false, we wouldn't get this far
 			var warnOnClose = { value: true };
 			var bundle = tbr.mStringBundle;
-			var messageKey = this.ut.fxVersion == 1.5
-				? tabsToClose == 1 ? "tabs.closeWarningOne"    : "tabs.closeWarningMultiple"
-				: tabsToClose == 1 ? "tabs.closeWarningOneTab" : "tabs.closeWarningMultipleTabs";
-			var closeKey = tabsToClose == 1 ? "tabs.closeButtonOne" : "tabs.closeButtonMultiple";
+			var messageKey = this.ut.isSeaMonkey
+				? "tabs.closeWarning"
+				: this.ut.fxVersion == 1.5
+					? tabsToClose == 1 ? "tabs.closeWarningOne"    : "tabs.closeWarningMultiple"
+					: tabsToClose == 1 ? "tabs.closeWarningOneTab" : "tabs.closeWarningMultipleTabs";
+			var closeKey = this.ut.isSeaMonkey
+				? "tabs.closeButton"
+				: tabsToClose == 1 ? "tabs.closeButtonOne" : "tabs.closeButtonMultiple";
 			// focus the window before prompting.
 			// this will raise any minimized window, which will
 			// make it obvious which window the prompt is for and will
@@ -1012,7 +1014,7 @@ var handyClicksFuncs = {
 
 		var ref = this.getRefererForItem(refererPolicy);
 		for(var h in hrefs)
-			tbr.loadOneTab(h, ref, null, null, true, false);
+			tbr.addTab(h, ref);
 
 		if("TreeStyleTabService" in window)
 			TreeStyleTabService.stopToOpenChildTab(tbr.selectedTab);

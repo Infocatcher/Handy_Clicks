@@ -230,11 +230,18 @@ var handyClicksUtils = {
 		return this.isChromeWin(doc.defaultView);
 	},
 
-	get fxVersion() {
-		var ai = Components.classes["@mozilla.org/xre/app-info;1"]
+	get appInfo() {
+		delete this.appInfo;
+		return this.appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
 			.getService(Components.interfaces.nsIXULAppInfo);
-		var ver = parseFloat(ai.version); // 3.0 for "3.0.10"
-		if(ai.ID == "{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}" && ver >= 2) // SeaMonkey
+	},
+	get isSeaMonkey() {
+		delete this.isSeaMonkey;
+		return this.isSeaMonkey = this.appInfo.ID == "{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}";
+	},
+	get fxVersion() {
+		var ver = parseFloat(this.appInfo.version); // 3.0 for "3.0.10"
+		if(this.isSeaMonkey) // SeaMonkey
 			ver = 3.5;
 		delete this.fxVersion;
 		return this.fxVersion = ver;

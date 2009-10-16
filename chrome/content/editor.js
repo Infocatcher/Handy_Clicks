@@ -116,7 +116,7 @@ var handyClicksEditor = {
 			this.addIds(dTab, this.delayId)
 		);
 		var fOpts = this.$("hc-editor-funcOpts");
-		var f = "handyClicksEditor.disableDelayedAction();";
+		var f = "handyClicksEditor.disableUnsupported();";
 		fOpts.setAttribute("onchange", f);
 		fOpts.setAttribute("oncommand", f);
 	},
@@ -132,11 +132,11 @@ var handyClicksEditor = {
 		this.initShortcutEditor();
 		this.appendTypesList();
 		this.initImgIgnoreLinks();
-		this.disableDelayedAction();
 		this.initCustomTypesEditor();
 		this.setWinTitle();
+		this.disableUnsupported();
 	},
-	alloyApply: function(e) {
+	allowApply: function(e) {
 		var ln = e.target.localName;
 		if(ln == "tab" || ln == "dialog" || ln == "key")
 			return;
@@ -198,6 +198,10 @@ var handyClicksEditor = {
 		}
 		this.initFuncsList(isCustom, setsObj.action || null, delayed);
 		this.$("hc-editor-enabled" + delayed).checked = typeof setsObj.enabled != "boolean" || setsObj.enabled;
+		if(!delayed) {
+			var aMd = this.ut.getOwnProperty(setsObj, "allowMousedownEvent");
+			this.$("hc-editor-allowMousedown").checked = typeof aMd == "boolean" && aMd;
+		}
 	},
 	selectCustomFunc: function(isCustom, delayed) {
 		delayed = delayed || "";
@@ -486,6 +490,7 @@ var handyClicksEditor = {
 		this.setWinId();
 		this.setWinTitle();
 		this.highlightUsedTypes();
+		this.disableUnsupported();
 	},
 	setClickOptions: function(e) {
 		this.$("hc-editor-button").value = e.button;
@@ -496,12 +501,13 @@ var handyClicksEditor = {
 			this
 		);
 		this.loadFuncs();
-		this.alloyApply(e);
+		this.allowApply(e);
 		this.$("hc-editor-funcTabbox").selectedIndex = 0;
 	},
-	disableDelayedAction: function() {
-		var dis = this.$("hc-editor-events").value == "mousedown" || !this.$("hc-editor-enabled").checked;
-		this.$("hc-editor-funcTabDelay").setAttribute("disabled", dis);
+	disableUnsupported: function() {
+		var isMd = this.$("hc-editor-events").value == "mousedown";
+		this.$("hc-editor-funcTabDelay").setAttribute("disabled", isMd || !this.$("hc-editor-enabled").checked);
+		this.$("hc-editor-allowMousedown").disabled = isMd;
 	},
 	fixFocusedElement: function _ffe(e) {
 		if(e.type == "select") {
@@ -578,7 +584,7 @@ var handyClicksEditor = {
 		var dso = this.getFuncObj(this.delayId);
 		if(dso) {
 			so.delayedAction = dso;
-			so.delayedAction.eventType = "_delayed_"; // Required for handyClicksPrefSvc.isOkFuncObj()
+			so.delayedAction.eventType = "__delayed__"; // Required for handyClicksPrefSvc.isOkFuncObj()
 		}
 
 		if(this.ps.otherSrc)
@@ -600,6 +606,8 @@ var handyClicksEditor = {
 		if(!fnc || (delayed && fnc == "$auto" && enabled))
 			return null;
 		var so = { enabled: enabled };
+		if(!delayed && this.$("hc-editor-allowMousedown").checked)
+			so.allowMousedownEvent = true;
 		var isCustom = fnc == "$custom";
 		if(isCustom) {
 			so.custom = isCustom;

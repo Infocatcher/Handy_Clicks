@@ -84,20 +84,22 @@ var handyClicks = {
 			return;
 		}
 
-		if(this.pu.pref("forceStopMousedownEvent") || this.editMode)
-			this.stopEvent(e);
-		else if(!this.ut.isChromeWin(e.view.top)) { // Prevent page handlers, but don't stop Mouse Gestures
-			var cWin = e.view.top === content ? gBrowser.mCurrentBrowser : e.view.top;
-			var _this = this;
-			cWin.addEventListener(
-				"mousedown",
-				function(e) {
-					cWin.removeEventListener("mousedown", arguments.callee, true);
-					if(_this._enabled)
-						_this.stopEvent(e);
-				},
-				true
-			);
+		if(!this.ut.getOwnProperty(funcObj, "allowMousedownEvent")) {
+			if(this.pu.pref("forceStopMousedownEvent") || this.editMode)
+				this.stopEvent(e);
+			else if(!this.ut.isChromeWin(e.view.top)) { // Prevent page handlers, but don't stop Mouse Gestures
+				var cWin = e.view.top === content ? gBrowser.mCurrentBrowser : e.view.top;
+				var _this = this;
+				cWin.addEventListener(
+					"mousedown",
+					function(e) {
+						cWin.removeEventListener("mousedown", arguments.callee, true);
+						if(_this._enabled)
+							_this.stopEvent(e);
+					},
+					true
+				);
+			}
 		}
 
 		var _this = this;
