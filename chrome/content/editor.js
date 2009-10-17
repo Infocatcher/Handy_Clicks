@@ -68,9 +68,10 @@ var handyClicksEditor = {
 				var tab = this.$("hc-editor-customTypeFuncs");
 				tab.selectedIndex = src == "define" ? 0 : 1;
 		}
+		if(line === null)
+			return;
 		var panel = tab.selectedPanel
-			|| tab.getElementsByTagName("tabpanels")[0]
-				.getElementsByTagName("tabpanel")[tab.selectedIndex];
+			|| tab.getElementsByTagName("tabpanels")[0].getElementsByTagName("tabpanel")[tab.selectedIndex];
 		var tbs = panel.getElementsByTagName("textbox"), tb;
 		var cre = /(?:^|\s)hcEditor(?:\s|$)/;
 		for(var i = 0, len = tbs.length; i < len; i++) {
@@ -638,7 +639,11 @@ var handyClicksEditor = {
 		return so;
 	},
 	deleteShortcut: function() {
-		delete this.ps.prefs[this.currentShortcut];
+		var p = this.ps.prefs;
+		var cs = this.currentShortcut;
+		var ct = this.currentType;
+		if(this.ut.getOwnProperty(p, cs, ct))
+			delete p[cs][ct];
 		if(this.ps.otherSrc)
 			this.ps.reloadSettings();
 		else

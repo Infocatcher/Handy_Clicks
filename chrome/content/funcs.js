@@ -540,6 +540,7 @@ var handyClicksFuncs = {
 			return;
 		}
 		this.addAppsProps(items, this.losslessDecodeURI(uri), checkFiles);
+		this.addEditItem(items);
 		var popup = this.showGeneratedPopup(items);
 		popup.setAttribute("oncommand", "handyClicksFuncs.openUriWithApp(event, this);");
 		popup.hc_uri = this.convertStrFromUnicode(uri);
@@ -580,6 +581,34 @@ var handyClicksFuncs = {
 			for(var j = 0, len = args.length; j < len; j++)
 				item[ttBase + n++] = args[j];
 		item[ttBase + n++] = uri;
+	},
+
+	addEditItem: function(items) {
+		if(typeof items == "xml") {
+			items.lastChild += <menuseparator xmlns={this.ut.XULNS} />;
+			items.lastChild += <menuitem xmlns={this.ut.XULNS}
+				label={this.ut.getLocalized("edit")}
+				oncommand="handyClicksFuncs.openEditor();" />;
+			return items;
+		}
+		items.push(
+			{ tagName: "menuseparator" },
+			{
+				tagName: "menuitem",
+				attr_label: this.ut.getLocalized("edit"),
+				attr_oncommand: "handyClicksFuncs.openEditor();"
+			}
+		);
+		return items;
+	},
+	openEditor: function() {
+		//this.wu.openEditor(null, "shortcut", this.ps.getEvtStr(this.hc.lastEvent), this.hc.lastAll ? "$all" : this.hc.lastItemType);
+		this.wu.openLink(
+			"handyclicks://editor/shortcut/" + this.ps.getEvtStr(this.hc.lastEvent) + "/"
+				+ (this.hc.lastAll ? "$all" : this.hc.lastItemType) + "/"
+				+ (this.hc.isDeleyed ? "delayed" : "normal") + "/code",
+			null
+		);
 	},
 
 	get profileDir() {

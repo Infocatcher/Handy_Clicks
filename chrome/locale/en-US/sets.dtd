@@ -93,6 +93,7 @@
 <!ENTITY hc.editor.enabled "Enabled">
 <!ENTITY hc.editor.ignoreLinks "Ignore links">
 <!ENTITY hc.editor.allowMousedown "Allow mousedown">
+<!ENTITY hc.editor.allowMousedownTip 'Handy Clicks will not stop "mousedown" event'>
 
 <!ENTITY hc.editor.tabFunc "Function">
 <!ENTITY hc.editor.tabFuncDelay "Delayed Function">

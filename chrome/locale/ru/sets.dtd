@@ -93,6 +93,7 @@
 <!ENTITY hc.editor.enabled "Включено">
 <!ENTITY hc.editor.ignoreLinks "Игнорировать ссылки">
 <!ENTITY hc.editor.allowMousedown "Разрешить mousedown">
+<!ENTITY hc.editor.allowMousedownTip "Handy Clicks не будет останавливать событие «mousedown»">
 
 <!ENTITY hc.editor.tabFunc "Функция">
 <!ENTITY hc.editor.tabFuncDelay "Отложенная функция">

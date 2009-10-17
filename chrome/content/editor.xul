@@ -103,7 +103,7 @@
 									</menupopup>
 								</menulist>
 								<checkbox id="hc-editor-enabled" label="&hc.editor.enabled;" />
-								<checkbox id="hc-editor-allowMousedown" hc_notdelay="true" label="&hc.editor.allowMousedown;" />
+								<checkbox id="hc-editor-allowMousedown" hc_notdelay="true" label="&hc.editor.allowMousedown;" tooltiptext="&hc.editor.allowMousedownTip;" />
 								<checkbox id="hc-editor-imgIgnoreLinks" hc_notdelay="true" label="&hc.editor.ignoreLinks;" />
 							</hbox>
 

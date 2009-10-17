@@ -838,6 +838,7 @@ var handyClicksSets = {
 			var tab = br.selectedTab = br.addTab("about:config");
 		var win = tab.linkedBrowser;
 		var filter = this.pu.nPrefix;
+		var oldFx = this.ut.fxVersion <= 3.0;
 		win.addEventListener(
 			"load",
 			function f(e) {
@@ -845,6 +846,9 @@ var handyClicksSets = {
 				var cWin = win.contentWindow;
 				var tb = cWin.document.getElementById("textbox");
 				tb && tb.setAttribute("value", filter);
+				oldFx && setTimeout(function() {
+					cWin.wrappedJSObject.FilterPrefs();
+				}, 0);
 			},
 			true
 		);

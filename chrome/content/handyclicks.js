@@ -805,7 +805,7 @@ var handyClicks = {
 			this.editMode = false;
 			this.blinkNode();
 			this.closeMenus(e.originalTarget);
-			this.wu.openEditor(null, "shortcut", this.ps.getEvtStr(e), this.itemType);
+			this.wu.openEditor(null, "shortcut", this.ps.getEvtStr(e), this._all ? "$all" : this.itemType);
 			return;
 		}
 		this.executeFunction(funcObj, e);
@@ -813,6 +813,11 @@ var handyClicks = {
 	executeFunction: function(funcObj, e) {
 		this.cancelDelayedAction();
 		this.removeMousemoveHandler();
+
+		this.lastEvent = this.copyOfEvent;
+		this.lastItemType = this.itemType;
+		this.lastAll = this._all;
+		this.isDeleyed = !e;
 
 		if(funcObj.custom) {
 			var action = this.ps.dec(funcObj.action);
@@ -823,7 +828,8 @@ var handyClicks = {
 			catch(err) {
 				var eLine = this.ut.mmLine(err.lineNumber - line + 1);
 				var href = "handyclicks://editor/shortcut/" + this.ps.getEvtStr(e || this.copyOfEvent) + "/"
-					+ (this._all ? "$all" : this.itemType) + "/" + (!e ? "delayed" : "normal") + "/code";
+					+ (this._all ? "$all" : this.itemType) + "/"
+					+ (this.isDeleyed ? "delayed" : "normal") + "/code";
 				var eMsg = this.ut.errInfo("customFunctionError", this.ps.dec(funcObj.label), this.itemType, err);
 				this.ut.notify(
 					this.ut.getLocalized("errorTitle"),
