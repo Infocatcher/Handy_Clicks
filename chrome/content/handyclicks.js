@@ -296,8 +296,11 @@ var handyClicks = {
 			isMousedown
 			|| evtStr != this.evtStrOnMousedown
 			|| e.originalTarget !== this.origItem // For "command" event
-		)
+		) {
 			this.defineItem(e, sets);
+			if(this.pu.pref("devMode") && this.itemType)
+				this.ut._log("[" + e.type + "] " + "this.itemType = " + this.itemType);
+		}
 		var funcObj = this.getFuncObj(sets) || (this.editMode ? {} : null);
 		this.hasSettings = !!funcObj;
 		if(this.hasSettings) {
@@ -521,8 +524,6 @@ var handyClicks = {
 		return false;
 	},
 	getFuncObj: function(sets) {
-		if(this.pu.pref("devMode") && this.itemType)
-			this.ut._log("this.itemType = " + this.itemType);
 		return this.itemType // see .defineItem()
 			&& (
 				(this.itemTypeInSets(sets, "$all") && sets.$all)
@@ -603,7 +604,8 @@ var handyClicks = {
 	},
 	_xy: null,
 	saveXY: function(e) {
-		this._xy = { __proto__: null };
+		if(!this._xy)
+			this._xy = { __proto__: null };
 		["screenX", "screenY", "clientX", "clientY"].forEach(
 			function(p) {
 				this._xy[p] = e[p];
@@ -819,8 +821,9 @@ var handyClicks = {
 		this.lastAll = this._all;
 		this.isDeleyed = !e;
 
+		var action = funcObj.action;
 		if(funcObj.custom) {
-			var action = this.ps.dec(funcObj.action);
+			action = this.ps.dec(action);
 			try {
 				var line = new Error().lineNumber + 1;
 				new Function("event,item,origItem", action).apply(this.fn, [e, this.item, this.origItem]);
@@ -841,7 +844,7 @@ var handyClicks = {
 			}
 		}
 		else {
-			var fnc = this.fn[funcObj.action];
+			var fnc = action in this.fn && this.fn[action];
 			if(typeof fnc == "function") {
 				var args = [e];
 				var argsObj = funcObj.arguments;
@@ -852,10 +855,10 @@ var handyClicks = {
 			else {
 				this.ut.notify(
 					this.ut.getLocalized("errorTitle"),
-					this.ut.getLocalized("functionNotFound").replace("%f", funcObj.action),
+					this.ut.getLocalized("functionNotFound").replace("%f", action),
 					this.ut.console
 				);
-				this.ut._err(new Error(funcObj.action + " not found (" + typeof fnc + ")"));
+				this.ut._err(new Error(action + " not found (" + typeof fnc + ")"));
 			}
 		}
 

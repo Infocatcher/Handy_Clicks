@@ -565,14 +565,15 @@ var handyClicksFuncs = {
 		var ttBase = "attr_" + this.tooltipAttrBase;
 		var n = 0;
 
-		path = this.getRelativePath(path);
+		var file = this.getLocalFile(path, true);
+		path = file ? file.path : path;
 		item.prop_className = (item.hasOwnProperty("prop_className") ? item.prop_className + " " : "")
 			+ "menuitem-iconic";
-		if(checkFiles && !this.fileExists(path)) {
+		if(checkFiles && (!file || !file.exists() || !file.isExecutable())) {
 			item.prop_className += " handyClicks-invalidPath";
 			item["attr_" + this.tooltipAttrClass + "0"] = "handyClicks-invalidPathTip";
 		}
-		item.attr_image = this.getFileURI(this.getRelativePath(img)) || "moz-icon:file://" + (this.getRelativePath(icon) || path);
+		item.attr_image = this.getFileURI(this.getLocalPath(img)) || "moz-icon:file://" + (this.getLocalPath(icon) || path);
 		item[ttBase + n++] = path;
 		item.prop_hc_path = path;
 
@@ -622,43 +623,41 @@ var handyClicksFuncs = {
 		delete this.profileDir;
 		return this.profileDir = this.ps.profileDir.path.replace(/[\\\/]$/, "");
 	},
-	getRelativePath: function(path) {
-		// Example:
-		//   %profile%\..\..\..\OperaUSB\op.com
-		// for
-		//   x:\FirefoxPortable\Data\profile\
-		//   x:\OperaUSB\op.com
-		if(!path || !/^%profile%([\/\\])((?:\.\.[\/\\])*)(.*)$/.test(path))
+	getLocalFile: function(path, normalizeFlag) {
+		if(!path)
 			return path;
-		var pathStart = this.profileDir + RegExp.$1;
-		var dirUp = RegExp.$2;
-		var pathEnd = RegExp.$3;
-		var _path = pathStart;
-		var upCount = dirUp && dirUp.match(/\.\.[\/\\]/g).length;
-		if(upCount) {
-			_path = pathStart.replace(new RegExp("(?:[^\\/\\\\]+[\\/\\\\]){" + upCount + "}$"), "");
-			if(!_path || _path == pathStart) {
-				this.ut._err(new Error("Invalid relative path:\n" + path));
-				return null;
+		path = path.replace(
+			/^%(\w+)%/,
+			function(s, id) {
+				return id.toLowerCase() == "profile" || id == "ProfD"
+					? this.profileDir
+					: Components.classes["@mozilla.org/file/directory_service;1"]
+						.getService(Components.interfaces.nsIProperties)
+						.get(id, Components.interfaces.nsILocalFile)
+						.path
 			}
+		);
+		var file = Components.classes["@mozilla.org/file/local;1"]
+			.createInstance(Components.interfaces.nsILocalFile);
+		try {
+			file.initWithPath(path);
 		}
-		return _path + pathEnd;
+		catch(e) {
+			this.ut._err(new Error("Invalid path: " + path));
+			this.ut._err(e);
+			return null;
+		}
+		normalizeFlag && file.normalize(); // dir1/dir2/../file -> dir1/file
+		return file;
+	},
+	getLocalPath: function(path) {
+		var file = this.getLocalFile(path, true);
+		return file ? file.path : path;
 	},
 	getFileURI: function(path) {
 		if(!path || /^\w{2,}:\/\//.test(path)) // Has protocol
 			return path;
 		return "file://" + path.replace(/\\/g, "/");
-	},
-	fileExists: function(path) {
-		var file = Components.classes["@mozilla.org/file/local;1"]
-			.createInstance(Components.interfaces.nsILocalFile);
-		try { file.initWithPath(path); }
-		catch(e) {
-			this.ut._err(new Error("Invalid path: " + path));
-			this.ut._err(e);
-			return false;
-		}
-		return file.exists();
 	},
 	startProcess: function(path, args) {
 		args = args || [];
