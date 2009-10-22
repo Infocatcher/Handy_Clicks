@@ -67,6 +67,16 @@ var handyClicksWinUtils = {
 		this.highlightOpened(winId, true);
 		return w;
 	},
+	openEditorEx: function(pSrc, mode, shortcut, itemType, delayed, src, line) {
+		var w = this.openEditor(null, mode, shortcut, itemType);
+		setTimeout(function() {
+			if("_handyClicksInitialized" in w) {
+				w.handyClicksEditor.selectTargetTab(delayed, src, line);
+				return;
+			}
+			setTimeout(arguments.callee, 5);
+		}, 0);
+	},
 	openLink: function(href, line) {
 		var hc = "handyclicks://editor/";
 		if(!href || href.indexOf(hc) != 0)
@@ -85,14 +95,7 @@ var handyClicksWinUtils = {
 			var delayed = false;
 			var src = tokens[2];
 		}
-		var w = this.openEditor(null, mode, shortcut, itemType);
-		setTimeout(function() {
-			if("_handyClicksInitialized" in w) {
-				w.handyClicksEditor.selectTargetTab(delayed, src, line);
-				return;
-			}
-			setTimeout(arguments.callee, 5);
-		}, 0);
+		this.openEditorEx(null, mode, shortcut, itemType, delayed, src, line);
 		return true;
 	},
 	getOpenLink: function(href, line) {

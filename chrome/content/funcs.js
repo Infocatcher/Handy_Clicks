@@ -588,27 +588,34 @@ var handyClicksFuncs = {
 			items.lastChild += <menuseparator xmlns={this.ut.XULNS} />;
 			items.lastChild += <menuitem xmlns={this.ut.XULNS}
 				label={this.ut.getLocalized("edit")}
-				oncommand="handyClicksFuncs.openEditor();" />;
-			return items;
+				oncommand="handyClicksFuncs.openEditorForLastEvent();" />;
+			return;
 		}
 		items.push(
 			{ tagName: "menuseparator" },
 			{
 				tagName: "menuitem",
 				attr_label: this.ut.getLocalized("edit"),
-				attr_oncommand: "handyClicksFuncs.openEditor();"
+				attr_oncommand: "handyClicksFuncs.openEditorForLastEvent();"
 			}
 		);
-		return items;
 	},
-	openEditor: function() {
+	openEditorForLastEvent: function() {
 		//this.wu.openEditor(null, "shortcut", this.ps.getEvtStr(this.hc.lastEvent), this.hc.lastAll ? "$all" : this.hc.lastItemType);
+		this.wu.openEditorEx(
+			null, "shortcut",
+			this.ps.getEvtStr(this.hc.lastEvent),
+			this.hc.lastAll ? "$all" : this.hc.lastItemType,
+			this.hc.isDeleyed, "code", null
+		);
+		/*
 		this.wu.openLink(
 			"handyclicks://editor/shortcut/" + this.ps.getEvtStr(this.hc.lastEvent) + "/"
 				+ (this.hc.lastAll ? "$all" : this.hc.lastItemType) + "/"
 				+ (this.hc.isDeleyed ? "delayed" : "normal") + "/code",
 			null
 		);
+		*/
 	},
 
 	get profileDir() {
