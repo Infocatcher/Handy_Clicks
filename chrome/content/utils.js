@@ -318,6 +318,14 @@ var handyClicksUtils = {
 		else
 			node.removeAttribute(attr);
 	},
+	isElementVisible: function(elt) {
+		// chrome://browser/content/utilityOverlay.js
+		// function isElementVisible(aElement)
+		// If elt or a direct or indirect parent is hidden or collapsed,
+		// height, width or both will be 0.
+		var bo = elt.boxObject;
+		return bo.height > 0 && bo.width > 0;
+	},
 
 	mm: function(n, minVal, maxVal) {
 		return Math.max(Math.min(n, maxVal), minVal);

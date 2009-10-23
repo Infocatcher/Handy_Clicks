@@ -626,15 +626,22 @@ var handyClicksFuncs = {
 	getLocalFile: function(path, normalizeFlag) {
 		if(!path)
 			return path;
+		var _this = this;
 		path = path.replace(
 			/^%(\w+)%/,
 			function(s, id) {
-				return id.toLowerCase() == "profile" || id == "ProfD"
-					? this.profileDir
-					: Components.classes["@mozilla.org/file/directory_service;1"]
+				if(id.toLowerCase() == "profile" || id == "ProfD")
+					return _this.profileDir;
+				try {
+					return Components.classes["@mozilla.org/file/directory_service;1"]
 						.getService(Components.interfaces.nsIProperties)
 						.get(id, Components.interfaces.nsILocalFile)
-						.path
+						.path;
+				}
+				catch(e) {
+					_this.ut._err(new Error("Invalid path: " + s));
+					throw e;
+				}
 			}
 		);
 		var file = Components.classes["@mozilla.org/file/local;1"]
