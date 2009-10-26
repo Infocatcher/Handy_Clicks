@@ -194,7 +194,7 @@
 											hc_supports="$all" />
 										<menuitem
 											value="openSimilarLinksInTabs" label="openSimilarLinksInTabs"
-											hc_args="refererPolicy"
+											hc_args="refererPolicy useDelay"
 											hc_supports="link" />
 										<menuitem
 											value="reloadImg" label="reloadImg"

@@ -21,11 +21,13 @@ menuitem[hc_disabled="true"] {
 }
 menuitem[hc_sets="enabled"],
 menulist[hc_sets="enabled"] .menulist-label {
-	color: -moz-hyperlinktext;
+	/*color: -moz-hyperlinktext;*/
+	text-decoration: underline;
 }
 menuitem[hc_sets="disabled"],
 menulist[hc_sets="disabled"] .menulist-label {
-	color: -moz-visitedhyperlinktext;
+	/*color: -moz-visitedhyperlinktext;*/
+	text-decoration: line-through;
 }
 
 /* Warning for empty menulists */

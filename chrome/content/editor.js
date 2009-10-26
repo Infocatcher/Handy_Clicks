@@ -6,7 +6,7 @@ var handyClicksEditor = {
 			loadInBackground: true,
 			loadJSInBackground: true,
 			closePopups: true,
-			toNewWin: true
+			useDelay: true
 		},
 		menulists: {
 			__proto__: null,
@@ -139,7 +139,10 @@ var handyClicksEditor = {
 	},
 	allowApply: function(e) {
 		var ln = e.target.localName;
-		if(ln == "tab" || ln == "dialog" || ln == "key")
+		if(
+			ln == "tab" || ln == "dialog" || ln == "key"
+			|| (ln == "menuitem" && e.target.parentNode.parentNode.id == "hc-editor-itemTypes")
+		)
 			return;
 		this.applyButton.disabled = false;
 	},

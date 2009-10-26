@@ -414,19 +414,14 @@ var handyClicksFuncs = {
 		var pw = window;
 		var _this = this;
 		win.addEventListener(
-			"load",
-			function() {
-				win.removeEventListener("load", arguments.callee, false);
-				setTimeout(
-					function() {
-						var fe = pw.document.commandDispatcher.focusedElement;
-						pw.focus();
-						if(fe)
-							fe.focus();
-						_this.restoreZLevel(win);
-					},
-					0
-				);
+			"resize",
+			function _rs(e) {
+				win.removeEventListener(e.type, _rs, false);
+				var fe = pw.document.commandDispatcher.focusedElement;
+				_this.restoreZLevel(win);
+				pw.focus();
+				if(fe)
+					fe.focus();
 			},
 			false
 		);
@@ -434,8 +429,8 @@ var handyClicksFuncs = {
 	initWindowMoving: function(win, x, y, w, h) {
 		win.addEventListener(
 			"resize",
-			function(e) {
-				win.removeEventListener(e.type, arguments.callee, false);
+			function _rs(e) {
+				win.removeEventListener(e.type, _rs, false);
 				win.moveTo(x, y);
 				win.resizeTo(w, h);
 			},
@@ -443,13 +438,14 @@ var handyClicksFuncs = {
 		);
 	},
 	restoreZLevel: function(win) {
-		var xulwin = win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-			.getInterface(Components.interfaces.nsIWebNavigation)
-			.QueryInterface(Components.interfaces.nsIDocShellTreeItem)
+		var ci = Components.interfaces;
+		var xulWin = win.QueryInterface(ci.nsIInterfaceRequestor)
+			.getInterface(ci.nsIWebNavigation)
+			.QueryInterface(ci.nsIDocShellTreeItem)
 			.treeOwner
-			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-			.getInterface(Components.interfaces.nsIXULWindow);
-		xulwin.zLevel = xulwin.normalZ;
+			.QueryInterface(ci.nsIInterfaceRequestor)
+			.getInterface(ci.nsIXULWindow);
+		xulWin.zLevel = xulWin.normalZ;
 	},
 
 	openInSidebar: function(e, closePopups, ttl, uri) {
@@ -602,21 +598,12 @@ var handyClicksFuncs = {
 		);
 	},
 	openEditorForLastEvent: function() {
-		//this.wu.openEditor(null, "shortcut", this.ps.getEvtStr(this.hc.lastEvent), this.hc.lastAll ? "$all" : this.hc.lastItemType);
 		this.wu.openEditorEx(
 			null, "shortcut",
 			this.ps.getEvtStr(this.hc.lastEvent),
 			this.hc.lastAll ? "$all" : this.hc.lastItemType,
 			this.hc.isDeleyed, "code", null
 		);
-		/*
-		this.wu.openLink(
-			"handyclicks://editor/shortcut/" + this.ps.getEvtStr(this.hc.lastEvent) + "/"
-				+ (this.hc.lastAll ? "$all" : this.hc.lastItemType) + "/"
-				+ (this.hc.isDeleyed ? "delayed" : "normal") + "/code",
-			null
-		);
-		*/
 	},
 
 	get profileDir() {
@@ -639,8 +626,9 @@ var handyClicksFuncs = {
 						.path;
 				}
 				catch(e) {
-					_this.ut._err(new Error("Invalid path: " + s));
-					throw e;
+					_this.ut._err(new Error("Invalid directory alias: " + s));
+					_this.ut._err(e);
+					return s;
 				}
 			}
 		);
@@ -668,17 +656,15 @@ var handyClicksFuncs = {
 	},
 	startProcess: function(path, args) {
 		args = args || [];
-		var file = Components.classes["@mozilla.org/file/local;1"]
-			.createInstance(Components.interfaces.nsILocalFile);
-		try { file.initWithPath(path); }
-		catch(e) { // E.g. this can be invalid relative path
+		var file = this.getLocalFile(path);
+		if(!file) {
 			this.ut.notify(
 				this.ut.getLocalized("errorTitle"),
 				this.ut.getLocalized("invalidFilePath").replace("%p", path)
 				+ this.ut.getLocalized("openConsole"),
 				this.ut.console
 			);
-			throw e;
+			return;
 		}
 		if(!file.exists()) {
 			this.ut.alertEx(
@@ -690,7 +676,9 @@ var handyClicksFuncs = {
 		var process = Components.classes["@mozilla.org/process/util;1"]
 			.createInstance(Components.interfaces.nsIProcess);
 		process.init(file);
-		try { process.run(false, args, args.length); }
+		try {
+			process.run(false, args, args.length);
+		}
 		catch(e) {
 			this.ut.alertEx(
 				this.ut.getLocalized("errorTitle"),
@@ -1014,7 +1002,7 @@ var handyClicksFuncs = {
 		item = item || this.hc.item;
 		return item.ownerDocument.defaultView.getComputedStyle(item, "")[propName];
 	},
-	openSimilarLinksInTabs: function(e, refererPolicy, a) {
+	openSimilarLinksInTabs: function(e, refererPolicy, useDelay, a) {
 		a = a || this.hc.item;
 		var s = a.innerHTML;
 		if(!s) {
@@ -1049,17 +1037,32 @@ var handyClicksFuncs = {
 				hrefs[h] = true;
 		}
 		var tbr = this.hc.getTabBrowser(true);
+		var ref = this.getRefererForItem(refererPolicy);
 
 		// Open a new tab as a child of the current tab (Tree Style Tab)
-		if("TreeStyleTabService" in window)
-			TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab, true);
+		if("TreeStyleTabService" in window) {
+			var _tab = tbr.selectedTab;
+			TreeStyleTabService.readyToOpenChildTab(_tab, true);
+		}
 
-		var ref = this.getRefererForItem(refererPolicy);
-		for(var h in hrefs)
-			tbr.addTab(h, ref);
-
-		if("TreeStyleTabService" in window)
-			TreeStyleTabService.stopToOpenChildTab(tbr.selectedTab);
+		if(!useDelay) {
+			for(var h in hrefs)
+				tbr.addTab(h, ref);
+			if("TreeStyleTabService" in window)
+				TreeStyleTabService.stopToOpenChildTab(_tab);
+			return;
+		}
+		var delay = this.pu.pref("funcs.multipleTabsOpenDelay") || 0;
+		(function delayedOpen() {
+			for(var h in hrefs) {
+				tbr.addTab(h, ref);
+				delete hrefs[h];
+				setTimeout(delayedOpen, delay);
+				return;
+			}
+			if("TreeStyleTabService" in window)
+				TreeStyleTabService.stopToOpenChildTab(_tab);
+		})();
 	},
 	$void: function(e) {}, // dummy function
 	getRefererForItem: function(refPolicy, imgLoading, it) {
