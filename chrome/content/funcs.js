@@ -817,6 +817,7 @@ var handyClicksFuncs = {
 		this.ut.attribute(form, "target", origTarget, true);
 		this.restorePrefs(origPrefs);
 	},
+
 	fixTab: function(tab) {
 		tab = tab || this.hc.item;
 		if(!tab || tab.localName != "tab")
@@ -829,11 +830,11 @@ var handyClicksFuncs = {
 	},
 	removeAllTabs: function(e) {
 		var tbr = this.hc.getTabBrowser();
-		if(this.warnAboutClosingTabs(null, tbr)) {
-			var tabs = tbr.mTabContainer.childNodes;
-			for(var i = tabs.length - 1; i >= 0; --i)
+		var tabs = tbr.mTabContainer.childNodes;
+		var len = tabs.length;
+		if(this.warnAboutClosingTabs(len, tbr))
+			for(var i = len - 1; i >= 0; --i)
 				tbr.removeTab(tabs[i]);
-		}
 	},
 	removeRightTabs: function(e, tab) {
 		tab = this.fixTab(tab);
@@ -863,8 +864,7 @@ var handyClicksFuncs = {
 	},
 	warnAboutClosingTabs: function(tabsToClose, tbr) {
 		// Based on code of Firefox 1.5 - 3.0
-		// chrome://browser/content/tabbrowser.xml
-		// "warnAboutClosingTabs" method
+		// "warnAboutClosingTabs" method in chrome://browser/content/tabbrowser.xml
 		tbr = tbr || this.hc.getTabBrowser();
 		tabsToClose = typeof tabsToClose == "number"
 			? tabsToClose
@@ -897,7 +897,7 @@ var handyClicksFuncs = {
 				bundle.getString("tabs.closeWarningTitle"),
 				bundle.getFormattedString(messageKey, [tabsToClose]),
 				(pSvc.BUTTON_TITLE_IS_STRING * pSvc.BUTTON_POS_0)
-				+ (pSvc.BUTTON_TITLE_CANCEL * pSvc.BUTTON_POS_1),
+					+ (pSvc.BUTTON_TITLE_CANCEL * pSvc.BUTTON_POS_1),
 				bundle.getString(closeKey),
 				null, null,
 				bundle.getString("tabs.closeWarningPromptMe"),
@@ -970,6 +970,7 @@ var handyClicksFuncs = {
 		tbr.moveTabTo(newTab, ind);
 		tbr.selectedTab = newTab;
 	},
+
 	reloadImg: function(e, img) {
 		img = img || this.hc.item;
 		var src = img.src;
@@ -1008,22 +1009,32 @@ var handyClicksFuncs = {
 		item = item || this.hc.item;
 		return item.ownerDocument.defaultView.getComputedStyle(item, "")[propName];
 	},
-	openSimilarLinksInTabs: function(e, refererPolicy, useDelay, a) {
+	openSimilarLinksInTabs: function(e, refererPolicy, a) {
 		a = a || this.hc.item;
 		var s = a.innerHTML;
 		if(!s) {
 			this.ut._err(new Error("openSimilarLinksInTabs() not supported: a.innerHTML is " + s));
 			return;
 		}
-		var onlyUnVisited = {};
-		var cnf = this.ut.promptsSvc.confirmCheck(
+		var ps = this.ut.promptsSvc;
+		var onlyUnvisited = { value: false };
+		var flags = ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING +
+		            ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL +
+		            ps.BUTTON_POS_2 * ps.BUTTON_TITLE_IS_STRING +
+		            ps.BUTTON_POS_0_DEFAULT;
+		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
+		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
+		var button = ps.confirmEx(
 			window, this.ut.getLocalized("title"),
 			this.ut.getLocalized("openSimilarLinksConfirm"),
-			this.ut.getLocalized("openOnlyVisited"), onlyUnVisited
+			flags,
+			this.ut.getLocalized("openButton"), "", this.ut.getLocalized("openWithDelaysButton"),
+			this.ut.getLocalized("openOnlyVisited"), onlyUnvisited
 		);
-		if(!cnf)
+		if(button == 1)
 			return;
-		onlyUnVisited = onlyUnVisited.value;
+		onlyUnvisited = onlyUnvisited.value;
+		var useDelays = button == 2;
 
 		var doc = a.ownerDocument;
 
@@ -1038,10 +1049,11 @@ var handyClicksFuncs = {
 			text = a.innerHTML, h = a.href;
 			if(
 				text == s && h && !this.isJSURI(h)
-				&& (!onlyUnVisited || !his.isVisited(makeURI(h))) // chrome://global/content/contentAreaUtils.js
+				&& (!onlyUnvisited || !his.isVisited(makeURI(h))) // chrome://global/content/contentAreaUtils.js
 			)
 				hrefs[h] = true;
 		}
+
 		var tbr = this.hc.getTabBrowser(true);
 		var ref = this.getRefererForItem(refererPolicy);
 
@@ -1051,7 +1063,7 @@ var handyClicksFuncs = {
 			TreeStyleTabService.readyToOpenChildTab(_tab, true);
 		}
 
-		if(!useDelay) {
+		if(!useDelays) {
 			for(var h in hrefs)
 				tbr.addTab(h, ref);
 			if("TreeStyleTabService" in window)

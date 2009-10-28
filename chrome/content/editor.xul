@@ -27,7 +27,7 @@
 	ondragexit="handyClicksEditor.allowApply(event);"
 	width="700"
 	height="500"
-	persist="width height screenX screenY">
+	persist="width height screenX screenY sizemode">
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
@@ -194,7 +194,7 @@
 											hc_supports="$all" />
 										<menuitem
 											value="openSimilarLinksInTabs" label="openSimilarLinksInTabs"
-											hc_args="refererPolicy useDelay"
+											hc_args="refererPolicy"
 											hc_supports="link" />
 										<menuitem
 											value="reloadImg" label="reloadImg"

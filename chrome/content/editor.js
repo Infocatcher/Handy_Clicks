@@ -5,8 +5,7 @@ var handyClicksEditor = {
 			skipCache: true,
 			loadInBackground: true,
 			loadJSInBackground: true,
-			closePopups: true,
-			useDelay: true
+			closePopups: true
 		},
 		menulists: {
 			__proto__: null,
