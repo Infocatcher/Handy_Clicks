@@ -806,53 +806,6 @@ var handyClicksSets = {
 	resetPref: function(pName) {
 		this.pu.resetPref(this.pu.nPrefix + pName);
 	},
-	openAboutConfig: function() {
-		var brWin = this.wu.wm.getMostRecentWindow("navigator:browser");
-		if(brWin) {
-			this.openAboutConfigFilter(brWin);
-			return;
-		}
-		brWin = window.openDialog(
-			"chrome://browser/content/", "_blank", "chrome,all,dialog=no",
-			"about:blank",
-			null, null, null, false
-		);
-		var _this = this;
-		brWin.addEventListener(
-			"load",
-			function f(e) {
-				brWin.removeEventListener("load", f, true);
-				_this.openAboutConfigFilter(brWin);
-			},
-			true
-		);
-	},
-	openAboutConfigFilter: function(brWin) {
-		brWin.focus();
-		var br = brWin.gBrowser;
-		if(br.currentURI.spec == "about:blank" && !br.webProgress.isLoadingDocument) {
-			var tab = br.mCurrentTab;
-			br.loadURI("about:config");
-		}
-		else
-			var tab = br.selectedTab = br.addTab("about:config");
-		var win = tab.linkedBrowser;
-		var filter = this.pu.nPrefix;
-		var oldFx = this.ut.fxVersion <= 3.0;
-		win.addEventListener(
-			"load",
-			function f(e) {
-				win.removeEventListener("load", f, true);
-				var cWin = win.contentWindow;
-				var tb = cWin.document.getElementById("textbox");
-				tb && tb.setAttribute("value", filter);
-				oldFx && setTimeout(function() {
-					cWin.wrappedJSObject.FilterPrefs();
-				}, 0);
-			},
-			true
-		);
-	},
 	// Export/import:
 	exportPrefsHeader: "[Handy Clicks settings]",
 	exportPrefs: function() {

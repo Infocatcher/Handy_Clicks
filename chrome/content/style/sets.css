@@ -15,9 +15,17 @@ radio[pane="hc-sets-pane-builtInFuncsSets"] {
 }
 
 /* Tree style */
-treechildren::-moz-tree-row(selected) {
-	background-color: Highlight !important;
+/* Override system colors for use custom colors for highlighting */
+treechildren {
+	color: black;
+	background-color: white;
 }
+treechildren::-moz-tree-row(selected),
+treechildren::-moz-tree-cell-text(selected) {
+	background-color: #bfc1ca !important;
+	color: black !important;
+}
+
 treechildren::-moz-tree-row(hc_custom) {
 	background-color: #dfffdf;
 }
@@ -28,25 +36,22 @@ treechildren::-moz-tree-row(hc_custom, hc_customType) {
 	background-color: #dffff7;
 }
 treechildren::-moz-tree-row(hc_disabled) {
-	/*background-color: ThreeDLightShadow;*/
 	background-color: #f1efe2;
 }
 treechildren::-moz-tree-row(hc_buggy) {
 	background-color: #faa;
 }
 treechildren::-moz-tree-row(hc_search) {
-	/*background-color: #cffff8;*/
 	background-color: #e7e3ff;
 }
 treechildren::-moz-tree-row(hover) {
-	/*background-color: ThreeDFace;*/
 	border: 1px dotted black;
 }
 treechildren::-moz-tree-cell-text(hc_edited) {
 	font-weight: bold;
 }
 treechildren::-moz-tree-cell-text(hc_copied) {
-	color: Highlight !important;
+	color: #bfc1ca !important;
 }
 treechildren::-moz-tree-checkbox(hc_editable) {
 	list-style-image: url("checkbox.png"); /* Image from Adblock Plus extension */

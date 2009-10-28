@@ -451,10 +451,13 @@ var handyClicksEditor = {
 		//default xml namespace = this.ut.XULNS;
 		var argContainer = <hbox xmlns={ns} align="center" class="hc-editor-argsContainer" />;
 		var elt = <{argType} xmlns={ns} hc_argname={argName} />;
+		elt.@onclick = "handyClicksEditor.clickHelper(event);";
 		switch(argType) {
 			case "checkbox":
 				elt.@checked = !!argVal;
-				elt.@label = this.ut.getLocalized(argName);
+				var l = this.ut.getLocalized(argName);
+				elt.@label = l;
+				this.setAboutConfigEntry(elt, l);
 			break;
 			case "menulist":
 				// Description:
@@ -464,7 +467,10 @@ var handyClicksEditor = {
 				this.types.menulists[argName].forEach(
 					function(val) {
 						var l = this.ut.getLocalized(argName + "[" + val + "]");
-						mp.appendChild(<menuitem xmlns={ns} value={val} label={l} />);
+						var mi = <menuitem xmlns={ns} value={val} label={l} />;
+						mp.appendChild(mi);
+						mi.@tooltiptext = "";
+						this.setAboutConfigEntry([elt, mi], l);
 					},
 					this
 				);
@@ -473,6 +479,29 @@ var handyClicksEditor = {
 		}
 		argContainer.appendChild(elt);
 		this.$("hc-editor-funcArgs" + delayed).appendChild(this.ut.fromXML(argContainer));
+	},
+	clickHelper: function(e) {
+		if(e.button != 2)
+			return;
+		var tar = e.target;
+		if(!tar.hasAttribute("hc_about_config_entry"))
+			return;
+		var mp = tar.parentNode;
+		if("hidePopup" in mp)
+			mp.hidePopup();
+		this.pu.openAboutConfig(tar.getAttribute("hc_about_config_entry"));
+	},
+	setAboutConfigEntry: function(xmlElt, label) {
+		if(!/\(([\w-]+(?:\.[\w-]+)+)\)/.test(label))
+			return;
+		var val = RegExp.$1;
+		var tt = this.ut.getLocalized("openAboutConfig");
+		(this.ut.isArray(xmlElt) ? xmlElt : [xmlElt]).forEach(
+			function(elt) {
+				elt.@hc_about_config_entry = val;
+				elt.@tooltiptext = tt;
+			}
+		);
 	},
 	get currentShortcut() {
 		var s = "button=" + this.$("hc-editor-button").value;

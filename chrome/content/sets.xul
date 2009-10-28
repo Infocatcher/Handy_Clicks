@@ -255,7 +255,7 @@
 			<menuitem command="hc-sets-cmd-add" key="hc-sets-key-add" />
 		</popup>
 		<popup id="hc-sets-prefsManagementPopup" position="before_start">
-			<menuitem oncommand="handyClicksSets.openAboutConfig();" label="&hc.sets.allPrefs;" />
+			<menuitem oncommand="handyClicksPrefUtils.openAboutConfig();" label="&hc.sets.allPrefs;" />
 			<menuseparator />
 			<menuitem oncommand="handyClicksSets.resetPrefs();" label="&hc.sets.defaults;" />
 			<menuseparator />

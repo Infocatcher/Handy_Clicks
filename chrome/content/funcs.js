@@ -12,7 +12,6 @@ var handyClicksFuncs = {
 		uri = uri || this.getUriOfItem(item);
 		var doc = item.ownerDocument;
 		var loc = doc.location.href.replace(/#.*$/, "");
-		//this.ut._log(doc, loc, uri);
 		if(uri.indexOf(loc) != 0)
 			return false;
 		var _uri = uri.substr(loc.length);
@@ -24,12 +23,8 @@ var handyClicksFuncs = {
 		return !anchor || (!doc.getElementById(anchor) && !doc.getElementsByName(anchor).length);
 	},
 
-	copyItemText: function(e, closePopups) { // for all
-		var text = this.hc.itemType == "tabbar"
-			? this.forEachTab(function(tab) {
-					return tab.label;
-				}).join("\n")
-			: this.getTextOfItem();
+	copyItemText: function(e, closePopups) {
+		var text = this.getTextOfItem();
 		if(text) {
 			this.ut.copyStr(text);
 			this.hc.blinkNode();
@@ -38,34 +33,34 @@ var handyClicksFuncs = {
 			this.hc.closeMenus();
 	},
 	copyItemLink: function(e, closePopups) {
-		var link = this.hc.itemType == "tabbar"
-			? this.forEachTab(this.getTabUri).join("\n")
-			: this.getUriOfItem() || "";
+		var link = this.getUriOfItem() || "";
 		if(link) {
 			if(this.pu.pref("funcs.decodeURIs"))
-				link = this.losslessDecodeURI(link);
+				link = link.split("\n")
+					.map(this.losslessDecodeURI, this)
+					.join("\n");
 			this.ut.copyStr(link);
 			this.hc.blinkNode();
 		}
 		if(closePopups)
 			this.hc.closeMenus();
 	},
-	getTextOfItem: function(it, e) {
+	getTextOfItem: function(it, e, noTrim) {
 		it = it || this.hc.item;
-		return it.textContent || it.label || it.alt || it.title || it.value
-			|| (
-				it.getAttribute
-				&& (it.getAttribute("label") || it.getAttribute("value"))
-			)
-			|| (
-				it.localName && it.localName.toLowerCase() == "treechildren"
-				&& this.hc.getTreeInfo(it, e, "title")
-			)
-			|| "";
+		var text = this.hc.itemType == "tabbar"
+			? this.forEachTab(this.getTabText).join("\n")
+			: it.textContent || it.label || it.alt || it.title || it.value
+				|| (
+					it.getAttribute
+					&& (it.getAttribute("label") || it.getAttribute("value"))
+				)
+				|| this.hc.getBookmarkUri(it)
+				|| "";
+		return noTrim ? text : this.trimStr(text);
 	},
-	getUriOfItem: function(it, itemType) {
+	getUriOfItem: function(it, itemType, noTrim) {
 		it = it || this.hc.item;
-		var uri = null;
+		var uri = "";
 		switch(itemType || this.hc.itemType) {
 			case "link":
 				uri = this.getLinkUri(it);
@@ -80,6 +75,9 @@ var handyClicksFuncs = {
 			case "tab":
 				uri = this.getTabUri(it);
 			break;
+			case "tabbar":
+				uri = this.forEachTab(this.getTabUri).join("\n");
+			break;
 			default: // Support for custom types
 				uri = this.getLinkUri(it)
 					|| it.src
@@ -89,7 +87,12 @@ var handyClicksFuncs = {
 		if(this.isJSURI(uri))
 			try { uri = decodeURI(uri); }
 			catch(e) {}
-		return uri;
+		return noTrim ? uri : this.trimStr(uri);
+	},
+	trimStr: function(s) {
+		return this.pu.pref("funcs.trimStrings")
+			? (s ? this.ut.safeToString(s) : "").replace(/^\s+|\s+$/g, "")
+			: s;
 	},
 	getLinkUri: function(it) {
 		var xLink = it.getAttributeNS("http://www.w3.org/1999/xlink", "href");
@@ -101,6 +104,9 @@ var handyClicksFuncs = {
 		return "linkedBrowser" in tab
 			? tab.linkedBrowser.contentDocument.location.href
 			: "";
+	},
+	getTabText: function(tab) {
+		return tab.label || tab.getAttribute("label");
 	},
 	forEachTab: function(fnc, _this, tbr) {
 		return Array.map(

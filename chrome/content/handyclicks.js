@@ -329,8 +329,8 @@ var handyClicks = {
 				: null;
 	},
 	defineItem: function(e, sets, forcedAll) {
-		var all = forcedAll || this.itemTypeInSets(sets, "$all");
-		this._all = all;
+		this._all = this.itemTypeInSets(sets, "$all");
+		var all = forcedAll || this._all;
 		//all = this.editMode || all;
 		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "submitButton"
 		this.item = null;

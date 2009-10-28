@@ -72,3 +72,11 @@ menulist:not([label]) > .menulist-label-box {
 #hc-editor-funcTab [hc_notfunc="true"] {
 	display: none;
 }
+
+menulist[hc_about_config_entry] .menulist-label,
+[hc_about_config_entry] {
+	cursor: help;
+}
+[hc_about_config_entry] :not([hc_about_config_entry]) {
+	cursor: default;
+}

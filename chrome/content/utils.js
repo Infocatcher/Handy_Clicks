@@ -237,7 +237,7 @@ var handyClicksUtils = {
 	},
 	get isSeaMonkey() {
 		delete this.isSeaMonkey;
-		return this.isSeaMonkey = this.appInfo.ID == "{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}";
+		return this.isSeaMonkey = this.appInfo.name == "SeaMonkey";
 	},
 	get fxVersion() {
 		var ver = parseFloat(this.appInfo.version); // 3.0 for "3.0.10"
