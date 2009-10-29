@@ -103,8 +103,9 @@ var handyClicksEditor = {
 			if(mi.hasAttribute("tooltiptext"))
 				mi.setAttribute("tooltiptext", this.ut.getLocalized(mi.getAttribute("tooltiptext")));
 		}
-		if(this.ut.fxVersion >= 3) // Fix bug in Firefox 1.5 and 2.0
+		if(this.ut.fxVersion >= 3)
 			return;
+		// Fix bug in Firefox 1.5 and 2.0
 		var ml = mi.parentNode.parentNode;
 		var si = ml.selectedIndex;
 		ml.selectedIndex = null;
@@ -451,12 +452,21 @@ var handyClicksEditor = {
 		var argContainer = <hbox xmlns={ns} align="center" class="hc-editor-argsContainer" />;
 		var elt = <{argType} xmlns={ns} hc_argname={argName} />;
 		elt.@onclick = "handyClicksEditor.clickHelper(event);";
+
+		var cfgTt = this.ut.getLocalized("openAboutConfig");
+		var cfg;
+
 		switch(argType) {
 			case "checkbox":
 				elt.@checked = !!argVal;
-				var l = this.ut.getLocalized(argName);
-				elt.@label = l;
-				this.setAboutConfigEntry(elt, l);
+				var label = this.ut.getLocalized(argName);
+				elt.@label = label;
+
+				cfg = this.getAboutConfigEntry(label);
+				if(cfg) {
+					elt.@hc_about_config_entry = cfg;
+					elt.@tooltiptext = cfgTt;
+				}
 			break;
 			case "menulist":
 				// Description:
@@ -464,12 +474,19 @@ var handyClicksEditor = {
 				// List of values:
 				var mp = <menupopup xmlns={ns} />;
 				this.types.menulists[argName].forEach(
-					function(val) {
-						var l = this.ut.getLocalized(argName + "[" + val + "]");
-						var mi = <menuitem xmlns={ns} value={val} label={l} />;
+					function(val, indx) {
+						var label = this.ut.getLocalized(argName + "[" + val + "]");
+						cfg = this.getAboutConfigEntry(label);
+						var mi = <menuitem xmlns={ns} value={val} label={label}
+							hc_about_config_entry={cfg} tooltiptext={cfg ? cfgTt : ""} />;
+						if(!cfg) // Firefox 1.5 crashes on actions like mi.@some_attribute = "";
+							delete mi.@hc_about_config_entry;
+						else if(!argVal && indx === 0 || val == argVal) { //~ todo: test!
+							elt.@hc_about_config_entry = cfg;
+							elt.@tooltiptext = cfgTt;
+							elt.@oncommand = "handyClicksEditor.setAboutConfigTooltip(this);";
+						}
 						mp.appendChild(mi);
-						mi.@tooltiptext = "";
-						this.setAboutConfigEntry([elt, mi], l);
 					},
 					this
 				);
@@ -478,6 +495,9 @@ var handyClicksEditor = {
 		}
 		argContainer.appendChild(elt);
 		this.$("hc-editor-funcArgs" + delayed).appendChild(this.ut.fromXML(argContainer));
+	},
+	getAboutConfigEntry: function(label) {
+		return /\(([\w-]+(?:\.[\w-]+)+)\)/.test(label) && RegExp.$1;
 	},
 	clickHelper: function(e) {
 		if(e.button != 2)
@@ -490,18 +510,18 @@ var handyClicksEditor = {
 			mp.hidePopup();
 		this.pu.openAboutConfig(tar.getAttribute("hc_about_config_entry"));
 	},
-	setAboutConfigEntry: function(xmlElt, label) {
-		if(!/\(([\w-]+(?:\.[\w-]+)+)\)/.test(label))
-			return;
-		var val = RegExp.$1;
-		var tt = this.ut.getLocalized("openAboutConfig");
-		(this.ut.isArray(xmlElt) ? xmlElt : [xmlElt]).forEach(
-			function(elt) {
-				elt.@hc_about_config_entry = val;
-				elt.@tooltiptext = tt;
-			}
-		);
+	setAboutConfigTooltip: function(ml) {
+		var si = ml.selectedItem;
+		if(si && si.hasAttribute("hc_about_config_entry")) {
+			ml.setAttribute("hc_about_config_entry", si.getAttribute("hc_about_config_entry"));
+			ml.setAttribute("tooltiptext", this.ut.getLocalized("openAboutConfig"));
+		}
+		else {
+			ml.removeAttribute("hc_about_config_entry");
+			ml.removeAttribute("tooltiptext");
+		}
 	},
+
 	get currentShortcut() {
 		var s = "button=" + this.$("hc-editor-button").value;
 		["ctrl", "shift", "alt", "meta"].forEach(
