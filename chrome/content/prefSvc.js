@@ -17,24 +17,33 @@ var handyClicksPrefSvc = {
 		version: "_version-",
 		beforeImport: "_before_import-"
 	},
-
 	okShortcut: /^button=[0-2],ctrl=(?:true|false),shift=(?:true|false),alt=(?:true|false),meta=(?:true|false)$/,
 	_restoringCounter: 0,
+
+	get _profileDir() {
+		delete this._profileDir;
+		return this._profileDir = Components.classes["@mozilla.org/file/directory_service;1"]
+			.getService(Components.interfaces.nsIProperties)
+			.get("ProfD", Components.interfaces.nsILocalFile);
+	},
 	get profileDir() {
-		var dirSvc = Components.classes["@mozilla.org/file/directory_service;1"]
-			.getService(Components.interfaces.nsIProperties);
-		return dirSvc.get("ProfD", Components.interfaces.nsILocalFile);
+		return this._profileDir.clone();
+	},
+	get _prefsDir() {
+		var dir = this.profileDir;
+		dir.append(this.prefsDirName);
+		if(!dir.exists()) {
+			try {
+				dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755);
+			}
+			catch(e) {
+				this.ut._err(new Error("Can't create directory\n" + e));
+			}
+		}
+		delete this._prefsDir;
+		return this._prefsDir = dir;
 	},
 	get prefsDir() {
-		if(!this._prefsDir) {
-			var dir = this.profileDir;
-			dir.append(this.prefsDirName);
-			if(!dir.exists()) {
-				try { dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755); }
-				catch(e) { this.ut._err(new Error("Can't create directory\n" + e)); }
-			}
-			this._prefsDir = dir;
-		}
 		return this._prefsDir.clone();
 	},
 	getFile: function(fName) {
@@ -42,12 +51,15 @@ var handyClicksPrefSvc = {
 		file.append(fName);
 		return file;
 	},
+	get _prefsFile() {
+		delete this._prefsFile;
+		return this._prefsFile = this.getFile(this.prefsFileName + ".js");
+	},
 	get prefsFile() {
-		if(!this._prefsFile)
-			return this._prefsFile = this.getFile(this.prefsFileName + ".js");
 		return this._prefsFile.clone();
 	},
-	_exported: {
+
+	_prefVars: {
 		currentVersion: "handyClicksPrefsVersion",
 		types: "handyClicksCustomTypes",
 		prefs: "handyClicksPrefs",
@@ -57,14 +69,14 @@ var handyClicksPrefSvc = {
 		if(!this.otherSrc)
 			return null;
 		var ret = {};
-		for(var p in this._exported)
-			ret[this._exported[p]] = this[p];
+		for(var p in this._prefVars)
+			ret[this._prefVars[p]] = this[p];
 		return ret;
 	},
 	importSrc: function(tar, src) {
 		var p, eName;
-		for(p in this._exported) {
-			eName = this._exported[p];
+		for(p in this._prefVars) {
+			eName = this._prefVars[p];
 			tar[p] = this.ut.getOwnProperty(src, eName);
 		}
 	},
@@ -76,7 +88,10 @@ var handyClicksPrefSvc = {
 		if(pSrc instanceof Components.interfaces.nsILocalFile) {
 			if(!pSrc.exists())
 				this.saveSettings(this.prefsHeader + this.versionInfo + this.defaultPrefs);
+			var fromProfile = pSrc.equals(this.prefsFile);
 			pSrc = this.ut.readFromFile(pSrc);
+			if(fromProfile)
+				this._savedStr = pSrc;
 		}
 		if(typeof pSrc == "string") {
 			// Uses sandbox instead mozIJSSubScriptLoader for security purposes

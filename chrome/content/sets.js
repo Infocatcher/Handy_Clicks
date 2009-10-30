@@ -869,7 +869,7 @@ var handyClicksSets = {
 	exportSets: function(partialExport, toClipboard) {
 		this.selectTreePane();
 		if(!toClipboard) {
-			var file = this.pickFile(this.ut.getLocalized("exportSets"), true, "js");
+			var file = this.pickFile(this.ut.getLocalized("exportSets"), true, "js", !partialExport && this.ps.prefsFile.lastModifiedTime);
 			if(!file)
 				return;
 			this.backupsDir = file.parent.path;
@@ -1034,10 +1034,10 @@ var handyClicksSets = {
 	},
 
 	// Export/import utils:
-	pickFile: function(pTitle, modeSave, ext) {
+	pickFile: function(pTitle, modeSave, ext, date) {
 		var fp = Components.classes["@mozilla.org/filepicker;1"]
 			.createInstance(Components.interfaces.nsIFilePicker);
-		fp.defaultString = this.ps.prefsFileName + (modeSave ? this.date : "") + "." + ext;
+		fp.defaultString = this.ps.prefsFileName + (modeSave ? this.getFormattedDate(date) : "") + "." + ext;
 		fp.defaultExtension = "js";
 		fp.appendFilter(this.ut.getLocalized("hcPrefsFiles"), "handyclicks_prefs*." + ext);
 		fp.appendFilter(this.ut.getLocalized(ext + "Files"), "*." + ext);
@@ -1055,18 +1055,24 @@ var handyClicksSets = {
 	},
 	get backupsDir() {
 		var path = this.pu.pref("sets.backupsDir");
+		if(!path)
+			return null;
 		var file = Components.classes["@mozilla.org/file/local;1"]
 			.createInstance(Components.interfaces.nsILocalFile);
-		try { file.initWithPath(path); }
-		catch(e) { return null; }
-		return file.exists() ? file : null;
+		try {
+			file.initWithPath(path);
+		}
+		catch(e) {
+			return null;
+		}
+		return file.exists() && file.isDirectory() && file;
 	},
 	set backupsDir(path) {
 		this.pu.pref("sets.backupsDir", path);
 	},
-	get date() {
+	getFormattedDate: function(date) {
 		var df = this.pu.pref("sets.dateFormat") || "";
-		return df && new Date().toLocaleFormat(df);
+		return df && (date ? new Date(date) : new Date()).toLocaleFormat(df);
 	},
 	checkPrefs: function(pSrc, partialImport) {
 		if(pSrc instanceof Components.interfaces.nsILocalFile)
