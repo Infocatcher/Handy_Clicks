@@ -35,8 +35,10 @@
 <!ENTITY hc.sets.fullImportFromFile "Импорт из файла…">
 <!ENTITY hc.sets.importIncrementFromFile "Инкрементный импорт из файла…">
 <!ENTITY hc.sets.importIncrementFromClipboard "Инкрементный импорт из буфера обмена">
-<!ENTITY hc.sets.importOk "Завершить инкрементный импорт">
-<!ENTITY hc.sets.importCancel "Отменить инкрементный импорт">
+<!ENTITY hc.sets.importOk "Завершить импорт">
+<!ENTITY hc.sets.importCancel "Отменить импорт">
+<!ENTITY hc.sets.importIncrementOk "Завершить инкрементный импорт">
+<!ENTITY hc.sets.importIncrementCancel "Отменить инкрементный импорт">
 
 
 <!ENTITY hc.sets.clickPrefsTitle "Настройки">

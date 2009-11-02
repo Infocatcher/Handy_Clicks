@@ -238,7 +238,7 @@ var handyClicksEditor = {
 			return;
 		var ct = cts[cType] || {};
 		cList.value = this.ps.dec(ct.label);
-		this.$("hc-editor-customTypeExtId").value = cType.replace(this.ps.customMask, "");
+		this.$("hc-editor-customTypeExtId").value = this.ps.removeCustomPrefix(cType);
 		enabledElt.checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
 		this.$("hc-editor-customTypeDefine").newValue = this.ps.dec(ct.define);
 		this.$("hc-editor-customTypeContext").newValue = this.ps.dec(ct.contextMenu);

@@ -67,12 +67,13 @@ var handyClicksUtils = {
 
 	_timers: { __proto__: null },
 	timer: function(tId) {
-		if(tId in this._timers) {
-			this._log("[timer] " + tId + " -> " + (Date.now() - this._timers[tId]) + " ms");
-			delete this._timers[tId];
+		var ts = this._timers;
+		if(tId in ts) {
+			this._log("[timer] " + tId + " -> " + (Date.now() - ts[tId]) + " ms");
+			delete ts[tId];
+			return;
 		}
-		else
-			this._timers[tId] = Date.now();
+		ts[tId] = Date.now();
 	},
 
 	notify: function(header, msg, fnc0, fnc1, extEnabled, inWindowCorner) {
@@ -85,7 +86,7 @@ var handyClicksUtils = {
 			 "chrome,dialog=1,titlebar=0,popup=1",
 			 {
 			 	dur: dur,
-			 	header: header || this.ut.getLocalized("title"),
+			 	header: header || this.getLocalized("title"),
 			 	msg: msg || "",
 			 	fnc0: fnc0, fnc1: fnc1,
 			 	extEnabled: extEnabled === undefined ? true : extEnabled,
@@ -138,8 +139,8 @@ var handyClicksUtils = {
 	},
 
 	errInfo: function(textId, label, type, err) {
-		return this.ut.getLocalized(textId)
-			+ this.ut.getLocalized("errorDetails")
+		return this.getLocalized(textId)
+			+ this.getLocalized("errorDetails")
 				.replace("%l", label)
 				.replace("%id", type)
 				.replace("%e", err);
@@ -187,7 +188,7 @@ var handyClicksUtils = {
 			.getService(Components.interfaces.nsIClipboardHelper)
 			.copyString(str);
 	},
-	readFromClipboard: function() {
+	readFromClipboard: function(trimFlag) {
 		// function readFromClipboard() chrome://browser/content/browser.js
 		var url;
 
@@ -218,7 +219,9 @@ var handyClicksUtils = {
 			}
 		}
 		catch (ex) {}
-		return url || "";
+
+		url = url || "";
+		return trimFlag ? this.trim(url) : url;
 	},
 
 	isChromeWin: function(win) {
@@ -312,6 +315,15 @@ var handyClicksUtils = {
 		obj[a[len]] = a[len + 1];
 	},
 
+	objEquals: function(o1) {
+		var s = uneval(o1);
+		return Array.slice(arguments, 1).every(
+			function(o) {
+				return uneval(o) === s;
+			}
+		);
+	},
+
 	attribute: function(node, attr, val, allowEmpty) {
 		if(val || allowEmpty && val === "")
 			node.setAttribute(attr, val);
@@ -331,9 +343,12 @@ var handyClicksUtils = {
 		return Math.max(Math.min(n, maxVal), minVal);
 	},
 	mmLine: function(n) {
-		if(n == 0xFFFFFFFF) // Max int number
+		if(n >= 0xFFFFFFFF)
 			n = 1;
 		return this.mm(n, 1, 100000);
+	},
+	trim: function(s) {
+		return s.trim ? s.trim() : s.replace(/^\s+|\s+$/g, "");
 	},
 
 	// E4X

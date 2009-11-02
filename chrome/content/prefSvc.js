@@ -88,9 +88,9 @@ var handyClicksPrefSvc = {
 		if(pSrc instanceof Components.interfaces.nsILocalFile) {
 			if(!pSrc.exists())
 				this.saveSettings(this.prefsHeader + this.versionInfo + this.defaultPrefs);
-			var fromProfile = pSrc.equals(this.prefsFile);
+			var fromProfile = pSrc.equals(this._prefsFile);
 			pSrc = this.ut.readFromFile(pSrc);
-			if(fromProfile)
+			if(fromProfile && !this.isMainWnd)
 				this._savedStr = pSrc;
 		}
 		if(typeof pSrc == "string") {
@@ -139,10 +139,10 @@ var handyClicksPrefSvc = {
 		if(vers < this.version)
 			this.convertSetsFormat(vers);
 		this._restoringCounter = 0;
-		if(window.location.href.indexOf("chrome://browser/content/browser.xul") != 0)
-			return;
-		this.compileCystomTypes();
-		this.initCustomFuncs();
+		if(this.isMainWnd) {
+			this.compileCystomTypes();
+			this.initCustomFuncs();
+		}
 	},
 	loadSettingsBackup: function() {
 		var pFile = this.prefsFile;
@@ -444,7 +444,7 @@ var handyClicksPrefSvc = {
 			}
 		);
 	},
-	moveFiles: function(mFile, nAdd, maxNum) {
+	moveFiles: function(mFile, nAdd, maxNum, leaveOriginal) {
 		maxNum = typeof maxNum == "number" ? maxNum : this.pu.pref("sets.backupDepth");
 		if(maxNum < 0)
 			return null;
@@ -459,7 +459,7 @@ var handyClicksPrefSvc = {
 				file.moveTo(pDir, fName + (maxNum + 1) + ".js");
 		}
 		mFile = mFile.clone();
-		mFile.moveTo(pDir, fName + "0.js");
+		mFile[leaveOriginal ? "copyTo" : "moveTo"](pDir, fName + "0.js");
 		return mFile.path;
 	},
 	__savedStr: null,
@@ -485,6 +485,10 @@ var handyClicksPrefSvc = {
 		this._savedStr = str;
 	},
 
+	get isMainWnd() {
+		delete this.isMainWnd;
+		return this.isMainWnd = "handyClicks" in window;
+	},
 	getEvtStr: function(e) {
 		return "button=" + (e.button || 0)
 			+ ",ctrl=" + e.ctrlKey
@@ -524,6 +528,9 @@ var handyClicksPrefSvc = {
 	customMask: /^custom_/,
 	isCustomType: function(type) {
 		return typeof type == "string" && type.indexOf(this.customPrefix) == 0;
+	},
+	removeCustomPrefix: function(type) {
+		return type.replace(this.customMask, "");
 	},
 	enc: function(s) {
 		return encodeURIComponent(s || "");

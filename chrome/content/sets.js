@@ -1,12 +1,15 @@
 var handyClicksSets = {
+	_importFlag: false,
+	_partialImportFlag: false,
+	_savedPrefs: null,
+	_savedTypes: null,
+
 	init: function(reloadFlag) {
 		this.ps.loadSettings();
 		this.initShortcuts();
 
-		if(reloadFlag) {
+		if(reloadFlag)
 			this.redrawTree();
-			this.partialImportActive = false;
-		}
 		else
 			this.drawTree();
 
@@ -74,7 +77,7 @@ var handyClicksSets = {
 		return document.getElementById(id);
 	},
 	drawTree: function() {
-		this.DOMCache = { __proto__: null };
+		this.eltsCache = { __proto__: null };
 		this.rowsCache = { __proto__: null };
 		var p = this.ps.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
@@ -83,9 +86,9 @@ var handyClicksSets = {
 				continue;
 			}
 			var button = this.ps.getButtonId(sh);
-			var buttonContainer = this.DOMCache[button] || this.appendContainerItem(null, button, this.ut.getLocalized(button));
+			var buttonContainer = this.eltsCache[button] || this.appendContainerItem(null, button, this.ut.getLocalized(button));
 			var modifiers = this.ps.getModifiersStr(sh);
-			var modifiersContainer = this.DOMCache[sh] || this.appendContainerItem(buttonContainer, sh, modifiers);
+			var modifiersContainer = this.eltsCache[sh] || this.appendContainerItem(buttonContainer, sh, modifiers);
 			this.appendItems(modifiersContainer, p[sh], sh);
 		}
 		this.highlightAllOpened();
@@ -110,8 +113,9 @@ var handyClicksSets = {
 			cnt.removeChild(cnt.lastChild);
 		this.drawTree();
 		this.searchInSetsTree(null, true);
-		if(this.prefsSaved)
+		if(this.prefsSaved && !this.ps.otherSrc)
 			this.applyButton.disabled = true;
+		document.title = document.title.replace(/\*?$/, this.ps.otherSrc ? "*" : "");
 	},
 	appendContainerItem: function(parent, hash, label) {
 		var tItem =
@@ -123,7 +127,7 @@ var handyClicksSets = {
 			</treeitem>;
 		tItem = this.ut.fromXML(tItem);
 		(parent || this.tBody).appendChild(tItem);
-		return this.DOMCache[hash] = tItem.getElementsByTagName("treechildren")[0];
+		return this.eltsCache[hash] = tItem.getElementsByTagName("treechildren")[0];
 	},
 	appendItems: function(parent, items, shortcut) {
 		var tItem, tRow, it, typeLabel, isCustom, isCustomType, actLabel;
@@ -158,11 +162,28 @@ var handyClicksSets = {
 					|| /^\(.+\)$/.test(typeLabel) // See handyClicksUtils.getLocalized()
 				)
 				|| (!isCustom && /^\(.+\)$/.test(actLabel));
-			this.addProperties(tRow, {
-				hc_disabled: !it.enabled, hc_buggy: isBuggy,
+			this.addCellsProperties([tRow], {
+				hc_disabled: !it.enabled,
+				hc_buggy: isBuggy,
 				hc_custom: isCustom,
 				hc_customType: isCustomType
-			});
+			}, true);
+			if(this._importFlag) { //~ todo: test!
+				var savedPref = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType);
+				var override = savedPref;
+				var equals = this.ut.objEquals(it, savedPref);
+				if(isCustomType) {
+					var savedType = this.ut.getOwnProperty(this._savedTypes, itemType);
+					var eqType = this.ut.objEquals(this.ps.types[itemType], savedType);
+					if(!eqType)
+						override = true;
+					equals = equals && eqType;
+				}
+				this.addCellsProperties([tRow], {
+					hc_override: override,
+					hc_equals: equals
+				}, true);
+			}
 
 			tRow.__shortcut = shortcut;
 			tRow.__itemType = itemType;
@@ -185,10 +206,12 @@ var handyClicksSets = {
 		}
 		tar.setAttribute("properties", propsVal.replace(/^\s+|\s+$/g, "").replace(/\s+/g, " "));
 	},
-	addCellsProperties: function(rows, propsObj) {
+	addCellsProperties: function(rows, propsObj, addToRow) {
 		Array.forEach(
 			rows,
 			function(row) {
+				if(addToRow)
+					this.addProperties(row, propsObj);
 				Array.forEach(
 					row.getElementsByTagName("treecell"),
 					function(cell) {
@@ -723,7 +746,7 @@ var handyClicksSets = {
 			this.ps.saveSettingsObjects(applyFlag);
 		if(
 			!applyFlag && this.ps.otherSrc
-			&& !this.ut.confirmEx(this.ut.getLocalized("title"), this.ut.getLocalized("partialImportIncomplete"))
+			&& !this.ut.confirmEx(this.ut.getLocalized("title"), this.ut.getLocalized("importIncomplete"))
 		)
 			return false;
 		return true;
@@ -869,7 +892,10 @@ var handyClicksSets = {
 	exportSets: function(partialExport, toClipboard) {
 		this.selectTreePane();
 		if(!toClipboard) {
-			var file = this.pickFile(this.ut.getLocalized("exportSets"), true, "js", !partialExport && this.ps.prefsFile.lastModifiedTime);
+			var file = this.pickFile(
+				this.ut.getLocalized("exportSets"), true, "js",
+				!partialExport && this.ps.prefsFile.lastModifiedTime
+			);
 			if(!file)
 				return;
 			this.backupsDir = file.parent.path;
@@ -951,53 +977,69 @@ var handyClicksSets = {
 			this.pu.pref("sets.importJSWarning", !ack.value);
 		}
 		var pSrc = fromClipboard
-			? this.ut.readFromClipboard()
+			? this.ut.readFromClipboard(true)
 			: this.pickFile(this.ut.getLocalized("importSets"), false, "js");
 		if(!pSrc)
 			return;
-		if(!this.checkPrefs(pSrc, partialImport)) {
+		if(!this.checkPrefs(pSrc)) {
 			this.ut.alertEx(
 				this.ut.getLocalized("importErrorTitle"),
 				this.ut.getLocalized("invalidConfigFormat")
 			);
 			return;
 		}
-		if(partialImport) {
-			!this.ps.otherSrc && this.ps.saveSettingsObjects(true); // Save current state
-			this.ps.loadSettings(pSrc);
-			if(this.ps._loadError)
-				return;
-			this.ps.reloadSettings(false);
-			this.redrawTree();
-			this.partialImportActive = true;
+		if(!this.ps.otherSrc) {
+			this._savedPrefs = this.ps.prefs;
+			this._savedTypes = this.ps.types;
 		}
+		this.ps.loadSettings(pSrc);
+		//this.ps.reloadSettings(false);
+		if(this.ps._loadError)
+			return;
+		this.setImportStatus(true, partialImport);
+		if(partialImport)
+			this.redrawTree();
 		else {
-			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport);
-			// Do not start full import from clipboard!
-			var pf = this.ps.prefsFile;
-			pf.exists() && pf.remove(true); // backups disabled
-			pSrc.copyTo(this.ps.prefsDir, this.ps.prefsFileName + ".js");
-			//this.ps.reloadSettings(true);
-			this.ps.loadSettings();
+			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, null, true);
 			this.updTree();
-			this.applyButton.disabled = false;
 		}
 		if(pSrc instanceof Components.interfaces.nsILocalFile)
 			this.backupsDir = pSrc.parent.path;
 	},
-	set partialImportActive(a) {
-		this.$("hc-sets-tree-partialImportPanel").hidden = !a;
-		document.title = document.title.replace(/\*$/, "") + (a ? "*" : "");
+
+	setImportStatus: function(isImport, isPartial) {
+		this._importFlag = isImport;
+		this._partialImportFlag = isPartial;
+		this.closeEditors();
+		if(this.prefsSaved)
+			this.applyButton.disabled = true;
+		var panel = this.$("hc-sets-tree-partialImportPanel");
+		panel.hidden = !isImport;
+		if(!isImport)
+			return;
+		var lAttr = "hc_label_" + (isPartial ? "partial" : "full");
+		Array.forEach(
+			panel.getElementsByTagName("*"),
+			function(elt) {
+				if(elt.hasAttribute(lAttr))
+					elt.setAttribute("label", elt.getAttribute(lAttr));
+			}
+		);
+		this.$("hc-sets-tree-buttonImportOk").focus();
 	},
-	partialImportDone: function(ok) {
-		if(ok)
-			this.mergePrefs();
+	importDone: function _id(ok) {
+		var isPartial = this._partialImportFlag;
+		this.setImportStatus(false);
+		if(ok) {
+			this.ps.otherSrc = false;
+			if(isPartial)
+				this.mergePrefs();
+			this.ps.saveSettingsObjects(true);
+		}
 		else {
 			this.ps.loadSettings();
 			this.updTree();
 		}
-		this.partialImportActive = false;
-		this.closeEditors();
 	},
 	mergePrefs: function() {
 		var cts = this.ps.types;
@@ -1029,8 +1071,6 @@ var handyClicksSets = {
 				this.ut.setOwnProperty(this.ps.prefs, sh, type, to);
 			}
 		}
-
-		this.ps.saveSettingsObjects(true);
 	},
 
 	// Export/import utils:
@@ -1074,17 +1114,17 @@ var handyClicksSets = {
 		var df = this.pu.pref("sets.dateFormat") || "";
 		return df && (date ? new Date(date) : new Date()).toLocaleFormat(df);
 	},
-	checkPrefs: function(pSrc, partialImport) {
+	checkPrefs: function(pSrc) {
 		if(pSrc instanceof Components.interfaces.nsILocalFile)
 			pSrc = this.ut.readFromFile(pSrc);
 		if(!this.ps.checkPrefsStr(pSrc))
 			return false;
-		if(!partialImport)
-			this.ps._savedStr = pSrc; // Update cache - see this.ps.saveSettings()
 		return true;
 	},
 	checkClipboard: function() {
-		this.$("hc-sets-cmd-partialImportFromClipboard")
-			.setAttribute("disabled", !this.ps.checkPrefsStr(this.ut.readFromClipboard()));
+		this.$("hc-sets-cmd-partialImportFromClipboard").setAttribute(
+			"disabled",
+			!this.ps.checkPrefsStr(this.ut.readFromClipboard(true))
+		);
 	}
 };

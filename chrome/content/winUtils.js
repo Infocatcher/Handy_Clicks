@@ -69,13 +69,13 @@ var handyClicksWinUtils = {
 	},
 	openEditorEx: function(pSrc, mode, shortcut, itemType, delayed, src, line) {
 		var w = this.openEditor(null, mode, shortcut, itemType);
-		setTimeout(function() {
+		(function _oe() {
 			if("_handyClicksInitialized" in w) {
 				w.handyClicksEditor.selectTargetTab(delayed, src, line);
 				return;
 			}
-			setTimeout(arguments.callee, 5);
-		}, 0);
+			setTimeout(_oe, 5);
+		})();
 	},
 	openLink: function(href, line) {
 		var hc = "handyclicks://editor/";

@@ -67,8 +67,10 @@
 			</tree>
 			<vbox id="hc-sets-tree-buttons">
 				<hbox id="hc-sets-tree-partialImportPanel" hidden="true" pack="center">
-					<button id="hc-sets-tree-buttonPartialImport" oncommand="handyClicksSets.partialImportDone(true);" label="&hc.sets.importOk;" />
-					<button id="hc-sets-tree-buttonCancelPartialImport" oncommand="handyClicksSets.partialImportDone(false);" label="&hc.sets.importCancel;" />
+					<button id="hc-sets-tree-buttonImportOk" oncommand="handyClicksSets.importDone(true);"
+						hc_label_full="&hc.sets.importOk;" hc_label_partial="&hc.sets.importIncrementOk;" />
+					<button id="hc-sets-tree-buttonImportCancel" oncommand="handyClicksSets.importDone(false);"
+						hc_label_full="&hc.sets.importCancel;" hc_label_partial="&hc.sets.importIncrementCancel;" />
 				</hbox>
 				<hbox pack="center">
 					<button id="hc-sets-tree-buttonAdd" label="&hc.sets.cmdAdd;" onclick="handyClicksSets.addItems(event);" oncommand="handyClicksSets.addItems(event);" />

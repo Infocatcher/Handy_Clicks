@@ -35,8 +35,10 @@
 <!ENTITY hc.sets.fullImportFromFile "Import from file…">
 <!ENTITY hc.sets.importIncrementFromFile "Incremental import from file…">
 <!ENTITY hc.sets.importIncrementFromClipboard "Incremental import from clipboard">
-<!ENTITY hc.sets.importOk "Incremental import done">
-<!ENTITY hc.sets.importCancel "Cancel incremental import">
+<!ENTITY hc.sets.importOk "Import done">
+<!ENTITY hc.sets.importCancel "Cancel import">
+<!ENTITY hc.sets.importIncrementOk "Incremental import done">
+<!ENTITY hc.sets.importIncrementCancel "Cancel incremental import">
 
 
 <!ENTITY hc.sets.clickPrefsTitle "Preferences">

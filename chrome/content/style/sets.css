@@ -53,6 +53,12 @@ treechildren::-moz-tree-cell-text(hc_edited) {
 treechildren::-moz-tree-cell-text(hc_copied) {
 	color: #bfc1ca !important;
 }
+treechildren::-moz-tree-cell-text(hc_override) {
+	font-style: italic;
+}
+treechildren::-moz-tree-cell-text(hc_equals) {
+	text-decoration: underline;
+}
 treechildren::-moz-tree-checkbox(hc_editable) {
 	list-style-image: url("checkbox.png"); /* Image from Adblock Plus extension */
 	-moz-image-region: rect(13px 13px 26px 0);

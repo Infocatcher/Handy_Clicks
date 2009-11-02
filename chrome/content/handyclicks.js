@@ -902,7 +902,7 @@ var handyClicks = {
 			this.ut.notify(null, this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, en, true);
 	},
 	checkClipboard: function() {
-		document.getElementById("handyClicks-importFromClipboard").hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard());
+		document.getElementById("handyClicks-importFromClipboard").hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard(true));
 	},
 	doSettings: function(e) {
 		if(e.type == "command" || e.button == 0)
@@ -919,13 +919,13 @@ var handyClicks = {
 			"handyclicks:settings",
 			"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
 		);
-		importFlag && setTimeout(function() {
+		importFlag && (function _imp() {
 			if("_handyClicksInitialized" in w) {
 				w.handyClicksSets.importSets(true, true);
 				return;
 			}
-			setTimeout(arguments.callee, 5);
-		}, 0);
+			setTimeout(_imp, 5);
+		})();
 	},
 	toggleEditMode: function() {
 		setTimeout(function(_this) {
