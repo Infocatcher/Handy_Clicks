@@ -91,9 +91,9 @@ var handyClicksSets = {
 			var modifiersContainer = this.eltsCache[sh] || this.appendContainerItem(buttonContainer, sh, modifiers);
 			this.appendItems(modifiersContainer, p[sh], sh);
 		}
-		this.highlightAllOpened();
+		this.markOpenedEditors();
 	},
-	highlightAllOpened: function() {
+	markOpenedEditors: function() {
 		for(var rowId in this.rowsCache)
 			this.setRowStatus(rowId, false);
 		var wProp = this.wu.winIdProp;

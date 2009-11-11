@@ -1090,8 +1090,9 @@ var handyClicksFuncs = {
 			imgLoading = false;
 		it = it || this.hc.item;
 		var oDoc = it.ownerDocument;
+		// Must be undefined for Firefox 3.6+ - see addTab() method in chrome://browser/content/tabbrowser.xml
 		if(this.ut.isChromeDoc(oDoc))
-			return null;
+			return undefined;
 		refPolicy = this.getRefererPolicy(refPolicy);
 		// http://kb.mozillazine.org/Network.http.sendRefererHeader
 		// 0 - none
@@ -1099,7 +1100,7 @@ var handyClicksFuncs = {
 		// 2 - for images and docs
 		return (refPolicy == 1 && !imgLoading) || refPolicy == 2
 			? makeURI(oDoc.location.href) // chrome://global/content/contentAreaUtils.js
-			: null;
+			: undefined;
 	},
 	getRefererPolicy: function(refPolicy) {
 		if(refPolicy === undefined)

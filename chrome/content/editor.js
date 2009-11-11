@@ -38,10 +38,20 @@ var handyClicksEditor = {
 		this.ps.oSvc.addPrefsObserver(this.appendTypesList, this);
 		window.addEventListener("DOMMouseScroll", this, true);
 		this.applyButton.disabled = true;
+
+		Array.forEach( // Add spellcheck feature for <menulist editable="true" />
+			document.getElementsByTagName("menulist"),
+			function(ml) {
+				if(ml.getAttribute("spellcheck") != "true")
+					return;
+				var inp = ml.ownerDocument.getAnonymousElementByAttribute(ml, "anonid", "input");
+				inp && inp.setAttribute("spellcheck", "true");
+			}
+		);
 	},
 	destroy: function(reloadFlag) {
 		window.removeEventListener("DOMMouseScroll", this, true);
-		this.wu.highlightAllOpened();
+		this.wu.markOpenedEditors();
 	},
 	initShortcuts: function() {
 		this.mBox = this.$("hc-editor-mainTabbox");
@@ -162,7 +172,7 @@ var handyClicksEditor = {
 			default: return;
 		}
 		window[this.wu.winIdProp] = winId;
-		this.wu.highlightAllOpened();
+		this.wu.markOpenedEditors();
 	},
 	setWinTitle: function() {
 		var sh = this.currentShortcut;

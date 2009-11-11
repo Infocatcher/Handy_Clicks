@@ -244,7 +244,7 @@
 								<vbox id="hc-editor-funcCustom" flex="1">
 									<hbox align="center">
 										<label value="&hc.editor.funcLabel;" />
-										<textbox id="hc-editor-funcLabel" flex="1" />
+										<textbox id="hc-editor-funcLabel" flex="1" spellcheck="true" />
 									</hbox>
 									<tabbox id="hc-editor-funcVarsTabbox" flex="1">
 										<tabs onselect="handyClicksEditor.fixFocusedElement(event);">
@@ -275,7 +275,7 @@
 			<tabpanel flex="1" orient="vertical">
 				<hbox align="center">
 					<label value="&hc.editor.funcLabel;" />
-					<menulist id="hc-editor-customType" editable="true"
+					<menulist id="hc-editor-customType" editable="true" spellcheck="true"
 						oncommand="handyClicksEditor.initCustomTypesEditor();"
 						oninput="handyClicksEditor.customTypeLabel(this);"
 						ondragexit="handyClicksEditor.customTypeLabelDelay(this);">

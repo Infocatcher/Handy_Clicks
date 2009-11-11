@@ -10,13 +10,11 @@ var handyClicksWinUtils = {
  			w.focus();
  			return w;
  		}
-		else {
-			var args = [uri, "_blank", features || "chrome,centerscreen,resizable,dialog=0"];
-			for(var i = _ow.length, len = arguments.length; i < len; i++)
-				args.push(arguments[i]);
-			win = win || window;
-			return win.openDialog.apply(win, args);
-		}
+		var args = [uri, "_blank", features || "chrome,centerscreen,resizable,dialog=0"];
+		for(var i = _ow.length, len = arguments.length; i < len; i++)
+			args.push(arguments[i]);
+		win = win || window;
+		return win.openDialog.apply(win, args);
 	},
 	forEachWindow: function(winTypes, func, context) {
 		var wm = this.wm;
@@ -64,7 +62,7 @@ var handyClicksWinUtils = {
 			pSrc, mode || "shortcut", shortcut, itemType
 		);
 		w[wProp] = winId;
-		this.highlightOpened(winId, true);
+		this.markOpenedEditors(winId, true);
 		return w;
 	},
 	openEditorEx: function(pSrc, mode, shortcut, itemType, delayed, src, line) {
@@ -104,14 +102,13 @@ var handyClicksWinUtils = {
 			_this.openLink(href, line);
 		};
 	},
-	highlightOpened: function(winId, editStat) {
+	markOpenedEditors: function(winId, editStat) {
 		var wSet = this.wm.getMostRecentWindow("handyclicks:settings");
-		if(wSet)
+		if(!wSet)
+			return;
+		if(arguments.length)
 			wSet.handyClicksSets.setRowStatus(winId, editStat);
-	},
-	highlightAllOpened: function() {
-		var wSet = this.wm.getMostRecentWindow("handyclicks:settings");
-		if(wSet)
-			wSet.handyClicksSets.highlightAllOpened();
+		else
+			wSet.handyClicksSets.markOpenedEditors();
 	}
 };

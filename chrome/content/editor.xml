@@ -245,7 +245,8 @@
 							true
 						);
 					}
-					catch(e) {}
+					catch(e) {
+					}
 				]]>
 				</body>
 			</method>
@@ -257,21 +258,19 @@
 				</getter>
 				<setter>
 				<![CDATA[
-					this.setAttribute("hc_maximized", !val);
-					this.toggleMaximized();
+					var node = this;
+					while(node && "setAttribute" in node) {
+						if(val) node.setAttribute("hc_maximized", "true");
+						else    node.removeAttribute("hc_maximized");
+						node = node.parentNode;
+					}
 				]]>
 				</setter>
 			</property>
 			<method name="toggleMaximized">
 				<body>
 				<![CDATA[
-					var mm = this.maximized;
-					var node = this;
-					while(node && "setAttribute" in node) {
-						if(mm) node.removeAttribute("hc_maximized");
-						else   node.setAttribute("hc_maximized", "true");
-						node = node.parentNode;
-					}
+					this.maximized = !this.maximized;
 				]]>
 				</body>
 			</method>
@@ -302,7 +301,7 @@
 						: Math.min(
 							Math.max(
 								parseInt(this.ownerDocument.defaultView.getComputedStyle(this, "").fontSize) + add,
-								2
+								1
 							),
 							36
 						) + "px";
@@ -330,7 +329,7 @@
 				if(event.originalTarget !== this.inputField || !this.maximized)
 					return;
 				setTimeout(function(_this) {
-					if(document.commandDispatcher.focusedElement !== _this.inputField)
+					if(document.commandDispatcher.focusedElement !== _this.inputField) // E.g. user press Ctrl+Tab
 						_this.maximized = false;
 				}, 0, this);
 			]]>
