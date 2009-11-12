@@ -306,7 +306,7 @@ var handyClicksFuncs = {
 
 			setTimeout(function(_this) {
 				_this.restorePrefs(origPrefs);
-			}, 0, _this);
+			}, 5, _this);
 			//_this.restorePrefs(origPrefs);
 		}
 		var load = this.pu.pref("funcs.loadJavaScriptLinks");
