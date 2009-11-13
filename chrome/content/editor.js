@@ -37,7 +37,6 @@ var handyClicksEditor = {
 		this.selectTargetTab();
 		this.ps.oSvc.addPrefsObserver(this.appendTypesList, this);
 		window.addEventListener("DOMMouseScroll", this, true);
-		this.applyButton.disabled = true;
 
 		Array.forEach( // Add spellcheck feature for <menulist editable="true" />
 			document.getElementsByTagName("menulist"),
@@ -135,7 +134,10 @@ var handyClicksEditor = {
 		node.id += id;
 		Array.forEach(
 			node.getElementsByTagName("*"),
-			function(node) { if(node.id) node.id += id; }
+			function(node) {
+				if(node.id)
+					node.id += id;
+			}
 		);
 		return node;
 	},
@@ -146,13 +148,11 @@ var handyClicksEditor = {
 		this.initCustomTypesEditor();
 		this.setWinTitle();
 		this.disableUnsupported();
+		this.applyButton.disabled = true;
 	},
 	allowApply: function(e) {
 		var ln = e.target.localName;
-		if(
-			ln == "tab" || ln == "dialog" || ln == "key"
-			|| (ln == "menuitem" && e.target.parentNode.parentNode.id == "hc-editor-itemTypes")
-		)
+		if(ln == "tab" || ln == "dialog" || ln == "key")
 			return;
 		this.applyButton.disabled = false;
 	},
@@ -260,7 +260,9 @@ var handyClicksEditor = {
 			this.initCustomTypesEditor();
 	},
 	customTypeLabelDelay: function(it) {
-		setTimeout(function(_this, it) { _this.customTypeLabel(it); }, 0, this, it);
+		setTimeout(function(_this, it) {
+			_this.customTypeLabel(it);
+		}, 0, this, it);
 	},
 	customTypeIdFilter: function(e) {
 		setTimeout(function(_this, node) { _this._customTypeIdFilter(node); }, 0, this, e.target);
@@ -563,7 +565,7 @@ var handyClicksEditor = {
 			this
 		);
 		this.loadFuncs();
-		this.allowApply(e);
+		//this.allowApply(e);
 		this.$("hc-editor-funcTabbox").selectedIndex = 0;
 	},
 	disableUnsupported: function() {

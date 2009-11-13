@@ -1,24 +1,24 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-#handyClicks-toggleStatus-sBarIcon {
+#handyClicks-statusbarButton {
 	cursor: pointer;
 }
-#handyClicks-toggleStatus-sBarIcon,
-toolbar[iconsize="small"] #handyClicks-toggleStatus-tbButton,
-#handyClicks-toggleStatus-menuitem {
+#handyClicks-statusbarButton,
+toolbar[iconsize="small"] #handyClicks-toolbarButton,
+#handyClicks-toolsMenuitem {
 	list-style-image: url("icons16.png");
 	-moz-image-region: rect(0 16px 16px 0);
 }
-#handyClicks-toggleStatus-sBarIcon[hc_enabled="false"],
-toolbar[iconsize="small"] #handyClicks-toggleStatus-tbButton[hc_enabled="false"],
-#handyClicks-toggleStatus-menuitem[hc_enabled="false"] {
+#handyClicks-statusbarButton[hc_enabled="false"],
+toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
+#handyClicks-toolsMenuitem[hc_enabled="false"] {
 	-moz-image-region: rect(0 32px 16px 16px);
 }
-#handyClicks-toggleStatus-tbButton {
+#handyClicks-toolbarButton {
 	list-style-image: url("icons24.png");
 	-moz-image-region: rect(0 24px 24px 0);
 }
-#handyClicks-toggleStatus-tbButton[hc_enabled="false"] {
+#handyClicks-toolbarButton[hc_enabled="false"] {
 	-moz-image-region: rect(0 48px 24px 24px);
 }
 [id^="handyClicks-"][hc_editmode="true"] {

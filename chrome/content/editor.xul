@@ -52,8 +52,10 @@
 		<tabpanels flex="1">
 			<tabpanel flex="1" orient="vertical">
 				<hbox id="hc-editor-targetBox" align="center"
-					onchange="handyClicksEditor.loadFuncs();"
-					oncommand="handyClicksEditor.loadFuncs();">
+					onchange="handyClicksEditor.loadFuncs(); event.stopPropagation();"
+					oncommand="handyClicksEditor.loadFuncs(); event.stopPropagation();"
+					ondragexit="event.stopPropagation();">
+					<!-- Prevent bubbling of all events from this box (any modifacation will not change apply button state) -->
 					<button id="hc-editor-clickButton" label="&hc.editor.clickHere;" onclick="handyClicksEditor.setClickOptions(event);" />
 					<menulist id="hc-editor-button">
 						<menupopup>

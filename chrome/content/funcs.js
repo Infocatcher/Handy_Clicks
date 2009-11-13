@@ -270,7 +270,12 @@ var handyClicksFuncs = {
 			_f();
 	},
 	hasHandlers: function(it) {
-		it = (it || this.hc.item).wrappedJSObject;
+		it = it || this.hc.item;
+		if(!it)
+			return false;
+		it = it.wrappedJSObject;
+		if(!it)
+			return false;
 		return ["onmousedown", "onmouseup", "onclick"].some(
 			function(h) {
 				return h in it;

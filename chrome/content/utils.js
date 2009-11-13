@@ -16,7 +16,7 @@ var handyClicksUtils = {
 			)
 		);
 	},
-	_err: function(e, warn, fileName, lineNumber) {
+	_err: function(e, isWarning, fileName, lineNumber) {
 		if(typeof e == "string")
 			e = new Error(e);
 		if(e.constructor !== Error) {
@@ -31,7 +31,7 @@ var handyClicksUtils = {
 			null,
 			lineNumber || e.lineNumber || 0,
 			e.columnNumber || 0,
-			warn ? 1 : 0,
+			isWarning ? 1 : 0,
 			null
 		);
 		this.consoleSvc.logMessage(cErr);
@@ -316,12 +316,18 @@ var handyClicksUtils = {
 	},
 
 	objEquals: function(o1) {
-		var s = uneval(o1);
+		var s = this.getSource(o1);
 		return Array.slice(arguments, 1).every(
 			function(o) {
-				return uneval(o) === s;
-			}
+				return this.getSource(o) === s;
+			},
+			this
 		);
+	},
+	getSource: function(o) {
+		return this.canHasProps(o) && !o.__proto__
+			? Object.prototype.toSource.call(o)
+			: uneval(o);
 	},
 
 	attribute: function(node, attr, val, allowEmpty) {

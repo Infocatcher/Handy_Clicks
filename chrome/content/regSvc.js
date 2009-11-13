@@ -1,17 +1,26 @@
 var handyClicksRegSvc = {
+	instantInit: function(reloadFlag) {
+		this.registerShortcuts(true);
+		this.callMethods("instantInit", reloadFlag);
+		window.addEventListener("load", this, false);
+	},
+	preInit: function(reloadFlag) {
+		this.callMethods("preInit", reloadFlag);
+	},
 	init: function(reloadFlag) { // window "load"
 		window.removeEventListener("load", this, false);
-		this.registerServices(true, reloadFlag);
 		window.addEventListener("unload", this, false);
-		window._handyClicksInitialized = true;
+		this.callMethods("init", reloadFlag);
 		if(!("handyClicksReloadScripts" in window))
 			Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 				.getService(Components.interfaces.mozIJSSubScriptLoader)
 				.loadSubScript("chrome://handyclicks/content/_devMode.js");
+		window._handyClicksInitialized = true;
 	},
 	destroy: function(reloadFlag) { // window "unlod"
 		window.removeEventListener("unload", this, false);
-		this.registerServices(false, reloadFlag);
+		this.callMethods("destroy", reloadFlag);
+		this.registerShortcuts(false);
 		delete window._handyClicksInitialized;
 	},
 	get s() {
@@ -36,29 +45,21 @@ var handyClicksRegSvc = {
 			if(oName in window)
 				_s[p] = window[oName];
 		}
-		return _s;
+		delete this.s;
+		return this.s = _s;
 	},
-	registerServices: function(regFlag, reloadFlag) {
+	registerShortcuts: function(regFlag) {
 		var s = this.s;
-		if(regFlag) {
-			this.registerShortcuts(s, true);
-			this.callMethods(s, "init", reloadFlag);
-			return;
-		}
-		this.callMethods(s, "destroy", reloadFlag);
-		this.registerShortcuts(s, false);
-	},
-	registerShortcuts: function(s, regFlag) {
 		var proto = regFlag ? s : Object.prototype;
 		for(var p in s) if(s.hasOwnProperty(p))
 			s[p].__proto__ = proto;
 	},
-	callMethods: function(s, meth, reloadFlag) {
-		var o;
+	callMethods: function(methName, reloadFlag) {
+		var s = this.s, o;
 		for(var p in s) if(s.hasOwnProperty(p)) {
 			o = s[p];
-			if(o !== this && meth in o)
-				o[meth](reloadFlag);
+			if(o !== this && methName in o)
+				o[methName](reloadFlag);
 		}
 	},
 	handleEvent: function(e) {
@@ -68,4 +69,4 @@ var handyClicksRegSvc = {
 		}
 	}
 };
-window.addEventListener("load", handyClicksRegSvc, false);
+handyClicksRegSvc.instantInit();

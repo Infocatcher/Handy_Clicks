@@ -12,7 +12,7 @@ var handyClicks = {
 	_cMenu: null,
 	daTimeout: null, // Delayed Action Timeout
 	evtStrOnMousedown: "",
-	hasMousemoveHandler: false,
+	hasMoveHandlers: false,
 	mousemoveParams: null,
 	_tabOnMousedown: null,
 
@@ -20,6 +20,47 @@ var handyClicks = {
 
 	// Initialization:
 	init: function(reloadFlag) {
+		var v = this.pu.pref("prefsVersion") || 0;
+		if(v < 2) { // Added 2009-11-13
+			// New id for toolbarbutton
+			var newId = "handyClicks-toolbarButton";
+			if(!document.getElementById(newId)) {
+				var tbm = /(?:^|,)handyClicks-toggleStatus-tbButton(?:,|$)/;
+				Array.some(
+					document.getElementsByTagName("toolbar"),
+					function(tb) {
+						var cs = tb.getAttribute("currentset");
+						if(cs && tbm.test(cs)) {
+							// Add toolbarbutton manually:
+							var palette = this.ut.getProperty(tb, "parentNode", "palette");
+							if(palette) {
+								var newItem = palette.getElementsByAttribute("id", newId);
+								if(newItem.length) {
+									newItem = newItem[0];
+									var nextItem = /,*([^,]+)/.test(RegExp.rightContext) && document.getElementById(RegExp.$1);
+									if(nextItem)
+										tb.insertBefore(newItem, nextItem);
+									else
+										tb.appendChild(newItem);
+								}
+							}
+							// Fix "currentset" of toolbar:
+							cs = cs.replace(tbm, "," + newId + ",")
+								.replace(/^,+|,+$/g, "")
+								.replace(/,+/g, ",");
+							tb.setAttribute("currentset", cs);
+							document.persist(tb.id, "currentset");
+							return true;
+						}
+						return false;
+					},
+					this
+				);
+			}
+			this.pu.pref("prefsVersion", 2);
+			this.pu.savePrefFile();
+		}
+
 		this.ps.loadSettings();
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], true);
 		this.pu.oSvc.addPrefsObserver(this.updUI, this);
@@ -106,53 +147,33 @@ var handyClicks = {
 		//var cm = this.getItemContext(e); //~ todo: get cm only if needed
 
 		var delay = this.pu.pref("delayedActionTimeout");
-		var delayedAction = funcObj.hasOwnProperty("delayedAction") && this.isOkFuncObj(funcObj.delayedAction)
-			? funcObj.delayedAction
-			: null;
-
-		if(
-			delay > 0
-			&& !this.editMode
-			&& (
-				(!delayedAction /*&& cm */&& e.button == 2) // Show context menu after delay
-				|| (delayedAction && delayedAction.enabled) // Other action after delay
-			)
-		) {
-			this.cancelDelayedAction(); // only one timeout... (for dblclick event)
-			this.daTimeout = setTimeout(
-				function(_this, da) {
-					if(!_this.tabNotChanged)
-						return;
-					_this.flags.runned = true;
-					if(!da)
-						_this.showPopupOnItem();
-					else
-						_this.executeFunction(da);
-				},
-				delay,
-				this,
-				delayedAction
-			);
-			/****
+		if(delay > 0 && !this.editMode) {
+			var delayedAction = this.ut.getOwnProperty(funcObj, "delayedAction");
 			if(
-				(cm && e.button == 2 && !delayedAction)
-				|| delayedAction.action == "showContextMenu"
+				(!delayedAction /*&& cm */&& e.button == 2) // Show context menu after delay
+				|| this.isOkFuncObj(delayedAction) // Other action after delay
 			) {
-				cm.addEventListener(
-					"popupshowing",
-					function(e) {
-						window.removeEventListener(e.type, arguments.callee, true);
-						_this.cancelDelayedAction();
+				this.cancelDelayedAction(); // only one timeout... (for dblclick event)
+				this.daTimeout = setTimeout(
+					function(_this, da) {
+						if(!_this.tabNotChanged)
+							return;
+						_this.flags.runned = true;
+						if(!da)
+							_this.showPopupOnItem();
+						else
+							_this.executeFunction(da);
 					},
-					true
+					delay,
+					this,
+					delayedAction
 				);
 			}
-			****/
 		}
-		if(!this.hasMousemoveHandler) {
-			this.hasMousemoveHandler = true;
+		if(!this.hasMoveHandlers) {
+			this.hasMoveHandlers = true;
 			this.disallowMousemove = this.pu.pref("disallowMousemoveButtons").indexOf(e.button) != -1;
-			window.addEventListener("mousemove", this, true);
+			this.setListeners(["mousemove", "draggesture"], true);
 		}
 	},
 	clickHandler: function(e) {
@@ -216,17 +237,25 @@ var handyClicks = {
 		if(this.mousemoveParams.dist < this.pu.pref("disallowMousemoveDist"))
 			return;
 
+		this.ut._log("mousemoveHandler -> cancel()");
+		this.cancel();
+	},
+	dragHandler: function(e) {
+		this.ut._log("dragHandler -> cancel()");
+		this.cancel();
+	},
+	cancel: function() {
 		this.flags.runned = true;
 		this.flags.stopContextMenu = false; //~ ?
 
 		this.cancelDelayedAction();
-		this.removeMousemoveHandler();
+		this.removeMoveHandlers();
 	},
-	removeMousemoveHandler: function() {
-		if(!this.hasMousemoveHandler)
+	removeMoveHandlers: function() {
+		if(!this.hasMoveHandlers)
 			return;
-		window.removeEventListener("mousemove", this, true);
-		this.hasMousemoveHandler = false;
+		this.setListeners(["mousemove", "draggesture"], false);
+		this.hasMoveHandlers = false;
 		this.mousemoveParams = null;
 	},
 
@@ -267,7 +296,7 @@ var handyClicks = {
 		var fls = this.flags;
 		for(var p in fls) if(fls.hasOwnProperty(p))
 			fls[p] = false;
-		this.removeMousemoveHandler();
+		this.removeMoveHandlers();
 	},
 	skipFlagsDelay: function() {
 		setTimeout(function(_this) {
@@ -711,11 +740,17 @@ var handyClicks = {
 			return;
 		it = it || this.item;
 		if(
-			this.ut.isObject(it)
-			&& it.ownerDocument.defaultView.getComputedStyle(it, "").MozUserFocus != "ignore"
-			&& typeof it.focus == "function"
+			!this.ut.isObject(it)
+			|| !("focus" in it) // typeof it.focus == "function"
+			|| it.ownerDocument.defaultView.getComputedStyle(it, "").MozUserFocus == "ignore"
 		)
+			return;
+		try {
 			it.focus();
+		}
+		catch(e) {
+			this.ut._err(e);
+		}
 	},
 
 	// Custom types:
@@ -814,7 +849,7 @@ var handyClicks = {
 	},
 	executeFunction: function(funcObj, e) {
 		this.cancelDelayedAction();
-		this.removeMousemoveHandler();
+		this.removeMoveHandlers();
 
 		this.lastEvent = this.copyOfEvent;
 		this.lastItemType = this.itemType;
@@ -888,6 +923,7 @@ var handyClicks = {
 			case "dblclick":    this.dblclickHandler(e);    break;
 			case "contextmenu": this.contextmenuHandler(e); break;
 			case "mousemove":   this.mousemoveHandler(e);   break;
+			case "draggesture": this.dragHandler(e);        break;
 			case "keydown":
 				if(e.keyCode == e.DOM_VK_ESCAPE)
 					this.editMode = false;
@@ -898,7 +934,7 @@ var handyClicks = {
 	toggleStatus: function(fromKey) {
 		var en = !this.enabled;
 		this.enabled = en;
-		if(fromKey && !document.getElementById("handyClicks-toggleStatus-tbButton") && !this.pu.pref("ui.showInStatusbar"))
+		if(fromKey && !document.getElementById("handyClicks-toolbarButton") && !this.pu.pref("ui.showInStatusbar"))
 			this.ut.notify(null, this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, en, true);
 	},
 	checkClipboard: function() {
@@ -974,13 +1010,13 @@ var handyClicks = {
 		document.getElementById("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
 	},
 	showHideControls: function() {
-		document.getElementById("handyClicks-toggleStatus-menuitem").hidden = !this.pu.pref("ui.showInToolsMenu");
-		document.getElementById("handyClicks-toggleStatus-sBarIcon").hidden = !this.pu.pref("ui.showInStatusbar");
+		document.getElementById("handyClicks-toolsMenuitem").hidden = !this.pu.pref("ui.showInToolsMenu");
+		document.getElementById("handyClicks-statusbarButton").hidden = !this.pu.pref("ui.showInStatusbar");
 	},
 	setControls: function(func, context) {
-		["sBarIcon", "tbButton", "menuitem"].forEach(
+		["statusbarButton", "toolbarButton", "toolsMenuitem"].forEach(
 			function(id) {
-				var elt = document.getElementById("handyClicks-toggleStatus-" + id);
+				var elt = document.getElementById("handyClicks-" + id);
 				elt && func.call(context || this, elt);
 			}
 		);

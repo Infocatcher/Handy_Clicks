@@ -29,7 +29,7 @@
 		<key id="handyClicks-key-importFromClipboard" command="handyClicks-cmd-importFromClipboard" disabled="true" />
 	</keyset>
 	<menupopup id="menu_ToolsPopup">
-		<menuitem id="handyClicks-toggleStatus-menuitem" insertbefore="sanitizeSeparator" class="menuitem-iconic"
+		<menuitem id="handyClicks-toolsMenuitem" insertbefore="sanitizeSeparator" class="menuitem-iconic"
 			label="&handyClicks.menuitemLabel;"
 			tooltip="handyClicks-tooltip"
 			key="handyClicks-key-toggleStatus"
@@ -38,14 +38,14 @@
 			onclick="if(event.button != 0) handyClicks.doSettings(event);" />
 	</menupopup>
 	<toolbarpalette id="BrowserToolbarPalette">
-		<toolbarbutton id="handyClicks-toggleStatus-tbButton" class="chromeclass-toolbar-additional toolbarbutton-1"
+		<toolbarbutton id="handyClicks-toolbarButton" class="chromeclass-toolbar-additional toolbarbutton-1"
 			label="&handyClicks.toolbarbuttonLabel;"
 			tooltip="handyClicks-tooltip"
 			context="handyClicks-settingsPopup"
 			onclick="handyClicks.doSettings(event);" />
 	</toolbarpalette>
 	<statusbar id="status-bar">
-		<statusbarpanel id="handyClicks-toggleStatus-sBarIcon" insertafter="page-report-button" class="statusbarpanel-menu-iconic"
+		<statusbarpanel id="handyClicks-statusbarButton" insertafter="page-report-button" class="statusbarpanel-menu-iconic"
 			tooltip="handyClicks-tooltip"
 			context="handyClicks-settingsPopup"
 			onclick="handyClicks.doSettings(event);" />
@@ -65,7 +65,7 @@
 
 	<!-- SeaMonkey -->
 	<menupopup id="taskPopup">
-		<menuitem id="handyClicks-toggleStatus-menuitem" insertafter="downloadmgr" class="menuitem-iconic"
+		<menuitem id="handyClicks-toolsMenuitem" insertafter="downloadmgr" class="menuitem-iconic"
 			label="&handyClicks.menuitemLabel;"
 			tooltip="handyClicks-tooltip"
 			key="handyClicks-key-toggleStatus"
