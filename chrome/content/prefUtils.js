@@ -14,8 +14,9 @@ var handyClicksPrefUtils = {
 	ss: Components.interfaces.nsISupportsString,
 
 	// Initialization:
-	init: function(reloadFlag) {
+	instantInit: function(reloadFlag) {
 		var np = this.nPrefix;
+
 		var v = this.pref("prefsVersion") || 0;
 		if(v < 1) { // Added 2009-09-24
 			// Move prefs to "extensions.handyclicks.funcs." branch:

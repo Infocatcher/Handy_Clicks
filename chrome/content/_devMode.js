@@ -31,7 +31,7 @@ function handyClicksReloadScripts() {
 		}
 		handyClicksRegSvc.instantInit(true);
 		handyClicksRegSvc.init(true);
-		var h = /([^\/]+)$/.test(location.href) ? RegExp.$1 : location.href;
+		var h = /\/[^\/]+$/.test(location.href) ? RegExp.lastMatch : location.href;
 		_log("Scripts from " + h + " was successfully reloaded! " + (Date.now() - t) + " ms");
 	}
 	catch(e) {

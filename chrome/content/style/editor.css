@@ -24,10 +24,16 @@ menulist[hc_sets="enabled"] .menulist-label {
 	/*color: -moz-hyperlinktext;*/
 	text-decoration: underline;
 }
-menuitem[hc_sets="disabled"],
+menuitem[hc_sets="disabled"] label,
 menulist[hc_sets="disabled"] .menulist-label {
 	/*color: -moz-visitedhyperlinktext;*/
 	text-decoration: line-through;
+}
+
+:root[hc_fxversion="3.0"] menuitem[hc_sets="disabled"],
+:root[hc_fxversion="3.0"] menulist[hc_sets="disabled"] .menulist-label-box {
+	/* Firefox 3.0 don't show line-through without this */
+	text-decoration: underline;
 }
 
 /* Warning for empty menulists */

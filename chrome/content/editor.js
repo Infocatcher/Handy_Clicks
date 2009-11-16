@@ -47,6 +47,8 @@ var handyClicksEditor = {
 				inp && inp.setAttribute("spellcheck", "true");
 			}
 		);
+		if(this.ut.fxVersion == 3)
+			document.documentElement.setAttribute("hc_fxversion", "3.0"); // See style/editor.css
 	},
 	destroy: function(reloadFlag) {
 		window.removeEventListener("DOMMouseScroll", this, true);
@@ -212,10 +214,8 @@ var handyClicksEditor = {
 		}
 		this.initFuncsList(isCustom, setsObj.action || null, delayed);
 		this.$("hc-editor-enabled" + delayed).checked = typeof setsObj.enabled != "boolean" || setsObj.enabled;
-		if(!delayed) {
-			var aMd = this.ut.getOwnProperty(setsObj, "allowMousedownEvent");
-			this.$("hc-editor-allowMousedown").checked = typeof aMd == "boolean" && aMd;
-		}
+		if(!delayed)
+			this.$("hc-editor-allowMousedown").value = "" + this.ut.getOwnProperty(setsObj, "allowMousedownEvent");
 	},
 	selectCustomFunc: function(isCustom, delayed) {
 		delayed = delayed || "";
@@ -265,7 +265,9 @@ var handyClicksEditor = {
 		}, 0, this, it);
 	},
 	customTypeIdFilter: function(e) {
-		setTimeout(function(_this, node) { _this._customTypeIdFilter(node); }, 0, this, e.target);
+		setTimeout(function(_this, node) {
+			_this._customTypeIdFilter(node);
+		}, 0, this, e.target);
 		if(e.type != "keypress")
 			return false;
 		var key = e.charCode;
@@ -571,6 +573,7 @@ var handyClicksEditor = {
 	disableUnsupported: function() {
 		var isMd = this.$("hc-editor-events").value == "mousedown";
 		this.$("hc-editor-funcTabDelay").setAttribute("disabled", isMd || !this.$("hc-editor-enabled").checked);
+		this.$("hc-editor-allowMousedownLabel").disabled = isMd;
 		this.$("hc-editor-allowMousedown").disabled = isMd;
 	},
 	fixFocusedElement: function _ffe(e) {
@@ -670,8 +673,13 @@ var handyClicksEditor = {
 		if(!fnc || (delayed && fnc == "$auto" && enabled))
 			return null;
 		var so = { enabled: enabled };
-		if(!delayed && this.$("hc-editor-allowMousedown").checked)
-			so.allowMousedownEvent = true;
+		if(!delayed) {
+			var amd = this.$("hc-editor-allowMousedown").value;
+			if(amd == "true")
+				so.allowMousedownEvent = true;
+			else if(amd == "false")
+				so.allowMousedownEvent = false;
+		}
 		var isCustom = fnc == "$custom";
 		if(isCustom) {
 			so.custom = isCustom;

@@ -94,8 +94,10 @@
 <!ENTITY hc.editor.event "Событие:">
 <!ENTITY hc.editor.enabled "Включено">
 <!ENTITY hc.editor.ignoreLinks "Игнорировать ссылки">
-<!ENTITY hc.editor.allowMousedown "Разрешить mousedown">
-<!ENTITY hc.editor.allowMousedownTip "Handy Clicks не будет останавливать событие «mousedown»">
+<!ENTITY hc.editor.mousedownEvent "Событие «mousedown»:">
+<!ENTITY hc.editor.mousedownAllow "Не останавливать">
+<!ENTITY hc.editor.mousedownSmart "Авто">
+<!ENTITY hc.editor.mousedownStop "Всегда останавливать">
 
 <!ENTITY hc.editor.tabFunc "Функция">
 <!ENTITY hc.editor.tabFuncDelay "Отложенная функция">

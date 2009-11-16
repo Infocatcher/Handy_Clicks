@@ -378,8 +378,7 @@ HandyClicksObservers.prototype = {
 				obs[i][0].apply(obs[i][1] || this, arguments);
 	},
 	addPrefsObserver: function(fnc, context) {
-		this.observers.push([fnc, context]);
-		return this.observers.length - 1;
+		return this.observers.push([fnc, context]) - 1;
 	},
 	removePrefsObserver: function(oId) {
 		delete this.observers[oId];
@@ -393,8 +392,7 @@ var handyClicksCleanupSvc = {
 		this.storage = [];
 	},
 	registerCleanup: function(cFunc, context, args, node) {
-		this.storage.push([cFunc, context, args]);
-		var cId = this.storage.length - 1;
+		var cId = this.storage.push([cFunc, context, args]) - 1;
 		if(node)
 			this.registerNodeCleanup(cId, node);
 		return cId;

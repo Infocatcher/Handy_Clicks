@@ -16,7 +16,7 @@ var handyClicksSets = {
 		this.updButtons();
 		this.ps.oSvc.addPrefsObserver(this.updTree, this);
 
-		this.updPrefsUI(true);
+		this.updPrefsUI();
 		this.pu.oSvc.addPrefsObserver(this.updPrefsUI, this);
 		// <preferences onchange="handyClicksSets.updPrefsUI();"> return some bugs
 
@@ -614,7 +614,7 @@ var handyClicksSets = {
 		_res: [], // row numbers
 		_current: 0,
 		init: function(parent, tree) {
-			this.parent = parent;
+			this.__parent = parent;
 			this.tree = tree;
 		},
 		reset: function() {
@@ -643,7 +643,7 @@ var handyClicksSets = {
 					return;
 				i = this._res[this._current];
 			}
-			this.parent.toggleTreeContainers(true);
+			this.__parent.toggleTreeContainers(true);
 			this.tree.view.selection.select(i);
 			this.tree.treeBoxObject.ensureRowIsVisible(i);
 		}
@@ -714,15 +714,9 @@ var handyClicksSets = {
 	},
 
 	/*** Prefs pane ***/
-	updPrefsUI: function(loadFlag) {
+	updPrefsUI: function() {
 		this.loadPrefs();
-		if(loadFlag === true)
-			this.updateAllDependencies();
-		else {
-			setTimeout(function(_this) { // Wait for prefpanes update
-				_this.updateAllDependencies();
-			}, 0, this);
-		}
+		this.updateAllDependencies();
 	},
 	loadPrefs: function() {
 		var buttons = this.pu.pref("disallowMousemoveButtons");

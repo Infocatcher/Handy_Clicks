@@ -23,8 +23,7 @@ var handyClicks = {
 		var v = this.pu.pref("prefsVersion") || 0;
 		if(v < 2) { // Added 2009-11-13
 			// New id for toolbarbutton
-			var newId = "handyClicks-toolbarButton";
-			if(!document.getElementById(newId)) {
+			if(!this.elts.toolbarButton) {
 				var tbm = /(?:^|,)handyClicks-toggleStatus-tbButton(?:,|$)/;
 				Array.some(
 					document.getElementsByTagName("toolbar"),
@@ -32,23 +31,20 @@ var handyClicks = {
 						var cs = tb.getAttribute("currentset");
 						if(cs && tbm.test(cs)) {
 							// Add toolbarbutton manually:
-							var palette = this.ut.getProperty(tb, "parentNode", "palette");
-							if(palette) {
-								var newItem = palette.getElementsByAttribute("id", newId);
-								if(newItem.length) {
-									newItem = newItem[0];
-									var nextItem = /,*([^,]+)/.test(RegExp.rightContext) && document.getElementById(RegExp.$1);
-									if(nextItem)
-										tb.insertBefore(newItem, nextItem);
-									else
-										tb.appendChild(newItem);
-								}
+							var newItem = this.elts.paletteButton;
+							if(newItem) {
+								var nextItem = /,*([^,]+)/.test(RegExp.rightContext) && document.getElementById(RegExp.$1);
+								if(nextItem)
+									tb.insertBefore(newItem, nextItem);
+								else
+									tb.appendChild(newItem);
 							}
 							// Fix "currentset" of toolbar:
-							cs = cs.replace(tbm, "," + newId + ",")
+							cs = cs.replace(tbm, "," + this.toolbarButtonId + ",")
 								.replace(/^,+|,+$/g, "")
 								.replace(/,+/g, ",");
 							tb.setAttribute("currentset", cs);
+							tb.currentSet = cs;
 							document.persist(tb.id, "currentset");
 							return true;
 						}
@@ -58,6 +54,7 @@ var handyClicks = {
 				);
 			}
 			this.pu.pref("prefsVersion", 2);
+			this.pu.prefSvc.deleteBranch(this.pu.nPrefix + "forceStopMousedownEvent");
 			this.pu.savePrefFile();
 		}
 
@@ -125,22 +122,25 @@ var handyClicks = {
 			return;
 		}
 
-		if(!this.ut.getOwnProperty(funcObj, "allowMousedownEvent")) {
-			if(this.pu.pref("forceStopMousedownEvent") || this.editMode)
-				this.stopEvent(e);
-			else if(!this.ut.isChromeWin(e.view.top)) { // Prevent page handlers, but don't stop Mouse Gestures
-				var cWin = e.view.top === content ? gBrowser.mCurrentBrowser : e.view.top;
-				var _this = this;
-				cWin.addEventListener(
-					"mousedown",
-					function(e) {
-						cWin.removeEventListener("mousedown", arguments.callee, true);
-						if(_this._enabled)
-							_this.stopEvent(e);
-					},
-					true
-				);
-			}
+		var amd = this.ut.getOwnProperty(funcObj, "allowMousedownEvent");
+		// true      - don't stop
+		// undefined - smart
+		// false     - always stop
+		if(amd === false || this.editMode)
+			this.stopEvent(e);
+		else if(amd === undefined && !this.ut.isChromeWin(e.view.top)) {
+			// Prevent page handlers, but don't stop Mouse Gestures
+			var cWin = e.view.top === content ? gBrowser.mCurrentBrowser : e.view.top;
+			var _this = this;
+			cWin.addEventListener(
+				"mousedown",
+				function _md(e) {
+					cWin.removeEventListener("mousedown", _md, true);
+					if(_this._enabled)
+						_this.stopEvent(e);
+				},
+				true
+			);
 		}
 
 		var _this = this;
@@ -280,8 +280,8 @@ var handyClicks = {
 				var _this = this;
 				cWin.addEventListener(
 					"mouseup",
-					function(e) {
-						cWin.removeEventListener("mouseup", arguments.callee, true);
+					function _mu(e) {
+						cWin.removeEventListener("mouseup", _mu, true);
 						if(_this._enabled)
 							_this.stopEvent(e);
 					},
@@ -931,14 +931,49 @@ var handyClicks = {
 	},
 
 	// GUI:
+	toolbarButtonId: "handyClicks-toolbarButton",
+	get elts() {
+		delete this.elts;
+		this.elts = {
+			__parent: this,
+			get paletteButton() {
+				var tb = "gNavToolbox" in window && gNavToolbox
+					|| "getNavToolbox" in window && getNavToolbox() // Firefox 3.0
+					|| document.getElementById("navigator-toolbox"); // Firefox <= 2.0
+				if(!tb)
+					return null;
+				var elt = tb.palette.getElementsByAttribute("id", this.__parent.toolbarButtonId);
+				if(elt.length) {
+					delete this.paletteButton;
+					return this.paletteButton = elt[0];
+				}
+				return null;
+			}
+		};
+		["statusbarButton", "toolbarButton", "toolsMenuitem", "importFromClipboard", "cmd-editMode"].forEach(
+			function(name) {
+				var id = "handyClicks-" + name;
+				this.elts.__defineGetter__(name, function() {
+					var elt = document.getElementById(id);
+					if(!elt)
+						return null;
+					delete this[name];
+					return this[name] = elt;
+				});
+			},
+			this
+		);
+		return this.elts;
+	},
+
 	toggleStatus: function(fromKey) {
 		var en = !this.enabled;
 		this.enabled = en;
-		if(fromKey && !document.getElementById("handyClicks-toolbarButton") && !this.pu.pref("ui.showInStatusbar"))
+		if(fromKey && !this.elts.toolbarButton && !this.pu.pref("ui.showInStatusbar"))
 			this.ut.notify(null, this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, en, true);
 	},
 	checkClipboard: function() {
-		document.getElementById("handyClicks-importFromClipboard").hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard(true));
+		this.elts.importFromClipboard.hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard(true));
 	},
 	doSettings: function(e) {
 		if(e.type == "command" || e.button == 0)
@@ -1007,18 +1042,19 @@ var handyClicks = {
 				elt.setAttribute(ttAttr, tt);
 			}
 		);
-		document.getElementById("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
+		this.elts["cmd-editMode"].setAttribute("disabled", !enabled);
 	},
 	showHideControls: function() {
-		document.getElementById("handyClicks-toolsMenuitem").hidden = !this.pu.pref("ui.showInToolsMenu");
-		document.getElementById("handyClicks-statusbarButton").hidden = !this.pu.pref("ui.showInStatusbar");
+		this.elts.toolsMenuitem.hidden = !this.pu.pref("ui.showInToolsMenu");
+		this.elts.statusbarButton.hidden = !this.pu.pref("ui.showInStatusbar");
 	},
 	setControls: function(func, context) {
-		["statusbarButton", "toolbarButton", "toolsMenuitem"].forEach(
+		["statusbarButton", "toolbarButton", "toolsMenuitem", "paletteButton"].forEach(
 			function(id) {
-				var elt = document.getElementById("handyClicks-" + id);
+				var elt = this.elts[id];
 				elt && func.call(context || this, elt);
-			}
+			},
+			this
 		);
 	},
 

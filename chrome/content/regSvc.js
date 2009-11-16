@@ -4,9 +4,6 @@ var handyClicksRegSvc = {
 		this.callMethods("instantInit", reloadFlag);
 		window.addEventListener("load", this, false);
 	},
-	preInit: function(reloadFlag) {
-		this.callMethods("preInit", reloadFlag);
-	},
 	init: function(reloadFlag) { // window "load"
 		window.removeEventListener("load", this, false);
 		window.addEventListener("unload", this, false);

@@ -94,20 +94,32 @@
 					<tabpanels id="hc-editor-funcsTab" flex="1">
 						<tabpanel id="hc-editor-funcTab" flex="1" orient="vertical">
 
-							<hbox id="hc-editor-funcOpts" align="center">
-								<label value="&hc.editor.event;" hc_notdelay="true" />
-								<menulist id="hc-editor-events" hc_notdelay="true">
-									<menupopup>
-										<menuitem value="mousedown" label="Mousedown" />
-										<menuitem value="click" label="Click" />
-										<menuitem id="hc-editor-events-command" value="command" label="Command" />
-										<menuitem value="dblclick" label="Dblclick" />
-									</menupopup>
-								</menulist>
-								<checkbox id="hc-editor-enabled" label="&hc.editor.enabled;" />
-								<checkbox id="hc-editor-allowMousedown" hc_notdelay="true" label="&hc.editor.allowMousedown;" tooltiptext="&hc.editor.allowMousedownTip;" />
-								<checkbox id="hc-editor-imgIgnoreLinks" hc_notdelay="true" label="&hc.editor.ignoreLinks;" />
-							</hbox>
+							<vbox id="hc-editor-funcOpts" style="display: block;">
+								<hbox align="center">
+									<label value="&hc.editor.event;" hc_notdelay="true" />
+									<menulist id="hc-editor-events" hc_notdelay="true">
+										<menupopup>
+											<menuitem value="mousedown" label="Mousedown" />
+											<menuitem value="click" label="Click" />
+											<menuitem id="hc-editor-events-command" value="command" label="Command" />
+											<menuitem value="dblclick" label="Dblclick" />
+										</menupopup>
+									</menulist>
+									<checkbox id="hc-editor-enabled" label="&hc.editor.enabled;" />
+								</hbox>
+								<hbox align="center">
+									<label id="hc-editor-allowMousedownLabel" value="&hc.editor.mousedownEvent;" hc_notdelay="true" />
+									<menulist id="hc-editor-allowMousedown" hc_notdelay="true">
+										<menupopup>
+											<menuitem value="true" label="&hc.editor.mousedownAllow;" />
+											<menuitem value="undefined" label="&hc.editor.mousedownSmart;" />
+											<menuitem value="false" label="&hc.editor.mousedownStop;" />
+										</menupopup>
+									</menulist>
+
+									<checkbox id="hc-editor-imgIgnoreLinks" hc_notdelay="true" label="&hc.editor.ignoreLinks;" />
+								</hbox>
+							</vbox>
 
 							<hbox align="center">
 								<label value="&hc.editor.func;" />
