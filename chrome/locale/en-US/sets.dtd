@@ -16,6 +16,10 @@
 <!ENTITY hc.sets.columnAction "Action">
 <!ENTITY hc.sets.columnFunction "Function">
 <!ENTITY hc.sets.columnArguments "Arguments">
+<!ENTITY hc.sets.columnDelayed "Delayed action">
+<!ENTITY hc.sets.columnDelayedAction "Action (delayed)">
+<!ENTITY hc.sets.columnDelayedFunction "Function (delayed)">
+<!ENTITY hc.sets.columnDelayedArguments "Arguments (delayed)">
 <!ENTITY hc.sets.columnEnabled "Enabled">
 
 <!ENTITY hc.sets.search "Search:">

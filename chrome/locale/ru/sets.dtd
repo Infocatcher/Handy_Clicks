@@ -16,6 +16,10 @@
 <!ENTITY hc.sets.columnAction "Действие">
 <!ENTITY hc.sets.columnFunction "Функция">
 <!ENTITY hc.sets.columnArguments "Аргументы">
+<!ENTITY hc.sets.columnDelayed "Отложенное действие">
+<!ENTITY hc.sets.columnDelayedAction "Действие (отлож.)">
+<!ENTITY hc.sets.columnDelayedFunction "Функция (отлож.)">
+<!ENTITY hc.sets.columnDelayedArguments "Аргументы (отлож.)">
 <!ENTITY hc.sets.columnEnabled "Включено">
 
 <!ENTITY hc.sets.search "Найти:">

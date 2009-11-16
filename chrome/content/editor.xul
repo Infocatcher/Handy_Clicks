@@ -271,10 +271,10 @@
 													<textbox class="hcText" readonly="true" value="&hc.editor.funcArgs; event, item, origItem"
 														onfocus="handyClicksEditor.fixFocusedElement(event);" />
 												</hbox>
-												<textbox class="hcEditor" persist="style" id="hc-editor-funcField" wrap="off" flex="1" value="" />
+												<textbox class="hcEditor" id="hc-editor-funcField" flex="1" value="" />
 											</tabpanel>
 											<tabpanel flex="1" orient="vertical">
-												<textbox class="hcEditor" persist="style" id="hc-editor-funcInitField" wrap="off" flex="1" value="" />
+												<textbox class="hcEditor" id="hc-editor-funcInitField" flex="1" value="" />
 											</tabpanel>
 										</tabpanels>
 									</tabbox>
@@ -315,7 +315,7 @@
 									onfocus="handyClicksEditor.fixFocusedElement(event);" />
 								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
 							</hbox>
-							<textbox class="hcEditor" persist="style" id="hc-editor-customTypeDefine" wrap="off" flex="1" value="" />
+							<textbox class="hcEditor" id="hc-editor-customTypeDefine" flex="1" value="" />
 						</tabpanel>
 						<tabpanel id="hc-editor-customTypeContextPanel" flex="1" orient="vertical">
 							<hbox>
@@ -323,7 +323,7 @@
 									onfocus="handyClicksEditor.fixFocusedElement(event);" />
 								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
 							</hbox>
-							<textbox class="hcEditor" persist="style" id="hc-editor-customTypeContext" wrap="off" flex="1" value="" />
+							<textbox class="hcEditor" id="hc-editor-customTypeContext" flex="1" value="" />
 						</tabpanel>
 					</tabpanels>
 				</tabbox>

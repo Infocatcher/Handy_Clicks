@@ -46,6 +46,8 @@ var handyClicks = {
 							tb.setAttribute("currentset", cs);
 							tb.currentSet = cs;
 							document.persist(tb.id, "currentset");
+							try { BrowserToolboxCustomizeDone(true); }
+							catch(e) {}
 							return true;
 						}
 						return false;

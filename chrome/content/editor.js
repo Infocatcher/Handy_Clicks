@@ -208,9 +208,9 @@ var handyClicksEditor = {
 		var isCustom = !!setsObj.custom;
 		this.selectCustomFunc(isCustom, delayed);
 		if(isCustom) {
-			this.$("hc-editor-funcField" + delayed).newValue = this.ps.dec(setsObj.action);
+			this.$("hc-editor-funcField"     + delayed).newValue = this.ps.dec(setsObj.action);
 			this.$("hc-editor-funcInitField" + delayed).newValue = this.ps.dec(setsObj.init);
-			this.$("hc-editor-funcLabel" + delayed).value = this.ps.dec(setsObj.label);
+			this.$("hc-editor-funcLabel"     + delayed).value    = this.ps.dec(setsObj.label);
 		}
 		this.initFuncsList(isCustom, setsObj.action || null, delayed);
 		this.$("hc-editor-enabled" + delayed).checked = typeof setsObj.enabled != "boolean" || setsObj.enabled;
@@ -220,7 +220,7 @@ var handyClicksEditor = {
 	selectCustomFunc: function(isCustom, delayed) {
 		delayed = delayed || "";
 		this.$("hc-editor-funcArgsBox" + delayed).collapsed = isCustom;
-		this.$("hc-editor-funcCustom" + delayed).collapsed = !isCustom;
+		this.$("hc-editor-funcCustom"  + delayed).collapsed = !isCustom;
 	},
 	loadCustomType: function(type) {
 		if(this.ps.isCustomType(type))

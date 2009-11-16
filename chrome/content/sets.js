@@ -34,6 +34,13 @@ var handyClicksSets = {
 		var prefsButt = document.documentElement.getButton("extra2");
 		prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
 		prefsButt.setAttribute("type", "menu");
+		Array.forEach(
+			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
+			function(col) {
+				if(!col.tooltipText)
+					col.tooltipText = col.getAttribute("label");
+			}
+		);
 		this.focusSearch();
 	},
 	initShortcuts: function() {
@@ -82,7 +89,7 @@ var handyClicksSets = {
 		var p = this.ps.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
 			if(!this.ps.isOkShortcut(sh) || !this.ut.isObject(p[sh])) {
-				this.ut._err(new Error("Invalid shortcut in prefs: " + sh), true);
+				this.ut._err(new Error("Invalid shortcut in prefs: \"" + sh + "\""), true);
 				continue;
 			}
 			var button = this.ps.getButtonId(sh);
@@ -130,40 +137,53 @@ var handyClicksSets = {
 		return this.eltsCache[hash] = tItem.getElementsByTagName("treechildren")[0];
 	},
 	appendItems: function(parent, items, shortcut) {
-		var tItem, tRow, it, typeLabel, isCustom, isCustomType, actLabel;
-		var isBuggy = false;
+		var tItem, tRow;
+		var fo, typeLabel, isCustom, isCustomType, actLabel;
+		var da, daCustom, daLabel;
+		var isBuggy;
 		for(var itemType in items) if(items.hasOwnProperty(itemType)) {
 			tItem = document.createElement("treeitem");
 			tRow = document.createElement("treerow");
-			it = items[itemType];
-			isCustom = !!it.custom;
+			fo = items[itemType];
+			if(!this.ut.canHasProps(fo))
+				fo = {};
+			isCustom = !!fo.custom;
 			isCustomType = this.ps.isCustomType(itemType);
-			typeLabel = isCustomType
-				? this.getCustomTypeLabel(itemType)
-				: this.ut.getLocalized(itemType);
+			typeLabel = this.getTypeLabel(itemType, isCustomType);
 			this.appendTreeCell(tRow, "label", typeLabel);
-			this.appendTreeCell(tRow, "label", it.eventType);
-			actLabel = isCustom ? this.ps.dec(it.label) : this.ut.getLocalized(it.action);
+			this.appendTreeCell(tRow, "label", fo.eventType);
+			actLabel = isCustom ? this.ps.dec(fo.label) : this.ut.getLocalized(fo.action);
 			this.appendTreeCell(tRow, "label", actLabel);
-			this.appendTreeCell(tRow, "label",
-				isCustom
-					? this.ut.getLocalized("customFunction") + (this.oldTree ? " " : "\n") + this.ps.dec(it.action)
-					: it.action
-			);
-			this.appendTreeCell(tRow, "label", this.getArguments(it.arguments || {}));
+			this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom));
+			this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}));
+
+			da = this.ut.getOwnProperty(fo, "delayedAction");
+			if(da) {
+				if(!this.ut.canHasProps(da))
+					da = {};
+				this.appendTreeCell(tRow, "label", da.enabled ? "+" : "\u2212"); // +/-
+
+				daCustom = !!da.custom;
+				daLabel = daCustom ? this.ps.dec(da.label) : this.ut.getLocalized(da.action);
+				this.appendTreeCell(tRow, "label", daLabel);
+				this.appendTreeCell(tRow, "label", this.getActionCode(da.action, daCustom));
+				this.appendTreeCell(tRow, "label", this.getArguments(da.arguments || {}));
+			}
+
 			this.addProperties(
-				this.appendTreeCell(tRow, "value", it.enabled), // checkbox
+				this.appendTreeCell(tRow, "value", fo.enabled), // checkbox
 				{ hc_editable: true }
 			);
 
-			isBuggy = !this.ps.isOkFuncObj(it)
+			isBuggy = this.isBuggyFuncObj(fo, isCustom, actLabel)
+				|| da && this.isBuggyFuncObj(da, daCustom, daLabel)
 				|| (
 					isCustomType && !this.ps.isOkCustomType(itemType)
-					|| /^\(.+\)$/.test(typeLabel) // See handyClicksUtils.getLocalized()
-				)
-				|| (!isCustom && /^\(.+\)$/.test(actLabel));
+					|| this.isBuggyLabel(typeLabel)
+				);
+
 			this.addCellsProperties([tRow], {
-				hc_disabled: !it.enabled,
+				hc_disabled: !fo.enabled,
 				hc_buggy: isBuggy,
 				hc_custom: isCustom,
 				hc_customType: isCustomType
@@ -171,7 +191,7 @@ var handyClicksSets = {
 			if(this._importFlag) { //~ todo: test!
 				var savedPref = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType);
 				var override = savedPref;
-				var equals = this.ut.objEquals(it, savedPref);
+				var equals = this.ut.objEquals(fo, savedPref);
 				if(isCustomType) {
 					var savedType = this.ut.getOwnProperty(this._savedTypes, itemType);
 					var eqType = this.ut.objEquals(this.ps.types[itemType], savedType);
@@ -196,6 +216,22 @@ var handyClicksSets = {
 	getCustomTypeLabel: function(type) {
 		var label = this.ut.getOwnProperty(this.ps.types, type, "label");
 		return (label ? this.ps.dec(label) + " " : "") + "(" + type + ")";
+	},
+	getTypeLabel: function(itemType, isCustomType) {
+		return isCustomType
+			? this.getCustomTypeLabel(itemType)
+			: this.ut.getLocalized(itemType);
+	},
+	getActionCode: function(action, isCustom) {
+		return isCustom
+			? this.ut.getLocalized("customFunction") + (this.oldTree ? " " : "\n") + this.ps.dec(action)
+			: action;
+	},
+	isBuggyFuncObj: function(fo, isCustom, label) {
+		return !this.ps.isOkFuncObj(fo) || !isCustom && this.isBuggyLabel(label);
+	},
+	isBuggyLabel: function(label) {
+		return !label || /^\(.+\)$/.test(label); // See handyClicksUtils.getLocalized()
 	},
 	addProperties: function(tar, propsObj) {
 		var propsVal = tar.getAttribute("properties");
@@ -409,19 +445,17 @@ var handyClicksSets = {
 
 		var del = tRows.map(
 			function(tRow, i) {
-				tRow = tRows[i];
-				var mdfs = this.ps.getModifiersStr(tRow.__shortcut);
-				var button = this.ps.getButtonStr(tRow.__shortcut, true);
-				var type = this.ps.isCustomType(type)
-					? this.getCustomTypeLabel(tRow.__itemType)
-					: this.ut.getLocalized(tRow.__itemType);
-				var fObj = this.ut.getOwnProperty(this.ps.prefs, tRow.__shortcut, tRow.__itemType);
-				var label = this.ut.isObject(fObj)
+				var type = tRow.__itemType, sh = tRow.__shortcut;
+				var mdfs = this.ps.getModifiersStr(sh);
+				var button = this.ps.getButtonStr(sh, true);
+				var typeLabel = this.getTypeLabel(type, this.ps.isCustomType(type));
+				var fObj = this.ut.getOwnProperty(this.ps.prefs, sh, type);
+				var label = fObj
 					? this.ut.getOwnProperty(fObj, "custom")
 						? this.ps.dec(fObj.label || "")
 						: this.ut.getLocalized(fObj.action || "")
 					: "?";
-				return mdfs + " + " + button + " + " + type + " \u21d2 " + label.substr(0, 42); // "=>" symbol
+				return mdfs + " + " + button + " + " + typeLabel + " \u21d2 " + label.substr(0, 42); // "=>" symbol
 			},
 			this
 		);
