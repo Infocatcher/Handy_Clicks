@@ -210,6 +210,10 @@
 		</groupbox>
 	</prefpane>
 
+	<!--
+		https://developer.mozilla.org/En/Preferences_System/Prefwindow#Issues_when_using_prefpanes_in_prefwindow
+		https://bugzilla.mozilla.org/show_bug.cgi?id=296418
+	-->
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefUtils.js" />

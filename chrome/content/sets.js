@@ -140,6 +140,7 @@ var handyClicksSets = {
 		var tItem, tRow;
 		var fo, typeLabel, isCustom, isCustomType, actLabel;
 		var da, daCustom, daLabel;
+		var i, daRows = 4;
 		var isBuggy;
 		for(var itemType in items) if(items.hasOwnProperty(itemType)) {
 			tItem = document.createElement("treeitem");
@@ -168,6 +169,10 @@ var handyClicksSets = {
 				this.appendTreeCell(tRow, "label", daLabel);
 				this.appendTreeCell(tRow, "label", this.getActionCode(da.action, daCustom));
 				this.appendTreeCell(tRow, "label", this.getArguments(da.arguments || {}));
+			}
+			else { // Add empty rows
+				for(i = 0; i < daRows; i++)
+					this.appendTreeCell(tRow);
 			}
 
 			this.addProperties(
@@ -261,7 +266,7 @@ var handyClicksSets = {
 	},
 	appendTreeCell: function(parent, attrName, attrValue) {
 		var cell = document.createElement("treecell");
-		cell.setAttribute(attrName, attrValue);
+		attrName && cell.setAttribute(attrName, attrValue);
 		return parent.appendChild(cell);
 	},
 	get oldTree() {

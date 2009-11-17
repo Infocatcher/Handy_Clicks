@@ -69,11 +69,12 @@ var handyClicksUtils = {
 	timer: function(tId) {
 		var ts = this._timers;
 		if(tId in ts) {
-			this._log("[timer] " + tId + " -> " + (Date.now() - ts[tId]) + " ms");
+			var dt = Date.now() - ts[tId];
+			this._log("[timer] " + tId + " -> " + dt + " ms");
 			delete ts[tId];
-			return;
+			return dt;
 		}
-		ts[tId] = Date.now();
+		return ts[tId] = Date.now();
 	},
 
 	notify: function(header, msg, fnc0, fnc1, extEnabled, inWindowCorner) {
@@ -122,8 +123,8 @@ var handyClicksUtils = {
 	getBundle: function(src) {
 		return this._bundles[src] || (
 			this._bundles[src] = Components.classes["@mozilla.org/intl/stringbundle;1"]
-			.getService(Components.interfaces.nsIStringBundleService)
-			.createBundle(src)
+				.getService(Components.interfaces.nsIStringBundleService)
+				.createBundle(src)
 		);
 	},
 	getStr: function(src, sName) {

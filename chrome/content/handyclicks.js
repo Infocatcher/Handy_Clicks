@@ -82,7 +82,7 @@ var handyClicks = {
 		);
 	},
 
-	_enabled: true,
+	_enabled: true, // Uses for internal disabling
 	get enabled() {
 		return this._enabled && this.pu.pref("enabled");
 	},
@@ -113,13 +113,14 @@ var handyClicks = {
 		if(this._cMenu && typeof this._cMenu.hidePopup == "function") // ?
 			this._cMenu.hidePopup();
 
-		this.flags.allowEvents = funcObj.action == this.ignoreAction;
+		var em = this.editMode;
+		this.flags.allowEvents = !em && funcObj.action == this.ignoreAction;
 		this.flags.stopContextMenu = funcObj.action != "showContextMenu";
 
 		// Fix for switching tabs by Mouse Gestures
 		this._tabOnMousedown = e.view.top === content && this.getTabBrowser(true).mCurrentTab;
 
-		if(funcObj.eventType == "mousedown" && !this.flags.allowEvents) {
+		if(!em && funcObj.eventType == "mousedown" && !this.flags.allowEvents) {
 			this.functionEvent(funcObj, e);
 			return;
 		}
@@ -128,7 +129,7 @@ var handyClicks = {
 		// true      - don't stop
 		// undefined - smart
 		// false     - always stop
-		if(amd === false || this.editMode)
+		if(amd === false || em)
 			this.stopEvent(e);
 		else if(amd === undefined && !this.ut.isChromeWin(e.view.top)) {
 			// Prevent page handlers, but don't stop Mouse Gestures
@@ -149,7 +150,7 @@ var handyClicks = {
 		//var cm = this.getItemContext(e); //~ todo: get cm only if needed
 
 		var delay = this.pu.pref("delayedActionTimeout");
-		if(delay > 0 && !this.editMode) {
+		if(delay > 0 && !em) {
 			var delayedAction = this.ut.getOwnProperty(funcObj, "delayedAction");
 			if(
 				(!delayedAction /*&& cm */&& e.button == 2) // Show context menu after delay
