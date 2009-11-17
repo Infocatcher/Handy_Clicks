@@ -57,20 +57,10 @@
 					<treecol id="hc-sets-tree-columnArguments" flex="1" label="&hc.sets.columnArguments;" persist="hidden width ordinal" />
 					<splitter class="tree-splitter" />
 
-					<treecol id="hc-sets-tree-columnDelayed" flex="1" width="18" label="&hc.sets.columnDelayed;" persist="hidden width ordinal" />
-					<splitter class="tree-splitter" />
-
-					<treecol id="hc-sets-tree-columnDelayedAction" flex="1" hidden="true" label="&hc.sets.columnDelayedAction;" persist="hidden width ordinal" />
-					<splitter class="tree-splitter" />
-					<treecol id="hc-sets-tree-columnDelayedFunction" flex="1" hidden="true" label="&hc.sets.columnDelayedFunction;" persist="hidden width ordinal" />
-					<splitter class="tree-splitter" />
-					<treecol id="hc-sets-tree-columnDelayedArguments" flex="1" hidden="true" label="&hc.sets.columnDelayedArguments;" persist="hidden width ordinal" />
-					<splitter class="tree-splitter" />
-
 					<treecol id="hc-sets-tree-columnEnabled" type="checkbox" width="18" label="&hc.sets.columnEnabled;" persist="hidden width ordinal" />
 				</treecols>
 				<treechildren id="hc-sets-tree-content"
-					onclick="handyClicksSets.toggleEnabled(event);"
+					onclick="handyClicksSets.treeClick(event);"
 					ondblclick="handyClicksSets.editItems(event);"
 					onmousedown="handyClicksSets.smartSelect(event);"
 					onmousemove="handyClicksSets.smartSelect(event);"

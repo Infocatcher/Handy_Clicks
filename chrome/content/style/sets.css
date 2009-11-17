@@ -59,7 +59,7 @@ treechildren::-moz-tree-cell-text(hc_override) {
 treechildren::-moz-tree-cell-text(hc_equals) {
 	text-decoration: underline;
 }
-treechildren::-moz-tree-checkbox(hc_editable) {
+treechildren::-moz-tree-checkbox(hc_checkbox) {
 	list-style-image: url("checkbox.png"); /* Image from Adblock Plus extension */
 	-moz-image-region: rect(13px 13px 26px 0);
 }

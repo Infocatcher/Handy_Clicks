@@ -34,7 +34,7 @@ var handyClicksEditor = {
 		this.ps.loadSettings(this.src || null);
 		this.initUI();
 		this.loadCustomType(this.type);
-		this.selectTargetTab();
+		this.selectTargetTab(this.isDelayed);
 		this.ps.oSvc.addPrefsObserver(this.appendTypesList, this);
 		window.addEventListener("DOMMouseScroll", this, true);
 
@@ -61,10 +61,13 @@ var handyClicksEditor = {
 		this.editorMode = wa[1];
 		this.shortcut = wa[2];
 		this.type = wa[3];
+		this.isDelayed = wa[4];
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
 	selectTargetTab: function(delayed, src, line) {
 		this.mBox.selectedIndex = this.tabs[this.editorMode];
+		if(delayed && !src)
+			src = "code";
 		if(!src)
 			return;
 		switch(this.editorMode) {

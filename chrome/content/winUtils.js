@@ -43,7 +43,7 @@ var handyClicksWinUtils = {
 			win.fullScreen = !win.fullScreen; // Firefox 3.0+
 	},
 	winIdProp: "__handyClicks__winId",
-	openEditor: function(pSrc, mode, shortcut, itemType) {
+	openEditor: function(pSrc, mode, shortcut, itemType, isDelayed) {
 		var winId = (mode == "itemType" ? itemType : shortcut + "-" + itemType) + (pSrc ? "@otherSrc" : "");
 		var wProp = this.winIdProp;
 		var ws = this.wm.getEnumerator("handyclicks:editor");
@@ -59,7 +59,7 @@ var handyClicksWinUtils = {
 			"chrome://handyclicks/content/editor.xul",
 			"_blank",
 			"chrome,resizable,centerscreen,dialog=0",
-			pSrc, mode || "shortcut", shortcut, itemType
+			pSrc, mode || "shortcut", shortcut, itemType, isDelayed
 		);
 		w[wProp] = winId;
 		this.markOpenedEditors(winId, true);
@@ -107,7 +107,7 @@ var handyClicksWinUtils = {
 		if(!wSet)
 			return;
 		if(arguments.length)
-			wSet.handyClicksSets.setRowStatus(winId, editStat);
+			wSet.handyClicksSets.setItemStatus(winId, editStat);
 		else
 			wSet.handyClicksSets.markOpenedEditors();
 	}
