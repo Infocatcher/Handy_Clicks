@@ -36,7 +36,6 @@ var handyClicksEditor = {
 		this.loadCustomType(this.type);
 		this.selectTargetTab(this.isDelayed);
 		this.ps.oSvc.addPrefsObserver(this.appendTypesList, this);
-		window.addEventListener("DOMMouseScroll", this, true);
 
 		Array.forEach( // Add spellcheck feature for <menulist editable="true" />
 			document.getElementsByTagName("menulist"),
@@ -51,7 +50,6 @@ var handyClicksEditor = {
 			document.documentElement.setAttribute("hc_fxversion", "3.0"); // See style/editor.css
 	},
 	destroy: function(reloadFlag) {
-		window.removeEventListener("DOMMouseScroll", this, true);
 		this.wu.markOpenedEditors();
 	},
 	initShortcuts: function() {
@@ -96,7 +94,7 @@ var handyClicksEditor = {
 		}
 	},
 	loadLabels: function() {
-		["hc-editor-button", "hc-editor-itemTypes", "hc-editor-funcPopup"].forEach(
+		["hc-editor-button", "hc-editor-itemTypes", "hc-editor-func"].forEach(
 			this.localiseLabels,
 			this
 		);
@@ -109,18 +107,19 @@ var handyClicksEditor = {
 		);
 	},
 	localiseLabels: function(parentId) {
-		var p = this.$(parentId);
-		var mis = p.getElementsByTagName("menuitem"), mi;
-		for(var i = 0, len = mis.length; i < len; i++) {
-			mi = mis[i];
-			mi.setAttribute("label", this.ut.getLocalized(mi.getAttribute("label")));
-			if(mi.hasAttribute("tooltiptext"))
-				mi.setAttribute("tooltiptext", this.ut.getLocalized(mi.getAttribute("tooltiptext")));
-		}
+		var ml = this.$(parentId);
+		Array.forEach(
+			ml.getElementsByTagName("menuitem"),
+			function(mi) {
+				mi.setAttribute("label", this.ut.getLocalized(mi.getAttribute("label")));
+				if(mi.hasAttribute("tooltiptext"))
+					mi.setAttribute("tooltiptext", this.ut.getLocalized(mi.getAttribute("tooltiptext")));
+			},
+			this
+		);
 		if(this.ut.fxVersion >= 3)
 			return;
 		// Fix bug in Firefox 1.5 and 2.0
-		var ml = mi.parentNode.parentNode;
 		var si = ml.selectedIndex;
 		ml.selectedIndex = null;
 		ml.selectedIndex = si;
@@ -138,10 +137,9 @@ var handyClicksEditor = {
 	addIds: function(node, id) {
 		node.id += id;
 		Array.forEach(
-			node.getElementsByTagName("*"),
+			node.getElementsByAttribute("id", "*"),
 			function(node) {
-				if(node.id)
-					node.id += id;
+				node.id += id;
 			}
 		);
 		return node;
@@ -163,10 +161,6 @@ var handyClicksEditor = {
 	},
 	$: function(id) {
 		return document.getElementById(id);
-	},
-	handleEvent: function(e) {
-		if(e.type == "DOMMouseScroll")
-			this.listScroll(e);
 	},
 	setWinId: function() {
 		var winId;
@@ -314,8 +308,8 @@ var handyClicksEditor = {
 			dis = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
 			mi.@disabled = dis;
 			_mi.@hc_disabled = dis;
-			parent.insertBefore(this.ut.fromXML(mi), sep);
-			tList.appendChild(this.ut.fromXML(_mi));
+			parent.insertBefore(this.ut.parseFromXML(mi), sep);
+			tList.appendChild(this.ut.parseFromXML(_mi));
 			hideSep = false;
 		}
 		sep.hidden = hideSep;
@@ -323,12 +317,11 @@ var handyClicksEditor = {
 		this.highlightUsedTypes();
 	},
 	delCustomTypes: function() {
-		var mis, mi, j;
 		["hc-editor-itemTypes", "hc-editor-customTypePopup"].forEach(
 			function(pId) {
-				mis = this.$(pId).getElementsByTagName("menuitem");
-				for(j = mis.length - 1; j >= 0; j--) {
-					mi = mis[j];
+				var mis = this.$(pId).getElementsByTagName("menuitem"), mi;
+				for(var i = mis.length - 1; i >= 0; i--) {
+					mi = mis[i];
 					if(this.ps.isCustomType(mi.getAttribute("value")))
 						mi.parentNode.removeChild(mi);
 				}
@@ -511,7 +504,7 @@ var handyClicksEditor = {
 				elt.appendChild(mp);
 		}
 		argContainer.appendChild(elt);
-		this.$("hc-editor-funcArgs" + delayed).appendChild(this.ut.fromXML(argContainer));
+		this.$("hc-editor-funcArgs" + delayed).appendChild(this.ut.parseFromXML(argContainer));
 	},
 	getAboutConfigEntry: function(label) {
 		return /\(([\w-]+(?:\.[\w-]+)+)\)/.test(label) && RegExp.$1;
@@ -776,37 +769,5 @@ var handyClicksEditor = {
 			this.ps.saveSettingsObjects();
 		this.appendTypesList();
 		this.applyButton.disabled = false;
-	},
-	listScroll: function(e) {
-		var ml = e.target;
-		var tn = ml.tagName;
-		if(tn == "menuitem" || tn == "menuseparator") {
-			ml = ml.parentNode.parentNode;
-			tn = ml.tagName;
-		}
-		if(tn != "menulist" || ml.disabled)
-			return;
-		var mp = ml.menupopup;
-		var si = ml.selectedItem;
-		var plus = e.detail > 0;
-		si = plus
-			? !si || si == mp.lastChild
-				? mp.firstChild
-				: si.nextSibling
-			: !si || si == mp.firstChild
-				? mp.lastChild
-				: si.previousSibling;
-		var win = si.ownerDocument.defaultView;
-		while(
-			si && (
-				si.getAttribute("disabled") == "true"
-				|| si.tagName != "menuitem"
-				|| !this.ut.isElementVisible(si)
-			)
-		)
-			si = plus ? si.nextSibling : si.previousSibling;
-		ml.selectedItem = si || (plus ? mp.firstChild : mp.lastChild);
-		ml.menuBoxObject.activeChild = ml.mSelectedInternal || ml.selectedInternal;
-		ml.doCommand();
 	}
 };

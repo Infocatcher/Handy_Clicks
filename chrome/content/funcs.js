@@ -504,7 +504,7 @@ var handyClicksFuncs = {
 		popup = xml || <popup xmlns={this.ut.XULNS} />;
 		popup.@id = id;
 		popup.@tooltip = "handyClicks-tooltip";
-		return pSet.appendChild(this.ut.fromXML(popup));
+		return pSet.appendChild(this.ut.parseFromXML(popup));
 	},
 	appendItems: function(parent, items) {
 		items.forEach(function(item) {

@@ -631,7 +631,10 @@ var handyClicks = {
 		document.popupNode = popup.ownerDocument.popupNode = this.itemType == "tab" ? this.item : node;
 
 		var xy = this.getXY();
-		popup.showPopup(this.ut.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "popup", null, null);
+		if("openPopupAtScreen" in popup) // Firefox 3.0+
+			popup.openPopupAtScreen(xy.x, xy.y, true /*isContextMenu*/);
+		else
+			popup.showPopup(this.ut.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "popup", null, null);
 		this.focusOnItem();
 	},
 	_xy: null,

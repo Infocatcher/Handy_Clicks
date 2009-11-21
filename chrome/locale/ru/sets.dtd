@@ -19,6 +19,11 @@
 <!ENTITY hc.sets.columnEnabled "Включено">
 
 <!ENTITY hc.sets.search "Найти:">
+<!ENTITY hc.sets.drawMode "Режим отображения:">
+<!ENTITY hc.sets.drawModeNormal "Нормальный">
+<!ENTITY hc.sets.drawModeNormalCompact "Нормальный (компактный)">
+<!ENTITY hc.sets.drawModeInverse "Инвертированный">
+<!ENTITY hc.sets.drawModeInverseCompact "Инвертированный (компактный)">
 <!ENTITY hc.sets.cmdAdd "Добавить…">
 <!ENTITY hc.sets.cmdEdit "Редактировать…">
 <!ENTITY hc.sets.cmdEditType "Редактировать добавленный тип…">

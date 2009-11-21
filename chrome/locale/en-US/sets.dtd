@@ -20,6 +20,11 @@
 <!ENTITY hc.sets.columnEnabled "Enabled">
 
 <!ENTITY hc.sets.search "Search:">
+<!ENTITY hc.sets.drawMode "Draw mode:">
+<!ENTITY hc.sets.drawModeNormal "Normal">
+<!ENTITY hc.sets.drawModeNormalCompact "Normal (compact)">
+<!ENTITY hc.sets.drawModeInverse "Inverse">
+<!ENTITY hc.sets.drawModeInverseCompact "Inverse (compact)">
 <!ENTITY hc.sets.cmdAdd "Add…">
 <!ENTITY hc.sets.cmdEdit "Edit…">
 <!ENTITY hc.sets.cmdEditType "Edit custom type…">

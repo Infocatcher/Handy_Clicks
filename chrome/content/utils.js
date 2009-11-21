@@ -178,7 +178,8 @@ var handyClicksUtils = {
 			return suc.ConvertToUnicode(str);
 		}
 		catch(e) {
-			this._err(this.errPrefix + "Can't convert UTF-8 to unicode\n" + e);
+			this._err(new Error("Can't convert UTF-8 to unicode"));
+			this._err(e);
 		}
 		return str;
 	},
@@ -359,10 +360,16 @@ var handyClicksUtils = {
 	},
 
 	// E4X
-	fromXML: function(xml) {
+	parseFromString: function(str, mime) {
+		return new DOMParser().parseFromString(str, mime || "application/xml").documentElement;
+	},
+	serializeToString: function(elt) {
+		return new XMLSerializer().serializeToString(elt);
+	},
+	parseFromXML: function(xml) {
 		var pp = XML.prettyPrinting;
 		XML.prettyPrinting = false;
-		var elt = new DOMParser().parseFromString(xml.toXMLString(), "application/xml").documentElement;
+		var elt = this.parseFromString(xml.toXMLString());
 		XML.prettyPrinting = pp;
 		return elt;
 	}

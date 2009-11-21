@@ -18,7 +18,6 @@ var handyClicksSets = {
 
 		this.updPrefsUI();
 		this.pu.oSvc.addPrefsObserver(this.updPrefsUI, this);
-		// <preferences onchange="handyClicksSets.updPrefsUI();"> return some bugs
 
 		if(this.ut.fxVersion >= 3.5) {
 			var s = this.$("hc-sets-tree-searchField");
@@ -83,25 +82,72 @@ var handyClicksSets = {
 	$: function(id) {
 		return document.getElementById(id);
 	},
+
 	drawTree: function() {
 		this.eltsCache = { __proto__: null };
-		this.itemsCache = { __proto__: null };
+		this.rowsCache = { __proto__: null };
+
+		var daTime = this.pu.pref("delayedActionTimeout");
+		this._daAfter = this.ut.getLocalized("after").replace("%t", daTime);
+		this._forcedDisDa = daTime <= 0;
+		this._expandDa = this.pu.pref("sets.treeExpandDelayedAction");
+
+		var drawMode = this.pu.pref("sets.treeDrawMode");
 		var p = this.ps.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
 			if(!this.ps.isOkShortcut(sh) || !this.ut.isObject(p[sh])) {
 				this.ut._err(new Error("Invalid shortcut in prefs: \"" + sh + "\""), true);
 				continue;
 			}
-			var button = this.ps.getButtonId(sh);
-			var buttonContainer = this.eltsCache[button] || this.appendContainerItem(null, button, this.ut.getLocalized(button));
-			var modifiers = this.ps.getModifiersStr(sh);
-			var modifiersContainer = this.eltsCache[sh] || this.appendContainerItem(buttonContainer, sh, modifiers);
-			this.appendItems(modifiersContainer, p[sh], sh);
+			switch(drawMode) {
+				case 0:
+				default:
+					var button = this.ps.getButtonId(sh);
+					var modifiers = this.ps.getModifiersStr(sh);
+					var buttonContainer = this.eltsCache[button]
+						|| this.appendContainerItem(this.tBody, button, this.ut.getLocalized(button));
+					var modifiersContainer = this.eltsCache[sh]
+						|| this.appendContainerItem(buttonContainer, sh, modifiers);
+					this.appendItems(modifiersContainer, p[sh], sh);
+				break;
+				case 1:
+					var button = this.ps.getButtonId(sh, true);
+					var modifiers = this.ps.getModifiersStr(sh, true);
+					var label = this.ut.getLocalized(button) + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
+					var buttonContainer = this.eltsCache[sh]
+						|| this.appendContainerItem(this.tBody, sh, label);
+					this.appendItems(buttonContainer, p[sh], sh);
+				break;
+				case 2:
+					var button = this.ps.getButtonId(sh);
+					var modifiers = this.ps.getModifiersStr(sh);
+					var so = p[sh];
+					for(var type in so) if(so.hasOwnProperty(type)) {
+						var typeContainer = this.eltsCache[type]
+							|| this.appendContainerItem(this.tBody, type, this.getTypeLabel(type));
+						var hash = type + "-" + button;
+						var buttonContainer = this.eltsCache[hash]
+							|| this.appendContainerItem(typeContainer, hash, this.ut.getLocalized(button));
+						this.appendRow(buttonContainer, sh, type, so[type], modifiers);
+					}
+				break;
+				case 3:
+					var button = this.ps.getButtonId(sh, true);
+					var modifiers = this.ps.getModifiersStr(sh, true);
+					var so = p[sh];
+					for(var type in so) if(so.hasOwnProperty(type)) {
+						var typeContainer = this.eltsCache[type]
+							|| this.appendContainerItem(this.tBody, type, this.getTypeLabel(type));
+						var label = this.ut.getLocalized(button) + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
+						this.appendRow(typeContainer, sh, type, so[type], label);
+					}
+				break;
+			}
 		}
 		this.markOpenedEditors();
 	},
 	markOpenedEditors: function() {
-		for(var rowId in this.itemsCache)
+		for(var rowId in this.rowsCache)
 			this.setItemStatus(rowId, false);
 		var wProp = this.wu.winIdProp;
 		var otherSrc = this.ps.otherSrc;
@@ -132,143 +178,143 @@ var handyClicksSets = {
 				</treerow>
 				<treechildren />
 			</treeitem>;
-		tItem = this.ut.fromXML(tItem);
-		(parent || this.tBody).appendChild(tItem);
+		tItem = this.ut.parseFromXML(tItem);
+		parent.appendChild(tItem);
 		return this.eltsCache[hash] = tItem.getElementsByTagName("treechildren")[0];
 	},
 	appendItems: function(parent, items, shortcut) {
-		var tItem, tRow;
-		var fo, typeLabel, isCustom, isCustomType, actLabel;
-		var da, daCustom, daLabel;
-		var isBuggy;
-		for(var itemType in items) if(items.hasOwnProperty(itemType)) {
-			tItem = document.createElement("treeitem");
-			tRow = document.createElement("treerow");
-			fo = items[itemType];
-			if(!this.ut.canHasProps(fo))
-				fo = {};
-			isCustom = !!fo.custom;
-			isCustomType = this.ps.isCustomType(itemType);
-			typeLabel = this.getTypeLabel(itemType, isCustomType);
-			this.appendTreeCell(tRow, "label", typeLabel);
-			this.appendTreeCell(tRow, "label", fo.eventType);
-			actLabel = isCustom ? this.ps.dec(fo.label) : this.ut.getLocalized(fo.action);
-			this.appendTreeCell(tRow, "label", actLabel);
-			this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom));
-			this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}));
+		for(var itemType in items) if(items.hasOwnProperty(itemType))
+			this.appendRow(parent, shortcut, itemType, items[itemType]);
+	},
+	appendRow: function(parent, shortcut, itemType, fo, forcedLabel) {
+		var tItem = document.createElement("treeitem");
+		var tRow = document.createElement("treerow");
+		if(!this.ut.canHasProps(fo))
+			fo = {};
+		var isCustom = !!fo.custom;
+		var isCustomType = this.ps.isCustomType(itemType);
+		var typeLabel = forcedLabel || this.getTypeLabel(itemType, isCustomType);
+		this.appendTreeCell(tRow, "label", typeLabel);
+		this.appendTreeCell(tRow, "label", fo.eventType);
+		var actLabel = isCustom ? this.ps.dec(fo.label) : this.ut.getLocalized(fo.action);
+		this.appendTreeCell(tRow, "label", actLabel);
+		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom));
+		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}));
 
-			da = this.ut.getOwnProperty(fo, "delayedAction");
-			if(da) {
-				tItem.setAttribute("container", "true");
+		var da = this.ut.getOwnProperty(fo, "delayedAction");
+		if(da) {
+			tItem.setAttribute("container", "true");
+			if(this._expandDa)
 				tItem.setAttribute("open", "true");
-				var daChild = document.createElement("treechildren");
-				var daItem = document.createElement("treeitem");
-				var daRow = document.createElement("treerow");
+			var daChild = document.createElement("treechildren");
+			var daItem = document.createElement("treeitem");
+			var daRow = document.createElement("treerow");
 
-				if(!this.ut.canHasProps(da))
-					da = {};
+			if(!this.ut.canHasProps(da))
+				da = {};
 
-				this.appendTreeCell(daRow, "label", this.ut.getLocalized("delayed"));
-				this.appendTreeCell(daRow, "label", da.eventType);
+			this.appendTreeCell(daRow, "label", this.ut.getLocalized("delayed"));
+			this.appendTreeCell(daRow, "label", this._daAfter);
 
-				daCustom = !!da.custom;
-				daLabel = daCustom ? this.ps.dec(da.label) : this.ut.getLocalized(da.action);
-				this.appendTreeCell(daRow, "label", daLabel);
-				this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom));
-				this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}));
+			var daCustom = !!da.custom;
+			var daLabel = daCustom ? this.ps.dec(da.label) : this.ut.getLocalized(da.action);
+			this.appendTreeCell(daRow, "label", daLabel);
+			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom));
+			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}));
 
-				this.addClildsProperties(daRow, {
-					hc_disabled: !fo.enabled || !da.enabled,
-					hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel),
-					hc_custom: daCustom,
-					hc_customType: isCustomType
-				}, true);
-
-				this.addProperties(
-					this.appendTreeCell(daRow, "value", da.enabled), // checkbox
-					{ hc_checkbox: true }
-				);
-
-				if(this._importFlag) { //~ todo: test!
-					var savedDa = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType, "delayedAction");
-					var override = savedDa;
-					var equals = this.ut.objEquals(da, savedDa);
-					this.addClildsProperties(daRow, {
-						hc_override: override,
-						hc_equals: equals
-					}, true);
-				}
-
-				daItem.__shortcut = shortcut;
-				daItem.__itemType = itemType;
-				daItem.__isCustomType = isCustomType;
-				daItem.__isDelayed = true;
-
-				daItem.appendChild(daRow);
-				daChild.appendChild(daItem);
-				tItem.appendChild(daChild);
-
-				//this.itemsCache[shortcut + "-" + itemType + "-delayed"] = daRow; //~~
-			}
+			this.addClildsProperties(daRow, {
+				hc_disabled: this._forcedDisDa || !fo.enabled || !da.enabled,
+				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel),
+				hc_custom: daCustom,
+				hc_customType: isCustomType
+			}, true);
 
 			this.addProperties(
-				this.appendTreeCell(tRow, "value", fo.enabled), // checkbox
+				this.appendTreeCell(daRow, "value", da.enabled), // checkbox
 				{ hc_checkbox: true }
 			);
 
-			isBuggy = this.isBuggyFuncObj(fo, isCustom, actLabel)
-				|| (
-					isCustomType && !this.ps.isOkCustomType(itemType)
-					|| this.isBuggyLabel(typeLabel)
-				);
-
-			this.addClildsProperties(tRow, {
-				hc_disabled: !fo.enabled,
-				hc_buggy: isBuggy,
-				hc_custom: isCustom,
-				hc_customType: isCustomType
-			}, true);
 			if(this._importFlag) { //~ todo: test!
-				var savedPref = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType);
-				if(savedDa) // Ignore delayed actions
-					savedPref.delayedAction = null;
-				if(da)
-					fo.delayedAction = null;
-				var override = savedPref;
-				var equals = this.ut.objEquals(fo, savedPref);
-				if(isCustomType) {
-					var savedType = this.ut.getOwnProperty(this._savedTypes, itemType);
-					var eqType = this.ut.objEquals(this.ps.types[itemType], savedType);
-					if(!eqType)
-						override = true;
-					equals = equals && eqType;
-				}
-				this.addClildsProperties(tRow, {
+				var savedDa = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType, "delayedAction");
+				var override = savedDa;
+				var equals = this.ut.objEquals(da, savedDa);
+				this.addClildsProperties(daRow, {
 					hc_override: override,
 					hc_equals: equals
 				}, true);
-
-				if(savedDa)
-					savedPref.delayedAction = savedDa;
-				if(da)
-					fo.delayedAction = da;
 			}
 
-			tItem.__shortcut = shortcut;
-			tItem.__itemType = itemType;
-			tItem.__isCustomType = isCustomType;
-			tItem.__isDelayed = false;
-			tItem.__delayed = da && daItem;
-			tItem.appendChild(tRow);
-			parent.appendChild(tItem);
-			this.itemsCache[shortcut + "-" + itemType] = tRow;
+			daItem.__shortcut = shortcut;
+			daItem.__itemType = itemType;
+			daItem.__isCustomType = isCustomType;
+			daItem.__isDelayed = true;
+
+			daItem.appendChild(daRow);
+			daChild.appendChild(daItem);
+			tItem.appendChild(daChild);
+
+			this.rowsCache[shortcut + "-" + itemType + "-delayed"] = daRow; // Uses for search
 		}
+
+		this.addProperties(
+			this.appendTreeCell(tRow, "value", fo.enabled), // checkbox
+			{ hc_checkbox: true }
+		);
+
+		var isBuggy = this.isBuggyFuncObj(fo, isCustom, actLabel)
+			|| (
+				isCustomType && !this.ps.isOkCustomType(itemType)
+				|| this.isBuggyLabel(typeLabel)
+			);
+
+		this.addClildsProperties(tRow, {
+			hc_disabled: !fo.enabled,
+			hc_buggy: isBuggy,
+			hc_custom: isCustom,
+			hc_customType: isCustomType
+		}, true);
+		if(this._importFlag) { //~ todo: test!
+			var savedPref = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType);
+			if(savedDa) // Ignore delayed actions
+				savedPref.delayedAction = null;
+			if(da)
+				fo.delayedAction = null;
+			var override = savedPref;
+			var equals = this.ut.objEquals(fo, savedPref);
+			if(isCustomType) {
+				var savedType = this.ut.getOwnProperty(this._savedTypes, itemType);
+				var eqType = this.ut.objEquals(this.ps.types[itemType], savedType);
+				if(!eqType)
+					override = true;
+				equals = equals && eqType;
+			}
+			this.addClildsProperties(tRow, {
+				hc_override: override,
+				hc_equals: equals
+			}, true);
+
+			if(savedDa)
+				savedPref.delayedAction = savedDa;
+			if(da)
+				fo.delayedAction = da;
+		}
+
+		tItem.__shortcut = shortcut;
+		tItem.__itemType = itemType;
+		tItem.__isCustomType = isCustomType;
+		tItem.__isDelayed = false;
+		tItem.__delayed = da && daItem;
+		tItem.appendChild(tRow);
+		parent.appendChild(tItem);
+		this.rowsCache[shortcut + "-" + itemType] = tRow;
 	},
 	getCustomTypeLabel: function(type) {
 		var label = this.ut.getOwnProperty(this.ps.types, type, "label");
 		return (label ? this.ps.dec(label) + " " : "") + "(" + type + ")";
 	},
 	getTypeLabel: function(itemType, isCustomType) {
+		if(isCustomType === undefined)
+			isCustomType = this.ps.isCustomType(itemType);
 		return isCustomType
 			? this.getCustomTypeLabel(itemType)
 			: this.ut.getLocalized(itemType);
@@ -386,16 +432,15 @@ var handyClicksSets = {
 					continue;
 				//if(tItem.__isDelayed)
 				//	tItem = tItem.parentNode.parentNode; // ?
-
-				tItemsArr.push(tItem); // for deleting (getElementsByTagName is dinamically)
+				tItemsArr.push(tItem);
 				tItem.__index = v;
 			}
 		}
 		tItemsArr.forEach(
 			function(tItem, indx) {
-				if(tItem.__isDelayed)
+				var daItem = !tItem.__isDelayed && tItem.__delayed;
+				if(!daItem)
 					return;
-				var daItem = tItem.__delayed;
 				tItemsArr.forEach(
 					function(tItem2, indx2) {
 						if(tItem2 === daItem && indx2 != indx)
@@ -418,17 +463,14 @@ var handyClicksSets = {
 		return this.tView.getItemAtIndex(indx); // <treeitem>
 		//return this.tView.getItemAtIndex(indx).getElementsByTagName("treerow")[0] || null;
 	},
-	getRowAtIndex: function(indx) {
-		var item = this.getItemAtIndex(indx);
-		return item && this.getRowFromItem(item);
-	},
-	getRowFromItem: function(item) {
+	getRowForItem: function(item) {
 		var chs = item.childNodes;
 		for(var i = 0, len = chs.length; i < len; i++)
 			if(chs[i].localName == "treerow")
 				return chs[i];
 		return null;
 	},
+
 	get isTreePaneSelected() {
 		var prefWin = document.documentElement;
 		return prefWin.currentPane == prefWin.preferencePanes[0];
@@ -450,6 +492,7 @@ var handyClicksSets = {
 		prefWin.showPane(panes[n]);
 		this.focusSearch();
 	},
+
 	addItems: function(e) {
 		if(!this.isTreePaneSelected)
 			return;
@@ -490,7 +533,7 @@ var handyClicksSets = {
 		var cIts = [];
 		this.selectedItems.forEach(
 			function(it) {
-				it.__isCustomType && cIts.push(row);
+				it.__isCustomType && cIts.push(it);
 			},
 			this
 		);
@@ -592,7 +635,7 @@ var handyClicksSets = {
 				delete p[sh];
 
 			tChld.removeChild(tItem);
-			while(!tChld.hasChildNodes() && tChld.localName == "treechildren") {
+			while(!tChld.hasChildNodes() && tChld != this.tBody) {
 				tItem = tChld.parentNode;
 				tChld = tItem.parentNode;
 				tChld.removeChild(tItem);
@@ -606,15 +649,16 @@ var handyClicksSets = {
 		var itemType = tItem && add !== true
 			? tItem.__itemType
 			: Math.random();
-		this.wu.openEditor(this.ps.currentSrc, mode || "shortcut", shortcut, itemType, tItem.__isDelayed);
+		this.wu.openEditor(this.ps.currentSrc, mode || "shortcut", shortcut, itemType, tItem && tItem.__isDelayed);
 	},
-	setItemStatus: function(itemId, editStat) {
-		itemId = itemId.replace(/@otherSrc$/, "");
-		if(itemId in this.itemsCache)
-			this.addClildsProperties(
-				this.itemsCache[itemId].parentNode, // <treeitem>
-				{ hc_edited: editStat }
-			);
+	setItemStatus: function(rowId, editStat) {
+		rowId = rowId.replace(/@otherSrc$/, "");
+		if(!(rowId in this.rowsCache))
+			return;
+		this.addClildsProperties(
+			this.rowsCache[rowId].parentNode, // <treeitem>
+			{ hc_edited: editStat }
+		);
 	},
 	treeClick: function(e) {
 		if(e.button == 0)
@@ -658,23 +702,20 @@ var handyClicksSets = {
 	},
 	toggleRowEnabled: function(rowIndx) {
 		var tItem = this.getItemAtIndex(rowIndx);
-		var tRow = this.getRowFromItem(tItem);
-
-		var tCell = tRow.getElementsByAttribute("value", "*")[0];
-		var enabled = tCell.getAttribute("value") != "true"; // toggle
-		tCell.setAttribute("value", enabled);
-
+		var tRow = this.getRowForItem(tItem);
+		var enabled = this.checkedState(tItem, true); // toggle
+		var forcedDisDa = this.pu.pref("delayedActionTimeout") <= 0;
 		if(tItem.__isDelayed) {
-			var pDis = this.getRowFromItem(tItem.parentNode.parentNode)
-				.getElementsByAttribute("value", "*")[0].getAttribute("value") != "true";
-			this.addProperties(tRow, { hc_disabled: pDis || !enabled });
+			var pDis = !this.checkedState(tItem.parentNode.parentNode); // Check state of parent
+			this.addProperties(tRow, { hc_disabled: forcedDisDa || pDis || !enabled });
 		}
-		else if(tItem.__delayed) {
+		else {
 			this.addProperties(tRow, { hc_disabled: !enabled });
-			var cRow = this.getRowFromItem(tItem.__delayed);
-			var cDis = cRow
-				.getElementsByAttribute("value", "*")[0].getAttribute("value") != "true";
-			this.addProperties(cRow, { hc_disabled: cDis || !enabled });
+			if(tItem.__delayed) {
+				var cRow = this.getRowForItem(tItem.__delayed);
+				var cDis = !this.checkedState(tItem.__delayed);
+				this.addProperties(cRow, { hc_disabled: forcedDisDa || cDis || !enabled });
+			}
 		}
 
 		var so = this.ps.prefs[tItem.__shortcut][tItem.__itemType];
@@ -682,6 +723,16 @@ var handyClicksSets = {
 			so.delayedAction.enabled = enabled;
 		else
 			so.enabled = enabled;
+	},
+	checkedState: function(tItem, toggle) {
+		var tRow = this.getRowForItem(tItem);
+		var tCell = tRow.getElementsByAttribute("value", "*")[0];
+		var enabled = tCell.getAttribute("value") == "true";
+		if(toggle) {
+			enabled = !enabled;
+			tCell.setAttribute("value", enabled);
+		}
+		return enabled;
 	},
 	selectAll: function() {
 		if(this.isTreePaneSelected)
@@ -731,6 +782,11 @@ var handyClicksSets = {
 		var maxRowsIndx = this.tView.rowCount - 1;
 		this.tbo.ensureRowIsVisible(this.ut.mm(visRow, 0, maxRowsIndx));
 	},
+	setDrawMode: function(dm) {
+		// <preference instantApply="true" ... /> is bad on slow devices (it saves prefs.js file)
+		if(!this.instantApply)
+			this.pu.pref("sets.treeDrawMode", parseInt(dm)); // => updPrefsUI()
+	},
 
 	toggleTreeContainers: function(oFlag) {
 		var tis = this.tBody.getElementsByTagName("treeitem"), ti;
@@ -765,9 +821,9 @@ var handyClicksSets = {
 		sIt.focus();
 	},
 
-	_lastSearch: 0,
 	_searchDelay: 50,
 	_searchTimeout: null,
+	_lastSearch: 0,
 
 	searcher: {
 		_res: [], // row numbers
@@ -813,69 +869,85 @@ var handyClicksSets = {
 			this.searcher.next();
 		else if(code == e.DOM_VK_UP || code == e.DOM_VK_RETURN && e.shiftKey)
 			this.searcher.prev();
+		else if(code == e.DOM_VK_ESCAPE && e.target.value)
+			e.preventDefault(); // Don't close dialog window
 		else
 			return;
 		e.preventDefault();
 	},
 	searchInSetsTree: function(sIt, notSelect) {
-		var remTime = this._lastSearch + this._searchDelay - Date.now();
-		if(sIt && this._searchTimeout === null && remTime > 0) {
-			this._searchTimeout = setTimeout(
-				function(_this, _a) {
-					_a.callee.apply(_this, _a);
-					_this._searchTimeout = null;
-				},
-				remTime,
-				this, arguments
-			);
-			return;
+		if(sIt && this._searchTimeout === null) {
+			var remTime = this._lastSearch + this._searchDelay - Date.now();
+			if(remTime > 0) {
+				this._searchTimeout = setTimeout(
+					function(_this, _a) {
+						_a.callee.apply(_this, _a);
+						_this._searchTimeout = null;
+					},
+					remTime,
+					this, arguments
+				);
+				return;
+			}
 		}
 		this.searcher.reset();
 		sIt = sIt || this.$("hc-sets-tree-searchField");
-		var sVal = sIt.value.replace(/^\s+|\s+$/g, "");
-		var _sVal = sVal.toLowerCase().split(/\s+/);
-		var sLen = _sVal.length;
-		var hasVal = !!sVal;
+		var sTerm = this.ut.trim(sIt.value);
+		var hasTerm = !!sTerm;
+		sTerm = sTerm.toLowerCase().split(/\s+/);
 
-		var tRows = this.tBody.getElementsByTagName("treerow"), tRow;
-		var labels, tmpArr, rowText;
-		var okRow, notFound = true;
-		var i, j, k, rLen, lLen;
-		for(i = 0, rLen = tRows.length; i < rLen; i++) {
-			tRow = tRows[i];
-			if(tRow.__shortcut && tRow.__itemType) {
-				okRow = hasVal;
-				tmpArr = [];
-				labels = tRow.getElementsByAttribute("label", "*");
-				for(j = 0, lLen = labels.length; j < lLen; j++)
-					tmpArr.push(labels[j].getAttribute("label"));
-				rowText = tmpArr.join("\n").toLowerCase();
-				if(hasVal)
-					for(k = 0; k < sLen; k++)
-						if(rowText.indexOf(_sVal[k]) == -1)
-							okRow = false;
-				this.addProperties(tRow, { hc_search: okRow });
-				if(okRow) {
-					this.searcher.add(i);
-					if(notFound) {
-						notFound = false;
-						if(!notSelect) { // Don't select for redraw
-							this.searcher.select(i);
-							//this.searcher.select(this.tView.getIndexOfItem(tRow.parentNode));
-						}
-					}
-				}
+		var tRow, rowText, okRow, indx;
+		var notFound = true;
+		for(var h in this.rowsCache) {
+			tRow = this.rowsCache[h];
+			okRow = hasTerm;
+			rowText = this.getRowText(tRow); //~ todo: cache?
+
+			if(hasTerm && sTerm.some(function(s) { return rowText.indexOf(s) == -1; }))
+				okRow = false;
+
+			this.addProperties(tRow, { hc_search: okRow });
+			if(!okRow)
+				continue;
+			indx = this.tView.getIndexOfItem(tRow.parentNode);
+			this.searcher.add(indx);
+			if(notFound) {
+				notFound = false;
+				if(!notSelect) // Don't select for redraw
+					this.searcher.select(indx);
 			}
 		}
-		sIt.setAttribute("hc_notfound", hasVal && notFound);
+		sIt.setAttribute("hc_notfound", hasTerm && notFound);
 
 		this._lastSearch = Date.now();
 	},
+	getRowText: function(tRow) {
+		var tChld = tRow, tItem;
+		var rowText = [];
+		do {
+			tItem = tChld.parentNode;
+			tChld = tItem.parentNode;
+			Array.forEach(
+				this.getRowForItem(tItem).getElementsByAttribute("label", "*"),
+				function(elt) {
+					var label = elt.getAttribute("label");
+					label && rowText.push(label);
+				},
+				this
+			);
+		}
+		while(tChld != this.tBody)
+		return rowText.join("\n").toLowerCase();
+	},
 
 	/*** Prefs pane ***/
-	updPrefsUI: function() {
+	updPrefsUI: function(prefName) {
 		this.loadPrefs();
 		this.updateAllDependencies();
+		if(prefName == "sets.treeDrawMode")
+			this.redrawTree();
+		else if(prefName == "sets.treeExpandDelayedAction")
+			this.updTree();
 	},
 	loadPrefs: function() {
 		var buttons = this.pu.pref("disallowMousemoveButtons");
@@ -922,7 +994,12 @@ var handyClicksSets = {
 			tar = tar.parentNode.parentNode;
 		if(tar.hasAttribute("hc_requiredfor"))
 			this.updateDependencies(tar, true);
-		if(!tar.hasAttribute("preference") && ln != "checkbox")
+		if(tar.hasAttribute("preference")) {
+			var p = document.getElementById(tar.getAttribute("preference"));
+			if(p.getAttribute("instantApply") == "true" || p.getAttribute("hc_instantApply") == "true")
+				return;
+		}
+		else if(ln != "checkbox")
 			return;
 		if(this.instantApply)
 			this.savePrefs();
@@ -1172,10 +1249,9 @@ var handyClicksSets = {
 			return;
 		var lAttr = "hc_label_" + (isPartial ? "partial" : "full");
 		Array.forEach(
-			panel.getElementsByTagName("*"),
+			panel.getElementsByAttribute(lAttr, "*"),
 			function(elt) {
-				if(elt.hasAttribute(lAttr))
-					elt.setAttribute("label", elt.getAttribute(lAttr));
+				elt.setAttribute("label", elt.getAttribute(lAttr));
 			}
 		);
 		this.$("hc-sets-tree-buttonImportOk").focus();
@@ -1193,6 +1269,7 @@ var handyClicksSets = {
 			this.ps.loadSettings();
 			this.updTree();
 		}
+		this.tree.focus();
 	},
 	mergePrefs: function() {
 		var cts = this.ps.types;

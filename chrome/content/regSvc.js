@@ -32,6 +32,7 @@ var handyClicksRegSvc = {
 			pu: "handyClicksPrefUtils",
 			rs: "handyClicksRegSvc",
 			st: "handyClicksSets",
+			su: "handyClicksSetsUtils",
 			ut: "handyClicksUtils",
 			wu: "handyClicksWinUtils",
 			__proto__: null

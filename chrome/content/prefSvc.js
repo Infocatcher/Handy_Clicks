@@ -563,14 +563,14 @@ var handyClicksPrefSvc = {
 			__proto__: null
 		};
 	},
-	getModifiersStr: function(sh) { // "button=0,ctrl=true,shift=true,alt=false,meta=false"
+	getModifiersStr: function(sh, _short) { // "button=0,ctrl=true,shift=true,alt=false,meta=false"
 		var _this = this;
 		sh = sh
 			.replace(/[a-z]+=(?:false|\d),?/g, "")
 			.replace(/,+$/g, "")
 			.replace(/([a-z]+)=true/g, function($0, $1) { return _this.keys[$1]; })
 			.replace(/,+/g, this.keys.sep);
-		return sh || this.ut.getLocalized("none");
+		return sh || (_short ? "" : this.ut.getLocalized("none"));
 	},
 	checkPrefsStr: function(str) {
 		if(str.indexOf(this.prefsHeader.substr(0, 56)) != 0) // Support for old header

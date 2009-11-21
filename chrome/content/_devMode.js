@@ -12,6 +12,7 @@ function handyClicksReloadScripts() {
 		"sets.js":        "handyClicksSets",
 		"utils.js":       "handyClicksUtils",
 		"winUtils.js":    "handyClicksWinUtils",
+		"setsUtils.js":   "handyClicksSetsUtils",
 		// Must be last:
 		"regSvc.js":      "handyClicksRegSvc",
 		__proto__: null
