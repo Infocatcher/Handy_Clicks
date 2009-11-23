@@ -135,8 +135,42 @@ var handyClicksUtils = {
 		return this._strings[sName] || (
 			this._strings[sName] = this.getStr("chrome://handyclicks/locale/hcs.properties", sName)
 				|| this.getStr("chrome://handyclicks-locale/content/hcs.properties", sName)
-				|| "(" + sName + ")"
+				|| this.makeBuggyStr(sName)
 		);
+	},
+
+	_entities: { __proto__: null }, // cache of strings from *.dtd files
+	getEntity: function(eName, dtds, contentType) {
+		dtds = dtds && "<!DOCTYPE dialog [\n"
+			+ Array.concat(dtds).map(
+					function(dtd, indx) {
+						return '<!ENTITY % dtd' + indx + ' SYSTEM "' + dtd + '">\n%dtd' + indx + ';';
+					}
+				).join("\n")
+			+ "\n]>";
+		var s = this.ut.parseFromString(
+			(dtds ? dtds + "\n" : "")
+			+ '<dialog xmlns="' + this.ut.XULNS + '">&' + eName + ';</dialog>',
+			contentType
+		).textContent;
+		if(s.indexOf("XML Parsing Error:") == 0) {
+			this.ut._err("Invalid XML entity: " + eName);
+			return "";
+		}
+		return s;
+	},
+	getLocalizedEntity: function(eName, dtds, contentType) {
+		return this._entities[eName] || (
+			this._entities[eName] = this.getEntity(eName, dtds)
+				|| this.makeBuggyStr(eName)
+		);
+	},
+
+	makeBuggyStr: function(s) {
+		return "(" + s + ")\u034f";
+	},
+	isBuggyStr: function(s) {
+		return !s || /^\(.*\)\u034f$/.test(s);
 	},
 
 	errInfo: function(textId, label, type, err) {
@@ -360,8 +394,8 @@ var handyClicksUtils = {
 	},
 
 	// E4X
-	parseFromString: function(str, mime) {
-		return new DOMParser().parseFromString(str, mime || "application/xml").documentElement;
+	parseFromString: function(str, contentType) {
+		return new DOMParser().parseFromString(str, contentType || "application/xml").documentElement;
 	},
 	serializeToString: function(elt) {
 		return new XMLSerializer().serializeToString(elt);

@@ -27,6 +27,7 @@ var handyClicksEditor = {
 		if(this.ut.fxVersion == 1.5) // "relative" is not supported
 			this.types.menulists.moveTabTo.pop();
 		if(!reloadFlag) {
+			this.initExtTypes();
 			this.loadLabels();
 			this.createDelayedFuncTab();
 		}
@@ -95,7 +96,7 @@ var handyClicksEditor = {
 	},
 	loadLabels: function() {
 		["hc-editor-button", "hc-editor-itemTypes", "hc-editor-func"].forEach(
-			this.localiseLabels,
+			this.localizeLabels,
 			this
 		);
 		["ctrl", "shift", "alt", "meta"].forEach(
@@ -106,12 +107,13 @@ var handyClicksEditor = {
 			this
 		);
 	},
-	localiseLabels: function(parentId) {
+	localizeLabels: function(parentId) {
 		var ml = this.$(parentId);
 		Array.forEach(
 			ml.getElementsByTagName("menuitem"),
 			function(mi) {
-				mi.setAttribute("label", this.ut.getLocalized(mi.getAttribute("label")));
+				if(!mi.hasAttribute("hc_extlabel"))
+					mi.setAttribute("label", this.ut.getLocalized(mi.getAttribute("label")));
 				if(mi.hasAttribute("tooltiptext"))
 					mi.setAttribute("tooltiptext", this.ut.getLocalized(mi.getAttribute("tooltiptext")));
 			},
@@ -143,6 +145,26 @@ var handyClicksEditor = {
 			}
 		);
 		return node;
+	},
+	initExtTypes: function() {
+		Array.forEach(
+			this.$("hc-editor-itemTypes").getElementsByAttribute("hc_required", "*"),
+			function(mi) {
+				var ext = mi.getAttribute("hc_required");
+				if(!this.extAvailable(ext)) {
+					mi.hidden = true;
+					return;
+				}
+				Array.forEach(
+					this.$("hc-editor-funcPopup").getElementsByAttribute("hc_extlabel", ext),
+					function(mi) {
+						mi.setAttribute("label", this.getExtLabel(mi.getAttribute("label")));
+					},
+					this.su
+				);
+			},
+			this
+		);
 	},
 	initUI: function() {
 		this.initShortcutEditor();
@@ -359,29 +381,28 @@ var handyClicksEditor = {
 		if(!fList.value) // fix for Firefox 2.0
 			fList.selectedIndex = -1;
 		var re = new RegExp("(?:^|[\\s,;]+)" + this.escapeRegExp(this.type) + "(?:[\\s,;]+|$)|^\\$all$");
-		var mp = this.$("hc-editor-funcPopup" + delayed);
-		var its = mp.childNodes;
-		var it, req;
 		var hideSep = true;
-		for(var i = 0, len = its.length; i < len; i++) {
-			it = its[i];
-			if(it.nodeName == "menuseparator") {
-				it.hidden = hideSep;
-				hideSep = true;
-			}
-			else {
-				req = it.getAttribute("hc_required");
-				if(
-					re.test(it.getAttribute("hc_supports"))
-					&& (!req || this.extAvailable(req))
-				) {
-					it.hidden = false;
-					hideSep = false;
+		Array.forEach(
+			this.$("hc-editor-funcPopup" + delayed).childNodes,
+			function(it) {
+				if(it.localName == "menuseparator") {
+					it.hidden = hideSep;
+					hideSep = true;
+					return;
 				}
-				else
+				if(
+					!re.test(it.getAttribute("hc_supports"))
+					|| it.hasAttribute("hc_required")
+						&& !this.extAvailable(it.getAttribute("hc_required"))
+				) {
 					it.hidden = true;
-			}
-		}
+					return;
+				}
+				it.hidden = false;
+				hideSep = false;
+			},
+			this
+		);
 		this.addFuncArgs(delayed);
 	},
 	escapeRegExp: function(s) {
@@ -389,7 +410,8 @@ var handyClicksEditor = {
 	},
 	exts: {
 		SplitBrowser: "{29c4afe1-db19-4298-8785-fcc94d1d6c1d}",
-		FlashGot: "{19503e42-ca3c-4c27-b1e2-9cdb2170ee34}"
+		FlashGot: "{19503e42-ca3c-4c27-b1e2-9cdb2170ee34}",
+		"Multiple Tab Handler": "multipletab@piro.sakura.ne.jp"
 	},
 	extAvailable: function(eName) {
 		return this.eh.isAvailable(this.exts[eName]);

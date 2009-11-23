@@ -6,7 +6,8 @@ var handyClicks = {
 	flags: {
 		runned: false, // => stop click events
 		stopContextMenu: false, // => stop "contextmenu" event (in Linux: mousedown -> contextmenu -> ... delay ... -> click)
-		allowEvents: false // => allow all events while (flags.runned == false)
+		allowEvents: false, // => allow all events while (flags.runned == false)
+		__proto__: null
 	},
 
 	_cMenu: null,
@@ -106,6 +107,7 @@ var handyClicks = {
 			return;
 
 		this.saveXY(e);
+		this.skipFlags();
 		var funcObj = this.getFuncObjByEvt(e);
 		if(!funcObj)
 			return;
@@ -115,7 +117,7 @@ var handyClicks = {
 
 		var em = this.editMode;
 		this.flags.allowEvents = !em && funcObj.action == this.ignoreAction;
-		this.flags.stopContextMenu = funcObj.action != "showContextMenu";
+		this.flags.stopContextMenu = !this.flags.allowEvents && funcObj.action != "showContextMenu";
 
 		// Fix for switching tabs by Mouse Gestures
 		this._tabOnMousedown = e.view.top === content && this.getTabBrowser(true).mCurrentTab;
@@ -195,7 +197,8 @@ var handyClicks = {
 		this.checkForStopEvent(e);
 		if(this.flags.allowEvents)
 			this.cancelDelayedAction();
-		this.skipFlagsDelay();
+		//this.skipFlagsDelay();
+		this.removeMoveHandlers();
 		this.saveXY(e);
 	},
 	commandHandler: function(e) {
@@ -240,11 +243,11 @@ var handyClicks = {
 		if(this.mousemoveParams.dist < this.pu.pref("disallowMousemoveDist"))
 			return;
 
-		this.ut._log("mousemoveHandler -> cancel()");
+		this.pu.pref("devMode") && this.ut._log("mousemoveHandler -> cancel()");
 		this.cancel();
 	},
 	dragHandler: function(e) {
-		this.ut._log("dragHandler -> cancel()");
+		this.pu.pref("devMode") && this.ut._log("dragHandler -> cancel()");
 		this.cancel();
 	},
 	cancel: function() {
@@ -297,14 +300,9 @@ var handyClicks = {
 	},
 	skipFlags: function() {
 		var fls = this.flags;
-		for(var p in fls) if(fls.hasOwnProperty(p))
+		for(var p in fls)
 			fls[p] = false;
-		this.removeMoveHandlers();
-	},
-	skipFlagsDelay: function() {
-		setTimeout(function(_this) {
-			_this.skipFlags();
-		}, 0, this);
+		//this.removeMoveHandlers();
 	},
 	get tabNotChanged() {
 		var tab = this._tabOnMousedown;
@@ -474,8 +472,10 @@ var handyClicks = {
 		}
 
 		// Tab:
+		// Selected tabs (Multiple Tab Handler extension):
+		var mth = all || this.itemTypeInSets(sets, "ext_mulipletabs");
 		if(
-			(all || this.itemTypeInSets(sets, "tab"))
+			(mth || this.itemTypeInSets(sets, "tab"))
 			&& it.namespaceURI == this.ut.XULNS
 			&& itln != "toolbarbutton"
 		) {
@@ -488,6 +488,11 @@ var handyClicks = {
 						|| /(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(_it.parentNode.className) // >1 tabs in Firefox 1.5
 					)
 				) {
+					if(mth && "MultipleTabService" in window && MultipleTabService.isSelected(_it)) {
+						this.itemType = "ext_mulipletabs";
+						this.item = MultipleTabService.getSelectedTabs(MultipleTabService.getTabBrowserFromChild(_it));
+						return;
+					}
 					this.itemType = "tab";
 					this.item = _it;
 					return;
@@ -921,7 +926,6 @@ var handyClicks = {
 	// Events interface:
 	handleEvent: function(e) {
 		switch(e.type) {
-			case "load":        this.init(e);               break;
 			case "mousedown":   this.mousedownHandler(e);   break;
 			case "click":       this.clickHandler(e);       break;
 			case "mouseup":     this.mouseupHandler(e);     break;
@@ -980,6 +984,10 @@ var handyClicks = {
 	},
 	checkClipboard: function() {
 		this.elts.importFromClipboard.hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard(true));
+	},
+	fixPopup: function() {
+		if(document.popupNode)
+			this.closeMenus(document.popupNode); // For Firefox 2.0
 	},
 	doSettings: function(e) {
 		if(e.type == "command" || e.button == 0)

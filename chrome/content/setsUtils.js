@@ -40,5 +40,18 @@ var handyClicksSetsUtils = {
 		ml.selectedItem = si || (plus ? mp.firstChild : mp.lastChild);
 		ml.menuBoxObject.activeChild = ml.mSelectedInternal || ml.selectedInternal;
 		ml.doCommand();
+	},
+
+	extLabels: {
+		mthCloseTabs:           ["popup.selection.removeTabs",    "chrome://multipletab/locale/multipletab.dtd"],
+		mthCloseOtherTabs:      ["popup.selection.removeOther",   "chrome://multipletab/locale/multipletab.dtd"],
+		mthReloadTabs:          ["popup.selection.reloadTabs",    "chrome://multipletab/locale/multipletab.dtd"],
+		mthAddBookmarkFor:      ["popup.selection.addBookmark",   "chrome://multipletab/locale/multipletab.dtd"],
+		mthDuplicateTabs:       ["popup.selection.duplicateTabs", "chrome://multipletab/locale/multipletab.dtd"],
+		mthSplitWindowFromTabs: ["popup.selection.splitWindow",   "chrome://multipletab/locale/multipletab.dtd"],
+		__proto__: null
+	},
+	getExtLabel: function(name) {
+		return this.ut.getLocalizedEntity.apply(this.ut, this.extLabels[name]);            
 	}
 };

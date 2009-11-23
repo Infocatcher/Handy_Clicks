@@ -79,6 +79,7 @@
 							<menuitem value="historyItem" label="historyItem" />
 							<menuitem value="bookmark" label="bookmark" />
 							<menuitem value="tab" label="tab" />
+							<menuitem value="ext_mulipletabs" label="ext_mulipletabs" hc_required="Multiple Tab Handler" />
 							<menuitem value="tabbar" label="tabbar" />
 							<menuitem value="submitButton" label="submitButton" />
 							<menuseparator />
@@ -186,6 +187,39 @@
 											hc_args=""
 											hc_supports="tab tabbar" />
 										<menuseparator id="hc-editor-funcsSep-tabs" />
+
+										<menuitem
+											value="mthCloseTabs" label="mthCloseTabs"
+											hc_extlabel="Multiple Tab Handler"
+											hc_args=""
+											hc_supports="ext_mulipletabs" />
+										<menuitem
+											value="mthCloseOtherTabs" label="mthCloseOtherTabs"
+											hc_extlabel="Multiple Tab Handler"
+											hc_args=""
+											hc_supports="ext_mulipletabs" />
+										<menuitem
+											value="mthReloadTabs" label="mthReloadTabs"
+											hc_extlabel="Multiple Tab Handler"
+											hc_args=""
+											hc_supports="ext_mulipletabs" />
+										<menuitem
+											value="mthAddBookmarkFor" label="mthAddBookmarkFor"
+											hc_extlabel="Multiple Tab Handler"
+											hc_args=""
+											hc_supports="ext_mulipletabs" />
+										<menuitem
+											value="mthDuplicateTabs" label="mthDuplicateTabs"
+											hc_extlabel="Multiple Tab Handler"
+											hc_args=""
+											hc_supports="ext_mulipletabs" />
+										<menuitem
+											value="mthSplitWindowFromTabs" label="mthSplitWindowFromTabs"
+											hc_extlabel="Multiple Tab Handler"
+											hc_args=""
+											hc_supports="ext_mulipletabs" />
+
+										<menuseparator id="hc-editor-funcsSep-mulipletabs" />
 										<menuitem
 											value="openUriInTab" label="openUriInTab"
 											hc_args="loadInBackground loadJSInBackground refererPolicy moveTabTo closePopups winRestriction"

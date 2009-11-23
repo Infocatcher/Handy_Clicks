@@ -37,7 +37,7 @@ menulist[hc_sets="disabled"] .menulist-label {
 }
 
 /* Warning for empty menulists */
-menulist:not([label]) > .menulist-label-box {
+menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-label-box {
 	outline: 2px solid red;
 	outline-offset: -2px;
 	min-height: 15px;

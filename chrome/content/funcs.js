@@ -49,13 +49,15 @@ var handyClicksFuncs = {
 		it = it || this.hc.item;
 		var text = this.hc.itemType == "tabbar"
 			? this.forEachTab(this.getTabText).join("\n")
-			: it.textContent || it.label || it.alt || it.title || it.value
-				|| (
-					it.getAttribute
-					&& (it.getAttribute("label") || it.getAttribute("value"))
-				)
-				|| this.hc.getBookmarkUri(it)
-				|| "";
+			: this.hc.itemType == "ext_mulipletabs"
+				? Array.map(it, this.getTabText, this).join("\n")
+				: it.textContent || it.label || it.alt || it.title || it.value
+					|| (
+						it.getAttribute
+						&& (it.getAttribute("label") || it.getAttribute("value"))
+					)
+					|| this.hc.getBookmarkUri(it)
+					|| "";
 		return noTrim ? text : this.trimStr(text);
 	},
 	getUriOfItem: function(it, itemType, noTrim) {
@@ -74,6 +76,9 @@ var handyClicksFuncs = {
 			break;
 			case "tab":
 				uri = this.getTabUri(it);
+			break;
+			case "ext_mulipletabs":
+				uri = Array.map(it, this.getTabUri, this).join("\n");
 			break;
 			case "tabbar":
 				uri = this.forEachTab(this.getTabUri).join("\n");
@@ -254,7 +259,7 @@ var handyClicksFuncs = {
 			//not needed?//_this.hc.flags.stopContextMenu = true;
 
 			evts();
-			_this.hc.skipFlagsDelay();
+			//_this.hc.skipFlagsDelay();
 
 			_this.restorePrefs(origPrefs);
 		}
@@ -546,11 +551,11 @@ var handyClicksFuncs = {
 			this.ut._err(new Error("Can't get URI of item (" + this.hc.itemType + ")"));
 			return;
 		}
-		this.addAppsProps(items, this.losslessDecodeURI(uri), checkFiles);
+		this.addAppsProps(items, this.losslessDecodeURI(uri).replace(/%0A/g, " "), checkFiles);
 		this.addEditItem(items);
 		var popup = this.showGeneratedPopup(items);
 		popup.setAttribute("oncommand", "handyClicksFuncs.openUriWithApp(event, this);");
-		popup.hc_uri = this.convertStrFromUnicode(uri);
+		popup.hc_uri = uri;
 	},
 	addAppsProps: function(items, uri, checkFiles) {
 		items.forEach(function(item) {
@@ -735,8 +740,9 @@ var handyClicksFuncs = {
 		if(!tar.hasOwnProperty("hc_path"))
 			return;
 		var args = tar.hc_args || [];
-		args.push(popup.hc_uri);
-		this.startProcess(tar.hc_path, args);
+		//args.push(popup.hc_uri);
+		var uris = popup.hc_uri.split("\n").map(this.convertStrFromUnicode, this);
+		this.startProcess(tar.hc_path, Array.concat(args, uris));
 	},
 	losslessDecodeURI: function(value) {
 		if(!value)
@@ -935,8 +941,7 @@ var handyClicksFuncs = {
 		this.forEachTab(
 			function(tab) {
 				this.reloadTab(e, skipCache, tab);
-			},
-			this
+			}
 		);
 	},
 	reloadTab: function(e, skipCache, tab) {
@@ -948,9 +953,10 @@ var handyClicksFuncs = {
 			br.reload();
 	},
 	stopAllTabsLoading: function(e) {
-		var _this = this;
 		this.forEachTab(
-			function(tab) { _this.stopTabLoading(e, tab); }
+			function(tab) {
+				this.stopTabLoading(e, tab);
+			}
 		);
 	},
 	stopTabLoading: function(e, tab) {
@@ -974,6 +980,37 @@ var handyClicksFuncs = {
 			tbr.moveTabTo(newTab, ind - 1); // Fix bug for last tab moving
 		tbr.moveTabTo(newTab, ind);
 		tbr.selectedTab = newTab;
+	},
+
+	// Multiple Tab Handler extension
+	// http://piro.sakura.ne.jp/xul/_multipletab.html.en#api-multipletabs
+	mthOk: function() {
+		if("MultipleTabService" in window)
+			return true;
+		else {
+			this.ut._err(new Error(
+				"Missing Multiple Tab Handler extension ( https://addons.mozilla.org/firefox/addon/4838 )"
+			), true);
+			return false;
+		}
+	},
+	mthCloseTabs: function(e, tabs) {
+		this.mthOk() && MultipleTabService.closeTabs(tabs || this.hc.item);
+	},
+	mthCloseOtherTabs: function(e, tabs) {
+		this.mthOk() && MultipleTabService.closeOtherTabs(tabs || this.hc.item);
+	},
+	mthReloadTabs: function(e, tabs) {
+		this.mthOk() && MultipleTabService.reloadTabs(tabs || this.hc.item);
+	},
+	mthAddBookmarkFor: function(e, tabs) {
+		this.mthOk() && MultipleTabService.addBookmarkFor(tabs || this.hc.item);
+	},
+	mthDuplicateTabs: function(e, tabs) {
+		this.mthOk() && MultipleTabService.duplicateTabs(tabs || this.hc.item);
+	},
+	mthSplitWindowFromTabs: function(e, tabs) {
+		this.mthOk() && MultipleTabService.splitWindowFromTabs(tabs || this.hc.item);
 	},
 
 	reloadImg: function(e, img) {

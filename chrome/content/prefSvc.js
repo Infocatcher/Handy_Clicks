@@ -526,11 +526,15 @@ var handyClicksPrefSvc = {
 	},
 	customPrefix: "custom_",
 	customMask: /^custom_/,
+	extPrefix: "ext_",
 	isCustomType: function(type) {
 		return typeof type == "string" && type.indexOf(this.customPrefix) == 0;
 	},
 	removeCustomPrefix: function(type) {
 		return type.replace(this.customMask, "");
+	},
+	isExtType: function(type) {
+		return typeof type == "string" && type.indexOf(this.extPrefix) == 0;
 	},
 	enc: function(s) {
 		return encodeURIComponent(s || "");

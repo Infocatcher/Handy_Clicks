@@ -196,7 +196,7 @@ var handyClicksSets = {
 		var typeLabel = forcedLabel || this.getTypeLabel(itemType, isCustomType);
 		this.appendTreeCell(tRow, "label", typeLabel);
 		this.appendTreeCell(tRow, "label", fo.eventType);
-		var actLabel = isCustom ? this.ps.dec(fo.label) : this.ut.getLocalized(fo.action);
+		var actLabel = this.getActionLabel(fo);
 		this.appendTreeCell(tRow, "label", actLabel);
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom));
 		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}));
@@ -217,7 +217,7 @@ var handyClicksSets = {
 			this.appendTreeCell(daRow, "label", this._daAfter);
 
 			var daCustom = !!da.custom;
-			var daLabel = daCustom ? this.ps.dec(da.label) : this.ut.getLocalized(da.action);
+			var daLabel = this.getActionLabel(da);
 			this.appendTreeCell(daRow, "label", daLabel);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom));
 			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}));
@@ -264,7 +264,7 @@ var handyClicksSets = {
 		var isBuggy = this.isBuggyFuncObj(fo, isCustom, actLabel)
 			|| (
 				isCustomType && !this.ps.isOkCustomType(itemType)
-				|| this.isBuggyLabel(typeLabel)
+				|| this.ut.isBuggyStr(typeLabel)
 			);
 
 		this.addClildsProperties(tRow, {
@@ -310,14 +310,22 @@ var handyClicksSets = {
 	},
 	getCustomTypeLabel: function(type) {
 		var label = this.ut.getOwnProperty(this.ps.types, type, "label");
-		return (label ? this.ps.dec(label) + " " : "") + "(" + type + ")";
+		return (label ? this.ps.dec(label) + " " : "") + "[" + type + "]";
 	},
-	getTypeLabel: function(itemType, isCustomType) {
-		if(isCustomType === undefined)
-			isCustomType = this.ps.isCustomType(itemType);
-		return isCustomType
-			? this.getCustomTypeLabel(itemType)
-			: this.ut.getLocalized(itemType);
+	getTypeLabel: function(type, isCustomType) {
+		return isCustomType === undefined
+			? this.ps.isCustomType(type)
+			: isCustomType
+				? this.getCustomTypeLabel(type)
+				: this.ut.getLocalized(type);
+	},
+	getActionLabel: function(fo) {
+		if(fo.custom)
+			return this.ps.dec(fo.label);
+		var act = fo.action;
+		if(act in this.su.extLabels)
+			return this.su.getExtLabel(act);
+		return this.ut.getLocalized(act);
 	},
 	getActionCode: function(action, isCustom) {
 		return isCustom
@@ -325,10 +333,7 @@ var handyClicksSets = {
 			: action;
 	},
 	isBuggyFuncObj: function(fo, isCustom, label) {
-		return !this.ps.isOkFuncObj(fo) || !isCustom && this.isBuggyLabel(label);
-	},
-	isBuggyLabel: function(label) {
-		return !label || /^\(.+\)$/.test(label); // See handyClicksUtils.getLocalized()
+		return !this.ps.isOkFuncObj(fo) || !isCustom && this.ut.isBuggyStr(label);
 	},
 	addProperties: function(tar, propsObj) {
 		var propsVal = tar.getAttribute("properties");
@@ -590,10 +595,8 @@ var handyClicksSets = {
 					typeLabel += " (" + this.ut.getLocalized("delayed") + ")";
 					fObj = this.ut.getOwnProperty(fObj, "delayedAction");
 				}
-				var label = fObj
-					? this.ut.getOwnProperty(fObj, "custom")
-						? this.ps.dec(fObj.label || "")
-						: this.ut.getLocalized(fObj.action || "")
+				var label = this.ut.canHasProps(fObj)
+					? this.getActionLabel(fObj)
 					: "?";
 				return mdfs + " + " + button + " + " + typeLabel + " \u21d2 " + label.substr(0, 42); // "=>" symbol
 			},
@@ -623,6 +626,11 @@ var handyClicksSets = {
 		var so = p[sh];
 
 		var tChld = tItem.parentNode;
+
+		var hash = tItem.__shortcut + "-" + tItem.__itemType;
+		var dHash = hash + "-delayed";
+		delete this.rowsCache[dHash];
+
 		if(tItem.__isDelayed) {
 			var to = so[type];
 			delete to.delayedAction;
@@ -630,6 +638,8 @@ var handyClicksSets = {
 			tChld.parentNode.removeChild(tChld);
 		}
 		else {
+			delete this.rowsCache[hash];
+
 			delete so[type];
 			if(this.ut.isEmptyObj(so))
 				delete p[sh];
@@ -641,6 +651,7 @@ var handyClicksSets = {
 				tChld.removeChild(tItem);
 			}
 		}
+		this.searchInSetsTree(null, true);
 	},
 	openEditorWindow: function(tItem, mode, add) { // mode: "shortcut" or "itemType"
 		var shortcut = tItem
@@ -649,7 +660,8 @@ var handyClicksSets = {
 		var itemType = tItem && add !== true
 			? tItem.__itemType
 			: Math.random();
-		this.wu.openEditor(this.ps.currentSrc, mode || "shortcut", shortcut, itemType, tItem && tItem.__isDelayed);
+		var isDelayed = tItem && add !== true && tItem.__isDelayed;
+		this.wu.openEditor(this.ps.currentSrc, mode || "shortcut", shortcut, itemType, isDelayed);
 	},
 	setItemStatus: function(rowId, editStat) {
 		rowId = rowId.replace(/@otherSrc$/, "");
