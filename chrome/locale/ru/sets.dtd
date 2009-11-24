@@ -24,10 +24,15 @@
 <!ENTITY hc.sets.drawModeNormalCompact "Нормальный (компактный)">
 <!ENTITY hc.sets.drawModeInverse "Инвертированный">
 <!ENTITY hc.sets.drawModeInverseCompact "Инвертированный (компактный)">
+
 <!ENTITY hc.sets.cmdAdd "Добавить…">
 <!ENTITY hc.sets.cmdEdit "Редактировать…">
 <!ENTITY hc.sets.cmdEditType "Редактировать добавленный тип…">
 <!ENTITY hc.sets.cmdDel "Удалить">
+
+<!ENTITY hc.sets.cmdEnable "Включить">
+<!ENTITY hc.sets.cmdDisable "Выключить">
+<!ENTITY hc.sets.cmdToggle "Переключить">
 
 <!ENTITY hc.sets.export "Экспорт">
 <!ENTITY hc.sets.exportAccesskey "Э">

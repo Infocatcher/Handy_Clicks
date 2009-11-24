@@ -54,6 +54,11 @@ var handyClicksSets = {
 		this.cmdDelete = this.$("hc-sets-cmd-delete");
 		this.cmdEdit = this.$("hc-sets-cmd-edit");
 		this.cmdEditType = this.$("hc-sets-cmd-editType");
+
+		this.cmdEnable = this.$("hc-sets-cmd-enable");
+		this.cmdDisable = this.$("hc-sets-cmd-disable");
+		this.cmdToggle = this.$("hc-sets-cmd-toggle");
+
 		this.cmdPExpFile = this.$("hc-sets-cmd-partialExportToFile");
 		this.cmdPExpClip = this.$("hc-sets-cmd-partialExportToClipboard");
 		this.miEditType = this.$("hc-sets-editType");
@@ -313,9 +318,7 @@ var handyClicksSets = {
 		return (label ? this.ps.dec(label) + " " : "") + "[" + type + "]";
 	},
 	getTypeLabel: function(type, isCustomType) {
-		return isCustomType === undefined
-			? this.ps.isCustomType(type)
-			: isCustomType
+		return (isCustomType === undefined ? this.ps.isCustomType(type) : isCustomType)
 				? this.getCustomTypeLabel(type)
 				: this.ut.getLocalized(type);
 	},
@@ -413,11 +416,19 @@ var handyClicksSets = {
 	updButtons: function() {
 		var selIts = this.selectedItems;
 		var noSel = !selIts.length;
-		["cmdDelete", "cmdEdit", "cmdPExpFile", "cmdPExpClip"].forEach(
+		["cmdDelete", "cmdEdit", "cmdToggle", "cmdPExpFile", "cmdPExpClip"].forEach(
 			function(hash) {
 				this[hash].setAttribute("disabled", noSel);
 			},
 			this
+		);
+		this.cmdEnable.setAttribute(
+			"disabled",
+			noSel || selIts.every(function(it) { return this.checkedState(it); }, this)
+		);
+		this.cmdDisable.setAttribute(
+			"disabled",
+			noSel || selIts.every(function(it) { return !this.checkedState(it); }, this)
 		);
 		var noTypes = noSel || !selIts.some(function(it) { return it.__isCustomType; });
 		this.cmdEditType.setAttribute("disabled", noTypes);
@@ -672,16 +683,26 @@ var handyClicksSets = {
 			{ hc_edited: editStat }
 		);
 	},
-	treeClick: function(e) {
-		if(e.button == 0)
-			this.toggleEnabled(e);
-		else if(e.button == 1)
-			this.editItems(e);
+	treeClick: function _tc(e) {
+		var row = {}, col = {}, cell = {};
+		this.tbo.getCellAt(e.clientX, e.clientY, row, col, cell);
+		if(e.type == "mousedown") {
+			_tc.row = row.value;
+			_tc.col = col.value;
+			return;
+		}
+		if(row.value == _tc.row) {
+			if(e.button == 0 && col.value == _tc.col)
+				this.toggleEnabled(e);
+			else if(e.button == 1)
+				this.editItems(e);
+		}
+		_tc.row = _tc.col = null;
 	},
-	toggleEnabled: function(e) { //~ todo: test!
-		if(e) {
-			var row = {}, col = {}, obj = {};
-			this.tbo.getCellAt(e.clientX, e.clientY, row, col, obj);
+	toggleEnabled: function(e, forcedEnabled) { //~ todo: test!
+		if(e) { // Click on checkbox cell
+			var row = {}, col = {}, cell = {};
+			this.tbo.getCellAt(e.clientX, e.clientY, row, col, cell);
 			var rowIndx = row.value;
 			var column = col.value;
 			if(rowIndx == -1 || column == null)
@@ -702,7 +723,7 @@ var handyClicksSets = {
 				return;
 			its.forEach(
 				function(tItem) {
-					this.toggleRowEnabled(tItem.__index);
+					this.toggleRowEnabled(tItem.__index, forcedEnabled);
 				},
 				this
 			);
@@ -711,11 +732,12 @@ var handyClicksSets = {
 			this.ps.saveSettingsObjects(true);
 		else
 			this.applyButton.disabled = false;
+		this.updButtons();
 	},
-	toggleRowEnabled: function(rowIndx) {
+	toggleRowEnabled: function(rowIndx, forcedEnabled) {
 		var tItem = this.getItemAtIndex(rowIndx);
 		var tRow = this.getRowForItem(tItem);
-		var enabled = this.checkedState(tItem, true); // toggle
+		var enabled = this.checkedState(tItem, forcedEnabled === undefined ? null : forcedEnabled);
 		var forcedDisDa = this.pu.pref("delayedActionTimeout") <= 0;
 		if(tItem.__isDelayed) {
 			var pDis = !this.checkedState(tItem.parentNode.parentNode); // Check state of parent
@@ -736,12 +758,14 @@ var handyClicksSets = {
 		else
 			so.enabled = enabled;
 	},
-	checkedState: function(tItem, toggle) {
+	checkedState: function(tItem, val) {
 		var tRow = this.getRowForItem(tItem);
 		var tCell = tRow.getElementsByAttribute("value", "*")[0];
 		var enabled = tCell.getAttribute("value") == "true";
-		if(toggle) {
-			enabled = !enabled;
+		if(val !== undefined) {
+			enabled = val === null
+				? !enabled // toggle
+				: val;
 			tCell.setAttribute("value", enabled);
 		}
 		return enabled;

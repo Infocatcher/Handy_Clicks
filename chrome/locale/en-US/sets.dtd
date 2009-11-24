@@ -25,10 +25,15 @@
 <!ENTITY hc.sets.drawModeNormalCompact "Normal (compact)">
 <!ENTITY hc.sets.drawModeInverse "Inverse">
 <!ENTITY hc.sets.drawModeInverseCompact "Inverse (compact)">
+
 <!ENTITY hc.sets.cmdAdd "Add…">
 <!ENTITY hc.sets.cmdEdit "Edit…">
 <!ENTITY hc.sets.cmdEditType "Edit custom type…">
 <!ENTITY hc.sets.cmdDel "Delete">
+
+<!ENTITY hc.sets.cmdEnable "Enable">
+<!ENTITY hc.sets.cmdDisable "Disable">
+<!ENTITY hc.sets.cmdToggle "Toggle">
 
 <!ENTITY hc.sets.export "Export">
 <!ENTITY hc.sets.exportAccesskey "E">

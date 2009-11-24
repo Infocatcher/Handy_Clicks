@@ -927,15 +927,28 @@ var handyClicksFuncs = {
 	},
 	renameTab: function(e, tab) {
 		tab = this.fixTab(tab);
+		var doc = tab.linkedBrowser.contentDocument;
+		var title = doc.title;
 		var lbl = this.ut.promptEx(
 			this.ut.getLocalized("renameTabTitle"),
 			this.ut.getLocalized("tabNewName"),
-			tab.label
+			title
 		);
+		var p = "__handyClicks__title";
+		if(!(p in tab))
+			tab[p] = title;
+		if(lbl == null) {
+			doc.title = tab[p];
+			delete tab[p];
+			return;
+		}
+		doc.title = lbl
+		/**
 		tab.label = lbl == null
 			? tab.linkedBrowser.contentDocument.title
 				|| this.hc.getTabBrowser(true).mStringBundle.getString("tabs.untitled")
 			: lbl;
+		**/
 	},
 	reloadAllTabs: function(e, skipCache) {
 		this.forEachTab(

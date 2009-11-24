@@ -248,6 +248,7 @@ var handyClicksEditor = {
 	editCustomType: function(e) {
 		if(e.button != 2)
 			return;
+		e.preventDefault();
 		var tar = e.target;
 		var cType = tar.value;
 		this.loadCustomType(cType);
