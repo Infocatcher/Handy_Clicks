@@ -179,10 +179,10 @@ var handyClicksFuncs = {
 		tabCont.addEventListener("TabSelect", _resetRelativeIndex, true);
 
 		this.cs.registerCleanup(
-			function(f) {
+			function(rri) {
 				this.__handyClicks__listeners = false;
-				this.removeEventListener("TabClose", f, true);
-				this.removeEventListener("TabSelect", f, true);
+				this.removeEventListener("TabClose", rri, true);
+				this.removeEventListener("TabSelect", rri, true);
 			},
 			tabCont, [_resetRelativeIndex], tbr
 		);

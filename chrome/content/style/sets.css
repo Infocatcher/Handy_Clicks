@@ -82,6 +82,9 @@ treechildren::-moz-tree-checkbox(checked) {
 	color: #fff;
 }
 
+#hc-sets-edit {
+	font-weight: bold;
+}
 #hc-sets-tree-buttons button {
 	margin-left: 3px;
 	margin-right: 3px;

@@ -273,7 +273,7 @@
 	</keyset>
 	<popupset id="hc-sets-popupset">
 		<popup id="hc-sets-tree-context" onpopupshowing="handyClicksSets.checkClipboard(); return handyClicksSets.checkTreeContext();">
-			<menuitem command="hc-sets-cmd-edit" key="hc-sets-key-edit" />
+			<menuitem id="hc-sets-edit" command="hc-sets-cmd-edit" key="hc-sets-key-edit" />
 			<menuitem id="hc-sets-editType" command="hc-sets-cmd-editType" key="hc-sets-key-editType" />
 			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" />
 			<menuseparator />

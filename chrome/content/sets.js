@@ -41,6 +41,7 @@ var handyClicksSets = {
 			}
 		);
 		this.focusSearch();
+		this.scrollPos(false);
 	},
 	initShortcuts: function() {
 		var tree = this.$("hc-sets-tree");
@@ -67,6 +68,7 @@ var handyClicksSets = {
 	},
 	destroy: function(reloadFlag) {
 		this.closeEditors();
+		this.scrollPos(true);
 	},
 	closeEditors: function() {
 		var pSvc = "handyClicksPrefSvc";
@@ -77,6 +79,26 @@ var handyClicksSets = {
 					w.close();
 			}
 		);
+	},
+	scrollPos: function(saveFlag) {
+		var tr = this.tree, tb = this.tbo;
+		if(saveFlag) {
+			tr.setAttribute("hc_firstVisibleRow", tb.getFirstVisibleRow());
+			tr.setAttribute("hc_lastVisibleRow", tb.getLastVisibleRow());
+			document.persist(tr.id, "hc_firstVisibleRow");
+			document.persist(tr.id, "hc_lastVisibleRow");
+			return;
+		}
+		if(!tr.hasAttribute("hc_firstVisibleRow"))
+			return;
+		var fvr = Number(tr.getAttribute("hc_firstVisibleRow"));
+		var lvr = Number(tr.getAttribute("hc_lastVisibleRow"));
+		var maxRowsIndx = this.tView.rowCount - 1;
+		if(maxRowsIndx < 0)
+			return;
+		if(lvr > maxRowsIndx)
+			fvr -= lvr - maxRowsIndx;
+		this.tbo.scrollToRow(this.ut.mm(fvr, 0, maxRowsIndx));
 	},
 
 	/*** Actions pane ***/
@@ -382,15 +404,21 @@ var handyClicksSets = {
 			res.push(p + " = " + uneval(argsObj[p])); //~ todo: this.ut.getLocalized(p) ?
 		return res.join(this.oldTree ? ", " : ",\n ");
 	},
-	updTree: function() {
+	updTree: function(saveSel) {
+		if(saveSel === undefined)
+			saveSel = true;
+
 		var tbo = this.tbo;
 		var fvr = tbo.getFirstVisibleRow();
-		var numRanges = this.tSel.getRangeCount();
-		var selRows = [];
-		var start = {}, end = {};
-		for(var i = 0; i < numRanges; i++) {
-			this.tSel.getRangeAt(i, start, end);
-			selRows.push([start.value, end.value]);
+		var lvr = tbo.getLastVisibleRow();
+		if(saveSel) {
+			var selRows = [];
+			var numRanges = this.tSel.getRangeCount();
+			var start = {}, end = {};
+			for(var i = 0; i < numRanges; i++) {
+				this.tSel.getRangeAt(i, start, end);
+				selRows.push([start.value, end.value]);
+			}
 		}
 
 		this.redrawTree();
@@ -399,15 +427,16 @@ var handyClicksSets = {
 			return;
 		var maxRowsIndx = rowsCount - 1;
 
-		selRows.forEach(
+		saveSel && selRows.forEach(
 			function(range) {
 				if(range[0] <= maxRowsIndx)
 					this.tSel.rangedSelect(range[0], this.ut.mm(range[1], 0, maxRowsIndx), true);
 			},
 			this
 		);
-		if(typeof fvr == "number" && fvr < rowsCount)
-			tbo.scrollToRow(this.ut.mm(fvr, 0, maxRowsIndx));
+		if(lvr > maxRowsIndx)
+			fvr -= lvr - maxRowsIndx;
+		tbo.scrollToRow(this.ut.mm(fvr, 0, maxRowsIndx));
 	},
 	forceUpdTree: function() {
 		this.ps.loadSettings();
@@ -981,7 +1010,7 @@ var handyClicksSets = {
 		this.loadPrefs();
 		this.updateAllDependencies();
 		if(prefName == "sets.treeDrawMode")
-			this.redrawTree();
+			this.updTree(false);
 		else if(prefName == "sets.treeExpandDelayedAction")
 			this.updTree();
 	},

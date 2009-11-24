@@ -6,7 +6,7 @@
 			<![CDATA[
 				var ww = -1;
 				if(this.hasAttribute("hc_wrap_width")) {
-					var _ww = parseInt(this.getAttribute("hc_wrap_width"));
+					var _ww = Number(this.getAttribute("hc_wrap_width"));
 					if(isFinite(_ww))
 						ww = _ww;
 				}
