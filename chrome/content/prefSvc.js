@@ -383,6 +383,8 @@ var handyClicksPrefSvc = {
 					if(pName == "delayedAction") {
 						if(!this.isOkFuncObj(pVal))
 							continue;
+						if(to.eventType == "mousedown")
+							pVal.enabled = false;
 						res += "\t\t\t" + pName + ": {\n";
 						for(dName in pVal) if(pVal.hasOwnProperty(dName))
 							res += "\t\t\t\t" + this.fixPropName(dName) + ": " + this.objToSource(pVal[dName]) + ",\n";

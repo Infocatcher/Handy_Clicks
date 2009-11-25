@@ -3,10 +3,6 @@
 #hc-editor-clickButton {
 	-moz-user-focus: ignore;
 }
-/*tabpanels { -moz-appearance: button; }*/
-[id^="hc-editor-enabled"], #hc-editor-customTypeEnabled {
-	font-weight: bold;
-}
 textbox.hcText {
 	background: transparent !important;
 	border: none;

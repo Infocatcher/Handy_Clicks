@@ -2,6 +2,7 @@
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/a11y.css" type="text/css"?>
 
 <!DOCTYPE dialog [
 	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/sets.dtd">
@@ -107,7 +108,7 @@
 											<menuitem value="dblclick" label="Dblclick" />
 										</menupopup>
 									</menulist>
-									<checkbox id="hc-editor-enabled" label="&hc.editor.enabled;" />
+									<checkbox id="hc-editor-enabled" label="&hc.editor.enabled;" hc_important="enabled" />
 								</hbox>
 								<hbox align="center">
 									<label id="hc-editor-allowMousedownLabel" value="&hc.editor.mousedownEvent;" hc_notdelay="true" />
@@ -335,7 +336,7 @@
 						onkeypress="return handyClicksEditor.customTypeIdFilter(event);"
 						oninput="handyClicksEditor.customTypeIdFilter(event);"
 						ondragexit="handyClicksEditor.customTypeIdFilter(event);" />
-					<checkbox id="hc-editor-customTypeEnabled" label="&hc.editor.enabled;" />
+					<checkbox id="hc-editor-customTypeEnabled" label="&hc.editor.enabled;" hc_important="enabled" />
 				</hbox>
 
 				<tabbox id="hc-editor-customTypeFuncs" flex="1">

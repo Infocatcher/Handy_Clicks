@@ -791,6 +791,8 @@ var handyClicksSets = {
 	smartSelect: function _ss(e) {
 		if(e.button == 1)
 			return;
+		if("mgGestureRecognizer" in window && !mgGestureRecognizer.checkPrevent(e))
+			return; // Do nothing, if Mouse Gestures Redox 3.0+ is active ( http://mousegestures.org/ )
 		var row = this.tbo.getRowAt(e.clientX, e.clientY);
 		var et = e.type;
 		if(et == "mouseout") {
@@ -963,9 +965,6 @@ var handyClicksSets = {
 		sIt = sIt || this.$("hc-sets-tree-searchField");
 		var sTerm = this.ut.trim(sIt.value);
 		var hasTerm = !!sTerm;
-		if(!hasTerm) {
-			this.ut._log("empty search");
-		}
 		sTerm = sTerm.toLowerCase().split(/\s+/);
 
 		var tRow, rowText, okRow, indx;

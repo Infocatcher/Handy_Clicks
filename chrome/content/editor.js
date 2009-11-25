@@ -588,7 +588,7 @@ var handyClicksEditor = {
 	},
 	disableUnsupported: function() {
 		var isMd = this.$("hc-editor-events").value == "mousedown";
-		this.$("hc-editor-funcTabDelay").setAttribute("disabled", isMd || !this.$("hc-editor-enabled").checked);
+		this.$("hc-editor-funcTabDelay").setAttribute("hc_disabled", isMd || !this.$("hc-editor-enabled").checked);
 		this.$("hc-editor-allowMousedownLabel").disabled = isMd;
 		this.$("hc-editor-allowMousedown").disabled = isMd;
 	},

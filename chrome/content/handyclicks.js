@@ -937,8 +937,10 @@ var handyClicks = {
 			case "mousemove":   this.mousemoveHandler(e);   break;
 			case "draggesture": this.dragHandler(e);        break;
 			case "keydown":
-				if(e.keyCode == e.DOM_VK_ESCAPE)
-					this.editMode = false;
+				if(e.keyCode != e.DOM_VK_ESCAPE)
+					return;
+				this.stopEvent(e);
+				this.editMode = false; // this removes event listener
 		}
 	},
 

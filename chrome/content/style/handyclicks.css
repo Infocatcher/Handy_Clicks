@@ -25,9 +25,6 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
 	outline: 1px solid red !important;
 	outline-offset: -1px !important;
 }
-#handyClicks-settingsMenuitem {
-	font-weight: bold;
-}
 
 #handyClicks-tooltip {
 	padding: 0;

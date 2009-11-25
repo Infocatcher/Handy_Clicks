@@ -2,6 +2,7 @@
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/a11y.css" type="text/css"?>
 
 <!DOCTYPE prefwindow [
 	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/sets.dtd">
@@ -126,7 +127,7 @@
 			<preference id="notifyDontCloseUnderCursor" type="bool" name="extensions.handyclicks.notifyDontCloseUnderCursor" />
 		</preferences>
 
-		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" />
+		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" hc_important="enabled" />
 		<groupbox>
 			<caption label="&hc.sets.appearance;" />
 			<checkbox preference="showInToolsMenu" label="&hc.sets.showInToolsMenu;" />
@@ -275,7 +276,7 @@
 	</keyset>
 	<popupset id="hc-sets-popupset">
 		<popup id="hc-sets-tree-context" onpopupshowing="handyClicksSets.checkClipboard(); return handyClicksSets.checkTreeContext();">
-			<menuitem id="hc-sets-edit" command="hc-sets-cmd-edit" key="hc-sets-key-edit" />
+			<menuitem id="hc-sets-edit" command="hc-sets-cmd-edit" key="hc-sets-key-edit" hc_main="true" />
 			<menuitem id="hc-sets-editType" command="hc-sets-cmd-editType" key="hc-sets-key-editType" />
 			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" />
 			<menuseparator />
