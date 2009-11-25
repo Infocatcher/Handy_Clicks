@@ -414,15 +414,17 @@ function HandyClicksObservers() {
 }
 HandyClicksObservers.prototype = {
 	notifyObservers: function() {
-		var obs = this.observers;
-		for(var i = 0, len = obs.length; i < len; i++)
-			if(i in obs)
-				obs[i][0].apply(obs[i][1] || this, arguments);
+		var args = arguments;
+		this.observers.forEach(
+			function(ob) {
+				ob[0].apply(ob[1] || window, args);
+			}
+		);
 	},
-	addPrefsObserver: function(fnc, context) {
+	addObserver: function(fnc, context) {
 		return this.observers.push([fnc, context]) - 1;
 	},
-	removePrefsObserver: function(oId) {
+	removeObserver: function(oId) {
 		delete this.observers[oId];
 	}
 };

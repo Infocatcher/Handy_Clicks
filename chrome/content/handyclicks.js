@@ -24,7 +24,7 @@ var handyClicks = {
 		var v = this.pu.pref("prefsVersion") || 0;
 		if(v < 2) { // Added 2009-11-13
 			// New id for toolbarbutton
-			if(!this.elts.toolbarButton) {
+			if(!this.$("handyClicks-toolbarButton")) {
 				var tbm = /(?:^|,)handyClicks-toggleStatus-tbButton(?:,|$)/;
 				Array.some(
 					document.getElementsByTagName("toolbar"),
@@ -32,7 +32,7 @@ var handyClicks = {
 						var cs = tb.getAttribute("currentset");
 						if(cs && tbm.test(cs)) {
 							// Add toolbarbutton manually:
-							var newItem = this.elts.paletteButton;
+							var newItem = this.paletteButton;
 							if(newItem) {
 								var nextItem = /,*([^,]+)/.test(RegExp.rightContext) && document.getElementById(RegExp.$1);
 								if(nextItem)
@@ -63,7 +63,7 @@ var handyClicks = {
 
 		this.ps.loadSettings();
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], true);
-		this.pu.oSvc.addPrefsObserver(this.updUI, this);
+		this.pu.oSvc.addObserver(this.updUI, this);
 		this.setStatus();
 		this.registerHotkeys();
 		this.showHideControls();
@@ -341,7 +341,9 @@ var handyClicks = {
 			// Always return "({x:0, y:0})":
 			//   var _this = this;
 			//   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
-			this.copyOfEvent = e;//this.cloneObj(e);
+			// Returns 65535 in Firefox 1.5:
+			//   setTimeout(function() { alert(_this.event.button); }, 10);
+			this.copyOfEvent = this.cloneObj(e);
 			//this.saveXY(e); // Saves incorrect coordinates...
 			this.origItem = e.originalTarget;
 		}
@@ -616,7 +618,7 @@ var handyClicks = {
 
 		if(this.itemType == "tab") {
 			// Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
-			var tabscope = document.getElementById("tabscopePopup");
+			var tabscope = this.$("tabscopePopup");
 			if(tabscope) // mousedown -> ...delay... -> this popup -> Tab Scope popup hide this popup
 				tabscope.hidePopup();
 		}
@@ -942,48 +944,28 @@ var handyClicks = {
 
 	// GUI:
 	toolbarButtonId: "handyClicks-toolbarButton",
-	get elts() {
-		delete this.elts;
-		this.elts = {
-			__parent: this,
-			get paletteButton() {
-				var tb = "gNavToolbox" in window && gNavToolbox
-					|| "getNavToolbox" in window && getNavToolbox() // Firefox 3.0
-					|| document.getElementById("navigator-toolbox"); // Firefox <= 2.0
-				if(!tb)
-					return null;
-				var elt = tb.palette.getElementsByAttribute("id", this.__parent.toolbarButtonId);
-				if(elt.length) {
-					delete this.paletteButton;
-					return this.paletteButton = elt[0];
-				}
-				return null;
-			}
-		};
-		["statusbarButton", "toolbarButton", "toolsMenuitem", "importFromClipboard", "cmd-editMode"].forEach(
-			function(name) {
-				var id = "handyClicks-" + name;
-				this.elts.__defineGetter__(name, function() {
-					var elt = document.getElementById(id);
-					if(!elt)
-						return null;
-					delete this[name];
-					return this[name] = elt;
-				});
-			},
-			this
-		);
-		return this.elts;
+	get paletteButton() {
+		var tb = "gNavToolbox" in window && gNavToolbox
+			|| "getNavToolbox" in window && getNavToolbox() // Firefox 3.0
+			|| document.getElementById("navigator-toolbox"); // Firefox <= 2.0
+		if(!tb)
+			return null;
+		var elt = tb.palette.getElementsByAttribute("id", this.toolbarButtonId);
+		if(elt.length) {
+			delete this.paletteButton;
+			return this.paletteButton = elt[0];
+		}
+		return null;
 	},
 
 	toggleStatus: function(fromKey) {
 		var en = !this.enabled;
 		this.enabled = en;
-		if(fromKey && !this.elts.toolbarButton && !this.pu.pref("ui.showInStatusbar"))
+		if(fromKey && !this.$("handyClicks-toolbarButton") && !this.pu.pref("ui.showInStatusbar"))
 			this.ut.notify(null, this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, en, true);
 	},
 	checkClipboard: function() {
-		this.elts.importFromClipboard.hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard(true));
+		this.$("handyClicks-importFromClipboard").hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard(true));
 	},
 	fixPopup: function() {
 		if(document.popupNode)
@@ -1056,16 +1038,20 @@ var handyClicks = {
 				elt.setAttribute(ttAttr, tt);
 			}
 		);
-		this.elts["cmd-editMode"].setAttribute("disabled", !enabled);
+		this.$("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
 	},
 	showHideControls: function() {
-		this.elts.toolsMenuitem.hidden = !this.pu.pref("ui.showInToolsMenu");
-		this.elts.statusbarButton.hidden = !this.pu.pref("ui.showInStatusbar");
+		this.$("handyClicks-toolsMenuitem").hidden = !this.pu.pref("ui.showInToolsMenu");
+		this.$("handyClicks-statusbarButton").hidden = !this.pu.pref("ui.showInStatusbar");
 	},
 	setControls: function(func, context) {
-		["statusbarButton", "toolbarButton", "toolsMenuitem", "paletteButton"].forEach(
-			function(id) {
-				var elt = this.elts[id];
+		var id = "handyClicks-";
+		[
+			this.$(id + "statusbarButton"),
+			this.$(id + "toolsMenuitem"),
+			this.$(id + "toolbarButton") || this.paletteButton,
+		].forEach(
+			function(elt) {
 				elt && func.call(context || this, elt);
 			},
 			this

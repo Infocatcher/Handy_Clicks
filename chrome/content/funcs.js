@@ -502,9 +502,9 @@ var handyClicksFuncs = {
 		return this.appendItems(this.getPopup(), items);
 	},
 	getPopup: function(xml) {
-		var pSet = document.getElementById("mainPopupSet");
+		var pSet = this.$("mainPopupSet");
 		var id = "handyClicks-generatedPopup";
-		var popup = document.getElementById(id);
+		var popup = this.$(id);
 		popup && pSet.removeChild(popup);
 		popup = xml || <popup xmlns={this.ut.XULNS} />;
 		popup.@id = id;

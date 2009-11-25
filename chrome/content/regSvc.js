@@ -37,7 +37,19 @@ var handyClicksRegSvc = {
 			wu: "handyClicksWinUtils",
 			__proto__: null
 		};
-		var _s = {}, oName;
+		var _s = {
+			_elts: { __proto__: null },
+			$: function(id) {
+				var es = this._elts;
+				if(id in es) {
+					var e = es[id];
+					if(e && e.parentNode)
+						return e;
+				}
+				return es[id] = document.getElementById(id);
+			}
+		};
+		var oName;
 		for(p in s) {
 			oName = s[p];
 			if(oName in window)

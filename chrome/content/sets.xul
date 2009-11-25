@@ -36,12 +36,14 @@
 		<vbox flex="1">
 			<hbox align="center">
 				<label value="&hc.sets.search;" />
-				<hbox id="hc-sets-tree-searchContainer" flex="1">
-					<textbox id="hc-sets-tree-searchField" hc_notfound="false" flex="1"
+				<hbox id="hc-sets-tree-searchContainer" flex="100">
+					<textbox id="hc-sets-tree-searchField" flex="1"
 						onkeypress="handyClicksSets.navigateSearchResults(event);"
 						oninput="handyClicksSets.searchInSetsTree(this);"
 						ondragexit="handyClicksSets.searchInSetsTree(this);" />
 				</hbox>
+				<label id="hc-sets-tree-searchResults" />
+				<spacer flex="1" />
 				<label value="&hc.sets.drawMode;" />
 				<menulist oncommand="handyClicksSets.setDrawMode(this.value);" preference="treeDrawMode">
 					<menupopup>

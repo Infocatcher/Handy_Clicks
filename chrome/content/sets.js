@@ -14,10 +14,10 @@ var handyClicksSets = {
 			this.drawTree();
 
 		this.updButtons();
-		this.ps.oSvc.addPrefsObserver(this.updTree, this);
+		this.ps.oSvc.addObserver(this.updTree, this);
 
 		this.updPrefsUI();
-		this.pu.oSvc.addPrefsObserver(this.updPrefsUI, this);
+		this.pu.oSvc.addObserver(this.updPrefsUI, this);
 
 		if(this.ut.fxVersion >= 3.5) {
 			var s = this.$("hc-sets-tree-searchField");
@@ -41,34 +41,22 @@ var handyClicksSets = {
 			}
 		);
 		this.focusSearch();
-		this.scrollPos(false);
+		this.treeScrollPos(false);
 	},
 	initShortcuts: function() {
-		var tree = this.$("hc-sets-tree");
-		this.tree = tree;
-		this.tbo = tree.treeBoxObject;
-		this.tView = tree.view;
+		var tr = this.$("hc-sets-tree");
+		this.tree = tr;
+		this.tbo = tr.treeBoxObject;
+		this.tView = tr.view;
 		this.tSel = this.tView.selection;
-		this.tBody = tree.body;
-		this.searcher.init(this, tree);
-
-		this.cmdDelete = this.$("hc-sets-cmd-delete");
-		this.cmdEdit = this.$("hc-sets-cmd-edit");
-		this.cmdEditType = this.$("hc-sets-cmd-editType");
-
-		this.cmdEnable = this.$("hc-sets-cmd-enable");
-		this.cmdDisable = this.$("hc-sets-cmd-disable");
-		this.cmdToggle = this.$("hc-sets-cmd-toggle");
-
-		this.cmdPExpFile = this.$("hc-sets-cmd-partialExportToFile");
-		this.cmdPExpClip = this.$("hc-sets-cmd-partialExportToClipboard");
-		this.miEditType = this.$("hc-sets-editType");
+		this.tBody = tr.body;
+		this.searcher.init(this, tr, this.$("hc-sets-tree-searchField"));
 
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
 	destroy: function(reloadFlag) {
 		this.closeEditors();
-		this.scrollPos(true);
+		this.treeScrollPos(true);
 	},
 	closeEditors: function() {
 		var pSvc = "handyClicksPrefSvc";
@@ -80,7 +68,7 @@ var handyClicksSets = {
 			}
 		);
 	},
-	scrollPos: function(saveFlag) {
+	treeScrollPos: function(saveFlag) {
 		var tr = this.tree, tb = this.tbo;
 		if(saveFlag) {
 			tr.setAttribute("hc_firstVisibleRow", tb.getFirstVisibleRow());
@@ -105,9 +93,6 @@ var handyClicksSets = {
 	_prefsSaved: true,
 	get prefsSaved() {
 		return this.instantApply || this._prefsSaved;
-	},
-	$: function(id) {
-		return document.getElementById(id);
 	},
 
 	drawTree: function() {
@@ -445,23 +430,23 @@ var handyClicksSets = {
 	updButtons: function() {
 		var selIts = this.selectedItems;
 		var noSel = !selIts.length;
-		["cmdDelete", "cmdEdit", "cmdToggle", "cmdPExpFile", "cmdPExpClip"].forEach(
-			function(hash) {
-				this[hash].setAttribute("disabled", noSel);
+		["delete", "edit", "toggle", "partialExportToFile", "partialExportToClipboard"].forEach(
+			function(id) {
+				this.$("hc-sets-cmd-" + id).setAttribute("disabled", noSel);
 			},
 			this
 		);
-		this.cmdEnable.setAttribute(
+		this.$("hc-sets-cmd-enable").setAttribute(
 			"disabled",
 			noSel || selIts.every(function(it) { return this.checkedState(it); }, this)
 		);
-		this.cmdDisable.setAttribute(
+		this.$("hc-sets-cmd-disable").setAttribute(
 			"disabled",
 			noSel || selIts.every(function(it) { return !this.checkedState(it); }, this)
 		);
 		var noTypes = noSel || !selIts.some(function(it) { return it.__isCustomType; });
-		this.cmdEditType.setAttribute("disabled", noTypes);
-		this.miEditType.hidden = noTypes;
+		this.$("hc-sets-cmd-editType").setAttribute("disabled", noTypes);
+		this.$("hc-sets-editType").hidden = noTypes;
 	},
 	get selectedItems() {
 		var numRanges = this.tSel.getRangeCount();
@@ -525,7 +510,7 @@ var handyClicksSets = {
 		prefWin.showPane(prefWin.preferencePanes[0]);
 	},
 	switchPanes: function(nextFlag) {
-		var prefWin = this.$("handyClicks-settings");
+		var prefWin = document.documentElement;
 		var curPane = prefWin.currentPane;
 		var panes = prefWin.preferencePanes, pLen = panes.length;
 		for(var n = 0; n < pLen; n++)
@@ -891,11 +876,13 @@ var handyClicksSets = {
 	_lastSearch: 0,
 
 	searcher: {
-		_res: [], // row numbers
+		_res: [], // rows numbers
 		_current: 0,
-		init: function(parent, tree) {
+		_wrapped: false,
+		init: function(parent, tree, field) {
 			this.__parent = parent;
 			this.tree = tree;
+			this.field = field;
 		},
 		reset: function() {
 			this._res = [];
@@ -909,12 +896,12 @@ var handyClicksSets = {
 		},
 		next: function() {
 			if(++this._current >= this._length)
-				this._current = 0;
+				this._wrapped = true, this._current = 0;
 			this.select();
 		},
 		prev: function() {
 			if(--this._current < 0)
-				this._current = this._length - 1;
+				this._wrapped = true, this._current = this._length - 1;
 			this.select();
 		},
 		select: function(i) {
@@ -923,19 +910,36 @@ var handyClicksSets = {
 					return;
 				i = this._res[this._current];
 			}
-			this.__parent.toggleTreeContainers(true);
+			this.field.setAttribute("hc_wrapped", this._wrapped);
+			this._wrapped = false; // Reset flag
+			this.__parent.toggleTreeContainers(true); // Expand tree
 			this.tree.view.selection.select(i);
 			this.tree.treeBoxObject.ensureRowIsVisible(i);
+		},
+		selectAll: function() {
+			this._res.forEach(
+				function(i) {
+					this.tree.view.selection.rangedSelect(i, i, true);
+				},
+				this
+			);
 		}
 	},
 	navigateSearchResults: function(e) {
 		var code = e.keyCode;
-		if(code == e.DOM_VK_DOWN || code == e.DOM_VK_RETURN && !e.shiftKey)
+		if(code == e.DOM_VK_RETURN && e.ctrlKey)
+			this.searcher.selectAll();
+		else if(code == e.DOM_VK_DOWN || code == e.DOM_VK_RETURN && !e.shiftKey)
 			this.searcher.next();
 		else if(code == e.DOM_VK_UP || code == e.DOM_VK_RETURN && e.shiftKey)
 			this.searcher.prev();
-		else if(code == e.DOM_VK_ESCAPE && e.target.value)
+		else if(code == e.DOM_VK_ESCAPE && e.target.value) {
 			e.preventDefault(); // Don't close dialog window
+			if(e.target.type != "search") { // Firefox < 3.5
+				e.target.value = "";
+				this.searchInSetsTree();
+			}
+		}
 		else
 			return;
 		e.preventDefault();
@@ -959,10 +963,13 @@ var handyClicksSets = {
 		sIt = sIt || this.$("hc-sets-tree-searchField");
 		var sTerm = this.ut.trim(sIt.value);
 		var hasTerm = !!sTerm;
+		if(!hasTerm) {
+			this.ut._log("empty search");
+		}
 		sTerm = sTerm.toLowerCase().split(/\s+/);
 
 		var tRow, rowText, okRow, indx;
-		var notFound = true;
+		var notFound = true, count = 0;
 		for(var h in this.rowsCache) {
 			tRow = this.rowsCache[h];
 			okRow = hasTerm;
@@ -974,6 +981,7 @@ var handyClicksSets = {
 			this.addProperties(tRow, { hc_search: okRow });
 			if(!okRow)
 				continue;
+			count++;
 			indx = this.tView.getIndexOfItem(tRow.parentNode);
 			this.searcher.add(indx);
 			if(notFound) {
@@ -982,6 +990,7 @@ var handyClicksSets = {
 					this.searcher.select(indx);
 			}
 		}
+		this.$("hc-sets-tree-searchResults").value = hasTerm ? count : "";
 		sIt.setAttribute("hc_notfound", hasTerm && notFound);
 
 		this._lastSearch = Date.now();
@@ -1060,7 +1069,7 @@ var handyClicksSets = {
 		if(tar.hasAttribute("hc_requiredfor"))
 			this.updateDependencies(tar, true);
 		if(tar.hasAttribute("preference")) {
-			var p = document.getElementById(tar.getAttribute("preference"));
+			var p = this.$(tar.getAttribute("preference"));
 			if(p.getAttribute("instantApply") == "true" || p.getAttribute("hc_instantApply") == "true")
 				return;
 		}

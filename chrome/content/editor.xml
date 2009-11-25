@@ -10,7 +10,11 @@
 					if(isFinite(_ww))
 						ww = _ww;
 				}
-				this.editor.wrapWidth = ww;
+				try { // Strange bug in Firefox 1.5
+					this.editor.wrapWidth = ww;
+				}
+				catch(e) {
+				}
 			]]>
 			</constructor>
 			<property name="tabSymbol">

@@ -36,7 +36,7 @@ var handyClicksEditor = {
 		this.initUI();
 		this.loadCustomType(this.type);
 		this.selectTargetTab(this.isDelayed);
-		this.ps.oSvc.addPrefsObserver(this.appendTypesList, this);
+		this.ps.oSvc.addObserver(this.appendTypesList, this);
 
 		Array.forEach( // Add spellcheck feature for <menulist editable="true" />
 			document.getElementsByTagName("menulist"),
@@ -180,9 +180,6 @@ var handyClicksEditor = {
 		if(ln == "tab" || ln == "dialog" || ln == "key")
 			return;
 		this.applyButton.disabled = false;
-	},
-	$: function(id) {
-		return document.getElementById(id);
 	},
 	setWinId: function() {
 		var winId;

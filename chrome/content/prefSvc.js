@@ -1,5 +1,6 @@
 var handyClicksPrefSvc = {
 	oSvc: new HandyClicksObservers(),
+
 	otherSrc: false,
 	version: 0.13,
 	prefsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
