@@ -51,6 +51,8 @@
 <!ENTITY hc.sets.importIncrementOk "Incremental import done">
 <!ENTITY hc.sets.importIncrementCancel "Cancel incremental import">
 
+<!ENTITY hc.sets.restoreFromBackup "Restore from backup">
+
 
 <!ENTITY hc.sets.clickPrefsTitle "Preferences">
 

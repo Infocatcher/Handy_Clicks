@@ -1,6 +1,7 @@
 var handyClicksSets = {
-	_importFlag: false,
-	_partialImportFlag: false,
+	_import: false,
+	_partialImport: false,
+	_importFromClipboard: false,
 	_savedPrefs: null,
 	_savedTypes: null,
 
@@ -246,7 +247,7 @@ var handyClicksSets = {
 				{ hc_checkbox: true }
 			);
 
-			if(this._importFlag) { //~ todo: test!
+			if(this._import) { //~ todo: test!
 				var savedDa = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType, "delayedAction");
 				var override = savedDa;
 				var equals = this.ut.objEquals(da, savedDa);
@@ -285,7 +286,7 @@ var handyClicksSets = {
 			hc_custom: isCustom,
 			hc_customType: isCustomType
 		}, true);
-		if(this._importFlag) { //~ todo: test!
+		if(this._import) { //~ todo: test!
 			var savedPref = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType);
 			if(savedDa) // Ignore delayed actions
 				savedPref.delayedAction = null;
@@ -791,7 +792,10 @@ var handyClicksSets = {
 	smartSelect: function _ss(e) {
 		if(e.button == 1)
 			return;
-		if("mgGestureRecognizer" in window && !mgGestureRecognizer.checkPrevent(e))
+		if(
+			"mgGestureRecognizer" in window
+			&& e.button == mgPrefs.mousebutton && !mgGestureRecognizer.checkPrevent(e)
+		)
 			return; // Do nothing, if Mouse Gestures Redox 3.0+ is active ( http://mousegestures.org/ )
 		var row = this.tbo.getRowAt(e.clientX, e.clientY);
 		var et = e.type;
@@ -1167,9 +1171,11 @@ var handyClicksSets = {
 			.splice(1) // Remove header
 			.forEach(
 				function(line, i) {
+					if(line.indexOf(";") == 0 || line.indexOf("#") == 0)
+						return; // Just for fun right now :)
 					var indx = line.indexOf("=");
 					if(indx == -1) {
-						this.ut._err(new Error("[Import INI] Skipped invalid line #" + i + ": " + line), true);
+						this.ut._err(new Error("[Import INI] Skipped invalid line #" + (i + 2) + ": " + line), true);
 						return;
 					}
 					var pName = line.substring(0, indx);
@@ -1180,9 +1186,9 @@ var handyClicksSets = {
 						return;
 					}
 					var pVal = line.substring(indx + 1);
-					if(pType == pbr.PREF_INT) // Convert string to number or boolean
+					if(pType == pbr.PREF_INT) // Convert string to number
 						pVal = parseInt(pVal);
-					else if(pType == pbr.PREF_BOOL)
+					else if(pType == pbr.PREF_BOOL) // ...or boolean
 						pVal = pVal == "true";
 					this.pu.setPref(pName, pVal);
 				},
@@ -1266,7 +1272,7 @@ var handyClicksSets = {
 
 		return this.ps.saveSettingsObjects(null, newTypes, newPrefs, true);
 	},
-	importSets: function(partialImport, fromClipboard) {
+	importSets: function(partialImport, fromClipboard, fileName) {
 		this.selectTreePane();
 		if(this.pu.pref("sets.importJSWarning")) {
 			var ack = { value: false };
@@ -1281,7 +1287,9 @@ var handyClicksSets = {
 		}
 		var pSrc = fromClipboard
 			? this.ut.readFromClipboard(true)
-			: this.pickFile(this.ut.getLocalized("importSets"), false, "js");
+			: fileName
+				? this.ps.getFile(fileName)
+				: this.pickFile(this.ut.getLocalized("importSets"), false, "js");
 		if(!pSrc)
 			return;
 		if(!this.checkPrefs(pSrc)) {
@@ -1299,20 +1307,68 @@ var handyClicksSets = {
 		//this.ps.reloadSettings(false);
 		if(this.ps._loadError)
 			return;
-		this.setImportStatus(true, partialImport);
+		this.setImportStatus(true, partialImport, fromClipboard);
 		if(partialImport)
 			this.redrawTree();
-		else {
-			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, null, true);
+		else
 			this.updTree();
-		}
-		if(pSrc instanceof Components.interfaces.nsILocalFile)
+		if(pSrc instanceof Components.interfaces.nsILocalFile && !fileName)
 			this.backupsDir = pSrc.parent.path;
 	},
+	buildRestorePopup: function(popup) {
+		popup = popup || this.$("hc-sets-tree-restoreFromBackupPopup");
+		while(popup.hasChildNodes())
+			popup.removeChild(popup.lastChild);
 
-	setImportStatus: function(isImport, isPartial) {
-		this._importFlag = isImport;
-		this._partialImportFlag = isPartial;
+		var entries = this.ps.prefsDir.directoryEntries;
+		var entry, fName, fTime;
+		var _times = [];
+		var _files = {}; // time => [file_0, file_1 ... file_n]
+		while(entries.hasMoreElements()) {
+			entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
+			if(!entry.isFile())
+				continue;
+			fName = entry.leafName;
+			if(
+				fName.indexOf(this.ps.prefsFileName) != 0
+				|| !/\.js$/.test(fName)
+				|| fName == this.ps.prefsFileName + ".js"
+				|| fName.indexOf(this.ps.names.corrupted) != -1
+			)
+				continue;
+			fTime = entry.lastModifiedTime;
+			if(!(fTime in _files))
+				_files[fTime] = [];
+			_files[fTime].push(entry);
+			_times.push(fTime);
+		}
+		var bytes = this.ut.getLocalized("bytes");
+		_times.sort(function(a, b) { return a > b; }); // sort as numbers
+		_times.reverse().forEach(
+			function(time) {
+				var file = _files[time].shift();
+				var fTime = new Date(time).toLocaleString();
+				//var fTime = new Date(time).toLocaleFormat("%Y-%m-%d %H:%M:%S");
+				var fSize = file.fileSize.toString().replace(/(\d)(?=(?:\d{3})+(?:\D|$))/g, "$1 ");
+				var fName = file.leafName;
+				popup.appendChild(this.ut.parseFromXML(
+					<menuitem xmlns={this.ut.XULNS}
+						label={ fTime + " [" + fSize + " " + bytes + "] \u2013 " + fName }
+						oncommand={ "handyClicksSets.importSets(false, false, \"" + fName + "\");" }
+						class="menuitem-iconic"
+						image={ "moz-icon:file://" + file.path }
+						hc_old={ fName.indexOf(this.ps.names.version) != -1 } />
+				));
+			},
+			this
+		);
+		popup.parentNode.disabled = !_times.length;
+	},
+
+	setImportStatus: function(isImport, isPartial, fromClipboard) {
+		this._import              = isImport;
+		this._partialImport       = isImport && isPartial;
+		this._importFromClipboard = isImport && fromClipboard;
 		this.closeEditors();
 		if(this.prefsSaved)
 			this.applyButton.disabled = true;
@@ -1330,12 +1386,15 @@ var handyClicksSets = {
 		this.$("hc-sets-tree-buttonImportOk").focus();
 	},
 	importDone: function _id(ok) {
-		var isPartial = this._partialImportFlag;
+		var isPartial = this._partialImport;
+		//var fromClip = this._importFromClipboard;
 		this.setImportStatus(false);
 		if(ok) {
 			this.ps.otherSrc = false;
 			if(isPartial)
 				this.mergePrefs();
+			else // Keep prefs file because content of new file may be equals!
+				this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, null, true);
 			this.ps.saveSettingsObjects(true);
 		}
 		else {
@@ -1381,7 +1440,7 @@ var handyClicksSets = {
 		var fp = Components.classes["@mozilla.org/filepicker;1"]
 			.createInstance(Components.interfaces.nsIFilePicker);
 		fp.defaultString = this.ps.prefsFileName + (modeSave ? this.getFormattedDate(date) : "") + "." + ext;
-		fp.defaultExtension = "js";
+		fp.defaultExtension = ext;
 		fp.appendFilter(this.ut.getLocalized("hcPrefsFiles"), "handyclicks_prefs*." + ext);
 		fp.appendFilter(this.ut.getLocalized(ext + "Files"), "*." + ext);
 		fp.appendFilters(fp.filterAll);

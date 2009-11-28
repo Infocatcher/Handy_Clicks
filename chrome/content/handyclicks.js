@@ -918,7 +918,7 @@ var handyClicks = {
 				(e ? e.type : "delayedAction")
 				+ " -> " + this.ps.getModifiersStr(eStr) + " + " + this.ps.getButtonStr(eStr, true)
 				+ "\n=> executeFunction()"
-				+ "\nnodeName = " + this.origItem.nodeName
+				+ "\nnodeName = " + (this.origItem ? this.origItem.nodeName : "?")
 				+ ", itemType = " + this.itemType
 				+ "\n=> " + (funcObj.custom ? (this.ps.dec(funcObj.label) || action) : funcObj.action)
 			);

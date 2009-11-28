@@ -29,7 +29,7 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
 #handyClicks-tooltip {
 	padding: 0;
 }
-.handyClicks-invalidPath {
+.handyClicks-invalidPath image, .handyClicks-invalidPath label {
 	opacity: 0.5;
 }
 .handyClicks-invalidPathTip {

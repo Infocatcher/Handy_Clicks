@@ -1,8 +1,8 @@
 var handyClicksRegSvc = {
 	instantInit: function(reloadFlag) {
+		window.addEventListener("load", this, false);
 		this.registerShortcuts(true);
 		this.callMethods("instantInit", reloadFlag);
-		window.addEventListener("load", this, false);
 	},
 	init: function(reloadFlag) { // window "load"
 		window.removeEventListener("load", this, false);
@@ -50,7 +50,7 @@ var handyClicksRegSvc = {
 			}
 		};
 		var oName;
-		for(p in s) {
+		for(var p in s) {
 			oName = s[p];
 			if(oName in window)
 				_s[p] = window[oName];
@@ -59,10 +59,13 @@ var handyClicksRegSvc = {
 		return this.s = _s;
 	},
 	registerShortcuts: function(regFlag) {
-		var s = this.s;
-		var proto = regFlag ? s : Object.prototype;
-		for(var p in s) if(s.hasOwnProperty(p))
-			s[p].__proto__ = proto;
+		if(regFlag) {
+			var s = this.s;
+			for(var p in s) if(s.hasOwnProperty(p))
+				s[p].__proto__ = s;
+			return;
+		}
+		this.s = null;
 	},
 	callMethods: function(methName, reloadFlag) {
 		var s = this.s, o;

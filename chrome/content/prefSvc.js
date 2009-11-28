@@ -4,6 +4,10 @@ var handyClicksPrefSvc = {
 	otherSrc: false,
 	version: 0.13,
 	prefsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
+	get requiredHeader() {
+		delete this.requiredHeader;
+		return this.requiredHeader = this.prefsHeader.match(/^([^\n]+?)\.?\n/)[1];
+	},
 	get versionInfo() {
 		delete this.versionInfo;
 		return this.versionInfo = "var handyClicksPrefsVersion = " + this.version + ";\n";
@@ -86,10 +90,11 @@ var handyClicksPrefSvc = {
 		this.otherSrc = !!pSrc;
 		this._loadError = 0;
 		pSrc = pSrc || this.prefsFile;
+		var fromProfile = false;
 		if(pSrc instanceof Components.interfaces.nsILocalFile) {
 			if(!pSrc.exists())
 				this.saveSettings(this.prefsHeader + this.versionInfo + this.defaultPrefs);
-			var fromProfile = pSrc.equals(this._prefsFile);
+			fromProfile = pSrc.equals(this._prefsFile);
 			pSrc = this.ut.readFromFile(pSrc);
 			if(fromProfile && !this.isMainWnd)
 				this._savedStr = pSrc;
@@ -138,7 +143,7 @@ var handyClicksPrefSvc = {
 
 		var vers = this.currentVersion = this.currentVersion || 0;
 		if(vers < this.version)
-			this.convertSetsFormat(vers);
+			this.convertSetsFormat(vers, fromProfile);
 		this._restoringCounter = 0;
 		if(this.isMainWnd) {
 			this.compileCystomTypes();
@@ -170,8 +175,9 @@ var handyClicksPrefSvc = {
 		}
 		this.loadSettings();
 	},
-	convertSetsFormat: function(vers) {
-		this.prefsFile.moveTo(null, this.prefsFileName + this.names.version + vers + ".js");
+	convertSetsFormat: function(vers, allowSave) {
+		if(allowSave)
+			this.prefsFile.moveTo(null, this.prefsFileName + this.names.version + vers + ".js");
 		if(vers < 0.12) { // New file names format
 			//= Expires after 2009-09-15
 			var convertName = function(s) {
@@ -180,8 +186,7 @@ var handyClicksPrefSvc = {
 			var entries = this.prefsDir.directoryEntries;
 			var entry, newName;
 			while(entries.hasMoreElements()) {
-				entry = entries.getNext();
-				entry.QueryInterface(Components.interfaces.nsIFile);
+				entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
 				if(!entry.isFile())
 					continue;
 				newName = convertName(entry.leafName);
@@ -246,7 +251,8 @@ var handyClicksPrefSvc = {
 			}
 		}
 		this.ut._log("Format of prefs file updated: " + vers + " => " + this.version);
-		this.saveSettingsObjects();
+		if(allowSave)
+			this.saveSettingsObjects();
 	},
 	compileCystomTypes: function() {
 		var cts = this.types, ct;
@@ -580,7 +586,7 @@ var handyClicksPrefSvc = {
 		return sh || (_short ? "" : this.ut.getLocalized("none"));
 	},
 	checkPrefsStr: function(str) {
-		if(str.indexOf(this.prefsHeader.substr(0, 56)) != 0) // Support for old header
+		if(str.indexOf(this.requiredHeader) != 0) // Support for old header
 			return false;
 		var hc = /^var handyClicks[\w$]+\s*=.*$/mg;
 		if(!hc.test(str))

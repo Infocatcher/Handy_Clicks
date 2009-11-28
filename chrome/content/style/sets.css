@@ -1,5 +1,4 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
-@namespace html url("http://www.w3.org/1999/xhtml");
 
 /* Icons */
 radio[pane] {
@@ -90,6 +89,13 @@ treechildren::-moz-tree-checkbox(checked) {
 #hc-sets-tree-searchResults {
 	min-width: 1.6em;
 	opacity: 0.5;
+}
+
+#hc-sets-tree-restoreFromBackupPopup menuitem {
+	max-width: none !important;
+}
+menuitem[hc_old="true"] image, menuitem[hc_old="true"] label {
+	opacity: 0.45;
 }
 
 #hc-sets-tree-buttons button {

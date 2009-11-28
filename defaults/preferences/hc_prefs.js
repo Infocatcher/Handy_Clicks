@@ -29,6 +29,7 @@ pref("extensions.handyclicks.funcs.convertURIs", false); // for Windows
 pref("extensions.handyclicks.funcs.convertURIsCharset", ""); // use defaults
 
 pref("extensions.handyclicks.funcs.multipleTabsOpenDelay", 200);
+pref("extensions.handyclicks.funcs.openOnlyVisibleLinks", true);
 pref("extensions.handyclicks.funcs.trimStrings", true);
 
 pref("extensions.handyclicks.key.toggleStatus", "VK_F2");

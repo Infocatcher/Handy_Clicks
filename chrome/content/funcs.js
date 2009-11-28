@@ -1065,12 +1065,14 @@ var handyClicksFuncs = {
 		return item.ownerDocument.defaultView.getComputedStyle(item, "")[propName];
 	},
 	openSimilarLinksInTabs: function(e, refererPolicy, a) {
+		//~ todo: test with XLink
 		a = a || this.hc.item;
-		var s = a.innerHTML;
-		if(!s) {
-			this.ut._err(new Error("openSimilarLinksInTabs() not supported: a.innerHTML is " + s));
+		var term = a.innerHTML;
+		if(!term) {
+			this.ut._err(new Error("openSimilarLinksInTabs() not supported: a.innerHTML is " + term));
 			return;
 		}
+
 		var ps = this.ut.promptsSvc;
 		var onlyUnvisited = { value: false };
 		var flags = ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING +
@@ -1091,23 +1093,25 @@ var handyClicksFuncs = {
 		onlyUnvisited = onlyUnvisited.value;
 		var useDelays = button == 2;
 
-		var doc = a.ownerDocument;
-
 		// Based on code by Yan ( http://forum.mozilla-russia.org/viewtopic.php?pid=144109#p144109 )
-		var ar = doc.getElementsByTagName("a");
 		var hrefs = { __proto__: null };
-		var his = Components.classes["@mozilla.org/browser/global-history;2"]
+		var gh = Components.classes["@mozilla.org/browser/global-history;2"]
 			.getService(Components.interfaces.nsIGlobalHistory2);
-		var text, h;
-		for(var i = 0, len = ar.length; i < len; i++) {
-			a = ar[i];
-			text = a.innerHTML, h = a.href;
-			if(
-				text == s && h && !this.isJSURI(h)
-				&& (!onlyUnvisited || !his.isVisited(makeURI(h))) // chrome://global/content/contentAreaUtils.js
-			)
-				hrefs[h] = true;
-		}
+		var onlyVisible = this.pu.pref("funcs.openOnlyVisibleLinks");
+		Array.forEach(
+			a.ownerDocument.getElementsByTagName("a"),
+			function(a) {
+				var t = a.innerHTML;
+				var h = a.href;
+				if(
+					t == term && h && !this.isJSURI(h)
+					&& (!onlyUnvisited || !gh.isVisited(makeURI(h))) // chrome://global/content/contentAreaUtils.js
+					&& (!onlyVisible || this.ut.isElementVisible(a))
+				)
+					hrefs[h] = true;
+			},
+			this
+		);
 
 		var tbr = this.hc.getTabBrowser(true);
 		var ref = this.getRefererForItem(refererPolicy);

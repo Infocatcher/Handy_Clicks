@@ -50,6 +50,8 @@
 <!ENTITY hc.sets.importIncrementOk "Завершить инкрементный импорт">
 <!ENTITY hc.sets.importIncrementCancel "Отменить инкрементный импорт">
 
+<!ENTITY hc.sets.restoreFromBackup "Восстановить из резервной копии">
+
 
 <!ENTITY hc.sets.clickPrefsTitle "Настройки">
 

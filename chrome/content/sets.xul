@@ -103,11 +103,15 @@
 						</menupopup>
 					</button>
 					<button id="hc-sets-tree-buttonImport" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;">
-						<menupopup onpopupshowing="handyClicksSets.checkClipboard();">
+						<menupopup onpopupshowing="if(event.target == this) { handyClicksSets.checkClipboard(); handyClicksSets.buildRestorePopup(); }">
 							<menuitem command="hc-sets-cmd-fullImportFromFile" key="hc-sets-key-fullImportFromFile" />
 							<menuseparator />
 							<menuitem command="hc-sets-cmd-partialImportFromFile" key="hc-sets-key-partialImportFromFile" />
 							<menuitem command="hc-sets-cmd-partialImportFromClipboard" key="hc-sets-key-partialImportFromClipboard" />
+							<menuseparator />
+							<menu id="hc-sets-tree-restoreFromBackupMenu" label="&hc.sets.restoreFromBackup;">
+								<menupopup id="hc-sets-tree-restoreFromBackupPopup" />
+							</menu>
 						</menupopup>
 					</button>
 				</hbox>
@@ -275,7 +279,8 @@
 		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksWinUtils.toggleFullscreen();" />
 	</keyset>
 	<popupset id="hc-sets-popupset">
-		<popup id="hc-sets-tree-context" onpopupshowing="handyClicksSets.checkClipboard(); return handyClicksSets.checkTreeContext();">
+		<popup id="hc-sets-tree-context"
+			onpopupshowing="if(event.target == this) handyClicksSets.checkClipboard(); return handyClicksSets.checkTreeContext();">
 			<menuitem id="hc-sets-edit" command="hc-sets-cmd-edit" key="hc-sets-key-edit" hc_main="true" />
 			<menuitem id="hc-sets-editType" command="hc-sets-cmd-editType" key="hc-sets-key-editType" />
 			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" />

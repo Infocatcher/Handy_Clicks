@@ -148,13 +148,13 @@ var handyClicksUtils = {
 					}
 				).join("\n")
 			+ "\n]>";
-		var s = this.ut.parseFromString(
+		var s = this.parseFromString(
 			(dtds ? dtds + "\n" : "")
-			+ '<dialog xmlns="' + this.ut.XULNS + '">&' + eName + ';</dialog>',
+			+ '<dialog xmlns="' + this.XULNS + '">&' + eName + ';</dialog>',
 			contentType
 		).textContent;
 		if(s.indexOf("XML Parsing Error:") == 0) {
-			this.ut._err("Invalid XML entity: " + eName);
+			this._err("Invalid XML entity: " + eName);
 			return "";
 		}
 		return s;
@@ -170,7 +170,7 @@ var handyClicksUtils = {
 		return "(" + s + ")\u034f";
 	},
 	isBuggyStr: function(s) {
-		return !s || /^\(.*\)\u034f$/.test(s);
+		return s && /^\(.*\)\u034f$/.test(s);
 	},
 
 	errInfo: function(textId, label, type, err) {
@@ -373,11 +373,11 @@ var handyClicksUtils = {
 			node.removeAttribute(attr);
 	},
 	isElementVisible: function(elt) {
-		// chrome://browser/content/utilityOverlay.js
-		// function isElementVisible(aElement)
-		// If elt or a direct or indirect parent is hidden or collapsed,
-		// height, width or both will be 0.
 		var bo = elt.boxObject;
+		if(!bo)
+			bo = "getBoundingClientRect" in elt
+				? elt.getBoundingClientRect()
+				: elt.ownerDocument.getBoxObjectFor(elt);
 		return bo.height > 0 && bo.width > 0;
 	},
 
