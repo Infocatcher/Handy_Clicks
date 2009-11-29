@@ -46,9 +46,15 @@
 <!ENTITY hc.sets.importIncrementFromFile "Инкрементный импорт из файла…">
 <!ENTITY hc.sets.importIncrementFromClipboard "Инкрементный импорт из буфера обмена">
 <!ENTITY hc.sets.importOk "Завершить импорт">
-<!ENTITY hc.sets.importCancel "Отменить импорт">
 <!ENTITY hc.sets.importIncrementOk "Завершить инкрементный импорт">
+<!ENTITY hc.sets.importOkAccesskey "З">
+<!ENTITY hc.sets.importCancel "Отменить импорт">
 <!ENTITY hc.sets.importIncrementCancel "Отменить инкрементный импорт">
+<!ENTITY hc.sets.importCancelAccesskey "О">
+
+<!ENTITY hc.sets.importOverrides "Перезаписываемых:">
+<!ENTITY hc.sets.importNew "Новых:">
+<!ENTITY hc.sets.importTip "Количество обычных настроек / Количество настроек отложенных действий">
 
 <!ENTITY hc.sets.restoreFromBackup "Восстановить из резервной копии">
 

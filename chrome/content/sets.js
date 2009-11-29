@@ -105,6 +105,8 @@ var handyClicksSets = {
 		this._forcedDisDa = daTime <= 0;
 		this._expandDa = this.pu.pref("sets.treeExpandDelayedAction");
 
+		this._overrides = this._overridesDa = this._new = this._newDa = 0;
+
 		var drawMode = this.pu.pref("sets.treeDrawMode");
 		var p = this.ps.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
@@ -158,6 +160,10 @@ var handyClicksSets = {
 			}
 		}
 		this.markOpenedEditors();
+		if(this._import) {
+			this.$("hc-sets-tree-importOverridesValue").value = this._overrides + "/" + this._overridesDa;
+			this.$("hc-sets-tree-importNewValue")      .value = this._new       + "/" + this._newDa;
+		}
 	},
 	markOpenedEditors: function() {
 		for(var rowId in this.rowsCache)
@@ -249,11 +255,12 @@ var handyClicksSets = {
 
 			if(this._import) { //~ todo: test!
 				var savedDa = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType, "delayedAction");
-				var override = savedDa;
-				var equals = this.ut.objEquals(da, savedDa);
+				var overrideDa = savedDa;
+				var equalsDa = this.ut.objEquals(da, savedDa);
 				this.addClildsProperties(daRow, {
-					hc_override: override,
-					hc_equals: equals
+					hc_override: overrideDa && !equalsDa && ++this._overrideDa,
+					hc_equals:   overrideDa &&  equalsDa,
+					hc_new:     !overrideDa &&              ++this._newDa
 				}, true);
 			}
 
@@ -287,13 +294,16 @@ var handyClicksSets = {
 			hc_customType: isCustomType
 		}, true);
 		if(this._import) { //~ todo: test!
-			var savedPref = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType);
-			if(savedDa) // Ignore delayed actions
-				savedPref.delayedAction = null;
+			var saved = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType);
+
+			// Ignore delayed actions:
+			if(savedDa)
+				saved.delayedAction = null;
 			if(da)
 				fo.delayedAction = null;
-			var override = savedPref;
-			var equals = this.ut.objEquals(fo, savedPref);
+
+			var override = saved;
+			var equals = this.ut.objEquals(fo, saved);
 			if(isCustomType) {
 				var savedType = this.ut.getOwnProperty(this._savedTypes, itemType);
 				var eqType = this.ut.objEquals(this.ps.types[itemType], savedType);
@@ -302,12 +312,14 @@ var handyClicksSets = {
 				equals = equals && eqType;
 			}
 			this.addClildsProperties(tRow, {
-				hc_override: override,
-				hc_equals: equals
+				hc_override: override && !equals && ++this._overrides,
+				hc_equals:   override &&  equals,
+				hc_new:     !override            && ++this._new
 			}, true);
 
+			// Restore...
 			if(savedDa)
-				savedPref.delayedAction = savedDa;
+				saved.delayedAction = savedDa;
 			if(da)
 				fo.delayedAction = da;
 		}
@@ -1362,7 +1374,10 @@ var handyClicksSets = {
 			},
 			this
 		);
-		popup.parentNode.disabled = !_times.length;
+
+		var h = !_times.length;
+		popup.parentNode.hidden = h
+		this.$("hc-sets-tree-restoreFromBackupSeparator").hidden = h;
 	},
 
 	setImportStatus: function(isImport, isPartial, fromClipboard) {

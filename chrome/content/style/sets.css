@@ -53,10 +53,10 @@ treechildren::-moz-tree-cell-text(hc_edited) {
 treechildren::-moz-tree-cell-text(hc_copied) {
 	color: #bfc1ca !important;
 }
-treechildren::-moz-tree-cell-text(hc_override) {
+treechildren::-moz-tree-cell-text(hc_override), #hc-sets-tree-importOverrides {
 	font-style: italic;
 }
-treechildren::-moz-tree-cell-text(hc_equals) {
+treechildren::-moz-tree-cell-text(hc_new), #hc-sets-tree-importNew {
 	text-decoration: underline;
 }
 treechildren::-moz-tree-checkbox(hc_checkbox) {
@@ -65,6 +65,20 @@ treechildren::-moz-tree-checkbox(hc_checkbox) {
 }
 treechildren::-moz-tree-checkbox(checked) {
 	-moz-image-region: rect(0 13px 13px 0);
+}
+
+#hc-sets-tree-importOverrides, #hc-sets-tree-importNew {
+	text-align: right;
+}
+#hc-sets-tree-importOverridesValue, #hc-sets-tree-importNewValue {
+	text-align: center;
+}
+#hc-sets-tree-importStatistics, #hc-sets-tree-importStatistics * {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+#hc-sets-tree-importStatistics column:not(:last-child) {
+	padding-right: 0.6em !important;
 }
 
 #hc-sets-tree-searchContainer {

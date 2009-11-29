@@ -162,15 +162,16 @@ var handyClicksPrefSvc = {
 				this.loadSettingsBackup();
 				return;
 			}
-			else {
-				bFile.copyTo(null, this.prefsFileName + ".js");
-				this.moveFiles(bFile, this.names.restored);
-			}
-			this.ut.alertEx(
-				this.ut.getLocalized("errorTitle"),
-				this.ut.getLocalized("badJSFile").replace("%f", this._cPath)
-					+ (hasBak ? this.ut.getLocalized("restoredFromBackup").replace("%b", bFile.path) : "")
-			);
+			bFile.copyTo(null, this.prefsFileName + ".js");
+			this.moveFiles(bFile, this.names.restored);
+
+			var errTitle = this.ut.getLocalized("errorTitle");
+			var errMsg = this.ut.getLocalized("badJSFile").replace("%f", this._cPath)
+				+ (hasBak ? this.ut.getLocalized("restoredFromBackup").replace("%b", bFile.path) : "");
+			setTimeout(function(_this, t, m) {
+				_this.ut.alertEx(t, m);
+			}, 0, this, errTitle, errMsg);
+
 			this._restoringCounter++;
 		}
 		this.loadSettings();
@@ -455,9 +456,7 @@ var handyClicksPrefSvc = {
 	},
 	moveFiles: function(mFile, nAdd, maxNum, leaveOriginal) {
 		maxNum = typeof maxNum == "number" ? maxNum : this.pu.pref("sets.backupDepth");
-		if(maxNum < 0)
-			return null;
-		if(!mFile.exists())
+		if(maxNum < 0 || !mFile.exists())
 			return null;
 		var fName = this.prefsFileName + nAdd;
 		var pDir = this.prefsDir;

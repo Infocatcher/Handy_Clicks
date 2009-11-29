@@ -47,9 +47,15 @@
 <!ENTITY hc.sets.importIncrementFromFile "Incremental import from file…">
 <!ENTITY hc.sets.importIncrementFromClipboard "Incremental import from clipboard">
 <!ENTITY hc.sets.importOk "Import done">
-<!ENTITY hc.sets.importCancel "Cancel import">
 <!ENTITY hc.sets.importIncrementOk "Incremental import done">
+<!ENTITY hc.sets.importOkAccesskey "d">
+<!ENTITY hc.sets.importCancel "Cancel import">
 <!ENTITY hc.sets.importIncrementCancel "Cancel incremental import">
+<!ENTITY hc.sets.importCancelAccesskey "C">
+
+<!ENTITY hc.sets.importOverrides "Overrides:">
+<!ENTITY hc.sets.importNew "New:">
+<!ENTITY hc.sets.importTip "Count of normal settings / Count of delayed actions settings">
 
 <!ENTITY hc.sets.restoreFromBackup "Restore from backup">
 
