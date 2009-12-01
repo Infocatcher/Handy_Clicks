@@ -132,9 +132,9 @@ var handyClicksEditor = {
 			this.addIds(dTab, this.delayId)
 		);
 		var fOpts = this.$("hc-editor-funcOpts");
-		var f = "handyClicksEditor.disableUnsupported();";
-		fOpts.setAttribute("onchange", f);
-		fOpts.setAttribute("oncommand", f);
+		var du = "handyClicksEditor.disableUnsupported();";
+		fOpts.setAttribute("onchange", du);
+		fOpts.setAttribute("oncommand", du);
 	},
 	addIds: function(node, id) {
 		node.id += id;
@@ -194,8 +194,7 @@ var handyClicksEditor = {
 	},
 	setWinTitle: function() {
 		var sh = this.currentShortcut;
-		var t = this.ps.getModifiersStr(sh)
-			+ " + " + this.ps.getButtonStr(sh, true);
+		var t = this.ps.getModifiersStr(sh) + " + " + this.ps.getButtonStr(sh, true);
 		var type = this.$("hc-editor-itemTypes").getAttribute("label");
 		var ct = this.$("hc-editor-customType").value || this.$("hc-editor-customTypeExtId").value;
 		t = " [" + t + (type ? " + " + type : "") + (ct ? " | " + ct : "") + "]";
@@ -267,7 +266,7 @@ var handyClicksEditor = {
 		cList.value = this.ps.dec(ct.label);
 		this.$("hc-editor-customTypeExtId").value = this.ps.removeCustomPrefix(cType);
 		enabledElt.checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
-		this.$("hc-editor-customTypeDefine").newValue = this.ps.dec(ct.define);
+		this.$("hc-editor-customTypeDefine") .newValue = this.ps.dec(ct.define);
 		this.$("hc-editor-customTypeContext").newValue = this.ps.dec(ct.contextMenu);
 		this.setWinId();
 		this.setWinTitle();
@@ -315,7 +314,7 @@ var handyClicksEditor = {
 		var tList = this.$("hc-editor-customTypePopup");
 		this.delCustomTypes();
 		var cTypes = this.ps.types;
-		var typeObj, mi, _mi, dis;
+		var typeObj, mi, _mi;
 		var hideSep = true;
 		for(var cType in cTypes) if(cTypes.hasOwnProperty(cType)) {
 			typeObj = cTypes[cType];
@@ -325,9 +324,7 @@ var handyClicksEditor = {
 			}
 			mi = <menuitem xmlns={this.ut.XULNS} value={cType} label={this.ps.dec(typeObj.label) || cType} />;
 			_mi = mi.copy();
-			dis = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
-			mi.@disabled = dis;
-			_mi.@hc_disabled = dis;
+			mi.@disabled = _mi.@hc_disabled = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
 			parent.insertBefore(this.ut.parseFromXML(mi), sep);
 			tList.appendChild(this.ut.parseFromXML(_mi));
 			hideSep = false;
@@ -396,8 +393,7 @@ var handyClicksEditor = {
 					it.hidden = true;
 					return;
 				}
-				it.hidden = false;
-				hideSep = false;
+				it.hidden = hideSep = false;
 			},
 			this
 		);
@@ -489,8 +485,7 @@ var handyClicksEditor = {
 		switch(argType) {
 			case "checkbox":
 				elt.@checked = !!argVal;
-				var label = this.ut.getLocalized(argName);
-				elt.@label = label;
+				var label = elt.@label = this.ut.getLocalized(argName);
 
 				cfg = this.getAboutConfigEntry(label);
 				if(cfg) {
@@ -589,8 +584,8 @@ var handyClicksEditor = {
 	disableUnsupported: function() {
 		var isMd = this.$("hc-editor-events").value == "mousedown";
 		this.$("hc-editor-funcTabDelay").setAttribute("hc_disabled", isMd || !this.$("hc-editor-enabled").checked);
-		this.$("hc-editor-allowMousedownLabel").disabled = isMd;
-		this.$("hc-editor-allowMousedown").disabled = isMd;
+		var id = "hc-editor-allowMousedown";
+		this.$(id + "Label").disabled = this.$(id).disabled = isMd;
 	},
 	fixFocusedElement: function _ffe(e) {
 		if(e.type == "select") {

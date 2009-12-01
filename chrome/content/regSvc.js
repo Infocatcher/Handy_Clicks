@@ -40,13 +40,10 @@ var handyClicksRegSvc = {
 		var _s = {
 			_elts: { __proto__: null },
 			$: function(id) {
-				var es = this._elts;
-				if(id in es) {
-					var e = es[id];
-					if(e && e.parentNode)
-						return e;
-				}
-				return es[id] = document.getElementById(id);
+				return this._elts[id] || (this._elts[id] = document.getElementById(id));
+			},
+			e: function(id) {
+				return document.getElementById(id);
 			}
 		};
 		var oName;

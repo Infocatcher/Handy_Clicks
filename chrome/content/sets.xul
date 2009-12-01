@@ -112,7 +112,8 @@
 					<button id="hc-sets-tree-buttonEdit" command="hc-sets-cmd-edit" />
 					<button id="hc-sets-tree-buttonDelete" command="hc-sets-cmd-delete" />
 					<spacer id="hc-sets-tree-buttonsSpacer" width="16" />
-					<button id="hc-sets-tree-buttonExport" type="menu" label="&hc.sets.export;" accesskey="&hc.sets.exportAccesskey;">
+					<button id="hc-sets-tree-buttonExport" type="menu" label="&hc.sets.export;" accesskey="&hc.sets.exportAccesskey;"
+						onmouseover="if(this.nextSibling.open) { this.nextSibling.open = false; this.open = true; }">
 						<menupopup>
 							<menuitem command="hc-sets-cmd-fullExportToFile" key="hc-sets-key-fullExportToFile" />
 							<menuseparator />
@@ -120,7 +121,8 @@
 							<menuitem key="hc-sets-key-partialExportToClipboard" command="hc-sets-cmd-partialExportToClipboard" />
 						</menupopup>
 					</button>
-					<button id="hc-sets-tree-buttonImport" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;">
+					<button id="hc-sets-tree-buttonImport" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;"
+						onmouseover="if(this.previousSibling.open) { this.previousSibling.open = false; this.open = true; }">
 						<menupopup onpopupshowing="if(event.target == this) { handyClicksSets.checkClipboard(); handyClicksSets.buildRestorePopup(); }">
 							<menuitem command="hc-sets-cmd-fullImportFromFile" key="hc-sets-key-fullImportFromFile" />
 							<menuseparator />

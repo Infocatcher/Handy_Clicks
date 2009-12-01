@@ -426,25 +426,30 @@ var handyClicksFuncs = {
 			this.initZLevelRestoring(win);
 		return win;
 	},
+	get winEvt() {
+		return this.ut.fxVersion >= 3.7 ? "load" : "resize";
+	},
 	initZLevelRestoring: function(win) {
 		var pw = window;
 		var _this = this;
 		win.addEventListener(
-			"resize",
+			this.winEvt,
 			function _rs(e) {
 				win.removeEventListener(e.type, _rs, false);
-				var fe = pw.document.commandDispatcher.focusedElement;
-				_this.restoreZLevel(win);
-				pw.focus();
-				if(fe)
-					fe.focus();
+				setTimeout(function() {
+					var fe = pw.document.commandDispatcher.focusedElement;
+					_this.restoreZLevel(win);
+					pw.focus();
+					if(fe)
+						fe.focus();
+				}, 5);
 			},
 			false
 		);
 	},
 	initWindowMoving: function(win, x, y, w, h) {
 		win.addEventListener(
-			"resize",
+			this.winEvt,
 			function _rs(e) {
 				win.removeEventListener(e.type, _rs, false);
 				win.moveTo(x, y);
@@ -504,7 +509,7 @@ var handyClicksFuncs = {
 	getPopup: function(xml) {
 		var pSet = this.$("mainPopupSet");
 		var id = "handyClicks-generatedPopup";
-		var popup = this.$(id);
+		var popup = this.e(id);
 		popup && pSet.removeChild(popup);
 		popup = xml || <popup xmlns={this.ut.XULNS} />;
 		popup.@id = id;

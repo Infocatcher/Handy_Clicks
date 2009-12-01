@@ -24,7 +24,7 @@ var handyClicks = {
 		var v = this.pu.pref("prefsVersion") || 0;
 		if(v < 2) { // Added 2009-11-13
 			// New id for toolbarbutton
-			if(!this.$("handyClicks-toolbarButton")) {
+			if(!this.$(this.toolbarButtonId)) {
 				var tbm = /(?:^|,)handyClicks-toggleStatus-tbButton(?:,|$)/;
 				Array.some(
 					document.getElementsByTagName("toolbar"),
@@ -34,7 +34,7 @@ var handyClicks = {
 							// Add toolbarbutton manually:
 							var newItem = this.paletteButton;
 							if(newItem) {
-								var nextItem = /,*([^,]+)/.test(RegExp.rightContext) && document.getElementById(RegExp.$1);
+								var nextItem = /,*([^,]+)/.test(RegExp.rightContext) && this.e(RegExp.$1);
 								if(nextItem)
 									tb.insertBefore(newItem, nextItem);
 								else
@@ -347,10 +347,8 @@ var handyClicks = {
 			//this.saveXY(e); // Saves incorrect coordinates...
 			this.origItem = e.originalTarget;
 		}
-		else {
-			this.copyOfEvent = null;
-			this.origItem = null;
-		}
+		else
+			this.copyOfEvent = this.origItem = null;
 		return funcObj;
 	},
 	getSettings: function(str) {
@@ -364,7 +362,7 @@ var handyClicks = {
 		this._all = this.itemTypeInSets(sets, "$all");
 		var all = forcedAll || this._all;
 		//all = this.editMode || all;
-		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "submitButton"
+		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "ext_mulipletabs", "submitButton"
 		this.item = null;
 
 		var it = e.originalTarget;
@@ -541,7 +539,7 @@ var handyClicks = {
 			}
 		}
 
-		if(!forcedAll && this.editMode) // Nothing found?
+		if(!forcedAll && this.editMode && !this.itemType) // Nothing found?
 			this.defineItem(e, sets, true); // Try again with disabled types.
 	},
 	itemTypeInSets: function(sets, iType) {
@@ -949,7 +947,7 @@ var handyClicks = {
 	get paletteButton() {
 		var tb = "gNavToolbox" in window && gNavToolbox
 			|| "getNavToolbox" in window && getNavToolbox() // Firefox 3.0
-			|| document.getElementById("navigator-toolbox"); // Firefox <= 2.0
+			|| this.e("navigator-toolbox"); // Firefox <= 2.0
 		if(!tb)
 			return null;
 		var elt = tb.palette.getElementsByAttribute("id", this.toolbarButtonId);
@@ -963,11 +961,12 @@ var handyClicks = {
 	toggleStatus: function(fromKey) {
 		var en = !this.enabled;
 		this.enabled = en;
-		if(fromKey && !this.$("handyClicks-toolbarButton") && !this.pu.pref("ui.showInStatusbar"))
+		if(fromKey && !this.pu.pref("ui.showInStatusbar") && !this.ut.isElementVisible(this.e(this.toolbarButtonId)))
 			this.ut.notify(null, this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, en, true);
 	},
 	checkClipboard: function() {
-		this.$("handyClicks-importFromClipboard").hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard(true));
+		var id = "handyClicks-importFromClipboard";
+		this.$(id).hidden = this.$(id + "Separator").hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard(true));
 	},
 	fixPopup: function() {
 		if(document.popupNode)
@@ -1073,7 +1072,7 @@ var handyClicks = {
 		var tokens = keyStr.split(" ");
 		var key = tokens.pop() || " ";
 		var modifiers = tokens.join(",");
-		var kElt = document.getElementById("handyClicks-key-" + kId);
+		var kElt = this.e("handyClicks-key-" + kId);
 		kElt.removeAttribute("disabled");
 		kElt.setAttribute(key.indexOf("VK_") == 0 ? "keycode" : "key", key);
 		kElt.setAttribute("modifiers", modifiers);

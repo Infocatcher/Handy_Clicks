@@ -52,21 +52,20 @@ var handyClicksPrefUtils = {
 		if(topic != "nsPref:changed")
 			return;
 		pName = pName.substring(this.nLength);
-		this.readPref(pName);
-		this.oSvc.notifyObservers(pName);
+		this.oSvc.notifyObservers(pName, this.readPref(pName));
 	},
 
 	// API functions:
 	_prefs: { __proto__: null }, // Prefs cache
 	pref: function(pName, pVal) {
-		if(pVal !== undefined)
+		if(arguments.length == 2)
 			return this.setPref(this.nPrefix + pName, pVal);
-		if(!(pName in this._prefs))
-			this.readPref(pName);
-		return this._prefs[pName];
+		if(pName in this._prefs)
+			return this._prefs[pName];
+		return this.readPref(pName);
 	},
 	readPref: function(pName) {
-		this._prefs[pName] = this.getPref(this.nPrefix + pName);
+		return this._prefs[pName] = this.getPref(this.nPrefix + pName);
 	},
 	getPref: function(pName, defaultVal) {
 		var pbr = this.pBr;

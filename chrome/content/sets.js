@@ -45,8 +45,7 @@ var handyClicksSets = {
 		this.treeScrollPos(false);
 	},
 	initShortcuts: function() {
-		var tr = this.$("hc-sets-tree");
-		this.tree = tr;
+		var tr = this.tree = this.$("hc-sets-tree");
 		this.tbo = tr.treeBoxObject;
 		this.tView = tr.view;
 		this.tSel = this.tView.selection;
@@ -126,15 +125,16 @@ var handyClicksSets = {
 					this.appendItems(modifiersContainer, p[sh], sh);
 				break;
 				case 1:
-					var button = this.ps.getButtonId(sh, true);
+					var button = this.ps.getButtonStr(sh, true);
 					var modifiers = this.ps.getModifiersStr(sh, true);
-					var label = this.ut.getLocalized(button) + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
+					var label = button + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
 					var buttonContainer = this.eltsCache[sh]
 						|| this.appendContainerItem(this.tBody, sh, label);
 					this.appendItems(buttonContainer, p[sh], sh);
 				break;
 				case 2:
 					var button = this.ps.getButtonId(sh);
+					var buttonLabel = this.ut.getLocalized(button);
 					var modifiers = this.ps.getModifiersStr(sh);
 					var so = p[sh];
 					for(var type in so) if(so.hasOwnProperty(type)) {
@@ -142,18 +142,18 @@ var handyClicksSets = {
 							|| this.appendContainerItem(this.tBody, type, this.getTypeLabel(type));
 						var hash = type + "-" + button;
 						var buttonContainer = this.eltsCache[hash]
-							|| this.appendContainerItem(typeContainer, hash, this.ut.getLocalized(button));
+							|| this.appendContainerItem(typeContainer, hash, buttonLabel);
 						this.appendRow(buttonContainer, sh, type, so[type], modifiers);
 					}
 				break;
 				case 3:
-					var button = this.ps.getButtonId(sh, true);
+					var button = this.ps.getButtonStr(sh, true);
 					var modifiers = this.ps.getModifiersStr(sh, true);
+					var label = button + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
 					var so = p[sh];
 					for(var type in so) if(so.hasOwnProperty(type)) {
 						var typeContainer = this.eltsCache[type]
 							|| this.appendContainerItem(this.tBody, type, this.getTypeLabel(type));
-						var label = this.ut.getLocalized(button) + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
 						this.appendRow(typeContainer, sh, type, so[type], label);
 					}
 				break;
@@ -164,6 +164,7 @@ var handyClicksSets = {
 			this.$("hc-sets-tree-importOverridesValue").value = this._overrides + "/" + this._overridesDa;
 			this.$("hc-sets-tree-importNewValue")      .value = this._new       + "/" + this._newDa;
 		}
+		delete this.eltsCache;
 	},
 	markOpenedEditors: function() {
 		for(var rowId in this.rowsCache)
@@ -479,9 +480,11 @@ var handyClicksSets = {
 				tItem.__index = v;
 			}
 		}
+		var tItemsArr2 = [];
 		tItemsArr.forEach(
 			function(tItem, indx) {
 				var daItem = !tItem.__isDelayed && tItem.__delayed;
+				tItemsArr2.push(tItem);
 				if(!daItem)
 					return;
 				tItemsArr.forEach(
@@ -490,12 +493,6 @@ var handyClicksSets = {
 							delete tItemsArr[indx2];
 					}
 				);
-			}
-		);
-		var tItemsArr2 = [];
-		tItemsArr.forEach(
-			function(tItem) {
-				tItem && tItemsArr2.push(tItem);
 			}
 		);
 		return tItemsArr2;
@@ -666,8 +663,7 @@ var handyClicksSets = {
 		var tChld = tItem.parentNode;
 
 		var hash = tItem.__shortcut + "-" + tItem.__itemType;
-		var dHash = hash + "-delayed";
-		delete this.rowsCache[dHash];
+		delete this.rowsCache[hash + "-delayed"];
 
 		if(tItem.__isDelayed) {
 			var to = so[type];
@@ -1051,8 +1047,7 @@ var handyClicksSets = {
 		this.pu.pref("disallowMousemoveButtons", val);
 		if(applyFlag && !this.instantApply) {
 			this.savePrefpanes();
-			this.applyButton.disabled = true;
-			this._prefsSaved = true;
+			this.applyButton.disabled = this._prefsSaved = true;
 		}
 		if(this.ps.otherSrc)
 			this.ps.reloadSettings(applyFlag);
@@ -1092,10 +1087,8 @@ var handyClicksSets = {
 			return;
 		if(this.instantApply)
 			this.savePrefs();
-		else {
-			this.applyButton.disabled = false;
-			this._prefsSaved = false;
-		}
+		else
+			this.applyButton.disabled = this._prefsSaved = false;
 	},
 	updateAllDependencies: function() {
 		Array.forEach(

@@ -373,6 +373,8 @@ var handyClicksUtils = {
 			node.removeAttribute(attr);
 	},
 	isElementVisible: function(elt) {
+		if(!elt)
+			return false;
 		var bo = elt.boxObject;
 		if(!bo)
 			bo = "getBoundingClientRect" in elt
