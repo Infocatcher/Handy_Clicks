@@ -16,7 +16,7 @@
 <!ENTITY hc.sets.columnAction "Action">
 <!ENTITY hc.sets.columnFunction "Function">
 <!ENTITY hc.sets.columnArguments "Arguments">
-<!ENTITY hc.sets.columnDelayed "Delayed action">
+<!ENTITY hc.sets.columnInit "Initialization">
 <!ENTITY hc.sets.columnEnabled "Enabled">
 
 <!ENTITY hc.sets.search "Search:">
@@ -66,9 +66,9 @@
 
 <!ENTITY hc.sets.appearance "Appearance">
 <!ENTITY hc.sets.showInToolsMenu "Show in Tools menu">
-<!ENTITY hc.sets.showInStatusbar "Show in statusbar">
+<!ENTITY hc.sets.showInStatusbar "Show in Status Bar">
 
-<!ENTITY hc.sets.disallowMousemove "Stop click handling when mouse mowing with holding buttons (mouse gestures)">
+<!ENTITY hc.sets.disallowMousemove "Stop click handling if mouse was moved with holded buttons (mouse gestures)">
 <!ENTITY hc.sets.left "Left">
 <!ENTITY hc.sets.middle "Middle">
 <!ENTITY hc.sets.right "Right">

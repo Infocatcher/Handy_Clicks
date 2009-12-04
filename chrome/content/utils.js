@@ -408,6 +408,11 @@ var handyClicksUtils = {
 		var elt = this.parseFromString(xml.toXMLString());
 		XML.prettyPrinting = pp;
 		return elt;
+	},
+
+	removeChilds: function(elt) {
+		while(elt.hasChildNodes())
+			elt.removeChild(elt.lastChild);
 	}
 };
 

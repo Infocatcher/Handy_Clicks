@@ -15,42 +15,49 @@ radio[pane="hc-sets-pane-builtInFuncsSets"] {
 }
 
 /* Tree style */
+#hc-sets-tree-columns > treecol[onclick] {
+	cursor: pointer;
+}
+
 /* Override system colors for use custom colors for highlighting */
-treechildren {
+tree[hc_colored="true"] .tree-bodybox, tree[hc_colored="true"] treechildren {
 	color: black;
 	background-color: white;
 }
-treechildren::-moz-tree-row(selected),
-treechildren::-moz-tree-cell-text(selected) {
+tree[hc_colored="true"] treechildren::-moz-tree-row(selected),
+tree[hc_colored="true"] treechildren::-moz-tree-cell-text(selected) {
 	background-color: #bfc1ca !important;
 	color: black !important;
 }
 
-treechildren::-moz-tree-row(hc_custom) {
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_custom) {
 	background-color: #dfffdf;
 }
-treechildren::-moz-tree-row(hc_customType) {
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_customType) {
 	background-color: #dff9ff;
 }
-treechildren::-moz-tree-row(hc_custom, hc_customType) {
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_custom, hc_customType) {
 	background-color: #dffff7;
 }
-treechildren::-moz-tree-row(hc_disabled) {
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_disabled) {
 	background-color: #f1efe2;
 }
-treechildren::-moz-tree-row(hc_buggy) {
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy) {
 	background-color: #faa;
 }
-treechildren::-moz-tree-row(hc_search) {
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_search) {
 	background-color: #e7e3ff;
 }
-treechildren::-moz-tree-row(hover) {
+tree[hc_colored="true"] treechildren::-moz-tree-row(hover) {
 	border: 1px dotted black;
 }
 treechildren::-moz-tree-cell-text(hc_edited) {
 	font-weight: bold;
 }
 treechildren::-moz-tree-cell-text(hc_copied) {
+	color: highlight !important;
+}
+tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_copied) {
 	color: #bfc1ca !important;
 }
 treechildren::-moz-tree-cell-text(hc_override), #hc-sets-tree-importOverrides {

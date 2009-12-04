@@ -79,11 +79,8 @@ var handyClicksPrefSvc = {
 		return ret;
 	},
 	importSrc: function(tar, src) {
-		var p, eName;
-		for(p in this._prefVars) {
-			eName = this._prefVars[p];
-			tar[p] = this.ut.getOwnProperty(src, eName);
-		}
+		for(var p in this._prefVars)
+			tar[p] = this.ut.getOwnProperty(src, this._prefVars[p]);
 	},
 	_loadError: 0,
 	loadSettings: function(pSrc) {
@@ -92,9 +89,9 @@ var handyClicksPrefSvc = {
 		pSrc = pSrc || this.prefsFile;
 		var fromProfile = false;
 		if(pSrc instanceof Components.interfaces.nsILocalFile) {
-			if(!pSrc.exists())
-				this.saveSettings(this.prefsHeader + this.versionInfo + this.defaultPrefs);
 			fromProfile = pSrc.equals(this._prefsFile);
+			if(fromProfile && !pSrc.exists())
+				this.saveSettings(this.prefsHeader + this.versionInfo + this.defaultPrefs);
 			pSrc = this.ut.readFromFile(pSrc);
 			if(fromProfile && !this.isMainWnd)
 				this._savedStr = pSrc;

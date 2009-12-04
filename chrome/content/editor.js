@@ -428,8 +428,7 @@ var handyClicksEditor = {
 	addFuncArgs: function(delayed) {
 		delayed = delayed || "";
 		var box = this.$("hc-editor-funcArgs" + delayed);
-		while(box.hasChildNodes())
-			box.removeChild(box.lastChild);
+		this.ut.removeChilds(box);
 		var funcs = this.$("hc-editor-func" + delayed);
 		var cFunc = funcs.value || null;
 		var isCustom = cFunc == "$custom";

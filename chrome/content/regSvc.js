@@ -20,8 +20,20 @@ var handyClicksRegSvc = {
 		this.registerShortcuts(false);
 		delete window._handyClicksInitialized;
 	},
+	globals: {
+		_elts: { __proto__: null },
+		$: function(id) {
+			return this._elts[id] || (this._elts[id] = document.getElementById(id));
+		},
+		e: function(id) {
+			return document.getElementById(id);
+		},
+		get _devMode() {
+			return this.pu.pref("devMode");
+		}
+	},
 	get s() {
-		var s = {
+		var _s = {
 			cn: "handyClicksConsole",
 			cs: "handyClicksCleanupSvc",
 			ed: "handyClicksEditor",
@@ -37,23 +49,17 @@ var handyClicksRegSvc = {
 			wu: "handyClicksWinUtils",
 			__proto__: null
 		};
-		var _s = {
-			_elts: { __proto__: null },
-			$: function(id) {
-				return this._elts[id] || (this._elts[id] = document.getElementById(id));
-			},
-			e: function(id) {
-				return document.getElementById(id);
-			}
+		var s = {
+			__proto__: this.globals
 		};
 		var oName;
-		for(var p in s) {
-			oName = s[p];
+		for(var p in _s) {
+			oName = _s[p];
 			if(oName in window)
-				_s[p] = window[oName];
+				s[p] = window[oName];
 		}
 		delete this.s;
-		return this.s = _s;
+		return this.s = s;
 	},
 	registerShortcuts: function(regFlag) {
 		if(regFlag) {

@@ -243,11 +243,11 @@ var handyClicks = {
 		if(this.mousemoveParams.dist < this.pu.pref("disallowMousemoveDist"))
 			return;
 
-		this.pu.pref("devMode") && this.ut._log("mousemoveHandler -> cancel()");
+		this._devMode && this.ut._log("mousemoveHandler -> cancel()");
 		this.cancel();
 	},
 	dragHandler: function(e) {
-		this.pu.pref("devMode") && this.ut._log("dragHandler -> cancel()");
+		this._devMode && this.ut._log("dragHandler -> cancel()");
 		this.cancel();
 	},
 	cancel: function() {
@@ -328,7 +328,7 @@ var handyClicks = {
 			|| e.originalTarget !== this.origItem // For "command" event
 		) {
 			this.defineItem(e, sets);
-			if(this.pu.pref("devMode") && this.itemType)
+			if(this._devMode && this.itemType)
 				this.ut._log("[" + e.type + "] " + "this.itemType = " + this.itemType);
 		}
 		var funcObj = this.getFuncObj(sets) || (this.editMode ? {} : null);
@@ -614,7 +614,7 @@ var handyClicks = {
 		if(!node || !node.ownerDocument.location)
 			return; // e.g. rocker gesture => go back => node.ownerDocument.location === null
 
-		if(this.itemType == "tab") {
+		if(this.itemType == "tab" || this.itemType == "ext_mulipletabs") {
 			// Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
 			var tabscope = this.$("tabscopePopup");
 			if(tabscope) // mousedown -> ...delay... -> this popup -> Tab Scope popup hide this popup
@@ -660,7 +660,7 @@ var handyClicks = {
 			: { x: e.clientX, y: e.clientY };
 	},
 	blinkNode: function(time, node) {
-		node = node || this.origItem;
+		node = node || this.item || this.origItem;
 		if(!node)
 			return;
 		var origStyle = node.hasAttribute("style") && node.getAttribute("style");
@@ -910,7 +910,7 @@ var handyClicks = {
 
 		this.focusOnItem();
 
-		if(this.pu.pref("devMode")) {
+		if(this._devMode) {
 			var eStr = this.ps.getEvtStr(e || this.copyOfEvent);
 			this.ut._log(
 				(e ? e.type : "delayedAction")

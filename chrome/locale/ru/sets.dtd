@@ -16,6 +16,7 @@
 <!ENTITY hc.sets.columnAction "Действие">
 <!ENTITY hc.sets.columnFunction "Функция">
 <!ENTITY hc.sets.columnArguments "Аргументы">
+<!ENTITY hc.sets.columnInit "Инициализация">
 <!ENTITY hc.sets.columnEnabled "Включено">
 
 <!ENTITY hc.sets.search "Найти:">

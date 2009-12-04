@@ -182,8 +182,7 @@ var handyClicksSets = {
 	},
 	redrawTree: function() {
 		var cnt = this.tBody;
-		while(cnt.hasChildNodes())
-			cnt.removeChild(cnt.lastChild);
+		this.ut.removeChilds(cnt);
 		this.drawTree();
 		this.searchInSetsTree(null, true);
 		if(this.prefsSaved && !this.ps.otherSrc)
@@ -220,6 +219,7 @@ var handyClicksSets = {
 		this.appendTreeCell(tRow, "label", actLabel);
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom));
 		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}));
+		this.appendTreeCell(tRow, "label", this.getInitCode(fo.init, true));
 
 		var da = this.ut.getOwnProperty(fo, "delayedAction");
 		if(da) {
@@ -241,6 +241,7 @@ var handyClicksSets = {
 			this.appendTreeCell(daRow, "label", daLabel);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom));
 			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}));
+			this.appendTreeCell(daRow, "label", this.getInitCode(da.init, true));
 
 			this.addClildsProperties(daRow, {
 				hc_disabled: this._forcedDisDa || !fo.enabled || !da.enabled,
@@ -356,6 +357,11 @@ var handyClicksSets = {
 			? this.ut.getLocalized("customFunction") + (this.oldTree ? " " : "\n") + this.ps.dec(action)
 			: action;
 	},
+	getInitCode: function(init) {
+		return init
+			? this.getActionCode(init, true)
+			: "";
+	},
 	isBuggyFuncObj: function(fo, isCustom, label) {
 		return !this.ps.isOkFuncObj(fo) || !isCustom && this.ut.isBuggyStr(label);
 	},
@@ -404,6 +410,7 @@ var handyClicksSets = {
 		return res.join(this.oldTree ? ", " : ",\n ");
 	},
 	updTree: function(saveSel) {
+		this.tBody.style.visibility = "hidden"; // Do not show shanges in progress
 		if(saveSel === undefined)
 			saveSel = true;
 
@@ -436,6 +443,7 @@ var handyClicksSets = {
 		if(lvr > maxRowsIndx)
 			fvr -= lvr - maxRowsIndx;
 		tbo.scrollToRow(this.ut.mm(fvr, 0, maxRowsIndx));
+		this.tBody.style.visibility = "";
 	},
 	forceUpdTree: function() {
 		this.ps.loadSettings();
@@ -846,10 +854,26 @@ var handyClicksSets = {
 		var maxRowsIndx = this.tView.rowCount - 1;
 		this.tbo.ensureRowIsVisible(this.ut.mm(visRow, 0, maxRowsIndx));
 	},
+
+	initViewMenu: function(mp) {
+		var checkbox = mp.getElementsByAttribute("value", this.pu.pref("sets.treeDrawMode"));
+		if(checkbox.length)
+			checkbox[0].setAttribute("checked", "true");
+		this.$("hc-sets-tree-toggleExpandDa").setAttribute("checked", this.pu.pref("sets.treeExpandDelayedAction"));
+		this.$("hc-sets-tree-toggleColored").setAttribute("checked", this.tree.getAttribute("hc_colored") == "true");
+	},
 	setDrawMode: function(dm) {
 		// <preference instantApply="true" ... /> is bad on slow devices (it saves prefs.js file)
-		if(!this.instantApply)
-			this.pu.pref("sets.treeDrawMode", parseInt(dm)); // => updPrefsUI()
+		//if(!this.instantApply)
+		this.pu.pref("sets.treeDrawMode", parseInt(dm)); // => updPrefsUI()
+	},
+	toggleExpandDa: function() {
+		var p = "sets.treeExpandDelayedAction";
+		this.pu.pref(p, !this.pu.pref(p)); // => updPrefsUI()
+	},
+	toggleColored: function() {
+		var tr = this.tree;
+		tr.setAttribute("hc_colored", tr.getAttribute("hc_colored") != "true");
 	},
 
 	toggleTreeContainers: function(oFlag) {
@@ -1322,8 +1346,7 @@ var handyClicksSets = {
 	},
 	buildRestorePopup: function(popup) {
 		popup = popup || this.$("hc-sets-tree-restoreFromBackupPopup");
-		while(popup.hasChildNodes())
-			popup.removeChild(popup.lastChild);
+		this.ut.removeChilds(popup);
 
 		var entries = this.ps.prefsDir.directoryEntries;
 		var entry, fName, fTime;
