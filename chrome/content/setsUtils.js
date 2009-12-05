@@ -7,17 +7,17 @@ var handyClicksSetsUtils = {
 	},
 	handleEvent: function(e) {
 		if(e.type == "DOMMouseScroll")
-			this.listScroll(e);
+			this.listScroll(e) || this.radioScroll(e);
 	},
 	listScroll: function(e) {
 		var ml = e.target;
-		var tn = ml.tagName;
-		if(tn == "menuitem" || tn == "menuseparator") {
+		var ln = ml.localName;
+		if(ln == "menuitem" || ln == "menuseparator") {
 			ml = ml.parentNode.parentNode;
-			tn = ml.tagName;
+			ln = ml.localName;
 		}
-		if(tn != "menulist" || ml.disabled)
-			return;
+		if(ln != "menulist" || ml.disabled)
+			return false;
 		var mp = ml.menupopup;
 		var si = ml.selectedItem;
 		var plus = e.detail > 0;
@@ -28,11 +28,10 @@ var handyClicksSetsUtils = {
 			: !si || si == mp.firstChild
 				? mp.lastChild
 				: si.previousSibling;
-		var win = si.ownerDocument.defaultView;
 		while(
 			si && (
 				si.getAttribute("disabled") == "true"
-				|| si.tagName != "menuitem"
+				|| si.localName != "menuitem"
 				|| !this.ut.isElementVisible(si)
 			)
 		)
@@ -40,6 +39,92 @@ var handyClicksSetsUtils = {
 		ml.selectedItem = si || (plus ? mp.firstChild : mp.lastChild);
 		ml.menuBoxObject.activeChild = ml.mSelectedInternal || ml.selectedInternal;
 		ml.doCommand();
+		return true;
+	},
+	_showTooltip: false,
+	radioScroll: function(e) {
+		var rds = this.getSameLevelRadios(e.target);
+		if(!rds.length)
+			return false;
+		var si, indx;
+		rds.some(
+			function(rd, i) {
+				if(rd.getAttribute("checked") == "true") {
+					si = rd, indx = i;
+					return true;
+				}
+				return false;
+			}
+		);
+		var plus = e.detail > 0;
+		indx = plus
+			? !si || indx == rds.length - 1
+				? 0
+				: indx + 1
+			: !si || indx == 0
+				? rds.length - 1
+				: indx - 1;
+		si = rds[indx];
+		si.doCommand();
+		//si.setAttribute("checked", "true");
+		rds.forEach( // Strange things happens for hidden items...
+			function(rd, i) {
+				this.ut.attribute(rd, "checked", i == indx);
+			},
+			this
+		);
+		if(this._showTooltip)
+			this.showInfoTooltip(e, si.getAttribute("label"));
+		return true;
+	},
+	getSameLevelRadios: function(elt) {
+		var isClosedMenu = false;
+		if(elt.localName == "menu" || elt.getAttribute("type") == "menu") {
+			isClosedMenu = elt.getAttribute("open") != "true";
+			elt = elt.hasChildNodes() ? elt.firstChild.firstChild : null;
+			if(!elt)
+				return null;
+		}
+		this._showTooltip = isClosedMenu;
+		return Array.filter(
+			elt.parentNode.childNodes,
+			function(elt) {
+				return "getAttribute" in elt
+					&& elt.getAttribute("type") == "radio"
+					&& elt.getAttribute("disabled") != "true"
+					&& (
+						isClosedMenu
+							? elt.getAttribute("collapsed") != "true" && elt.getAttribute("hidden") != "true"
+							: this.ut.isElementVisible(elt)
+					);
+			},
+			this
+		);
+	},
+	get infoTooltip() {
+		var tt = this.ut.parseFromXML(
+			<tooltip xmlns={this.ut.XULNS} id="handyClicks-infoTooltip" onmouseover="this.hidePopup();">
+				<label />
+			</tooltip>
+		);
+		delete this.infoTooltip;
+		return this.infoTooltip = document.documentElement.appendChild(tt);
+	},
+	showInfoTooltip: function _sit(e, msg) {
+		if(!msg)
+			return;
+		var tt = this.infoTooltip;
+		tt.firstChild.setAttribute("value", msg);
+		//tt.hidePopup();
+		if("openPopup" in tt)
+			tt.openPopup(e.target, "after_start");
+		else
+			tt.showPopup(e.target, -1, -1, "popup", "bottomleft", "topleft");
+		if("timeout" in _sit)
+			clearTimeout(_sit.timeout);
+		_sit.timeout = setTimeout(function(tt) {
+			tt.hidePopup();
+		}, 800, tt);
 	},
 
 	extLabels: {
@@ -52,6 +137,6 @@ var handyClicksSetsUtils = {
 		__proto__: null
 	},
 	getExtLabel: function(name) {
-		return this.ut.getLocalizedEntity.apply(this.ut, this.extLabels[name]);            
+		return this.ut.getLocalizedEntity.apply(this.ut, this.extLabels[name]);
 	}
 };

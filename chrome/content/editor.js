@@ -539,11 +539,10 @@ var handyClicksEditor = {
 		if(si && si.hasAttribute("hc_about_config_entry")) {
 			ml.setAttribute("hc_about_config_entry", si.getAttribute("hc_about_config_entry"));
 			ml.setAttribute("tooltiptext", this.ut.getLocalized("openAboutConfig"));
+			return;
 		}
-		else {
-			ml.removeAttribute("hc_about_config_entry");
-			ml.removeAttribute("tooltiptext");
-		}
+		ml.removeAttribute("hc_about_config_entry");
+		ml.removeAttribute("tooltiptext");
 	},
 
 	get currentShortcut() {

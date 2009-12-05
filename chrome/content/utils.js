@@ -351,6 +351,10 @@ var handyClicksUtils = {
 		obj[a[len]] = a[len + 1];
 	},
 
+	toArray: function(a) {
+		return Array.filter(a, function() { return true; });
+	},
+
 	objEquals: function(o1) {
 		var s = this.getSource(o1);
 		return Array.slice(arguments, 1).every(

@@ -26,6 +26,11 @@ tree[hc_colored="true"] .tree-bodybox, tree[hc_colored="true"] treechildren {
 }
 tree[hc_colored="true"] treechildren::-moz-tree-row(selected),
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(selected) {
+	background-color: #d7d8dd !important;
+	color: black !important;
+}
+tree[hc_colored="true"] treechildren::-moz-tree-row(selected, focus),
+tree[hc_colored="true"] treechildren::-moz-tree-cell-text(selected, focus) {
 	background-color: #bfc1ca !important;
 	color: black !important;
 }
@@ -51,6 +56,9 @@ tree[hc_colored="true"] treechildren::-moz-tree-row(hc_search) {
 tree[hc_colored="true"] treechildren::-moz-tree-row(hover) {
 	border: 1px dotted black;
 }
+treechildren::-moz-tree-row(hover) {
+	border: 1px dotted -moz-use-text-color;
+}
 treechildren::-moz-tree-cell-text(hc_edited) {
 	font-weight: bold;
 }
@@ -66,12 +74,25 @@ treechildren::-moz-tree-cell-text(hc_override), #hc-sets-tree-importOverrides {
 treechildren::-moz-tree-cell-text(hc_new), #hc-sets-tree-importNew {
 	text-decoration: underline;
 }
-treechildren::-moz-tree-checkbox(hc_checkbox) {
+treechildren::-moz-tree-checkbox(hc_checkbox),
+menuitem[command="hc-sets-cmd-enable"], menuitem[command="hc-sets-cmd-disable"] {
 	list-style-image: url("checkbox.png"); /* Image from Adblock Plus extension */
 	-moz-image-region: rect(13px 13px 26px 0);
 }
-treechildren::-moz-tree-checkbox(checked) {
+treechildren::-moz-tree-checkbox(checked),
+menuitem[command="hc-sets-cmd-enable"] {
 	-moz-image-region: rect(0 13px 13px 0);
+}
+menuitem[command="hc-sets-cmd-enable"] image,
+menuitem[command="hc-sets-cmd-disable"] image {
+	width: auto !important;
+	height: auto !important;
+	min-width: 0 !important;
+	min-height: 0 !important;
+}
+menuitem[command="hc-sets-cmd-enable"][disabled="true"] image,
+menuitem[command="hc-sets-cmd-disable"][disabled="true"] image {
+	opacity: 0.35;
 }
 
 #hc-sets-tree-importOverrides, #hc-sets-tree-importNew {

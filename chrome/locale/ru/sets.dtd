@@ -20,11 +20,15 @@
 <!ENTITY hc.sets.columnEnabled "Включено">
 
 <!ENTITY hc.sets.search "Найти:">
-<!ENTITY hc.sets.drawMode "Режим отображения:">
+
+<!ENTITY hc.sets.viewMenu "Вид">
+<!ENTITY hc.sets.viewMenuAccesskey "В">
 <!ENTITY hc.sets.drawModeNormal "Нормальный">
 <!ENTITY hc.sets.drawModeNormalCompact "Нормальный (компактный)">
 <!ENTITY hc.sets.drawModeInverse "Инвертированный">
 <!ENTITY hc.sets.drawModeInverseCompact "Инвертированный (компактный)">
+<!ENTITY hc.sets.expandDa "Разворачивать отложенные действия">
+<!ENTITY hc.sets.highlightTree "Раскраска дерева">
 
 <!ENTITY hc.sets.cmdAdd "Добавить…">
 <!ENTITY hc.sets.cmdEdit "Редактировать…">
@@ -32,7 +36,7 @@
 <!ENTITY hc.sets.cmdDel "Удалить">
 
 <!ENTITY hc.sets.cmdEnable "Включить">
-<!ENTITY hc.sets.cmdDisable "Выключить">
+<!ENTITY hc.sets.cmdDisable "Отключить">
 <!ENTITY hc.sets.cmdToggle "Переключить">
 
 <!ENTITY hc.sets.export "Экспорт">

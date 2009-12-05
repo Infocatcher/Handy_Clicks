@@ -219,7 +219,7 @@ var handyClicksSets = {
 		this.appendTreeCell(tRow, "label", actLabel);
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom));
 		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}));
-		this.appendTreeCell(tRow, "label", this.getInitCode(fo.init, true));
+		this.appendTreeCell(tRow, "label", this.getInitCode(fo, true));
 
 		var da = this.ut.getOwnProperty(fo, "delayedAction");
 		if(da) {
@@ -241,7 +241,7 @@ var handyClicksSets = {
 			this.appendTreeCell(daRow, "label", daLabel);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom));
 			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}));
-			this.appendTreeCell(daRow, "label", this.getInitCode(da.init, true));
+			this.appendTreeCell(daRow, "label", this.getInitCode(da, true));
 
 			this.addClildsProperties(daRow, {
 				hc_disabled: this._forcedDisDa || !fo.enabled || !da.enabled,
@@ -357,7 +357,8 @@ var handyClicksSets = {
 			? this.ut.getLocalized("customFunction") + (this.oldTree ? " " : "\n") + this.ps.dec(action)
 			: action;
 	},
-	getInitCode: function(init) {
+	getInitCode: function(fo) {
+		var init = this.ut.getOwnProperty(fo, "init");
 		return init
 			? this.getActionCode(init, true)
 			: "";
@@ -483,27 +484,23 @@ var handyClicksSets = {
 				if(!tItem || !("__shortcut" in tItem))
 					continue;
 				//if(tItem.__isDelayed)
-				//	tItem = tItem.parentNode.parentNode; // ?
+				//	tItem = tItem.parentNode.parentNode;
 				tItemsArr.push(tItem);
 				tItem.__index = v;
 			}
 		}
-		var tItemsArr2 = [];
 		tItemsArr.forEach(
 			function(tItem, indx) {
 				var daItem = !tItem.__isDelayed && tItem.__delayed;
-				tItemsArr2.push(tItem);
 				if(!daItem)
 					return;
-				tItemsArr.forEach(
-					function(tItem2, indx2) {
-						if(tItem2 === daItem && indx2 != indx)
-							delete tItemsArr[indx2];
-					}
-				);
+				var i; // Remove "delayed action", if main item is selected
+				while((i = tItemsArr.lastIndexOf(daItem)) != -1)
+					if(i != indx)
+						delete tItemsArr[i];
 			}
 		);
-		return tItemsArr2;
+		return this.ut.toArray(tItemsArr); // Remove deleted items
 	},
 	getItemAtIndex: function(indx) {
 		if(indx == -1 || indx >= this.tView.rowCount)
@@ -865,7 +862,7 @@ var handyClicksSets = {
 	setDrawMode: function(dm) {
 		// <preference instantApply="true" ... /> is bad on slow devices (it saves prefs.js file)
 		//if(!this.instantApply)
-		this.pu.pref("sets.treeDrawMode", parseInt(dm)); // => updPrefsUI()
+		this.pu.pref("sets.treeDrawMode", Number(dm)); // => updPrefsUI()
 	},
 	toggleExpandDa: function() {
 		var p = "sets.treeExpandDelayedAction";

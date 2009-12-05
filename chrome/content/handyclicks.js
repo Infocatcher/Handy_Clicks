@@ -2,6 +2,7 @@ var handyClicks = {
 	copyOfEvent: null,
 	origItem: null,
 	item: null,
+	mainItem: null,
 	itemType: undefined,
 	flags: {
 		runned: false, // => stop click events
@@ -147,6 +148,13 @@ var handyClicks = {
 				true
 			);
 		}
+
+		if(
+			em && this.ut.fxVersion >= 3.6
+			&& "open" in e.originalTarget
+			&& e.originalTarget.boxObject instanceof Components.interfaces.nsIMenuBoxObject
+		)
+			e.originalTarget.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
 
 		var _this = this;
 		//var cm = this.getItemContext(e); //~ todo: get cm only if needed
@@ -363,7 +371,7 @@ var handyClicks = {
 		var all = forcedAll || this._all;
 		//all = this.editMode || all;
 		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "ext_mulipletabs", "submitButton"
-		this.item = null;
+		this.item = this.mainItem = null;
 
 		var it = e.originalTarget;
 		//this.origItem = it;
@@ -491,6 +499,7 @@ var handyClicks = {
 					if(mth && "MultipleTabService" in window && MultipleTabService.isSelected(_it)) {
 						this.itemType = "ext_mulipletabs";
 						this.item = MultipleTabService.getSelectedTabs(MultipleTabService.getTabBrowserFromChild(_it));
+						this.mainItem = _it;
 						return;
 					}
 					this.itemType = "tab";
@@ -523,14 +532,14 @@ var handyClicks = {
 
 		// Submit button:
 		if(all || this.itemTypeInSets(sets, "submitButton")) {
-			if(itln == "input" && it.type == "submit" && "form" in it.wrappedJSObject) {
+			if(itln == "input" && it.type == "submit" && this.inObject("form", it)) {
 				this.itemType = "submitButton";
 				this.item = it;
 				return;
 			}
 			_it = it;
 			while(_it && _it.nodeType != docNode) {
-				if(_it.localName.toLowerCase() == "button" && "form" in _it.wrappedJSObject) {
+				if(_it.localName.toLowerCase() == "button" && this.inObject("form", _it)) {
 					this.itemType = "submitButton";
 					this.item = _it;
 					return;
@@ -541,6 +550,9 @@ var handyClicks = {
 
 		if(!forcedAll && this.editMode && !this.itemType) // Nothing found?
 			this.defineItem(e, sets, true); // Try again with disabled types.
+	},
+	inObject: function(p, o) {
+		return p in o || "wrappedJSObject" in o && p in o.wrappedJSObject;
 	},
 	itemTypeInSets: function(sets, iType) {
 		return sets.hasOwnProperty(iType) && this.isOkFuncObj(sets[iType]);
@@ -663,6 +675,16 @@ var handyClicks = {
 		node = node || this.item || this.origItem;
 		if(!node)
 			return;
+		var arr = this.ut.toArray(node);
+		if(arr.length) {
+			arr.forEach(
+				function(node) {
+					this.blinkNode(time, node);
+				},
+				this
+			);
+			return;
+		}
 		var origStyle = node.hasAttribute("style") && node.getAttribute("style");
 		node.style.setProperty("visibility", "hidden", "important");
 		setTimeout(
@@ -749,7 +771,7 @@ var handyClicks = {
 	focusOnItem: function(forced, it) {
 		if(!forced && !this.pu.pref("focusOnItems"))
 			return;
-		it = it || this.item;
+		it = it || this.mainItem || this.item;
 		if(
 			!this.ut.isObject(it)
 			|| !("focus" in it) // typeof it.focus == "function"

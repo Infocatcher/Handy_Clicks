@@ -20,11 +20,15 @@
 <!ENTITY hc.sets.columnEnabled "Enabled">
 
 <!ENTITY hc.sets.search "Search:">
-<!ENTITY hc.sets.drawMode "Draw mode:">
+
+<!ENTITY hc.sets.viewMenu "View">
+<!ENTITY hc.sets.viewMenuAccesskey "V">
 <!ENTITY hc.sets.drawModeNormal "Normal">
 <!ENTITY hc.sets.drawModeNormalCompact "Normal (compact)">
 <!ENTITY hc.sets.drawModeInverse "Inverse">
 <!ENTITY hc.sets.drawModeInverseCompact "Inverse (compact)">
+<!ENTITY hc.sets.expandDa "Expand delayed actions">
+<!ENTITY hc.sets.highlightTree "Highlight tree">
 
 <!ENTITY hc.sets.cmdAdd "Add…">
 <!ENTITY hc.sets.cmdEdit "Edit…">
