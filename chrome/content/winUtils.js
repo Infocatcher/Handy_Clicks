@@ -6,6 +6,7 @@ var handyClicksWinUtils = {
 	},
 	openWindowByType: function _ow(win, uri, type, features/*, arg0, arg1, ...*/) {
 		var w = this.wm.getMostRecentWindow(type);
+		_ow.alreadyOpened = !!w;
  		if(w) {
  			w.focus();
  			return w;

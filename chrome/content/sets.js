@@ -1134,18 +1134,25 @@ var handyClicksSets = {
 				);
 		it.getAttribute("hc_requiredfor").split(/\s+/).forEach(
 			function(req) {
-				var deps = document.getElementsByAttribute("hc_depends", req);
-				for(var i = 0, len = deps.length; i < len; i++)
-					this.desableChilds(deps[i], dis); // deps[i].disabled = dis;
+				Array.forEach(
+					document.getElementsByAttribute("hc_depends", req),
+					function(dep) {
+						this.desableChilds(dep, dis);
+					},
+					this
+				);
 			},
 			this
 		);
 	},
 	desableChilds: function(parent, dis) {
 		parent.disabled = dis;
-		var childs = parent.childNodes;
-		for(var i = 0, len = childs.length; i < len; i++)
-			this.desableChilds(childs[i], dis);
+		Array.forEach(
+			parent.getElementsByTagName("*"),
+			function(elt) {
+				elt.disabled = dis;
+			}
+		);
 	},
 	checkTreeContext: function() {
 		var ln = document.popupNode.localName;
@@ -1213,7 +1220,7 @@ var handyClicksSets = {
 					}
 					var pVal = line.substring(indx + 1);
 					if(pType == pbr.PREF_INT) // Convert string to number
-						pVal = parseInt(pVal);
+						pVal = Number(pVal);
 					else if(pType == pbr.PREF_BOOL) // ...or boolean
 						pVal = pVal == "true";
 					this.pu.setPref(pName, pVal);
@@ -1260,7 +1267,7 @@ var handyClicksSets = {
 		);
 
 		var cts = this.ps.types, newTypes = {};
-		var p = this.ps.prefs, newPrefs = {};
+		var p   = this.ps.prefs, newPrefs = {};
 
 		var type, to;
 		var sh, so, exTypes;
@@ -1388,9 +1395,7 @@ var handyClicksSets = {
 			this
 		);
 
-		var h = !_times.length;
-		popup.parentNode.hidden = h
-		this.$("hc-sets-tree-restoreFromBackupSeparator").hidden = h;
+		popup.parentNode.hidden = this.$("hc-sets-tree-restoreFromBackupSeparator").hidden = !_times.length;
 	},
 
 	setImportStatus: function(isImport, isPartial, fromClipboard) {
