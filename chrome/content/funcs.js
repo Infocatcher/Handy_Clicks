@@ -508,7 +508,7 @@ var handyClicksFuncs = {
 	},
 	getPopup: function(xml) {
 		var pSet = this.$("mainPopupSet");
-		var id = "handyClicks-generatedPopup";
+		const id = "handyClicks-generatedPopup";
 		var popup = this.e(id);
 		popup && pSet.removeChild(popup);
 		popup = xml || <popup xmlns={this.ut.XULNS} />;
@@ -579,10 +579,10 @@ var handyClicksFuncs = {
 		var img = this.ut.getOwnProperty(item, "prop_hc_image");
 		delete item.prop_hc_image;
 
-		var ttBase = "attr_" + this.tooltipAttrBase;
+		const ttBase = "attr_" + this.tooltipAttrBase;
 		var n = 0;
 
-		var file = this.getLocalFile(path, true);
+		var file = this.getLocalFile(path);
 		path = file ? file.path : path;
 		item.prop_className = (item.hasOwnProperty("prop_className") ? item.prop_className + " " : "")
 			+ "menuitem-iconic";
@@ -627,23 +627,19 @@ var handyClicksFuncs = {
 		);
 	},
 
-	get profileDir() {
-		delete this.profileDir;
-		return this.profileDir = this.ps.profileDir.path.replace(/[\\\/]$/, "");
-	},
-	getLocalFile: function(path, normalizeFlag) {
+	getLocalFile: function(path) {
 		if(!path)
 			return path;
 		var _this = this;
 		path = path.replace(
-			/^%(\w+)%/,
-			function(s, id) {
-				if(id.toLowerCase() == "profile" || id == "ProfD")
-					return _this.profileDir;
+			/^%([^%]+)%/,
+			function(s, alias) {
+				if(alias.toLowerCase() == "profile" || alias == "ProfD")
+					return _this.ps._profileDir.path;
 				try {
 					return Components.classes["@mozilla.org/file/directory_service;1"]
 						.getService(Components.interfaces.nsIProperties)
-						.get(id, Components.interfaces.nsILocalFile)
+						.get(alias, Components.interfaces.nsILocalFile)
 						.path;
 				}
 				catch(e) {
@@ -663,11 +659,11 @@ var handyClicksFuncs = {
 			this.ut._err(e);
 			return null;
 		}
-		normalizeFlag && file.normalize(); // dir1/dir2/../file -> dir1/file
+		file.normalize(); // dir1/dir2/../file -> dir1/file
 		return file;
 	},
 	getLocalPath: function(path) {
-		var file = this.getLocalFile(path, true);
+		var file = this.getLocalFile(path);
 		return file ? file.path : path;
 	},
 	getFileURI: function(path) {
@@ -939,7 +935,7 @@ var handyClicksFuncs = {
 			this.ut.getLocalized("tabNewName"),
 			title
 		);
-		var p = "__handyClicks__title";
+		const p = "__handyClicks__title";
 		if(!(p in tab))
 			tab[p] = title;
 		if(lbl == null) {

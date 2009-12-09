@@ -275,7 +275,9 @@ var handyClicksPrefSvc = {
 			catch(e) {
 				var line = ct._contextMenuLine || ct._defineLine;
 				var eLine = this.ut.mmLine(e.lineNumber - line + 1);
-				var href = "handyclicks://editor/itemType/" + type + "/" + ("_contextMenuLine" in ct ? "context" : "define");
+				var href = "handyclicks://editor/itemType/" + type + "/"
+					+ ("_contextMenuLine" in ct ? "context" : "define")
+					+ "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customTypeCompileError", this.dec(ct.label), type, e);
 				this.ut.notify(
 					this.ut.getLocalized("errorTitle"),
@@ -318,7 +320,9 @@ var handyClicksPrefSvc = {
 		}
 		catch(e) {
 			var eLine = this.ut.mmLine(e.lineNumber - line + 1);
-			var href = "handyclicks://editor/shortcut/" + sh + "/" + type + "/" + (delayed ? "delayed" : "normal") + "/init";
+			var href = "handyclicks://editor/shortcut/" + sh + "/" + type + "/"
+				+ (delayed ? "delayed" : "normal") + "/init"
+				+ "?line=" + eLine;
 			var eMsg = this.ut.errInfo("funcInitError", this.dec(fObj.label), type, e);
 			this.ut.notify(
 				this.ut.getLocalized("errorTitle"),
@@ -436,7 +440,7 @@ var handyClicksPrefSvc = {
 		return arr.length > 0;
 	},
 	reloadSettings: function(reloadAll) {
-		var pSvc = "handyClicksPrefSvc";
+		const pSvc = "handyClicksPrefSvc";
 		var curSrc = this.currentSrc;
 		this.wu.forEachWindow(
 			["navigator:browser", "handyclicks:settings", "handyclicks:editor"],
@@ -472,7 +476,7 @@ var handyClicksPrefSvc = {
 		return this.__savedStr;
 	},
 	set _savedStr(str) {
-		var pSvc = "handyClicksPrefSvc";
+		const pSvc = "handyClicksPrefSvc";
 		this.wu.forEachWindow(
 			["handyclicks:settings", "handyclicks:editor"],
 			function(w) {
@@ -562,7 +566,7 @@ var handyClicksPrefSvc = {
 	},
 	get keys() {
 		delete this.keys;
-		var src = "chrome://global-platform/locale/platformKeys.properties";
+		const src = "chrome://global-platform/locale/platformKeys.properties";
 		return this.keys = {
 			ctrl:  this.ut.getStr(src, "VK_CONTROL")         || "Ctrl",
 			shift: this.ut.getStr(src, "VK_SHIFT")           || "Shift",
@@ -581,10 +585,17 @@ var handyClicksPrefSvc = {
 			.replace(/,+/g, this.keys.sep);
 		return sh || (_short ? "" : this.ut.getLocalized("none"));
 	},
+	getPrefsStr: function(str) {
+		const add = "handyclicks://settings/add/";
+		return str.indexOf(add) == 0
+			? this.dec(str.substr(add.length))
+			: str;
+	},
 	checkPrefsStr: function(str) {
+		str = this.getPrefsStr(str);
 		if(str.indexOf(this.requiredHeader) != 0) // Support for old header
 			return false;
-		var hc = /^var handyClicks[\w$]+\s*=.*$/mg;
+		const hc = /^var handyClicks[\w$]+\s*=.*$/mg;
 		if(!hc.test(str))
 			return false;
 		str = str.replace(hc, ""); // Replace handyClicks* vars

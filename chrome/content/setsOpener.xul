@@ -1,18 +1,16 @@
 <?xml version="1.0"?>
-<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	id="handyClicks-settingsOpener">
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" id="handyClicks-settingsOpener">
 	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
 	<script type="application/x-javascript"><![CDATA[
 	// Prevent modal windows
 	var wu = handyClicksWinUtils;
-	var wo = window.opener;
 	wu.openWindowByType(
-		wo,
 		"chrome://handyclicks/content/sets.xul",
 		"handyclicks:settings",
 		"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
 	);
 	if(wu.openWindowByType.alreadyOpened) {
+		var wo = window.opener;
 		var _f = function f(e) {
 			f.wo.removeEventListener("focus", f, true);
 			if(Date.now() - f.time < 200)

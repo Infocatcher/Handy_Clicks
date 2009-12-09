@@ -392,7 +392,7 @@ var handyClicks = {
 				}
 				catch(e) {
 					var eLine = this.ut.mmLine(e.lineNumber - ct._defineLine + 1);
-					var href = "handyclicks://editor/itemType/" + type + "/define";
+					var href = "handyclicks://editor/itemType/" + type + "/define?line=" + eLine;
 					var eMsg = this.ut.errInfo("customTypeDefineError", this.ps.dec(ct.label), type, e);
 					this.ut.notify(
 						this.ut.getLocalized("errorTitle"),
@@ -597,7 +597,7 @@ var handyClicks = {
 			}
 			catch(e) {
 				var eLine = this.ut.mmLine(e.lineNumber - ct._contextMenuLine + 1);
-				var href = "handyclicks://editor/itemType/" + this.itemType + "/context";
+				var href = "handyclicks://editor/itemType/" + this.itemType + "/context?line=" + eLine;
 				var eMsg = this.ut.errInfo("customTypeContextMenuError", this.ps.dec(ct.label), this.itemType, e);
 				this.ut.notify(
 					this.ut.getLocalized("errorTitle"),
@@ -900,7 +900,8 @@ var handyClicks = {
 				var eLine = this.ut.mmLine(err.lineNumber - line + 1);
 				var href = "handyclicks://editor/shortcut/" + this.ps.getEvtStr(e || this.copyOfEvent) + "/"
 					+ (this._all ? "$all" : this.itemType) + "/"
-					+ (this.isDeleyed ? "delayed" : "normal") + "/code";
+					+ (this.isDeleyed ? "delayed" : "normal") + "/code"
+					+ "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customFunctionError", this.ps.dec(funcObj.label), this.itemType, err);
 				this.ut.notify(
 					this.ut.getLocalized("errorTitle"),
@@ -987,7 +988,7 @@ var handyClicks = {
 			this.ut.notify(null, this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, en, true);
 	},
 	checkClipboard: function() {
-		var id = "handyClicks-importFromClipboard";
+		const id = "handyClicks-importFromClipboard";
 		this.$(id).hidden = this.$(id + "Separator").hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard(true));
 	},
 	fixPopup: function() {
@@ -998,24 +999,9 @@ var handyClicks = {
 		if(e.type == "command" || e.button == 0)
 			this.toggleStatus();
 		else if(e.button == 1) {
-			this.openSettings();
+			this.wu.openSettings();
 			this.closeMenus(e.target);
 		}
-	},
-	openSettings: function(importFlag) {
-		var w = this.wu.openWindowByType(
-			window,
-			"chrome://handyclicks/content/sets.xul",
-			"handyclicks:settings",
-			"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
-		);
-		importFlag && (function _imp() {
-			if("_handyClicksInitialized" in w) {
-				w.handyClicksSets.importSets(true, true);
-				return;
-			}
-			setTimeout(_imp, 5);
-		})();
 	},
 	toggleEditMode: function() {
 		setTimeout(function(_this) {
@@ -1068,7 +1054,7 @@ var handyClicks = {
 		this.$("handyClicks-statusbarButton").hidden = !this.pu.pref("ui.showInStatusbar");
 	},
 	setControls: function(func, context) {
-		var id = "handyClicks-";
+		const id = "handyClicks-";
 		[
 			this.$(id + "statusbarButton"),
 			this.$(id + "toolsMenuitem"),

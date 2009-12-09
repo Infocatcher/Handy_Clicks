@@ -4,18 +4,25 @@ var handyClicksWinUtils = {
 		return this.wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
 			.getService(Components.interfaces.nsIWindowMediator);
 	},
-	openWindowByType: function _ow(win, uri, type, features/*, arg0, arg1, ...*/) {
+	get ww() {
+		delete this.ww;
+		return this.ww = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
+			.getService(Components.interfaces.nsIWindowWatcher);
+	},
+	openWindowByType: function _ow(uri, type, features, args) {
 		var w = this.wm.getMostRecentWindow(type);
 		_ow.alreadyOpened = !!w;
  		if(w) {
  			w.focus();
  			return w;
  		}
-		var args = [uri, "_blank", features || "chrome,centerscreen,resizable,dialog=0"];
-		for(var i = _ow.length, len = arguments.length; i < len; i++)
-			args.push(arguments[i]);
-		win = win || window;
-		return win.openDialog.apply(win, args);
+		w = this.ww.openWindow(
+			null, uri, "_blank",
+			features || "chrome,centerscreen,resizable,dialog=0", null
+		);
+		if(args)
+			w.arguments = args;
+		return w;
 	},
 	forEachWindow: function(winTypes, func, context) {
 		var wm = this.wm;
@@ -34,7 +41,7 @@ var handyClicksWinUtils = {
 		if("fullScreen" in win)
 			win.fullScreen = false;
 		switch(win.windowState) {
-			case win.STATE_MAXIMIZED: win.restore(); break;
+			case win.STATE_MAXIMIZED: win.restore();  break;
 			case win.STATE_NORMAL:    win.maximize();
 		}
 	},
@@ -44,7 +51,7 @@ var handyClicksWinUtils = {
 			win.fullScreen = !win.fullScreen; // Firefox 3.0+
 	},
 	winIdProp: "__handyClicks__winId",
-	openEditor: function(pSrc, mode, shortcut, itemType, isDelayed) {
+	openEditor: function _oe(pSrc, mode, shortcut, itemType, isDelayed) {
 		var winId = (mode == "itemType" ? itemType : shortcut + "-" + itemType) + (pSrc ? "@otherSrc" : "");
 		var wProp = this.winIdProp;
 		var ws = this.wm.getEnumerator("handyclicks:editor");
@@ -52,16 +59,17 @@ var handyClicksWinUtils = {
 		while(ws.hasMoreElements()) {
 			w = ws.getNext();
 			if(wProp in w && w[wProp] == winId) {
+				_oe.alreadyOpened = true;
 				w.focus();
 				return w;
 			}
 		}
-		w = window.openDialog(
-			"chrome://handyclicks/content/editor.xul",
-			"_blank",
-			"chrome,resizable,centerscreen,dialog=0",
-			pSrc, mode || "shortcut", shortcut, itemType, isDelayed
+		_oe.alreadyOpened = false;
+		w = this.ww.openWindow(
+			null, "chrome://handyclicks/content/editor.xul", "_blank",
+			"chrome,resizable,centerscreen,dialog=0", null
 		);
+		w.arguments = [pSrc, mode || "shortcut", shortcut, itemType, isDelayed];
 		w[wProp] = winId;
 		this.markOpenedEditors(winId, true);
 		return w;
@@ -77,10 +85,14 @@ var handyClicksWinUtils = {
 		})();
 	},
 	openLink: function(href, line) {
-		var hc = "handyclicks://editor/";
-		if(!href || href.indexOf(hc) != 0)
+		const ed = "handyclicks://editor/";
+		if(!href || href.indexOf(ed) != 0)
 			return false;
-		var tokens = href.substr(hc.length).split("/");
+		href = href.replace(/\?(.*)$/, "");
+		var args = RegExp.$1;
+		if(args && typeof line != "number" && /(?:^|&)line=(\d+)(?:&|$)/.test(args))
+			line = Number(RegExp.$1);
+		var tokens = href.substr(ed.length).split("/");
 		var mode = tokens[0];
 		if(mode == "shortcut") {
 			var shortcut = tokens[1];
@@ -111,5 +123,20 @@ var handyClicksWinUtils = {
 			wSet.handyClicksSets.setItemStatus(winId, editStat);
 		else
 			wSet.handyClicksSets.markOpenedEditors();
+	},
+	openSettings: function(/* importArgs */) {
+		var w = this.openWindowByType(
+			"chrome://handyclicks/content/sets.xul",
+			"handyclicks:settings",
+			"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
+		);
+		var args = arguments;
+		args.length && (function _imp() {
+			if("_handyClicksInitialized" in w) {
+				w.handyClicksSets.importSets.apply(w.handyClicksSets, args);
+				return;
+			}
+			setTimeout(_imp, 5);
+		})();
 	}
 };

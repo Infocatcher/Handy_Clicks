@@ -19,9 +19,9 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/regSvc.js" />
 
 	<commandset id="mainCommandSet">
-		<command id="handyClicks-cmd-openSettings" oncommand="handyClicks.openSettings();" label="&handyClicks.settingsLabel;" />
+		<command id="handyClicks-cmd-openSettings" oncommand="handyClicksWinUtils.openSettings();" label="&handyClicks.settingsLabel;" />
 		<command id="handyClicks-cmd-editMode" oncommand="handyClicks.toggleEditMode();" label="&handyClicks.editModeLabel;" />
-		<command id="handyClicks-cmd-importFromClipboard" oncommand="handyClicks.openSettings(true);" label="&handyClicks.importFromClipboardLabel;" />
+		<command id="handyClicks-cmd-importFromClipboard" oncommand="handyClicksWinUtils.openSettings(true, 1);" label="&handyClicks.importFromClipboardLabel;" />
 	</commandset>
 	<keyset id="mainKeyset">
 		<key id="handyClicks-key-toggleStatus" oncommand="handyClicks.toggleStatus(true);" disabled="true" />
@@ -31,8 +31,7 @@
 	</keyset>
 	<menupopup id="menu_ToolsPopup">
 		<menuitem id="handyClicks-toolsMenuitem" insertbefore="sanitizeSeparator" class="menuitem-iconic"
-			label="&handyClicks.menuitemLabel;"
-			tooltip="handyClicks-tooltip"
+			label="&handyClicks.menuitemLabel;" tooltip="handyClicks-tooltip"
 			key="handyClicks-key-toggleStatus"
 			context="handyClicks-settingsPopup"
 			oncommand="handyClicks.doSettings(event);"
@@ -40,8 +39,7 @@
 	</menupopup>
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton id="handyClicks-toolbarButton" class="chromeclass-toolbar-additional toolbarbutton-1"
-			label="&handyClicks.toolbarbuttonLabel;"
-			tooltip="handyClicks-tooltip"
+			label="&handyClicks.toolbarbuttonLabel;" tooltip="handyClicks-tooltip"
 			context="handyClicks-settingsPopup"
 			onclick="handyClicks.doSettings(event);" />
 	</toolbarpalette>
@@ -68,8 +66,7 @@
 	<!-- SeaMonkey -->
 	<menupopup id="taskPopup">
 		<menuitem id="handyClicks-toolsMenuitem" insertafter="downloadmgr" class="menuitem-iconic"
-			label="&handyClicks.menuitemLabel;"
-			tooltip="handyClicks-tooltip"
+			label="&handyClicks.menuitemLabel;" tooltip="handyClicks-tooltip"
 			key="handyClicks-key-toggleStatus"
 			context="handyClicks-settingsPopup"
 			oncommand="handyClicks.doSettings(event);"

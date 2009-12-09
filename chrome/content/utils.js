@@ -185,7 +185,15 @@ var handyClicksUtils = {
 	writeToFile: function(str, file) { // UTF-8
 		var fos = Components.classes["@mozilla.org/network/file-output-stream;1"]
 			.createInstance(Components.interfaces.nsIFileOutputStream);
-		fos.init(file, 0x02 | 0x08 | 0x20, 0666, 0);
+		try {
+			fos.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
+		}
+		catch(e) {
+			this.ut._err(new Error("Can't write string to file\"" + file.path + "\""));
+			this.ut._err(e);
+			fos.close();
+			return;
+		}
 		var cos = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
 			.createInstance(Components.interfaces.nsIConverterOutputStream);
 		cos.init(fos, "UTF-8", 0, 0);
@@ -195,9 +203,17 @@ var handyClicksUtils = {
 	readFromFile: function(file) { // UTF-8
 		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
 			.createInstance(Components.interfaces.nsIFileInputStream);
+		try {
+			fis.init(file, 0x01, 0444, 0);
+		}
+		catch(e) {
+			this.ut._err(new Error("Can't read string from file\"" + file.path + "\""));
+			this.ut._err(e);
+			fis.close();
+			return "";
+		}
 		var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]
 			.createInstance(Components.interfaces.nsIScriptableInputStream);
-		fis.init(file, 0x01, 0444, null);
 		sis.init(fis);
 		var str = sis.read(fis.available());
 		sis.close();

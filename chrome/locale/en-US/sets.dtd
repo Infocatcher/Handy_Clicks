@@ -44,6 +44,7 @@
 <!ENTITY hc.sets.fullExportToFile "Export to file…">
 <!ENTITY hc.sets.exportSelectedToFile "Export selected to file…">
 <!ENTITY hc.sets.exportSelectedToClipboard "Export selected to clipboard">
+<!ENTITY hc.sets.exportToURI "Copy as URI">
 
 <!ENTITY hc.sets.import "Import">
 <!ENTITY hc.sets.importAccesskey "I">

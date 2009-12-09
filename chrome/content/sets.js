@@ -59,11 +59,10 @@ var handyClicksSets = {
 		this.treeScrollPos(true);
 	},
 	closeEditors: function() {
-		var pSvc = "handyClicksPrefSvc";
 		this.wu.forEachWindow(
 			["handyclicks:editor"],
 			function(w) {
-				if(!("_handyClicksInitialized" in w) || w[pSvc].otherSrc)
+				if(!("_handyClicksInitialized" in w) || w.handyClicksPrefSvc.otherSrc)
 					w.close();
 			}
 		);
@@ -453,7 +452,7 @@ var handyClicksSets = {
 	updButtons: function() {
 		var selIts = this.selectedItems;
 		var noSel = !selIts.length;
-		["delete", "edit", "toggle", "partialExportToFile", "partialExportToClipboard"].forEach(
+		["delete", "edit", "toggle", "partialExportToFile", "partialExportToClipboard", "exportToURI"].forEach(
 			function(id) {
 				this.$("hc-sets-cmd-" + id).setAttribute("disabled", noSel);
 			},
@@ -829,12 +828,17 @@ var handyClicksSets = {
 		var row1 = this.ut.getOwnProperty(_ss, "row1");
 		_ss.row1 = row;
 
-		setTimeout(function(_this, row0, row1, row) {
+		if(!(row0 == row1 && row0 == row)) {
 			if(row1 !== undefined)
-				_this.tSel.clearRange(row0, row1);
-			if(row0 != row)
-				_this.tSel.rangedSelect(row0, row, true);
-		}, 0, this, row0, row1, row);
+				this.tSel.clearRange(row0, row1);
+			if(row0 != row) {
+				this.tSel.rangedSelect(row0, row, true);
+				if(et == "mouseup")
+					setTimeout(function(_this, row0, row) {
+						_this.tSel.rangedSelect(row0, row, true);
+					}, 0, this, row0, row);
+			}
+		}
 
 		if(et == "mouseup") {
 			_ss.row0 = _ss.row1 = undefined;
@@ -865,7 +869,7 @@ var handyClicksSets = {
 		this.pu.pref("sets.treeDrawMode", Number(dm)); // => updPrefsUI()
 	},
 	toggleExpandDa: function() {
-		var p = "sets.treeExpandDelayedAction";
+		const p = "sets.treeExpandDelayedAction";
 		this.pu.pref(p, !this.pu.pref(p)); // => updPrefsUI()
 	},
 	toggleColored: function() {
@@ -1231,9 +1235,12 @@ var handyClicksSets = {
 
 	// Clicking options management
 	// Export/import:
-	exportSets: function(partialExport, toClipboard) {
+	exportSets: function(partialExport, targetId) {
+		var toFile      = targetId == 0;
+		var toClipboard = targetId == 1;
+		var toURI       = targetId == 2;
 		this.selectTreePane();
-		if(!toClipboard) {
+		if(toFile) {
 			var file = this.pickFile(
 				this.ut.getLocalized("exportSets"), true, "js",
 				!partialExport && this.ps.prefsFile.lastModifiedTime
@@ -1246,6 +1253,8 @@ var handyClicksSets = {
 			var pStr = this.extractPrefs();
 			if(toClipboard)
 				this.ut.copyStr(pStr);
+			else if(toURI)
+				this.ut.copyStr("handyclicks://settings/add/" + this.ps.enc(pStr));
 			else
 				this.ut.writeToFile(pStr, file);
 		}
@@ -1305,7 +1314,7 @@ var handyClicksSets = {
 
 		return this.ps.saveSettingsObjects(null, newTypes, newPrefs, true);
 	},
-	importSets: function(partialImport, fromClipboard, fileName) {
+	importSets: function(partialImport, srcId, data) {
 		this.selectTreePane();
 		if(this.pu.pref("sets.importJSWarning")) {
 			var ack = { value: false };
@@ -1318,11 +1327,14 @@ var handyClicksSets = {
 				return;
 			this.pu.pref("sets.importJSWarning", !ack.value);
 		}
-		var pSrc = fromClipboard
-			? this.ut.readFromClipboard(true)
-			: fileName
-				? this.ps.getFile(fileName)
-				: this.pickFile(this.ut.getLocalized("importSets"), false, "js");
+		var pSrc;
+		switch(srcId) {
+			default:
+			case 0: pSrc = this.pickFile(this.ut.getLocalized("importSets"), false, "js"); break;
+			case 1: pSrc = this.ps.getPrefsStr(this.ut.readFromClipboard(true));           break;
+			case 2: pSrc = this.ps.dec(data);                                              break;
+			case 3: pSrc = this.ps.getFile(data);
+		}
 		if(!pSrc)
 			return;
 		if(!this.checkPrefs(pSrc)) {
@@ -1340,12 +1352,12 @@ var handyClicksSets = {
 		//this.ps.reloadSettings(false);
 		if(this.ps._loadError)
 			return;
-		this.setImportStatus(true, partialImport, fromClipboard);
+		this.setImportStatus(true, partialImport, srcId == 1 /* from clipboard */);
 		if(partialImport)
 			this.redrawTree();
 		else
 			this.updTree();
-		if(pSrc instanceof Components.interfaces.nsILocalFile && !fileName)
+		if(pSrc instanceof Components.interfaces.nsILocalFile && srcId != 2 /* from %profile%/handyclicks/ */)
 			this.backupsDir = pSrc.parent.path;
 	},
 	buildRestorePopup: function(popup) {
@@ -1386,7 +1398,7 @@ var handyClicksSets = {
 				popup.appendChild(this.ut.parseFromXML(
 					<menuitem xmlns={this.ut.XULNS}
 						label={ fTime + " [" + fSize + " " + bytes + "] \u2013 " + fName }
-						oncommand={ "handyClicksSets.importSets(false, false, \"" + fName + "\");" }
+						oncommand={ "handyClicksSets.importSets(false, 3, \"" + fName + "\");" }
 						class="menuitem-iconic"
 						image={ "moz-icon:file://" + file.path }
 						hc_old={ fName.indexOf(this.ps.names.version) != -1 } />
@@ -1409,7 +1421,7 @@ var handyClicksSets = {
 		panel.hidden = !isImport;
 		if(!isImport)
 			return;
-		var lAttr = "hc_label_" + (isPartial ? "partial" : "full");
+		const lAttr = "hc_label_" + (isPartial ? "partial" : "full");
 		Array.forEach(
 			panel.getElementsByAttribute(lAttr, "*"),
 			function(elt) {

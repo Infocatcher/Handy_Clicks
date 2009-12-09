@@ -1,8 +1,8 @@
 function handyClicksReloadScripts() {
-	var jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+	const jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 		.getService(Components.interfaces.mozIJSSubScriptLoader);
-	var path = "chrome://handyclicks/content/";
-	var files = {
+	const path = "chrome://handyclicks/content/";
+	const files = {
 		"console.js":     "handyClicksConsole",
 		"editor.js":      "handyClicksEditor",
 		"funcs.js":       "handyClicksFuncs",
