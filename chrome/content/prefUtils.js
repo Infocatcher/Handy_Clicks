@@ -2,7 +2,8 @@ var handyClicksPrefUtils = {
 	oSvc: new HandyClicksObservers(),
 
 	// Preferences:
-	nPrefix: "extensions.handyclicks.",
+	prefNS: "extensions.handyclicks.",
+	prefVer: 2,
 
 	get prefSvc() {
 		delete this.prefSvc;
@@ -15,9 +16,16 @@ var handyClicksPrefUtils = {
 
 	// Initialization:
 	instantInit: function(reloadFlag) {
-		var np = this.nPrefix;
+		const v = this.pref("prefsVersion") || 0;
+		if(v < this.prefVer)
+			this.prefsMigration(v);
 
-		var v = this.pref("prefsVersion") || 0;
+		const pns = this.prefNS;
+		this.prefSvc.addObserver(pns, this, false);
+		this.prefNSL = pns.length;
+	},
+	prefsMigration: function(v) {
+		const pns = this.prefNS;
 		if(v < 1) { // Added 2009-09-24
 			// Move prefs to "extensions.handyclicks.funcs." branch:
 			[
@@ -28,30 +36,27 @@ var handyClicksPrefUtils = {
 				"convertURIs", "convertURIsCharset"
 			].forEach(
 				function(pId) {
-					var fullId = np + pId;
-					if(!this.existPref(fullId))
-						return;
-					this.pref("funcs." + pId, this.getPref(fullId));
-					this.prefSvc.deleteBranch(fullId);
+					const fullId = pns + pId;
+					if(this.existPref(fullId))
+						this.pref("funcs." + pId, this.getPref(fullId))
+							.prefSvc.deleteBranch(fullId);
 				},
 				this
 			);
-			this.pref("prefsVersion", 1);
-			this.savePrefFile();
 		}
-
-		this.prefSvc.addObserver(np, this, false);
-		this.nLength = np.length;
+		if(v < 2) // Added 2009-11-13
+			this.pu.prefSvc.deleteBranch(pns + "forceStopMousedownEvent");
+		this.pref("prefsVersion", this.prefVer).savePrefFile();
 	},
 	destroy: function(reloadFlag) {
-		this.prefSvc.removeObserver(this.nPrefix, this);
+		this.prefSvc.removeObserver(this.prefNS, this);
 	},
 
 	// Preferences observer:
 	observe: function(subject, topic, pName) {
 		if(topic != "nsPref:changed")
 			return;
-		pName = pName.substring(this.nLength);
+		pName = pName.substr(this.prefNSL);
 		this.oSvc.notifyObservers(pName, this.readPref(pName));
 	},
 
@@ -59,13 +64,13 @@ var handyClicksPrefUtils = {
 	_prefs: { __proto__: null }, // Prefs cache
 	pref: function(pName, pVal) {
 		if(arguments.length == 2)
-			return this.setPref(this.nPrefix + pName, pVal);
+			return this.setPref(this.prefNS + pName, pVal);
 		if(pName in this._prefs)
 			return this._prefs[pName];
 		return this.readPref(pName);
 	},
 	readPref: function(pName) {
-		return this._prefs[pName] = this.getPref(this.nPrefix + pName);
+		return this._prefs[pName] = this.getPref(this.prefNS + pName);
 	},
 	getPref: function(pName, defaultVal) {
 		var pbr = this.pBr;
@@ -137,7 +142,7 @@ var handyClicksPrefUtils = {
 		else
 			var tab = br.selectedTab = br.addTab("about:config");
 		var win = tab.linkedBrowser;
-		filter = filter || this.pu.nPrefix;
+		filter = filter || this.prefNS;
 		var oldFx = this.ut.fxVersion <= 3.0;
 		win.addEventListener(
 			"load",

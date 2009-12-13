@@ -586,7 +586,8 @@ var handyClicksFuncs = {
 		path = file ? file.path : path;
 		item.prop_className = (item.hasOwnProperty("prop_className") ? item.prop_className + " " : "")
 			+ "menuitem-iconic";
-		if(checkFiles && (!file || !file.exists() || !file.isExecutable())) {
+		if(checkFiles && (!file || !file.exists()/* || !file.isExecutable()*/)) {
+			// https://bugzilla.mozilla.org/show_bug.cgi?id=322865
 			item.prop_className += " handyClicks-invalidPath";
 			item["attr_" + this.tooltipAttrClass + "0"] = "handyClicks-invalidPathTip";
 		}
@@ -653,13 +654,13 @@ var handyClicksFuncs = {
 			.createInstance(Components.interfaces.nsILocalFile);
 		try {
 			file.initWithPath(path);
+			file.normalize(); // dir1/dir2/../file -> dir1/file
 		}
 		catch(e) {
 			this.ut._err(new Error("Invalid path: " + path));
 			this.ut._err(e);
 			return null;
 		}
-		file.normalize(); // dir1/dir2/../file -> dir1/file
 		return file;
 	},
 	getLocalPath: function(path) {

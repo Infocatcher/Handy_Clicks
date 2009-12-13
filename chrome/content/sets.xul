@@ -114,7 +114,7 @@
 					<spacer id="hc-sets-tree-buttonsSpacer" width="16" />
 					<button id="hc-sets-tree-buttonExport" type="menu" label="&hc.sets.export;" accesskey="&hc.sets.exportAccesskey;"
 						onmouseover="if(this.nextSibling.open) { this.nextSibling.open = false; this.open = true; }">
-						<menupopup>
+						<menupopup position="before_start">
 							<menuitem command="hc-sets-cmd-fullExportToFile" key="hc-sets-key-fullExportToFile" />
 							<menuseparator />
 							<menuitem command="hc-sets-cmd-partialExportToFile" key="hc-sets-key-partialExportToFile" />
@@ -124,15 +124,16 @@
 					</button>
 					<button id="hc-sets-tree-buttonImport" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;"
 						onmouseover="if(this.previousSibling.open) { this.previousSibling.open = false; this.open = true; }">
-						<menupopup onpopupshowing="if(event.target == this) { handyClicksSets.checkClipboard(); handyClicksSets.buildRestorePopup(); }">
+						<menupopup position="before_start"
+							onpopupshowing="if(event.target == this) { handyClicksSets.checkClipboard(); handyClicksSets.buildRestorePopup(); }">
 							<menuitem command="hc-sets-cmd-fullImportFromFile" key="hc-sets-key-fullImportFromFile" />
 							<menuseparator />
-							<menuitem command="hc-sets-cmd-partialImportFromFile" key="hc-sets-key-partialImportFromFile" />
-							<menuitem command="hc-sets-cmd-partialImportFromClipboard" key="hc-sets-key-partialImportFromClipboard" />
-							<menuseparator id="hc-sets-tree-restoreFromBackupSeparator" />
 							<menu id="hc-sets-tree-restoreFromBackupMenu" label="&hc.sets.restoreFromBackup;">
 								<menupopup id="hc-sets-tree-restoreFromBackupPopup" />
 							</menu>
+							<menuseparator id="hc-sets-tree-restoreFromBackupSeparator" />
+							<menuitem command="hc-sets-cmd-partialImportFromFile" key="hc-sets-key-partialImportFromFile" />
+							<menuitem command="hc-sets-cmd-partialImportFromClipboard" key="hc-sets-key-partialImportFromClipboard" />
 						</menupopup>
 					</button>
 				</hbox>

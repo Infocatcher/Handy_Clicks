@@ -48,4 +48,5 @@ pref("extensions.handyclicks.sets.treeDrawMode", 0);
 pref("extensions.handyclicks.sets.treeExpandDelayedAction", true);
 
 pref("extensions.handyclicks.prefsVersion", 0);
+pref("extensions.handyclicks.uiVersion", 0);
 pref("extensions.handyclicks.devMode", true);

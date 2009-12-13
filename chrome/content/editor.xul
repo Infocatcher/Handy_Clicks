@@ -40,6 +40,8 @@
 
 	<keyset id="hc-editor-keys">
 		<key key="s" modifiers="control" id="hc-editor-key-apply" oncommand="handyClicksEditor.saveSettings(true);" />
+		<key key="c" modifiers="control,shift" id="hc-editor-key-copy" oncommand="handyClicksEditor.copySettings();" />
+		<key key="v" modifiers="control,shift" id="hc-editor-key-paste" oncommand="handyClicksEditor.pasteSettings();" />
 		<key keycode="VK_F5" id="hc-editor-key-reload" oncommand="handyClicksEditor.initUI();" />
 
 		<key keycode="VK_F10" id="hc-editor-key-maximizeWindow" oncommand="handyClicksWinUtils.maximizeWindow();" />
@@ -326,7 +328,7 @@
 				<hbox align="center">
 					<label value="&hc.editor.funcLabel;" />
 					<menulist id="hc-editor-customType" editable="true" spellcheck="true"
-						oncommand="handyClicksEditor.initCustomTypesEditor();"
+						oncommand="handyClicksEditor.initCustomTypesEditor(); event.stopPropagation();"
 						oninput="handyClicksEditor.customTypeLabel(this);"
 						ondragexit="handyClicksEditor.customTypeLabelDelay(this);">
 						<menupopup id="hc-editor-customTypePopup" />

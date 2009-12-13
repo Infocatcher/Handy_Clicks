@@ -31,7 +31,8 @@ var handyClicksSets = {
 			this.applyButton.hidden = true;
 		else
 			this.applyButton.disabled = true;
-		var prefsButt = document.documentElement.getButton("extra2");
+		var de = document.documentElement;
+		var prefsButt = de.getButton("extra2");
 		prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
 		prefsButt.setAttribute("type", "menu");
 		Array.forEach(
@@ -43,6 +44,8 @@ var handyClicksSets = {
 		);
 		this.focusSearch();
 		this.treeScrollPos(false);
+		if(this.ut.fxVersion >= 3.6) // Fix wrong restoring
+			window.resizeTo(Number(de.width), Number(de.height));
 	},
 	initShortcuts: function() {
 		var tr = this.tree = this.$("hc-sets-tree");
@@ -57,6 +60,7 @@ var handyClicksSets = {
 	destroy: function(reloadFlag) {
 		this.closeEditors();
 		this.treeScrollPos(true);
+		reloadFlag && this.setImportStatus(false);
 	},
 	closeEditors: function() {
 		this.wu.forEachWindow(
@@ -78,11 +82,11 @@ var handyClicksSets = {
 		}
 		if(!tr.hasAttribute("hc_firstVisibleRow"))
 			return;
-		var fvr = Number(tr.getAttribute("hc_firstVisibleRow"));
-		var lvr = Number(tr.getAttribute("hc_lastVisibleRow"));
 		var maxRowsIndx = this.tView.rowCount - 1;
 		if(maxRowsIndx < 0)
 			return;
+		var fvr = Number(tr.getAttribute("hc_firstVisibleRow"));
+		var lvr = Number(tr.getAttribute("hc_lastVisibleRow"));
 		if(lvr > maxRowsIndx)
 			fvr -= lvr - maxRowsIndx;
 		this.tbo.scrollToRow(this.ut.mm(fvr, 0, maxRowsIndx));
@@ -307,7 +311,7 @@ var handyClicksSets = {
 			var equals = this.ut.objEquals(fo, saved);
 			if(isCustomType) {
 				var savedType = this.ut.getOwnProperty(this._savedTypes, itemType);
-				var eqType = this.ut.objEquals(this.ps.types[itemType], savedType);
+				var eqType = this.ut.objEquals(this.ut.getOwnProperty(this.ps.types, itemType), savedType);
 				if(!eqType)
 					override = true;
 				equals = equals && eqType;
@@ -574,12 +578,10 @@ var handyClicksSets = {
 	editItemsTypes: function() {
 		if(!this.isTreePaneSelected)
 			return;
-		var cIts = [];
-		this.selectedItems.forEach(
+		var cIts = this.selectedItems.filter(
 			function(it) {
-				it.__isCustomType && cIts.push(it);
-			},
-			this
+				return it.__isCustomType;
+			}
 		);
 		if(this.editorsLimit(cIts.length))
 			return;
@@ -1166,12 +1168,12 @@ var handyClicksSets = {
 	// about:config entries
 	// Reset prefs:
 	resetPrefs: function() {
-		this.pu.prefSvc.getBranch(this.pu.nPrefix)
+		this.pu.prefSvc.getBranch(this.pu.prefNS)
 			.getChildList("", {})
 			.forEach(this.resetPref, this);
 	},
 	resetPref: function(pName) {
-		this.pu.resetPref(this.pu.nPrefix + pName);
+		this.pu.resetPref(this.pu.prefNS + pName);
 	},
 	// Export/import:
 	exportPrefsHeader: "[Handy Clicks settings]",
@@ -1180,11 +1182,11 @@ var handyClicksSets = {
 		if(!file)
 			return;
 		var data = this.exportPrefsHeader + "\n"
-			+ this.pu.prefSvc.getBranch(this.pu.nPrefix)
+			+ this.pu.prefSvc.getBranch(this.pu.prefNS)
 				.getChildList("", {})
 				.map(
 					function(pName) {
-						return this.pu.nPrefix + pName + "=" + this.pu.pref(pName);
+						return this.pu.prefNS + pName + "=" + this.pu.pref(pName);
 					},
 					this
 				).sort().join("\n");
@@ -1218,7 +1220,7 @@ var handyClicksSets = {
 					var pName = line.substring(0, indx);
 					var pbr = this.pu.pBr;
 					var pType = this.pu.prefSvc.getPrefType(pName);
-					if(pType == pbr.PREF_INVALID || pName.indexOf(this.pu.nPrefix) != 0) {
+					if(pType == pbr.PREF_INVALID || pName.indexOf(this.pu.prefNS) != 0) {
 						this.ut._err(new Error("[Import INI] Skipped pref with invalid name: " + pName), true);
 						return;
 					}

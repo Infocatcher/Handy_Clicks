@@ -22,8 +22,8 @@ var handyClicks = {
 
 	// Initialization:
 	init: function(reloadFlag) {
-		var v = this.pu.pref("prefsVersion") || 0;
-		if(v < 2) { // Added 2009-11-13
+		const v = this.pu.pref("uiVersion") || 0;
+		if(v < 1) { // Added 2009-11-13
 			// New id for toolbarbutton
 			if(!this.$(this.toolbarButtonId)) {
 				var tbm = /(?:^|,)handyClicks-toggleStatus-tbButton(?:,|$)/;
@@ -31,35 +31,32 @@ var handyClicks = {
 					document.getElementsByTagName("toolbar"),
 					function(tb) {
 						var cs = tb.getAttribute("currentset");
-						if(cs && tbm.test(cs)) {
-							// Add toolbarbutton manually:
-							var newItem = this.paletteButton;
-							if(newItem) {
-								var nextItem = /,*([^,]+)/.test(RegExp.rightContext) && this.e(RegExp.$1);
-								if(nextItem)
-									tb.insertBefore(newItem, nextItem);
-								else
-									tb.appendChild(newItem);
-							}
-							// Fix "currentset" of toolbar:
-							cs = cs.replace(tbm, "," + this.toolbarButtonId + ",")
-								.replace(/^,+|,+$/g, "")
-								.replace(/,+/g, ",");
-							tb.setAttribute("currentset", cs);
-							tb.currentSet = cs;
-							document.persist(tb.id, "currentset");
-							try { BrowserToolboxCustomizeDone(true); }
-							catch(e) {}
-							return true;
+						if(!cs || !tbm.test(cs))
+							return false;
+						// Add toolbarbutton manually:
+						var newItem = this.paletteButton;
+						if(newItem) {
+							var nextItem = /,*([^,]+)/.test(RegExp.rightContext) && this.e(RegExp.$1);
+							if(nextItem)
+								tb.insertBefore(newItem, nextItem);
+							else
+								tb.appendChild(newItem);
 						}
-						return false;
+						// Fix "currentset" of toolbar:
+						cs = cs.replace(tbm, "," + this.toolbarButtonId + ",")
+							.replace(/^,+|,+$/g, "")
+							.replace(/,+/g, ",");
+						tb.setAttribute("currentset", cs);
+						tb.currentSet = cs;
+						document.persist(tb.id, "currentset");
+						try { BrowserToolboxCustomizeDone(true); }
+						catch(e) {}
+						return true;
 					},
 					this
 				);
 			}
-			this.pu.pref("prefsVersion", 2);
-			this.pu.prefSvc.deleteBranch(this.pu.nPrefix + "forceStopMousedownEvent");
-			this.pu.savePrefFile();
+			this.pu.pref("uiVersion", 1).savePrefFile();
 		}
 
 		this.ps.loadSettings();
@@ -237,7 +234,7 @@ var handyClicks = {
 		if(!this.disallowMousemove)
 			return;
 		if(!this.mousemoveParams)
-			this.mousemoveParams = { dist: 0 };
+			this.mousemoveParams = { dist: 0, __proto__: null };
 		if("screenX" in this.mousemoveParams) {
 			this.mousemoveParams.dist +=
 				Math.sqrt(
@@ -984,8 +981,13 @@ var handyClicks = {
 	toggleStatus: function(fromKey) {
 		var en = !this.enabled;
 		this.enabled = en;
-		if(fromKey && !this.pu.pref("ui.showInStatusbar") && !this.ut.isElementVisible(this.e(this.toolbarButtonId)))
-			this.ut.notify(null, this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, en, true);
+		if(
+			!fromKey
+			|| this.ut.isElementVisible(this.$("handyClicks-statusbarButton"))
+			|| this.ut.isElementVisible(this.$(this.toolbarButtonId))
+		)
+			return;
+		this.ut.notify(null, this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, en, true);
 	},
 	checkClipboard: function() {
 		const id = "handyClicks-importFromClipboard";
@@ -1069,7 +1071,7 @@ var handyClicks = {
 
 	// Hotkeys:
 	registerHotkeys: function() {
-		this.pu.prefSvc.getBranch(this.pu.nPrefix + "key.")
+		this.pu.prefSvc.getBranch(this.pu.prefNS + "key.")
 			.getChildList("", {})
 			.forEach(this.registerHotkey, this);
 	},

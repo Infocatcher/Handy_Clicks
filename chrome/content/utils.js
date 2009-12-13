@@ -148,16 +148,16 @@ var handyClicksUtils = {
 					}
 				).join("\n")
 			+ "\n]>";
-		var s = this.parseFromString(
+		var node = this.parseFromString(
 			(dtds ? dtds + "\n" : "")
-			+ '<dialog xmlns="' + this.XULNS + '">&' + eName + ';</dialog>',
+			+ '<page xmlns="' + this.XULNS + '">&' + eName + ';</page>',
 			contentType
-		).textContent;
-		if(s.indexOf("XML Parsing Error:") == 0) {
-			this._err("Invalid XML entity: " + eName);
+		);
+		if(node.namespaceURI == "http://www.mozilla.org/newlayout/xml/parsererror.xml") {
+			this._err(new Error("Invalid XML entity: \"" + eName + "\""));
 			return "";
 		}
-		return s;
+		return node.textContent;
 	},
 	getLocalizedEntity: function(eName, dtds, contentType) {
 		return this._entities[eName] || (
