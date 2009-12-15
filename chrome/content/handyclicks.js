@@ -440,6 +440,9 @@ var handyClicks = {
 			}
 		}
 
+		if(this.itemType == "img")
+			return;
+
 		// History item:
 		if(
 			(all || this.itemTypeInSets(sets, "historyItem"))
@@ -560,13 +563,10 @@ var handyClicks = {
 	isOkCustomType: function(cType) {
 		return this.ps.isOkCustomType(cType) && this.ps.types[cType].hasOwnProperty("_initialized");
 	},
-	hasParent: function(it, id) {
-		it = it.parentNode;
-		while(it) {
-			if(it.id == id)
+	hasParent: function(it, pId) {
+		for(it = it.parentNode; it; it = it.parentNode)
+			if(it.id == pId)
 				return true;
-			it = it.parentNode;
-		}
 		return false;
 	},
 	getFuncObj: function(sets) {

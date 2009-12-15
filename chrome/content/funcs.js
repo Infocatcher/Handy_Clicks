@@ -100,9 +100,9 @@ var handyClicksFuncs = {
 			: s;
 	},
 	getLinkUri: function(it) {
-		var xLink = it.getAttributeNS("http://www.w3.org/1999/xlink", "href");
-		return xLink
-			? makeURLAbsolute(it.baseURI, xLink) // See chrome://browser/content/utilityOverlay.js
+		const ns = "http://www.w3.org/1999/xlink";
+		return it.hasAttributeNS(ns, "href")
+			? makeURLAbsolute(it.baseURI, it.getAttributeNS(ns, "href")) // See chrome://browser/content/utilityOverlay.js
 			: it.href;
 	},
 	getTabUri: function(tab) {
@@ -1067,11 +1067,10 @@ var handyClicksFuncs = {
 		return item.ownerDocument.defaultView.getComputedStyle(item, "")[propName];
 	},
 	openSimilarLinksInTabs: function(e, refererPolicy, a) {
-		//~ todo: test with XLink
 		a = a || this.hc.item;
-		var term = a.innerHTML;
+		var term = this.ut.innerXML(a);
 		if(!term) {
-			this.ut._err(new Error("openSimilarLinksInTabs() not supported: a.innerHTML is " + term));
+			this.ut._err(new Error("openSimilarLinksInTabs() is not supported: can't serialize a.childNodes to string"));
 			return;
 		}
 
@@ -1101,14 +1100,18 @@ var handyClicksFuncs = {
 			.getService(Components.interfaces.nsIGlobalHistory2);
 		var onlyVisible = this.pu.pref("funcs.openOnlyVisibleLinks");
 		Array.forEach(
-			a.ownerDocument.getElementsByTagName("a"),
+			a.ownerDocument.getElementsByTagName(a.localName),
 			function(a) {
-				var t = a.innerHTML;
-				var h = a.href;
+				var t = this.ut.innerXML(a);
+				var h = this.getLinkUri(a);
 				if(
 					t == term && h && !this.isJSURI(h)
 					&& (!onlyUnvisited || !gh.isVisited(makeURI(h))) // chrome://global/content/contentAreaUtils.js
-					&& (!onlyVisible || this.ut.isElementVisible(a))
+					&& (
+						!onlyVisible || this.ut.isElementVisible(a)
+						// See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
+						|| a.namespaceURI == "http://www.w3.org/2000/svg"
+					)
 				)
 					hrefs[h] = true;
 			},

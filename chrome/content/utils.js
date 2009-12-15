@@ -400,6 +400,8 @@ var handyClicksUtils = {
 			bo = "getBoundingClientRect" in elt
 				? elt.getBoundingClientRect()
 				: elt.ownerDocument.getBoxObjectFor(elt);
+		// https://bugzilla.mozilla.org/show_bug.cgi?id=530985
+		// isElementVisible(elt) || elt.namespaceURI == "http://www.w3.org/2000/svg"
 		return bo.height > 0 && bo.width > 0;
 	},
 
@@ -421,6 +423,15 @@ var handyClicksUtils = {
 	},
 	serializeToString: function(elt) {
 		return new XMLSerializer().serializeToString(elt);
+	},
+	innerXML: function(elt) {
+		return elt.innerHTML || Array.map(
+			elt.childNodes,
+			function(ch) {
+				return ch.innerHTML || this.serializeToString(ch);
+			},
+			this
+		).join("");
 	},
 	parseFromXML: function(xml) {
 		var pp = XML.prettyPrinting;

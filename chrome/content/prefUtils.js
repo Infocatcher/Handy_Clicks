@@ -118,7 +118,8 @@ var handyClicksPrefUtils = {
 			return;
 		}
 		brWin = window.openDialog(
-			"chrome://browser/content/", "_blank", "chrome,all,dialog=no",
+			this.pu.getPref("browser.chromeURL") || "chrome://browser/content/",
+			"_blank", "chrome,all,dialog=no",
 			"about:blank",
 			null, null, null, false
 		);
@@ -134,7 +135,7 @@ var handyClicksPrefUtils = {
 	},
 	openAboutConfigFilter: function(brWin, filter) {
 		brWin.focus();
-		var br = brWin.gBrowser;
+		var br = brWin.gBrowser || brWin.getBrowser();
 		if(br.currentURI.spec == "about:blank" && !br.webProgress.isLoadingDocument) {
 			var tab = br.mCurrentTab;
 			br.loadURI("about:config");
@@ -144,16 +145,29 @@ var handyClicksPrefUtils = {
 		var win = tab.linkedBrowser;
 		filter = filter || this.prefNS;
 		var oldFx = this.ut.fxVersion <= 3.0;
+		var _this = this;
 		win.addEventListener(
 			"load",
-			function f(e) {
-				win.removeEventListener("load", f, true);
+			function _l(e) {
+				win.removeEventListener("load", _l, true);
 				var cWin = win.contentWindow;
-				var tb = cWin.document.getElementById("textbox");
-				tb && tb.setAttribute("value", filter);
-				oldFx && setTimeout(function() {
-					cWin.wrappedJSObject.FilterPrefs();
-				}, 0);
+				(function setFilter() {
+					var tb = cWin.document.getElementById("textbox");
+					if(!tb) {
+						setTimeout(setFilter, 5);
+						return;
+					}
+					tb.setAttribute("value", filter);
+					if(oldFx) try {
+						cWin.wrappedJSObject.FilterPrefs();
+						tb.focus();
+					}
+					catch(e) {
+						_this.ut._err(new Error("FilterPrefs() failed"));
+						_this.ut._err(e);
+						setTimeout(setFilter, 5);
+					}
+				})();
 			},
 			true
 		);
