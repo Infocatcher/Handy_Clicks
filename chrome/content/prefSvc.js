@@ -83,7 +83,21 @@ var handyClicksPrefSvc = {
 			tar[p] = this.ut.getOwnProperty(src, this._prefVars[p]);
 	},
 	_loadError: 0,
-	loadSettings: function(pSrc) {
+	_needLoad: true,
+	loadSettings: function(pSrc, fromMainWnd) {
+		if(this.isMainWnd) {
+			if(fromMainWnd && !this._needLoad) {
+				this.ut._log("loadSettings() from main window => not needed");
+				return;
+			}
+			if(!fromMainWnd && !this.hc.enabled) {
+				this.ut._log("loadSettings() -> disabled");
+				this._needLoad = true;
+				return;
+			}
+			this._needLoad = false;
+			this.ut._log("loadSettings()");
+		}
 		this.otherSrc = !!pSrc;
 		this._loadError = 0;
 		pSrc = pSrc || this.prefsFile;

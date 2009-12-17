@@ -59,10 +59,10 @@ var handyClicks = {
 			this.pu.pref("uiVersion", 1).savePrefFile();
 		}
 
-		this.ps.loadSettings();
+		//this.ps.loadSettings(null, true);
+		this.setStatus(); // This call this.ps.loadSettings(null, true);
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], true);
 		this.pu.oSvc.addObserver(this.updUI, this);
-		this.setStatus();
 		this.registerHotkeys();
 		this.showHideControls();
 		reloadFlag && this.setEditModeStatus();
@@ -85,8 +85,8 @@ var handyClicks = {
 	get enabled() {
 		return this._enabled && this.pu.pref("enabled");
 	},
-	set enabled(val) {
-		this.pu.pref("enabled", val);
+	set enabled(on) {
+		this.pu.pref("enabled", on);
 	},
 
 	_editMode: false,
@@ -1041,6 +1041,7 @@ var handyClicks = {
 	},
 	setStatus: function() {
 		var enabled = this.enabled;
+		this.ps.loadSettings(null, true);
 		var tt = this.ut.getLocalized(enabled ? "enabledTip" : "disabledTip");
 		var ttAttr = this.fn.tooltipAttrBase + "0";
 		this.setControls(
