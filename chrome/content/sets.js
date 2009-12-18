@@ -1343,6 +1343,7 @@ var handyClicksSets = {
 			this.ut.alertEx(
 				this.ut.getLocalized("importErrorTitle"),
 				this.ut.getLocalized("invalidConfigFormat")
+					+ (this.ps.checkPrefsStr.hashError ? this.ut.getLocalized("invalidHash") : "")
 			);
 			return;
 		}

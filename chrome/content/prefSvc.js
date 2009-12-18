@@ -83,19 +83,15 @@ var handyClicksPrefSvc = {
 			tar[p] = this.ut.getOwnProperty(src, this._prefVars[p]);
 	},
 	_loadError: 0,
-	_needLoad: true,
-	loadSettings: function(pSrc, fromMainWnd) {
+	_skippedLoad: false,
+	loadSettings: function(pSrc) {
 		if(this.isMainWnd) {
-			if(fromMainWnd && !this._needLoad) {
-				this.ut._log("loadSettings() from main window => not needed");
-				return;
-			}
-			if(!fromMainWnd && !this.hc.enabled) {
+			if(!this.hc.enabled) {
 				this.ut._log("loadSettings() -> disabled");
-				this._needLoad = true;
+				this._skippedLoad = true;
 				return;
 			}
-			this._needLoad = false;
+			this._skippedLoad = false;
 			this.ut._log("loadSettings()");
 		}
 		this.otherSrc = !!pSrc;
@@ -421,6 +417,9 @@ var handyClicksPrefSvc = {
 		}
 		res = this.delLastComma(res) + "};";
 
+		const hashFunc = "SHA256";
+		res += "\n// " + hashFunc + ": " + this.getHash(res, hashFunc);
+
 		if(!dontSave)
 			this.saveSettings(res);
 		if(reloadFlag !== null)
@@ -452,6 +451,24 @@ var handyClicksPrefSvc = {
 			}
 		);
 		return arr.length > 0;
+	},
+	getHash: function(str, hashFunc) {
+		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+		suc.charset = "UTF-8";
+		var result = {};
+		var data = suc.convertToByteArray(str, result);
+		var ch = Components.classes["@mozilla.org/security/hash;1"]
+			.createInstance(Components.interfaces.nsICryptoHash);
+		ch.init(ch[hashFunc]);
+		ch.update(data, data.length);
+		var hash = ch.finish(false);
+		return Array.map(
+			hash,
+			function(chr) {
+				return ("0" + chr.charCodeAt(0).toString(16)).slice(-2);
+			}
+		).join("");
 	},
 	reloadSettings: function(reloadAll) {
 		const pSvc = "handyClicksPrefSvc";
@@ -605,13 +622,26 @@ var handyClicksPrefSvc = {
 			? this.dec(str.substr(add.length))
 			: str;
 	},
-	checkPrefsStr: function(str) {
+	checkPrefsStr: function _cps(str) {
+		_cps.hashError = false;
 		str = this.getPrefsStr(str);
 		if(str.indexOf(this.requiredHeader) != 0) // Support for old header
 			return false;
 		const hc = /^var handyClicks[\w$]+\s*=.*$/mg;
 		if(!hc.test(str))
 			return false;
+
+		const hashRe = /(?:\r\n|\n|\r)\/\/[ \t]?(MD2|MD5|SHA1|SHA512|SHA256|SHA384):[ \t]?([a-f0-9]+)$/;
+		if(hashRe.test(str)) { // Added: 2009-12-18, todo: return false, if hash check failed
+			var hashFunc = RegExp.$1;
+			var hash = RegExp.$2;
+			str = str.replace(hashRe, "");
+			if(hash != this.getHash(str, hashFunc)) {
+				_cps.hashError = true;
+				return false;
+			}
+		}
+
 		str = str.replace(hc, ""); // Replace handyClicks* vars
 		str = str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/g, ""); // Replace comments
 		if(/\/\/|\/\*|\*\//.test(str)) // No other comments

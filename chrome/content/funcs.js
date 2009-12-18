@@ -1184,9 +1184,7 @@ var handyClicksFuncs = {
 		var tNode = document.tooltipNode;
 		var attrBase = this.tooltipAttrBase;
 		var i = 0, cache, lbl, val;
-		var attrName = attrBase + i;
-		var styleAttr, classAttr;
-		while(tNode.hasAttribute(attrName)) {
+		for(var attrName = attrBase + i; tNode.hasAttribute(attrName); attrName = attrBase + ++i) {
 			cache = "_" + attrName;
 			lbl = cache in tooltip && tooltip[cache];
 			if(!lbl) {
@@ -1195,14 +1193,12 @@ var handyClicksFuncs = {
 				tooltip.firstChild.appendChild(lbl);
 				tooltip[cache] = lbl;
 			}
-			var val = tNode.getAttribute(attrName);
-			lbl.setAttribute("value", val);
-
 			this.ut.attribute(lbl, "style", tNode.getAttribute(this.tooltipAttrStyle + i));
 			this.ut.attribute(lbl, "class", tNode.getAttribute(this.tooltipAttrClass + i));
 
+			val = tNode.getAttribute(attrName);
+			lbl.setAttribute("value", val);
 			lbl.hidden = !val; // Hide empty lines
-			attrName = attrBase + ++i;
 		}
 		return i > 0;
 	},

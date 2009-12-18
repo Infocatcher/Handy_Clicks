@@ -59,8 +59,8 @@ var handyClicks = {
 			this.pu.pref("uiVersion", 1).savePrefFile();
 		}
 
-		//this.ps.loadSettings(null, true);
-		this.setStatus(); // This call this.ps.loadSettings(null, true);
+		this.ps.loadSettings();
+		this.setStatus();
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], true);
 		this.pu.oSvc.addObserver(this.updUI, this);
 		this.registerHotkeys();
@@ -423,8 +423,7 @@ var handyClicks = {
 
 		// Link:
 		if(all || this.itemTypeInSets(sets, "link")) {
-			_it = it;
-			while(_it && _it.nodeType != docNode) {
+			for(_it = it; _it && _it.nodeType != docNode; _it = _it.parentNode) {
 				if(
 					(_it.localName.toLowerCase() == "a" && _it.href)
 					|| (
@@ -436,7 +435,6 @@ var handyClicks = {
 					this.item = _it;
 					return;
 				}
-				_it = _it.parentNode;
 			}
 		}
 
@@ -487,8 +485,7 @@ var handyClicks = {
 			&& it.namespaceURI == this.ut.XULNS
 			&& itln != "toolbarbutton"
 		) {
-			_it = it;
-			while(_it && _it.nodeType != docNode) {
+			for(_it = it; _it && _it.nodeType != docNode; _it = _it.parentNode) {
 				if(
 					_it.localName.toLowerCase() == "tab"
 					&& (
@@ -506,7 +503,6 @@ var handyClicks = {
 					this.item = _it;
 					return;
 				}
-				_it = _it.parentNode;
 			}
 		}
 
@@ -516,8 +512,7 @@ var handyClicks = {
 			&& it.namespaceURI == this.ut.XULNS
 			&& itln != "toolbarbutton"
 		) {
-			_it = it;
-			while(_it && _it.nodeType != docNode) {
+			for(_it = it; _it && _it.nodeType != docNode; _it = _it.parentNode) {
 				_itln = _it.localName.toLowerCase();
 				if(_itln == "tab" || _itln == "toolbarbutton")
 					break;
@@ -526,7 +521,6 @@ var handyClicks = {
 					this.item = _it;
 					return;
 				}
-				_it = _it.parentNode;
 			}
 		}
 
@@ -537,14 +531,12 @@ var handyClicks = {
 				this.item = it;
 				return;
 			}
-			_it = it;
-			while(_it && _it.nodeType != docNode) {
+			for(_it = it; _it && _it.nodeType != docNode; _it = _it.parentNode) {
 				if(_it.localName.toLowerCase() == "button" && this.inObject("form", _it)) {
 					this.itemType = "submitButton";
 					this.item = _it;
 					return;
 				}
-				_it = _it.parentNode;
 			}
 		}
 
@@ -793,13 +785,12 @@ var handyClicks = {
 		var doc = document;
 		if(this.ut.isChromeDoc(node.ownerDocument) || node.namespaceURI == this.ut.XULNS) {
 			var docNode = Node.DOCUMENT_NODE; // 9
-			while(node && node.nodeType != docNode) {
+			for(; node && node.nodeType != docNode; node = node.parentNode) {
 				if(node.hasAttribute("context")) {
 					id = node.getAttribute("context");
 					doc = node.ownerDocument;
 					break;
 				}
-				node = node.parentNode;
 			}
 		}
 		if(!id) {
@@ -1041,7 +1032,8 @@ var handyClicks = {
 	},
 	setStatus: function() {
 		var enabled = this.enabled;
-		this.ps.loadSettings(null, true);
+		if(enabled && this.ps._skippedLoad)
+			this.ps.loadSettings();
 		var tt = this.ut.getLocalized(enabled ? "enabledTip" : "disabledTip");
 		var ttAttr = this.fn.tooltipAttrBase + "0";
 		this.setControls(

@@ -290,10 +290,9 @@
 				<setter>
 				<![CDATA[
 					var node = this;
-					while(node && "setAttribute" in node) {
+					for(; node && "setAttribute" in node; node = node.parentNode) {
 						if(val) node.setAttribute("hc_maximized", "true");
 						else    node.removeAttribute("hc_maximized");
-						node = node.parentNode;
 					}
 				]]>
 				</setter>

@@ -620,18 +620,17 @@ var handyClicksEditor = {
 		e.preventDefault();
 		e.stopPropagation();
 		w:
-		while(elt) {
-			if(elt.localName == "tabpanel") {
-				var ts = elt.getElementsByTagName("textbox"), t;
-				for(var i = 1, len = ts.length; i < len; i++) {
-					t = ts[i];
-					if(!cre.test(t.className || "")) {
-						t.focus();
-						break w;
-					}
+		for(; elt; elt = elt.parentNode) {
+			if(elt.localName != "tabpanel")
+				continue;
+			var ts = elt.getElementsByTagName("textbox"), t;
+			for(var i = 1, len = ts.length; i < len; i++) {
+				t = ts[i];
+				if(!cre.test(t.className || "")) {
+					t.focus();
+					break w;
 				}
 			}
-			elt = elt.parentNode;
 		}
 	},
 
