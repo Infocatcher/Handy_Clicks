@@ -87,12 +87,12 @@ var handyClicksPrefSvc = {
 	loadSettings: function(pSrc) {
 		if(this.isMainWnd) {
 			if(!this.hc.enabled) {
-				this.ut._log("loadSettings() -> disabled");
+				this._devMode && this.ut._log("loadSettings() -> disabled");
 				this._skippedLoad = true;
 				return;
 			}
 			this._skippedLoad = false;
-			this.ut._log("loadSettings()");
+			this._devMode && this.ut._log("loadSettings()");
 		}
 		this.otherSrc = !!pSrc;
 		this._loadError = 0;
@@ -345,7 +345,7 @@ var handyClicksPrefSvc = {
 		}
 	},
 	saveSettingsObjects: function(reloadFlag, types, prefs, dontSave) {
- 		var res = this.prefsHeader + this.versionInfo;
+ 		var res = this.versionInfo;
 		var sh, so, type, to, pName, pVal, dName;
 		var forcedDisByType = { __proto__: null };
 		var forcedDis;
@@ -418,7 +418,9 @@ var handyClicksPrefSvc = {
 		res = this.delLastComma(res) + "};";
 
 		const hashFunc = "SHA256";
-		res += "\n// " + hashFunc + ": " + this.getHash(res, hashFunc);
+		res = this.prefsHeader
+			+ "// " + hashFunc + ": " + this.getHash(res, hashFunc) + "\n"
+			+ res;
 
 		if(!dontSave)
 			this.saveSettings(res);
@@ -631,11 +633,12 @@ var handyClicksPrefSvc = {
 		if(!hc.test(str))
 			return false;
 
-		const hashRe = /(?:\r\n|\n|\r)\/\/[ \t]?(MD2|MD5|SHA1|SHA512|SHA256|SHA384):[ \t]?([a-f0-9]+)$/;
+		const hashRe = /(?:\r\n|\n|\r)\/\/[ \t]?(MD2|MD5|SHA1|SHA512|SHA256|SHA384):[ \t]?([a-f0-9]+)(?=[\n\r]|$)/;
 		if(hashRe.test(str)) { // Added: 2009-12-18, todo: return false, if hash check failed
 			var hashFunc = RegExp.$1;
 			var hash = RegExp.$2;
 			str = str.replace(hashRe, "");
+			str = str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Replace comments
 			if(hash != this.getHash(str, hashFunc)) {
 				_cps.hashError = true;
 				return false;
@@ -643,7 +646,7 @@ var handyClicksPrefSvc = {
 		}
 
 		str = str.replace(hc, ""); // Replace handyClicks* vars
-		str = str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/g, ""); // Replace comments
+		str = str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Replace comments
 		if(/\/\/|\/\*|\*\//.test(str)) // No other comments
 			return false;
 		str = str.replace(/"[^"]*"/g, "_dummy_"); // Replace strings

@@ -959,7 +959,7 @@ var handyClicks = {
 		var tb = "gNavToolbox" in window && gNavToolbox
 			|| "getNavToolbox" in window && getNavToolbox() // Firefox 3.0
 			|| this.e("navigator-toolbox"); // Firefox <= 2.0
-		if(!tb)
+		if(!tb || !("palette" in tb))
 			return null;
 		var elt = tb.palette.getElementsByAttribute("id", this.toolbarButtonId);
 		if(elt.length) {

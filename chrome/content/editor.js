@@ -388,7 +388,7 @@ var handyClicksEditor = {
 				: action;
 		if(!fList.value) // fix for Firefox 2.0
 			fList.selectedIndex = -1;
-		const typeRe = this.getTypeRegExp(this.type);
+		const type = this.type;
 		var hideSep = true;
 		Array.forEach(
 			this.$("hc-editor-funcPopup" + delayed).childNodes,
@@ -398,7 +398,7 @@ var handyClicksEditor = {
 					hideSep = true;
 					return;
 				}
-				if(this.notSupported(typeRe, it)) {
+				if(this.notSupported(type, it)) {
 					it.hidden = true;
 					return;
 				}
@@ -408,15 +408,15 @@ var handyClicksEditor = {
 		);
 		this.addFuncArgs(delayed);
 	},
-	getTypeRegExp: function(type) {
-		return new RegExp("(?:^|[\\s,;]+)" + this.escapeRegExp(type) + "(?:[\\s,;]+|$)|^\\$all$");
-	},
-	escapeRegExp: function(s) {
-		return ("" + s).replace(/[\\^$+*?()\[\]{}]/g, "\\$&");
-	},
-	notSupported: function(typeRe, actionItem, supp, req) {
-		return !typeRe.test(supp || actionItem && actionItem.getAttribute("hc_supports"))
-			|| !this.extAvailable(req || actionItem && actionItem.getAttribute("hc_required"));
+	notSupported: function(type, actionItem, supp, app, req) {
+		if(actionItem) {
+			supp = actionItem.getAttribute("hc_supports");
+			app  = actionItem.getAttribute("hc_app");
+			req  = actionItem.getAttribute("hc_required");
+		}
+		return supp && supp.split(/,\s*/).indexOf(type) == -1
+			|| app && app.split(/,\s*/).indexOf(this.ut.appInfo.name) == -1
+			|| req && !this.extAvailable(req);
 	},
 	exts: {
 		SplitBrowser: "{29c4afe1-db19-4298-8785-fcc94d1d6c1d}",
@@ -424,9 +424,7 @@ var handyClicksEditor = {
 		"Multiple Tab Handler": "multipletab@piro.sakura.ne.jp"
 	},
 	extAvailable: function(eName) {
-		return eName
-			? this.eh.isAvailable(this.exts[eName])
-			: true; // "hc_required" attribute is missing
+		return this.eh.isAvailable(this.exts[eName]);
 	},
 	itemTypeChanged: function(iType) {
 		this.addFuncArgs();
@@ -462,7 +460,7 @@ var handyClicksEditor = {
 		if(!cArgs)
 			return;
 		argBox.hidden = false;
-		cArgs.split(/[\s,;]+/).forEach(
+		cArgs.split(/,\s*/).forEach(
 			function(arg) {
 				this.addArgControls(arg, delayed);
 			},
@@ -769,6 +767,7 @@ var handyClicksEditor = {
 			return;
 		this.storage("shortcut", {
 			supports: si.getAttribute("hc_supports"),
+			app:      si.getAttribute("hc_app"),
 			required: si.getAttribute("hc_required"),
 			so: this.getFuncObj(delayed)
 		});
@@ -780,7 +779,7 @@ var handyClicksEditor = {
 		var type = this.currentType;
 		if(
 			!type || /^0(?:\.\d+)?$/.test(type) // type can be Math.random()
-			|| this.notSupported(this.getTypeRegExp(type), null, st.supports, st.required)
+			|| this.notSupported(type, null, st.supports, st.app, st.required)
 		)
 			return;
 

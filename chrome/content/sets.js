@@ -509,7 +509,6 @@ var handyClicksSets = {
 		if(indx == -1 || indx >= this.tView.rowCount)
 			return null;
 		return this.tView.getItemAtIndex(indx); // <treeitem>
-		//return this.tView.getItemAtIndex(indx).getElementsByTagName("treerow")[0] || null;
 	},
 	getRowForItem: function(item) {
 		var chs = item.childNodes;
