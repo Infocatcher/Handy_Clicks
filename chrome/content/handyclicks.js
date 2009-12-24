@@ -407,7 +407,7 @@ var handyClicks = {
 			}
 		}
 
-		var docNode = Node.DOCUMENT_NODE; // 9
+		const docNode = Node.DOCUMENT_NODE; // 9
 
 		// img:
 		if(
@@ -423,13 +423,22 @@ var handyClicks = {
 
 		// Link:
 		if(all || this.itemTypeInSets(sets, "link")) {
+			const eltNode = Node.ELEMENT_NODE; // 1
 			for(_it = it; _it && _it.nodeType != docNode; _it = _it.parentNode) {
+				// https://bugzilla.mozilla.org/show_bug.cgi?id=266932
+				// https://bug266932.bugzilla.mozilla.org/attachment.cgi?id=206815
+				// It's strange to see another link in Status Bar
+				// and other browsers (Opera, Safari, Google Chrome) will open "top level" link.
+				// And IE... IE won't open XML (it's important!) testcase. :D
+				// Also this seems like bug of left-click handler.
+				// So, let's open link, which user see in Status Bar.
 				if(
-					(_it.localName.toLowerCase() == "a" && _it.href)
-					|| (
-						_it.nodeType == Node.ELEMENT_NODE
-						&& _it.hasAttributeNS("http://www.w3.org/1999/xlink", "href")
-					)
+					(
+						_it instanceof HTMLAnchorElement
+						|| _it instanceof HTMLAreaElement
+						|| _it instanceof HTMLLinkElement
+					) && _it.hasAttribute("href")
+					|| _it.nodeType == eltNode && _it.hasAttributeNS("http://www.w3.org/1999/xlink", "href")
 				) {
 					this.itemType = "link";
 					this.item = _it;
