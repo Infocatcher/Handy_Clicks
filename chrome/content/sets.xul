@@ -86,7 +86,7 @@
 				<hbox id="hc-sets-tree-partialImportPanel" hidden="true" pack="center" align="center">
 					<button id="hc-sets-tree-buttonImportOk" oncommand="handyClicksSets.importDone(true);"
 						accesskey="&hc.sets.importOkAccesskey;"
-						hc_label_full="&hc.sets.importOk;" hc_label_partial="&hc.sets.importIncrementOk;" />
+						hc_labelFull="&hc.sets.importOk;" hc_labelPartial="&hc.sets.importIncrementOk;" />
 					<grid id="hc-sets-tree-importStatistics" tooltiptext="&hc.sets.importTip;">
 						<columns>
 							<column />
@@ -105,7 +105,7 @@
 					</grid>
 					<button id="hc-sets-tree-buttonImportCancel" oncommand="handyClicksSets.importDone(false);"
 						accesskey="&hc.sets.importCancelAccesskey;"
-						hc_label_full="&hc.sets.importCancel;" hc_label_partial="&hc.sets.importIncrementCancel;" />
+						hc_labelFull="&hc.sets.importCancel;" hc_labelFartial="&hc.sets.importIncrementCancel;" />
 				</hbox>
 				<hbox pack="center">
 					<button id="hc-sets-tree-buttonAdd" label="&hc.sets.cmdAdd;" onclick="handyClicksSets.addItems(event);" oncommand="handyClicksSets.addItems(event);" />
@@ -153,7 +153,7 @@
 			<preference id="notifyDontCloseUnderCursor" type="bool" name="extensions.handyclicks.notifyDontCloseUnderCursor" />
 		</preferences>
 
-		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" hc_important="enabled" />
+		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" handyclicks_important="enabled" />
 		<groupbox>
 			<caption label="&hc.sets.appearance;" />
 			<checkbox preference="showInToolsMenu" label="&hc.sets.showInToolsMenu;" />
@@ -162,10 +162,10 @@
 		<groupbox>
 			<caption label="&hc.sets.disallowMousemove;" />
 			<vbox>
-				<hbox hc_requiredfor="disallowMousemove">
-					<checkbox id="hc-sets-disallowMousemove-0" label="&hc.sets.left;" hc_requiredfor="disallowMousemove" hc_checkparent="true" />
-					<checkbox id="hc-sets-disallowMousemove-1" label="&hc.sets.middle;" hc_requiredfor="disallowMousemove" hc_checkparent="true" />
-					<checkbox id="hc-sets-disallowMousemove-2" label="&hc.sets.right;" hc_requiredfor="disallowMousemove" hc_checkparent="true" />
+				<hbox hc_requiredFor="disallowMousemove">
+					<checkbox id="hc-sets-disallowMousemove-0" label="&hc.sets.left;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
+					<checkbox id="hc-sets-disallowMousemove-1" label="&hc.sets.middle;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
+					<checkbox id="hc-sets-disallowMousemove-2" label="&hc.sets.right;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
 				</hbox>
 				<hbox align="center" hc_depends="disallowMousemove">
 					<label value="&hc.sets.maxDistance;" />
@@ -177,7 +177,7 @@
 		<hbox align="center">
 			<label value="&hc.sets.delayedActionTimeout;" hc_depends="delayedTimeout" />
 			<textbox preference="delayedActionTimeout" type="number" min="0" max="7000" increment="10" style="width: 4.5em;"
-				hc_requiredfor="delayedTimeout" hc_disabledvalues="0" />
+				hc_requiredFor="delayedTimeout" hc_disabledValues="0" />
 			<label value="&hc.sets.zeroForDisable;" hc_depends="delayedTimeout" />
 		</hbox>
 		<groupbox>
@@ -185,7 +185,7 @@
 			<hbox align="center">
 				<label value="&hc.sets.notifyCloseAfter;" hc_depends="notify" />
 				<textbox preference="notifyOpenTime" type="number" min="0" max="30000" increment="50" style="width: 5em;"
-					hc_requiredfor="notify" hc_disabledvalues="0" />
+					hc_requiredFor="notify" hc_disabledValues="0" />
 				<label value="&hc.sets.zeroForDisable;" hc_depends="notify" />
 			</hbox>
 			<checkbox preference="notifyInWindowCorner" hc_depends="notify" label="&hc.sets.notifyInWindowCorner;" />
@@ -218,7 +218,7 @@
 		<groupbox>
 			<caption label="&hc.sets.fileLinks;" />
 			<hbox align="center">
-				<menulist preference="filesLinksPolicy" hc_requiredfor="regexp" hc_disabledvalues="-1">
+				<menulist preference="filesLinksPolicy" hc_requiredFor="regexp" hc_disabledValues="-1">
 					<menupopup>
 						<menuitem value="-1" label="&hc.sets.fileLinksNotCheck;" />
 						<menuitem value="0" label="&hc.sets.fileLinksShowContext;" />
@@ -233,7 +233,7 @@
 		</groupbox>
 		<groupbox>
 			<caption label="&hc.sets.openURIsInApps;" />
-			<checkbox preference="convertURIs" hc_requiredfor="convert" label="&hc.sets.convertURIs;" />
+			<checkbox preference="convertURIs" hc_requiredFor="convert" label="&hc.sets.convertURIs;" />
 			<hbox align="center" hc_depends="convert">
 				<textbox preference="convertURIsCharset" style="width: 10em;" />
 				<label value="&hc.sets.emptyForAutodetect;" />
@@ -309,7 +309,7 @@
 	<popupset id="hc-sets-popupset">
 		<popup id="hc-sets-tree-context"
 			onpopupshowing="if(event.target == this) handyClicksSets.checkClipboard(); return handyClicksSets.checkTreeContext();">
-			<menuitem id="hc-sets-edit" command="hc-sets-cmd-edit" key="hc-sets-key-edit" hc_main="true" />
+			<menuitem id="hc-sets-edit" command="hc-sets-cmd-edit" key="hc-sets-key-edit" handyclicks_main="true" />
 			<menuitem id="hc-sets-editType" command="hc-sets-cmd-editType" key="hc-sets-key-editType" />
 			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" />
 			<menuseparator />

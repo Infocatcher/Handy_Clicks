@@ -48,7 +48,7 @@ var handyClicksEditor = {
 			}
 		);
 		if(this.ut.fxVersion == 3)
-			document.documentElement.setAttribute("hc_fxversion", "3.0"); // See style/editor.css
+			document.documentElement.setAttribute("hc_fxVersion", "3.0"); // See style/editor.css
 	},
 	destroy: function(reloadFlag) {
 		this.wu.markOpenedEditors();
@@ -114,7 +114,7 @@ var handyClicksEditor = {
 		Array.forEach(
 			ml.getElementsByTagName("menuitem"),
 			function(mi) {
-				if(!mi.hasAttribute("hc_extlabel"))
+				if(!mi.hasAttribute("hc_extLabel"))
 					mi.setAttribute("label", this.ut.getLocalized(mi.getAttribute("label")));
 				if(mi.hasAttribute("tooltiptext"))
 					mi.setAttribute("tooltiptext", this.ut.getLocalized(mi.getAttribute("tooltiptext")));
@@ -158,7 +158,7 @@ var handyClicksEditor = {
 					return;
 				}
 				Array.forEach(
-					this.$("hc-editor-funcPopup").getElementsByAttribute("hc_extlabel", ext),
+					this.$("hc-editor-funcPopup").getElementsByAttribute("hc_extLabel", ext),
 					function(mi) {
 						mi.setAttribute("label", this.getExtLabel(mi.getAttribute("label")));
 					},
@@ -490,7 +490,7 @@ var handyClicksEditor = {
 		const ns = this.ut.XULNS;
 		//default xml namespace = this.ut.XULNS;
 		var argContainer = <hbox xmlns={ns} align="center" class="hc-editor-argsContainer" />;
-		var elt = <{argType} xmlns={ns} hc_argname={argName} />;
+		var elt = <{argType} xmlns={ns} hc_argName={argName} />;
 		elt.@onclick = "handyClicksEditor.clickHelper(event);";
 
 		var cfgTt = this.ut.getLocalized("openAboutConfig");
@@ -503,7 +503,7 @@ var handyClicksEditor = {
 
 				cfg = this.getAboutConfigEntry(label);
 				if(cfg) {
-					elt.@hc_about_config_entry = cfg;
+					elt.@hc_aboutConfigEntry = cfg;
 					elt.@tooltiptext = cfgTt;
 				}
 			break;
@@ -517,11 +517,11 @@ var handyClicksEditor = {
 						var label = this.ut.getLocalized(argName + "[" + val + "]");
 						cfg = this.getAboutConfigEntry(label);
 						var mi = <menuitem xmlns={ns} value={val} label={label}
-							hc_about_config_entry={cfg} tooltiptext={cfg ? cfgTt : ""} />;
+							hc_aboutConfigEntry={cfg} tooltiptext={cfg ? cfgTt : ""} />;
 						if(!cfg) // Firefox 1.5 crashes on actions like mi.@some_attribute = "";
-							delete mi.@hc_about_config_entry;
+							delete mi.@hc_aboutConfigEntry;
 						else if(!argVal && indx === 0 || val == argVal) { //~ todo: test!
-							elt.@hc_about_config_entry = cfg;
+							elt.@hc_aboutConfigEntry = cfg;
 							elt.@tooltiptext = cfgTt;
 							elt.@oncommand = "handyClicksEditor.setAboutConfigTooltip(this);";
 						}
@@ -542,21 +542,21 @@ var handyClicksEditor = {
 		if(e.button != 2)
 			return;
 		var tar = e.target;
-		if(!tar.hasAttribute("hc_about_config_entry"))
+		if(!tar.hasAttribute("hc_aboutConfigEntry"))
 			return;
 		var mp = tar.parentNode;
 		if("hidePopup" in mp)
 			mp.hidePopup();
-		this.pu.openAboutConfig(tar.getAttribute("hc_about_config_entry"));
+		this.pu.openAboutConfig(tar.getAttribute("hc_aboutConfigEntry"));
 	},
 	setAboutConfigTooltip: function(ml) {
 		var si = ml.selectedItem;
-		if(si && si.hasAttribute("hc_about_config_entry")) {
-			ml.setAttribute("hc_about_config_entry", si.getAttribute("hc_about_config_entry"));
+		if(si && si.hasAttribute("hc_aboutConfigEntry")) {
+			ml.setAttribute("hc_aboutConfigEntry", si.getAttribute("hc_aboutConfigEntry"));
 			ml.setAttribute("tooltiptext", this.ut.getLocalized("openAboutConfig"));
 			return;
 		}
-		ml.removeAttribute("hc_about_config_entry");
+		ml.removeAttribute("hc_aboutConfigEntry");
 		ml.removeAttribute("tooltiptext");
 	},
 
@@ -730,7 +730,7 @@ var handyClicksEditor = {
 			so.action = fnc;
 			so.arguments = {};
 			var args = so.arguments;
-			var aIts = this.$("hc-editor-funcArgs" + delayed).getElementsByAttribute("hc_argname", "*");
+			var aIts = this.$("hc-editor-funcArgs" + delayed).getElementsByAttribute("hc_argName", "*");
 			var aIt, aVal;
 			for(var i = 0, len = aIts.length; i < len; i++) {
 				aIt = aIts[i];
@@ -741,7 +741,7 @@ var handyClicksEditor = {
 					else if(/^-?\d+$/.test(aVal))
 						aVal = parseInt(aVal);
 				}
-				args[aIt.getAttribute("hc_argname")] = aVal;
+				args[aIt.getAttribute("hc_argName")] = aVal;
 			}
 		}
 		return so;

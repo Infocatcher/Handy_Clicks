@@ -5,8 +5,8 @@
 			<constructor>
 			<![CDATA[
 				var ww = -1;
-				if(this.hasAttribute("hc_wrap_width")) {
-					var _ww = Number(this.getAttribute("hc_wrap_width"));
+				if(this.hasAttribute("hc_wrapWidth")) {
+					var _ww = Number(this.getAttribute("hc_wrapWidth"));
 					if(isFinite(_ww))
 						ww = _ww;
 				}
@@ -343,11 +343,11 @@
 			<method name="toggleWordWrap">
 				<body>
 				<![CDATA[
-					var ww = this.getAttribute("hc_wrap_width") == "0" ? -1 : 0;
+					var ww = this.getAttribute("hc_wrapWidth") == "0" ? -1 : 0;
 					this.editor.wrapWidth = ww;
-					this.setAttribute("hc_wrap_width", ww);
+					this.setAttribute("hc_wrapWidth", ww);
 					if(this.id)
-						document.persist(this.id, "hc_wrap_width");
+						document.persist(this.id, "hc_wrapWidth");
 				]]>
 				</body>
 			</method>

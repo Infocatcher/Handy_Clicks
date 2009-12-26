@@ -1177,9 +1177,9 @@ var handyClicksFuncs = {
 		this.hc.showPopupOnItem();
 	},
 
-	tooltipAttrBase: "hc_tooltip_",
-	tooltipAttrStyle: "hc_tooltip_style_",
-	tooltipAttrClass: "hc_tooltip_class_",
+	tooltipAttrBase: "handyclicks_tooltip-",
+	tooltipAttrStyle: "handyclicks_tooltipStyle-",
+	tooltipAttrClass: "handyclicks_tooltipClass-",
 	fillInTooltip: function(tooltip) {
 		var tNode = document.tooltipNode;
 		var attrBase = this.tooltipAttrBase;

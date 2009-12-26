@@ -21,7 +21,7 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
 #handyClicks-toolbarButton[hc_enabled="false"] {
 	-moz-image-region: rect(0 48px 24px 24px);
 }
-[id^="handyClicks-"][hc_editmode="true"] {
+[id^="handyClicks-"][hc_editMode="true"] {
 	outline: 1px solid red !important;
 	outline-offset: -1px !important;
 }

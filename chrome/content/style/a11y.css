@@ -1,22 +1,18 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 @namespace html url("http://www.w3.org/1999/xhtml");
 
-menuitem[hc_main="true"] {
+menuitem[handyclicks_main="true"] {
 	font-weight: bold;
 }
 
-checkbox[hc_important="enabled"] label {
+checkbox[handyclicks_important="enabled"] label {
 	font-weight: bold;
 	padding-top: 1px;
 	padding-bottom: 0;
 }
-checkbox[hc_important="enabled"] html|span {
+checkbox[handyclicks_important="enabled"] html|span {
 	border-bottom: 2px solid transparent;
 }
-checkbox[hc_important="enabled"]:not([checked="true"]) html|span {
+checkbox[handyclicks_important="enabled"]:not([checked="true"]) html|span {
 	border-bottom: 2px solid red;
-}
-
-tab[hc_disabled="true"] {
-	text-decoration: line-through;
 }

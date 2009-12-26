@@ -26,8 +26,12 @@ menulist[hc_sets="disabled"] .menulist-label {
 	text-decoration: line-through;
 }
 
-:root[hc_fxversion="3.0"] menuitem[hc_sets="disabled"],
-:root[hc_fxversion="3.0"] menulist[hc_sets="disabled"] .menulist-label-box {
+tab[hc_disabled="true"] {
+	text-decoration: line-through;
+}
+
+:root[hc_fxVersion="3.0"] menuitem[hc_sets="disabled"],
+:root[hc_fxVersion="3.0"] menulist[hc_sets="disabled"] .menulist-label-box {
 	/* Firefox 3.0 don't show line-through without this */
 	text-decoration: underline;
 }
@@ -74,15 +78,15 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 	min-width: 9em;
 }
 
-#hc-editor-funcTab-delay [hc_notdelay="true"],
-#hc-editor-funcTab [hc_notfunc="true"] {
+#hc-editor-funcTab-delay [hc_notDelay="true"],
+#hc-editor-funcTab [hc_notFunc="true"] {
 	display: none;
 }
 
-menulist[hc_about_config_entry] .menulist-label,
-[hc_about_config_entry] {
+menulist[hc_aboutConfigEntry] .menulist-label,
+[hc_aboutConfigEntry] {
 	cursor: help;
 }
-[hc_about_config_entry] :not([hc_about_config_entry]) {
+[hc_aboutConfigEntry] :not([hc_aboutConfigEntry]) {
 	cursor: default;
 }

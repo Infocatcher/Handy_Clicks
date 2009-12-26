@@ -101,8 +101,8 @@
 
 							<vbox id="hc-editor-funcOpts" style="display: block;">
 								<hbox align="center">
-									<label value="&hc.editor.event;" hc_notdelay="true" />
-									<menulist id="hc-editor-events" hc_notdelay="true">
+									<label value="&hc.editor.event;" hc_notDelay="true" />
+									<menulist id="hc-editor-events" hc_notDelay="true">
 										<menupopup>
 											<menuitem value="mousedown" label="Mousedown" />
 											<menuitem value="click" label="Click" />
@@ -110,11 +110,11 @@
 											<menuitem value="dblclick" label="Dblclick" />
 										</menupopup>
 									</menulist>
-									<checkbox id="hc-editor-enabled" label="&hc.editor.enabled;" hc_important="enabled" />
+									<checkbox id="hc-editor-enabled" label="&hc.editor.enabled;" handyclicks_important="enabled" />
 								</hbox>
 								<hbox align="center">
-									<label id="hc-editor-allowMousedownLabel" value="&hc.editor.mousedownEvent;" hc_notdelay="true" />
-									<menulist id="hc-editor-allowMousedown" hc_notdelay="true">
+									<label id="hc-editor-allowMousedownLabel" value="&hc.editor.mousedownEvent;" hc_notDelay="true" />
+									<menulist id="hc-editor-allowMousedown" hc_notDelay="true">
 										<menupopup>
 											<menuitem value="true" label="&hc.editor.mousedownAllow;" />
 											<menuitem value="undefined" label="&hc.editor.mousedownSmart;" />
@@ -122,7 +122,7 @@
 										</menupopup>
 									</menulist>
 
-									<checkbox id="hc-editor-imgIgnoreLinks" hc_notdelay="true" label="&hc.editor.ignoreLinks;" />
+									<checkbox id="hc-editor-imgIgnoreLinks" hc_notDelay="true" label="&hc.editor.ignoreLinks;" />
 								</hbox>
 							</vbox>
 
@@ -170,22 +170,22 @@
 										<menuseparator id="hc-editor-funcsSep-tabs" />
 
 										<menuitem value="mthCloseTabs" label="mthCloseTabs"
-											hc_extlabel="Multiple Tab Handler"
+											hc_extLabel="Multiple Tab Handler"
 											hc_supports="ext_mulipletabs" />
 										<menuitem value="mthCloseOtherTabs" label="mthCloseOtherTabs"
-											hc_extlabel="Multiple Tab Handler"
+											hc_extLabel="Multiple Tab Handler"
 											hc_supports="ext_mulipletabs" />
 										<menuitem value="mthReloadTabs" label="mthReloadTabs"
-											hc_extlabel="Multiple Tab Handler"
+											hc_extLabel="Multiple Tab Handler"
 											hc_supports="ext_mulipletabs" />
 										<menuitem value="mthAddBookmarkFor" label="mthAddBookmarkFor"
-											hc_extlabel="Multiple Tab Handler"
+											hc_extLabel="Multiple Tab Handler"
 											hc_supports="ext_mulipletabs" />
 										<menuitem value="mthDuplicateTabs" label="mthDuplicateTabs"
-											hc_extlabel="Multiple Tab Handler"
+											hc_extLabel="Multiple Tab Handler"
 											hc_supports="ext_mulipletabs" />
 										<menuitem value="mthSplitWindowFromTabs" label="mthSplitWindowFromTabs"
-											hc_extlabel="Multiple Tab Handler"
+											hc_extLabel="Multiple Tab Handler"
 											hc_supports="ext_mulipletabs" />
 										<menuseparator id="hc-editor-funcsSep-mulipletabs" />
 
@@ -224,9 +224,9 @@
 											hc_supports="link, img, tab, bookmark, historyItem" />
 										<menuseparator id="hc-editor-funcsSep-exts" />
 
-										<menuitem value="$void" label="$void" hc_notdelay="true" />
-										<menuitem value="$ignore" label="$ignore" hc_notdelay="true" />
-										<menuitem value="$auto" label="$auto" hc_notfunc="true" />
+										<menuitem value="$void" label="$void" hc_notDelay="true" />
+										<menuitem value="$ignore" label="$ignore" hc_notDelay="true" />
+										<menuitem value="$auto" label="$auto" hc_notFunc="true" />
 
 										<!-- Custom code -->
 										<menuseparator id="hc-editor-funcsSep" />
@@ -285,7 +285,7 @@
 						onkeypress="return handyClicksEditor.customTypeIdFilter(event);"
 						oninput="handyClicksEditor.customTypeIdFilter(event);"
 						ondragexit="handyClicksEditor.customTypeIdFilter(event);" />
-					<checkbox id="hc-editor-customTypeEnabled" label="&hc.editor.enabled;" hc_important="enabled" />
+					<checkbox id="hc-editor-customTypeEnabled" label="&hc.editor.enabled;" handyclicks_important="enabled" />
 				</hbox>
 
 				<tabbox id="hc-editor-customTypeFuncs" flex="1">

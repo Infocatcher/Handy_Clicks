@@ -410,15 +410,24 @@ var handyClicks = {
 		const docNode = Node.DOCUMENT_NODE; // 9
 
 		// img:
-		if(
-			(all || this.itemTypeInSets(sets, "img"))
-			&& (itln == "img" || itln == "image") && (it.src || it.hasAttribute("src"))
-			&& !this.ut.isChromeDoc(it.ownerDocument) // Not for interface...
-		) {
-			this.itemType = "img";
-			this.item = it;
-			if(this.ut.getOwnProperty(sets, "img", "ignoreLinks"))
-				return;
+		if(all || this.itemTypeInSets(sets, "img")) {
+			if(itln == "_moz_generated_content_before") { // Alt-text
+				_it = it.parentNode;
+				_itln = _it.localName.toLowerCase();
+			}
+			else {
+				_it = it;
+				_itln = itln;
+			}
+			if(
+				(_itln == "img" || _itln == "image") && _it.hasAttribute("src")
+				&& !this.ut.isChromeDoc(_it.ownerDocument) // Not for interface...
+			) {
+				this.itemType = "img";
+				this.item = _it;
+				if(this.ut.getOwnProperty(sets, "img", "ignoreLinks"))
+					return;
+			}
 		}
 
 		// Link:
@@ -1019,7 +1028,7 @@ var handyClicks = {
 		var ttAttr = this.fn.tooltipAttrBase + "1";
 		this.setControls(
 			function(elt) {
-				elt.setAttribute("hc_editmode", em);
+				elt.setAttribute("hc_editMode", em);
 				elt.setAttribute(ttAttr, tt);
 			}
 		);

@@ -1028,7 +1028,7 @@ var handyClicksSets = {
 			}
 		}
 		this.$("hc-sets-tree-searchResults").value = hasTerm ? count : "";
-		sIt.setAttribute("hc_notfound", hasTerm && notFound);
+		sIt.setAttribute("hc_notFound", hasTerm && notFound);
 
 		this._lastSearch = Date.now();
 	},
@@ -1102,7 +1102,7 @@ var handyClicksSets = {
 		}
 		if(tar.localName == "menuitem")
 			tar = tar.parentNode.parentNode;
-		if(tar.hasAttribute("hc_requiredfor"))
+		if(tar.hasAttribute("hc_requiredFor"))
 			this.updateDependencies(tar, true);
 		if(tar.hasAttribute("preference")) {
 			var p = this.$(tar.getAttribute("preference"));
@@ -1118,17 +1118,17 @@ var handyClicksSets = {
 	},
 	updateAllDependencies: function() {
 		Array.forEach(
-			document.getElementsByAttribute("hc_requiredfor", "*"),
+			document.getElementsByAttribute("hc_requiredFor", "*"),
 			this.updateDependencies,
 			this
 		);
 	},
 	updateDependencies: function(it, checkAll) {
-		var checkParent = it.getAttribute("hc_checkparent") == "true";
+		var checkParent = it.getAttribute("hc_checkParent") == "true";
 		if(checkParent && checkAll !== true)
 			return;
-		var dis = it.hasAttribute("hc_disabledvalues")
-			? new RegExp("(?:^|\\s)" + it.value + "(?:\\s|$)").test(it.getAttribute("hc_disabledvalues"))
+		var dis = it.hasAttribute("hc_disabledValues")
+			? new RegExp("(?:^|\\s)" + it.value + "(?:\\s|$)").test(it.getAttribute("hc_disabledValues"))
 			: it.hasAttribute("checked") && !checkParent
 				? it.getAttribute("checked") != "true"
 				: Array.every(
@@ -1137,7 +1137,7 @@ var handyClicksSets = {
 						return ch.getAttribute("checked") != "true";
 					}
 				);
-		it.getAttribute("hc_requiredfor").split(/\s+/).forEach(
+		it.getAttribute("hc_requiredFor").split(/\s+/).forEach(
 			function(req) {
 				Array.forEach(
 					document.getElementsByAttribute("hc_depends", req),
@@ -1423,7 +1423,7 @@ var handyClicksSets = {
 		panel.hidden = !isImport;
 		if(!isImport)
 			return;
-		const lAttr = "hc_label_" + (isPartial ? "partial" : "full");
+		const lAttr = "hc_label" + (isPartial ? "Partial" : "Full");
 		Array.forEach(
 			panel.getElementsByAttribute(lAttr, "*"),
 			function(elt) {
