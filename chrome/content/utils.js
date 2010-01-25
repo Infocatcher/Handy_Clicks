@@ -413,8 +413,16 @@ var handyClicksUtils = {
 			n = 1;
 		return this.mm(n, 1, 100000);
 	},
-	trim: function(s) {
-		return s.trim ? s.trim() : s.replace(/^\s+|\s+$/g, "");
+
+	get trim() {
+		delete this.trim;
+		return this.trim = "trim" in String && String.trim.toString().indexOf("[native code]") != -1
+			? function(s) {
+				return s.trim();
+			}
+			: function(s) {
+				return s.replace(/^\s+|\s+$/g, "");
+			};
 	},
 
 	// E4X

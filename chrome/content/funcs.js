@@ -26,7 +26,8 @@ var handyClicksFuncs = {
 	copyItemText: function(e, closePopups) {
 		var text = this.getTextOfItem();
 		if(text) {
-			this.ut.copyStr(text);
+			text = Array.concat(text);
+			this.ut.copyStr(text.join("\n"));
 			this.hc.blinkNode();
 		}
 		if(closePopups)
@@ -35,11 +36,10 @@ var handyClicksFuncs = {
 	copyItemLink: function(e, closePopups) {
 		var link = this.getUriOfItem() || "";
 		if(link) {
+			link = Array.concat(link);
 			if(this.pu.pref("funcs.decodeURIs"))
-				link = link.split("\n")
-					.map(this.losslessDecodeURI, this)
-					.join("\n");
-			this.ut.copyStr(link);
+				link = link.map(this.losslessDecodeURI, this);
+			this.ut.copyStr(link.join("\n"));
 			this.hc.blinkNode();
 		}
 		if(closePopups)
@@ -48,9 +48,9 @@ var handyClicksFuncs = {
 	getTextOfItem: function(it, e, noTrim) {
 		it = it || this.hc.item;
 		var text = this.hc.itemType == "tabbar"
-			? this.forEachTab(this.getTabText).join("\n")
+			? this.forEachTab(this.getTabText)
 			: this.hc.itemType == "ext_mulipletabs"
-				? Array.map(it, this.getTabText, this).join("\n")
+				? Array.map(it, this.getTabText, this)
 				: it.textContent || it.label || it.alt || it.title || it.value
 					|| (
 						it.getAttribute
@@ -78,10 +78,10 @@ var handyClicksFuncs = {
 				uri = this.getTabUri(it);
 			break;
 			case "ext_mulipletabs":
-				uri = Array.map(it, this.getTabUri, this).join("\n");
+				uri = Array.map(it, this.getTabUri, this); //.join("\n");
 			break;
 			case "tabbar":
-				uri = this.forEachTab(this.getTabUri).join("\n");
+				uri = this.forEachTab(this.getTabUri); //.join("\n");
 			break;
 			default: // Support for custom types
 				uri = this.getLinkUri(it)
@@ -89,15 +89,29 @@ var handyClicksFuncs = {
 					|| this.hc.getBookmarkUri(it)
 					|| this.getTabUri(it);
 		}
-		if(this.isJSURI(uri))
-			try { uri = decodeURI(uri); }
-			catch(e) {}
+		
+		var isArr = this.ut.isArray(uri);
+		uri = Array.concat(uri).map(
+			function(s) {
+				if(this.isJSURI(s))
+					try { return decodeURI(s); }
+					catch(e) {}
+				return s;
+			},
+			this
+		);
+		if(!isArr)
+			uri = uri.toString();
 		return noTrim ? uri : this.trimStr(uri);
 	},
 	trimStr: function(s) {
-		return this.pu.pref("funcs.trimStrings")
-			? (s ? this.ut.safeToString(s) : "").replace(/^\s+|\s+$/g, "")
-			: s;
+		if(!this.pu.pref("funcs.trimStrings"))
+			return s;
+		var isArr = this.ut.isArray(s);
+		s = Array.concat(s)
+			.map(this.ut.safeToString, this.ut)
+			.map(this.ut.trim, this.ut);
+		return isArr ? s : s.toString();
 	},
 	getLinkUri: function(it) {
 		const ns = "http://www.w3.org/1999/xlink";
@@ -743,7 +757,7 @@ var handyClicksFuncs = {
 			return;
 		var args = tar.hc_args || [];
 		//args.push(popup.hc_uri);
-		var uris = popup.hc_uri.split("\n").map(this.convertStrFromUnicode, this);
+		var uris = Array.concat(popup.hc_uri).map(this.convertStrFromUnicode, this);
 		this.startProcess(tar.hc_path, Array.concat(args, uris));
 	},
 	losslessDecodeURI: function(value) {

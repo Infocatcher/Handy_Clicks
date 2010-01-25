@@ -35,13 +35,8 @@ var handyClicks = {
 							return false;
 						// Add toolbarbutton manually:
 						var newItem = this.paletteButton;
-						if(newItem) {
-							var nextItem = /,*([^,]+)/.test(RegExp.rightContext) && this.e(RegExp.$1);
-							if(nextItem)
-								tb.insertBefore(newItem, nextItem);
-							else
-								tb.appendChild(newItem);
-						}
+						if(newItem)
+							tb.insertBefore(newItem, /,*([^,]+)/.test(RegExp.rightContext) && this.e(RegExp.$1) || null);
 						// Fix "currentset" of toolbar:
 						cs = cs.replace(tbm, "," + this.toolbarButtonId + ",")
 							.replace(/^,+|,+$/g, "")
