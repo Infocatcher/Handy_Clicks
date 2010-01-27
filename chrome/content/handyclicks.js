@@ -61,10 +61,12 @@ var handyClicks = {
 		this.registerHotkeys();
 		this.showHideControls();
 		reloadFlag && this.setEditModeStatus();
+		this.initUninstallObserver();
 	},
 	destroy: function(reloadFlag) {
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
 		this.cancelDelayedAction();
+		this.destroyUninstallObserver();
 	},
 	setListeners: function(evtTypes, addFlag) {
 		var act = addFlag ? "addEventListener" : "removeEventListener";
@@ -1092,5 +1094,77 @@ var handyClicks = {
 		kElt.removeAttribute("disabled");
 		kElt.setAttribute(key.indexOf("VK_") == 0 ? "keycode" : "key", key);
 		kElt.setAttribute("modifiers", modifiers);
+	},
+
+	get oSvc() {
+		return Components.classes["@mozilla.org/observer-service;1"]
+			.getService(Components.interfaces.nsIObserverService);
+	},
+	initUninstallObserver: function() {
+		this.oSvc.addObserver(this, "em-action-requested", false);
+	},
+	destroyUninstallObserver: function() {
+		this.oSvc.removeObserver(this, "em-action-requested");
+	},
+	observe: function(subject, topic, data) {
+		if(
+			topic == "em-action-requested"
+			&& subject instanceof Components.interfaces.nsIUpdateItem
+			&& subject.id == "handyclicks@infocatcher"
+			&& data == "item-uninstalled"
+		)
+			this.uninstall();
+	},
+	uninstall: function() {
+		var ps = this.ut.promptsSvc;
+		var flags = ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING +
+		            ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL +
+		            ps.BUTTON_POS_1_DEFAULT;
+		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
+		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
+		var win = this.wu.wm.getMostRecentWindow("Extension:Manager") || window;
+		var button = ps.confirmEx(
+			win, this.ut.getLocalized("title"),
+			this.ut.getLocalized("removeSettingsConfirm"),
+			flags,
+			this.ut.getLocalized("removeSettings"), "", "",
+			null, {}
+		);
+		if(button == 1) // Cancel
+			return;
+
+		//this.pu.prefSvc.deleteBranch(this.pu.prefNS);
+		this.pu.prefSvc.getBranch(this.pu.prefNS)
+			.getChildList("", {})
+			.forEach(
+				function(pName) {
+					this.pu.resetPref(this.pu.prefNS + pName);
+				},
+				this
+			);
+
+		// Based on components/nsExtensionManager.js from Firefox 3.6
+		function removeDirRecursive(dir) {
+			try {
+				dir.remove(true);
+				return;
+			}
+			catch(e) {
+			}
+			var dirEntries = dir.directoryEntries;
+			while(dirEntries.hasMoreElements()) {
+				var entry = dirEntries.getNext().QueryInterface(Components.interfaces.nsIFile);
+				if(entry.isDirectory())
+					arguments.callee.call(this, entry);
+				else {
+					entry.permissions = 0644;
+					entry.remove(false);
+				}
+			}
+			dir.permissions = 0755;
+			dir.remove(true);
+		}
+		removeDirRecursive(this.ps._prefsDir);
+		//this.ps._prefsDir.remove(true);
 	}
 };

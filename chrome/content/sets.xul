@@ -17,6 +17,7 @@
 	title="&hc.sets.title;"
 	buttons="accept,cancel,extra1,extra2"
 	buttonlabelextra1="&hc.sets.apply;"
+	buttonaccesskeyextra1="&hc.sets.applyAccesskey;"
 	buttonlabelextra2="&hc.sets.settings;"
 	buttonaccesskeyextra2="&hc.sets.settingsAccesskey;"
 	ondialogaccept="return handyClicksSets.savePrefs();"
@@ -305,6 +306,7 @@
 
 		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksWinUtils.maximizeWindow();" />
 		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksWinUtils.toggleFullscreen();" />
+		<key id="hc-sets-key-toggleOnTop" key="T" modifiers="control" oncommand="handyClicksWinUtils.toggleOnTop();" />
 	</keyset>
 	<popupset id="hc-sets-popupset">
 		<popup id="hc-sets-tree-context"

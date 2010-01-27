@@ -13,6 +13,7 @@ pref("extensions.handyclicks.notifyDontCloseUnderCursor", true);
 
 pref("extensions.handyclicks.ui.showInToolsMenu", true);
 pref("extensions.handyclicks.ui.showInStatusbar", true);
+pref("extensions.handyclicks.ui.onTopBorderColor", "orange");
 
 pref("extensions.handyclicks.funcs.loadJavaScriptLinks", true);
 pref("extensions.handyclicks.funcs.notifyJavaScriptLinks", true);

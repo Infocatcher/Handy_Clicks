@@ -50,6 +50,27 @@ var handyClicksWinUtils = {
 		if("fullScreen" in win)
 			win.fullScreen = !win.fullScreen; // Firefox 3.0+
 	},
+	toggleOnTop: function() {
+		var ci = Components.interfaces;
+		var xulWin = top.QueryInterface(ci.nsIInterfaceRequestor)
+			.getInterface(ci.nsIWebNavigation)
+			.QueryInterface(ci.nsIDocShellTreeItem)
+			.treeOwner
+			.QueryInterface(ci.nsIInterfaceRequestor)
+			.getInterface(ci.nsIXULWindow);
+		var normal = xulWin.zLevel == xulWin.normalZ;
+		xulWin.zLevel = normal ? xulWin.highestZ : xulWin.normalZ;
+
+		var s = top.document.documentElement.style;
+		if(normal) {
+			s.outline = "2px groove " + (this.pu.pref("ui.onTopBorderColor") || "orange");
+			s.outlineOffset = "-2px";
+		}
+		else {
+			s.outline = "";
+			s.outlineOffset = "";
+		}
+	},
 	winIdProp: "__handyClicks__winId",
 	openEditor: function _oe(pSrc, mode, shortcut, itemType, isDelayed) {
 		var winId = (mode == "itemType" ? itemType : shortcut + "-" + itemType) + (pSrc ? "@otherSrc" : "");

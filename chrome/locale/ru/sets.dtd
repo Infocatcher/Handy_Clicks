@@ -1,6 +1,7 @@
 <!-- Options dialog -->
 <!ENTITY hc.sets.title "Handy Clicks: Настройки">
 <!ENTITY hc.sets.apply "Применить">
+<!ENTITY hc.sets.applyAccesskey "П">
 <!ENTITY hc.sets.settings "Настройки">
 <!ENTITY hc.sets.settingsAccesskey "Н">
 
@@ -109,6 +110,7 @@
 <!-- Editor -->
 <!ENTITY hc.editor.title "Handy Clicks: Редактор">
 <!ENTITY hc.editor.apply "Применить">
+<!ENTITY hc.editor.applyAccesskey "П">
 <!ENTITY hc.editor.delete "Удалить">
 <!ENTITY hc.editor.deleteAccesskey "у">
 <!ENTITY hc.editor.test "Протестировать">

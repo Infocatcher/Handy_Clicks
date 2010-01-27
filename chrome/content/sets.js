@@ -312,7 +312,7 @@ var handyClicksSets = {
 			if(isCustomType) {
 				var savedType = this.ut.getOwnProperty(this._savedTypes, itemType);
 				var eqType = this.ut.objEquals(this.ut.getOwnProperty(this.ps.types, itemType), savedType);
-				if(!eqType)
+				if(!eqType && (saved || savedType))
 					override = true;
 				equals = equals && eqType;
 			}
@@ -1061,7 +1061,7 @@ var handyClicksSets = {
 			this.updTree();
 	},
 	loadPrefs: function() {
-		var buttons = this.pu.pref("disallowMousemoveButtons");
+		var buttons = this.pu.pref("disallowMousemoveButtons") || "2";
 		for(var i = 0; i <= 2; i++)
 			this.$("hc-sets-disallowMousemove-" + i).checked = buttons.indexOf(i) > -1;
 	},
@@ -1377,7 +1377,7 @@ var handyClicksSets = {
 			fName = entry.leafName;
 			if(
 				fName.indexOf(this.ps.prefsFileName) != 0
-				|| !/\.js$/.test(fName)
+				|| !/\.js$/i.test(fName)
 				|| fName == this.ps.prefsFileName + ".js"
 				|| fName.indexOf(this.ps.names.corrupted) != -1
 			)

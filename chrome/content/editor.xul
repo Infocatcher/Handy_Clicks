@@ -17,6 +17,7 @@
 	title="&hc.editor.title;"
 	buttons="accept,cancel,extra1,extra2"
 	buttonlabelextra1="&hc.editor.apply;"
+	buttonaccesskeyextra1="&hc.editor.applyAccesskey;"
 	buttonlabelextra2="&hc.editor.delete;"
 	buttonaccesskeyextra2="&hc.editor.deleteAccesskey;"
 	hc_buttonLabelTest="&hc.editor.test;"
@@ -50,6 +51,7 @@
 
 		<key keycode="VK_F10" id="hc-editor-key-maximizeWindow" oncommand="handyClicksWinUtils.maximizeWindow();" />
 		<key keycode="VK_F11" id="hc-editor-key-toggleFullscreen" oncommand="handyClicksWinUtils.toggleFullscreen();" />
+		<key key="T" modifiers="control" id="hc-editor-key-toggleOnTop" oncommand="handyClicksWinUtils.toggleOnTop();" />
 	</keyset>
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">
