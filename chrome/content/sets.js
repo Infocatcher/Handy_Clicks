@@ -64,7 +64,7 @@ var handyClicksSets = {
 	},
 	closeEditors: function() {
 		this.wu.forEachWindow(
-			["handyclicks:editor"],
+			"handyclicks:editor",
 			function(w) {
 				if(!("_handyClicksInitialized" in w) || w.handyClicksPrefSvc.otherSrc)
 					w.close();
@@ -175,7 +175,7 @@ var handyClicksSets = {
 		var wProp = this.wu.winIdProp;
 		var otherSrc = this.ps.otherSrc;
 		this.wu.forEachWindow(
-			["handyclicks:editor"],
+			"handyclicks:editor",
 			function(w) {
 				if(wProp in w)
 					this.setItemStatus(w[wProp], w.handyClicksPrefSvc.otherSrc == otherSrc);
@@ -414,7 +414,7 @@ var handyClicksSets = {
 		return res.join(this.oldTree ? ", " : ",\n ");
 	},
 	updTree: function(saveSel) {
-		this.tBody.style.visibility = "hidden"; // Do not show shanges in progress
+		this.tBody.style.visibility = "hidden"; // Do not show changes in progress
 		if(saveSel === undefined)
 			saveSel = true;
 
@@ -1313,7 +1313,7 @@ var handyClicksSets = {
 			_this.addsClildsProperties(its, { hc_copied: false });
 		}, 200, this, its);
 
-		return this.ps.saveSettingsObjects(null, newTypes, newPrefs, true);
+		return this.ps.getSettingsStr(newTypes, newPrefs);
 	},
 	importSets: function(partialImport, srcId, data) {
 		this.selectTreePane();

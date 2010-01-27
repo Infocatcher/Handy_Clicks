@@ -462,7 +462,7 @@ var handyClicks = {
 				this.hasParent(it, "goPopup")
 				|| (itln == "treechildren" && (it.parentNode.id || "").indexOf("history") != -1) // Sidebar
 			)
-			&& this.getBookmarkUri(it, e)
+			&& this.getBookmarkURI(it, e)
 		) {
 			this.itemType = "historyItem";
 			this.item = it;
@@ -483,7 +483,7 @@ var handyClicks = {
 				|| (itln == "treechildren" && (it.parentNode.id || "").indexOf("bookmark") != -1) // Sidebar
 			)
 			&& !this.hasParent(it, "goPopup")
-			&& this.getBookmarkUri(it, e)
+			&& this.getBookmarkURI(it, e)
 		) {
 			this.itemType = "bookmark";
 			this.item = it;
@@ -720,7 +720,7 @@ var handyClicks = {
 		if(this.ut.isObject(it))
 			closeMenus(it); // chrome://browser/content/utilityOverlay.js
 	},
-	getBookmarkUri:	function(it, e, usePlacesURIs) {
+	getBookmarkURI:	function(it, e, usePlacesURIs) {
 		var ln = it.localName;
 		var uri = ln && ln.toLowerCase() == "treechildren"
 			? this.getTreeInfo(it, e, "uri")

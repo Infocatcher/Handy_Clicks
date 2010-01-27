@@ -1,4 +1,6 @@
 var handyClicksEditor = {
+	_testMode: false,
+
 	types: {
 		checkboxes: {
 			__proto__: null,
@@ -26,10 +28,15 @@ var handyClicksEditor = {
 	init: function(reloadFlag) {
 		if(this.ut.fxVersion == 1.5) // "relative" is not supported
 			this.types.menulists.moveTabTo.pop();
-		if(!reloadFlag) {
+		if(reloadFlag) {
+			this.testButton = document.getElementById("hc-editor-buttonTest");
+			this.undoButton = document.getElementById("hc-editor-buttonUndo");
+		}
+		else {
 			this.initExtTypes();
 			this.loadLabels();
 			this.createDelayedFuncTab();
+			this.addTestButtons();
 		}
 		this.initShortcuts();
 		this.ps.loadSettings(this.src || null);
@@ -52,6 +59,33 @@ var handyClicksEditor = {
 	},
 	destroy: function(reloadFlag) {
 		this.wu.markOpenedEditors();
+		this._testMode && this.undoTestSettings();
+	},
+	addTestButtons: function() {
+		var bTest = this.ut.parseFromXML(
+			<button xmlns={this.ut.XULNS}
+				id="hc-editor-buttonTest"
+				class="dialog-button"
+				oncommand="handyClicksEditor.testSettings();"
+				label={ document.documentElement.getAttribute("hc_buttonLabelTest") }
+				accesskey={ document.documentElement.getAttribute("hc_buttonAccesskeyTest") }
+			/>
+		);
+		var bUndo = this.ut.parseFromXML(
+			<button xmlns={this.ut.XULNS}
+				id="hc-editor-buttonUndo"
+				class="dialog-button"
+				oncommand="handyClicksEditor.undoTestSettings(true);"
+				label={ document.documentElement.getAttribute("hc_buttonLabelUndo") }
+				accesskey={ document.documentElement.getAttribute("hc_buttonAccesskeyUndo") }
+			/>
+		);
+		var bDel = document.documentElement.getButton("extra2");
+		var insPoint = bDel.nextSibling, parent = bDel.parentNode;
+		parent.insertBefore(bTest, insPoint);
+		parent.insertBefore(bUndo, insPoint);
+		this.testButton = bTest;
+		this.undoButton = bUndo;
 	},
 	initShortcuts: function() {
 		this.mBox = this.$("hc-editor-mainTabbox");
@@ -62,6 +96,11 @@ var handyClicksEditor = {
 		this.type = wa[3];
 		this.isDelayed = wa[4];
 		this.applyButton = document.documentElement.getButton("extra1");
+	},
+	set applyDisabled(dis) {
+		this.applyButton.disabled = dis;
+		this.testButton.disabled = dis;
+		this.undoButton.disabled = dis;
 	},
 	selectTargetTab: function(delayed, src, line) {
 		this.mBox.selectedIndex = this.tabs[this.editorMode];
@@ -168,20 +207,23 @@ var handyClicksEditor = {
 			this
 		);
 	},
-	initUI: function() {
+	_allowUndo: false,
+	initUI: function(allowUndo) {
+		this._allowUndo = allowUndo;
 		this.initShortcutEditor();
 		this.appendTypesList();
 		this.initImgIgnoreLinks();
 		this.initCustomTypesEditor();
 		this.setWinTitle();
 		this.disableUnsupported();
-		this.applyButton.disabled = true;
+		this.applyDisabled = true;
+		this._allowUndo = false;
 	},
 	allowApply: function(e) {
 		var ln = e.target.localName;
 		if(ln == "tab" || ln == "dialog" || ln == "key")
 			return;
-		this.applyButton.disabled = false;
+		this.applyDisabled = false;
 	},
 	setWinId: function() {
 		var winId;
@@ -225,7 +267,7 @@ var handyClicksEditor = {
 		var isCustom = !!setsObj.custom;
 		this.selectCustomFunc(isCustom, delayed);
 		if(isCustom) {
-			const val = allowUndo ? "value" : "newValue";
+			const val = allowUndo || this._allowUndo ? "value" : "newValue";
 			this.$("hc-editor-funcField"     + delayed)[val]  = this.ps.dec(setsObj.action);
 			this.$("hc-editor-funcInitField" + delayed)[val]  = this.ps.dec(setsObj.init);
 			this.$("hc-editor-funcLabel"     + delayed).value = this.ps.dec(setsObj.label);
@@ -274,7 +316,7 @@ var handyClicksEditor = {
 		if(!this.ut.canHasProps(ct))
 			ct = {};
 		enabledElt.checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
-		const val = to ? "value" : "newValue";
+		const val = to || this._allowUndo ? "value" : "newValue";
 		this.$("hc-editor-customTypeDefine") [val] = this.ps.dec(ct.define);
 		this.$("hc-editor-customTypeContext")[val] = this.ps.dec(ct.contextMenu);
 		if(!to) {
@@ -639,6 +681,20 @@ var handyClicksEditor = {
 			default: return false;
 		}
 	},
+	testSettings: function() {
+		//~ todo: save settings to temp file (aka crash recovery)
+		this.testButton.disabled = true;
+		switch(this.mBox.selectedIndex) {
+			case this.tabs.shortcut: return this.testShortcut();
+			case this.tabs.itemType: return this.testCustomType();
+			default: return false;
+		}
+	},
+	undoTestSettings: function(reloadAll) {
+		this._testMode = false;
+		this.ps.reloadSettings(reloadAll);
+		reloadAll && this.initUI(true);
+	},
 	deleteSettings: function() {
 		switch(this.mBox.selectedIndex) {
 			case this.tabs.shortcut: return this.deleteShortcut();
@@ -660,7 +716,7 @@ var handyClicksEditor = {
 			default: return false;
 		}
 	},
-	saveShortcut: function(applyFlag) {
+	saveShortcut: function(applyFlag, testFlag) {
 		var sh = this.currentShortcut;
 		var type = this.currentType;
 		var evt = this.$("hc-editor-events").value || null;
@@ -691,17 +747,26 @@ var handyClicksEditor = {
 			so.delayedAction.eventType = "__delayed__"; // Required for handyClicksPrefSvc.isOkFuncObj()
 		}
 
-		if(this.ps.otherSrc)
-			this.ps.reloadSettings(applyFlag);
-		else
-			this.ps.saveSettingsObjects(applyFlag);
-		if(!applyFlag) // ondialogaccept
-			return true;
+		this._testMode = testFlag; //~ todo: test!
+		if(testFlag)
+			this.ps.testSettings();
+		else {
+			if(this.ps.otherSrc)
+				this.ps.reloadSettings(applyFlag);
+			else
+				this.ps.saveSettingsObjects(applyFlag);
+			if(!applyFlag) // ondialogaccept
+				return true;
+			this.applyDisabled = true;
+		}
+
 		this.$("hc-editor-enabled").checked = this.ut.getOwnProperty(this.ps.prefs, sh, type, "enabled");
 		var dae = this.ut.getOwnProperty(this.ps.prefs, sh, type, "delayedAction", "enabled");
 		this.$("hc-editor-enabled" + this.delayId).checked = typeof dae == "boolean" ? dae : true;
-		this.applyButton.disabled = true;
 		return true;
+	},
+	testShortcut: function() {
+		return this.saveShortcut(true, true);
 	},
 	getFuncObj: function(delayed) {
 		delayed = delayed || "";
@@ -757,7 +822,7 @@ var handyClicksEditor = {
 		else
 			this.ps.saveSettingsObjects();
 		this.highlightUsedTypes();
-		this.applyButton.disabled = false;
+		this.applyDisabled = false;
 	},
 	copyShortcut: function() {
 		var delayed = this.$("hc-editor-funcTabbox").selectedIndex == 1 ? this.delayId : "";
@@ -792,9 +857,9 @@ var handyClicksEditor = {
 			this.$("hc-editor-events").value = so.eventType || "click";
 
 		this.disableUnsupported();
-		this.applyButton.disabled = false;
+		this.applyDisabled = false;
 	},
-	saveCustomType: function(applyFlag) {
+	saveCustomType: function(applyFlag, testFlag) {
 		var label = this.$("hc-editor-customType").value;
 		var cType = this.$("hc-editor-customTypeExtId").value;
 		var def = this.$("hc-editor-customTypeDefine").value;
@@ -820,15 +885,24 @@ var handyClicksEditor = {
 		)
 			return false;
 		cts[cType] = this.getTypeObj(newEnabl, label, def);
-		if(this.ps.otherSrc)
-			this.ps.reloadSettings(applyFlag);
-		else
-			this.ps.saveSettingsObjects(applyFlag);
-		if(!applyFlag) // ondialogaccept
-			return true;
-		this.applyButton.disabled = true;
+
+		if(testFlag)
+			this.ps.testSettings();
+		else {
+			if(this.ps.otherSrc)
+				this.ps.reloadSettings(applyFlag);
+			else
+				this.ps.saveSettingsObjects(applyFlag);
+			if(!applyFlag) // ondialogaccept
+				return true;
+			this.applyDisabled = true;
+		}
+
 		this.appendTypesList();
 		return true;
+	},
+	testCustomType: function() {
+		return this.saveCustomType(true, true);
 	},
 	getTypeObj: function(enabled, label, def) {
 		var ct = {
@@ -847,7 +921,7 @@ var handyClicksEditor = {
 		else
 			this.ps.saveSettingsObjects();
 		this.appendTypesList();
-		this.applyButton.disabled = false;
+		this.applyDisabled = false;
 	},
 	copyCustomType: function() {
 		this.storage("type", this.getTypeObj());
@@ -857,7 +931,7 @@ var handyClicksEditor = {
 		if(!st)
 			return;
 		this.initCustomTypesEditor(null, st);
-		this.applyButton.disabled = false;
+		this.applyDisabled = false;
 	},
 
 	get _storage() {

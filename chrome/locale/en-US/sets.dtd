@@ -111,6 +111,10 @@
 <!ENTITY hc.editor.apply "Apply">
 <!ENTITY hc.editor.delete "Delete">
 <!ENTITY hc.editor.deleteAccesskey "d">
+<!ENTITY hc.editor.test "Test">
+<!ENTITY hc.editor.testAccesskey "T">
+<!ENTITY hc.editor.undo "Undo">
+<!ENTITY hc.editor.undoAccesskey "U">
 
 <!ENTITY hc.editor.mainTabFuncs "Functions">
 <!ENTITY hc.editor.clickHere "Click here">

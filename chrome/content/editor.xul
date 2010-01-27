@@ -19,6 +19,10 @@
 	buttonlabelextra1="&hc.editor.apply;"
 	buttonlabelextra2="&hc.editor.delete;"
 	buttonaccesskeyextra2="&hc.editor.deleteAccesskey;"
+	hc_buttonLabelTest="&hc.editor.test;"
+	hc_buttonAccesskeyTest="&hc.editor.testAccesskey;"
+	hc_buttonLabelUndo="&hc.editor.undo;"
+	hc_buttonAccesskeyUndo="&hc.editor.undoAccesskey;"
 	ondialogaccept="return handyClicksEditor.saveSettings();"
 	ondialogextra1="handyClicksEditor.saveSettings(true);"
 	ondialogextra2="handyClicksEditor.deleteSettings();"
@@ -42,7 +46,7 @@
 		<key key="s" modifiers="control" id="hc-editor-key-apply" oncommand="handyClicksEditor.saveSettings(true);" />
 		<key key="c" modifiers="control,shift" id="hc-editor-key-copy" oncommand="handyClicksEditor.copySettings();" />
 		<key key="v" modifiers="control,shift" id="hc-editor-key-paste" oncommand="handyClicksEditor.pasteSettings();" />
-		<key keycode="VK_F5" id="hc-editor-key-reload" oncommand="handyClicksEditor.initUI();" />
+		<key keycode="VK_F5" id="hc-editor-key-reload" oncommand="handyClicksEditor.initUI(true);" />
 
 		<key keycode="VK_F10" id="hc-editor-key-maximizeWindow" oncommand="handyClicksWinUtils.maximizeWindow();" />
 		<key keycode="VK_F11" id="hc-editor-key-toggleFullscreen" oncommand="handyClicksWinUtils.toggleFullscreen();" />
@@ -189,16 +193,16 @@
 											hc_supports="ext_mulipletabs" />
 										<menuseparator id="hc-editor-funcsSep-mulipletabs" />
 
-										<menuitem value="openUriInTab" label="openUriInTab"
+										<menuitem value="openURIInTab" label="openURIInTab"
 											hc_args="loadInBackground, loadJSInBackground, refererPolicy, moveTabTo, closePopups, winRestriction"
 											hc_supports="link, img, tab, bookmark, historyItem" />
-										<menuitem value="openUriInCurrentTab" label="openUriInCurrentTab"
+										<menuitem value="openURIInCurrentTab" label="openURIInCurrentTab"
 											hc_args="refererPolicy, closePopups"
 											hc_supports="link, img, bookmark, historyItem" />
-										<menuitem value="openUriInWindow" label="openUriInWindow"
+										<menuitem value="openURIInWindow" label="openURIInWindow"
 											hc_args="loadInBackground, refererPolicy, moveWinTo, closePopups"
 											hc_supports="link, img, tab, bookmark, historyItem" />
-										<menuitem value="openInSidebar" label="openInSidebar"
+										<menuitem value="openURIInSidebar" label="openURIInSidebar"
 											hc_args="closePopups"
 											hc_supports="link, img, tab, bookmark, historyItem"
 											hc_app="Firefox" />
@@ -218,7 +222,7 @@
 										<menuitem value="downloadWithFlashGot" label="downloadWithFlashGot"
 											hc_required="FlashGot"
 											hc_supports="link" />
-										<menuitem value="openInSplitBrowser" label="openInSplitBrowser"
+										<menuitem value="openURIInSplitBrowser" label="openURIInSplitBrowser"
 											hc_required="SplitBrowser"
 											hc_args="position"
 											hc_supports="link, img, tab, bookmark, historyItem" />

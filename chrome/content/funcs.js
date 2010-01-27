@@ -9,7 +9,7 @@ var handyClicksFuncs = {
 		return typeof uri == "string" && /^javascript:/i.test(uri);
 	},
 	isDummyURI: function(item, uri) {
-		uri = uri || this.getUriOfItem(item);
+		uri = uri || this.getItemURI(item);
 		var doc = item.ownerDocument;
 		var loc = doc.location.href.replace(/#.*$/, "");
 		if(uri.indexOf(loc) != 0)
@@ -24,7 +24,7 @@ var handyClicksFuncs = {
 	},
 
 	copyItemText: function(e, closePopups) {
-		var text = this.getTextOfItem();
+		var text = this.getItemText();
 		if(text) {
 			text = Array.concat(text);
 			this.ut.copyStr(text.join("\n"));
@@ -34,7 +34,7 @@ var handyClicksFuncs = {
 			this.hc.closeMenus();
 	},
 	copyItemLink: function(e, closePopups) {
-		var link = this.getUriOfItem() || "";
+		var link = this.getItemURI() || "";
 		if(link) {
 			link = Array.concat(link);
 			if(this.pu.pref("funcs.decodeURIs"))
@@ -45,7 +45,7 @@ var handyClicksFuncs = {
 		if(closePopups)
 			this.hc.closeMenus();
 	},
-	getTextOfItem: function(it, e, noTrim) {
+	getItemText: function(it, e, noTrim) {
 		it = it || this.hc.item;
 		var text = this.hc.itemType == "tabbar"
 			? this.forEachTab(this.getTabText)
@@ -56,38 +56,38 @@ var handyClicksFuncs = {
 						it.getAttribute
 						&& (it.getAttribute("label") || it.getAttribute("value"))
 					)
-					|| this.hc.getBookmarkUri(it)
+					|| this.hc.getBookmarkURI(it)
 					|| "";
 		return noTrim ? text : this.trimStr(text);
 	},
-	getUriOfItem: function(it, itemType, noTrim) {
+	getItemURI: function(it, itemType, noTrim) {
 		it = it || this.hc.item;
 		var uri = "";
 		switch(itemType || this.hc.itemType) {
 			case "link":
-				uri = this.getLinkUri(it);
+				uri = this.getLinkURI(it);
 			break;
 			case "img":
 				uri = it.src;
 			break;
 			case "bookmark":
 			case "historyItem":
-				uri = this.hc.getBookmarkUri(it);
+				uri = this.hc.getBookmarkURI(it);
 			break;
 			case "tab":
-				uri = this.getTabUri(it);
+				uri = this.getTabURI(it);
 			break;
 			case "ext_mulipletabs":
-				uri = Array.map(it, this.getTabUri, this); //.join("\n");
+				uri = Array.map(it, this.getTabURI, this); //.join("\n");
 			break;
 			case "tabbar":
-				uri = this.forEachTab(this.getTabUri); //.join("\n");
+				uri = this.forEachTab(this.getTabURI); //.join("\n");
 			break;
 			default: // Support for custom types
-				uri = this.getLinkUri(it)
+				uri = this.getLinkURI(it)
 					|| it.src
-					|| this.hc.getBookmarkUri(it)
-					|| this.getTabUri(it);
+					|| this.hc.getBookmarkURI(it)
+					|| this.getTabURI(it);
 		}
 		
 		var isArr = this.ut.isArray(uri);
@@ -113,13 +113,13 @@ var handyClicksFuncs = {
 			.map(this.ut.trim, this.ut);
 		return isArr ? s : s.toString();
 	},
-	getLinkUri: function(it) {
+	getLinkURI: function(it) {
 		const ns = "http://www.w3.org/1999/xlink";
 		return it.hasAttributeNS(ns, "href")
 			? makeURLAbsolute(it.baseURI, it.getAttributeNS(ns, "href")) // See chrome://browser/content/utilityOverlay.js
 			: it.href;
 	},
-	getTabUri: function(tab) {
+	getTabURI: function(tab) {
 		return "linkedBrowser" in tab
 			? tab.linkedBrowser.contentDocument.location.href
 			: "";
@@ -136,21 +136,21 @@ var handyClicksFuncs = {
 	},
 
 	// Open URI in...
-	openUriInCurrentTab: function(e, refererPolicy, closePopups, uri) {
-		uri = uri || this.getUriOfItem(this.hc.item);
+	openURIInCurrentTab: function(e, refererPolicy, closePopups, uri) {
+		uri = uri || this.getItemURI(this.hc.item);
 		if(this.testForLinkFeatures(e, this.hc.item, uri, false, false, refererPolicy, undefined, "cur"))
 			return;
 		this.hc.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
 		if(closePopups)
 			this.hc.closeMenus();
 	},
-	openUriInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, closePopups, winRestriction) {
+	openURIInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, closePopups, winRestriction) {
 		var tbr = this.hc.getTabBrowser(true);
 		if(moveTo == "relative") {
 			var tabCont = tbr.mTabContainer;
 			tabCont.__handyClicks__resetRelativeIndex = false;
 		}
-		var tab = this._openUriInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction);
+		var tab = this._openURIInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction);
 		if(closePopups)
 			this.hc.closeMenus();
 		if(!tab || !moveTo)
@@ -166,7 +166,7 @@ var handyClicksFuncs = {
 			case "last":     ind = tbr.browsers.length;           break;
 			case "relative": ind = curInd + ++this.relativeIndex; break;
 			default:
-				this.ut._err(new Error("openUriInTab -> invalid moveTo argument: " + moveTo));
+				this.ut._err(new Error("openURIInTab -> invalid moveTo argument: " + moveTo));
 				return;
 		}
 		if(
@@ -201,10 +201,10 @@ var handyClicksFuncs = {
 			tabCont, [_resetRelativeIndex], tbr
 		);
 	},
-	_openUriInTab: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction) {
+	_openURIInTab: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
-		uri = uri || this.getUriOfItem(item);
+		uri = uri || this.getItemURI(item);
 		if(this.testForLinkFeatures(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, winRestriction, "tab"))
 			return null;
 		var tbr = this.hc.getTabBrowser(true);
@@ -222,7 +222,7 @@ var handyClicksFuncs = {
 	testForLinkFeatures: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, winRestriction, target) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
-		uri = uri || this.getUriOfItem(item);
+		uri = uri || this.getItemURI(item);
 		if(
 			this.testForHighlander(uri)
 			|| this.loadJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target)
@@ -245,7 +245,7 @@ var handyClicksFuncs = {
 	loadJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
-		uri = uri || this.getUriOfItem(item);
+		uri = uri || this.getItemURI(item);
 
 		var voidURI = this.isVoidURI(uri);
 		if(!voidURI && this.isJSURI(uri)) {
@@ -314,7 +314,7 @@ var handyClicksFuncs = {
 	},
 	loadNotVoidJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target) {
 		item = item || this.hc.item;
-		uri = uri || this.getUriOfItem(item);
+		uri = uri || this.getItemURI(item);
 
 		var _this = this;
 		function _f() {
@@ -345,7 +345,7 @@ var handyClicksFuncs = {
 			_f();
 	},
 	testForFileLink: function(uri, refererPolicy) {
-		uri = uri || this.getUriOfItem(this.hc.item);
+		uri = uri || this.getItemURI(this.hc.item);
 		var filesPolicy = this.pu.pref("funcs.filesLinksPolicy");
 		if(filesPolicy == -1)
 			return false;
@@ -370,8 +370,8 @@ var handyClicksFuncs = {
 			this.hc.getTabBrowser().loadURI(uri, this.getRefererForItem(refererPolicy));
 		return true;
 	},
-	openUriInWindow: function(e, loadInBackground, refererPolicy, moveTo, closePopups) {
-		var win = this._openUriInWindow(e, null, null, loadInBackground, refererPolicy);
+	openURIInWindow: function(e, loadInBackground, refererPolicy, moveTo, closePopups) {
+		var win = this._openURIInWindow(e, null, null, loadInBackground, refererPolicy);
 		if(closePopups)
 			this.hc.closeMenus();
 		if(!win || !moveTo)
@@ -414,7 +414,7 @@ var handyClicksFuncs = {
 				wNew = window.outerWidth, hNew = window.outerHeight;
 			break;
 			default:
-				this.ut._err(new Error("openUriInWindow -> invalid moveTo argument: " + moveTo));
+				this.ut._err(new Error("openURIInWindow -> invalid moveTo argument: " + moveTo));
 				return;
 		}
 		if(xCur !== undefined && yCur !== undefined)
@@ -423,10 +423,10 @@ var handyClicksFuncs = {
 			window.resizeTo(wCur, hCur);
 		this.initWindowMoving(win, xNew, yNew, wNew, hNew);
 	},
-	_openUriInWindow: function(e, item, uri, loadInBackground, refererPolicy) {
+	_openURIInWindow: function(e, item, uri, loadInBackground, refererPolicy) {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
-		uri = uri || this.getUriOfItem(item);
+		uri = uri || this.getItemURI(item);
 		if(this.testForLinkFeatures(e, item, uri, loadInBackground, false /* loadJSInBackground */, refererPolicy, undefined, "win"))
 			return null;
 		var win = window.openDialog(
@@ -483,10 +483,10 @@ var handyClicksFuncs = {
 		xulWin.zLevel = xulWin.normalZ;
 	},
 
-	openInSidebar: function(e, closePopups, ttl, uri) {
+	openURIInSidebar: function(e, closePopups, ttl, uri) {
 		var item = this.hc.item;
-		ttl = ttl || this.getTextOfItem(item);
-		uri = uri || this.getUriOfItem(item);
+		ttl = ttl || this.getItemText(item);
+		uri = uri || this.getItemURI(item);
 		if(uri && !this.isVoidURI(uri))
 			openWebPanel(ttl, uri); //~ todo: refererPolicy ?
 		if(closePopups)
@@ -501,9 +501,9 @@ var handyClicksFuncs = {
 		document.popupNode = item;
 		gFlashGot.downloadPopupLink();
 	},
-	openInSplitBrowser: function(e, position, closePopups, uri, win) {
+	openURIInSplitBrowser: function(e, position, closePopups, uri, win) {
 		position = (position || "bottom").toUpperCase();
-		uri = uri || this.getUriOfItem(this.hc.item);
+		uri = uri || this.getItemURI(this.hc.item);
 		win = win || this.hc.item.ownerDocument.defaultView;
 		if(typeof SplitBrowser == "undefined") {
 			this.ut._err(new Error("Missing Split Browser extension ( https://addons.mozilla.org/firefox/addon/4287 )"), true);
@@ -565,7 +565,7 @@ var handyClicksFuncs = {
 	},
 
 	showOpenUriWithAppsPopup: function(items, checkFiles) {
-		var uri = this.getUriOfItem();
+		var uri = this.getItemURI();
 		if(!uri) {
 			this.ut._err(new Error("Can't get URI of item (" + this.hc.itemType + ")"));
 			return;
@@ -1004,7 +1004,7 @@ var handyClicksFuncs = {
 		if("duplicateTab" in tbr) // fx 3.0+
 			var newTab = tbr.duplicateTab(tab);
 		else // Not a real "clone"... Just URI's copy
-			var newTab = tbr.addTab(this.getTabUri(tab));
+			var newTab = tbr.addTab(this.getTabURI(tab));
 		if("TreeStyleTabService" in window && ind == tbr.browsers.length - 1)
 			tbr.moveTabTo(newTab, ind - 1); // Fix bug for last tab moving
 		tbr.moveTabTo(newTab, ind);
@@ -1117,7 +1117,7 @@ var handyClicksFuncs = {
 			a.ownerDocument.getElementsByTagName(a.localName),
 			function(a) {
 				var t = this.ut.innerXML(a);
-				var h = this.getLinkUri(a);
+				var h = this.getLinkURI(a);
 				if(
 					t == term && h && !this.isJSURI(h)
 					&& (!onlyUnvisited || !gh.isVisited(makeURI(h))) // chrome://global/content/contentAreaUtils.js
@@ -1223,5 +1223,22 @@ var handyClicksFuncs = {
 				ch.hidden = true;
 			}
 		);
+	},
+
+	__noSuchMethod__: function(meth, args) {
+		// Support for old names of methods
+		//= Expires after 2010-05-20
+		const newMeth = meth
+			.replace(/^(_?)open(?:Uri)?In/, "$1openURIIn") // openIn => openURIIn, openUriIn => openURIIn
+			.replace(/^get(\w*)Uri(Of[A-Z]\w*)?$/, "get$1URI$2") // getTabUri => getTabURI, getUriOfItem => getURIOfItem
+			.replace(/^get(\w+)OfItem$/, "getItem$1");
+		const oName = "handyClicksFuncs";
+		if(!(newMeth in this))
+			throw new Error(this.ut.errPrefix + "Method \"" + meth + "\" does not exist in \"" + oName + "\" object");
+		this.ut._err(
+			new Error("Function " + oName + "." + meth + " is deprecated. Use " + oName + "." + newMeth + " instead."),
+			true
+		);
+		return this[newMeth].apply(this, args);
 	}
 };

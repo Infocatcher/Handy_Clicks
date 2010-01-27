@@ -2,7 +2,7 @@ var handyClicksPrefSvc = {
 	oSvc: new HandyClicksObservers(),
 
 	otherSrc: false,
-	version: 0.13,
+	version: 0.14,
 	prefsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
 	get requiredHeader() {
 		delete this.requiredHeader;
@@ -258,6 +258,32 @@ var handyClicksPrefSvc = {
 				}
 			}
 		}
+		if(vers < 0.14) {
+			//= [Not critical]
+			// Functions:
+			//   openIn => openURIIn
+			//   openUriIn => openURIIn
+			//= Expires after 2010-05-20
+			var p = this.prefs;
+			var sh, so, type, to;
+			var act;
+			for(sh in p) if(p.hasOwnProperty(sh)) {
+				if(!this.isOkShortcut(sh))
+					continue;
+				so = p[sh];
+				if(!this.ut.isObject(so))
+					continue;
+				for(type in so) if(so.hasOwnProperty(type)) {
+					to = so[type];
+					if(!this.ut.isObject(to))
+						continue;
+					act = this.ut.getOwnProperty(to, "action");
+					if(act)
+						to.action = act // openIn => openURIIn, openUriIn => openURIIn
+							.replace(/^(_?)open(?:Uri)?In/, "$1openURIIn");
+				}
+			}
+		}
 		this.ut._log("Format of prefs file updated: " + vers + " => " + this.version);
 		if(allowSave)
 			this.saveSettingsObjects();
@@ -344,19 +370,21 @@ var handyClicksPrefSvc = {
 			this.ut._err(e);
 		}
 	},
-	saveSettingsObjects: function(reloadFlag, types, prefs, dontSave) {
- 		var res = this.versionInfo;
+	getSettingsStr: function(types, prefs) {
+		types = types || this.types;
+		prefs = prefs || this.prefs;
+
+		var res = this.versionInfo;
 		var sh, so, type, to, pName, pVal, dName;
 		var forcedDisByType = { __proto__: null };
 		var forcedDis;
 
 		res += "var handyClicksCustomTypes = {\n";
-		var cts = types || this.types;
-		this.sortObj(cts);
-		for(type in cts) if(cts.hasOwnProperty(type)) {
+		this.sortObj(types);
+		for(type in types) if(types.hasOwnProperty(type)) {
 			if(!this.isCustomType(type))
 				continue;
-			to = cts[type];
+			to = types[type];
 			if(!this.isOkCustomObj(to))
 				continue;
 			res += "\t" + this.fixPropName(type) + ": {\n";
@@ -373,12 +401,11 @@ var handyClicksPrefSvc = {
 		res = this.delLastComma(res) + "};\n";
 
 		res += "var handyClicksPrefs = {\n";
-		var p = prefs || this.prefs;
-		this.sortObj(p);
-		for(sh in p) if(p.hasOwnProperty(sh)) {
+		this.sortObj(prefs);
+		for(sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			if(!this.isOkShortcut(sh))
 				continue;
-			so = p[sh];
+			so = prefs[sh];
 			if(!this.sortObj(so))
 				continue;
 			res += '\t"' + sh + '": {\n';
@@ -418,15 +445,13 @@ var handyClicksPrefSvc = {
 		res = this.delLastComma(res) + "};";
 
 		const hashFunc = "SHA256";
-		res = this.prefsHeader
+		return this.prefsHeader
 			+ "// " + hashFunc + ": " + this.getHash(res, hashFunc) + "\n"
 			+ res;
-
-		if(!dontSave)
-			this.saveSettings(res);
-		if(reloadFlag !== null)
-			this.reloadSettings(reloadFlag);
-		return res;
+	},
+	saveSettingsObjects: function(reloadFlag) {
+		this.saveSettings(this.getSettingsStr());
+		this.reloadSettings(reloadFlag);
 	},
 	objToSource: function(obj) {
 		return uneval(obj).replace(/^\(|\)$/g, "");
@@ -488,6 +513,23 @@ var handyClicksPrefSvc = {
 			}
 		);
 	},
+
+	testSettings: function() {
+		var src = this.getSettingsStr();
+
+		const pSvc = "handyClicksPrefSvc";
+		this.wu.forEachWindow(
+			"navigator:browser",
+			function(w) {
+				if(!(pSvc in w))
+					return;
+				var p = w[pSvc];
+				p.loadSettings(src);
+				p.oSvc.notifyObservers();
+			}
+		);
+	},
+
 	moveFiles: function(mFile, nAdd, maxNum, leaveOriginal) {
 		maxNum = typeof maxNum == "number" ? maxNum : this.pu.pref("sets.backupDepth");
 		if(maxNum < 0 || !mFile.exists())

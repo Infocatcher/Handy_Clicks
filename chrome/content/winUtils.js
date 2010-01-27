@@ -26,7 +26,7 @@ var handyClicksWinUtils = {
 	},
 	forEachWindow: function(winTypes, func, context) {
 		var wm = this.wm;
-		winTypes.forEach(
+		Array.concat(winTypes).forEach(
 			function(winType) {
 				var ws = wm.getEnumerator(winType), w;
 				while(ws.hasMoreElements()) {

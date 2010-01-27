@@ -111,6 +111,10 @@
 <!ENTITY hc.editor.apply "Применить">
 <!ENTITY hc.editor.delete "Удалить">
 <!ENTITY hc.editor.deleteAccesskey "у">
+<!ENTITY hc.editor.test "Протестировать">
+<!ENTITY hc.editor.testAccesskey "т">
+<!ENTITY hc.editor.undo "Отменить">
+<!ENTITY hc.editor.undoAccesskey "О">
 
 <!ENTITY hc.editor.mainTabFuncs "Функции">
 <!ENTITY hc.editor.clickHere "Кликните здесь">
