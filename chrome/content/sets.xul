@@ -106,7 +106,7 @@
 					</grid>
 					<button id="hc-sets-tree-buttonImportCancel" oncommand="handyClicksSets.importDone(false);"
 						accesskey="&hc.sets.importCancelAccesskey;"
-						hc_labelFull="&hc.sets.importCancel;" hc_labelFartial="&hc.sets.importIncrementCancel;" />
+						hc_labelFull="&hc.sets.importCancel;" hc_labelPartial="&hc.sets.importIncrementCancel;" />
 				</hbox>
 				<hbox pack="center">
 					<button id="hc-sets-tree-buttonAdd" label="&hc.sets.cmdAdd;" onclick="handyClicksSets.addItems(event);" oncommand="handyClicksSets.addItems(event);" />
@@ -306,7 +306,7 @@
 
 		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksWinUtils.maximizeWindow();" />
 		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksWinUtils.toggleFullscreen();" />
-		<key id="hc-sets-key-toggleOnTop" key="T" modifiers="control" oncommand="handyClicksWinUtils.toggleOnTop();" />
+		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksWinUtils.toggleOnTop();" />
 	</keyset>
 	<popupset id="hc-sets-popupset">
 		<popup id="hc-sets-tree-context"

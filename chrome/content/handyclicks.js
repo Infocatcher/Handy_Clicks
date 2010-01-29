@@ -1117,16 +1117,15 @@ var handyClicks = {
 	},
 	uninstall: function() {
 		var ps = this.ut.promptsSvc;
-		var flags = ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING +
-		            ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL +
-		            ps.BUTTON_POS_1_DEFAULT;
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
 		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
 		var win = this.wu.wm.getMostRecentWindow("Extension:Manager") || window;
 		var button = ps.confirmEx(
 			win, this.ut.getLocalized("title"),
 			this.ut.getLocalized("removeSettingsConfirm"),
-			flags,
+			  ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING
+			+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL
+			+ ps.BUTTON_POS_1_DEFAULT,
 			this.ut.getLocalized("removeSettings"), "", "",
 			null, {}
 		);

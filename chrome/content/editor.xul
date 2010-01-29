@@ -20,10 +20,6 @@
 	buttonaccesskeyextra1="&hc.editor.applyAccesskey;"
 	buttonlabelextra2="&hc.editor.delete;"
 	buttonaccesskeyextra2="&hc.editor.deleteAccesskey;"
-	hc_buttonLabelTest="&hc.editor.test;"
-	hc_buttonAccesskeyTest="&hc.editor.testAccesskey;"
-	hc_buttonLabelUndo="&hc.editor.undo;"
-	hc_buttonAccesskeyUndo="&hc.editor.undoAccesskey;"
 	ondialogaccept="return handyClicksEditor.saveSettings();"
 	ondialogextra1="handyClicksEditor.saveSettings(true);"
 	ondialogextra2="handyClicksEditor.deleteSettings();"
@@ -43,15 +39,26 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/editor.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/regSvc.js" />
 
-	<keyset id="hc-editor-keys">
-		<key key="s" modifiers="control" id="hc-editor-key-apply" oncommand="handyClicksEditor.saveSettings(true);" />
-		<key key="c" modifiers="control,shift" id="hc-editor-key-copy" oncommand="handyClicksEditor.copySettings();" />
-		<key key="v" modifiers="control,shift" id="hc-editor-key-paste" oncommand="handyClicksEditor.pasteSettings();" />
-		<key keycode="VK_F5" id="hc-editor-key-reload" oncommand="handyClicksEditor.initUI(true);" />
+	<commandset id="hc-editor-commands">
+		<command id="hc-editor-cmd-test" oncommand="handyClicksEditor.testSettings(); event.stopPropagation();"
+			disabled="true" label="&hc.editor.test;" accesskey="&hc.editor.testAccesskey;" />
+		<command id="hc-editor-cmd-undo" oncommand="handyClicksEditor.undoTestSettings(true); event.stopPropagation();"
+			disabled="true" label="&hc.editor.undo;" accesskey="&hc.editor.undoAccesskey;" />
+	</commandset>
 
-		<key keycode="VK_F10" id="hc-editor-key-maximizeWindow" oncommand="handyClicksWinUtils.maximizeWindow();" />
-		<key keycode="VK_F11" id="hc-editor-key-toggleFullscreen" oncommand="handyClicksWinUtils.toggleFullscreen();" />
-		<key key="T" modifiers="control" id="hc-editor-key-toggleOnTop" oncommand="handyClicksWinUtils.toggleOnTop();" />
+	<keyset id="hc-editor-keys">
+		<key id="hc-editor-key-apply" key="s" modifiers="control" oncommand="handyClicksEditor.saveSettings(true);" />
+		<key id="hc-editor-key-test" key="t" modifiers="control" command="hc-editor-cmd-test" />
+		<key id="hc-editor-key-undo" key="u" modifiers="control" command="hc-editor-cmd-undo" />
+		<key id="hc-editor-key-delete" key="d" modifiers="control" oncommand="handyClicksEditor.deleteSettings();" />
+		<key id="hc-editor-key-reload" keycode="VK_F5" oncommand="handyClicksEditor.initUI(true);" />
+
+		<key id="hc-editor-key-copy" key="c" modifiers="control,shift" oncommand="handyClicksEditor.copySettings();" />
+		<key id="hc-editor-key-paste" key="v" modifiers="control,shift" oncommand="handyClicksEditor.pasteSettings();" />
+
+		<key id="hc-editor-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksWinUtils.maximizeWindow();" />
+		<key id="hc-editor-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksWinUtils.toggleFullscreen();" />
+		<key id="hc-editor-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksWinUtils.toggleOnTop();" />
 	</keyset>
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">

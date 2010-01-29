@@ -666,8 +666,11 @@ var handyClicksPrefSvc = {
 			? this.dec(str.substr(add.length))
 			: str;
 	},
-	checkPrefsStr: function _cps(str) {
-		_cps.hashError = false;
+	_hashError: false,
+	_hashMissing: false,
+	checkPrefsStr: function(str) {
+		this._hashError = false;
+		this._hashMissing = true;
 		str = this.getPrefsStr(str);
 		if(str.indexOf(this.requiredHeader) != 0) // Support for old header
 			return false;
@@ -677,12 +680,13 @@ var handyClicksPrefSvc = {
 
 		const hashRe = /(?:\r\n|\n|\r)\/\/[ \t]?(MD2|MD5|SHA1|SHA512|SHA256|SHA384):[ \t]?([a-f0-9]+)(?=[\n\r]|$)/;
 		if(hashRe.test(str)) { // Added: 2009-12-18, todo: return false, if hash check failed
+			this._hashMissing = false;
 			var hashFunc = RegExp.$1;
 			var hash = RegExp.$2;
 			str = str.replace(hashRe, "");
 			str = str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Replace comments
 			if(hash != this.getHash(str, hashFunc)) {
-				_cps.hashError = true;
+				this._hashError = true;
 				return false;
 			}
 		}

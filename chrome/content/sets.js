@@ -638,13 +638,13 @@ var handyClicksSets = {
 				var label = this.ut.canHasProps(fObj)
 					? this.getActionLabel(fObj)
 					: "?";
-				return mdfs + " + " + button + " + " + typeLabel + " \u21d2 " + label.substr(0, 42); // "=>" symbol
+				return mdfs + " + " + button + " + " + typeLabel + " \u21d2 " /* "=>" */ + label.substr(0, 42);
 			},
 			this
 		);
 		var maxRows = 12;
 		if(del.length > maxRows)
-			del.splice(maxRows - 2, del.length - maxRows + 1, "\u2026"); // "..." symbol
+			del.splice(maxRows - 2, del.length - maxRows + 1, "\u2026" /* "..." */);
 
 		if(
 			!this.ut.confirmEx(
@@ -1342,9 +1342,25 @@ var handyClicksSets = {
 			this.ut.alertEx(
 				this.ut.getLocalized("importErrorTitle"),
 				this.ut.getLocalized("invalidConfigFormat")
-					+ (this.ps.checkPrefsStr.hashError ? this.ut.getLocalized("invalidHash") : "")
+					+ (this.ps._hashError ? this.ut.getLocalized("invalidHash") : "")
 			);
 			return;
+		}
+		if(this.ps._hashMissing) {
+			var ps = this.ut.promptsSvc;
+			// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
+			// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
+			var button = ps.confirmEx(
+				window, this.ut.getLocalized("warningTitle"),
+				this.ut.getLocalized("hashMissingConfirm"),
+				  ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING
+				+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL
+				+ ps.BUTTON_POS_1_DEFAULT,
+				this.ut.getLocalized("continueImport"), "", "",
+				null, {}
+			);
+			if(button == 1)
+				return;
 		}
 		if(!this.ps.otherSrc) {
 			this._savedPrefs = this.ps.prefs;

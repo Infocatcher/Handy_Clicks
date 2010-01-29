@@ -89,7 +89,7 @@ var handyClicksFuncs = {
 					|| this.hc.getBookmarkURI(it)
 					|| this.getTabURI(it);
 		}
-		
+
 		var isArr = this.ut.isArray(uri);
 		uri = Array.concat(uri).map(
 			function(s) {
@@ -923,8 +923,8 @@ var handyClicksFuncs = {
 			var buttonPressed = pSvc.confirmEx(window,
 				bundle.getString("tabs.closeWarningTitle"),
 				bundle.getFormattedString(messageKey, [tabsToClose]),
-				(pSvc.BUTTON_TITLE_IS_STRING * pSvc.BUTTON_POS_0)
-					+ (pSvc.BUTTON_TITLE_CANCEL * pSvc.BUTTON_POS_1),
+				  pSvc.BUTTON_POS_0 * pSvc.BUTTON_TITLE_IS_STRING
+				+ pSvc.BUTTON_POS_1 * pSvc.BUTTON_TITLE_CANCEL,
 				bundle.getString(closeKey),
 				null, null,
 				bundle.getString("tabs.closeWarningPromptMe"),
@@ -1090,16 +1090,15 @@ var handyClicksFuncs = {
 
 		var ps = this.ut.promptsSvc;
 		var onlyUnvisited = { value: false };
-		var flags = ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING +
-		            ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL +
-		            ps.BUTTON_POS_2 * ps.BUTTON_TITLE_IS_STRING +
-		            ps.BUTTON_POS_0_DEFAULT;
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
 		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
 		var button = ps.confirmEx(
 			window, this.ut.getLocalized("title"),
 			this.ut.getLocalized("openSimilarLinksConfirm"),
-			flags,
+			  ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING
+			+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL
+			+ ps.BUTTON_POS_2 * ps.BUTTON_TITLE_IS_STRING
+			+ ps.BUTTON_POS_0_DEFAULT,
 			this.ut.getLocalized("openButton"), "", this.ut.getLocalized("openWithDelaysButton"),
 			this.ut.getLocalized("openOnlyVisited"), onlyUnvisited
 		);
