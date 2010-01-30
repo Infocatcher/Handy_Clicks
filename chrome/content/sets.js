@@ -599,7 +599,7 @@ var handyClicksSets = {
 		var cnf = this.ut.promptsSvc.confirmCheck(
 			window, this.ut.getLocalized("warningTitle"),
 			this.ut.getLocalized("openEditorsWarning").replace("%n", count),
-			this.ut.getLocalized("openEditorsWarningNotShowAgain"), ack
+			this.ut.getLocalized("notAckAgain"), ack
 		);
 		if(!cnf)
 			return true;
@@ -1375,8 +1375,42 @@ var handyClicksSets = {
 			this.redrawTree();
 		else
 			this.updTree();
-		if(pSrc instanceof Components.interfaces.nsILocalFile && srcId != 2 /* from %profile%/handyclicks/ */)
+		if(pSrc instanceof Components.interfaces.nsILocalFile && srcId != 2 /* not from %profile%/handyclicks/ */)
 			this.backupsDir = pSrc.parent.path;
+	},
+	createBackup: function() {
+		var bName = this.ps.prefsFileName + this.ps.names.userBackup + new Date().toLocaleFormat("%Y%m%d%H%M%S");
+		var bFile, i = 0;
+		do bFile = this.ps.getFile(bName + (i++ ? "-" + i : "") + ".js");
+		while(bFile.exists())
+		this.ps.prefsFile.copyTo(null, bFile.leafName);
+	},
+	removeBackup: function(mi) {
+		var fName = mi.getAttribute("hc_fileName");
+		if(!fName)
+			return false;
+		var file = this.ps.getFile(fName);
+		if(!file.exists()) {
+			mi.parentNode.removeChild(mi);
+			return false;
+		}
+
+		if(this.pu.pref("sets.removeBackupConfirm")) {
+			var ack = { value: false };
+			var cnf = this.ut.promptsSvc.confirmCheck(
+				window, this.ut.getLocalized("title"),
+				this.ut.getLocalized("removeBackupConfirm").replace("%f", fName),
+				this.ut.getLocalized("notAckAgain"), ack
+			);
+			if(!cnf)
+				return false;
+			if(ack.value)
+				this.pu.pref("sets.removeBackupConfirm", false);
+		}
+
+		file.remove(false);
+		mi.parentNode.removeChild(mi);
+		return true;
 	},
 	buildRestorePopup: function(popup) {
 		popup = popup || this.$("hc-sets-tree-restoreFromBackupPopup");
@@ -1416,7 +1450,9 @@ var handyClicksSets = {
 				popup.appendChild(this.ut.parseFromXML(
 					<menuitem xmlns={this.ut.XULNS}
 						label={ fTime + " [" + fSize + " " + bytes + "] \u2013 " + fName }
-						oncommand={ "handyClicksSets.importSets(false, 3, \"" + fName + "\");" }
+						oncommand='handyClicksSets.importSets(false, 3, this.getAttribute("hc_fileName"));'
+						onclick="if(event.target == 2) handyClicksSets.removeBackup(this);"
+						hc_fileName={fName}
 						class="menuitem-iconic"
 						image={ "moz-icon:file://" + file.path }
 						hc_old={ fName.indexOf(this.ps.names.version) != -1 } />

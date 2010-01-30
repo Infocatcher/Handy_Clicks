@@ -43,6 +43,7 @@
 <!ENTITY hc.sets.export "Export">
 <!ENTITY hc.sets.exportAccesskey "E">
 <!ENTITY hc.sets.fullExportToFile "Export to file…">
+<!ENTITY hc.sets.createBackup "Create backup">
 <!ENTITY hc.sets.exportSelectedToFile "Export selected to file…">
 <!ENTITY hc.sets.exportSelectedToClipboard "Export selected to clipboard">
 <!ENTITY hc.sets.exportToURI "Copy as URI">
@@ -73,6 +74,7 @@
 <!ENTITY hc.sets.appearance "Appearance">
 <!ENTITY hc.sets.showInToolsMenu "Show in Tools menu">
 <!ENTITY hc.sets.showInStatusbar "Show in Status Bar">
+<!ENTITY hc.sets.onTopButton 'Show "On top" button'> <!-- see "onTop" in hcs.properties -->
 
 <!ENTITY hc.sets.disallowMousemove "Stop click handling if mouse was moved with holded buttons (mouse gestures)">
 <!ENTITY hc.sets.left "Left">

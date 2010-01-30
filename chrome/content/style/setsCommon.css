@@ -1,0 +1,12 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+#hc-sets-onTop {
+	margin: 2px;
+	padding: 0 2px;
+	min-width: 0;
+}
+#hc-sets-onTop * {
+	margin: 0;
+	padding: 0;
+	min-width: 0;
+}

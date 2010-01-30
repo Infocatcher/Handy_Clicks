@@ -43,6 +43,7 @@
 <!ENTITY hc.sets.export "Экспорт">
 <!ENTITY hc.sets.exportAccesskey "Э">
 <!ENTITY hc.sets.fullExportToFile "Экспорт в файл…">
+<!ENTITY hc.sets.createBackup "Сделать резервную копию">
 <!ENTITY hc.sets.exportSelectedToFile "Экспорт выделенного в файл…">
 <!ENTITY hc.sets.exportSelectedToClipboard "Экспорт выделенного в буфер обмена">
 <!ENTITY hc.sets.exportToURI "Копировать ссылку">
@@ -73,6 +74,7 @@
 <!ENTITY hc.sets.appearance "Внешний вид">
 <!ENTITY hc.sets.showInToolsMenu "Показывать в меню Инструменты">
 <!ENTITY hc.sets.showInStatusbar "Показывать в строке состояния">
+<!ENTITY hc.sets.onTopButton "Показывать кнопку «Закрепить»"> <!-- see "onTop" in hcs.properties -->
 
 <!ENTITY hc.sets.disallowMousemove "Прекращать обработку кликов при перемещении мыши с зажатыми кнопками (жесты мышью)">
 <!ENTITY hc.sets.left "Левая">

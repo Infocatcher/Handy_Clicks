@@ -1,9 +1,34 @@
 var handyClicksSetsUtils = {
 	init: function(reloadFlag) {
 		window.addEventListener("DOMMouseScroll", this, true);
+
+		var onTop = this.ut.parseFromXML(
+			<div xmlns="http://www.w3.org/1999/xhtml"
+				id="hc-sets-topRightToolbar"
+				style="position: fixed; top: 0; right: 0;">
+				<button xmlns={this.ut.XULNS}
+					id="hc-sets-onTop"
+					type="checkbox"
+					hidden={ !this.pu.pref("ui.onTopButton") }
+					oncommand="handyClicksWinUtils.toggleOnTop(); event.stopPropagation();"
+					label={ this.ut.getLocalized("onTop") }
+				/>
+			</div>
+		);
+		document.documentElement.appendChild(onTop);
+		this.wu.toggleOnTop(true, document.documentElement.getAttribute("hc_onTop") == "true");
+
+		this.pu.oSvc.addObserver(this.prefsChanged, this);
 	},
 	destroy: function(reloadFlag) {
 		window.removeEventListener("DOMMouseScroll", this, true);
+	},
+	prefsChanged: function(pName, pValue) {
+		switch(pName) {
+			case "ui.onTopButton":
+			case "ui.onTopBorderColor":
+				this.wu.showOnTopStatus();
+		}
 	},
 	handleEvent: function(e) {
 		if(e.type == "DOMMouseScroll")

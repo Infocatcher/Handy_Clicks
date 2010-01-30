@@ -9,6 +9,9 @@ var handyClicksWinUtils = {
 		return this.ww = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
 			.getService(Components.interfaces.nsIWindowWatcher);
 	},
+	get opener() {
+		return typeof window == "undefined" ? null : window;
+	},
 	openWindowByType: function _ow(uri, type, features, args) {
 		var w = this.wm.getMostRecentWindow(type);
 		_ow.alreadyOpened = !!w;
@@ -17,7 +20,7 @@ var handyClicksWinUtils = {
  			return w;
  		}
 		w = this.ww.openWindow(
-			null, uri, "_blank",
+			this.opener, uri, "_blank",
 			features || "chrome,centerscreen,resizable,dialog=0", null
 		);
 		if(args)
@@ -50,19 +53,45 @@ var handyClicksWinUtils = {
 		if("fullScreen" in win)
 			win.fullScreen = !win.fullScreen; // Firefox 3.0+
 	},
-	toggleOnTop: function() {
+	getXulWin: function(win) {
 		var ci = Components.interfaces;
-		var xulWin = top.QueryInterface(ci.nsIInterfaceRequestor)
+		return win.QueryInterface(ci.nsIInterfaceRequestor)
 			.getInterface(ci.nsIWebNavigation)
 			.QueryInterface(ci.nsIDocShellTreeItem)
 			.treeOwner
 			.QueryInterface(ci.nsIInterfaceRequestor)
 			.getInterface(ci.nsIXULWindow);
-		var normal = xulWin.zLevel == xulWin.normalZ;
-		xulWin.zLevel = normal ? xulWin.highestZ : xulWin.normalZ;
+	},
+	toggleOnTop: function(inherit, forsedOnTop) {
+		if(inherit && !opener)
+			return;
+		var xulWin = this.getXulWin(top);
+		var onTop = forsedOnTop
+			? true
+			: inherit
+				? this.getXulWin(opener).zLevel > xulWin.normalZ
+				: xulWin.zLevel <= xulWin.normalZ;
+		xulWin.zLevel = onTop ? xulWin.highestZ : xulWin.normalZ;
+
+		this.showOnTopStatus(onTop);
+	},
+	showOnTopStatus: function(onTop, buttonVisible) {
+		if(buttonVisible === undefined)
+			buttonVisible = this.pu.pref("ui.onTopButton");
+
+		var butt = this.$("hc-sets-onTop");
+		butt.hidden = !buttonVisible;
+		buttonVisible && butt.setAttribute("checked", onTop);
+
+		if(buttonVisible)
+			onTop = false;
+		else if(onTop === undefined) {
+			var xulWin = this.getXulWin(top);
+			onTop = xulWin.zLevel == xulWin.highestZ;
+		}
 
 		var s = top.document.documentElement.style;
-		if(normal) {
+		if(onTop) {
 			s.outline = "2px groove " + (this.pu.pref("ui.onTopBorderColor") || "orange");
 			s.outlineOffset = "-2px";
 		}
@@ -70,6 +99,8 @@ var handyClicksWinUtils = {
 			s.outline = "";
 			s.outlineOffset = "";
 		}
+
+		document.documentElement.setAttribute("hc_onTop", onTop);
 	},
 	winIdProp: "__handyClicks__winId",
 	openEditor: function _oe(pSrc, mode, shortcut, itemType, isDelayed) {
@@ -87,7 +118,7 @@ var handyClicksWinUtils = {
 		}
 		_oe.alreadyOpened = false;
 		w = this.ww.openWindow(
-			null, "chrome://handyclicks/content/editor.xul", "_blank",
+			this.opener, "chrome://handyclicks/content/editor.xul", "_blank",
 			"chrome,resizable,centerscreen,dialog=0", null
 		);
 		w.arguments = [pSrc, mode || "shortcut", shortcut, itemType, isDelayed];

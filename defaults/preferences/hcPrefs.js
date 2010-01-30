@@ -13,6 +13,7 @@ pref("extensions.handyclicks.notifyDontCloseUnderCursor", true);
 
 pref("extensions.handyclicks.ui.showInToolsMenu", true);
 pref("extensions.handyclicks.ui.showInStatusbar", true);
+pref("extensions.handyclicks.ui.onTopButton", true);
 pref("extensions.handyclicks.ui.onTopBorderColor", "orange");
 
 pref("extensions.handyclicks.funcs.loadJavaScriptLinks", true);
@@ -42,6 +43,7 @@ pref("extensions.handyclicks.editor.tabSymbol", "	");
 
 pref("extensions.handyclicks.sets.backupsDir", ""); // Allow import empty value
 pref("extensions.handyclicks.sets.backupDepth", 4);
+pref("extensions.handyclicks.sets.removeBackupConfirm", true);
 pref("extensions.handyclicks.sets.importJSWarning", true);
 pref("extensions.handyclicks.sets.openEditorsLimit", 5);
 pref("extensions.handyclicks.sets.dateFormat", "_%Y-%m-%d_%H-%M"); // String for new Date().toLocaleFormat()

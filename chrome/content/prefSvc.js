@@ -20,7 +20,8 @@ var handyClicksPrefSvc = {
 		corrupted: "_corrupted-",
 		restored: "_restored-",
 		version: "_version-",
-		beforeImport: "_before_import-"
+		beforeImport: "_before_import-",
+		userBackup: "_user_backup-"
 	},
 	okShortcut: /^button=[0-2],ctrl=(?:true|false),shift=(?:true|false),alt=(?:true|false),meta=(?:true|false)$/,
 	_restoringCounter: 0,

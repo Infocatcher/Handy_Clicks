@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/setsCommon.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/a11y.css" type="text/css"?>
 
@@ -28,7 +29,7 @@
 	ondragexit="handyClicksSets.prefsChanged(event);"
 	width="720"
 	height="520"
-	persist="width height screenX screenY sizemode">
+	persist="width height screenX screenY sizemode hc_onTop">
 
 	<prefpane id="hc-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1">
 		<vbox flex="1">
@@ -118,6 +119,8 @@
 						<menupopup position="before_start">
 							<menuitem command="hc-sets-cmd-fullExportToFile" key="hc-sets-key-fullExportToFile" />
 							<menuseparator />
+							<menuitem oncommand="handyClicksSets.createBackup();" key="hc-sets-key-backup" label="&hc.sets.createBackup;" />
+							<menuseparator />
 							<menuitem command="hc-sets-cmd-partialExportToFile" key="hc-sets-key-partialExportToFile" />
 							<menuitem command="hc-sets-cmd-partialExportToClipboard" key="hc-sets-key-partialExportToClipboard" />
 							<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
@@ -147,6 +150,7 @@
 			<preference id="enabled" type="bool" name="extensions.handyclicks.enabled" />
 			<preference id="showInToolsMenu" type="bool" name="extensions.handyclicks.ui.showInToolsMenu" />
 			<preference id="showInStatusbar" type="bool" name="extensions.handyclicks.ui.showInStatusbar" />
+			<preference id="onTopButton" type="bool" name="extensions.handyclicks.ui.onTopButton" />
 			<preference id="disallowMousemoveDist" type="int" name="extensions.handyclicks.disallowMousemoveDist" />
 			<preference id="delayedActionTimeout" type="int" name="extensions.handyclicks.delayedActionTimeout" />
 			<preference id="notifyOpenTime" type="int" name="extensions.handyclicks.notifyOpenTime" />
@@ -159,6 +163,7 @@
 			<caption label="&hc.sets.appearance;" />
 			<checkbox preference="showInToolsMenu" label="&hc.sets.showInToolsMenu;" />
 			<checkbox preference="showInStatusbar" label="&hc.sets.showInStatusbar;" />
+			<checkbox preference="onTopButton" label="&hc.sets.onTopButton;" />
 		</groupbox>
 		<groupbox>
 			<caption label="&hc.sets.disallowMousemove;" />

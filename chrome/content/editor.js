@@ -51,7 +51,7 @@ var handyClicksEditor = {
 			}
 		);
 		if(this.ut.fxVersion == 3)
-			document.documentElement.setAttribute("hc_fxVersion", "3.0"); // See style/editor.css
+			document.documentElement.setAttribute("hc_fxVersion", "3.0"); // See style/editor.cssz
 	},
 	destroy: function(reloadFlag) {
 		this.wu.markOpenedEditors();
