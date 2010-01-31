@@ -16,8 +16,9 @@
 			<image id="hcNotifyImg" src="style/icons24.png" autostretch="never" />
 		</hbox>
 		<vbox id="hcNotifyContainer">
-			<label id="hcNotifyHeader" class="header" value="[Header]" />
-			<description id="hcNotifyDesc">[Description]</description>
+			<!--<label id="hcNotifyHeader" class="header" value="[Header]" />-->
+			<description id="hcNotifyHeader" class="header">[Header]</description>
+			<description id="hcNotifyDesc">[Message]</description>
 		</vbox>
 	</hbox>
 

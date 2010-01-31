@@ -133,11 +133,18 @@ menuitem[command="hc-sets-cmd-disable"][disabled="true"] image {
 	opacity: 0.5;
 }
 
+#hc-sets-tree-restoreFromBackupPopup scrollbox {
+	overflow-y: auto;
+}
 #hc-sets-tree-restoreFromBackupPopup menuitem {
 	max-width: none !important;
 }
 menuitem[hc_old="true"] image, menuitem[hc_old="true"] label {
 	opacity: 0.45;
+}
+menuitem[hc_userBackup="true"] label {
+	border-bottom: 1px dashed -moz-use-text-color;
+	/*text-decoration: underline;*/
 }
 
 #hc-sets-tree-buttons button {

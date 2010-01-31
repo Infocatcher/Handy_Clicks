@@ -16,15 +16,16 @@ var handyClicksPrefUtils = {
 
 	// Initialization:
 	instantInit: function(reloadFlag) {
-		const v = this.pref("prefsVersion") || 0;
-		if(v < this.prefVer)
-			this.prefsMigration(v);
-
+		this.prefsMigration();
 		const pns = this.prefNS;
 		this.prefSvc.addObserver(pns, this, false);
 		this.prefNSL = pns.length;
 	},
-	prefsMigration: function(v) {
+	prefsMigration: function() {
+		const v = this.pref("prefsVersion") || 0;
+		if(v >= this.prefVer)
+			return;
+
 		const pns = this.prefNS;
 		if(v < 1) { // Added 2009-09-24
 			// Move prefs to "extensions.handyclicks.funcs." branch:
@@ -47,6 +48,7 @@ var handyClicksPrefUtils = {
 		if(v < 2) // Added 2009-11-13
 			this.pu.prefSvc.deleteBranch(pns + "forceStopMousedownEvent");
 		this.pref("prefsVersion", this.prefVer).savePrefFile();
+		this.ut._log("Format of about:config prefs updated: " + v + " => " + this.prefVer);
 	},
 	destroy: function(reloadFlag) {
 		this.prefSvc.removeObserver(this.prefNS, this);

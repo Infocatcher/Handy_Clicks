@@ -1205,11 +1205,16 @@ var handyClicksSets = {
 			return;
 		}
 		this.backupsDir = file.parent.path;
+		var _oldPrefs = [];
+		this.pu.pref("prefsVersion", 0);
 		str.replace(/[\r\n]{1,100}/g, "\n").split(/[\r\n]+/)
 			.splice(1) // Remove header
 			.forEach(
 				function(line, i) {
-					if(line.indexOf(";") == 0 || line.indexOf("#") == 0)
+					if(
+						line.indexOf(";") == 0 || line.indexOf("#") == 0
+						|| line.charAt(0) == "[" && line.charAt(line.length - 1) == "]"
+					)
 						return; // Just for fun right now :)
 					var indx = line.indexOf("=");
 					if(indx == -1) {
@@ -1217,21 +1222,33 @@ var handyClicksSets = {
 						return;
 					}
 					var pName = line.substring(0, indx);
-					var pbr = this.pu.pBr;
-					var pType = this.pu.prefSvc.getPrefType(pName);
-					if(pType == pbr.PREF_INVALID || pName.indexOf(this.pu.prefNS) != 0) {
+					if(pName.indexOf(this.pu.prefNS) != 0) {
 						this.ut._err(new Error("[Import INI] Skipped pref with invalid name: " + pName), true);
 						return;
 					}
+					var pbr = this.pu.pBr;
+					var pType = this.pu.prefSvc.getPrefType(pName);
+					var isOld = pType == pbr.PREF_INVALID; // Old format?
+					if(isOld) {
+						_oldPrefs.push(pName);
+						this.ut._err(new Error("[Import INI] Old pref: " + pName), true);
+					}
 					var pVal = line.substring(indx + 1);
-					if(pType == pbr.PREF_INT) // Convert string to number
+					if(pType == pbr.PREF_INT || isOld && /^-?\d+$/.test(pVal)) // Convert string to number
 						pVal = Number(pVal);
-					else if(pType == pbr.PREF_BOOL) // ...or boolean
+					else if(pType == pbr.PREF_BOOL || isOld && (pVal == "true" || pVal == "false")) // ...or boolean
 						pVal = pVal == "true";
 					this.pu.setPref(pName, pVal);
 				},
 				this
 			);
+		this.pu.prefsMigration();
+		_oldPrefs.forEach(
+			function(pName) {
+				this.pu.prefSvc.deleteBranch(pName);
+			},
+			this
+		);
 	},
 
 	// Clicking options management
@@ -1384,6 +1401,9 @@ var handyClicksSets = {
 		do bFile = this.ps.getFile(bName + (i++ ? "-" + i : "") + ".js");
 		while(bFile.exists())
 		this.ps.prefsFile.copyTo(null, bFile.leafName);
+		this.ut.notifyInWindowCorner(
+			this.ut.getLocalized("backupCreated").replace("%f", bFile.leafName)
+		);
 	},
 	removeBackup: function(mi) {
 		var fName = mi.getAttribute("hc_fileName");
@@ -1392,10 +1412,12 @@ var handyClicksSets = {
 		var file = this.ps.getFile(fName);
 		if(!file.exists()) {
 			mi.parentNode.removeChild(mi);
+			this.updRestorePopup();
 			return false;
 		}
 
 		if(this.pu.pref("sets.removeBackupConfirm")) {
+			this.ut.closeMenus(mi);
 			var ack = { value: false };
 			var cnf = this.ut.promptsSvc.confirmCheck(
 				window, this.ut.getLocalized("title"),
@@ -1410,16 +1432,29 @@ var handyClicksSets = {
 
 		file.remove(false);
 		mi.parentNode.removeChild(mi);
+		this.updRestorePopup();
 		return true;
 	},
-	buildRestorePopup: function(popup) {
-		popup = popup || this.$("hc-sets-tree-restoreFromBackupPopup");
-		this.ut.removeChilds(popup);
+	get ubPopup() {
+		return this.$("hc-sets-tree-restoreFromBackupPopup");
+	},
+	buildRestorePopup: function() {
+		var popup = this.ubPopup;
+		//this.ut.removeChilds(popup);
+		var sep;
+		while(true) {
+			sep = popup.firstChild;
+			if(sep.localName == "menuseparator")
+				break;
+			popup.removeChild(sep);
+		}
 
 		var entries = this.ps.prefsDir.directoryEntries;
-		var entry, fName, fTime;
-		var _times = [];
-		var _files = {}; // time => [file_0, file_1 ... file_n]
+		var entry, fName;
+		var _fTerms = [], _files = {}, _fTime;
+		var _ubTerms = [], _ubFiles = {}, _ubTime;
+		var mainFile = this.ps.prefsFileName + ".js";
+
 		while(entries.hasMoreElements()) {
 			entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
 			if(!entry.isFile())
@@ -1428,40 +1463,98 @@ var handyClicksSets = {
 			if(
 				fName.indexOf(this.ps.prefsFileName) != 0
 				|| !/\.js$/i.test(fName)
-				|| fName == this.ps.prefsFileName + ".js"
+				|| fName == mainFile
 				|| fName.indexOf(this.ps.names.corrupted) != -1
 			)
 				continue;
-			fTime = entry.lastModifiedTime;
-			if(!(fTime in _files))
-				_files[fTime] = [];
-			_files[fTime].push(entry);
-			_times.push(fTime);
+			if(
+				fName.indexOf(this.ps.names.userBackup) != -1
+				&& /-(\d{14})(?:-\d+)?\.js$/.test(fName)
+			) {
+				_ubTime = Number(RegExp.$1);
+				if(!(_ubTime in _ubFiles))
+					_ubFiles[_ubTime] = [];
+				_ubFiles[_ubTime].push(entry);
+				_ubTerms.push(_ubTime);
+			}
+			_fTime = entry.lastModifiedTime;
+			if(!(_fTime in _files))
+				_files[_fTime] = [];
+			_files[_fTime].push(entry);
+			_fTerms.push(_fTime);
 		}
+		var isEmpty = _fTerms.length == 0;
+		var ubCount = _ubTerms.length;
+
+		var comparator = function(a, b) {
+			return a > b; // sort as numbers
+		};
+
 		var bytes = this.ut.getLocalized("bytes");
-		_times.sort(function(a, b) { return a > b; }); // sort as numbers
-		_times.reverse().forEach(
+		_fTerms.sort(comparator).reverse().forEach(
 			function(time) {
 				var file = _files[time].shift();
 				var fTime = new Date(time).toLocaleString();
-				//var fTime = new Date(time).toLocaleFormat("%Y-%m-%d %H:%M:%S");
 				var fSize = file.fileSize.toString().replace(/(\d)(?=(?:\d{3})+(?:\D|$))/g, "$1 ");
 				var fName = file.leafName;
-				popup.appendChild(this.ut.parseFromXML(
+				var fPath = file.path;
+				popup.insertBefore(this.ut.parseFromXML(
 					<menuitem xmlns={this.ut.XULNS}
 						label={ fTime + " [" + fSize + " " + bytes + "] \u2013 " + fName }
-						oncommand='handyClicksSets.importSets(false, 3, this.getAttribute("hc_fileName"));'
-						onclick="if(event.target == 2) handyClicksSets.removeBackup(this);"
-						hc_fileName={fName}
 						class="menuitem-iconic"
-						image={ "moz-icon:file://" + file.path }
-						hc_old={ fName.indexOf(this.ps.names.version) != -1 } />
-				));
+						image={ "moz-icon:file://" + fPath }
+						tooltiptext={fPath}
+						hc_fileName={fName}
+						hc_old={ fName.indexOf(this.ps.names.version) != -1 }
+						hc_userBackup={ fName.indexOf(this.ps.names.userBackup) != -1 }
+					/>
+				), sep);
 			},
 			this
 		);
+		_fTerms = _files = null;
 
-		popup.parentNode.hidden = this.$("hc-sets-tree-restoreFromBackupSeparator").hidden = !_times.length;
+		popup.__userBackups = _ubTerms.sort(comparator).reverse().map(function(time) {
+			return _ubFiles[time].shift(); // newest ... oldest
+		});
+		_ubTerms = _ubFiles = null;
+
+		this.updRestorePopup(ubCount, isEmpty);
+	},
+	destroyRestorePopup: function() {
+		delete this.ubPopup.__userBackups;
+	},
+	updRestorePopup: function(ubCount, isEmpty) {
+		var popup = this.ubPopup;
+		if(ubCount === undefined)
+			ubCount = popup.getElementsByAttribute("hc_userBackup", "true").length;
+		if(isEmpty === undefined && !ubCount)
+			isEmpty = popup.getElementsByAttribute("hc_fileName", "*").length == 0;
+		var menu = popup.parentNode;
+		menu.setAttribute("disabled", isEmpty);
+		if(isEmpty)
+			popup.hidePopup();
+		this.$("hc-sets-tree-removeUserBackupsExc10").setAttribute("disabled", ubCount <= 10);
+		this.$("hc-sets-tree-removeAllUserBackups")  .setAttribute("disabled", ubCount == 0);
+	},
+	removeOldUserBackups: function(store) {
+		var popup = this.ubPopup;
+		var ub = popup.__userBackups;
+		ub.slice(store, ub.length).forEach(
+			function(file) {
+				var fName = /[^\\\/]+$/.test(file.leafName) && RegExp.lastMatch;
+				file.remove(false);
+				Array.forEach(
+					popup.getElementsByAttribute("hc_fileName", fName),
+					function(mi) {
+						mi.parentNode.removeChild(mi);
+					}
+				);
+			}
+		);
+		popup.__userBackups = ub.slice(0, store);
+		//this.buildRestorePopup();
+		this.updRestorePopup(store);
 	},
 
 	setImportStatus: function(isImport, isPartial, fromClipboard) {

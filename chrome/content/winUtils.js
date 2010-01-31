@@ -62,11 +62,11 @@ var handyClicksWinUtils = {
 			.QueryInterface(ci.nsIInterfaceRequestor)
 			.getInterface(ci.nsIXULWindow);
 	},
-	toggleOnTop: function(inherit, forsedOnTop) {
+	toggleOnTop: function(inherit, forcedOnTop) {
 		if(inherit && !opener)
 			return;
 		var xulWin = this.getXulWin(top);
-		var onTop = forsedOnTop
+		var onTop = forcedOnTop
 			? true
 			: inherit
 				? this.getXulWin(opener).zLevel > xulWin.normalZ

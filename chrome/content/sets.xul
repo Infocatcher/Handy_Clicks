@@ -119,7 +119,7 @@
 						<menupopup position="before_start">
 							<menuitem command="hc-sets-cmd-fullExportToFile" key="hc-sets-key-fullExportToFile" />
 							<menuseparator />
-							<menuitem oncommand="handyClicksSets.createBackup();" key="hc-sets-key-backup" label="&hc.sets.createBackup;" />
+							<menuitem oncommand="handyClicksSets.createBackup();" key="hc-sets-key-createBackup" label="&hc.sets.createBackup;" />
 							<menuseparator />
 							<menuitem command="hc-sets-cmd-partialExportToFile" key="hc-sets-key-partialExportToFile" />
 							<menuitem command="hc-sets-cmd-partialExportToClipboard" key="hc-sets-key-partialExportToClipboard" />
@@ -129,13 +129,23 @@
 					<button id="hc-sets-tree-buttonImport" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;"
 						onmouseover="if(this.previousSibling.open) { this.previousSibling.open = false; this.open = true; }">
 						<menupopup position="before_start"
-							onpopupshowing="if(event.target == this) { handyClicksSets.checkClipboard(); handyClicksSets.buildRestorePopup(); }">
+							onpopupshowing="if(event.target == this) { handyClicksSets.checkClipboard(); handyClicksSets.buildRestorePopup(); }"
+							onpopuphidden="if(event.target == this) handyClicksSets.destroyRestorePopup();">
 							<menuitem command="hc-sets-cmd-fullImportFromFile" key="hc-sets-key-fullImportFromFile" />
 							<menuseparator />
-							<menu id="hc-sets-tree-restoreFromBackupMenu" label="&hc.sets.restoreFromBackup;">
-								<menupopup id="hc-sets-tree-restoreFromBackupPopup" />
+							<menu id="hc-sets-tree-restoreFromBackupMenu" label="&hc.sets.restoreFromBackup;"
+								oncommand="event.stopPropagation();">
+								<menupopup id="hc-sets-tree-restoreFromBackupPopup"
+									oncommand='if(event.target.hasAttribute("hc_fileName")) handyClicksSets.importSets(false, 3, event.target.getAttribute("hc_fileName"));'
+									onclick='if(event.target.hasAttribute("hc_fileName") &amp;&amp; event.button == 2) handyClicksSets.removeBackup(event.target);'>
+									<menuseparator />
+									<menuitem id="hc-sets-tree-removeUserBackupsExc10" label="&hc.sets.removeUserBackupsExc10;"
+										oncommand="handyClicksSets.removeOldUserBackups(10);" closemenu="none" />
+									<menuitem id="hc-sets-tree-removeAllUserBackups" label="&hc.sets.removeAllUserBackups;"
+										oncommand="handyClicksSets.removeOldUserBackups(0);" closemenu="none" />
+								</menupopup>
 							</menu>
-							<menuseparator id="hc-sets-tree-restoreFromBackupSeparator" />
+							<menuseparator />
 							<menuitem command="hc-sets-cmd-partialImportFromFile" key="hc-sets-key-partialImportFromFile" />
 							<menuitem command="hc-sets-cmd-partialImportFromClipboard" key="hc-sets-key-partialImportFromClipboard" />
 						</menupopup>
@@ -290,6 +300,7 @@
 		<key id="hc-sets-key-toggle" key=" " command="hc-sets-cmd-toggle" />
 
 		<key id="hc-sets-key-fullExportToFile" key="e" modifiers="control" command="hc-sets-cmd-fullExportToFile" />
+		<key id="hc-sets-key-createBackup" key="b" modifiers="control" oncommand="handyClicksSets.createBackup();" />
 		<key id="hc-sets-key-partialExportToFile" key="e" modifiers="control,shift" command="hc-sets-cmd-partialExportToFile" />
 		<key id="hc-sets-key-partialExportToClipboard" key="c" modifiers="control,shift" command="hc-sets-cmd-partialExportToClipboard" />
 		<key id="hc-sets-key-exportToURI" key="c" modifiers="control" command="hc-sets-cmd-exportToURI" />
@@ -337,8 +348,8 @@
 			<menuseparator />
 			<menuitem oncommand="handyClicksSets.resetPrefs();" label="&hc.sets.defaults;" />
 			<menuseparator />
-			<menuitem oncommand="handyClicksSets.exportPrefs();" label="&hc.sets.exportPrefs;" />
 			<menuitem oncommand="handyClicksSets.importPrefs();" label="&hc.sets.importPrefs;" />
+			<menuitem oncommand="handyClicksSets.exportPrefs();" label="&hc.sets.exportPrefs;" />
 		</popup>
 	</popupset>
 

@@ -77,7 +77,7 @@ var handyClicksUtils = {
 		return ts[tId] = Date.now();
 	},
 
-	notify: function(header, msg, fnc0, fnc1, extEnabled, inWindowCorner) {
+	notify: function(msg, header, funcLeftClick, funcMiddleClick, extEnabled, inWindowCorner) {
 		var dur = this.pu.pref("notifyOpenTime");
 		if(dur <= 0)
 			 return null;
@@ -89,7 +89,8 @@ var handyClicksUtils = {
 			 	dur: dur,
 			 	header: header || this.getLocalized("title"),
 			 	msg: msg || "",
-			 	fnc0: fnc0, fnc1: fnc1,
+			 	funcLeftClick: funcLeftClick,
+			 	funcMiddleClick: funcMiddleClick,
 			 	extEnabled: extEnabled === undefined ? true : extEnabled,
 			 	inWindowCorner: inWindowCorner === undefined ? this.pu.pref("notifyInWindowCorner") : inWindowCorner,
 			 	dontCloseUnderCursor: this.pu.pref("notifyDontCloseUnderCursor"),
@@ -97,6 +98,10 @@ var handyClicksUtils = {
 			 }
 		);
 	},
+	notifyInWindowCorner: function(msg, header, funcLeftClick, funcMiddleClick, extEnabled) {
+		return this.notify(msg, header, funcLeftClick, funcMiddleClick, extEnabled, true);
+	},
+
 	get console() {
 		return window.toErrorConsole || window.toJavaScriptConsole;
 	},
@@ -403,6 +408,17 @@ var handyClicksUtils = {
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=530985
 		// isElementVisible(elt) || elt.namespaceURI == "http://www.w3.org/2000/svg"
 		return bo.height > 0 && bo.width > 0;
+	},
+	closeMenus: function _cm(node) {
+		// Based on function closeMenus from chrome://browser/content/utilityOverlay.js
+		if(!this.isObject(node))
+			return;
+		if(
+			node.namespaceURI == this.XULNS
+			&& (node.localName == "menupopup" || node.localName == "popup")
+		)
+			node.hidePopup();
+		_cm.call(this, node.parentNode);
 	},
 
 	mm: function(n, minVal, maxVal) {

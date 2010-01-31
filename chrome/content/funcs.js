@@ -280,10 +280,10 @@ var handyClicksFuncs = {
 		var load = this.pu.pref("funcs.loadVoidLinksWithHandlers");
 		if(this.pu.pref("funcs.notifyVoidLinksWithHandlers"))
 			this.ut.notify(
-				this.ut.getLocalized("title"),
 				this.ut.getLocalized("voidLinkWithHandler").replace(/\s*%h/, this.getItemHandlers(item))
 					+ (load ? "" : this.ut.getLocalized("clickForOpen")),
-				(load ? null : _f)
+				this.ut.getLocalized("title"),
+				load && _f
 			);
 		if(load)
 			_f();
@@ -336,10 +336,10 @@ var handyClicksFuncs = {
 		var load = this.pu.pref("funcs.loadJavaScriptLinks");
 		if(this.pu.pref("funcs.notifyJavaScriptLinks"))
 			this.ut.notify(
-				this.ut.getLocalized("title"),
 				this.ut.getLocalized("javaScriptLink")
 					+ (load ? "" : this.ut.getLocalized("clickForOpen")),
-				(load ? null : _f)
+				this.ut.getLocalized("title"),
+				load && _f
 			);
 		if(load)
 			_f();
@@ -691,9 +691,9 @@ var handyClicksFuncs = {
 		var file = this.getLocalFile(path);
 		if(!file) {
 			this.ut.notify(
-				this.ut.getLocalized("errorTitle"),
 				this.ut.getLocalized("invalidFilePath").replace("%p", path)
-				+ this.ut.getLocalized("openConsole"),
+					+ this.ut.getLocalized("openConsole"),
+				this.ut.getLocalized("errorTitle"),
 				this.ut.console
 			);
 			return;

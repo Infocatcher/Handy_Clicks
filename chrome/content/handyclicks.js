@@ -389,8 +389,8 @@ var handyClicks = {
 					var href = "handyclicks://editor/itemType/" + type + "/define?line=" + eLine;
 					var eMsg = this.ut.errInfo("customTypeDefineError", this.ps.dec(ct.label), type, e);
 					this.ut.notify(
-						this.ut.getLocalized("errorTitle"),
 						eMsg + this.ut.getLocalized("openConsole"),
+						this.ut.getLocalized("errorTitle"),
 						this.ut.console, this.wu.getOpenLink(href, eLine)
 					);
 					this.ut._err(new Error(eMsg), false, href, eLine);
@@ -604,8 +604,8 @@ var handyClicks = {
 				var href = "handyclicks://editor/itemType/" + this.itemType + "/context?line=" + eLine;
 				var eMsg = this.ut.errInfo("customTypeContextMenuError", this.ps.dec(ct.label), this.itemType, e);
 				this.ut.notify(
-					this.ut.getLocalized("errorTitle"),
 					eMsg + this.ut.getLocalized("openConsole"),
+					this.ut.getLocalized("errorTitle"),
 					this.ut.console, this.wu.getOpenLink(href, eLine)
 				);
 				this.ut._err(new Error(eMsg), false, href, eLine);
@@ -718,9 +718,7 @@ var handyClicks = {
 			: window.gBrowser || getBrowser();
 	},
 	closeMenus: function(it) {
-		it = it || this.item;
-		if(this.ut.isObject(it))
-			closeMenus(it); // chrome://browser/content/utilityOverlay.js
+		this.ut.closeMenus(it || this.item);
 	},
 	getBookmarkURI:	function(it, e, usePlacesURIs) {
 		var ln = it.localName;
@@ -907,8 +905,8 @@ var handyClicks = {
 					+ "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customFunctionError", this.ps.dec(funcObj.label), this.itemType, err);
 				this.ut.notify(
-					this.ut.getLocalized("errorTitle"),
 					eMsg + this.ut.getLocalized("openConsole"),
+					this.ut.getLocalized("errorTitle"),
 					this.ut.console, this.wu.getOpenLink(href, eLine)
 				);
 				this.ut._err(new Error(eMsg), false, href, eLine);
@@ -926,8 +924,8 @@ var handyClicks = {
 			}
 			else {
 				this.ut.notify(
-					this.ut.getLocalized("errorTitle"),
 					this.ut.getLocalized("functionNotFound").replace("%f", action),
+					this.ut.getLocalized("errorTitle"),
 					this.ut.console
 				);
 				this.ut._err(new Error(action + " not found (" + typeof fnc + ")"));
@@ -993,7 +991,7 @@ var handyClicks = {
 			|| this.ut.isElementVisible(this.$(this.toolbarButtonId))
 		)
 			return;
-		this.ut.notify(null, this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, en, true);
+		this.ut.notifyInWindowCorner(this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, null, en);
 	},
 	checkClipboard: function() {
 		const id = "handyClicks-importFromClipboard";
@@ -1032,11 +1030,10 @@ var handyClicks = {
 		if(!em)
 			return;
 		var _this = this;
-		this.ut.notify(
-			this.ut.getLocalized("editModeTitle"),
+		this.ut.notifyInWindowCorner(
 			this.ut.getLocalized("editModeNote").replace("%k", exitKey),
-			function() { _this.editMode = false; },
-			null, true, true
+			this.ut.getLocalized("editModeTitle"),
+			function() { _this.editMode = false; }
 		);
 	},
 	updUI: function(pName) {
@@ -1142,6 +1139,7 @@ var handyClicks = {
 				this
 			);
 
+		//this.ps._prefsDir.remove(true);
 		// Based on components/nsExtensionManager.js from Firefox 3.6
 		function removeDirRecursive(dir) {
 			try {
@@ -1164,6 +1162,5 @@ var handyClicks = {
 			dir.remove(true);
 		}
 		removeDirRecursive(this.ps._prefsDir);
-		//this.ps._prefsDir.remove(true);
 	}
 };

@@ -51,6 +51,9 @@
 <!ENTITY hc.sets.import "Импорт">
 <!ENTITY hc.sets.importAccesskey "И">
 <!ENTITY hc.sets.fullImportFromFile "Импорт из файла…">
+<!ENTITY hc.sets.restoreFromBackup "Восстановить из резервной копии">
+<!ENTITY hc.sets.removeUserBackupsExc10 "Удалить пользовательские резервные копии кроме 10 самых новых">
+<!ENTITY hc.sets.removeAllUserBackups "Удалить все пользовательские резервные копии">
 <!ENTITY hc.sets.importIncrementFromFile "Инкрементный импорт из файла…">
 <!ENTITY hc.sets.importIncrementFromClipboard "Инкрементный импорт из буфера обмена">
 <!ENTITY hc.sets.importOk "Завершить импорт">
@@ -63,8 +66,6 @@
 <!ENTITY hc.sets.importOverrides "Перезаписываемых:">
 <!ENTITY hc.sets.importNew "Новых:">
 <!ENTITY hc.sets.importTip "Количество обычных настроек / Количество настроек отложенных действий">
-
-<!ENTITY hc.sets.restoreFromBackup "Восстановить из резервной копии">
 
 
 <!ENTITY hc.sets.clickPrefsTitle "Настройки">

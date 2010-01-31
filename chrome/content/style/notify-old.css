@@ -15,3 +15,6 @@
 #hcNotifyDesc {
 	white-space: -moz-pre-wrap;
 }
+* {
+	-moz-user-select: text !important;
+}
