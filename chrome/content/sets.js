@@ -1061,7 +1061,7 @@ var handyClicksSets = {
 			this.updTree();
 	},
 	loadPrefs: function() {
-		var buttons = this.pu.pref("disallowMousemoveButtons") || "2";
+		var buttons = this.pu.pref("disallowMousemoveButtons") || "";
 		for(var i = 0; i <= 2; i++)
 			this.$("hc-sets-disallowMousemove-" + i).checked = buttons.indexOf(i) > -1;
 	},

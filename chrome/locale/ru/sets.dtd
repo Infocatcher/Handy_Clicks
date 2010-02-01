@@ -75,7 +75,6 @@
 <!ENTITY hc.sets.appearance "Внешний вид">
 <!ENTITY hc.sets.showInToolsMenu "Показывать в меню Инструменты">
 <!ENTITY hc.sets.showInStatusbar "Показывать в строке состояния">
-<!ENTITY hc.sets.onTopButton "Показывать кнопку «Закрепить»"> <!-- see "onTop" in hcs.properties -->
 
 <!ENTITY hc.sets.disallowMousemove "Прекращать обработку кликов при перемещении мыши с зажатыми кнопками (жесты мышью)">
 <!ENTITY hc.sets.left "Левая">
@@ -90,6 +89,9 @@
 <!ENTITY hc.sets.notifyCloseAfter "Закрывать через">
 <!ENTITY hc.sets.notifyInWindowCorner "Показывать в углу окна">
 <!ENTITY hc.sets.notifyDontClose "Не закрывать под курсором">
+
+<!ENTITY hc.sets.settingsInterface "Интерфейс настроек">
+<!ENTITY hc.sets.onTopButton "Показывать кнопку «Закрепить»"> <!-- see "onTop" in hcs.properties -->
 
 
 <!ENTITY hc.sets.builtInFuncsSetsTitle "Встроенные функции">
@@ -108,6 +110,11 @@
 <!ENTITY hc.sets.openURIsInApps "Открытие ссылок в других приложениях">
 <!ENTITY hc.sets.convertURIs "Конвертировать ссылки в следующую кодировку:">
 <!ENTITY hc.sets.emptyForAutodetect "(оставьте поле пустым для автоопределения)">
+
+<!ENTITY hc.sets.similarLinks "Открытие похожих ссылок">
+<!ENTITY hc.sets.visibleOnly "Открывать только видимые ссылки">
+<!ENTITY hc.sets.openingDelay "Интервал:">
+<!ENTITY hc.sets.ms "мс">
 
 
 <!-- Editor -->

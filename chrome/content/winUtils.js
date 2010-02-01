@@ -81,7 +81,10 @@ var handyClicksWinUtils = {
 
 		var butt = this.$("hc-sets-onTop");
 		butt.hidden = !buttonVisible;
-		buttonVisible && butt.setAttribute("checked", onTop);
+		if(buttonVisible) {
+			butt.setAttribute("checked", onTop);
+			butt.style.textDecoration = onTop ? "underline" : "";
+		}
 
 		if(buttonVisible)
 			onTop = false;

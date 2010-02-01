@@ -160,12 +160,12 @@
 			<preference id="enabled" type="bool" name="extensions.handyclicks.enabled" />
 			<preference id="showInToolsMenu" type="bool" name="extensions.handyclicks.ui.showInToolsMenu" />
 			<preference id="showInStatusbar" type="bool" name="extensions.handyclicks.ui.showInStatusbar" />
-			<preference id="onTopButton" type="bool" name="extensions.handyclicks.ui.onTopButton" />
 			<preference id="disallowMousemoveDist" type="int" name="extensions.handyclicks.disallowMousemoveDist" />
 			<preference id="delayedActionTimeout" type="int" name="extensions.handyclicks.delayedActionTimeout" />
 			<preference id="notifyOpenTime" type="int" name="extensions.handyclicks.notifyOpenTime" />
 			<preference id="notifyInWindowCorner" type="bool" name="extensions.handyclicks.notifyInWindowCorner" />
 			<preference id="notifyDontCloseUnderCursor" type="bool" name="extensions.handyclicks.notifyDontCloseUnderCursor" />
+			<preference id="onTopButton" type="bool" name="extensions.handyclicks.ui.onTopButton" />
 		</preferences>
 
 		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" handyclicks_important="enabled" />
@@ -173,7 +173,6 @@
 			<caption label="&hc.sets.appearance;" />
 			<checkbox preference="showInToolsMenu" label="&hc.sets.showInToolsMenu;" />
 			<checkbox preference="showInStatusbar" label="&hc.sets.showInStatusbar;" />
-			<checkbox preference="onTopButton" label="&hc.sets.onTopButton;" />
 		</groupbox>
 		<groupbox>
 			<caption label="&hc.sets.disallowMousemove;" />
@@ -200,12 +199,16 @@
 			<caption label="&hc.sets.notify;" />
 			<hbox align="center">
 				<label value="&hc.sets.notifyCloseAfter;" hc_depends="notify" />
-				<textbox preference="notifyOpenTime" type="number" min="0" max="30000" increment="50" style="width: 5em;"
+				<textbox preference="notifyOpenTime" type="number" min="0" max="60000" increment="50" style="width: 5em;"
 					hc_requiredFor="notify" hc_disabledValues="0" />
 				<label value="&hc.sets.zeroForDisable;" hc_depends="notify" />
 			</hbox>
 			<checkbox preference="notifyInWindowCorner" hc_depends="notify" label="&hc.sets.notifyInWindowCorner;" />
 			<checkbox preference="notifyDontCloseUnderCursor" hc_depends="notify" label="&hc.sets.notifyDontClose;" />
+		</groupbox>
+		<groupbox>
+			<caption label="&hc.sets.settingsInterface;" />
+			<checkbox preference="onTopButton" label="&hc.sets.onTopButton;" />
 		</groupbox>
 	</prefpane>
 
@@ -219,6 +222,8 @@
 			<preference id="filesLinksMask" type="string" name="extensions.handyclicks.funcs.filesLinksMask" />
 			<preference id="convertURIs" type="bool" name="extensions.handyclicks.funcs.convertURIs" />
 			<preference id="convertURIsCharset" type="string" name="extensions.handyclicks.funcs.convertURIsCharset" />
+			<preference id="openOnlyVisibleLinks" type="bool" name="extensions.handyclicks.funcs.openOnlyVisibleLinks" />
+			<preference id="multipleTabsOpenDelay" type="int" name="extensions.handyclicks.funcs.multipleTabsOpenDelay" />
 		</preferences>
 
 		<groupbox orient="horizontal">
@@ -253,6 +258,15 @@
 			<hbox align="center" hc_depends="convert">
 				<textbox preference="convertURIsCharset" style="width: 10em;" />
 				<label value="&hc.sets.emptyForAutodetect;" />
+			</hbox>
+		</groupbox>
+		<groupbox>
+			<caption label="&hc.sets.similarLinks;" />
+			<checkbox preference="openOnlyVisibleLinks" label="&hc.sets.visibleOnly;" />
+			<hbox align="center">
+				<label value="&hc.sets.openingDelay;" />
+				<textbox preference="multipleTabsOpenDelay" type="number" min="0" max="10000" increment="10" style="width: 5em;" />
+				<label value="&hc.sets.ms;" />
 			</hbox>
 		</groupbox>
 	</prefpane>

@@ -75,7 +75,6 @@
 <!ENTITY hc.sets.appearance "Appearance">
 <!ENTITY hc.sets.showInToolsMenu "Show in Tools menu">
 <!ENTITY hc.sets.showInStatusbar "Show in Status Bar">
-<!ENTITY hc.sets.onTopButton 'Show "On top" button'> <!-- see "onTop" in hcs.properties -->
 
 <!ENTITY hc.sets.disallowMousemove "Stop click handling if mouse was moved with holded buttons (mouse gestures)">
 <!ENTITY hc.sets.left "Left">
@@ -90,6 +89,9 @@
 <!ENTITY hc.sets.notifyCloseAfter "Close after">
 <!ENTITY hc.sets.notifyInWindowCorner "Show in window corner">
 <!ENTITY hc.sets.notifyDontClose "Don't close under cursor">
+
+<!ENTITY hc.sets.settingsInterface "Settings interface">
+<!ENTITY hc.sets.onTopButton 'Show "On top" button'> <!-- see "onTop" in hcs.properties -->
 
 
 <!ENTITY hc.sets.builtInFuncsSetsTitle "Built-in functions">
@@ -108,6 +110,11 @@
 <!ENTITY hc.sets.openURIsInApps "Opening URIs in other applications">
 <!ENTITY hc.sets.convertURIs "Convert URIs to following charset:">
 <!ENTITY hc.sets.emptyForAutodetect "(empty for autodetection)">
+
+<!ENTITY hc.sets.similarLinks "Similar links opening">
+<!ENTITY hc.sets.visibleOnly "Open visible links only">
+<!ENTITY hc.sets.openingDelay "Delay:">
+<!ENTITY hc.sets.ms "ms">
 
 
 <!-- Editor -->

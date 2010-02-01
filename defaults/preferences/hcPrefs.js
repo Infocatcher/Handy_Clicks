@@ -11,6 +11,8 @@ pref("extensions.handyclicks.notifyOpenTime", 3000);
 pref("extensions.handyclicks.notifyInWindowCorner", false);
 pref("extensions.handyclicks.notifyDontCloseUnderCursor", true);
 
+pref("extensions.handyclicks.notifyEditMode", 2);
+
 pref("extensions.handyclicks.ui.showInToolsMenu", true);
 pref("extensions.handyclicks.ui.showInStatusbar", true);
 pref("extensions.handyclicks.ui.onTopButton", true);

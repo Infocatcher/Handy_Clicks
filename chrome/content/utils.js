@@ -373,7 +373,8 @@ var handyClicksUtils = {
 	},
 
 	toArray: function(a) {
-		return Array.filter(a, function() { return true; });
+		var arr = Array.filter(a, function() { return true; });
+		return arr.length ? arr : [a];
 	},
 
 	objEquals: function(o1) {

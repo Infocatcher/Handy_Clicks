@@ -1,4 +1,5 @@
 var handyClicks = {
+	blinkAttr: "__handyclicks__blink__",
 	copyOfEvent: null,
 	origItem: null,
 	item: null,
@@ -62,6 +63,15 @@ var handyClicks = {
 		this.showHideControls();
 		reloadFlag && this.setEditModeStatus();
 		this.initUninstallObserver();
+
+		var cssStr = '*|*:root *|*[' + this.blinkAttr + '="true"] { opacity: 0.1 !important; }';
+		var data = "data:text/css," + encodeURIComponent(cssStr);
+		var cc = Components.classes;
+		var sss = cc["@mozilla.org/content/style-sheet-service;1"]
+			.getService(Components.interfaces.nsIStyleSheetService);
+		var uri = makeURI(data);
+		if(!sss.sheetRegistered(uri, sss.USER_SHEET))
+			sss.loadAndRegisterSheet(uri, sss.USER_SHEET);
 	},
 	destroy: function(reloadFlag) {
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
@@ -679,23 +689,19 @@ var handyClicks = {
 		node = node || this.item || this.origItem;
 		if(!node)
 			return;
-		var arr = this.ut.toArray(node);
-		if(arr.length) {
-			arr.forEach(
-				function(node) {
-					this.blinkNode(time, node);
-				},
-				this
-			);
-			return;
-		}
-		var origStyle = node.hasAttribute("style") && node.getAttribute("style");
-		node.style.setProperty("visibility", "hidden", "important");
-		setTimeout(
-			function(_this) {
-				_this.ut.attribute(node, "style", origStyle, true);
+		time = time || 170;
+		this.ut.toArray(node).forEach(
+			function(node) {
+				var attr = this.blinkAttr;
+				node.setAttribute(attr, "true");
+				setTimeout(
+					function(node, attr) {
+						node.removeAttribute(attr);
+					},
+					time, node, attr
+				);
 			},
-			time || 170, this
+			this
 		);
 	},
 
@@ -754,7 +760,9 @@ var handyClicks = {
 		var _this = this;
 		return function() {
 			_this._enabled = false;
-			evts.forEach(function(evt) { item.dispatchEvent(evt); });
+			evts.forEach(function(evt) {
+				item.dispatchEvent(evt);
+			});
 			_this._enabled = true;
 		};
 	},
@@ -982,14 +990,14 @@ var handyClicks = {
 		return null;
 	},
 
+	get isControlsVisible() {
+		return this.ut.isElementVisible(this.$("handyClicks-statusbarButton"))
+			|| this.ut.isElementVisible(this.$(this.toolbarButtonId));
+	},
 	toggleStatus: function(fromKey) {
 		var en = !this.enabled;
 		this.enabled = en;
-		if(
-			!fromKey
-			|| this.ut.isElementVisible(this.$("handyClicks-statusbarButton"))
-			|| this.ut.isElementVisible(this.$(this.toolbarButtonId))
-		)
+		if(!fromKey || this.isControlsVisible)
 			return;
 		this.ut.notifyInWindowCorner(this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, null, en);
 	},
@@ -1009,9 +1017,12 @@ var handyClicks = {
 			this.closeMenus(e.target);
 		}
 	},
-	toggleEditMode: function() {
+	_temFromKey: false,
+	toggleEditMode: function(fromKey) {
+		this._temFromKey = fromKey;
 		setTimeout(function(_this) {
 			_this.editMode = !_this.editMode;
+			_this._temFromKey = false;
 		}, 0, this);
 	},
 	setEditModeStatus: function(em) {
@@ -1021,13 +1032,14 @@ var handyClicks = {
 			? this.ut.getLocalized("editModeTip").replace("%k", exitKey)
 			: "";
 		var ttAttr = this.fn.tooltipAttrBase + "1";
-		this.setControls(
-			function(elt) {
-				elt.setAttribute("hc_editMode", em);
-				elt.setAttribute(ttAttr, tt);
-			}
-		);
+		this.setControls(function(elt) {
+			elt.setAttribute("hc_editMode", em);
+			elt.setAttribute(ttAttr, tt);
+		});
 		if(!em)
+			return;
+		var nem = this.pu.pref("notifyEditMode");
+		if(!(nem == 1 && this._temFromKey && !this.isControlsVisible || nem == 2))
 			return;
 		var _this = this;
 		this.ut.notifyInWindowCorner(
@@ -1048,16 +1060,14 @@ var handyClicks = {
 			this.ps.loadSettings();
 		var tt = this.ut.getLocalized(enabled ? "enabledTip" : "disabledTip");
 		var ttAttr = this.fn.tooltipAttrBase + "0";
-		this.setControls(
-			function(elt) {
-				elt.setAttribute("hc_enabled", enabled);
-				elt.setAttribute(ttAttr, tt);
-			}
-		);
+		this.setControls(function(elt) {
+			elt.setAttribute("hc_enabled", enabled);
+			elt.setAttribute(ttAttr, tt);
+		});
 		this.$("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
 	},
 	showHideControls: function() {
-		this.$("handyClicks-toolsMenuitem").hidden = !this.pu.pref("ui.showInToolsMenu");
+		this.$("handyClicks-toolsMenuitem")  .hidden = !this.pu.pref("ui.showInToolsMenu");
 		this.$("handyClicks-statusbarButton").hidden = !this.pu.pref("ui.showInStatusbar");
 	},
 	setControls: function(func, context) {
