@@ -1242,13 +1242,14 @@ var handyClicksSets = {
 				},
 				this
 			);
-		this.pu.prefsMigration();
+		this.pu.prefsMigration(true);
 		_oldPrefs.forEach(
 			function(pName) {
 				this.pu.prefSvc.deleteBranch(pName);
 			},
 			this
 		);
+		this.pu.savePrefFile();
 	},
 
 	// Clicking options management

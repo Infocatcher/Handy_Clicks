@@ -21,10 +21,10 @@ var handyClicksPrefUtils = {
 		this.prefSvc.addObserver(pns, this, false);
 		this.prefNSL = pns.length;
 	},
-	prefsMigration: function() {
+	prefsMigration: function(notSave) {
 		const v = this.pref("prefsVersion") || 0;
 		if(v >= this.prefVer)
-			return;
+			return false;
 
 		const pns = this.prefNS;
 		if(v < 1) { // Added 2009-09-24
@@ -47,8 +47,10 @@ var handyClicksPrefUtils = {
 		}
 		if(v < 2) // Added 2009-11-13
 			this.pu.prefSvc.deleteBranch(pns + "forceStopMousedownEvent");
-		this.pref("prefsVersion", this.prefVer).savePrefFile();
+		this.pref("prefsVersion", this.prefVer);
+		!notSave && this.savePrefFile();
 		this.ut._log("Format of about:config prefs updated: " + v + " => " + this.prefVer);
+		return true;
 	},
 	destroy: function(reloadFlag) {
 		this.prefSvc.removeObserver(this.prefNS, this);

@@ -373,8 +373,9 @@ var handyClicksUtils = {
 	},
 
 	toArray: function(a) {
-		var arr = Array.filter(a, function() { return true; });
-		return arr.length ? arr : [a];
+		return typeof a.length == "number" && a.length >= 0
+			? Array.filter(a, function() { return true; })
+			: [a];
 	},
 
 	objEquals: function(o1) {
