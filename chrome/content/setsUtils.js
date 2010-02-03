@@ -16,8 +16,13 @@ var handyClicksSetsUtils = {
 			</div>
 		);
 		document.documentElement.appendChild(onTop);
-		this.wu.toggleOnTop(true, document.documentElement.getAttribute("hc_onTop") == "true");
-
+		if(document.documentElement.getAttribute("hc_onTop") == "true")
+			this.wu.toggleOnTop(true);
+		else if(opener) {
+			var xulWin = this.wu.getXulWin(opener);
+			if(xulWin.zLevel > xulWin.normalZ)
+				this.wu.toggleOnTop(true);
+		}
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 	},
 	destroy: function(reloadFlag) {

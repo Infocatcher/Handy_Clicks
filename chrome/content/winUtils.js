@@ -62,39 +62,27 @@ var handyClicksWinUtils = {
 			.QueryInterface(ci.nsIInterfaceRequestor)
 			.getInterface(ci.nsIXULWindow);
 	},
-	toggleOnTop: function(inherit, forcedOnTop) {
-		if(inherit && !opener)
-			return;
+	toggleOnTop: function(forcedOnTop) {
 		var xulWin = this.getXulWin(top);
-		var onTop = forcedOnTop
-			? true
-			: inherit
-				? this.getXulWin(opener).zLevel > xulWin.normalZ
-				: xulWin.zLevel <= xulWin.normalZ;
+		var onTop = forcedOnTop || xulWin.zLevel <= xulWin.normalZ;
 		xulWin.zLevel = onTop ? xulWin.highestZ : xulWin.normalZ;
-
 		this.showOnTopStatus(onTop);
 	},
-	showOnTopStatus: function(onTop, buttonVisible) {
-		if(buttonVisible === undefined)
-			buttonVisible = this.pu.pref("ui.onTopButton");
-
+	showOnTopStatus: function(onTop) {
+		if(onTop === undefined) {
+			var xulWin = this.getXulWin(top);
+			onTop = xulWin.zLevel == xulWin.highestZ;
+		}
+		var buttonVisible = this.pu.pref("ui.onTopButton");
 		var butt = this.$("hc-sets-onTop");
 		butt.hidden = !buttonVisible;
 		if(buttonVisible) {
 			butt.setAttribute("checked", onTop);
 			butt.style.textDecoration = onTop ? "underline" : "";
 		}
-
-		if(buttonVisible)
-			onTop = false;
-		else if(onTop === undefined) {
-			var xulWin = this.getXulWin(top);
-			onTop = xulWin.zLevel == xulWin.highestZ;
-		}
-
-		var s = top.document.documentElement.style;
-		if(onTop) {
+		var de = top.document.documentElement;
+		var s = de.style;
+		if(onTop && !buttonVisible) {
 			s.outline = "2px groove " + (this.pu.pref("ui.onTopBorderColor") || "orange");
 			s.outlineOffset = "-2px";
 		}
@@ -102,8 +90,8 @@ var handyClicksWinUtils = {
 			s.outline = "";
 			s.outlineOffset = "";
 		}
-
-		document.documentElement.setAttribute("hc_onTop", onTop);
+		de.setAttribute("hc_onTop", onTop);
+		de.id && document.persist(de.id, "hc_onTop");
 	},
 	winIdProp: "__handyClicks__winId",
 	openEditor: function _oe(pSrc, mode, shortcut, itemType, isDelayed) {

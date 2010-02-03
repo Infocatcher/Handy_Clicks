@@ -29,7 +29,7 @@
 	ondragexit="handyClicksSets.prefsChanged(event);"
 	width="720"
 	height="520"
-	persist="width height screenX screenY sizemode hc_onTop">
+	persist="width height screenX screenY sizemode">
 
 	<prefpane id="hc-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1">
 		<vbox flex="1">

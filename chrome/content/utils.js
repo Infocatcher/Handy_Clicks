@@ -122,6 +122,15 @@ var handyClicksUtils = {
 		return this.promptsSvc.confirm(window, ttl, txt);
 	},
 
+	timeout: function(func, context, args, delay) {
+		return setTimeout(
+			function() {
+				func.apply(context, args);
+			},
+			delay || 0, func, context, args || []
+		);
+	},
+
 	// Localized strings:
 	_strings: { __proto__: null }, // cache of strings from stringbundle
 	_bundles: { __proto__: null },
@@ -301,8 +310,11 @@ var handyClicksUtils = {
 	},
 	get fxVersion() {
 		var ver = parseFloat(this.appInfo.version); // 3.0 for "3.0.10"
-		if(this.isSeaMonkey) // SeaMonkey
-			ver = 3.5;
+		if(this.isSeaMonkey) switch(ver) {
+			case 2:   ver = 3.5; break;
+			case 2.1:
+			default:  ver = 3.7;
+		}
 		delete this.fxVersion;
 		return this.fxVersion = ver;
 	},

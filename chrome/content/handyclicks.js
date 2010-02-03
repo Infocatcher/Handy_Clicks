@@ -1,5 +1,7 @@
 var handyClicks = {
 	blinkAttr: "__handyclicks__blink__",
+	ignoreAction: "$ignore",
+
 	copyOfEvent: null,
 	origItem: null,
 	item: null,
@@ -18,8 +20,6 @@ var handyClicks = {
 	hasMoveHandlers: false,
 	mousemoveParams: null,
 	_tabOnMousedown: null,
-
-	ignoreAction: "$ignore",
 
 	// Initialization:
 	init: function(reloadFlag) {
@@ -64,6 +64,7 @@ var handyClicks = {
 		reloadFlag && this.setEditModeStatus();
 		this.initUninstallObserver();
 
+		// Styles for blinkNode() function:
 		var cssStr = '*|*:root *|*[' + this.blinkAttr + '="true"] { opacity: 0.1 !important; }';
 		var data = "data:text/css," + encodeURIComponent(cssStr);
 		var cc = Components.classes;
@@ -171,19 +172,18 @@ var handyClicks = {
 				|| this.isOkFuncObj(delayedAction) // Other action after delay
 			) {
 				this.cancelDelayedAction(); // only one timeout... (for dblclick event)
-				this.daTimeout = setTimeout(
-					function(_this, da) {
-						if(!_this.tabNotChanged)
+				this.daTimeout = this.ut.timeout(
+					function(da) {
+						if(!this.tabNotChanged)
 							return;
-						_this.flags.runned = true;
+						this.flags.runned = true;
 						if(!da)
-							_this.showPopupOnItem();
+							this.showPopupOnItem();
 						else
-							_this.executeFunction(da);
+							this.executeFunction(da);
 					},
-					delay,
-					this,
-					delayedAction
+					this, [delayedAction],
+					delay
 				);
 			}
 		}
@@ -690,15 +690,22 @@ var handyClicks = {
 		if(!node)
 			return;
 		time = time || 170;
+		var oldFx = this.ut.fxVersion <= 2;
 		this.ut.toArray(node).forEach(
 			function(node) {
 				var attr = this.blinkAttr;
 				node.setAttribute(attr, "true");
-				setTimeout(
-					function(node, attr) {
+				if(oldFx) {
+					var origStyle = node.hasAttribute("style") && node.getAttribute("style");
+					node.style.setProperty("opacity", "0.1", "important");
+				}
+				this.ut.timeout(
+					function(node, attr, oldFx, origStyle) {
 						node.removeAttribute(attr);
+						this.ut.attribute(node, "style", origStyle, true);
 					},
-					time, node, attr
+					this, [node, attr, oldFx, origStyle],
+					time
 				);
 			},
 			this
@@ -884,7 +891,12 @@ var handyClicks = {
 			this.editMode = false;
 			this.blinkNode();
 			this.closeMenus(e.originalTarget);
-			this.wu.openEditor(null, "shortcut", this.ps.getEvtStr(e), this._all ? "$all" : this.itemType);
+			//this.wu.openEditor(null, "shortcut", this.ps.getEvtStr(e), this._all ? "$all" : this.itemType);
+			this.ut.timeout( // Wait for blinkNode redraw
+				this.wu.openEditor,
+				this.wu,
+				[null, "shortcut", this.ps.getEvtStr(e), this._all ? "$all" : this.itemType]
+			);
 			return;
 		}
 		this.executeFunction(funcObj, e);
@@ -1020,10 +1032,10 @@ var handyClicks = {
 	_temFromKey: false,
 	toggleEditMode: function(fromKey) {
 		this._temFromKey = fromKey;
-		setTimeout(function(_this) {
-			_this.editMode = !_this.editMode;
-			_this._temFromKey = false;
-		}, 0, this);
+		this.ut.timeout(function() {
+			this.editMode = !this.editMode;
+			this._temFromKey = false;
+		}, this);
 	},
 	setEditModeStatus: function(em) {
 		em = em === undefined ? this.editMode : em;

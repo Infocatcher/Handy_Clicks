@@ -4,22 +4,24 @@
 	<script type="application/x-javascript"><![CDATA[
 	// Prevent modal windows
 	var wu = handyClicksWinUtils;
-	wu.openWindowByType(
-		"chrome://handyclicks/content/sets.xul",
-		"handyclicks:settings",
-		"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
-	);
-	if(wu.openWindowByType.alreadyOpened) {
-		var wo = window.opener;
-		var _f = function f(e) {
-			f.wo.removeEventListener("focus", f, true);
-			if(Date.now() - f.time < 200)
-				f.wo.blur();
-		};
-		_f.wo = wo;
-		_f.time = Date.now();
-		wo.addEventListener("focus", _f, true);
+	var w = wu.wm.getMostRecentWindow("handyclicks:settings");
+	if(!w) {
+		 wu.ww.openWindow(
+			null,
+			"chrome://handyclicks/content/sets.xul", "_blank",
+			"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0",
+			null
+		);
+		window.close();
 	}
-	window.close();
+	else {
+		var wo = window.opener;
+		window.close();
+		var _f = function f() {
+			f.w.focus();
+		};
+		_f.w = w;
+		wo.setTimeout(_f, 0);
+	}
 	]]></script>
 </window>

@@ -30,7 +30,7 @@
 	ondragexit="handyClicksEditor.allowApply(event);"
 	width="700"
 	height="500"
-	persist="width height screenX screenY sizemode hc_onTop">
+	persist="width height screenX screenY sizemode">
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />

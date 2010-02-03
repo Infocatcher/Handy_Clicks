@@ -21,7 +21,7 @@ var handyClicksPrefUtils = {
 		this.prefSvc.addObserver(pns, this, false);
 		this.prefNSL = pns.length;
 	},
-	prefsMigration: function(notSave) {
+	prefsMigration: function(dontSave) {
 		const v = this.pref("prefsVersion") || 0;
 		if(v >= this.prefVer)
 			return false;
@@ -48,7 +48,7 @@ var handyClicksPrefUtils = {
 		if(v < 2) // Added 2009-11-13
 			this.pu.prefSvc.deleteBranch(pns + "forceStopMousedownEvent");
 		this.pref("prefsVersion", this.prefVer);
-		!notSave && this.savePrefFile();
+		!dontSave && this.savePrefFile();
 		this.ut._log("Format of about:config prefs updated: " + v + " => " + this.prefVer);
 		return true;
 	},
