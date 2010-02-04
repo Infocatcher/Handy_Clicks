@@ -1,5 +1,6 @@
 var handyClicks = {
 	blinkAttr: "__handyclicks__blink__",
+	blinkOpacity: "0.1",
 	ignoreAction: "$ignore",
 
 	copyOfEvent: null,
@@ -65,7 +66,7 @@ var handyClicks = {
 		this.initUninstallObserver();
 
 		// Styles for blinkNode() function:
-		var cssStr = '*|*:root *|*[' + this.blinkAttr + '="true"] { opacity: 0.1 !important; }';
+		var cssStr = '*|*:root *|*[' + this.blinkAttr + '="true"] { opacity: ' + this.blinkOpacity + ' !important; }';
 		var data = "data:text/css," + encodeURIComponent(cssStr);
 		var cc = Components.classes;
 		var sss = cc["@mozilla.org/content/style-sheet-service;1"]
@@ -697,12 +698,12 @@ var handyClicks = {
 				node.setAttribute(attr, "true");
 				if(oldFx) {
 					var origStyle = node.hasAttribute("style") && node.getAttribute("style");
-					node.style.setProperty("opacity", "0.1", "important");
+					node.style.setProperty("opacity", this.blinkOpacity, "important");
 				}
 				this.ut.timeout(
 					function(node, attr, oldFx, origStyle) {
 						node.removeAttribute(attr);
-						this.ut.attribute(node, "style", origStyle, true);
+						oldFx && this.ut.attribute(node, "style", origStyle, true);
 					},
 					this, [node, attr, oldFx, origStyle],
 					time
