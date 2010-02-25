@@ -43,16 +43,22 @@
 				</hbox>
 				<label id="hc-sets-tree-searchResults" />
 				<spacer flex="1" />
-				<button id="hc-sets-tree-viewMenu" type="menu" label="&hc.sets.viewMenu;" accesskey="&hc.sets.viewMenuAccesskey;"
-					oncommand="if(event.target.value) handyClicksSets.setDrawMode(event.target.value);">
-					<menupopup onpopupshowing="handyClicksSets.initViewMenu(this);">
+				<button id="hc-sets-tree-viewMenu" type="menu" label="&hc.sets.viewMenu;" accesskey="&hc.sets.viewMenuAccesskey;">
+					<menupopup onpopupshowing="handyClicksSets.initViewMenu(this);"
+						oncommand="handyClicksSets.viewMenuCommand(event.target);"
+						onclick="if(event.button == 2) this.hidePopup();">
 						<menuitem value="0" type="radio" label="&hc.sets.drawModeNormal;" />
 						<menuitem value="1" type="radio" label="&hc.sets.drawModeNormalCompact;" />
-						<menuitem value="2" type="radio" label="&hc.sets.drawModeInverse;" />
-						<menuitem value="3" type="radio" label="&hc.sets.drawModeInverseCompact;" />
+						<menuitem value="2" type="radio" label="&hc.sets.drawModeNormalInline;" />
+						<menuitem value="3" type="radio" label="&hc.sets.drawModeInverse;" />
+						<menuitem value="4" type="radio" label="&hc.sets.drawModeInverseCompact;" />
+						<menuitem value="5" type="radio" label="&hc.sets.drawModeInverseInline;" />
 						<menuseparator />
-						<menuitem id="hc-sets-tree-toggleExpandDa" type="checkbox" label="&hc.sets.expandDa;" oncommand="handyClicksSets.toggleExpandDa();" />
+						<menuitem id="hc-sets-tree-toggleExpandDa" type="checkbox" hc_pref="sets.treeExpandDelayedAction" label="&hc.sets.expandDa;" />
 						<menuitem id="hc-sets-tree-toggleColored" type="checkbox" label="&hc.sets.highlightTree;" oncommand="handyClicksSets.toggleColored();" />
+						<menuitem id="hc-sets-tree-toggleLocalizeArgs" type="checkbox" hc_pref="sets.localizeArguments" label="&hc.sets.localizeArgs;" />
+						<menuseparator />
+						<menuitem id="hc-sets-tree-toggleCloseViewMenu" type="checkbox" hc_pref="sets.closeTreeViewMenu" label="&hc.sets.closeThisMenu;" />
 					</menupopup>
 				</button>
 			</hbox>

@@ -61,6 +61,7 @@ var handyClicksSets = {
 		this.closeEditors();
 		this.treeScrollPos(true);
 		reloadFlag && this.setImportStatus(false);
+		delete this.rowsCache;
 	},
 	closeEditors: function() {
 		this.wu.forEachWindow(
@@ -106,6 +107,7 @@ var handyClicksSets = {
 		this._daAfter = this.ut.getLocalized("after").replace("%t", daTime);
 		this._forcedDisDa = daTime <= 0;
 		this._expandDa = this.pu.pref("sets.treeExpandDelayedAction");
+		this._localizeArgs = this.pu.pref("sets.localizeArguments");
 
 		this._overrides = this._overridesDa = this._new = this._newDa = 0;
 
@@ -118,7 +120,7 @@ var handyClicksSets = {
 			}
 			switch(drawMode) {
 				case 0:
-				default:
+				default: // Normal
 					var button = this.ps.getButtonId(sh);
 					var modifiers = this.ps.getModifiersStr(sh);
 					var buttonContainer = this.eltsCache[button]
@@ -127,7 +129,7 @@ var handyClicksSets = {
 						|| this.appendContainerItem(buttonContainer, sh, modifiers);
 					this.appendItems(modifiersContainer, p[sh], sh);
 				break;
-				case 1:
+				case 1: // Normal (compact)
 					var button = this.ps.getButtonStr(sh, true);
 					var modifiers = this.ps.getModifiersStr(sh, true);
 					var label = button + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
@@ -135,7 +137,16 @@ var handyClicksSets = {
 						|| this.appendContainerItem(this.tBody, sh, label);
 					this.appendItems(buttonContainer, p[sh], sh);
 				break;
-				case 2:
+				case 2: // Normal (inline)
+					var button = this.ps.getButtonStr(sh, true);
+					var modifiers = this.ps.getModifiersStr(sh, true);
+					var sep = " " + this.ps.keys.sep + " ";
+					var label = button + (modifiers ? sep + modifiers : "") + sep;
+					var so = p[sh];
+					for(var type in so) if(so.hasOwnProperty(type))
+						this.appendRow(this.tBody, sh, type, so[type], label + this.getTypeLabel(type));
+				break;
+				case 3: // Inverse
 					var button = this.ps.getButtonId(sh);
 					var buttonLabel = this.ut.getLocalized(button);
 					var modifiers = this.ps.getModifiersStr(sh);
@@ -149,7 +160,7 @@ var handyClicksSets = {
 						this.appendRow(buttonContainer, sh, type, so[type], modifiers);
 					}
 				break;
-				case 3:
+				case 4: // Inverse (compact)
 					var button = this.ps.getButtonStr(sh, true);
 					var modifiers = this.ps.getModifiersStr(sh, true);
 					var label = button + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
@@ -159,6 +170,17 @@ var handyClicksSets = {
 							|| this.appendContainerItem(this.tBody, type, this.getTypeLabel(type));
 						this.appendRow(typeContainer, sh, type, so[type], label);
 					}
+				break;
+				case 5: // Inverse (inline)
+					var button = this.ps.getButtonStr(sh, true);
+					var modifiers = this.ps.getModifiersStr(sh, true);
+					var sep = " " + this.ps.keys.sep + " ";
+					var label = sep + button + (modifiers ? sep + modifiers : "");
+					var so = p[sh];
+					for(var type in so) if(so.hasOwnProperty(type))
+						this.eltsCache[type] = this.appendRow(
+							this.tBody, sh, type, so[type], this.getTypeLabel(type) + label, this.eltsCache[type] || null
+						);
 				break;
 			}
 		}
@@ -193,14 +215,14 @@ var handyClicksSets = {
 		document.title = document.title.replace(/\*?$/, this.ps.otherSrc ? "*" : "");
 	},
 	appendContainerItem: function(parent, hash, label) {
-		var tItem =
+		var tItem = this.ut.parseFromXML(
 			<treeitem xmlns={this.ut.XULNS} container="true" open="true">
 				<treerow>
 					<treecell label={label} />
 				</treerow>
 				<treechildren />
-			</treeitem>;
-		tItem = this.ut.parseFromXML(tItem);
+			</treeitem>
+		);
 		parent.appendChild(tItem);
 		return this.eltsCache[hash] = tItem.getElementsByTagName("treechildren")[0];
 	},
@@ -208,7 +230,7 @@ var handyClicksSets = {
 		for(var itemType in items) if(items.hasOwnProperty(itemType))
 			this.appendRow(parent, shortcut, itemType, items[itemType]);
 	},
-	appendRow: function(parent, shortcut, itemType, fo, forcedLabel) {
+	appendRow: function(parent, shortcut, itemType, fo, forcedLabel, insAfter) {
 		var tItem = document.createElement("treeitem");
 		var tRow = document.createElement("treerow");
 		if(!this.ut.canHasProps(fo))
@@ -221,7 +243,7 @@ var handyClicksSets = {
 		var actLabel = this.getActionLabel(fo);
 		this.appendTreeCell(tRow, "label", actLabel);
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom));
-		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}));
+		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}, this._localizeArgs));
 		this.appendTreeCell(tRow, "label", this.getInitCode(fo, true));
 
 		var da = this.ut.getOwnProperty(fo, "delayedAction");
@@ -243,7 +265,7 @@ var handyClicksSets = {
 			var daLabel = this.getActionLabel(da);
 			this.appendTreeCell(daRow, "label", daLabel);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom));
-			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}));
+			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}, this._localizeArgs));
 			this.appendTreeCell(daRow, "label", this.getInitCode(da, true));
 
 			this.addClildsProperties(daRow, {
@@ -335,8 +357,10 @@ var handyClicksSets = {
 		tItem.__isDelayed = false;
 		tItem.__delayed = da && daItem;
 		tItem.appendChild(tRow);
-		parent.appendChild(tItem);
+		//parent.appendChild(tItem);
+		parent.insertBefore(tItem, insAfter && insAfter.nextSibling);
 		this.rowsCache[shortcut + "-" + itemType] = tRow;
+		return tItem;
 	},
 	getCustomTypeLabel: function(type) {
 		var label = this.ut.getOwnProperty(this.ps.types, type, "label");
@@ -407,11 +431,24 @@ var handyClicksSets = {
 		delete this.oldTree;
 		return this.oldTree = this.ut.fxVersion <= 2;
 	},
-	getArguments: function(argsObj) {
+	getArguments: function(argsObj, localize) {
 		var res = [];
 		for(var p in argsObj) if(argsObj.hasOwnProperty(p))
-			res.push(p + " = " + uneval(argsObj[p])); //~ todo: this.ut.getLocalized(p) ?
+			res.push(
+				localize
+					? this.getLocalizedArguments(argsObj, p)
+					: this.getRawArguments(argsObj, p)
+			)
 		return res.join(this.oldTree ? ", " : ",\n ");
+	},
+	getLocalizedArguments: function(argsObj, p) {
+		var argVal = argsObj[p];
+		return typeof argVal == "boolean"
+			? this.ut.getLocalized(p) + ": " + this.ut.getLocalized(argVal ? "yes" : "no")
+			: this.ut.getLocalized(p) + " " + this.ut.getLocalized(p + "[" + argVal + "]");
+	},
+	getRawArguments: function(argsObj, p) {
+		return p + " = " + uneval(argsObj[p]);
 	},
 	updTree: function(saveSel) {
 		this.tBody.style.visibility = "hidden"; // Do not show changes in progress
@@ -858,27 +895,41 @@ var handyClicksSets = {
 	},
 
 	initViewMenu: function(mp) {
-		var checkbox = mp.getElementsByAttribute("value", this.pu.pref("sets.treeDrawMode"));
-		if(checkbox.length)
-			checkbox[0].setAttribute("checked", "true");
-		this.$("hc-sets-tree-toggleExpandDa").setAttribute("checked", this.pu.pref("sets.treeExpandDelayedAction"));
+		var tdm = this.pu.pref("sets.treeDrawMode");
+		if(tdm < 0 || tdm > 5) // see drawTree() and switch(drawMode) { ... }
+			tdm = 0;
+		var checkbox = mp.getElementsByAttribute("value", tdm);
+		checkbox.length && checkbox[0].setAttribute("checked", "true");
 		this.$("hc-sets-tree-toggleColored").setAttribute("checked", this.tree.getAttribute("hc_colored") == "true");
+		var closeMenu = this.pu.pref("sets.closeTreeViewMenu") ? "auto" : "none";
+		Array.forEach(
+			mp.getElementsByTagName("menuitem"),
+			function(mi) {
+				mi.setAttribute("closemenu", closeMenu);
+				if(mi.hasAttribute("hc_pref"))
+					mi.setAttribute("checked", this.pu.pref(mi.getAttribute("hc_pref")));
+			},
+			this
+		);
+	},
+	viewMenuCommand: function(mi) {
+		if(mi.hasAttribute("value"))
+			this.setDrawMode(mi.value);
+		else if(mi.hasAttribute("hc_pref")) {
+			const pName = mi.getAttribute("hc_pref");
+			this.pu.pref(pName, !this.pu.pref(pName)); // => updPrefsUI()
+		}
 	},
 	setDrawMode: function(dm) {
 		// <preference instantApply="true" ... /> is bad on slow devices (it saves prefs.js file)
-		//if(!this.instantApply)
 		this.pu.pref("sets.treeDrawMode", Number(dm)); // => updPrefsUI()
-	},
-	toggleExpandDa: function() {
-		const p = "sets.treeExpandDelayedAction";
-		this.pu.pref(p, !this.pu.pref(p)); // => updPrefsUI()
 	},
 	toggleColored: function() {
 		var tr = this.tree;
 		tr.setAttribute("hc_colored", tr.getAttribute("hc_colored") != "true");
 	},
 
-	toggleTreeContainers: function(oFlag) {
+	toggleTreeContainers: function(oFlag) { //~ todo: collapse/expand one level per click?
 		var tis = this.tBody.getElementsByTagName("treeitem"), ti;
 		var isFunc = typeof oFlag == "function";
 		isFunc && this.toggleTreeContainers(true);
@@ -1047,7 +1098,7 @@ var handyClicksSets = {
 				this
 			);
 		}
-		while(tChld != this.tBody)
+		while(tChld != this.tBody);
 		return rowText.join("\n").toLowerCase();
 	},
 
@@ -1057,7 +1108,7 @@ var handyClicksSets = {
 		this.updateAllDependencies();
 		if(prefName == "sets.treeDrawMode")
 			this.updTree(false);
-		else if(prefName == "sets.treeExpandDelayedAction")
+		else if(prefName == "sets.treeExpandDelayedAction" || prefName == "sets.localizeArguments")
 			this.updTree();
 	},
 	loadPrefs: function() {
@@ -1087,9 +1138,12 @@ var handyClicksSets = {
 		return true;
 	},
 	savePrefpanes: function() {
-		var pps = document.getElementsByTagName("prefpane");
-		for(var i = 0, len = pps.length; i < len; i++)
-			pps[i].writePreferences(true /* aFlushToDisk */);
+		Array.forEach(
+			document.getElementsByTagName("prefpane"),
+			function(pp) {
+				pp.writePreferences(true /* aFlushToDisk */);
+			}
+		);
 	},
 	prefsChanged: function(e) {
 		var tar = e.target;

@@ -3,7 +3,7 @@ var handyClicksPrefUtils = {
 
 	// Preferences:
 	prefNS: "extensions.handyclicks.",
-	prefVer: 2,
+	prefVer: 3,
 
 	get prefSvc() {
 		delete this.prefSvc;
@@ -47,6 +47,11 @@ var handyClicksPrefUtils = {
 		}
 		if(v < 2) // Added 2009-11-13
 			this.pu.prefSvc.deleteBranch(pns + "forceStopMousedownEvent");
+		if(v < 3) { // Added 2010-02-04
+			var dm = this.pref("sets.treeDrawMode") || 0;
+			if(dm >= 2)
+				this.pref("sets.treeDrawMode", dm + 1);
+		}
 		this.pref("prefsVersion", this.prefVer);
 		!dontSave && this.savePrefFile();
 		this.ut._log("Format of about:config prefs updated: " + v + " => " + this.prefVer);

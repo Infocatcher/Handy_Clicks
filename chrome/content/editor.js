@@ -79,7 +79,7 @@ var handyClicksEditor = {
 	},
 	initShortcuts: function() {
 		this.mBox = this.$("hc-editor-mainTabbox");
-		var wa = window.arguments || [];
+		var wa = "arguments" in window ? window.arguments : [];
 		this.src = wa[0];
 		this.editorMode = wa[1];
 		this.shortcut = wa[2];
@@ -322,14 +322,10 @@ var handyClicksEditor = {
 			this.initCustomTypesEditor();
 	},
 	customTypeLabelDelay: function(it) {
-		setTimeout(function(_this, it) {
-			_this.customTypeLabel(it);
-		}, 0, this, it);
+		this.ut.timeout(this.customTypeLabel, this, [it], 0);
 	},
 	customTypeIdFilter: function(e) {
-		setTimeout(function(_this, node) {
-			_this._customTypeIdFilter(node);
-		}, 0, this, e.target);
+		this.ut.timeout(this._customTypeIdFilter, this, [e.target], 0);
 		if(e.type != "keypress")
 			return false;
 		var key = e.charCode;

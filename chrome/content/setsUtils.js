@@ -2,12 +2,14 @@ var handyClicksSetsUtils = {
 	init: function(reloadFlag) {
 		window.addEventListener("DOMMouseScroll", this, true);
 
+		var de = document.documentElement;
+		de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
 		var onTop = this.ut.parseFromXML(
 			<div xmlns="http://www.w3.org/1999/xhtml"
-				id="hc-sets-topRightToolbar"
-				style="position: fixed; top: 0; right: 0;">
+				id="hc-sets-ftTopEnd">
 				<button xmlns={this.ut.XULNS}
 					id="hc-sets-onTop"
+					class="hcFloatButton"
 					type="checkbox"
 					hidden={ !this.pu.pref("ui.onTopButton") }
 					oncommand="handyClicksWinUtils.toggleOnTop(); event.stopPropagation();"
@@ -15,8 +17,8 @@ var handyClicksSetsUtils = {
 				/>
 			</div>
 		);
-		document.documentElement.appendChild(onTop);
-		if(document.documentElement.getAttribute("hc_onTop") == "true")
+		de.appendChild(onTop);
+		if(de.getAttribute("hc_onTop") == "true")
 			this.wu.toggleOnTop(true);
 		else if(opener) {
 			var xulWin = this.wu.getXulWin(opener);
@@ -37,7 +39,7 @@ var handyClicksSetsUtils = {
 	},
 	handleEvent: function(e) {
 		if(e.type == "DOMMouseScroll")
-			this.listScroll(e) || this.radioScroll(e);
+			this.listScroll(e) || this.radioScroll(e) || this.numTextboxScroll(e);
 	},
 	listScroll: function(e) {
 		var ml = e.target;
@@ -107,6 +109,16 @@ var handyClicksSetsUtils = {
 			this.showInfoTooltip(e, si.getAttribute("label"));
 		return true;
 	},
+	numTextboxScroll: function(e) {
+		var tar = e.target;
+		if(
+			tar.localName != "textbox" || tar.getAttribute("type") != "number"
+			|| !("increase" in tar) || !("decrease" in tar) || !("_fireChange" in tar)
+		)
+			return false;
+		tar[e.detail > 0 ? "increase" : "decrease"]();
+		tar._fireChange();
+	},
 	getSameLevelRadios: function(elt) {
 		var isClosedMenu = false;
 		if(elt.localName == "menu" || elt.getAttribute("type") == "menu") {
@@ -132,13 +144,14 @@ var handyClicksSetsUtils = {
 		);
 	},
 	get infoTooltip() {
-		var tt = this.ut.parseFromXML(
-			<tooltip xmlns={this.ut.XULNS} id="handyClicks-infoTooltip" onmouseover="this.hidePopup();">
-				<label />
-			</tooltip>
-		);
 		delete this.infoTooltip;
-		return this.infoTooltip = document.documentElement.appendChild(tt);
+		return this.infoTooltip = document.documentElement.appendChild(
+			this.ut.parseFromXML(
+				<tooltip xmlns={this.ut.XULNS} id="handyClicks-infoTooltip" onmouseover="this.hidePopup();">
+					<label />
+				</tooltip>
+			)
+		);
 	},
 	showInfoTooltip: function _sit(e, msg) {
 		if(!msg)

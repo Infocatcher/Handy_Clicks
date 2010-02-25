@@ -19,6 +19,14 @@ radio[pane="hc-sets-pane-builtInFuncsSets"] {
 	cursor: pointer;
 }
 
+/* Allow access from keyboard */
+tree treecolpicker {
+	-moz-user-focus: normal;
+}
+tree treecolpicker:focus image {
+	outline: 1px dotted ThreeDDarkShadow;
+}
+
 /* Override system colors for use custom colors for highlighting */
 tree[hc_colored="true"] .tree-bodybox, tree[hc_colored="true"] treechildren {
 	color: black;

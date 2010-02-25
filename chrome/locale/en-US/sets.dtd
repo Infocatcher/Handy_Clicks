@@ -26,10 +26,14 @@
 <!ENTITY hc.sets.viewMenuAccesskey "V">
 <!ENTITY hc.sets.drawModeNormal "Normal">
 <!ENTITY hc.sets.drawModeNormalCompact "Normal (compact)">
+<!ENTITY hc.sets.drawModeNormalInline "Normal (inline)">
 <!ENTITY hc.sets.drawModeInverse "Inverse">
 <!ENTITY hc.sets.drawModeInverseCompact "Inverse (compact)">
+<!ENTITY hc.sets.drawModeInverseInline "Inverse (inline)">
 <!ENTITY hc.sets.expandDa "Expand delayed actions">
 <!ENTITY hc.sets.highlightTree "Highlight tree">
+<!ENTITY hc.sets.localizeArgs "Localize arguments">
+<!ENTITY hc.sets.closeThisMenu "Close this menu after click">
 
 <!ENTITY hc.sets.cmdAdd "Add…">
 <!ENTITY hc.sets.cmdEdit "Edit…">

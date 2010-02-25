@@ -1,7 +1,6 @@
 var handyClicksPrefSvc = {
 	oSvc: new HandyClicksObservers(),
 
-	otherSrc: false,
 	version: 0.14,
 	prefsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
 	get requiredHeader() {
@@ -24,6 +23,7 @@ var handyClicksPrefSvc = {
 		userBackup: "_user_backup-"
 	},
 	okShortcut: /^button=[0-2],ctrl=(?:true|false),shift=(?:true|false),alt=(?:true|false),meta=(?:true|false)$/,
+	otherSrc: false,
 	_restoringCounter: 0,
 
 	get _profileDir() {

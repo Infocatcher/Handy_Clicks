@@ -117,7 +117,9 @@ var handyClicksFuncs = {
 		const ns = "http://www.w3.org/1999/xlink";
 		return it.hasAttributeNS(ns, "href")
 			? makeURLAbsolute(it.baseURI, it.getAttributeNS(ns, "href")) // See chrome://browser/content/utilityOverlay.js
-			: it.href;
+			// Looks like wrapper error with chrome://global/content/bindings/text.xml#text-link binding
+			// on "content" pages (e.g. chrome://global/content/console.xul)
+			: it.href || it.getAttribute("href");
 	},
 	getTabURI: function(tab) {
 		return "linkedBrowser" in tab
@@ -129,7 +131,7 @@ var handyClicksFuncs = {
 	},
 	forEachTab: function(fnc, _this, tbr) {
 		return Array.map(
-			(tbr || this.hc.getTabBrowser(true)).mTabContainer.childNodes,
+			(tbr || this.hc.getTabBrowser(true)).tabContainer.childNodes,
 			fnc,
 			_this || this
 		);
@@ -147,7 +149,7 @@ var handyClicksFuncs = {
 	openURIInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, closePopups, winRestriction) {
 		var tbr = this.hc.getTabBrowser(true);
 		if(moveTo == "relative") {
-			var tabCont = tbr.mTabContainer;
+			var tabCont = tbr.tabContainer;
 			tabCont.__handyClicks__resetRelativeIndex = false;
 		}
 		var tab = this._openURIInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction);
@@ -857,7 +859,7 @@ var handyClicksFuncs = {
 	},
 	removeAllTabs: function(e) {
 		var tbr = this.hc.getTabBrowser();
-		var tabs = tbr.mTabContainer.childNodes;
+		var tabs = tbr.tabContainer.childNodes;
 		var len = tabs.length;
 		if(this.warnAboutClosingTabs(len, tbr))
 			for(var i = len - 1; i >= 0; --i)
@@ -866,7 +868,7 @@ var handyClicksFuncs = {
 	removeRightTabs: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
-		var tabs = tbr.mTabContainer.childNodes;
+		var tabs = tbr.tabContainer.childNodes;
 		var _tabs = [];
 		for(var i = tabs.length - 1; i >= 0; --i) {
 			if(tabs[i] == tab)
@@ -879,7 +881,7 @@ var handyClicksFuncs = {
 	removeLeftTabs: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
-		var tabs = tbr.mTabContainer.childNodes;
+		var tabs = tbr.tabContainer.childNodes;
 		var _tabs = [];
 		for(var i = 0, len = tabs.length; i < len; i++) {
 			if(tabs[i] == tab)
@@ -895,7 +897,7 @@ var handyClicksFuncs = {
 		tbr = tbr || this.hc.getTabBrowser();
 		tabsToClose = typeof tabsToClose == "number"
 			? tabsToClose
-			: tbr.mTabContainer.childNodes.length;
+			: tbr.tabContainer.childNodes.length;
 		var reallyClose = true;
 		if(tabsToClose <= 1)
 			return reallyClose;
@@ -975,11 +977,21 @@ var handyClicksFuncs = {
 	},
 	reloadTab: function(e, skipCache, tab) {
 		tab = this.fixTab(tab);
+		if(this.ensureTabLoaded(tab))
+			return;
 		var br = tab.linkedBrowser;
 		if(skipCache)
 			br.reloadWithFlags(nsIWebNavigation.LOAD_FLAGS_BYPASS_PROXY | nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE);
 		else
 			br.reload();
+	},
+	ensureTabLoaded: function(tab) {
+		// For BarTab ( https://addons.mozilla.org/firefox/addon/67651 )
+		if("BarTap" in window && tab.getAttribute("ontap") == "true") {
+			BarTap.loadTabContents(tab);
+			return true;
+		}
+		return false;
 	},
 	stopAllTabsLoading: function(e) {
 		this.forEachTab(
@@ -1138,6 +1150,14 @@ var handyClicksFuncs = {
 		if("TreeStyleTabService" in window) {
 			var _tab = tbr.selectedTab;
 			TreeStyleTabService.readyToOpenChildTab(_tab, true);
+		}
+
+		if("PlacesUIUtils" in window && "_confirmOpenInTabs" in PlacesUIUtils) {
+			var count = 0;
+			for(var h in hrefs)
+				count++;
+			if(!PlacesUIUtils._confirmOpenInTabs(count))
+				return;
 		}
 
 		if(!useDelays) {

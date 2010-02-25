@@ -26,10 +26,14 @@
 <!ENTITY hc.sets.viewMenuAccesskey "В">
 <!ENTITY hc.sets.drawModeNormal "Нормальный">
 <!ENTITY hc.sets.drawModeNormalCompact "Нормальный (компактный)">
+<!ENTITY hc.sets.drawModeNormalInline "Нормальный (линейный)">
 <!ENTITY hc.sets.drawModeInverse "Инвертированный">
 <!ENTITY hc.sets.drawModeInverseCompact "Инвертированный (компактный)">
+<!ENTITY hc.sets.drawModeInverseInline "Инвертированный (линейный)">
 <!ENTITY hc.sets.expandDa "Разворачивать отложенные действия">
 <!ENTITY hc.sets.highlightTree "Раскраска дерева">
+<!ENTITY hc.sets.localizeArgs "Переводить аргументы">
+<!ENTITY hc.sets.closeThisMenu "Закрывать это меню после клика">
 
 <!ENTITY hc.sets.cmdAdd "Добавить…">
 <!ENTITY hc.sets.cmdEdit "Редактировать…">

@@ -234,7 +234,7 @@ var handyClicks = {
 
 	// Special handlers:
 	contextmenuHandler: function(e) {
-		if(this.flags.stopContextMenu)
+		if(this.enabled && this.flags.stopContextMenu)
 			this.stopEvent(e);
 	},
 	mousemoveHandler: function(e) {
@@ -440,6 +440,17 @@ var handyClicks = {
 
 		// Link:
 		if(all || this.itemTypeInSets(sets, "link")) {
+			if(
+				it.namespaceURI == this.ut.XULNS
+				&& this.inObject(it, "href")
+				&& (it.accessibleType || it.wrappedJSObject.accessibleType)
+					== Components.interfaces.nsIAccessibleProvider.XULLink
+			) {
+				this.itemType = "link";
+				this.item = it;
+				return;
+			}
+
 			const eltNode = Node.ELEMENT_NODE; // 1
 			for(_it = it; _it && _it.nodeType != docNode; _it = _it.parentNode) {
 				// https://bugzilla.mozilla.org/show_bug.cgi?id=266932
@@ -552,13 +563,13 @@ var handyClicks = {
 
 		// Submit button:
 		if(all || this.itemTypeInSets(sets, "submitButton")) {
-			if(itln == "input" && it.type == "submit" && this.inObject("form", it)) {
+			if(itln == "input" && it.type == "submit" && this.inObject(it, "form")) {
 				this.itemType = "submitButton";
 				this.item = it;
 				return;
 			}
 			for(_it = it; _it && _it.nodeType != docNode; _it = _it.parentNode) {
-				if(_it.localName.toLowerCase() == "button" && this.inObject("form", _it)) {
+				if(_it.localName.toLowerCase() == "button" && this.inObject(_it, "form")) {
 					this.itemType = "submitButton";
 					this.item = _it;
 					return;
@@ -569,8 +580,15 @@ var handyClicks = {
 		if(!forcedAll && this.editMode && !this.itemType) // Nothing found?
 			this.defineItem(e, sets, true); // Try again with disabled types.
 	},
-	inObject: function(p, o) {
-		return p in o || "wrappedJSObject" in o && p in o.wrappedJSObject;
+	inObject: function(o, p) {
+		// this.ut._log("inObject", "wrappedJSObject" in o, o.wrappedJSObject);
+		// Open chrome://global/content/console.xul in tab
+		// and click on <xul:label class="text-link" />
+		//   "wrappedJSObject" in o => false
+		//   o.wrappedJSObject      => [object XULElement]
+
+		//return p in o || "wrappedJSObject" in o && p in o.wrappedJSObject;
+		return p in o || o.wrappedJSObject && p in o.wrappedJSObject;
 	},
 	itemTypeInSets: function(sets, iType) {
 		return sets.hasOwnProperty(iType) && this.isOkFuncObj(sets[iType]);
@@ -941,7 +959,22 @@ var handyClicks = {
 				var argsObj = funcObj.arguments;
 				for(var p in argsObj) if(argsObj.hasOwnProperty(p))
 					args.push(argsObj[p]);
-				fnc.apply(this.fn, args);
+				try {
+					fnc.apply(this.fn, args);
+				}
+				catch(err) {
+					var href = "handyclicks://editor/shortcut/" + this.ps.getEvtStr(e || this.copyOfEvent) + "/"
+						+ (this._all ? "$all" : this.itemType) + "/"
+						+ (this.isDeleyed ? "delayed" : "normal") + "/code";
+					var eMsg = this.ut.getLocalized("errorInBuiltInFunction").replace("%f", action);
+					this.ut.notify(
+						eMsg + this.ut.getLocalized("openConsole"),
+						this.ut.getLocalized("errorTitle"),
+						this.ut.console, this.wu.getOpenLink(href)
+					);
+					this.ut._err(new Error(eMsg));
+					this.ut._err(err);
+				}
 			}
 			else {
 				this.ut.notify(
@@ -949,7 +982,7 @@ var handyClicks = {
 					this.ut.getLocalized("errorTitle"),
 					this.ut.console
 				);
-				this.ut._err(new Error(action + " not found (" + typeof fnc + ")"));
+				this.ut._err(new Error(action + " not found (" + typeof this.fn[action] + ")"));
 			}
 		}
 

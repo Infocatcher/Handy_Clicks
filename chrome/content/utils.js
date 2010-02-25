@@ -124,7 +124,7 @@ var handyClicksUtils = {
 
 	timeout: function(func, context, args, delay) {
 		return setTimeout(
-			function() {
+			function(func, context, args) {
 				func.apply(context, args);
 			},
 			delay || 0, func, context, args || []
@@ -324,7 +324,7 @@ var handyClicksUtils = {
 	},
 	isArray: function(arr) {
 		return arr instanceof Array
-			|| Object.prototype.toString.call(arr) === "[object Array]";
+			|| this.sandbox.Object.prototype.toString.call(arr) === "[object Array]";
 	},
 	canHasProps: function(o) {
 		if(!o)
@@ -401,8 +401,13 @@ var handyClicksUtils = {
 	},
 	getSource: function(o) {
 		return this.canHasProps(o) && !o.__proto__
-			? Object.prototype.toSource.call(o)
+			? this.sandbox.Object.prototype.toSource.call(o)
 			: uneval(o);
+	},
+
+	get sandbox() {
+		delete this.sandbox;
+		return this.sandbox = new Components.utils.Sandbox("about:blank");
 	},
 
 	attribute: function(node, attr, val, allowEmpty) {

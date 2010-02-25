@@ -107,6 +107,7 @@ var handyClicksWinUtils = {
 				return w;
 			}
 		}
+
 		_oe.alreadyOpened = false;
 		w = this.ww.openWindow(
 			this.opener, "chrome://handyclicks/content/editor.xul", "_blank",

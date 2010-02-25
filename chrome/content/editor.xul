@@ -161,9 +161,9 @@
 											hc_supports="tab, tabbar" />
 										<menuitem value="removeAllTabs" label="removeAllTabs"
 											hc_supports="tab, tabbar" />
- 										<menuitem value="removeRightTabs" label="removeRightTabs"
-											hc_supports="tab, tabbar" />
 										<menuitem value="removeLeftTabs" label="removeLeftTabs"
+											hc_supports="tab, tabbar" />
+ 										<menuitem value="removeRightTabs" label="removeRightTabs"
 											hc_supports="tab, tabbar" />
 										<menuitem value="undoCloseTab" label="undoCloseTab"
 											hc_supports="tab, tabbar" />
