@@ -74,7 +74,8 @@
 					oncommand="handyClicksEditor.loadFuncs(); event.stopPropagation();"
 					ondragexit="event.stopPropagation();">
 					<!-- Prevent bubbling of all events from this box (any modifacation will not change apply button state) -->
-					<button id="hc-editor-clickButton" label="&hc.editor.clickHere;" onclick="handyClicksEditor.setClickOptions(event);" />
+					<button id="hc-editor-clickButton" onclick="handyClicksEditor.setClickOptions(event);"
+						 label="&hc.editor.clickHere;" tooltiptext="&hc.editor.clickHereTip;" />
 					<menulist id="hc-editor-button">
 						<menupopup>
 							<menuitem value="0" label="button0short" tooltiptext="button0" />

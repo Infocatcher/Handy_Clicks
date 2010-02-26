@@ -134,6 +134,7 @@
 
 <!ENTITY hc.editor.mainTabFuncs "Functions">
 <!ENTITY hc.editor.clickHere "Click here">
+<!ENTITY hc.editor.clickHereTip "Click for select mouse button and modifiers">
 
 <!ENTITY hc.editor.event "Event:">
 <!ENTITY hc.editor.enabled "Enabled">

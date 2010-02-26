@@ -134,6 +134,7 @@
 
 <!ENTITY hc.editor.mainTabFuncs "Функции">
 <!ENTITY hc.editor.clickHere "Кликните здесь">
+<!ENTITY hc.editor.clickHereTip "Кликните для выбора кнопки мыши и модификаторов">
 
 <!ENTITY hc.editor.event "Событие:">
 <!ENTITY hc.editor.enabled "Включено">
