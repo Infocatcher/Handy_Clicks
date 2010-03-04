@@ -48,13 +48,14 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 	-moz-binding: url("chrome://handyclicks/content/editor.xml#codeEditor");
 }
 /* "Fullwindow" feature */
-:root[hc_maximized="true"] > * :not([hc_maximized="true"]):not(autorepeatbutton) {
-	visibility: collapse !important;
+:root[hc_maximized="true"] *|*:not([hc_maximized="true"]):not(.dialog-content-box) {
+	visibility: collapse;
 }
-:root[hc_maximized="true"] > * .hcEditor :not(autorepeatbutton) {
+:root[hc_maximized="true"] .hcEditor *|*:not(autorepeatbutton) {
 	visibility: visible !important; /* For anonymous nodes inside textbox.hcEditor */
 }
-[hc_maximized="true"]:not(.hcEditor) { /* Hide all borders */
+[hc_maximized="true"]:not(.hcEditor) {
+	/* Hide all borders */
 	margin: 0 !important;
 	padding: 0 !important;
 	border: none !important;

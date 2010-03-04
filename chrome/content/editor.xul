@@ -5,6 +5,8 @@
 <?xml-stylesheet href="chrome://handyclicks/content/style/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/a11y.css" type="text/css"?>
 
+<?xul-overlay href="chrome://handyclicks/content/editorFuncs.xul"?>
+
 <!DOCTYPE dialog [
 	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/sets.dtd">
 	%locale;
@@ -64,8 +66,8 @@
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">
 		<tabs onselect="handyClicksEditor.setWinId(); handyClicksEditor.setWinTitle();">
-			<tab label="&hc.editor.mainTabFuncs;" selected="true" />
-			<tab label="&hc.editor.mainTabCustomTypes;" />
+			<tab label="&hc.editor.mainTabFuncs;" accesskey="&hc.editor.mainTabFuncsAccesskey;" selected="true" />
+			<tab label="&hc.editor.mainTabCustomTypes;" accesskey="&hc.editor.mainTabCustomTypesAccesskey;" />
 		</tabs>
 		<tabpanels flex="1">
 			<tabpanel flex="1" orient="vertical">
@@ -145,108 +147,7 @@
 								<label value="&hc.editor.func;" />
 								<menulist id="hc-editor-func"
 									oncommand="handyClicksEditor.addFuncArgs(this.id.replace(/^hc-editor-func/, ''));">
-									<menupopup id="hc-editor-funcPopup">
-										<!--
-										Separator: "," or ", "
-										hc_args:     missing => no args  or string like "refererPolicy, closePopups"
-										hc_supports: missing => all      or string like "tab, tabbar"
-										hc_app:      missing => all      or string like "Firefox, SeaMonkey"
-										-->
-										<!-- Built-in actions -->
-										<menuitem value="copyItemText" label="copyItemText" />
-										<menuitem value="copyItemLink" label="copyItemLink" />
-										<menuseparator id="hc-editor-funcsSep-clip" />
-										<menuitem value="removeTab" label="removeTab"
-											hc_supports="tab, tabbar" />
-										<menuitem value="removeOtherTabs" label="removeOtherTabs"
-											hc_supports="tab, tabbar" />
-										<menuitem value="removeAllTabs" label="removeAllTabs"
-											hc_supports="tab, tabbar" />
-										<menuitem value="removeLeftTabs" label="removeLeftTabs"
-											hc_supports="tab, tabbar" />
- 										<menuitem value="removeRightTabs" label="removeRightTabs"
-											hc_supports="tab, tabbar" />
-										<menuitem value="undoCloseTab" label="undoCloseTab"
-											hc_supports="tab, tabbar" />
-										<menuitem value="cloneTab" label="cloneTab"
-											hc_supports="tab, tabbar" />
-										<menuitem value="renameTab" label="renameTab"
-											hc_supports="tab, tabbar" />
-										<menuitem value="reloadTab" label="reloadTab"
-											hc_args="skipCache"
-											hc_supports="tab, tabbar" />
-										<menuitem value="reloadAllTabs" label="reloadAllTabs"
-											hc_args="skipCache"
-											hc_supports="tab, tabbar" />
-										<menuitem value="stopTabLoading" label="stopTabLoading"
-											hc_supports="tab, tabbar" />
-										<menuitem value="stopAllTabsLoading" label="stopAllTabsLoading"
-											hc_supports="tab, tabbar" />
-										<menuseparator id="hc-editor-funcsSep-tabs" />
-
-										<menuitem value="mthCloseTabs" label="mthCloseTabs"
-											hc_extLabel="Multiple Tab Handler"
-											hc_supports="ext_mulipletabs" />
-										<menuitem value="mthCloseOtherTabs" label="mthCloseOtherTabs"
-											hc_extLabel="Multiple Tab Handler"
-											hc_supports="ext_mulipletabs" />
-										<menuitem value="mthReloadTabs" label="mthReloadTabs"
-											hc_extLabel="Multiple Tab Handler"
-											hc_supports="ext_mulipletabs" />
-										<menuitem value="mthAddBookmarkFor" label="mthAddBookmarkFor"
-											hc_extLabel="Multiple Tab Handler"
-											hc_supports="ext_mulipletabs" />
-										<menuitem value="mthDuplicateTabs" label="mthDuplicateTabs"
-											hc_extLabel="Multiple Tab Handler"
-											hc_supports="ext_mulipletabs" />
-										<menuitem value="mthSplitWindowFromTabs" label="mthSplitWindowFromTabs"
-											hc_extLabel="Multiple Tab Handler"
-											hc_supports="ext_mulipletabs" />
-										<menuseparator id="hc-editor-funcsSep-mulipletabs" />
-
-										<menuitem value="openURIInTab" label="openURIInTab"
-											hc_args="loadInBackground, loadJSInBackground, refererPolicy, moveTabTo, closePopups, winRestriction"
-											hc_supports="link, img, tab, bookmark, historyItem" />
-										<menuitem value="openURIInCurrentTab" label="openURIInCurrentTab"
-											hc_args="refererPolicy, closePopups"
-											hc_supports="link, img, bookmark, historyItem" />
-										<menuitem value="openURIInWindow" label="openURIInWindow"
-											hc_args="loadInBackground, refererPolicy, moveWinTo, closePopups"
-											hc_supports="link, img, tab, bookmark, historyItem" />
-										<menuitem value="openURIInSidebar" label="openURIInSidebar"
-											hc_args="closePopups"
-											hc_supports="link, img, tab, bookmark, historyItem"
-											hc_app="Firefox" />
-										<menuseparator id="hc-editor-funcsSep-links" />
-
-										<menuitem value="showContextMenu" label="showContextMenu" />
-										<menuitem value="openSimilarLinksInTabs" label="openSimilarLinksInTabs"
-											hc_args="refererPolicy"
-											hc_supports="link" />
-										<menuitem value="reloadImg" label="reloadImg"
-											hc_supports="img" />
-										<menuitem value="submitForm" label="submitForm"
-											hc_args="target, loadInBackground, refererPolicy"
-											hc_supports="submitButton" />
-										<menuseparator id="hc-editor-funcsSep-misc" />
-
-										<menuitem value="downloadWithFlashGot" label="downloadWithFlashGot"
-											hc_required="FlashGot"
-											hc_supports="link" />
-										<menuitem value="openURIInSplitBrowser" label="openURIInSplitBrowser"
-											hc_required="SplitBrowser"
-											hc_args="position"
-											hc_supports="link, img, tab, bookmark, historyItem" />
-										<menuseparator id="hc-editor-funcsSep-exts" />
-
-										<menuitem value="$void" label="$void" hc_notDelay="true" />
-										<menuitem value="$ignore" label="$ignore" hc_notDelay="true" />
-										<menuitem value="$auto" label="$auto" hc_notFunc="true" />
-
-										<!-- Custom code -->
-										<menuseparator id="hc-editor-funcsSep" />
-										<menuitem value="$custom" label="$custom" />
-									</menupopup>
+									<!-- See editorFuncs.xul -->
 								</menulist>
 							</hbox>
 							<vbox id="hc-editor-funcSets" flex="1">
@@ -268,7 +169,8 @@
 										<tabpanels flex="1">
 											<tabpanel flex="1" orient="vertical">
 												<hbox>
-													<textbox class="hcText" readonly="true" value="&hc.editor.funcArgs; event, item, origItem"
+													<textbox class="hcText" readonly="true"
+														value="&hc.editor.funcArgs; event, item, origItem"
 														onfocus="handyClicksEditor.fixFocusedElement(event);" />
 												</hbox>
 												<textbox class="hcEditor" id="hc-editor-funcField" flex="1" value="" />
@@ -319,7 +221,8 @@
 						</tabpanel>
 						<tabpanel id="hc-editor-customTypeContextPanel" flex="1" orient="vertical">
 							<hbox>
-								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.funcArgs; event, item, origItem"
+								<textbox class="hcText" readonly="true" tabindex="1"
+									value="&hc.editor.funcArgs; event, item, origItem"
 									onfocus="handyClicksEditor.fixFocusedElement(event);" />
 								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
 							</hbox>

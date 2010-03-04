@@ -495,22 +495,20 @@ var handyClicksFuncs = {
 			this.hc.closeMenus();
 	},
 	downloadWithFlashGot: function(e, item) {
-		item = item || this.hc.item;
-		if(typeof gFlashGot == "undefined") {
+		if(!("gFlashGot" in window)) {
 			this.ut._err(new Error("Missing FlashGot extension ( https://addons.mozilla.org/firefox/addon/220 )"), true);
 			return;
 		}
-		document.popupNode = item;
+		document.popupNode = item || this.hc.item;
 		gFlashGot.downloadPopupLink();
 	},
-	openURIInSplitBrowser: function(e, position, closePopups, uri, win) {
-		position = (position || "bottom").toUpperCase();
-		uri = uri || this.getItemURI(this.hc.item);
-		win = win || this.hc.item.ownerDocument.defaultView;
-		if(typeof SplitBrowser == "undefined") {
+	openURIInSplitBrowser: function(e, position, closePopups, uri) {
+		if(!("SplitBrowser" in window)) {
 			this.ut._err(new Error("Missing Split Browser extension ( https://addons.mozilla.org/firefox/addon/4287 )"), true);
 			return;
 		}
+		position = (position || "bottom").toUpperCase();
+		uri = uri || this.getItemURI(this.hc.item);
 		SplitBrowser.addSubBrowser(uri, null, SplitBrowser["POSITION_" + position]);
 		if(closePopups)
 			this.hc.closeMenus();
@@ -563,6 +561,7 @@ var handyClicksFuncs = {
 	showGeneratedPopup: function(items) {
 		var popup = this.createPopup(items);
 		this.hc.showPopupOnItem(popup);
+		this.ut.fixIconsSize(popup);
 		return popup;
 	},
 
@@ -607,7 +606,8 @@ var handyClicksFuncs = {
 			item.prop_className += " handyClicks-invalidPath";
 			item["attr_" + this.tooltipAttrClass + "0"] = "handyClicks-invalidPathTip";
 		}
-		item.attr_image = this.getFileURI(this.getLocalPath(img)) || "moz-icon:file://" + (this.getLocalPath(icon) || path);
+		item.attr_image = this.getFileURI(this.getLocalPath(img))
+			|| "moz-icon:file://" + (this.getLocalPath(icon) || path) + "?size=16";
 		item[ttBase + n++] = path;
 		item.prop_hc_path = path;
 

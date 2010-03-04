@@ -1165,8 +1165,11 @@ var handyClicks = {
 			&& subject instanceof Components.interfaces.nsIUpdateItem
 			&& subject.id == "handyclicks@infocatcher"
 			&& data == "item-uninstalled"
-		)
+			&& !this.ut.storage("uninstalled")
+		) {
+			this.ut.storage("uninstalled", true);
 			this.uninstall();
+		}
 	},
 	uninstall: function() {
 		var ps = this.ut.promptsSvc;

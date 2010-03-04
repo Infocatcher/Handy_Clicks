@@ -819,7 +819,7 @@ var handyClicksEditor = {
 		var si = funcs.selectedItem;
 		if(!si)
 			return;
-		this.storage("shortcut", {
+		this.ut.storage("shortcut", {
 			supports: si.getAttribute("hc_supports"),
 			app:      si.getAttribute("hc_app"),
 			required: si.getAttribute("hc_required"),
@@ -827,7 +827,7 @@ var handyClicksEditor = {
 		});
 	},
 	pasteShortcut: function() {
-		var st = this.storage("shortcut");
+		var st = this.ut.storage("shortcut");
 		if(!st)
 			return;
 		var type = this.currentType;
@@ -916,40 +916,13 @@ var handyClicksEditor = {
 		this.buttonApply.disabled = false;
 	},
 	copyCustomType: function() {
-		this.storage("type", this.getTypeObj());
+		this.ut.storage("type", this.getTypeObj());
 	},
 	pasteCustomType: function() {
-		var st = this.storage("type");
+		var st = this.ut.storage("type");
 		if(!st)
 			return;
 		this.initCustomTypesEditor(null, st);
 		this.applyDisabled = false;
-	},
-
-	get _storage() {
-		var w = Components.classes["@mozilla.org/appshell/appShellService;1"]
-			.getService(Components.interfaces.nsIAppShellService)
-			.hiddenDOMWindow;
-		const ns = "__handyClicks__";
-		if(!(ns in w)) {
-			w[ns] = { __proto__: null };
-			w.addEventListener("unload", function _u(e) {
-				w.removeEventListener("unload", _u, false);
-				delete w[ns];
-			}, false);
-		}
-		delete this._storage;
-		return this._storage = w[ns];
-	},
-	storage: function(key, val) {
-		if("Application" in window) { // Firefox 3.0+
-			const ns = "__handyClicks__";
-			return arguments.length == 1
-				? Application.storage.get(ns + key, null)
-				: Application.storage.set(ns + key, val);
-		}
-		return arguments.length == 1
-			? key in this._storage ? this._storage[key] : null
-			: (this._storage[key] = val);
 	}
 };

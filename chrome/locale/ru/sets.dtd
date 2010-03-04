@@ -133,6 +133,7 @@
 <!ENTITY hc.editor.undoAccesskey "О">
 
 <!ENTITY hc.editor.mainTabFuncs "Функции">
+<!ENTITY hc.editor.mainTabFuncsAccesskey "Ф">
 <!ENTITY hc.editor.clickHere "Кликните здесь">
 <!ENTITY hc.editor.clickHereTip "Кликните для выбора кнопки мыши и модификаторов">
 
@@ -157,6 +158,7 @@
 <!ENTITY hc.editor.funcInitTip "Выполняется при (пере)загрузке настроек">
 
 <!ENTITY hc.editor.mainTabCustomTypes "Добавленные типы">
+<!ENTITY hc.editor.mainTabCustomTypesAccesskey "Д">
 <!ENTITY hc.editor.internalId "Внутренний id:">
 <!ENTITY hc.editor.defineItem "Определение элемента">
 <!ENTITY hc.editor.defineReturn "Должно возвращать: элемент или null"> <!-- Do not translate "null"! -->

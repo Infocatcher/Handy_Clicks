@@ -16,3 +16,10 @@ checkbox[handyclicks_important="enabled"] html|span {
 checkbox[handyclicks_important="enabled"]:not([checked="true"]) html|span {
 	border-bottom: 2px solid red;
 }
+
+[handyclicks_iconSize="15"] menuitem .menu-iconic-icon[src^="moz-icon:"] {
+	width: 15px; height: 15px;
+}
+[handyclicks_iconSize="14"] menuitem .menu-iconic-icon[src^="moz-icon:"] {
+	width: 14px; height: 14px;
+}

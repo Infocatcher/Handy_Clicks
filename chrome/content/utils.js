@@ -47,14 +47,14 @@ var handyClicksUtils = {
 			},
 			this
 		);
-		return r.join("\n\n");
+		return r.join("\n");
 	},
 	_objProps: function(o) {
 		var r = [];
 		var has = "hasOwnProperty" in o;
 		for(var p in o)
-			r.push(p + (has && o.hasOwnProperty(p) ? " [own]" : "") + " = " + this.safeToString(this.safeGet(o, p)));
-		return r.join("\n\n");
+			r.push(p + " = " + (has && o.hasOwnProperty(p) ? "[own] " : "") + this.safeToString(this.safeGet(o, p)));
+		return r.join("\n");
 	},
 	safeGet: function(o, p) {
 		try { return o[p]; }
@@ -487,7 +487,46 @@ var handyClicksUtils = {
 	removeChilds: function(elt) {
 		while(elt.hasChildNodes())
 			elt.removeChild(elt.lastChild);
-	}
+	},
+
+	get _storage() {
+		var w = Components.classes["@mozilla.org/appshell/appShellService;1"]
+			.getService(Components.interfaces.nsIAppShellService)
+			.hiddenDOMWindow;
+		const ns = "__handyClicks__";
+		if(!(ns in w)) {
+			w[ns] = { __proto__: null };
+			w.addEventListener("unload", function _u(e) {
+				w.removeEventListener("unload", _u, false);
+				delete w[ns];
+			}, false);
+		}
+		delete this._storage;
+		return this._storage = w[ns];
+	},
+	storage: function(key, val) {
+		if("Application" in window) { // Firefox 3.0+
+			const ns = "__handyClicks__";
+			return arguments.length == 1
+				? Application.storage.get(ns + key, null)
+				: Application.storage.set(ns + key, val);
+		}
+		return arguments.length == 1
+			? key in this._storage ? this._storage[key] : null
+			: (this._storage[key] = val);
+	},
+
+	fixIconsSize: function(popup) {
+		var icon = new Image();
+		icon.src = "moz-icon://.js?size=16"; // Sometimes I see 14x14 instead of 16x16 in Windows 7
+		this.timeout(
+			function(icon, popup) {
+				popup.setAttribute("handyclicks_iconSize", icon.width);
+				this._devMode && this._log("Icon size: " + icon.width + " x " + icon.height);
+			},
+			this, [icon, popup], 0
+		);
+	},
 };
 
 function HandyClicksObservers() {
