@@ -6,7 +6,7 @@ var handyClicksSetsUtils = {
 		de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
 		var onTop = this.ut.parseFromXML(
 			<div xmlns="http://www.w3.org/1999/xhtml"
-				id="hc-sets-ftTopEnd">
+				id="hc-sets-floatToolbar">
 				<button xmlns={this.ut.XULNS}
 					id="hc-sets-onTop"
 					class="hcFloatButton"
@@ -162,7 +162,7 @@ var handyClicksSetsUtils = {
 		if("openPopup" in tt)
 			tt.openPopup(e.target, "after_start");
 		else
-			tt.showPopup(e.target, -1, -1, "popup", "bottomleft", "topleft");
+			tt.showPopup(e.target, -1, -1, "tooltip", "bottomleft", "topleft");
 		if("timeout" in _sit)
 			clearTimeout(_sit.timeout);
 		_sit.timeout = setTimeout(function(tt) {

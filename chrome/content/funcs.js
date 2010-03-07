@@ -607,7 +607,7 @@ var handyClicksFuncs = {
 			item["attr_" + this.tooltipAttrClass + "0"] = "handyClicks-invalidPathTip";
 		}
 		item.attr_image = this.getFileURI(this.getLocalPath(img))
-			|| "moz-icon:file://" + (this.getLocalPath(icon) || path) + "?size=16";
+			|| "moz-icon:file://" + (this.getLocalPath(icon) || path).replace(/\\/g, "/") + "?size=16";
 		item[ttBase + n++] = path;
 		item.prop_hc_path = path;
 

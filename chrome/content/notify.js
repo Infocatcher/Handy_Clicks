@@ -2,15 +2,13 @@ var hcNotify = {
 	startColor: 0, // >= 0 (black)
 	endColor: 255, // <= 255 (white)
 	hoverColor: "blue",
-	_colorDelta: 0,
-	_startTime: 0,
-	_dur: 0,
+
 	_closeTimeout: null,
 	_highlightInterval: null,
-	_nBox: null,
+
 	init: function() {
-		// { dur, header, msg, funcLeftClick, funcMiddleClick, extEnabled, inWindowCorner, dontCloseUnderCursor }
 		var wa = window.arguments[0];
+		// { dur, header, msg, funcLeftClick, funcMiddleClick, extEnabled, inWindowCorner, dontCloseUnderCursor }
 		document.getElementById("hcNotifyHeader").textContent = wa.header + "\n\n";
 		var descElt = document.getElementById("hcNotifyDesc");
 		descElt.textContent = wa.msg;

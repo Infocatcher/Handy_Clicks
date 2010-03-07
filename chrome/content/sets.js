@@ -1557,7 +1557,7 @@ var handyClicksSets = {
 					<menuitem xmlns={this.ut.XULNS}
 						label={ fTime + " [" + fSize + " " + bytes + "] \u2013 " + fName }
 						class="menuitem-iconic"
-						image={ "moz-icon:file://" + fPath + "?size=16" }
+						image={ "moz-icon:file://" + fPath.replace(/\\/g, "/") + "?size=16" }
 						tooltiptext={fPath}
 						hc_fileName={fName}
 						hc_old={ fName.indexOf(this.ps.names.version) != -1 }

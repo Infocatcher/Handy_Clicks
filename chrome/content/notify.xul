@@ -6,17 +6,15 @@
 	windowtype="handyclicks:notify"
 	hidechrome="true"
 	align="start"
-	onload="hcNotify.init();"
-	onclick="hcNotify.clickHandler(event);">
+	onload="hcNotify.init();">
 
 	<script type="application/x-javascript" src="chrome://handyclicks/content/notify.js" />
 
-	<hbox id="hcNotifyBox">
+	<hbox id="hcNotifyBox" onclick="hcNotify.clickHandler(event);">
 		<hbox id="hcNotifyImgBox" align="center" valign="top">
 			<image id="hcNotifyImg" src="style/icons24.png" autostretch="never" />
 		</hbox>
 		<vbox id="hcNotifyContainer">
-			<!--<label id="hcNotifyHeader" class="header" value="[Header]" />-->
 			<description id="hcNotifyHeader" class="header">[Header]</description>
 			<description id="hcNotifyDesc">[Message]</description>
 		</vbox>
