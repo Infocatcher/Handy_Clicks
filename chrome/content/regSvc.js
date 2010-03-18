@@ -1,6 +1,9 @@
 var handyClicksRegSvc = {
 	instantInit: function(reloadFlag) {
 		window.addEventListener("load", this, false);
+		Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+			.getService(Components.interfaces.mozIJSSubScriptLoader)
+			.loadSubScript("chrome://handyclicks/content/_reloader.js");
 		this.registerShortcuts(true);
 		this.callMethods("instantInit", reloadFlag);
 	},
@@ -8,10 +11,6 @@ var handyClicksRegSvc = {
 		window.removeEventListener("load", this, false);
 		window.addEventListener("unload", this, false);
 		this.callMethods("init", reloadFlag);
-		if(!("handyClicksReloadScripts" in window))
-			Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-				.getService(Components.interfaces.mozIJSSubScriptLoader)
-				.loadSubScript("chrome://handyclicks/content/_devMode.js");
 		window._handyClicksInitialized = true;
 	},
 	destroy: function(reloadFlag) { // window "unlod"
@@ -43,6 +42,7 @@ var handyClicksRegSvc = {
 			ps: "handyClicksPrefSvc",
 			pu: "handyClicksPrefUtils",
 			rs: "handyClicksRegSvc",
+			rl: "handyClicksReloader",
 			st: "handyClicksSets",
 			su: "handyClicksSetsUtils",
 			ut: "handyClicksUtils",

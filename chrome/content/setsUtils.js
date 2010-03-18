@@ -2,6 +2,9 @@ var handyClicksSetsUtils = {
 	init: function(reloadFlag) {
 		window.addEventListener("DOMMouseScroll", this, true);
 
+		this.pu.oSvc.addObserver(this.prefsChanged, this);
+		if(reloadFlag)
+			return;
 		var de = document.documentElement;
 		de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
 		var onTop = this.ut.parseFromXML(
@@ -25,7 +28,6 @@ var handyClicksSetsUtils = {
 			if(xulWin.zLevel > xulWin.normalZ)
 				this.wu.toggleOnTop(true);
 		}
-		this.pu.oSvc.addObserver(this.prefsChanged, this);
 	},
 	destroy: function(reloadFlag) {
 		window.removeEventListener("DOMMouseScroll", this, true);
@@ -118,6 +120,7 @@ var handyClicksSetsUtils = {
 			return false;
 		tar[e.detail > 0 ? "increase" : "decrease"]();
 		tar._fireChange();
+		return true;
 	},
 	getSameLevelRadios: function(elt) {
 		var isClosedMenu = false;
