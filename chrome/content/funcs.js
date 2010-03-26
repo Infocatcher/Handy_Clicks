@@ -47,6 +47,7 @@ var handyClicksFuncs = {
 	},
 	getItemText: function(it, e, noTrim) {
 		it = it || this.hc.item;
+		e = e || this.hc.copyOfEvent;
 		var text = this.hc.itemType == "tabbar"
 			? this.forEachTab(this.getTabText)
 			: this.hc.itemType == "ext_mulipletabs"
@@ -56,9 +57,15 @@ var handyClicksFuncs = {
 						it.getAttribute
 						&& (it.getAttribute("label") || it.getAttribute("value"))
 					)
-					|| this.hc.getBookmarkURI(it)
+					|| this.getTreeText(it, e)
 					|| "";
 		return noTrim ? text : this.trimStr(text);
+	},
+	getTreeText: function(it, e) {
+		var ln = it.localName;
+		return ln && ln.toLowerCase() == "treechildren"
+			? this.hc.getTreeInfo(it, e, "title")
+			: "";
 	},
 	getItemURI: function(it, itemType, noTrim) {
 		it = it || this.hc.item;
@@ -157,7 +164,7 @@ var handyClicksFuncs = {
 			this.hc.closeMenus();
 		if(!tab || !moveTo)
 			return;
-		var curTab = tbr.mCurrentTab;
+		var curTab = tbr.selectedTab;
 		var curInd = curTab._tPos, ind = 0;
 		if(this.ut.fxVersion == 1.5 && moveTo == "relative")
 			moveTo = "after"; // Tab* events is not supported
@@ -597,7 +604,7 @@ var handyClicksFuncs = {
 		const ttBase = "attr_" + this.tooltipAttrBase;
 		var n = 0;
 
-		var file = this.getLocalFile(path);
+		var file = this.ut.getLocalFile(path);
 		path = file ? file.path : path;
 		item.prop_className = (item.hasOwnProperty("prop_className") ? item.prop_className + " " : "")
 			+ "menuitem-iconic";
@@ -606,8 +613,8 @@ var handyClicksFuncs = {
 			item.prop_className += " handyClicks-invalidPath";
 			item["attr_" + this.tooltipAttrClass + "0"] = "handyClicks-invalidPathTip";
 		}
-		item.attr_image = this.getFileURI(this.getLocalPath(img))
-			|| "moz-icon:file://" + (this.getLocalPath(icon) || path).replace(/\\/g, "/") + "?size=16";
+		item.attr_image = this.getFileURI(this.ut.getLocalPath(img))
+			|| "moz-icon:file://" + (this.ut.getLocalPath(icon) || path).replace(/\\/g, "/") + "?size=16";
 		item[ttBase + n++] = path;
 		item.prop_hc_path = path;
 
@@ -644,82 +651,12 @@ var handyClicksFuncs = {
 		);
 	},
 
-	getLocalFile: function(path) {
-		if(!path)
-			return path;
-		var _this = this;
-		path = path.replace(
-			/^%([^%]+)%/,
-			function(s, alias) {
-				if(alias.toLowerCase() == "profile" || alias == "ProfD")
-					return _this.ps._profileDir.path;
-				try {
-					return Components.classes["@mozilla.org/file/directory_service;1"]
-						.getService(Components.interfaces.nsIProperties)
-						.get(alias, Components.interfaces.nsILocalFile)
-						.path;
-				}
-				catch(e) {
-					_this.ut._err(new Error("Invalid directory alias: " + s));
-					_this.ut._err(e);
-					return s;
-				}
-			}
-		);
-		var file = Components.classes["@mozilla.org/file/local;1"]
-			.createInstance(Components.interfaces.nsILocalFile);
-		try {
-			file.initWithPath(path);
-			file.normalize(); // dir1/dir2/../file -> dir1/file
-		}
-		catch(e) {
-			this.ut._err(new Error("Invalid path: " + path));
-			this.ut._err(e);
-			return null;
-		}
-		return file;
-	},
-	getLocalPath: function(path) {
-		var file = this.getLocalFile(path);
-		return file ? file.path : path;
-	},
 	getFileURI: function(path) {
 		if(!path || /^\w{2,}:\/\//.test(path)) // Has protocol
 			return path;
 		return "file://" + path.replace(/\\/g, "/");
 	},
-	startProcess: function(path, args) {
-		args = args || [];
-		var file = this.getLocalFile(path);
-		if(!file) {
-			this.ut.notify(
-				this.ut.getLocalized("invalidFilePath").replace("%p", path)
-					+ this.ut.getLocalized("openConsole"),
-				this.ut.getLocalized("errorTitle"),
-				this.ut.console
-			);
-			return;
-		}
-		if(!file.exists()) {
-			this.ut.alertEx(
-				this.ut.getLocalized("errorTitle"),
-				this.ut.getLocalized("fileNotFound").replace("%p", path)
-			);
-			return;
-		}
-		var process = Components.classes["@mozilla.org/process/util;1"]
-			.createInstance(Components.interfaces.nsIProcess);
-		process.init(file);
-		try {
-			process.run(false, args, args.length);
-		}
-		catch(e) {
-			this.ut.alertEx(
-				this.ut.getLocalized("errorTitle"),
-				this.ut.getLocalized("fileCantRun").replace("%p", path).replace("%e", e)
-			);
-		}
-	},
+
 	get defaultCharset() { // thanks to IE Tab!
 		delete this.defaultCharset;
 		return this.defaultCharset = this.ut.getStr("chrome://global-platform/locale/intl.properties", "intl.charset.default");
@@ -760,7 +697,7 @@ var handyClicksFuncs = {
 		var args = tar.hc_args || [];
 		//args.push(popup.hc_uri);
 		var uris = Array.concat(popup.hc_uri).map(this.convertStrFromUnicode, this);
-		this.startProcess(tar.hc_path, Array.concat(args, uris));
+		this.ut.startProcess(tar.hc_path, Array.concat(args, uris));
 	},
 	losslessDecodeURI: function(value) {
 		if(!value)
@@ -850,7 +787,7 @@ var handyClicksFuncs = {
 	fixTab: function(tab) {
 		tab = tab || this.hc.item;
 		if(!tab || tab.localName != "tab")
-			tab = this.hc.getTabBrowser().mCurrentTab;
+			tab = this.hc.getTabBrowser().selectedTab;
 		return tab;
 	},
 	removeOtherTabs: function(e, tab) {

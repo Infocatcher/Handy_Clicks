@@ -195,6 +195,80 @@ var handyClicksUtils = {
 				.replace("%e", err);
 	},
 
+	getLocalFile: function(path) {
+		if(!path)
+			return path;
+		var _this = this;
+		path = path.replace(
+			/^%([^%]+)%/,
+			function(s, alias) {
+				if(alias.toLowerCase() == "profile" || alias == "ProfD")
+					return _this.ps._profileDir.path;
+				try {
+					return Components.classes["@mozilla.org/file/directory_service;1"]
+						.getService(Components.interfaces.nsIProperties)
+						.get(alias, Components.interfaces.nsILocalFile)
+						.path;
+				}
+				catch(e) {
+					_this.ut._err(new Error("Invalid directory alias: " + s));
+					_this.ut._err(e);
+					return s;
+				}
+			}
+		);
+		var file = Components.classes["@mozilla.org/file/local;1"]
+			.createInstance(Components.interfaces.nsILocalFile);
+		try {
+			file.initWithPath(path);
+			file.normalize(); // dir1/dir2/../file -> dir1/file
+		}
+		catch(e) {
+			this.ut._err(new Error("Invalid path: " + path));
+			this.ut._err(e);
+			return null;
+		}
+		return file;
+	},
+	getLocalPath: function(path) {
+		var file = this.getLocalFile(path);
+		return file ? file.path : path;
+	},
+	startProcess: function(path, args) {
+		args = args || [];
+		var file = this.ut.getLocalFile(path);
+		if(!file) {
+			this.ut.notify(
+				this.ut.getLocalized("invalidFilePath").replace("%p", path)
+					+ this.ut.getLocalized("openConsole"),
+				this.ut.getLocalized("errorTitle"),
+				this.ut.console
+			);
+			return false;
+		}
+		if(!file.exists()) {
+			this.ut.alertEx(
+				this.ut.getLocalized("errorTitle"),
+				this.ut.getLocalized("fileNotFound").replace("%p", path)
+			);
+			return false;
+		}
+		var process = Components.classes["@mozilla.org/process/util;1"]
+			.createInstance(Components.interfaces.nsIProcess);
+		process.init(file);
+		try {
+			process.run(false, args, args.length);
+			return true;
+		}
+		catch(e) {
+			this.ut.alertEx(
+				this.ut.getLocalized("errorTitle"),
+				this.ut.getLocalized("fileCantRun").replace("%p", path).replace("%e", e)
+			);
+			return false;
+		}
+	},
+
 	// File I/O:
 	writeToFile: function(str, file) { // UTF-8
 		var fos = Components.classes["@mozilla.org/network/file-output-stream;1"]
@@ -526,7 +600,7 @@ var handyClicksUtils = {
 			},
 			this, [icon, popup], 0
 		);
-	},
+	}
 };
 
 function HandyClicksObservers() {
@@ -613,13 +687,16 @@ var handyClicksExtensionsHelper = {
 		return this.isInstalled(guid) && this.isEnabled(guid);
 	},
 	isInstalled: function(guid) {
-		return this.em.getInstallLocation(guid);
+		return "Application" in window
+			? Application.extensions.has(guid)
+			: this.em.getInstallLocation(guid);
 	},
 	isEnabled: function(guid) {
+		if("Application" in window)
+			return Application.extensions.get(guid).enabled;
 		var res  = this.rdf.GetResource("urn:mozilla:item:" + guid);
 		var opType = this.getRes(res, "opType");
-		return opType != "needs-disable" && opType != "needs-enable"
-			&& opType != "needs-uninstall" && opType != "needs-install"
+		return opType != "needs-enable" && opType != "needs-install"
 			&& this.getRes(res, "userDisabled") != "true"
 			&& this.getRes(res, "appDisabled") != "true";
 	},

@@ -41,8 +41,6 @@ pref("extensions.handyclicks.key.openSettings", "shift VK_F2");
 pref("extensions.handyclicks.key.editMode", "accel VK_F2");
 pref("extensions.handyclicks.key.importFromClipboard", "accel shift VK_F2");
 
-pref("extensions.handyclicks.editor.tabSymbol", "	");
-
 pref("extensions.handyclicks.sets.backupsDir", ""); // Allow import empty value
 pref("extensions.handyclicks.sets.backupDepth", 4);
 pref("extensions.handyclicks.sets.removeBackupConfirm", true);
@@ -53,6 +51,10 @@ pref("extensions.handyclicks.sets.treeDrawMode", 0);
 pref("extensions.handyclicks.sets.treeExpandDelayedAction", true);
 pref("extensions.handyclicks.sets.localizeArguments", true);
 pref("extensions.handyclicks.sets.closeTreeViewMenu", false);
+
+pref("extensions.handyclicks.editor.tabSymbol", "	");
+pref("extensions.handyclicks.editor.externalEditorPath", "");
+pref("extensions.handyclicks.editor.externalEditorArgs", "-n%L");
 
 pref("extensions.handyclicks.prefsVersion", 0);
 pref("extensions.handyclicks.uiVersion", 0);

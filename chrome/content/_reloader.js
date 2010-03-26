@@ -33,11 +33,10 @@ var handyClicksReloader = {
 					jsLoader.loadSubScript(path + f);
 			}
 			handyClicksRegSvc.init(true);
-			var h = /\/[^\/]+$/.test(location.href) ? RegExp.lastMatch : location.href;
-			this._log("Scripts from " + h + " was successfully reloaded! " + (Date.now() - t) + " ms");
+			this._log(this.path + ": js reloaded (" + (Date.now() - t) + " ms)");
 		}
 		catch(e) {
-			this._log("Can't reload scripts");
+			this._log(this.path + ": can't reload scripts");
 			throw e;
 		}
 	},
@@ -60,9 +59,8 @@ var handyClicksReloader = {
 			}
 		}
 
-		var h = /\/[^\/]+$/.test(location.href) ? RegExp.lastMatch : location.href;
 		if(!sheets.length) {
-			this._log("Styles not found in " + h);
+			this._log(this.path + ": css not found");
 			return;
 		}
 
@@ -76,7 +74,7 @@ var handyClicksReloader = {
 			+ '<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />'
 		), null);
 
-		this._log("Styles from " + h + " [" + sheets.length+ "]" + " was successfully reloaded!");
+		this._log(this.path + ": css [" + sheets.length + "] reloaded");
 	},
 	_lastKeydown: 0,
 	keydownHandler: function(e) {
@@ -96,12 +94,15 @@ var handyClicksReloader = {
 			}
 		}
 	},
-	get devMode() {
-		return navigator.preference("extensions.handyclicks.devMode");
-	},
 	stopEvent: function(e) {
 		e.preventDefault();
 		e.stopPropagation();
+	},
+	get devMode() {
+		return navigator.preference("extensions.handyclicks.devMode");
+	},
+	get path() {
+		return /[^\\\/]+$/.test(location.href) ? RegExp.lastMatch : location.href;
 	},
 	_log: function(msg) {
 		Components.classes["@mozilla.org/consoleservice;1"]

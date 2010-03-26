@@ -20,13 +20,13 @@
 			<property name="tabSymbol">
 				<getter>
 				<![CDATA[
-					return this.getAttribute("hc_tabsymbol")
-						|| "handyClicksPrefUtils" in window && handyClicksPrefUtils.pref("editor.tabSymbol")
+					return this.getAttribute("hc_tabSymbol")
+						|| "handyClicksPrefUtils" in top && top.handyClicksPrefUtils.pref("editor.tabSymbol")
 						|| "\t";
 				]]>
 				</getter>
 				<setter>
-					this.setAttribute("hc_tabsymbol", val);
+					this.setAttribute("hc_tabSymbol", val);
 				</setter>
 			</property>
 			<property name="editor" readonly="true">
@@ -200,13 +200,12 @@
 			<method name="goToLine">
 				<body>
 				<![CDATA[
-					var curNum = this.value.substring(0, this.inputField.selectionStart).match(/^.*$/mg).length;
-					var num = { value: curNum };
-					var ut = "handyClicksUtils" in window && handyClicksUtils;
+					var num = { value: this.currentLine };
+					var ut = "handyClicksUtils" in top && top.handyClicksUtils;
 					var ps = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
 						.getService(Components.interfaces.nsIPromptService);
 					var res = ps.prompt(
-						window,
+						top,
 						ut ? ut.getLocalized("goToLineTitle") : "Go to line\u2026",
 						(ut ? ut.getLocalized("goToLineMessage") : "Line number (1 \u2026 %max):")
 							.replace("%max", this.linesCount),
@@ -221,6 +220,13 @@
 				]]>
 				</body>
 			</method>
+			<property name="currentLine" readonly="true">
+				<getter>
+				<![CDATA[
+					return this.value.substring(0, this.inputField.selectionStart).match(/^.*$/mg).length;
+				]]>
+				</getter>
+			</property>
 			<property name="linesCount" readonly="true">
 				<getter>
 				<![CDATA[
@@ -304,24 +310,6 @@
 				]]>
 				</body>
 			</method>
-			<method name="moveCaret">
-				<parameter name="moveLeft" />
-				<parameter name="event" />
-				<body>
-				<![CDATA[
-					var ifi = this.inputField;
-					var ss = ifi.selectionStart;
-					var se = ifi.selectionEnd;
-					if(ss == se)
-						return;
-					event.preventDefault();
-					if(moveLeft)
-						ifi.selectionStart = ifi.selectionEnd = ss;
-					else
-						ifi.selectionStart = ifi.selectionEnd = se;
-				]]>
-				</body>
-			</method>
 			<method name="textZoom">
 				<parameter name="add" />
 				<body>
@@ -351,6 +339,137 @@
 				]]>
 				</body>
 			</method>
+
+			<field name="file">null</field>
+			<method name="openExternalEditor">
+				<body>
+				<![CDATA[
+					if(!("handyClicksUtils" in top))
+						return;
+					var ut = top.handyClicksUtils;
+					var ee = ut.pu.pref("editor.externalEditorPath");
+					if(!ee)
+						return;
+
+					var file = this.file;
+					var isNew = !file || !file.exists();
+
+					if(isNew) {
+						var fName = "handyclicks_" + this.id.replace(/^hc-editor-|Field/g, "") + ".js";
+						file = Components.classes["@mozilla.org/file/directory_service;1"]
+							.getService(Components.interfaces.nsIProperties)
+							.get("TmpD", Components.interfaces.nsIFile);
+						file.append(fName);
+						file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0644);
+						this.file = file;
+
+						Components.classes["@mozilla.org/uriloader/external-helper-app-service;1"]
+							.getService(Components.interfaces.nsPIExternalAppLauncher)
+							.deleteTemporaryFileOnExit(file);
+					}
+
+					ut.writeToFile(this.value, file);
+
+					if(isNew) {
+						this._lastModifiedTime = file.lastModifiedTime;
+						this._fileSize = file.fileSize;
+
+						var _this = this;
+						var upd = function(e) {
+							var file = _this.file;
+							if(!file || !file.exists())
+								return;
+							var fTime = file.lastModifiedTime;
+							var fSize = file.fileSize;
+							if(_this._lastModifiedTime == fTime && _this._fileSize == fSize)
+								return;
+							var fVal = ut.readFromFile(file);
+							if(fVal == _this.value)
+								return;
+
+							var ifi = _this.inputField;
+							var sTop = ifi.scrollTop;
+							var sLeft = ifi.scrollLeft;
+
+							_this.value = fVal;
+
+							ifi.scrollTop = sTop;
+							ifi.scrollLeft = sLeft;
+
+							_this._lastModifiedTime = fTime;
+							_this._fileSize = fSize;
+							_this.fade();
+
+							var evt = document.createEvent("Events");
+							evt.initEvent("change", true, true);
+							_this.dispatchEvent(evt);
+						};
+						top.addEventListener("focus", upd, false);
+						top.addEventListener("unload", function _unl(e) {
+							top.removeEventListener(e.type, _unl, false);
+							top.removeEventListener("focus", upd, false);
+							var file = _this.file;
+							if(file && file.exists())
+								file.remove(false);
+						}, false);
+					}
+
+					var args = [file.path];
+					var eeArgs = ut.pu.pref("editor.externalEditorArgs");
+					if(eeArgs)
+						args.push(eeArgs.replace("%L", this.currentLine));
+					if(ut.startProcess(ee, args))
+						this.fade();
+				]]>
+				</body>
+			</method>
+
+			<method name="fade">
+				<body>
+				<![CDATA[
+					const opMax = 1, opMin = 0.5, opDur = 350;
+					const opDelay = 10, opStep = (opMax - opMin)*2*opDelay/opDur;
+
+					var op = opMax;
+					var sign = -1;
+					var st = this.style;
+
+					var opInt = setInterval(
+						function() {
+							if(op < opMin)
+								sign = 1;
+							else if(op > opMax) {
+								clearInterval(opInt);
+								st.opacity = "";
+								return;
+							}
+							st.opacity = op;
+							op += sign*opStep;
+						},
+						opDelay
+					);
+				]]>
+				</body>
+			</method>
+
+			<method name="moveCaret">
+				<parameter name="moveLeft" />
+				<parameter name="event" />
+				<body>
+				<![CDATA[
+					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
+					if(ss == se)
+						return;
+					event.preventDefault();
+					if(moveLeft)
+						ifi.selectionStart = ifi.selectionEnd = ss;
+					else
+						ifi.selectionStart = ifi.selectionEnd = se;
+				]]>
+				</body>
+			</method>
 		</implementation>
 		<handlers>
 			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent(this.tabSymbol, false);" />
@@ -361,13 +480,14 @@
 			<handler event="keypress" preventdefault="true" key="q" action="this.toggleComments(false);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" keycode="VK_RETURN" action="this.formatNewLine();" />
 			<handler event="keypress" preventdefault="true" keycode="VK_F12" action="this.toggleMaximized();" />
-			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
-			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />
 			<handler event="keypress" preventdefault="true" key="+" action="this.textZoom(1);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="-" action="this.textZoom(-1);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="0" action="this.textZoom(0);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="g" action="this.goToLine();" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="w" action="this.toggleWordWrap();" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key="e" action="this.openExternalEditor();" modifiers="control" />
+			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
+			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />
 			<handler event="blur">
 			<![CDATA[
 				if(event.originalTarget !== this.inputField || !this.maximized)

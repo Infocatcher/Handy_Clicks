@@ -1454,7 +1454,7 @@ var handyClicksSets = {
 		var bName = this.ps.prefsFileName + this.ps.names.userBackup + new Date().toLocaleFormat("%Y%m%d%H%M%S");
 		var bFile, i = 0;
 		do bFile = this.ps.getFile(bName + (i++ ? "-" + i : "") + ".js");
-		while(bFile.exists())
+		while(bFile.exists());
 		this.ps.prefsFile.copyTo(null, bFile.leafName);
 		this.ut.notifyInWindowCorner(
 			this.ut.getLocalized("backupCreated").replace("%f", bFile.leafName)

@@ -29,6 +29,9 @@ menulist[hc_sets="disabled"] .menulist-label {
 tab[hc_disabled="true"] {
 	text-decoration: line-through;
 }
+tab[hc_empty="true"] label {
+	opacity: 0.6;
+}
 
 :root[hc_fxVersion="3.0"] menuitem[hc_sets="disabled"],
 :root[hc_fxVersion="3.0"] menulist[hc_sets="disabled"] .menulist-label-box {

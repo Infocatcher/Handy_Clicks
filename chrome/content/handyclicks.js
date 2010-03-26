@@ -127,7 +127,7 @@ var handyClicks = {
 		this.flags.stopContextMenu = !this.flags.allowEvents && funcObj.action != "showContextMenu";
 
 		// Fix for switching tabs by Mouse Gestures
-		this._tabOnMousedown = e.view.top === content && this.getTabBrowser(true).mCurrentTab;
+		this._tabOnMousedown = e.view.top === content && this.getTabBrowser(true).selectedTab;
 
 		if(!em && funcObj.eventType == "mousedown" && !this.flags.allowEvents) {
 			this.functionEvent(funcObj, e);
@@ -319,7 +319,7 @@ var handyClicks = {
 	},
 	get tabNotChanged() {
 		var tab = this._tabOnMousedown;
-		return !tab || tab == this.getTabBrowser(true).mCurrentTab;
+		return !tab || tab == this.getTabBrowser(true).selectedTab;
 	},
 	cancelDelayedAction: function() {
 		clearTimeout(this.daTimeout);
@@ -762,19 +762,22 @@ var handyClicks = {
 	getTreeInfo: function(treechildren, e, prop) { // "uri" or "title"
 		if(!("PlacesUtils" in window)) // For Firefox 3.0+
 			return "";
-		var tree = (treechildren || this.item).parentNode
+		var tree = (treechildren || this.item).parentNode;
 		e = e || this.copyOfEvent;
 
 		// Based on code of Places' Tooltips ( https://addons.mozilla.org/firefox/addon/7314 )
-		var row = {}, column = {}, part = {};
+		var row = {}, column = {}, cell = {};
 		var tbo = tree.treeBoxObject;
-		tbo.getCellAt(e.clientX, e.clientY, row, column, part);
+		tbo.getCellAt(e.clientX, e.clientY, row, column, cell);
 		if(row.value == -1)
 			return "";
-		var node = tree.view.nodeForTreeIndex(row.value);
-		if(!PlacesUtils.nodeIsURI(node))
+		var view = tree.view;
+		if(!("nodeForTreeIndex" in view))
 			return "";
-		return node[prop];
+		var node = view.nodeForTreeIndex(row.value);
+		return PlacesUtils.nodeIsURI(node)
+			? node[prop]
+			: "";
 	},
 	createMouseEvents: function(origEvt, item, evtTypes, button) {
 		var evts = evtTypes.map(

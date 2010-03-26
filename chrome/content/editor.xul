@@ -116,7 +116,9 @@
 					<tabpanels id="hc-editor-funcsTab" flex="1">
 						<tabpanel id="hc-editor-funcTab" flex="1" orient="vertical">
 
-							<vbox id="hc-editor-funcOpts" style="display: block;">
+							<vbox id="hc-editor-funcOpts" style="display: block;"
+								oncommand="handyClicksEditor.disableUnsupported();"
+								onchange="handyClicksEditor.disableUnsupported();">
 								<hbox align="center">
 									<label value="&hc.editor.event;" hc_notDelay="true" />
 									<menulist id="hc-editor-events" hc_notDelay="true">
@@ -164,7 +166,7 @@
 									<tabbox id="hc-editor-funcVarsTabbox" flex="1">
 										<tabs onselect="handyClicksEditor.fixFocusedElement(event);">
 											<tab label="&hc.editor.funcCode;" tooltiptext="&hc.editor.funcCodeTip;" selected="true" />
-											<tab label="&hc.editor.funcInit;" tooltiptext="&hc.editor.funcInitTip;" />
+											<tab label="&hc.editor.funcInit;" tooltiptext="&hc.editor.funcInitTip;" hc_empty="true" />
 										</tabs>
 										<tabpanels flex="1">
 											<tabpanel flex="1" orient="vertical">
@@ -176,7 +178,9 @@
 												<textbox class="hcEditor" id="hc-editor-funcField" flex="1" value="" />
 											</tabpanel>
 											<tabpanel flex="1" orient="vertical">
-												<textbox class="hcEditor" id="hc-editor-funcInitField" flex="1" value="" />
+												<textbox class="hcEditor" id="hc-editor-funcInitField" flex="1" value=""
+													oninput="handyClicksEditor.highlightEmpty(this, true);"
+													ondragexit="handyClicksEditor.highlightEmpty(this, true);" />
 											</tabpanel>
 										</tabpanels>
 									</tabbox>
@@ -184,7 +188,9 @@
 							</vbox>
 
 						</tabpanel>
-						<!-- <tabpanel id="hc-editor-funcTab-delay" flex="1" orient="vertical"> ... </tabpanel> -->
+						<!-- See createDelayedFuncTab() in editor.js
+						<tabpanel id="hc-editor-funcTab-delay" flex="1" orient="vertical"> ... </tabpanel>
+						-->
 					</tabpanels>
 				</tabbox>
 			</tabpanel>
@@ -208,7 +214,7 @@
 				<tabbox id="hc-editor-customTypeFuncs" flex="1">
 					<tabs onselect="handyClicksEditor.fixFocusedElement(event);">
 						<tab label="&hc.editor.defineItem;" selected="true" />
-						<tab label="&hc.editor.defineContext;" tooltiptext="&hc.editor.defineContextTip;" />
+						<tab label="&hc.editor.defineContext;" tooltiptext="&hc.editor.defineContextTip;" hc_empty="true" />
 					</tabs>
 					<tabpanels flex="1">
 						<tabpanel id="hc-editor-customTypeDefinePanel" flex="1" orient="vertical">
@@ -226,7 +232,9 @@
 									onfocus="handyClicksEditor.fixFocusedElement(event);" />
 								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
 							</hbox>
-							<textbox class="hcEditor" id="hc-editor-customTypeContext" flex="1" value="" />
+							<textbox class="hcEditor" id="hc-editor-customTypeContext" flex="1" value=""
+								oninput="handyClicksEditor.highlightEmpty(this, true);"
+								ondragexit="handyClicksEditor.highlightEmpty(this, true);" />
 						</tabpanel>
 					</tabpanels>
 				</tabbox>
