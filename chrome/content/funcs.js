@@ -28,7 +28,7 @@ var handyClicksFuncs = {
 		if(text) {
 			text = Array.concat(text);
 			this.ut.copyStr(text.join("\n"));
-			this.hc.blinkNode();
+			this.ui.blinkNode();
 		}
 		if(closePopups)
 			this.hc.closeMenus();
@@ -40,7 +40,7 @@ var handyClicksFuncs = {
 			if(this.pu.pref("funcs.decodeURIs"))
 				link = link.map(this.losslessDecodeURI, this);
 			this.ut.copyStr(link.join("\n"));
-			this.hc.blinkNode();
+			this.ui.blinkNode();
 		}
 		if(closePopups)
 			this.hc.closeMenus();
@@ -601,7 +601,7 @@ var handyClicksFuncs = {
 		var img = this.ut.getOwnProperty(item, "prop_hc_image");
 		delete item.prop_hc_image;
 
-		const ttBase = "attr_" + this.tooltipAttrBase;
+		const ttBase = "attr_" + this.ui.tooltipAttrBase;
 		var n = 0;
 
 		var file = this.ut.getLocalFile(path);
@@ -611,7 +611,7 @@ var handyClicksFuncs = {
 		if(checkFiles && (!file || !file.exists()/* || !file.isExecutable()*/)) {
 			// https://bugzilla.mozilla.org/show_bug.cgi?id=322865
 			item.prop_className += " handyClicks-invalidPath";
-			item["attr_" + this.tooltipAttrClass + "0"] = "handyClicks-invalidPathTip";
+			item["attr_" + this.ui.tooltipAttrClass + "0"] = "handyClicks-invalidPathTip";
 		}
 		item.attr_image = this.getFileURI(this.ut.getLocalPath(img))
 			|| "moz-icon:file://" + (this.ut.getLocalPath(icon) || path).replace(/\\/g, "/") + "?size=16";
@@ -1145,40 +1145,6 @@ var handyClicksFuncs = {
 	},
 	showContextMenu: function(e) {
 		this.hc.showPopupOnItem();
-	},
-
-	tooltipAttrBase: "handyclicks_tooltip-",
-	tooltipAttrStyle: "handyclicks_tooltipStyle-",
-	tooltipAttrClass: "handyclicks_tooltipClass-",
-	fillInTooltip: function(tooltip) {
-		var tNode = document.tooltipNode;
-		var attrBase = this.tooltipAttrBase;
-		var i = 0, cache, lbl, val;
-		for(var attrName = attrBase + i; tNode.hasAttribute(attrName); attrName = attrBase + ++i) {
-			cache = "_" + attrName;
-			lbl = cache in tooltip && tooltip[cache];
-			if(!lbl) {
-				lbl = document.createElement("label");
-				lbl.setAttribute("crop", "center");
-				tooltip.firstChild.appendChild(lbl);
-				tooltip[cache] = lbl;
-			}
-			this.ut.attribute(lbl, "style", tNode.getAttribute(this.tooltipAttrStyle + i));
-			this.ut.attribute(lbl, "class", tNode.getAttribute(this.tooltipAttrClass + i));
-
-			val = tNode.getAttribute(attrName);
-			lbl.setAttribute("value", val);
-			lbl.hidden = !val; // Hide empty lines
-		}
-		return i > 0;
-	},
-	hideAllLabels: function(tooltip) {
-		Array.forEach(
-			tooltip.firstChild.childNodes,
-			function(ch) {
-				ch.hidden = true;
-			}
-		);
 	},
 
 	__noSuchMethod__: function(meth, args) {

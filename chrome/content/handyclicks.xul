@@ -15,18 +15,19 @@
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefUtils.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/prefSvc.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/handyclicks.js" />
+	<script type="application/x-javascript" src="chrome://handyclicks/content/handyclicksUI.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/funcs.js" />
 	<script type="application/x-javascript" src="chrome://handyclicks/content/regSvc.js" />
 
 	<commandset id="mainCommandSet">
 		<command id="handyClicks-cmd-openSettings" oncommand="handyClicksWinUtils.openSettings();" label="&handyClicks.settingsLabel;" />
-		<command id="handyClicks-cmd-editMode" oncommand="handyClicks.toggleEditMode();" label="&handyClicks.editModeLabel;" />
+		<command id="handyClicks-cmd-editMode" oncommand="handyClicksUI.toggleEditMode();" label="&handyClicks.editModeLabel;" />
 		<command id="handyClicks-cmd-importFromClipboard" oncommand="handyClicksWinUtils.openSettings(true, 1);" label="&handyClicks.importFromClipboardLabel;" />
 	</commandset>
 	<keyset id="mainKeyset">
-		<key id="handyClicks-key-toggleStatus" oncommand="handyClicks.toggleStatus(true);" disabled="true" />
+		<key id="handyClicks-key-toggleStatus" oncommand="handyClicksUI.toggleStatus(true);" disabled="true" />
 		<key id="handyClicks-key-openSettings"  command="handyClicks-cmd-openSettings" disabled="true" />
-		<key id="handyClicks-key-editMode" oncommand="handyClicks.toggleEditMode(true);" disabled="true" />
+		<key id="handyClicks-key-editMode" oncommand="handyClicksUI.toggleEditMode(true);" disabled="true" />
 		<key id="handyClicks-key-importFromClipboard" command="handyClicks-cmd-importFromClipboard" disabled="true" />
 	</keyset>
 	<menupopup id="menu_ToolsPopup">
@@ -34,32 +35,31 @@
 			label="&handyClicks.menuitemLabel;" tooltip="handyClicks-tooltip"
 			key="handyClicks-key-toggleStatus"
 			context="handyClicks-settingsPopup"
-			oncommand="handyClicks.doSettings(event);"
-			onclick="if(event.button != 0) handyClicks.doSettings(event);" />
+			oncommand="handyClicksUI.doSettings(event);"
+			onclick="if(event.button != 0) handyClicksUI.doSettings(event);" />
 	</menupopup>
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton id="handyClicks-toolbarButton" class="chromeclass-toolbar-additional toolbarbutton-1"
 			label="&handyClicks.toolbarbuttonLabel;" tooltip="handyClicks-tooltip"
 			context="handyClicks-settingsPopup"
-			onclick="handyClicks.doSettings(event);" />
+			onclick="handyClicksUI.doSettings(event);" />
 	</toolbarpalette>
 	<statusbar id="status-bar">
 		<statusbarpanel id="handyClicks-statusbarButton" insertafter="page-report-button" class="statusbarpanel-menu-iconic"
 			tooltip="handyClicks-tooltip"
 			context="handyClicks-settingsPopup"
-			onclick="handyClicks.doSettings(event);" />
+			onclick="handyClicksUI.doSettings(event);" />
 	</statusbar>
 	<popupset id="mainPopupSet">
-		<menupopup id="handyClicks-settingsPopup" onpopupshowing="handyClicks.checkClipboard();" onpopuphiding="handyClicks.fixPopup();">
+		<menupopup id="handyClicks-settingsPopup" onpopupshowing="handyClicksUI.checkClipboard();" onpopuphiding="handyClicksUI.fixPopup();">
 			<menuitem id="handyClicks-settingsMenuitem" command="handyClicks-cmd-openSettings" key="handyClicks-key-openSettings" handyclicks_main="true" />
 			<menuitem id="handyClicks-editMode" command="handyClicks-cmd-editMode" key="handyClicks-key-editMode" />
 			<menuseparator id="handyClicks-importFromClipboardSeparator" />
 			<menuitem id="handyClicks-importFromClipboard" command="handyClicks-cmd-importFromClipboard" key="handyClicks-key-importFromClipboard" />
 		</menupopup>
-		<tooltip id="handyClicks-tooltip" noautohide="true"
-			onpopupshowing="return handyClicksFuncs.fillInTooltip(this);"
-			onpopuphidden="handyClicksFuncs.hideAllLabels(this);">
-			<vbox id="handyClicks-tooltipBox" />
+		<tooltip id="handyClicks-tooltip" noautohide="true" orient="vertical"
+			onpopupshowing="return handyClicksUI.fillInTooltip(this);"
+			onpopuphidden="handyClicksUI.hideAllLabels(this);">
 		</tooltip>
 	</popupset>
 
@@ -69,7 +69,7 @@
 			label="&handyClicks.menuitemLabel;" tooltip="handyClicks-tooltip"
 			key="handyClicks-key-toggleStatus"
 			context="handyClicks-settingsPopup"
-			oncommand="handyClicks.doSettings(event);"
-			onclick="if(event.button != 0) handyClicks.doSettings(event);" />
+			oncommand="handyClicksUI.doSettings(event);"
+			onclick="if(event.button != 0) handyClicksUI.doSettings(event);" />
 	</menupopup>
 </overlay>

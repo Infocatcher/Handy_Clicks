@@ -41,10 +41,11 @@ var handyClicksRegSvc = {
 			hc: "handyClicks",
 			ps: "handyClicksPrefSvc",
 			pu: "handyClicksPrefUtils",
-			rs: "handyClicksRegSvc",
 			rl: "handyClicksReloader",
+			rs: "handyClicksRegSvc",
 			st: "handyClicksSets",
 			su: "handyClicksSetsUtils",
+			ui: "handyClicksUI",
 			ut: "handyClicksUtils",
 			wu: "handyClicksWinUtils",
 			__proto__: null

@@ -10,18 +10,19 @@ var handyClicksReloader = {
 			.getService(Components.interfaces.mozIJSSubScriptLoader);
 		const path = "chrome://handyclicks/content/";
 		const files = {
-			"console.js":     "handyClicksConsole",
-			"editor.js":      "handyClicksEditor",
-			"funcs.js":       "handyClicksFuncs",
-			"handyclicks.js": "handyClicks",
-			"prefSvc.js":     "handyClicksPrefSvc",
-			"prefUtils.js":   "handyClicksPrefUtils",
-			"sets.js":        "handyClicksSets",
-			"utils.js":       "handyClicksUtils",
-			"winUtils.js":    "handyClicksWinUtils",
-			"setsUtils.js":   "handyClicksSetsUtils",
+			"console.js":       "handyClicksConsole",
+			"editor.js":        "handyClicksEditor",
+			"funcs.js":         "handyClicksFuncs",
+			"handyclicks.js":   "handyClicks",
+			"handyclicksUI.js": "handyClicksUI",
+			"prefSvc.js":       "handyClicksPrefSvc",
+			"prefUtils.js":     "handyClicksPrefUtils",
+			"sets.js":          "handyClicksSets",
+			"setsUtils.js":     "handyClicksSetsUtils",
+			"utils.js":         "handyClicksUtils",
+			"winUtils.js":      "handyClicksWinUtils",
 			// Must be last:
-			"regSvc.js":      "handyClicksRegSvc",
+			"regSvc.js":        "handyClicksRegSvc",
 			__proto__: null
 		};
 		try {
