@@ -126,7 +126,7 @@
 <!ENTITY hc.editor.apply "Применить">
 <!ENTITY hc.editor.applyAccesskey "П">
 <!ENTITY hc.editor.delete "Удалить">
-<!ENTITY hc.editor.deleteAccesskey "у">
+<!ENTITY hc.editor.deleteAccesskey "У">
 <!ENTITY hc.editor.test "Протестировать">
 <!ENTITY hc.editor.testAccesskey "т">
 <!ENTITY hc.editor.undo "Отменить">
@@ -136,31 +136,49 @@
 <!ENTITY hc.editor.mainTabFuncsAccesskey "Ф">
 <!ENTITY hc.editor.clickHere "Кликните здесь">
 <!ENTITY hc.editor.clickHereTip "Кликните для выбора кнопки мыши и модификаторов">
+<!ENTITY hc.editor.itemTypesAccesskey "э">
 
 <!ENTITY hc.editor.event "Событие:">
-<!ENTITY hc.editor.enabled "Включено">
-<!ENTITY hc.editor.ignoreLinks "Игнорировать ссылки">
+<!ENTITY hc.editor.eventAccesskey "С">
 <!ENTITY hc.editor.mousedownEvent "Событие «mousedown»:">
 <!ENTITY hc.editor.mousedownAllow "Не останавливать">
 <!ENTITY hc.editor.mousedownSmart "Авто">
 <!ENTITY hc.editor.mousedownStop "Всегда останавливать">
+<!ENTITY hc.editor.enabled "Включено">
+<!ENTITY hc.editor.enabledAccesskey "В">
+<!ENTITY hc.editor.funcOptsAdd "Дополнительные настройки:">
+<!ENTITY hc.editor.ignoreLinks "Игнорировать ссылки">
 
 <!ENTITY hc.editor.tabFunc "Функция">
+<!ENTITY hc.editor.tabFuncAccesskey "ц">
 <!ENTITY hc.editor.tabFuncDelay "Отложенная функция">
+<!ENTITY hc.editor.tabFuncDelayAccesskey "л">
+<!ENTITY hc.editor.fixFuncOpts "Зафиксировать">
+<!ENTITY hc.editor.fixFuncOptsAccesskey "З">
+<!ENTITY hc.editor.fixFuncOptsTip "Зафиксировать настройки функции">
 
 <!ENTITY hc.editor.func "Функция:">
-<!ENTITY hc.editor.funcArgsCaption "Аргументы">
+<!ENTITY hc.editor.funcAccesskey "я">
 <!ENTITY hc.editor.funcLabel "Название:">
+<!ENTITY hc.editor.funcLabelAccesskey "Н">
+<!ENTITY hc.editor.funcArgsCaption "Аргументы">
 <!ENTITY hc.editor.funcArgs "Аргументы:">
 <!ENTITY hc.editor.funcCode "Код">
+<!ENTITY hc.editor.funcCodeAccesskey "К">
 <!ENTITY hc.editor.funcCodeTip "Выполняется при клике">
 <!ENTITY hc.editor.funcInit "Инициализация">
+<!ENTITY hc.editor.funcInitAccesskey "И">
 <!ENTITY hc.editor.funcInitTip "Выполняется при (пере)загрузке настроек">
 
 <!ENTITY hc.editor.mainTabCustomTypes "Добавленные типы">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "Д">
 <!ENTITY hc.editor.internalId "Внутренний id:">
+<!ENTITY hc.editor.internalIdAccesskey "й">
 <!ENTITY hc.editor.defineItem "Определение элемента">
+<!ENTITY hc.editor.defineItemAccesskey "э">
 <!ENTITY hc.editor.defineReturn "Должно возвращать: элемент или null"> <!-- Do not translate "null"! -->
 <!ENTITY hc.editor.defineContext "Контекстное меню элемента">
+<!ENTITY hc.editor.defineContextAccesskey "К">
 <!ENTITY hc.editor.defineContextTip "Для автоопределения оставьте поле пустым">
+
+<!ENTITY hc.editor.editAccesskey "р">

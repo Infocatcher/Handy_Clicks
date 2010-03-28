@@ -1,4 +1,5 @@
 var handyClicksEditor = {
+	fixFuncOpts: false,
 	_testMode: false,
 
 	types: {
@@ -50,6 +51,8 @@ var handyClicksEditor = {
 				inp && inp.setAttribute("spellcheck", "true");
 			}
 		);
+		var fb = this.e("hc-editor-funcFixBox");
+		fb.style.marginBottom = "-" + fb.boxObject.height + "px";
 		document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css
 	},
 	destroy: function(reloadFlag) {
@@ -101,7 +104,7 @@ var handyClicksEditor = {
 			case "shortcut":
 				var mTab = this.$("hc-editor-funcTabbox");
 				mTab.selectedIndex = delayed ? 1 : 0;
-				var tab = this.$("hc-editor-funcVarsTabbox" + (delayed ? this.delayId : ""));
+				var tab = this.$("hc-editor-funcCustomTabbox" + (delayed ? this.delayId : ""));
 				tab.selectedIndex = src == "code" ? 0 : 1;
 			break;
 			case "itemType":
@@ -268,8 +271,9 @@ var handyClicksEditor = {
 	},
 	selectCustomFunc: function(isCustom, delayed) {
 		delayed = delayed || "";
-		this.$("hc-editor-funcArgsBox" + delayed).collapsed = isCustom;
-		this.$("hc-editor-funcCustom"  + delayed).collapsed = !isCustom;
+		this.$("hc-editor-funcArgsBox"      + delayed).collapsed =  isCustom;
+		this.$("hc-editor-funcLabelBox"     + delayed).collapsed = !isCustom;
+		this.$("hc-editor-funcCustomTabbox" + delayed).collapsed = !isCustom;
 	},
 	loadCustomType: function(type) {
 		if(this.ps.isCustomType(type))
@@ -501,11 +505,10 @@ var handyClicksEditor = {
 	initImgIgnoreLinks: function(iType) {
 		iType = iType || this.$("hc-editor-itemTypes").value;
 		var isImg = iType == "img";
-		var ignoreLinks = this.$("hc-editor-imgIgnoreLinks");
-		ignoreLinks.hidden = !isImg;
+		this.$("hc-editor-funcOptsAdd").hidden = !isImg;
 		if(isImg) {
 			var setsObj = (this.ps.prefs[this.shortcut] || {})[iType] || {};
-			ignoreLinks.checked = typeof setsObj.ignoreLinks == "boolean" ? setsObj.ignoreLinks : false;
+			this.$("hc-editor-imgIgnoreLinks").checked = typeof setsObj.ignoreLinks == "boolean" ? setsObj.ignoreLinks : false;
 		}
 	},
 	addFuncArgs: function(delayed) {
@@ -650,6 +653,12 @@ var handyClicksEditor = {
 		this.highlightUsedTypes();
 		this.disableUnsupported();
 	},
+	targetChanged: function() {
+		if(this.fixFuncOpts)
+			this.applyDisabled = false;
+		else
+			this.loadFuncs();
+	},
 	setClickOptions: function(e) {
 		this.$("hc-editor-button").value = e.button;
 		["ctrl", "shift", "alt", "meta"].forEach(
@@ -658,9 +667,11 @@ var handyClicksEditor = {
 			},
 			this
 		);
-		this.loadFuncs();
-		//this.allowApply(e);
-		this.$("hc-editor-funcTabbox").selectedIndex = 0;
+		this.targetChanged();
+	},
+	setFixFuncOpts: function(fix) {
+		this.fixFuncOpts = fix;
+		this.$("hc-editor-targetBox").setAttribute("hc_fixedFields", fix);
 	},
 	disableUnsupported: function() {
 		var isMd = this.$("hc-editor-events").value == "mousedown";

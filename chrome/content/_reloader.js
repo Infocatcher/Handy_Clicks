@@ -44,7 +44,7 @@ var handyClicksReloader = {
 	reloadStyles: function() {
 		const ns = "chrome://handyclicks/";
 
-		var sheets = [];
+		var sheetsHrefs = [];
 		var nodes = document.childNodes;
 		for(var i = nodes.length - 1; i >= 0; i--) {
 			var node = nodes[i];
@@ -54,28 +54,51 @@ var handyClicksReloader = {
 			) {
 				var href = node.sheet.href;
 				if(href.indexOf(ns) == 0) {
-					sheets.push(href);
+					sheetsHrefs.push(href);
 					node.parentNode.removeChild(node);
 				}
 			}
 		}
 
-		if(!sheets.length) {
-			this._log(this.path + ": css not found");
+		if(!sheetsHrefs.length) {
+			// Firefox 1.5 and 2.0
+			var sh = "__handyClicks__sheetsHrefs";
+			if(sh in document)
+				sheetsHrefs = document[sh];
+			else {
+				var sheets = document.styleSheets;
+				for(var i = sheets.length - 1; i >= 0; i--) {
+					var sheet = sheets[i];
+					var rules = sheet.cssRules;
+					var href = sheet.href;
+					if(href.indexOf(ns) == 0) {
+						sheetsHrefs.push(href);
+						for(var j = rules.length - 1; j >= 0; j--)
+							sheet.deleteRule(rules[j]);
+					}
+				}
+				document[sh] = sheetsHrefs;
+			}
+			if(sheetsHrefs.length)
+				this._log(this.path + ": Can't completely remove styles!");
+		}
+
+		if(!sheetsHrefs.length) {
+			this._log(this.path + ": css not found!");
 			return;
 		}
 
 		document.loadOverlay("data:application/vnd.mozilla.xul+xml," + encodeURIComponent(
 			'<?xml version="1.0"?>\n'
-			+ sheets.map(
-				function(href) {
+			+ sheetsHrefs.map(
+				function(href, indx) {
 					return '<?xml-stylesheet href="' + href + '" type="text/css"?>';
 				}
 			).join("\n")
 			+ '<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />'
 		), null);
 
-		this._log(this.path + ": css [" + sheets.length + "] reloaded");
+		this._log(this.path + ": css [" + sheetsHrefs.length + "] reloaded");
 	},
 	_lastKeydown: 0,
 	keydownHandler: function(e) {

@@ -26,6 +26,11 @@ menulist[hc_sets="disabled"] .menulist-label {
 	text-decoration: line-through;
 }
 
+hbox[hc_fixedFields="true"] {
+	outline: 1px solid graytext;
+	outline-offset: -1px;
+}
+
 tab[hc_disabled="true"] {
 	text-decoration: line-through;
 }
@@ -85,6 +90,11 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 #hc-editor-funcTab-delay [hc_notDelay="true"],
 #hc-editor-funcTab [hc_notFunc="true"] {
 	display: none;
+}
+
+#hc-editor-funcLabel, #hc-editor-funcLabel-delay {
+	margin-top: 0;
+	margin-bottom: 0;
 }
 
 menulist[hc_aboutConfigEntry] .menulist-label,

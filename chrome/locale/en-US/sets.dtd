@@ -128,7 +128,7 @@
 <!ENTITY hc.editor.delete "Delete">
 <!ENTITY hc.editor.deleteAccesskey "d">
 <!ENTITY hc.editor.test "Test">
-<!ENTITY hc.editor.testAccesskey "T">
+<!ENTITY hc.editor.testAccesskey "s">
 <!ENTITY hc.editor.undo "Undo">
 <!ENTITY hc.editor.undoAccesskey "U">
 
@@ -136,31 +136,49 @@
 <!ENTITY hc.editor.mainTabFuncsAccesskey "F">
 <!ENTITY hc.editor.clickHere "Click here">
 <!ENTITY hc.editor.clickHereTip "Click for select mouse button and modifiers">
+<!ENTITY hc.editor.itemTypesAccesskey "m">
 
 <!ENTITY hc.editor.event "Event:">
-<!ENTITY hc.editor.enabled "Enabled">
-<!ENTITY hc.editor.ignoreLinks "Ignore links">
+<!ENTITY hc.editor.eventAccesskey "v">
 <!ENTITY hc.editor.mousedownEvent '"Mousedown" event:'>
 <!ENTITY hc.editor.mousedownAllow "Don't stop">
 <!ENTITY hc.editor.mousedownSmart "Smart">
 <!ENTITY hc.editor.mousedownStop "Always stop">
+<!ENTITY hc.editor.enabled "Enabled">
+<!ENTITY hc.editor.enabledAccesskey "b">
+<!ENTITY hc.editor.funcOptsAdd "Additional options:">
+<!ENTITY hc.editor.ignoreLinks "Ignore links">
 
 <!ENTITY hc.editor.tabFunc "Function">
+<!ENTITY hc.editor.tabFuncAccesskey "">
 <!ENTITY hc.editor.tabFuncDelay "Delayed Function">
+<!ENTITY hc.editor.tabFuncDelayAccesskey "y">
+<!ENTITY hc.editor.fixFuncOpts "Fix">
+<!ENTITY hc.editor.fixFuncOptsAccesskey "x">
+<!ENTITY hc.editor.fixFuncOptsTip "Fix function options">
 
 <!ENTITY hc.editor.func "Function:">
-<!ENTITY hc.editor.funcArgsCaption "Arguments">
+<!ENTITY hc.editor.funcAccesskey "n">
 <!ENTITY hc.editor.funcLabel "Label:">
+<!ENTITY hc.editor.funcLabelAccesskey "L">
+<!ENTITY hc.editor.funcArgsCaption "Arguments">
 <!ENTITY hc.editor.funcArgs "Arguments:">
 <!ENTITY hc.editor.funcCode "Code">
+<!ENTITY hc.editor.funcCodeAccesskey "C">
 <!ENTITY hc.editor.funcCodeTip "Execites on click">
 <!ENTITY hc.editor.funcInit "Initialization">
+<!ENTITY hc.editor.funcInitAccesskey "I">
 <!ENTITY hc.editor.funcInitTip "Execites on (re)loading settings">
 
 <!ENTITY hc.editor.mainTabCustomTypes "Custom Types">
-<!ENTITY hc.editor.mainTabCustomTypesAccesskey "C">
+<!ENTITY hc.editor.mainTabCustomTypesAccesskey "T">
 <!ENTITY hc.editor.internalId "Internal id:">
+<!ENTITY hc.editor.internalIdAccesskey "r">
 <!ENTITY hc.editor.defineItem "Item definition">
+<!ENTITY hc.editor.defineItemAccesskey "I">
 <!ENTITY hc.editor.defineReturn "Return: node or null"> <!-- Do not translate "null"! -->
 <!ENTITY hc.editor.defineContext "Context menu of item">
+<!ENTITY hc.editor.defineContextAccesskey "C">
 <!ENTITY hc.editor.defineContextTip "Leave this field empty for autodetection">
+
+<!ENTITY hc.editor.editAccesskey "e">
