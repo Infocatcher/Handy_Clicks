@@ -23,6 +23,7 @@ var handyClicksPrefSvc = {
 		userBackup: "_user_backup-"
 	},
 	okShortcut: /^button=[0-2],ctrl=(?:true|false),shift=(?:true|false),alt=(?:true|false),meta=(?:true|false)$/,
+
 	otherSrc: false,
 	_restoringCounter: 0,
 

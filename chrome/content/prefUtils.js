@@ -146,7 +146,7 @@ var handyClicksPrefUtils = {
 		brWin.focus();
 		var br = brWin.gBrowser || brWin.getBrowser();
 		if(br.currentURI.spec == "about:blank" && !br.webProgress.isLoadingDocument) {
-			var tab = br.mCurrentTab;
+			var tab = br.selectedTab;
 			br.loadURI("about:config");
 		}
 		else

@@ -33,18 +33,17 @@ var handyClicksReloader = {
 					jsLoader.loadSubScript(path + f);
 			}
 			handyClicksRegSvc.init(true);
-			var h = /\/[^\/]+$/.test(location.href) ? RegExp.lastMatch : location.href;
-			this._log("Scripts from " + h + " was successfully reloaded! " + (Date.now() - t) + " ms");
+			this._log(this.path + ": js reloaded (" + (Date.now() - t) + " ms)");
 		}
 		catch(e) {
-			this._log("Can't reload scripts");
+			this._log(this.path + ": can't reload scripts");
 			throw e;
 		}
 	},
 	reloadStyles: function() {
 		const ns = "chrome://handyclicks/";
 
-		var sheets = [];
+		var sheetsHrefs = [];
 		var nodes = document.childNodes;
 		for(var i = nodes.length - 1; i >= 0; i--) {
 			var node = nodes[i];
@@ -54,29 +53,51 @@ var handyClicksReloader = {
 			) {
 				var href = node.sheet.href;
 				if(href.indexOf(ns) == 0) {
-					sheets.push(href);
+					sheetsHrefs.push(href);
 					node.parentNode.removeChild(node);
 				}
 			}
 		}
 
-		var h = /\/[^\/]+$/.test(location.href) ? RegExp.lastMatch : location.href;
-		if(!sheets.length) {
-			this._log("Styles not found in " + h);
+		if(!sheetsHrefs.length) {
+			// Firefox 1.5 and 2.0
+			var sh = "__handyClicks__sheetsHrefs";
+			if(sh in document)
+				sheetsHrefs = document[sh];
+			else {
+				var sheets = document.styleSheets;
+				for(var i = sheets.length - 1; i >= 0; i--) {
+					var sheet = sheets[i];
+					var rules = sheet.cssRules;
+					var href = sheet.href;
+					if(href.indexOf(ns) == 0) {
+						sheetsHrefs.push(href);
+						for(var j = rules.length - 1; j >= 0; j--)
+							sheet.deleteRule(rules[j]);
+					}
+				}
+				document[sh] = sheetsHrefs;
+			}
+			if(sheetsHrefs.length)
+				this._log(this.path + ": Can't completely remove styles!");
+		}
+
+		if(!sheetsHrefs.length) {
+			this._log(this.path + ": css not found!");
 			return;
 		}
 
 		document.loadOverlay("data:application/vnd.mozilla.xul+xml," + encodeURIComponent(
 			'<?xml version="1.0"?>\n'
-			+ sheets.map(
-				function(href) {
+			+ sheetsHrefs.map(
+				function(href, indx) {
 					return '<?xml-stylesheet href="' + href + '" type="text/css"?>';
 				}
 			).join("\n")
 			+ '<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />'
 		), null);
 
-		this._log("Styles from " + h + " [" + sheets.length+ "]" + " was successfully reloaded!");
+		this._log(this.path + ": css [" + sheetsHrefs.length + "] reloaded");
 	},
 	_lastKeydown: 0,
 	keydownHandler: function(e) {
@@ -96,12 +117,15 @@ var handyClicksReloader = {
 			}
 		}
 	},
-	get devMode() {
-		return navigator.preference("extensions.handyclicks.devMode");
-	},
 	stopEvent: function(e) {
 		e.preventDefault();
 		e.stopPropagation();
+	},
+	get devMode() {
+		return navigator.preference("extensions.handyclicks.devMode");
+	},
+	get path() {
+		return /[^\\\/]+$/.test(location.href) ? RegExp.lastMatch : location.href;
 	},
 	_log: function(msg) {
 		Components.classes["@mozilla.org/consoleservice;1"]

@@ -47,6 +47,7 @@ var handyClicksFuncs = {
 	},
 	getItemText: function(it, e, noTrim) {
 		it = it || this.hc.item;
+		e = e || this.hc.copyOfEvent;
 		var text = this.hc.itemType == "tabbar"
 			? this.forEachTab(this.getTabText)
 			: this.hc.itemType == "ext_mulipletabs"
@@ -56,9 +57,15 @@ var handyClicksFuncs = {
 						it.getAttribute
 						&& (it.getAttribute("label") || it.getAttribute("value"))
 					)
-					|| this.hc.getBookmarkURI(it)
+					|| this.getTreeText(it, e)
 					|| "";
 		return noTrim ? text : this.trimStr(text);
+	},
+	getTreeText: function(it, e) {
+		var ln = it.localName;
+		return ln && ln.toLowerCase() == "treechildren"
+			? this.hc.getTreeInfo(it, e, "title")
+			: "";
 	},
 	getItemURI: function(it, itemType, noTrim) {
 		it = it || this.hc.item;
@@ -157,7 +164,7 @@ var handyClicksFuncs = {
 			this.hc.closeMenus();
 		if(!tab || !moveTo)
 			return;
-		var curTab = tbr.mCurrentTab;
+		var curTab = tbr.selectedTab;
 		var curInd = curTab._tPos, ind = 0;
 		if(this.ut.fxVersion == 1.5 && moveTo == "relative")
 			moveTo = "after"; // Tab* events is not supported
@@ -850,7 +857,7 @@ var handyClicksFuncs = {
 	fixTab: function(tab) {
 		tab = tab || this.hc.item;
 		if(!tab || tab.localName != "tab")
-			tab = this.hc.getTabBrowser().mCurrentTab;
+			tab = this.hc.getTabBrowser().selectedTab;
 		return tab;
 	},
 	removeOtherTabs: function(e, tab) {

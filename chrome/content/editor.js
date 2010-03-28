@@ -3,20 +3,20 @@ var handyClicksEditor = {
 
 	types: {
 		checkboxes: {
-			__proto__: null,
 			skipCache: true,
 			loadInBackground: true,
 			loadJSInBackground: true,
-			closePopups: true
+			closePopups: true,
+			__proto__: null
 		},
 		menulists: {
-			__proto__: null,
 			refererPolicy: [-1, 0, /*1,*/ 2],
 			moveTabTo: ["null", "first", "before", "after", "last", "relative"],
 			moveWinTo: ["null", "top", "right", "bottom", "left", "sub"],
 			winRestriction: [-1, 0, 1, 2], // browser.link.open_newwindow.restriction
 			target: ["cur", "win", "tab"], // browser.link.open_newwindow
-			position: ["top", "right", "bottom", "left"]
+			position: ["top", "right", "bottom", "left"],
+			__proto__: null
 		}
 	},
 	tabs: {
@@ -50,8 +50,7 @@ var handyClicksEditor = {
 				inp && inp.setAttribute("spellcheck", "true");
 			}
 		);
-		if(this.ut.fxVersion == 3)
-			document.documentElement.setAttribute("hc_fxVersion", "3.0"); // See style/editor.css
+		document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css
 	},
 	destroy: function(reloadFlag) {
 		this.wu.markOpenedEditors();
@@ -162,10 +161,6 @@ var handyClicksEditor = {
 		this.$("hc-editor-funcsTab").appendChild(
 			this.addIds(dTab, this.delayId)
 		);
-		var fOpts = this.$("hc-editor-funcOpts");
-		const du = "handyClicksEditor.disableUnsupported();";
-		fOpts.setAttribute("onchange", du);
-		fOpts.setAttribute("oncommand", du);
 	},
 	addIds: function(node, id) {
 		node.id += id;
@@ -189,9 +184,9 @@ var handyClicksEditor = {
 				Array.forEach(
 					this.$("hc-editor-funcPopup").getElementsByAttribute("hc_extLabel", ext),
 					function(mi) {
-						mi.setAttribute("label", this.getExtLabel(mi.getAttribute("label")));
+						mi.setAttribute("label", this.su.getExtLabel(mi.getAttribute("label")));
 					},
-					this.su
+					this
 				);
 			},
 			this
@@ -259,9 +254,12 @@ var handyClicksEditor = {
 		this.selectCustomFunc(isCustom, delayed);
 		if(isCustom) {
 			const val = allowUndo || this._allowUndo ? "value" : "newValue";
-			this.$("hc-editor-funcField"     + delayed)[val]  = this.ps.dec(setsObj.action);
-			this.$("hc-editor-funcInitField" + delayed)[val]  = this.ps.dec(setsObj.init);
-			this.$("hc-editor-funcLabel"     + delayed).value = this.ps.dec(setsObj.label);
+			this.$("hc-editor-funcField" + delayed)[val]  = this.ps.dec(setsObj.action);
+			this.$("hc-editor-funcLabel" + delayed).value = this.ps.dec(setsObj.label);
+
+			var initField = this.$("hc-editor-funcInitField" + delayed);
+			initField[val] = this.ps.dec(setsObj.init || "");
+			this.highlightEmpty(initField);
 		}
 		this.initFuncsList(isCustom, setsObj.action || null, delayed);
 		this.$("hc-editor-enabled" + delayed).checked = typeof setsObj.enabled != "boolean" || setsObj.enabled;
@@ -308,8 +306,10 @@ var handyClicksEditor = {
 			ct = {};
 		enabledElt.checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
 		const val = to || this._allowUndo ? "value" : "newValue";
-		this.$("hc-editor-customTypeDefine") [val] = this.ps.dec(ct.define);
-		this.$("hc-editor-customTypeContext")[val] = this.ps.dec(ct.contextMenu);
+		this.$("hc-editor-customTypeDefine")[val] = this.ps.dec(ct.define);
+		var contextField = this.$("hc-editor-customTypeContext");
+		contextField[val] = this.ps.dec(ct.contextMenu);
+		this.highlightEmpty(contextField);
 		if(!to) {
 			cList.value = this.ps.dec(ct.label);
 			this.$("hc-editor-customTypeExtId").value = this.ps.removeCustomPrefix(cType);
@@ -406,6 +406,44 @@ var handyClicksEditor = {
 		);
 		var si = ml.selectedItem;
 		si && ml.setAttribute("hc_sets", si.getAttribute("hc_sets"));
+	},
+	highlightEmpty: function _he(tb, wait) {
+		if(wait) {
+			this.ut.timeout(_he, this, [tb]);
+			return;
+		}
+		var tab;
+		if("__tab" in tb)
+			tab = tb.__tab;
+		else {
+			var tabPanel, tabBox;
+			for(var node = tb.parentNode; tb; node = node.parentNode) {
+				var ln = node.localName;
+				if(ln == "tabpanel")
+					tabPanel = node;
+				else if(ln == "tabbox") {
+					tabBox = node;
+					break;
+				}
+			}
+			if(!tabPanel || !tabBox) {
+				this.ut._err("highlightEmpty: <tabpanel> or <tabbox> not found!");
+				return;
+			}
+			var tabPanels = tabBox.tabpanels || tabBox.getElementsByTagNameNS(this.ut.XULNS, "tabpanels")[0];
+			var tabs = tabBox.tabs || tabBox.getElementsByTagNameNS(this.ut.XULNS, "tabs")[0];
+			if(!tabPanels || !tabs) {
+				this.ut._err("highlightEmpty: <tabpanels> or <tabs> not found!");
+				return;
+			}
+			var tabPanelIndx = Array.indexOf(tabPanels.childNodes, tabPanel);
+			if(tabPanelIndx == -1) {
+				this.ut._err("highlightEmpty: index of <tabpanel> not found!");
+				return;
+			}
+			tab = tb.__tab = tabs.childNodes[tabPanelIndx];
+		}
+		tab.setAttribute("hc_empty", !tb.value);
 	},
 	initFuncsList: function(custom, action, delayed) {
 		delayed = delayed || "";
@@ -546,7 +584,8 @@ var handyClicksEditor = {
 						var label = this.ut.getLocalized(argName + "[" + val + "]");
 						cfg = this.getAboutConfigEntry(label);
 						var mi = <menuitem xmlns={ns} value={val} label={label}
-							hc_aboutConfigEntry={cfg} tooltiptext={cfg ? cfgTt : ""} />;
+							hc_aboutConfigEntry={cfg} tooltiptext={cfg ? cfgTt : ""}
+						/>;
 						if(!cfg) // Firefox 1.5 crashes on actions like mi.@some_attribute = "";
 							delete mi.@hc_aboutConfigEntry;
 						else if(!argVal && indx === 0 || val == argVal) { //~ todo: test!
@@ -625,7 +664,10 @@ var handyClicksEditor = {
 	},
 	disableUnsupported: function() {
 		var isMd = this.$("hc-editor-events").value == "mousedown";
-		this.$("hc-editor-funcTabDelay").setAttribute("hc_disabled", isMd || !this.$("hc-editor-enabled").checked);
+		this.$("hc-editor-funcTabDelay").setAttribute(
+			"hc_disabled",
+			isMd || !this.$("hc-editor-enabled").checked || !this.$("hc-editor-enabled" + this.delayId).checked
+		);
 		const id = "hc-editor-allowMousedown";
 		this.$(id + "Label").disabled = this.$(id).disabled = isMd;
 	},

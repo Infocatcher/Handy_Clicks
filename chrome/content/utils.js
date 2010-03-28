@@ -526,7 +526,7 @@ var handyClicksUtils = {
 			},
 			this, [icon, popup], 0
 		);
-	},
+	}
 };
 
 function HandyClicksObservers() {
@@ -613,13 +613,16 @@ var handyClicksExtensionsHelper = {
 		return this.isInstalled(guid) && this.isEnabled(guid);
 	},
 	isInstalled: function(guid) {
-		return this.em.getInstallLocation(guid);
+		return "Application" in window
+			? Application.extensions.has(guid)
+			: this.em.getInstallLocation(guid);
 	},
 	isEnabled: function(guid) {
+		if("Application" in window)
+			return Application.extensions.get(guid).enabled;
 		var res  = this.rdf.GetResource("urn:mozilla:item:" + guid);
 		var opType = this.getRes(res, "opType");
-		return opType != "needs-disable" && opType != "needs-enable"
-			&& opType != "needs-uninstall" && opType != "needs-install"
+		return opType != "needs-enable" && opType != "needs-install"
 			&& this.getRes(res, "userDisabled") != "true"
 			&& this.getRes(res, "appDisabled") != "true";
 	},
