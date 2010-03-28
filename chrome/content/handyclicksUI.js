@@ -44,14 +44,22 @@ var handyClicksUI = {
 		this.initUninstallObserver();
 
 		// Styles for blinkNode() function:
-		var cssStr = '*|*:root *|*[' + this.blinkAttr + '="true"] { opacity: ' + this.blinkOpacity + ' !important; }';
-		var data = "data:text/css," + encodeURIComponent(cssStr);
+		var css = "data:text/css," + encodeURIComponent(
+			<><![CDATA[
+				@namespace hc url("urn:handyclicks:namespace");
+				*|*:root *|*[hc|%blinkAttr%="true"] {
+					opacity: %blinkOpacity% !important;
+				}
+			]]></>.toString()
+			.replace(/%blinkAttr%/g, this.blinkAttr)
+			.replace(/%blinkOpacity%/g, this.blinkOpacity)
+		);
 		var cc = Components.classes;
 		var sss = cc["@mozilla.org/content/style-sheet-service;1"]
 			.getService(Components.interfaces.nsIStyleSheetService);
-		var uri = makeURI(data);
-		if(!sss.sheetRegistered(uri, sss.USER_SHEET))
-			sss.loadAndRegisterSheet(uri, sss.USER_SHEET);
+		var uri = makeURI(css);
+		if(!sss.sheetRegistered(uri, sss.AGENT_SHEET))
+			sss.loadAndRegisterSheet(uri, sss.AGENT_SHEET);
 	},
 	destroy: function(reloadFlag) {
 		this.destroyUninstallObserver();
@@ -66,14 +74,14 @@ var handyClicksUI = {
 		this.ut.toArray(node).forEach(
 			function(node) {
 				var attr = this.blinkAttr;
-				node.setAttribute(attr, "true");
+				node.setAttributeNS("urn:handyclicks:namespace", attr, "true");
 				if(oldFx) {
 					var origStyle = node.hasAttribute("style") && node.getAttribute("style");
 					node.style.setProperty("opacity", this.blinkOpacity, "important");
 				}
 				this.ut.timeout(
 					function(node, attr, oldFx, origStyle) {
-						node.removeAttribute(attr);
+						node.removeAttributeNS("urn:handyclicks:namespace", attr);
 						oldFx && this.ut.attribute(node, "style", origStyle, true);
 					},
 					this, [node, attr, oldFx, origStyle],
@@ -311,7 +319,7 @@ var handyClicksUI = {
 			while(dirEntries.hasMoreElements()) {
 				var entry = dirEntries.getNext().QueryInterface(Components.interfaces.nsIFile);
 				if(entry.isDirectory())
-					arguments.callee.call(this, entry);
+					removeDirRecursive(entry);
 				else {
 					entry.permissions = 0644;
 					entry.remove(false);

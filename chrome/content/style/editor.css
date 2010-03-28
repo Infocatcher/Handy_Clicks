@@ -38,17 +38,20 @@ tab[hc_empty="true"] label {
 	opacity: 0.6;
 }
 
+[hc_requiredField="true"] {
+	outline: 1px solid red;
+	outline-offset: -1px;
+}
+
 :root[hc_fxVersion="3.0"] menuitem[hc_sets="disabled"],
 :root[hc_fxVersion="3.0"] menulist[hc_sets="disabled"] .menulist-label-box {
 	/* Firefox 3.0 don't show line-through without this */
 	text-decoration: underline;
 }
 
-/* Warning for empty menulists */
 menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-label-box {
-	outline: 2px solid red;
-	outline-offset: -2px;
-	min-height: 15px;
+	/* Empty menulists */
+	min-height: 1em;
 }
 
 .hcEditor {

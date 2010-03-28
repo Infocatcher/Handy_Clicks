@@ -762,11 +762,21 @@ var handyClicksEditor = {
 		var evt = this.$("hc-editor-events").value || null;
 
 		var so = this.getFuncObj();
-		if(!this.ps.isOkShortcut(sh) || !type || !evt || !so) {
+		if(
+			!this.ps.isOkShortcut(sh) // Not needed?
+			|| !type || !evt || !so
+		) {
+			var req = [
+				this.$("hc-editor-itemTypes"),
+				this.$("hc-editor-events"),
+				this.$("hc-editor-func")
+			];
+			this.highlightRequiredFields(req, true);
 			this.ut.alertEx(
 				this.ut.getLocalized("errorTitle"),
 				this.ut.getLocalized("editorIncomplete")
 			);
+			this.highlightRequiredFields(req, false);
 			return false;
 		}
 
@@ -906,10 +916,17 @@ var handyClicksEditor = {
 		var cType = this.$("hc-editor-customTypeExtId").value;
 		var def = this.$("hc-editor-customTypeDefine").value;
 		if(!label || !cType || !def) {
+			var req = [
+				this.$("hc-editor-customType"),
+				this.$("hc-editor-customTypeExtId"),
+				this.$("hc-editor-customTypeDefine")
+			];
+			this.highlightRequiredFields(req, true);
 			this.ut.alertEx(
 				this.ut.getLocalized("errorTitle"),
 				this.ut.getLocalized("editorIncomplete")
 			);
+			this.highlightRequiredFields(req, false);
 			return false;
 		}
 		cType = this.ps.customPrefix + cType;
@@ -977,5 +994,19 @@ var handyClicksEditor = {
 			return;
 		this.initCustomTypesEditor(null, st);
 		this.applyDisabled = false;
+	},
+
+	highlightRequiredFields: function _hl(fields, addFlag, noDelay) {
+		if(!addFlag && !noDelay) {
+			this.ut.timeout(_hl, this, [fields, false, true], 2500);
+			return;
+		}
+		fields.forEach(
+			function(field) {
+				if(!addFlag || !field.value)
+					this.ut.attribute(field, "hc_requiredField", addFlag);
+			},
+			this
+		);
 	}
 };

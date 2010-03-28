@@ -89,7 +89,9 @@
 					<checkbox id="hc-editor-shift" label="shift" />
 					<checkbox id="hc-editor-alt" label="alt" />
 					<checkbox id="hc-editor-meta" label="meta" />
-					<label style="margin: 0; padding: 0; border: none;" accesskey="&hc.editor.itemTypesAccesskey;" control="hc-editor-itemTypes" />
+					<!-- Dummy label for accesskey -->
+					<label style="margin: 0; padding: 0; border: none;"
+						accesskey="&hc.editor.itemTypesAccesskey;" control="hc-editor-itemTypes" />
 					<menulist id="hc-editor-itemTypes"
 						oncommand="handyClicksEditor.itemTypeChanged(this.value);"
 						onclick="handyClicksEditor.editCustomType(event);">
@@ -118,8 +120,9 @@
 
 				<tabbox id="hc-editor-funcTabbox" flex="1">
 					<tabs>
-						<tab label="&hc.editor.tabFunc;" accesskey="&hc.editor.tabFuncAccesskey;" selected="true" />
-						<tab id="hc-editor-funcTabDelay" label="&hc.editor.tabFuncDelay;" accesskey="&hc.editor.tabFuncDelayAccesskey;" />
+						<tab label="&hc.editor.tabFunc;" accesskey="&hc.editor.tabFuncAccesskey;" />
+						<tab id="hc-editor-funcTabDelay" label="&hc.editor.tabFuncDelay;"
+							accesskey="&hc.editor.tabFuncDelayAccesskey;" />
 					</tabs>
 					<tabpanels id="hc-editor-funcsTab" flex="1">
 						<tabpanel id="hc-editor-funcTab" flex="1" orient="vertical">
@@ -128,8 +131,8 @@
 								oncommand="handyClicksEditor.disableUnsupported();"
 								onchange="handyClicksEditor.disableUnsupported();">
 								<hbox align="center">
-									<label value="&hc.editor.event;" accesskey="&hc.editor.eventAccesskey;" control="hc-editor-events"
-										hc_notDelay="true" />
+									<label hc_notDelay="true" value="&hc.editor.event;"
+										accesskey="&hc.editor.eventAccesskey;" control="hc-editor-events" />
 									<menulist id="hc-editor-events" hc_notDelay="true">
 										<menupopup>
 											<menuitem value="mousedown" label="Mousedown" />
@@ -139,7 +142,8 @@
 										</menupopup>
 									</menulist>
 
-									<label id="hc-editor-allowMousedownLabel" value="&hc.editor.mousedownEvent;" hc_notDelay="true" />
+									<label id="hc-editor-allowMousedownLabel" hc_notDelay="true"
+										value="&hc.editor.mousedownEvent;" />
 									<menulist id="hc-editor-allowMousedown" hc_notDelay="true">
 										<menupopup>
 											<menuitem value="true" label="&hc.editor.mousedownAllow;" />
@@ -148,8 +152,8 @@
 										</menupopup>
 									</menulist>
 
-									<checkbox id="hc-editor-enabled" label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;"
-										handyclicks_important="enabled" />
+									<checkbox id="hc-editor-enabled" handyclicks_important="enabled"
+										label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
 								</hbox>
 								<hbox id="hc-editor-funcOptsAdd" align="center" hc_notDelay="true">
 									<label value="&hc.editor.funcOptsAdd;" />
@@ -158,13 +162,15 @@
 							</vbox>
 
 							<hbox align="center">
-								<label value="&hc.editor.func;" accesskey="&hc.editor.funcAccesskey;" control="hc-editor-func" />
+								<label value="&hc.editor.func;"
+									accesskey="&hc.editor.funcAccesskey;" control="hc-editor-func" />
 								<menulist id="hc-editor-func"
 									oncommand="handyClicksEditor.addFuncArgs(this.id.replace(/^hc-editor-func/, ''));">
 									<!-- See editorFuncs.xul -->
 								</menulist>
 								<hbox id="hc-editor-funcLabelBox" align="center" flex="1">
-									<label value="&hc.editor.funcLabel;" accesskey="&hc.editor.funcLabelAccesskey;" control="hc-editor-funcLabel" />
+									<label value="&hc.editor.funcLabel;"
+										accesskey="&hc.editor.funcLabelAccesskey;" control="hc-editor-funcLabel" />
 									<textbox id="hc-editor-funcLabel" flex="1" spellcheck="true" />
 								</hbox>
 							</hbox>
@@ -188,10 +194,12 @@
 													value="&hc.editor.funcArgs; event, item, origItem"
 													onfocus="handyClicksEditor.fixFocusedElement(event);" />
 											</hbox>
-											<textbox class="hcEditor" id="hc-editor-funcField" flex="1" accesskey="&hc.editor.editAccesskey;" />
+											<textbox class="hcEditor" id="hc-editor-funcField" flex="1"
+												accesskey="&hc.editor.editAccesskey;" />
 										</tabpanel>
 										<tabpanel flex="1" orient="vertical">
-											<textbox class="hcEditor" id="hc-editor-funcInitField" flex="1" accesskey="&hc.editor.editAccesskey;"
+											<textbox class="hcEditor" id="hc-editor-funcInitField" flex="1"
+												accesskey="&hc.editor.editAccesskey;"
 												oninput="handyClicksEditor.highlightEmpty(this, true);"
 												ondragexit="handyClicksEditor.highlightEmpty(this, true);" />
 										</tabpanel>
@@ -208,27 +216,29 @@
 			</tabpanel>
 			<tabpanel flex="1" orient="vertical">
 				<hbox align="center">
-					<label value="&hc.editor.funcLabel;" accesskey="&hc.editor.funcLabelAccesskey;" control="hc-editor-customType" />
+					<label value="&hc.editor.funcLabel;"
+						accesskey="&hc.editor.funcLabelAccesskey;" control="hc-editor-customType" />
 					<menulist id="hc-editor-customType" editable="true" spellcheck="true"
 						oncommand="handyClicksEditor.initCustomTypesEditor(); event.stopPropagation();"
 						oninput="handyClicksEditor.customTypeLabel(this);"
 						ondragexit="handyClicksEditor.customTypeLabelDelay(this);">
 						<menupopup id="hc-editor-customTypePopup" />
 					</menulist>
-					<label value="&hc.editor.internalId;" accesskey="&hc.editor.internalIdAccesskey;" control="hc-editor-customTypeExtId" />
+					<label value="&hc.editor.internalId;"
+						accesskey="&hc.editor.internalIdAccesskey;" control="hc-editor-customTypeExtId" />
 					<textbox id="hc-editor-customTypeExtId"
 						onkeypress="return handyClicksEditor.customTypeIdFilter(event);"
 						oninput="handyClicksEditor.customTypeIdFilter(event);"
 						ondragexit="handyClicksEditor.customTypeIdFilter(event);" />
-					<checkbox id="hc-editor-customTypeEnabled" label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;"
-						handyclicks_important="enabled" />
+					<checkbox id="hc-editor-customTypeEnabled" handyclicks_important="enabled"
+						label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
 				</hbox>
 
 				<tabbox id="hc-editor-customTypeFuncs" flex="1">
 					<tabs onselect="handyClicksEditor.fixFocusedElement(event);">
-						<tab label="&hc.editor.defineItem;" accesskey="&hc.editor.defineItemAccesskey;" selected="true" />
-						<tab label="&hc.editor.defineContext;" accesskey="&hc.editor.defineContextAccesskey;"
-							tooltiptext="&hc.editor.defineContextTip;" hc_empty="true" />
+						<tab label="&hc.editor.defineItem;" accesskey="&hc.editor.defineItemAccesskey;" />
+						<tab hc_empty="true" label="&hc.editor.defineContext;" accesskey="&hc.editor.defineContextAccesskey;"
+							tooltiptext="&hc.editor.defineContextTip;" />
 					</tabs>
 					<tabpanels flex="1">
 						<tabpanel id="hc-editor-customTypeDefinePanel" flex="1" orient="vertical">
@@ -237,7 +247,8 @@
 									onfocus="handyClicksEditor.fixFocusedElement(event);" />
 								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
 							</hbox>
-							<textbox class="hcEditor" id="hc-editor-customTypeDefine" flex="1" accesskey="&hc.editor.editAccesskey;" />
+							<textbox class="hcEditor" id="hc-editor-customTypeDefine" flex="1"
+								accesskey="&hc.editor.editAccesskey;" />
 						</tabpanel>
 						<tabpanel id="hc-editor-customTypeContextPanel" flex="1" orient="vertical">
 							<hbox>
@@ -246,7 +257,8 @@
 									onfocus="handyClicksEditor.fixFocusedElement(event);" />
 								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
 							</hbox>
-							<textbox class="hcEditor" id="hc-editor-customTypeContext" flex="1" accesskey="&hc.editor.editAccesskey;"
+							<textbox class="hcEditor" id="hc-editor-customTypeContext" flex="1"
+								accesskey="&hc.editor.editAccesskey;"
 								oninput="handyClicksEditor.highlightEmpty(this, true);"
 								ondragexit="handyClicksEditor.highlightEmpty(this, true);" />
 						</tabpanel>
