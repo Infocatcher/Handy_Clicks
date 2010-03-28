@@ -503,12 +503,12 @@ var handyClicksEditor = {
 		this.initImgIgnoreLinks(iType);
 	},
 	initImgIgnoreLinks: function(iType) {
-		iType = iType || this.$("hc-editor-itemTypes").value;
+		iType = iType || this.currentType;
 		var isImg = iType == "img";
 		this.$("hc-editor-funcOptsAdd").hidden = !isImg;
 		if(isImg) {
-			var setsObj = (this.ps.prefs[this.shortcut] || {})[iType] || {};
-			this.$("hc-editor-imgIgnoreLinks").checked = typeof setsObj.ignoreLinks == "boolean" ? setsObj.ignoreLinks : false;
+			var ignoreLinks = this.ut.getOwnProperty(this.ps.prefs, this.shortcut, iType, "ignoreLinks") || false;
+			this.$("hc-editor-imgIgnoreLinks").checked = ignoreLinks;
 		}
 	},
 	addFuncArgs: function(delayed) {
@@ -894,10 +894,7 @@ var handyClicksEditor = {
 		if(!st)
 			return;
 		var type = this.currentType;
-		if(
-			!type || /^0(?:\.\d+)?$/.test(type) // type can be Math.random()
-			|| this.notSupported(type, null, st.supports, st.app, st.required)
-		)
+		if(!type || this.notSupported(type, null, st.supports, st.app, st.required))
 			return;
 
 		var isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == 1;

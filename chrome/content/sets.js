@@ -237,8 +237,9 @@ var handyClicksSets = {
 			fo = {};
 		var isCustom = !!fo.custom;
 		var isCustomType = this.ps.isCustomType(itemType);
-		var typeLabel = forcedLabel || this.getTypeLabel(itemType, isCustomType);
-		this.appendTreeCell(tRow, "label", typeLabel);
+		var typeLabel = this.getTypeLabel(itemType, isCustomType);
+
+		this.appendTreeCell(tRow, "label", forcedLabel || typeLabel);
 		this.appendTreeCell(tRow, "label", fo.eventType);
 		var actLabel = this.getActionLabel(fo);
 		this.appendTreeCell(tRow, "label", actLabel);
@@ -662,20 +663,28 @@ var handyClicksSets = {
 			return;
 
 		var del = tIts.map(
-			function(tItem, i) { //~ todo: delayed info
+			function(tItem, i) {
 				var type = tItem.__itemType, sh = tItem.__shortcut;
 				var mdfs = this.ps.getModifiersStr(sh);
 				var button = this.ps.getButtonStr(sh, true);
 				var typeLabel = this.getTypeLabel(type, this.ps.isCustomType(type));
 				var fObj = this.ut.getOwnProperty(this.ps.prefs, sh, type);
+				var dObj = this.ut.getOwnProperty(fObj, "delayedAction");
+				var addLabel = "";
 				if(tItem.__isDelayed) {
 					typeLabel += " (" + this.ut.getLocalized("delayed") + ")";
-					fObj = this.ut.getOwnProperty(fObj, "delayedAction");
+					fObj = dObj;
+				}
+				else {
+					var daLabel = this.ut.canHasProps(dObj) && this.getActionLabel(fObj);
+					if(daLabel)
+						addLabel = "\n\t(" + this.ut.getLocalized("delayed") + ": " + daLabel + ")";
 				}
 				var label = this.ut.canHasProps(fObj)
 					? this.getActionLabel(fObj)
 					: "?";
-				return mdfs + " + " + button + " + " + typeLabel + " \u21d2 " /* "=>" */ + label.substr(0, 42);
+				return (i + 1) + ". " + mdfs + " + " + button + " + " + typeLabel + " \u21d2 " /* "=>" */
+					+ label.substr(0, 42) + addLabel.substr(0, 42);
 			},
 			this
 		);
@@ -732,10 +741,10 @@ var handyClicksSets = {
 	openEditorWindow: function(tItem, mode, add) { // mode: "shortcut" or "itemType"
 		var shortcut = tItem
 			? tItem.__shortcut
-			: Date.now() + "-" + Math.random();
+			: undefined;
 		var itemType = tItem && add !== true
 			? tItem.__itemType
-			: Math.random();
+			: undefined;
 		var isDelayed = tItem && add !== true && tItem.__isDelayed;
 		this.wu.openEditor(this.ps.currentSrc, mode || "shortcut", shortcut, itemType, isDelayed);
 	},
