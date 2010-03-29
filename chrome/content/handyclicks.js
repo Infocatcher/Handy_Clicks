@@ -111,7 +111,6 @@ var handyClicks = {
 		)
 			e.originalTarget.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
 
-		var _this = this;
 		//var cm = this.getItemContext(e); //~ todo: get cm only if needed
 
 		var delay = this.pu.pref("delayedActionTimeout");
@@ -414,7 +413,10 @@ var handyClicks = {
 						_it instanceof HTMLAnchorElement
 						|| _it instanceof HTMLAreaElement
 						|| _it instanceof HTMLLinkElement
-					) && _it.hasAttribute("href")
+					) && (
+						_it.hasAttribute("href")
+						|| this.ut.getProperty(_it, "repObject", "href") // Firebug
+					)
 					|| _it.nodeType == eltNode && _it.hasAttributeNS("http://www.w3.org/1999/xlink", "href")
 				) {
 					this.itemType = "link";

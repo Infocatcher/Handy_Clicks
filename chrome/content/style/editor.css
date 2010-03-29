@@ -95,10 +95,12 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 	display: none;
 }
 
+/*
 #hc-editor-funcLabel, #hc-editor-funcLabel-delay {
 	margin-top: 0;
 	margin-bottom: 0;
 }
+*/
 
 menulist[hc_aboutConfigEntry] .menulist-label,
 [hc_aboutConfigEntry] {

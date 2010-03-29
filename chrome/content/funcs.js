@@ -126,7 +126,8 @@ var handyClicksFuncs = {
 			? makeURLAbsolute(it.baseURI, it.getAttributeNS(ns, "href")) // See chrome://browser/content/utilityOverlay.js
 			// Looks like wrapper error with chrome://global/content/bindings/text.xml#text-link binding
 			// on "content" pages (e.g. chrome://global/content/console.xul)
-			: it.href || it.getAttribute("href");
+			: it.href || it.getAttribute("href")
+				|| this.ut.getProperty(it, "repObject", "href"); // Firebug
 	},
 	getTabURI: function(tab) {
 		return "linkedBrowser" in tab
@@ -578,21 +579,22 @@ var handyClicksFuncs = {
 			this.ut._err(new Error("Can't get URI of item (" + this.hc.itemType + ")"));
 			return;
 		}
-		this.addAppsProps(items, this.losslessDecodeURI(uri).replace(/%0A/g, " "), checkFiles);
+		var uris = Array.concat(uri).map(this.losslessDecodeURI, this);
+		this.addAppsProps(items, uris, checkFiles);
 		this.addEditItem(items);
 		var popup = this.showGeneratedPopup(items);
 		popup.setAttribute("oncommand", "handyClicksFuncs.openUriWithApp(event, this);");
 		popup.hc_uri = uri;
 	},
-	addAppsProps: function(items, uri, checkFiles) {
+	addAppsProps: function(items, uris, checkFiles) {
 		items.forEach(function(item) {
-			this.addAppProps(item, uri, checkFiles);
+			this.addAppProps(item, uris, checkFiles);
 		}, this);
 	},
-	addAppProps: function(item, uri, checkFiles) {
+	addAppProps: function(item, uris, checkFiles) {
 		var childs = this.ut.getOwnProperty(item, "childNodes");
 		if(this.ut.isArray(childs))
-			this.addAppsProps(childs, uri, checkFiles);
+			this.addAppsProps(childs, uris, checkFiles);
 		var path = this.ut.getOwnProperty(item, "prop_hc_path");
 		if(!path)
 			return;
@@ -622,23 +624,34 @@ var handyClicksFuncs = {
 		if(this.ut.isArray(args))
 			for(var j = 0, len = args.length; j < len; j++)
 				item[ttBase + n++] = args[j];
-		item[ttBase + n++] = uri;
+		var addNums = uris.length > 1;
+		uris.forEach(
+			function(uri, indx) {
+				item[ttBase + n++] = (addNums ? (indx + 1) + ". " : "") + uri;
+			}
+		);
 	},
 
 	addEditItem: function(items) {
+		var cmd = "handyClicksFuncs.openEditorForLastEvent();";
+		var label = this.ut.getLocalized("edit");
+		var accesskey = this.ut.getLocalized("editAccesskey");
 		if(typeof items == "xml") {
 			items.lastChild += <menuseparator xmlns={this.ut.XULNS} />;
 			items.lastChild += <menuitem xmlns={this.ut.XULNS}
-				label={this.ut.getLocalized("edit")}
-				oncommand="handyClicksFuncs.openEditorForLastEvent();" />;
+				oncommand={cmd}
+				label={label}
+				accesskey={accesskey}
+			/>;
 			return;
 		}
 		items.push(
 			{ tagName: "menuseparator" },
 			{
 				tagName: "menuitem",
-				attr_label: this.ut.getLocalized("edit"),
-				attr_oncommand: "handyClicksFuncs.openEditorForLastEvent();"
+				attr_oncommand: cmd,
+				attr_label: label,
+				attr_accesskey: accesskey
 			}
 		);
 	},

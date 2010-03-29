@@ -122,7 +122,13 @@ var handyClicksUtils = {
 		return this.promptsSvc.confirm(window, ttl, txt);
 	},
 
+	bind: function(func, context, args) {
+		return function() {
+			func.apply(context, args);
+		};
+	},
 	timeout: function(func, context, args, delay) {
+		//return setTimeout(this.bind(func, context, args), delay || 0);
 		return setTimeout(
 			function(func, context, args) {
 				func.apply(context, args);
