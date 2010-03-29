@@ -55,6 +55,7 @@
 		<key id="hc-editor-key-undo" key="u" modifiers="control" command="hc-editor-cmd-undo" />
 		<key id="hc-editor-key-delete" key="d" modifiers="control" oncommand="handyClicksEditor.deleteSettings();" />
 		<key id="hc-editor-key-reload" keycode="VK_F5" oncommand="handyClicksEditor.initUI(true);" />
+		<key id="hc-editor-key-reload" key="r" modifiers="control" oncommand="handyClicksEditor.initUI(true);" />
 
 		<key id="hc-editor-key-copy" key="c" modifiers="control,shift" oncommand="handyClicksEditor.copySettings();" />
 		<key id="hc-editor-key-paste" key="v" modifiers="control,shift" oncommand="handyClicksEditor.pasteSettings();" />

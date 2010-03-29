@@ -363,9 +363,13 @@ var handyClicksEditor = {
 		var typeObj, mi, _mi;
 		var hideSep = true;
 		for(var cType in cTypes) if(cTypes.hasOwnProperty(cType)) {
+			if(!this.ps.isCustomType(cType)) {
+				this.ut._err(new Error("Invalid custom type id: " + cType), true);
+				continue;
+			}
 			typeObj = cTypes[cType];
 			if(!this.ut.isObject(typeObj)) {
-				this.ut._err(new Error("Invalid custom type: " + cType + "\nvalue: " + typeObj), true);
+				this.ut._err(new Error("Invalid custom type: " + cType + " (" + typeObj + ")"), true);
 				continue;
 			}
 			mi = <menuitem xmlns={this.ut.XULNS} value={cType} label={this.ps.dec(typeObj.label) || cType} />;

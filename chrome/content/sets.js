@@ -1234,9 +1234,16 @@ var handyClicksSets = {
 	// about:config entries
 	// Reset prefs:
 	resetPrefs: function() {
-		this.pu.prefSvc.getBranch(this.pu.prefNS)
-			.getChildList("", {})
-			.forEach(this.resetPref, this);
+		if(
+			this.ut.confirmEx(
+				this.ut.getLocalized("warningTitle"),
+				this.ut.getLocalized("resetPrefsWarning")
+			)
+		) {
+			this.pu.prefSvc.getBranch(this.pu.prefNS)
+				.getChildList("", {})
+				.forEach(this.resetPref, this);
+		}
 	},
 	resetPref: function(pName) {
 		this.pu.resetPref(this.pu.prefNS + pName);

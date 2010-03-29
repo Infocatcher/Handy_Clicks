@@ -40,10 +40,15 @@ var handyClicksSetsUtils = {
 		}
 	},
 	handleEvent: function(e) {
-		if(e.type == "DOMMouseScroll")
-			this.listScroll(e) || this.radioScroll(e) || this.numTextboxScroll(e);
+		if(e.type == "DOMMouseScroll") {
+			this.scrollList(e)
+				|| this.scrollRadio(e)
+				|| this.scrollNumTextbox(e)
+				|| this.scrollTabs(e)
+				|| this.scrollPanes(e);
+		}
 	},
-	listScroll: function(e) {
+	scrollList: function(e) {
 		var ml = e.target;
 		var ln = ml.localName;
 		if(ln == "menuitem" || ln == "menuseparator") {
@@ -76,7 +81,7 @@ var handyClicksSetsUtils = {
 		return true;
 	},
 	_showTooltip: false,
-	radioScroll: function(e) {
+	scrollRadio: function(e) {
 		var rds = this.getSameLevelRadios(e.target);
 		if(!rds.length)
 			return false;
@@ -111,17 +116,6 @@ var handyClicksSetsUtils = {
 			this.showInfoTooltip(e, si.getAttribute("label"));
 		return true;
 	},
-	numTextboxScroll: function(e) {
-		var tar = e.target;
-		if(
-			tar.localName != "textbox" || tar.getAttribute("type") != "number"
-			|| !("increase" in tar) || !("decrease" in tar) || !("_fireChange" in tar)
-		)
-			return false;
-		tar[e.detail > 0 ? "increase" : "decrease"]();
-		tar._fireChange();
-		return true;
-	},
 	getSameLevelRadios: function(elt) {
 		var isClosedMenu = false;
 		if(elt.localName == "menu" || elt.getAttribute("type") == "menu") {
@@ -146,6 +140,40 @@ var handyClicksSetsUtils = {
 			this
 		);
 	},
+	scrollNumTextbox: function(e) {
+		var tar = e.target;
+		if(
+			tar.localName != "textbox" || tar.getAttribute("type") != "number"
+			|| tar.getAttribute("disabled") == "true"
+			|| !("increase" in tar) || !("decrease" in tar) || !("_fireChange" in tar)
+		)
+			return false;
+		tar[e.detail > 0 ? "increase" : "decrease"]();
+		tar._fireChange();
+		return true;
+	},
+	scrollTabs: function(e) {
+		for(var node = e.target; node; node = node.parentNode) {
+			if(node.localName == "tabs") {
+				node.advanceSelectedTab(e.detail > 0 ? 1 : -1, true);
+				return true;
+			}
+		}
+		return false;
+	},
+	scrollPanes: function(e) {
+		var de = document.documentElement;
+		if(de.localName != "prefwindow")
+			return false;
+		for(var node = e.originalTarget; node; node = node.parentNode) {
+			if(node.localName == "windowdragbox" && node.parentNode == de) {
+				this.st.switchPanes(e.detail > 0);
+				return true;
+			}
+		}
+		return false;
+	},
+
 	get infoTooltip() {
 		delete this.infoTooltip;
 		return this.infoTooltip = document.documentElement.appendChild(
