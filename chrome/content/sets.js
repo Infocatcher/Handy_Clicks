@@ -118,6 +118,12 @@ var handyClicksSets = {
 				this.ut._err(new Error("Invalid shortcut in prefs: \"" + sh + "\""), true);
 				continue;
 			}
+			var so = p[sh];
+			if(this.ut.isEmptyObj(so)) {
+				this.ut._err(new Error("Empty settings object in prefs: \"" + sh + "\""), true);
+				//delete p[sh];
+				continue;
+			}
 			switch(drawMode) {
 				case 0:
 				default: // Normal
@@ -127,7 +133,7 @@ var handyClicksSets = {
 						|| this.appendContainerItem(this.tBody, button, this.ut.getLocalized(button));
 					var modifiersContainer = this.eltsCache[sh]
 						|| this.appendContainerItem(buttonContainer, sh, modifiers);
-					this.appendItems(modifiersContainer, p[sh], sh);
+					this.appendItems(modifiersContainer, so, sh);
 				break;
 				case 1: // Normal (compact)
 					var button = this.ps.getButtonStr(sh, true);
@@ -135,14 +141,13 @@ var handyClicksSets = {
 					var label = button + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
 					var buttonContainer = this.eltsCache[sh]
 						|| this.appendContainerItem(this.tBody, sh, label);
-					this.appendItems(buttonContainer, p[sh], sh);
+					this.appendItems(buttonContainer, so, sh);
 				break;
 				case 2: // Normal (inline)
 					var button = this.ps.getButtonStr(sh, true);
 					var modifiers = this.ps.getModifiersStr(sh, true);
 					var sep = " " + this.ps.keys.sep + " ";
 					var label = button + (modifiers ? sep + modifiers : "") + sep;
-					var so = p[sh];
 					for(var type in so) if(so.hasOwnProperty(type))
 						this.appendRow(this.tBody, sh, type, so[type], label + this.getTypeLabel(type));
 				break;
@@ -150,7 +155,6 @@ var handyClicksSets = {
 					var button = this.ps.getButtonId(sh);
 					var buttonLabel = this.ut.getLocalized(button);
 					var modifiers = this.ps.getModifiersStr(sh);
-					var so = p[sh];
 					for(var type in so) if(so.hasOwnProperty(type)) {
 						var typeContainer = this.eltsCache[type]
 							|| this.appendContainerItem(this.tBody, type, this.getTypeLabel(type));
@@ -164,7 +168,6 @@ var handyClicksSets = {
 					var button = this.ps.getButtonStr(sh, true);
 					var modifiers = this.ps.getModifiersStr(sh, true);
 					var label = button + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
-					var so = p[sh];
 					for(var type in so) if(so.hasOwnProperty(type)) {
 						var typeContainer = this.eltsCache[type]
 							|| this.appendContainerItem(this.tBody, type, this.getTypeLabel(type));
@@ -176,7 +179,6 @@ var handyClicksSets = {
 					var modifiers = this.ps.getModifiersStr(sh, true);
 					var sep = " " + this.ps.keys.sep + " ";
 					var label = sep + button + (modifiers ? sep + modifiers : "");
-					var so = p[sh];
 					for(var type in so) if(so.hasOwnProperty(type))
 						this.eltsCache[type] = this.appendRow(
 							this.tBody, sh, type, so[type], this.getTypeLabel(type) + label, this.eltsCache[type] || null
@@ -749,6 +751,8 @@ var handyClicksSets = {
 		this.wu.openEditor(this.ps.currentSrc, mode || "shortcut", shortcut, itemType, isDelayed);
 	},
 	setItemStatus: function(rowId, editStat) {
+		if(!rowId)
+			return;
 		rowId = rowId.replace(/@otherSrc$/, "");
 		if(!(rowId in this.rowsCache))
 			return;
@@ -1499,6 +1503,19 @@ var handyClicksSets = {
 		this.updRestorePopup();
 		return true;
 	},
+	handleRestoreCommand: function(e) {
+		var mi = e.target;
+		if(!mi.hasAttribute("hc_fileName"))
+			return;
+		var butt = "button" in e && e.button;
+		if(e.type == "command" || butt == 1) {
+			var hasModifier = e.ctrlKey || e.shiftKey || e.altKey || e.metaKey;
+			this.importSets(hasModifier || butt == 1/*partialImport*/, 3, mi.getAttribute("hc_fileName"));
+			this.ut.closeMenus(mi);
+		}
+		else if(butt == 2)
+			this.removeBackup(mi);
+	},
 	get ubPopup() {
 		return this.$("hc-sets-tree-restoreFromBackupPopup");
 	},
@@ -1506,7 +1523,7 @@ var handyClicksSets = {
 		var popup = this.ubPopup;
 		//this.ut.removeChilds(popup);
 		var sep;
-		while(true) {
+		for(;;) {
 			sep = popup.firstChild;
 			if(sep.localName == "menuseparator")
 				break;

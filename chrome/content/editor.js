@@ -863,10 +863,13 @@ var handyClicksEditor = {
 	},
 	deleteShortcut: function() {
 		var p = this.ps.prefs;
-		var cs = this.currentShortcut;
+		var sh = this.currentShortcut;
 		var ct = this.currentType;
-		if(this.ut.getOwnProperty(p, cs, ct))
-			delete p[cs][ct];
+		if(this.ut.getOwnProperty(p, sh, ct)) {
+			delete p[sh][ct];
+			if(this.ut.isEmptyObj(p[sh]))
+				delete p[sh];
+		}
 		if(this.ps.otherSrc)
 			this.ps.reloadSettings();
 		else
