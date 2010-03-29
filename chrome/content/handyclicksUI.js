@@ -119,6 +119,70 @@ var handyClicksUI = {
 			return;
 		this.ut.notifyInWindowCorner(this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, null, en);
 	},
+
+	buildSettingsPopup: function(e) {
+		this.checkClipboard();
+
+		var popup = e.target;
+		var showCustomize = this.pu.pref("ui.showCustomizeToolbars")
+			&& document.popupNode && document.popupNode.localName.indexOf("toolbar") == 0;
+		this.$("handyClicks-customizeSeparator").setAttribute("hc_hideAllAfter", !showCustomize);
+		if(!showCustomize)
+			return;
+
+		if("onViewToolbarsPopupShowing" in window) {
+			try {
+				onViewToolbarsPopupShowing(e);
+			}
+			catch(e) {
+				this.ut._err(new Error("onViewToolbarsPopupShowing() failed"));
+				this.ut._err(e);
+			}
+			Array.forEach(
+				this.ut.toArray(popup.childNodes),
+				function(ch) {
+					if((ch.id || "").indexOf("handyClicks-") != 0)
+						popup.appendChild(ch);
+				}
+			);
+		}
+
+		var tbSep = this.$("handyClicks-toolbarsSep");
+		var customize;
+		if(!tbSep) {
+			var cmd = "cmd_CustomizeToolbars";
+			var ct;
+			Array.some(
+				document.getElementsByAttribute("command", cmd),
+				function(it) {
+					return it.hasAttribute("label")
+						? (ct = it)
+						: false;
+				}
+			);
+			if(!ct)
+				return;
+			tbSep = popup.appendChild(
+				this.ut.parseFromXML(
+					<menuseparator xmlns={this.ut.XULNS}
+						id="handyClicks-toolbarsSep"
+					/>
+				)
+			);
+			customize = popup.appendChild(
+				this.ut.parseFromXML(
+					<menuitem xmlns={this.ut.XULNS}
+						id="handyClicks-customizeToolbars"
+						label={ ct.getAttribute("label") }
+						accesskey={ ct.getAttribute("accesskey") }
+						command={cmd}
+					/>
+				)
+			);
+		}
+		popup.appendChild(tbSep);
+		popup.appendChild(customize || this.$("handyClicks-customizeToolbars"));
+	},
 	checkClipboard: function() {
 		const id = "handyClicks-importFromClipboard";
 		this.$(id).hidden = this.$(id + "Separator").hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard(true));
@@ -127,6 +191,7 @@ var handyClicksUI = {
 		if(document.popupNode)
 			this.ut.closeMenus(document.popupNode); // For Firefox 2.0
 	},
+
 	doSettings: function(e) {
 		if(e.type == "command" || e.button == 0)
 			this.toggleStatus();

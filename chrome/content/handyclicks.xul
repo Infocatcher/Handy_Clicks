@@ -58,7 +58,7 @@
 	</statusbar>
 	<popupset id="mainPopupSet">
 		<menupopup id="handyClicks-settingsPopup"
-			onpopupshowing="handyClicksUI.checkClipboard();"
+			onpopupshowing="handyClicksUI.buildSettingsPopup(event);"
 			onpopuphiding="handyClicksUI.fixPopup();">
 			<menuitem id="handyClicks-settingsMenuitem"
 				command="handyClicks-cmd-openSettings" key="handyClicks-key-openSettings"
@@ -68,6 +68,7 @@
 			<menuseparator id="handyClicks-importFromClipboardSeparator" />
 			<menuitem id="handyClicks-importFromClipboard"
 				command="handyClicks-cmd-importFromClipboard" key="handyClicks-key-importFromClipboard" />
+			<menuseparator id="handyClicks-customizeSeparator" />
 		</menupopup>
 		<tooltip id="handyClicks-tooltip" noautohide="true" orient="vertical"
 			onpopupshowing="return handyClicksUI.fillInTooltip(this);"

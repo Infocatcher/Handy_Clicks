@@ -166,7 +166,10 @@ var handyClicksSetsUtils = {
 		if(de.localName != "prefwindow")
 			return false;
 		for(var node = e.originalTarget; node; node = node.parentNode) {
-			if(node.localName == "windowdragbox" && node.parentNode == de) {
+			if(
+				node.localName == "radiogroup"
+				&& /(?:^|\s)paneSelector(?:\s|$)/.test(node.className)
+			) {
 				this.st.switchPanes(e.detail > 0);
 				return true;
 			}
