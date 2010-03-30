@@ -340,6 +340,7 @@ var handyClicks = {
 				&& this.isOkCustomType(type)
 			) {
 				ct = cts[type];
+				this.ignoreOtherTypes = true;
 				try {
 					_it = ct._define.call(this, e, it);
 				}
@@ -359,7 +360,8 @@ var handyClicks = {
 					continue;
 				this.itemType = type;
 				this.item = _it;
-				return;
+				if(this.ignoreOtherTypes)
+					return;
 			}
 		}
 
