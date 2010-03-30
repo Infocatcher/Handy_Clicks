@@ -67,7 +67,7 @@
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">
 		<tabs onselect="handyClicksEditor.setWinId(); handyClicksEditor.setWinTitle();">
-			<tab label="&hc.editor.mainTabFuncs;" accesskey="&hc.editor.mainTabFuncsAccesskey;" selected="true" />
+			<tab label="&hc.editor.mainTabActions;" accesskey="&hc.editor.mainTabActionsAccesskey;" selected="true" />
 			<tab label="&hc.editor.mainTabCustomTypes;" accesskey="&hc.editor.mainTabCustomTypesAccesskey;" />
 		</tabs>
 		<tabpanels flex="1">
@@ -121,9 +121,10 @@
 
 				<tabbox id="hc-editor-funcTabbox" flex="1">
 					<tabs>
-						<tab label="&hc.editor.tabFunc;" accesskey="&hc.editor.tabFuncAccesskey;" />
-						<tab id="hc-editor-funcTabDelay" label="&hc.editor.tabFuncDelay;"
-							accesskey="&hc.editor.tabFuncDelayAccesskey;" />
+						<tab label="&hc.editor.tabAction;" accesskey="&hc.editor.tabActionAccesskey;" />
+						<tab id="hc-editor-funcTabDelay"
+							label="&hc.editor.tabActionDelay;" accesskey="&hc.editor.tabActionDelayAccesskey;"
+							tooltiptext="&hc.editor.tabActionDelayTip;" />
 					</tabs>
 					<tabpanels id="hc-editor-funcsTab" flex="1">
 						<tabpanel id="hc-editor-funcTab" flex="1" orient="vertical">

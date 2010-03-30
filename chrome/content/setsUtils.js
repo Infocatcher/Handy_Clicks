@@ -32,7 +32,7 @@ var handyClicksSetsUtils = {
 	destroy: function(reloadFlag) {
 		window.removeEventListener("DOMMouseScroll", this, true);
 	},
-	prefsChanged: function(pName, pValue) {
+	prefsChanged: function(pName, pVal) {
 		switch(pName) {
 			case "ui.onTopButton":
 			case "ui.onTopBorderColor":

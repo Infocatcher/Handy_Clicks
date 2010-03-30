@@ -42,6 +42,9 @@ var handyClicksEditor = {
 		this.selectTargetTab(this.isDelayed);
 		this.ps.oSvc.addObserver(this.appendTypesList, this);
 
+		this.setTooltip();
+		this.pu.oSvc.addObserver(this.prefsChanged, this);
+
 		Array.forEach( // Add spellcheck feature for <menulist editable="true" />
 			document.getElementsByTagName("menulist"),
 			function(ml) {
@@ -174,6 +177,14 @@ var handyClicksEditor = {
 			}
 		);
 		return node;
+	},
+	setTooltip: function() {
+		var dTab = this.$("hc-editor-funcTabDelay");
+		dTab.tooltipText = dTab.tooltipText.replace(/\d+(?:\s+\d+)*/, this.pu.pref("delayedActionTimeout"));
+	},
+	prefsChanged: function(pName, pVal) {
+		if(pName == "delayedActionTimeout")
+			this.setTooltip();
 	},
 	initExtTypes: function() {
 		Array.forEach(

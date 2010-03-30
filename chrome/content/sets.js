@@ -208,8 +208,7 @@ var handyClicksSets = {
 		);
 	},
 	redrawTree: function() {
-		var cnt = this.tBody;
-		this.ut.removeChilds(cnt);
+		this.ut.removeChilds(this.tBody);
 		this.drawTree();
 		this.searchInSetsTree(null, true);
 		if(this.prefsSaved && !this.ps.otherSrc)
@@ -653,8 +652,8 @@ var handyClicksSets = {
 		return row.value > -1;
 	},
 	isClickOnContainer: function(e) {
-		var row = {}, col = {}, obj = {};
-		this.tbo.getCellAt(e.clientX, e.clientY, row, col, obj);
+		var row = {}, col = {}, cell = {};
+		this.tbo.getCellAt(e.clientX, e.clientY, row, col, cell);
 		return row.value > -1 && this.tView.isContainer(row.value);
 	},
 	deleteItems: function() {

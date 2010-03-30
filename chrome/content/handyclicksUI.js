@@ -54,8 +54,7 @@ var handyClicksUI = {
 			.replace(/%blinkAttr%/g, this.blinkAttr)
 			.replace(/%blinkOpacity%/g, this.blinkOpacity)
 		);
-		var cc = Components.classes;
-		var sss = cc["@mozilla.org/content/style-sheet-service;1"]
+		var sss = Components.classes["@mozilla.org/content/style-sheet-service;1"]
 			.getService(Components.interfaces.nsIStyleSheetService);
 		var uri = makeURI(css);
 		if(!sss.sheetRegistered(uri, sss.AGENT_SHEET))
