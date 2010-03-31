@@ -351,7 +351,7 @@ var handyClicks = {
 					this.ut.notify(
 						eMsg + this.ut.getLocalized("openConsole"),
 						this.ut.getLocalized("errorTitle"),
-						this.ut.console, this.wu.getOpenLink(href, eLine)
+						this.ut.toErrorConsole, this.wu.getOpenLink(href, eLine)
 					);
 					this.ut._err(new Error(eMsg), false, href, eLine);
 					this.ut._err(e);
@@ -588,7 +588,7 @@ var handyClicks = {
 				this.ut.notify(
 					eMsg + this.ut.getLocalized("openConsole"),
 					this.ut.getLocalized("errorTitle"),
-					this.ut.console, this.wu.getOpenLink(href, eLine)
+					this.ut.toErrorConsole, this.wu.getOpenLink(href, eLine)
 				);
 				this.ut._err(new Error(eMsg), false, href, eLine);
 				this.ut._err(e);
@@ -876,7 +876,7 @@ var handyClicks = {
 				this.ut.notify(
 					eMsg + this.ut.getLocalized("openConsole"),
 					this.ut.getLocalized("errorTitle"),
-					this.ut.console, this.wu.getOpenLink(href, eLine)
+					this.ut.toErrorConsole, this.wu.getOpenLink(href, eLine)
 				);
 				this.ut._err(new Error(eMsg), false, href, eLine);
 				this.ut._err(err);
@@ -900,7 +900,7 @@ var handyClicks = {
 					this.ut.notify(
 						eMsg + this.ut.getLocalized("openConsole"),
 						this.ut.getLocalized("errorTitle"),
-						this.ut.console, this.wu.getOpenLink(href)
+						this.ut.toErrorConsole, this.wu.getOpenLink(href)
 					);
 					this.ut._err(new Error(eMsg));
 					this.ut._err(err);
@@ -910,7 +910,7 @@ var handyClicks = {
 				this.ut.notify(
 					this.ut.getLocalized("functionNotFound").replace("%f", action),
 					this.ut.getLocalized("errorTitle"),
-					this.ut.console
+					this.ut.toErrorConsole
 				);
 				this.ut._err(new Error(action + " not found (" + typeof this.fn[action] + ")"));
 			}
@@ -926,7 +926,7 @@ var handyClicks = {
 				+ "\n=> executeFunction()"
 				+ "\nnodeName = " + (this.origItem ? this.origItem.nodeName : "?")
 				+ ", itemType = " + this.itemType
-				+ "\n=> " + (funcObj.custom ? (this.ps.dec(funcObj.label) || action) : funcObj.action)
+				+ "\n=> " + (funcObj.custom ? (this.ps.dec(funcObj.label) || action.substr(0, 100)) : funcObj.action)
 			);
 		}
 	},

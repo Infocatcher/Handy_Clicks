@@ -102,7 +102,7 @@ var handyClicksUtils = {
 		return this.notify(msg, header, funcLeftClick, funcMiddleClick, extEnabled, true);
 	},
 
-	get console() {
+	get toErrorConsole() {
 		return window.toErrorConsole || window.toJavaScriptConsole;
 	},
 	get promptsSvc() {
@@ -217,8 +217,8 @@ var handyClicksUtils = {
 						.path;
 				}
 				catch(e) {
-					_this.ut._err(new Error("Invalid directory alias: " + s));
-					_this.ut._err(e);
+					_this._err(new Error("Invalid directory alias: " + s));
+					_this._err(e);
 					return s;
 				}
 			}
@@ -230,8 +230,8 @@ var handyClicksUtils = {
 			file.normalize(); // dir1/dir2/../file -> dir1/file
 		}
 		catch(e) {
-			this.ut._err(new Error("Invalid path: " + path));
-			this.ut._err(e);
+			this._err(new Error("Invalid path: " + path));
+			this._err(e);
 			return null;
 		}
 		return file;
@@ -242,20 +242,20 @@ var handyClicksUtils = {
 	},
 	startProcess: function(path, args) {
 		args = args || [];
-		var file = this.ut.getLocalFile(path);
+		var file = this.getLocalFile(path);
 		if(!file) {
-			this.ut.notify(
-				this.ut.getLocalized("invalidFilePath").replace("%p", path)
-					+ this.ut.getLocalized("openConsole"),
-				this.ut.getLocalized("errorTitle"),
-				this.ut.console
+			this.notify(
+				this.getLocalized("invalidFilePath").replace("%p", path)
+					+ this.getLocalized("openConsole"),
+				this.getLocalized("errorTitle"),
+				this.toErrorConsole
 			);
 			return false;
 		}
 		if(!file.exists()) {
-			this.ut.alertEx(
-				this.ut.getLocalized("errorTitle"),
-				this.ut.getLocalized("fileNotFound").replace("%p", path)
+			this.alertEx(
+				this.getLocalized("errorTitle"),
+				this.getLocalized("fileNotFound").replace("%p", path)
 			);
 			return false;
 		}
@@ -267,9 +267,9 @@ var handyClicksUtils = {
 			return true;
 		}
 		catch(e) {
-			this.ut.alertEx(
-				this.ut.getLocalized("errorTitle"),
-				this.ut.getLocalized("fileCantRun").replace("%p", path).replace("%e", e)
+			this.alertEx(
+				this.getLocalized("errorTitle"),
+				this.getLocalized("fileCantRun").replace("%p", path).replace("%e", e)
 			);
 			return false;
 		}
@@ -283,27 +283,30 @@ var handyClicksUtils = {
 			fos.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
 		}
 		catch(e) {
-			this.ut._err(new Error("Can't write string to file\"" + file.path + "\""));
-			this.ut._err(e);
+			this._err(new Error("Can't write string to file\"" + file.path + "\""));
+			this._err(e);
 			fos.close();
-			return;
+			return false;
 		}
 		var cos = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
 			.createInstance(Components.interfaces.nsIConverterOutputStream);
 		cos.init(fos, "UTF-8", 0, 0);
 		cos.writeString(str);
 		cos.close(); // this closes fos
+		return true;
 	},
-	readFromFile: function(file) { // UTF-8
+	readFromFile: function _rff(file) { // UTF-8
+		_rff.error = false;
 		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
 			.createInstance(Components.interfaces.nsIFileInputStream);
 		try {
 			fis.init(file, 0x01, 0444, 0);
 		}
 		catch(e) {
-			this.ut._err(new Error("Can't read string from file\"" + file.path + "\""));
-			this.ut._err(e);
+			this._err(new Error("Can't read string from file\"" + file.path + "\""));
+			this._err(e);
 			fis.close();
+			_rff.error = true;
 			return "";
 		}
 		var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]

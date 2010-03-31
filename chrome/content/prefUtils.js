@@ -3,7 +3,7 @@ var handyClicksPrefUtils = {
 
 	// Preferences:
 	prefNS: "extensions.handyclicks.",
-	prefVer: 3,
+	prefVer: 4,
 
 	get prefSvc() {
 		delete this.prefSvc;
@@ -51,6 +51,11 @@ var handyClicksPrefUtils = {
 			var dm = this.pref("sets.treeDrawMode") || 0;
 			if(dm >= 2)
 				this.pref("sets.treeDrawMode", dm + 1);
+		}
+		if(v < 4) { // Added 2010-03-31
+			var pn = "sets.backupDepth";
+			if(this.prefSvc.prefHasUserValue(this.prefNS + pn))
+				this.pref(pn, (this.pref(pn) || 0) + 1);
 		}
 		this.pref("prefsVersion", this.prefVer);
 		!dontSave && this.savePrefFile();

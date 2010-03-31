@@ -1,10 +1,14 @@
 var handyClicksSetsUtils = {
 	init: function(reloadFlag) {
 		window.addEventListener("DOMMouseScroll", this, true);
-
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
-		if(reloadFlag)
-			return;
+		if(!reloadFlag)
+			this.createFloatToolbar();
+	},
+	destroy: function(reloadFlag) {
+		window.removeEventListener("DOMMouseScroll", this, true);
+	},
+	createFloatToolbar: function() {
 		var de = document.documentElement;
 		de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
 		var onTop = this.ut.parseFromXML(
@@ -28,9 +32,6 @@ var handyClicksSetsUtils = {
 			if(xulWin.zLevel > xulWin.normalZ)
 				this.wu.toggleOnTop(true);
 		}
-	},
-	destroy: function(reloadFlag) {
-		window.removeEventListener("DOMMouseScroll", this, true);
 	},
 	prefsChanged: function(pName, pVal) {
 		switch(pName) {

@@ -20,7 +20,8 @@ var handyClicksPrefSvc = {
 		restored: "_restored-",
 		version: "_version-",
 		beforeImport: "_before_import-",
-		userBackup: "_user_backup-"
+		userBackup: "_user_backup-",
+		testBackup: "_test_backup-"
 	},
 	okShortcut: /^button=[0-2],ctrl=(?:true|false),shift=(?:true|false),alt=(?:true|false),meta=(?:true|false)$/,
 
@@ -162,7 +163,7 @@ var handyClicksPrefSvc = {
 	loadSettingsBackup: function() {
 		var pFile = this.prefsFile;
 		this._cPath = this.moveFiles(pFile, this.names.corrupted) || this._cPath;
-		if(this._restoringCounter <= this.pu.pref("sets.backupDepth")) {
+		if(this._restoringCounter < this.pu.pref("sets.backupDepth")) {
 			var bName = this.prefsFileName + this.names.backup + this._restoringCounter + ".js";
 			var bFile = this.getFile(bName);
 			var hasBak = bFile.exists();
@@ -320,7 +321,7 @@ var handyClicksPrefSvc = {
 				this.ut.notifyInWindowCorner(
 					eMsg + this.ut.getLocalized("openConsole"),
 					this.ut.getLocalized("errorTitle"),
-					this.ut.console, this.wu.getOpenLink(href, eLine)
+					this.ut.toErrorConsole, this.wu.getOpenLink(href, eLine)
 				);
 				this.ut._err(new Error(eMsg), false, href, eLine);
 				this.ut._err(e);
@@ -364,7 +365,7 @@ var handyClicksPrefSvc = {
 			this.ut.notifyInWindowCorner(
 				eMsg + this.ut.getLocalized("openConsole"),
 				this.ut.getLocalized("errorTitle"),
-				this.ut.console, this.wu.getOpenLink(href, eLine)
+				this.ut.toErrorConsole, this.wu.getOpenLink(href, eLine)
 			);
 			this.ut._err(eMsg, false, href, eLine);
 			this.ut._err(e);
@@ -516,6 +517,7 @@ var handyClicksPrefSvc = {
 
 	testSettings: function() {
 		var src = this.getSettingsStr();
+		this.createTestBackup(src);
 
 		const pSvc = "handyClicksPrefSvc";
 		this.wu.forEachWindow(
@@ -529,18 +531,41 @@ var handyClicksPrefSvc = {
 			}
 		);
 	},
+	createTestBackup: function(pStr) {
+		var num = this.pu.pref("sets.backupTestDepth") - 1;
+		if(num < 0)
+			return;
+		var fName = this.prefsFileName + this.names.testBackup;
+		var file, bakFile;
+		var eal = Components.classes["@mozilla.org/uriloader/external-helper-app-service;1"]
+			.getService(Components.interfaces.nsPIExternalAppLauncher);
+		while(--num >= 0) {
+			file = this.getFile(fName + num + ".js");
+			if(num == 0)
+				bakFile = file.clone();
+			if(file.exists()) {
+				file.moveTo(null, fName + (num + 1) + ".js");
+				eal.deleteTemporaryFileOnExit(file);
+			}
+		}
+		this.ut.writeToFile(pStr, bakFile);
+		eal.deleteTemporaryFileOnExit(bakFile);
 
-	moveFiles: function(mFile, nAdd, maxNum, leaveOriginal) {
-		maxNum = typeof maxNum == "number" ? maxNum : this.pu.pref("sets.backupDepth");
-		if(maxNum < 0 || !mFile.exists())
+		this.ut.storage("testBackupCreated", true);
+	},
+
+	moveFiles: function(mFile, nAdd, depth, leaveOriginal) {
+		depth = typeof depth == "number" ? depth : this.pu.pref("sets.backupDepth");
+		if(depth <= 0 || !mFile.exists())
 			return null;
+		var num = depth - 1;
 		var fName = this.prefsFileName + nAdd;
 		var pDir = this.prefsDir;
 		var file;
-		while(--maxNum >= 0) {
-			file = this.getFile(fName + maxNum + ".js");
+		while(--num >= 0) {
+			file = this.getFile(fName + num + ".js");
 			if(file.exists())
-				file.moveTo(pDir, fName + (maxNum + 1) + ".js");
+				file.moveTo(pDir, fName + (num + 1) + ".js");
 		}
 		mFile = mFile.clone();
 		mFile[leaveOriginal ? "copyTo" : "moveTo"](pDir, fName + "0.js");

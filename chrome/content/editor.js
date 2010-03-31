@@ -54,6 +54,7 @@ var handyClicksEditor = {
 				inp && inp.setAttribute("spellcheck", "true");
 			}
 		);
+
 		var fb = this.e("hc-editor-funcFixBox");
 		fb.style.marginBottom = "-" + fb.boxObject.height + "px";
 		document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css

@@ -43,7 +43,8 @@ pref("extensions.handyclicks.key.editMode", "accel VK_F2");
 pref("extensions.handyclicks.key.importFromClipboard", "accel shift VK_F2");
 
 pref("extensions.handyclicks.sets.backupsDir", ""); // Allow import empty value
-pref("extensions.handyclicks.sets.backupDepth", 4);
+pref("extensions.handyclicks.sets.backupDepth", 5);
+pref("extensions.handyclicks.sets.backupTestDepth", 5);
 pref("extensions.handyclicks.sets.removeBackupConfirm", true);
 pref("extensions.handyclicks.sets.importJSWarning", true);
 pref("extensions.handyclicks.sets.openEditorsLimit", 5);

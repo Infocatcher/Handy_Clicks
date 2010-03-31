@@ -13,10 +13,17 @@ var handyClicksSets = {
 			this.redrawTree();
 		else
 			this.drawTree();
+		this.treeScrollPos(false);
+		Array.forEach(
+			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
+			function(col) {
+				if(!col.tooltipText)
+					col.tooltipText = col.getAttribute("label");
+			}
+		);
 
 		this.updButtons();
 		this.ps.oSvc.addObserver(this.updTree, this);
-
 		this.updPrefsUI();
 		this.pu.oSvc.addObserver(this.updPrefsUI, this);
 
@@ -25,25 +32,19 @@ var handyClicksSets = {
 			s.type = "search";
 			s._clearSearch = function() { this.value = ""; this.oninput && this.oninput(); };
 		}
+		this.focusSearch();
 
 		this.instantApply = this.pu.getPref("browser.preferences.instantApply");
 		if(this.instantApply)
 			this.applyButton.hidden = true;
 		else
 			this.applyButton.disabled = true;
+
 		var de = document.documentElement;
 		var prefsButt = de.getButton("extra2");
 		prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
 		prefsButt.setAttribute("type", "menu");
-		Array.forEach(
-			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
-			function(col) {
-				if(!col.tooltipText)
-					col.tooltipText = col.getAttribute("label");
-			}
-		);
-		this.focusSearch();
-		this.treeScrollPos(false);
+
 		if(this.ut.fxVersion >= 3.6) // Fix wrong restoring
 			window.resizeTo(Number(de.width), Number(de.height));
 	},
@@ -1578,6 +1579,7 @@ var handyClicksSets = {
 		};
 
 		var bytes = this.ut.getLocalized("bytes");
+		var testBackupStatus = this.ut.storage("testBackupCreated") ? "thisSession" : "afterCrash";
 		_fTerms.sort(comparator).reverse().forEach(
 			function(time) {
 				var file = _files[time].shift();
@@ -1592,8 +1594,9 @@ var handyClicksSets = {
 						image={ "moz-icon:file://" + fPath.replace(/\\/g, "/") + "?size=16" }
 						tooltiptext={fPath}
 						hc_fileName={fName}
-						hc_old={ fName.indexOf(this.ps.names.version) != -1 }
+						hc_oldBackup={ fName.indexOf(this.ps.names.version) != -1 }
 						hc_userBackup={ fName.indexOf(this.ps.names.userBackup) != -1 }
+						hc_testBackup={ fName.indexOf(this.ps.names.testBackup) != -1 && testBackupStatus }
 					/>
 				), sep);
 			},

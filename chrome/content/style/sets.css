@@ -147,12 +147,18 @@ menuitem[command="hc-sets-cmd-disable"][disabled="true"] image {
 #hc-sets-tree-restoreFromBackupPopup menuitem {
 	max-width: none !important;
 }
-menuitem[hc_old="true"] image, menuitem[hc_old="true"] label {
+menuitem[hc_oldBackup="true"] image, menuitem[hc_oldBackup="true"] label {
 	opacity: 0.45;
 }
 menuitem[hc_userBackup="true"] label {
 	border-bottom: 1px dashed -moz-use-text-color;
 	/*text-decoration: underline;*/
+}
+menuitem[hc_testBackup="thisSession"] label {
+	opacity: 0.45;
+}
+menuitem[hc_testBackup="afterCrash"] label {
+	font-weight: bold;
 }
 
 #hc-sets-tree-buttons button {
