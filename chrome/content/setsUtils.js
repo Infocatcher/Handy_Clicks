@@ -115,6 +115,7 @@ var handyClicksSetsUtils = {
 		var tar = e.target;
 		if(
 			tar.localName != "textbox" || tar.getAttribute("type") != "number"
+			|| tar.getAttribute("disabled") == "true"
 			|| !("increase" in tar) || !("decrease" in tar) || !("_fireChange" in tar)
 		)
 			return false;

@@ -499,14 +499,12 @@ var handyClicksEditor = {
 		this.initImgIgnoreLinks(iType);
 	},
 	initImgIgnoreLinks: function(iType) {
-		iType = iType || this.$("hc-editor-itemTypes").value;
+		iType = iType || this.currentType;
 		var isImg = iType == "img";
 		var ignoreLinks = this.$("hc-editor-imgIgnoreLinks");
 		ignoreLinks.hidden = !isImg;
-		if(isImg) {
-			var setsObj = (this.ps.prefs[this.shortcut] || {})[iType] || {};
-			ignoreLinks.checked = typeof setsObj.ignoreLinks == "boolean" ? setsObj.ignoreLinks : false;
-		}
+		if(isImg)
+			ignoreLinks.checked = this.ut.getOwnProperty(this.ps.prefs, this.shortcut, iType, "ignoreLinks") || false;
 	},
 	addFuncArgs: function(delayed) {
 		delayed = delayed || "";
@@ -842,10 +840,13 @@ var handyClicksEditor = {
 	},
 	deleteShortcut: function() {
 		var p = this.ps.prefs;
-		var cs = this.currentShortcut;
+		var sh = this.currentShortcut;
 		var ct = this.currentType;
-		if(this.ut.getOwnProperty(p, cs, ct))
-			delete p[cs][ct];
+		if(this.ut.getOwnProperty(p, sh, ct)) {
+			delete p[sh][ct];
+			if(this.ut.isEmptyObj(p[sh]))
+				delete p[sh];
+		}
 		if(this.ps.otherSrc)
 			this.ps.reloadSettings();
 		else
@@ -873,10 +874,7 @@ var handyClicksEditor = {
 		if(!st)
 			return;
 		var type = this.currentType;
-		if(
-			!type || /^0(?:\.\d+)?$/.test(type) // type can be Math.random()
-			|| this.notSupported(type, null, st.supports, st.app, st.required)
-		)
+		if(!type || this.notSupported(type, null, st.supports, st.app, st.required))
 			return;
 
 		var isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == 1;

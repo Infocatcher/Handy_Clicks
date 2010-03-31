@@ -162,7 +162,6 @@ var handyClicks = {
 		)
 			e.originalTarget.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
 
-		var _this = this;
 		//var cm = this.getItemContext(e); //~ todo: get cm only if needed
 
 		var delay = this.pu.pref("delayedActionTimeout");

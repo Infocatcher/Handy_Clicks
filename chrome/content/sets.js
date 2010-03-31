@@ -237,8 +237,9 @@ var handyClicksSets = {
 			fo = {};
 		var isCustom = !!fo.custom;
 		var isCustomType = this.ps.isCustomType(itemType);
-		var typeLabel = forcedLabel || this.getTypeLabel(itemType, isCustomType);
-		this.appendTreeCell(tRow, "label", typeLabel);
+		var typeLabel = this.getTypeLabel(itemType, isCustomType);
+
+		this.appendTreeCell(tRow, "label", forcedLabel || typeLabel);
 		this.appendTreeCell(tRow, "label", fo.eventType);
 		var actLabel = this.getActionLabel(fo);
 		this.appendTreeCell(tRow, "label", actLabel);
@@ -732,14 +733,16 @@ var handyClicksSets = {
 	openEditorWindow: function(tItem, mode, add) { // mode: "shortcut" or "itemType"
 		var shortcut = tItem
 			? tItem.__shortcut
-			: Date.now() + "-" + Math.random();
+			: undefined;
 		var itemType = tItem && add !== true
 			? tItem.__itemType
-			: Math.random();
+			: undefined;
 		var isDelayed = tItem && add !== true && tItem.__isDelayed;
 		this.wu.openEditor(this.ps.currentSrc, mode || "shortcut", shortcut, itemType, isDelayed);
 	},
 	setItemStatus: function(rowId, editStat) {
+		if(!rowId)
+			return;
 		rowId = rowId.replace(/@otherSrc$/, "");
 		if(!(rowId in this.rowsCache))
 			return;
@@ -1447,7 +1450,7 @@ var handyClicksSets = {
 			this.redrawTree();
 		else
 			this.updTree();
-		if(pSrc instanceof Components.interfaces.nsILocalFile && srcId != 2 /* not from %profile%/handyclicks/ */)
+		if(pSrc instanceof Components.interfaces.nsILocalFile && !pSrc.parent.equals(this.ps._prefsDir))
 			this.backupsDir = pSrc.parent.path;
 	},
 	createBackup: function() {

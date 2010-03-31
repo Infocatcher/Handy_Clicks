@@ -39,7 +39,7 @@
 			<menuitem value="stopAllTabsLoading" label="stopAllTabsLoading"
 				hc_supports="tab, tabbar" />
 			<menuseparator id="hc-editor-funcsSep-tabs" />
-	
+
 			<menuitem value="mthCloseTabs" label="mthCloseTabs"
 				hc_extLabel="Multiple Tab Handler"
 				hc_supports="ext_mulipletabs" />
@@ -59,7 +59,7 @@
 				hc_extLabel="Multiple Tab Handler"
 				hc_supports="ext_mulipletabs" />
 			<menuseparator id="hc-editor-funcsSep-mulipletabs" />
-	
+
 			<menuitem value="openURIInTab" label="openURIInTab"
 				hc_args="loadInBackground, loadJSInBackground, refererPolicy, moveTabTo, closePopups, winRestriction"
 				hc_supports="link, img, tab, bookmark, historyItem" />
@@ -74,7 +74,7 @@
 				hc_supports="link, img, tab, bookmark, historyItem"
 				hc_app="Firefox" />
 			<menuseparator id="hc-editor-funcsSep-links" />
-	
+
 			<menuitem value="showContextMenu" label="showContextMenu" />
 			<menuitem value="openSimilarLinksInTabs" label="openSimilarLinksInTabs"
 				hc_args="refererPolicy"
@@ -85,7 +85,7 @@
 				hc_args="target, loadInBackground, refererPolicy"
 				hc_supports="submitButton" />
 			<menuseparator id="hc-editor-funcsSep-misc" />
-	
+
 			<menuitem value="downloadWithFlashGot" label="downloadWithFlashGot"
 				hc_required="FlashGot"
 				hc_supports="link" />
@@ -94,11 +94,11 @@
 				hc_args="position, closePopups"
 				hc_supports="link, img, tab, bookmark, historyItem" />
 			<menuseparator id="hc-editor-funcsSep-exts" />
-	
+
 			<menuitem value="$void" label="$void" hc_notDelay="true" />
 			<menuitem value="$ignore" label="$ignore" hc_notDelay="true" />
 			<menuitem value="$auto" label="$auto" hc_notFunc="true" />
-	
+
 			<!-- Custom code -->
 			<menuseparator id="hc-editor-funcsSep" />
 			<menuitem value="$custom" label="$custom" />
