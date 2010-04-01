@@ -109,8 +109,8 @@ menuitem[command="hc-sets-cmd-disable"][disabled="true"] image {
 #hc-sets-tree-importOverridesValue, #hc-sets-tree-importNewValue {
 	text-align: center;
 }
-#hc-sets-tree-importStatistics, #hc-sets-tree-importStatistics * {
-	margin: 0 !important;
+#hc-sets-tree-importStatistics label {
+	margin: 1px !important;
 	padding: 0 !important;
 }
 #hc-sets-tree-importStatistics column:not(:last-child) {

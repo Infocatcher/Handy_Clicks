@@ -189,8 +189,23 @@ var handyClicksSets = {
 		}
 		this.markOpenedEditors();
 		if(this._import) {
-			this.$("hc-sets-tree-importOverridesValue").value = this._overrides + "/" + this._overridesDa;
-			this.$("hc-sets-tree-importNewValue")      .value = this._new       + "/" + this._newDa;
+			var overridesTypes = 0, newTypes = 0;
+
+			var types = this.ps.types;
+			var savedTypes = this._savedTypes;
+
+			for(var type in types) if(types.hasOwnProperty(type)) {
+				var to = types[type];
+				var oldTo = this.ut.getOwnProperty(savedTypes, type);
+				if(!oldTo)
+					newTypes++;
+				else if(!this.ut.objEquals(to, oldTo))
+					overridesTypes++;
+			}
+
+			var id = "hc-sets-tree-import";
+			this.$(id + "OverridesValue").value = this._overrides + "/" + this._overridesDa + " + " + overridesTypes;
+			this.$(id + "NewValue")      .value = this._new       + "/" + this._newDa       + " + " + newTypes;
 		}
 		delete this.eltsCache;
 	},

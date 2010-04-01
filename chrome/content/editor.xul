@@ -8,9 +8,9 @@
 <?xul-overlay href="chrome://handyclicks/content/editorFuncs.xul"?>
 
 <!DOCTYPE dialog [
-	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/sets.dtd">
+	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/editor.dtd">
 	%locale;
-	<!ENTITY % default SYSTEM "chrome://handyclicks-locale/content/sets.dtd">
+	<!ENTITY % default SYSTEM "chrome://handyclicks-locale/content/editor.dtd">
 	%default;
 ]>
 

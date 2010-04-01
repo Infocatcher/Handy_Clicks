@@ -374,6 +374,7 @@ var handyClicksEditor = {
 		var cTypes = this.ps.types;
 		var typeObj, mi, _mi;
 		var hideSep = true;
+		var label, _labels = { __proto__: null };
 		for(var cType in cTypes) if(cTypes.hasOwnProperty(cType)) {
 			if(!this.ps.isCustomType(cType)) {
 				this.ut._err(new Error("Invalid custom type id: " + cType), true);
@@ -384,7 +385,12 @@ var handyClicksEditor = {
 				this.ut._err(new Error("Invalid custom type: " + cType + " (" + typeObj + ")"), true);
 				continue;
 			}
-			mi = <menuitem xmlns={this.ut.XULNS} value={cType} label={this.ps.dec(typeObj.label) || cType} />;
+			label = this.ps.dec(typeObj.label) || cType;
+			if(label in _labels)
+				label += " (" + ++_labels[label] + ")";
+			else
+				_labels[label] = 1;
+			mi = <menuitem xmlns={this.ut.XULNS} value={cType} label={label} />;
 			_mi = mi.copy();
 			mi.@disabled = _mi.@hc_disabled = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
 			parent.insertBefore(this.ut.parseFromXML(mi), sep);
