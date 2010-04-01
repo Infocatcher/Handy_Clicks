@@ -864,7 +864,7 @@ var handyClicks = {
 			action = this.ps.dec(action);
 			try {
 				var line = new Error().lineNumber + 1;
-				new Function("event,item,origItem", action).apply(this.fn, [e, this.item, this.origItem]);
+				new Function("event,item,origItem", action).call(this.fn, e, this.item, this.origItem);
 			}
 			catch(err) {
 				var eLine = this.ut.mmLine(err.lineNumber - line + 1);

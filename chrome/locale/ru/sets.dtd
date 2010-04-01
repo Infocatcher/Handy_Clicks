@@ -69,7 +69,7 @@
 
 <!ENTITY hc.sets.importOverrides "Перезаписываемых:">
 <!ENTITY hc.sets.importNew "Новых:">
-<!ENTITY hc.sets.importTip "Количество обычных настроек / Количество настроек отложенных действий">
+<!ENTITY hc.sets.importTip "Количество обычных настроек / Количество настроек отложенных действий / Количество пользовательских типов">
 
 
 <!ENTITY hc.sets.clickPrefsTitle "Настройки">

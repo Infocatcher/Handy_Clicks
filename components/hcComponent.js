@@ -34,18 +34,12 @@ function init() {
 	wu = handyClicksWinUtils;
 }
 function handleURI(uri) {
-	const sets = "handyclicks://settings/";
-	const add = "add/";
-	if(uri.indexOf(sets) == 0) {
-		uri = uri.substr(sets.length);
-		if(uri.indexOf(add) == 0) {
-			wu.openSettings(true, 2, uri.substr(add.length));
-			return;
-		}
+	if(uri.indexOf("handyclicks://settings/add/") == 0)
+		wu.openSettings(true, wu.IMPORT_STRING, uri);
+	else if(uri.indexOf("handyclicks://settings/") == 0)
 		wu.openSettings();
-		return;
-	}
-	wu.openLink(uri); // Not used now...
+	else
+		wu.openLink(uri); // Not used now...
 }
 function disable() {
 	cc["@mozilla.org/preferences-service;1"]

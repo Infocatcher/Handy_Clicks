@@ -69,7 +69,7 @@
 
 <!ENTITY hc.sets.importOverrides "Overrides:">
 <!ENTITY hc.sets.importNew "New:">
-<!ENTITY hc.sets.importTip "Count of normal settings / Count of delayed actions settings">
+<!ENTITY hc.sets.importTip "Count of normal settings / Count of delayed actions settings / Count of custom types">
 
 
 <!ENTITY hc.sets.clickPrefsTitle "Preferences">

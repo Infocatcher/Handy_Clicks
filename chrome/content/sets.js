@@ -335,8 +335,9 @@ var handyClicksSets = {
 			var override = saved;
 			var equals = this.ut.objEquals(fo, saved);
 			if(isCustomType) {
+				var newType = this.ut.getOwnProperty(this.ps.types, itemType);
 				var savedType = this.ut.getOwnProperty(this._savedTypes, itemType);
-				var eqType = this.ut.objEquals(this.ut.getOwnProperty(this.ps.types, itemType), savedType);
+				var eqType = this.ut.objEquals(newType, savedType);
 				if(!eqType && (saved || savedType))
 					override = true;
 				equals = equals && eqType;
@@ -545,6 +546,13 @@ var handyClicksSets = {
 		);
 		return this.ut.toArray(tItemsArr); // Remove deleted items
 	},
+	get selectedItemsWithCustomTypes() {
+		return this.selectedItems.filter(
+			function(it) {
+				return it.__isCustomType;
+			}
+		);
+	},
 	getItemAtIndex: function(indx) {
 		if(indx == -1 || indx >= this.tView.rowCount)
 			return null;
@@ -617,11 +625,7 @@ var handyClicksSets = {
 	editItemsTypes: function() {
 		if(!this.isTreePaneSelected)
 			return;
-		var cIts = this.selectedItems.filter(
-			function(it) {
-				return it.__isCustomType;
-			}
-		);
+		var cIts = this.selectedItemsWithCustomTypes;
 		if(this.editorsLimit(cIts.length))
 			return;
 		cIts.forEach(
@@ -1328,12 +1332,10 @@ var handyClicksSets = {
 
 	// Clicking options management
 	// Export/import:
-	exportSets: function(partialExport, targetId) {
-		var toFile      = targetId == 0;
-		var toClipboard = targetId == 1;
-		var toURI       = targetId == 2;
+	exportSets: function(partialExport, targetId, onlyCustomTypes) {
 		this.selectTreePane();
-		if(toFile) {
+		var wu = this.wu;
+		if(targetId == wu.EXPORT_FILEPICKER) {
 			var file = this.pickFile(
 				this.ut.getLocalized("exportSets"), true, "js",
 				!partialExport && this.ps.prefsFile.lastModifiedTime
@@ -1343,10 +1345,10 @@ var handyClicksSets = {
 			this.backupsDir = file.parent.path;
 		}
 		if(partialExport) {
-			var pStr = this.extractPrefs();
-			if(toClipboard)
+			var pStr = this.extractPrefs(!onlyCustomTypes);
+			if(targetId == wu.EXPORT_CLIPBOARD_STRING)
 				this.ut.copyStr(pStr);
-			else if(toURI)
+			else if(targetId == wu.EXPORT_CLIPBOARD_URI)
 				this.ut.copyStr("handyclicks://settings/add/" + this.ps.enc(pStr));
 			else
 				this.ut.writeToFile(pStr, file);
@@ -1354,51 +1356,27 @@ var handyClicksSets = {
 		else // Do not start full export to clipboard!
 			this.ps.prefsFile.copyTo(file.parent, file.leafName);
 	},
-	extractPrefs: function() {
-		var exCts = { __proto__: null };
-		var exSh = { __proto__: null };
-		var its = this.selectedItems;
+	extractPrefs: function(extractShortcuts) {
+		//~ todo: with extractShortcuts == false iser see empty tree on import
+		var types = this.ps.types, newTypes = {};
+		var prefs = this.ps.prefs, newPrefs = {};
+
+		var its = extractShortcuts ? this.selectedItems : this.selectedItemsWithCustomTypes;
 		its.forEach(
 			function(it) {
-				if(it.__isCustomType)
-					exCts[it.__itemType] = true;
-				exSh[it.__shortcut] = exSh[it.__shortcut] || { __proto__: null };
-				exSh[it.__shortcut][it.__itemType] = true;
+				var type = it.__itemType;
+				if(it.__isCustomType) {
+					var to = this.ut.getOwnProperty(types, type);
+					this.ut.setOwnProperty(newTypes, type, to);
+				}
+				if(extractShortcuts) {
+					var sh = it.__shortcut;
+					var to = this.ut.getOwnProperty(prefs, sh, type);
+					this.ut.setOwnProperty(newPrefs, sh, type, to);
+				}
 			},
 			this
 		);
-
-		var cts = this.ps.types, newTypes = {};
-		var p   = this.ps.prefs, newPrefs = {};
-
-		var type, to;
-		var sh, so, exTypes;
-
-		for(type in cts) if(cts.hasOwnProperty(type)) {
-			if(!(type in exCts) || !this.ps.isCustomType(type))
-				continue;
-			to = cts[type];
-			if(!this.ps.isOkCustomObj(to))
-				continue;
-			this.ut.setOwnProperty(newTypes, type, to);
-		}
-
-		for(sh in p) if(p.hasOwnProperty(sh)) {
-			if(!(sh in exSh) || !this.ps.isOkShortcut(sh))
-				continue;
-			so = p[sh];
-			if(!this.ut.isObject(so))
-				continue;
-			exTypes = exSh[sh];
-			for(type in so) if(so.hasOwnProperty(type)) {
-				if(!(type in exTypes))
-					continue;
-				to = so[type];
-				if(!this.ut.isObject(to))
-					continue;
-				this.ut.setOwnProperty(newPrefs, sh, type, to);
-			}
-		}
 
 		this.addsClildsProperties(its, { hc_copied: true });
 		setTimeout(function(_this, its) {
@@ -1421,12 +1399,20 @@ var handyClicksSets = {
 			this.pu.pref("sets.importJSWarning", !ack.value);
 		}
 		var pSrc;
+		var wu = this.wu;
 		switch(srcId) {
 			default:
-			case 0: pSrc = this.pickFile(this.ut.getLocalized("importSets"), false, "js"); break;
-			case 1: pSrc = this.ps.getPrefsStr(this.ut.readFromClipboard(true));           break;
-			case 2: pSrc = this.ps.dec(data);                                              break;
-			case 3: pSrc = this.ps.getFile(data);
+			case wu.IMPORT_FILEPICKER:
+				pSrc = this.pickFile(this.ut.getLocalized("importSets"), false, "js");
+			break;
+			case wu.IMPORT_CLIPBOARD:
+				pSrc = this.ps.getPrefsStr(this.ut.readFromClipboard(true));
+			break;
+			case wu.IMPORT_STRING:
+				pSrc = this.ps.getPrefsStr(data);
+			break;
+			case wu.IMPORT_BACKUP:
+				pSrc = this.ps.getFile(data);
 		}
 		if(!pSrc)
 			return;
@@ -1467,7 +1453,7 @@ var handyClicksSets = {
 			this.redrawTree();
 		else
 			this.updTree();
-		if(pSrc instanceof Components.interfaces.nsILocalFile && srcId != 2 /* not from %profile%/handyclicks/ */)
+		if(pSrc instanceof Components.interfaces.nsILocalFile && !pSrc.parent.equals(this.ps._prefsDir))
 			this.backupsDir = pSrc.parent.path;
 	},
 	createBackup: function() {
@@ -1517,7 +1503,7 @@ var handyClicksSets = {
 		var butt = "button" in e && e.button;
 		if(e.type == "command" || butt == 1) {
 			var hasModifier = e.ctrlKey || e.shiftKey || e.altKey || e.metaKey;
-			this.importSets(hasModifier || butt == 1/*partialImport*/, 3, mi.getAttribute("hc_fileName"));
+			this.importSets(hasModifier || butt == 1/*partialImport*/, this.wu.IMPORT_BACKUP, mi.getAttribute("hc_fileName"));
 			this.ut.closeMenus(mi);
 		}
 		else if(butt == 2)

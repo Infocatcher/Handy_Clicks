@@ -168,6 +168,16 @@ var handyClicksWinUtils = {
 		else
 			wSet.handyClicksSets.markOpenedEditors();
 	},
+
+	IMPORT_FILEPICKER: 0,
+	IMPORT_CLIPBOARD: 1,
+	IMPORT_STRING: 2,
+	IMPORT_BACKUP: 3,
+
+	EXPORT_FILEPICKER: 0,
+	EXPORT_CLIPBOARD_STRING: 1,
+	EXPORT_CLIPBOARD_URI: 2,
+
 	openSettings: function(/* importArgs */) {
 		var w = this.openWindowByType(
 			"chrome://handyclicks/content/sets.xul",
