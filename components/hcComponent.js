@@ -39,7 +39,7 @@ function handleURI(uri) {
 	else if(uri.indexOf("handyclicks://settings/") == 0)
 		wu.openSettings();
 	else
-		wu.openLink(uri); // Not used now...
+		wu.openLink(uri);
 }
 function disable() {
 	cc["@mozilla.org/preferences-service;1"]

@@ -16,7 +16,7 @@
 
 <!ENTITY hc.editor.event "Event:">
 <!ENTITY hc.editor.eventAccesskey "v">
-<!ENTITY hc.editor.mousedownEvent '"Mousedown" event:'>
+<!ENTITY hc.editor.mousedownEvent "“Mousedown” event:">
 <!ENTITY hc.editor.mousedownAllow "Don't stop">
 <!ENTITY hc.editor.mousedownSmart "Smart">
 <!ENTITY hc.editor.mousedownStop "Always stop">

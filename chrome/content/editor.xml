@@ -200,7 +200,9 @@
 			<method name="goToLine">
 				<body>
 				<![CDATA[
-					var num = { value: this.currentLine };
+					var currLine = this.currentLine;
+					var currCol = this.currentColumn;
+					var num = { value: currLine + ":" + currCol };
 					var ut = "handyClicksUtils" in top && top.handyClicksUtils;
 					var ps = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
 						.getService(Components.interfaces.nsIPromptService);
@@ -214,9 +216,15 @@
 					);
 					if(!res)
 						return;
-					num = parseInt(num.value);
-					if(isFinite(num))
-						this.scrollTo(num, true);
+					if(!/^(\+|-)?(\d+)(?:\s*[:;,|\/\\_]\s*(\+|-)?(\d+))?$/.test(num.value))
+						return;
+					var line = Number(RegExp.$2);
+					if(RegExp.$1)
+						line = Math.max(1, currLine + line*(RegExp.$1 == "+" ? 1 : -1));
+					var col = Number(RegExp.$4);
+					if(RegExp.$3)
+						col = Math.max(0, currCol + col*(RegExp.$3 == "+" ? 1 : -1));
+					this.scrollTo(line, col);
 				]]>
 				</body>
 			</method>
@@ -227,6 +235,13 @@
 				]]>
 				</getter>
 			</property>
+			<property name="currentColumn" readonly="true">
+				<getter>
+				<![CDATA[
+					return this.value.substring(0, this.inputField.selectionStart).match(/[^\n\r]*$/)[0].length + 1;
+				]]>
+				</getter>
+			</property>
 			<property name="linesCount" readonly="true">
 				<getter>
 				<![CDATA[
@@ -234,24 +249,43 @@
 				]]>
 				</getter>
 			</property>
+			<property name="columnsCount" readonly="true">
+				<getter>
+				<![CDATA[
+					// For current line
+					return this.value.substr(this.inputField.selectionStart).match(/^[^\n\r]*/)[0].length + 1;
+				]]>
+				</getter>
+			</property>
 			<method name="scrollTo">
 				<parameter name="lineNumber" />
+				<parameter name="columnNumber" />
 				<parameter name="allowOverflow" />
 				<body>
 				<![CDATA[
+					if(allowOverflow === undefined)
+						allowOverflow = true;
 					// Thanks to Custom Buttons!
-					var editor = this.editor;
-					var maxNumber = this.linesCount;
-					var overflow = lineNumber > maxNumber;
-					if(overflow && !allowOverflow)
-						editor.endOfDocument();
-					else {
-						if(overflow)
-							lineNumber = maxNumber;
-						editor.beginningOfDocument();
-						var sc = editor.selectionController;
-						while(--lineNumber > 0)
-							sc.lineMove(true, false);
+					if(lineNumber != null && isFinite(lineNumber)) {
+						var editor = this.editor;
+						var maxLine = this.linesCount;
+						if(lineNumber > maxLine && !allowOverflow)
+							editor.endOfDocument();
+						else {
+							lineNumber = Math.min(lineNumber, maxLine);
+							editor.beginningOfDocument();
+							var sc = editor.selectionController;
+							while(--lineNumber > 0)
+								sc.lineMove(true, false);
+						}
+					}
+					if(columnNumber != null && isFinite(columnNumber)) {
+						var maxCol = this.columnsCount;
+						columnNumber = Math.max(1, Math.min(maxCol, columnNumber));
+						if(allowOverflow || columnNumber <= maxCol) {
+							var ifi = this.inputField;
+							ifi.selectionStart = ifi.selectionEnd = ifi.selectionStart - this.currentColumn + columnNumber;
+						}
 					}
 					this.scrollSelectionIntoView();
 					this.focus();
@@ -260,11 +294,10 @@
 			</method>
 			<method name="selectLine">
 				<parameter name="lineNumber" />
-				<parameter name="allowOverflow" />
 				<body>
 				<![CDATA[
 					// Thanks to Custom Buttons!
-					this.scrollTo(lineNumber, allowOverflow);
+					this.scrollTo(lineNumber, null, false);
 					this.editor.selectionController.intraLineMove(true, true);
 					this.focus();
 				]]>

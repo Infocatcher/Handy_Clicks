@@ -7,8 +7,7 @@ var handyClicksEditor = {
 			skipCache: true,
 			loadInBackground: true,
 			loadJSInBackground: true,
-			closePopups: true,
-			__proto__: null
+			closePopups: true
 		},
 		menulists: {
 			refererPolicy: [-1, 0, /*1,*/ 2],
@@ -16,8 +15,7 @@ var handyClicksEditor = {
 			moveWinTo: ["null", "top", "right", "bottom", "left", "sub"],
 			winRestriction: [-1, 0, 1, 2], // browser.link.open_newwindow.restriction
 			target: ["cur", "win", "tab"], // browser.link.open_newwindow
-			position: ["top", "right", "bottom", "left"],
-			__proto__: null
+			position: ["top", "right", "bottom", "left"]
 		}
 	},
 	tabs: {
@@ -76,6 +74,7 @@ var handyClicksEditor = {
 				id="hc-editor-buttonUndo"
 				class="dialog-button"
 				command="hc-editor-cmd-undo"
+				disabled="true"
 			/>
 		);
 		var bDel = document.documentElement.getButton("extra2");
@@ -96,7 +95,6 @@ var handyClicksEditor = {
 	set applyDisabled(dis) {
 		this.buttonApply.disabled = dis;
 		this.$("hc-editor-cmd-test").setAttribute("disabled", dis);
-		this.$("hc-editor-cmd-undo").setAttribute("disabled", dis);
 	},
 	selectTargetTab: function(delayed, src, line) {
 		this.mBox.selectedIndex = this.tabs[this.editorMode];
@@ -115,7 +113,7 @@ var handyClicksEditor = {
 				var tab = this.$("hc-editor-customTypeFuncs");
 				tab.selectedIndex = src == "define" ? 0 : 1;
 		}
-		if(typeof line != "number")
+		if(typeof line != "number" || !isFinite(line))
 			return;
 		var panel = tab.selectedPanel
 			|| tab.getElementsByTagName("tabpanels")[0].getElementsByTagName("tabpanel")[tab.selectedIndex];
@@ -744,18 +742,24 @@ var handyClicksEditor = {
 		}
 	},
 	testSettings: function() {
-		//~ todo: save settings to temp file (aka crash recovery)
 		this.$("hc-editor-cmd-test").setAttribute("disabled", "true");
+		var ok = false;
 		switch(this.mBox.selectedIndex) {
-			case this.tabs.shortcut: return this.testShortcut();
-			case this.tabs.itemType: return this.testCustomType();
-			default: return false;
+			case this.tabs.shortcut: ok = this.testShortcut();   break;
+			case this.tabs.itemType: ok = this.testCustomType();
 		}
+		ok = ok && this._testMode;
+		if(ok)
+			this.$("hc-editor-cmd-undo").setAttribute("disabled", "false");
+		return ok;
 	},
 	undoTestSettings: function(reloadAll) {
 		this._testMode = false;
 		this.ps.reloadSettings(reloadAll);
-		reloadAll && this.initUI(true);
+		if(reloadAll) {
+			this.initUI(true);
+			this.$("hc-editor-cmd-undo").setAttribute("disabled", "true");
+		}
 	},
 	deleteSettings: function() {
 		switch(this.mBox.selectedIndex) {

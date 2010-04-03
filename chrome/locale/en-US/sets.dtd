@@ -95,13 +95,13 @@
 <!ENTITY hc.sets.notifyDontClose "Don't close under cursor">
 
 <!ENTITY hc.sets.settingsInterface "Settings interface">
-<!ENTITY hc.sets.onTopButton 'Show "On top" button'> <!-- see "onTop" in hcs.properties -->
+<!ENTITY hc.sets.onTopButton "Show “On top” button"> <!-- see "onTop" in hcs.properties -->
 
 
 <!ENTITY hc.sets.builtInFuncsSetsTitle "Built-in functions">
 
 <!ENTITY hc.sets.jsLinks "JavaScript-links (javascript: …)">
-<!ENTITY hc.sets.voidLinks '"Void" links with click handlers'>
+<!ENTITY hc.sets.voidLinks "“Void” links with click handlers">
 <!ENTITY hc.sets.linkLoad "Load">
 <!ENTITY hc.sets.linkNotify "Notify">
 
