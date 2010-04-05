@@ -95,7 +95,8 @@
 					<button id="hc-sets-tree-buttonImportOk" oncommand="handyClicksSets.importDone(true);"
 						accesskey="&hc.sets.importOkAccesskey;"
 						hc_labelFull="&hc.sets.importOk;" hc_labelPartial="&hc.sets.importIncrementOk;" />
-					<grid id="hc-sets-tree-importStatistics" tooltiptext="&hc.sets.importTip;">
+					<grid id="hc-sets-tree-importStatistics" tooltiptext="&hc.sets.importTip;"
+						ondblclick="handyClicksSets.toggleImportType();">
 						<columns>
 							<column />
 							<column />
@@ -103,11 +104,11 @@
 						<rows>
 							<row>
 								<label id="hc-sets-tree-importNew" value="&hc.sets.importNew;" />
-								<label id="hc-sets-tree-importNewValue" value="?/?/?" />
+								<label id="hc-sets-tree-importNewValue" value="?/? + ?" />
 							</row>
 							<row>
 								<label id="hc-sets-tree-importOverrides" value="&hc.sets.importOverrides;" />
-								<label id="hc-sets-tree-importOverridesValue" value="?/?/?" />
+								<label id="hc-sets-tree-importOverridesValue" value="?/? + ?" />
 							</row>
 						</rows>
 					</grid>

@@ -1649,13 +1649,15 @@ var handyClicksSets = {
 		this.updRestorePopup(store);
 	},
 
-	setImportStatus: function(isImport, isPartial, fromClipboard) {
+	setImportStatus: function(isImport, isPartial, fromClipboard, updMode) {
 		this._import              = isImport;
 		this._partialImport       = isImport && isPartial;
 		this._importFromClipboard = isImport && fromClipboard;
-		this.closeEditors();
-		if(this.prefsSaved)
-			this.applyButton.disabled = true;
+		if(!updMode) {
+			this.closeEditors();
+			if(this.prefsSaved)
+				this.applyButton.disabled = true;
+		}
 		var panel = this.$("hc-sets-tree-partialImportPanel");
 		panel.hidden = !isImport;
 		if(!isImport)
@@ -1667,9 +1669,13 @@ var handyClicksSets = {
 				elt.setAttribute("label", elt.getAttribute(lAttr));
 			}
 		);
-		this.$("hc-sets-tree-buttonImportOk").focus();
+		if(!updMode)
+			this.$("hc-sets-tree-buttonImportOk").focus();
 	},
-	importDone: function _id(ok) {
+	toggleImportType: function() {
+		this.setImportStatus(this._import, !this._partialImport, this._importFromClipboard, true);
+	},
+	importDone: function(ok) {
 		var isPartial = this._partialImport;
 		//var fromClip = this._importFromClipboard;
 		this.setImportStatus(false);
