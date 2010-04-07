@@ -329,6 +329,8 @@ var handyClicks = {
 		var it = e.originalTarget;
 		//this.origItem = it;
 
+		if(!it.localName) // it == document
+			return;
 		var itln = it.localName.toLowerCase();
 		var _it, _itln;
 

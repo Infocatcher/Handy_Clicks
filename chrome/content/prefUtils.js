@@ -3,7 +3,7 @@ var handyClicksPrefUtils = {
 
 	// Preferences:
 	prefNS: "extensions.handyclicks.",
-	prefVer: 4,
+	prefVer: 5,
 
 	get prefSvc() {
 		delete this.prefSvc;
@@ -54,8 +54,14 @@ var handyClicksPrefUtils = {
 		}
 		if(v < 4) { // Added 2010-03-31
 			var pn = "sets.backupDepth";
-			if(this.prefSvc.prefHasUserValue(this.prefNS + pn))
+			if(this.prefSvc.prefHasUserValue(pns + pn))
 				this.pref(pn, (this.pref(pn) || 0) + 1);
+		}
+		if(v < 5) { // Added 2010-04-08
+			var pn = pns + "ui.showCustomizeToolbars";
+			if(this.existPref(pn))
+				this.pref("ui.inheritToolbarContextMenu", this.getPref(pn))
+					.prefSvc.deleteBranch(pn);
 		}
 		this.pref("prefsVersion", this.prefVer);
 		!dontSave && this.savePrefFile();

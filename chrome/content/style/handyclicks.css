@@ -26,9 +26,10 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
 	outline-offset: -1px !important;
 }
 
-#handyClicks-customizeSeparator[hc_hideAllAfter="true"],
-#handyClicks-customizeSeparator[hc_hideAllAfter="true"] ~ *,
-#handyClicks-customizeSeparator + menuseparator {
+#handyClicks-mainCommandsSeparator[hc_hideAllAfter="true"],
+#handyClicks-mainCommandsSeparator[hc_hideAllAfter="true"] ~ *,
+#handyClicks-mainCommandsSeparator + menuseparator,
+#handyClicks-viewToolbarsSeparator + menuseparator {
 	display: none !important;
 }
 

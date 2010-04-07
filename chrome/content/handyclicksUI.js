@@ -122,12 +122,13 @@ var handyClicksUI = {
 	buildSettingsPopup: function(e) {
 		this.checkClipboard();
 
-		var popup = e.target;
-		var showCustomize = this.pu.pref("ui.showCustomizeToolbars")
+		var inheritContext = this.pu.pref("ui.inheritToolbarContextMenu")
 			&& document.popupNode && document.popupNode.localName.indexOf("toolbar") == 0;
-		this.$("handyClicks-customizeSeparator").setAttribute("hc_hideAllAfter", !showCustomize);
-		if(!showCustomize)
+		this.$("handyClicks-mainCommandsSeparator").setAttribute("hc_hideAllAfter", !inheritContext);
+		if(!inheritContext)
 			return;
+
+		var popup = e.target;
 
 		if("onViewToolbarsPopupShowing" in window) {
 			try {
@@ -137,50 +138,33 @@ var handyClicksUI = {
 				this.ut._err(new Error("onViewToolbarsPopupShowing() failed"));
 				this.ut._err(e);
 			}
+			var vtSep = this.$("handyClicks-viewToolbarsSeparator");
 			Array.forEach(
 				this.ut.toArray(popup.childNodes),
 				function(ch) {
-					if((ch.id || "").indexOf("handyClicks-") != 0)
-						popup.appendChild(ch);
+					if(!ch.hasAttribute("toolbarindex") && !ch.hasAttribute("toolbarid"))
+						return;
+					ch.setAttribute("oncommand", "onViewToolbarCommand(event);"); // For SeaMonkey
+					popup.insertBefore(ch, vtSep);
 				}
 			);
 		}
 
-		var tbSep = this.$("handyClicks-toolbarsSep");
-		var customize;
-		if(!tbSep) {
-			var cmd = "cmd_CustomizeToolbars";
-			var ct;
-			Array.some(
-				document.getElementsByAttribute("command", cmd),
-				function(it) {
-					return it.hasAttribute("label")
-						? (ct = it)
-						: false;
-				}
-			);
-			if(!ct)
-				return;
-			tbSep = popup.appendChild(
-				this.ut.parseFromXML(
-					<menuseparator xmlns={this.ut.XULNS}
-						id="handyClicks-toolbarsSep"
-					/>
-				)
-			);
-			customize = popup.appendChild(
-				this.ut.parseFromXML(
-					<menuitem xmlns={this.ut.XULNS}
-						id="handyClicks-customizeToolbars"
-						label={ ct.getAttribute("label") }
-						accesskey={ ct.getAttribute("accesskey") }
-						command={cmd}
-					/>
-				)
-			);
-		}
-		popup.appendChild(tbSep);
-		popup.appendChild(customize || this.$("handyClicks-customizeToolbars"));
+		if(popup.hasAttribute("hc_additionalItemsAdded"))
+			return;
+		popup.setAttribute("hc_additionalItemsAdded", "true");
+
+		Array.forEach(
+			this.e("toolbar-context-menu").childNodes,
+			function(ch) {
+				if(ch.hasAttribute("toolbarindex") || ch.hasAttribute("toolbarid"))
+					return;
+				var clone = ch.cloneNode(true);
+				if(clone.id)
+					clone.id = "handyClicks-cloned-" + clone.id;
+				popup.appendChild(clone);
+			}
+		);
 	},
 	checkClipboard: function() {
 		const id = "handyClicks-importFromClipboard";
@@ -192,9 +176,11 @@ var handyClicksUI = {
 	},
 
 	doSettings: function(e) {
-		if(e.type == "command" || e.button == 0)
+		var leftClick = e.type == "command" || e.button == 0;
+		var hasModifiers = e.ctrlKey || e.shiftKey || e.altKey || e.metaKey;
+		if(leftClick && !hasModifiers)
 			this.toggleStatus();
-		else if(e.button == 1) {
+		else if(e.button == 1 || leftClick && hasModifiers) {
 			this.wu.openSettings();
 			this.ut.closeMenus(e.target);
 		}

@@ -69,7 +69,10 @@
 			<menuseparator id="handyClicks-importFromClipboardSeparator" />
 			<menuitem id="handyClicks-importFromClipboard"
 				command="handyClicks-cmd-importFromClipboard" key="handyClicks-key-importFromClipboard" />
-			<menuseparator id="handyClicks-customizeSeparator" />
+			<menuseparator id="handyClicks-mainCommandsSeparator" />
+			<!-- Toolbars -->
+			<menuseparator id="handyClicks-viewToolbarsSeparator" />
+			<!-- Additional items from "toolbar-context-menu" -->
 		</menupopup>
 		<tooltip id="handyClicks-tooltip" noautohide="true" orient="vertical"
 			onpopupshowing="return handyClicksUI.fillInTooltip(this);"
