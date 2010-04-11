@@ -19,7 +19,7 @@ var handyClicksUtils = {
 	_err: function(e, isWarning, fileName, lineNumber) {
 		if(typeof e == "string")
 			e = new Error(e);
-		if(e.constructor !== Error) {
+		if(!e || e.constructor !== Error) {
 			Components.utils.reportError(e);
 			return;
 		}

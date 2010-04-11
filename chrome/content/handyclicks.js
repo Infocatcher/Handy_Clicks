@@ -347,7 +347,7 @@ var handyClicks = {
 					_it = ct._define.call(this, e, it);
 				}
 				catch(e) {
-					var eLine = this.ut.mmLine(e.lineNumber - ct._defineLine + 1);
+					var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - ct._defineLine + 1);
 					var href = "handyclicks://editor/itemType/" + type + "/define?line=" + eLine;
 					var eMsg = this.ut.errInfo("customTypeDefineError", this.ps.dec(ct.label), type, e);
 					this.ut.notify(
@@ -584,7 +584,7 @@ var handyClicks = {
 				cm = _cm.call(this.fn, e, this.item, this.origItem);
 			}
 			catch(e) {
-				var eLine = this.ut.mmLine(e.lineNumber - ct._contextMenuLine + 1);
+				var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - ct._contextMenuLine + 1);
 				var href = "handyclicks://editor/itemType/" + this.itemType + "/context?line=" + eLine;
 				var eMsg = this.ut.errInfo("customTypeContextMenuError", this.ps.dec(ct.label), this.itemType, e);
 				this.ut.notify(
@@ -869,7 +869,7 @@ var handyClicks = {
 				new Function("event,item,origItem", action).call(this.fn, e, this.item, this.origItem);
 			}
 			catch(err) {
-				var eLine = this.ut.mmLine(err.lineNumber - line + 1);
+				var eLine = this.ut.mmLine(this.ut.getProperty(err, "lineNumber") - line + 1);
 				var href = "handyclicks://editor/shortcut/" + this.ps.getEvtStr(e || this.copyOfEvent) + "/"
 					+ (this._all ? "$all" : this.itemType) + "/"
 					+ (this.isDeleyed ? "delayed" : "normal") + "/code"

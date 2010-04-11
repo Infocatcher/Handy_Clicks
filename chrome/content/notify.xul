@@ -8,7 +8,7 @@
 	align="start"
 	onload="hcNotify.init();">
 
-	<script type="application/x-javascript" src="chrome://handyclicks/content/notify.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/notify.js" />
 
 	<hbox id="hcNotifyBox" onclick="hcNotify.clickHandler(event);">
 		<hbox id="hcNotifyImgBox" align="center" valign="top">

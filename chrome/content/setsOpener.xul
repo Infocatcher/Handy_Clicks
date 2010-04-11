@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" id="handyClicks-settingsOpener">
-	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
-	<script type="application/x-javascript"><![CDATA[
+	<script type="application/javascript" src="chrome://handyclicks/content/winUtils.js" />
+	<script type="application/javascript"><![CDATA[
 	// Prevent modal windows
 	var wu = handyClicksWinUtils;
 	var w = wu.wm.getMostRecentWindow("handyclicks:settings");

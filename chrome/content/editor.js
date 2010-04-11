@@ -121,7 +121,7 @@ var handyClicksEditor = {
 		Array.some(
 			panel.getElementsByTagName("textbox"),
 			function(tb) {
-				if(cre.test(tb.className || "")) {
+				if(cre.test(tb.className)) {
 					tb.selectLine(line);
 					return true;
 				}
@@ -256,8 +256,8 @@ var handyClicksEditor = {
 		this.$("hc-editor-events-command").disabled = butt != "0";
 		["ctrl", "shift", "alt", "meta"].forEach(
 			function(mdf) {
-				this.$("hc-editor-" + mdf).checked
-					= new RegExp("(?:^|,)" + mdf + "=true(?:,|$)").test(this.shortcut);
+				var re = new RegExp("(?:^|,)" + mdf + "=true(?:,|$)");
+				this.$("hc-editor-" + mdf).checked = re.test(this.shortcut);
 			},
 			this
 		);
@@ -606,8 +606,11 @@ var handyClicksEditor = {
 					function(val, indx) {
 						var label = this.ut.getLocalized(argName + "[" + val + "]");
 						cfg = this.getAboutConfigEntry(label);
-						var mi = <menuitem xmlns={ns} value={val} label={label}
-							hc_aboutConfigEntry={cfg} tooltiptext={cfg ? cfgTt : ""}
+						var mi = <menuitem xmlns={ns}
+							value={val}
+							label={label}
+							hc_aboutConfigEntry={cfg}
+							tooltiptext={cfg ? cfgTt : ""}
 						/>;
 						if(!cfg) // Firefox 1.5 crashes on actions like mi.@some_attribute = "";
 							delete mi.@hc_aboutConfigEntry;
@@ -715,7 +718,7 @@ var handyClicksEditor = {
 			return;
 		var elt = fe.parentNode.parentNode; // <textbox>
 		var cre = /(?:^|\s)hcText(?:\s|$)/;
-		if(!elt || !cre.test(elt.className || ""))
+		if(!elt || !cre.test(elt.className))
 			return;
 		e.preventDefault();
 		e.stopPropagation();
@@ -726,7 +729,7 @@ var handyClicksEditor = {
 			var ts = elt.getElementsByTagName("textbox"), t;
 			for(var i = 1, len = ts.length; i < len; i++) {
 				t = ts[i];
-				if(!cre.test(t.className || "")) {
+				if(!cre.test(t.className)) {
 					t.focus();
 					break w;
 				}

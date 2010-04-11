@@ -1200,9 +1200,10 @@ var handyClicksSets = {
 		Array.forEach(
 			document.getElementsByTagName("prefpane"),
 			function(pp) {
-				pp.writePreferences(true /* aFlushToDisk */);
+				pp.writePreferences(false /* aFlushToDisk */);
 			}
 		);
+		this.pu.savePrefFile();
 	},
 	prefsChanged: function(e) {
 		var tar = e.target;

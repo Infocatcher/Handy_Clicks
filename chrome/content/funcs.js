@@ -313,11 +313,9 @@ var handyClicksFuncs = {
 	},
 	getItemHandlers: function(item) {
 		item = (item || this.hc.item).wrappedJSObject;
-		var hnds = [];
-		["onmousedown", "onmouseup", "onclick"].forEach(
+		var hnds = ["onmousedown", "onmouseup", "onclick"].filter(
 			function(h) {
-				if(h in item)
-					hnds.push(h);
+				return h in item;
 			}
 		);
 		return hnds.length ? " (" + hnds.join(", ") + ")" : "";

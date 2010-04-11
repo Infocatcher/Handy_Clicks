@@ -313,7 +313,7 @@ var handyClicksPrefSvc = {
 			}
 			catch(e) {
 				var line = ct._contextMenuLine || ct._defineLine;
-				var eLine = this.ut.mmLine(e.lineNumber - line + 1);
+				var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - line + 1);
 				var href = "handyclicks://editor/itemType/" + type + "/"
 					+ ("_contextMenuLine" in ct ? "context" : "define")
 					+ "?line=" + eLine;
@@ -357,7 +357,7 @@ var handyClicksPrefSvc = {
 			new Function(this.dec(rawCode)).call(this.ut);
 		}
 		catch(e) {
-			var eLine = this.ut.mmLine(e.lineNumber - line + 1);
+			var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - line + 1);
 			var href = "handyclicks://editor/shortcut/" + sh + "/" + type + "/"
 				+ (delayed ? "delayed" : "normal") + "/init"
 				+ "?line=" + eLine;

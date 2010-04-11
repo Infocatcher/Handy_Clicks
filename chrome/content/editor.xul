@@ -34,13 +34,13 @@
 	height="500"
 	persist="width height screenX screenY sizemode">
 
-	<script type="application/x-javascript" src="chrome://handyclicks/content/utils.js" />
-	<script type="application/x-javascript" src="chrome://handyclicks/content/winUtils.js" />
-	<script type="application/x-javascript" src="chrome://handyclicks/content/prefUtils.js" />
-	<script type="application/x-javascript" src="chrome://handyclicks/content/setsUtils.js" />
-	<script type="application/x-javascript" src="chrome://handyclicks/content/prefSvc.js" />
-	<script type="application/x-javascript" src="chrome://handyclicks/content/editor.js" />
-	<script type="application/x-javascript" src="chrome://handyclicks/content/regSvc.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/utils.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/winUtils.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/prefUtils.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/setsUtils.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/prefSvc.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/editor.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/regSvc.js" />
 
 	<commandset id="hc-editor-commands">
 		<command id="hc-editor-cmd-test" oncommand="handyClicksEditor.testSettings(); event.stopPropagation();"

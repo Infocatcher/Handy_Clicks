@@ -9,11 +9,11 @@ var handyClicksConsole = {
 		if(e.button != 0)
 			return;
 		var tar = e.originalTarget;
-		if(tar.className != "text-link")
+		if(!/(?:^|\s)text-link(?:\s|$)/.test(tar.className))
 			return;
 		var link = tar.parentNode;
 		var href = link.getAttribute("href");
-		var line = parseInt(link.getAttribute("line"));
+		var line = Number(link.getAttribute("line"));
 		if(!this.wu.openLink(href, line))
 			return;
 		e.preventDefault();
