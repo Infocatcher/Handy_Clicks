@@ -351,7 +351,7 @@ var handyClicks = {
 					var href = "handyclicks://editor/itemType/" + type + "/define?line=" + eLine;
 					var eMsg = this.ut.errInfo("customTypeDefineError", this.ps.dec(ct.label), type, e);
 					this.ut.notify(
-						eMsg + this.ut.getLocalized("openConsole"),
+						eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 						this.ut.getLocalized("errorTitle"),
 						this.ut.toErrorConsole, this.wu.getOpenLink(href, eLine)
 					);
@@ -588,7 +588,7 @@ var handyClicks = {
 				var href = "handyclicks://editor/itemType/" + this.itemType + "/context?line=" + eLine;
 				var eMsg = this.ut.errInfo("customTypeContextMenuError", this.ps.dec(ct.label), this.itemType, e);
 				this.ut.notify(
-					eMsg + this.ut.getLocalized("openConsole"),
+					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 					this.ut.getLocalized("errorTitle"),
 					this.ut.toErrorConsole, this.wu.getOpenLink(href, eLine)
 				);
@@ -876,7 +876,7 @@ var handyClicks = {
 					+ "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customFunctionError", this.ps.dec(funcObj.label), this.itemType, err);
 				this.ut.notify(
-					eMsg + this.ut.getLocalized("openConsole"),
+					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 					this.ut.getLocalized("errorTitle"),
 					this.ut.toErrorConsole, this.wu.getOpenLink(href, eLine)
 				);
@@ -900,7 +900,7 @@ var handyClicks = {
 						+ (this.isDeleyed ? "delayed" : "normal") + "/code";
 					var eMsg = this.ut.getLocalized("errorInBuiltInFunction").replace("%f", action);
 					this.ut.notify(
-						eMsg + this.ut.getLocalized("openConsole"),
+						eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 						this.ut.getLocalized("errorTitle"),
 						this.ut.toErrorConsole, this.wu.getOpenLink(href)
 					);

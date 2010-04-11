@@ -533,7 +533,7 @@ var handyClicksFuncs = {
 		const id = "handyClicks-generatedPopup";
 		var popup = this.e(id);
 		popup && pSet.removeChild(popup);
-		popup = xml || <popup xmlns={this.ut.XULNS} />;
+		popup = xml || <menupopup xmlns={this.ut.XULNS} />;
 		popup.@id = id;
 		popup.@tooltip = "handyClicks-tooltip";
 		return pSet.appendChild(this.ut.parseFromXML(popup));
@@ -956,8 +956,12 @@ var handyClicksFuncs = {
 		br.stop();
 	},
 	undoCloseTab: function(e) {
-		try { gBrowser.undoRemoveTab(); } // Tab Mix Plus
-		catch(err) { undoCloseTab(0); }
+		if("undoCloseTab" in window) // Firefox 2.0+
+			undoCloseTab(0);
+		else if("TMP_ClosedTabs" in window) // Tab Mix Plus
+			TMP_ClosedTabs.undoCloseTab();
+		else if("gSessionManager" in window) // Old Session Manager
+			gSessionManager.undoCloseTab();
 	},
 	cloneTab: function(e, tab) {
 		tab = this.fixTab(tab);

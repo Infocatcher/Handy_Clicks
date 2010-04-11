@@ -86,9 +86,7 @@
 					onclick="handyClicksSets.treeClick(event);"
 					ondblclick="handyClicksSets.editItems(event);"
 					onmousedown="handyClicksSets.smartSelect(event); handyClicksSets.treeClick(event);"
-					onmousemove="handyClicksSets.smartSelect(event);"
-					onmouseup="handyClicksSets.smartSelect(event);"
-					onmouseout="handyClicksSets.smartSelect(event);" />
+					onmousemove="handyClicksSets.smartSelect(event);" />
 			</tree>
 			<vbox id="hc-sets-tree-buttons">
 				<hbox id="hc-sets-tree-partialImportPanel" hidden="true" pack="center" align="center">
@@ -347,7 +345,7 @@
 		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksWinUtils.toggleOnTop();" />
 	</keyset>
 	<popupset id="hc-sets-popupset">
-		<popup id="hc-sets-tree-context"
+		<menupopup id="hc-sets-tree-context"
 			onpopupshowing="if(event.target == this) handyClicksSets.checkClipboard(); return handyClicksSets.checkTreeContext();">
 			<menuitem id="hc-sets-edit" command="hc-sets-cmd-edit" key="hc-sets-key-edit" handyclicks_main="true" />
 			<menuitem id="hc-sets-editType" command="hc-sets-cmd-editType" key="hc-sets-key-editType" />
@@ -364,15 +362,15 @@
 			<menuitem command="hc-sets-cmd-partialExportToFile" key="hc-sets-key-partialExportToFile" />
 			<menuseparator />
 			<menuitem command="hc-sets-cmd-partialImportFromClipboard" key="hc-sets-key-partialImportFromClipboard" />
-		</popup>
-		<popup id="hc-sets-prefsManagementPopup" position="before_start">
+		</menupopup>
+		<menupopup id="hc-sets-prefsManagementPopup" position="before_start">
 			<menuitem oncommand="handyClicksPrefUtils.openAboutConfig();" label="&hc.sets.allPrefs;" />
 			<menuseparator />
 			<menuitem oncommand="handyClicksSets.resetPrefs();" label="&hc.sets.defaults;" />
 			<menuseparator />
 			<menuitem oncommand="handyClicksSets.importPrefs();" label="&hc.sets.importPrefs;" />
 			<menuitem oncommand="handyClicksSets.exportPrefs();" label="&hc.sets.exportPrefs;" />
-		</popup>
+		</menupopup>
 	</popupset>
 
 </prefwindow>

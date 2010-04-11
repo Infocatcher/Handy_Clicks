@@ -667,8 +667,8 @@ var handyClicksSets = {
 		return false;
 	},
 	isClickOnRow: function(e) {
-		var row = {}, col = {}, obj = {};
-		this.tbo.getCellAt(e.clientX, e.clientY, row, col, obj);
+		var row = {}, col = {}, cell = {};
+		this.tbo.getCellAt(e.clientX, e.clientY, row, col, cell);
 		return row.value > -1;
 	},
 	isClickOnContainer: function(e) {
@@ -712,7 +712,6 @@ var handyClicksSets = {
 		var maxRows = 12;
 		if(del.length > maxRows)
 			del.splice(maxRows - 2, del.length - maxRows + 1, "\u2026" /* "..." */);
-
 		if(
 			!this.ut.confirmEx(
 				this.ut.getLocalized("title"),
@@ -721,6 +720,7 @@ var handyClicksSets = {
 			)
 		)
 			return;
+
 		tIts.forEach(this.deleteItem, this);
 		this.applyButton.disabled = false;
 	},
@@ -879,15 +879,14 @@ var handyClicksSets = {
 			&& e.button == mgPrefs.mousebutton && !mgGestureRecognizer.checkPrevent(e)
 		)
 			return; // Do nothing, if Mouse Gestures Redox 3.0+ is active ( http://mousegestures.org/ )
+
 		var row = this.tbo.getRowAt(e.clientX, e.clientY);
 		var et = e.type;
-		if(et == "mouseout") {
-			_ss.row0 = _ss.row1 = undefined;
-			return;
-		}
 		if(row == -1)
 			return;
-		if(et == "mousedown") {
+		if(et == "mousedown") { // Start
+			this.smartSelectStop();
+			window.addEventListener("mouseup", this, true);
 			_ss.row0 = row;
 			return;
 		}
@@ -911,7 +910,7 @@ var handyClicksSets = {
 		}
 
 		if(et == "mouseup") {
-			_ss.row0 = _ss.row1 = undefined;
+			this.smartSelectStop();
 			return;
 		}
 		// mousemove:
@@ -924,6 +923,16 @@ var handyClicksSets = {
 			return;
 		var maxRowsIndx = this.tView.rowCount - 1;
 		this.tbo.ensureRowIsVisible(this.ut.mm(visRow, 0, maxRowsIndx));
+	},
+	smartSelectStop: function() {
+		this.smartSelect.row0 = this.smartSelect.row1 = undefined;
+		window.removeEventListener("mouseup", this, true);
+	},
+	handleEvent: function(e) {
+		if(e.type == "mouseup") {
+			this.smartSelect(e);
+			this.ut.timeout(this.smartSelectStop, this, null, 10);
+		}
 	},
 
 	initViewMenu: function(mp) {
@@ -1084,18 +1093,35 @@ var handyClicksSets = {
 		}
 		this.searcher.reset();
 		sIt = sIt || this.$("hc-sets-tree-searchField");
-		var sTerm = this.ut.trim(sIt.value);
-		var hasTerm = !!sTerm;
-		sTerm = sTerm.toLowerCase().split(/\s+/);
+
+		var sTerm = sIt.value;
+		var isRegExp = false;
+		var hasTerm = true;
+		if(/^\/(.+)\/([im]{0,2})$/.test(sTerm)) try {
+			sTerm = new RegExp(RegExp.$1, RegExp.$2);
+			isRegExp = true;
+		}
+		catch(e) {
+		}
+		sIt.setAttribute("hc_isRegExp", isRegExp);
+		if(!isRegExp) {
+			sTerm = this.ut.trim(sIt.value);
+			hasTerm = !!sTerm;
+			sTerm = sTerm.toLowerCase().split(/\s+/);
+		}
 
 		var tRow, rowText, okRow, indx;
 		var notFound = true, count = 0;
 		for(var h in this.rowsCache) {
 			tRow = this.rowsCache[h];
 			okRow = hasTerm;
-			rowText = this.getRowText(tRow); //~ todo: cache?
+			rowText = this.getRowText(tRow, !isRegExp); //~ todo: cache?
 
-			if(hasTerm && sTerm.some(function(s) { return rowText.indexOf(s) == -1; }))
+			if(
+				isRegExp
+					? !sTerm.test(rowText)
+					: hasTerm && sTerm.some(function(s) { return rowText.indexOf(s) == -1; })
+			)
 				okRow = false;
 
 			this.addProperties(tRow, { hc_search: okRow });
@@ -1115,7 +1141,7 @@ var handyClicksSets = {
 
 		this._lastSearch = Date.now();
 	},
-	getRowText: function(tRow) {
+	getRowText: function(tRow, lowerCase) {
 		var tChld = tRow, tItem;
 		var rowText = [];
 		do {
@@ -1131,7 +1157,8 @@ var handyClicksSets = {
 			);
 		}
 		while(tChld != this.tBody);
-		return rowText.join("\n").toLowerCase();
+		rowText = rowText.join("\n");
+		return lowerCase ? rowText.toLowerCase() : rowText;
 	},
 
 	/*** Prefs pane ***/

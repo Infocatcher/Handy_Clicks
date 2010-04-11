@@ -18,10 +18,17 @@ var handyClicksSetsUtils = {
 					id="hc-sets-onTop"
 					class="hcFloatButton"
 					type="checkbox"
+					context="hc-sets-onTopContext"
 					hidden={ !this.pu.pref("ui.onTopButton") }
 					oncommand="handyClicksWinUtils.toggleOnTop(); event.stopPropagation();"
 					label={ this.ut.getLocalized("onTop") }
 				/>
+				<menupopup xmlns={this.ut.XULNS} id="hc-sets-onTopContext">
+					<menuitem id="hc-sets-onTopHide"
+						oncommand="handyClicksWinUtils.toggleOnTopButton();"
+						label={ this.ut.getLocalized("onTopHide") }
+					/>
+				</menupopup>
 			</div>
 		);
 		de.appendChild(onTop);

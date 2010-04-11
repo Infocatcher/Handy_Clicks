@@ -162,6 +162,12 @@ var handyClicksUI = {
 				var clone = ch.cloneNode(true);
 				if(clone.id)
 					clone.id = "handyClicks-cloned-" + clone.id;
+				Array.forEach(
+					clone.getElementsByAttribute("id", "*"),
+					function(elt) {
+						elt.id = "handyClicks-cloned-" + elt.id;
+					}
+				);
 				popup.appendChild(clone);
 			}
 		);

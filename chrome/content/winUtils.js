@@ -21,7 +21,7 @@ var handyClicksWinUtils = {
  		}
 		w = this.ww.openWindow(
 			this.opener, uri, "_blank",
-			features || "chrome,centerscreen,resizable,dialog=0", null
+			features || "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar,centerscreen,dialog=0", null
 		);
 		if(args)
 			w.arguments = args;
@@ -93,6 +93,11 @@ var handyClicksWinUtils = {
 		de.setAttribute("hc_onTop", onTop);
 		de.id && document.persist(de.id, "hc_onTop");
 	},
+	toggleOnTopButton: function() {
+		const p = "ui.onTopButton";
+		this.pu.pref(p, !this.pu.pref(p));
+	},
+
 	winIdProp: "__handyClicks__winId",
 	openEditor: function _oe(pSrc, mode, shortcut, itemType, isDelayed) {
 		var winId = (mode == "itemType" ? itemType : shortcut + "-" + itemType) + (pSrc ? "@otherSrc" : "");

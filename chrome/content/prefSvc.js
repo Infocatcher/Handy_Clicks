@@ -319,7 +319,7 @@ var handyClicksPrefSvc = {
 					+ "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customTypeCompileError", this.dec(ct.label), type, e);
 				this.ut.notifyInWindowCorner(
-					eMsg + this.ut.getLocalized("openConsole"),
+					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 					this.ut.getLocalized("errorTitle"),
 					this.ut.toErrorConsole, this.wu.getOpenLink(href, eLine)
 				);
@@ -363,7 +363,7 @@ var handyClicksPrefSvc = {
 				+ "?line=" + eLine;
 			var eMsg = this.ut.errInfo("funcInitError", this.dec(fObj.label), type, e);
 			this.ut.notifyInWindowCorner(
-				eMsg + this.ut.getLocalized("openConsole"),
+				eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 				this.ut.getLocalized("errorTitle"),
 				this.ut.toErrorConsole, this.wu.getOpenLink(href, eLine)
 			);

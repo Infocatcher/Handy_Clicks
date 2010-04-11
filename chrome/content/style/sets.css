@@ -127,12 +127,16 @@ menuitem[command="hc-sets-cmd-disable"][disabled="true"] image {
 	margin: 0;
 	border: none;
 }
-[hc_notFound="true"], [hc_notFound="true"] * {
+#hc-sets-tree-searchField[hc_isRegExp="true"], #hc-sets-tree-searchField[hc_isRegExp="true"] * {
+	background-color: white;
+	color: blue !important;
+}
+#hc-sets-tree-searchField[hc_notFound="true"], #hc-sets-tree-searchField[hc_notFound="true"] * {
 	/* Colors from chrome://global/skin/findBar.css in Firefox 3.0 */
 	background-color: #f66;
 	color: #fff;
 }
-[hc_wrapped="true"], [hc_wrapped="true"] * {
+#hc-sets-tree-searchField[hc_wrapped="true"], #hc-sets-tree-searchField[hc_wrapped="true"] * {
 	background-color: #e4ffe4;
 	color: black;
 }

@@ -30,9 +30,9 @@
 <!ENTITY hc.editor.tabActionDelay "Отложенное действие">
 <!ENTITY hc.editor.tabActionDelayAccesskey "л">
 <!ENTITY hc.editor.tabActionDelayTip "Выполняется через 500 мс"> <!-- "500" will be replaced with correct value -->
-<!ENTITY hc.editor.fixFuncOpts "Зафиксировать">
-<!ENTITY hc.editor.fixFuncOptsAccesskey "З">
-<!ENTITY hc.editor.fixFuncOptsTip "Зафиксировать настройки функции">
+<!ENTITY hc.editor.fixActionOpts "Зафиксировать">
+<!ENTITY hc.editor.fixActionOptsAccesskey "З">
+<!ENTITY hc.editor.fixActionOptsTip "Зафиксировать настройки действия">
 
 <!ENTITY hc.editor.func "Функция:">
 <!ENTITY hc.editor.funcAccesskey "Ф">

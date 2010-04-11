@@ -103,8 +103,16 @@ var handyClicksUtils = {
 	},
 
 	get toErrorConsole() {
-		return window.toErrorConsole || window.toJavaScriptConsole;
+		return this.ut.bind(this.openErrorConsole, this);
 	},
+	openErrorConsole: function() {
+		if("toErrorConsole" in top)
+			return top.toErrorConsole();
+		if("toJavaScriptConsole" in top)
+			return top.toJavaScriptConsole();
+		return this.wu.openWindowByType("chrome://global/content/console.xul", "global:console");
+	},
+
 	get promptsSvc() {
 		delete this.promptsSvc;
 		return this.promptsSvc = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]

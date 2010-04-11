@@ -115,8 +115,8 @@
 				<hbox id="hc-editor-funcFixBox" align="right" oncommand="event.stopPropagation();">
 					<checkbox style="position: relative;"
 						oncommand="handyClicksEditor.setFixFuncOpts(this.checked);"
-						label="&hc.editor.fixFuncOpts;" accesskey="&hc.editor.fixFuncOptsAccesskey;"
-						tooltiptext="&hc.editor.fixFuncOptsTip;" />
+						label="&hc.editor.fixActionOpts;" accesskey="&hc.editor.fixActionOptsAccesskey;"
+						tooltiptext="&hc.editor.fixActionOptsTip;" />
 				</hbox>
 
 				<tabbox id="hc-editor-funcTabbox" flex="1">
