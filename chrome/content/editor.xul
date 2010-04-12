@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/a11y.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/setsCommon.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/editor.css" type="text/css"?>
-<?xml-stylesheet href="chrome://handyclicks/content/style/a11y.css" type="text/css"?>
 
 <?xul-overlay href="chrome://handyclicks/content/editorFuncs.xul"?>
 
@@ -122,7 +122,7 @@
 				<tabbox id="hc-editor-funcTabbox" flex="1">
 					<tabs>
 						<tab label="&hc.editor.tabAction;" accesskey="&hc.editor.tabActionAccesskey;" />
-						<tab id="hc-editor-funcTabDelay"
+						<tab id="hc-editor-funcTab-delay"
 							label="&hc.editor.tabActionDelay;" accesskey="&hc.editor.tabActionDelayAccesskey;"
 							tooltiptext="&hc.editor.tabActionDelayTip;" />
 					</tabs>
@@ -145,7 +145,7 @@
 									</menulist>
 
 									<label id="hc-editor-allowMousedownLabel" hc_notDelay="true"
-										value="&hc.editor.mousedownEvent;" />
+										value="&hc.editor.mousedownEvent;" control="hc-editor-allowMousedown" />
 									<menulist id="hc-editor-allowMousedown" hc_notDelay="true">
 										<menupopup>
 											<menuitem value="true" label="&hc.editor.mousedownAllow;" />

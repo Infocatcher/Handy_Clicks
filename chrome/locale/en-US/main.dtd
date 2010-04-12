@@ -1,6 +1,10 @@
 <!-- Main window -->
 <!ENTITY handyClicks.menuitemLabel "Handy Clicks">
+<!ENTITY handyClicks.menuitemAccesskey "H">
 <!ENTITY handyClicks.toolbarbuttonLabel "Handy Clicks">
 <!ENTITY handyClicks.settingsLabel "Settings…">
+<!ENTITY handyClicks.settingsAccesskey "S">
 <!ENTITY handyClicks.editModeLabel "Start edit mode">
+<!ENTITY handyClicks.editModeAccesskey "e">
 <!ENTITY handyClicks.importFromClipboardLabel "Import settings from clipboard…">
+<!ENTITY handyClicks.importFromClipboardAccesskey "I">

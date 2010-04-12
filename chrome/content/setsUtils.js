@@ -12,10 +12,8 @@ var handyClicksSetsUtils = {
 		var de = document.documentElement;
 		de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
 		var onTop = this.ut.parseFromXML(
-			<div xmlns="http://www.w3.org/1999/xhtml"
-				id="hc-sets-floatToolbar">
-				<button xmlns={this.ut.XULNS}
-					id="hc-sets-onTop"
+			<hbox xmlns={this.ut.XULNS} id="hc-sets-floatToolbar">
+				<button id="hc-sets-onTop"
 					class="hcFloatButton"
 					type="checkbox"
 					context="hc-sets-onTopContext"
@@ -23,13 +21,13 @@ var handyClicksSetsUtils = {
 					oncommand="handyClicksWinUtils.toggleOnTop(); event.stopPropagation();"
 					label={ this.ut.getLocalized("onTop") }
 				/>
-				<menupopup xmlns={this.ut.XULNS} id="hc-sets-onTopContext">
+				<menupopup id="hc-sets-onTopContext">
 					<menuitem id="hc-sets-onTopHide"
 						oncommand="handyClicksWinUtils.toggleOnTopButton();"
 						label={ this.ut.getLocalized("onTopHide") }
 					/>
 				</menupopup>
-			</div>
+			</hbox>
 		);
 		de.appendChild(onTop);
 		if(de.getAttribute("hc_onTop") == "true")

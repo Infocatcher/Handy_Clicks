@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/a11y.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/setsCommon.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
-<?xml-stylesheet href="chrome://handyclicks/content/style/a11y.css" type="text/css"?>
 
 <!DOCTYPE prefwindow [
 	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/sets.dtd">
@@ -34,7 +34,7 @@
 	<prefpane id="hc-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1">
 		<vbox flex="1">
 			<hbox align="center">
-				<label value="&hc.sets.search;" />
+				<label value="&hc.sets.search;" control="hc-sets-tree-searchField" />
 				<hbox id="hc-sets-tree-searchContainer" flex="100">
 					<textbox id="hc-sets-tree-searchField" flex="1"
 						onkeypress="handyClicksSets.navigateSearchResults(event);"
@@ -188,23 +188,26 @@
 					<checkbox id="hc-sets-disallowMousemove-2" label="&hc.sets.right;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
 				</hbox>
 				<hbox align="center" hc_depends="disallowMousemove">
-					<label value="&hc.sets.maxDistance;" />
-					<textbox preference="disallowMousemoveDist" type="number" min="0" max="100" increment="1" style="width: 4.5em;" />
+					<label value="&hc.sets.maxDistance;" control="hc-sets-disallowMousemoveDist" />
+					<textbox id="hc-sets-disallowMousemoveDist" preference="disallowMousemoveDist"
+						type="number" min="0" max="100" increment="1" style="width: 4.5em;" />
 					<label value="px" />
 				</hbox>
 			</vbox>
 		</groupbox>
 		<hbox align="center">
-			<label value="&hc.sets.delayedActionTimeout;" hc_depends="delayedTimeout" />
-			<textbox preference="delayedActionTimeout" type="number" min="0" max="7000" increment="10" style="width: 4.5em;"
+			<label value="&hc.sets.delayedActionTimeout;" control="hc-sets-delayedActionTimeout" hc_depends="delayedTimeout" />
+			<textbox id="hc-sets-delayedActionTimeout" preference="delayedActionTimeout"
+				type="number" min="0" max="7000" increment="10" style="width: 4.5em;"
 				hc_requiredFor="delayedTimeout" hc_disabledValues="0" />
 			<label value="&hc.sets.zeroForDisable;" hc_depends="delayedTimeout" />
 		</hbox>
 		<groupbox>
 			<caption label="&hc.sets.notify;" />
 			<hbox align="center">
-				<label value="&hc.sets.notifyCloseAfter;" hc_depends="notify" />
-				<textbox preference="notifyOpenTime" type="number" min="0" max="60000" increment="50" style="width: 5em;"
+				<label value="&hc.sets.notifyCloseAfter;" control="hc-sets-notifyOpenTime" hc_depends="notify" />
+				<textbox id="hc-sets-notifyOpenTime" preference="notifyOpenTime"
+					type="number" min="0" max="60000" increment="50" style="width: 5em;"
 					hc_requiredFor="notify" hc_disabledValues="0" />
 				<label value="&hc.sets.zeroForDisable;" hc_depends="notify" />
 			</hbox>
@@ -253,8 +256,8 @@
 				</menulist>
 			</hbox>
 			<hbox align="center" hc_depends="regexp">
-				<label value="&hc.sets.fileLinksFilter;" />
-				<textbox preference="filesLinksMask" flex="1" />
+				<label value="&hc.sets.fileLinksFilter;" control="hc-sets-filesLinksMask" />
+				<textbox id="hc-sets-filesLinksMask" preference="filesLinksMask" flex="1" />
 			</hbox>
 		</groupbox>
 		<groupbox>
@@ -269,8 +272,9 @@
 			<caption label="&hc.sets.similarLinks;" />
 			<checkbox preference="openOnlyVisibleLinks" label="&hc.sets.visibleOnly;" />
 			<hbox align="center">
-				<label value="&hc.sets.openingDelay;" />
-				<textbox preference="multipleTabsOpenDelay" type="number" min="0" max="10000" increment="10" style="width: 5em;" />
+				<label value="&hc.sets.openingDelay;" control="hc-sets-multipleTabsOpenDelay" />
+				<textbox id="hc-sets-multipleTabsOpenDelay" preference="multipleTabsOpenDelay"
+					type="number" min="0" max="10000" increment="10" style="width: 5em;" />
 				<label value="&hc.sets.ms;" />
 			</hbox>
 		</groupbox>

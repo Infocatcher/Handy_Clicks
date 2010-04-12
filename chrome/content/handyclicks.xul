@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="chrome://handyclicks/content/style/handyclicks.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/a11y.css" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/handyclicks.css" type="text/css"?>
 
 <!DOCTYPE overlay [
 	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/main.dtd">
@@ -21,12 +21,12 @@
 
 	<commandset id="mainCommandSet">
 		<command id="handyClicks-cmd-openSettings" oncommand="handyClicksWinUtils.openSettings();"
-			label="&handyClicks.settingsLabel;" />
+			label="&handyClicks.settingsLabel;" accesskey="&handyClicks.settingsAccesskey;" />
 		<command id="handyClicks-cmd-editMode" oncommand="handyClicksUI.toggleEditMode();"
-			label="&handyClicks.editModeLabel;" />
+			label="&handyClicks.editModeLabel;" accesskey="&handyClicks.editModeAccesskey;" />
 		<command id="handyClicks-cmd-importFromClipboard"
 			oncommand="handyClicksWinUtils.openSettings(true, handyClicksWinUtils.IMPORT_CLIPBOARD);"
-			label="&handyClicks.importFromClipboardLabel;" />
+			label="&handyClicks.importFromClipboardLabel;" accesskey="&handyClicks.importFromClipboardAccesskey;" />
 	</commandset>
 	<keyset id="mainKeyset">
 		<!-- See registerHotkeys() in handyclicksUI.js -->
@@ -38,7 +38,8 @@
 	<menupopup id="menu_ToolsPopup">
 		<menuitem id="handyClicks-toolsMenuitem" insertbefore="sanitizeSeparator"
 			class="menuitem-iconic"
-			label="&handyClicks.menuitemLabel;" tooltip="handyClicks-tooltip"
+			label="&handyClicks.menuitemLabel;" accesskey="&handyClicks.menuitemAccesskey;"
+			tooltip="handyClicks-tooltip"
 			key="handyClicks-key-toggleStatus"
 			context="handyClicks-settingsPopup"
 			oncommand="handyClicksUI.doSettings(event);"
@@ -83,7 +84,8 @@
 	<!-- SeaMonkey -->
 	<menupopup id="taskPopup">
 		<menuitem id="handyClicks-toolsMenuitem" insertafter="downloadmgr" class="menuitem-iconic"
-			label="&handyClicks.menuitemLabel;" tooltip="handyClicks-tooltip"
+			label="&handyClicks.menuitemLabel;" accesskey="&handyClicks.menuitemAccesskey;"
+			tooltip="handyClicks-tooltip"
 			key="handyClicks-key-toggleStatus"
 			context="handyClicks-settingsPopup"
 			oncommand="handyClicksUI.doSettings(event);"

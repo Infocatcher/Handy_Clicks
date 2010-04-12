@@ -1,19 +1,18 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
-@namespace html url("http://www.w3.org/1999/xhtml");
 
-html|*#hc-sets-floatToolbar {
+#hc-sets-floatToolbar {
 	position: fixed !important;
 	top: 0 !important;
 	right: 0 !important;
 	padding: 2px;
 }
 /* Firefox 3.6+
-html|*#hc-sets-floatToolbar:-moz-locale-dir(rtl) {
+#hc-sets-floatToolbar:-moz-locale-dir(rtl) {
 	right: auto !important;
 	left: 0 !important;
 }
 */
-:root[chromedir="rtl"] html|*#hc-sets-floatToolbar {
+:root[chromedir="rtl"] #hc-sets-floatToolbar {
 	right: auto !important;
 	left: 0 !important;
 }

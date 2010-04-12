@@ -163,22 +163,22 @@ var handyClicksEditor = {
 	},
 	createDelayedFuncTab: function() {
 		var dTab = this.$("hc-editor-funcTab").cloneNode(true);
-		this.$("hc-editor-funcsTab").appendChild(
-			this.addIds(dTab, this.delayId)
-		);
-	},
-	addIds: function(node, id) {
-		node.id += id;
+		this.makeDelayedNode(dTab);
 		Array.forEach(
-			node.getElementsByAttribute("id", "*"),
-			function(node) {
-				node.id += id;
-			}
+			dTab.getElementsByTagName("*"),
+			this.makeDelayedNode,
+			this
 		);
-		return node;
+		this.$("hc-editor-funcsTab").appendChild(dTab);
+	},
+	makeDelayedNode: function(node) {
+		if(node.hasAttribute("id"))
+			node.id += this.delayId;
+		if(node.hasAttribute("control"))
+			node.setAttribute("control", node.getAttribute("control") + this.delayId);
 	},
 	setTooltip: function() {
-		var dTab = this.$("hc-editor-funcTabDelay");
+		var dTab = this.$("hc-editor-funcTab-delay");
 		dTab.tooltipText = dTab.tooltipText.replace(/\d+(?:\s+\d+)*/, this.pu.pref("delayedActionTimeout"));
 	},
 	prefsChanged: function(pName, pVal) {
@@ -698,7 +698,7 @@ var handyClicksEditor = {
 	},
 	disableUnsupported: function() {
 		var isMd = this.$("hc-editor-events").value == "mousedown";
-		this.$("hc-editor-funcTabDelay").setAttribute(
+		this.$("hc-editor-funcTab-delay").setAttribute(
 			"hc_disabled",
 			isMd || !this.$("hc-editor-enabled").checked || !this.$("hc-editor-enabled" + this.delayId).checked
 		);

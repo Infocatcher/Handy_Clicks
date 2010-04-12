@@ -496,10 +496,8 @@
 					if(ss == se)
 						return;
 					event.preventDefault();
-					if(moveLeft)
-						ifi.selectionStart = ifi.selectionEnd = ss;
-					else
-						ifi.selectionStart = ifi.selectionEnd = se;
+					ifi.selectionStart = ifi.selectionEnd = moveLeft ? ss : se;
+					this.scrollSelectionIntoView();
 				]]>
 				</body>
 			</method>

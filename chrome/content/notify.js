@@ -1,7 +1,7 @@
 var hcNotify = {
 	startColor: 0, // >= 0 (black)
 	endColor: 255, // <= 255 (white)
-	hoverColor: "blue",
+	hoverColor: "blue", // valid color string
 
 	_closeTimeout: null,
 	_highlightInterval: null,
@@ -14,6 +14,7 @@ var hcNotify = {
 		descElt.textContent = wa.msg;
 		var maxW = Math.round(screen.availWidth*0.6);
 		descElt.style.maxWidth = maxW + "px";
+		descElt.style.maxHeight = Math.round(screen.availHeight*0.6) + "px";
 		if(!wa.extEnabled)
 			document.getElementById("hcNotifyImg").style.marginLeft = "-24px";
 		window.sizeToContent();
@@ -46,7 +47,7 @@ var hcNotify = {
 				y = xy.screenY - winH - addH;
 		}
 		window.moveTo(x, y);
-		this._nBox = document.getElementById("hcNotifyBox");
+		this._notifyBox = document.getElementById("hcNotifyBox");
 		this._colorDelta = this.endColor - this.startColor;
 		this._dur = wa.dur;
 		this.delayedClose();
@@ -59,16 +60,22 @@ var hcNotify = {
 			_this.mouseHandler(e);
 		};
 	},
+	set borderColor(clr) {
+		this._notifyBox.style.borderColor = clr;
+	},
+	numToColor: function(n) { // 0 <= n <= 255
+		var h = n.toString(16);
+		if(h.length == 1)
+			h = "0" + h;
+		return "#" + h + h + h;
+	},
 	setColor: function() {
 		var persent = (Date.now() - this._startTime)/this._dur;
 		if(persent >= 1) {
 			clearInterval(this._highlightInterval);
 			return;
 		}
-		var h = (this.startColor + Math.round(this._colorDelta*persent)).toString(16);
-		if(h.length == 1)
-			h = "0" + h;
-		this._nBox.style.borderColor = "#" + h + h + h;
+		this.borderColor = this.numToColor(this.startColor + Math.round(this._colorDelta*persent));
 	},
 	delayedClose: function() {
 		this._closeTimeout = setTimeout(window.close, this._dur);
@@ -80,12 +87,12 @@ var hcNotify = {
 			},
 			Math.round(this._dur/this._colorDelta) + 4
 		);
-		this._nBox.style.borderColor = "black";
+		this.borderColor = this.numToColor(this.startColor);
 	},
 	cancelDelayedClose: function() {
 		clearTimeout(this._closeTimeout);
 		clearInterval(this._highlightInterval);
-		this._nBox.style.borderColor = this.hoverColor;
+		this.borderColor = this.hoverColor;
 	},
 	mouseHandler: function(e) {
 		if(!e.relatedTarget)
