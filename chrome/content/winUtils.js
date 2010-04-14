@@ -1,4 +1,19 @@
 var handyClicksWinUtils = {
+	IMPORT_FILEPICKER: 0,
+	IMPORT_CLIPBOARD: 1,
+	IMPORT_STRING: 2,
+	IMPORT_BACKUP: 3,
+
+	EXPORT_FILEPICKER: 0,
+	EXPORT_CLIPBOARD_STRING: 1,
+	EXPORT_CLIPBOARD_URI: 2,
+
+	PROTOCOL_SETTINGS: "handyclicks://settings/",
+	PROTOCOL_SETTINGS_ADD: "handyclicks://settings/add/",
+	PROTOCOL_EDITOR: "handyclicks://editor/",
+	PROTOCOL_EDITOR_SHORTCUT: "handyclicks://editor/shortcut/",
+	PROTOCOL_EDITOR_ITEM_TYPE: "handyclicks://editor/itemType/",
+
 	get wm() {
 		delete this.wm;
 		return this.wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
@@ -21,7 +36,7 @@ var handyClicksWinUtils = {
  		}
 		w = this.ww.openWindow(
 			this.opener, uri, "_blank",
-			features || "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar,centerscreen,dialog=0", null
+			features || "chrome,titlebar=1,toolbar=1,centerscreen,resizable,dialog=0", null
 		);
 		if(args)
 			w.arguments = args;
@@ -78,7 +93,7 @@ var handyClicksWinUtils = {
 		butt.hidden = !buttonVisible;
 		if(buttonVisible) {
 			butt.setAttribute("checked", onTop);
-			butt.style.textDecoration = onTop ? "underline" : "";
+			butt.setAttribute("hc_hideLabel", !this.pu.pref("ui.onTopButtonLabel"));
 		}
 		var de = top.document.documentElement;
 		var s = de.style;
@@ -132,11 +147,12 @@ var handyClicksWinUtils = {
 			}
 			setTimeout(_oe, 5);
 		})();
+		return w;
 	},
-	openLink: function(href, line) {
-		const ed = "handyclicks://editor/";
+	openEditorLink: function(href, line) {
+		const ed = this.PROTOCOL_EDITOR;
 		if(!href || href.indexOf(ed) != 0)
-			return false;
+			return;
 		href = href.replace(/\?(.*)$/, "");
 		var args = RegExp.$1;
 		if(args && typeof line != "number" && /(?:^|&)line=(\d+)(?:&|$)/.test(args))
@@ -156,12 +172,11 @@ var handyClicksWinUtils = {
 			var src = tokens[2];
 		}
 		this.openEditorEx(null, mode, shortcut, itemType, delayed, src, line);
-		return true;
 	},
-	getOpenLink: function(href, line) {
+	getOpenEditorLink: function(href, line) {
 		var _this = this;
 		return function() {
-			_this.openLink(href, line);
+			_this.openEditorLink(href, line);
 		};
 	},
 	markOpenedEditors: function(winId, editStat) {
@@ -174,20 +189,10 @@ var handyClicksWinUtils = {
 			wSet.handyClicksSets.markOpenedEditors();
 	},
 
-	IMPORT_FILEPICKER: 0,
-	IMPORT_CLIPBOARD: 1,
-	IMPORT_STRING: 2,
-	IMPORT_BACKUP: 3,
-
-	EXPORT_FILEPICKER: 0,
-	EXPORT_CLIPBOARD_STRING: 1,
-	EXPORT_CLIPBOARD_URI: 2,
-
 	openSettings: function(/* importArgs */) {
 		var w = this.openWindowByType(
 			"chrome://handyclicks/content/sets.xul",
-			"handyclicks:settings",
-			"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0"
+			"handyclicks:settings"
 		);
 		var args = arguments;
 		args.length && (function _imp() {
@@ -197,5 +202,12 @@ var handyClicksWinUtils = {
 			}
 			setTimeout(_imp, 5);
 		})();
+		return w;
+	},
+	openSettingsLink: function(uri) {
+		if(uri.indexOf(this.PROTOCOL_SETTINGS_ADD) == 0)
+			this.openSettings(true, this.IMPORT_STRING, uri);
+		else if(uri.indexOf(this.PROTOCOL_SETTINGS) == 0)
+			this.openSettings();
 	}
 };

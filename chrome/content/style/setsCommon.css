@@ -29,6 +29,18 @@
 	min-width: 0;
 }
 
+#hc-sets-onTop {
+	list-style-image: url("pin.png");
+	-moz-image-region: rect(0 32px 16px 16px);
+}
+#hc-sets-onTop[checked="true"] {
+	-moz-image-region: rect(0 16px 16px 0);
+	text-decoration: underline;
+}
+#hc-sets-onTop[hc_hideLabel="true"] label {
+	display: none;
+}
+
 #handyClicks-infoTooltip {
 	margin: 0;
 	padding: 0;

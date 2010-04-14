@@ -314,14 +314,14 @@ var handyClicksPrefSvc = {
 			catch(e) {
 				var line = ct._contextMenuLine || ct._defineLine;
 				var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - line + 1);
-				var href = "handyclicks://editor/itemType/" + type + "/"
+				var href = this.wu.PROTOCOL_EDITOR_ITEM_TYPE + type + "/"
 					+ ("_contextMenuLine" in ct ? "context" : "define")
 					+ "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customTypeCompileError", this.dec(ct.label), type, e);
 				this.ut.notifyInWindowCorner(
 					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 					this.ut.getLocalized("errorTitle"),
-					this.ut.toErrorConsole, this.wu.getOpenLink(href, eLine)
+					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
 				);
 				this.ut._err(new Error(eMsg), false, href, eLine);
 				this.ut._err(e);
@@ -358,14 +358,14 @@ var handyClicksPrefSvc = {
 		}
 		catch(e) {
 			var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - line + 1);
-			var href = "handyclicks://editor/shortcut/" + sh + "/" + type + "/"
+			var href = this.wu.PROTOCOL_EDITOR_SHORTCUT + sh + "/" + type + "/"
 				+ (delayed ? "delayed" : "normal") + "/init"
 				+ "?line=" + eLine;
 			var eMsg = this.ut.errInfo("funcInitError", this.dec(fObj.label), type, e);
 			this.ut.notifyInWindowCorner(
 				eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 				this.ut.getLocalized("errorTitle"),
-				this.ut.toErrorConsole, this.wu.getOpenLink(href, eLine)
+				this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
 			);
 			this.ut._err(eMsg, false, href, eLine);
 			this.ut._err(e);
@@ -686,7 +686,7 @@ var handyClicksPrefSvc = {
 		return sh || (_short ? "" : this.ut.getLocalized("none"));
 	},
 	getPrefsStr: function(str) {
-		const add = "handyclicks://settings/add/";
+		const add = this.wu.PROTOCOL_SETTINGS_ADD;
 		return str.indexOf(add) == 0
 			? this.dec(str.substr(add.length))
 			: str;

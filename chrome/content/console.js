@@ -12,12 +12,13 @@ var handyClicksConsole = {
 		if(!/(?:^|\s)text-link(?:\s|$)/.test(tar.className))
 			return;
 		var link = tar.parentNode;
-		var href = link.getAttribute("href");
+		var href = link.getAttribute("href") || "";
 		var line = Number(link.getAttribute("line"));
-		if(!this.wu.openLink(href, line))
-			return;
-		e.preventDefault();
-		e.stopPropagation();
+		if(href.indexOf(this.wu.PROTOCOL_EDITOR) == 0) {
+			e.preventDefault();
+			e.stopPropagation();
+			this.wu.openEditorLink(href, line)
+		}
 	},
 	handleEvent: function(e) {
 		if(e.type == "click")

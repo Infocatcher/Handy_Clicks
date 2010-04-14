@@ -11,6 +11,7 @@ var handyClicksSetsUtils = {
 	createFloatToolbar: function() {
 		var de = document.documentElement;
 		de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
+
 		var onTop = this.ut.parseFromXML(
 			<hbox xmlns={this.ut.XULNS} id="hc-sets-floatToolbar">
 				<button id="hc-sets-onTop"
@@ -20,27 +21,50 @@ var handyClicksSetsUtils = {
 					hidden={ !this.pu.pref("ui.onTopButton") }
 					oncommand="handyClicksWinUtils.toggleOnTop(); event.stopPropagation();"
 					label={ this.ut.getLocalized("onTop") }
+					tooltiptext={ this.ut.getLocalized("onTopTip") }
 				/>
-				<menupopup id="hc-sets-onTopContext">
-					<menuitem id="hc-sets-onTopHide"
-						oncommand="handyClicksWinUtils.toggleOnTopButton();"
-						label={ this.ut.getLocalized("onTopHide") }
+				<menupopup id="hc-sets-onTopContext"
+					onpopupshowing="handyClicksSetsUtils.initOnTopContext(this);"
+					oncommand="handyClicksSetsUtils.handleOnTopContextCommand(event.target);">
+					<menuitem id="hc-sets-onTopButtonLabel" type="checkbox"
+						hc_pref="ui.onTopButtonLabel"
+						label={ this.ut.getLocalized("onTopButtonLabel") }
+					/>
+					<menuitem id="hc-sets-onTopButtonShow" type="checkbox"
+						hc_pref="ui.onTopButton"
+						label={ this.ut.getLocalized("onTopButtonShow") }
 					/>
 				</menupopup>
 			</hbox>
 		);
 		de.appendChild(onTop);
-		if(de.getAttribute("hc_onTop") == "true")
-			this.wu.toggleOnTop(true);
-		else if(opener) {
+
+		var onTop = de.getAttribute("hc_onTop") == "true";
+		if(!onTop && opener) {
 			var xulWin = this.wu.getXulWin(opener);
-			if(xulWin.zLevel > xulWin.normalZ)
-				this.wu.toggleOnTop(true);
+			onTop = xulWin.zLevel > xulWin.normalZ;
 		}
+		if(onTop)
+			this.wu.toggleOnTop(true);
+		else
+			this.wu.showOnTopStatus();
+	},
+	initOnTopContext: function(popup) {
+		Array.forEach(
+			popup.getElementsByTagName("menuitem"),
+			function(mi) {
+				mi.setAttribute("checked", this.pu.pref(mi.getAttribute("hc_pref")));
+			},
+			this
+		);
+	},
+	handleOnTopContextCommand: function(mi) {
+		this.pu.pref(mi.getAttribute("hc_pref"), mi.getAttribute("checked") == "true");
 	},
 	prefsChanged: function(pName, pVal) {
 		switch(pName) {
 			case "ui.onTopButton":
+			case "ui.onTopButtonLabel":
 			case "ui.onTopBorderColor":
 				this.wu.showOnTopStatus();
 		}

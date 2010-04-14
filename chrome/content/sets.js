@@ -1392,7 +1392,7 @@ var handyClicksSets = {
 			if(targetId == wu.EXPORT_CLIPBOARD_STRING)
 				this.ut.copyStr(pStr);
 			else if(targetId == wu.EXPORT_CLIPBOARD_URI)
-				this.ut.copyStr("handyclicks://settings/add/" + this.ps.enc(pStr));
+				this.ut.copyStr(this.wu.PROTOCOL_SETTINGS_ADD + this.ps.enc(pStr));
 			else
 				this.ut.writeToFile(pStr, file);
 		}

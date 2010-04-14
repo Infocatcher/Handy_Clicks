@@ -169,16 +169,17 @@ var handyClicksUtils = {
 
 	_entities: { __proto__: null }, // cache of strings from *.dtd files
 	getEntity: function(eName, dtds, contentType) {
-		dtds = dtds && "<!DOCTYPE dialog [\n"
-			+ Array.concat(dtds).map(
+		dtds = dtds
+			? "<!DOCTYPE page [\n"
+				+ Array.concat(dtds).map(
 					function(dtd, indx) {
 						return '<!ENTITY % dtd' + indx + ' SYSTEM "' + dtd + '">\n%dtd' + indx + ';';
 					}
 				).join("\n")
-			+ "\n]>";
+				+ "\n]>\n"
+			: "";
 		var node = this.parseFromString(
-			(dtds ? dtds + "\n" : "")
-			+ '<page xmlns="' + this.XULNS + '">&' + eName + ';</page>',
+			dtds + '<page xmlns="' + this.XULNS + '">&' + eName + ';</page>',
 			contentType
 		);
 		if(node.namespaceURI == "http://www.mozilla.org/newlayout/xml/parsererror.xml") {

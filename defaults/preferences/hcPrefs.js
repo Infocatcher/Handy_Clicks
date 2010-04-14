@@ -17,6 +17,7 @@ pref("extensions.handyclicks.ui.showInToolsMenu", true);
 pref("extensions.handyclicks.ui.showInStatusbar", true);
 pref("extensions.handyclicks.ui.inheritToolbarContextMenu", true);
 pref("extensions.handyclicks.ui.onTopButton", true);
+pref("extensions.handyclicks.ui.onTopButtonLabel", true);
 pref("extensions.handyclicks.ui.onTopBorderColor", "orange");
 
 pref("extensions.handyclicks.funcs.loadJavaScriptLinks", true);
