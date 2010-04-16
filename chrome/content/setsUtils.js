@@ -78,6 +78,10 @@ var handyClicksSetsUtils = {
 				|| this.scrollPanes(e);
 		}
 	},
+	isScrollForward: function(e) {
+		var fwd = e.detail > 0;
+		return this.pu.pref("ui.reverseScrollDirection") ? !fwd : fwd;
+	},
 	scrollList: function(e) {
 		var ml = e.target;
 		var ln = ml.localName;
@@ -89,8 +93,8 @@ var handyClicksSetsUtils = {
 			return false;
 		var mp = ml.menupopup;
 		var si = ml.selectedItem;
-		var plus = e.detail > 0;
-		si = plus
+		var fwd = this.isScrollForward(e);
+		si = fwd
 			? !si || si == mp.lastChild
 				? mp.firstChild
 				: si.nextSibling
@@ -104,8 +108,8 @@ var handyClicksSetsUtils = {
 				|| !this.ut.isElementVisible(si)
 			)
 		)
-			si = plus ? si.nextSibling : si.previousSibling;
-		ml.selectedItem = si || (plus ? mp.firstChild : mp.lastChild);
+			si = fwd ? si.nextSibling : si.previousSibling;
+		ml.selectedItem = si || (fwd ? mp.firstChild : mp.lastChild);
 		ml.menuBoxObject.activeChild = ml.mSelectedInternal || ml.selectedInternal;
 		ml.doCommand();
 		return true;
@@ -125,8 +129,8 @@ var handyClicksSetsUtils = {
 				return false;
 			}
 		);
-		var plus = e.detail > 0;
-		indx = plus
+		var fwd = this.isScrollForward(e);
+		indx = fwd
 			? !si || indx == rds.length - 1
 				? 0
 				: indx + 1
@@ -178,14 +182,14 @@ var handyClicksSetsUtils = {
 			|| !("increase" in tar) || !("decrease" in tar) || !("_fireChange" in tar)
 		)
 			return false;
-		tar[e.detail > 0 ? "increase" : "decrease"]();
+		tar[this.isScrollForward(e) ? "increase" : "decrease"]();
 		tar._fireChange();
 		return true;
 	},
 	scrollTabs: function(e) {
 		for(var node = e.target; node; node = node.parentNode) {
 			if(node.localName == "tabs") {
-				node.advanceSelectedTab(e.detail > 0 ? 1 : -1, true);
+				node.advanceSelectedTab(this.isScrollForward(e) ? 1 : -1, true);
 				return true;
 			}
 		}
@@ -200,7 +204,7 @@ var handyClicksSetsUtils = {
 				node.localName == "radiogroup"
 				&& /(?:^|\s)paneSelector(?:\s|$)/.test(node.className)
 			) {
-				this.st.switchPanes(e.detail > 0);
+				this.st.switchPanes(this.isScrollForward(e));
 				return true;
 			}
 		}

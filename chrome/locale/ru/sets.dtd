@@ -85,6 +85,7 @@
 <!ENTITY hc.sets.middle "Средняя">
 <!ENTITY hc.sets.right "Правая">
 <!ENTITY hc.sets.maxDistance "Допустимое перемещение:">
+<!ENTITY hc.sets.px "пикселов">
 
 <!ENTITY hc.sets.delayedActionTimeout "Задержка отложенного действия:">
 <!ENTITY hc.sets.zeroForDisable "мс (0 для отключения)">

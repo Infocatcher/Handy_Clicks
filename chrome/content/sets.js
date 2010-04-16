@@ -479,9 +479,9 @@ var handyClicksSets = {
 		var lvr = tbo.getLastVisibleRow();
 		if(saveSel) {
 			var selRows = [];
-			var numRanges = this.tSel.getRangeCount();
+			var rngCount = this.tSel.getRangeCount();
 			var start = {}, end = {};
-			for(var i = 0; i < numRanges; i++) {
+			for(var i = 0; i < rngCount; i++) {
 				this.tSel.getRangeAt(i, start, end);
 				selRows.push([start.value, end.value]);
 			}
@@ -531,12 +531,12 @@ var handyClicksSets = {
 		this.$("hc-sets-editType").hidden = noTypes;
 	},
 	get selectedItems() {
-		var numRanges = this.tSel.getRangeCount();
+		var rngCount = this.tSel.getRangeCount();
 		var tItemsArr = [];
-		if(numRanges == 0)
+		if(rngCount == 0)
 			return tItemsArr;
 		var start = {}, end = {}, tItem;
-		for(var t = 0; t < numRanges; t++) {
+		for(var t = 0; t < rngCount; t++) {
 			this.tSel.getRangeAt(t, start, end);
 			for(var v = start.value; v <= end.value; v++) {
 				tItem = this.getItemAtIndex(v);
@@ -591,14 +591,11 @@ var handyClicksSets = {
 	},
 	switchPanes: function(nextFlag) {
 		var prefWin = document.documentElement;
-		var curPane = prefWin.currentPane;
-		var panes = prefWin.preferencePanes, pLen = panes.length;
-		for(var n = 0; n < pLen; n++)
-			if(panes[n] == curPane)
-				break;
-		n += nextFlag ? 1 : -1;
-		if(n >= pLen)  n = 0;
-		else if(n < 0) n = pLen - 1;
+		var panes = prefWin.preferencePanes;
+		var pCount = panes.length;
+		var n = Array.indexOf(panes, prefWin.currentPane) + (nextFlag ? 1 : -1);
+		if(n >= pCount)  n = 0;
+		else if(n < 0) n = pCount - 1;
 		prefWin.showPane(panes[n]);
 		this.focusSearch();
 	},
@@ -871,6 +868,34 @@ var handyClicksSets = {
 		if(this.isTreePaneSelected)
 			this.tSel.selectAll();
 	},
+	invertSelection: function() {
+		if(!this.isTreePaneSelected)
+			return;
+		var tSel = this.tSel;
+		try {
+			tSel.invertSelection();
+			return;
+		}
+		catch(e) {
+			// NS_ERROR_NOT_IMPLEMENTED
+		}
+		var rngCount = tSel.getRangeCount();
+		if(rngCount == 0) {
+			tSel.selectAll();
+			return;
+		}
+		var selectedRows = { __proto__: null };
+		var start = {}, end = {};
+		for(var t = 0; t < rngCount; t++) {
+			tSel.getRangeAt(t, start, end);
+			for(var i = start.value; i <= end.value; i++)
+				selectedRows[i] = false;
+		}
+		tSel.clearSelection();
+		for(var i = 0, rowsCount = this.tView.rowCount; i < rowsCount; i++)
+			if(!(i in selectedRows))
+				tSel.rangedSelect(i, i, true);
+	},
 	smartSelect: function _ss(e) {
 		if(e.button == 1)
 			return;
@@ -970,26 +995,62 @@ var handyClicksSets = {
 		tr.setAttribute("hc_colored", tr.getAttribute("hc_colored") != "true");
 	},
 
-	toggleTreeContainers: function(oFlag) { //~ todo: collapse/expand one level per click?
-		var tis = this.tBody.getElementsByTagName("treeitem"), ti;
-		var isFunc = typeof oFlag == "function";
-		isFunc && this.toggleTreeContainers(true);
-		for(var i = tis.length - 1; i >= 0; i--) {
-			ti = tis[i];
-			ti.setAttribute(
-				"open",
-				isFunc
-					? oFlag(this.tView.getLevel(this.tView.getIndexOfItem(ti)))
-					: oFlag
-			);
-		}
+	get treeContainers() {
+		return this.tBody.getElementsByAttribute("container", "true");
 	},
-	toggleTreeContainersClick: function(e) {
-		var b = e.button;
-		var oFlag = b == 1 || b == 0 && (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey)
-			? function(level) { return level < 1; }
-			: b == 2;
-		this.toggleTreeContainers(oFlag);
+	toggleTreeContainers: function(expand) {
+		expand = String(expand);
+		Array.forEach(
+			this.treeContainers,
+			function(ti) {
+				ti.setAttribute("open", expand);
+			}
+		);
+	},
+	expandTree: function() {
+		this.toggleTreeContainers(true);
+	},
+	get maxExpandedLevel() {
+		var expandedLevel = -1;
+		Array.forEach(
+			this.treeContainers,
+			function(ti) {
+				if(ti.getAttribute("open") != "true")
+					return;
+				var curIndx = this.tView.getIndexOfItem(ti);
+				if(curIndx == -1)
+					return;
+				var curLevel = this.tView.getLevel(curIndx);
+				if(curLevel > expandedLevel)
+					expandedLevel = curLevel;
+			},
+			this
+		);
+		return expandedLevel;
+	},
+	expandTreeLevel: function(level) {
+		this.expandTree();
+		Array.filter(
+			this.treeContainers,
+			function(ti) {
+				var curLevel = this.tView.getLevel(this.tView.getIndexOfItem(ti));
+				return curLevel > level;
+			},
+			this
+		).forEach(
+			function(ti) {
+				ti.setAttribute("open", "false");
+			}
+		);
+	},
+
+	treeHeaderClick: function(e) {
+		if(e.button == 1)
+			return this.toggleTreeContainers(!this.tBody.getElementsByAttribute("open", "true").length);
+		if(e.ctrlKey || e.shiftKey || e.altKey || e.metaKey)
+			return this.toggleTreeContainers(e.button == 2);
+		var level = this.maxExpandedLevel + (e.button == 2 ? 1 : -1);
+		return this.expandTreeLevel(level);
 	},
 
 	/*** Search in tree ***/
@@ -1019,6 +1080,7 @@ var handyClicksSets = {
 		reset: function() {
 			this._res = [];
 			this._current = 0;
+			this.wrapped = this._wrapped = false;
 		},
 		add: function(r) {
 			this._res.push(r);
@@ -1042,9 +1104,9 @@ var handyClicksSets = {
 					return;
 				i = this._res[this._current];
 			}
-			this.field.setAttribute("hc_wrapped", this._wrapped);
+			this.wrapped = this._wrapped;
 			this._wrapped = false; // Reset flag
-			this.__parent.toggleTreeContainers(true); // Expand tree
+			this.__parent.expandTree();
 			this.tree.view.selection.select(i);
 			this.tree.treeBoxObject.ensureRowIsVisible(i);
 		},
@@ -1055,6 +1117,9 @@ var handyClicksSets = {
 				},
 				this
 			);
+		},
+		set wrapped(val) {
+			this.field.setAttribute("hc_wrapped", val);
 		}
 	},
 	navigateSearchResults: function(e) {

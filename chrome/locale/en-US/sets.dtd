@@ -85,6 +85,7 @@
 <!ENTITY hc.sets.middle "Middle">
 <!ENTITY hc.sets.right "Right">
 <!ENTITY hc.sets.maxDistance "Allowed distance:">
+<!ENTITY hc.sets.px "pixels">
 
 <!ENTITY hc.sets.delayedActionTimeout "Timeout for delayed action:">
 <!ENTITY hc.sets.zeroForDisable "ms (0 for disable)">
