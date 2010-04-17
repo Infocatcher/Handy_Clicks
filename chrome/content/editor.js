@@ -375,12 +375,12 @@ var handyClicksEditor = {
 		var label, _labels = { __proto__: null };
 		for(var cType in cTypes) if(cTypes.hasOwnProperty(cType)) {
 			if(!this.ps.isCustomType(cType)) {
-				this.ut._err(new Error("Invalid custom type id: " + cType), true);
+				this.ut._warn(new Error("Invalid custom type id: " + cType));
 				continue;
 			}
 			typeObj = cTypes[cType];
 			if(!this.ut.isObject(typeObj)) {
-				this.ut._err(new Error("Invalid custom type: " + cType + " (" + typeObj + ")"), true);
+				this.ut._warn(new Error("Invalid custom type: " + cType + " (" + typeObj + ")"));
 				continue;
 			}
 			label = this.ps.dec(typeObj.label) || cType;
@@ -451,18 +451,18 @@ var handyClicksEditor = {
 				}
 			}
 			if(!tabPanel || !tabBox) {
-				this.ut._err("highlightEmpty: <tabpanel> or <tabbox> not found!");
+				this.ut._err(new Error("highlightEmpty: <tabpanel> or <tabbox> not found!"));
 				return;
 			}
 			var tabPanels = tabBox.tabpanels || tabBox.getElementsByTagNameNS(this.ut.XULNS, "tabpanels")[0];
 			var tabs = tabBox.tabs || tabBox.getElementsByTagNameNS(this.ut.XULNS, "tabs")[0];
 			if(!tabPanels || !tabs) {
-				this.ut._err("highlightEmpty: <tabpanels> or <tabs> not found!");
+				this.ut._err(new Error("highlightEmpty: <tabpanels> or <tabs> not found!"));
 				return;
 			}
 			var tabPanelIndx = Array.indexOf(tabPanels.childNodes, tabPanel);
 			if(tabPanelIndx == -1) {
-				this.ut._err("highlightEmpty: index of <tabpanel> not found!");
+				this.ut._err(new Error("highlightEmpty: index of <tabpanel> not found!"));
 				return;
 			}
 			tab = tb.__tab = tabs.childNodes[tabPanelIndx];
@@ -667,13 +667,14 @@ var handyClicksEditor = {
 	get currentType() {
 		return this.$("hc-editor-itemTypes").value || null;
 	},
+
 	loadFuncs: function() {
 		this.shortcut = this.currentShortcut;
 		this.type = this.currentType;
 		this.initShortcutEditor();
-		this.setWinId();
-		this.setWinTitle();
-		this.highlightUsedTypes();
+		//this.setWinId();
+		//this.setWinTitle();
+		//this.highlightUsedTypes();
 		this.disableUnsupported();
 	},
 	targetChanged: function() {
@@ -681,6 +682,9 @@ var handyClicksEditor = {
 			this.applyDisabled = false;
 		else
 			this.loadFuncs();
+		this.setWinId();
+		this.setWinTitle();
+		this.highlightUsedTypes();
 	},
 	setClickOptions: function(e) {
 		this.$("hc-editor-button").value = e.button;
@@ -883,7 +887,7 @@ var handyClicksEditor = {
 					if(aVal == "null")
 						aVal = null;
 					else if(/^-?\d+$/.test(aVal))
-						aVal = parseInt(aVal);
+						aVal = Number(aVal);
 				}
 				args[aIt.getAttribute("hc_argName")] = aVal;
 			}

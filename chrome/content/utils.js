@@ -16,10 +16,10 @@ var handyClicksUtils = {
 			)
 		);
 	},
-	_err: function(e, isWarning, fileName, lineNumber) {
+	_err: function(e, fileName, lineNumber, isWarning) {
 		if(typeof e == "string")
 			e = new Error(e);
-		if(!e || e.constructor !== Error) {
+		else if(!e || e.constructor !== Error && String(e.constructor) != String(Error)) {
 			Components.utils.reportError(e);
 			return;
 		}
@@ -35,6 +35,9 @@ var handyClicksUtils = {
 			null
 		);
 		this.consoleSvc.logMessage(cErr);
+	},
+	_warn: function(e, fileName, lineNumber) {
+		this._err(e, fileName, lineNumber, true);
 	},
 	objProps: function(o, mask) { // mask like "id, nodeName, parentNode.id"
 		if(!this.canHasProps(o))
@@ -58,9 +61,9 @@ var handyClicksUtils = {
 	},
 	safeGet: function(o, p) {
 		try { return o[p]; }
-		catch(e) { return "" + e; }
+		catch(e) { return e; }
 	},
-	safeToString: function(object) { // var obj = { __proto__: null }; => obj.toString() is missing
+	safeToString: function(object) { // var obj = { __proto__: null }; => obj.valueOf() and obj.toString() is missing
 		try { return "" + object; }
 		catch(e) { return "" + e; }
 	},
@@ -347,7 +350,7 @@ var handyClicksUtils = {
 			.copyString(str);
 	},
 	readFromClipboard: function(trimFlag) {
-		// function readFromClipboard() chrome://browser/content/browser.js
+		// function readFromClipboard() from chrome://browser/content/browser.js
 		var url;
 
 		try {
@@ -416,7 +419,7 @@ var handyClicksUtils = {
 	},
 	isArray: function(arr) {
 		return arr instanceof Array
-			|| this.sandbox.Object.prototype.toString.call(arr) === "[object Array]";
+			|| Object.prototype.toString.call(arr) === "[object Array]";
 	},
 	canHasProps: function(o) {
 		if(!o)
@@ -493,13 +496,8 @@ var handyClicksUtils = {
 	},
 	getSource: function(o) {
 		return this.canHasProps(o) && !o.__proto__
-			? this.sandbox.Object.prototype.toSource.call(o)
+			? Object.prototype.toSource.call(o)
 			: uneval(o);
-	},
-
-	get sandbox() {
-		delete this.sandbox;
-		return this.sandbox = new Components.utils.Sandbox("about:blank");
 	},
 
 	attribute: function(node, attr, val, allowEmpty) {

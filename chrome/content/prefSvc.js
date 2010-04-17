@@ -296,7 +296,7 @@ var handyClicksPrefSvc = {
 		var df, cm;
 		for(var type in cts) if(cts.hasOwnProperty(type)) {
 			if(!this.isOkCustomType(type)) {
-				this.ut._err(new Error("Invalid custom type: " + type), true);
+				this.ut._warn(new Error("Invalid custom type: " + type));
 				continue;
 			}
 			ct = cts[type];
@@ -323,7 +323,7 @@ var handyClicksPrefSvc = {
 					this.ut.getLocalized("errorTitle"),
 					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
 				);
-				this.ut._err(new Error(eMsg), false, href, eLine);
+				this.ut._err(new Error(eMsg), href, eLine);
 				this.ut._err(e);
 			}
 		}
@@ -367,7 +367,7 @@ var handyClicksPrefSvc = {
 				this.ut.getLocalized("errorTitle"),
 				this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
 			);
-			this.ut._err(eMsg, false, href, eLine);
+			this.ut._err(eMsg, href, eLine);
 			this.ut._err(e);
 		}
 	},

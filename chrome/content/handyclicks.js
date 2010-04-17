@@ -355,7 +355,7 @@ var handyClicks = {
 						this.ut.getLocalized("errorTitle"),
 						this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
 					);
-					this.ut._err(new Error(eMsg), false, href, eLine);
+					this.ut._err(new Error(eMsg), href, eLine);
 					this.ut._err(e);
 				}
 				if(!_it)
@@ -592,7 +592,7 @@ var handyClicks = {
 					this.ut.getLocalized("errorTitle"),
 					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
 				);
-				this.ut._err(new Error(eMsg), false, href, eLine);
+				this.ut._err(new Error(eMsg), href, eLine);
 				this.ut._err(e);
 			}
 			if(cm === "auto")
@@ -601,7 +601,7 @@ var handyClicks = {
 
 		if(this.ut.isObject(cm) && typeof cm.hidePopup != "function") {
 			// XUL document with custom context...
-			this.ut._err(new Error("Error: context menu has no hidePopup() method\nid: " + cm.id), true);
+			this.ut._warn(new Error("Error: context menu has no hidePopup() method\nid: " + cm.id));
 			cm = null;
 		}
 		this._cMenu = cm; // cache
@@ -880,7 +880,7 @@ var handyClicks = {
 					this.ut.getLocalized("errorTitle"),
 					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
 				);
-				this.ut._err(new Error(eMsg), false, href, eLine);
+				this.ut._err(new Error(eMsg), href, eLine);
 				this.ut._err(err);
 			}
 		}

@@ -116,12 +116,12 @@ var handyClicksSets = {
 		var p = this.ps.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
 			if(!this.ps.isOkShortcut(sh) || !this.ut.isObject(p[sh])) {
-				this.ut._err(new Error("Invalid shortcut in prefs: \"" + sh + "\""), true);
+				this.ut._warn(new Error("Invalid shortcut in prefs: \"" + sh + "\""));
 				continue;
 			}
 			var so = p[sh];
 			if(this.ut.isEmptyObj(so)) {
-				this.ut._err(new Error("Empty settings object in prefs: \"" + sh + "\""), true);
+				this.ut._warn(new Error("Empty settings object in prefs: \"" + sh + "\""));
 				//delete p[sh];
 				continue;
 			}
@@ -532,9 +532,9 @@ var handyClicksSets = {
 	},
 	get selectedItems() {
 		var rngCount = this.tSel.getRangeCount();
-		var tItemsArr = [];
 		if(rngCount == 0)
-			return tItemsArr;
+			return [];
+		var tItemsArr = [];
 		var start = {}, end = {}, tItem;
 		for(var t = 0; t < rngCount; t++) {
 			this.tSel.getRangeAt(t, start, end);
@@ -1404,12 +1404,12 @@ var handyClicksSets = {
 						return; // Just for fun right now :)
 					var indx = line.indexOf("=");
 					if(indx == -1) {
-						this.ut._err(new Error("[Import INI] Skipped invalid line #" + (i + 2) + ": " + line), true);
+						this.ut._warn(new Error("[Import INI] Skipped invalid line #" + (i + 2) + ": " + line));
 						return;
 					}
 					var pName = line.substring(0, indx);
 					if(pName.indexOf(this.pu.prefNS) != 0) {
-						this.ut._err(new Error("[Import INI] Skipped pref with invalid name: " + pName), true);
+						this.ut._warn(new Error("[Import INI] Skipped pref with invalid name: " + pName));
 						return;
 					}
 					var pbr = this.pu.pBr;
@@ -1417,7 +1417,7 @@ var handyClicksSets = {
 					var isOld = pType == pbr.PREF_INVALID; // Old format?
 					if(isOld) {
 						_oldPrefs.push(pName);
-						this.ut._err(new Error("[Import INI] Old pref: " + pName), true);
+						this.ut._warn(new Error("[Import INI] Old pref: " + pName));
 					}
 					var pVal = line.substring(indx + 1);
 					if(pType == pbr.PREF_INT || isOld && /^-?\d+$/.test(pVal)) // Convert string to number

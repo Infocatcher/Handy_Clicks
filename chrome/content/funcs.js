@@ -502,7 +502,7 @@ var handyClicksFuncs = {
 	},
 	downloadWithFlashGot: function(e, item) {
 		if(!("gFlashGot" in window)) {
-			this.ut._err(new Error("Missing FlashGot extension ( https://addons.mozilla.org/firefox/addon/220 )"), true);
+			this.ut._warn(new Error("Missing FlashGot extension ( https://addons.mozilla.org/firefox/addon/220 )"));
 			return;
 		}
 		document.popupNode = item || this.hc.item;
@@ -510,7 +510,7 @@ var handyClicksFuncs = {
 	},
 	openURIInSplitBrowser: function(e, position, closePopups, uri) {
 		if(!("SplitBrowser" in window)) {
-			this.ut._err(new Error("Missing Split Browser extension ( https://addons.mozilla.org/firefox/addon/4287 )"), true);
+			this.ut._warn(new Error("Missing Split Browser extension ( https://addons.mozilla.org/firefox/addon/4287 )"));
 			return;
 		}
 		position = (position || "bottom").toUpperCase();
@@ -981,9 +981,9 @@ var handyClicksFuncs = {
 		if("MultipleTabService" in window)
 			return true;
 		else {
-			this.ut._err(new Error(
+			this.ut._warn(new Error(
 				"Missing Multiple Tab Handler extension ( https://addons.mozilla.org/firefox/addon/4838 )"
-			), true);
+			));
 			return false;
 		}
 	},
@@ -1172,10 +1172,9 @@ var handyClicksFuncs = {
 		const oName = "handyClicksFuncs";
 		if(!(newMeth in this))
 			throw new Error(this.ut.errPrefix + "Method \"" + meth + "\" does not exist in \"" + oName + "\" object");
-		this.ut._err(
-			new Error("Function " + oName + "." + meth + " is deprecated. Use " + oName + "." + newMeth + " instead."),
-			true
-		);
+		this.ut._warn(new Error(
+			"Function " + oName + "." + meth + " is deprecated. Use " + oName + "." + newMeth + " instead."
+		));
 		return this[newMeth].apply(this, args);
 	}
 };
