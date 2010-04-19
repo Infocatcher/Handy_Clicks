@@ -599,7 +599,7 @@ var handyClicksUtils = {
 			const ns = "__handyClicks__";
 			return arguments.length == 1
 				? Application.storage.get(ns + key, null)
-				: Application.storage.set(ns + key, val);
+				: Application.storage.set(ns + key, val) || val;
 		}
 		return arguments.length == 1
 			? key in this._storage ? this._storage[key] : null

@@ -1,6 +1,8 @@
 var handyClicksEditor = {
-	fixFuncOpts: false,
-	_testMode: false,
+	funcOptsFixed: false,
+	testMode: false,
+
+	delayId: "-delay",
 
 	types: {
 		checkboxes: {
@@ -22,7 +24,6 @@ var handyClicksEditor = {
 		shortcut: 0,
 		itemType: 1
 	},
-	delayId: "-delay",
 
 	init: function(reloadFlag) {
 		if(this.ut.fxVersion == 1.5) // "relative" is not supported
@@ -59,7 +60,7 @@ var handyClicksEditor = {
 	},
 	destroy: function(reloadFlag) {
 		this.wu.markOpenedEditors();
-		this._testMode && this.undoTestSettings();
+		this.testMode && this.undoTestSettings();
 	},
 	addTestButtons: function() {
 		var bTest = this.ut.parseFromXML(
@@ -263,19 +264,20 @@ var handyClicksEditor = {
 		);
 	},
 	initFuncEditor: function(setsObj, delayed, allowUndo) {
-		var isCustom = !!setsObj.custom;
+		var isCustom = this.ut.getOwnProperty(setsObj, "custom");
 		this.selectCustomFunc(isCustom, delayed);
 		if(isCustom) {
 			const val = allowUndo || this._allowUndo ? "value" : "newValue";
-			this.$("hc-editor-funcField" + delayed)[val]  = this.ps.dec(setsObj.action);
-			this.$("hc-editor-funcLabel" + delayed).value = this.ps.dec(setsObj.label);
+			this.$("hc-editor-funcField" + delayed)[val]  = this.ps.dec(this.ut.getOwnProperty(setsObj, "action"));
+			this.$("hc-editor-funcLabel" + delayed).value = this.ps.dec(this.ut.getOwnProperty(setsObj, "label"));
 
 			var initField = this.$("hc-editor-funcInitField" + delayed);
-			initField[val] = this.ps.dec(setsObj.init || "");
+			initField[val] = this.ps.dec(this.ut.getOwnProperty(setsObj, "init"));
 			this.highlightEmpty(initField);
 		}
-		this.initFuncsList(isCustom, setsObj.action || null, delayed);
-		this.$("hc-editor-enabled" + delayed).checked = typeof setsObj.enabled != "boolean" || setsObj.enabled;
+		this.initFuncsList(setsObj, delayed);
+		var enabled = this.ut.getOwnProperty(setsObj, "enabled");
+		this.$("hc-editor-enabled" + delayed).checked = typeof enabled != "boolean" || enabled;
 		if(!delayed)
 			this.$("hc-editor-allowMousedown").value = "" + this.ut.getOwnProperty(setsObj, "allowMousedownEvent");
 	},
@@ -469,10 +471,11 @@ var handyClicksEditor = {
 		}
 		tab.setAttribute("hc_empty", !tb.value);
 	},
-	initFuncsList: function(custom, action, delayed) {
+	initFuncsList: function(setsObj, delayed) {
 		delayed = delayed || "";
+		var action = this.ut.getOwnProperty(setsObj, "action") || null;
 		var fList = this.$("hc-editor-func" + delayed);
-		fList.value = custom // <menulist>
+		fList.value = this.ut.getOwnProperty(setsObj, "custom") // <menulist>
 			? "$custom"
 			: delayed && !action
 				? "$auto"
@@ -497,7 +500,7 @@ var handyClicksEditor = {
 			},
 			this
 		);
-		this.addFuncArgs(delayed);
+		this.addFuncArgs(delayed, setsObj);
 	},
 	notSupported: function(type, actionItem, supp, app, req) {
 		if(actionItem) {
@@ -518,32 +521,32 @@ var handyClicksEditor = {
 		return this.eh.isAvailable(this.exts[eName]);
 	},
 	itemTypeChanged: function(iType) {
-		this.addFuncArgs();
+		this.addFuncArgs(); //~ ??
 		this.loadCustomType(iType);
 		this.initImgIgnoreLinks(iType);
 	},
-	initImgIgnoreLinks: function(iType) {
+	initImgIgnoreLinks: function(iType, setsObj) {
 		iType = iType || this.currentType;
 		var isImg = iType == "img";
 		this.$("hc-editor-funcOptsAdd").hidden = !isImg;
 		if(isImg) {
-			var ignoreLinks = this.ut.getOwnProperty(this.ps.prefs, this.shortcut, iType, "ignoreLinks") || false;
+			setsObj = setsObj || this.ut.getOwnProperty(this.ps.prefs, this.shortcut, iType);
+			var ignoreLinks = this.ut.getOwnProperty(setsObj, "ignoreLinks") || false;
 			this.$("hc-editor-imgIgnoreLinks").checked = ignoreLinks;
 		}
 	},
-	addFuncArgs: function(delayed) {
+	addFuncArgs: function(delayed, setsObj) {
 		delayed = delayed || "";
-		var box = this.$("hc-editor-funcArgs" + delayed);
-		this.ut.removeChilds(box);
-		var funcs = this.$("hc-editor-func" + delayed);
-		var cFunc = funcs.value || null;
+		this.ut.removeChilds(this.$("hc-editor-funcArgs" + delayed));
+		var funcsList = this.$("hc-editor-func" + delayed);
+		var cFunc = funcsList.value || null;
 		var isCustom = cFunc == "$custom";
 		this.selectCustomFunc(isCustom, delayed);
 		var argBox = this.$("hc-editor-funcArgsBox" + delayed);
 		argBox.hidden = true;
 		if(cFunc == "$custom")
 			return;
-		var cMi = funcs.selectedItem;
+		var cMi = funcsList.selectedItem;
 		if(!cMi)
 			return;
 		var cArgs = cMi.getAttribute("hc_args");
@@ -551,29 +554,28 @@ var handyClicksEditor = {
 			return;
 		argBox.hidden = false;
 		cArgs.split(/,\s*/).forEach(
-			function(arg) {
-				this.addArgControls(arg, delayed);
+			function(argName) {
+				this.addArgControls(argName, delayed, setsObj);
 			},
 			this
 		);
 	},
-	addArgControls: function(arg, delayed) {
-		var setsObj = this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
+	addArgControls: function(argName, delayed, setsObj) {
+		setsObj = setsObj || this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
 		if(delayed)
 			setsObj = this.ut.getOwnProperty(setsObj, "delayedAction") || {};
-		var cArgVal = this.ut.getOwnProperty(setsObj, "arguments") || {};
-		cArgVal = this.ut.getOwnProperty(setsObj, "arguments", arg);
-		var argType = this.getArgType(arg);
+		var argVal = this.ut.getOwnProperty(setsObj, "arguments", argName);
+		var argType = this.getArgType(argName);
 		if(argType)
-			this.addControl(arg, argType, cArgVal, delayed); // "loadInBackground", "checkbox", true
+			this.addControl(argName, argType, argVal, delayed); // "loadInBackground", "checkbox", true
 	},
-	getArgType: function(arg) {
+	getArgType: function(argName) {
 		var types = this.types;
-		if(arg in types.checkboxes)
+		if(argName in types.checkboxes)
 			return "checkbox";
-		if(arg in types.menulists)
+		if(argName in types.menulists)
 			return "menulist";
-		this.ut._err(new Error("Can't get type of " + arg));
+		this.ut._err(new Error("Can't get type of " + argName));
 		return null;
 	},
 	addControl: function(argName, argType, argVal, delayed) {
@@ -671,20 +673,17 @@ var handyClicksEditor = {
 	loadFuncs: function() {
 		this.shortcut = this.currentShortcut;
 		this.type = this.currentType;
-		this.initShortcutEditor();
-		//this.setWinId();
-		//this.setWinTitle();
-		//this.highlightUsedTypes();
-		this.disableUnsupported();
-	},
-	targetChanged: function() {
-		if(this.fixFuncOpts)
-			this.applyDisabled = false;
-		else
-			this.loadFuncs();
+		if(this.funcOptsFixed) {
+			this.cantFixFuncOpts = !this.pasteShortcut(false, this._fixedFuncObj);
+			this.pasteShortcut(true, this._fixedFuncObjDelayed);
+		}
+		else {
+			this.initShortcutEditor();
+		}
 		this.setWinId();
 		this.setWinTitle();
 		this.highlightUsedTypes();
+		this.disableUnsupported();
 	},
 	setClickOptions: function(e) {
 		this.$("hc-editor-button").value = e.button;
@@ -694,12 +693,22 @@ var handyClicksEditor = {
 			},
 			this
 		);
-		this.targetChanged();
+		this.loadFuncs();
 	},
-	setFixFuncOpts: function(fix) {
-		this.fixFuncOpts = fix;
+
+	fixFuncOpts: function(fix) {
+		this.funcOptsFixed = fix;
+
+		var so = this._fixedFuncObj = fix && this.copyShortcut(false, true);
+		this._fixedFuncObjDelayed   = fix && this.copyShortcut(true,  true);
+
 		this.$("hc-editor-targetBox").setAttribute("hc_fixedFields", fix);
+		this.cantFixFuncOpts = fix && !so;
 	},
+	set cantFixFuncOpts(val) {
+		this.$("hc-editor-funcOptsFixed").setAttribute("hc_cantFixFields", val);
+	},
+
 	disableUnsupported: function() {
 		var isMd = this.$("hc-editor-events").value == "mousedown";
 		this.$("hc-editor-funcTab-delay").setAttribute(
@@ -755,13 +764,13 @@ var handyClicksEditor = {
 			case this.tabs.shortcut: ok = this.testShortcut();   break;
 			case this.tabs.itemType: ok = this.testCustomType();
 		}
-		ok = ok && this._testMode;
+		ok = ok && this.testMode;
 		if(ok)
 			this.$("hc-editor-cmd-undo").setAttribute("disabled", "false");
 		return ok;
 	},
 	undoTestSettings: function(reloadAll) {
-		this._testMode = false;
+		this.testMode = false;
 		this.ps.reloadSettings(reloadAll);
 		if(reloadAll) {
 			this.initUI(true);
@@ -792,12 +801,11 @@ var handyClicksEditor = {
 	saveShortcut: function(applyFlag, testFlag) {
 		var sh = this.currentShortcut;
 		var type = this.currentType;
-		var evt = this.$("hc-editor-events").value || null;
 
 		var so = this.getFuncObj();
 		if(
 			!this.ps.isOkShortcut(sh) // Not needed?
-			|| !type || !evt || !so
+			|| !type || !so
 		) {
 			var req = [
 				this.$("hc-editor-itemTypes"),
@@ -813,24 +821,16 @@ var handyClicksEditor = {
 			return false;
 		}
 
+		var dso = this.getFuncObj(this.delayId);
+		if(dso)
+			so.delayedAction = dso;
+
 		var p = this.ps.prefs;
 		if(!p.hasOwnProperty(sh) || !this.ut.isObject(p[sh]))
 			p[sh] = {};
-		var po = p[sh];
-		po[type] = so; // rewrite
-		so = po[type];
-		so.eventType = evt;
+		p[sh][type] = so;
 
-		if(type == "img")
-			so.ignoreLinks = this.$("hc-editor-imgIgnoreLinks").checked;
-
-		var dso = this.getFuncObj(this.delayId);
-		if(dso) {
-			so.delayedAction = dso;
-			so.delayedAction.eventType = "__delayed__"; // Required for handyClicksPrefSvc.isOkFuncObj()
-		}
-
-		this._testMode = testFlag; //~ todo: test!
+		this.testMode = testFlag; //~ todo: test!
 		if(testFlag)
 			this.ps.testSettings();
 		else {
@@ -852,13 +852,21 @@ var handyClicksEditor = {
 		return this.saveShortcut(true, true);
 	},
 	getFuncObj: function(delayed) {
+		var isDelayed = !!delayed;
 		delayed = delayed || "";
 		var fnc = this.$("hc-editor-func" + delayed).value || null;
 		var enabled = this.$("hc-editor-enabled" + delayed).checked;
-		if(!fnc || (delayed && fnc == "$auto" && enabled))
+		var evt = this.$("hc-editor-events").value;
+		if(
+			!fnc || (
+				isDelayed
+					? fnc == "$auto" && enabled
+					: !evt
+			)
+		)
 			return null;
 		var so = { enabled: enabled };
-		if(!delayed) {
+		if(!isDelayed) {
 			var amd = this.$("hc-editor-allowMousedown").value;
 			if(amd == "true")
 				so.allowMousedownEvent = true;
@@ -892,6 +900,14 @@ var handyClicksEditor = {
 				args[aIt.getAttribute("hc_argName")] = aVal;
 			}
 		}
+		so.eventType = isDelayed
+			? "__delayed__" // Required for handyClicksPrefSvc.isOkFuncObj()
+			: evt;
+		if(!isDelayed) {
+			var type = this.currentType;
+			if(type == "img")
+				so.ignoreLinks = this.$("hc-editor-imgIgnoreLinks").checked;
+		}
 		return so;
 	},
 	deleteShortcut: function() {
@@ -912,37 +928,46 @@ var handyClicksEditor = {
 		//this.applyDisabled = false;
 		this.buttonApply.disabled = false;
 	},
-	copyShortcut: function() {
-		var delayed = this.$("hc-editor-funcTabbox").selectedIndex == 1 ? this.delayId : "";
+	copyShortcut: function(isDelayed, dontCopy) {
+		if(isDelayed === undefined)
+			isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == 1;
+		var delayed = isDelayed ? this.delayId : "";
 		var funcs = this.$("hc-editor-func" + delayed);
 		var si = funcs.selectedItem;
 		if(!si)
-			return;
-		this.ut.storage("shortcut", {
+			return null;
+		var o = {
 			supports: si.getAttribute("hc_supports"),
 			app:      si.getAttribute("hc_app"),
 			required: si.getAttribute("hc_required"),
 			so: this.getFuncObj(delayed)
-		});
+		};
+		if(dontCopy)
+			return o;
+		return this.ut.storage("shortcut", o);
 	},
-	pasteShortcut: function() {
-		var st = this.ut.storage("shortcut");
-		if(!st)
-			return;
+	pasteShortcut: function(isDelayed, stored) {
+		stored = stored || this.ut.storage("shortcut");
+		if(!stored)
+			return false;
 		var type = this.currentType;
-		if(!type || this.notSupported(type, null, st.supports, st.app, st.required))
-			return;
+		if(!type || this.notSupported(type, null, stored.supports, stored.app, stored.required))
+			return false;
 
-		var isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == 1;
+		if(isDelayed === undefined)
+			isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == 1;
 		var delayed = isDelayed ? this.delayId : "";
-		var so = st.so;
+		var so = stored.so;
 
 		this.initFuncEditor(so, delayed, true);
-		if(!isDelayed)
+		if(!isDelayed) {
 			this.$("hc-editor-events").value = so.eventType || "click";
+			this.initImgIgnoreLinks(type, so);
+		}
 
 		this.disableUnsupported();
 		this.applyDisabled = false;
+		return true;
 	},
 	saveCustomType: function(applyFlag, testFlag) {
 		var label = this.$("hc-editor-customType").value;
@@ -978,7 +1003,7 @@ var handyClicksEditor = {
 			return false;
 		cts[cType] = this.getTypeObj(newEnabl, label, def);
 
-		this._testMode = testFlag; //~ todo: test!
+		this.testMode = testFlag; //~ todo: test!
 		if(testFlag)
 			this.ps.testSettings();
 		else {
@@ -1022,10 +1047,10 @@ var handyClicksEditor = {
 		this.ut.storage("type", this.getTypeObj());
 	},
 	pasteCustomType: function() {
-		var st = this.ut.storage("type");
-		if(!st)
+		var stored = this.ut.storage("type");
+		if(!stored)
 			return;
-		this.initCustomTypesEditor(null, st);
+		this.initCustomTypesEditor(null, stored);
 		this.applyDisabled = false;
 	},
 

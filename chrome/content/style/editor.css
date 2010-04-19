@@ -27,8 +27,15 @@ menulist[hc_sets="disabled"] .menulist-label {
 }
 
 hbox[hc_fixedFields="true"] {
-	outline: 1px solid graytext;
+	outline: 1px solid ThreeDShadow;
 	outline-offset: -1px;
+	background-color: ThreeDFace;
+}
+#hc-editor-funcOptsFixed {
+	position: relative;
+}
+#hc-editor-funcOptsFixed[hc_cantFixFields="true"] {
+	opacity: 0.5;
 }
 
 tab[hc_disabled="true"] {

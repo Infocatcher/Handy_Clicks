@@ -1785,6 +1785,7 @@ var handyClicksSets = {
 			this.updTree();
 		}
 		this.tree.focus();
+		this._savedPrefs = this._savedTypes = null;
 	},
 	mergePrefs: function() {
 		var cts = this.ps.types;

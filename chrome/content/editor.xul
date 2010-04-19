@@ -73,8 +73,8 @@
 		<tabpanels flex="1">
 			<tabpanel flex="1" orient="vertical">
 				<hbox id="hc-editor-targetBox" align="center"
-					onchange="event.stopPropagation(); handyClicksEditor.targetChanged();"
-					oncommand="event.stopPropagation(); handyClicksEditor.targetChanged();"
+					onchange="event.stopPropagation(); handyClicksEditor.loadFuncs();"
+					oncommand="event.stopPropagation(); handyClicksEditor.loadFuncs();"
 					ondragexit="event.stopPropagation();">
 					<!-- Prevent bubbling of all events from this box (any modifacation will not change apply button state) -->
 					<button id="hc-editor-clickButton" onclick="handyClicksEditor.setClickOptions(event);"
@@ -113,8 +113,8 @@
 				</hbox>
 
 				<hbox id="hc-editor-funcFixBox" align="right" oncommand="event.stopPropagation();">
-					<checkbox style="position: relative;"
-						oncommand="handyClicksEditor.setFixFuncOpts(this.checked);"
+					<checkbox id="hc-editor-funcOptsFixed"
+						oncommand="handyClicksEditor.fixFuncOpts(this.checked);"
 						label="&hc.editor.fixActionOpts;" accesskey="&hc.editor.fixActionOptsAccesskey;"
 						tooltiptext="&hc.editor.fixActionOptsTip;" />
 				</hbox>
