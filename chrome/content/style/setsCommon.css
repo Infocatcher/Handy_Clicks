@@ -41,6 +41,10 @@
 	display: none;
 }
 
+[hc_canDragSwitch="true"] {
+	text-decoration: underline !important;
+}
+
 #handyClicks-infoTooltip {
 	margin: 0;
 	padding: 0;

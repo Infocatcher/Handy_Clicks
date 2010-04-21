@@ -1285,6 +1285,14 @@ var handyClicksSets = {
 		);
 		this.pu.savePrefFile();
 	},
+	reloadPrefpanes: function() {
+		Array.forEach(
+			document.getElementsByTagName("preference"),
+			function(ps) {
+				ps.value = ps.valueFromPreferences;
+			}
+		);
+	},
 	prefsChanged: function(e) {
 		var tar = e.target;
 		if(!("hasAttribute" in tar))
@@ -1356,6 +1364,16 @@ var handyClicksSets = {
 	checkTreeContext: function() {
 		var ln = document.popupNode.localName;
 		return ln == "treechildren" || ln == "tree";
+	},
+
+	reloadConfig: function() {
+		this.reloadPrefpanes();
+		this.loadPrefs();
+		this.updateAllDependencies();
+
+		this.forceUpdTree();
+
+		this.applyButton.disabled = this._prefsSaved = true;
 	},
 
 	// about:config entries

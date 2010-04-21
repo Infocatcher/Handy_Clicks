@@ -190,7 +190,7 @@
 				<hbox align="center" hc_depends="disallowMousemove">
 					<label value="&hc.sets.maxDistance;" control="hc-sets-disallowMousemoveDist" />
 					<textbox id="hc-sets-disallowMousemoveDist" preference="disallowMousemoveDist"
-						type="number" min="0" max="100" increment="1" style="width: 4.5em;" />
+						type="number" min="0" max="150" increment="2" style="width: 4.5em;" />
 					<label value="&hc.sets.px;" />
 				</hbox>
 			</vbox>
@@ -207,7 +207,7 @@
 			<hbox align="center">
 				<label value="&hc.sets.notifyCloseAfter;" control="hc-sets-notifyOpenTime" hc_depends="notify" />
 				<textbox id="hc-sets-notifyOpenTime" preference="notifyOpenTime"
-					type="number" min="0" max="60000" increment="50" style="width: 5em;"
+					type="number" min="0" max="120000" increment="50" style="width: 5.5em;"
 					hc_requiredFor="notify" hc_disabledValues="0" />
 				<label value="&hc.sets.zeroForDisable;" hc_depends="notify" />
 			</hbox>
@@ -274,7 +274,7 @@
 			<hbox align="center">
 				<label value="&hc.sets.openingDelay;" control="hc-sets-multipleTabsOpenDelay" />
 				<textbox id="hc-sets-multipleTabsOpenDelay" preference="multipleTabsOpenDelay"
-					type="number" min="0" max="10000" increment="10" style="width: 5em;" />
+					type="number" min="0" max="15000" increment="10" style="width: 5em;" />
 				<label value="&hc.sets.ms;" />
 			</hbox>
 		</groupbox>
@@ -342,8 +342,8 @@
 		<key id="hc-sets-key-switchPanes-ltr" keycode="VK_TAB" modifiers="control" oncommand="handyClicksSets.switchPanes(true);" />
 		<key id="hc-sets-key-switchPanes-rtl" keycode="VK_TAB" modifiers="control,shift" oncommand="handyClicksSets.switchPanes(false);" />
 		<key id="hc-sets-key-apply" key="s" modifiers="control" oncommand="handyClicksSets.savePrefs(true);" />
-		<key id="hc-sets-key-reload" keycode="VK_F5" oncommand="handyClicksSets.forceUpdTree();" />
-		<key id="hc-sets-key-reload" key="r" modifiers="control" oncommand="handyClicksSets.forceUpdTree();" />
+		<key id="hc-sets-key-reload" keycode="VK_F5" oncommand="handyClicksSets.reloadConfig();" />
+		<key id="hc-sets-key-reload" key="r" modifiers="control" oncommand="handyClicksSets.reloadConfig();" />
 
 		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksWinUtils.maximizeWindow();" />
 		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksWinUtils.toggleFullscreen();" />

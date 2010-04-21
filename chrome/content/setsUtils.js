@@ -1,6 +1,8 @@
 var handyClicksSetsUtils = {
 	init: function(reloadFlag) {
 		window.addEventListener("DOMMouseScroll", this, true);
+		window.addEventListener("dragenter", this, true);
+		window.addEventListener("dragexit", this, true);
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 		if(!reloadFlag)
 			this.createFloatToolbar();
@@ -14,6 +16,8 @@ var handyClicksSetsUtils = {
 	},
 	destroy: function(reloadFlag) {
 		window.removeEventListener("DOMMouseScroll", this, true);
+		window.removeEventListener("dragenter", this, true);
+		window.removeEventListener("dragexit", this, true);
 	},
 	get dropEvent() {
 		delete this.dropEvent;
@@ -32,7 +36,7 @@ var handyClicksSetsUtils = {
 			<hbox xmlns={this.ut.XULNS} id="hc-sets-floatToolbar">
 				<button id="hc-sets-onTop"
 					class="hcFloatButton"
-					type="checkbox"
+					type="checkbox" autoCheck="false"
 					context="hc-sets-onTopContext"
 					hidden={ !this.pu.pref("ui.onTopButton") }
 					oncommand="handyClicksWinUtils.toggleOnTop(); event.stopPropagation();"
@@ -86,12 +90,16 @@ var handyClicksSetsUtils = {
 		}
 	},
 	handleEvent: function(e) {
-		if(e.type == "DOMMouseScroll") {
-			this.scrollList(e)
-				|| this.scrollRadio(e)
-				|| this.scrollNumTextbox(e)
-				|| this.scrollTabs(e)
-				|| this.scrollPanes(e);
+		switch(e.type) {
+			case "DOMMouseScroll":
+				this.scrollList(e)
+					|| this.scrollRadio(e)
+					|| this.scrollNumTextbox(e)
+					|| this.scrollTabs(e)
+					|| this.scrollPanes(e);
+			break;
+			case "dragenter": this.dragenterHandler(e); break;
+			case "dragexit":  this.dragexitHandler(e);
 		}
 	},
 	isScrollForward: function(e) {
@@ -225,6 +233,48 @@ var handyClicksSetsUtils = {
 			}
 		}
 		return false;
+	},
+
+	dragSwitch: true,
+	dragenterHandler: function(e) {
+		var tar = e.originalTarget;
+		var ln = tar.localName;
+		if(!ln || tar.getAttribute("disabled") == "true" || tar.getAttribute("selected") == "true")
+			return;
+		var selectHandler;
+		if(ln == "tab")
+			selectHandler = "selectTab";
+		else if(ln == "radio" && /(?:^|\s)paneSelector(?:\s|$)/.test(tar.parentNode.className))
+			selectHandler = "selectRadio";
+		if(!selectHandler)
+			return;
+		tar.setAttribute("hc_canDragSwitch", "true");
+		this.dragSwitch = true;
+		var _this = this;
+		var dragSwitch = function() {
+			tar.removeAttribute("hc_canDragSwitch");
+			if(_this.dragSwitch)
+				_this[selectHandler](tar);
+		};
+		var delay = this.pu.pref("ui.dragSwitchDelay");
+		if(delay > 0 && this.ut.fxVersion >= 3)
+			setTimeout(dragSwitch, delay);
+		else
+			dragSwitch();
+	},
+	dragexitHandler: function(e) {
+		this.dragSwitch = false;
+	},
+	selectTab: function(tab) {
+		for(var node = tab.parentNode; node; node = node.parentNode) {
+			if(node.localName == "tabbox") {
+				node.selectedTab = tab;
+				return;
+			}
+		}
+	},
+	selectRadio: function(radio) {
+		radio.doCommand();
 	},
 
 	get infoTooltip() {

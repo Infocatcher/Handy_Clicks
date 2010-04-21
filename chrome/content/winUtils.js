@@ -92,7 +92,7 @@ var handyClicksWinUtils = {
 		var butt = this.$("hc-sets-onTop");
 		butt.hidden = !buttonVisible;
 		if(buttonVisible) {
-			butt.setAttribute("checked", onTop);
+			butt.setAttribute("checked", onTop); // + autoCheck="false"
 			butt.setAttribute("hc_hideLabel", !this.pu.pref("ui.onTopButtonLabel"));
 		}
 		var de = top.document.documentElement;

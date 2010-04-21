@@ -20,6 +20,7 @@ pref("extensions.handyclicks.ui.onTopButton", true);
 pref("extensions.handyclicks.ui.onTopButtonLabel", true);
 pref("extensions.handyclicks.ui.onTopBorderColor", "orange");
 pref("extensions.handyclicks.ui.reverseScrollDirection", false);
+pref("extensions.handyclicks.ui.dragSwitchDelay", 250);
 
 pref("extensions.handyclicks.funcs.loadJavaScriptLinks", true);
 pref("extensions.handyclicks.funcs.notifyJavaScriptLinks", true);
