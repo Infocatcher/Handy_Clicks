@@ -529,9 +529,12 @@ var handyClicksUtils = {
 			node.hidePopup();
 		_cm.call(this, node.parentNode);
 	},
+	hasModifier: function(evt) {
+		return evt.ctrlKey || evt.shiftKey || evt.altKey || evt.metaKey;
+	},
 
 	mm: function(n, minVal, maxVal) {
-		return Math.max(Math.min(n, maxVal), minVal);
+		return Math.max(minVal, Math.min(maxVal, n));
 	},
 	mmLine: function(n) {
 		if(n >= 0xFFFFFFFF)

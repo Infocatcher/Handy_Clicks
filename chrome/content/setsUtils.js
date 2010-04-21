@@ -4,9 +4,25 @@ var handyClicksSetsUtils = {
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 		if(!reloadFlag)
 			this.createFloatToolbar();
+		Array.slice(document.getElementsByAttribute("hc_ondrop", "*")).forEach(
+			function(elt) {
+				elt.setAttribute("on" + this.dropEvent, elt.getAttribute("hc_ondrop"));
+				elt.removeAttribute("hc_ondrop");
+			},
+			this
+		);
 	},
 	destroy: function(reloadFlag) {
 		window.removeEventListener("DOMMouseScroll", this, true);
+	},
+	get dropEvent() {
+		delete this.dropEvent;
+		var v = this.ut.fxVersion;
+		return this.dropEvent = v < 3
+			? "dragexit"
+			: v < 3.7
+				? "dragend"
+				: "drop";
 	},
 	createFloatToolbar: function() {
 		var de = document.documentElement;

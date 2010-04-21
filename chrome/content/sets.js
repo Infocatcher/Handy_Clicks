@@ -978,13 +978,28 @@ var handyClicksSets = {
 			this
 		);
 	},
-	viewMenuCommand: function(mi) {
+	viewMenuCommand: function(e, popup) {
+		var mi = e.target;
 		if(mi.hasAttribute("value"))
 			this.setDrawMode(mi.value);
 		else if(mi.hasAttribute("hc_pref")) {
-			const pName = mi.getAttribute("hc_pref");
+			var pName = mi.getAttribute("hc_pref");
 			this.pu.pref(pName, !this.pu.pref(pName)); // => updPrefsUI()
 		}
+		if(this.ut.hasModifier(e))
+			popup.hidePopup();
+	},
+	viewMenuClick: function(e, popup) {
+		if(e.button == 0)
+			return;
+		if(e.button == 1) {
+			var mi = e.target;
+			mi.doCommand();
+			mi.setAttribute("checked", mi.getAttribute("type") == "radio" || mi.getAttribute("checked") != "true");
+			if(this.pu.pref("sets.closeTreeViewMenu"))
+				return;
+		}
+		popup.hidePopup();
 	},
 	setDrawMode: function(dm) {
 		// <preference instantApply="true" ... /> is bad on slow devices (it saves prefs.js file)
@@ -1047,7 +1062,7 @@ var handyClicksSets = {
 	treeHeaderClick: function(e) {
 		if(e.button == 1)
 			return this.toggleTreeContainers(!this.tBody.getElementsByAttribute("open", "true").length);
-		if(e.ctrlKey || e.shiftKey || e.altKey || e.metaKey)
+		if(this.ut.hasModifier(e))
 			return this.toggleTreeContainers(e.button == 2);
 		var level = this.maxExpandedLevel + (e.button == 2 ? 1 : -1);
 		return this.expandTreeLevel(level);
@@ -1610,7 +1625,7 @@ var handyClicksSets = {
 			return;
 		var butt = "button" in e && e.button;
 		if(e.type == "command" || butt == 1) {
-			var hasModifier = e.ctrlKey || e.shiftKey || e.altKey || e.metaKey;
+			var hasModifier = this.ut.hasModifier(e);
 			this.importSets(hasModifier || butt == 1/*partialImport*/, this.wu.IMPORT_BACKUP, mi.getAttribute("hc_fileName"));
 			this.ut.closeMenus(mi);
 		}

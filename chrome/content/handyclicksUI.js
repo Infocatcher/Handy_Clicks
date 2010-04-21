@@ -183,10 +183,10 @@ var handyClicksUI = {
 
 	doSettings: function(e) {
 		var leftClick = e.type == "command" || e.button == 0;
-		var hasModifiers = e.ctrlKey || e.shiftKey || e.altKey || e.metaKey;
-		if(leftClick && !hasModifiers)
+		var hasModifier = this.ut.hasModifier(e);
+		if(leftClick && !hasModifier)
 			this.toggleStatus();
-		else if(e.button == 1 || leftClick && hasModifiers) {
+		else if(e.button == 1 || leftClick && hasModifier) {
 			this.wu.openSettings();
 			this.ut.closeMenus(e.target);
 		}

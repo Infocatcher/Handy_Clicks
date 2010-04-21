@@ -521,7 +521,7 @@ var handyClicksEditor = {
 		return this.eh.isAvailable(this.exts[eName]);
 	},
 	itemTypeChanged: function(iType) {
-		this.addFuncArgs(); //~ ??
+		this.addFuncArgs();
 		this.loadCustomType(iType);
 		this.initImgIgnoreLinks(iType);
 	},
@@ -674,6 +674,8 @@ var handyClicksEditor = {
 		this.shortcut = this.currentShortcut;
 		this.type = this.currentType;
 		if(this.funcOptsFixed) {
+			this.initShortcutEditor(); //~ ugly, ugly, ugly...
+
 			this.cantFixFuncOpts = !this.pasteShortcut(false, this._fixedFuncObj);
 			this.pasteShortcut(true, this._fixedFuncObjDelayed);
 		}
