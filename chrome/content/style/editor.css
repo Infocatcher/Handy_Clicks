@@ -45,7 +45,7 @@ tab[hc_empty="true"] label {
 	opacity: 0.6;
 }
 
-[hc_requiredField="true"] {
+[hc_requiredField="true"], tab[hc_requiredFieldParentTab="true"] {
 	outline: 1px solid red;
 	outline-offset: -1px;
 }

@@ -400,7 +400,7 @@ var handyClicksEditor = {
 			hideSep = false;
 		}
 		sep.hidden = hideSep;
-		parent.parentNode.value = this.type; // <menulist>
+		parent.parentNode.value = this.type || ""; // <menulist>
 		this.highlightUsedTypes();
 	},
 	delCustomTypes: function() {
@@ -440,38 +440,36 @@ var handyClicksEditor = {
 			this.ut.timeout(_he, this, [tb]);
 			return;
 		}
-		var tab;
-		if("__tab" in tb)
-			tab = tb.__tab;
-		else {
-			var tabPanel, tabBox;
-			for(var node = tb.parentNode; tb; node = node.parentNode) {
-				var ln = node.localName;
-				if(ln == "tabpanel")
-					tabPanel = node;
-				else if(ln == "tabbox") {
-					tabBox = node;
-					break;
-				}
+		var tab = tb.__parentTab || (tb.__parentTab = this.getTabForNode(tb));
+		tab && tab.setAttribute("hc_empty", !tb.value);
+	},
+	getTabForNode: function(node, noWarnings) {
+		var tabPanel, tabBox;
+		for(node = node.parentNode; node; node = node.parentNode) {
+			var ln = node.localName;
+			if(ln == "tabpanel")
+				tabPanel = node;
+			else if(ln == "tabbox") {
+				tabBox = node;
+				break;
 			}
-			if(!tabPanel || !tabBox) {
-				this.ut._err(new Error("highlightEmpty: <tabpanel> or <tabbox> not found!"));
-				return;
-			}
-			var tabPanels = tabBox.tabpanels || tabBox.getElementsByTagNameNS(this.ut.XULNS, "tabpanels")[0];
-			var tabs = tabBox.tabs || tabBox.getElementsByTagNameNS(this.ut.XULNS, "tabs")[0];
-			if(!tabPanels || !tabs) {
-				this.ut._err(new Error("highlightEmpty: <tabpanels> or <tabs> not found!"));
-				return;
-			}
-			var tabPanelIndx = Array.indexOf(tabPanels.childNodes, tabPanel);
-			if(tabPanelIndx == -1) {
-				this.ut._err(new Error("highlightEmpty: index of <tabpanel> not found!"));
-				return;
-			}
-			tab = tb.__tab = tabs.childNodes[tabPanelIndx];
 		}
-		tab.setAttribute("hc_empty", !tb.value);
+		if(!tabPanel || !tabBox) {
+			!noWarnings && this.ut._warn(new Error("getTabForNode: <tabpanel> or <tabbox> not found!"));
+			return null;
+		}
+		var tabPanels = tabBox.tabpanels || tabBox.getElementsByTagNameNS(this.ut.XULNS, "tabpanels")[0];
+		var tabs = tabBox.tabs || tabBox.getElementsByTagNameNS(this.ut.XULNS, "tabs")[0];
+		if(!tabPanels || !tabs) {
+			!noWarnings && this.ut._warn(new Error("getTabForNode: <tabpanels> or <tabs> not found!"));
+			return null;
+		}
+		var tabPanelIndx = Array.indexOf(tabPanels.childNodes, tabPanel);
+		if(tabPanelIndx == -1) {
+			!noWarnings && this.ut._warn(new Error("getTabForNode: index of <tabpanel> not found!"));
+			return null;
+		}
+		return tabs.childNodes[tabPanelIndx];
 	},
 	initFuncsList: function(setsObj, delayed) {
 		delayed = delayed || "";
@@ -669,7 +667,7 @@ var handyClicksEditor = {
 		return s;
 	},
 	get currentType() {
-		return this.$("hc-editor-itemTypes").value || null;
+		return this.$("hc-editor-itemTypes").value || undefined;
 	},
 
 	loadFuncs: function() {
@@ -805,17 +803,19 @@ var handyClicksEditor = {
 	saveShortcut: function(applyFlag, testFlag) {
 		var sh = this.currentShortcut;
 		var type = this.currentType;
-
 		var so = this.getFuncObj();
+
+		var typesList = this.$("hc-editor-itemTypes");
+		var eventsList = this.$("hc-editor-events");
+		var funcList = this.$("hc-editor-func");
 		if(
 			!this.ps.isOkShortcut(sh) // Not needed?
 			|| !type || !so
+			|| !this.checkMenulist(typesList)
+			|| !this.checkMenulist(eventsList)
+			|| !this.checkMenulist(funcList)
 		) {
-			var req = [
-				this.$("hc-editor-itemTypes"),
-				this.$("hc-editor-events"),
-				this.$("hc-editor-func")
-			];
+			var req = [typesList, eventsList, funcList];
 			this.highlightRequiredFields(req, true);
 			this.ut.alertEx(
 				this.ut.getLocalized("errorTitle"),
@@ -1065,10 +1065,20 @@ var handyClicksEditor = {
 		}
 		fields.forEach(
 			function(field) {
-				if(!addFlag || !field.value)
-					this.ut.attribute(field, "hc_requiredField", addFlag);
+				if(
+					addFlag && field.value
+					&& (field.localName != "menulist" || this.checkMenulist(field))
+				)
+					return;
+				this.ut.attribute(field, "hc_requiredField", addFlag);
+				for(var tab = this.getTabForNode(field); tab; tab = this.getTabForNode(tab, true))
+					this.ut.attribute(tab, "hc_requiredFieldParentTab", addFlag && tab.getAttribute("selected") != "true");
 			},
 			this
 		);
+	},
+	checkMenulist: function(ml) {
+		//~ note: disabled state are not checked
+		return this.ut.isElementVisible(ml.selectedItem);
 	}
 };
