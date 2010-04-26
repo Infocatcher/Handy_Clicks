@@ -394,7 +394,7 @@ var handyClicks = {
 		if(all || this.itemTypeInSets(sets, "link")) {
 			if(
 				it.namespaceURI == this.ut.XULNS
-				&& this.inObject(it, "href")
+				&& this.inObject(it, "href") && (it.href || it.hasAttribute("href"))
 				&& (it.accessibleType || it.wrappedJSObject.accessibleType)
 					== Components.interfaces.nsIAccessibleProvider.XULLink
 			) {

@@ -171,7 +171,7 @@ var handyClicksSetsUtils = {
 			this
 		);
 		if(this._showTooltip)
-			this.showInfoTooltip(e, si.getAttribute("label"));
+			this.showInfoTooltip(e.target, si.getAttribute("label"));
 		return true;
 	},
 	getSameLevelRadios: function(elt) {
@@ -287,17 +287,21 @@ var handyClicksSetsUtils = {
 			)
 		);
 	},
-	showInfoTooltip: function _sit(e, msg) {
+	showInfoTooltip: function _sit(anchor, msg) {
 		if(!msg)
 			return;
 		var tt = this.infoTooltip;
 		tt.firstChild.setAttribute("value", msg);
-		//tt.hidePopup();
-		if("openPopup" in tt)
-			tt.openPopup(e.target, "after_start");
+
+		var bo = anchor.boxObject;
+		var x = bo.screenX;
+		var y = bo.screenY + bo.height + 12;
+		if("openPopupAtScreen" in tt) // Firefox 3.0+
+			tt.openPopupAtScreen(x, y, false /*isContextMenu*/);
 		else
-			tt.showPopup(e.target, -1, -1, "tooltip", "bottomleft", "topleft");
-		if("timeout" in _sit)
+			tt.showPopup(anchor, x, y, "tooltip", null, null);
+
+		if(_sit.hasOwnProperty("timeout"))
 			clearTimeout(_sit.timeout);
 		_sit.timeout = setTimeout(function(tt) {
 			tt.hidePopup();

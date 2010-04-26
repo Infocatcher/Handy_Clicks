@@ -9,7 +9,8 @@ var handyClicksEditor = {
 			skipCache: true,
 			loadInBackground: true,
 			loadJSInBackground: true,
-			closePopups: true
+			closePopups: true,
+			__proto__: null
 		},
 		menulists: {
 			refererPolicy: [-1, 0, /*1,*/ 2],
@@ -17,7 +18,8 @@ var handyClicksEditor = {
 			moveWinTo: ["null", "top", "right", "bottom", "left", "sub"],
 			winRestriction: [-1, 0, 1, 2], // browser.link.open_newwindow.restriction
 			target: ["cur", "win", "tab"], // browser.link.open_newwindow
-			position: ["top", "right", "bottom", "left"]
+			position: ["top", "right", "bottom", "left"],
+			__proto__: null
 		}
 	},
 	tabs: {
@@ -725,7 +727,7 @@ var handyClicksEditor = {
 			_ffe.time = Date.now();
 			return;
 		}
-		else if(!("time" in _ffe) || Date.now() - _ffe.time > 50)
+		else if(!_ffe.hasOwnProperty("time") || Date.now() - _ffe.time > 50)
 			return;
 		// tab seleted ... < 50 ms ... textbox focused
 		var fe = document.commandDispatcher.focusedElement;

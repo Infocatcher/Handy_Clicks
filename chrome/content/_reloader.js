@@ -26,18 +26,18 @@ var handyClicksReloader = {
 			__proto__: null
 		};
 		try {
-			handyClicksRegSvc.destroy(true);
 			var t = Date.now(), p;
+			handyClicksRegSvc.destroy(true);
 			for(var f in files) {
 				p = files[f];
 				if(p in window)
 					jsLoader.loadSubScript(path + f);
 			}
 			handyClicksRegSvc.init(true);
-			this._log(this.path + ": js reloaded (" + (Date.now() - t) + " ms)");
+			this._log("js reloaded (" + (Date.now() - t) + " ms)");
 		}
 		catch(e) {
-			this._log(this.path + ": can't reload scripts");
+			this._log("Can't reload scripts!");
 			throw e;
 		}
 	},
@@ -80,11 +80,11 @@ var handyClicksReloader = {
 				document[sh] = sheetsHrefs;
 			}
 			if(sheetsHrefs.length)
-				this._log(this.path + ": Can't completely remove styles!");
+				this._log("Can't completely remove styles!");
 		}
 
 		if(!sheetsHrefs.length) {
-			this._log(this.path + ": css not found!");
+			this._log("css not found!");
 			return;
 		}
 
@@ -98,7 +98,7 @@ var handyClicksReloader = {
 			+ '<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />'
 		), null);
 
-		this._log(this.path + ": css [" + sheetsHrefs.length + "] reloaded");
+		this._log("css [" + sheetsHrefs.length + "] reloaded");
 	},
 	_lastKeydown: 0,
 	keydownHandler: function(e) {
@@ -131,7 +131,7 @@ var handyClicksReloader = {
 	_log: function(msg) {
 		Components.classes["@mozilla.org/consoleservice;1"]
 			.getService(Components.interfaces.nsIConsoleService)
-			.logStringMessage("[Handy Clicks]: " + msg);
+			.logStringMessage("[Handy Clicks]: " + this.path + ": " + msg);
 	},
 	handleEvent: function(e) {
 		if(e.type == "keydown")

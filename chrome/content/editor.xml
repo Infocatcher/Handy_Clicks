@@ -389,11 +389,12 @@
 
 					if(isNew) {
 						var fName = "handyclicks_" + this.id.replace(/^hc-editor-|Field/g, "") + ".js";
+						var nsf = Components.interfaces.nsIFile;
 						file = Components.classes["@mozilla.org/file/directory_service;1"]
 							.getService(Components.interfaces.nsIProperties)
-							.get("TmpD", Components.interfaces.nsIFile);
+							.get("TmpD", nsf);
 						file.append(fName);
-						file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0644);
+						file.createUnique(nsf.NORMAL_FILE_TYPE, 0644);
 						this.file = file;
 
 						Components.classes["@mozilla.org/uriloader/external-helper-app-service;1"]
@@ -527,6 +528,53 @@
 					if(document.commandDispatcher.focusedElement !== _this.inputField) // E.g. user press Ctrl+Tab
 						_this.maximized = false;
 				}, 0, this);
+			]]>
+			</handler>
+			<handler event="dragover">
+			<![CDATA[
+				if(event.shiftKey)
+					return;
+
+				var ex = event.screenX, ey = event.screenY;
+
+				var dragSpeed = 0;
+				var now = Date.now();
+				if("_dragData" in this) {
+					var dd = this._dragData;
+					var dt = now - dd.t;
+					dragSpeed = dt < 5
+						? 100 // Just ignore...
+						: Math.pow(Math.pow(dd.x - ex, 2) + Math.pow(dd.y - ey, 2), 0.5)/dt*1000; // px/s
+				}
+				this._dragData = { t: now, x: ex, y: ey };
+				if(dragSpeed > 4)
+					return;
+
+				var bo = this.boxObject;
+				var minX = bo.screenX, maxX = minX + bo.width;
+				var minY = bo.screenY, maxY = minY + bo.height;
+
+				//if(ex < minX || ex > maxX || ey < minY || ey > maxY)
+				//	return;
+
+				const corner = 30;
+
+				var c = function(offset) {
+					var d = corner - offset;
+					return Math.round(Math.min(corner*1.6, d + Math.pow(d, d/corner*1.15) - 1));
+				};
+				var d, ifi = this.inputField;
+
+				if((d = ex - minX) < corner) // left
+					ifi.scrollLeft -= c(d);
+				else if((d = maxX - ex) < corner) // right
+					ifi.scrollLeft += c(d);
+
+				if((d = ey - minY) < corner) // top
+					ifi.scrollTop -= c(d);
+				else if((d = maxY - ey) < corner) // bottom
+					ifi.scrollTop += c(d);
+
 			]]>
 			</handler>
 		</handlers>

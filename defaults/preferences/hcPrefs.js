@@ -55,7 +55,7 @@ pref("extensions.handyclicks.sets.dateFormat", "_%Y-%m-%d_%H-%M"); // String for
 pref("extensions.handyclicks.sets.treeDrawMode", 0);
 pref("extensions.handyclicks.sets.treeExpandDelayedAction", true);
 pref("extensions.handyclicks.sets.localizeArguments", true);
-pref("extensions.handyclicks.sets.closeTreeViewMenu", false);
+pref("extensions.handyclicks.sets.closeTreeViewMenu", true);
 
 pref("extensions.handyclicks.editor.tabSymbol", "	");
 pref("extensions.handyclicks.editor.externalEditorPath", "");
