@@ -111,6 +111,7 @@ var handyClicksSets = {
 		this._localizeArgs = this.pu.pref("sets.localizeArguments");
 
 		this._overrides = this._overridesDa = this._new = this._newDa = 0;
+		this._buggy = 0;
 
 		var drawMode = this.pu.pref("sets.treeDrawMode");
 		var p = this.ps.prefs;
@@ -288,7 +289,7 @@ var handyClicksSets = {
 
 			this.addClildsProperties(daRow, {
 				hc_disabled: this._forcedDisDa || !fo.enabled || !da.enabled,
-				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel),
+				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel) && ++this._buggy,
 				hc_custom: daCustom,
 				hc_customType: isCustomType
 			}, true);
@@ -334,7 +335,7 @@ var handyClicksSets = {
 
 		this.addClildsProperties(tRow, {
 			hc_disabled: !fo.enabled,
-			hc_buggy: isBuggy,
+			hc_buggy: isBuggy && ++this._buggy,
 			hc_custom: isCustom,
 			hc_customType: isCustomType
 		}, true);
@@ -823,7 +824,7 @@ var handyClicksSets = {
 			);
 		}
 		if(this.instantApply && !this.ps.otherSrc)
-			this.ps.saveSettingsObjects(true);
+			this.saveSettingsObjectsCheck(true);
 		else
 			this.applyButton.disabled = false;
 		this.updButtons();
@@ -1265,15 +1266,43 @@ var handyClicksSets = {
 			this.savePrefpanes();
 			this.applyButton.disabled = this._prefsSaved = true;
 		}
+		var saved = true;
 		if(this.ps.otherSrc)
 			this.ps.reloadSettings(applyFlag);
 		else
-			this.ps.saveSettingsObjects(applyFlag);
+			saved = this.saveSettingsObjectsCheck(applyFlag);
 		if(
-			!applyFlag && this.ps.otherSrc
+			saved
+			&& !applyFlag && this.ps.otherSrc
 			&& !this.ut.confirmEx(this.ut.getLocalized("title"), this.ut.getLocalized("importIncomplete"))
 		)
 			return false;
+		return saved;
+	},
+	buggyPrefsCheck: function() {
+		if(this._buggy) {
+			var ps = this.ut.promptsSvc;
+			// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
+			// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
+			var button = ps.confirmEx(
+				window,
+				this.ut.getLocalized("warningTitle"),
+				this.ut.getLocalized("saveBuggyConfirm").replace("%n", this._buggy),
+				  ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING
+				+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL
+				+ ps.BUTTON_POS_1_DEFAULT,
+				this.ut.getLocalized("save"), "", "",
+				null, {}
+			);
+			if(button == 1)
+				return false;
+		}
+		return true;
+	},
+	saveSettingsObjectsCheck: function(reloadFlag) {
+		if(!this.buggyPrefsCheck())
+			return false;
+		this.ps.saveSettingsObjects(reloadFlag);
 		return true;
 	},
 	savePrefpanes: function() {
@@ -1570,7 +1599,8 @@ var handyClicksSets = {
 			// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
 			// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
 			var button = ps.confirmEx(
-				window, this.ut.getLocalized("warningTitle"),
+				window,
+				this.ut.getLocalized("warningTitle"),
 				this.ut.getLocalized("hashMissingConfirm"),
 				  ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING
 				+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL
@@ -1802,6 +1832,13 @@ var handyClicksSets = {
 		this.setImportStatus(this._import, !this._partialImport, this._importFromClipboard, true);
 	},
 	importDone: function(ok) {
+		var confirmed = false;
+		if(ok) {
+			confirmed = this.buggyPrefsCheck();
+			if(!confirmed)
+				return;
+		}
+
 		var isPartial = this._partialImport;
 		//var fromClip = this._importFromClipboard;
 		this.setImportStatus(false);
@@ -1811,7 +1848,10 @@ var handyClicksSets = {
 				this.mergePrefs();
 			else // Keep prefs file because content of new file may be equals!
 				this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, null, true);
-			this.ps.saveSettingsObjects(true);
+			if(confirmed)
+				this.ps.saveSettingsObjects(true);
+			else
+				this.saveSettingsObjectsCheck(true);
 		}
 		else {
 			this.ps.loadSettings();

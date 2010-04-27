@@ -486,6 +486,88 @@
 				</body>
 			</method>
 
+			<method name="jsAutocomplete">
+				<parameter name="reverseFlag" />
+				<body>
+				<![CDATA[
+					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
+					var val = this.value;
+					var selText = val.substring(ss, se);
+					if(/[^\w$]/.test(selText))
+						return;
+					var startText = val.substring(0, ss);
+
+					if(!/(?:(\.)\s*|('|"))?([\w$]+)$/.test(startText))
+						return;
+					var lastWord = RegExp.$3;
+					var scopeProp = RegExp.$1 // .
+						? "jsProps"
+						: RegExp.$2 // ' or "
+							? "jsStrings"
+							: "jsStatements";
+
+					var newWord;
+					var curWord = lastWord + selText;
+
+					if(!("handyClicksAutocompleteData" in top)) {
+						Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+							.getService(Components.interfaces.mozIJSSubScriptLoader)
+							.loadSubScript(new Error().fileName.replace(/[^\/]+$/, "") + "editorAutocompleteData.js");
+					}
+					var scopeArr = top.handyClicksAutocompleteData[scopeProp];
+					if(reverseFlag)
+						scopeArr = scopeArr.concat().reverse();
+
+					var found = false;
+					scopeArr.some(
+						function(p) {
+							if(!found && p == curWord) {
+								found = true;
+								return false;
+							}
+							if(found && p.indexOf(lastWord) == 0) {
+								newWord = p;
+								return true;
+							}
+							return false;
+						}
+					);
+					if(!newWord) {
+						scopeArr.some(
+							function(p) {
+								if(p.indexOf(lastWord) == 0) {
+									newWord = p;
+									return true;
+								}
+								return false;
+							}
+						);
+					}
+					if(!newWord)
+						return;
+
+					var cnt = 0;
+					scopeArr.forEach(
+						function(p) {
+							if(p.indexOf(lastWord) == 0)
+								cnt++;
+						}
+					);
+
+					var sPos = startText.lastIndexOf(lastWord);
+					ifi.selectionStart = sPos;
+					ifi.selectionEnd = sPos + curWord.length;
+
+					this.insertText(newWord);
+
+					ifi.selectionStart = sPos + (cnt == 1 ? newWord.length : lastWord.length);
+					ifi.selectionEnd = sPos + newWord.length;
+				]]>
+				</body>
+			</method>
+
 			<method name="moveCaret">
 				<parameter name="moveLeft" />
 				<parameter name="event" />
@@ -518,6 +600,9 @@
 			<handler event="keypress" preventdefault="true" key="g" action="this.goToLine();" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="w" action="this.toggleWordWrap();" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="e" action="this.openExternalEditor();" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(false);" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(true);" modifiers="control,shift" />
+
 			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
 			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />
 			<handler event="blur">

@@ -58,6 +58,9 @@ tree[hc_colored="true"] treechildren::-moz-tree-row(hc_disabled) {
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy) {
 	background-color: #faa;
 }
+tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_buggy) {
+	text-decoration: line-through;
+}
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_search) {
 	background-color: #e7e3ff;
 }
