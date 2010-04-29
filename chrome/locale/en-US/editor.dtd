@@ -39,13 +39,14 @@
 <!ENTITY hc.editor.funcLabel "Label:">
 <!ENTITY hc.editor.funcLabelAccesskey "L">
 <!ENTITY hc.editor.funcArgsCaption "Arguments">
-<!ENTITY hc.editor.funcArgs "Arguments:">
 <!ENTITY hc.editor.funcCode "Code">
 <!ENTITY hc.editor.funcCodeAccesskey "C">
 <!ENTITY hc.editor.funcCodeTip "Executes on click">
+<!ENTITY hc.editor.argsNote "Arguments:">
 <!ENTITY hc.editor.funcInit "Initialization">
 <!ENTITY hc.editor.funcInitAccesskey "I">
 <!ENTITY hc.editor.funcInitTip "Executes on settings (re)loading">
+<!ENTITY hc.editor.funcInitReturnNote "Return: destructor function or nothing">
 
 <!ENTITY hc.editor.mainTabCustomTypes "Custom Types">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "T">
@@ -53,7 +54,7 @@
 <!ENTITY hc.editor.internalIdAccesskey "r">
 <!ENTITY hc.editor.defineItem "Item definition">
 <!ENTITY hc.editor.defineItemAccesskey "I">
-<!ENTITY hc.editor.defineReturn "Return: node or null"> <!-- Do not translate "null"! -->
+<!ENTITY hc.editor.defineReturnNote "Return: node or null"> <!-- Do not translate "null"! -->
 <!ENTITY hc.editor.defineContext "Context menu of item">
 <!ENTITY hc.editor.defineContextAccesskey "C">
 <!ENTITY hc.editor.defineContextTip "Leave this field empty for autodetection">

@@ -495,21 +495,25 @@
 					var se = ifi.selectionEnd;
 					var val = this.value;
 					var selText = val.substring(ss, se);
-					if(/[^\w$]/.test(selText))
+					if(selText && !/^[\w$]+['"]?$/.test(selText))
 						return;
 					var startText = val.substring(0, ss);
 
 					if(!/(?:(\.)\s*|('|"))?([\w$]+)$/.test(startText))
 						return;
+					var isProp = !!RegExp.$1;
+					var isStr = !!RegExp.$2, strComma = RegExp.$2;
 					var lastWord = RegExp.$3;
-					var scopeProp = RegExp.$1 // .
+
+					var scopeProp = isProp
 						? "jsProps"
-						: RegExp.$2 // ' or "
+						: isStr
 							? "jsStrings"
 							: "jsStatements";
 
 					var newWord;
-					var curWord = lastWord + selText;
+					var curWordOrig = lastWord + selText;
+					var curWord = curWordOrig.replace(/['"]$/, "");
 
 					if(!("handyClicksAutocompleteData" in top)) {
 						Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
@@ -545,7 +549,7 @@
 							}
 						);
 					}
-					if(!newWord)
+					if(!newWord || newWord == curWord)
 						return;
 
 					var cnt = 0;
@@ -556,11 +560,14 @@
 						}
 					);
 
-					var sPos = startText.lastIndexOf(lastWord);
-					ifi.selectionStart = sPos;
-					ifi.selectionEnd = sPos + curWord.length;
+					if(isStr)
+						newWord += strComma;
 
-					this.insertText(newWord);
+					var sPos = startText.lastIndexOf(lastWord);
+					ifi.selectionStart = sPos + lastWord.length;
+					ifi.selectionEnd = sPos + curWordOrig.length;
+
+					this.insertText(newWord.substr(lastWord.length));
 
 					ifi.selectionStart = sPos + (cnt == 1 ? newWord.length : lastWord.length);
 					ifi.selectionEnd = sPos + newWord.length;

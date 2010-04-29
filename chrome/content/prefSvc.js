@@ -27,6 +27,11 @@ var handyClicksPrefSvc = {
 	otherSrc: false,
 	_restoringCounter: 0,
 
+	destroy: function(reloadFlag) {
+		if(this.isMainWnd)
+			this.destroyCustomFuncs(reloadFlag);
+	},
+
 	get _profileDir() {
 		delete this._profileDir;
 		return this._profileDir = Components.classes["@mozilla.org/file/directory_service;1"]
@@ -290,6 +295,7 @@ var handyClicksPrefSvc = {
 		if(allowSave)
 			this.saveSettingsObjects();
 	},
+
 	compileCystomTypes: function() {
 		var cts = this.types, ct;
 		var df, cm;
@@ -328,6 +334,7 @@ var handyClicksPrefSvc = {
 		}
 	},
 	initCustomFuncs: function() {
+		this.destroyCustomFuncs();
 		var p = this.prefs;
 		var sh, so, type, to, da;
 		for(sh in p) if(p.hasOwnProperty(sh)) {
@@ -340,36 +347,69 @@ var handyClicksPrefSvc = {
 				to = so[type];
 				if(!this.isOkFuncObj(to) || !to.enabled || !this.ut.getOwnProperty(to, "custom"))
 					continue;
-				this.initCustomFunc(this.ut.getOwnProperty(to, "init"), to, sh, type, false);
+				this.initCustomFunc(to, sh, type, false);
 				da = this.ut.getOwnProperty(to, "delayedAction");
 				if(!this.isOkFuncObj(da) || !da.enabled || !this.ut.getOwnProperty(da, "custom"))
 					continue;
-				this.initCustomFunc(this.ut.getOwnProperty(da, "init"), da, sh, type, true);
+				this.initCustomFunc(da, sh, type, true);
 			}
 		}
 	},
-	initCustomFunc: function(rawCode, fObj, sh, type, delayed) {
+	initCustomFunc: function(fObj, sh, type, delayed) {
+		var rawCode = this.ut.getOwnProperty(fObj, "init");
 		if(!rawCode)
 			return;
 		try {
 			var line = new Error().lineNumber + 1;
-			new Function(this.dec(rawCode)).call(this.ut);
+			var destructor = new Function(this.dec(rawCode)).call(this.ut);
+			if(typeof destructor == "function")
+				this._destructors.push([destructor, line, fObj, sh, type, delayed]);
 		}
 		catch(e) {
-			var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - line + 1);
-			var href = this.wu.PROTOCOL_EDITOR_SHORTCUT + sh + "/" + type + "/"
-				+ (delayed ? "delayed" : "normal") + "/init"
-				+ "?line=" + eLine;
-			var eMsg = this.ut.errInfo("funcInitError", this.dec(fObj.label), type, e);
-			this.ut.notifyInWindowCorner(
-				eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
-				this.ut.getLocalized("errorTitle"),
-				this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
-			);
-			this.ut._err(eMsg, href, eLine);
-			this.ut._err(e);
+			this.handleCustomFuncError(e, line, fObj, sh, type, delayed);
 		}
 	},
+	_destructors: [],
+	destroyCustomFuncs: function(reloadFlag) {
+		this.ut._log("destroyCustomFuncs() [" + this._destructors.length + "]"); //~
+		this._destructors.forEach(
+			function(destructorArr) {
+				this.destroyCustomFunc.apply(this, destructorArr.concat(reloadFlag));
+			},
+			this
+		);
+		this._destructors = [];
+	},
+	destroyCustomFunc: function(destructor, baseLine, fObj, sh, type, delayed, reloadFlag) {
+		if(
+			!reloadFlag // unload
+			&& this.ut.getOwnProperty(destructor, "handleUnload") === false
+		)
+			return;
+		var context = this.ut.getOwnProperty(destructor, "context");
+		var args = this.ut.getOwnProperty(destructor, "args");
+		try {
+			destructor.apply(context, args);
+		}
+		catch(e) {
+			this.handleCustomFuncError(e, baseLine, fObj, sh, type, delayed);
+		}
+	},
+	handleCustomFuncError: function(e, baseLine, fObj, sh, type, delayed) {
+		var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - baseLine + 1);
+		var href = this.wu.PROTOCOL_EDITOR_SHORTCUT + sh + "/" + type + "/"
+			+ (delayed ? "delayed" : "normal") + "/init"
+			+ "?line=" + eLine;
+		var eMsg = this.ut.errInfo("funcInitError", this.dec(this.ut.getOwnProperty(fObj, "label")), type, e);
+		this.ut.notifyInWindowCorner(
+			eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
+			this.ut.getLocalized("errorTitle"),
+			this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
+		);
+		this.ut._err(eMsg, href, eLine);
+		this.ut._err(e);
+	},
+
 	getSettingsStr: function(types, prefs) {
 		types = types || this.types;
 		prefs = prefs || this.prefs;
@@ -421,7 +461,7 @@ var handyClicksPrefSvc = {
 						pName == "enabled"
 						&& (
 							type in forcedDisByType
-							|| (type != "$all" && forcedDis)
+							|| forcedDis && type != "$all"
 						)
 					)
 						pVal = false;

@@ -1205,7 +1205,8 @@ var handyClicksSets = {
 			)
 				okRow = false;
 
-			this.addProperties(tRow, { hc_search: okRow });
+			//this.addProperties(tRow, { hc_search: okRow });
+			this.addClildsProperties(tRow, { hc_search: okRow }, true);
 			if(!okRow)
 				continue;
 			count++;

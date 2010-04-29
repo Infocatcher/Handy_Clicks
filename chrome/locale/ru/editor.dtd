@@ -39,13 +39,14 @@
 <!ENTITY hc.editor.funcLabel "Название:">
 <!ENTITY hc.editor.funcLabelAccesskey "Н">
 <!ENTITY hc.editor.funcArgsCaption "Аргументы">
-<!ENTITY hc.editor.funcArgs "Аргументы:">
 <!ENTITY hc.editor.funcCode "Код">
 <!ENTITY hc.editor.funcCodeAccesskey "К">
 <!ENTITY hc.editor.funcCodeTip "Выполняется при клике">
+<!ENTITY hc.editor.argsNote "Аргументы:">
 <!ENTITY hc.editor.funcInit "Инициализация">
 <!ENTITY hc.editor.funcInitAccesskey "И">
 <!ENTITY hc.editor.funcInitTip "Выполняется при (пере)загрузке настроек">
+<!ENTITY hc.editor.funcInitReturnNote "Должно возвращать: функцию-деструктор или ничего">
 
 <!ENTITY hc.editor.mainTabCustomTypes "Добавленные типы">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "б">
@@ -53,7 +54,7 @@
 <!ENTITY hc.editor.internalIdAccesskey "й">
 <!ENTITY hc.editor.defineItem "Определение элемента">
 <!ENTITY hc.editor.defineItemAccesskey "э">
-<!ENTITY hc.editor.defineReturn "Должно возвращать: элемент или null"> <!-- Do not translate "null"! -->
+<!ENTITY hc.editor.defineReturnNote "Должно возвращать: элемент или null"> <!-- Do not translate "null"! -->
 <!ENTITY hc.editor.defineContext "Контекстное меню элемента">
 <!ENTITY hc.editor.defineContextAccesskey "К">
 <!ENTITY hc.editor.defineContextTip "Для автоопределения оставьте поле пустым">

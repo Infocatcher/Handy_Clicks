@@ -75,7 +75,7 @@ var handyClicksRegSvc = {
 		var s = this.s, o;
 		for(var p in s) if(s.hasOwnProperty(p)) {
 			o = s[p];
-			if(o !== this && methName in o)
+			if(o !== this && o.hasOwnProperty(methName))
 				o[methName](reloadFlag);
 		}
 	},

@@ -193,13 +193,18 @@
 										<tabpanel flex="1" orient="vertical">
 											<hbox>
 												<textbox class="hcText" readonly="true"
-													value="&hc.editor.funcArgs; event, item, origItem"
+													value="&hc.editor.argsNote; event, item, origItem"
 													onfocus="handyClicksEditor.fixFocusedElement(event);" />
 											</hbox>
 											<textbox class="hcEditor" id="hc-editor-funcField" flex="1"
 												accesskey="&hc.editor.editAccesskey;" />
 										</tabpanel>
 										<tabpanel flex="1" orient="vertical">
+											<hbox>
+												<textbox class="hcText" readonly="true"
+													value="&hc.editor.funcInitReturnNote;"
+													onfocus="handyClicksEditor.fixFocusedElement(event);" />
+											</hbox>
 											<textbox class="hcEditor" id="hc-editor-funcInitField" flex="1"
 												accesskey="&hc.editor.editAccesskey;"
 												oninput="handyClicksEditor.highlightEmpty(this, true);"
@@ -245,9 +250,9 @@
 					<tabpanels flex="1">
 						<tabpanel id="hc-editor-customTypeDefinePanel" flex="1" orient="vertical">
 							<hbox>
-								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.funcArgs; event, item"
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.argsNote; event, item"
 									onfocus="handyClicksEditor.fixFocusedElement(event);" />
-								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturnNote;" />
 							</hbox>
 							<textbox class="hcEditor" id="hc-editor-customTypeDefine" flex="1"
 								accesskey="&hc.editor.editAccesskey;" />
@@ -255,9 +260,9 @@
 						<tabpanel id="hc-editor-customTypeContextPanel" flex="1" orient="vertical">
 							<hbox>
 								<textbox class="hcText" readonly="true" tabindex="1"
-									value="&hc.editor.funcArgs; event, item, origItem"
+									value="&hc.editor.argsNote; event, item, origItem"
 									onfocus="handyClicksEditor.fixFocusedElement(event);" />
-								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturn;" />
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturnNote;" />
 							</hbox>
 							<textbox class="hcEditor" id="hc-editor-customTypeContext" flex="1"
 								accesskey="&hc.editor.editAccesskey;"
