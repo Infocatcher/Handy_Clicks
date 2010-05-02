@@ -183,7 +183,7 @@
 								</groupbox>
 
 								<tabbox id="hc-editor-funcCustomTabbox" flex="1">
-									<tabs onselect="handyClicksEditor.fixFocusedElement(event);">
+									<tabs>
 										<tab label="&hc.editor.funcCode;" accesskey="&hc.editor.funcCodeAccesskey;"
 											tooltiptext="&hc.editor.funcCodeTip;" selected="true" />
 										<tab label="&hc.editor.funcInit;" accesskey="&hc.editor.funcInitAccesskey;"
@@ -191,19 +191,17 @@
 									</tabs>
 									<tabpanels flex="1">
 										<tabpanel flex="1" orient="vertical">
-											<hbox>
-												<textbox class="hcText" readonly="true"
-													value="&hc.editor.argsNote; event, item, origItem"
-													onfocus="handyClicksEditor.fixFocusedElement(event);" />
+											<hbox class="hcNotesBox">
+												<textbox class="hcText" readonly="true" tabindex="1"
+													value="&hc.editor.argsNote; event, item, origItem" />
 											</hbox>
 											<textbox class="hcEditor" id="hc-editor-funcField" flex="1"
 												accesskey="&hc.editor.editAccesskey;" />
 										</tabpanel>
 										<tabpanel flex="1" orient="vertical">
-											<hbox>
-												<textbox class="hcText" readonly="true"
-													value="&hc.editor.funcInitReturnNote;"
-													onfocus="handyClicksEditor.fixFocusedElement(event);" />
+											<hbox class="hcNotesBox">
+												<textbox class="hcText" readonly="true" tabindex="1"
+													value="&hc.editor.funcInitReturnNote;" />
 											</hbox>
 											<textbox class="hcEditor" id="hc-editor-funcInitField" flex="1"
 												accesskey="&hc.editor.editAccesskey;"
@@ -242,26 +240,24 @@
 				</hbox>
 
 				<tabbox id="hc-editor-customTypeFuncs" flex="1">
-					<tabs onselect="handyClicksEditor.fixFocusedElement(event);">
+					<tabs>
 						<tab label="&hc.editor.defineItem;" accesskey="&hc.editor.defineItemAccesskey;" />
 						<tab hc_empty="true" label="&hc.editor.defineContext;" accesskey="&hc.editor.defineContextAccesskey;"
 							tooltiptext="&hc.editor.defineContextTip;" />
 					</tabs>
 					<tabpanels flex="1">
 						<tabpanel id="hc-editor-customTypeDefinePanel" flex="1" orient="vertical">
-							<hbox>
-								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.argsNote; event, item"
-									onfocus="handyClicksEditor.fixFocusedElement(event);" />
+							<hbox class="hcNotesBox">
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.argsNote; event, item" />
 								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturnNote;" />
 							</hbox>
 							<textbox class="hcEditor" id="hc-editor-customTypeDefine" flex="1"
 								accesskey="&hc.editor.editAccesskey;" />
 						</tabpanel>
 						<tabpanel id="hc-editor-customTypeContextPanel" flex="1" orient="vertical">
-							<hbox>
+							<hbox class="hcNotesBox">
 								<textbox class="hcText" readonly="true" tabindex="1"
-									value="&hc.editor.argsNote; event, item, origItem"
-									onfocus="handyClicksEditor.fixFocusedElement(event);" />
+									value="&hc.editor.argsNote; event, item, origItem" />
 								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturnNote;" />
 							</hbox>
 							<textbox class="hcEditor" id="hc-editor-customTypeContext" flex="1"

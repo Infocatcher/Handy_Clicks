@@ -116,3 +116,31 @@ menulist[hc_aboutConfigEntry] .menulist-label,
 [hc_aboutConfigEntry] :not([hc_aboutConfigEntry]) {
 	cursor: default;
 }
+
+:root[hc_showCustomFuncsNotes="false"] .hcNotesBox {
+	display: none;
+}
+
+/* Compact style */
+:root[hc_compactUI="true"] tabpanels {
+	padding: 4px;
+}
+:root[hc_compactUI="true"] tab {
+	padding: 0px 4px 1px 4px;
+}
+:root[hc_compactUI="true"] tab[selected="true"] {
+	padding: 0px 6px 3px 6px;
+}
+:root[hc_compactUI="true"] menulist {
+	margin-top: 1px;
+	margin-bottom: 1px;
+}
+:root[hc_compactUI="true"] .button-box {
+	margin-top: 1px;
+	margin-bottom: 1px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+:root[hc_compactUI="true"] .hcEditor {
+  margin: 0;
+}

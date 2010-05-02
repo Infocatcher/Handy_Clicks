@@ -468,15 +468,15 @@ var handyClicksUtils = {
 		return u;
 	},
 	setOwnProperty: function(obj) { // obj, "x", "y", value
-		var a = arguments, p, len = a.length - 2;
-		for(var i = 1; i <= len; i++) {
+		var a = arguments, p;
+		for(var i = 1, len = a.length - 2; i <= len; i++) {
 			p = a[i];
 			if(!(p in obj) || "hasOwnProperty" in obj && !obj.hasOwnProperty(p) || !this.isObject(obj[p]))
 				obj[p] = {};
 			if(i != len)
 				obj = obj[p];
 		}
-		obj[a[len]] = a[len + 1];
+		obj[p] = a[len + 1];
 	},
 
 	toArray: function(a) {
@@ -703,17 +703,45 @@ var handyClicksExtensionsHelper = {
 		return this.rdf = Components.classes["@mozilla.org/rdf/rdf-service;1"]
 			.getService(Components.interfaces.nsIRDFService);
 	},
+	instantInit: function() {
+		if(
+			window.Application
+			// Note:
+			//  "Application" in window && "getExtensions" in Application;
+			// will crash Firefox 3.7a5pre+
+			&& "getExtensions" in Application && !("extensions" in Application)
+			&& !this.ut.storage("extensionsPending")
+		) {
+			// Hack for Firefox 3.7a5pre+
+			// Following code is asynchronous and take some time... so, starts them as soon possible
+			this.ut.storage("extensionsPending", true);
+			var _this = this;
+			Application.getExtensions(
+				function(exts) {
+					_this.ut.storage("extensions", exts);
+				}
+			);
+		}
+	},
+	get extensions() {
+		var exts = Application.extensions || this.ut.storage("extensions");
+		if(exts) {
+			delete this.extensions;
+			return this.extensions = exts;
+		}
+		return exts;
+	},
 	isAvailable: function(guid) {
 		return this.isInstalled(guid) && this.isEnabled(guid);
 	},
 	isInstalled: function(guid) {
 		return "Application" in window
-			? Application.extensions.has(guid)
+			? this.extensions && this.extensions.has(guid)
 			: this.em.getInstallLocation(guid);
 	},
 	isEnabled: function(guid) {
 		if("Application" in window)
-			return Application.extensions.get(guid).enabled;
+			return this.extensions && this.extensions.get(guid).enabled;
 		var res  = this.rdf.GetResource("urn:mozilla:item:" + guid);
 		var opType = this.getRes(res, "opType");
 		return opType != "needs-enable" && opType != "needs-install"

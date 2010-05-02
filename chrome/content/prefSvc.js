@@ -371,7 +371,7 @@ var handyClicksPrefSvc = {
 	},
 	_destructors: [],
 	destroyCustomFuncs: function(reloadFlag) {
-		this.ut._log("destroyCustomFuncs() [" + this._destructors.length + "]"); //~
+		this._devMode && this.ut._log("destroyCustomFuncs() [" + this._destructors.length + "]"); //~
 		this._destructors.forEach(
 			function(destructorArr) {
 				this.destroyCustomFunc.apply(this, destructorArr.concat(reloadFlag));

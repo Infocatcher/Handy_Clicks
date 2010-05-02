@@ -384,7 +384,7 @@ var handyClicksSets = {
 	},
 	getCustomTypeLabel: function(type) {
 		var label = this.ut.getOwnProperty(this.ps.types, type, "label");
-		return (label ? this.ps.dec(label) + " " : "") + "[" + type + "]";
+		return (label ? this.ps.dec(label) + " " : "") + "[" + this.ps.removeCustomPrefix(type) + "]";
 	},
 	getTypeLabel: function(type, isCustomType) {
 		return (isCustomType === undefined ? this.ps.isCustomType(type) : isCustomType)
@@ -901,8 +901,11 @@ var handyClicksSets = {
 		if(e.button == 1)
 			return;
 		if(
-			"mgGestureRecognizer" in window
-			&& e.button == mgPrefs.mousebutton && !mgGestureRecognizer.checkPrevent(e)
+			(
+				"mgPrefs" in window && e.button == mgPrefs.mousebutton // 3.0
+				|| "mgGesturePrefs" in window && e.button == mgGesturePrefs.mousebutton // 3.1pre
+			)
+			&& "mgGestureRecognizer" in window && !mgGestureRecognizer.checkPrevent(e)
 		)
 			return; // Do nothing, if Mouse Gestures Redox 3.0+ is active ( http://mousegestures.org/ )
 
@@ -1101,22 +1104,25 @@ var handyClicksSets = {
 		add: function(r) {
 			this._res.push(r);
 		},
-		get _length() {
+		finish: function() {
+			this._res.sort(function(a, b) { return a > b; }); // Sort as numbers
+		},
+		get count() {
 			return this._res.length;
 		},
 		next: function() {
-			if(++this._current >= this._length)
+			if(++this._current >= this.count)
 				this._wrapped = true, this._current = 0;
 			this.select();
 		},
 		prev: function() {
 			if(--this._current < 0)
-				this._wrapped = true, this._current = this._length - 1;
+				this._wrapped = true, this._current = this.count - 1;
 			this.select();
 		},
 		select: function(i) {
 			if(typeof i != "number") {
-				if(!this._length)
+				if(!this.count)
 					return;
 				i = this._res[this._current];
 			}
@@ -1172,7 +1178,6 @@ var handyClicksSets = {
 				return;
 			}
 		}
-		this.searcher.reset();
 		sIt = sIt || this.$("hc-sets-tree-searchField");
 
 		var sTerm = sIt.value;
@@ -1191,6 +1196,7 @@ var handyClicksSets = {
 			sTerm = sTerm.toLowerCase().split(/\s+/);
 		}
 
+		this.searcher.reset();
 		var tRow, rowText, okRow, indx;
 		var notFound = true, count = 0;
 		for(var h in this.rowsCache) {
@@ -1218,6 +1224,7 @@ var handyClicksSets = {
 					this.searcher.select(indx);
 			}
 		}
+		this.searcher.finish();
 		this.$("hc-sets-tree-searchResults").value = hasTerm ? count : "";
 		sIt.setAttribute("hc_notFound", hasTerm && notFound);
 

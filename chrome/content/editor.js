@@ -44,6 +44,8 @@ var handyClicksEditor = {
 		this.ps.oSvc.addObserver(this.appendTypesList, this);
 
 		this.setTooltip();
+		this.setFuncsNotes();
+		this.setCompactUI();
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 
 		Array.forEach( // Add spellcheck feature for <menulist editable="true" />
@@ -59,10 +61,17 @@ var handyClicksEditor = {
 		var fb = this.e("hc-editor-funcFixBox");
 		fb.style.marginBottom = "-" + fb.boxObject.height + "px";
 		document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css
+
+		window.addEventListener("focus", this, true);
 	},
 	destroy: function(reloadFlag) {
 		this.wu.markOpenedEditors();
 		this.testMode && this.undoTestSettings();
+		window.removeEventListener("focus", this, true);
+	},
+	handleEvent: function(e) {
+		if(e.type == "focus")
+			this.fixFocusedElement(e);
 	},
 	addTestButtons: function() {
 		var bTest = this.ut.parseFromXML(
@@ -180,13 +189,32 @@ var handyClicksEditor = {
 		if(node.hasAttribute("control"))
 			node.setAttribute("control", node.getAttribute("control") + this.delayId);
 	},
-	setTooltip: function() {
+	setTooltip: function(delay) {
 		var dTab = this.$("hc-editor-funcTab-delay");
-		dTab.tooltipText = dTab.tooltipText.replace(/\d+(?:\s+\d+)*/, this.pu.pref("delayedActionTimeout"));
+		dTab.tooltipText = dTab.tooltipText.replace(
+			/\d+(?:\s+\d+)*/,
+			delay === undefined ? this.pu.pref("delayedActionTimeout") : delay
+		);
+	},
+	setFuncsNotes: function(show) {
+		document.documentElement.setAttribute(
+			"hc_showCustomFuncsNotes",
+			show === undefined ? this.pu.pref("editor.ui.showCustomFuncsNotes") : show
+		);
+	},
+	setCompactUI: function(compact) {
+		document.documentElement.setAttribute(
+			"hc_compactUI",
+			compact === undefined ? this.pu.pref("editor.ui.compact") : compact
+		);
 	},
 	prefsChanged: function(pName, pVal) {
 		if(pName == "delayedActionTimeout")
-			this.setTooltip();
+			this.setTooltip(pVal);
+		else if(pName == "editor.ui.showCustomFuncsNotes")
+			this.setFuncsNotes(pVal);
+		else if(pName == "editor.ui.compact")
+			this.setCompactUI(pVal);
 	},
 	initExtTypes: function() {
 		Array.forEach(
@@ -440,8 +468,12 @@ var handyClicksEditor = {
 			this.ut.timeout(_he, this, [tb]);
 			return;
 		}
+		var empty = !tb.textLength;
+		if(tb.__highlightedEmpty == empty)
+			return;
+		tb.__highlightedEmpty = empty;
 		var tab = tb.__parentTab || (tb.__parentTab = this.getTabForNode(tb));
-		tab && tab.setAttribute("hc_empty", !tb.value);
+		tab && tab.setAttribute("hc_empty", empty);
 	},
 	getTabForNode: function(node, noWarnings) {
 		var tabPanel, tabBox;
@@ -449,7 +481,7 @@ var handyClicksEditor = {
 			var ln = node.localName;
 			if(ln == "tabpanel")
 				tabPanel = node;
-			else if(ln == "tabbox") {
+			else if(tabPanel && ln == "tabbox") {
 				tabBox = node;
 				break;
 			}
@@ -720,35 +752,37 @@ var handyClicksEditor = {
 		const id = "hc-editor-allowMousedown";
 		this.$(id + "Label").disabled = this.$(id).disabled = isMd;
 	},
-	fixFocusedElement: function _ffe(e) {
-		if(e.type == "select") {
-			_ffe.time = Date.now();
-			return;
+	hasCaller: function(calledFunc, func) {
+		for(var caller = calledFunc.caller; caller; caller = caller.caller) {
+			if(caller === func)
+				return true;
+			if(caller === calledFunc) // Prevent recursion
+				return false;
 		}
-		else if(!_ffe.hasOwnProperty("time") || Date.now() - _ffe.time > 50)
+		return false;
+	},
+	fixFocusedElement: function _ffe(e) {
+		// Stack example: _ffe <- this.handleEvent <- _ffe.caller.caller
+		//this.ut._log(new Error().stack);
+		if(!this.hasCaller(_ffe, document.commandDispatcher.advanceFocusIntoSubtree))
 			return;
-		// tab seleted ... < 50 ms ... textbox focused
-		var fe = document.commandDispatcher.focusedElement;
-		if(!fe || fe.localName != "input")
-			return;
-		var elt = fe.parentNode.parentNode; // <textbox>
-		var cre = /(?:^|\s)hcText(?:\s|$)/;
-		if(!elt || !cre.test(elt.className))
+		var tar = e.target;
+		if(tar.localName != "textbox" || !tar.hasAttribute("tabindex"))
 			return;
 		e.preventDefault();
-		e.stopPropagation();
-		w:
-		for(; elt; elt = elt.parentNode) {
-			if(elt.localName != "tabpanel")
+		for(var node = tar.parentNode; node; node = node.parentNode) {
+			if(node.localName != "tabpanel")
 				continue;
-			var ts = elt.getElementsByTagName("textbox"), t;
-			for(var i = 1, len = ts.length; i < len; i++) {
-				t = ts[i];
-				if(!cre.test(t.className)) {
-					t.focus();
-					break w;
+			Array.some(
+				node.getElementsByTagName("textbox"),
+				function(elt) {
+					if(elt.hasAttribute("tabindex"))
+						return false;
+					elt.focus();
+					return true;
 				}
-			}
+			);
+			break;
 		}
 	},
 
@@ -804,18 +838,23 @@ var handyClicksEditor = {
 		var sh = this.currentShortcut;
 		var type = this.currentType;
 		var so = this.getFuncObj();
+		var dso = this.getFuncObj(this.delayId);
 
 		var typesList = this.$("hc-editor-itemTypes");
 		var eventsList = this.$("hc-editor-events");
 		var funcList = this.$("hc-editor-func");
 		if(
 			!this.ps.isOkShortcut(sh) // Not needed?
-			|| !type || !so
+			|| !type || !so || dso === null
 			|| !this.checkMenulist(typesList)
 			|| !this.checkMenulist(eventsList)
 			|| !this.checkMenulist(funcList)
 		) {
 			var req = [typesList, eventsList, funcList];
+			if(this.$("hc-editor-func").value == "$custom")
+				req.push(this.$("hc-editor-funcField"));
+			if(this.$("hc-editor-func" + this.delayId).value == "$custom")
+				req.push(this.$("hc-editor-funcField" + this.delayId));
 			this.highlightRequiredFields(req, true);
 			this.ut.alertEx(
 				this.ut.getLocalized("errorTitle"),
@@ -825,14 +864,9 @@ var handyClicksEditor = {
 			return false;
 		}
 
-		var dso = this.getFuncObj(this.delayId);
 		if(dso)
 			so.delayedAction = dso;
-
-		var p = this.ps.prefs;
-		if(!p.hasOwnProperty(sh) || !this.ut.isObject(p[sh]))
-			p[sh] = {};
-		p[sh][type] = so;
+		this.ut.setOwnProperty(this.ps.prefs, sh, type, so);
 
 		this.testMode = testFlag; //~ todo: test!
 		if(testFlag)
@@ -861,14 +895,10 @@ var handyClicksEditor = {
 		var fnc = this.$("hc-editor-func" + delayed).value || null;
 		var enabled = this.$("hc-editor-enabled" + delayed).checked;
 		var evt = this.$("hc-editor-events").value;
-		if(
-			!fnc || (
-				isDelayed
-					? fnc == "$auto" && enabled
-					: !evt
-			)
-		)
+		if(!fnc || !isDelayed && !evt)
 			return null;
+		if(isDelayed && fnc == "$auto" && enabled)
+			return undefined;
 		var so = { enabled: enabled };
 		if(!isDelayed) {
 			var amd = this.$("hc-editor-allowMousedown").value;
@@ -881,7 +911,10 @@ var handyClicksEditor = {
 		if(isCustom) {
 			so.custom = isCustom;
 			so.label = this.ps.enc(this.$("hc-editor-funcLabel" + delayed).value);
-			so.action = this.ps.enc(this.$("hc-editor-funcField" + delayed).value);
+			var action = this.$("hc-editor-funcField" + delayed).value;
+			if(!action)
+				return null;
+			so.action = this.ps.enc(action);
 			var init = this.$("hc-editor-funcInitField" + delayed).value;
 			if(init)
 				so.init = this.ps.enc(init);
