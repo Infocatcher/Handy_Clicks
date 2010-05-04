@@ -53,7 +53,7 @@ var handyClicks = {
 	},
 	set editMode(em) {
 		this._editMode = em;
-		this.setListeners(["keydown"], em);
+		this.setListeners(["keypress"], em);
 		this.ui.setEditModeStatus(em);
 	},
 
@@ -77,6 +77,8 @@ var handyClicks = {
 
 		// Fix for switching tabs by Mouse Gestures
 		this._tabOnMousedown = e.view.top === content && this.getTabBrowser(true).selectedTab;
+
+		this.ui.setIcon(e);
 
 		if(!em && funcObj.eventType == "mousedown" && !this.flags.allowEvents) {
 			this.functionEvent(funcObj, e);
@@ -122,15 +124,7 @@ var handyClicks = {
 			) {
 				this.cancelDelayedAction(); // only one timeout... (for dblclick event)
 				this.daTimeout = this.ut.timeout(
-					function(da) {
-						if(!this.tabNotChanged)
-							return;
-						this.flags.runned = true;
-						if(!da)
-							this.showPopupOnItem();
-						else
-							this.executeFunction(da);
-					},
+					this.executeDelayedAction,
 					this, [delayedAction],
 					delay
 				);
@@ -161,6 +155,8 @@ var handyClicks = {
 		//this.skipFlagsDelay();
 		this.removeMoveHandlers();
 		this.saveXY(e);
+
+		this.ui.restoreIcon();
 	},
 	commandHandler: function(e) {
 		if(!this.enabled)
@@ -217,6 +213,8 @@ var handyClicks = {
 
 		this.cancelDelayedAction();
 		this.removeMoveHandlers();
+
+		this.ui.restoreIcon();
 	},
 	removeMoveHandlers: function() {
 		if(!this.hasMoveHandlers)
@@ -265,9 +263,9 @@ var handyClicks = {
 			fls[p] = false;
 		//this.removeMoveHandlers();
 	},
-	get tabNotChanged() {
+	get tabChanged() {
 		var tab = this._tabOnMousedown;
-		return !tab || tab == this.getTabBrowser(true).selectedTab;
+		return tab && tab != this.getTabBrowser(true).selectedTab;
 	},
 	cancelDelayedAction: function() {
 		clearTimeout(this.daTimeout);
@@ -616,9 +614,9 @@ var handyClicks = {
 
 		if(this.itemType == "tab" || this.itemType == "ext_mulipletabs") {
 			// Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
+			// mousedown -> ...delay... -> this popup -> Tab Scope popup hide this popup
 			var tabscope = this.$("tabscopePopup");
-			if(tabscope) // mousedown -> ...delay... -> this popup -> Tab Scope popup hide this popup
-				tabscope.hidePopup();
+			tabscope && tabscope.hidePopup();
 		}
 
 		if(!popup)
@@ -631,7 +629,7 @@ var handyClicks = {
 			return;
 		}
 
-		popup = popup || this._cMenu;
+		//popup = popup || this._cMenu;
 		e = e || this.copyOfEvent;
 		document.popupNode = popup.ownerDocument.popupNode = this.itemType == "tab" ? this.item : node;
 
@@ -644,14 +642,13 @@ var handyClicks = {
 	},
 	_xy: null,
 	saveXY: function(e) {
-		if(!this._xy)
-			this._xy = { __proto__: null };
-		["screenX", "screenY", "clientX", "clientY"].forEach(
-			function(p) {
-				this._xy[p] = e[p];
-			},
-			this
-		);
+		this._xy = {
+			screenX: e.screenX,
+			screenY: e.screenY,
+			clientX: e.clientX,
+			clientY: e.clientY,
+			__proto__: null
+		};
 	},
 	getXY: function(e) {
 		e = e || this._xy || this.copyOfEvent;
@@ -828,7 +825,7 @@ var handyClicks = {
 			this.flags.runned
 			|| (!this.editMode && e.type != funcObj.eventType)
 			|| !this.itemType // (!this.editMode && !this.itemType)
-			|| !this.tabNotChanged
+			|| this.tabChanged
 		) {
 			//this.editMode = false;
 			return;
@@ -851,6 +848,16 @@ var handyClicks = {
 			return;
 		}
 		this.executeFunction(funcObj, e);
+	},
+	executeDelayedAction: function(da) {
+		if(this.tabChanged)
+			return;
+		this.flags.runned = true;
+		if(da)
+			this.executeFunction(da);
+		else
+			this.showPopupOnItem();
+		this.ui.restoreIcon();
 	},
 	executeFunction: function(funcObj, e) {
 		this.cancelDelayedAction();
@@ -944,7 +951,7 @@ var handyClicks = {
 			case "contextmenu": this.contextmenuHandler(e); break;
 			case "mousemove":   this.mousemoveHandler(e);   break;
 			case "draggesture": this.dragHandler(e);        break;
-			case "keydown":
+			case "keypress":
 				if(e.keyCode != e.DOM_VK_ESCAPE)
 					return;
 				this.stopEvent(e);

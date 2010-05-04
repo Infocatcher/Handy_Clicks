@@ -31,6 +31,8 @@
 	height="520"
 	persist="width height screenX screenY sizemode">
 
+	<!-- "hc_ondrop" attribute will be replaced in init() function from setsUtils.js -->
+
 	<prefpane id="hc-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1">
 		<vbox flex="1">
 			<hbox align="center">

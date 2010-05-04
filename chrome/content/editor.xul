@@ -34,6 +34,8 @@
 	height="500"
 	persist="width height screenX screenY sizemode">
 
+	<!-- "hc_ondrop" attribute will be replaced in init() function from setsUtils.js -->
+
 	<script type="application/javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/winUtils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/prefUtils.js" />
@@ -81,9 +83,9 @@
 						label="&hc.editor.clickHere;" tooltiptext="&hc.editor.clickHereTip;" />
 					<menulist id="hc-editor-button">
 						<menupopup>
-							<menuitem value="0" label="button0short" tooltiptext="button0" />
-							<menuitem value="1" label="button1short" tooltiptext="button1" />
-							<menuitem value="2" label="button2short" tooltiptext="button2" />
+							<menuitem value="0" label="button0short" tooltiptext="button0" class="menuitem-iconic" />
+							<menuitem value="1" label="button1short" tooltiptext="button1" class="menuitem-iconic" />
+							<menuitem value="2" label="button2short" tooltiptext="button2" class="menuitem-iconic" />
 						</menupopup>
 					</menulist>
 					<checkbox id="hc-editor-ctrl" label="ctrl" />
@@ -213,7 +215,7 @@
 							</vbox>
 
 						</tabpanel>
-						<!-- See createDelayedFuncTab() in editor.js
+						<!-- See createDelayedFuncTab() function in editor.js
 						<tabpanel id="hc-editor-funcTab-delay" flex="1" orient="vertical"> ... </tabpanel>
 						-->
 					</tabpanels>

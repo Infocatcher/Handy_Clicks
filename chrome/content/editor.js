@@ -767,7 +767,7 @@ var handyClicksEditor = {
 		if(!this.hasCaller(_ffe, document.commandDispatcher.advanceFocusIntoSubtree))
 			return;
 		var tar = e.target;
-		if(tar.localName != "textbox" || !tar.hasAttribute("tabindex"))
+		if(tar.localName != "textbox" || !tar.hasAttribute("tabindex") || tar.getAttribute("readonly") != "true")
 			return;
 		e.preventDefault();
 		for(var node = tar.parentNode; node; node = node.parentNode) {
@@ -776,7 +776,7 @@ var handyClicksEditor = {
 			Array.some(
 				node.getElementsByTagName("textbox"),
 				function(elt) {
-					if(elt.hasAttribute("tabindex"))
+					if(elt.hasAttribute("tabindex") || elt.getAttribute("readonly") == "true")
 						return false;
 					elt.focus();
 					return true;

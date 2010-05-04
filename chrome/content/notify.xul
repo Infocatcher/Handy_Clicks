@@ -2,7 +2,7 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	id="handylinksNotify"
+	id="handyClicks-notify"
 	windowtype="handyclicks:notify"
 	hidechrome="true"
 	align="start"
@@ -12,7 +12,7 @@
 
 	<hbox id="hcNotifyBox" onclick="hcNotify.clickHandler(event);">
 		<hbox id="hcNotifyImgBox" align="center" valign="top">
-			<image id="hcNotifyImg" src="style/icons24.png" autostretch="never" />
+			<image id="hcNotifyImg" autostretch="never" />
 		</hbox>
 		<vbox id="hcNotifyContainer">
 			<description id="hcNotifyHeader" class="header">[Header]</description>

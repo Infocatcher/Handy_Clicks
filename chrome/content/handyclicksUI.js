@@ -240,6 +240,31 @@ var handyClicksUI = {
 		});
 		this.$("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
 	},
+	_restoreDelay: 250,
+	_restoreTimeout: null,
+	_hasIcon: false,
+	setIcon: function(e) {
+		if(!this.pu.pref("ui.showMouseButton"))
+			return;
+		clearTimeout(this._restoreTimeout);
+		var img = e ? String(e.button || 0) : null;
+		this._hasIcon = !!img;
+		this._devMode && this.ut._log("setIcon: " + img); //~
+		this.setControls(function(elt) {
+			this.ut.attribute(elt, "hc_button", img);
+		});
+	},
+	restoreIcon: function() {
+		if(!this._hasIcon)
+			return;
+		clearTimeout(this._restoreTimeout);
+		this._restoreTimeout = this.ut.timeout(
+			function() {
+				this.setIcon();
+			},
+			this, [], this._restoreDelay
+		);
+	},
 	showHideControls: function() {
 		this.$("handyClicks-toolsMenuitem")  .hidden = !this.pu.pref("ui.showInToolsMenu");
 		this.$("handyClicks-statusbarButton").hidden = !this.pu.pref("ui.showInStatusbar");

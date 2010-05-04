@@ -4,10 +4,12 @@
 	border: 2px solid black;
 	padding: 10px;
 }
-#hcNotifyImgBox {
-	overflow: hidden;
-	height: 24px;
-	width: 24px;
+#hcNotifyImg {
+	list-style-image: url("icons24.png");
+	-moz-image-region: rect(0 24px 24px 0);
+}
+#hcNotifyImg[hc_enabled="false"] {
+	-moz-image-region: rect(0 48px 24px 24px);
 }
 #hcNotifyContainer {
 	margin-left: 5px;

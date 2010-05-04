@@ -30,11 +30,11 @@
 }
 
 #hc-sets-onTop {
-	list-style-image: url("pin.png");
-	-moz-image-region: rect(0 32px 16px 16px);
+	list-style-image: url("icons16.png");
+	-moz-image-region: rect(16px 32px 32px 16px);
 }
 #hc-sets-onTop[checked="true"] {
-	-moz-image-region: rect(0 16px 16px 0);
+	-moz-image-region: rect(16px 16px 32px 0);
 	text-decoration: underline;
 }
 #hc-sets-onTop label {

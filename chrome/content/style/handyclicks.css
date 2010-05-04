@@ -2,7 +2,11 @@
 
 #handyClicks-statusbarButton {
 	cursor: pointer;
+	margin-right: 1px;
+	padding-left: 2px; /* Fix for not centered icon */
 }
+
+/* Small status icons */
 #handyClicks-statusbarButton,
 toolbar[iconsize="small"] #handyClicks-toolbarButton,
 #handyClicks-toolsMenuitem {
@@ -14,6 +18,8 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
 #handyClicks-toolsMenuitem[hc_enabled="false"] {
 	-moz-image-region: rect(0 32px 16px 16px);
 }
+
+/* Large status icons */
 #handyClicks-toolbarButton {
 	list-style-image: url("icons24.png");
 	-moz-image-region: rect(0 24px 24px 0);
@@ -21,7 +27,35 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
 #handyClicks-toolbarButton[hc_enabled="false"] {
 	-moz-image-region: rect(0 48px 24px 24px);
 }
-[id^="handyClicks-"][hc_editMode="true"] {
+
+/* Small mouse buttons icons */
+#handyClicks-statusbarButton[hc_button="0"],
+toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="0"] {
+	-moz-image-region: rect(0 48px 16px 32px);
+}
+#handyClicks-statusbarButton[hc_button="1"],
+toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="1"] {
+	-moz-image-region: rect(0 64px 16px 48px);
+}
+#handyClicks-statusbarButton[hc_button="2"],
+toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="2"] {
+	-moz-image-region: rect(0 80px 16px 64px);
+}
+
+/* Large mouse buttons icons */
+#handyClicks-toolbarButton[hc_button="0"] {
+	-moz-image-region: rect(0 72px 24px 48px);
+}
+#handyClicks-toolbarButton[hc_button="1"] {
+	-moz-image-region: rect(0 96px 24px 72px);
+}
+#handyClicks-toolbarButton[hc_button="2"] {
+	-moz-image-region: rect(0 120px 24px 96px);
+}
+
+#handyClicks-statusbarButton[hc_editMode="true"],
+#handyClicks-toolbarButton[hc_editMode="true"],
+#handyClicks-toolsMenuitem[hc_editMode="true"] {
 	outline: 1px solid red !important;
 	outline-offset: -1px !important;
 }

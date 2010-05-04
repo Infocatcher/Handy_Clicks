@@ -69,10 +69,12 @@ var handyClicksUtils = {
 	},
 
 	_timers: { __proto__: null },
-	timer: function(tId) {
+	timer: function(tId, division) {
 		var ts = this._timers;
 		if(tId in ts) {
 			var dt = Date.now() - ts[tId];
+			if(division)
+				dt /= division;
 			this._log("[timer] " + tId + " -> " + dt + " ms");
 			delete ts[tId];
 			return dt;
@@ -398,6 +400,7 @@ var handyClicksUtils = {
 		delete this.appInfo;
 		return this.appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
 			.getService(Components.interfaces.nsIXULAppInfo);
+			//.QueryInterface(Components.interfaces.nsIXULRuntime);
 	},
 	get isSeaMonkey() {
 		delete this.isSeaMonkey;

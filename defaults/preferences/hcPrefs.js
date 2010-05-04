@@ -15,6 +15,7 @@ pref("extensions.handyclicks.notifyEditMode", 2);
 
 pref("extensions.handyclicks.ui.showInToolsMenu", true);
 pref("extensions.handyclicks.ui.showInStatusbar", true);
+pref("extensions.handyclicks.ui.showMouseButton", true);
 pref("extensions.handyclicks.ui.inheritToolbarContextMenu", true);
 pref("extensions.handyclicks.ui.onTopButton", true);
 pref("extensions.handyclicks.ui.onTopButtonLabel", true);

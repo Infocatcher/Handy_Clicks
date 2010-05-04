@@ -643,6 +643,19 @@ var handyClicksFuncs = {
 			/>;
 			return;
 		}
+		if("appendChild" in items) {
+			items.appendChild(this.ut.parseFromXML(
+				<menuseparator xmlns={this.ut.XULNS} />
+			));
+			items.appendChild(this.ut.parseFromXML(
+				<menuitem xmlns={this.ut.XULNS}
+					oncommand={cmd}
+					label={label}
+					accesskey={accesskey}
+				/>
+			));
+			return;
+		}
 		items.push(
 			{ tagName: "menuseparator" },
 			{

@@ -15,8 +15,7 @@ var hcNotify = {
 		var maxW = Math.round(screen.availWidth*0.6);
 		descElt.style.maxWidth = maxW + "px";
 		descElt.style.maxHeight = Math.round(screen.availHeight*0.6) + "px";
-		if(!wa.extEnabled)
-			document.getElementById("hcNotifyImg").style.marginLeft = "-24px";
+		document.getElementById("hcNotifyImg").setAttribute("hc_enabled", !!wa.extEnabled);
 		window.sizeToContent();
 		var winW = window.outerWidth, winH = window.outerHeight;
 		var maxW = Math.round(screen.availWidth*0.65);

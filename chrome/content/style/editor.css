@@ -26,6 +26,27 @@ menulist[hc_sets="disabled"] .menulist-label {
 	text-decoration: line-through;
 }
 
+#hc-editor-button menuitem.menuitem-iconic > .menu-iconic-left {
+	display: -moz-box !important;
+	-moz-appearance: none !important;
+	margin-right: 2px;
+}
+#hc-editor-button menuitem.menuitem-iconic > .menu-accel-container {
+	display: none;
+}
+#hc-editor-button, #hc-editor-button menuitem {
+	list-style-image: url("icons16.png");
+}
+#hc-editor-button[value="0"], #hc-editor-button menuitem[value="0"] {
+	-moz-image-region: rect(0 48px 16px 32px);
+}
+#hc-editor-button[value="1"], #hc-editor-button menuitem[value="1"] {
+	-moz-image-region: rect(0 64px 16px 48px);
+}
+#hc-editor-button[value="2"], #hc-editor-button menuitem[value="2"] {
+	-moz-image-region: rect(0 80px 16px 64px);
+}
+
 hbox[hc_fixedFields="true"] {
 	outline: 1px solid ThreeDShadow;
 	outline-offset: -1px;

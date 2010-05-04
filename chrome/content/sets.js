@@ -1,6 +1,6 @@
 var handyClicksSets = {
 	_import: false,
-	_partialImport: false,
+	_importPartial: false,
 	_importFromClipboard: false,
 	_savedPrefs: null,
 	_savedTypes: null,
@@ -1815,7 +1815,7 @@ var handyClicksSets = {
 
 	setImportStatus: function(isImport, isPartial, fromClipboard, updMode) {
 		this._import              = isImport;
-		this._partialImport       = isImport && isPartial;
+		this._importPartial       = isImport && isPartial;
 		this._importFromClipboard = isImport && fromClipboard;
 		if(!updMode) {
 			this.closeEditors();
@@ -1837,7 +1837,7 @@ var handyClicksSets = {
 			this.$("hc-sets-tree-buttonImportOk").focus();
 	},
 	toggleImportType: function() {
-		this.setImportStatus(this._import, !this._partialImport, this._importFromClipboard, true);
+		this.setImportStatus(this._import, !this._importPartial, this._importFromClipboard, true);
 	},
 	importDone: function(ok) {
 		var confirmed = false;
@@ -1847,7 +1847,7 @@ var handyClicksSets = {
 				return;
 		}
 
-		var isPartial = this._partialImport;
+		var isPartial = this._importPartial;
 		//var fromClip = this._importFromClipboard;
 		this.setImportStatus(false);
 		if(ok) {
