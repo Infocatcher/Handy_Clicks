@@ -846,8 +846,11 @@ var handyClicksSets = {
 		if(e.button == 1)
 			return;
 		if(
-			"mgGestureRecognizer" in window
-			&& e.button == mgPrefs.mousebutton && !mgGestureRecognizer.checkPrevent(e)
+			(
+				"mgPrefs" in window && e.button == mgPrefs.mousebutton // 3.0
+				|| "mgGesturePrefs" in window && e.button == mgGesturePrefs.mousebutton // 3.1pre
+			)
+			&& "mgGestureRecognizer" in window && !mgGestureRecognizer.checkPrevent(e)
 		)
 			return; // Do nothing, if Mouse Gestures Redox 3.0+ is active ( http://mousegestures.org/ )
 		var row = this.tbo.getRowAt(e.clientX, e.clientY);
@@ -985,6 +988,9 @@ var handyClicksSets = {
 		add: function(r) {
 			this._res.push(r);
 		},
+		finish: function() {
+			this._res.sort(function(a, b) { return a > b; }); // Sort as numbers
+		},
 		get _length() {
 			return this._res.length;
 		},
@@ -1053,12 +1059,12 @@ var handyClicksSets = {
 				return;
 			}
 		}
-		this.searcher.reset();
 		sIt = sIt || this.$("hc-sets-tree-searchField");
 		var sTerm = this.ut.trim(sIt.value);
 		var hasTerm = !!sTerm;
 		sTerm = sTerm.toLowerCase().split(/\s+/);
 
+		this.searcher.reset();
 		var tRow, rowText, okRow, indx;
 		var notFound = true, count = 0;
 		for(var h in this.rowsCache) {
@@ -1081,6 +1087,7 @@ var handyClicksSets = {
 					this.searcher.select(indx);
 			}
 		}
+		this.searcher.finish();
 		this.$("hc-sets-tree-searchResults").value = hasTerm ? count : "";
 		sIt.setAttribute("hc_notFound", hasTerm && notFound);
 

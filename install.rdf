@@ -10,6 +10,7 @@
 		<em:description>More clicks options</em:description>
 		<em:creator>Infocatcher</em:creator>
 		<em:contributor>Anton Glazatov (some editor features)</em:contributor>
+		<em:contributor>Gnome icons (http://art.gnome.org/themes/icon)</em:contributor>
 		<em:optionsURL>chrome://handyclicks/content/setsOpener.xul</em:optionsURL>
 		<em:updateURL>http://infocatcher.ucoz.net/ext/fx/handy_clicks/update.rdf</em:updateURL>
 		<em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLgtEbrhCdZetIAanFNvkT441WwBgXcg1Zzlo5s5
@@ -20,7 +21,7 @@
 			<Description>
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
 				<em:minVersion>1.5</em:minVersion>
-				<em:maxVersion>3.7a4pre</em:maxVersion>
+				<em:maxVersion>3.7a5pre</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 

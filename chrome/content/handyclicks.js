@@ -104,7 +104,7 @@ var handyClicks = {
 	},
 	set editMode(em) {
 		this._editMode = em;
-		this.setListeners(["keydown"], em);
+		this.setListeners(["keypress"], em);
 		this.setEditModeStatus(em);
 	},
 
@@ -1014,7 +1014,7 @@ var handyClicks = {
 			case "contextmenu": this.contextmenuHandler(e); break;
 			case "mousemove":   this.mousemoveHandler(e);   break;
 			case "draggesture": this.dragHandler(e);        break;
-			case "keydown":
+			case "keypress":
 				if(e.keyCode != e.DOM_VK_ESCAPE)
 					return;
 				this.stopEvent(e);

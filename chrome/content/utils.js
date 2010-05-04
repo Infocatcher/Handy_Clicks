@@ -324,7 +324,7 @@ var handyClicksUtils = {
 	},
 	isArray: function(arr) {
 		return arr instanceof Array
-			|| this.sandbox.Object.prototype.toString.call(arr) === "[object Array]";
+			|| Object.prototype.toString.call(arr) === "[object Array]";
 	},
 	canHasProps: function(o) {
 		if(!o)
@@ -401,13 +401,8 @@ var handyClicksUtils = {
 	},
 	getSource: function(o) {
 		return this.canHasProps(o) && !o.__proto__
-			? this.sandbox.Object.prototype.toSource.call(o)
+			? Object.prototype.toSource.call(o)
 			: uneval(o);
-	},
-
-	get sandbox() {
-		delete this.sandbox;
-		return this.sandbox = new Components.utils.Sandbox("about:blank");
 	},
 
 	attribute: function(node, attr, val, allowEmpty) {

@@ -315,10 +315,8 @@
 					if(ss == se)
 						return;
 					event.preventDefault();
-					if(moveLeft)
-						ifi.selectionStart = ifi.selectionEnd = ss;
-					else
-						ifi.selectionStart = ifi.selectionEnd = se;
+					ifi.selectionStart = ifi.selectionEnd = moveLeft ? ss : se;
+					this.scrollSelectionIntoView();
 				]]>
 				</body>
 			</method>
@@ -361,13 +359,13 @@
 			<handler event="keypress" preventdefault="true" key="q" action="this.toggleComments(false);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" keycode="VK_RETURN" action="this.formatNewLine();" />
 			<handler event="keypress" preventdefault="true" keycode="VK_F12" action="this.toggleMaximized();" />
-			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
-			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />
 			<handler event="keypress" preventdefault="true" key="+" action="this.textZoom(1);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="-" action="this.textZoom(-1);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="0" action="this.textZoom(0);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="g" action="this.goToLine();" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="w" action="this.toggleWordWrap();" modifiers="control" />
+			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
+			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />
 			<handler event="blur">
 			<![CDATA[
 				if(event.originalTarget !== this.inputField || !this.maximized)

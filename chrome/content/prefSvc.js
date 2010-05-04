@@ -11,7 +11,6 @@ var handyClicksPrefSvc = {
 		delete this.versionInfo;
 		return this.versionInfo = "var handyClicksPrefsVersion = " + this.version + ";\n";
 	},
-	defaultPrefs: "var handyClicksCustomTypes = {};\nvar handyClicksPrefs = {};",
 	prefsDirName: "handyclicks",
 	prefsFileName: "handyclicks_prefs",
 	names: {
@@ -102,8 +101,8 @@ var handyClicksPrefSvc = {
 		var fromProfile = false;
 		if(pSrc instanceof Components.interfaces.nsILocalFile) {
 			fromProfile = pSrc.equals(this._prefsFile);
-			if(fromProfile && !pSrc.exists())
-				this.saveSettings(this.prefsHeader + this.versionInfo + this.defaultPrefs);
+			if(fromProfile && !pSrc.exists()) // Save default (empty) settings
+				this.saveSettings(this.getSettingsStr({}, {}));
 			pSrc = this.ut.readFromFile(pSrc);
 			if(fromProfile && !this.isMainWnd)
 				this._savedStr = pSrc;
