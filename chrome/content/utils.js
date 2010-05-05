@@ -108,7 +108,7 @@ var handyClicksUtils = {
 	},
 
 	get toErrorConsole() {
-		return this.ut.bind(this.openErrorConsole, this);
+		return this.bind(this.openErrorConsole, this);
 	},
 	openErrorConsole: function() {
 		if("toErrorConsole" in top)
@@ -409,9 +409,8 @@ var handyClicksUtils = {
 	get fxVersion() {
 		var ver = parseFloat(this.appInfo.version); // 3.0 for "3.0.10"
 		if(this.isSeaMonkey) switch(ver) {
-			case 2:   ver = 3.5; break;
-			case 2.1:
-			default:  ver = 3.7;
+			case 2:             ver = 3.5; break;
+			case 2.1: default:  ver = 3.7;
 		}
 		delete this.fxVersion;
 		return this.fxVersion = ver;
@@ -585,31 +584,40 @@ var handyClicksUtils = {
 			elt.removeChild(elt.lastChild);
 	},
 
-	get _storage() {
-		var w = Components.classes["@mozilla.org/appshell/appShellService;1"]
-			.getService(Components.interfaces.nsIAppShellService)
-			.hiddenDOMWindow;
+	get storage() { // return function(key, val)
 		const ns = "__handyClicks__";
-		if(!(ns in w)) {
-			w[ns] = { __proto__: null };
-			w.addEventListener("unload", function _u(e) {
-				w.removeEventListener("unload", _u, false);
-				delete w[ns];
-			}, false);
-		}
-		delete this._storage;
-		return this._storage = w[ns];
-	},
-	storage: function(key, val) {
 		if("Application" in window) { // Firefox 3.0+
-			const ns = "__handyClicks__";
-			return arguments.length == 1
-				? Application.storage.get(ns + key, null)
-				: Application.storage.set(ns + key, val) || val;
+			var st = Application.storage;
+			if(!st.has(ns))
+				st.set(ns, { __proto__: null });
+			this._storage = st.get(ns, null);
 		}
-		return arguments.length == 1
-			? key in this._storage ? this._storage[key] : null
-			: (this._storage[key] = val);
+		else { // For old versions
+			var hw = Components.classes["@mozilla.org/appshell/appShellService;1"]
+				.getService(Components.interfaces.nsIAppShellService)
+				.hiddenDOMWindow;
+			if(!(ns in hw)) {
+				hw[ns] = { __proto__: null };
+				var destroy = hw[ns + "destroy"] = function _ds(e) {
+					var win = e.target.defaultView;
+					if(win !== win.top)
+						return;
+					win.removeEventListener(e.type, _ds, false);
+					delete win[_ds.ns];
+				};
+				destroy.ns = ns;
+				hw.addEventListener("unload", destroy, false);
+			}
+			this._storage = hw[ns];
+		}
+		delete this.storage;
+		return this.storage = function(key, val) {
+			return arguments.length == 1
+				? key in this._storage
+					? this._storage[key]
+					: undefined
+				: (this._storage[key] = val);
+		};
 	},
 
 	fixIconsSize: function(popup) {
@@ -706,45 +714,23 @@ var handyClicksExtensionsHelper = {
 		return this.rdf = Components.classes["@mozilla.org/rdf/rdf-service;1"]
 			.getService(Components.interfaces.nsIRDFService);
 	},
-	instantInit: function() {
-		if(
-			window.Application
-			// Note:
-			//  "Application" in window && "getExtensions" in Application;
-			// will crash Firefox 3.7a5pre+
-			&& "getExtensions" in Application && !("extensions" in Application)
-			&& !this.ut.storage("extensionsPending")
-		) {
-			// Hack for Firefox 3.7a5pre+
-			// Following code is asynchronous and take some time... so, starts them as soon possible
-			this.ut.storage("extensionsPending", true);
-			var _this = this;
-			Application.getExtensions(
-				function(exts) {
-					_this.ut.storage("extensions", exts);
-				}
-			);
-		}
-	},
-	get extensions() {
-		var exts = Application.extensions || this.ut.storage("extensions");
-		if(exts) {
-			delete this.extensions;
-			return this.extensions = exts;
-		}
-		return exts;
+	get exts() {
+		delete this.exts;
+		return this.exts = "Application" in window
+			? Application.extensions
+			: null;
 	},
 	isAvailable: function(guid) {
 		return this.isInstalled(guid) && this.isEnabled(guid);
 	},
 	isInstalled: function(guid) {
-		return "Application" in window
-			? this.extensions && this.extensions.has(guid)
+		return this.exts
+			? this.exts.has(guid)
 			: this.em.getInstallLocation(guid);
 	},
 	isEnabled: function(guid) {
-		if("Application" in window)
-			return this.extensions && this.extensions.get(guid).enabled;
+		if(this.exts)
+			return this.exts.get(guid).enabled;
 		var res  = this.rdf.GetResource("urn:mozilla:item:" + guid);
 		var opType = this.getRes(res, "opType");
 		return opType != "needs-enable" && opType != "needs-install"

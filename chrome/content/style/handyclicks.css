@@ -2,7 +2,7 @@
 
 #handyClicks-statusbarButton {
 	cursor: pointer;
-	margin-right: 1px;
+	padding-right: 1px;
 	padding-left: 2px; /* Fix for not centered icon */
 }
 

@@ -25,7 +25,7 @@ var handyClicksWinUtils = {
 			.getService(Components.interfaces.nsIWindowWatcher);
 	},
 	get opener() {
-		return typeof window == "undefined" ? null : window;
+		return typeof top == "undefined" ? null : top;
 	},
 	openWindowByType: function _ow(uri, type, features, args) {
 		var w = this.wm.getMostRecentWindow(type);

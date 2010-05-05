@@ -440,8 +440,11 @@
 						};
 						top.addEventListener("focus", upd, false);
 						top.addEventListener("unload", function _unl(e) {
-							top.removeEventListener(e.type, _unl, false);
-							top.removeEventListener("focus", upd, false);
+							var win = e.target.defaultView;
+							if(win !== win.top)
+								return;
+							win.removeEventListener(e.type, _unl, false);
+							win.removeEventListener("focus", upd, false);
 							var file = _this.file;
 							if(file && file.exists())
 								file.remove(false);
