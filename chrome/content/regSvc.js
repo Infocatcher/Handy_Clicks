@@ -17,7 +17,14 @@ var handyClicksRegSvc = {
 		window.removeEventListener("unload", this, false);
 		this.callMethods("destroy", reloadFlag);
 		this.registerShortcuts(false);
+		delete this.s;
 		delete window._handyClicksInitialized;
+	},
+	handleEvent: function(e) {
+		switch(e.type) {
+			case "load":   this.init();    break;
+			case "unload": this.destroy();
+		}
 	},
 	globals: {
 		_elts: { __proto__: null },
@@ -63,13 +70,10 @@ var handyClicksRegSvc = {
 		return this.s = s;
 	},
 	registerShortcuts: function(regFlag) {
-		if(regFlag) {
-			var s = this.s;
-			for(var p in s) if(s.hasOwnProperty(p))
-				s[p].__proto__ = s;
-			return;
-		}
-		this.s = null;
+		var s = this.s;
+		var proto = regFlag ? s : ({}).__proto__;
+		for(var p in s) if(s.hasOwnProperty(p))
+			s[p].__proto__ = s;
 	},
 	callMethods: function(methName, reloadFlag) {
 		var s = this.s, o;
@@ -77,12 +81,6 @@ var handyClicksRegSvc = {
 			o = s[p];
 			if(o !== this && o.hasOwnProperty(methName))
 				o[methName](reloadFlag);
-		}
-	},
-	handleEvent: function(e) {
-		switch(e.type) {
-			case "load":   this.init();    break;
-			case "unload": this.destroy();
 		}
 	}
 };

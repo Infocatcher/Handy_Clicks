@@ -41,7 +41,6 @@ var handyClicksUI = {
 		this.registerHotkeys();
 		this.showHideControls();
 		reloadFlag && this.setEditModeStatus();
-		this.initUninstallObserver();
 
 		// Styles for blinkNode() function:
 		var css = "data:text/css," + encodeURIComponent(
@@ -59,9 +58,6 @@ var handyClicksUI = {
 		var uri = makeURI(css);
 		if(!sss.sheetRegistered(uri, sss.AGENT_SHEET))
 			sss.loadAndRegisterSheet(uri, sss.AGENT_SHEET);
-	},
-	destroy: function(reloadFlag) {
-		this.destroyUninstallObserver();
 	},
 
 	blinkNode: function(time, node) {
@@ -247,11 +243,10 @@ var handyClicksUI = {
 		if(!this.pu.pref("ui.showMouseButton"))
 			return;
 		clearTimeout(this._restoreTimeout);
-		var img = e ? String(e.button || 0) : null;
-		this._hasIcon = !!img;
-		this._devMode && this.ut._log("setIcon: " + img); //~
+		var icon = e ? String(e.button || 0) : null;
+		this._hasIcon = !!icon;
 		this.setControls(function(elt) {
-			this.ut.attribute(elt, "hc_button", img);
+			this.ut.attribute(elt, "hc_button", icon);
 		});
 	},
 	restoreIcon: function() {
@@ -335,80 +330,5 @@ var handyClicksUI = {
 		kElt.removeAttribute("disabled");
 		kElt.setAttribute(key.indexOf("VK_") == 0 ? "keycode" : "key", key);
 		kElt.setAttribute("modifiers", modifiers);
-	},
-
-	// Uninstall observer:
-	get oSvc() {
-		return Components.classes["@mozilla.org/observer-service;1"]
-			.getService(Components.interfaces.nsIObserverService);
-	},
-	initUninstallObserver: function() {
-		this.oSvc.addObserver(this, "em-action-requested", false);
-	},
-	destroyUninstallObserver: function() {
-		this.oSvc.removeObserver(this, "em-action-requested");
-	},
-	observe: function(subject, topic, data) {
-		if(
-			topic == "em-action-requested"
-			&& subject instanceof Components.interfaces.nsIUpdateItem
-			&& subject.id == "handyclicks@infocatcher"
-			&& data == "item-uninstalled"
-			&& !this.ut.storage("uninstalled")
-		) {
-			this.ut.storage("uninstalled", true);
-			this.uninstall();
-		}
-	},
-	uninstall: function() {
-		var ps = this.ut.promptsSvc;
-		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
-		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
-		var win = this.wu.wm.getMostRecentWindow("Extension:Manager") || window;
-		var button = ps.confirmEx(
-			win, this.ut.getLocalized("title"),
-			this.ut.getLocalized("removeSettingsConfirm"),
-			  ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING
-			+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL
-			+ ps.BUTTON_POS_1_DEFAULT,
-			this.ut.getLocalized("removeSettings"), "", "",
-			null, {}
-		);
-		if(button == 1) // Cancel
-			return;
-
-		//this.pu.prefSvc.deleteBranch(this.pu.prefNS);
-		this.pu.prefSvc.getBranch(this.pu.prefNS)
-			.getChildList("", {})
-			.forEach(
-				function(pName) {
-					this.pu.resetPref(this.pu.prefNS + pName);
-				},
-				this
-			);
-
-		//this.ps._prefsDir.remove(true);
-		// Based on components/nsExtensionManager.js from Firefox 3.6
-		function removeDirRecursive(dir) {
-			try {
-				dir.remove(true);
-				return;
-			}
-			catch(e) {
-			}
-			var dirEntries = dir.directoryEntries;
-			while(dirEntries.hasMoreElements()) {
-				var entry = dirEntries.getNext().QueryInterface(Components.interfaces.nsIFile);
-				if(entry.isDirectory())
-					removeDirRecursive(entry);
-				else {
-					entry.permissions = 0644;
-					entry.remove(false);
-				}
-			}
-			dir.permissions = 0755;
-			dir.remove(true);
-		}
-		removeDirRecursive(this.ps._prefsDir);
 	}
 };

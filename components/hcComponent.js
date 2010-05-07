@@ -26,6 +26,8 @@ const C_CID = Components.ID("{50C6263F-F53F-4fbd-A295-9BA84C5FAAC3}"),
 const jsLoader = cc["@mozilla.org/moz/jssubscript-loader;1"]
 	.getService(ci.mozIJSSubScriptLoader);
 
+jsLoader.loadSubScript("chrome://handyclicks/content/uninstaller.js");
+
 var initialized = false;
 var wu;
 function init() {

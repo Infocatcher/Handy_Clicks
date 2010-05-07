@@ -856,7 +856,7 @@ var handyClicksEditor = {
 			if(this.$("hc-editor-func" + this.delayId).value == "$custom")
 				req.push(this.$("hc-editor-funcField" + this.delayId));
 			this.highlightRequiredFields(req, true);
-			this.ut.alertEx(
+			this.ut.alert(
 				this.ut.getLocalized("errorTitle"),
 				this.ut.getLocalized("editorIncomplete")
 			);
@@ -1017,7 +1017,7 @@ var handyClicksEditor = {
 				this.$("hc-editor-customTypeDefine")
 			];
 			this.highlightRequiredFields(req, true);
-			this.ut.alertEx(
+			this.ut.alert(
 				this.ut.getLocalized("errorTitle"),
 				this.ut.getLocalized("editorIncomplete")
 			);
@@ -1032,7 +1032,7 @@ var handyClicksEditor = {
 		var newEnabl = this.$("hc-editor-customTypeEnabled").checked;
 		if(
 			!newEnabl && curEnabl
-			&& !this.ut.confirmEx(
+			&& !this.ut.confirm(
 				this.ut.getLocalized("warningTitle"),
 				this.ut.getLocalized("typeDisablingWarning")
 			)

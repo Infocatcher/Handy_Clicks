@@ -123,16 +123,30 @@ var handyClicksUtils = {
 		return this.promptsSvc = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
 			.getService(Components.interfaces.nsIPromptService);
 	},
-	alertEx: function(ttl, txt) {
-		this.promptsSvc.alert(window, ttl, txt);
+	alert: function(title, text, win) {
+		this.promptsSvc.alert(win || window, title, text);
 	},
-	promptEx: function(ttl, txt, defVal) {
+	prompt: function(title, text, defVal, win) {
 		var ret = { value: defVal };
-		var res = this.promptsSvc.prompt(window, ttl, txt, ret, null, {});
+		var res = this.promptsSvc.prompt(win || window, title, text, ret, null, {});
 		return res ? ret.value : null;
 	},
-	confirmEx: function(ttl, txt) {
-		return this.promptsSvc.confirm(window, ttl, txt);
+	confirm: function(title, text, win) {
+		return this.promptsSvc.confirm(win || window, title, text);
+	},
+	confirmEx: function(title, text, buttonOkTxt, buttonOkDefault, win) {
+		var ps = this.promptsSvc;
+		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
+		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
+		return ps.confirmEx(
+			win || window,
+			title, text,
+			  ps.BUTTON_POS_0 * (buttonOkTxt ? ps.BUTTON_TITLE_IS_STRING : ps.BUTTON_TITLE_OK)
+			+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL
+			+ ps["BUTTON_POS_" + (buttonOkDefault ? 0 : 1) + "_DEFAULT"],
+			buttonOkTxt, "", "",
+			null, {}
+		) != 1;
 	},
 
 	bind: function(func, context, args) {
@@ -267,7 +281,7 @@ var handyClicksUtils = {
 			return false;
 		}
 		if(!file.exists()) {
-			this.alertEx(
+			this.alert(
 				this.getLocalized("errorTitle"),
 				this.getLocalized("fileNotFound").replace("%p", path)
 			);
@@ -281,7 +295,7 @@ var handyClicksUtils = {
 			return true;
 		}
 		catch(e) {
-			this.alertEx(
+			this.alert(
 				this.getLocalized("errorTitle"),
 				this.getLocalized("fileCantRun").replace("%p", path).replace("%e", e)
 			);

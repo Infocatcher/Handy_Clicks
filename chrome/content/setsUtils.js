@@ -19,6 +19,19 @@ var handyClicksSetsUtils = {
 		window.removeEventListener("dragenter", this, true);
 		window.removeEventListener("dragexit", this, true);
 	},
+	handleEvent: function(e) {
+		switch(e.type) {
+			case "DOMMouseScroll":
+				this.scrollList(e)
+					|| this.scrollRadio(e)
+					|| this.scrollNumTextbox(e)
+					|| this.scrollTabs(e)
+					|| this.scrollPanes(e);
+			break;
+			case "dragenter": this.dragenterHandler(e); break;
+			case "dragexit":  this.dragexitHandler(e);
+		}
+	},
 	get dropEvent() {
 		delete this.dropEvent;
 		var v = this.ut.fxVersion;
@@ -33,13 +46,14 @@ var handyClicksSetsUtils = {
 		de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
 
 		var onTop = this.ut.parseFromXML(
-			<hbox xmlns={this.ut.XULNS} id="hc-sets-floatToolbar">
+			<hbox xmlns={this.ut.XULNS} id="hc-sets-floatToolbar"
+				oncommand="event.stopPropagation();">
 				<button id="hc-sets-onTop"
 					class="hcFloatButton"
 					type="checkbox" autoCheck="false"
 					context="hc-sets-onTopContext"
 					hidden={ !this.pu.pref("ui.onTopButton") }
-					oncommand="handyClicksWinUtils.toggleOnTop(); event.stopPropagation();"
+					oncommand="handyClicksWinUtils.toggleOnTop();"
 					label={ this.ut.getLocalized("onTop") }
 					tooltiptext={ this.ut.getLocalized("onTopTip") }
 				/>
@@ -87,19 +101,6 @@ var handyClicksSetsUtils = {
 			case "ui.onTopButtonLabel":
 			case "ui.onTopBorderColor":
 				this.wu.showOnTopStatus();
-		}
-	},
-	handleEvent: function(e) {
-		switch(e.type) {
-			case "DOMMouseScroll":
-				this.scrollList(e)
-					|| this.scrollRadio(e)
-					|| this.scrollNumTextbox(e)
-					|| this.scrollTabs(e)
-					|| this.scrollPanes(e);
-			break;
-			case "dragenter": this.dragenterHandler(e); break;
-			case "dragexit":  this.dragexitHandler(e);
 		}
 	},
 	isScrollForward: function(e) {

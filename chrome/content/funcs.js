@@ -364,7 +364,7 @@ var handyClicksFuncs = {
 			var _regexp = new RegExp(regexp, "i");
 		}
 		catch(e) {
-			this.ut.alertEx(
+			this.ut.alert(
 				this.ut.getLocalized("errorTitle"),
 				this.ut.getLocalized("RegExpError").replace("%r", regexp).replace("%e", e)
 			);
@@ -571,7 +571,7 @@ var handyClicksFuncs = {
 		return popup;
 	},
 
-	showOpenUriWithAppsPopup: function(items, checkFiles) {
+	showOpenURIWithAppsPopup: function(items, checkFiles) {
 		var uri = this.getItemURI();
 		if(!uri) {
 			this.ut._err(new Error("Can't get URI of item (" + this.hc.itemType + ")"));
@@ -908,7 +908,7 @@ var handyClicksFuncs = {
 		tab = this.fixTab(tab);
 		var doc = tab.linkedBrowser.contentDocument;
 		var title = doc.title;
-		var lbl = this.ut.promptEx(
+		var lbl = this.ut.prompt(
 			this.ut.getLocalized("renameTabTitle"),
 			this.ut.getLocalized("tabNewName"),
 			title
@@ -1064,7 +1064,6 @@ var handyClicksFuncs = {
 			this.ut._err(new Error("openSimilarLinksInTabs() is not supported: can't serialize a.childNodes to string"));
 			return;
 		}
-
 		var ps = this.ut.promptsSvc;
 		var onlyUnvisited = { value: false };
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
@@ -1177,16 +1176,24 @@ var handyClicksFuncs = {
 
 	__noSuchMethod__: function(meth, args) {
 		// Support for old names of methods
-		//= Expires after 2010-05-20
 		const newMeth = meth
+			//= Expires after 2010-05-20:
 			.replace(/^(_?)open(?:Uri)?In/, "$1openURIIn") // openIn => openURIIn, openUriIn => openURIIn
 			.replace(/^get(\w*)Uri(Of[A-Z]\w*)?$/, "get$1URI$2") // getTabUri => getTabURI, getUriOfItem => getURIOfItem
-			.replace(/^get(\w+)OfItem$/, "getItem$1");
+			.replace(/^get(\w+)OfItem$/, "getItem$1")
+			//= Expires after 2010-10-20:
+			.replace(/^showOpenUriWithAppsPopup$/, "showOpenURIWithAppsPopup");
 		const oName = "handyClicksFuncs";
-		if(!(newMeth in this))
-			throw new Error(this.ut.errPrefix + "Method \"" + meth + "\" does not exist in \"" + oName + "\" object");
+		if(!(newMeth in this)) {
+			var caller = Components.stack.caller;
+			throw new Error(
+				this.ut.errPrefix + 'Method "' + meth + '" does not exist in "' + oName + '" object',
+				caller.filename,
+				caller.lineNumber
+			);
+		}
 		this.ut._warn(new Error(
-			"Function " + oName + "." + meth + " is deprecated. Use " + oName + "." + newMeth + " instead."
+			'Function "' + oName + '.' + meth + '" is deprecated. Use "' + oName + '.' + newMeth + '" instead.'
 		));
 		return this[newMeth].apply(this, args);
 	}

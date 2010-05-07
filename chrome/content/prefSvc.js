@@ -124,7 +124,7 @@ var handyClicksPrefSvc = {
 				this.ut._err(new Error("Invalid prefs: evalInSandbox() failed"));
 				this.ut._err(e);
 				if(this.otherSrc) {
-					this.ut.alertEx(
+					this.ut.alert(
 						this.ut.getLocalized("errorTitle"),
 						this.ut.getLocalized("invalidConfigFormat")
 					);
@@ -144,7 +144,7 @@ var handyClicksPrefSvc = {
 			this._loadError = 2;
 			this.ut._err(new Error("Loaded prefs or types is not object"));
 			if(this.otherSrc) {
-				this.ut.alertEx(
+				this.ut.alert(
 					this.ut.getLocalized("errorTitle"),
 					this.ut.getLocalized("invalidConfigFormat")
 				);
@@ -183,7 +183,7 @@ var handyClicksPrefSvc = {
 			var errMsg = this.ut.getLocalized("badJSFile").replace("%f", this._cPath)
 				+ (hasBak ? this.ut.getLocalized("restoredFromBackup").replace("%b", bFile.path) : "");
 			setTimeout(function(_this, t, m) {
-				_this.ut.alertEx(t, m);
+				_this.ut.alert(t, m);
 			}, 0, this, errTitle, errMsg);
 
 			this._restoringCounter++;

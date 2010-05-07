@@ -1,27 +1,32 @@
 <?xml version="1.0"?>
-<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" id="handyClicks-settingsOpener">
-	<script type="application/javascript" src="chrome://handyclicks/content/winUtils.js" />
-	<script type="application/javascript"><![CDATA[
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	id="handyClicks-settingsOpener"
+	windowtype="handyClicks:settingsOpener">
+	<script type="application/javascript">
+	<![CDATA[
 	// Prevent modal windows
-	var wu = handyClicksWinUtils;
-	var w = wu.wm.getMostRecentWindow("handyclicks:settings");
+	var w = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+		.getService(Components.interfaces.nsIWindowMediator)
+		.getMostRecentWindow("handyclicks:settings");
 	if(!w) {
-		 wu.ww.openWindow(
-			null,
-			"chrome://handyclicks/content/sets.xul", "_blank",
-			"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0",
-			null
-		);
+		 Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
+			.getService(Components.interfaces.nsIWindowWatcher)
+			.openWindow(
+				window.opener,
+				"chrome://handyclicks/content/sets.xul", "_blank",
+				"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0",
+				null
+			);
 		window.close();
 	}
 	else {
-		var wo = window.opener;
-		window.close();
 		var _f = function f() {
 			f.w.focus();
 		};
 		_f.w = w;
-		wo.setTimeout(_f, 0);
+		window.opener.setTimeout(_f, 0);
+		window.close();
 	}
-	]]></script>
+	]]>
+	</script>
 </window>

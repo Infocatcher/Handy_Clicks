@@ -711,7 +711,7 @@ var handyClicksSets = {
 		if(del.length > maxRows)
 			del.splice(maxRows - 2, del.length - maxRows + 1, "\u2026" /* "..." */);
 		if(
-			!this.ut.confirmEx(
+			!this.ut.confirm(
 				this.ut.getLocalized("title"),
 				this.ut.getLocalized("deleteConfirm").replace("%n", tIts.length)
 					+ "\n\n" + del.join("\n")
@@ -1282,33 +1282,20 @@ var handyClicksSets = {
 		if(
 			saved
 			&& !applyFlag && this.ps.otherSrc
-			&& !this.ut.confirmEx(this.ut.getLocalized("title"), this.ut.getLocalized("importIncomplete"))
+			&& !this.ut.confirm(this.ut.getLocalized("title"), this.ut.getLocalized("importIncomplete"))
 		)
 			return false;
 		return saved;
 	},
-	buggyPrefsCheck: function() {
-		if(this._buggy) {
-			var ps = this.ut.promptsSvc;
-			// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
-			// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
-			var button = ps.confirmEx(
-				window,
-				this.ut.getLocalized("warningTitle"),
-				this.ut.getLocalized("saveBuggyConfirm").replace("%n", this._buggy),
-				  ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING
-				+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL
-				+ ps.BUTTON_POS_1_DEFAULT,
-				this.ut.getLocalized("save"), "", "",
-				null, {}
-			);
-			if(button == 1)
-				return false;
-		}
-		return true;
+	buggyPrefsConfirm: function() {
+		return !this._buggy || this.ut.confirmEx(
+			this.ut.getLocalized("warningTitle"),
+			this.ut.getLocalized("saveBuggyConfirm").replace("%n", this._buggy),
+			this.ut.getLocalized("save")
+		);
 	},
 	saveSettingsObjectsCheck: function(reloadFlag) {
-		if(!this.buggyPrefsCheck())
+		if(!this.buggyPrefsConfirm())
 			return false;
 		this.ps.saveSettingsObjects(reloadFlag);
 		return true;
@@ -1417,7 +1404,7 @@ var handyClicksSets = {
 	// Reset prefs:
 	resetPrefs: function() {
 		if(
-			this.ut.confirmEx(
+			this.ut.confirm(
 				this.ut.getLocalized("warningTitle"),
 				this.ut.getLocalized("resetPrefsWarning")
 			)
@@ -1454,7 +1441,7 @@ var handyClicksSets = {
 			return;
 		var str = this.ut.readFromFile(file);
 		if(str.indexOf(this.exportPrefsHeader) != 0) {
-			this.ut.alertEx(
+			this.ut.alert(
 				this.ut.getLocalized("importErrorTitle"),
 				this.ut.getLocalized("invalidConfigFormat")
 			);
@@ -1595,30 +1582,22 @@ var handyClicksSets = {
 		if(!pSrc)
 			return;
 		if(!this.checkPrefs(pSrc)) {
-			this.ut.alertEx(
+			this.ut.alert(
 				this.ut.getLocalized("importErrorTitle"),
 				this.ut.getLocalized("invalidConfigFormat")
 					+ (this.ps._hashError ? this.ut.getLocalized("invalidHash") : "")
 			);
 			return;
 		}
-		if(this.ps._hashMissing) {
-			var ps = this.ut.promptsSvc;
-			// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
-			// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
-			var button = ps.confirmEx(
-				window,
+		if(
+			this.ps._hashMissing
+			&& !this.ut.confirmEx(
 				this.ut.getLocalized("warningTitle"),
 				this.ut.getLocalized("hashMissingConfirm"),
-				  ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING
-				+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL
-				+ ps.BUTTON_POS_1_DEFAULT,
-				this.ut.getLocalized("continueImport"), "", "",
-				null, {}
-			);
-			if(button == 1)
-				return;
-		}
+				this.ut.getLocalized("continueImport")
+			)
+		)
+			return;
 		if(!this.ps.otherSrc) {
 			this._savedPrefs = this.ps.prefs;
 			this._savedTypes = this.ps.types;
@@ -1842,7 +1821,7 @@ var handyClicksSets = {
 	importDone: function(ok) {
 		var confirmed = false;
 		if(ok) {
-			confirmed = this.buggyPrefsCheck();
+			confirmed = this.buggyPrefsConfirm();
 			if(!confirmed)
 				return;
 		}

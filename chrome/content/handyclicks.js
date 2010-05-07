@@ -17,7 +17,6 @@ var handyClicks = {
 	daTimeout: null, // Delayed Action Timeout
 	evtStrOnMousedown: "",
 	hasMoveHandlers: false,
-	mousemoveParams: null,
 	_tabOnMousedown: null,
 
 	// Initialization:
@@ -37,6 +36,23 @@ var handyClicks = {
 			},
 			this
 		);
+	},
+	handleEvent: function(e) {
+		switch(e.type) {
+			case "mousedown":   this.mousedownHandler(e);   break;
+			case "click":       this.clickHandler(e);       break;
+			case "mouseup":     this.mouseupHandler(e);     break;
+			case "command":     this.commandHandler(e);     break;
+			case "dblclick":    this.dblclickHandler(e);    break;
+			case "contextmenu": this.contextmenuHandler(e); break;
+			case "mousemove":   this.mousemoveHandler(e);   break;
+			case "draggesture": this.dragHandler(e);        break;
+			case "keypress":
+				if(e.keyCode != e.DOM_VK_ESCAPE)
+					return;
+				this.stopEvent(e);
+				this.editMode = false; // this removes event listener
+		}
 	},
 
 	_enabled: true, // Uses for internal disabling
@@ -72,15 +88,15 @@ var handyClicks = {
 			this._cMenu.hidePopup();
 
 		var em = this.editMode;
-		this.flags.allowEvents = !em && funcObj.action == this.ignoreAction;
-		this.flags.stopContextMenu = !this.flags.allowEvents && funcObj.action != "showContextMenu";
+		var allowEvts = this.flags.allowEvents = !em && funcObj.action == this.ignoreAction;
+		this.flags.stopContextMenu = !allowEvts && funcObj.action != "showContextMenu";
 
 		// Fix for switching tabs by Mouse Gestures
 		this._tabOnMousedown = e.view.top === content && this.getTabBrowser(true).selectedTab;
 
 		this.ui.setIcon(e);
 
-		if(!em && funcObj.eventType == "mousedown" && !this.flags.allowEvents) {
+		if(!em && funcObj.eventType == "mousedown" && !allowEvts) {
 			this.functionEvent(funcObj, e);
 			return;
 		}
@@ -106,23 +122,25 @@ var handyClicks = {
 			);
 		}
 
-		if(
-			em && this.ut.fxVersion >= 3.6
-			&& "open" in e.originalTarget
-			&& e.originalTarget.boxObject instanceof Components.interfaces.nsIMenuBoxObject
-		)
-			e.originalTarget.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
-
-		//var cm = this.getItemContext(e); //~ todo: get cm only if needed
+		if(em) {
+			var tar = e.originalTarget;
+			if(
+				this.ut.fxVersion >= 3.6
+				&& "open" in tar
+				&& tar.boxObject
+				&& tar.boxObject instanceof Components.interfaces.nsIMenuBoxObject
+			)
+				tar.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
+		}
 
 		var delay = this.pu.pref("delayedActionTimeout");
 		if(delay > 0 && !em) {
 			var delayedAction = this.ut.getOwnProperty(funcObj, "delayedAction");
 			if(
-				(!delayedAction /*&& cm */&& e.button == 2) // Show context menu after delay
+				(!delayedAction && e.button == 2) // Show context menu after delay
 				|| this.isOkFuncObj(delayedAction) // Other action after delay
 			) {
-				this.cancelDelayedAction(); // only one timeout... (for dblclick event)
+				this.cancelDelayedAction(); // Only one timeout... (for dblclick event)
 				this.daTimeout = this.ut.timeout(
 					this.executeDelayedAction,
 					this, [delayedAction],
@@ -133,6 +151,11 @@ var handyClicks = {
 		if(!this.hasMoveHandlers) {
 			this.hasMoveHandlers = true;
 			this.disallowMousemove = this.pu.pref("disallowMousemoveButtons").indexOf(e.button) != -1;
+			this.mousemoveParams = {
+				dist: 0,
+				screenX: e.screenX,
+				screenY: e.screenY
+			};
 			this.setListeners(["mousemove", "draggesture"], true);
 		}
 	},
@@ -185,18 +208,15 @@ var handyClicks = {
 		this.saveXY(e);
 		if(!this.disallowMousemove)
 			return;
-		if(!this.mousemoveParams)
-			this.mousemoveParams = { dist: 0, __proto__: null };
-		if("screenX" in this.mousemoveParams) {
-			this.mousemoveParams.dist +=
-				Math.sqrt(
-					Math.pow(this.mousemoveParams.screenX - e.screenX, 2) +
-					Math.pow(this.mousemoveParams.screenY - e.screenY, 2)
-				);
-		}
-		this.mousemoveParams.screenX = e.screenX;
-		this.mousemoveParams.screenY = e.screenY;
-
+		var mp = this.mousemoveParams, x = e.screenX, y = e.screenY;
+		this.mousemoveParams = {
+			dist: mp.dist + Math.sqrt(
+				Math.pow(mp.screenX - x, 2) +
+				Math.pow(mp.screenY - y, 2)
+			),
+			screenX: x,
+			screenY: y
+		};
 		if(this.mousemoveParams.dist < this.pu.pref("disallowMousemoveDist"))
 			return;
 
@@ -937,25 +957,6 @@ var handyClicks = {
 				+ ", itemType = " + this.itemType
 				+ "\n=> " + (funcObj.custom ? (this.ps.dec(funcObj.label) || action.substr(0, 100)) : funcObj.action)
 			);
-		}
-	},
-
-	// Events interface:
-	handleEvent: function(e) {
-		switch(e.type) {
-			case "mousedown":   this.mousedownHandler(e);   break;
-			case "click":       this.clickHandler(e);       break;
-			case "mouseup":     this.mouseupHandler(e);     break;
-			case "command":     this.commandHandler(e);     break;
-			case "dblclick":    this.dblclickHandler(e);    break;
-			case "contextmenu": this.contextmenuHandler(e); break;
-			case "mousemove":   this.mousemoveHandler(e);   break;
-			case "draggesture": this.dragHandler(e);        break;
-			case "keypress":
-				if(e.keyCode != e.DOM_VK_ESCAPE)
-					return;
-				this.stopEvent(e);
-				this.editMode = false; // this removes event listener
 		}
 	}
 };
