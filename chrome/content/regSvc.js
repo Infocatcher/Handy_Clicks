@@ -17,6 +17,7 @@ var handyClicksRegSvc = {
 		window.removeEventListener("unload", this, false);
 		this.callMethods("destroy", reloadFlag);
 		this.registerShortcuts(false);
+		delete this.s; // We can't undo this!
 		delete window._handyClicksInitialized;
 	},
 	globals: {
@@ -62,13 +63,12 @@ var handyClicksRegSvc = {
 		return this.s = s;
 	},
 	registerShortcuts: function(regFlag) {
-		if(regFlag) {
-			var s = this.s;
-			for(var p in s) if(s.hasOwnProperty(p))
-				s[p].__proto__ = s;
-			return;
-		}
-		this.s = null;
+		var s = this.s;
+		var proto = regFlag
+			? s
+			: ({}).__proto__; // Object.prototype
+		for(var p in s) if(s.hasOwnProperty(p))
+			s[p].__proto__ = proto;
 	},
 	callMethods: function(methName, reloadFlag) {
 		var s = this.s, o;

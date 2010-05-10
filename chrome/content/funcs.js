@@ -572,7 +572,7 @@ var handyClicksFuncs = {
 		return popup;
 	},
 
-	showOpenUriWithAppsPopup: function(items, checkFiles) {
+	showOpenURIWithAppsPopup: function(items, checkFiles) {
 		var uri = this.getItemURI();
 		if(!uri) {
 			this.ut._err(new Error("Can't get URI of item (" + this.hc.itemType + ")"));
@@ -1253,11 +1253,13 @@ var handyClicksFuncs = {
 
 	__noSuchMethod__: function(meth, args) {
 		// Support for old names of methods
-		//= Expires after 2010-05-20
 		const newMeth = meth
+			//= Expires after 2010-05-20
 			.replace(/^(_?)open(?:Uri)?In/, "$1openURIIn") // openIn => openURIIn, openUriIn => openURIIn
 			.replace(/^get(\w*)Uri(Of[A-Z]\w*)?$/, "get$1URI$2") // getTabUri => getTabURI, getUriOfItem => getURIOfItem
-			.replace(/^get(\w+)OfItem$/, "getItem$1");
+			.replace(/^get(\w+)OfItem$/, "getItem$1")
+			//= Expires after 2010-10-20:
+			.replace(/^showOpenUriWithAppsPopup$/, "showOpenURIWithAppsPopup");
 		const oName = "handyClicksFuncs";
 		if(!(newMeth in this))
 			throw new Error(this.ut.errPrefix + "Method \"" + meth + "\" does not exist in \"" + oName + "\" object");
