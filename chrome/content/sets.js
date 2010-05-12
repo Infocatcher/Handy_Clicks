@@ -1454,9 +1454,10 @@ var handyClicksSets = {
 			.splice(1) // Remove header
 			.forEach(
 				function(line, i) {
+					var first = line.charAt(0);
 					if(
-						line.indexOf(";") == 0 || line.indexOf("#") == 0
-						|| line.charAt(0) == "[" && line.charAt(line.length - 1) == "]"
+						first == ";" || first == "#"
+						|| first == "[" && line.charAt(line.length - 1) == "]"
 					)
 						return; // Just for fun right now :)
 					var indx = line.indexOf("=");
@@ -1522,7 +1523,7 @@ var handyClicksSets = {
 			this.ps.prefsFile.copyTo(file.parent, file.leafName);
 	},
 	extractPrefs: function(extractShortcuts) {
-		//~ todo: with extractShortcuts == false iser see empty tree on import
+		//~ todo: with "extractShortcuts == false" iser see empty tree on import
 		var types = this.ps.types, newTypes = {};
 		var prefs = this.ps.prefs, newPrefs = {};
 

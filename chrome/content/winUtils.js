@@ -138,11 +138,11 @@ var handyClicksWinUtils = {
 		this.markOpenedEditors(winId, true);
 		return w;
 	},
-	openEditorEx: function(pSrc, mode, shortcut, itemType, delayed, src, line) {
-		var w = this.openEditor(null, mode, shortcut, itemType);
+	openEditorEx: function(pSrc, mode, shortcut, itemType, isDelayed, src, line) {
+		var w = this.openEditor(null, mode, shortcut, itemType, isDelayed);
 		(function _oe() {
 			if("_handyClicksInitialized" in w) {
-				w.handyClicksEditor.selectTargetTab(delayed, src, line);
+				w.handyClicksEditor.selectTargetTab(isDelayed, src, line);
 				return;
 			}
 			setTimeout(_oe, 5);
@@ -162,16 +162,16 @@ var handyClicksWinUtils = {
 		if(mode == "shortcut") {
 			var shortcut = tokens[1];
 			var itemType = tokens[2];
-			var delayed = tokens[3] == "delayed";
+			var isDelayed = tokens[3] == "delayed";
 			var src = tokens[4];
 		}
 		else if(mode == "itemType") {
 			var shortcut = null;
 			var itemType = tokens[1];
-			var delayed = false;
+			var isDelayed = false;
 			var src = tokens[2];
 		}
-		this.openEditorEx(null, mode, shortcut, itemType, delayed, src, line);
+		this.openEditorEx(null, mode, shortcut, itemType, isDelayed, src, line);
 	},
 	getOpenEditorLink: function(href, line) {
 		var _this = this;

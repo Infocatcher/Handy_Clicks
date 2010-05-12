@@ -28,6 +28,18 @@ var handyClicksEditor = {
 	},
 
 	init: function(reloadFlag) {
+		if(this.ut.storage("extensionsPending")) {
+			// Hack for Firefox 3.7a5pre+ (see handyClicksExtensionsHelper.instantInit() in utils.js)
+			if(!this.ut.storage("extensionsScheduledTasks"))
+				this.ut.storage("extensionsScheduledTasks", []);
+			this.ut.storage("extensionsScheduledTasks").push({
+				func: arguments.callee,
+				context: this,
+				args: arguments
+			});
+			return;
+		}
+
 		if(this.ut.fxVersion == 1.5) // "relative" is not supported
 			this.types.menulists.moveTabTo.pop();
 		if(!reloadFlag) {
@@ -108,17 +120,29 @@ var handyClicksEditor = {
 		this.buttonApply.disabled = dis;
 		this.$("hc-editor-cmd-test").setAttribute("disabled", dis);
 	},
-	selectTargetTab: function(delayed, src, line) {
+	selectTargetTab: function(isDelayed, src, line) {
+		if(this.ut.storage("extensionsPending")) {
+			// Hack for Firefox 3.7a5pre+ (see handyClicksExtensionsHelper.instantInit() in utils.js)
+			if(!this.ut.storage("extensionsScheduledTasks"))
+				this.ut.storage("extensionsScheduledTasks", []);
+			this.ut.storage("extensionsScheduledTasks").push({
+				func: arguments.callee,
+				context: this,
+				args: arguments
+			});
+			return;
+		}
+
 		this.mBox.selectedIndex = this.tabs[this.editorMode];
-		if(delayed && !src)
+		if(isDelayed && !src)
 			src = "code";
 		if(!src)
 			return;
 		switch(this.editorMode) {
 			case "shortcut":
 				var mTab = this.$("hc-editor-funcTabbox");
-				mTab.selectedIndex = delayed ? 1 : 0;
-				var tab = this.$("hc-editor-funcCustomTabbox" + (delayed ? this.delayId : ""));
+				mTab.selectedIndex = isDelayed ? 1 : 0;
+				var tab = this.$("hc-editor-funcCustomTabbox" + (isDelayed ? this.delayId : ""));
 				tab.selectedIndex = src == "code" ? 0 : 1;
 			break;
 			case "itemType":
@@ -592,10 +616,10 @@ var handyClicksEditor = {
 			this
 		);
 	},
-	addArgControls: function(argName, delayed, setsObj) {
-		setsObj = setsObj || this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
-		if(delayed)
-			setsObj = this.ut.getOwnProperty(setsObj, "delayedAction") || {};
+	addArgControls: function(argName, delayed, so) {
+		var setsObj = so || this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
+		if(delayed) //~ todo: test part with "so"
+			setsObj = so || this.ut.getOwnProperty(setsObj, "delayedAction") || {};
 		var argVal = this.ut.getOwnProperty(setsObj, "arguments", argName);
 		var argType = this.getArgType(argName);
 		if(argType)

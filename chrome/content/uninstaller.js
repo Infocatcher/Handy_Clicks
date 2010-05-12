@@ -1,5 +1,8 @@
 // This file loaded from components/hcComponent.js
 handyClicksUninstaller = {
+	isUninstall: false,
+	uninstallConfirmed: false,
+	guid: "handyclicks@infocatcher",
 	get oSvc() {
 		return Components.classes["@mozilla.org/observer-service;1"]
 			.getService(Components.interfaces.nsIObserverService);
@@ -13,51 +16,53 @@ handyClicksUninstaller = {
 		this.oSvc.removeObserver(this, "quit-application");
 	},
 	observe: function(subject, topic, data) {
-		if(topic == "quit-application")
+		if(topic == "quit-application") {
 			this.destroyUninstallObserver();
+			if(this.isUninstall && this.uninstallConfirmed) {
+				this.include();
+				this.uninstall();
+			}
+		}
 		else if(
 			topic == "em-action-requested"
 			&& subject instanceof Components.interfaces.nsIUpdateItem
-			&& subject.id == "handyclicks@infocatcher"
-			&& data == "item-uninstalled"
+			&& subject.id == this.guid
 		) {
-			this.startup();
-			this.uninstall();
-			this.clear();
+			if(data == "item-uninstalled") {
+				this.isUninstall = true;
+				this.include();
+				this.uninstallConfirm();
+				this.exclude();
+			}
+			else if(data == "item-cancel-action")
+				this.isUninstall = false;
 		}
 	},
-	startup: function() {
+	include: function() {
 		// Simple way for get some required functions
+		const path = "chrome://handyclicks/content/";
 		var temp = {};
-		jsLoader.loadSubScript("chrome://handyclicks/content/utils.js", temp);
-		jsLoader.loadSubScript("chrome://handyclicks/content/winUtils.js", temp);
-		jsLoader.loadSubScript("chrome://handyclicks/content/prefUtils.js", temp);
-		jsLoader.loadSubScript("chrome://handyclicks/content/prefSvc.js", temp);
-		this.ut = temp.handyClicksUtils;
-		this.wu = temp.handyClicksWinUtils;
-		this.pu = temp.handyClicksPrefUtils;
-		this.ps = temp.handyClicksPrefSvc;
+		jsLoader.loadSubScript(path + "utils.js",     temp); this.ut = temp.handyClicksUtils;
+		jsLoader.loadSubScript(path + "winUtils.js",  temp); this.wu = temp.handyClicksWinUtils;
+		jsLoader.loadSubScript(path + "prefUtils.js", temp); this.pu = temp.handyClicksPrefUtils;
+		jsLoader.loadSubScript(path + "prefSvc.js",   temp); this.ps = temp.handyClicksPrefSvc;
 	},
-	clear: function() {
+	exclude: function() {
 		delete this.ut;
 		delete this.wu;
 		delete this.pu;
 		delete this.ps;
 	},
+	uninstallConfirm: function() {
+		this.uninstallConfirmed = this.ut.confirmEx(
+			this.ut.getLocalized("title"),
+			this.ut.getLocalized("removeSettingsConfirm"),
+			this.ut.getLocalized("removeSettings"),
+			false, // Cancel button is default
+			this.wu.wm.getMostRecentWindow("Extension:Manager") || window
+		);
+	},
 	uninstall: function() {
-		var prefsDir = this.ps._prefsDir;
-		if(
-			!prefsDir.exists()
-			|| !this.ut.confirmEx(
-				this.ut.getLocalized("title"),
-				this.ut.getLocalized("removeSettingsConfirm"),
-				this.ut.getLocalized("removeSettings"),
-				false, // Cancel button is default
-				this.wu.wm.getMostRecentWindow("Extension:Manager") || window
-			)
-		)
-			return;
-
 		//this.pu.prefSvc.deleteBranch(this.pu.prefNS);
 		this.pu.prefSvc.getBranch(this.pu.prefNS)
 			.getChildList("", {})
@@ -89,7 +94,7 @@ handyClicksUninstaller = {
 			}
 			dir.permissions = 0755;
 			dir.remove(true);
-		})(prefsDir);
+		})(this.ps._prefsDir);
 	}
 };
 handyClicksUninstaller.initUninstallObserver();

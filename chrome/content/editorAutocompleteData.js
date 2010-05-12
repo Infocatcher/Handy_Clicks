@@ -683,6 +683,12 @@ var handyClicksAutocompleteData = {
 		"MozAfterPaint",
 		"MozMousePixelScroll",
 		"PluginNotFound",
-		"PopupWindow"
+		"PopupWindow",
+		"boolean",
+		"number",
+		"object",
+		"string",
+		"undefined",
+		"xml"
 	]
 };
