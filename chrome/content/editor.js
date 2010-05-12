@@ -26,6 +26,18 @@ var handyClicksEditor = {
 	delayId: "-delay",
 
 	init: function(reloadFlag) {
+		if(this.ut.storage("extensionsPending")) {
+			// Firefox 3.7a5pre+ (see handyClicksExtensionsHelper.instantInit() in utils.js)
+			if(!this.ut.storage("extensionsScheduledTasks"))
+				this.ut.storage("extensionsScheduledTasks", []);
+			this.ut.storage("extensionsScheduledTasks").push({
+				func: this.init,
+				context: this,
+				args: arguments
+			});
+			return;
+		}
+
 		if(this.ut.fxVersion == 1.5) // "relative" is not supported
 			this.types.menulists.moveTabTo.pop();
 		if(!reloadFlag) {

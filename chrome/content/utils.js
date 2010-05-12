@@ -604,17 +604,52 @@ var handyClicksExtensionsHelper = {
 		return this.rdf = Components.classes["@mozilla.org/rdf/rdf-service;1"]
 			.getService(Components.interfaces.nsIRDFService);
 	},
+	instantInit: function() {
+		if(
+			"Application" in window
+			&& "getExtensions" in Application && !("extensions" in Application)
+			&& !this.ut.storage("extensions")
+			&& !this.ut.storage("extensionsPending")
+		) {
+			// Hack for Firefox 3.7a5pre+
+			// Following code is asynchronous and take some time... so, starts them as soon possible
+			this.ut.storage("extensionsPending", true);
+			var _this = this;
+			Application.getExtensions(
+				function(exts) {
+					_this.ut.storage("extensions", exts);
+					_this.ut.storage("extensionsPending", false);
+					var scheduledTasks = _this.ut.storage("extensionsScheduledTasks");
+					if(scheduledTasks) {
+						//_this.ut._log("Run tasks: " + scheduledTasks.length);
+						scheduledTasks.forEach(function(task) {
+							task.func.apply(task.context, task.args);
+						});
+						_this.ut.storage("extensionsScheduledTasks", null);
+					}
+				}
+			);
+		}
+	},
+	get exts() {
+		var exts = Application.extensions || this.ut.storage("extensions");
+		if(exts) {
+			delete this.exts;
+			return this.exts = exts;
+		}
+		return exts;
+	},
 	isAvailable: function(guid) {
 		return this.isInstalled(guid) && this.isEnabled(guid);
 	},
 	isInstalled: function(guid) {
 		return "Application" in window
-			? Application.extensions.has(guid)
+			? this.exts && this.exts.has(guid)
 			: this.em.getInstallLocation(guid);
 	},
 	isEnabled: function(guid) {
 		if("Application" in window)
-			return Application.extensions.get(guid).enabled;
+			return this.exts && this.exts.get(guid).enabled;
 		var res  = this.rdf.GetResource("urn:mozilla:item:" + guid);
 		var opType = this.getRes(res, "opType");
 		return opType != "needs-enable" && opType != "needs-install"
