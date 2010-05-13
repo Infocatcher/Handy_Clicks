@@ -22,10 +22,19 @@ var handyClicksEditor = {
 			__proto__: null
 		}
 	},
-	tabs: {
-		shortcut: 0,
-		itemType: 1
-	},
+
+	// "hc-editor-mainTabbox":
+	INDEX_SHORTCUT: 0,
+	INDEX_TYPE: 1,
+	// "hc-editor-funcTabbox":
+	INDEX_SHORTCUT_NORMAL: 0,
+	INDEX_SHORTCUT_DELAYED: 1,
+	// "hc-editor-funcCustomTabbox":
+	INDEX_SHORTCUT_CODE: 0,
+	INDEX_SHORTCUT_INIT: 1,
+	// "hc-editor-customTypeTabbox":
+	INDEX_TYPE_DEFINE: 0,
+	INDEX_TYPE_CONTEXT: 0,
 
 	init: function(reloadFlag) {
 		if(this.ut.storage("extensionsPending")) {
@@ -107,7 +116,8 @@ var handyClicksEditor = {
 		parent.insertBefore(bUndo, insPoint);
 	},
 	initShortcuts: function() {
-		this.mBox = this.$("hc-editor-mainTabbox");
+		this.mainTabbox = this.$("hc-editor-mainTabbox");
+
 		var wa = "arguments" in window ? window.arguments : [];
 		this.src = wa[0];
 		this.editorMode = wa[1];
@@ -133,26 +143,37 @@ var handyClicksEditor = {
 			return;
 		}
 
-		this.mBox.selectedIndex = this.tabs[this.editorMode];
+		this.mainTabbox.selectedIndex = this.editorMode == this.wu.EDITOR_MODE_TYPE
+			? this.INDEX_TYPE
+			: this.INDEX_SHORTCUT;
+
 		if(isDelayed && !src)
-			src = "code";
+			src = this.wu.EDITOR_SHORTCUT_CODE;
 		if(!src)
 			return;
+		var tabbox, si;
 		switch(this.editorMode) {
-			case "shortcut":
-				var mTab = this.$("hc-editor-funcTabbox");
-				mTab.selectedIndex = isDelayed ? 1 : 0;
-				var tab = this.$("hc-editor-funcCustomTabbox" + (isDelayed ? this.delayId : ""));
-				tab.selectedIndex = src == "code" ? 0 : 1;
+			default:
+			case this.wu.EDITOR_MODE_SHORTCUT:
+				this.$("hc-editor-funcTabbox").selectedIndex = isDelayed
+					? this.INDEX_SHORTCUT_DELAYED
+					: this.INDEX_SHORTCUT_NORMAL;
+				tabbox = this.$("hc-editor-funcCustomTabbox" + (isDelayed ? this.delayId : ""));
+				si = src == this.wu.EDITOR_SHORTCUT_INIT
+						? this.INDEX_SHORTCUT_INIT
+						: this.INDEX_SHORTCUT_CODE;
 			break;
-			case "itemType":
-				var tab = this.$("hc-editor-customTypeFuncs");
-				tab.selectedIndex = src == "define" ? 0 : 1;
+			case this.wu.EDITOR_MODE_TYPE:
+				tabbox = this.$("hc-editor-customTypeTabbox");
+				si = src == this.wu.EDITOR_TYPE_CONTEXT
+					? this.INDEX_TYPE_CONTEXT
+					: this.INDEX_TYPE_DEFINE;
 		}
+		tabbox.selectedIndex = si;
 		if(typeof line != "number" || !isFinite(line))
 			return;
-		var panel = tab.selectedPanel
-			|| tab.getElementsByTagName("tabpanels")[0].getElementsByTagName("tabpanel")[tab.selectedIndex];
+		var panel = tabbox.selectedPanel
+			|| tabbox.getElementsByTagName("tabpanels")[0].getElementsByTagName("tabpanel")[tabbox.selectedIndex]; //~ todo: test
 		var cre = /(?:^|\s)hcEditor(?:\s|$)/;
 		Array.some(
 			panel.getElementsByTagName("textbox"),
@@ -282,9 +303,9 @@ var handyClicksEditor = {
 	setWinId: function() {
 		var winId;
 		var cType = this.currentType || this.type; // For deleted custom types
-		switch(this.mBox.selectedIndex) {
-			case this.tabs.shortcut: winId = this.currentShortcut + "-" + cType; break;
-			case this.tabs.itemType: winId = cType;                              break;
+		switch(this.mainTabbox.selectedIndex) {
+			case this.INDEX_SHORTCUT: winId = this.currentShortcut + "-" + cType; break;
+			case this.INDEX_TYPE:     winId = cType;                              break;
 			default: return;
 		}
 		window[this.wu.winIdProp] = winId;
@@ -306,7 +327,7 @@ var handyClicksEditor = {
 		so = this.ut.getOwnProperty(so, "delayedAction") || {};
 		this.initFuncEditor(so, this.delayId);
 
-		var butt = /(?:^|,)button=(\d)(?:,|$)/.test(this.shortcut) && RegExp.$1 || "0";
+		var butt = /(?:^|,)button=([0-2])(?:,|$)/.test(this.shortcut) && RegExp.$1 || "0";
 		this.$("hc-editor-button").value = butt;
 		this.$("hc-editor-events-command").disabled = butt != "0";
 		["ctrl", "shift", "alt", "meta"].forEach(
@@ -352,7 +373,7 @@ var handyClicksEditor = {
 		var tar = e.target;
 		var cType = tar.value;
 		this.loadCustomType(cType);
-		this.mBox.selectedIndex = this.tabs.itemType;
+		this.mainTabbox.selectedIndex = this.INDEX_TYPE;
 		var mp = tar.parentNode;
 		if("hidePopup" in mp)
 			mp.hidePopup();
@@ -811,18 +832,18 @@ var handyClicksEditor = {
 	},
 
 	saveSettings: function(applyFlag) {
-		switch(this.mBox.selectedIndex) {
-			case this.tabs.shortcut: return this.saveShortcut(applyFlag);
-			case this.tabs.itemType: return this.saveCustomType(applyFlag);
+		switch(this.mainTabbox.selectedIndex) {
+			case this.INDEX_SHORTCUT: return this.saveShortcut(applyFlag);
+			case this.INDEX_TYPE: return this.saveCustomType(applyFlag);
 			default: return false;
 		}
 	},
 	testSettings: function() {
 		this.$("hc-editor-cmd-test").setAttribute("disabled", "true");
 		var ok = false;
-		switch(this.mBox.selectedIndex) {
-			case this.tabs.shortcut: ok = this.testShortcut();   break;
-			case this.tabs.itemType: ok = this.testCustomType();
+		switch(this.mainTabbox.selectedIndex) {
+			case this.INDEX_SHORTCUT: ok = this.testShortcut();   break;
+			case this.INDEX_TYPE: ok = this.testCustomType();
 		}
 		ok = ok && this.testMode;
 		if(ok)
@@ -838,23 +859,23 @@ var handyClicksEditor = {
 		}
 	},
 	deleteSettings: function() {
-		switch(this.mBox.selectedIndex) {
-			case this.tabs.shortcut: return this.deleteShortcut();
-			case this.tabs.itemType: return this.deleteCustomType();
+		switch(this.mainTabbox.selectedIndex) {
+			case this.INDEX_SHORTCUT: return this.deleteShortcut();
+			case this.INDEX_TYPE: return this.deleteCustomType();
 			default: return false;
 		}
 	},
 	copySettings: function() {
-		switch(this.mBox.selectedIndex) {
-			case this.tabs.shortcut: return this.copyShortcut();
-			case this.tabs.itemType: return this.copyCustomType();
+		switch(this.mainTabbox.selectedIndex) {
+			case this.INDEX_SHORTCUT: return this.copyShortcut();
+			case this.INDEX_TYPE: return this.copyCustomType();
 			default: return false;
 		}
 	},
 	pasteSettings: function() {
-		switch(this.mBox.selectedIndex) {
-			case this.tabs.shortcut: return this.pasteShortcut();
-			case this.tabs.itemType: return this.pasteCustomType();
+		switch(this.mainTabbox.selectedIndex) {
+			case this.INDEX_SHORTCUT: return this.pasteShortcut();
+			case this.INDEX_TYPE: return this.pasteCustomType();
 			default: return false;
 		}
 	},

@@ -241,7 +241,7 @@
 						label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
 				</hbox>
 
-				<tabbox id="hc-editor-customTypeFuncs" flex="1">
+				<tabbox id="hc-editor-customTypeTabbox" flex="1">
 					<tabs>
 						<tab label="&hc.editor.defineItem;" accesskey="&hc.editor.defineItemAccesskey;" />
 						<tab hc_empty="true" label="&hc.editor.defineContext;" accesskey="&hc.editor.defineContextAccesskey;"

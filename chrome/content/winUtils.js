@@ -11,8 +11,15 @@ var handyClicksWinUtils = {
 	PROTOCOL_SETTINGS: "handyclicks://settings/",
 	PROTOCOL_SETTINGS_ADD: "handyclicks://settings/add/",
 	PROTOCOL_EDITOR: "handyclicks://editor/",
-	PROTOCOL_EDITOR_SHORTCUT: "handyclicks://editor/shortcut/",
-	PROTOCOL_EDITOR_ITEM_TYPE: "handyclicks://editor/itemType/",
+
+	EDITOR_MODE_SHORTCUT: "shortcut",
+	EDITOR_MODE_TYPE: "itemType",
+	EDITOR_SHORTCUT_NORMAL: "normal",
+	EDITOR_SHORTCUT_DELAYED: "delayed",
+	EDITOR_SHORTCUT_CODE: "code",
+	EDITOR_SHORTCUT_INIT: "init",
+	EDITOR_TYPE_DEFINE: "define",
+	EDITOR_TYPE_CONTEXT: "context",
 
 	get wm() {
 		delete this.wm;
@@ -115,7 +122,8 @@ var handyClicksWinUtils = {
 
 	winIdProp: "__handyClicks__winId",
 	openEditor: function _oe(pSrc, mode, shortcut, itemType, isDelayed) {
-		var winId = (mode == "itemType" ? itemType : shortcut + "-" + itemType) + (pSrc ? "@otherSrc" : "");
+		var winId = (mode == this.EDITOR_MODE_TYPE ? itemType : shortcut + "-" + itemType)
+			+ (pSrc ? "@otherSrc" : "");
 		var wProp = this.winIdProp;
 		var ws = this.wm.getEnumerator("handyclicks:editor");
 		var w;
@@ -159,13 +167,13 @@ var handyClicksWinUtils = {
 			line = Number(RegExp.$1);
 		var tokens = href.substr(ed.length).split("/");
 		var mode = tokens[0];
-		if(mode == "shortcut") {
+		if(mode == this.EDITOR_MODE_SHORTCUT) {
 			var shortcut = tokens[1];
 			var itemType = tokens[2];
-			var isDelayed = tokens[3] == "delayed";
+			var isDelayed = tokens[3] == this.EDITOR_SHORTCUT_DELAYED;
 			var src = tokens[4];
 		}
-		else if(mode == "itemType") {
+		else if(mode == this.EDITOR_MODE_TYPE) {
 			var shortcut = null;
 			var itemType = tokens[1];
 			var isDelayed = false;

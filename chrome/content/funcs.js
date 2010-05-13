@@ -202,13 +202,14 @@ var handyClicksFuncs = {
 		tabCont.addEventListener("TabClose", _resetRelativeIndex, true);
 		tabCont.addEventListener("TabSelect", _resetRelativeIndex, true);
 
-		this.cs.registerCleanup(
+		this.cs.registerNodeCleanup(
+			tbr,
 			function(rri) {
 				this.__handyClicks__listeners = false;
 				this.removeEventListener("TabClose", rri, true);
 				this.removeEventListener("TabSelect", rri, true);
 			},
-			tabCont, [_resetRelativeIndex], tbr
+			tabCont, [_resetRelativeIndex]
 		);
 	},
 	_openURIInTab: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction) {

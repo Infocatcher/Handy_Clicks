@@ -606,12 +606,12 @@ var handyClicksSets = {
 			return;
 		if(e) {
 			if(e.type == "command" || e.button > 0)
-				this.openEditorWindow({ __shortcut: this.ps.getEvtStr(e) }, "shortcut", true);
+				this.openEditorWindow({ __shortcut: this.ps.getEvtStr(e) }, this.wu.EDITOR_MODE_SHORTCUT, true);
 			return;
 		}
 		var its = this.selectedItems;
 		if(its.length == 1) {
-			this.openEditorWindow(its[0], "shortcut", true);
+			this.openEditorWindow(its[0], this.wu.EDITOR_MODE_SHORTCUT, true);
 			return;
 		}
 		this.openEditorWindow();
@@ -630,7 +630,7 @@ var handyClicksSets = {
 			return;
 		its.forEach(
 			function(it) {
-				this.openEditorWindow(it, "shortcut");
+				this.openEditorWindow(it, this.wu.EDITOR_MODE_SHORTCUT);
 			},
 			this
 		);
@@ -643,7 +643,7 @@ var handyClicksSets = {
 			return;
 		cIts.forEach(
 			function(it) {
-				this.openEditorWindow(it, "itemType");
+				this.openEditorWindow(it, this.wu.EDITOR_MODE_TYPE);
 			},
 			this
 		);
@@ -757,7 +757,7 @@ var handyClicksSets = {
 		}
 		this.searchInSetsTree(null, true);
 	},
-	openEditorWindow: function(tItem, mode, add) { // mode: "shortcut" or "itemType"
+	openEditorWindow: function(tItem, mode, add) { // mode: this.wu.EDITOR_MODE_*
 		var shortcut = tItem
 			? tItem.__shortcut
 			: undefined;
@@ -765,7 +765,7 @@ var handyClicksSets = {
 			? tItem.__itemType
 			: undefined;
 		var isDelayed = tItem && add !== true && tItem.__isDelayed;
-		this.wu.openEditor(this.ps.currentSrc, mode || "shortcut", shortcut, itemType, isDelayed);
+		this.wu.openEditor(this.ps.currentSrc, mode || this.wu.EDITOR_MODE_SHORTCUT, shortcut, itemType, isDelayed);
 	},
 	setItemStatus: function(rowId, editStat) {
 		if(!rowId)

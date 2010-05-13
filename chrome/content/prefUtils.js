@@ -70,6 +70,7 @@ var handyClicksPrefUtils = {
 	},
 	destroy: function(reloadFlag) {
 		this.prefSvc.removeObserver(this.prefNS, this);
+		this.oSvc.destroy();
 	},
 
 	// Preferences observer:

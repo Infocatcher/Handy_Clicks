@@ -1,22 +1,38 @@
 // This file loaded from components/hcComponent.js
 handyClicksUninstaller = {
+	guid: "handyclicks@infocatcher",
 	isUninstall: false,
 	uninstallConfirmed: false,
-	guid: "handyclicks@infocatcher",
 	get oSvc() {
 		return Components.classes["@mozilla.org/observer-service;1"]
 			.getService(Components.interfaces.nsIObserverService);
 	},
+	init: function() {
+		this.oSvc.addObserver(this, "final-ui-startup", false); // Wait for AddonManager startup
+	},
 	initUninstallObserver: function() {
-		this.oSvc.addObserver(this, "em-action-requested", false);
+		if("@mozilla.org/extensions/manager;1" in Components.classes)
+			this.oSvc.addObserver(this, "em-action-requested", false);
+		else {
+			Components.utils.import("resource://gre/modules/AddonManager.jsm");
+			//AddonManagerPrivate.startup();
+			AddonManager.addAddonListener(this);
+		}
 		this.oSvc.addObserver(this, "quit-application", false);
 	},
 	destroyUninstallObserver: function() {
-		this.oSvc.removeObserver(this, "em-action-requested");
+		if("@mozilla.org/extensions/manager;1" in Components.classes)
+			this.oSvc.removeObserver(this, "em-action-requested");
+		else
+			AddonManager.removeAddonListener(this);
 		this.oSvc.removeObserver(this, "quit-application");
 	},
 	observe: function(subject, topic, data) {
-		if(topic == "quit-application") {
+		if(topic == "final-ui-startup") {
+			this.oSvc.removeObserver(this, "final-ui-startup");
+			this.initUninstallObserver();
+		}
+		else if(topic == "quit-application") {
 			this.destroyUninstallObserver();
 			if(this.isUninstall && this.uninstallConfirmed) {
 				this.include();
@@ -28,15 +44,28 @@ handyClicksUninstaller = {
 			&& subject instanceof Components.interfaces.nsIUpdateItem
 			&& subject.id == this.guid
 		) {
-			if(data == "item-uninstalled") {
-				this.isUninstall = true;
-				this.include();
-				this.uninstallConfirm();
-				this.exclude();
-			}
+			if(data == "item-uninstalled")
+				this.handleUninstalling();
 			else if(data == "item-cancel-action")
 				this.isUninstall = false;
 		}
+	},
+	onUninstalling: function(ext, requiresRestart) {
+		if(ext.id == this.guid)
+			this.handleUninstalling();
+	},
+	onOperationCancelled: function(ext) {
+		if(
+			ext.id == this.guid
+			&& !(ext.pendingOperations & AddonManager.PENDING_UNINSTALL)
+		)
+			this.isUninstall = false;
+	},
+	handleUninstalling: function() {
+		this.isUninstall = true;
+		this.include();
+		this.uninstallConfirm();
+		this.exclude();
 	},
 	include: function() {
 		// Simple way for get some required functions
@@ -59,7 +88,7 @@ handyClicksUninstaller = {
 			this.ut.getLocalized("removeSettingsConfirm"),
 			this.ut.getLocalized("removeSettings"),
 			false, // Cancel button is default
-			this.wu.wm.getMostRecentWindow("Extension:Manager") || window
+			this.wu.wm.getMostRecentWindow(null) //this.wu.wm.getMostRecentWindow("Extension:Manager")
 		);
 	},
 	uninstall: function() {
@@ -97,4 +126,4 @@ handyClicksUninstaller = {
 		})(this.ps._prefsDir);
 	}
 };
-handyClicksUninstaller.initUninstallObserver();
+handyClicksUninstaller.init();

@@ -30,6 +30,7 @@ var handyClicksPrefSvc = {
 	destroy: function(reloadFlag) {
 		if(this.isMainWnd)
 			this.destroyCustomFuncs(reloadFlag);
+		this.oSvc.destroy();
 	},
 
 	get _profileDir() {
@@ -319,8 +320,8 @@ var handyClicksPrefSvc = {
 			catch(e) {
 				var line = ct._contextMenuLine || ct._defineLine;
 				var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - line + 1);
-				var href = this.wu.PROTOCOL_EDITOR_ITEM_TYPE + type + "/"
-					+ ("_contextMenuLine" in ct ? "context" : "define")
+				var href = this.wu.PROTOCOL_EDITOR + this.wu.EDITOR_MODE_TYPE + "/" + type + "/"
+					+ ("_contextMenuLine" in ct ? this.wu.EDITOR_TYPE_CONTEXT : this.wu.EDITOR_TYPE_DEFINE)
 					+ "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customTypeCompileError", this.dec(ct.label), type, e);
 				this.ut.notifyInWindowCorner(
@@ -395,10 +396,11 @@ var handyClicksPrefSvc = {
 			this.handleCustomFuncError(e, baseLine, fObj, sh, type, delayed);
 		}
 	},
-	handleCustomFuncError: function(e, baseLine, fObj, sh, type, delayed) {
+	handleCustomFuncError: function(e, baseLine, fObj, sh, type, isDelayed) {
 		var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - baseLine + 1);
-		var href = this.wu.PROTOCOL_EDITOR_SHORTCUT + sh + "/" + type + "/"
-			+ (delayed ? "delayed" : "normal") + "/init"
+		var href = this.wu.PROTOCOL_EDITOR + this.wu.EDITOR_MODE_SHORTCUT + "/" + sh + "/" + type + "/"
+			+ (isDelayed ? this.wu.EDITOR_SHORTCUT_DELAYED : this.wu.EDITOR_SHORTCUT_NORMAL) + "/"
+			+ this.wu.EDITOR_SHORTCUT_INIT
 			+ "?line=" + eLine;
 		var eMsg = this.ut.errInfo("funcInitError", this.dec(this.ut.getOwnProperty(fObj, "label")), type, e);
 		this.ut.notifyInWindowCorner(
