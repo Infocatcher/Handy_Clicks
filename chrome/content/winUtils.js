@@ -1,26 +1,4 @@
 var handyClicksWinUtils = {
-	IMPORT_FILEPICKER: 0,
-	IMPORT_CLIPBOARD: 1,
-	IMPORT_STRING: 2,
-	IMPORT_BACKUP: 3,
-
-	EXPORT_FILEPICKER: 0,
-	EXPORT_CLIPBOARD_STRING: 1,
-	EXPORT_CLIPBOARD_URI: 2,
-
-	PROTOCOL_SETTINGS: "handyclicks://settings/",
-	PROTOCOL_SETTINGS_ADD: "handyclicks://settings/add/",
-	PROTOCOL_EDITOR: "handyclicks://editor/",
-
-	EDITOR_MODE_SHORTCUT: "shortcut",
-	EDITOR_MODE_TYPE: "itemType",
-	EDITOR_SHORTCUT_NORMAL: "normal",
-	EDITOR_SHORTCUT_DELAYED: "delayed",
-	EDITOR_SHORTCUT_CODE: "code",
-	EDITOR_SHORTCUT_INIT: "init",
-	EDITOR_TYPE_DEFINE: "define",
-	EDITOR_TYPE_CONTEXT: "context",
-
 	get wm() {
 		delete this.wm;
 		return this.wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
@@ -122,7 +100,7 @@ var handyClicksWinUtils = {
 
 	winIdProp: "__handyClicks__winId",
 	openEditor: function _oe(pSrc, mode, shortcut, itemType, isDelayed) {
-		var winId = (mode == this.EDITOR_MODE_TYPE ? itemType : shortcut + "-" + itemType)
+		var winId = (mode == this.ct.EDITOR_MODE_TYPE ? itemType : shortcut + "-" + itemType)
 			+ (pSrc ? "@otherSrc" : "");
 		var wProp = this.winIdProp;
 		var ws = this.wm.getEnumerator("handyclicks:editor");
@@ -158,7 +136,7 @@ var handyClicksWinUtils = {
 		return w;
 	},
 	openEditorLink: function(href, line) {
-		const ed = this.PROTOCOL_EDITOR;
+		const ed = this.ct.PROTOCOL_EDITOR;
 		if(!href || href.indexOf(ed) != 0)
 			return;
 		href = href.replace(/\?(.*)$/, "");
@@ -167,13 +145,13 @@ var handyClicksWinUtils = {
 			line = Number(RegExp.$1);
 		var tokens = href.substr(ed.length).split("/");
 		var mode = tokens[0];
-		if(mode == this.EDITOR_MODE_SHORTCUT) {
+		if(mode == this.ct.EDITOR_MODE_SHORTCUT) {
 			var shortcut = tokens[1];
 			var itemType = tokens[2];
-			var isDelayed = tokens[3] == this.EDITOR_SHORTCUT_DELAYED;
+			var isDelayed = tokens[3] == this.ct.EDITOR_SHORTCUT_DELAYED;
 			var src = tokens[4];
 		}
-		else if(mode == this.EDITOR_MODE_TYPE) {
+		else if(mode == this.ct.EDITOR_MODE_TYPE) {
 			var shortcut = null;
 			var itemType = tokens[1];
 			var isDelayed = false;
@@ -213,9 +191,9 @@ var handyClicksWinUtils = {
 		return w;
 	},
 	openSettingsLink: function(uri) {
-		if(uri.indexOf(this.PROTOCOL_SETTINGS_ADD) == 0)
-			this.openSettings(true, this.IMPORT_STRING, uri);
-		else if(uri.indexOf(this.PROTOCOL_SETTINGS) == 0)
+		if(uri.indexOf(this.ct.PROTOCOL_SETTINGS_ADD) == 0)
+			this.openSettings(true, this.ct.IMPORT_STRING, uri);
+		else if(uri.indexOf(this.ct.PROTOCOL_SETTINGS) == 0)
 			this.openSettings();
 	}
 };

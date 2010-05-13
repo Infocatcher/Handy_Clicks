@@ -25,7 +25,7 @@
 		<command id="handyClicks-cmd-editMode" oncommand="handyClicksUI.toggleEditMode();"
 			label="&handyClicks.editModeLabel;" accesskey="&handyClicks.editModeAccesskey;" />
 		<command id="handyClicks-cmd-importFromClipboard"
-			oncommand="handyClicksWinUtils.openSettings(true, handyClicksWinUtils.IMPORT_CLIPBOARD);"
+			oncommand="handyClicksWinUtils.openSettings(true, handyClicksConst.IMPORT_CLIPBOARD);"
 			label="&handyClicks.importFromClipboardLabel;" accesskey="&handyClicks.importFromClipboardAccesskey;" />
 	</commandset>
 	<keyset id="mainKeyset">

@@ -14,7 +14,7 @@ var handyClicksConsole = {
 		var link = tar.parentNode;
 		var href = link.getAttribute("href") || "";
 		var line = Number(link.getAttribute("line"));
-		if(href.indexOf(this.wu.PROTOCOL_EDITOR) == 0) {
+		if(href.indexOf(this.ct.PROTOCOL_EDITOR) == 0) {
 			e.preventDefault();
 			e.stopPropagation();
 			this.wu.openEditorLink(href, line)

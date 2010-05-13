@@ -320,8 +320,8 @@ var handyClicksPrefSvc = {
 			catch(e) {
 				var line = ct._contextMenuLine || ct._defineLine;
 				var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - line + 1);
-				var href = this.wu.PROTOCOL_EDITOR + this.wu.EDITOR_MODE_TYPE + "/" + type + "/"
-					+ ("_contextMenuLine" in ct ? this.wu.EDITOR_TYPE_CONTEXT : this.wu.EDITOR_TYPE_DEFINE)
+				var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
+					+ ("_contextMenuLine" in ct ? this.ct.EDITOR_TYPE_CONTEXT : this.ct.EDITOR_TYPE_DEFINE)
 					+ "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customTypeCompileError", this.dec(ct.label), type, e);
 				this.ut.notifyInWindowCorner(
@@ -398,9 +398,9 @@ var handyClicksPrefSvc = {
 	},
 	handleCustomFuncError: function(e, baseLine, fObj, sh, type, isDelayed) {
 		var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - baseLine + 1);
-		var href = this.wu.PROTOCOL_EDITOR + this.wu.EDITOR_MODE_SHORTCUT + "/" + sh + "/" + type + "/"
-			+ (isDelayed ? this.wu.EDITOR_SHORTCUT_DELAYED : this.wu.EDITOR_SHORTCUT_NORMAL) + "/"
-			+ this.wu.EDITOR_SHORTCUT_INIT
+		var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_SHORTCUT + "/" + sh + "/" + type + "/"
+			+ (isDelayed ? this.ct.EDITOR_SHORTCUT_DELAYED : this.ct.EDITOR_SHORTCUT_NORMAL) + "/"
+			+ this.ct.EDITOR_SHORTCUT_INIT
 			+ "?line=" + eLine;
 		var eMsg = this.ut.errInfo("funcInitError", this.dec(this.ut.getOwnProperty(fObj, "label")), type, e);
 		this.ut.notifyInWindowCorner(
@@ -727,7 +727,7 @@ var handyClicksPrefSvc = {
 		return sh || (_short ? "" : this.ut.getLocalized("none"));
 	},
 	getPrefsStr: function(str) {
-		const add = this.wu.PROTOCOL_SETTINGS_ADD;
+		const add = this.ct.PROTOCOL_SETTINGS_ADD;
 		return str.indexOf(add) == 0
 			? this.dec(str.substr(add.length))
 			: str;

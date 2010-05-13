@@ -62,7 +62,7 @@ var handyClicksSets = {
 		this.closeEditors();
 		this.treeScrollPos(true);
 		reloadFlag && this.setImportStatus(false);
-		delete this.rowsCache;
+		this.rowsCache = this._savedPrefs = this._savedTypes = null;
 	},
 	closeEditors: function() {
 		this.wu.forEachWindow(
@@ -101,6 +101,25 @@ var handyClicksSets = {
 	},
 
 	drawTree: function() {
+		this.treeBatch("_drawTree", arguments);
+	},
+	redrawTree: function() {
+		this.treeBatch("_redrawTree", arguments);
+	},
+	updTree: function() {
+		this.treeBatch("_updTree", arguments);
+	},
+	forceUpdTree: function() {
+		this.ps.loadSettings();
+		this.updTree();
+	},
+	treeBatch: function(meth, args) {
+		var tbo = this.tbo;
+		tbo.beginUpdateBatch();
+		this[meth].apply(this, args);
+		tbo.endUpdateBatch();
+	},
+	_drawTree: function() {
 		this.eltsCache = { __proto__: null };
 		this.rowsCache = { __proto__: null };
 
@@ -210,6 +229,49 @@ var handyClicksSets = {
 		}
 		delete this.eltsCache;
 	},
+	_redrawTree: function() {
+		this.ut.removeChilds(this.tBody);
+		this._drawTree();
+		this.searchInSetsTree(null, true);
+		if(this.prefsSaved && !this.ps.otherSrc)
+			this.applyButton.disabled = true;
+		document.title = document.title.replace(/\*?$/, this.ps.otherSrc ? "*" : "");
+	},
+	_updTree: function(saveSel) {
+		if(saveSel === undefined)
+			saveSel = true;
+
+		var tbo = this.tbo;
+		var fvr = tbo.getFirstVisibleRow();
+		var lvr = tbo.getLastVisibleRow();
+		if(saveSel) {
+			var selRows = [];
+			var rngCount = this.tSel.getRangeCount();
+			var start = {}, end = {};
+			for(var i = 0; i < rngCount; i++) {
+				this.tSel.getRangeAt(i, start, end);
+				selRows.push([start.value, end.value]);
+			}
+		}
+
+		this._redrawTree();
+		var rowsCount = this.tView.rowCount;
+		if(!rowsCount)
+			return;
+		var maxRowsIndx = rowsCount - 1;
+
+		saveSel && selRows.forEach(
+			function(range) {
+				if(range[0] <= maxRowsIndx)
+					this.tSel.rangedSelect(range[0], this.ut.mm(range[1], 0, maxRowsIndx), true);
+			},
+			this
+		);
+		if(lvr > maxRowsIndx)
+			fvr -= lvr - maxRowsIndx;
+		tbo.scrollToRow(this.ut.mm(fvr, 0, maxRowsIndx));
+	},
+
 	markOpenedEditors: function() {
 		for(var rowId in this.rowsCache)
 			this.setItemStatus(rowId, false);
@@ -223,14 +285,6 @@ var handyClicksSets = {
 			},
 			this
 		);
-	},
-	redrawTree: function() {
-		this.ut.removeChilds(this.tBody);
-		this.drawTree();
-		this.searchInSetsTree(null, true);
-		if(this.prefsSaved && !this.ps.otherSrc)
-			this.applyButton.disabled = true;
-		document.title = document.title.replace(/\*?$/, this.ps.otherSrc ? "*" : "");
 	},
 	appendContainerItem: function(parent, hash, label) {
 		var tItem = this.ut.parseFromXML(
@@ -470,46 +524,6 @@ var handyClicksSets = {
 	getRawArguments: function(argsObj, p) {
 		return p + " = " + uneval(argsObj[p]);
 	},
-	updTree: function(saveSel) {
-		this.tBody.style.visibility = "hidden"; // Do not show changes in progress
-		if(saveSel === undefined)
-			saveSel = true;
-
-		var tbo = this.tbo;
-		var fvr = tbo.getFirstVisibleRow();
-		var lvr = tbo.getLastVisibleRow();
-		if(saveSel) {
-			var selRows = [];
-			var rngCount = this.tSel.getRangeCount();
-			var start = {}, end = {};
-			for(var i = 0; i < rngCount; i++) {
-				this.tSel.getRangeAt(i, start, end);
-				selRows.push([start.value, end.value]);
-			}
-		}
-
-		this.redrawTree();
-		var rowsCount = this.tView.rowCount;
-		if(!rowsCount)
-			return;
-		var maxRowsIndx = rowsCount - 1;
-
-		saveSel && selRows.forEach(
-			function(range) {
-				if(range[0] <= maxRowsIndx)
-					this.tSel.rangedSelect(range[0], this.ut.mm(range[1], 0, maxRowsIndx), true);
-			},
-			this
-		);
-		if(lvr > maxRowsIndx)
-			fvr -= lvr - maxRowsIndx;
-		tbo.scrollToRow(this.ut.mm(fvr, 0, maxRowsIndx));
-		this.tBody.style.visibility = "";
-	},
-	forceUpdTree: function() {
-		this.ps.loadSettings();
-		this.updTree();
-	},
 	updButtons: function() {
 		var selIts = this.selectedItems;
 		var noSel = !selIts.length;
@@ -606,12 +620,12 @@ var handyClicksSets = {
 			return;
 		if(e) {
 			if(e.type == "command" || e.button > 0)
-				this.openEditorWindow({ __shortcut: this.ps.getEvtStr(e) }, this.wu.EDITOR_MODE_SHORTCUT, true);
+				this.openEditorWindow({ __shortcut: this.ps.getEvtStr(e) }, this.ct.EDITOR_MODE_SHORTCUT, true);
 			return;
 		}
 		var its = this.selectedItems;
 		if(its.length == 1) {
-			this.openEditorWindow(its[0], this.wu.EDITOR_MODE_SHORTCUT, true);
+			this.openEditorWindow(its[0], this.ct.EDITOR_MODE_SHORTCUT, true);
 			return;
 		}
 		this.openEditorWindow();
@@ -630,7 +644,7 @@ var handyClicksSets = {
 			return;
 		its.forEach(
 			function(it) {
-				this.openEditorWindow(it, this.wu.EDITOR_MODE_SHORTCUT);
+				this.openEditorWindow(it, this.ct.EDITOR_MODE_SHORTCUT);
 			},
 			this
 		);
@@ -643,7 +657,7 @@ var handyClicksSets = {
 			return;
 		cIts.forEach(
 			function(it) {
-				this.openEditorWindow(it, this.wu.EDITOR_MODE_TYPE);
+				this.openEditorWindow(it, this.ct.EDITOR_MODE_TYPE);
 			},
 			this
 		);
@@ -757,7 +771,7 @@ var handyClicksSets = {
 		}
 		this.searchInSetsTree(null, true);
 	},
-	openEditorWindow: function(tItem, mode, add) { // mode: this.wu.EDITOR_MODE_*
+	openEditorWindow: function(tItem, mode, add) { // mode: this.ct.EDITOR_MODE_*
 		var shortcut = tItem
 			? tItem.__shortcut
 			: undefined;
@@ -765,7 +779,7 @@ var handyClicksSets = {
 			? tItem.__itemType
 			: undefined;
 		var isDelayed = tItem && add !== true && tItem.__isDelayed;
-		this.wu.openEditor(this.ps.currentSrc, mode || this.wu.EDITOR_MODE_SHORTCUT, shortcut, itemType, isDelayed);
+		this.wu.openEditor(this.ps.currentSrc, mode || this.ct.EDITOR_MODE_SHORTCUT, shortcut, itemType, isDelayed);
 	},
 	setItemStatus: function(rowId, editStat) {
 		if(!rowId)
@@ -1500,8 +1514,8 @@ var handyClicksSets = {
 	// Export/import:
 	exportSets: function(partialExport, targetId, onlyCustomTypes) {
 		this.selectTreePane();
-		var wu = this.wu;
-		if(targetId == wu.EXPORT_FILEPICKER) {
+		var ct = this.ct;
+		if(targetId == ct.EXPORT_FILEPICKER) {
 			var file = this.pickFile(
 				this.ut.getLocalized("exportSets"), true, "js",
 				!partialExport && this.ps.prefsFile.lastModifiedTime
@@ -1512,10 +1526,10 @@ var handyClicksSets = {
 		}
 		if(partialExport) {
 			var pStr = this.extractPrefs(!onlyCustomTypes);
-			if(targetId == wu.EXPORT_CLIPBOARD_STRING)
+			if(targetId == ct.EXPORT_CLIPBOARD_STRING)
 				this.ut.copyStr(pStr);
-			else if(targetId == wu.EXPORT_CLIPBOARD_URI)
-				this.ut.copyStr(this.wu.PROTOCOL_SETTINGS_ADD + this.ps.enc(pStr));
+			else if(targetId == ct.EXPORT_CLIPBOARD_URI)
+				this.ut.copyStr(ct.PROTOCOL_SETTINGS_ADD + this.ps.enc(pStr));
 			else
 				this.ut.writeToFile(pStr, file);
 		}
@@ -1565,19 +1579,19 @@ var handyClicksSets = {
 			this.pu.pref("sets.importJSWarning", !ack.value);
 		}
 		var pSrc;
-		var wu = this.wu;
+		var ct = this.ct;
 		switch(srcId) {
 			default:
-			case wu.IMPORT_FILEPICKER:
+			case ct.IMPORT_FILEPICKER:
 				pSrc = this.pickFile(this.ut.getLocalized("importSets"), false, "js");
 			break;
-			case wu.IMPORT_CLIPBOARD:
+			case ct.IMPORT_CLIPBOARD:
 				pSrc = this.ps.getPrefsStr(this.ut.readFromClipboard(true));
 			break;
-			case wu.IMPORT_STRING:
+			case ct.IMPORT_STRING:
 				pSrc = this.ps.getPrefsStr(data);
 			break;
-			case wu.IMPORT_BACKUP:
+			case ct.IMPORT_BACKUP:
 				pSrc = this.ps.getFile(data);
 		}
 		if(!pSrc)
@@ -1662,7 +1676,7 @@ var handyClicksSets = {
 		var butt = "button" in e && e.button;
 		if(e.type == "command" || butt == 1) {
 			var hasModifier = this.ut.hasModifier(e);
-			this.importSets(hasModifier || butt == 1/*partialImport*/, this.wu.IMPORT_BACKUP, mi.getAttribute("hc_fileName"));
+			this.importSets(hasModifier || butt == 1/*partialImport*/, this.ct.IMPORT_BACKUP, mi.getAttribute("hc_fileName"));
 			this.ut.closeMenus(mi);
 		}
 		else if(butt == 2)

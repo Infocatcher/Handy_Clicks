@@ -27,6 +27,7 @@ var handyClicks = {
 	destroy: function(reloadFlag) {
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
 		this.cancelDelayedAction();
+		this.copyOfEvent = this.origItem = this.item = this.mainItem = this._tabOnMousedown = null;
 	},
 	setListeners: function(evtTypes, addFlag) {
 		var act = addFlag ? "addEventListener" : "removeEventListener";
@@ -366,8 +367,8 @@ var handyClicks = {
 				}
 				catch(e) {
 					var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - ct._defineLine + 1);
-					var href = this.wu.PROTOCOL_EDITOR + this.wu.EDITOR_MODE_TYPE + "/" + type + "/"
-						+ this.wu.EDITOR_TYPE_DEFINE
+					var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
+						+ this.ct.EDITOR_TYPE_DEFINE
 						+ "?line=" + eLine;
 					var eMsg = this.ut.errInfo("customTypeDefineError", this.ps.dec(ct.label), type, e);
 					this.ut.notify(
@@ -605,8 +606,8 @@ var handyClicks = {
 			}
 			catch(e) {
 				var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - ct._contextMenuLine + 1);
-				var href = this.wu.PROTOCOL_EDITOR + this.wu.EDITOR_MODE_TYPE + "/" + this.itemType + "/"
-					+ this.wu.EDITOR_TYPE_CONTEXT
+				var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + this.itemType + "/"
+					+ this.ct.EDITOR_TYPE_CONTEXT
 					+ "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customTypeContextMenuError", this.ps.dec(ct.label), this.itemType, e);
 				this.ut.notify(
@@ -863,11 +864,11 @@ var handyClicks = {
 			this.editMode = false;
 			this.ui.blinkNode();
 			this.closeMenus(e.originalTarget);
-			//this.wu.openEditor(null, this.wu.EDITOR_MODE_SHORTCUT, this.ps.getEvtStr(e), this._all ? "$all" : this.itemType);
+			//this.wu.openEditor(null, this.ct.EDITOR_MODE_SHORTCUT, this.ps.getEvtStr(e), this._all ? "$all" : this.itemType);
 			this.ut.timeout( // Wait for blinkNode redraw
 				this.wu.openEditor,
 				this.wu,
-				[null, this.wu.EDITOR_MODE_SHORTCUT, this.ps.getEvtStr(e), this._all ? "$all" : this.itemType]
+				[null, this.ct.EDITOR_MODE_SHORTCUT, this.ps.getEvtStr(e), this._all ? "$all" : this.itemType]
 			);
 			return;
 		}
@@ -901,10 +902,10 @@ var handyClicks = {
 			}
 			catch(err) {
 				var eLine = this.ut.mmLine(this.ut.getProperty(err, "lineNumber") - line + 1);
-				var href = this.wu.PROTOCOL_EDITOR + this.wu.EDITOR_MODE_SHORTCUT + "/" + this.ps.getEvtStr(e || this.copyOfEvent) + "/"
+				var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_SHORTCUT + "/" + this.ps.getEvtStr(e || this.copyOfEvent) + "/"
 					+ (this._all ? "$all" : this.itemType) + "/"
-					+ (this.isDeleyed ? this.wu.EDITOR_SHORTCUT_DELAYED : this.wu.EDITOR_SHORTCUT_NORMAL) + "/"
-					+ this.wu.EDITOR_SHORTCUT_CODE
+					+ (this.isDeleyed ? this.ct.EDITOR_SHORTCUT_DELAYED : this.ct.EDITOR_SHORTCUT_NORMAL) + "/"
+					+ this.ct.EDITOR_SHORTCUT_CODE
 					+ "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customFunctionError", this.ps.dec(funcObj.label), this.itemType, err);
 				this.ut.notify(
@@ -927,10 +928,10 @@ var handyClicks = {
 					fnc.apply(this.fn, args);
 				}
 				catch(err) {
-					var href = this.wu.PROTOCOL_EDITOR + this.wu.EDITOR_MODE_SHORTCUT + "/" + this.ps.getEvtStr(e || this.copyOfEvent) + "/"
+					var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_SHORTCUT + "/" + this.ps.getEvtStr(e || this.copyOfEvent) + "/"
 						+ (this._all ? "$all" : this.itemType) + "/"
-						+ (this.isDeleyed ? this.wu.EDITOR_SHORTCUT_DELAYED : this.wu.EDITOR_SHORTCUT_NORMAL) + "/"
-						+ this.wu.EDITOR_SHORTCUT_CODE;
+						+ (this.isDeleyed ? this.ct.EDITOR_SHORTCUT_DELAYED : this.ct.EDITOR_SHORTCUT_NORMAL) + "/"
+						+ this.ct.EDITOR_SHORTCUT_CODE;
 					var eMsg = this.ut.getLocalized("errorInBuiltInFunction").replace("%f", action);
 					this.ut.notify(
 						eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),

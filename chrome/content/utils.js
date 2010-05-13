@@ -64,8 +64,8 @@ var handyClicksUtils = {
 		catch(e) { return e; }
 	},
 	safeToString: function(object) { // var obj = { __proto__: null }; => obj.valueOf() and obj.toString() is missing
-		try { return "" + object; }
-		catch(e) { return "" + e; }
+		try { return String(object); }
+		catch(e) { return String(e); }
 	},
 
 	_timers: { __proto__: null },

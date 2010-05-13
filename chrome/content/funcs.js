@@ -1111,18 +1111,18 @@ var handyClicksFuncs = {
 		var tbr = this.hc.getTabBrowser(true);
 		var ref = this.getRefererForItem(refererPolicy);
 
-		// Open a new tab as a child of the current tab (Tree Style Tab)
-		if("TreeStyleTabService" in window) {
-			var _tab = tbr.selectedTab;
-			TreeStyleTabService.readyToOpenChildTab(_tab, true);
-		}
-
 		if("PlacesUIUtils" in window && "_confirmOpenInTabs" in PlacesUIUtils) {
 			var count = 0;
 			for(var h in hrefs)
 				count++;
 			if(!PlacesUIUtils._confirmOpenInTabs(count))
 				return;
+		}
+
+		if("TreeStyleTabService" in window) {
+			// Open a new tab as a child of the current tab (Tree Style Tab)
+			var _tab = tbr.selectedTab;
+			TreeStyleTabService.readyToOpenChildTab(_tab, true);
 		}
 
 		if(!useDelays) {

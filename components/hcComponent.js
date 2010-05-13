@@ -29,16 +29,17 @@ const jsLoader = cc["@mozilla.org/moz/jssubscript-loader;1"]
 jsLoader.loadSubScript("chrome://handyclicks/content/uninstaller.js");
 
 var initialized = false;
-var wu;
+var wu, ct;
 function init() {
 	initialized = true;
-	jsLoader.loadSubScript("chrome://handyclicks/content/winUtils.js");
-	wu = handyClicksWinUtils;
+	jsLoader.loadSubScript("chrome://handyclicks/content/winUtils.js"); wu = handyClicksWinUtils;
+	jsLoader.loadSubScript("chrome://handyclicks/content/consts.js");   ct = handyClicksConst;
+	wu.ct = ct;
 }
 function handleURI(uri) {
-	if(uri.indexOf(wu.PROTOCOL_SETTINGS) == 0)
+	if(uri.indexOf(ct.PROTOCOL_SETTINGS) == 0)
 		wu.openSettingsLink(uri);
-	else if(uri.indexOf(wu.PROTOCOL_EDITOR) == 0)
+	else if(uri.indexOf(ct.PROTOCOL_EDITOR) == 0)
 		wu.openEditorLink(uri);
 }
 function disable() {

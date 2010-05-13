@@ -4,24 +4,26 @@ handyClicksUninstaller = {
 	isUninstall: false,
 	uninstallConfirmed: false,
 	get oSvc() {
-		return Components.classes["@mozilla.org/observer-service;1"]
+		delete this.oSvc;
+		return this.oSvc = Components.classes["@mozilla.org/observer-service;1"]
 			.getService(Components.interfaces.nsIObserverService);
 	},
-	init: function() {
-		this.oSvc.addObserver(this, "final-ui-startup", false); // Wait for AddonManager startup
+	get newAddonManager() {
+		delete this.newAddonManager;
+		return this.newAddonManager = "@mozilla.org/extensions/manager;1" in Components.classes;
 	},
 	initUninstallObserver: function() {
-		if("@mozilla.org/extensions/manager;1" in Components.classes)
-			this.oSvc.addObserver(this, "em-action-requested", false);
-		else {
-			Components.utils.import("resource://gre/modules/AddonManager.jsm");
-			//AddonManagerPrivate.startup();
-			AddonManager.addAddonListener(this);
-		}
+		this.oSvc.addObserver(
+			this,
+			this.newAddonManager
+				? "em-action-requested"
+				: "final-ui-startup", // Wait for AddonManager startup
+			false
+		);
 		this.oSvc.addObserver(this, "quit-application", false);
 	},
 	destroyUninstallObserver: function() {
-		if("@mozilla.org/extensions/manager;1" in Components.classes)
+		if(this.newAddonManager)
 			this.oSvc.removeObserver(this, "em-action-requested");
 		else
 			AddonManager.removeAddonListener(this);
@@ -30,13 +32,17 @@ handyClicksUninstaller = {
 	observe: function(subject, topic, data) {
 		if(topic == "final-ui-startup") {
 			this.oSvc.removeObserver(this, "final-ui-startup");
-			this.initUninstallObserver();
+			// Firefox 3.7a5pre+:
+			Components.utils.import("resource://gre/modules/AddonManager.jsm");
+			//AddonManagerPrivate.startup();
+			AddonManager.addAddonListener(this);
 		}
 		else if(topic == "quit-application") {
 			this.destroyUninstallObserver();
 			if(this.isUninstall && this.uninstallConfirmed) {
 				this.include();
 				this.uninstall();
+				this.exclude();
 			}
 		}
 		else if(
@@ -126,4 +132,4 @@ handyClicksUninstaller = {
 		})(this.ps._prefsDir);
 	}
 };
-handyClicksUninstaller.init();
+handyClicksUninstaller.initUninstallObserver();

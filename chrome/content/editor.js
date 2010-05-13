@@ -1,8 +1,18 @@
 var handyClicksEditor = {
-	funcOptsFixed: false,
-	testMode: false,
-
 	delayId: "-delay",
+
+	// "hc-editor-mainTabbox":
+	INDEX_SHORTCUT: 0,
+	INDEX_TYPE: 1,
+	// "hc-editor-funcTabbox":
+	INDEX_SHORTCUT_NORMAL: 0,
+	INDEX_SHORTCUT_DELAYED: 1,
+	// "hc-editor-funcCustomTabbox":
+	INDEX_SHORTCUT_CODE: 0,
+	INDEX_SHORTCUT_INIT: 1,
+	// "hc-editor-customTypeTabbox":
+	INDEX_TYPE_DEFINE: 0,
+	INDEX_TYPE_CONTEXT: 0,
 
 	types: {
 		checkboxes: {
@@ -23,18 +33,8 @@ var handyClicksEditor = {
 		}
 	},
 
-	// "hc-editor-mainTabbox":
-	INDEX_SHORTCUT: 0,
-	INDEX_TYPE: 1,
-	// "hc-editor-funcTabbox":
-	INDEX_SHORTCUT_NORMAL: 0,
-	INDEX_SHORTCUT_DELAYED: 1,
-	// "hc-editor-funcCustomTabbox":
-	INDEX_SHORTCUT_CODE: 0,
-	INDEX_SHORTCUT_INIT: 1,
-	// "hc-editor-customTypeTabbox":
-	INDEX_TYPE_DEFINE: 0,
-	INDEX_TYPE_CONTEXT: 0,
+	funcOptsFixed: false,
+	testMode: false,
 
 	init: function(reloadFlag) {
 		if(this.ut.storage("extensionsPending")) {
@@ -143,29 +143,29 @@ var handyClicksEditor = {
 			return;
 		}
 
-		this.mainTabbox.selectedIndex = this.editorMode == this.wu.EDITOR_MODE_TYPE
+		this.mainTabbox.selectedIndex = this.editorMode == this.ct.EDITOR_MODE_TYPE
 			? this.INDEX_TYPE
 			: this.INDEX_SHORTCUT;
 
 		if(isDelayed && !src)
-			src = this.wu.EDITOR_SHORTCUT_CODE;
+			src = this.ct.EDITOR_SHORTCUT_CODE;
 		if(!src)
 			return;
 		var tabbox, si;
 		switch(this.editorMode) {
 			default:
-			case this.wu.EDITOR_MODE_SHORTCUT:
+			case this.ct.EDITOR_MODE_SHORTCUT:
 				this.$("hc-editor-funcTabbox").selectedIndex = isDelayed
 					? this.INDEX_SHORTCUT_DELAYED
 					: this.INDEX_SHORTCUT_NORMAL;
 				tabbox = this.$("hc-editor-funcCustomTabbox" + (isDelayed ? this.delayId : ""));
-				si = src == this.wu.EDITOR_SHORTCUT_INIT
+				si = src == this.ct.EDITOR_SHORTCUT_INIT
 						? this.INDEX_SHORTCUT_INIT
 						: this.INDEX_SHORTCUT_CODE;
 			break;
-			case this.wu.EDITOR_MODE_TYPE:
+			case this.ct.EDITOR_MODE_TYPE:
 				tabbox = this.$("hc-editor-customTypeTabbox");
-				si = src == this.wu.EDITOR_TYPE_CONTEXT
+				si = src == this.ct.EDITOR_TYPE_CONTEXT
 					? this.INDEX_TYPE_CONTEXT
 					: this.INDEX_TYPE_DEFINE;
 		}
