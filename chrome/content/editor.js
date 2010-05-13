@@ -31,7 +31,7 @@ var handyClicksEditor = {
 			if(!this.ut.storage("extensionsScheduledTasks"))
 				this.ut.storage("extensionsScheduledTasks", []);
 			this.ut.storage("extensionsScheduledTasks").push({
-				func: this.init,
+				func: arguments.callee,
 				context: this,
 				args: arguments
 			});
@@ -104,6 +104,18 @@ var handyClicksEditor = {
 		this.$("hc-editor-cmd-test").setAttribute("disabled", dis);
 	},
 	selectTargetTab: function(delayed, src, line) {
+		if(this.ut.storage("extensionsPending")) {
+			// Hack for Firefox 3.7a5pre+ (see handyClicksExtensionsHelper.instantInit() in utils.js)
+			if(!this.ut.storage("extensionsScheduledTasks"))
+				this.ut.storage("extensionsScheduledTasks", []);
+			this.ut.storage("extensionsScheduledTasks").push({
+				func: arguments.callee,
+				context: this,
+				args: arguments
+			});
+			return;
+		}
+
 		this.mBox.selectedIndex = this.tabs[this.editorMode];
 		if(delayed && !src)
 			src = "code";

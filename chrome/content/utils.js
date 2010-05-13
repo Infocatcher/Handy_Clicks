@@ -573,7 +573,7 @@ var handyClicksCleanupSvc = {
 		};
 	},
 	unregisterCleanup: function(cId) {
-		delete this.observers[cId];
+		delete this.storage[cId];
 	},
 	doCleanup: function(cId) {
 		var strg = this.storage;
