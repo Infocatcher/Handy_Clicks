@@ -151,7 +151,7 @@ var handyClicksUtils = {
 
 	bind: function(func, context, args) {
 		return function() {
-			func.apply(context, args);
+			func.apply(context, args || arguments);
 		};
 	},
 	timeout: function(func, context, args, delay) {
