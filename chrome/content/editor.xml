@@ -373,29 +373,25 @@
 				</body>
 			</method>
 
-			<field name="file">null</field>
+			<field name="tempFile">null</field>
 			<method name="openExternalEditor">
 				<body>
 				<![CDATA[
 					if(!("handyClicksUtils" in top))
 						return;
 					var ut = top.handyClicksUtils;
-					var ee = ut.pu.pref("editor.externalEditorPath");
-					if(!ee)
-						return;
-
-					var file = this.file;
+					var file = this.tempFile;
 					var isNew = !file || !file.exists();
 
 					if(isNew) {
-						var fName = "handyclicks_" + this.id.replace(/^hc-editor-|Field/g, "") + ".js";
-						var nsf = Components.interfaces.nsIFile;
+						var ext = ut.pu.pref("editor.externalEditorExtension") || "js";
+						var fName = "handyclicks_" + this.id.replace(/^hc-editor-|Field/g, "") + "." + ext;
 						file = Components.classes["@mozilla.org/file/directory_service;1"]
 							.getService(Components.interfaces.nsIProperties)
-							.get("TmpD", nsf);
+							.get("TmpD", Components.interfaces.nsILocalFile);
 						file.append(fName);
-						file.createUnique(nsf.NORMAL_FILE_TYPE, 0644);
-						this.file = file;
+						file.createUnique(file.NORMAL_FILE_TYPE, 0644);
+						this.tempFile = file;
 
 						Components.classes["@mozilla.org/uriloader/external-helper-app-service;1"]
 							.getService(Components.interfaces.nsPIExternalAppLauncher)
@@ -410,7 +406,7 @@
 
 						var _this = this;
 						var upd = function(e) {
-							var file = _this.file;
+							var file = _this.tempFile;
 							if(!file || !file.exists())
 								return;
 							var fTime = file.lastModifiedTime;
@@ -445,18 +441,25 @@
 								return;
 							win.removeEventListener(e.type, _unl, false);
 							win.removeEventListener("focus", upd, false);
-							var file = _this.file;
+							var file = _this.tempFile;
 							if(file && file.exists())
 								file.remove(false);
 						}, false);
 					}
 
-					var args = [file.path];
-					var eeArgs = ut.pu.pref("editor.externalEditorArgs");
-					if(eeArgs)
-						args.push(eeArgs.replace("%L", this.currentLine));
-					if(ut.startProcess(ee, args))
+					var ee = ut.pu.pref("editor.externalEditorPath");
+					if(ee) {
+						var args = [file.path];
+						var eeArgs = ut.pu.pref("editor.externalEditorArgs");
+						if(eeArgs)
+							args.push(eeArgs.replace("%L", this.currentLine));
+						if(ut.startProcess(ee, args))
+							this.fade();
+					}
+					else {
+						file.launch(); //~ todo: association may be "invalid" (like wscript.exe on Windows) or missing
 						this.fade();
+					}
 				]]>
 				</body>
 			</method>

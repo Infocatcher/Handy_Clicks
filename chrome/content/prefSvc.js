@@ -341,15 +341,19 @@ var handyClicksPrefSvc = {
 					to = so[type];
 					if(!this.ut.isObject(to))
 						continue;
-					recode(to, "label");
-					recode(to, "action");
-					recode(to, "init");
+					if(this.ut.getOwnProperty(to, "custom")) {
+						recode(to, "label");
+						recode(to, "action");
+						recode(to, "init");
+					}
 					da = this.ut.getOwnProperty(to, "delayedAction");
 					if(!this.ut.isObject(da))
 						continue;
-					recode(da, "label");
-					recode(da, "action");
-					recode(da, "init");
+					if(this.ut.getOwnProperty(da, "custom")) {
+						recode(da, "label");
+						recode(da, "action");
+						recode(da, "init");
+					}
 				}
 			}
 
@@ -852,8 +856,8 @@ var handyClicksPrefSvc = {
 			}
 		}
 
-		str = str.replace(/"(?:\\"|[^"])*"/g, "__dummy__") // Replace strings
-		str = str.replace(hc, ""); // Replace handyClicks* vars
+		str = str.replace(/"(?:\\"|[^"\n\r\u2028\u2029])*"/g, "__dummy__") // Replace strings
+		str = str.replace(hc, ""); // Remove handyClicks* vars
 		str = str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Remove comments
 		if(/\/\/|\/\*|\*\//.test(str)) // No other comments
 			return false;

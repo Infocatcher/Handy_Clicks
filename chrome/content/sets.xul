@@ -146,10 +146,16 @@
 									oncommand="handyClicksSets.handleRestoreCommand(event);"
 									onclick="if(event.button > 0) handyClicksSets.handleRestoreCommand(event);">
 									<menuseparator />
-									<menuitem id="hc-sets-tree-removeUserBackupsExc10" label="&hc.sets.removeUserBackupsExc10;"
-										oncommand="handyClicksSets.removeOldUserBackups(10);" closemenu="none" />
-									<menuitem id="hc-sets-tree-removeAllUserBackups" label="&hc.sets.removeAllUserBackups;"
-										oncommand="handyClicksSets.removeOldUserBackups(0);" closemenu="none" />
+									<menuitem id="hc-sets-tree-openBackupsDir"
+										oncommand="handyClicksPrefSvc._prefsDir.QueryInterface(Components.interfaces.nsILocalFile).reveal()"
+										label="&hc.sets.openDir;" accesskey="&hc.sets.openDirAccesskey;" />
+									<menuseparator />
+									<menuitem id="hc-sets-tree-removeUserBackupsExc10"
+										oncommand="handyClicksSets.removeOldUserBackups(10);" closemenu="none"
+										label="&hc.sets.removeUserBackupsExc10;" accesskey="&hc.sets.removeUserBackupsExc10Accesskey;" />
+									<menuitem id="hc-sets-tree-removeAllUserBackups"
+										oncommand="handyClicksSets.removeOldUserBackups(0);" closemenu="none"
+										label="&hc.sets.removeAllUserBackups;" accesskey="&hc.sets.removeAllUserBackupsAccesskey;" />
 								</menupopup>
 							</menu>
 							<menuseparator />

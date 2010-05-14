@@ -61,6 +61,7 @@ pref("extensions.handyclicks.sets.closeTreeViewMenu", true);
 pref("extensions.handyclicks.editor.tabSymbol", "	");
 pref("extensions.handyclicks.editor.externalEditorPath", "");
 pref("extensions.handyclicks.editor.externalEditorArgs", "-n%L");
+pref("extensions.handyclicks.editor.externalEditorExtension", "js");
 pref("extensions.handyclicks.editor.ui.showCustomFuncsNotes", true);
 pref("extensions.handyclicks.editor.ui.compact", false);
 
