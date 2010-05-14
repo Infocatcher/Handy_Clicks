@@ -694,9 +694,22 @@ var handyClicksPrefSvc = {
 			return decodeURIComponent(s || "");
 		}
 		catch(e) {
-			this.ut._err(new Error("Can't decode: " + s));
+			this.ut._err(new Error("Can't decode:\n" + s));
 			this.ut._err(e);
 			return "[invalid value]";
+		}
+	},
+	encURI: function(s) {
+		return encodeURIComponent(s || "");
+	},
+	decURI: function(s) {
+		try {
+			return decodeURIComponent(s || "");
+		}
+		catch(e) {
+			this.ut._err(new Error("Can't decode URI:\n" + s));
+			this.ut._err(e);
+			return "[invalid URI]";
 		}
 	},
 	getButtonId: function(sh, _short) {
@@ -729,7 +742,7 @@ var handyClicksPrefSvc = {
 	getPrefsStr: function(str) {
 		const add = this.ct.PROTOCOL_SETTINGS_ADD;
 		return str.indexOf(add) == 0
-			? this.dec(str.substr(add.length))
+			? this.decURI(str.substr(add.length))
 			: str;
 	},
 	_hashError: false,

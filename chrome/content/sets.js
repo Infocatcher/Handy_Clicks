@@ -1529,7 +1529,7 @@ var handyClicksSets = {
 			if(targetId == ct.EXPORT_CLIPBOARD_STRING)
 				this.ut.copyStr(pStr);
 			else if(targetId == ct.EXPORT_CLIPBOARD_URI)
-				this.ut.copyStr(ct.PROTOCOL_SETTINGS_ADD + this.ps.enc(pStr));
+				this.ut.copyStr(ct.PROTOCOL_SETTINGS_ADD + this.ps.encURI(pStr));
 			else
 				this.ut.writeToFile(pStr, file);
 		}
