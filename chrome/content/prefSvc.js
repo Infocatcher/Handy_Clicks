@@ -1,15 +1,15 @@
 var handyClicksPrefSvc = {
 	oSvc: new HandyClicksObservers(),
 
-	version: 0.2,
-	prefsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
+	setsVersion: 0.2,
+	setsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
 	get requiredHeader() {
 		delete this.requiredHeader;
-		return this.requiredHeader = this.prefsHeader.match(/^([^\n]+?)\.?\n/)[1];
+		return this.requiredHeader = this.setsHeader.match(/^([^\n]+?)\.?\n/)[1];
 	},
 	get versionInfo() {
 		delete this.versionInfo;
-		return this.versionInfo = "var handyClicksPrefsVersion = " + this.version + ";\n";
+		return this.versionInfo = "var handyClicksPrefsVersion = " + this.setsVersion + ";\n";
 	},
 	prefsDirName: "handyclicks",
 	prefsFileName: "handyclicks_prefs",
@@ -73,7 +73,7 @@ var handyClicksPrefSvc = {
 	},
 
 	_prefVars: {
-		currentVersion: "handyClicksPrefsVersion",
+		loadedVersion: "handyClicksPrefsVersion",
 		types: "handyClicksCustomTypes",
 		prefs: "handyClicksPrefs",
 		__proto__: null
@@ -155,10 +155,9 @@ var handyClicksPrefSvc = {
 			return;
 		}
 		this.importSrc(this, sandbox);
-
-		var vers = this.currentVersion = this.currentVersion || 0;
-		if(vers < this.version)
-			this.convertSetsFormat(vers, fromProfile);
+		var vers = this.loadedVersion || 0;
+		if(vers < this.setsVersion)
+			this.setsMigration(fromProfile, vers);
 		this._restoringCounter = 0;
 		if(this.isMainWnd) {
 			this.compileCystomTypes();
@@ -191,186 +190,10 @@ var handyClicksPrefSvc = {
 		}
 		this.loadSettings();
 	},
-	convertSetsFormat: function(vers, allowSave) {
-		if(allowSave)
-			this.prefsFile.moveTo(null, this.prefsFileName + this.names.version + vers + ".js");
-		if(vers < 0.12) { // New file names format
-			//= Expires after 2009-09-15
-			var convertName = function(s) {
-				return s.replace(/^(handyclicks_prefs)-(\w+-\d+(?:\.\d+)?\.js)$/, "$1_$2");
-			};
-			var entries = this.prefsDir.directoryEntries;
-			var entry, newName;
-			while(entries.hasMoreElements()) {
-				entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
-				if(!entry.isFile())
-					continue;
-				newName = convertName(entry.leafName);
-				if(newName != entry.leafName)
-					entry.moveTo(null, newName);
-			}
-		}
-		if(vers < 0.13) {
-			//= [Not critical]
-			// Arguments:
-			//   "hidePopup" -> "closePopups" (old)
-			//   "inWin"     -> "winRestriction"
-			//   "toNewWin"  -> "target"
-			// Functions:
-			//   submitFormToNewDoc -> submitForm
-			//= Expires after 2009-09-15
-			var changeArg = function(args, curName, newName, valConv) {
-				// { p0: 0, curName: 1, p2: 2 } => { p0: 0, newName: 1, p2: 2 }
-				var a = {}, aName;
-				for(aName in args) if(args.hasOwnProperty(aName)) {
-					a[aName] = args[aName];
-					delete args[aName];
-				}
-				var aVal;
-				for(aName in a) if(a.hasOwnProperty(aName)) {
-					aVal = a[aName];
-					if(aName == curName)
-						args[newName] = valConv ? valConv(aVal) : aVal;
-					else
-						args[aName] = aVal;
-				}
-			}
-			var changeTypeObj = this.ut.bind(
-				function(to) {
-					var pName, pVal;
-					for(pName in to) if(to.hasOwnProperty(pName)) {
-						pVal = to[pName];
-						if(pName == "action") {
-							if(pVal == "submitFormToNewDoc")
-								to.action = "submitForm";
-							else if(pVal == "openUriInWindow")
-								try { delete to.arguments.loadJSInBackground; } catch(e) {}
-							continue;
-						}
-						if(pName != "arguments" || !this.ut.isObject(pVal))
-							continue;
-						if(pVal.hasOwnProperty("hidePopup"))
-							changeArg(pVal, "hidePopup", "closePopups");
-						if(pVal.hasOwnProperty("inWin"))
-							changeArg(pVal, "inWin", "winRestriction");
-						if(pVal.hasOwnProperty("toNewWin"))
-							changeArg(pVal, "toNewWin", "target", function(v) { return v ? "win" : "tab"; });
-					}
-				},
-				this
-			);
-			var p = this.prefs;
-			var sh, so, type, to, da;
-			for(sh in p) if(p.hasOwnProperty(sh)) {
-				if(!this.isOkShortcut(sh))
-					continue;
-				so = p[sh];
-				if(!this.ut.isObject(so))
-					continue;
-				for(type in so) if(so.hasOwnProperty(type)) {
-					to = so[type];
-					if(!this.ut.isObject(to))
-						continue;
-					changeTypeObj(to);
-					da = this.ut.getOwnProperty(to, "delayedAction");
-					da && changeTypeObj(da);
-				}
-			}
-		}
-		if(vers < 0.14) {
-			//= [Not critical]
-			// Functions:
-			//   openIn => openURIIn
-			//   openUriIn => openURIIn
-			//= Expires after 2010-05-20
-			var convAct = function(obj) {
-				var act = this.ut.getOwnProperty(obj, "action");
-				if(act)
-					obj.action = act.replace(/^(_?)open(?:Uri)?In/, "$1openURIIn");
-			};
-			var p = this.prefs;
-			var sh, so, type, to, da;
-			var act, dAct;
-			for(sh in p) if(p.hasOwnProperty(sh)) {
-				if(!this.isOkShortcut(sh))
-					continue;
-				so = p[sh];
-				if(!this.ut.isObject(so))
-					continue;
-				for(type in so) if(so.hasOwnProperty(type)) {
-					to = so[type];
-					if(!this.ut.isObject(to))
-						continue;
-					convAct(to);
-					da = this.ut.getOwnProperty(to, "delayedAction");
-					da && convAct(da);
-				}
-			}
-		}
-		if(vers < 0.2) {
-			//= [Important]
-			//= Added: 2010-05-14, expires after: 2011-05-10
-			var recode = this.ut.bind(
-				function(obj, pName) {
-					var pVal = this.ut.getOwnProperty(obj, pName);
-					if(!pVal)
-						return;
-					try {
-						pVal = decodeURIComponent(pVal || "");
-					}
-					catch(e) {
-						this.ut._err(new Error("Can't decode \"" + pName + "\":\n" + pVal));
-						this.ut._err(e);
-						pVal = "[invalid value]";
-					}
-					obj[pName] = pVal;
-				},
-				this
-			);
-
-			var p = this.prefs;
-			var sh, so, type, to, da;
-			var str;
-			for(sh in p) if(p.hasOwnProperty(sh)) {
-				if(!this.isOkShortcut(sh))
-					continue;
-				so = p[sh];
-				if(!this.ut.isObject(so))
-					continue;
-				for(type in so) if(so.hasOwnProperty(type)) {
-					to = so[type];
-					if(!this.ut.isObject(to))
-						continue;
-					if(this.ut.getOwnProperty(to, "custom")) {
-						recode(to, "label");
-						recode(to, "action");
-						recode(to, "init");
-					}
-					da = this.ut.getOwnProperty(to, "delayedAction");
-					if(!this.ut.isObject(da))
-						continue;
-					if(this.ut.getOwnProperty(da, "custom")) {
-						recode(da, "label");
-						recode(da, "action");
-						recode(da, "init");
-					}
-				}
-			}
-
-			var types = this.types;
-			var type, to;
-			for(var type in types) if(types.hasOwnProperty(type)) {
-				to = types[type];
-				if(!this.ut.isObject(to))
-					continue;
-				recode(to, "label");
-				recode(to, "define");
-				recode(to, "contextMenu");
-			}
-		}
-		this.ut._log("Format of prefs file updated: " + vers + " => " + this.version);
-		if(allowSave)
-			this.saveSettingsObjects();
+	get setsMigration() { // function(allowSave, vers)
+		var temp = {};
+		this.rs.loadSubScript("chrome://handyclicks/content/setsConverter.js", temp);
+		return temp.setsMigration;
 	},
 
 	compileCystomTypes: function() {
@@ -507,7 +330,7 @@ var handyClicksPrefSvc = {
 				continue;
 			res += "\t" + this.fixPropName(type) + ": {\n";
 			for(pName in to) if(to.hasOwnProperty(pName)) {
-				if(pName.indexOf("_") == 0)
+				if(pName.charAt(0) == "_")
 					continue;
 				pVal = to[pName];
 				res += "\t\t" + pName + ": " + this.objToSource(pVal) + ",\n";
@@ -563,7 +386,7 @@ var handyClicksPrefSvc = {
 		res = this.delLastComma(res) + "};";
 
 		const hashFunc = "SHA256";
-		return this.prefsHeader
+		return this.setsHeader
 			+ "// " + hashFunc + ": " + this.getHash(res, hashFunc) + "\n"
 			+ res;
 	},
@@ -575,12 +398,9 @@ var handyClicksPrefSvc = {
 		return typeof obj == "string"
 			? '"' + this.encForWrite(obj) + '"'
 			: uneval(obj).replace(/^\(|\)$/g, "");
-
-
-		return uneval(obj).replace(/^\(|\)$/g, "");
 	},
 	fixPropName: function(pName) {
-		var o = {}; o[pName] = true;
+		var o = {}; o[pName] = 0;
 		return /'|"/.test(uneval(o)) ? '"' + pName + '"' : pName;
 	},
 	delLastComma: function(str) {

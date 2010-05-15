@@ -3,7 +3,7 @@ var handyClicksPrefUtils = {
 
 	// Preferences:
 	prefNS: "extensions.handyclicks.",
-	prefVer: 5,
+	prefsVersion: 5,
 
 	get prefSvc() {
 		delete this.prefSvc;
@@ -16,57 +16,17 @@ var handyClicksPrefUtils = {
 
 	// Initialization:
 	instantInit: function(reloadFlag) {
-		this.prefsMigration();
+		var vers = this.pref("prefsVersion") || 0;
+		if(vers < this.prefsVersion)
+			this.prefsMigration(true, vers);
 		const pns = this.prefNS;
 		this.prefSvc.addObserver(pns, this, false);
 		this.prefNSL = pns.length;
 	},
-	prefsMigration: function(dontSave) {
-		const v = this.pref("prefsVersion") || 0;
-		if(v >= this.prefVer)
-			return false;
-
-		const pns = this.prefNS;
-		if(v < 1) { // Added 2009-09-24
-			// Move prefs to "extensions.handyclicks.funcs." branch:
-			[
-				"loadJavaScriptLinks", "notifyJavaScriptLinks",
-				"loadVoidLinksWithHandlers", "notifyVoidLinksWithHandlers",
-				"filesLinksPolicy", "filesLinksMask",
-				"decodeURIs",
-				"convertURIs", "convertURIsCharset"
-			].forEach(
-				function(pId) {
-					const fullId = pns + pId;
-					if(this.existPref(fullId))
-						this.pref("funcs." + pId, this.getPref(fullId))
-							.prefSvc.deleteBranch(fullId);
-				},
-				this
-			);
-		}
-		if(v < 2) // Added 2009-11-13
-			this.pu.prefSvc.deleteBranch(pns + "forceStopMousedownEvent");
-		if(v < 3) { // Added 2010-02-04
-			var dm = this.pref("sets.treeDrawMode") || 0;
-			if(dm >= 2)
-				this.pref("sets.treeDrawMode", dm + 1);
-		}
-		if(v < 4) { // Added 2010-03-31
-			var pn = "sets.backupDepth";
-			if(this.prefSvc.prefHasUserValue(pns + pn))
-				this.pref(pn, (this.pref(pn) || 0) + 1);
-		}
-		if(v < 5) { // Added 2010-04-08
-			var pn = pns + "ui.showCustomizeToolbars";
-			if(this.existPref(pn))
-				this.pref("ui.inheritToolbarContextMenu", this.getPref(pn))
-					.prefSvc.deleteBranch(pn);
-		}
-		this.pref("prefsVersion", this.prefVer);
-		!dontSave && this.savePrefFile();
-		this.ut._log("Format of about:config prefs updated: " + v + " => " + this.prefVer);
-		return true;
+	get prefsMigration() { // function(allowSave, vers)
+		var temp = {};
+		this.rs.loadSubScript("chrome://handyclicks/content/prefsConverter.js", temp);
+		return temp.prefsMigration;
 	},
 	destroy: function(reloadFlag) {
 		this.prefSvc.removeObserver(this.prefNS, this);

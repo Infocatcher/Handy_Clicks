@@ -1,4 +1,4 @@
-// This file loaded from components/hcComponent.js
+// This file is loaded from components/hcComponent.js
 handyClicksUninstaller = {
 	guid: "handyclicks@infocatcher",
 	isUninstall: false,
@@ -13,6 +13,7 @@ handyClicksUninstaller = {
 		return this.newAddonManager = "@mozilla.org/extensions/manager;1" in Components.classes;
 	},
 	initUninstallObserver: function() {
+		this.oSvc.addObserver(this, "quit-application", false);
 		this.oSvc.addObserver(
 			this,
 			this.newAddonManager
@@ -20,14 +21,13 @@ handyClicksUninstaller = {
 				: "final-ui-startup", // Wait for AddonManager startup
 			false
 		);
-		this.oSvc.addObserver(this, "quit-application", false);
 	},
 	destroyUninstallObserver: function() {
+		this.oSvc.removeObserver(this, "quit-application");
 		if(this.newAddonManager)
 			this.oSvc.removeObserver(this, "em-action-requested");
 		else
 			AddonManager.removeAddonListener(this);
-		this.oSvc.removeObserver(this, "quit-application");
 	},
 	observe: function(subject, topic, data) {
 		if(topic == "final-ui-startup") {

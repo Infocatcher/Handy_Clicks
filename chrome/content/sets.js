@@ -1500,7 +1500,7 @@ var handyClicksSets = {
 				},
 				this
 			);
-		this.pu.prefsMigration(true);
+		this.pu.prefsMigration();
 		_oldPrefs.forEach(
 			function(pName) {
 				this.pu.prefSvc.deleteBranch(pName);
@@ -1806,6 +1806,39 @@ var handyClicksSets = {
 		//this.buildRestorePopup();
 		this.updRestorePopup(store);
 	},
+	reveal: function(file) {
+		// Based on code of function showDownload() from chrome://mozapps/content/downloads/downloads.js in Firefox 3.6
+		// See https://developer.mozilla.org/en/nsILocalFile#Remarks
+		var nsilf = Components.interfaces.nsILocalFile;
+		if(!(file instanceof nsilf))
+			return false;
+		try {
+			file.reveal();
+			return true;
+		}
+		catch(e) {
+			this.ut._err(e);
+		}
+		if(!file.isDirectory()) {
+			file = file.parent.QueryInterface(nsilf);
+			if(!file)
+				return false;
+		}
+		try {
+			file.launch();
+			return true;
+		}
+		catch(e) {
+			this.ut._err(e);
+		}
+		var uri = Components.classes["@mozilla.org/network/io-service;1"]
+			.getService(Components.interfaces.nsIIOService)
+			.newFileURI(file);
+		Components.classes["@mozilla.org/uriloader/external-protocol-service;1"]
+			.getService(Components.interfaces.nsIExternalProtocolService)
+			.loadUrl(uri);
+		return true;
+	},
 
 	setImportStatus: function(isImport, isPartial, fromClipboard, updMode) {
 		this._import              = isImport;
@@ -1863,26 +1896,25 @@ var handyClicksSets = {
 		this._savedPrefs = this._savedTypes = null;
 	},
 	mergePrefs: function() {
-		var cts = this.ps.types;
-		var p = this.ps.prefs;
+		var types = this.ps.types;
+		var prefs = this.ps.prefs;
 		this.ps.loadSettings();
 
-		var type, to;
-		var sh, so;
+		var type, to, sh, so;
 
-		for(type in cts) if(cts.hasOwnProperty(type)) {
+		for(type in types) if(types.hasOwnProperty(type)) {
 			if(!this.ps.isCustomType(type))
 				continue;
-			to = cts[type];
+			to = types[type];
 			if(!this.ps.isOkCustomObj(to))
 				continue;
 			this.ut.setOwnProperty(this.ps.types, type, to);
 		}
 
-		for(sh in p) if(p.hasOwnProperty(sh)) {
+		for(sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			if(!this.ps.isOkShortcut(sh))
 				continue;
-			so = p[sh];
+			so = prefs[sh];
 			if(!this.ut.isObject(so))
 				continue;
 			for(type in so) if(so.hasOwnProperty(type)) {

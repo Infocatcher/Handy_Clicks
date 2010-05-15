@@ -457,8 +457,15 @@
 							this.fade();
 					}
 					else {
-						file.launch(); //~ todo: association may be "invalid" (like wscript.exe on Windows) or missing
-						this.fade();
+						//~ todo: association may be "invalid" (like wscript.exe on Windows) or missing
+						try {
+							file.launch();
+							this.fade();
+						}
+						catch(e) {
+							// See https://developer.mozilla.org/en/nsILocalFile#Remarks
+							ut._err(e);
+						}
 					}
 				]]>
 				</body>
