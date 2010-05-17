@@ -59,9 +59,9 @@ var handyClicksEditor = {
 		}
 		this.initShortcuts();
 		this.ps.loadSettings(this.src || null);
-		this.initUI();
 		this.loadCustomType(this.type);
 		this.selectTargetTab(this.isDelayed);
+		this.initUI();
 		this.ps.oSvc.addObserver(this.appendTypesList, this);
 
 		this.setTooltip();
@@ -290,15 +290,54 @@ var handyClicksEditor = {
 		this.initCustomTypesEditor();
 		this.setWinTitle();
 		this.disableUnsupported();
-		this.applyDisabled = true;
 		this._allowUndo = false;
+
+		this.shortcutSaved();
+		this.itemTypeSaved();
+		this.applyDisabled = true;
 	},
-	allowApply: function(e) {
+	editorModeChanged: function() {
+		if(!("_handyClicksInitialized" in window))
+			return;
+		this.setWinId();
+		this.setWinTitle();
+		this.setButtons();
+	},
+
+	_savedShortcut: null,
+	_savedItemType: null,
+	setButtons: function() {
+		var saved = true;
+		switch(this.mainTabbox.selectedIndex) {
+			case this.INDEX_SHORTCUT:
+				saved = this.su.getNodeData(this.$("hc-editor-shortcutPanel")) == this._savedShortcut;
+			break;
+			case this.INDEX_TYPE:
+				saved = this.su.getNodeData(this.$("hc-editor-itemTypePanel")) == this._savedItemType;
+			break;
+			default: return;
+		}
+		this.applyDisabled = saved;
+	},
+	shortcutSaved: function() {
+		this._savedShortcut = this.su.getNodeData(this.$("hc-editor-shortcutPanel"));
+	},
+	itemTypeSaved: function() {
+		this._savedItemType = this.su.getNodeData(this.$("hc-editor-itemTypePanel"));
+	},
+	get hasUnsaved() {
+		return this.su.getNodeData(this.$("hc-editor-shortcutPanel")) != this._savedShortcut
+			|| this.su.getNodeData(this.$("hc-editor-itemTypePanel")) != this._savedItemType;
+	},
+
+	dataChanged: function(e) {
 		var tar = e.target;
 		var ln = tar.localName;
 		if(ln == "tab" || ln == "dialog" || ln == "key")
 			return;
-		this.applyDisabled = false;
+		//this.applyDisabled = false;
+		this.ut.timeout(this.setButtons, this, [], 5);
+		//this.setButtons();
 	},
 	setWinId: function() {
 		var winId;
@@ -406,6 +445,8 @@ var handyClicksEditor = {
 			this.$("hc-editor-customTypeExtId").value = this.ps.removeCustomPrefix(cType);
 			this.setWinId();
 			this.setWinTitle();
+			this.itemTypeSaved();
+			this.applyDisabled = true;
 		}
 	},
 	customTypeLabel: function(it) {
@@ -758,6 +799,8 @@ var handyClicksEditor = {
 		}
 		else {
 			this.initShortcutEditor();
+			this.shortcutSaved();
+			this.setButtons();
 		}
 		this.setWinId();
 		this.setWinTitle();
@@ -879,6 +922,17 @@ var handyClicksEditor = {
 			default: return false;
 		}
 	},
+	checkSaved: function() {
+		if(!this.hasUnsaved)
+			return true;
+		var res = this.su.notifyUnsaved();
+		if(res == this.su.CANCEL)
+			return false;
+		if(res == this.su.SAVE)
+			this.saveSettings();
+		return true;
+	},
+
 	saveShortcut: function(applyFlag, testFlag) {
 		var sh = this.currentShortcut;
 		var type = this.currentType;
@@ -923,6 +977,7 @@ var handyClicksEditor = {
 				this.ps.saveSettingsObjects(applyFlag);
 			if(!applyFlag) // ondialogaccept
 				return true;
+			this.shortcutSaved();
 			this.applyDisabled = true;
 		}
 
@@ -1095,6 +1150,7 @@ var handyClicksEditor = {
 				this.ps.saveSettingsObjects(applyFlag);
 			if(!applyFlag) // ondialogaccept
 				return true;
+			this.itemTypeSaved();
 			this.applyDisabled = true;
 		}
 

@@ -35,6 +35,9 @@ var handyClicksSets = {
 		this.updPrefsUI();
 		this.pu.oSvc.addObserver(this.updPrefsUI, this);
 
+		this.treeSaved();
+		this.prefsSaved();
+
 		if(this.ut.fxVersion >= 3.5) {
 			var s = this.$("hc-sets-tree-searchField");
 			s.type = "search";
@@ -75,6 +78,12 @@ var handyClicksSets = {
 		if(this.hasOwnProperty("_animateFadeIn"))
 			this.pu.setPref("browser.preferences.animateFadeIn", true);
 	},
+	handleEvent: function(e) {
+		if(e.type == "mouseup") {
+			this.smartSelect(e);
+			this.ut.timeout(this.smartSelectStop, this, null, 10);
+		}
+	},
 	closeEditors: function() {
 		this.wu.forEachWindow(
 			"handyclicks:editor",
@@ -106,11 +115,6 @@ var handyClicksSets = {
 	},
 
 	/*** Actions pane ***/
-	_prefsSaved: true,
-	get prefsSaved() {
-		return this.instantApply || this._prefsSaved;
-	},
-
 	drawTree: function() {
 		this.treeBatch("_drawTree", arguments);
 	},
@@ -244,8 +248,10 @@ var handyClicksSets = {
 		this.ut.removeChilds(this.tBody);
 		this._drawTree();
 		this.searchInSetsTree(null, true);
-		if(this.prefsSaved && !this.ps.otherSrc)
-			this.applyButton.disabled = true;
+		if(!this.ps.otherSrc) { //~
+			this.treeSaved();
+		}
+		this.setButtons();
 		document.title = document.title.replace(/\*?$/, this.ps.otherSrc ? "*" : "");
 	},
 	_updTree: function(saveSel) {
@@ -745,7 +751,10 @@ var handyClicksSets = {
 			return;
 
 		tIts.forEach(this.deleteItem, this);
-		this.applyButton.disabled = false;
+		if(this.instantApply)
+			this.saveSettingsObjectsCheck(true);
+		else
+			this.setButtons();
 	},
 	deleteItem: function(tItem) {
 		var sh = tItem.__shortcut;
@@ -850,8 +859,7 @@ var handyClicksSets = {
 		}
 		if(this.instantApply && !this.ps.otherSrc)
 			this.saveSettingsObjectsCheck(true);
-		else
-			this.applyButton.disabled = false;
+		this.setButtons();
 		this.updButtons();
 	},
 	toggleRowEnabled: function(rowIndx, forcedEnabled) {
@@ -981,12 +989,6 @@ var handyClicksSets = {
 	smartSelectStop: function() {
 		this.smartSelect.row0 = this.smartSelect.row1 = undefined;
 		window.removeEventListener("mouseup", this, true);
-	},
-	handleEvent: function(e) {
-		if(e.type == "mouseup") {
-			this.smartSelect(e);
-			this.ut.timeout(this.smartSelectStop, this, null, 10);
-		}
 	},
 
 	initViewMenu: function(mp) {
@@ -1297,13 +1299,13 @@ var handyClicksSets = {
 		this.pu.pref("disallowMousemoveButtons", val);
 		if(applyFlag && !this.instantApply) {
 			this.savePrefpanes();
-			this.applyButton.disabled = this._prefsSaved = true;
 		}
 		var saved = true;
 		if(this.ps.otherSrc)
 			this.ps.reloadSettings(applyFlag);
 		else
 			saved = this.saveSettingsObjectsCheck(applyFlag);
+		this.setButtons();
 		if(
 			saved
 			&& !applyFlag && this.ps.otherSrc
@@ -1333,6 +1335,7 @@ var handyClicksSets = {
 			}
 		);
 		this.pu.savePrefFile();
+		this.prefsSaved();
 	},
 	reloadPrefpanes: function() {
 		Array.forEach(
@@ -1342,7 +1345,39 @@ var handyClicksSets = {
 			}
 		);
 	},
-	prefsChanged: function(e) {
+	checkSaved: function() {
+		if(!this.hasUnsaved)
+			return true;
+		var res = this.su.notifyUnsaved();
+		if(res == this.su.CANCEL)
+			return false;
+		if(res == this.su.SAVE)
+			this.savePrefs();
+		return true;
+	},
+
+	_savedTreeData: null,
+	_savedPrefsData: null,
+	setButtons: function() {
+		this.applyButton.disabled = this.instantApply || (
+			this.ps.getSettingsStr() == this._savedTreeData
+			&& this.su.getNodeData() == this._savedPrefsData
+		);
+	},
+	treeSaved: function() {
+		this._savedTreeData = this.ps.getSettingsStr();
+	},
+	prefsSaved: function() {
+		this._savedPrefsData = this.su.getNodeData();
+	},
+	get hasUnsaved() {
+		return this.instantApply
+			? false
+			: this.ps.getSettingsStr() != this._savedTreeData
+				|| this.su.getNodeData() != this._savedPrefsData;
+	},
+
+	dataChanged: function(e) {
 		var tar = e.target;
 		if(!("hasAttribute" in tar))
 			return;
@@ -1364,8 +1399,10 @@ var handyClicksSets = {
 			return;
 		if(this.instantApply)
 			this.savePrefs();
-		else
-			this.applyButton.disabled = this._prefsSaved = false;
+		else {
+			this.ut.timeout(this.setButtons, this, [], 5);
+			//this.applyButton.disabled = this._prefsSaved = false;
+		}
 	},
 	updateAllDependencies: function() {
 		Array.forEach(
@@ -1422,7 +1459,10 @@ var handyClicksSets = {
 
 		this.forceUpdTree();
 
-		this.applyButton.disabled = this._prefsSaved = true;
+		this.treeSaved();
+		this.prefsSaved();
+
+		this.applyButton.disabled = true;
 	},
 
 	// about:config entries

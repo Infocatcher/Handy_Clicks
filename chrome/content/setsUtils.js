@@ -1,4 +1,8 @@
 var handyClicksSetsUtils = {
+	SAVE: 0,
+	CANCEL: 1,
+	DONT_SAVE: 2,
+
 	init: function(reloadFlag) {
 		window.addEventListener("DOMMouseScroll", this, true);
 		window.addEventListener("dragenter", this, true);
@@ -103,6 +107,72 @@ var handyClicksSetsUtils = {
 				this.wu.showOnTopStatus();
 		}
 	},
+
+	getNodeData: function(node) {
+		node = node || document;
+		var hashes = [];
+		Array.forEach(
+			node.getElementsByTagName("checkbox"),
+			function(node, indx) {
+				if(this.ut.isElementVisible(node))
+					hashes.push("checkbox[" + indx + "]#" + node.id + "=" + node.checked);
+			},
+			this
+		);
+		Array.forEach(
+			node.getElementsByTagName("textbox"),
+			function(node, indx) {
+				if(
+					this.ut.isElementVisible(node)
+					&& node.getAttribute("readonly") != "true"
+					&& node.getAttribute("hc_dontSave") != "true"
+				)
+					hashes.push("textbox[" + indx + "]#" + node.id + "=" + node.value);
+			},
+			this
+		);
+		Array.forEach(
+			node.getElementsByTagName("menulist"),
+			function(node, indx) {
+				if(this.ut.isElementVisible(node))
+					hashes.push("menulist[" + indx + "]#" + node.id + "=" + node.value);
+			},
+			this
+		);
+		Array.forEach(
+			node.getElementsByTagName("radiogroup"),
+			function(node, indx) {
+				if(this.ut.isElementVisible(node))
+					hashes.push("radiogroup[" + indx + "]#" + node.id + "=" + node.selectedIndex);
+			},
+			this
+		);
+		//this.ut._log(hashes.join("\n"));
+		return hashes.join("\n");
+	},
+	notifyUnsaved: function() {
+		if(!this.pu.pref("ui.notifyUnsaved"))
+			return this.DONT_SAVE;
+		var ps = this.ut.promptsSvc;
+		var ack = { value: false };
+		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
+		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
+		var ret = ps.confirmEx(
+			window,
+			this.ut.getLocalized("warningTitle"),
+			this.ut.getLocalized("notifyUnsaved"),
+			  ps.BUTTON_POS_0 * ps.BUTTON_TITLE_SAVE
+			+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL
+			+ ps.BUTTON_POS_2 * ps.BUTTON_TITLE_DONT_SAVE
+			+ ps.BUTTON_POS_0_DEFAULT,
+			"", "", "",
+			this.ut.getLocalized("notAckAgain"), ack
+		);
+		if(ret != this.CANCEL && ack.value)
+			this.pu.pref("ui.notifyUnsaved", false);
+		return ret;
+	},
+
 	isScrollForward: function(e) {
 		var fwd = e.detail > 0;
 		return this.pu.pref("ui.reverseScrollDirection") ? !fwd : fwd;

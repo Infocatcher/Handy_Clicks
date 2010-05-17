@@ -22,11 +22,12 @@
 	buttonlabelextra2="&hc.sets.settings;"
 	buttonaccesskeyextra2="&hc.sets.settingsAccesskey;"
 	ondialogaccept="return handyClicksSets.savePrefs();"
+	ondialogcancel="return handyClicksSets.checkSaved();"
 	ondialogextra1="handyClicksSets.savePrefs(true);"
-	oncommand="handyClicksSets.prefsChanged(event);"
-	onchange="handyClicksSets.prefsChanged(event);"
-	oninput="handyClicksSets.prefsChanged(event);"
-	hc_ondrop="handyClicksSets.prefsChanged(event);"
+	onchange="handyClicksSets.dataChanged(event);"
+	oninput="handyClicksSets.dataChanged(event);"
+	oncommand="handyClicksSets.dataChanged(event);"
+	hc_ondrop="handyClicksSets.dataChanged(event);"
 	width="720"
 	height="520"
 	persist="width height screenX screenY sizemode">
@@ -38,7 +39,7 @@
 			<hbox align="center">
 				<label value="&hc.sets.search;" control="hc-sets-tree-searchField" />
 				<hbox id="hc-sets-tree-searchContainer" flex="100">
-					<textbox id="hc-sets-tree-searchField" flex="1"
+					<textbox id="hc-sets-tree-searchField" flex="1" hc_dontSave="true"
 						onkeypress="handyClicksSets.navigateSearchResults(event);"
 						oninput="handyClicksSets.searchInSetsTree(this);"
 						hc_ondrop="handyClicksSets.searchInSetsTree(this);" />
@@ -47,7 +48,7 @@
 				<spacer flex="1" />
 				<button id="hc-sets-tree-viewMenu" type="menu" label="&hc.sets.viewMenu;" accesskey="&hc.sets.viewMenuAccesskey;">
 					<menupopup onpopupshowing="handyClicksSets.initViewMenu(this);"
-						oncommand="handyClicksSets.viewMenuCommand(event, this);"
+						oncommand="event.stopPropagation(); handyClicksSets.viewMenuCommand(event, this);"
 						onclick="handyClicksSets.viewMenuClick(event, this);">
 						<menuitem value="0" type="radio" label="&hc.sets.drawModeNormal;" />
 						<menuitem value="1" type="radio" label="&hc.sets.drawModeNormalCompact;" />

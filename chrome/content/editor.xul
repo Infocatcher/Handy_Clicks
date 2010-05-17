@@ -24,12 +24,13 @@
 	buttonlabelextra2="&hc.editor.delete;"
 	buttonaccesskeyextra2="&hc.editor.deleteAccesskey;"
 	ondialogaccept="return handyClicksEditor.saveSettings();"
+	ondialogcancel="return handyClicksEditor.checkSaved();"
 	ondialogextra1="handyClicksEditor.saveSettings(true);"
 	ondialogextra2="handyClicksEditor.deleteSettings();"
-	onchange="handyClicksEditor.allowApply(event);"
-	oncommand="handyClicksEditor.allowApply(event);"
-	oninput="handyClicksEditor.allowApply(event);"
-	hc_ondrop="handyClicksEditor.allowApply(event);"
+	onchange="handyClicksEditor.dataChanged(event);"
+	oninput="handyClicksEditor.dataChanged(event);"
+	oncommand="handyClicksEditor.dataChanged(event);"
+	hc_ondrop="handyClicksEditor.dataChanged(event);"
 	width="700"
 	height="500"
 	persist="width height screenX screenY sizemode">
@@ -68,12 +69,12 @@
 	</keyset>
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">
-		<tabs onselect="handyClicksEditor.setWinId(); handyClicksEditor.setWinTitle();">
+		<tabs onselect="handyClicksEditor.editorModeChanged();">
 			<tab label="&hc.editor.mainTabActions;" accesskey="&hc.editor.mainTabActionsAccesskey;" selected="true" />
 			<tab label="&hc.editor.mainTabCustomTypes;" accesskey="&hc.editor.mainTabCustomTypesAccesskey;" />
 		</tabs>
 		<tabpanels flex="1">
-			<tabpanel flex="1" orient="vertical">
+			<tabpanel id="hc-editor-shortcutPanel" flex="1" orient="vertical">
 				<hbox id="hc-editor-targetBox" align="center"
 					onchange="event.stopPropagation(); handyClicksEditor.loadFuncs();"
 					oncommand="event.stopPropagation(); handyClicksEditor.loadFuncs();"
@@ -221,7 +222,7 @@
 					</tabpanels>
 				</tabbox>
 			</tabpanel>
-			<tabpanel flex="1" orient="vertical">
+			<tabpanel id="hc-editor-itemTypePanel" flex="1" orient="vertical">
 				<hbox align="center">
 					<label value="&hc.editor.funcLabel;"
 						accesskey="&hc.editor.funcLabelAccesskey;" control="hc-editor-customType" />
