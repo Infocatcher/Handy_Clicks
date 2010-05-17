@@ -5,6 +5,14 @@ var handyClicksSets = {
 	_savedPrefs: null,
 	_savedTypes: null,
 
+	instantInit: function() {
+		if(this.pu.getPref("browser.preferences.animateFadeIn")) {
+			// Strange bugs with "flex" window
+			this._animateFadeIn = true;
+			this.pu.setPref("browser.preferences.animateFadeIn", false);
+		}
+	},
+
 	init: function(reloadFlag) {
 		this.ps.loadSettings();
 		this.initShortcuts();
@@ -63,6 +71,9 @@ var handyClicksSets = {
 		this.treeScrollPos(true);
 		reloadFlag && this.setImportStatus(false);
 		this.rowsCache = this._savedPrefs = this._savedTypes = null;
+
+		if(this.hasOwnProperty("_animateFadeIn"))
+			this.pu.setPref("browser.preferences.animateFadeIn", true);
 	},
 	closeEditors: function() {
 		this.wu.forEachWindow(

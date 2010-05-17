@@ -539,13 +539,13 @@ var handyClicks = {
 
 		// Submit button:
 		if(all || this.itemTypeInSets(sets, "submitButton")) {
-			if(itln == "input" && it.type == "submit" && this.inObject(it, "form")) {
+			if(itln == "input" && it.type == "submit" && this.inObject(it, "form") && it.form) {
 				this.itemType = "submitButton";
 				this.item = it;
 				return;
 			}
 			for(_it = it; _it && _it.nodeType != docNode; _it = _it.parentNode) {
-				if(_it.localName.toLowerCase() == "button" && this.inObject(_it, "form")) {
+				if(_it.localName.toLowerCase() == "button" && this.inObject(_it, "form") && _it.form) {
 					this.itemType = "submitButton";
 					this.item = _it;
 					return;
