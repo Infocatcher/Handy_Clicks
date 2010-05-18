@@ -101,7 +101,7 @@ var handyClicksWinUtils = {
 	winIdProp: "__handyClicks__winId",
 	openEditor: function _oe(pSrc, mode, shortcut, itemType, isDelayed) {
 		var winId = (mode == this.ct.EDITOR_MODE_TYPE ? itemType : shortcut + "-" + itemType)
-			+ (pSrc ? "@otherSrc" : "");
+			+ (pSrc ? this.ct.OTHER_SRC_POSTFIX : "");
 		var wProp = this.winIdProp;
 		var ws = this.wm.getEnumerator("handyclicks:editor");
 		var w;

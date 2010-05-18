@@ -19,5 +19,7 @@ var handyClicksConst = {
 	EDITOR_SHORTCUT_CODE: "code",
 	EDITOR_SHORTCUT_INIT: "init",
 	EDITOR_TYPE_DEFINE: "define",
-	EDITOR_TYPE_CONTEXT: "context"
+	EDITOR_TYPE_CONTEXT: "context",
+
+	OTHER_SRC_POSTFIX: "@otherSrc"
 };

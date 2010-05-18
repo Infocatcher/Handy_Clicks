@@ -108,6 +108,24 @@ var handyClicksSetsUtils = {
 		}
 	},
 
+	modifiedFlag: "*",
+	get importFlag() {
+		delete this.importFlag;
+		return this.importFlag = this.ut.getLocalized("importFlag");
+	},
+	createTitle: function(title, isModified, isImport) {
+		// [modifiedFlag] [importFlag] [title]
+		var modifiedFlag = this.modifiedFlag + " ";
+		var importFlag = this.importFlag + " ";
+		if(title.indexOf(modifiedFlag) == 0)
+			title = title.substr(modifiedFlag.length);
+		if(title.indexOf(importFlag) == 0)
+			title = title.substr(importFlag.length);
+		return (isModified ? this.modifiedFlag + " " : "")
+			+ (isImport ? this.importFlag + " " : "")
+			+ title;
+	},
+
 	getNodeData: function(node) {
 		node = node || document;
 		var hashes = [];

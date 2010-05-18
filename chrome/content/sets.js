@@ -30,7 +30,7 @@ var handyClicksSets = {
 			}
 		);
 
-		this.updButtons();
+		this.updTreeButtons();
 		this.ps.oSvc.addObserver(this.updTree, this);
 		this.updPrefsUI();
 		this.pu.oSvc.addObserver(this.updPrefsUI, this);
@@ -252,11 +252,13 @@ var handyClicksSets = {
 			this.treeSaved();
 		}
 		this.setButtons();
-		document.title = document.title.replace(/\*?$/, this.ps.otherSrc ? "*" : "");
+		//document.title = document.title.replace(/\*?$/, this.ps.otherSrc ? "*" : "");
 	},
-	_updTree: function(saveSel) {
+	_updTree: function(saveSel, saveClosed) {
 		if(saveSel === undefined)
 			saveSel = true;
+		if(saveClosed === undefined)
+			saveClosed = true;
 
 		var tbo = this.tbo;
 		var fvr = tbo.getFirstVisibleRow();
@@ -270,6 +272,16 @@ var handyClicksSets = {
 				selRows.push([start.value, end.value]);
 			}
 		}
+		if(saveClosed) {
+			var collapsedRows = { __proto__: null };
+			Array.forEach(
+				this.treeContainers,
+				function(ti) {
+					if(ti.getAttribute("open") != "true")
+						collapsedRows[ti.__hash] = true;
+				}
+			);
+		}
 
 		this._redrawTree();
 		var rowsCount = this.tView.rowCount;
@@ -277,6 +289,13 @@ var handyClicksSets = {
 			return;
 		var maxRowsIndx = rowsCount - 1;
 
+		saveClosed && Array.forEach(
+			this.treeContainers,
+			function(ti) {
+				if(ti.__hash in collapsedRows)
+					ti.setAttribute("open", "false");
+			}
+		);
 		saveSel && selRows.forEach(
 			function(range) {
 				if(range[0] <= maxRowsIndx)
@@ -313,6 +332,7 @@ var handyClicksSets = {
 			</treeitem>
 		);
 		parent.appendChild(tItem);
+		tItem.__hash = hash; //~ test
 		return this.eltsCache[hash] = tItem.getElementsByTagName("treechildren")[0];
 	},
 	appendItems: function(parent, items, shortcut) {
@@ -541,7 +561,7 @@ var handyClicksSets = {
 	getRawArguments: function(argsObj, p) {
 		return p + " = " + uneval(argsObj[p]);
 	},
-	updButtons: function() {
+	updTreeButtons: function() {
 		var selIts = this.selectedItems;
 		var noSel = !selIts.length;
 		["delete", "edit", "toggle", "partialExportToFile", "partialExportToClipboard", "exportToURI"].forEach(
@@ -753,8 +773,10 @@ var handyClicksSets = {
 		tIts.forEach(this.deleteItem, this);
 		if(this.instantApply)
 			this.saveSettingsObjectsCheck(true);
-		else
+		else {
+			this.ps.otherSrc && this.ps.reloadSettings(true /* reloadAll */);
 			this.setButtons();
+		}
 	},
 	deleteItem: function(tItem) {
 		var sh = tItem.__shortcut;
@@ -804,7 +826,8 @@ var handyClicksSets = {
 	setItemStatus: function(rowId, editStat) {
 		if(!rowId)
 			return;
-		rowId = rowId.replace(/@otherSrc$/, "");
+		//rowId = rowId.replace(/@otherSrc$/, "");
+		rowId = rowId.replace(new RegExp(this.ct.OTHER_SRC_POSTFIX + "$"), "");
 		if(!(rowId in this.rowsCache))
 			return;
 		this.addClildsProperties(
@@ -857,10 +880,11 @@ var handyClicksSets = {
 				this
 			);
 		}
+		this.ps.otherSrc && this.ps.reloadSettings(true /* applyFlag */);
 		if(this.instantApply && !this.ps.otherSrc)
 			this.saveSettingsObjectsCheck(true);
 		this.setButtons();
-		this.updButtons();
+		this.updTreeButtons();
 	},
 	toggleRowEnabled: function(rowIndx, forcedEnabled) {
 		var tItem = this.getItemAtIndex(rowIndx);
@@ -1281,9 +1305,9 @@ var handyClicksSets = {
 	updPrefsUI: function(prefName) {
 		this.loadPrefs();
 		this.updateAllDependencies();
-		if(prefName == "sets.treeDrawMode")
-			this.updTree(false);
-		else if(prefName == "sets.treeExpandDelayedAction" || prefName == "sets.localizeArguments")
+		if(prefName == "sets.treeDrawMode" || prefName == "sets.treeExpandDelayedAction")
+			this.updTree(false, false);
+		else if(prefName == "sets.localizeArguments")
 			this.updTree();
 	},
 	loadPrefs: function() {
@@ -1291,7 +1315,7 @@ var handyClicksSets = {
 		for(var i = 0; i <= 2; i++)
 			this.$("hc-sets-disallowMousemove-" + i).checked = buttons.indexOf(i) > -1;
 	},
-	savePrefs: function(applyFlag) {
+	saveSettings: function(applyFlag) {
 		var val = "";
 		for(var i = 0; i <= 2; i++)
 			if(this.$("hc-sets-disallowMousemove-" + i).checked)
@@ -1352,17 +1376,18 @@ var handyClicksSets = {
 		if(res == this.su.CANCEL)
 			return false;
 		if(res == this.su.SAVE)
-			this.savePrefs();
+			this.saveSettings();
 		return true;
 	},
 
 	_savedTreeData: null,
 	_savedPrefsData: null,
 	setButtons: function() {
-		this.applyButton.disabled = this.instantApply || (
-			this.ps.getSettingsStr() == this._savedTreeData
-			&& this.su.getNodeData() == this._savedPrefsData
-		);
+		var isModified = this.hasUnsaved;
+		document.title = this.su.createTitle(document.title, isModified, this.ps.otherSrc);
+		if(this.instantApply)
+			return; // Button is hidden
+		this.applyButton.disabled = !isModified;
 	},
 	treeSaved: function() {
 		this._savedTreeData = this.ps.getSettingsStr();
@@ -1373,7 +1398,7 @@ var handyClicksSets = {
 	get hasUnsaved() {
 		return this.instantApply
 			? false
-			: this.ps.getSettingsStr() != this._savedTreeData
+			: (this.ps.otherSrc ? false : this.ps.getSettingsStr() != this._savedTreeData)
 				|| this.su.getNodeData() != this._savedPrefsData;
 	},
 
@@ -1383,7 +1408,7 @@ var handyClicksSets = {
 			return;
 		var ln = tar.localName;
 		if(ln == "prefwindow") {
-			this.focusSearch(e);
+			this.focusSearch(e); //?
 			return;
 		}
 		if(tar.localName == "menuitem")
@@ -1398,7 +1423,7 @@ var handyClicksSets = {
 		else if(ln != "checkbox")
 			return;
 		if(this.instantApply)
-			this.savePrefs();
+			this.saveSettings();
 		else {
 			this.ut.timeout(this.setButtons, this, [], 5);
 			//this.applyButton.disabled = this._prefsSaved = false;
@@ -1452,7 +1477,7 @@ var handyClicksSets = {
 		return ln == "treechildren" || ln == "tree";
 	},
 
-	reloadConfig: function() {
+	reloadSettings: function() {
 		this.reloadPrefpanes();
 		this.loadPrefs();
 		this.updateAllDependencies();
@@ -1461,7 +1486,6 @@ var handyClicksSets = {
 
 		this.treeSaved();
 		this.prefsSaved();
-
 		this.applyButton.disabled = true;
 	},
 

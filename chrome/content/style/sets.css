@@ -19,6 +19,10 @@ radio[pane="hc-sets-pane-builtInFuncsSets"] {
 	cursor: pointer;
 }
 
+prefwindow[animated="true"] #hc-sets-tree-content {
+	min-height: 270px;
+}
+
 /* Allow access from keyboard */
 tree treecolpicker {
 	-moz-user-focus: normal;

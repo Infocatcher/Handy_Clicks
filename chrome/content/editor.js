@@ -288,20 +288,21 @@ var handyClicksEditor = {
 		this.appendTypesList();
 		this.initImgIgnoreLinks();
 		this.initCustomTypesEditor();
-		this.setWinTitle();
 		this.disableUnsupported();
 		this._allowUndo = false;
 
 		this.shortcutSaved();
 		this.itemTypeSaved();
 		this.applyDisabled = true;
+
+		this.setWinTitle();
 	},
 	editorModeChanged: function() {
 		if(!("_handyClicksInitialized" in window))
 			return;
+		this.setButtons();
 		this.setWinId();
 		this.setWinTitle();
-		this.setButtons();
 	},
 
 	_savedShortcut: null,
@@ -318,6 +319,7 @@ var handyClicksEditor = {
 			default: return;
 		}
 		this.applyDisabled = saved;
+		document.title = this.su.createTitle(document.title, !saved, this.ps.otherSrc);
 	},
 	shortcutSaved: function() {
 		this._savedShortcut = this.su.getNodeData(this.$("hc-editor-shortcutPanel"));
@@ -352,11 +354,13 @@ var handyClicksEditor = {
 	},
 	setWinTitle: function() {
 		var sh = this.currentShortcut;
-		var t = this.ps.getModifiersStr(sh) + " + " + this.ps.getButtonStr(sh, true);
+		var title = this.ps.getModifiersStr(sh) + " + " + this.ps.getButtonStr(sh, true);
 		var type = this.$("hc-editor-itemTypes").getAttribute("label");
 		var ct = this.$("hc-editor-customType").value || this.$("hc-editor-customTypeExtId").value;
-		t = " [" + t + (type ? " + " + type : "") + (ct ? " | " + ct : "") + "]";
-		document.title = document.title.replace(/\s+\[.+\]\*?$/, "") + t + (this.ps.otherSrc ? "*" : "");
+		title = " [" + title + (type ? " + " + type : "") + (ct ? " | " + ct : "") + "]";
+		title = document.title.replace(/\s+\[.+\]\*?$/, "") + title;
+		//document.title = document.title.replace(/\s+\[.+\]\*?$/, "") + title + (this.ps.otherSrc ? "*" : "");
+		document.title = this.su.createTitle(title, !this.buttonApply.disabled, this.ps.otherSrc);
 	},
 	initShortcutEditor: function() {
 		var so = this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
@@ -443,10 +447,10 @@ var handyClicksEditor = {
 		if(!to) {
 			cList.value = this.ps.dec(ct.label);
 			this.$("hc-editor-customTypeExtId").value = this.ps.removeCustomPrefix(cType);
-			this.setWinId();
-			this.setWinTitle();
 			this.itemTypeSaved();
 			this.applyDisabled = true;
+			this.setWinId();
+			this.setWinTitle();
 		}
 	},
 	customTypeLabel: function(it) {
@@ -802,10 +806,10 @@ var handyClicksEditor = {
 			this.shortcutSaved();
 			this.setButtons();
 		}
-		this.setWinId();
-		this.setWinTitle();
 		this.highlightUsedTypes();
 		this.disableUnsupported();
+		this.setWinId();
+		this.setWinTitle();
 	},
 	setClickOptions: function(e) {
 		this.$("hc-editor-button").value = e.button;
