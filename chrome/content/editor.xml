@@ -386,9 +386,7 @@
 					if(isNew) {
 						var ext = ut.pu.pref("editor.externalEditorExtension") || "js";
 						var fName = "handyclicks_" + this.id.replace(/^hc-editor-|Field/g, "") + "." + ext;
-						file = Components.classes["@mozilla.org/file/directory_service;1"]
-							.getService(Components.interfaces.nsIProperties)
-							.get("TmpD", Components.interfaces.nsILocalFile);
+						file = ut.getFileByAlias("TmpD");
 						file.append(fName);
 						file.createUnique(file.NORMAL_FILE_TYPE, 0644);
 						this.tempFile = file;
@@ -477,8 +475,7 @@
 					const opMax = 1, opMin = 0.5, opDur = 350;
 					const opDelay = 10, opStep = (opMax - opMin)*2*opDelay/opDur;
 
-					var op = opMax;
-					var sign = -1;
+					var op = opMax, sign = -1;
 					var st = this.style;
 
 					var opInt = setInterval(
@@ -619,7 +616,7 @@
 			<handler event="keypress" preventdefault="true" key="0" action="this.textZoom(0);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="g" action="this.goToLine();" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="w" action="this.toggleWordWrap();" modifiers="control" />
-			<handler event="keypress" preventdefault="true" key="e" action="this.openExternalEditor();" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key="e" action="this.openExternalEditor();" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(false);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(true);" modifiers="control,shift" />
 

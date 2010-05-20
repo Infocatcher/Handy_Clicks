@@ -1,6 +1,10 @@
 var handyClicksPrefSvc = {
 	oSvc: new HandyClicksObservers(),
 
+	SETS_BEFORE_RELOAD: 1,
+	SETS_RELOADED: 2,
+	SETS_TEST: 4,
+
 	setsVersion: 0.2,
 	setsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
 	get requiredHeader() {
@@ -451,9 +455,11 @@ var handyClicksPrefSvc = {
 				var p = w[pSvc];
 				if(curSrc && !p.otherSrc) //~ ?
 					return;
+				p.oSvc.notifyObservers(this.SETS_BEFORE_RELOAD);
 				p.loadSettings(curSrc);
-				p.oSvc.notifyObservers();
-			}
+				p.oSvc.notifyObservers(this.SETS_RELOADED);
+			},
+			this
 		);
 	},
 
@@ -468,8 +474,9 @@ var handyClicksPrefSvc = {
 				if(!(pSvc in w))
 					return;
 				var p = w[pSvc];
+				p.oSvc.notifyObservers(this.SETS_BEFORE_RELOAD | this.SETS_TEST);
 				p.loadSettings(src);
-				p.oSvc.notifyObservers();
+				p.oSvc.notifyObservers(this.SETS_RELOADED | this.SETS_TEST);
 			}
 		);
 	},

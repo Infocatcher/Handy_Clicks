@@ -68,10 +68,6 @@ var handyClicksSetsUtils = {
 						hc_pref="ui.onTopButtonLabel"
 						label={ this.ut.getLocalized("onTopButtonLabel") }
 					/>
-					<menuitem id="hc-sets-onTopButtonShow" type="checkbox"
-						hc_pref="ui.onTopButton"
-						label={ this.ut.getLocalized("onTopButtonShow") }
-					/>
 				</menupopup>
 			</hbox>
 		);
@@ -172,7 +168,7 @@ var handyClicksSetsUtils = {
 		if(!this.pu.pref("ui.notifyUnsaved"))
 			return this.DONT_SAVE;
 		var ps = this.ut.promptsSvc;
-		var ack = { value: false };
+		var ask = { value: false };
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
 		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
 		var ret = ps.confirmEx(
@@ -184,9 +180,9 @@ var handyClicksSetsUtils = {
 			+ ps.BUTTON_POS_2 * ps.BUTTON_TITLE_DONT_SAVE
 			+ ps.BUTTON_POS_0_DEFAULT,
 			"", "", "",
-			this.ut.getLocalized("notAckAgain"), ack
+			this.ut.getLocalized("dontAskAgain"), ask
 		);
-		if(ret != this.CANCEL && ack.value)
+		if(ret != this.CANCEL && ask.value)
 			this.pu.pref("ui.notifyUnsaved", false);
 		return ret;
 	},

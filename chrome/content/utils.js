@@ -151,7 +151,7 @@ var handyClicksUtils = {
 
 	bind: function(func, context, args) {
 		return function() {
-			func.apply(context, args || arguments);
+			return func.apply(context, args || arguments);
 		};
 	},
 	timeout: function(func, context, args, delay) {
@@ -229,27 +229,29 @@ var handyClicksUtils = {
 				.replace("%e", err);
 	},
 
+	getFileByAlias: function(alias) {
+		return Components.classes["@mozilla.org/file/directory_service;1"]
+			.getService(Components.interfaces.nsIProperties)
+			.get(alias, Components.interfaces.nsILocalFile);
+	},
 	getLocalFile: function(path) {
 		if(!path)
 			return path;
-		var _this = this;
 		path = path.replace(
 			/^%([^%]+)%/,
-			function(s, alias) {
-				if(alias.toLowerCase() == "profile" || alias == "ProfD")
-					return _this.ps._profileDir.path;
+			this.ut.bind(function(s, alias) {
+				if(alias.toLowerCase() == "profile" || alias == "ProfD") {
+					return this.ps._profileDir.path;
+				}
 				try {
-					return Components.classes["@mozilla.org/file/directory_service;1"]
-						.getService(Components.interfaces.nsIProperties)
-						.get(alias, Components.interfaces.nsILocalFile)
-						.path;
+					return this.getFileByAlias(alias).path;
 				}
 				catch(e) {
-					_this._err(new Error("Invalid directory alias: " + s));
-					_this._err(e);
+					this._err(new Error("Invalid directory alias: " + s));
+					this._err(e);
 					return s;
 				}
-			}
+			}, this)
 		);
 		var file = Components.classes["@mozilla.org/file/local;1"]
 			.createInstance(Components.interfaces.nsILocalFile);
@@ -700,7 +702,7 @@ var handyClicksCleanupSvc = {
 			if(typeof e == "object") {
 				var type = e.type;
 				if(type == "unload") {
-					if(win !== win.top)
+					if(e.target.defaultView !== win)
 						return;
 				}
 				else if(type == "DOMNodeRemoved")

@@ -179,7 +179,6 @@
 			<preference id="notifyOpenTime" type="int" name="extensions.handyclicks.notifyOpenTime" />
 			<preference id="notifyInWindowCorner" type="bool" name="extensions.handyclicks.notifyInWindowCorner" />
 			<preference id="notifyDontCloseUnderCursor" type="bool" name="extensions.handyclicks.notifyDontCloseUnderCursor" />
-			<preference id="onTopButton" type="bool" name="extensions.handyclicks.ui.onTopButton" />
 		</preferences>
 
 		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" handyclicks_important="enabled" />
@@ -223,13 +222,53 @@
 			<checkbox preference="notifyInWindowCorner" hc_depends="notify" label="&hc.sets.notifyInWindowCorner;" />
 			<checkbox preference="notifyDontCloseUnderCursor" hc_depends="notify" label="&hc.sets.notifyDontClose;" />
 		</groupbox>
+	</prefpane>
+
+	<prefpane id="hc-sets-pane-editor" label="&hc.sets.editorTitle;" flex="1">
+		<preferences>
+			<preference id="onTopButton" type="bool" name="extensions.handyclicks.ui.onTopButton" />
+			<preference id="externalEditorPath" type="string" name="extensions.handyclicks.editor.externalEditorPath" />
+			<preference id="externalEditorArgs" type="string" name="extensions.handyclicks.editor.externalEditorArgs" />
+			<preference id="externalEditorExt" type="string" name="extensions.handyclicks.editor.externalEditorExtension" />
+		</preferences>
+
 		<groupbox>
 			<caption label="&hc.sets.settingsInterface;" />
 			<checkbox preference="onTopButton" label="&hc.sets.onTopButton;" />
 		</groupbox>
+		<groupbox>
+			<caption label="&hc.sets.externalEditor; (Ctrl+Shift+E)" />
+			<hbox align="center">
+				<label value="&hc.sets.externalEditorPath;" tooltiptext="&hc.sets.externalEditorPathNote;" control="hc-sets-externalEditorPath" />
+				<image id="hc-sets-externalEditorIcon" />
+				<textbox id="hc-sets-externalEditorPath" preference="externalEditorPath" flex="1"
+					oninput="handyClicksSets.initExternalEditor();"
+					onchange="handyClicksSets.initExternalEditor();"
+					hc_ondrop="handyClicksSets.initExternalEditor();"
+					hc_requiredFor="externalEditor" hc_enabledRegExp="[/\\]\S" />
+				<button oncommand="handyClicksSets.selectExternalEditor();" label="&hc.sets.externalEditorBrowse;" />
+				<button id="hc-sets-externalEditorButton" oncommand="handyClicksSets.convertPath();"
+					hc_labelMakeRelative="&hc.sets.externalEditorMakeRelative;"
+					hc_labelMakeAbsolute="&hc.sets.externalEditorMakeAbsolute;"
+					hc_depends="externalEditor" />
+			</hbox>
+			<hbox align="center" hc_depends="externalEditor">
+				<label value="&hc.sets.externalEditorArgs;" control="hc-sets-externalEditorArgs" />
+				<textbox id="hc-sets-externalEditorArgs" preference="externalEditorArgs" style="width: 7em;" />
+				<label value="&hc.sets.externalEditorArgsNote;" />
+			</hbox>
+			<hbox align="center">
+				<label value="&hc.sets.externalEditorExt;" control="hc-sets-externalEditorExt" />
+				<textbox id="hc-sets-externalEditorExt" preference="externalEditorExt" style="width: 5.5em;" />
+			</hbox>
+		</groupbox>
+		<hbox pack="center">
+			<button id="hc-sets-resetWarnMsgs" oncommand="handyClicksSets.resetWarnMsgs();"
+				label="&hc.sets.resetWarnMsgs;" />
+		</hbox>
 	</prefpane>
 
-	<prefpane id="hc-sets-pane-builtInFuncsSets" label="&hc.sets.builtInFuncsSetsTitle;" flex="1">
+	<prefpane id="hc-sets-pane-builtInFuncs" label="&hc.sets.builtInFuncsTitle;" flex="1">
 		<preferences>
 			<preference id="loadJavaScriptLinks" type="bool" name="extensions.handyclicks.funcs.loadJavaScriptLinks" />
 			<preference id="notifyJavaScriptLinks" type="bool" name="extensions.handyclicks.funcs.notifyJavaScriptLinks" />

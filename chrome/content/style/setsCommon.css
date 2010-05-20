@@ -48,6 +48,11 @@
 	text-decoration: underline !important;
 }
 
+label[tooltiptext]:not([tooltiptext=""]) {
+	border-bottom: 1px dotted;
+	cursor: help;
+}
+
 #handyClicks-infoTooltip {
 	margin: 0;
 	padding: 0;

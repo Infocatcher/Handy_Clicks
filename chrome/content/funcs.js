@@ -1,6 +1,4 @@
 var handyClicksFuncs = {
-	relativeIndex: 0,
-
 	isVoidURI: function(uri) {
 		uri = (uri || "").replace(/(?:\s|%20)+/g, " ");
 		return /^javascript: *(?:|\/\/|void *(?: +0|\( *0 *\))) *;? *$/i.test(uri);
@@ -154,6 +152,7 @@ var handyClicksFuncs = {
 		if(closePopups)
 			this.hc.closeMenus();
 	},
+	relativeIndex: 0,
 	openURIInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, closePopups, winRestriction) {
 		var tbr = this.hc.getTabBrowser(true);
 		if(moveTo == "relative") {
@@ -274,30 +273,24 @@ var handyClicksFuncs = {
 		item = item || this.hc.item;
 
 		var evts = this.hc.createMouseEvents(e, item, ["mousedown", "mouseup", "click"], 0);
-
-		var _this = this;
-		function _f() {
-			var origPrefs = _this.setPrefs(
-				_this.getOpenLinksPrefs(target, loadJSInBackground, refererPolicy, winRestriction, false /* winOpenFix */)
+		var loadLink = this.ut.bind(function() {
+			var origPrefs = this.setPrefs(
+				this.getOpenLinksPrefs(target, loadJSInBackground, refererPolicy, winRestriction, false /* winOpenFix */)
 			);
-
-			//not needed?//_this.hc.flags.stopContextMenu = true;
-
 			evts();
-			//_this.hc.skipFlagsDelay();
+			this.restorePrefs(origPrefs);
+		}, this);
 
-			_this.restorePrefs(origPrefs);
-		}
 		var load = this.pu.pref("funcs.loadVoidLinksWithHandlers");
 		if(this.pu.pref("funcs.notifyVoidLinksWithHandlers"))
 			this.ut.notify(
 				this.ut.getLocalized("voidLinkWithHandler").replace(/\s*%h/, this.getItemHandlers(item))
 					+ (load ? "" : this.ut.getLocalized("clickForOpen")),
 				this.ut.getLocalized("title"),
-				load && _f
+				!load && loadLink
 			);
 		if(load)
-			_f();
+			loadLink();
 	},
 	hasHandlers: function(it) {
 		it = it || this.hc.item;
@@ -325,33 +318,33 @@ var handyClicksFuncs = {
 		item = item || this.hc.item;
 		uri = uri || this.getItemURI(item);
 
-		var _this = this;
-		function _f() {
-			var origPrefs = _this.setPrefs(
-				_this.getOpenLinksPrefs(target, loadJSInBackground, refererPolicy, winRestriction, true /* winOpenFix */)
+		var loadLink = this.ut.bind(function() {
+			var origPrefs = this.setPrefs(
+				this.getOpenLinksPrefs(target, loadJSInBackground, refererPolicy, winRestriction, true /* winOpenFix */)
 			);
 
 			var oDoc = item.ownerDocument;
-			if(_this.ut.isChromeDoc(oDoc))
-				_this.hc.getTabBrowser().loadURI(uri); // bookmarklets
+			if(this.ut.isChromeDoc(oDoc))
+				this.hc.getTabBrowser().loadURI(uri); // bookmarklets
 			else
 				oDoc.location.href = uri;
 
+			//this.restorePrefs(origPrefs);
 			setTimeout(function(_this) {
 				_this.restorePrefs(origPrefs);
-			}, 5, _this);
-			//_this.restorePrefs(origPrefs);
-		}
+			}, 5, this);
+		}, this);
+
 		var load = this.pu.pref("funcs.loadJavaScriptLinks");
 		if(this.pu.pref("funcs.notifyJavaScriptLinks"))
 			this.ut.notify(
 				this.ut.getLocalized("javaScriptLink")
 					+ (load ? "" : this.ut.getLocalized("clickForOpen")),
 				this.ut.getLocalized("title"),
-				load && _f
+				!load && loadLink
 			);
 		if(load)
-			_f();
+			loadLink();
 	},
 	testForFileLink: function(uri, refererPolicy) {
 		uri = uri || this.getItemURI(this.hc.item);
@@ -1038,8 +1031,8 @@ var handyClicksFuncs = {
 				img.setAttribute("src", src);
 				img.addEventListener(
 					"load",
-					function f() {
-						img.removeEventListener("load", f, false);
+					function _l() {
+						img.removeEventListener("load", _l, false);
 						_this.ut.attribute(img, "style", origStyle, true);
 					},
 					false

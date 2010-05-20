@@ -62,7 +62,7 @@ var handyClicksEditor = {
 		this.loadCustomType(this.type);
 		this.selectTargetTab(this.isDelayed);
 		this.initUI();
-		this.ps.oSvc.addObserver(this.appendTypesList, this);
+		this.ps.oSvc.addObserver(this.setsReloading, this);
 
 		this.setTooltip();
 		this.setFuncsNotes();
@@ -125,6 +125,19 @@ var handyClicksEditor = {
 		this.type = wa[3];
 		this.isDelayed = wa[4];
 		this.buttonApply = document.documentElement.getButton("extra1");
+	},
+	setsReloading: function(notifyReason) {
+		if(notifyReason & this.ps.SETS_BEFORE_RELOAD) {
+			//~ todo:
+			// var setsObj = ...;
+			// var saved = setsObj;
+		}
+		else if(notifyReason & this.ps.SETS_RELOADED) {
+			this.appendTypesList();
+			//~ todo:
+			// var setsObj = ...;
+			// if(!this.ut.objEquals(saved, setsObj)) { ... }
+		}
 	},
 	set applyDisabled(dis) {
 		this.buttonApply.disabled = dis;
@@ -448,7 +461,8 @@ var handyClicksEditor = {
 			cList.value = this.ps.dec(ct.label);
 			this.$("hc-editor-customTypeExtId").value = this.ps.removeCustomPrefix(cType);
 			this.itemTypeSaved();
-			this.applyDisabled = true;
+			//this.applyDisabled = true;
+			this.setButtons();
 			this.setWinId();
 			this.setWinTitle();
 		}
@@ -982,7 +996,8 @@ var handyClicksEditor = {
 			if(!applyFlag) // ondialogaccept
 				return true;
 			this.shortcutSaved();
-			this.applyDisabled = true;
+			//this.applyDisabled = true;
+			this.setButtons();
 		}
 
 		this.$("hc-editor-enabled").checked = this.ut.getOwnProperty(this.ps.prefs, sh, type, "enabled");
@@ -1155,7 +1170,8 @@ var handyClicksEditor = {
 			if(!applyFlag) // ondialogaccept
 				return true;
 			this.itemTypeSaved();
-			this.applyDisabled = true;
+			//this.applyDisabled = true;
+			this.setButtons();
 		}
 
 		this.appendTypesList();

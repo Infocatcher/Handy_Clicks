@@ -99,11 +99,26 @@
 <!ENTITY hc.sets.notifyInWindowCorner "Показывать в углу окна">
 <!ENTITY hc.sets.notifyDontClose "Не закрывать под курсором">
 
+
+<!ENTITY hc.sets.editorTitle "Редактор">
+
 <!ENTITY hc.sets.settingsInterface "Интерфейс настроек">
-<!ENTITY hc.sets.onTopButton "Показывать кнопку «Закрепить»"> <!-- see "onTop" in hcs.properties -->
+<!ENTITY hc.sets.onTopButton "Показывать кнопку «Закрепить» в углу окна"> <!-- see "onTop" in hcs.properties -->
+
+<!ENTITY hc.sets.externalEditor "Внешний редактор">
+<!ENTITY hc.sets.externalEditorPath "Путь:">
+<!ENTITY hc.sets.externalEditorPathNote "Если путь не задан, будет запущена ассоциированная программа">
+<!ENTITY hc.sets.externalEditorBrowse "Обзор…">
+<!ENTITY hc.sets.externalEditorMakeRelative "Сделать путь относительным">
+<!ENTITY hc.sets.externalEditorMakeAbsolute "Сделать путь абсолютным">
+<!ENTITY hc.sets.externalEditorArgs "Аргументы:">
+<!ENTITY hc.sets.externalEditorArgsNote "(&#37;L – номер строки)">
+<!ENTITY hc.sets.externalEditorExt "Расширение временного файла:">
+
+<!ENTITY hc.sets.resetWarnMsgs "Сбросить отключённые предупреждения">
 
 
-<!ENTITY hc.sets.builtInFuncsSetsTitle "Встроенные функции">
+<!ENTITY hc.sets.builtInFuncsTitle "Встроенные функции">
 
 <!ENTITY hc.sets.jsLinks "JavaScript-ссылки (javascript: …)">
 <!ENTITY hc.sets.voidLinks "«Пустые» ссылки с обработчиками кликов">

@@ -12,6 +12,7 @@
 		<em:contributor>Anton Glazatov (some editor features)</em:contributor>
 		<em:contributor>Fugue icons (http://p.yusukekamiyamane.com/)</em:contributor>
 		<em:contributor>Gnome icons (http://art.gnome.org/themes/icon)</em:contributor>
+		<em:contributor>Tango icons (http://tango.freedesktop.org/Tango_Icon_Library)</em:contributor>
 		<em:optionsURL>chrome://handyclicks/content/setsOpener.xul</em:optionsURL>
 		<em:iconURL>chrome://handyclicks/content/style/icon32.png</em:iconURL>
 		<em:updateURL>http://infocatcher.ucoz.net/ext/fx/handy_clicks/update.rdf</em:updateURL>
