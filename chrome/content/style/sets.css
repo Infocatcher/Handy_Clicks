@@ -117,7 +117,7 @@ menuitem[command="hc-sets-cmd-disable"][disabled="true"] image {
 }
 
 #hc-sets-tree-importOverrides, #hc-sets-tree-importNew {
-	text-align: right;
+	text-align: end;
 }
 #hc-sets-tree-importOverridesValue, #hc-sets-tree-importNewValue {
 	text-align: center;
@@ -127,7 +127,7 @@ menuitem[command="hc-sets-cmd-disable"][disabled="true"] image {
 	padding: 0 !important;
 }
 #hc-sets-tree-importStatistics column:not(:last-child) {
-	padding-right: 0.6em !important;
+	-moz-padding-end: 0.6em !important;
 }
 
 #hc-sets-tree-searchContainer {
@@ -187,4 +187,15 @@ button[type="menu"] dropmarker {
 	min-height: 11px !important;
 	width: auto !important;
 	height: auto !important;
+}
+
+#hc-sets-externalEditorIcon {
+	width: 16px; height: 16px;
+	margin: 0; padding: 0;
+	-moz-margin-end: -24px;
+	-moz-margin-start: 8px; /* 24 - 16 */
+}
+#hc-sets-externalEditorPath {
+	margin: 2px 4px;
+	-moz-padding-start: 20px;
 }

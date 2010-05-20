@@ -229,10 +229,19 @@ var handyClicksUtils = {
 				.replace("%e", err);
 	},
 
-	getFileByAlias: function(alias) {
-		return Components.classes["@mozilla.org/file/directory_service;1"]
-			.getService(Components.interfaces.nsIProperties)
-			.get(alias, Components.interfaces.nsILocalFile);
+	getFileByAlias: function(alias, dontShowErrors) {
+		try {
+			return Components.classes["@mozilla.org/file/directory_service;1"]
+				.getService(Components.interfaces.nsIProperties)
+				.get(alias, Components.interfaces.nsILocalFile);
+		}
+		catch(e) {
+			if(dontShowErrors)
+				return null;
+			this._err(new Error("Invalid directory alias: " + alias));
+			this._err(e);
+		}
+		return null;
 	},
 	getLocalFile: function(path) {
 		if(!path)
@@ -240,17 +249,10 @@ var handyClicksUtils = {
 		path = path.replace(
 			/^%([^%]+)%/,
 			this.ut.bind(function(s, alias) {
-				if(alias.toLowerCase() == "profile" || alias == "ProfD") {
+				if(alias.toLowerCase() == "profile" || alias == "ProfD")
 					return this.ps._profileDir.path;
-				}
-				try {
-					return this.getFileByAlias(alias).path;
-				}
-				catch(e) {
-					this._err(new Error("Invalid directory alias: " + s));
-					this._err(e);
-					return s;
-				}
+				var aliasFile = this.getFileByAlias(alias);
+				return aliasFile ? aliasFile.path : s;
 			}, this)
 		);
 		var file = Components.classes["@mozilla.org/file/local;1"]
@@ -291,8 +293,8 @@ var handyClicksUtils = {
 		}
 		var process = Components.classes["@mozilla.org/process/util;1"]
 			.createInstance(Components.interfaces.nsIProcess);
-		process.init(file);
 		try {
+			process.init(file);
 			process.run(false, args, args.length);
 			return true;
 		}

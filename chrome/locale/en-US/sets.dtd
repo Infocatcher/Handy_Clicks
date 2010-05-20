@@ -107,7 +107,7 @@
 
 <!ENTITY hc.sets.externalEditor "External editor">
 <!ENTITY hc.sets.externalEditorPath "Path:">
-<!ENTITY hc.sets.externalEditorPathNote "If path is empty, will launch the associated program">
+<!ENTITY hc.sets.externalEditorPathNote "If path is empty, will launch associated program">
 <!ENTITY hc.sets.externalEditorBrowse "Browse…">
 <!ENTITY hc.sets.externalEditorMakeRelative "Make path relative">
 <!ENTITY hc.sets.externalEditorMakeAbsolute "Make path absolute">

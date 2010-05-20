@@ -29,7 +29,7 @@ menulist[hc_sets="disabled"] .menulist-label {
 #hc-editor-button menuitem.menuitem-iconic > .menu-iconic-left {
 	display: -moz-box !important;
 	-moz-appearance: none !important;
-	margin-right: 2px;
+	-moz-margin-end: 2px;
 }
 #hc-editor-button menuitem.menuitem-iconic > .menu-accel-container {
 	display: none;

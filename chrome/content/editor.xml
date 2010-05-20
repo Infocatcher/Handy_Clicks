@@ -66,7 +66,7 @@
 					var sTop = ifi.scrollTop;
 					var sHeight = ifi.scrollHeight;
 					var sLeft = ifi.scrollLeft;
-					// var sWidth = ifi.scrollWidth;
+					var sWidth = ifi.scrollWidth;
 
 					ifi.selectionStart = startPos;
 					ifi.selectionEnd = endPos;
@@ -87,7 +87,7 @@
 							ifi.selectionEnd = selEnd;
 					}
 					ifi.scrollTop = sTop + (ifi.scrollHeight - sHeight);
-					ifi.scrollLeft = sLeft; // + (ifi.scrollWidth - sWidth);
+					ifi.scrollLeft = sLeft + (ifi.scrollWidth - sWidth);
 				]]>
 				</body>
 			</method>

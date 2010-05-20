@@ -128,15 +128,29 @@ var handyClicksEditor = {
 	},
 	setsReloading: function(notifyReason) {
 		if(notifyReason & this.ps.SETS_BEFORE_RELOAD) {
-			//~ todo:
-			// var setsObj = ...;
-			// var saved = setsObj;
+			this._lastShortcutObj = this.ut.getOwnProperty(this.ps.prefs, this.currentShortcut, this.currentType);
+			this._lastTypeObj = this.ut.getOwnProperty(this.ps.types, this.currentType);
 		}
 		else if(notifyReason & this.ps.SETS_RELOADED) {
 			this.appendTypesList();
-			//~ todo:
-			// var setsObj = ...;
-			// if(!this.ut.objEquals(saved, setsObj)) { ... }
+
+			var changed = false;
+			if(!this.ut.objEquals(
+				this._lastShortcutObj,
+				this.ut.getOwnProperty(this.ps.prefs, this.currentShortcut, this.currentType)
+			)) {
+				changed = true;
+				this._savedShortcutData = null;
+			}
+			if(!this.ut.objEquals(
+				this._lastTypeObj, this.ut.getOwnProperty(this.ps.types, this.currentType)
+			)) {
+				changed = true;
+				this._savedTypeData = null;
+			}
+			if(changed) //~ todo: ask for full reload ?
+				this.setButtons();
+			this._lastShortcutObj = this._lastTypeObj = null;
 		}
 	},
 	set applyDisabled(dis) {
@@ -318,16 +332,16 @@ var handyClicksEditor = {
 		this.setWinTitle();
 	},
 
-	_savedShortcut: null,
-	_savedItemType: null,
+	_savedShortcutData: null,
+	_savedTypeData: null,
 	setButtons: function() {
 		var saved = true;
 		switch(this.mainTabbox.selectedIndex) {
 			case this.INDEX_SHORTCUT:
-				saved = this.su.getNodeData(this.$("hc-editor-shortcutPanel")) == this._savedShortcut;
+				saved = this.su.getNodeData(this.$("hc-editor-shortcutPanel")) == this._savedShortcutData;
 			break;
 			case this.INDEX_TYPE:
-				saved = this.su.getNodeData(this.$("hc-editor-itemTypePanel")) == this._savedItemType;
+				saved = this.su.getNodeData(this.$("hc-editor-itemTypePanel")) == this._savedTypeData;
 			break;
 			default: return;
 		}
@@ -335,14 +349,14 @@ var handyClicksEditor = {
 		document.title = this.su.createTitle(document.title, !saved, this.ps.otherSrc);
 	},
 	shortcutSaved: function() {
-		this._savedShortcut = this.su.getNodeData(this.$("hc-editor-shortcutPanel"));
+		this._savedShortcutData = this.su.getNodeData(this.$("hc-editor-shortcutPanel"));
 	},
 	itemTypeSaved: function() {
-		this._savedItemType = this.su.getNodeData(this.$("hc-editor-itemTypePanel"));
+		this._savedTypeData = this.su.getNodeData(this.$("hc-editor-itemTypePanel"));
 	},
 	get hasUnsaved() {
-		return this.su.getNodeData(this.$("hc-editor-shortcutPanel")) != this._savedShortcut
-			|| this.su.getNodeData(this.$("hc-editor-itemTypePanel")) != this._savedItemType;
+		return this.su.getNodeData(this.$("hc-editor-shortcutPanel")) != this._savedShortcutData
+			|| this.su.getNodeData(this.$("hc-editor-itemTypePanel")) != this._savedTypeData;
 	},
 
 	dataChanged: function(e) {

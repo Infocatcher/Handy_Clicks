@@ -242,10 +242,10 @@
 				<label value="&hc.sets.externalEditorPath;" tooltiptext="&hc.sets.externalEditorPathNote;" control="hc-sets-externalEditorPath" />
 				<image id="hc-sets-externalEditorIcon" />
 				<textbox id="hc-sets-externalEditorPath" preference="externalEditorPath" flex="1"
-					oninput="handyClicksSets.initExternalEditor();"
+					oninput="handyClicksSets.initExternalEditor(true);"
 					onchange="handyClicksSets.initExternalEditor();"
 					hc_ondrop="handyClicksSets.initExternalEditor();"
-					hc_requiredFor="externalEditor" hc_enabledRegExp="[/\\]\S" />
+					hc_requiredFor="externalEditor" hc_enabledRegExp="[/\\]\S|^%[^%]+%." />
 				<button oncommand="handyClicksSets.selectExternalEditor();" label="&hc.sets.externalEditorBrowse;" />
 				<button id="hc-sets-externalEditorButton" oncommand="handyClicksSets.convertPath();"
 					hc_labelMakeRelative="&hc.sets.externalEditorMakeRelative;"

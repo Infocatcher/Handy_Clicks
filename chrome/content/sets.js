@@ -1426,22 +1426,28 @@ var handyClicksSets = {
 		var ee = this.$("hc-sets-externalEditorPath");
 		var path = ee.value.replace(/^[a-z]:\\/, function(s) { return s.toUpperCase(); });
 
-		var resPath, resLevel;
-		["ProgF", "LocalAppData", "ProfD", "Home", "SysD", "WinD"].some(function(alias) {
-			var aliasFile = this.ut.getFileByAlias(alias), aliasPath;
+		var resPath, resLevel, resLength;
+		[
+			"ProgF", "LocalAppData", "ProfD", "Home", "SysD", "WinD",// "XCurProcD",
+			"UsrApp", "LocApp",
+			"Locl", "LibD"
+		].forEach(function(alias) {
+			var aliasFile = this.ut.getFileByAlias(alias, true), aliasPath, aliasLength;
 			for(var level = 0; aliasFile; aliasFile = aliasFile.parent, level++) {
 				aliasPath = aliasFile.path;
-				if(path.indexOf(aliasPath) == 0 && /\/|\\/.test(path.charAt(aliasPath.length))) {
-					if(resPath && level >= resLevel)
-						return false;
-					resLevel = level;
-					resPath = "%" + alias + "%"
-						+ new Array(level + 1).join(RegExp.lastMatch + "..")
-						+ path.substr(aliasPath.length);
-					return level == 0; // 0 => stop
-				}
+				aliasLength = aliasPath.length;
+				if(
+					path.indexOf(aliasPath) != 0
+					|| !/\/|\\/.test(path.substr(aliasLength - 1, 2))
+					|| resPath && (level > resLevel || level == resLevel && aliasLength < resLength)
+				)
+					continue;
+				resPath = "%" + alias + "%"
+					+ new Array(level + 1).join(RegExp.lastMatch + "..")
+					+ path.substr(aliasLength);
+				resLevel = level;
+				resLength = aliasLength;
 			}
-			return false;
 		}, this);
 
 		if(!resPath || resPath == path)
@@ -1463,7 +1469,11 @@ var handyClicksSets = {
 		else
 			this.makeRelativePath();
 	},
-	initExternalEditor: function() {
+	initExternalEditor: function _iee(delay) {
+		if(delay) {
+			this.ut.timeout(_iee, this, [], 5);
+			return;
+		}
 		var ee = this.$("hc-sets-externalEditorPath");
 		var path = ee.value;
 		var file = this.ut.getLocalFile(path);
