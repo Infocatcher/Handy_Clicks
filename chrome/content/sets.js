@@ -35,7 +35,7 @@ var handyClicksSets = {
 		this.updPrefsUI();
 		this.pu.oSvc.addObserver(this.updPrefsUI, this);
 
-		this.treeSaved();
+		this.checkTreeSaved();
 		//this.prefsSaved();
 
 		if(this.ut.fxVersion >= 3.5) {
@@ -126,7 +126,6 @@ var handyClicksSets = {
 	},
 	forceUpdTree: function() {
 		this.ps.loadSettings();
-		this.treeSaved();
 		this.setDialogButtons();
 		this.updTree();
 	},
@@ -250,9 +249,6 @@ var handyClicksSets = {
 		this.ut.removeChilds(this.tBody);
 		this._drawTree();
 		this.searchInSetsTree(null, true);
-		//if(!this.ps.otherSrc) { //~
-		//	this.treeSaved();
-		//}
 		this.setDialogButtons();
 		//document.title = document.title.replace(/\*?$/, this.ps.otherSrc ? "*" : "");
 	},
@@ -320,9 +316,8 @@ var handyClicksSets = {
 	setsReloading: function(notifyReason) {
 		if(!(notifyReason & this.ps.SETS_RELOADED))
 			return;
-		if(!this.ps.otherSrc)
-			this.treeSaved();
 		this.updTree();
+		this.checkTreeSaved();
 	},
 
 	markOpenedEditors: function() {
@@ -788,6 +783,7 @@ var handyClicksSets = {
 			return;
 
 		tIts.forEach(this.deleteItem, this);
+		this.checkTreeSaved();
 		if(this.instantApply)
 			this.saveSettingsObjectsCheck(true);
 		else {
@@ -900,6 +896,7 @@ var handyClicksSets = {
 		this.ps.otherSrc && this.ps.reloadSettings(true /* applyFlag */);
 		if(this.instantApply && !this.ps.otherSrc)
 			this.saveSettingsObjectsCheck(true);
+		this.checkTreeSaved();
 		this.setDialogButtons();
 		this.updTreeButtons();
 	},
@@ -1372,7 +1369,6 @@ var handyClicksSets = {
 		if(!this.buggyPrefsConfirm())
 			return false;
 		this.ps.saveSettingsObjects(reloadFlag);
-		this.treeSaved();
 		this.setDialogButtons();
 		return true;
 	},
@@ -1432,7 +1428,8 @@ var handyClicksSets = {
 		[
 			"ProgF", "LocalAppData", "ProfD", "Home", "SysD", "WinD",// "XCurProcD",
 			"UsrApp", "LocApp",
-			"Locl", "LibD"
+			"Locl", "LibD",
+			"_SysDrv"//, "_ProfDrv"
 		].forEach(function(alias) {
 			var aliasFile = this.ut.getFileByAlias(alias, true), aliasPath, aliasLength;
 			for(var level = 0; aliasFile; aliasFile = aliasFile.parent, level++) {
@@ -1521,21 +1518,24 @@ var handyClicksSets = {
 		this.applyButton.disabled = !isModified;
 	},
 
-	_savedTreeStr: null,
-	treeSaved: function() {
-		this._savedTreeStr = this.ps.getSettingsStr();
-	},
-	get treeUnsaved() {
-		return this.ps.otherSrc
+	treeUnsaved: true,
+	checkTreeSaved: function() {
+		this.treeUnsaved = this.ps.otherSrc
 			? false
-			: this.ps.getSettingsStr() != this._savedTreeStr;
+			: this.ps.getSettingsStr() != this.ps._savedStr;
 	},
 	get prefsUnsaved() { //~ todo: this is buggy
 		return Array.some(
 			document.getElementsByTagName("preference"),
 			function(ps) {
+				// Sometimes value are not updated after actions like Ctrl+Z
+				var elts = document.getElementsByAttribute("preference", ps.id);
+				if(elts.length)
+					ps.value = ps.getElementValue(elts[0]);
+
 				return ps.value !== ps.valueFromPreferences;
-			}
+			},
+			this
 		) || this.disallowMousemoveButtons !== this.pu.pref("disallowMousemoveButtons");
 	},
 	get hasUnsaved() {
@@ -1847,7 +1847,6 @@ var handyClicksSets = {
 			this._savedTypes = this.ps.types;
 		}
 		this.ps.loadSettings(pSrc);
-		this.treeSaved();
 		this.setDialogButtons();
 		//this.ps.reloadSettings(false);
 		if(this.ps._loadError)
@@ -2116,7 +2115,6 @@ var handyClicksSets = {
 				this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, null, true);
 			if(confirmed) {
 				this.ps.saveSettingsObjects(true);
-				this.treeSaved();
 				this.setDialogButtons();
 			}
 			else
@@ -2124,7 +2122,6 @@ var handyClicksSets = {
 		}
 		else {
 			this.ps.loadSettings();
-			this.treeSaved();
 			this.setDialogButtons();
 			this.updTree();
 		}

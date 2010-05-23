@@ -229,7 +229,18 @@ var handyClicksUtils = {
 				.replace("%e", err);
 	},
 
+	getFileRoot: function(file) {
+		while(file.parent)
+			file = file.parent;
+		return file;
+	},
 	getFileByAlias: function(alias, dontShowErrors) {
+		if(alias == "_ProfDrv")
+			return this.getFileRoot(this.ps.profileDir)
+				.QueryInterface(Components.interfaces.nsILocalFile);
+		if(alias == "_SysDrv")
+			return this.getFileRoot(this.getFileByAlias("SysD"))
+				.QueryInterface(Components.interfaces.nsILocalFile);
 		try {
 			return Components.classes["@mozilla.org/file/directory_service;1"]
 				.getService(Components.interfaces.nsIProperties)
@@ -515,7 +526,7 @@ var handyClicksUtils = {
 		);
 	},
 	getSource: function(o) {
-		return this.canHasProps(o) && !o.__proto__
+		return this.canHasProps(o) && !("toSource" in o) // !o.__proto__
 			? Object.prototype.toSource.call(o)
 			: uneval(o);
 	},

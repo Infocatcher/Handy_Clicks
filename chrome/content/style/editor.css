@@ -156,11 +156,20 @@ menulist[hc_aboutConfigEntry] .menulist-label,
 	margin-top: 1px;
 	margin-bottom: 1px;
 }
-:root[hc_compactUI="true"] .button-box {
+:root[hc_compactUI="true"] button {
 	margin-top: 1px;
 	margin-bottom: 1px;
-	padding-top: 1px;
-	padding-bottom: 1px;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+:root[hc_compactUI="true"] button.dialog-button {
+	margin-top: 6px;
+}
+:root[hc_compactUI="true"] button * {
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-top: 0;
+	padding-bottom: 0;
 }
 :root[hc_compactUI="true"] .hcEditor {
   margin: 0;

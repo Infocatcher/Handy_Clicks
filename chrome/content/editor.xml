@@ -52,6 +52,9 @@
 						this.editor.deleteSelection(0);
 				</body>
 			</method>
+			<field name="INSERT_SELECT_ALL">0</field>
+			<field name="INSERT_MOVE_CURSOR_TO_START">1</field>
+			<field name="INSERT_SELECT_CUSTOM">2</field>
 			<method name="insertTextEx">
 				<parameter name="text" />
 				<parameter name="startPos" />
@@ -74,15 +77,15 @@
 					this.insertText(text);
 
 					switch(selectFlag) {
-						case 0: // select all
+						case this.INSERT_SELECT_ALL:
 							ifi.selectionStart = startPos;
 							ifi.selectionEnd = startPos + text.length;
 						break;
-						case 1: // move cursor to start
+						case this.INSERT_MOVE_CURSOR_TO_START:
 							ifi.selectionStart = startPos;
 							ifi.selectionEnd = startPos;
 						break;
-						case 2: // custom selection
+						case this.INSERT_SELECT_CUSTOM:
 							ifi.selectionStart = selStart;
 							ifi.selectionEnd = selEnd;
 					}
@@ -105,7 +108,7 @@
 					var sel = val.substring(startPos, endPos);
 					if(!/\n|\r/.test(sel)) {
 						if(removeFlag)
-							this.insertTextEx(indentChar, startPos, endPos, 1);
+							this.insertTextEx(indentChar, startPos, endPos, this.INSERT_MOVE_CURSOR_TO_START);
 						else
 							this.insertText(indentChar);
 						return;
@@ -130,7 +133,7 @@
 					}
 					else
 						block = block.replace(/^/mg, indentChar);
-					this.insertTextEx(block, startLine, endLine, 0);
+					this.insertTextEx(block, startLine, endLine, this.INSERT_SELECT_ALL);
 				]]>
 				</body>
 			</method>
@@ -169,9 +172,14 @@
 					var bLen1 = block.length;
 
 					if(isMultiline)
-						this.insertTextEx(block, startLine, endLine, 0);
+						this.insertTextEx(block, startLine, endLine, this.INSERT_SELECT_ALL);
 					else
-						this.insertTextEx(block, startLine, endLine, 2, startPos + bLen1 - bLen0, endPos + bLen1 - bLen0);
+						this.insertTextEx(
+							block, startLine, endLine,
+							this.INSERT_SELECT_CUSTOM,
+							startPos + bLen1 - bLen0,
+							endPos + bLen1 - bLen0
+						);
 				]]>
 				</body>
 			</method>

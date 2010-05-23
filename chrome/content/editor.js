@@ -92,7 +92,7 @@ var handyClicksEditor = {
 		this.wu.markOpenedEditors();
 		this.testMode && this.undoTestSettings();
 		window.removeEventListener("focus", this, true);
-		this._savedShortcutObj = _savedTypeObj = null;
+		this._savedShortcutObj = this._savedTypeObj = null;
 	},
 	handleEvent: function(e) {
 		if(e.type == "focus")
@@ -388,7 +388,7 @@ var handyClicksEditor = {
 		so = this.ut.getOwnProperty(so, "delayedAction") || {};
 		this.initFuncEditor(so, this.delayId);
 
-		var butt = /(?:^|,)button=([0-2])(?:,|$)/.test(this.shortcut) && RegExp.$1 || "0";
+		var butt = /(?:^|,)button=([0-2])(?:,|$)/.test(this.shortcut) ? RegExp.$1 : "0";
 		this.$("hc-editor-button").value = butt;
 		this.$("hc-editor-events-command").disabled = butt != "0";
 		["ctrl", "shift", "alt", "meta"].forEach(
@@ -398,6 +398,7 @@ var handyClicksEditor = {
 			},
 			this
 		);
+
 		this.shortcutSaved();
 		this.setDialogButtons();
 	},
