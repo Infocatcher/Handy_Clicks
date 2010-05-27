@@ -81,7 +81,7 @@ var handyClicksSets = {
 	handleEvent: function(e) {
 		if(e.type == "mouseup") {
 			this.smartSelect(e);
-			this.ut.timeout(this.smartSelectStop, this, null, 10);
+			this.ut.timeout(this.smartSelectStop, this, [], 10);
 		}
 	},
 	closeEditors: function() {
@@ -111,19 +111,10 @@ var handyClicksSets = {
 		var lvr = Number(tr.getAttribute("hc_lastVisibleRow"));
 		if(lvr > maxRowsIndx)
 			fvr -= lvr - maxRowsIndx;
-		this.tbo.scrollToRow(this.ut.mm(fvr, 0, maxRowsIndx));
+		tbo.scrollToRow(this.ut.mm(fvr, 0, maxRowsIndx));
 	},
 
 	/*** Actions pane ***/
-	drawTree: function() {
-		this.treeBatch(this._drawTree, this, arguments);
-	},
-	redrawTree: function() {
-		this.treeBatch(this._redrawTree, this, arguments);
-	},
-	updTree: function() {
-		this.treeBatch(this._updTree, this, arguments);
-	},
 	forceUpdTree: function() {
 		this.ps.loadSettings();
 		this.setDialogButtons();
@@ -135,6 +126,9 @@ var handyClicksSets = {
 		var ret = func.apply(context || this, args);
 		tbo.endUpdateBatch();
 		return ret;
+	},
+	drawTree: function() {
+		this.treeBatch(this._drawTree, this, arguments);
 	},
 	_drawTree: function() {
 		this.eltsCache = { __proto__: null };
@@ -246,12 +240,18 @@ var handyClicksSets = {
 		}
 		delete this.eltsCache;
 	},
+	redrawTree: function() {
+		this.treeBatch(this._redrawTree, this, arguments);
+	},
 	_redrawTree: function() {
 		this.ut.removeChilds(this.tBody);
 		this._drawTree();
 		this.searchInSetsTree(null, true);
 		this.setDialogButtons();
 		//document.title = document.title.replace(/\*?$/, this.ps.otherSrc ? "*" : "");
+	},
+	updTree: function() {
+		this.treeBatch(this._updTree, this, arguments);
 	},
 	_updTree: function(saveScroll, saveSel, saveClosed) {
 		if(saveScroll === undefined)
@@ -268,12 +268,17 @@ var handyClicksSets = {
 			var lvr = tbo.getLastVisibleRow();
 		}
 		if(saveSel) {
-			var selRows = [];
+			var selectedRows = { __proto__: null };
 			var rngCount = this.tSel.getRangeCount();
 			var start = {}, end = {};
 			for(var i = 0; i < rngCount; i++) {
 				this.tSel.getRangeAt(i, start, end);
-				selRows.push([start.value, end.value]);
+				for(var j = start.value, l = end.value; j <= l; j++) {
+					//var tItem = this.getItemAtIndex(j);
+					var tItem = this.tView.getItemAtIndex(j);
+					//this.ut._log("[" + tItem.__hash + "]");
+					selectedRows[tItem.__hash] = true;
+				}
 			}
 		}
 		if(saveClosed) {
@@ -300,10 +305,14 @@ var handyClicksSets = {
 					ti.setAttribute("open", "false");
 			}
 		);
-		saveSel && selRows.forEach(
-			function(range) {
-				if(range[0] <= maxRowsIndx)
-					this.tSel.rangedSelect(range[0], this.ut.mm(range[1], 0, maxRowsIndx), true);
+		saveSel && Array.forEach(
+			this.tBody.getElementsByTagName("treeitem"),
+			function(ti) {
+				if(ti.__hash in selectedRows) {
+					var indx = this.tView.getIndexOfItem(ti);
+					if(indx != -1)
+						this.tSel.rangedSelect(indx, indx, true);
+				}
 			},
 			this
 		);
@@ -322,6 +331,9 @@ var handyClicksSets = {
 	},
 
 	markOpenedEditors: function() {
+		this.treeBatch(this._markOpenedEditors, this, arguments);
+	},
+	_markOpenedEditors: function() {
 		for(var rowId in this.rowsCache)
 			this.setItemStatus(rowId, false);
 		var wProp = this.wu.winIdProp;
@@ -345,7 +357,7 @@ var handyClicksSets = {
 			</treeitem>
 		);
 		parent.appendChild(tItem);
-		tItem.__hash = hash; //~ test
+		tItem.__hash = hash;
 		return this.eltsCache[hash] = tItem.getElementsByTagName("treechildren")[0];
 	},
 	appendItems: function(parent, items, shortcut) {
@@ -423,7 +435,7 @@ var handyClicksSets = {
 			daChild.appendChild(daItem);
 			tItem.appendChild(daChild);
 
-			this.rowsCache[shortcut + "-" + itemType + "-delayed"] = daRow; // Uses for search
+			this.rowsCache[daItem.__hash = shortcut + "-" + itemType + "-delayed"] = daRow; // Uses for search
 		}
 
 		this.addProperties(
@@ -480,10 +492,11 @@ var handyClicksSets = {
 		tItem.__isCustomType = isCustomType;
 		tItem.__isDelayed = false;
 		tItem.__delayed = da && daItem;
+
 		tItem.appendChild(tRow);
 		//parent.appendChild(tItem);
 		parent.insertBefore(tItem, insAfter && insAfter.nextSibling);
-		this.rowsCache[shortcut + "-" + itemType] = tRow;
+		this.rowsCache[tItem.__hash = shortcut + "-" + itemType] = tRow;
 		return tItem;
 	},
 	getCustomTypeLabel: function(type) {
@@ -585,11 +598,11 @@ var handyClicksSets = {
 		);
 		this.$("hc-sets-cmd-enable").setAttribute(
 			"disabled",
-			noSel || selIts.every(function(it) { return this.checkedState(it); }, this)
+			noSel || !selIts.some(function(it) { return !this.checkedState(it); }, this)
 		);
 		this.$("hc-sets-cmd-disable").setAttribute(
 			"disabled",
-			noSel || selIts.every(function(it) { return !this.checkedState(it); }, this)
+			noSel || !selIts.some(function(it) { return this.checkedState(it); }, this)
 		);
 		var noTypes = noSel || !selIts.some(function(it) { return it.__isCustomType; });
 		this.$("hc-sets-cmd-editType").setAttribute("disabled", noTypes);
@@ -601,16 +614,16 @@ var handyClicksSets = {
 			return [];
 		var tItemsArr = [];
 		var start = {}, end = {}, tItem;
-		for(var t = 0; t < rngCount; t++) {
-			this.tSel.getRangeAt(t, start, end);
-			for(var v = start.value; v <= end.value; v++) {
-				tItem = this.getItemAtIndex(v);
+		for(var i = 0; i < rngCount; i++) {
+			this.tSel.getRangeAt(i, start, end);
+			for(var j = start.value, l = end.value; j <= l; j++) {
+				tItem = this.getItemAtIndex(j);
 				if(!tItem || !("__shortcut" in tItem))
 					continue;
 				//if(tItem.__isDelayed)
 				//	tItem = tItem.parentNode.parentNode;
 				tItemsArr.push(tItem);
-				tItem.__index = v;
+				tItem.__index = j;
 			}
 		}
 		tItemsArr.forEach(
@@ -659,10 +672,10 @@ var handyClicksSets = {
 		var panes = prefWin.preferencePanes;
 		var pCount = panes.length;
 		var n = Array.indexOf(panes, prefWin.currentPane) + (nextFlag ? 1 : -1);
-		if(n >= pCount)  n = 0;
-		else if(n < 0) n = pCount - 1;
+		if(n >= pCount) n = 0;
+		else if(n < 0)  n = pCount - 1;
 		prefWin.showPane(panes[n]);
-		this.focusSearch();
+		//this.focusSearch();
 	},
 
 	addItems: function(e) {
@@ -1239,7 +1252,10 @@ var handyClicksSets = {
 			return;
 		e.preventDefault();
 	},
-	searchInSetsTree: function(sIt, notSelect) {
+	searchInSetsTree: function() {
+		this.treeBatch(this._searchInSetsTree, this, arguments);
+	},
+	_searchInSetsTree: function(sIt, notSelect) {
 		if(sIt && this._searchTimeout === null) {
 			var remTime = this._lastSearch + this._searchDelay - Date.now();
 			if(remTime > 0) {
@@ -1658,6 +1674,7 @@ var handyClicksSets = {
 		this.forceUpdTree();
 
 		//this.applyButton.disabled = true;
+		this.checkTreeSaved();
 		this.setDialogButtons();
 	},
 
