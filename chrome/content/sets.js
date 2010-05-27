@@ -116,24 +116,25 @@ var handyClicksSets = {
 
 	/*** Actions pane ***/
 	drawTree: function() {
-		this.treeBatch("_drawTree", arguments);
+		this.treeBatch(this._drawTree, this, arguments);
 	},
 	redrawTree: function() {
-		this.treeBatch("_redrawTree", arguments);
+		this.treeBatch(this._redrawTree, this, arguments);
 	},
 	updTree: function() {
-		this.treeBatch("_updTree", arguments);
+		this.treeBatch(this._updTree, this, arguments);
 	},
 	forceUpdTree: function() {
 		this.ps.loadSettings();
 		this.setDialogButtons();
 		this.updTree();
 	},
-	treeBatch: function(meth, args) {
+	treeBatch: function(func, context, args) {
 		var tbo = this.tbo;
 		tbo.beginUpdateBatch();
-		this[meth].apply(this, args);
+		var ret = func.apply(context || this, args);
 		tbo.endUpdateBatch();
+		return ret;
 	},
 	_drawTree: function() {
 		this.eltsCache = { __proto__: null };
@@ -1083,7 +1084,10 @@ var handyClicksSets = {
 	get treeContainers() {
 		return this.tBody.getElementsByAttribute("container", "true");
 	},
-	toggleTreeContainers: function(expand) {
+	toggleTreeContainers: function() {
+		this.treeBatch(this._toggleTreeContainers, this, arguments);
+	},
+	_toggleTreeContainers: function(expand) {
 		expand = String(expand);
 		Array.forEach(
 			this.treeContainers,
@@ -1113,7 +1117,10 @@ var handyClicksSets = {
 		);
 		return expandedLevel;
 	},
-	expandTreeLevel: function(level) {
+	expandTreeLevel: function() {
+		this.treeBatch(this._expandTreeLevel, this, arguments);
+	},
+	_expandTreeLevel: function(level) {
 		this.expandTree();
 		Array.filter(
 			this.treeContainers,
@@ -1199,6 +1206,9 @@ var handyClicksSets = {
 			this.tree.treeBoxObject.ensureRowIsVisible(i);
 		},
 		selectAll: function() {
+			this.__parent.treeBatch(this._selectAll, this, arguments);
+		},
+		_selectAll: function() {
 			this._res.forEach(
 				function(i) {
 					this.tree.view.selection.rangedSelect(i, i, true);
