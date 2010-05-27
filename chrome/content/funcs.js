@@ -942,9 +942,16 @@ var handyClicksFuncs = {
 	},
 	ensureTabLoaded: function(tab) {
 		// For BarTab ( https://addons.mozilla.org/firefox/addon/67651 )
-		if("BarTap" in window && tab.getAttribute("ontap") == "true") {
-			BarTap.loadTabContents(tab);
-			return true;
+		if(tab.getAttribute("ontap") == "true") {
+			if("BarTabHandler" in window) {
+				BarTabHandler.prototype.loadTab(tab);
+				//~ todo: getTabbrowserForTab(tab).BarTabHandler.loadTab(tab);
+				return true;
+			}
+			if("BarTap" in window) {
+				BarTap.loadTabContents(tab);
+				return true;
+			}
 		}
 		return false;
 	},
@@ -1062,6 +1069,7 @@ var handyClicksFuncs = {
 		var onlyUnvisited = { value: false };
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
 		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
+		this.ut.fixMinimized();
 		var button = ps.confirmEx(
 			window, this.ut.getLocalized("title"),
 			this.ut.getLocalized("openSimilarLinksConfirm"),

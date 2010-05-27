@@ -715,6 +715,7 @@ var handyClicksSets = {
 		var lim = this.pu.pref("sets.openEditorsLimit");
 		if(lim <= 0 || count <= lim)
 			return false;
+		this.ut.fixMinimized();
 		var ask = { value: false };
 		var cnf = this.ut.promptsSvc.confirmCheck(
 			window, this.ut.getLocalized("warningTitle"),
@@ -1316,6 +1317,7 @@ var handyClicksSets = {
 	},
 
 	/*** Prefs pane ***/
+	_updPrefsUITimeout: null,
 	updPrefsUI: function(prefName) {
 		this.loadPrefs();
 		this.updateAllDependencies();
@@ -1325,6 +1327,12 @@ var handyClicksSets = {
 			this.updTree();
 		else if(this.warnMsgsPrefs.indexOf(prefName) != -1)
 			this.initResetWarnMsgs();
+		else {
+			clearTimeout(this._updPrefsUITimeout);
+			this._updPrefsUITimeout = setTimeout(function(_this) {
+				_this.setDialogButtons();
+			}, 10, this);
+		}
 	},
 	loadPrefs: function() {
 		var buttons = this.pu.pref("disallowMousemoveButtons") || "";
@@ -1655,6 +1663,7 @@ var handyClicksSets = {
 			this.pu.prefSvc.getBranch(this.pu.prefNS)
 				.getChildList("", {})
 				.forEach(this.resetPref, this);
+			this.reloadPrefpanes(); // Changed prefs don't reloaded by default
 		}
 	},
 	resetPref: function(pName) {
@@ -1737,6 +1746,7 @@ var handyClicksSets = {
 			this
 		);
 		this.pu.savePrefFile();
+		this.reloadPrefpanes(); // Changed prefs don't reloaded by default
 	},
 
 	// Clicking options management
@@ -1797,6 +1807,7 @@ var handyClicksSets = {
 	importSets: function(partialImport, srcId, data) {
 		this.selectTreePane();
 		if(this.pu.pref("sets.importJSWarning")) {
+			this.ut.fixMinimized();
 			var ask = { value: false };
 			var cnf = this.ut.promptsSvc.confirmCheck(
 				window, this.ut.getLocalized("warningTitle"),
@@ -1882,6 +1893,7 @@ var handyClicksSets = {
 
 		if(this.pu.pref("sets.removeBackupConfirm")) {
 			this.ut.closeMenus(mi);
+			this.ut.fixMinimized();
 			var ask = { value: false };
 			var cnf = this.ut.promptsSvc.confirmCheck(
 				window, this.ut.getLocalized("title"),

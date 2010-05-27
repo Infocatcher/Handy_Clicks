@@ -62,10 +62,12 @@ var handyClicksEditor = {
 		this.loadCustomType(this.type);
 		this.selectTargetTab(this.isDelayed);
 		this.initUI();
-		this.ps.oSvc.addObserver(this.setsReloading, this);
 
 		this.dataSaved();
-		this.applyDisabled = true;
+		//this.applyDisabled = true;
+		this.setDialogButtons();
+
+		this.ps.oSvc.addObserver(this.setsReloading, this);
 
 		this.setTooltip();
 		this.setFuncsNotes();
@@ -317,13 +319,18 @@ var handyClicksEditor = {
 	},
 
 	setDialogButtons: function() {
-		var saved = true;
+		var shModified = this.shortcutUnsaved;
+		var typeModified = this.typeUnsaved;
 		switch(this.mainTabbox.selectedIndex) {
-			case this.INDEX_SHORTCUT: saved = !this.shortcutUnsaved; break;
-			case this.INDEX_TYPE:     saved = !this.typeUnsaved;
+			case this.INDEX_SHORTCUT: this.applyDisabled = !shModified;   break;
+			case this.INDEX_TYPE:     this.applyDisabled = !typeModified;
 		}
-		this.applyDisabled = saved;
-		document.title = this.su.createTitle(document.title, !saved, this.ps.otherSrc);
+		document.title = this.su.createTitle(document.title, shModified || typeModified, this.ps.otherSrc);
+		this.setModifiedTab(this.$("hc-editor-shortcutTab"), shModified);
+		this.setModifiedTab(this.$("hc-editor-itemTypeTab"), typeModified);
+	},
+	setModifiedTab: function(tab, isModified) {
+		tab.setAttribute("label", this.su.createTitle(tab.getAttribute("label"), isModified));
 	},
 
 	_savedShortcutObj: null,
@@ -378,7 +385,8 @@ var handyClicksEditor = {
 		title = " [" + title + (type ? " + " + type : "") + (ct ? " | " + ct : "") + "]";
 		title = document.title.replace(/\s+\[.+\]\*?$/, "") + title;
 		//document.title = document.title.replace(/\s+\[.+\]\*?$/, "") + title + (this.ps.otherSrc ? "*" : "");
-		document.title = this.su.createTitle(title, !this.buttonApply.disabled, this.ps.otherSrc);
+		//document.title = this.su.createTitle(title, !this.buttonApply.disabled, this.ps.otherSrc);
+		document.title = title;
 	},
 	initShortcutEditor: function() {
 		var so = this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
@@ -834,6 +842,7 @@ var handyClicksEditor = {
 		this.disableUnsupported();
 		this.setWinId();
 		this.setWinTitle();
+		this.setDialogButtons();
 	},
 	setClickOptions: function(e) {
 		this.$("hc-editor-button").value = e.button;

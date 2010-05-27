@@ -124,17 +124,21 @@ var handyClicksUtils = {
 			.getService(Components.interfaces.nsIPromptService);
 	},
 	alert: function(title, text, win) {
+		this.fixMinimized(win);
 		this.promptsSvc.alert(win || window, title, text);
 	},
 	prompt: function(title, text, defVal, win) {
+		this.fixMinimized(win);
 		var ret = { value: defVal };
 		var res = this.promptsSvc.prompt(win || window, title, text, ret, null, {});
 		return res ? ret.value : null;
 	},
 	confirm: function(title, text, win) {
+		this.fixMinimized(win);
 		return this.promptsSvc.confirm(win || window, title, text);
 	},
 	confirmEx: function(title, text, buttonOkTxt, buttonOkDefault, win) {
+		this.fixMinimized(win);
 		var ps = this.promptsSvc;
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
 		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
@@ -147,6 +151,12 @@ var handyClicksUtils = {
 			buttonOkTxt, "", "",
 			null, {}
 		) != 1;
+	},
+	fixMinimized: function(win) {
+		// See https://bugzilla.mozilla.org/show_bug.cgi?id=350299
+		win = win || window;
+		if(win.windowState == win.STATE_MINIMIZED)
+			win.focus();
 	},
 
 	bind: function(func, context, args) {

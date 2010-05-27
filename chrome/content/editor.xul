@@ -70,8 +70,10 @@
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">
 		<tabs onselect="handyClicksEditor.editorModeChanged();">
-			<tab label="&hc.editor.mainTabActions;" accesskey="&hc.editor.mainTabActionsAccesskey;" selected="true" />
-			<tab label="&hc.editor.mainTabCustomTypes;" accesskey="&hc.editor.mainTabCustomTypesAccesskey;" />
+			<tab id="hc-editor-shortcutTab" selected="true"
+				label="&hc.editor.mainTabActions;" accesskey="&hc.editor.mainTabActionsAccesskey;" />
+			<tab id="hc-editor-itemTypeTab"
+				label="&hc.editor.mainTabCustomTypes;" accesskey="&hc.editor.mainTabCustomTypesAccesskey;" />
 		</tabs>
 		<tabpanels flex="1">
 			<tabpanel id="hc-editor-shortcutPanel" flex="1" orient="vertical">

@@ -168,6 +168,7 @@ var handyClicksSetsUtils = {
 		if(!this.pu.pref("ui.notifyUnsaved"))
 			return this.DONT_SAVE;
 		var ps = this.ut.promptsSvc;
+		this.ut.fixMinimized();
 		var ask = { value: false };
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
 		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
