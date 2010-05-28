@@ -253,19 +253,21 @@ var handyClicksSets = {
 	updTree: function() {
 		this.treeBatch(this._updTree, this, arguments);
 	},
-	_updTree: function(saveScroll, saveSel, saveClosed) {
-		if(saveScroll === undefined)
-			saveScroll = true;
-		if(saveSel === undefined)
-			saveSel = true;
+	_updTree: function(saveClosed, saveSel) {
 		if(saveClosed === undefined)
 			saveClosed = true;
-		saveScroll = false; //~ not needed?
+		if(saveSel === undefined)
+			saveSel = true;
 
-		if(saveScroll) {
-			var tbo = this.tbo;
-			var fvr = tbo.getFirstVisibleRow();
-			var lvr = tbo.getLastVisibleRow();
+		if(saveClosed) {
+			var collapsedRows = { __proto__: null };
+			Array.forEach(
+				this.treeContainers,
+				function(ti) {
+					if(ti.getAttribute("open") != "true")
+						collapsedRows[ti.__hash] = true;
+				}
+			);
 		}
 		if(saveSel) {
 			var selectedRows = { __proto__: null };
@@ -281,22 +283,10 @@ var handyClicksSets = {
 				}
 			}
 		}
-		if(saveClosed) {
-			var collapsedRows = { __proto__: null };
-			Array.forEach(
-				this.treeContainers,
-				function(ti) {
-					if(ti.getAttribute("open") != "true")
-						collapsedRows[ti.__hash] = true;
-				}
-			);
-		}
 
 		this._redrawTree();
-		var rowsCount = this.tView.rowCount;
-		if(!rowsCount)
+		if(!this.tView.rowCount)
 			return;
-		var maxRowsIndx = rowsCount - 1;
 
 		saveClosed && Array.forEach(
 			this.treeContainers,
@@ -316,11 +306,6 @@ var handyClicksSets = {
 			},
 			this
 		);
-		if(saveScroll) {
-			if(lvr > maxRowsIndx)
-				fvr -= lvr - maxRowsIndx;
-			tbo.scrollToRow(this.ut.mm(fvr, 0, maxRowsIndx));
-		}
 	},
 
 	setsReloading: function(notifyReason) {
@@ -1347,8 +1332,10 @@ var handyClicksSets = {
 	updPrefsUI: function(prefName) {
 		this.loadPrefs();
 		this.updateAllDependencies();
-		if(prefName == "sets.treeDrawMode" || prefName == "sets.treeExpandDelayedAction")
+		if(prefName == "sets.treeDrawMode")
 			this.redrawTree();
+		else if(prefName == "sets.treeExpandDelayedAction")
+			this.updTree(false);
 		else if(prefName == "sets.localizeArguments")
 			this.updTree();
 		else if(this.warnMsgsPrefs.indexOf(prefName) != -1)
