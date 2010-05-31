@@ -158,6 +158,12 @@ menuitem[command="hc-sets-cmd-disable"][disabled="true"] image {
 	opacity: 0.5;
 }
 
+/*
+button[type="menu"] {
+	min-width: 0 !important;
+}
+*/
+
 #hc-sets-tree-restoreFromBackupPopup scrollbox {
 	overflow-y: auto;
 }

@@ -22,6 +22,16 @@
 
 <!ENTITY hc.sets.search "Search:">
 
+<!ENTITY hc.sets.editMenu "Edit">
+<!ENTITY hc.sets.editMenuAccesskey "E">
+<!ENTITY hc.sets.selectAll "Select all">
+<!ENTITY hc.sets.clearSelection "Clear selection">
+<!ENTITY hc.sets.invertSelection "Invert selection">
+<!ENTITY hc.sets.find "Find…">
+<!ENTITY hc.sets.findNext "Find next down">
+<!ENTITY hc.sets.findPrev "Find next up">
+<!ENTITY hc.sets.findSelectAll "Select all search results">
+
 <!ENTITY hc.sets.viewMenu "View">
 <!ENTITY hc.sets.viewMenuAccesskey "V">
 <!ENTITY hc.sets.drawModeNormal "Normal">
@@ -116,6 +126,7 @@
 <!ENTITY hc.sets.externalEditorExt "Extension of temp file:">
 
 <!ENTITY hc.sets.resetWarnMsgs "Reset warning messages">
+<!ENTITY hc.sets.resetWarnMsgsTip "Disabled warnings:">
 
 
 <!ENTITY hc.sets.builtInFuncsTitle "Built-in functions">

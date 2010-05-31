@@ -22,6 +22,16 @@
 
 <!ENTITY hc.sets.search "Найти:">
 
+<!ENTITY hc.sets.editMenu "Правка">
+<!ENTITY hc.sets.editMenuAccesskey "П">
+<!ENTITY hc.sets.selectAll "Выделить всё">
+<!ENTITY hc.sets.clearSelection "Снять всё выделение">
+<!ENTITY hc.sets.invertSelection "Инвертировать выделение">
+<!ENTITY hc.sets.find "Найти…">
+<!ENTITY hc.sets.findNext "Найти далее вниз">
+<!ENTITY hc.sets.findPrev "Найти далее вверх">
+<!ENTITY hc.sets.findSelectAll "Выделить всё найденное">
+
 <!ENTITY hc.sets.viewMenu "Вид">
 <!ENTITY hc.sets.viewMenuAccesskey "В">
 <!ENTITY hc.sets.drawModeNormal "Нормальный">
@@ -116,6 +126,7 @@
 <!ENTITY hc.sets.externalEditorExt "Расширение временного файла:">
 
 <!ENTITY hc.sets.resetWarnMsgs "Сбросить отключённые предупреждения">
+<!ENTITY hc.sets.resetWarnMsgsTip "Отключённые предупреждения:">
 
 
 <!ENTITY hc.sets.builtInFuncsTitle "Встроенные функции">

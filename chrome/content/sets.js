@@ -936,9 +936,38 @@ var handyClicksSets = {
 		}
 		return enabled;
 	},
+
+	initEditMenu: function(mp) {
+		var rowCount = this.tView.rowCount;
+		var selected = 0;
+
+		var tSel = this.tSel;
+		var rngCount = tSel.getRangeCount();
+		var start = {}, end = {};
+		for(var i = 0; i < rngCount; i++) {
+			tSel.getRangeAt(i, start, end);
+			for(var j = start.value, l = end.value; j <= l; j++)
+				selected++;
+		}
+
+		this.$("hc-sets-tree-selectAll")      .disabled = !rowCount || selected == rowCount;
+		this.$("hc-sets-tree-clearSelection") .disabled = !rowCount || selected == 0;
+		this.$("hc-sets-tree-invertSelection").disabled = !rowCount;
+
+		this.$("hc-sets-tree-find")           .disabled = !rowCount;
+
+		var found = this.searcher.count > 0;
+		this.$("hc-sets-tree-findNext")       .disabled = !found;
+		this.$("hc-sets-tree-findPrev")       .disabled = !found;
+		this.$("hc-sets-tree-findSelectAll")  .disabled = !found;
+	},
 	selectAll: function() {
 		if(this.isTreePaneSelected)
 			this.tSel.selectAll();
+	},
+	clearSelection: function() {
+		if(this.isTreePaneSelected)
+			this.tSel.clearSelection();
 	},
 	invertSelection: function() {
 		if(!this.isTreePaneSelected)
@@ -1143,6 +1172,23 @@ var handyClicksSets = {
 		return this.expandTreeLevel(level);
 	},
 
+	openMenu: function(e, menu) {
+		if(e.target != menu)
+			return;
+		Array.some(
+			menu.parentNode.childNodes,
+			function(node) {
+				if(!("open" in node))
+					return false;
+				// node.boxObject instanceof Components.interfaces.nsIMenuBoxObject
+				if(!node.open || node == menu)
+					return false;
+				node.open = false;
+				return menu.open = true;
+			}
+		);
+	},
+
 	/*** Search in tree ***/
 	focusSearch: function(e) {
 		if(!this.isTreePaneSelected)
@@ -1207,11 +1253,12 @@ var handyClicksSets = {
 			this.__parent.treeBatch(this._selectAll, this, arguments);
 		},
 		_selectAll: function() {
+			var tSel = this.tree.view.selection;
+			tSel.clearSelection();
 			this._res.forEach(
 				function(i) {
-					this.tree.view.selection.rangedSelect(i, i, true);
-				},
-				this
+					tSel.rangedSelect(i, i, true);
+				}
 			);
 		},
 		set wrapped(val) {
@@ -1419,9 +1466,47 @@ var handyClicksSets = {
 		"ui.notifyUnsaved"
 	],
 	initResetWarnMsgs: function() {
-		this.$("hc-sets-resetWarnMsgs").disabled = !this.warnMsgsPrefs.some(function(pName) {
-			return !this.pu.pref(pName);
+		var notChanged = true;
+		var disabled = this.warnMsgsPrefs.filter(function(pName) {
+			if(this.pu.pref(pName))
+				return false;
+			notChanged = false;
+			return true;
 		}, this);
+
+		var tt = this.$("hc-sets-warnMsgsPrefs-tooltip");
+		if(disabled.length) {
+			//this.ut.removeChilds(tt);
+			var ttSep = this.$("hc-sets-warnMsgsPrefs-tooltipSep");
+			while(ttSep.nextSibling)
+				tt.removeChild(ttSep.nextSibling);
+			disabled.forEach(function(pName, i) {
+				if(i != 0) {
+					var sep = ttSep.cloneNode(true);
+					sep.removeAttribute("id");
+					tt.appendChild(sep);
+				}
+				var desc = document.createElement("description");
+				var text;
+				switch(pName) {
+					case "sets.importJSWarning":
+						text = this.ut.getLocalized("importSetsWarning");
+					break;
+					case "sets.openEditorsLimit":
+						text = this.ut.getLocalized("openEditorsWarning").replace("%n", "N");
+					break;
+					case "sets.removeBackupConfirm":
+						text = this.ut.getLocalized("removeBackupConfirm").replace("%f", "file.js");
+					break;
+					case "ui.notifyUnsaved":
+						text = this.ut.getLocalized("notifyUnsaved");
+				}
+				desc.textContent = text || pName;
+				tt.appendChild(desc);
+			}, this);
+		}
+
+		this.$("hc-sets-resetWarnMsgs").disabled = tt.hidden = notChanged;
 	},
 	resetWarnMsgs: function() {
 		this.warnMsgsPrefs.forEach(function(pName) {
@@ -1630,7 +1715,7 @@ var handyClicksSets = {
 				Array.forEach(
 					document.getElementsByAttribute("hc_depends", req),
 					function(dep) {
-						this.desableChilds(dep, dis);
+						this.disableChilds(dep, dis);
 					},
 					this
 				);
@@ -1638,7 +1723,7 @@ var handyClicksSets = {
 			this
 		);
 	},
-	desableChilds: function(parent, dis) {
+	disableChilds: function(parent, dis) {
 		parent.disabled = dis;
 		Array.forEach(
 			parent.getElementsByTagName("*"),
