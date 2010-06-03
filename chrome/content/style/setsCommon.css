@@ -52,6 +52,12 @@ label[tooltiptext]:not([tooltiptext=""]) {
 	border-bottom: 1px dotted;
 	cursor: help;
 }
+button[tooltip]:not([disabled="true"]) {
+	cursor: help;
+}
+button[tooltip]:not([disabled="true"]) label {
+	border-bottom: 1px dotted;
+}
 
 #handyClicks-infoTooltip {
 	margin: 0;

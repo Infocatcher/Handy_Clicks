@@ -358,11 +358,11 @@
 					this.style.fontSize = add == 0
 						? ""
 						: Math.min(
+							36,
 							Math.max(
-								parseInt(this.ownerDocument.defaultView.getComputedStyle(this, "").fontSize) + add,
-								1
-							),
-							36
+								1,
+								parseInt(this.ownerDocument.defaultView.getComputedStyle(this, null).fontSize) + add
+							)
 						) + "px";
 					if(this.id)
 						document.persist(this.id, "style");

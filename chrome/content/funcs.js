@@ -1056,7 +1056,7 @@ var handyClicksFuncs = {
 	},
 	getStyle: function(item, propName) {
 		item = item || this.hc.item;
-		return item.ownerDocument.defaultView.getComputedStyle(item, "")[propName];
+		return item.ownerDocument.defaultView.getComputedStyle(item, null)[propName];
 	},
 	openSimilarLinksInTabs: function(e, refererPolicy, a) {
 		a = a || this.hc.item;

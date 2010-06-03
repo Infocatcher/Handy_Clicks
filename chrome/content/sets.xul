@@ -447,7 +447,7 @@
 			<menuitem oncommand="handyClicksSets.importPrefs();" label="&hc.sets.importPrefs;" />
 			<menuitem oncommand="handyClicksSets.exportPrefs();" label="&hc.sets.exportPrefs;" />
 		</menupopup>
-		<tooltip id="hc-sets-warnMsgsPrefs-tooltip">
+		<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical">
 			<description class="header">&hc.sets.resetWarnMsgsTip;</description>
 			<separator id="hc-sets-warnMsgsPrefs-tooltipSep" class="groove" />
 		</tooltip>

@@ -82,6 +82,26 @@ var handyClicksUtils = {
 		return ts[tId] = Date.now();
 	},
 
+	hasPrefix: function(str, prefix) {
+		return typeof str == "string" && str.indexOf(prefix) == 0;
+	},
+	removePrefix: function(str, prefix) {
+		return this.hasPrefix(str, prefix)
+			? str.substr(0, prefix.length)
+			: str;
+	},
+	hasPostfix: function(str, postfix) {
+		return typeof str == "string" && str.indexOf(postfix) == str.length - postfix.length;
+	},
+	removePostfix: function(str, postfix) {
+		if(typeof str != "string")
+			return str;
+		var indx = str.indexOf(postfix);
+		return indx == str.length - postfix.length
+			? str.substring(0, indx)
+			: str;
+	},
+
 	notify: function(msg, header, funcLeftClick, funcMiddleClick, extEnabled, inWindowCorner) {
 		var dur = this.pu.pref("notifyOpenTime");
 		if(dur <= 0)
@@ -239,9 +259,21 @@ var handyClicksUtils = {
 				.replace("%e", err);
 	},
 
+	getFileParent: function(file) {
+		try {
+			return file.parent;
+		}
+		catch(e) {
+			// Firefox 1.5 and 2.0 says:
+			// Component returned failure code: 0x80520001 (NS_ERROR_FILE_UNRECOGNIZED_PATH) [nsIFile.parent]
+			// for root directories
+		}
+		return null;
+	},
 	getFileRoot: function(file) {
-		while(file.parent)
-			file = file.parent;
+		var tmp = file;
+		for(; tmp = this.getFileParent(tmp);)
+			file = tmp;
 		return file;
 	},
 	getFileByAlias: function(alias, dontShowErrors) {

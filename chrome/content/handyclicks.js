@@ -707,7 +707,11 @@ var handyClicks = {
 		var ln = it.localName;
 		var uri = ln && ln.toLowerCase() == "treechildren"
 			? this.getTreeInfo(it, e, "uri")
-			: it.statusText || (it.node && it.node.uri) || it.getAttribute("siteURI") || "";
+			: it.statusText
+				|| (it.node && it.node.uri)
+				|| (it._placesNode && it._placesNode.uri) // Firefox 3.7a5pre
+				|| it.getAttribute("siteURI")
+				|| "";
 		return !usePlacesURIs && /^place:/.test(uri) ? "" : uri;
 	},
 	getTreeInfo: function(treechildren, e, prop) { // "uri" or "title"
@@ -765,7 +769,7 @@ var handyClicks = {
 		if(
 			!this.ut.isObject(it)
 			|| !("focus" in it) // typeof it.focus == "function"
-			|| it.ownerDocument.defaultView.getComputedStyle(it, "").MozUserFocus == "ignore"
+			|| it.ownerDocument.defaultView.getComputedStyle(it, null).MozUserFocus == "ignore"
 		)
 			return;
 		try {

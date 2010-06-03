@@ -31,12 +31,11 @@ var handyClicksSets = {
 		);
 
 		this.updTreeButtons();
+		this.checkTreeSaved();
+		//this.prefsSaved();
 		this.ps.oSvc.addObserver(this.setsReloading, this);
 		this.updPrefsUI();
 		this.pu.oSvc.addObserver(this.updPrefsUI, this);
-
-		this.checkTreeSaved();
-		//this.prefsSaved();
 
 		if(this.ut.fxVersion >= 3.5) {
 			var s = this.$("hc-sets-tree-searchField");
@@ -840,7 +839,8 @@ var handyClicksSets = {
 		if(!rowId)
 			return;
 		//rowId = rowId.replace(/@otherSrc$/, "");
-		rowId = rowId.replace(new RegExp(this.ct.OTHER_SRC_POSTFIX + "$"), "");
+		//rowId = rowId.replace(new RegExp(this.ct.OTHER_SRC_POSTFIX + "$"), "");
+		rowId = this.ut.removePostfix(rowId, this.ct.OTHER_SRC_POSTFIX);
 		if(!(rowId in this.rowsCache))
 			return;
 		this.addClildsProperties(
@@ -1307,13 +1307,19 @@ var handyClicksSets = {
 		var sTerm = sIt.value;
 		var isRegExp = false;
 		var hasTerm = true;
-		if(/^\/(.+)\/([im]{0,2})$/.test(sTerm)) try {
-			sTerm = new RegExp(RegExp.$1, RegExp.$2);
-			isRegExp = true;
+		if(!/^\/(.+)\/([im]{0,2})$/.test(sTerm))
+			sIt.removeAttribute("hc_isValidRegExp");
+		else {
+			try {
+				sTerm = new RegExp(RegExp.$1, RegExp.$2);
+				isRegExp = true;
+				sIt.setAttribute("hc_isValidRegExp", "true");
+			}
+			catch(e) {
+				sIt.setAttribute("hc_isValidRegExp", "false");
+			}
 		}
-		catch(e) {
-		}
-		sIt.setAttribute("hc_isRegExp", isRegExp);
+
 		if(!isRegExp) {
 			sTerm = this.ut.trim(sIt.value);
 			hasTerm = !!sTerm;
@@ -1475,6 +1481,9 @@ var handyClicksSets = {
 		}, this);
 
 		var tt = this.$("hc-sets-warnMsgsPrefs-tooltip");
+		//~ todo:
+		//   #hc-sets-warnMsgsPrefs-tooltip description { white-space: -moz-pre-wrap; }
+		// for old Firefox versions (it's buggy in Firefox 1.5)?
 		if(disabled.length) {
 			//this.ut.removeChilds(tt);
 			var ttSep = this.$("hc-sets-warnMsgsPrefs-tooltipSep");
@@ -1538,7 +1547,7 @@ var handyClicksSets = {
 			"_SysDrv"//, "_ProfDrv"
 		].forEach(function(alias) {
 			var aliasFile = this.ut.getFileByAlias(alias, true), aliasPath, aliasLength;
-			for(var level = 0; aliasFile; aliasFile = aliasFile.parent, level++) {
+			for(var level = 0; aliasFile; aliasFile = this.ut.getFileParent(aliasFile), level++) {
 				aliasPath = aliasFile.path;
 				aliasLength = aliasPath.length;
 				if(
@@ -1639,10 +1648,10 @@ var handyClicksSets = {
 				if(elts.length)
 					ps.value = ps.getElementValue(elts[0]);
 
-				return ps.value !== ps.valueFromPreferences;
+				return ps.value != ps.valueFromPreferences; // May be string and number on Firefox 3.0
 			},
 			this
-		) || this.disallowMousemoveButtons !== this.pu.pref("disallowMousemoveButtons");
+		) || this.disallowMousemoveButtons != this.pu.pref("disallowMousemoveButtons");
 	},
 	get hasUnsaved() {
 		return this.instantApply

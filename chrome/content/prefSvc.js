@@ -582,18 +582,16 @@ var handyClicksPrefSvc = {
 			&& typeof ct.define == "string"
 			&& ct.hasOwnProperty("contextMenu");
 	},
+
 	customPrefix: "custom_",
-	customMask: /^custom_/,
 	extPrefix: "ext_",
 	isCustomType: function(type) {
-		return typeof type == "string" && type.indexOf(this.customPrefix) == 0;
+		return this.ut.hasPrefix(type, this.customPrefix);
 	},
 	removeCustomPrefix: function(type) {
-		return type.replace(this.customMask, "");
+		return this.ut.removePrefix(type, this.customPrefix);
 	},
-	isExtType: function(type) {
-		return typeof type == "string" && type.indexOf(this.extPrefix) == 0;
-	},
+
 	encForWrite: function(s) {
 		return s
 			? s

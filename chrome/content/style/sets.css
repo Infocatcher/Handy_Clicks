@@ -117,7 +117,11 @@ menuitem[command="hc-sets-cmd-disable"][disabled="true"] image {
 }
 
 #hc-sets-tree-importOverrides, #hc-sets-tree-importNew {
-	text-align: end;
+	/* Firefox 3.6+: text-align: end; */
+	text-align: right;
+}
+:root[chromedir="rtl"] #hc-sets-tree-importOverrides, #hc-sets-tree-importNew {
+	text-align: left;
 }
 #hc-sets-tree-importOverridesValue, #hc-sets-tree-importNewValue {
 	text-align: center;
@@ -140,7 +144,7 @@ menuitem[command="hc-sets-cmd-disable"][disabled="true"] image {
 	margin: 0;
 	border: none;
 }
-#hc-sets-tree-searchField[hc_isRegExp="true"], #hc-sets-tree-searchField[hc_isRegExp="true"] * {
+#hc-sets-tree-searchField[hc_isValidRegExp="true"], #hc-sets-tree-searchField[hc_isValidRegExp="true"] * {
 	background-color: white;
 	color: blue !important;
 }
