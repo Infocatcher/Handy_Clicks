@@ -292,7 +292,7 @@ var handyClicksFuncs = {
 				this.ut.getLocalized("voidLinkWithHandler").replace(/\s*%h/, this.getItemHandlers(item))
 					+ (load ? "" : this.ut.getLocalized("clickForOpen")),
 				this.ut.getLocalized("title"),
-				load && _f
+				!load && _f
 			);
 		if(load)
 			_f();
@@ -348,7 +348,7 @@ var handyClicksFuncs = {
 				this.ut.getLocalized("javaScriptLink")
 					+ (load ? "" : this.ut.getLocalized("clickForOpen")),
 				this.ut.getLocalized("title"),
-				load && _f
+				!load && _f
 			);
 		if(load)
 			_f();

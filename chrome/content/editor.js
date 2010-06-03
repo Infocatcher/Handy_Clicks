@@ -262,7 +262,7 @@ var handyClicksEditor = {
 		so = this.ut.getOwnProperty(so, "delayedAction") || {};
 		this.initFuncEditor(so, this.delayId);
 
-		var butt = /(?:^|,)button=(\d)(?:,|$)/.test(this.shortcut) && RegExp.$1 || "0";
+		var butt = /(?:^|,)button=([0-2])(?:,|$)/.test(this.shortcut) && RegExp.$1 || "0";
 		this.$("hc-editor-button").value = butt;
 		this.$("hc-editor-events-command").disabled = butt != "0";
 		["ctrl", "shift", "alt", "meta"].forEach(

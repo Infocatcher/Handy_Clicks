@@ -122,6 +122,11 @@ var handyClicksUtils = {
 		return this.promptsSvc.confirm(window, ttl, txt);
 	},
 
+	bind: function(func, context, args) {
+		return function() {
+			return func.apply(context, args || arguments);
+		};
+	},
 	timeout: function(func, context, args, delay) {
 		return setTimeout(
 			function(func, context, args) {
@@ -517,7 +522,8 @@ var handyClicksUtils = {
 		this.timeout(
 			function(icon, popup) {
 				popup.setAttribute("handyclicks_iconSize", icon.width);
-				this._devMode && this._log("Icon size: " + icon.width + " x " + icon.height);
+				if(this._devMode && icon.width != 16)
+					this._log("Icon size: " + icon.width + " x " + icon.height);
 			},
 			this, [icon, popup], 0
 		);
