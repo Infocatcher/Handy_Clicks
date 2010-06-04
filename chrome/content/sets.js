@@ -621,7 +621,7 @@ var handyClicksSets = {
 						delete tItemsArr[i];
 			}
 		);
-		return this.ut.toArray(tItemsArr); // Remove deleted items
+		return tItemsArr.filter(function() { return true; }) // Remove deleted items
 	},
 	get selectedItemsWithCustomTypes() {
 		return this.selectedItems.filter(
@@ -1222,7 +1222,8 @@ var handyClicksSets = {
 			this._res.push(r);
 		},
 		finish: function() {
-			this._res.sort(function(a, b) { return a > b; }); // Sort as numbers
+			//this._res.sort(function(a, b) { return a > b; }); // Sort as numbers
+			this.__parent.ut.sortAsNumbers(this._res);
 		},
 		get count() {
 			return this._res.length;
@@ -1988,7 +1989,7 @@ var handyClicksSets = {
 			this.ut.getLocalized("backupCreated").replace("%f", bFile.leafName)
 		);
 	},
-	removeBackup: function(mi) {
+	removeBackup: function(mi, dontAsk) {
 		var fName = mi.getAttribute("hc_fileName");
 		if(!fName)
 			return false;
@@ -1999,7 +2000,7 @@ var handyClicksSets = {
 			return false;
 		}
 
-		if(this.pu.pref("sets.removeBackupConfirm")) {
+		if(!dontAsk && this.pu.pref("sets.removeBackupConfirm")) {
 			this.ut.closeMenus(mi);
 			this.ut.fixMinimized();
 			var ask = { value: false };
@@ -2030,7 +2031,7 @@ var handyClicksSets = {
 			this.ut.closeMenus(mi);
 		}
 		else if(butt == 2)
-			this.removeBackup(mi);
+			this.removeBackup(mi, e.shiftKey);
 	},
 	get ubPopup() {
 		return this.$("hc-sets-tree-restoreFromBackupPopup");
@@ -2083,13 +2084,10 @@ var handyClicksSets = {
 		var isEmpty = _fTerms.length == 0;
 		var ubCount = _ubTerms.length;
 
-		var comparator = function(a, b) {
-			return a > b; // sort as numbers
-		};
-
 		var bytes = this.ut.getLocalized("bytes");
 		var testBackupStatus = this.ut.storage("testBackupCreated") ? "thisSession" : "afterCrash";
-		_fTerms.sort(comparator).reverse().forEach(
+
+		this.ut.sortAsNumbers(_fTerms).reverse().forEach(
 			function(time) {
 				var file = _files[time].shift();
 				var fTime = new Date(time).toLocaleString();
@@ -2113,7 +2111,7 @@ var handyClicksSets = {
 		);
 		_fTerms = _files = null;
 
-		popup.__userBackups = _ubTerms.sort(comparator).reverse().map(function(time) {
+		popup.__userBackups = this.ut.sortAsNumbers(_ubTerms).reverse().map(function(time) {
 			return _ubFiles[time].shift(); // newest ... oldest
 		});
 		_ubTerms = _ubFiles = null;

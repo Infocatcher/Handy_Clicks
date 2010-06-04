@@ -6,7 +6,7 @@
 
 		<em:id>handyclicks@infocatcher</em:id>
 		<em:name>Handy Clicks</em:name>
-		<em:version>0.1.1.0pre</em:version>
+		<em:version>0.1.1.0</em:version>
 		<em:description>More clicks options</em:description>
 		<em:creator>Infocatcher</em:creator>
 		<em:contributor>Anton Glazatov (some editor features)</em:contributor>
@@ -31,7 +31,7 @@
 		<em:targetApplication> <!-- SeaMonkey -->
 			<Description>
 				<em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
-				<em:minVersion>2.0b1</em:minVersion>
+				<em:minVersion>2.0</em:minVersion>
 				<em:maxVersion>2.1a2pre</em:maxVersion>
 			</Description>
 		</em:targetApplication>

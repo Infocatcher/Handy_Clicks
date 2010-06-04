@@ -553,19 +553,25 @@ var handyClicksUtils = {
 	},
 
 	toArray: function(a) {
-		return typeof a.length == "number" && a.length >= 0
+		return a && typeof a.length == "number" && a.length >= 0
 			? Array.filter(a, function() { return true; })
 			: [a];
+	},
+	sortAsNumbers: function(arr) {
+		return arr.sort(function(a, b) {
+			if(a > b)
+				return 1;
+			if(a == b)
+				return 0;
+			return -1;
+		});
 	},
 
 	objEquals: function(o1) {
 		var s = this.getSource(o1);
-		return Array.slice(arguments, 1).every(
-			function(o) {
-				return this.getSource(o) === s;
-			},
-			this
-		);
+		return Array.slice(arguments, 1).every(function(o) {
+			return this.getSource(o) === s;
+		}, this);
 	},
 	getSource: function(o) {
 		return this.canHasProps(o) && !("toSource" in o) // !o.__proto__
