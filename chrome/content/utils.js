@@ -822,21 +822,18 @@ var handyClicksExtensionsHelper = {
 			// Hack for Firefox 3.7a5pre+
 			// Following code is asynchronous and take some time... so, starts them as soon possible
 			this.ut.storage("extensionsPending", true);
-			var _this = this;
-			Application.getExtensions(
-				function(exts) {
-					_this.ut.storage("extensions", exts);
-					_this.ut.storage("extensionsPending", false);
-					var scheduledTasks = _this.ut.storage("extensionsScheduledTasks");
-					if(scheduledTasks) {
-						//_this.ut._log("Run tasks: " + scheduledTasks.length);
-						scheduledTasks.forEach(function(task) {
-							task.func.apply(task.context, task.args);
-						});
-						_this.ut.storage("extensionsScheduledTasks", null);
-					}
+			Application.getExtensions(this.ut.bind(function(exts) {
+				this.ut.storage("extensions", exts);
+				this.ut.storage("extensionsPending", false);
+				var scheduledTasks = this.ut.storage("extensionsScheduledTasks");
+				if(scheduledTasks) {
+					//this.ut._log("Run tasks: " + scheduledTasks.length);
+					scheduledTasks.forEach(function(task) {
+						task.func.apply(task.context, task.args);
+					});
+					this.ut.storage("extensionsScheduledTasks", null);
 				}
-			);
+			}, this));
 		}
 	},
 	get exts() {

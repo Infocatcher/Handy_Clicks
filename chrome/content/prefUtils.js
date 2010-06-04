@@ -25,7 +25,7 @@ var handyClicksPrefUtils = {
 	},
 	get prefsMigration() { // function(allowSave, vers)
 		var temp = {};
-		this.rs.loadSubScript("chrome://handyclicks/content/prefsConverter.js", temp);
+		this.rs.loadSubScript("chrome://handyclicks/content/convPrefs.js", temp);
 		return temp.prefsMigration;
 	},
 	destroy: function(reloadFlag) {

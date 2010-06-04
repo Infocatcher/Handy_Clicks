@@ -196,7 +196,7 @@ var handyClicksPrefSvc = {
 	},
 	get setsMigration() { // function(allowSave, vers)
 		var temp = {};
-		this.rs.loadSubScript("chrome://handyclicks/content/setsConverter.js", temp);
+		this.rs.loadSubScript("chrome://handyclicks/content/convSets.js", temp);
 		return temp.setsMigration;
 	},
 
@@ -646,7 +646,7 @@ var handyClicksPrefSvc = {
 		sh = sh
 			.replace(/[a-z]+=(?:false|\d),?/g, "")
 			.replace(/,+$/g, "")
-			.replace(/([a-z]+)=true/g, function($0, $1) { return _this.keys[$1]; })
+			.replace(/([a-z]+)=true/g, function($0, $1) { return _this.keys[$1] || $1; })
 			.replace(/,+/g, this.keys.sep);
 		return sh || (_short ? "" : this.ut.getLocalized("none"));
 	},

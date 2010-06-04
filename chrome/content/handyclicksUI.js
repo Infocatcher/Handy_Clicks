@@ -2,46 +2,27 @@ var handyClicksUI = {
 	blinkAttr: "__handyclicks__blink__",
 	blinkOpacity: "0.1",
 
+	uiVersion: 1,
+
 	// Initialization:
 	init: function(reloadFlag) {
-		const v = this.pu.pref("uiVersion") || 0;
-		if(v < 1) { // Added 2009-11-13
-			// New id for toolbarbutton
-			if(!this.$(this.toolbarButtonId)) {
-				var tbm = /(?:^|,)handyClicks-toggleStatus-tbButton(?:,|$)/;
-				Array.some(
-					document.getElementsByTagName("toolbar"),
-					function(tb) {
-						var cs = tb.getAttribute("currentset");
-						if(!cs || !tbm.test(cs))
-							return false;
-						// Add toolbarbutton manually:
-						var newItem = this.paletteButton;
-						if(newItem)
-							tb.insertBefore(newItem, /,*([^,]+)/.test(RegExp.rightContext) && this.e(RegExp.$1) || null);
-						// Fix "currentset" of toolbar:
-						cs = cs.replace(tbm, "," + this.toolbarButtonId + ",")
-							.replace(/^,+|,+$/g, "")
-							.replace(/,+/g, ",");
-						tb.setAttribute("currentset", cs);
-						tb.currentSet = cs;
-						document.persist(tb.id, "currentset");
-						try { BrowserToolboxCustomizeDone(true); }
-						catch(e) {}
-						return true;
-					},
-					this
-				);
-			}
-			this.pu.pref("uiVersion", 1).savePrefFile();
-		}
+		var vers = this.pu.pref("uiVersion") || 0;
+		if(vers < this.uiVersion)
+			this.uiMigration(vers);
 
 		this.setStatus();
-		this.pu.oSvc.addObserver(this.updUI, this);
-		this.registerHotkeys();
 		this.showHideControls();
+		this.loadBlinkStyle();
 		reloadFlag && this.setEditModeStatus();
-
+		this.registerHotkeys();
+		this.pu.oSvc.addObserver(this.updUI, this);
+	},
+	get uiMigration() { // function(vers)
+		var temp = {};
+		this.rs.loadSubScript("chrome://handyclicks/content/convUI.js", temp);
+		return temp.uiMigration;
+	},
+	loadBlinkStyle: function() {
 		// Styles for blinkNode() function:
 		var css = "data:text/css," + encodeURIComponent(
 			<><![CDATA[
@@ -55,7 +36,7 @@ var handyClicksUI = {
 		);
 		var sss = Components.classes["@mozilla.org/content/style-sheet-service;1"]
 			.getService(Components.interfaces.nsIStyleSheetService);
-		var uri = makeURI(css);
+		var uri = makeURI(css); // chrome://global/content/contentAreaUtils.js
 		if(!sss.sheetRegistered(uri, sss.AGENT_SHEET))
 			sss.loadAndRegisterSheet(uri, sss.AGENT_SHEET);
 	},
@@ -112,7 +93,11 @@ var handyClicksUI = {
 		this.hc.enabled = en;
 		if(!fromKey || this.isControlsVisible)
 			return;
-		this.ut.notifyInWindowCorner(this.ut.getLocalized(en ? "enabled" : "disabled"), null, null, null, en);
+		this.ut.notifyInWindowCorner(
+			this.ut.getLocalized(en ? "enabled" : "disabled"), null,
+			this.ut.bind(this.wu.openSettings, this.wu), null,
+			en
+		);
 	},
 
 	buildSettingsPopup: function(e) {
@@ -211,11 +196,10 @@ var handyClicksUI = {
 		var nem = this.pu.pref("notifyEditMode");
 		if(!(nem == 1 && this._temFromKey && !this.isControlsVisible || nem == 2))
 			return;
-		var _this = this;
 		this.ut.notifyInWindowCorner(
 			this.ut.getLocalized("editModeNote").replace("%k", exitKey),
 			this.ut.getLocalized("editModeTitle"),
-			function() { _this.hc.editMode = false; }
+			this.ut.bind(function() { this.hc.editMode = false; }, this)
 		);
 	},
 	updUI: function(pName) {
