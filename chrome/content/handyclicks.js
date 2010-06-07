@@ -51,7 +51,7 @@ var handyClicks = {
 			case "keypress":
 				if(e.keyCode != e.DOM_VK_ESCAPE)
 					return;
-				this.stopEvent(e);
+				this.ut.stopEvent(e);
 				this.editMode = false; // this removes event listener
 		}
 	},
@@ -107,7 +107,7 @@ var handyClicks = {
 		// undefined - smart
 		// false     - always stop
 		if(amd === false || em)
-			this.stopEvent(e);
+			this.ut.stopEvent(e);
 		else if(amd === undefined && !this.ut.isChromeWin(e.view.top)) {
 			// Prevent page handlers, but don't stop Mouse Gestures
 			var cWin = e.view.top === content ? gBrowser.mCurrentBrowser : e.view.top;
@@ -117,7 +117,7 @@ var handyClicks = {
 				function _md(e) {
 					cWin.removeEventListener("mousedown", _md, true);
 					if(_this._enabled)
-						_this.stopEvent(e);
+						_this.ut.stopEvent(e);
 				},
 				true
 			);
@@ -203,7 +203,7 @@ var handyClicks = {
 	// Special handlers:
 	contextmenuHandler: function(e) {
 		if(this.enabled && this.flags.stopContextMenu)
-			this.stopEvent(e);
+			this.ut.stopEvent(e);
 	},
 	mousemoveHandler: function(e) {
 		this.saveXY(e);
@@ -269,13 +269,13 @@ var handyClicks = {
 					function _mu(e) {
 						cWin.removeEventListener("mouseup", _mu, true);
 						if(_this._enabled)
-							_this.stopEvent(e);
+							_this.ut.stopEvent(e);
 					},
 					true
 				);
 				return;
 			}
-			this.stopEvent(e);
+			this.ut.stopEvent(e);
 		}
 	},
 	skipFlags: function() {
@@ -683,11 +683,6 @@ var handyClicks = {
 	},
 
 	// Utils:
-	stopEvent: function(e) {
-		//this.ut._log(e.type + " -> stopEvent()");
-		e.preventDefault();
-		e.stopPropagation();
-	},
 	cloneObj: function(obj) {
 		obj = obj || {};
 		var clone = {};
@@ -862,7 +857,7 @@ var handyClicks = {
 		this.flags.runned = true;
 		this.flags.stopContextMenu = true;
 
-		this.stopEvent(e); // this stop "contextmenu" event in Windows
+		this.ut.stopEvent(e); // this stop "contextmenu" event in Windows
 
 		if(this.editMode) {
 			this.editMode = false;

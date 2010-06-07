@@ -206,6 +206,9 @@ button[type="menu"] dropmarker {
 	-moz-margin-end: -24px;
 	-moz-margin-start: 8px; /* 24 - 16 */
 }
+#hc-sets-externalEditorIcon[hc_validPath="true"] {
+	cursor: pointer;
+}
 #hc-sets-externalEditorPath {
 	margin: 2px 4px;
 	-moz-padding-start: 22px;

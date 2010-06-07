@@ -1523,21 +1523,33 @@ var handyClicksSets = {
 			this.resetPref(pName);
 		}, this);
 	},
+	get ee() {
+		return this.$("hc-sets-externalEditorPath");
+	},
+	get eeFile() {
+		return this.ut.getLocalFile(this.ee.value);
+	},
 	selectExternalEditor: function() {
+		var ee = this.ee;
 		var fp = Components.classes["@mozilla.org/filepicker;1"]
 			.createInstance(Components.interfaces.nsIFilePicker);
 		fp.appendFilters(fp.filterApps);
 		fp.appendFilters(fp.filterAll);
-		//fp.displayDirectory = this.ut.getFileByAlias("ProgF");
+		var curDir = this.eeFile;
+		if(curDir && curDir.exists()) {
+			if(!curDir.isDirectory())
+				curDir = this.ut.getFileParent(curDir);
+			if(curDir)
+				fp.displayDirectory = curDir;
+		}
 		fp.init(window, this.ut.getLocalized("selectEditor"), fp.modeOpen);
 		if(fp.show() != fp.returnOK)
 			return;
-		var ee = this.$("hc-sets-externalEditorPath");
 		ee.value = fp.file.path;
 		this.fireChange(ee);
 	},
 	makeRelativePath: function() {
-		var ee = this.$("hc-sets-externalEditorPath");
+		var ee = this.ee;
 		var path = ee.value.replace(/^[a-z]:\\/, function(s) { return s.toUpperCase(); });
 
 		var resPath, resLevel, resLength;
@@ -1571,15 +1583,15 @@ var handyClicksSets = {
 		this.fireChange(ee);
 	},
 	makeNormalPath: function() {
-		var ee = this.$("hc-sets-externalEditorPath");
-		var file = this.ut.getLocalFile(ee.value);
-		if(file) {
-			ee.value = file.path;
-			this.fireChange(ee);
-		}
+		var file = this.eeFile;
+		if(!file)
+			return;
+		var ee = this.ee;
+		ee.value = file.path;
+		this.fireChange(ee);
 	},
 	convertPath: function() {
-		if(/^%[^%]+%/.test(this.$("hc-sets-externalEditorPath").value))
+		if(/^%[^%]+%/.test(this.ee.value))
 			this.makeNormalPath();
 		else
 			this.makeRelativePath();
@@ -1589,24 +1601,59 @@ var handyClicksSets = {
 			this.ut.timeout(_iee, this, [], 5);
 			return;
 		}
-		var ee = this.$("hc-sets-externalEditorPath");
-		var path = ee.value;
-		var file = this.ut.getLocalFile(path);
+		var eeFile = this.eeFile;
 		var img = this.$("hc-sets-externalEditorIcon");
-		img.src = file
-			? "moz-icon:file://" + file.path.replace(/\\/g, "/") + "?size=16"
-			: "";
+		if(eeFile && eeFile.exists()) {
+			img.src = "moz-icon:file://" + eeFile.path.replace(/\\/g, "/") + "?size=16";
+			img.setAttribute("hc_validPath", "true");
+		}
+		else {
+			img.src = "";
+			img.setAttribute("hc_validPath", "false");
+		}
 		var butt = this.$("hc-sets-externalEditorButton");
+		var isRelative = /^%[^%]+%/.test(this.ee.value);
 		butt.setAttribute(
 			"label",
-			butt.getAttribute(/^%[^%]+%/.test(path) ? "hc_labelMakeAbsolute" : "hc_labelMakeRelative")
+			butt.getAttribute(isRelative ? "hc_labelMakeAbsolute" : "hc_labelMakeRelative")
 		);
-		if(file instanceof Components.interfaces.nsILocalFileWin) try {
-			var name = file.getVersionInfoField("ProductName")    || "";
-			var vers = file.getVersionInfoField("ProductVersion") || "";
-			img.tooltipText = name + (name && vers ? " " + vers : vers);
+		img.removeAttribute("tooltiptext");
+		var tt = "";
+		if(eeFile instanceof Components.interfaces.nsILocalFileWin) try {
+			var name = eeFile.getVersionInfoField("ProductName")    || "";
+			var vers = eeFile.getVersionInfoField("ProductVersion") || "";
+			tt = name + (name && vers ? " " + vers : vers);
 		}
 		catch(e) {
+		}
+		if(isRelative)
+			tt += (tt ? "\n" : "") + eeFile.path;
+		this.ut.attribute(img, "tooltiptext", tt);
+	},
+	showExternalEditorFile: function() {
+		var eeFile = this.eeFile;
+		if(eeFile && eeFile.exists()) {
+			this.reveal(eeFile);
+			return;
+		}
+		this.ee.focus();
+	},
+	externalEditorEvent: function(e) {
+		switch(e.type) {
+			case "click":
+				if(e.button == 0)
+					this.showExternalEditorFile();
+			break;
+			case "keypress":
+				if(e.keyCode != e.DOM_VK_RETURN)
+					break;
+				this.ut.stopEvent(e);
+				if(!this.ut.hasModifier(e))
+					this.selectExternalEditor();
+				else if(e.shiftKey)
+					this.convertPath();
+				else
+					this.showExternalEditorFile();
 		}
 	},
 	fireChange: function(node) {

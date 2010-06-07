@@ -261,8 +261,9 @@
 			<caption label="&hc.sets.externalEditor; (Ctrl+Shift+E)" />
 			<hbox align="center">
 				<label value="&hc.sets.externalEditorPath;" tooltiptext="&hc.sets.externalEditorPathNote;" control="hc-sets-externalEditorPath" />
-				<image id="hc-sets-externalEditorIcon" onclick="this.nextSibling.focus();" />
+				<image id="hc-sets-externalEditorIcon" onclick="handyClicksSets.externalEditorEvent(event);" />
 				<textbox id="hc-sets-externalEditorPath" preference="externalEditorPath" flex="1"
+					onkeypress="handyClicksSets.externalEditorEvent(event);"
 					oninput="handyClicksSets.initExternalEditor(true);"
 					onchange="handyClicksSets.initExternalEditor();"
 					hc_ondrop="handyClicksSets.initExternalEditor();"

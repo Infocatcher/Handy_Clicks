@@ -579,6 +579,10 @@ var handyClicksUtils = {
 			: uneval(o);
 	},
 
+	stopEvent: function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+	},
 	attribute: function(node, attr, val, allowEmpty) {
 		if(val || allowEmpty && val === "")
 			node.setAttribute(attr, val);
