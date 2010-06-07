@@ -78,7 +78,8 @@ tree[hc_colored="true"] treechildren::-moz-tree-row(hover) {
 	border: 1px dotted black;
 }
 treechildren::-moz-tree-row(hover) {
-	border: 1px dotted -moz-use-text-color;
+	/*border: 1px dotted -moz-use-text-color;*/
+	border: 1px dotted currentColor;
 }
 treechildren::-moz-tree-cell-text(hc_edited) {
 	font-weight: bold;

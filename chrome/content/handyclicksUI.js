@@ -17,6 +17,10 @@ var handyClicksUI = {
 		this.registerHotkeys();
 		this.pu.oSvc.addObserver(this.updUI, this);
 	},
+	destroy: function(reloadFlag) {
+		clearTimeout(this._restoreIconTimeout);
+		clearTimeout(this._blinkNodeTimeout);
+	},
 	get uiMigration() { // function(vers)
 		var temp = {};
 		this.rs.loadSubScript("chrome://handyclicks/content/convUI.js", temp);
@@ -41,6 +45,7 @@ var handyClicksUI = {
 			sss.loadAndRegisterSheet(uri, sss.AGENT_SHEET);
 	},
 
+	_blinkNodeTimeout: null,
 	blinkNode: function(time, node) {
 		node = node || this.hc.item || this.hc.origItem;
 		if(!node)
@@ -55,7 +60,7 @@ var handyClicksUI = {
 					var origStyle = node.hasAttribute("style") && node.getAttribute("style");
 					node.style.setProperty("opacity", this.blinkOpacity, "important");
 				}
-				this.ut.timeout(
+				this._blinkNodeTimeout = this.ut.timeout(
 					function(node, attr, oldFx, origStyle) {
 						node.removeAttributeNS("urn:handyclicks:namespace", attr);
 						oldFx && this.ut.attribute(node, "style", origStyle, true);
@@ -220,13 +225,13 @@ var handyClicksUI = {
 		});
 		this.$("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
 	},
-	_restoreDelay: 250,
-	_restoreTimeout: null,
+	_restoreIconDelay: 250,
+	_restoreIconTimeout: null,
 	_hasIcon: false,
 	setIcon: function(e) {
 		if(!this.pu.pref("ui.showMouseButton"))
 			return;
-		clearTimeout(this._restoreTimeout);
+		clearTimeout(this._restoreIconTimeout);
 		var icon = e ? String(e.button || 0) : null;
 		this._hasIcon = !!icon;
 		this.setControls(function(elt) {
@@ -236,12 +241,12 @@ var handyClicksUI = {
 	restoreIcon: function() {
 		if(!this._hasIcon)
 			return;
-		clearTimeout(this._restoreTimeout);
-		this._restoreTimeout = this.ut.timeout(
+		clearTimeout(this._restoreIconTimeout);
+		this._restoreIconTimeout = this.ut.timeout(
 			function() {
 				this.setIcon();
 			},
-			this, [], this._restoreDelay
+			this, [], this._restoreIconDelay
 		);
 	},
 	showHideControls: function() {
