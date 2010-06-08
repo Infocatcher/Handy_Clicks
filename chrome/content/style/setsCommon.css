@@ -66,8 +66,8 @@ button .button-icon {
 	/* We can see strange things on Firefox 1.5 and 2.0 without them */
 	opacity: 0.999;
 }
-button.hc-iconic .button-icon {
-	-moz-margin-end: 2px;
+button.hc-iconic .button-text {
+	-moz-margin-start: 2px !important;
 }
 button.hc-iconic[disabled="true"] .button-icon,
 menuitem.menuitem-iconic[disabled="true"] image {

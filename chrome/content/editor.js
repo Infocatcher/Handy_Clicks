@@ -137,10 +137,7 @@ var handyClicksEditor = {
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
 	setsReloading: function(notifyReason) {
-		if(notifyReason & this.ps.SETS_BEFORE_RELOAD) {
-
-		}
-		else if(notifyReason & this.ps.SETS_RELOADED) {
+		if(notifyReason & this.ps.SETS_RELOADED) {
 			this.appendTypesList();
 			this.dataSaved();
 			this.setDialogButtons();
@@ -1112,7 +1109,8 @@ var handyClicksEditor = {
 
 		//this.applyDisabled = false;
 		//this.applyButton.disabled = false;
-		this.setDialogButtons(); //~ todo: disable delete button, if nothing to delete
+		this.shortcutSaved();
+		this.setDialogButtons(); //~ todo: disable delete button, if nothing to delete ?
 	},
 	copyShortcut: function(isDelayed, dontCopy) {
 		if(isDelayed === undefined)
@@ -1237,6 +1235,7 @@ var handyClicksEditor = {
 
 		//this.applyDisabled = false;
 		//this.applyButton.disabled = false;
+		this.typeSaved();
 		this.setDialogButtons();
 	},
 	copyCustomType: function() {

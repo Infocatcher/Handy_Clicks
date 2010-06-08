@@ -401,7 +401,10 @@ var handyClicks = {
 				_itln = itln;
 			}
 			if(
-				(_itln == "img" || _itln == "image") && _it.hasAttribute("src")
+				(
+					(_itln == "img" || _itln == "image") && _it.hasAttribute("src")
+					|| _it instanceof HTMLCanvasElement
+				)
 				&& !this.ut.isChromeDoc(_it.ownerDocument) // Not for interface...
 			) {
 				this.itemType = "img";

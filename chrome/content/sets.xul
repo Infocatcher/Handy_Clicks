@@ -78,11 +78,11 @@
 						<menuitem value="4" type="radio" label="&hc.sets.drawModeInverseCompact;" />
 						<menuitem value="5" type="radio" label="&hc.sets.drawModeInverseInline;" />
 						<menuseparator />
-						<menuitem id="hc-sets-tree-toggleExpandDa" type="checkbox" hc_pref="sets.treeExpandDelayedAction" label="&hc.sets.expandDa;" />
+						<menuitem type="checkbox" hc_pref="sets.treeExpandDelayedAction" label="&hc.sets.expandDa;" />
 						<menuitem id="hc-sets-tree-toggleColored" type="checkbox" label="&hc.sets.highlightTree;" oncommand="handyClicksSets.toggleColored();" />
-						<menuitem id="hc-sets-tree-toggleLocalizeArgs" type="checkbox" hc_pref="sets.localizeArguments" label="&hc.sets.localizeArgs;" />
+						<menuitem type="checkbox" hc_pref="sets.localizeArguments" label="&hc.sets.localizeArgs;" />
 						<menuseparator />
-						<menuitem id="hc-sets-tree-toggleCloseViewMenu" type="checkbox" hc_pref="sets.closeTreeViewMenu" label="&hc.sets.closeThisMenu;" />
+						<menuitem type="checkbox" hc_pref="sets.closeTreeViewMenu" label="&hc.sets.closeThisMenu;" />
 					</menupopup>
 				</button>
 			</hbox>
@@ -135,8 +135,7 @@
 						</rows>
 					</grid>
 					<button id="hc-sets-tree-buttonImportCancel" class="hc-iconic" oncommand="handyClicksSets.importDone(false);"
-						accesskey="&hc.sets.importCancelAccesskey;"
-						hc_labelFull="&hc.sets.importCancel;" hc_labelPartial="&hc.sets.importIncrementCancel;" />
+						label="&hc.sets.importCancel;" accesskey="&hc.sets.importCancelAccesskey;" />
 				</hbox>
 				<hbox id="hc-sets-tree-editPanel" pack="center">
 					<button id="hc-sets-tree-buttonAdd" class="hc-iconic" label="&hc.sets.cmdAdd;" onclick="handyClicksSets.addItems(event);" oncommand="handyClicksSets.addItems(event);" />
@@ -450,7 +449,7 @@
 			<menuitem oncommand="handyClicksSets.importPrefs();" label="&hc.sets.importPrefs;" />
 			<menuitem oncommand="handyClicksSets.exportPrefs();" label="&hc.sets.exportPrefs;" />
 		</menupopup>
-		<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical">
+		<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical" onpopupshowing="return !document.tooltipNode.disabled;">
 			<description class="header">&hc.sets.resetWarnMsgsTip;</description>
 			<separator id="hc-sets-warnMsgsPrefs-tooltipSep" class="groove" />
 		</tooltip>

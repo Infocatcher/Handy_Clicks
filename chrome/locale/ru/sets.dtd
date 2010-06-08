@@ -78,7 +78,6 @@
 <!ENTITY hc.sets.importIncrementOk "Завершить инкрементный импорт">
 <!ENTITY hc.sets.importOkAccesskey "З">
 <!ENTITY hc.sets.importCancel "Отменить импорт">
-<!ENTITY hc.sets.importIncrementCancel "Отменить инкрементный импорт">
 <!ENTITY hc.sets.importCancelAccesskey "О">
 
 <!ENTITY hc.sets.importOverrides "Перезаписываемых:">

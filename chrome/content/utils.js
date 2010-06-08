@@ -9,11 +9,8 @@ var handyClicksUtils = {
 	},
 	_log: function() {
 		this.consoleSvc.logStringMessage(
-			this.errPrefix +
-			Array.join(
-				Array.map(arguments, this.safeToString), // Convert all arguments to strings
-				"\n"
-			)
+			this.errPrefix
+			+ Array.map(arguments, this.safeToString).join("\n")
 		);
 	},
 	_err: function(e, fileName, lineNumber, isWarning) {

@@ -78,7 +78,6 @@
 <!ENTITY hc.sets.importIncrementOk "Incremental import done">
 <!ENTITY hc.sets.importOkAccesskey "d">
 <!ENTITY hc.sets.importCancel "Cancel import">
-<!ENTITY hc.sets.importIncrementCancel "Cancel incremental import">
 <!ENTITY hc.sets.importCancelAccesskey "C">
 
 <!ENTITY hc.sets.importOverrides "Overrides:">
