@@ -54,6 +54,9 @@ var handyClicksSets = {
 		var prefsButt = de.getButton("extra2");
 		prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
 		prefsButt.setAttribute("type", "menu");
+		prefsButt.className += " hc-iconic hc-preferences";
+
+		this.applyButton.className += " hc-iconic hc-apply";
 
 		if(this.ut.fxVersion >= 3.6) // Fix wrong restoring
 			window.resizeTo(Number(de.width), Number(de.height));

@@ -88,6 +88,8 @@ var handyClicksEditor = {
 		fb.style.marginBottom = "-" + fb.boxObject.height + "px";
 		document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css
 
+		this.applyButton.className += " hc-iconic hc-apply";
+
 		window.addEventListener("focus", this, true);
 	},
 	destroy: function(reloadFlag) {
@@ -104,19 +106,21 @@ var handyClicksEditor = {
 		var bTest = this.ut.parseFromXML(
 			<button xmlns={this.ut.XULNS}
 				id="hc-editor-buttonTest"
-				class="dialog-button"
+				class="dialog-button hc-iconic"
 				command="hc-editor-cmd-test"
 			/>
 		);
 		var bUndo = this.ut.parseFromXML(
 			<button xmlns={this.ut.XULNS}
 				id="hc-editor-buttonUndo"
-				class="dialog-button"
+				class="dialog-button hc-iconic"
 				command="hc-editor-cmd-undo"
 				disabled="true"
 			/>
 		);
 		var bDel = document.documentElement.getButton("extra2");
+		bDel.id = "hc-editor-buttonDelete";
+		bDel.className += " hc-iconic";
 		var insPoint = bDel.nextSibling, parent = bDel.parentNode;
 		parent.insertBefore(bTest, insPoint);
 		parent.insertBefore(bUndo, insPoint);
@@ -130,7 +134,7 @@ var handyClicksEditor = {
 		this.shortcut = wa[2];
 		this.type = wa[3];
 		this.isDelayed = wa[4];
-		this.buttonApply = document.documentElement.getButton("extra1");
+		this.applyButton = document.documentElement.getButton("extra1");
 	},
 	setsReloading: function(notifyReason) {
 		if(notifyReason & this.ps.SETS_BEFORE_RELOAD) {
@@ -143,7 +147,7 @@ var handyClicksEditor = {
 		}
 	},
 	set applyDisabled(dis) {
-		this.buttonApply.disabled = dis;
+		this.applyButton.disabled = dis;
 		this.$("hc-editor-cmd-test").setAttribute("disabled", dis);
 	},
 	selectTargetTab: function(isDelayed, src, line) {
@@ -385,7 +389,7 @@ var handyClicksEditor = {
 		title = " [" + title + (type ? " + " + type : "") + (ct ? " | " + ct : "") + "]";
 		title = document.title.replace(/\s+\[.+\]\*?$/, "") + title;
 		//document.title = document.title.replace(/\s+\[.+\]\*?$/, "") + title + (this.ps.otherSrc ? "*" : "");
-		//document.title = this.su.createTitle(title, !this.buttonApply.disabled, this.ps.otherSrc);
+		//document.title = this.su.createTitle(title, !this.applyButton.disabled, this.ps.otherSrc);
 		document.title = title;
 	},
 	initShortcutEditor: function() {
@@ -932,7 +936,9 @@ var handyClicksEditor = {
 	},
 	undoTestSettings: function(reloadAll) {
 		this.testMode = false;
-		this.ps.reloadSettings(reloadAll);
+		//this.ps.reloadSettings(reloadAll);
+		this.ps.testSettings(false);
+		this.ps.loadSettings();
 		if(reloadAll) {
 			this.initUI(true);
 			this.$("hc-editor-cmd-undo").setAttribute("disabled", "true");
@@ -1003,7 +1009,7 @@ var handyClicksEditor = {
 
 		this.testMode = testFlag; //~ todo: test!
 		if(testFlag)
-			this.ps.testSettings();
+			this.ps.testSettings(true);
 		else {
 			if(this.ps.otherSrc)
 				this.ps.reloadSettings(applyFlag);
@@ -1105,7 +1111,8 @@ var handyClicksEditor = {
 		this.highlightUsedTypes();
 
 		//this.applyDisabled = false;
-		this.buttonApply.disabled = false;
+		//this.applyButton.disabled = false;
+		this.setDialogButtons(); //~ todo: disable delete button, if nothing to delete
 	},
 	copyShortcut: function(isDelayed, dontCopy) {
 		if(isDelayed === undefined)
@@ -1184,7 +1191,7 @@ var handyClicksEditor = {
 
 		this.testMode = testFlag; //~ todo: test!
 		if(testFlag)
-			this.ps.testSettings();
+			this.ps.testSettings(true);
 		else {
 			if(this.ps.otherSrc)
 				this.ps.reloadSettings(applyFlag);
@@ -1229,7 +1236,8 @@ var handyClicksEditor = {
 		this.appendTypesList();
 
 		//this.applyDisabled = false;
-		this.buttonApply.disabled = false;
+		//this.applyButton.disabled = false;
+		this.setDialogButtons();
 	},
 	copyCustomType: function() {
 		this.ut.storage("type", this.getTypeObj());

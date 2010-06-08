@@ -114,7 +114,7 @@
 			</tree>
 			<vbox id="hc-sets-tree-buttons">
 				<hbox id="hc-sets-tree-partialImportPanel" hidden="true" pack="center" align="center">
-					<button id="hc-sets-tree-buttonImportOk" oncommand="handyClicksSets.importDone(true);"
+					<button id="hc-sets-tree-buttonImportOk" class="hc-iconic" oncommand="handyClicksSets.importDone(true);"
 						accesskey="&hc.sets.importOkAccesskey;"
 						hc_labelFull="&hc.sets.importOk;" hc_labelPartial="&hc.sets.importIncrementOk;" />
 					<grid id="hc-sets-tree-importStatistics" tooltiptext="&hc.sets.importTip;"
@@ -134,16 +134,16 @@
 							</row>
 						</rows>
 					</grid>
-					<button id="hc-sets-tree-buttonImportCancel" oncommand="handyClicksSets.importDone(false);"
+					<button id="hc-sets-tree-buttonImportCancel" class="hc-iconic" oncommand="handyClicksSets.importDone(false);"
 						accesskey="&hc.sets.importCancelAccesskey;"
 						hc_labelFull="&hc.sets.importCancel;" hc_labelPartial="&hc.sets.importIncrementCancel;" />
 				</hbox>
-				<hbox pack="center">
-					<button id="hc-sets-tree-buttonAdd" label="&hc.sets.cmdAdd;" onclick="handyClicksSets.addItems(event);" oncommand="handyClicksSets.addItems(event);" />
-					<button id="hc-sets-tree-buttonEdit" command="hc-sets-cmd-edit" />
-					<button id="hc-sets-tree-buttonDelete" command="hc-sets-cmd-delete" />
+				<hbox id="hc-sets-tree-editPanel" pack="center">
+					<button id="hc-sets-tree-buttonAdd" class="hc-iconic" label="&hc.sets.cmdAdd;" onclick="handyClicksSets.addItems(event);" oncommand="handyClicksSets.addItems(event);" />
+					<button id="hc-sets-tree-buttonEdit" class="hc-iconic" command="hc-sets-cmd-edit" />
+					<button id="hc-sets-tree-buttonDelete" class="hc-iconic" command="hc-sets-cmd-delete" />
 					<spacer id="hc-sets-tree-buttonsSpacer" width="16" />
-					<button id="hc-sets-tree-buttonExport" type="menu" label="&hc.sets.export;" accesskey="&hc.sets.exportAccesskey;"
+					<button id="hc-sets-tree-buttonExport" class="hc-iconic" type="menu" label="&hc.sets.export;" accesskey="&hc.sets.exportAccesskey;"
 						onmouseover="handyClicksSets.openMenu(event, this);">
 						<menupopup position="before_start">
 							<menuitem command="hc-sets-cmd-fullExportToFile" key="hc-sets-key-fullExportToFile" />
@@ -155,7 +155,7 @@
 							<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
 						</menupopup>
 					</button>
-					<button id="hc-sets-tree-buttonImport" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;"
+					<button id="hc-sets-tree-buttonImport" class="hc-iconic" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;"
 						onmouseover="handyClicksSets.openMenu(event, this);">
 						<menupopup position="before_start"
 							onpopupshowing="if(event.target == this) { handyClicksSets.checkClipboard(); handyClicksSets.buildRestorePopup(); }"
@@ -424,11 +424,13 @@
 	<popupset id="hc-sets-popupset">
 		<menupopup id="hc-sets-tree-context"
 			onpopupshowing="if(event.target == this) handyClicksSets.checkClipboard(); return handyClicksSets.checkTreeContext();">
-			<menuitem id="hc-sets-edit" command="hc-sets-cmd-edit" key="hc-sets-key-edit" handyclicks_main="true" />
-			<menuitem id="hc-sets-editType" command="hc-sets-cmd-editType" key="hc-sets-key-editType" />
-			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" />
+			<menuitem id="hc-sets-edit" command="hc-sets-cmd-edit" key="hc-sets-key-edit"
+				class="menuitem-iconic hc-iconic" handyclicks_main="true" />
+			<menuitem id="hc-sets-editType" command="hc-sets-cmd-editType" key="hc-sets-key-editType"
+				class="menuitem-iconic hc-iconic" />
+			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" class="menuitem-iconic hc-iconic" />
 			<menuseparator />
-			<menuitem command="hc-sets-cmd-add" key="hc-sets-key-add" />
+			<menuitem command="hc-sets-cmd-add" key="hc-sets-key-add" class="menuitem-iconic hc-iconic" />
 			<menuseparator />
 			<menuitem command="hc-sets-cmd-enable" key="hc-sets-key-enable" class="menuitem-iconic" />
 			<menuitem command="hc-sets-cmd-disable" key="hc-sets-key-disable" class="menuitem-iconic" />

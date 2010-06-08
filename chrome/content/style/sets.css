@@ -17,6 +17,34 @@ radio[pane="hc-sets-pane-builtInFuncs"] {
 	-moz-image-region: rect(0 128px 32px 96px);
 }
 
+#hc-sets-tree-searchContainer {
+	-moz-appearance: textfield;
+	margin: 2px;
+	max-width: 400px;
+}
+#hc-sets-tree-searchField {
+	-moz-appearance: none;
+	margin: 0;
+	border: none;
+}
+#hc-sets-tree-searchField[hc_isValidRegExp="true"], #hc-sets-tree-searchField[hc_isValidRegExp="true"] * {
+	background-color: white;
+	color: blue !important;
+}
+#hc-sets-tree-searchField[hc_notFound="true"], #hc-sets-tree-searchField[hc_notFound="true"] * {
+	/* Colors from chrome://global/skin/findBar.css in Firefox 3.0 */
+	background-color: #f66;
+	color: #fff;
+}
+#hc-sets-tree-searchField[hc_wrapped="true"], #hc-sets-tree-searchField[hc_wrapped="true"] * {
+	background-color: #e4ffe4;
+	color: black;
+}
+#hc-sets-tree-searchResults {
+	min-width: 1.6em;
+	opacity: 0.5;
+}
+
 /* Tree style */
 #hc-sets-tree-columns > treecol[onclick] {
 	cursor: pointer;
@@ -105,17 +133,6 @@ treechildren::-moz-tree-checkbox(checked),
 menuitem[command="hc-sets-cmd-enable"] {
 	-moz-image-region: rect(0 13px 13px 0);
 }
-menuitem[command="hc-sets-cmd-enable"] image,
-menuitem[command="hc-sets-cmd-disable"] image {
-	width: auto !important;
-	height: auto !important;
-	min-width: 0 !important;
-	min-height: 0 !important;
-}
-menuitem[command="hc-sets-cmd-enable"][disabled="true"] image,
-menuitem[command="hc-sets-cmd-disable"][disabled="true"] image {
-	opacity: 0.35;
-}
 
 #hc-sets-tree-importOverrides, #hc-sets-tree-importNew {
 	/* Firefox 3.6+: text-align: end; */
@@ -135,39 +152,34 @@ menuitem[command="hc-sets-cmd-disable"][disabled="true"] image {
 	-moz-padding-end: 0.6em !important;
 }
 
-#hc-sets-tree-searchContainer {
-	-moz-appearance: textfield;
-	margin: 2px;
-	max-width: 400px;
+#hc-sets-tree-buttons button {
+	margin-left: 3px;
+	margin-right: 3px;
 }
-#hc-sets-tree-searchField {
-	-moz-appearance: none;
-	margin: 0;
-	border: none;
+#hc-sets-tree-buttonAdd, menuitem[command="hc-sets-cmd-add"] {
+	-moz-image-region: rect(32px 16px 48px 0);
 }
-#hc-sets-tree-searchField[hc_isValidRegExp="true"], #hc-sets-tree-searchField[hc_isValidRegExp="true"] * {
-	background-color: white;
-	color: blue !important;
+#hc-sets-tree-buttonEdit, #hc-sets-edit {
+	-moz-image-region: rect(32px 32px 48px 16px);
 }
-#hc-sets-tree-searchField[hc_notFound="true"], #hc-sets-tree-searchField[hc_notFound="true"] * {
-	/* Colors from chrome://global/skin/findBar.css in Firefox 3.0 */
-	background-color: #f66;
-	color: #fff;
+#hc-sets-editType {
+	-moz-image-region: rect(32px 48px 48px 32px);
 }
-#hc-sets-tree-searchField[hc_wrapped="true"], #hc-sets-tree-searchField[hc_wrapped="true"] * {
-	background-color: #e4ffe4;
-	color: black;
+#hc-sets-tree-buttonDelete, menuitem[command="hc-sets-cmd-delete"] {
+	-moz-image-region: rect(32px 64px 48px 48px);
 }
-#hc-sets-tree-searchResults {
-	min-width: 1.6em;
-	opacity: 0.5;
+#hc-sets-tree-buttonExport {
+	-moz-image-region: rect(32px 80px 48px 64px);
 }
-
-/*
-button[type="menu"] {
-	min-width: 0 !important;
+#hc-sets-tree-buttonImport {
+	-moz-image-region: rect(32px 96px 48px 80px);
 }
-*/
+#hc-sets-tree-buttonImportOk {
+	-moz-image-region: rect(48px 16px 64px 0);
+}
+#hc-sets-tree-buttonImportCancel {
+	-moz-image-region: rect(48px 32px 64px 16px);
+}
 
 #hc-sets-tree-restoreFromBackupPopup scrollbox {
 	overflow-y: auto;
@@ -189,10 +201,6 @@ menuitem[hc_testBackup="afterCrash"] label {
 	font-weight: bold;
 }
 
-#hc-sets-tree-buttons button {
-	margin-left: 3px;
-	margin-right: 3px;
-}
 button[type="menu"] dropmarker {
 	min-width: 11px !important;
 	min-height: 11px !important;

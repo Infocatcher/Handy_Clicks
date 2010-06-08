@@ -4,6 +4,7 @@ var handyClicksPrefSvc = {
 	SETS_BEFORE_RELOAD: 1,
 	SETS_RELOADED: 2,
 	SETS_TEST: 4,
+	SETS_TEST_UNDO: 8,
 
 	setsVersion: 0.2,
 	setsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
@@ -463,10 +464,13 @@ var handyClicksPrefSvc = {
 		);
 	},
 
-	testSettings: function() {
-		var src = this.getSettingsStr();
-		this.createTestBackup(src);
-
+	testSettings: function(testFlag) {
+		var src, notifyTestFlag = 0;
+		if(testFlag) {
+			src = this.getSettingsStr();
+			this.createTestBackup(src);
+			notifyTestFlag = this.SETS_TEST_UNDO;
+		}
 		const pSvc = "handyClicksPrefSvc";
 		this.wu.forEachWindow(
 			"navigator:browser",
@@ -474,9 +478,9 @@ var handyClicksPrefSvc = {
 				if(!(pSvc in w))
 					return;
 				var p = w[pSvc];
-				p.oSvc.notifyObservers(this.SETS_BEFORE_RELOAD | this.SETS_TEST);
+				p.oSvc.notifyObservers(this.SETS_BEFORE_RELOAD | this.SETS_TEST | notifyTestFlag);
 				p.loadSettings(src);
-				p.oSvc.notifyObservers(this.SETS_RELOADED | this.SETS_TEST);
+				p.oSvc.notifyObservers(this.SETS_RELOADED | this.SETS_TEST | notifyTestFlag);
 			}
 		);
 	},

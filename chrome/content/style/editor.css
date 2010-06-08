@@ -47,6 +47,16 @@ menulist[hc_sets="disabled"] .menulist-label {
 	-moz-image-region: rect(0 80px 16px 64px);
 }
 
+#hc-editor-buttonDelete {
+	-moz-image-region: rect(32px 64px 48px 48px);
+}
+#hc-editor-buttonTest {
+	-moz-image-region: rect(48px 16px 64px 0);
+}
+#hc-editor-buttonUndo {
+	-moz-image-region: rect(48px 64px 64px 48px);
+}
+
 hbox[hc_fixedFields="true"] {
 	outline: 1px solid ThreeDShadow;
 	outline-offset: -1px;
