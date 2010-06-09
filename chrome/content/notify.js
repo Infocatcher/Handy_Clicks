@@ -24,8 +24,7 @@ var hcNotify = {
 		document.getElementById("hcNotifyImg").setAttribute("hc_icon", wa.icon);
 		window.sizeToContent();
 		var winW = window.outerWidth, winH = window.outerHeight;
-		var maxW = Math.round(screen.availWidth*0.65);
-		maxW += 100;
+		var maxW = Math.round(screen.availWidth*0.65) + 100;
 		if(winW > maxW) {
 			winW = maxW;
 			window.resizeTo(winW, winH);

@@ -20,11 +20,6 @@
 #hcNotifyContainer {
 	margin-left: 5px;
 }
-/* See hcNotify.init() in  notify.js
-#hcNotifyDesc {
-	white-space: pre-wrap;
-}
-*/
 * {
 	-moz-user-select: text !important;
 }

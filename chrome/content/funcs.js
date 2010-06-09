@@ -630,37 +630,37 @@ var handyClicksFuncs = {
 		var cmd = "handyClicksFuncs.openEditorForLastEvent();";
 		var label = this.ut.getLocalized("edit");
 		var accesskey = this.ut.getLocalized("editAccesskey");
+		var miClass = "menuitem-iconic handyClicks-editItem";
+		if(this.ut.isArray(items)) {
+			items.push(
+				{ tagName: "menuseparator" },
+				{
+					tagName: "menuitem",
+					attr_oncommand: cmd,
+					attr_class: miClass,
+					attr_label: label,
+					attr_accesskey: accesskey
+				}
+			);
+			return;
+		}
+		var sep = <menuseparator xmlns={this.ut.XULNS} />;
+		var mi = <menuitem xmlns={this.ut.XULNS}
+			oncommand={cmd}
+			class={miClass}
+			label={label}
+			accesskey={accesskey}
+		/>;
 		if(typeof items == "xml") {
-			items.lastChild += <menuseparator xmlns={this.ut.XULNS} />;
-			items.lastChild += <menuitem xmlns={this.ut.XULNS}
-				oncommand={cmd}
-				label={label}
-				accesskey={accesskey}
-			/>;
+			items.lastChild += sep + mi;
 			return;
 		}
-		if("appendChild" in items) {
-			items.appendChild(this.ut.parseFromXML(
-				<menuseparator xmlns={this.ut.XULNS} />
-			));
-			items.appendChild(this.ut.parseFromXML(
-				<menuitem xmlns={this.ut.XULNS}
-					oncommand={cmd}
-					label={label}
-					accesskey={accesskey}
-				/>
-			));
+		if(this.ut.canHasProps(items) && "appendChild" in items) {
+			items.appendChild(this.ut.parseFromXML(sep));
+			items.appendChild(this.ut.parseFromXML(mi));
 			return;
 		}
-		items.push(
-			{ tagName: "menuseparator" },
-			{
-				tagName: "menuitem",
-				attr_oncommand: cmd,
-				attr_label: label,
-				attr_accesskey: accesskey
-			}
-		);
+		this.ut._warn("addEditItem: unsupported items: (" + typeof items + ") " + items);
 	},
 	openEditorForLastEvent: function() {
 		this.wu.openEditorEx(

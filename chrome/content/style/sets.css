@@ -13,7 +13,7 @@ radio[pane="hc-sets-pane-prefs"] {
 radio[pane="hc-sets-pane-editor"] {
 	-moz-image-region: rect(0 96px 32px 64px);
 }
-radio[pane="hc-sets-pane-builtInFuncs"] {
+radio[pane="hc-sets-pane-funcs"] {
 	-moz-image-region: rect(0 128px 32px 96px);
 }
 
@@ -168,10 +168,10 @@ menuitem[command="hc-sets-cmd-enable"] {
 #hc-sets-tree-buttonDelete, menuitem[command="hc-sets-cmd-delete"] {
 	-moz-image-region: rect(32px 64px 48px 48px);
 }
-#hc-sets-tree-buttonExport {
+#hc-sets-tree-buttonExport, #hc-sets-prefs-miExport {
 	-moz-image-region: rect(32px 80px 48px 64px);
 }
-#hc-sets-tree-buttonImport {
+#hc-sets-tree-buttonImport, #hc-sets-prefs-miImport {
 	-moz-image-region: rect(32px 96px 48px 80px);
 }
 #hc-sets-tree-buttonImportOk {

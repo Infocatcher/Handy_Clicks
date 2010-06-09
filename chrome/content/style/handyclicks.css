@@ -73,6 +73,11 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton .toolbarbutton-icon {
 	height: auto;
 }
 
+.handyClicks-editItem {
+	list-style-image: url("icons16.png");
+	-moz-image-region: rect(32px 32px 48px 16px);
+}
+
 #handyClicks-tooltip {
 	padding: 0;
 }

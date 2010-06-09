@@ -10,6 +10,7 @@ var handyClicksConst = {
 
 	PROTOCOL_SETTINGS: "handyclicks://settings/",
 	PROTOCOL_SETTINGS_ADD: "handyclicks://settings/add/",
+	PROTOCOL_SETTINGS_PANE: "handyclicks://settings/pane/",
 	PROTOCOL_EDITOR: "handyclicks://editor/",
 
 	EDITOR_MODE_SHORTCUT: "shortcut",

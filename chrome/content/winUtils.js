@@ -190,9 +190,28 @@ var handyClicksWinUtils = {
 		})();
 		return w;
 	},
+	openSettingsPane: function(paneId) {
+		const idPrefix = "hc-sets-pane-";
+		if(paneId.indexOf(idPrefix) != 0)
+			paneId = idPrefix + paneId;
+		var w = this.openSettings();
+		var showPane = function _sp(e) {
+			e && w.removeEventListener("load", _sp, false);
+			var doc = w.document;
+			var pane = doc.getElementById(paneId);
+			pane && doc.documentElement.showPane(pane);
+		};
+		if(this.openWindowByType.alreadyOpened)
+			showPane();
+		else
+			w.addEventListener("load", showPane, false);
+		return w;
+	},
 	openSettingsLink: function(uri) {
 		if(uri.indexOf(this.ct.PROTOCOL_SETTINGS_ADD) == 0)
 			this.openSettings(true, this.ct.IMPORT_STRING, uri);
+		else if(uri.indexOf(this.ct.PROTOCOL_SETTINGS_PANE) == 0)
+			this.openSettingsPane(uri.substr(this.ct.PROTOCOL_SETTINGS_PANE.length, uri.length));
 		else if(uri.indexOf(this.ct.PROTOCOL_SETTINGS) == 0)
 			this.openSettings();
 	}

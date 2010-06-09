@@ -289,7 +289,7 @@
 		</hbox>
 	</prefpane>
 
-	<prefpane id="hc-sets-pane-builtInFuncs" label="&hc.sets.builtInFuncsTitle;" flex="1">
+	<prefpane id="hc-sets-pane-funcs" label="&hc.sets.builtInFuncsTitle;" flex="1">
 		<preferences>
 			<preference id="loadJavaScriptLinks" type="bool" name="extensions.handyclicks.funcs.loadJavaScriptLinks" />
 			<preference id="notifyJavaScriptLinks" type="bool" name="extensions.handyclicks.funcs.notifyJavaScriptLinks" />
@@ -446,8 +446,10 @@
 			<menuseparator />
 			<menuitem oncommand="handyClicksSets.resetPrefs();" label="&hc.sets.defaults;" />
 			<menuseparator />
-			<menuitem oncommand="handyClicksSets.importPrefs();" label="&hc.sets.importPrefs;" />
-			<menuitem oncommand="handyClicksSets.exportPrefs();" label="&hc.sets.exportPrefs;" />
+			<menuitem id="hc-sets-prefs-miImport" class="menuitem-iconic hc-iconic" oncommand="handyClicksSets.importPrefs();"
+				label="&hc.sets.importPrefs;" />
+			<menuitem id="hc-sets-prefs-miExport" class="menuitem-iconic hc-iconic" oncommand="handyClicksSets.exportPrefs();"
+				label="&hc.sets.exportPrefs;" />
 		</menupopup>
 		<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical" onpopupshowing="return !document.tooltipNode.disabled;">
 			<description class="header">&hc.sets.resetWarnMsgsTip;</description>
