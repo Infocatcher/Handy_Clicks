@@ -374,7 +374,8 @@ var handyClicks = {
 					this.ut.notify(
 						eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 						this.ut.getLocalized("errorTitle"),
-						this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
+						this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
+						this.ut.NOTIFY_ICON_ERROR
 					);
 					this.ut._err(new Error(eMsg), href, eLine);
 					this.ut._err(e);
@@ -616,7 +617,8 @@ var handyClicks = {
 				this.ut.notify(
 					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 					this.ut.getLocalized("errorTitle"),
-					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
+					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
+					this.ut.NOTIFY_ICON_ERROR
 				);
 				this.ut._err(new Error(eMsg), href, eLine);
 				this.ut._err(e);
@@ -913,7 +915,8 @@ var handyClicks = {
 				this.ut.notify(
 					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 					this.ut.getLocalized("errorTitle"),
-					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
+					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
+					this.ut.NOTIFY_ICON_ERROR
 				);
 				this.ut._err(new Error(eMsg), href, eLine);
 				this.ut._err(err);
@@ -938,7 +941,8 @@ var handyClicks = {
 					this.ut.notify(
 						eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 						this.ut.getLocalized("errorTitle"),
-						this.ut.toErrorConsole, this.wu.getOpenEditorLink(href)
+						this.ut.toErrorConsole, this.wu.getOpenEditorLink(href),
+						this.ut.NOTIFY_ICON_ERROR
 					);
 					this.ut._err(new Error(eMsg));
 					this.ut._err(err);
@@ -948,7 +952,8 @@ var handyClicks = {
 				this.ut.notify(
 					this.ut.getLocalized("functionNotFound").replace("%f", action),
 					this.ut.getLocalized("errorTitle"),
-					this.ut.toErrorConsole
+					this.ut.toErrorConsole, null,
+					this.ut.NOTIFY_ICON_WARNING
 				);
 				this.ut._err(new Error(action + " not found (" + typeof this.fn[action] + ")"));
 			}

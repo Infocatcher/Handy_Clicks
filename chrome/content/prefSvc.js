@@ -231,7 +231,8 @@ var handyClicksPrefSvc = {
 				this.ut.notifyInWindowCorner(
 					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 					this.ut.getLocalized("errorTitle"),
-					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
+					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
+					this.ut.NOTIFY_ICON_ERROR
 				);
 				this.ut._err(new Error(eMsg), href, eLine);
 				this.ut._err(e);
@@ -310,7 +311,8 @@ var handyClicksPrefSvc = {
 		this.ut.notifyInWindowCorner(
 			eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 			this.ut.getLocalized("errorTitle"),
-			this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine)
+			this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
+			this.ut.NOTIFY_ICON_ERROR
 		);
 		this.ut._err(eMsg, href, eLine);
 		this.ut._err(e);

@@ -8,14 +8,20 @@ var hcNotify = {
 
 	init: function() {
 		var wa = window.arguments[0];
-		// { dur, header, msg, funcLeftClick, funcMiddleClick, extEnabled, inWindowCorner, dontCloseUnderCursor }
+		// { dur, header, msg, funcLeftClick, funcMiddleClick, icon, inWindowCorner, dontCloseUnderCursor }
 		document.getElementById("hcNotifyHeader").textContent = wa.header + "\n\n";
 		var descElt = document.getElementById("hcNotifyDesc");
 		descElt.textContent = wa.msg;
-		var maxW = Math.round(screen.availWidth*0.6);
-		descElt.style.maxWidth = maxW + "px";
-		descElt.style.maxHeight = Math.round(screen.availHeight*0.6) + "px";
-		document.getElementById("hcNotifyImg").setAttribute("hc_enabled", !!wa.extEnabled);
+		with(descElt.style) {
+			maxWidth  = Math.round(screen.availWidth *0.6) + "px";
+			maxHeight = Math.round(screen.availHeight*0.6) + "px";
+			var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
+				.getService(Components.interfaces.nsIXULAppInfo);
+			whiteSpace = appInfo.name == "Firefox" && parseFloat(appInfo.version) < 3
+				? "-moz-pre-wrap"
+				: "pre-wrap";
+		}
+		document.getElementById("hcNotifyImg").setAttribute("hc_icon", wa.icon);
 		window.sizeToContent();
 		var winW = window.outerWidth, winH = window.outerHeight;
 		var maxW = Math.round(screen.availWidth*0.65);

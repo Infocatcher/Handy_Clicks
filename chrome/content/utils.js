@@ -99,7 +99,11 @@ var handyClicksUtils = {
 			: str;
 	},
 
-	notify: function(msg, header, funcLeftClick, funcMiddleClick, extEnabled, inWindowCorner) {
+	NOTIFY_ICON_NORMAL: "normal",
+	NOTIFY_ICON_DISABLED: "disabled",
+	NOTIFY_ICON_WARNING: "warning",
+	NOTIFY_ICON_ERROR: "error",
+	notify: function(msg, header, funcLeftClick, funcMiddleClick, icon, inWindowCorner) {
 		var dur = this.pu.pref("notifyOpenTime");
 		if(dur <= 0)
 			 return null;
@@ -113,15 +117,15 @@ var handyClicksUtils = {
 			 	msg: msg || "",
 			 	funcLeftClick: funcLeftClick,
 			 	funcMiddleClick: funcMiddleClick,
-			 	extEnabled: extEnabled === undefined ? true : extEnabled,
+			 	icon: icon === undefined ? this.NOTIFY_ICON_NORMAL : icon,
 			 	inWindowCorner: inWindowCorner === undefined ? this.pu.pref("notifyInWindowCorner") : inWindowCorner,
 			 	dontCloseUnderCursor: this.pu.pref("notifyDontCloseUnderCursor"),
 			 	__proto__: null
 			 }
 		);
 	},
-	notifyInWindowCorner: function(msg, header, funcLeftClick, funcMiddleClick, extEnabled) {
-		return this.notify(msg, header, funcLeftClick, funcMiddleClick, extEnabled, true);
+	notifyInWindowCorner: function(msg, header, funcLeftClick, funcMiddleClick, icon) {
+		return this.notify(msg, header, funcLeftClick, funcMiddleClick, icon, true);
 	},
 
 	get toErrorConsole() {
@@ -326,11 +330,12 @@ var handyClicksUtils = {
 		args = args || [];
 		var file = this.getLocalFile(path);
 		if(!file) {
-			this.notify(
+			this.notifyInWindowCorner(
 				this.getLocalized("invalidFilePath").replace("%p", path)
 					+ this.getLocalized("openConsole"),
 				this.getLocalized("errorTitle"),
-				this.toErrorConsole
+				this.toErrorConsole, null,
+				this.ut.NOTIFY_ICON_ERROR
 			);
 			return false;
 		}

@@ -101,7 +101,7 @@ var handyClicksUI = {
 		this.ut.notifyInWindowCorner(
 			this.ut.getLocalized(en ? "enabled" : "disabled"), null,
 			this.ut.bind(this.wu.openSettings, this.wu), null,
-			en
+			en ? this.ut.NOTIFY_ICON_NORMAL : this.ut.NOTIFY_ICON_DISABLED
 		);
 	},
 
