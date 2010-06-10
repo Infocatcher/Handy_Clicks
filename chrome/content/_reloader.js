@@ -121,8 +121,13 @@ var handyClicksReloader = {
 		e.preventDefault();
 		e.stopPropagation();
 	},
+	get prefSvc() {
+		delete this.prefSvc;
+		return this.prefSvc = Components.classes["@mozilla.org/preferences-service;1"]
+			.getService(Components.interfaces.nsIPrefBranch2);
+	},
 	get devMode() {
-		return navigator.preference("extensions.handyclicks.devMode");
+		return this.prefSvc.getBoolPref("extensions.handyclicks.devMode");
 	},
 	get path() {
 		return /[^\\\/]+$/.test(location.href) ? RegExp.lastMatch : location.href;
