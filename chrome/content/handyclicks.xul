@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="chrome://handyclicks/content/style/a11y.css" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/global.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/handyclicks.css" type="text/css"?>
 
 <!DOCTYPE overlay [
@@ -62,13 +62,13 @@
 		<menupopup id="handyClicks-settingsPopup"
 			onpopupshowing="handyClicksUI.buildSettingsPopup(event);"
 			onpopuphiding="handyClicksUI.fixPopup();">
-			<menuitem id="handyClicks-settingsMenuitem"
+			<menuitem id="handyClicks-settingsMenuitem" class="menuitem-iconic handyClicks-iconic"
 				command="handyClicks-cmd-openSettings" key="handyClicks-key-openSettings"
 				handyclicks_main="true" />
-			<menuitem id="handyClicks-editMode"
+			<menuitem id="handyClicks-editMode" class="menuitem-iconic handyClicks-iconic"
 				command="handyClicks-cmd-editMode" key="handyClicks-key-editMode" />
 			<menuseparator id="handyClicks-importFromClipboardSeparator" />
-			<menuitem id="handyClicks-importFromClipboard"
+			<menuitem id="handyClicks-importFromClipboard" class="menuitem-iconic handyClicks-iconic"
 				command="handyClicks-cmd-importFromClipboard" key="handyClicks-key-importFromClipboard" />
 			<menuseparator id="handyClicks-mainCommandsSeparator" />
 			<!-- Toolbars -->

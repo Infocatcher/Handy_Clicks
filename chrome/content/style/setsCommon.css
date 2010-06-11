@@ -59,7 +59,7 @@ button[tooltip]:not([disabled="true"]) label {
 	border-bottom: 1px dotted;
 }
 
-button.hc-iconic, menuitem.hc-iconic {
+button.hc-iconic {
 	list-style-image: url("icons16.png");
 }
 button .button-icon {
@@ -69,21 +69,14 @@ button .button-icon {
 button.hc-iconic .button-text {
 	-moz-margin-start: 2px !important;
 }
-button.hc-iconic[disabled="true"] .button-icon,
-menuitem.menuitem-iconic[disabled="true"] image {
+button.hc-iconic[disabled="true"] .button-icon {
 	opacity: 0.32;
 }
-menuitem.menuitem-iconic image {
-	width: auto !important;
-	height: auto !important;
-	min-width: 0 !important;
-	min-height: 0 !important;
-}
 
-button.hc-iconic.hc-apply {
+button.hc-apply {
 	-moz-image-region: rect(48px 48px 64px 32px);
 }
-button.hc-iconic.hc-preferences {
+button.hc-preferences {
 	-moz-image-region: rect(48px 80px 64px 64px);
 }
 

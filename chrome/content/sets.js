@@ -2180,7 +2180,6 @@ var handyClicksSets = {
 		_ubTerms = _ubFiles = null;
 
 		this.updRestorePopup(ubCount, isEmpty);
-		this.ut.fixIconsSize(popup);
 	},
 	destroyRestorePopup: function() {
 		delete this.ubPopup.__userBackups;

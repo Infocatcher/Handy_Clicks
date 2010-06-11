@@ -27,16 +27,16 @@ radio[pane="hc-sets-pane-funcs"] {
 	margin: 0;
 	border: none;
 }
-#hc-sets-tree-searchField[hc_isValidRegExp="true"], #hc-sets-tree-searchField[hc_isValidRegExp="true"] * {
+#hc-sets-tree-searchField[hc_isValidRegExp="true"], #hc-sets-tree-searchField[hc_isValidRegExp="true"] > * {
 	background-color: white;
 	color: blue !important;
 }
-#hc-sets-tree-searchField[hc_notFound="true"], #hc-sets-tree-searchField[hc_notFound="true"] * {
+#hc-sets-tree-searchField[hc_notFound="true"], #hc-sets-tree-searchField[hc_notFound="true"] > * {
 	/* Colors from chrome://global/skin/findBar.css in Firefox 3.0 */
 	background-color: #f66;
 	color: #fff;
 }
-#hc-sets-tree-searchField[hc_wrapped="true"], #hc-sets-tree-searchField[hc_wrapped="true"] * {
+#hc-sets-tree-searchField[hc_wrapped="true"], #hc-sets-tree-searchField[hc_wrapped="true"] > * {
 	background-color: #e4ffe4;
 	color: black;
 }
@@ -179,6 +179,22 @@ menuitem[command="hc-sets-cmd-enable"] {
 }
 #hc-sets-tree-buttonImportCancel {
 	-moz-image-region: rect(48px 32px 64px 16px);
+}
+
+checkbox[id^="hc-sets-disallowMousemove-"] {
+	list-style-image: url("icons16.png");
+}
+checkbox[id^="hc-sets-disallowMousemove-"] .checkbox-label-box {
+	-moz-box-align: center;
+}
+#hc-sets-disallowMousemove-0 {
+	-moz-image-region: rect(0 48px 16px 32px);
+}
+#hc-sets-disallowMousemove-1 {
+	-moz-image-region: rect(0 64px 16px 48px);
+}
+#hc-sets-disallowMousemove-2 {
+	-moz-image-region: rect(0 80px 16px 64px);
 }
 
 #hc-sets-tree-restoreFromBackupPopup scrollbox {

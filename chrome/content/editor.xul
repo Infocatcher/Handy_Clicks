@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://handyclicks/content/style/a11y.css" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/global.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/setsCommon.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/editor.css" type="text/css"?>
 

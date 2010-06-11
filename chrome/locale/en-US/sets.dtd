@@ -92,6 +92,7 @@
 <!ENTITY hc.sets.appearance "Appearance">
 <!ENTITY hc.sets.showInToolsMenu "Show in Tools menu">
 <!ENTITY hc.sets.showInStatusbar "Show in Status Bar">
+<!ENTITY hc.sets.showMouseButton "Change icon when click handling">
 
 <!ENTITY hc.sets.disallowMousemove "Stop click handling if mouse was moved with holded buttons (mouse gestures)">
 <!ENTITY hc.sets.left "Left">

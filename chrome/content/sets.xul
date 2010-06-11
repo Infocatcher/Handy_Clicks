@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://handyclicks/content/style/a11y.css" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/global.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/setsCommon.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
 
@@ -194,6 +194,7 @@
 			<preference id="enabled" type="bool" name="extensions.handyclicks.enabled" />
 			<preference id="showInToolsMenu" type="bool" name="extensions.handyclicks.ui.showInToolsMenu" />
 			<preference id="showInStatusbar" type="bool" name="extensions.handyclicks.ui.showInStatusbar" />
+			<preference id="showMouseButton" type="bool" name="extensions.handyclicks.ui.showMouseButton" />
 			<preference id="disallowMousemoveDist" type="int" name="extensions.handyclicks.disallowMousemoveDist" />
 			<preference id="delayedActionTimeout" type="int" name="extensions.handyclicks.delayedActionTimeout" />
 			<preference id="notifyOpenTime" type="int" name="extensions.handyclicks.notifyOpenTime" />
@@ -206,6 +207,7 @@
 			<caption label="&hc.sets.appearance;" />
 			<checkbox preference="showInToolsMenu" label="&hc.sets.showInToolsMenu;" />
 			<checkbox preference="showInStatusbar" label="&hc.sets.showInStatusbar;" />
+			<checkbox preference="showMouseButton" label="&hc.sets.showMouseButton;" />
 		</groupbox>
 		<groupbox>
 			<caption label="&hc.sets.disallowMousemove;" />
@@ -424,15 +426,15 @@
 		<menupopup id="hc-sets-tree-context"
 			onpopupshowing="if(event.target == this) handyClicksSets.checkClipboard(); return handyClicksSets.checkTreeContext();">
 			<menuitem id="hc-sets-edit" command="hc-sets-cmd-edit" key="hc-sets-key-edit"
-				class="menuitem-iconic hc-iconic" handyclicks_main="true" />
+				class="menuitem-iconic handyClicks-iconic" handyclicks_main="true" />
 			<menuitem id="hc-sets-editType" command="hc-sets-cmd-editType" key="hc-sets-key-editType"
-				class="menuitem-iconic hc-iconic" />
-			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" class="menuitem-iconic hc-iconic" />
+				class="menuitem-iconic handyClicks-iconic" />
+			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" class="menuitem-iconic handyClicks-iconic" />
 			<menuseparator />
-			<menuitem command="hc-sets-cmd-add" key="hc-sets-key-add" class="menuitem-iconic hc-iconic" />
+			<menuitem command="hc-sets-cmd-add" key="hc-sets-key-add" class="menuitem-iconic handyClicks-iconic" />
 			<menuseparator />
-			<menuitem command="hc-sets-cmd-enable" key="hc-sets-key-enable" class="menuitem-iconic" />
-			<menuitem command="hc-sets-cmd-disable" key="hc-sets-key-disable" class="menuitem-iconic" />
+			<menuitem command="hc-sets-cmd-enable" key="hc-sets-key-enable" class="menuitem-iconic handyClicks-iconic" />
+			<menuitem command="hc-sets-cmd-disable" key="hc-sets-key-disable" class="menuitem-iconic handyClicks-iconic" />
 			<menuitem command="hc-sets-cmd-toggle" key="hc-sets-key-toggle" />
 			<menuseparator />
 			<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
@@ -446,9 +448,9 @@
 			<menuseparator />
 			<menuitem oncommand="handyClicksSets.resetPrefs();" label="&hc.sets.defaults;" />
 			<menuseparator />
-			<menuitem id="hc-sets-prefs-miImport" class="menuitem-iconic hc-iconic" oncommand="handyClicksSets.importPrefs();"
+			<menuitem id="hc-sets-prefs-miImport" class="menuitem-iconic handyClicks-iconic" oncommand="handyClicksSets.importPrefs();"
 				label="&hc.sets.importPrefs;" />
-			<menuitem id="hc-sets-prefs-miExport" class="menuitem-iconic hc-iconic" oncommand="handyClicksSets.exportPrefs();"
+			<menuitem id="hc-sets-prefs-miExport" class="menuitem-iconic handyClicks-iconic" oncommand="handyClicksSets.exportPrefs();"
 				label="&hc.sets.exportPrefs;" />
 		</menupopup>
 		<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical" onpopupshowing="return !document.tooltipNode.disabled;">

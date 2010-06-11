@@ -15,7 +15,7 @@ var handyClicksFuncs = {
 		var _uri = uri.substr(loc.length);
 		if(_uri == "" && item.getAttribute && !item.getAttribute("href")) // <a href="">
 			return true;
-		if(_uri.indexOf("#") != 0)
+		if(_uri.charAt(0) != "#")
 			return false;
 		var anchor = _uri.substr(1);
 		return !anchor || (!doc.getElementById(anchor) && !doc.getElementsByName(anchor).length);
@@ -524,11 +524,11 @@ var handyClicksFuncs = {
 	},
 	getPopup: function(xml) {
 		var pSet = this.$("mainPopupSet");
-		const id = "handyClicks-generatedPopup";
-		var popup = this.e(id);
+		const popupId = "handyClicks-generatedPopup";
+		var popup = this.e(popupId);
 		popup && pSet.removeChild(popup);
 		popup = xml || <menupopup xmlns={this.ut.XULNS} />;
-		popup.@id = id;
+		popup.@id = popupId;
 		popup.@tooltip = "handyClicks-tooltip";
 		return pSet.appendChild(this.ut.parseFromXML(popup));
 	},
@@ -563,7 +563,6 @@ var handyClicksFuncs = {
 	showGeneratedPopup: function(items) {
 		var popup = this.createPopup(items);
 		this.hc.showPopupOnItem(popup);
-		this.ut.fixIconsSize(popup);
 		return popup;
 	},
 
@@ -619,18 +618,16 @@ var handyClicksFuncs = {
 			for(var j = 0, len = args.length; j < len; j++)
 				item[ttBase + n++] = args[j];
 		var addNums = uris.length > 1;
-		uris.forEach(
-			function(uri, indx) {
-				item[ttBase + n++] = (addNums ? (indx + 1) + ". " : "") + uri;
-			}
-		);
+		uris.forEach(function(uri, indx) {
+			item[ttBase + n++] = (addNums ? (indx + 1) + ". " : "") + uri;
+		});
 	},
 
 	addEditItem: function(items) {
 		var cmd = "handyClicksFuncs.openEditorForLastEvent();";
 		var label = this.ut.getLocalized("edit");
 		var accesskey = this.ut.getLocalized("editAccesskey");
-		var miClass = "menuitem-iconic handyClicks-editItem";
+		var miClass = "menuitem-iconic handyClicks-iconic handyClicks-editItem";
 		if(this.ut.isArray(items)) {
 			items.push(
 				{ tagName: "menuseparator" },

@@ -200,7 +200,7 @@
 
 					var line = val.substring(startLine, startPos);
 
-					var indent = /^([ \t]+)/.test(line) ? RegExp.$1 : "";
+					var indent = /^[ \t]+/.test(line) ? RegExp.lastMatch : "";
 					this.insertText("\n" + indent);
 				]]>
 				</body>
