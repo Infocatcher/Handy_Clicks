@@ -380,10 +380,13 @@ var handyClicksEditor = {
 	},
 	setWinTitle: function() {
 		var sh = this.currentShortcut;
-		var title = this.ps.getModifiersStr(sh) + " + " + this.ps.getButtonStr(sh, true);
+		var shStr = this.ps.getModifiersStr(sh) + " + " + this.ps.getButtonStr(sh, true);
 		var type = this.$("hc-editor-itemTypes").getAttribute("label");
-		var ct = this.$("hc-editor-customType").value || this.$("hc-editor-customTypeExtId").value;
-		title = " [" + title + (type ? " + " + type : "") + (ct ? " | " + ct : "") + "]";
+		var typeStr = this.$("hc-editor-customType").value || this.$("hc-editor-customTypeExtId").value;
+		//title = " [" + title + (type ? " + " + type : "") + (typeStr ? " | " + typeStr : "") + "]";
+		var title = this.mainTabbox.selectedIndex == this.INDEX_TYPE
+			? " [" + typeStr + (typeStr ? " | " : "") + shStr + (type ? " + " + type : "") + "]"
+			: " [" + shStr + (type ? " + " + type : "") + (typeStr ? " | " + typeStr : "") + "]";
 		title = document.title.replace(/\s+\[.+\]\*?$/, "") + title;
 		//document.title = document.title.replace(/\s+\[.+\]\*?$/, "") + title + (this.ps.otherSrc ? "*" : "");
 		//document.title = this.su.createTitle(title, !this.applyButton.disabled, this.ps.otherSrc);
@@ -1201,6 +1204,7 @@ var handyClicksEditor = {
 		}
 
 		this.appendTypesList();
+		this.setWinTitle(); // Label changed?
 		return true;
 	},
 	testCustomType: function() {

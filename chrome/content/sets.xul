@@ -237,7 +237,7 @@
 			<hbox align="center">
 				<label value="&hc.sets.notifyCloseAfter;" control="hc-sets-notifyOpenTime" hc_depends="notify" />
 				<textbox id="hc-sets-notifyOpenTime" preference="notifyOpenTime"
-					type="number" min="0" max="120000" increment="50" style="width: 5.5em;"
+					type="number" min="0" max="600000" increment="50" style="width: 5.5em;"
 					hc_requiredFor="notify" hc_disabledValues="0" />
 				<label value="&hc.sets.zeroForDisable;" hc_depends="notify" />
 			</hbox>
@@ -453,7 +453,8 @@
 			<menuitem id="hc-sets-prefs-miExport" class="menuitem-iconic handyClicks-iconic" oncommand="handyClicksSets.exportPrefs();"
 				label="&hc.sets.exportPrefs;" />
 		</menupopup>
-		<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical" onpopupshowing="return !document.tooltipNode.disabled;">
+		<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical" noautohide="true"
+			onpopupshowing="return !document.tooltipNode.disabled;">
 			<description class="header">&hc.sets.resetWarnMsgsTip;</description>
 			<separator id="hc-sets-warnMsgsPrefs-tooltipSep" class="groove" />
 		</tooltip>

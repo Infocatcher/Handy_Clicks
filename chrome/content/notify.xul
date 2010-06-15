@@ -7,7 +7,8 @@
 	windowtype="handyclicks:notify"
 	hidechrome="true"
 	align="start"
-	onload="hcNotify.init();">
+	onload="hcNotify.init();"
+	onunload="hcNotify.destroy();">
 
 	<script type="application/javascript" src="chrome://handyclicks/content/notify.js" />
 

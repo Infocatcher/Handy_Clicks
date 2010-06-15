@@ -7,13 +7,15 @@ var handyClicksFuncs = {
 		return typeof uri == "string" && /^javascript:/i.test(uri);
 	},
 	isDummyURI: function(item, uri) {
+		//if(this.hc.itemType != "link")
+		//	return false;
 		uri = uri || this.getItemURI(item);
 		var doc = item.ownerDocument;
 		var loc = doc.location.href.replace(/#.*$/, "");
 		if(uri.indexOf(loc) != 0)
 			return false;
 		var _uri = uri.substr(loc.length);
-		if(_uri == "" && item.getAttribute && !item.getAttribute("href")) // <a href="">
+		if(_uri == "" && item.getAttribute && item.hasAttribute("href") && !item.getAttribute("href")) // <a href="">
 			return true;
 		if(_uri.charAt(0) != "#")
 			return false;
@@ -301,11 +303,9 @@ var handyClicksFuncs = {
 		it = it.wrappedJSObject;
 		if(!it)
 			return false;
-		return ["onmousedown", "onmouseup", "onclick"].some(
-			function(h) {
-				return h in it;
-			}
-		);
+		return ["onmousedown", "onmouseup", "onclick"].some(function(h) {
+			return h in it;
+		});
 	},
 	getItemHandlers: function(item) {
 		item = (item || this.hc.item).wrappedJSObject;
@@ -530,6 +530,7 @@ var handyClicksFuncs = {
 		popup = xml || <menupopup xmlns={this.ut.XULNS} />;
 		popup.@id = popupId;
 		popup.@tooltip = "handyClicks-tooltip";
+		popup.@popupsinherittooltip = "true";
 		return pSet.appendChild(this.ut.parseFromXML(popup));
 	},
 	appendItems: function(parent, items) {
@@ -900,27 +901,21 @@ var handyClicksFuncs = {
 	renameTab: function(e, tab) {
 		tab = this.fixTab(tab);
 		var doc = tab.linkedBrowser.contentDocument;
-		var title = doc.title;
-		var lbl = this.ut.prompt(
+		var curTitle = doc.title;
+		var newTitle = this.ut.prompt(
 			this.ut.getLocalized("renameTabTitle"),
 			this.ut.getLocalized("tabNewName"),
-			title
+			curTitle
 		);
 		const p = "__handyClicks__title";
-		if(!(p in tab))
-			tab[p] = title;
-		if(lbl == null) {
+		if(newTitle != null) {
+			tab[p] = curTitle;
+			doc.title = newTitle;
+		}
+		else if(p in tab) {
 			doc.title = tab[p];
 			delete tab[p];
-			return;
 		}
-		doc.title = lbl
-		/**
-		tab.label = lbl == null
-			? tab.linkedBrowser.contentDocument.title
-				|| this.hc.getTabBrowser(true).mStringBundle.getString("tabs.untitled")
-			: lbl;
-		**/
 	},
 	reloadAllTabs: function(e, skipCache) {
 		this.forEachTab(

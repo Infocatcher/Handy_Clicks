@@ -768,6 +768,7 @@ var handyClicks = {
 		it = it || this.mainItem || this.item;
 		if(
 			!this.ut.isObject(it)
+			|| document.commandDispatcher.focusedElement === it // Already focused
 			|| !("focus" in it) // typeof it.focus == "function"
 			|| it.ownerDocument.defaultView.getComputedStyle(it, null).MozUserFocus == "ignore"
 		)

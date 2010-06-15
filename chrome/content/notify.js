@@ -51,7 +51,9 @@ var hcNotify = {
 				y = xy.screenY - winH - addH;
 		}
 		window.moveTo(x, y);
-		this._notifyBox = document.getElementById("hcNotifyBox");
+		var notifyBox = this._notifyBox = document.getElementById("hcNotifyBox");
+		if(typeof wa.funcLeftClick == "function")
+			notifyBox.className += " hc-clickable";
 		this._colorDelta = this.endColor - this.startColor;
 		this._dur = wa.dur;
 		this.delayedClose();
@@ -63,6 +65,10 @@ var hcNotify = {
 		window.onmouseover = window.onmouseout = function(e) {
 			_this.mouseHandler(e);
 		};
+	},
+	destroy: function() {
+		clearTimeout(this._closeTimeout);
+		clearInterval(this._highlightInterval);
 	},
 	set borderColor(clr) {
 		this._notifyBox.style.borderColor = clr;
@@ -105,6 +111,7 @@ var hcNotify = {
 	clickHandler: function(e) {
 		this.cancelDelayedClose();
 		var wa = window.arguments[0];
+		window.close();
 		if(
 			e.button == 0 && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey
 			&& typeof wa.funcLeftClick == "function"
@@ -115,6 +122,5 @@ var hcNotify = {
 			&& typeof wa.funcMiddleClick == "function"
 		)
 			wa.funcMiddleClick();
-		window.close();
 	}
 };
