@@ -41,9 +41,12 @@
 				<hbox id="hc-sets-tree-searchContainer" flex="100">
 					<textbox id="hc-sets-tree-searchField" flex="1" hc_dontSave="true"
 						onkeypress="handyClicksSets.navigateSearchResults(event);"
-						oninput="handyClicksSets.searchInSetsTree(this);"
+						oninput="handyClicksSets.searchInSetsTreeDelay(this);"
 						hc_ondrop="handyClicksSets.searchInSetsTree(this);" />
 				</hbox>
+				<toolbarbutton id="hc-sets-tree-searchFilterMode" type="checkbox" persist="checked"
+					oncommand="handyClicksSets.searchInSetsTree(null, true);"
+					tooltiptext="&hc.sets.filterTip;" />
 				<label id="hc-sets-tree-searchResults" />
 				<spacer flex="1" />
 				<button id="hc-sets-tree-editMenu" type="menu" label="&hc.sets.editMenu;" accesskey="&hc.sets.editMenuAccesskey;"
@@ -64,6 +67,9 @@
 							label="&hc.sets.findPrev;" />
 						<menuitem id="hc-sets-tree-findSelectAll" oncommand="handyClicksSets.searcher.selectAll();" key="hc-sets-key-findSelectAll"
 							label="&hc.sets.findSelectAll;" />
+						<menuseparator />
+						<menuitem id="hc-sets-tree-findFilter" type="checkbox" oncommand="handyClicksSets.toggleFilterMode();" key="hc-sets-key-toggleFilterMode"
+							label="&hc.sets.findFilter;" />
 					</menupopup>
 				</button>
 				<button id="hc-sets-tree-viewMenu" type="menu" label="&hc.sets.viewMenu;" accesskey="&hc.sets.viewMenuAccesskey;"
@@ -409,6 +415,7 @@
 		<key id="hc-sets-key-clearSelection" key="a" modifiers="control,shift" oncommand="handyClicksSets.clearSelection();" />
 		<key id="hc-sets-key-invertSelection" key="*" oncommand="handyClicksSets.invertSelection();" />
 		<key id="hc-sets-key-focusSearch" key="f" modifiers="control" oncommand="handyClicksSets.focusSearch();" />
+		<key id="hc-sets-key-toggleFilterMode" key="f" modifiers="control,shift" oncommand="handyClicksSets.toggleFilterMode();" />
 		<key id="hc-sets-key-findNext" keycode="VK_F3" oncommand="handyClicksSets.searcher.next();" />
 		<key id="hc-sets-key-findPrev" keycode="VK_F3" modifiers="shift" oncommand="handyClicksSets.searcher.prev();" />
 		<key id="hc-sets-key-findSelectAll" keycode="VK_F3" modifiers="control" oncommand="handyClicksSets.searcher.selectAll();" />

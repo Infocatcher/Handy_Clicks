@@ -40,6 +40,15 @@ radio[pane="hc-sets-pane-funcs"] {
 	background-color: #e4ffe4;
 	color: black;
 }
+#hc-sets-tree-searchFilterMode {
+	-moz-user-focus: normal;
+	list-style-image: url("icons16.png");
+	-moz-image-region: rect(16px 64px 32px 48px);
+	padding: 4px 4px 4px 5px !important;
+}
+#hc-sets-tree-searchFilterMode[checked="true"] {
+	-moz-image-region: rect(16px 48px 32px 32px);
+}
 #hc-sets-tree-searchResults {
 	min-width: 1.6em;
 	opacity: 0.5;

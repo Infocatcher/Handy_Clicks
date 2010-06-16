@@ -244,14 +244,15 @@ var handyClicksSets = {
 			this.$(id + "NewValue")      .value = this._new       + "/" + this._newDa       + " + " + newTypes;
 		}
 		delete this.eltsCache;
+		this._hasFilter = false;
 	},
 	redrawTree: function() {
 		this.treeBatch(this._redrawTree, this, arguments);
 	},
-	_redrawTree: function() {
+	_redrawTree: function(dontSearch) {
 		this.ut.removeChilds(this.tBody);
 		this._drawTree();
-		this.searchInSetsTree(null, true);
+		!dontSearch && this.searchInSetsTree(null, true);
 		this.setDialogButtons();
 		//document.title = document.title.replace(/\*?$/, this.ps.otherSrc ? "*" : "");
 	},
@@ -966,6 +967,11 @@ var handyClicksSets = {
 		this.$("hc-sets-tree-findNext")       .setAttribute("disabled", !found);
 		this.$("hc-sets-tree-findPrev")       .setAttribute("disabled", !found);
 		this.$("hc-sets-tree-findSelectAll")  .setAttribute("disabled", !found);
+
+		this.$("hc-sets-tree-findFilter").setAttribute(
+			"checked",
+			this.$("hc-sets-tree-searchFilterMode").getAttribute("checked")
+		);
 	},
 	selectAll: function() {
 		if(this.isTreePaneSelected)
@@ -1276,12 +1282,13 @@ var handyClicksSets = {
 		var code = e.keyCode;
 		if(code == e.DOM_VK_RETURN && e.ctrlKey)
 			this.searcher.selectAll();
+		else if(code == e.DOM_VK_RETURN && e.altKey)
+			this.toggleFilterMode();
 		else if(code == e.DOM_VK_DOWN || code == e.DOM_VK_RETURN && !e.shiftKey)
 			this.searcher.next();
 		else if(code == e.DOM_VK_UP || code == e.DOM_VK_RETURN && e.shiftKey)
 			this.searcher.prev();
 		else if(code == e.DOM_VK_ESCAPE && e.target.value) {
-			e.preventDefault(); // Don't close dialog window
 			if(e.target.type != "search") { // Firefox < 3.5
 				e.target.value = "";
 				this.searchInSetsTree();
@@ -1289,7 +1296,18 @@ var handyClicksSets = {
 		}
 		else
 			return;
-		e.preventDefault();
+		e.preventDefault(); // Don't close dialog window
+	},
+	toggleFilterMode: function() {
+		if(!this.isTreePaneSelected)
+			return;
+		var fm = this.$("hc-sets-tree-searchFilterMode");
+		fm.setAttribute("checked", fm.getAttribute("checked") != "true");
+		this.searchInSetsTree(null, true);
+	},
+	searchInSetsTreeDelay: function() {
+		// Needs for undo/redo
+		this.ut.timeout(this.searchInSetsTree, this, arguments, 0);
 	},
 	searchInSetsTree: function(sIt, notSelect) {
 		if(sIt && !this._searchTimeout) {
@@ -1310,6 +1328,7 @@ var handyClicksSets = {
 	},
 	_searchInSetsTree: function(sIt, notSelect) {
 		sIt = sIt || this.$("hc-sets-tree-searchField");
+		var filterMode = this.$("hc-sets-tree-searchFilterMode").getAttribute("checked") == "true";
 
 		var sTerm = sIt.value;
 		var isRegExp = false;
@@ -1333,11 +1352,13 @@ var handyClicksSets = {
 			sTerm = sTerm.toLowerCase().split(/\s+/);
 		}
 
-		this.searcher.reset();
-		var tRow, rowText, okRow, indx;
-		var notFound = true, count = 0;
+		this._hasFilter && this._redrawTree(true);
+		var tRow, rowText, okRow, hl;
+		var matchedRows = [];
 		for(var h in this.rowsCache) {
 			tRow = this.rowsCache[h];
+			if(!tRow.parentNode || !tRow.parentNode.parentNode)
+				continue;
 			okRow = hasTerm;
 			rowText = this.getRowText(tRow, !isRegExp); //~ todo: cache?
 
@@ -1348,22 +1369,38 @@ var handyClicksSets = {
 			)
 				okRow = false;
 
+			hl = filterMode ? false : okRow;
 			//this.addProperties(tRow, { hc_search: okRow });
-			this.addClildsProperties(tRow, { hc_search: okRow }, true);
-			if(!okRow)
+			this.addClildsProperties(tRow, { hc_search: hl }, true);
+			if(!okRow) {
+				if(hasTerm && filterMode) {
+					var tItem = tRow.parentNode;
+					var tChld = tItem.parentNode;
+					tChld.removeChild(tItem);
+					while(!tChld.hasChildNodes() && tChld != this.tBody) {
+						tItem = tChld.parentNode;
+						tChld = tItem.parentNode;
+						tChld.removeChild(tItem);
+					}
+					this._hasFilter = true;
+				}
 				continue;
-			count++;
-			indx = this.tView.getIndexOfItem(tRow.parentNode);
-			this.searcher.add(indx);
-			if(notFound) {
-				notFound = false;
-				if(!notSelect) // Don't select for redraw
-					this.searcher.select(indx);
 			}
+			matchedRows.push(tRow);
 		}
+
+		this.searcher.reset();
+		matchedRows.forEach(function(tRow) {
+			var indx = this.tView.getIndexOfItem(tRow.parentNode);
+			this.searcher.add(indx);
+		}, this);
 		this.searcher.finish();
-		this.$("hc-sets-tree-searchResults").value = hasTerm ? count : "";
-		sIt.setAttribute("hc_notFound", hasTerm && notFound);
+
+		if(!notSelect && matchedRows.length) // Don't select for redraw
+			this.searcher.select();
+
+		this.$("hc-sets-tree-searchResults").value = hasTerm ? matchedRows.length : "";
+		sIt.setAttribute("hc_notFound", hasTerm && !matchedRows.length);
 
 		this._lastSearch = Date.now();
 	},

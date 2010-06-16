@@ -21,6 +21,7 @@
 <!ENTITY hc.sets.columnEnabled "Enabled">
 
 <!ENTITY hc.sets.search "Search:">
+<!ENTITY hc.sets.filterTip "Filter">
 
 <!ENTITY hc.sets.editMenu "Edit">
 <!ENTITY hc.sets.editMenuAccesskey "E">
@@ -31,6 +32,7 @@
 <!ENTITY hc.sets.findNext "Find next down">
 <!ENTITY hc.sets.findPrev "Find next up">
 <!ENTITY hc.sets.findSelectAll "Select all search results">
+<!ENTITY hc.sets.findFilter "Enable filter">
 
 <!ENTITY hc.sets.viewMenu "View">
 <!ENTITY hc.sets.viewMenuAccesskey "V">
