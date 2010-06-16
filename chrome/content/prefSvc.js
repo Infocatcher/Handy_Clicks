@@ -6,6 +6,10 @@ var handyClicksPrefSvc = {
 	SETS_TEST: 4,
 	SETS_TEST_UNDO: 8,
 
+	DESTROY_REBUILD: 1,
+	DESTROY_WINDOW_UNLOAD: 2,
+	DESTROY_LAST_WINDOW_UNLOAD: 4,
+
 	setsVersion: 0.2,
 	setsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
 	get requiredHeader() {
@@ -33,8 +37,20 @@ var handyClicksPrefSvc = {
 	_restoringCounter: 0,
 
 	destroy: function(reloadFlag) {
-		if(this.isMainWnd)
-			this.destroyCustomFuncs(reloadFlag);
+		if(this.isMainWnd) {
+			var reason;
+			if(reloadFlag)
+				reason = this.DESTROY_REBUILD;
+			else {
+				var count = 0;
+				var ws = this.wu.wm.getEnumerator("navigator:browser");
+				while(ws.hasMoreElements())
+					if("_handyClicksInitialized" in ws.getNext()) // ?
+						count++;
+				reason = count == 0 ? this.DESTROY_LAST_WINDOW_UNLOAD : this.DESTROY_WINDOW_UNLOAD;
+			}
+			this.destroyCustomFuncs(reason);
+		}
 		this.oSvc.destroy();
 	},
 
@@ -55,7 +71,8 @@ var handyClicksPrefSvc = {
 				dir.create(dir.DIRECTORY_TYPE, 0755);
 			}
 			catch(e) {
-				this.ut._err(new Error("Can't create directory\n" + e));
+				this.ut._err(new Error("Can't create directory: " + dir.path));
+				this.ut._err(e);
 			}
 		}
 		delete this._prefsDir;
@@ -206,7 +223,7 @@ var handyClicksPrefSvc = {
 		var df, cm;
 		for(var type in cts) if(cts.hasOwnProperty(type)) {
 			if(!this.isOkCustomType(type)) {
-				this.ut._warn(new Error("Invalid custom type: " + type));
+				this.ut._warn(new Error("Invalid custom type: \"" + type + "\""));
 				continue;
 			}
 			ct = cts[type];
@@ -234,13 +251,13 @@ var handyClicksPrefSvc = {
 					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
 					this.ut.NOTIFY_ICON_ERROR
 				);
-				this.ut._err(new Error(eMsg), href, eLine);
+				this.ut._err(eMsg, href, eLine);
 				this.ut._err(e);
 			}
 		}
 	},
 	initCustomFuncs: function() {
-		this.destroyCustomFuncs();
+		this.destroyCustomFuncs(this.DESTROY_REBUILD);
 		var p = this.prefs;
 		var sh, so, type, to, da;
 		for(sh in p) if(p.hasOwnProperty(sh)) {
@@ -260,54 +277,98 @@ var handyClicksPrefSvc = {
 				this.initCustomFunc(da, sh, type, true);
 			}
 		}
+		this.cleanupDestructors();
 	},
-	initCustomFunc: function(fObj, sh, type, delayed) {
+	initCustomFunc: function(fObj, sh, type, isDelayed) {
 		var rawCode = this.ut.getOwnProperty(fObj, "init");
 		if(!rawCode)
 			return;
 		try {
-			var line = new Error().lineNumber + 1;
-			var destructor = new Function(this.dec(rawCode)).call(this.ut);
-			if(typeof destructor == "function")
-				this._destructors.push([destructor, line, fObj, sh, type, delayed]);
+			var line = new Error().lineNumber + 2;
+			this.saveDestructorContext(line, fObj, sh, type, isDelayed);
+			var legacyDestructor = new Function(this.dec(rawCode)).call(this.ut);
 		}
 		catch(e) {
-			this.handleCustomFuncError(e, line, fObj, sh, type, delayed);
+			this.handleCustomFuncError(e, line, fObj, sh, type, isDelayed, true);
+		}
+		if(typeof legacyDestructor == "function") { // Added: 2010-06-15
+			this.ut._warn(new Error(
+				"Construction \"return destructorFunction;\" is deprecated, use "
+				+ "\"void handyClicksPrefSvc.registerDestructor(function destructor, object context, boolean notifyFlags)\" "
+				+ "instead"
+			));
+			this.registerDestructor(
+				this.ut.bind(
+					legacyDestructor,
+					this.ut.getOwnProperty(legacyDestructor, "context"),
+					this.ut.getOwnProperty(legacyDestructor, "args")
+				),
+				null,
+				this.ut.getOwnProperty(legacyDestructor, "handleUnload") === false
+					? this.DESTROY_REBUILD
+					: 0
+			);
 		}
 	},
+
+	saveDestructorContext: function(baseLine, fObj, sh, type, isDelayed) {
+		this._destructorContext = {
+			baseLine: baseLine,
+			funcObj: fObj,
+			shortcut: sh,
+			type: type,
+			isDelayed: isDelayed
+		};
+	},
+	cleanupDestructors: function() {
+		delete this._destructorContext;
+	},
 	_destructors: [],
-	destroyCustomFuncs: function(reloadFlag) {
+	registerDestructor: function(destructor, context, notifyFlags) {
+		var dc = this._destructorContext;
+		this._destructors.push([
+			destructor,
+			context,
+			notifyFlags,
+			dc.baseLine,
+			dc.funcObj,
+			dc.shortcut,
+			dc.type,
+			dc.isDelayed
+		]);
+	},
+
+	destroyCustomFuncs: function(reason) {
 		//this._devMode && this.ut._log("destroyCustomFuncs() [" + this._destructors.length + "]");
 		this._destructors.forEach(
 			function(destructorArr) {
-				this.destroyCustomFunc.apply(this, destructorArr.concat(reloadFlag));
+				this.destroyCustomFunc.apply(this, destructorArr.concat(reason));
 			},
 			this
 		);
 		this._destructors = [];
 	},
-	destroyCustomFunc: function(destructor, baseLine, fObj, sh, type, delayed, reloadFlag) {
-		if(
-			!reloadFlag // unload
-			&& this.ut.getOwnProperty(destructor, "handleUnload") === false
-		)
+	destroyCustomFunc: function(destructor, context, notifyFlags, baseLine, fObj, sh, type, isDelayed, reason) {
+		if(notifyFlags && !(notifyFlags & reason))
 			return;
-		var context = this.ut.getOwnProperty(destructor, "context");
-		var args = this.ut.getOwnProperty(destructor, "args");
 		try {
-			destructor.apply(context, args);
+			destructor.call(context, reason);
 		}
 		catch(e) {
-			this.handleCustomFuncError(e, baseLine, fObj, sh, type, delayed);
+			this.handleCustomFuncError(e, baseLine, fObj, sh, type, isDelayed, false);
 		}
 	},
-	handleCustomFuncError: function(e, baseLine, fObj, sh, type, isDelayed) {
+	handleCustomFuncError: function(e, baseLine, fObj, sh, type, isDelayed, isInit) {
 		var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - baseLine + 1);
 		var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_SHORTCUT + "/" + sh + "/" + type + "/"
 			+ (isDelayed ? this.ct.EDITOR_SHORTCUT_DELAYED : this.ct.EDITOR_SHORTCUT_NORMAL) + "/"
 			+ this.ct.EDITOR_SHORTCUT_INIT
 			+ "?line=" + eLine;
-		var eMsg = this.ut.errInfo("funcInitError", this.dec(this.ut.getOwnProperty(fObj, "label")), type, e);
+		var eMsg = this.ut.errInfo(
+			isInit ? "funcInitError" : "funcDestroyError",
+			this.dec(this.ut.getOwnProperty(fObj, "label")),
+			type, e
+		);
 		this.ut.notifyInWindowCorner(
 			eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 			this.ut.getLocalized("errorTitle"),
@@ -466,12 +527,12 @@ var handyClicksPrefSvc = {
 		);
 	},
 
-	testSettings: function(testFlag) {
-		var src, notifyTestFlag = 0;
-		if(testFlag) {
+	testSettings: function(isTest) {
+		var src, notifyFlags = this.SETS_TEST;
+		if(isTest) {
 			src = this.getSettingsStr();
 			this.createTestBackup(src);
-			notifyTestFlag = this.SETS_TEST_UNDO;
+			notifyFlags |= this.SETS_TEST_UNDO;
 		}
 		const pSvc = "handyClicksPrefSvc";
 		this.wu.forEachWindow(
@@ -480,9 +541,9 @@ var handyClicksPrefSvc = {
 				if(!(pSvc in w))
 					return;
 				var p = w[pSvc];
-				p.oSvc.notifyObservers(this.SETS_BEFORE_RELOAD | this.SETS_TEST | notifyTestFlag);
+				p.oSvc.notifyObservers(notifyFlags | this.SETS_BEFORE_RELOAD);
 				p.loadSettings(src);
-				p.oSvc.notifyObservers(this.SETS_RELOADED | this.SETS_TEST | notifyTestFlag);
+				p.oSvc.notifyObservers(notifyFlags | this.SETS_RELOADED);
 			}
 		);
 	},
@@ -624,7 +685,7 @@ var handyClicksPrefSvc = {
 			return decodeURIComponent(s || "");
 		}
 		catch(e) {
-			this.ut._err(new Error("Can't decode URI:\n" + s));
+			this.ut._err(new Error("Can't decode URI: " + s));
 			this.ut._err(e);
 			return "[invalid URI]";
 		}

@@ -28,7 +28,7 @@ var handyClicksUtils = {
 			null,
 			lineNumber || e.lineNumber || 0,
 			e.columnNumber || 0,
-			isWarning ? 1 : 0,
+			isWarning ? cErr.warningFlag : cErr.errorFlag,
 			null
 		);
 		this.consoleSvc.logMessage(cErr);
@@ -292,7 +292,7 @@ var handyClicksUtils = {
 		catch(e) {
 			if(dontShowErrors)
 				return null;
-			this._err(new Error("Invalid directory alias: " + alias));
+			this._err(new Error("Invalid directory alias: \"" + alias + "\""));
 			this._err(e);
 		}
 		return null;
@@ -316,7 +316,7 @@ var handyClicksUtils = {
 			file.normalize(); // dir1/dir2/../file -> dir1/file
 		}
 		catch(e) {
-			this._err(new Error("Invalid path: " + path));
+			this._err(new Error("Invalid path: \"" + path + "\""));
 			this._err(e);
 			return null;
 		}

@@ -179,7 +179,7 @@ var handyClicksFuncs = {
 			case "last":     ind = tbr.browsers.length;           break;
 			case "relative": ind = curInd + ++this.relativeIndex; break;
 			default:
-				this.ut._err(new Error("openURIInTab -> invalid moveTo argument: " + moveTo));
+				this.ut._err(new Error("openURIInTab -> invalid moveTo argument: \"" + moveTo + "\""));
 				return;
 		}
 		if(
@@ -418,7 +418,7 @@ var handyClicksFuncs = {
 				wNew = window.outerWidth, hNew = window.outerHeight;
 			break;
 			default:
-				this.ut._err(new Error("openURIInWindow -> invalid moveTo argument: " + moveTo));
+				this.ut._err(new Error("openURIInWindow -> invalid moveTo argument: \"" + moveTo + "\""));
 				return;
 		}
 		if(xCur !== undefined && yCur !== undefined)
@@ -496,9 +496,16 @@ var handyClicksFuncs = {
 		if(closePopups)
 			this.hc.closeMenus();
 	},
+
+	getMissingExtWarning: function(extName, amoId) {
+		return "Missing %name extension (%url)"
+			.replace("%name", extName)
+			.replace("%url", "https://addons.mozilla.org/firefox/addon/" + amoId);
+
+	}
 	downloadWithFlashGot: function(e, item) {
 		if(!("gFlashGot" in window)) {
-			this.ut._warn(new Error("Missing FlashGot extension ( https://addons.mozilla.org/firefox/addon/220 )"));
+			this.ut._warn(new Error(this.getMissingExtWarning("FlashGot", 220)));
 			return;
 		}
 		document.popupNode = item || this.hc.item;
@@ -506,7 +513,7 @@ var handyClicksFuncs = {
 	},
 	openURIInSplitBrowser: function(e, position, closePopups, uri) {
 		if(!("SplitBrowser" in window)) {
-			this.ut._warn(new Error("Missing Split Browser extension ( https://addons.mozilla.org/firefox/addon/4287 )"));
+			this.ut._warn(new Error(this.getMissingExtWarning("Split Browser", 4287)));
 			return;
 		}
 		position = (position || "bottom").toUpperCase();
@@ -985,33 +992,31 @@ var handyClicksFuncs = {
 
 	// Multiple Tab Handler extension
 	// http://piro.sakura.ne.jp/xul/_multipletab.html.en#api-multipletabs
-	mthOk: function() {
+	get hasMultipleTabHandler() {
 		if("MultipleTabService" in window)
 			return true;
 		else {
-			this.ut._warn(new Error(
-				"Missing Multiple Tab Handler extension ( https://addons.mozilla.org/firefox/addon/4838 )"
-			));
+			this.ut._warn(new Error(this.getMissingExtWarning("Multiple Tab Handler", 4838)));
 			return false;
 		}
 	},
 	mthCloseTabs: function(e, tabs) {
-		this.mthOk() && MultipleTabService.closeTabs(tabs || this.hc.item);
+		this.hasMultipleTabHandler && MultipleTabService.closeTabs(tabs || this.hc.item);
 	},
 	mthCloseOtherTabs: function(e, tabs) {
-		this.mthOk() && MultipleTabService.closeOtherTabs(tabs || this.hc.item);
+		this.hasMultipleTabHandler && MultipleTabService.closeOtherTabs(tabs || this.hc.item);
 	},
 	mthReloadTabs: function(e, tabs) {
-		this.mthOk() && MultipleTabService.reloadTabs(tabs || this.hc.item);
+		this.hasMultipleTabHandler && MultipleTabService.reloadTabs(tabs || this.hc.item);
 	},
 	mthAddBookmarkFor: function(e, tabs) {
-		this.mthOk() && MultipleTabService.addBookmarkFor(tabs || this.hc.item);
+		this.hasMultipleTabHandler && MultipleTabService.addBookmarkFor(tabs || this.hc.item);
 	},
 	mthDuplicateTabs: function(e, tabs) {
-		this.mthOk() && MultipleTabService.duplicateTabs(tabs || this.hc.item);
+		this.hasMultipleTabHandler && MultipleTabService.duplicateTabs(tabs || this.hc.item);
 	},
 	mthSplitWindowFromTabs: function(e, tabs) {
-		this.mthOk() && MultipleTabService.splitWindowFromTabs(tabs || this.hc.item);
+		this.hasMultipleTabHandler && MultipleTabService.splitWindowFromTabs(tabs || this.hc.item);
 	},
 
 	reloadImg: function(e, img) {

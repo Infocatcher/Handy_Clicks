@@ -31,7 +31,11 @@ var hcNotify = {
 		}
 		var wo = window.opener;
 		var x, y;
-		if(wa.inWindowCorner || !("handyClicks" in wo) || !wo.handyClicks._xy) { // Show in window corner
+		if(wo.closed) {
+			x = screen.availLeft + screen.availWidth - winW;
+			y = screen.availTop + screen.availHeight - winH;
+		}
+		else if(wa.inWindowCorner || !("handyClicks" in wo) || !wo.handyClicks._xy) { // Show in window corner
 			x = wo.screenX + wo.outerWidth - winW;
 			var sBar = wo.document.getElementById("browser-bottombox") || wo.document.getElementById("status-bar");
 			y = (sBar ? sBar.boxObject.screenY : wo.screenY + wo.outerHeight) - winH;

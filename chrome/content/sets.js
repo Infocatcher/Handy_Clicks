@@ -312,10 +312,10 @@ var handyClicksSets = {
 	},
 
 	setsReloading: function(notifyReason) {
-		if(!(notifyReason & this.ps.SETS_RELOADED))
-			return;
-		this.updTree();
-		this.checkTreeSaved();
+		if(notifyReason & this.ps.SETS_RELOADED) {
+			this.updTree();
+			this.checkTreeSaved();
+		}
 	},
 
 	markOpenedEditors: function() {
@@ -1890,7 +1890,7 @@ var handyClicksSets = {
 					}
 					var pName = line.substring(0, indx);
 					if(pName.indexOf(this.pu.prefNS) != 0) {
-						this.ut._warn(new Error("[Import INI] Skipped pref with invalid name: " + pName));
+						this.ut._warn(new Error("[Import INI] Skipped pref with invalid name: \"" + pName + "\""));
 						return;
 					}
 					var pbr = this.pu.pBr;

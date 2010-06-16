@@ -731,7 +731,7 @@ var handyClicksEditor = {
 			return "checkbox";
 		if(argName in types.menulists)
 			return "menulist";
-		this.ut._err(new Error("Can't get type of " + argName));
+		this.ut._err(new Error("Can't get type of \"" + argName + "\""));
 		return null;
 	},
 	addControl: function(argName, argType, argVal, delayed) {
