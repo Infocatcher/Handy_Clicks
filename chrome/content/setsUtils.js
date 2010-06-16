@@ -1,7 +1,7 @@
 var handyClicksSetsUtils = {
-	SAVE: 0,
-	CANCEL: 1,
-	DONT_SAVE: 2,
+	PROMPT_SAVE: 0,
+	PROMPT_CANCEL: 1,
+	PROMPT_DONT_SAVE: 2,
 
 	init: function(reloadFlag) {
 		window.addEventListener("DOMMouseScroll", this, true);
@@ -122,51 +122,9 @@ var handyClicksSetsUtils = {
 			+ title;
 	},
 
-	getNodeData: function(node) {
-		node = node || document;
-		var hashes = [];
-		Array.forEach(
-			node.getElementsByTagName("checkbox"),
-			function(node, indx) {
-				if(this.ut.isElementVisible(node))
-					hashes.push("checkbox[" + indx + "]#" + node.id + "=" + node.checked);
-			},
-			this
-		);
-		Array.forEach(
-			node.getElementsByTagName("textbox"),
-			function(node, indx) {
-				if(
-					this.ut.isElementVisible(node)
-					&& node.getAttribute("readonly") != "true"
-					&& node.getAttribute("hc_dontSave") != "true"
-				)
-					hashes.push("textbox[" + indx + "]#" + node.id + "=" + node.value);
-			},
-			this
-		);
-		Array.forEach(
-			node.getElementsByTagName("menulist"),
-			function(node, indx) {
-				if(this.ut.isElementVisible(node))
-					hashes.push("menulist[" + indx + "]#" + node.id + "=" + node.value);
-			},
-			this
-		);
-		Array.forEach(
-			node.getElementsByTagName("radiogroup"),
-			function(node, indx) {
-				if(this.ut.isElementVisible(node))
-					hashes.push("radiogroup[" + indx + "]#" + node.id + "=" + node.selectedIndex);
-			},
-			this
-		);
-		//this.ut._log(hashes.join("\n"));
-		return hashes.join("\n");
-	},
 	notifyUnsaved: function() {
 		if(!this.pu.pref("ui.notifyUnsaved"))
-			return this.DONT_SAVE;
+			return this.PROMPT_DONT_SAVE;
 		var ps = this.ut.promptsSvc;
 		this.ut.fixMinimized();
 		var ask = { value: false };
@@ -176,14 +134,14 @@ var handyClicksSetsUtils = {
 			window,
 			this.ut.getLocalized("warningTitle"),
 			this.ut.getLocalized("notifyUnsaved"),
-			  ps.BUTTON_POS_0 * ps.BUTTON_TITLE_SAVE
-			+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL
-			+ ps.BUTTON_POS_2 * ps.BUTTON_TITLE_DONT_SAVE
-			+ ps.BUTTON_POS_0_DEFAULT,
+			  ps["BUTTON_POS_" + this.PROMPT_SAVE]      * ps.BUTTON_TITLE_SAVE
+			+ ps["BUTTON_POS_" + this.PROMPT_CANCEL]    * ps.BUTTON_TITLE_CANCEL
+			+ ps["BUTTON_POS_" + this.PROMPT_DONT_SAVE] * ps.BUTTON_TITLE_DONT_SAVE
+			+ ps["BUTTON_POS_" + this.PROMPT_SAVE + "_DEFAULT"],
 			"", "", "",
 			this.ut.getLocalized("dontAskAgain"), ask
 		);
-		if(ret != this.CANCEL && ask.value)
+		if(ret != this.PROMPT_CANCEL && ask.value)
 			this.pu.pref("ui.notifyUnsaved", false);
 		return ret;
 	},
@@ -250,12 +208,10 @@ var handyClicksSetsUtils = {
 		si = rds[indx];
 		si.doCommand();
 		//si.setAttribute("checked", "true");
-		rds.forEach( // Strange things happens for hidden items...
-			function(rd, i) {
-				this.ut.attribute(rd, "checked", i == indx);
-			},
-			this
-		);
+		rds.forEach(function(rd, i) {
+			// Strange things happens for hidden items...
+			this.ut.attribute(rd, "checked", i == indx);
+		}, this);
 		if(this._showTooltip)
 			this.showInfoTooltip(e.target, si.getAttribute("label"));
 		return true;

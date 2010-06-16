@@ -53,7 +53,9 @@ var handyClicksSets = {
 
 		var de = document.documentElement;
 		var prefsButt = de.getButton("extra2");
-		prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
+		//prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
+		// Can't open popup from keyboard
+		prefsButt.appendChild(this.e("hc-sets-prefsManagementPopup"));
 		prefsButt.setAttribute("type", "menu");
 		prefsButt.className += " hc-iconic hc-preferences";
 
@@ -1289,16 +1291,13 @@ var handyClicksSets = {
 			return;
 		e.preventDefault();
 	},
-	searchInSetsTree: function() {
-		this.treeBatch(this._searchInSetsTree, this, arguments);
-	},
-	_searchInSetsTree: function(sIt, notSelect) {
-		if(sIt && this._searchTimeout === null) {
+	searchInSetsTree: function(sIt, notSelect) {
+		if(sIt && !this._searchTimeout) {
 			var remTime = this._lastSearch + this._searchDelay - Date.now();
 			if(remTime > 0) {
 				this._searchTimeout = setTimeout(
-					function(_this, _a) {
-						_a.callee.apply(_this, _a);
+					function(_this, args) {
+						args.callee.apply(_this, args);
 						_this._searchTimeout = null;
 					},
 					remTime,
@@ -1307,6 +1306,9 @@ var handyClicksSets = {
 				return;
 			}
 		}
+		this.treeBatch(this._searchInSetsTree, this, arguments);
+	},
+	_searchInSetsTree: function(sIt, notSelect) {
 		sIt = sIt || this.$("hc-sets-tree-searchField");
 
 		var sTerm = sIt.value;
@@ -1681,9 +1683,9 @@ var handyClicksSets = {
 		if(!this.hasUnsaved)
 			return true;
 		var res = this.su.notifyUnsaved();
-		if(res == this.su.CANCEL)
+		if(res == this.su.PROMPT_CANCEL)
 			return false;
-		if(res == this.su.SAVE)
+		if(res == this.su.PROMPT_SAVE)
 			this.saveSettings();
 		return true;
 	},

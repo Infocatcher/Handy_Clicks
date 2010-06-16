@@ -189,7 +189,7 @@ var handyClicksUI = {
 		em = em === undefined ? this.hc.editMode : em;
 		var exitKey = this.ut.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE") || "Esc";
 		var tt = em
-			? this.ut.getLocalized("editModeTip").replace("%k", exitKey)
+			? this.ut.getLocalized("editModeTip").replace("%key", exitKey)
 			: "";
 		var ttAttr = this.tooltipAttrBase + "1";
 		this.setControls(function(elt) {
@@ -202,7 +202,7 @@ var handyClicksUI = {
 		if(!(nem == 1 && this._temFromKey && !this.isControlsVisible || nem == 2))
 			return;
 		this.ut.notifyInWindowCorner(
-			this.ut.getLocalized("editModeNote").replace("%k", exitKey),
+			this.ut.getLocalized("editModeNote").replace("%key", exitKey),
 			this.ut.getLocalized("editModeTitle"),
 			this.ut.bind(function() { this.hc.editMode = false; }, this)
 		);

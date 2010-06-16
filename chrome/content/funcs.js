@@ -362,7 +362,7 @@ var handyClicksFuncs = {
 		catch(e) {
 			this.ut.alert(
 				this.ut.getLocalized("errorTitle"),
-				this.ut.getLocalized("RegExpError").replace("%r", regexp).replace("%e", e)
+				this.ut.getLocalized("RegExpError").replace("%r", regexp).replace("%err", e)
 			);
 			return false;
 		}
@@ -502,7 +502,7 @@ var handyClicksFuncs = {
 			.replace("%name", extName)
 			.replace("%url", "https://addons.mozilla.org/firefox/addon/" + amoId);
 
-	}
+	},
 	downloadWithFlashGot: function(e, item) {
 		if(!("gFlashGot" in window)) {
 			this.ut._warn(new Error(this.getMissingExtWarning("FlashGot", 220)));

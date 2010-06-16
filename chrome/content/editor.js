@@ -969,9 +969,9 @@ var handyClicksEditor = {
 		if(!this.hasUnsaved)
 			return true;
 		var res = this.su.notifyUnsaved();
-		if(res == this.su.CANCEL)
+		if(res == this.su.PROMPT_CANCEL)
 			return false;
-		if(res == this.su.SAVE)
+		if(res == this.su.PROMPT_SAVE)
 			this.saveSettings();
 		return true;
 	},

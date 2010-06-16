@@ -203,7 +203,7 @@ var handyClicksPrefSvc = {
 
 			var errTitle = this.ut.getLocalized("errorTitle");
 			var errMsg = this.ut.getLocalized("badJSFile").replace("%f", this._cPath)
-				+ (hasBak ? this.ut.getLocalized("restoredFromBackup").replace("%b", bFile.path) : "");
+				+ (hasBak ? this.ut.getLocalized("restoredFromBackup").replace("%f", bFile.path) : "");
 			setTimeout(function(_this, t, m) {
 				_this.ut.alert(t, m);
 			}, 0, this, errTitle, errMsg);

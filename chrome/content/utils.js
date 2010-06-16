@@ -34,6 +34,7 @@ var handyClicksUtils = {
 		this.consoleSvc.logMessage(cErr);
 	},
 	_warn: function(e, fileName, lineNumber) {
+		// Bug: any string are shown as 1 line
 		this._err(e, fileName, lineNumber, true);
 	},
 	objProps: function(o, mask) { // mask like "id, nodeName, parentNode.id"
@@ -255,9 +256,9 @@ var handyClicksUtils = {
 	errInfo: function(textId, label, type, err) {
 		return this.getLocalized(textId)
 			+ this.getLocalized("errorDetails")
-				.replace("%l", label)
-				.replace("%id", type)
-				.replace("%e", err);
+				.replace("%label", label)
+				.replace("%type", type)
+				.replace("%err", err);
 	},
 
 	getFileParent: function(file) {
@@ -342,7 +343,7 @@ var handyClicksUtils = {
 		if(!file.exists()) {
 			this.alert(
 				this.getLocalized("errorTitle"),
-				this.getLocalized("fileNotFound").replace("%p", path)
+				this.getLocalized("fileNotFound").replace("%f", path)
 			);
 			return false;
 		}
@@ -356,7 +357,7 @@ var handyClicksUtils = {
 		catch(e) {
 			this.alert(
 				this.getLocalized("errorTitle"),
-				this.getLocalized("fileCantRun").replace("%p", path).replace("%e", e)
+				this.getLocalized("fileCantRun").replace("%f", path).replace("%err", e)
 			);
 			return false;
 		}
