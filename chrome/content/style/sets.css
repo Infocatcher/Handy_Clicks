@@ -105,8 +105,9 @@ tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy) {
 tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_buggy) {
 	text-decoration: line-through;
 }
-tree[hc_colored="true"] treechildren::-moz-tree-row(hc_search) {
-	background-color: #e7e3ff;
+tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_search) {
+	/*background-color: #e7e3ff;*/
+	color: #00e !important;
 }
 tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_search) {
 	font-style: italic;

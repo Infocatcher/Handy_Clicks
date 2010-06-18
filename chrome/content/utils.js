@@ -278,13 +278,15 @@ var handyClicksUtils = {
 			file = tmp;
 		return file;
 	},
+	getLocalFileRoot: function(file) {
+		file = this.getFileRoot(file);
+		return file && file.QueryInterface(Components.interfaces.nsILocalFile);
+	},
 	getFileByAlias: function(alias, dontShowErrors) {
 		if(alias == "_ProfDrv")
-			return this.getFileRoot(this.ps.profileDir)
-				.QueryInterface(Components.interfaces.nsILocalFile);
+			return this.getLocalFileRoot(this.ps.profileDir);
 		if(alias == "_SysDrv")
-			return this.getFileRoot(this.getFileByAlias("SysD"))
-				.QueryInterface(Components.interfaces.nsILocalFile);
+			return this.getLocalFileRoot(this.getFileByAlias("SysD"));
 		try {
 			return Components.classes["@mozilla.org/file/directory_service;1"]
 				.getService(Components.interfaces.nsIProperties)
