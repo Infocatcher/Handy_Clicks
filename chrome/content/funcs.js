@@ -1047,6 +1047,10 @@ var handyClicksFuncs = {
 			0, this
 		);
 	},
+	copyImg: function(e, img) {
+		document.popupNode = img || this.hc.item;
+		goDoCommand("cmd_copyImageContents");
+	},
 	get resPath() {
 		delete this.resPath;
 		return this.resPath = this.ut.fxVersion < 3

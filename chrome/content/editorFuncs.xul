@@ -81,6 +81,8 @@
 				hc_supports="link" />
 			<menuitem value="reloadImg" label="reloadImg"
 				hc_supports="img" />
+			<menuitem value="copyImg" label="copyImg"
+				hc_supports="img" />
 			<menuitem value="submitForm" label="submitForm"
 				hc_args="target, loadInBackground, refererPolicy"
 				hc_supports="submitButton" />

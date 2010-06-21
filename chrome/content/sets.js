@@ -1649,9 +1649,11 @@ var handyClicksSets = {
 					|| resPath && (level > resLevel || level == resLevel && aliasLength < resLength)
 				)
 					continue;
+				var sep = RegExp.lastMatch; // \ or /
+				resPath = path.substr(aliasLength);
 				resPath = "%" + alias + "%"
-					+ new Array(level + 1).join(RegExp.lastMatch + "..")
-					+ path.substr(aliasLength);
+					+ new Array(level + 1).join(sep + "..")
+					+ (resPath.charAt(0) == sep ? "" : sep) + resPath;
 				resLevel = level;
 				resLength = aliasLength;
 			}
