@@ -338,6 +338,15 @@ var handyClicks = {
 				? {}
 				: null;
 	},
+
+	_ignoreOtherTypes: true,
+	get ignoreOtherTypes() { // Added 2010-06-21
+		return this._ignoreOtherTypes;
+	},
+	set ignoreOtherTypes(val) {
+		this.ut._err(new Error("Flag \"ignoreOtherTypes\" is deprecated. Use \"checkOtherTypes\" instead."));
+		this._ignoreOtherTypes = val;
+	},
 	defineItem: function(e, sets, forcedAll) {
 		this._all = this.itemTypeInSets(sets, "$all");
 		var all = forcedAll || this._all;
@@ -345,13 +354,11 @@ var handyClicks = {
 		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "ext_mulipletabs", "submitButton"
 		this.item = this.mainItem = null;
 
+		//var it = this.origItem = e.originalTarget;
 		var it = e.originalTarget;
-		//this.origItem = it;
-
 		if(!it.localName) // it == document
 			return;
-		var itln = it.localName.toLowerCase();
-		var _it, _itln;
+		var _it;
 
 		// Custom:
 		var cts = this.ps.types, ct;
@@ -361,7 +368,8 @@ var handyClicks = {
 				&& this.isOkCustomType(type)
 			) {
 				ct = cts[type];
-				this.ignoreOtherTypes = true;
+				this._ignoreOtherTypes = true; // Deprecated, see "ignoreOtherTypes" setter and getter
+				this.checkOtherTypes = false;
 				try {
 					_it = ct._define.call(this, e, it);
 				}
@@ -384,30 +392,15 @@ var handyClicks = {
 					continue;
 				this.itemType = type;
 				this.item = _it;
-				if(this.ignoreOtherTypes)
+				if(!this.checkOtherTypes || this._ignoreOtherTypes)
 					return;
 			}
 		}
 
-		const docNode = Node.DOCUMENT_NODE; // 9
-
 		// img:
 		if(all || this.itemTypeInSets(sets, "img")) {
-			if(itln == "_moz_generated_content_before") { // Alt-text
-				_it = it.parentNode;
-				_itln = _it.localName.toLowerCase();
-			}
-			else {
-				_it = it;
-				_itln = itln;
-			}
-			if(
-				(
-					(_itln == "img" || _itln == "image") && _it.hasAttribute("src")
-					|| _it instanceof HTMLCanvasElement
-				)
-				&& !this.ut.isChromeDoc(_it.ownerDocument) // Not for interface...
-			) {
+			_it = this.getImg(_it);
+			if(_it) {
 				this.itemType = "img";
 				this.item = _it;
 				if(this.ut.getOwnProperty(sets, "img", "ignoreLinks"))
@@ -417,41 +410,11 @@ var handyClicks = {
 
 		// Link:
 		if(all || this.itemTypeInSets(sets, "link")) {
-			if(
-				it.namespaceURI == this.ut.XULNS
-				&& this.inObject(it, "href") && (it.href || it.hasAttribute("href"))
-				&& (it.accessibleType || it.wrappedJSObject.accessibleType)
-					== Components.interfaces.nsIAccessibleProvider.XULLink
-			) {
+			_it = this.getLink(it);
+			if(_it) {
 				this.itemType = "link";
-				this.item = it;
+				this.item = _it;
 				return;
-			}
-
-			const eltNode = Node.ELEMENT_NODE; // 1
-			for(_it = it; _it && _it.nodeType != docNode; _it = _it.parentNode) {
-				// https://bugzilla.mozilla.org/show_bug.cgi?id=266932
-				// https://bug266932.bugzilla.mozilla.org/attachment.cgi?id=206815
-				// It's strange to see another link in Status Bar
-				// and other browsers (Opera, Safari, Google Chrome) will open "top level" link.
-				// And IE... IE won't open XML (it's important!) testcase. :D
-				// Also this seems like bug of left-click handler.
-				// So, let's open link, which user see in Status Bar.
-				if(
-					(
-						_it instanceof HTMLAnchorElement
-						|| _it instanceof HTMLAreaElement
-						|| _it instanceof HTMLLinkElement
-					) && (
-						_it.hasAttribute("href")
-						|| this.ut.getProperty(_it, "repObject", "href") // Firebug
-					)
-					|| _it.nodeType == eltNode && _it.hasAttributeNS("http://www.w3.org/1999/xlink", "href")
-				) {
-					this.itemType = "link";
-					this.item = _it;
-					return;
-				}
 			}
 		}
 
@@ -459,107 +422,211 @@ var handyClicks = {
 			return;
 
 		// History item:
-		if(
-			(all || this.itemTypeInSets(sets, "historyItem"))
-			&& it.namespaceURI == this.ut.XULNS
-			&& (
-				this.hasParent(it, "goPopup")
-				|| (itln == "treechildren" && (it.parentNode.id || "").indexOf("history") != -1) // Sidebar
-			)
-			&& this.getBookmarkURI(it, e)
-		) {
-			this.itemType = "historyItem";
-			this.item = it;
-			return;
+		if(all || this.itemTypeInSets(sets, "historyItem")) {
+			_it = this.getHistoryItem(it, e);
+			if(_it) {
+				this.itemType = "historyItem";
+				this.item = _it;
+				return;
+			}
 		}
 
 		// Bookmark:
-		if(
-			(all || this.itemTypeInSets(sets, "bookmark"))
-			&& it.namespaceURI == this.ut.XULNS
-			&& it.type != "menu"
-			&& (
-				(
-					/(?:^|\s)bookmark-item(?:\s|$)/.test(it.className)
-					&& (itln == "toolbarbutton" || itln == "menuitem")
-				)
-				|| (itln == "menuitem" && (it.hasAttribute("siteURI")))
-				|| (itln == "treechildren" && (it.parentNode.id || "").indexOf("bookmark") != -1) // Sidebar
-			)
-			&& !this.hasParent(it, "goPopup")
-			&& this.getBookmarkURI(it, e)
-		) {
-			this.itemType = "bookmark";
-			this.item = it;
-			return;
+		if(all || this.itemTypeInSets(sets, "bookmark")) {
+			_it = this.getBookmarkItem(it, e);
+			if(_it) {
+				this.itemType = "bookmark";
+				this.item = _it;
+				return;
+			}
 		}
 
 		// Tab:
 		// Selected tabs (Multiple Tab Handler extension):
 		var mth = all || this.itemTypeInSets(sets, "ext_mulipletabs");
-		if(
-			(mth || this.itemTypeInSets(sets, "tab"))
-			&& it.namespaceURI == this.ut.XULNS
-			&& itln != "toolbarbutton"
-		) {
-			for(_it = it; _it && _it.nodeType != docNode; _it = _it.parentNode) {
-				if(
-					_it.localName.toLowerCase() == "tab"
-					&& (
-						/(?:^|\s)tabbrowser-tab(?:\s|$)/.test(_it.className)
-						|| /(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(_it.parentNode.className) // >1 tabs in Firefox 1.5
-					)
-				) {
-					if(mth && "MultipleTabService" in window && MultipleTabService.isSelected(_it)) {
-						this.itemType = "ext_mulipletabs";
-						this.item = MultipleTabService.getSelectedTabs(MultipleTabService.getTabBrowserFromChild(_it));
-						this.mainItem = _it;
-						return;
-					}
-					this.itemType = "tab";
-					this.item = _it;
+		if(mth || this.itemTypeInSets(sets, "tab")) {
+			_it = this.getTab(it);
+			if(_it) {
+				if(mth && "MultipleTabService" in window && MultipleTabService.isSelected(_it)) {
+					this.itemType = "ext_mulipletabs";
+					this.item = MultipleTabService.getSelectedTabs(MultipleTabService.getTabBrowserFromChild(_it));
+					this.mainItem = _it;
 					return;
 				}
+				this.itemType = "tab";
+				this.item = _it;
+				return;
 			}
 		}
 
 		// Tab bar:
-		if(
-			(all || this.itemTypeInSets(sets, "tabbar"))
-			&& it.namespaceURI == this.ut.XULNS
-			&& itln != "toolbarbutton"
-		) {
-			for(_it = it; _it && _it.nodeType != docNode; _it = _it.parentNode) {
-				_itln = _it.localName.toLowerCase();
-				if(_itln == "tab" || _itln == "toolbarbutton")
-					break;
-				if(/(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(_it.className)) {
-					this.itemType = "tabbar";
-					this.item = _it;
-					return;
-				}
+		if(all || this.itemTypeInSets(sets, "tabbar")) {
+			_it = this.getTabbar(it);
+			if(_it) {
+				this.itemType = "tabbar";
+				this.item = _it;
+				return;
 			}
 		}
 
 		// Submit button:
 		if(all || this.itemTypeInSets(sets, "submitButton")) {
-			if(itln == "input" && it.type == "submit" && this.inObject(it, "form") && it.form) {
+			_it = this.getSubmitButton(it);
+			if(_it) {
 				this.itemType = "submitButton";
-				this.item = it;
+				this.item = _it;
 				return;
-			}
-			for(_it = it; _it && _it.nodeType != docNode; _it = _it.parentNode) {
-				if(_it.localName.toLowerCase() == "button" && this.inObject(_it, "form") && _it.form) {
-					this.itemType = "submitButton";
-					this.item = _it;
-					return;
-				}
 			}
 		}
 
 		if(!forcedAll && this.editMode && !this.itemType) // Nothing found?
 			this.defineItem(e, sets, true); // Try again with disabled types.
 	},
+
+	getImg: function(it) {
+		if(!it || !it.localName)
+			return null;
+		var itln = it.localName.toLowerCase();
+		if(itln == "_moz_generated_content_before") { // Alt-text
+			it = it.parentNode;
+			itln = it.localName.toLowerCase();
+		}
+		if(
+			(
+				(itln == "img" || itln == "image") && it.hasAttribute("src")
+				|| it instanceof HTMLCanvasElement
+			)
+			&& !this.ut.isChromeDoc(it.ownerDocument) // Not for interface...
+		)
+			return it;
+		return null;
+	},
+	getLink: function(it) {
+		if(!it || !it.localName)
+			return null;
+		if(
+			it.namespaceURI == this.ut.XULNS
+			&& this.inObject(it, "href") && (it.href || it.hasAttribute("href"))
+			&& (it.accessibleType || it.wrappedJSObject.accessibleType) == Components.interfaces.nsIAccessibleProvider.XULLink
+		)
+			return it;
+
+		const docNode = Node.DOCUMENT_NODE; // 9
+		const eltNode = Node.ELEMENT_NODE; // 1
+		for(it = it; it && it.nodeType != docNode; it = it.parentNode) {
+			// https://bugzilla.mozilla.org/show_bug.cgi?id=266932
+			// https://bug266932.bugzilla.mozilla.org/attachment.cgi?id=206815
+			// It's strange to see another link in Status Bar
+			// and other browsers (Opera, Safari, Google Chrome) will open "top level" link.
+			// And IE... IE won't open XML (it's important!) testcase. :D
+			// Also this seems like bug of left-click handler.
+			// So, let's open link, which user see in Status Bar.
+			if(
+				(
+					it instanceof HTMLAnchorElement
+					|| it instanceof HTMLAreaElement
+					|| it instanceof HTMLLinkElement
+				)
+				&& (
+					it.hasAttribute("href")
+					|| this.ut.getProperty(it, "repObject", "href") // Firebug
+				)
+				|| it.nodeType == eltNode && it.hasAttributeNS("http://www.w3.org/1999/xlink", "href")
+			)
+				return it;
+		}
+		return null;
+	},
+	getHistoryItem: function(it, e) {
+		if(!it || !it.localName)
+			return null;
+		if(it.namespaceURI != this.ut.XULNS)
+			return null;
+		var itln = it.localName.toLowerCase();
+		if(
+			(
+				this.hasParent(it, "goPopup")
+				|| itln == "treechildren" && (it.parentNode.id || "").toLowerCase().indexOf("history") != -1 // Sidebar
+			)
+			&& this.getBookmarkURI(it, e)
+		)
+			return it;
+		return null;
+	},
+	getBookmarkItem: function(it, e) {
+		if(!it || !it.localName)
+			return null;
+		if(it.namespaceURI != this.ut.XULNS)
+			return null;
+		var itln = it.localName.toLowerCase();
+		if(
+			it.type != "menu"
+			&& (
+				(
+					/(?:^|\s)bookmark-item(?:\s|$)/.test(it.className)
+					&& (itln == "toolbarbutton" || itln == "menuitem")
+				)
+				|| itln == "menuitem" && it.hasAttribute("siteURI")
+				|| itln == "treechildren" && (it.parentNode.id || "").toLowerCase().indexOf("bookmark") != -1 // Sidebar
+			)
+			&& !this.hasParent(it, "goPopup")
+			&& this.getBookmarkURI(it, e)
+		)
+			return it;
+		return null;
+	},
+	getTab: function(it) {
+		if(!it || !it.localName)
+			return null;
+		if(it.namespaceURI != this.ut.XULNS)
+			return null;
+		var itln = it.localName.toLowerCase();
+		if(itln == "toolbarbutton")
+			return null;
+		const docNode = Node.DOCUMENT_NODE; // 9
+		for(; it && it.nodeType != docNode; it = it.parentNode) {
+			if(
+				it.localName.toLowerCase() == "tab"
+				&& (
+					/(?:^|\s)tabbrowser-tab(?:\s|$)/.test(it.className)
+					|| /(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(it.parentNode.className) // >1 tab in Firefox 1.5
+				)
+			)
+				return it;
+		}
+		return null;
+	},
+	getTabbar: function(it) {
+		if(!it || !it.localName)
+			return null;
+		if(it.namespaceURI != this.ut.XULNS)
+			return null;
+		var itln = it.localName.toLowerCase();
+		if(itln == "toolbarbutton")
+			return null;
+		const docNode = Node.DOCUMENT_NODE; // 9
+		for(; it && it.nodeType != docNode; it = it.parentNode) {
+			itln = it.localName.toLowerCase();
+			if(itln == "tab" || itln == "toolbarbutton")
+				return null;
+			if(/(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(it.className))
+				return it;
+		}
+		return null;
+	},
+	getSubmitButton: function(it) {
+		if(!it || !it.localName)
+			return null;
+		var itln = it.localName.toLowerCase();
+		if(itln == "input" && it.type == "submit" && this.inObject(it, "form") && it.form)
+			return it;
+		const docNode = Node.DOCUMENT_NODE; // 9
+		for(; it && it.nodeType != docNode; it = it.parentNode)
+			if(it.localName.toLowerCase() == "button" && this.inObject(it, "form") && it.form)
+				return it;
+		return null;
+	},
+
 	inObject: function(o, p) {
 		// this.ut._log("inObject", "wrappedJSObject" in o, o.wrappedJSObject);
 		// Open chrome://global/content/console.xul in tab
