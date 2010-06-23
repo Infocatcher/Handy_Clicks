@@ -1,6 +1,10 @@
 var handyClicksPrefSvc = {
 	oSvc: new HandyClicksObservers(),
 
+	DESTROY_REBUILD: 1,
+	DESTROY_WINDOW_UNLOAD: 2,
+	DESTROY_LAST_WINDOW_UNLOAD: 4,
+
 	version: 0.14,
 	prefsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
 	get requiredHeader() {
@@ -25,6 +29,23 @@ var handyClicksPrefSvc = {
 
 	otherSrc: false,
 	_restoringCounter: 0,
+
+	destroy: function(reloadFlag) {
+		if(this.isMainWnd) {
+			var reason;
+			if(reloadFlag)
+				reason = this.DESTROY_REBUILD;
+			else {
+				var count = 0;
+				var ws = this.wu.wm.getEnumerator("navigator:browser");
+				while(ws.hasMoreElements())
+					if("_handyClicksInitialized" in ws.getNext()) // ?
+						count++;
+				reason = count == 0 ? this.DESTROY_LAST_WINDOW_UNLOAD : this.DESTROY_WINDOW_UNLOAD;
+			}
+			this.destroyCustomFuncs(reason);
+		}
+	},
 
 	get _profileDir() {
 		delete this._profileDir;
@@ -154,7 +175,7 @@ var handyClicksPrefSvc = {
 			this.convertSetsFormat(vers, fromProfile);
 		this._restoringCounter = 0;
 		if(this.isMainWnd) {
-			this.compileCystomTypes();
+			this.compileCustomTypes();
 			this.initCustomFuncs();
 		}
 	},
@@ -341,13 +362,17 @@ var handyClicksPrefSvc = {
 				recode(to, "contextMenu");
 			}
 		}
-		this.ut._log("Format of prefs file updated: " + vers + " => " + this.version);
+		this.ut._log(
+			"Format of prefs file " + (vers < this.version ? "updated" : "converted") + ": "
+			+ vers + " => " + this.version
+		);
 		if(allowSave)
 			this.saveSettingsObjects();
 		else
 			this.currentVersion = this.version;
 	},
-	compileCystomTypes: function() {
+
+	compileCustomTypes: function() {
 		var cts = this.types, ct;
 		var df, cm;
 		for(var type in cts) if(cts.hasOwnProperty(type)) {
@@ -385,6 +410,7 @@ var handyClicksPrefSvc = {
 		}
 	},
 	initCustomFuncs: function() {
+		this.destroyCustomFuncs(this.DESTROY_REBUILD);
 		var p = this.prefs;
 		var sh, so, type, to, da;
 		for(sh in p) if(p.hasOwnProperty(sh)) {
@@ -410,7 +436,7 @@ var handyClicksPrefSvc = {
 			return;
 		try {
 			var line = new Error().lineNumber + 1;
-			new Function(this.dec(rawCode)).call(this.ut);
+			var legacyDestructor = new Function(this.dec(rawCode)).call(this.ut);
 		}
 		catch(e) {
 			var eLine = this.ut.mmLine(e.lineNumber - line + 1);
@@ -426,7 +452,52 @@ var handyClicksPrefSvc = {
 			this.ut._err(eMsg, false, href, eLine);
 			this.ut._err(e);
 		}
+		if(typeof legacyDestructor == "function") { // Added: 2010-06-16
+			this.ut._err(new Error(
+				"Construction \"return destructorFunction;\" is deprecated, use "
+				+ "\"void handyClicksPrefSvc.registerDestructor"
+				+ "(in function destructor, in object context, in unsigned long notifyFlags)\" "
+				+ "instead"
+			), true);
+			this.registerDestructor(
+				this.ut.bind(
+					legacyDestructor,
+					this.ut.getOwnProperty(legacyDestructor, "context"),
+					this.ut.getOwnProperty(legacyDestructor, "args")
+				),
+				null,
+				this.ut.getOwnProperty(legacyDestructor, "handleUnload") === false
+					? this.DESTROY_REBUILD
+					: 0
+			);
+		}
 	},
+	_destructors: [],
+	registerDestructor: function(destructor, context, notifyFlags) {
+		this._destructors.push([destructor, context, notifyFlags]);
+	},
+	destroyCustomFuncs: function(reason) {
+		this._destructors.forEach(
+			function(destructorArr) {
+				this.destroyCustomFunc.apply(this, destructorArr.concat(reason));
+			},
+			this
+		);
+		this._destructors = [];
+	},
+	destroyCustomFunc: function(destructor, context, notifyFlags, reason) {
+		if(notifyFlags && !(notifyFlags & reason))
+			return;
+		try {
+			destructor.call(context, reason);
+		}
+		catch(e) {
+			// Line number detection are not supported.
+			this.ut._err(new Error("Error in destructor function"));
+			this.ut._err(e);
+		}
+	},
+
 	getSettingsStr: function(types, prefs) {
 		types = types || this.types;
 		prefs = prefs || this.prefs;

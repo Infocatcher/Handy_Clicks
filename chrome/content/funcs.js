@@ -529,12 +529,13 @@ var handyClicksFuncs = {
 	},
 	getPopup: function(xml) {
 		var pSet = this.$("mainPopupSet");
-		const id = "handyClicks-generatedPopup";
-		var popup = this.e(id);
+		const popupId = "handyClicks-generatedPopup";
+		var popup = this.e(popupId);
 		popup && pSet.removeChild(popup);
 		popup = xml || <popup xmlns={this.ut.XULNS} />;
-		popup.@id = id;
+		popup.@id = popupId;
 		popup.@tooltip = "handyClicks-tooltip";
+		popup.@popupsinherittooltip = "true";
 		return pSet.appendChild(this.ut.parseFromXML(popup));
 	},
 	appendItems: function(parent, items) {

@@ -38,7 +38,7 @@
 				<hbox id="hc-sets-tree-searchContainer" flex="100">
 					<textbox id="hc-sets-tree-searchField" flex="1"
 						onkeypress="handyClicksSets.navigateSearchResults(event);"
-						oninput="handyClicksSets.searchInSetsTree(this);"
+						oninput="handyClicksSets.searchInSetsTreeDelay(this);"
 						ondragexit="handyClicksSets.searchInSetsTree(this);" />
 				</hbox>
 				<label id="hc-sets-tree-searchResults" />

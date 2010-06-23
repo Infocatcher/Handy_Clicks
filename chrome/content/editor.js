@@ -960,6 +960,7 @@ var handyClicksEditor = {
 		}
 
 		this.appendTypesList();
+		this.setWinTitle(); // Label changed?
 		return true;
 	},
 	testCustomType: function() {
