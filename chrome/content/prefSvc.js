@@ -182,7 +182,7 @@ var handyClicksPrefSvc = {
 			this.setsMigration(fromProfile, vers);
 		this._restoringCounter = 0;
 		if(this.isMainWnd) {
-			this.compileCystomTypes();
+			this.compileCustomTypes();
 			this.initCustomFuncs();
 		}
 	},
@@ -218,7 +218,7 @@ var handyClicksPrefSvc = {
 		return temp.setsMigration;
 	},
 
-	compileCystomTypes: function() {
+	compileCustomTypes: function() {
 		var cts = this.types, ct;
 		var df, cm;
 		for(var type in cts) if(cts.hasOwnProperty(type)) {
@@ -294,7 +294,8 @@ var handyClicksPrefSvc = {
 		if(typeof legacyDestructor == "function") { // Added: 2010-06-15
 			this.ut._warn(new Error(
 				"Construction \"return destructorFunction;\" is deprecated, use "
-				+ "\"void handyClicksPrefSvc.registerDestructor(function destructor, object context, boolean notifyFlags)\" "
+				+ "\"void handyClicksPrefSvc.registerDestructor"
+				+ "(in function destructor, in object context, in unsigned long notifyFlags)\" "
 				+ "instead"
 			));
 			this.registerDestructor(
@@ -668,7 +669,7 @@ var handyClicksPrefSvc = {
 				.replace(/\r/g, "\\r")
 
 				.replace(/\u2028/g, "\\u2028")
-				.replace(/\u2029/g, "\\u2028")
+				.replace(/\u2029/g, "\\u2029")
 			: "";
 	},
 	enc: function(s) {

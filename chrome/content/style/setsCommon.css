@@ -59,7 +59,9 @@ button[tooltip]:not([disabled="true"]) label {
 	border-bottom: 1px dotted;
 }
 
-button.hc-iconic {
+button.hc-iconic .button-icon {
+	/* It's important to use "button .button-icon" ! */
+	/* Without them we can see same icon instead of dropmarker on Linux */
 	list-style-image: url("icons16.png");
 }
 button .button-icon {
