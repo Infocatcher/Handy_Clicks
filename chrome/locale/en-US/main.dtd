@@ -4,6 +4,8 @@
 <!ENTITY handyClicks.toolbarbuttonLabel "Handy Clicks">
 <!ENTITY handyClicks.settingsLabel "Settings…">
 <!ENTITY handyClicks.settingsAccesskey "S">
+<!ENTITY handyClicks.allSettingsLabel "All settings…">
+<!ENTITY handyClicks.allSettingsAccesskey "A">
 <!ENTITY handyClicks.editModeLabel "Start edit mode">
 <!ENTITY handyClicks.editModeAccesskey "e">
 <!ENTITY handyClicks.importFromClipboardLabel "Import settings from clipboard…">

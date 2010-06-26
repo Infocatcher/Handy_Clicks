@@ -2116,7 +2116,7 @@ var handyClicksSets = {
 		this.ps.prefsFile.copyTo(null, bFile.leafName);
 		this.ut.notifyInWindowCorner(
 			this.ut.getLocalized("backupCreated").replace("%f", bFile.leafName), null,
-			this.ut.bind(this.reveal, this, [this.ps._prefsDir])
+			this.ut.bind(this.reveal, this, [bFile])
 		);
 	},
 	removeBackup: function(mi, dontAsk) {

@@ -65,6 +65,9 @@
 			<menuitem id="handyClicks-settingsMenuitem" class="menuitem-iconic handyClicks-iconic"
 				command="handyClicks-cmd-openSettings" key="handyClicks-key-openSettings"
 				handyclicks_main="true" />
+			<menuitem id="handyClicks-allSettingsMenuitem" class="menuitem-iconic handyClicks-iconic"
+				oncommand="handyClicksPrefUtils.openAboutConfig();"
+				label="&handyClicks.allSettingsLabel;" accesskey="&handyClicks.allSettingsAccesskey;" />
 			<menuitem id="handyClicks-editMode" class="menuitem-iconic handyClicks-iconic"
 				command="handyClicks-cmd-editMode" key="handyClicks-key-editMode" />
 			<menuseparator id="handyClicks-importFromClipboardSeparator" />

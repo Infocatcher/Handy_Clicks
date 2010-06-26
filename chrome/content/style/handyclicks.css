@@ -76,8 +76,11 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton .toolbarbutton-icon {
 #handyClicks-settingsMenuitem {
 	-moz-image-region: rect(48px 80px 64px 64px);
 }
-#handyClicks-editMode {
+#handyClicks-allSettingsMenuitem {
 	-moz-image-region: rect(48px 96px 64px 80px);
+}
+#handyClicks-editMode {
+	-moz-image-region: rect(48px 112px 64px 96px);
 }
 #handyClicks-importFromClipboard {
 	-moz-image-region: rect(32px 96px 48px 80px);

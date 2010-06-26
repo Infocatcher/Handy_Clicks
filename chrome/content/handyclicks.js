@@ -365,7 +365,7 @@ var handyClicks = {
 		for(var type in cts) if(cts.hasOwnProperty(type)) {
 			if(
 				(all || this.itemTypeInSets(sets, type))
-				&& this.isOkCustomType(type)
+				&& this.ps.initCustomType(type)
 			) {
 				ct = cts[type];
 				this._ignoreOtherTypes = true; // Deprecated, see "ignoreOtherTypes" setter and getter
@@ -643,9 +643,6 @@ var handyClicks = {
 	isOkFuncObj: function(fObj) {
 		return this.ps.isOkFuncObj(fObj) && fObj.enabled;
 	},
-	isOkCustomType: function(cType) {
-		return this.ps.isOkCustomType(cType) && this.ps.types[cType].hasOwnProperty("_initialized");
-	},
 	hasParent: function(it, pId) {
 		for(it = it.parentNode; it; it = it.parentNode)
 			if(it.id == pId)
@@ -667,7 +664,7 @@ var handyClicks = {
 		if(!this.ps.isCustomType(type))
 			return null; // Simulate "contextmenu" event
 
-		if(!this.isOkCustomType(type))
+		if(!this.ps.initCustomType(type))
 			return null;
 		var ct = this.ps.types[type];
 		var _cm = ct._contextMenu;

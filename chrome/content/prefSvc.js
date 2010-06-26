@@ -182,7 +182,9 @@ var handyClicksPrefSvc = {
 			this.setsMigration(fromProfile, vers);
 		this._restoringCounter = 0;
 		if(this.isMainWnd) {
-			this.compileCystomTypes();
+			this._typesCache = { __proto__: null };
+			if(this.pu.pref("precompileCustomTypes"))
+				this.compileCustomTypes();
 			this.initCustomFuncs();
 		}
 	},
@@ -218,43 +220,55 @@ var handyClicksPrefSvc = {
 		return temp.setsMigration;
 	},
 
-	compileCystomTypes: function() {
-		var cts = this.types, ct;
-		var df, cm;
-		for(var type in cts) if(cts.hasOwnProperty(type)) {
-			if(!this.isOkCustomType(type)) {
-				this.ut._warn(new Error("Invalid custom type: \"" + type + "\""));
-				continue;
-			}
-			ct = cts[type];
-			if(!ct.enabled)
-				continue;
-			try {
-				df = cts[type].define;
-				cm = cts[type].contextMenu;
-				ct._defineLine = new Error().lineNumber + 1;
-				ct._define = new Function("event,item", this.dec(df));
-				ct._contextMenuLine = new Error().lineNumber + 1;
-				ct._contextMenu = cm ? new Function("event,item,origItem", this.dec(cm)) : null;
-				ct._initialized = true;
-			}
-			catch(e) {
-				var line = ct._contextMenuLine || ct._defineLine;
-				var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - line + 1);
-				var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
-					+ ("_contextMenuLine" in ct ? this.ct.EDITOR_TYPE_CONTEXT : this.ct.EDITOR_TYPE_DEFINE)
-					+ "?line=" + eLine;
-				var eMsg = this.ut.errInfo("customTypeCompileError", this.dec(ct.label), type, e);
-				this.ut.notifyInWindowCorner(
-					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
-					this.ut.getLocalized("errorTitle"),
-					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
-					this.ut.NOTIFY_ICON_ERROR
-				);
-				this.ut._err(eMsg, href, eLine);
-				this.ut._err(e);
-			}
+	initCustomType: function(type) {
+		var cache = this._typesCache;
+		if(type in cache)
+			return cache[type];
+
+		if(!this.isOkCustomType(type)) {
+			this.ut._warn(new Error("Invalid custom type: \"" + type + "\""));
+			this._devMode && this.ut._log("! Type \"" + type + "\" => invalid");
+			return cache[type] = false;
 		}
+		var ct = this.types[type];
+		if(!ct.enabled) {
+			this.ut._log("Type \"" + type + "\" => disabled");
+			return cache[type] = false;
+		}
+		try {
+			var df = ct.define;
+			var cm = ct.contextMenu;
+			ct._defineLine = new Error().lineNumber + 1;
+			ct._define = new Function("event,item", this.dec(df));
+			ct._contextMenuLine = new Error().lineNumber + 1;
+			ct._contextMenu = cm ? new Function("event,item,origItem", this.dec(cm)) : null;
+			this._devMode && this.ut._log("Type \"" + type + "\" => initialized");
+			return cache[type] = true;
+		}
+		catch(e) {
+			ct._invalid = true;
+			var line = ct._contextMenuLine || ct._defineLine;
+			var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - line + 1);
+			var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
+				+ ("_contextMenuLine" in ct ? this.ct.EDITOR_TYPE_CONTEXT : this.ct.EDITOR_TYPE_DEFINE)
+				+ "?line=" + eLine;
+			var eMsg = this.ut.errInfo("customTypeCompileError", this.dec(ct.label), type, e);
+			this.ut.notifyInWindowCorner(
+				eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
+				this.ut.getLocalized("errorTitle"),
+				this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
+				this.ut.NOTIFY_ICON_ERROR
+			);
+			this.ut._err(eMsg, href, eLine);
+			this.ut._err(e);
+		}
+		this._devMode && this.ut._log("! Type \"" + type + "\" => initialization error");
+		return cache[type] = false;
+	},
+	compileCustomTypes: function() {
+		var types = this.types;
+		for(var type in types) if(types.hasOwnProperty(type))
+			this.initCustomType(type);
 	},
 	initCustomFuncs: function() {
 		this.destroyCustomFuncs(this.DESTROY_REBUILD);
@@ -637,9 +651,7 @@ var handyClicksPrefSvc = {
 	},
 	isOkCustomType: function(cType) {
 		var cts = this.types;
-		if(!("hasOwnProperty" in cts) || !cts.hasOwnProperty(cType))
-			return false;
-		return this.isOkCustomObj(cts[cType]);
+		return "hasOwnProperty" in cts && cts.hasOwnProperty(cType) && this.isOkCustomObj(cts[cType]);
 	},
 	isOkCustomObj: function(ct) {
 		return this.ut.isObject(ct)
@@ -669,7 +681,7 @@ var handyClicksPrefSvc = {
 				.replace(/\r/g, "\\r")
 
 				.replace(/\u2028/g, "\\u2028")
-				.replace(/\u2029/g, "\\u2028")
+				.replace(/\u2029/g, "\\u2029")
 			: "";
 	},
 	enc: function(s) {
