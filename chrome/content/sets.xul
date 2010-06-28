@@ -451,7 +451,8 @@
 			<menuitem command="hc-sets-cmd-partialImportFromClipboard" key="hc-sets-key-partialImportFromClipboard" />
 		</menupopup>
 		<menupopup id="hc-sets-prefsManagementPopup" position="before_start">
-			<menuitem oncommand="handyClicksPrefUtils.openAboutConfig();" label="&hc.sets.allPrefs;" />
+			<menuitem id="hc-sets-prefs-all" class="menuitem-iconic handyClicks-iconic" oncommand="handyClicksPrefUtils.openAboutConfig();"
+				label="&hc.sets.allPrefs;" />
 			<menuseparator />
 			<menuitem oncommand="handyClicksSets.resetPrefs();" label="&hc.sets.defaults;" />
 			<menuseparator />

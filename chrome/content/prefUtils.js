@@ -93,11 +93,44 @@ var handyClicksPrefUtils = {
 	},
 
 	openAboutConfig: function(filter) {
-		var brWin = this.wu.wm.getMostRecentWindow("navigator:browser");
+		filter = filter || this.prefNS;
+		const wm = this.wu.wm;
+
+		// Search already opened tab:
+		var ws = wm.getEnumerator("navigator:browser");
+		var brWin, tbr;
+		while(ws.hasMoreElements()) {
+			brWin = ws.getNext();
+			tbr = brWin.gBrowser || brWin.getBrowser();
+			if(
+				Array.some(
+					tbr.tabContainer.childNodes,
+					function(tab) {
+						var br = tab.linkedBrowser;
+						if(br.currentURI.spec != "about:config")
+							return false;
+						var tb = br.contentDocument.getElementById("textbox");
+						if(tb && tb.wrappedJSObject.value == filter) {
+							//brWin.focus();
+							tbr.selectedTab = tab;
+							br.contentWindow.focus();
+							return true;
+						}
+						return false;
+					}
+				)
+			)
+				return;
+		}
+
+		// Search already opened browser window:
+		var brWin = wm.getMostRecentWindow("navigator:browser");
 		if(brWin) {
 			this.openAboutConfigFilter(brWin, filter);
 			return;
 		}
+
+		// Open new browser window:
 		brWin = window.openDialog(
 			this.pu.getPref("browser.chromeURL") || "chrome://browser/content/",
 			"_blank", "chrome,all,dialog=no",
@@ -107,8 +140,8 @@ var handyClicksPrefUtils = {
 		var _this = this;
 		brWin.addEventListener(
 			"load",
-			function f(e) {
-				brWin.removeEventListener("load", f, true);
+			function _l(e) {
+				brWin.removeEventListener("load", _l, true);
 				_this.openAboutConfigFilter(brWin, filter);
 			},
 			true
@@ -116,22 +149,21 @@ var handyClicksPrefUtils = {
 	},
 	openAboutConfigFilter: function(brWin, filter) {
 		brWin.focus();
-		var br = brWin.gBrowser || brWin.getBrowser();
-		if(br.currentURI.spec == "about:blank" && !br.webProgress.isLoadingDocument) {
-			var tab = br.selectedTab;
-			br.loadURI("about:config");
+		var tbr = brWin.gBrowser || brWin.getBrowser();
+		if(tbr.currentURI.spec == "about:blank" && !tbr.webProgress.isLoadingDocument) {
+			var tab = tbr.selectedTab;
+			tbr.loadURI("about:config");
 		}
 		else
-			var tab = br.selectedTab = br.addTab("about:config");
-		var win = tab.linkedBrowser;
-		filter = filter || this.prefNS;
+			var tab = tbr.selectedTab = tbr.addTab("about:config");
+		var br = tab.linkedBrowser;
 		var oldFx = this.ut.fxVersion <= 3.0;
 		var _this = this;
-		win.addEventListener(
+		br.addEventListener(
 			"load",
 			function _l(e) {
-				win.removeEventListener("load", _l, true);
-				var cWin = win.contentWindow;
+				br.removeEventListener("load", _l, true);
+				var cWin = br.contentWindow;
 				(function setFilter() {
 					var tb = cWin.document.getElementById("textbox");
 					if(!tb) {

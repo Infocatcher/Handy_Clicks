@@ -190,6 +190,9 @@ menuitem[command="hc-sets-cmd-enable"] {
 #hc-sets-tree-buttonImportCancel {
 	-moz-image-region: rect(48px 32px 64px 16px);
 }
+#hc-sets-prefs-all {
+	-moz-image-region: rect(48px 96px 64px 80px);
+}
 
 checkbox[id^="hc-sets-disallowMousemove-"] {
 	list-style-image: url("icons16.png");

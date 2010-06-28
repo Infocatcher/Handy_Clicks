@@ -55,10 +55,10 @@ var handyClicksSets = {
 
 		var de = document.documentElement;
 		var prefsButt = de.getButton("extra2");
+		prefsButt.setAttribute("type", "menu");
 		//prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
 		// Can't open popup from keyboard
 		prefsButt.appendChild(this.e("hc-sets-prefsManagementPopup"));
-		prefsButt.setAttribute("type", "menu");
 		prefsButt.className += " hc-iconic hc-preferences";
 
 		this.applyButton.className += " hc-iconic hc-apply";
@@ -68,10 +68,10 @@ var handyClicksSets = {
 	},
 	initShortcuts: function() {
 		var tr = this.tree = this.$("hc-sets-tree");
+		var tView = this.tView = tr.view;
 		this.tbo = tr.treeBoxObject;
-		this.tView = tr.view;
-		this.tSel = this.tView.selection;
 		this.tBody = tr.body;
+		this.tSel = tView.selection;
 		this.searcher.init(this, tr, this.$("hc-sets-tree-searchField"));
 
 		this.applyButton = document.documentElement.getButton("extra1");
@@ -525,12 +525,23 @@ var handyClicksSets = {
 	},
 	addProperties: function(tar, propsObj) {
 		var propsVal = tar.getAttribute("properties");
+		var changed = false;
 		for(var p in propsObj) if(propsObj.hasOwnProperty(p)) {
-			propsVal = propsVal.replace(new RegExp("(?:^|\\s)" + p + "(?:\\s|$)"), " ");
-			if(propsObj[p])
-				propsVal += " " + p;
+			//propsVal = propsVal.replace(new RegExp("(?:^|\\s)" + p + "(?:\\s|$)"), " ");
+			//if(propsObj[p])
+			//	propsVal += " " + p;
+			if(new RegExp("(?:^|\\s)" + p + "(?:\\s|$)").test(propsVal)) {
+				if(!propsObj[p]) { // Remove
+					propsVal = RegExp.leftContext + " " + RegExp.rightContext;
+					changed = true;
+				}
+			}
+			else if(propsObj[p]) { // Add
+				propsVal = propsVal + " " + p;
+				changed = true;
+			}
 		}
-		tar.setAttribute("properties", propsVal.replace(/^\s+|\s+$/g, "").replace(/\s+/g, " "));
+		changed && tar.setAttribute("properties", propsVal.replace(/^\s+|\s+$/g, "").replace(/\s+/g, " "));
 	},
 	addClildsProperties: function(parent, propsObj, addToParent) {
 		if(addToParent)
