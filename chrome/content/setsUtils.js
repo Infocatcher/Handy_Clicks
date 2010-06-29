@@ -109,17 +109,20 @@ var handyClicksSetsUtils = {
 		delete this.importFlag;
 		return this.importFlag = this.ut.getLocalized("importFlag");
 	},
-	createTitle: function(title, isModified, isImport) {
-		// [modifiedFlag] [importFlag] [title]
+	removeTitleFlags: function(title) {
 		var modifiedFlag = this.modifiedFlag + " ";
 		var importFlag = this.importFlag + " ";
 		if(title.indexOf(modifiedFlag) == 0)
 			title = title.substr(modifiedFlag.length);
 		if(title.indexOf(importFlag) == 0)
 			title = title.substr(importFlag.length);
+		return title;
+	},
+	createTitle: function(title, isModified, isImport) {
+		// [modifiedFlag] [importFlag] [title]
 		return (isModified ? this.modifiedFlag + " " : "")
 			+ (isImport ? this.importFlag + " " : "")
-			+ title;
+			+ this.removeTitleFlags(title);
 	},
 
 	notifyUnsaved: function() {

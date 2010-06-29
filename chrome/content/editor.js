@@ -277,6 +277,10 @@ var handyClicksEditor = {
 			this.setFuncsNotes(pVal);
 		else if(pName == "editor.ui.compact")
 			this.setCompactUI(pVal);
+		else if(pName == "editor.ui.invertWindowTitle") {
+			this.setWinTitle();
+			this.setDialogButtons();
+		}
 	},
 	initExtTypes: function() {
 		Array.forEach(
@@ -383,14 +387,15 @@ var handyClicksEditor = {
 		var shStr = this.ps.getModifiersStr(sh) + " + " + this.ps.getButtonStr(sh, true);
 		var type = this.$("hc-editor-itemTypes").getAttribute("label");
 		var typeStr = this.$("hc-editor-customType").value || this.$("hc-editor-customTypeExtId").value;
-		//title = " [" + title + (type ? " + " + type : "") + (typeStr ? " | " + typeStr : "") + "]";
 		var title = this.mainTabbox.selectedIndex == this.INDEX_TYPE
-			? " [" + typeStr + (typeStr ? " | " : "") + shStr + (type ? " + " + type : "") + "]"
-			: " [" + shStr + (type ? " + " + type : "") + (typeStr ? " | " + typeStr : "") + "]";
-		title = document.title.replace(/\s+\[.+\]\*?$/, "") + title;
-		//document.title = document.title.replace(/\s+\[.+\]\*?$/, "") + title + (this.ps.otherSrc ? "*" : "");
-		//document.title = this.su.createTitle(title, !this.applyButton.disabled, this.ps.otherSrc);
-		document.title = title;
+			? typeStr + (typeStr ? " | " : "") + shStr + (type ? " + " + type : "")
+			: shStr + (type ? " + " + type : "") + (typeStr ? " | " + typeStr : "");
+		var baseTitle = this.su.removeTitleFlags(document.title)
+			.replace(/\s+\[.+\]\*?$/, "")
+			.replace(/^.*? \u2013 /, "");
+		document.title = this.pu.pref("editor.ui.invertWindowTitle")
+			? title + " \u2013 " + baseTitle
+			: baseTitle + " [" + title + "]";
 	},
 	initShortcutEditor: function() {
 		var so = this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};

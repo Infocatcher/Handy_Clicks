@@ -112,20 +112,24 @@ var handyClicksPrefSvc = {
 		for(var p in this._prefVars)
 			tar[p] = this.ut.getOwnProperty(src, this._prefVars[p]);
 	},
-	_loadError: 0,
-	_skippedLoad: false,
+
+	SETS_LOAD_OK: 0,
+	SETS_LOAD_EVAL_ERROR: 1,
+	SETS_LOAD_INVALID_DATA: 2,
+	SETS_LOAD_SKIPPED: 3,
+
+	_loadStatus: -1,
 	loadSettings: function(pSrc) {
 		if(this.isMainWnd) {
 			if(!this.hc.enabled) {
 				this._devMode && this.ut._log("loadSettings() -> disabled");
-				this._skippedLoad = true;
+				this._loadStatus = this.SETS_LOAD_SKIPPED;
 				return;
 			}
-			this._skippedLoad = false;
 			this._devMode && this.ut._log("loadSettings()");
 		}
 		this.otherSrc = !!pSrc;
-		this._loadError = 0;
+		//this._loadStatus = this.SETS_LOAD_OK;
 		pSrc = pSrc || this.prefsFile;
 		var fromProfile = false;
 		if(pSrc instanceof Components.interfaces.nsILocalFile) {
@@ -138,12 +142,13 @@ var handyClicksPrefSvc = {
 		}
 		if(typeof pSrc == "string") {
 			// Uses sandbox instead mozIJSSubScriptLoader for security purposes
+			// Since version 0.1.1.0 we use UTF-8 for store strings and can't use mozIJSSubScriptLoader
 			var sandbox = new Components.utils.Sandbox("about:blank");
 			try {
 				Components.utils.evalInSandbox(pSrc, sandbox);
 			}
 			catch(e) {
-				this._loadError = 1;
+				this._loadStatus = this.SETS_LOAD_EVAL_ERROR;
 				this.ut._err(new Error("Invalid prefs: evalInSandbox() failed"));
 				this.ut._err(e);
 				if(this.otherSrc) {
@@ -164,7 +169,7 @@ var handyClicksPrefSvc = {
 		this.importSrc(tmp, sandbox);
 
 		if(!this.ut.isObject(tmp.prefs) || !this.ut.isObject(tmp.types)) {
-			this._loadError = 2;
+			this._loadStatus = this.SETS_LOAD_INVALID_DATA;
 			this.ut._err(new Error("Loaded prefs or types is not object"));
 			if(this.otherSrc) {
 				this.ut.alert(
@@ -187,6 +192,7 @@ var handyClicksPrefSvc = {
 				this.compileCustomTypes();
 			this.initCustomFuncs();
 		}
+		this._loadStatus = this.SETS_LOAD_OK;
 	},
 	loadSettingsBackup: function() {
 		var pFile = this.prefsFile;

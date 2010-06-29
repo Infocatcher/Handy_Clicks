@@ -2109,7 +2109,7 @@ var handyClicksSets = {
 		this.ps.loadSettings(pSrc);
 		this.setDialogButtons();
 		//this.ps.reloadSettings(false);
-		if(this.ps._loadError)
+		if(this.ps._loadStatus)
 			return;
 		this.setImportStatus(true, partialImport, srcId == 1 /* from clipboard */);
 		if(partialImport)
