@@ -1143,13 +1143,17 @@ var handyClicks = {
 			.forEach(this.registerHotkey, this);
 	},
 	registerHotkey: function(kId) {
+		var kElt = this.e("handyClicks-key-" + kId);
+		if(!kElt) {
+			this.ut._err(new Error("Key element not found: \"" + kId + "\""), true);
+			return;
+		}
 		var keyStr = this.pu.pref("key." + kId);
 		if(!keyStr) // Key is disabled
 			return;
 		var tokens = keyStr.split(" ");
 		var key = tokens.pop() || " ";
 		var modifiers = tokens.join(",");
-		var kElt = this.e("handyClicks-key-" + kId);
 		kElt.removeAttribute("disabled");
 		kElt.setAttribute(key.indexOf("VK_") == 0 ? "keycode" : "key", key);
 		kElt.setAttribute("modifiers", modifiers);

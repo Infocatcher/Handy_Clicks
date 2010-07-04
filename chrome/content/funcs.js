@@ -678,13 +678,14 @@ var handyClicksFuncs = {
 			.createInstance(Components.interfaces.nsILocalFile);
 		try {
 			file.initWithPath(path);
-			file.normalize(); // dir1/dir2/../file -> dir1/file
 		}
 		catch(e) {
 			this.ut._err(new Error("Invalid path: " + path));
 			this.ut._err(e);
 			return null;
 		}
+		try { file.normalize(); } // dir1/dir2/../file -> dir1/file
+		catch(e) {}
 		return file;
 	},
 	getLocalPath: function(path) {

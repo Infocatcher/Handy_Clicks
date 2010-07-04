@@ -157,3 +157,8 @@ const module = {
 function NSGetModule(comMgr, fileSpec) {
 	return module;
 }
+function NSGetFactory(cid) {
+	if(!cid.equals(P_CID) && !cid.equals(C_CID))
+		throw cr.NS_ERROR_FACTORY_NOT_REGISTERED;
+	return factory;
+}
