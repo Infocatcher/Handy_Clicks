@@ -300,11 +300,22 @@ var handyClicksUtils = {
 		}
 		return null;
 	},
-	getLocalFile: function(path) {
-		if(!path)
-			return path;
-		path = path.replace(
-			/^%([^%]+)%/,
+	expandVariables: function(str) {
+		return this.expandInternalVariables(this.expandEnvironmentVariables(str));
+	},
+	expandEnvironmentVariables: function(str) {
+		var env = Components.classes["@mozilla.org/process/environment;1"]
+			.getService(Components.interfaces.nsIEnvironment);
+		return str.replace(
+			/%([^%]+)%/g,
+			function(s, alias) {
+				return env.exists(alias) ? env.get(alias) : s;
+			}
+		);
+	},
+	expandInternalVariables: function (str) {
+		return str.replace(
+			/^%([^%]+)%/, //~ todo: may conflict with environment variables => [ProfD]/dir like Thunderbird or some other
 			this.ut.bind(function(s, alias) {
 				if(alias.toLowerCase() == "profile" || alias == "ProfD")
 					return this.ps._profileDir.path;
@@ -312,17 +323,23 @@ var handyClicksUtils = {
 				return aliasFile ? aliasFile.path : s;
 			}, this)
 		);
+	},
+	getLocalFile: function(path) {
+		if(!path)
+			return path;
+		path = this.expandVariables(path);
 		var file = Components.classes["@mozilla.org/file/local;1"]
 			.createInstance(Components.interfaces.nsILocalFile);
 		try {
 			file.initWithPath(path);
-			file.normalize(); // dir1/dir2/../file -> dir1/file
 		}
 		catch(e) {
 			this._err(new Error("Invalid path: \"" + path + "\""));
 			this._err(e);
 			return null;
 		}
+		try { file.normalize(); } // dir1/dir2/../file -> dir1/file
+		catch(e) {}
 		return file;
 	},
 	getLocalPath: function(path) {

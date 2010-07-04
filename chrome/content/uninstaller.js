@@ -10,17 +10,22 @@ handyClicksUninstaller = {
 	},
 	get newAddonManager() {
 		delete this.newAddonManager;
-		return this.newAddonManager = "@mozilla.org/extensions/manager;1" in Components.classes;
+		return this.newAddonManager = !("@mozilla.org/extensions/manager;1" in Components.classes);
 	},
 	initUninstallObserver: function() {
 		this.oSvc.addObserver(this, "quit-application", false);
-		this.oSvc.addObserver(
-			this,
-			this.newAddonManager
-				? "em-action-requested"
-				: "final-ui-startup", // Wait for AddonManager startup
-			false
-		);
+		if(this.newAddonManager) {
+			try {
+				// In Gecko 2 XPCOM can starts after "final-ui-startup"
+				this.addAddonListener();
+			}
+			catch(e) {
+				// Wait for AddonManager startup
+				this.oSvc.addObserver(this, "final-ui-startup", false);
+			}
+		}
+		else
+			this.oSvc.addObserver(this, "em-action-requested", false);
 	},
 	destroyUninstallObserver: function() {
 		this.oSvc.removeObserver(this, "quit-application");
@@ -32,10 +37,7 @@ handyClicksUninstaller = {
 	observe: function(subject, topic, data) {
 		if(topic == "final-ui-startup") {
 			this.oSvc.removeObserver(this, "final-ui-startup");
-			// Firefox 3.7a5pre+:
-			Components.utils.import("resource://gre/modules/AddonManager.jsm");
-			//AddonManagerPrivate.startup();
-			AddonManager.addAddonListener(this);
+			this.addAddonListener();
 		}
 		else if(topic == "quit-application") {
 			this.destroyUninstallObserver();
@@ -55,6 +57,12 @@ handyClicksUninstaller = {
 			else if(data == "item-cancel-action")
 				this.isUninstall = false;
 		}
+	},
+	addAddonListener: function() {
+		// Firefox 3.7a5pre+:
+		Components.utils.import("resource://gre/modules/AddonManager.jsm");
+		//AddonManagerPrivate.startup();
+		AddonManager.addAddonListener(this);
 	},
 	onUninstalling: function(ext, requiresRestart) {
 		if(ext.id == this.guid)
