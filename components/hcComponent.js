@@ -31,6 +31,8 @@ jsLoader.loadSubScript("chrome://handyclicks/content/uninstaller.js");
 var initialized = false;
 var wu, ct;
 function init() {
+	if(initialized)
+		return;
 	initialized = true;
 	jsLoader.loadSubScript("chrome://handyclicks/content/winUtils.js"); wu = handyClicksWinUtils;
 	jsLoader.loadSubScript("chrome://handyclicks/content/consts.js");   ct = handyClicksConst;
@@ -101,8 +103,7 @@ const factory = {
 	createInstance: function(outer, iid) {
 		if(outer != null)
 			throw cr.NS_ERROR_NO_AGGREGATION;
-		if(!initialized)
-			init();
+		init();
 		if(iid.equals(P_HANDLER))
 			return protocol;
 		if(iid.equals(C_HANDLER))
@@ -151,4 +152,9 @@ const module = {
 
 function NSGetModule(comMgr, fileSpec) {
 	return module;
+}
+function NSGetFactory(cid) {
+	if(!cid.equals(P_CID) && !cid.equals(C_CID))
+		throw cr.NS_ERROR_FACTORY_NOT_REGISTERED;
+	return factory;
 }
