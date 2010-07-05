@@ -110,7 +110,7 @@ var handyClicks = {
 			this.ut.stopEvent(e);
 		else if(amd === undefined && !this.ut.isChromeWin(e.view.top)) {
 			// Prevent page handlers, but don't stop Mouse Gestures
-			var cWin = e.view.top === content ? gBrowser.mCurrentBrowser : e.view.top;
+			var cWin = e.view.top === content ? gBrowser.selectedBrowser : e.view.top;
 			var _this = this;
 			cWin.addEventListener(
 				"mousedown",
@@ -254,15 +254,15 @@ var handyClicks = {
 		if(stop && isMouseup)
 			_cs.time = Date.now();
 		if(
-			stop
-			|| (
-				canStop && e.type == "command" && e.originalTarget.localName == "command"
-				&& _cs.hasOwnProperty("time")
-				&& Date.now() - _cs.time < 100
-			)
+			e.type == "command"
+				? canStop
+					&& e.originalTarget.localName == "command"
+					&& _cs.hasOwnProperty("time")
+					&& Date.now() - _cs.time < 100
+				: stop
 		) {
 			if(isMouseup && e.view.top === content) { // Prevent page handlers, but don't stop FireGestures extension
-				var cWin = gBrowser.mCurrentBrowser;
+				var cWin = gBrowser.selectedBrowser;
 				var _this = this;
 				cWin.addEventListener(
 					"mouseup",

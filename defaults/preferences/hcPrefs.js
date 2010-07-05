@@ -46,6 +46,7 @@ pref("extensions.handyclicks.funcs.trimStrings", true);
 
 pref("extensions.handyclicks.key.toggleStatus", "VK_F2");
 pref("extensions.handyclicks.key.openSettings", "shift VK_F2");
+pref("extensions.handyclicks.key.openAboutConfig", "");
 pref("extensions.handyclicks.key.editMode", "accel VK_F2");
 pref("extensions.handyclicks.key.importFromClipboard", "accel shift VK_F2");
 
@@ -65,6 +66,7 @@ pref("extensions.handyclicks.editor.tabSymbol", "	");
 pref("extensions.handyclicks.editor.externalEditorPath", "");
 pref("extensions.handyclicks.editor.externalEditorArgs", "-n%L");
 pref("extensions.handyclicks.editor.externalEditorExtension", "js");
+pref("extensions.handyclicks.editor.testFocusMainWindow", true);
 pref("extensions.handyclicks.editor.ui.showCustomFuncsNotes", true);
 pref("extensions.handyclicks.editor.ui.compact", false);
 pref("extensions.handyclicks.editor.ui.invertWindowTitle", false);

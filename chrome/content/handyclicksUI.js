@@ -108,7 +108,9 @@ var handyClicksUI = {
 	buildSettingsPopup: function(e) {
 		this.checkClipboard();
 
-		this.$("handyClicks-allSettingsMenuitem").setAttribute("hidden", !this.pu.pref("ui.showAllSettingsMenuitem"));
+		var hideAllSets = !this.pu.pref("ui.showAllSettingsMenuitem");
+		this.$("handyClicks-allSettingsMenuitem").setAttribute("hidden", hideAllSets);
+		this.$("handyClicks-editModeSeparator")  .setAttribute("hidden", hideAllSets);
 
 		var inheritContext = this.pu.pref("ui.inheritToolbarContextMenu")
 			&& document.popupNode && document.popupNode.localName.indexOf("toolbar") == 0;

@@ -22,6 +22,8 @@
 	<commandset id="mainCommandSet">
 		<command id="handyClicks-cmd-openSettings" oncommand="handyClicksWinUtils.openSettings();"
 			label="&handyClicks.settingsLabel;" accesskey="&handyClicks.settingsAccesskey;" />
+		<command id="handyClicks-cmd-openAboutConfig" oncommand="handyClicksPrefUtils.openAboutConfig();"
+			label="&handyClicks.allSettingsLabel;" accesskey="&handyClicks.allSettingsAccesskey;" />
 		<command id="handyClicks-cmd-editMode" oncommand="handyClicksUI.toggleEditMode();"
 			label="&handyClicks.editModeLabel;" accesskey="&handyClicks.editModeAccesskey;" />
 		<command id="handyClicks-cmd-importFromClipboard"
@@ -32,6 +34,7 @@
 		<!-- See registerHotkeys() in handyclicksUI.js -->
 		<key id="handyClicks-key-toggleStatus" oncommand="handyClicksUI.toggleStatus(true);" disabled="true" />
 		<key id="handyClicks-key-openSettings" command="handyClicks-cmd-openSettings" disabled="true" />
+		<key id="handyClicks-key-openAboutConfig" command="handyClicks-cmd-openAboutConfig" disabled="true" />
 		<key id="handyClicks-key-editMode" oncommand="handyClicksUI.toggleEditMode(true);" disabled="true" />
 		<key id="handyClicks-key-importFromClipboard" command="handyClicks-cmd-importFromClipboard" disabled="true" />
 	</keyset>
@@ -66,8 +69,8 @@
 				command="handyClicks-cmd-openSettings" key="handyClicks-key-openSettings"
 				handyclicks_main="true" />
 			<menuitem id="handyClicks-allSettingsMenuitem" class="menuitem-iconic handyClicks-iconic"
-				oncommand="handyClicksPrefUtils.openAboutConfig();"
-				label="&handyClicks.allSettingsLabel;" accesskey="&handyClicks.allSettingsAccesskey;" />
+				command="handyClicks-cmd-openAboutConfig" key="handyClicks-key-openAboutConfig" />
+			<menuseparator id="handyClicks-editModeSeparator" />
 			<menuitem id="handyClicks-editMode" class="menuitem-iconic handyClicks-iconic"
 				command="handyClicks-cmd-editMode" key="handyClicks-key-editMode" />
 			<menuseparator id="handyClicks-importFromClipboardSeparator" />

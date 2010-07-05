@@ -108,6 +108,7 @@ var handyClicksEditor = {
 				id="hc-editor-buttonTest"
 				class="dialog-button hc-iconic"
 				command="hc-editor-cmd-test"
+				onclick="handyClicksEditor.testSettings(event);"
 			/>
 		);
 		var bUndo = this.ut.parseFromXML(
@@ -923,20 +924,31 @@ var handyClicksEditor = {
 	saveSettings: function(applyFlag) {
 		switch(this.mainTabbox.selectedIndex) {
 			case this.INDEX_SHORTCUT: return this.saveShortcut(applyFlag);
-			case this.INDEX_TYPE: return this.saveCustomType(applyFlag);
-			default: return false;
+			case this.INDEX_TYPE:     return this.saveCustomType(applyFlag);
+			default:                  return false;
 		}
 	},
-	testSettings: function() {
+	testSettings: function(e) {
+		var invertFocusPref = e && (e.button == 1 || e.button == 0 && this.ut.hasModifier(e));
+		if(e && !invertFocusPref)
+			return;
+
 		this.$("hc-editor-cmd-test").setAttribute("disabled", "true");
 		var ok = false;
 		switch(this.mainTabbox.selectedIndex) {
 			case this.INDEX_SHORTCUT: ok = this.testShortcut();   break;
-			case this.INDEX_TYPE: ok = this.testCustomType();
+			case this.INDEX_TYPE:     ok = this.testCustomType();
+			default:                  return false;
 		}
 		ok = ok && this.testMode;
-		if(ok)
+		if(ok) {
 			this.$("hc-editor-cmd-undo").setAttribute("disabled", "false");
+			var focus = this.pu.pref("editor.testFocusMainWindow");
+			if(invertFocusPref ? !focus : focus) {
+				var mainWin = this.wu.wm.getMostRecentWindow("navigator:browser");
+				mainWin && mainWin.focus();
+			}
+		}
 		return ok;
 	},
 	undoTestSettings: function(reloadAll) {
@@ -952,22 +964,22 @@ var handyClicksEditor = {
 	deleteSettings: function() {
 		switch(this.mainTabbox.selectedIndex) {
 			case this.INDEX_SHORTCUT: return this.deleteShortcut();
-			case this.INDEX_TYPE: return this.deleteCustomType();
-			default: return false;
+			case this.INDEX_TYPE:     return this.deleteCustomType();
+			default:                  return false;
 		}
 	},
 	copySettings: function() {
 		switch(this.mainTabbox.selectedIndex) {
 			case this.INDEX_SHORTCUT: return this.copyShortcut();
-			case this.INDEX_TYPE: return this.copyCustomType();
-			default: return false;
+			case this.INDEX_TYPE:     return this.copyCustomType();
+			default:                  return false;
 		}
 	},
 	pasteSettings: function() {
 		switch(this.mainTabbox.selectedIndex) {
 			case this.INDEX_SHORTCUT: return this.pasteShortcut();
-			case this.INDEX_TYPE: return this.pasteCustomType();
-			default: return false;
+			case this.INDEX_TYPE:     return this.pasteCustomType();
+			default:                  return false;
 		}
 	},
 	checkSaved: function() {
