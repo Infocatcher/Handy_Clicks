@@ -315,8 +315,10 @@ var handyClicksUI = {
 			return;
 		}
 		var keyStr = this.pu.pref("key." + kId);
-		if(!keyStr) // Key is disabled
+		if(!keyStr) { // Key is disabled
+			kElt.setAttribute("key", ""); // Strange things may happens without this for <key command="..." />
 			return;
+		}
 		var tokens = keyStr.split(" ");
 		var key = tokens.pop() || " ";
 		var modifiers = tokens.join(",");
