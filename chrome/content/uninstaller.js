@@ -30,9 +30,9 @@ handyClicksUninstaller = {
 	destroyUninstallObserver: function() {
 		this.oSvc.removeObserver(this, "quit-application");
 		if(this.newAddonManager)
-			this.oSvc.removeObserver(this, "em-action-requested");
-		else
 			AddonManager.removeAddonListener(this);
+		else
+			this.oSvc.removeObserver(this, "em-action-requested");
 	},
 	observe: function(subject, topic, data) {
 		if(topic == "final-ui-startup") {
@@ -60,7 +60,8 @@ handyClicksUninstaller = {
 	},
 	addAddonListener: function() {
 		// Firefox 3.7a5pre+:
-		Components.utils.import("resource://gre/modules/AddonManager.jsm");
+		// In Firefox 1.5 we can't use "import" keyword (we get syntax error)
+		Components.utils["import"]("resource://gre/modules/AddonManager.jsm");
 		//AddonManagerPrivate.startup();
 		AddonManager.addAddonListener(this);
 	},
