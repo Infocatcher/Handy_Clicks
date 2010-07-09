@@ -1161,33 +1161,68 @@ var handyClicks = {
 		kElt.setAttribute("modifiers", modifiers);
 	},
 
+	// Uninstaller:
+	// Next version uses global uninstaller component and remove preferences only on "quit-application".
+	// Here is simplified version:
+	guid: "handyclicks@infocatcher",
 	get oSvc() {
 		return Components.classes["@mozilla.org/observer-service;1"]
 			.getService(Components.interfaces.nsIObserverService);
 	},
+	get newAddonManager() {
+		delete this.newAddonManager;
+		return this.newAddonManager = !("@mozilla.org/extensions/manager;1" in Components.classes);
+	},
 	initUninstallObserver: function() {
-		this.oSvc.addObserver(this, "em-action-requested", false);
+		if(this.newAddonManager) {
+			// Firefox 3.7a5pre+:
+			// In Firefox 1.5 we can't use "import" keyword (we get syntax error)
+			Components.utils["import"]("resource://gre/modules/AddonManager.jsm");
+			AddonManager.addAddonListener(this);
+		}
+		else
+			this.oSvc.addObserver(this, "em-action-requested", false);
 	},
 	destroyUninstallObserver: function() {
-		this.oSvc.removeObserver(this, "em-action-requested");
+		if(this.newAddonManager)
+			AddonManager.removeAddonListener(this);
+		else
+			this.oSvc.removeObserver(this, "em-action-requested");
 	},
 	observe: function(subject, topic, data) {
 		if(
 			topic == "em-action-requested"
 			&& subject instanceof Components.interfaces.nsIUpdateItem
-			&& subject.id == "handyclicks@infocatcher"
-			&& data == "item-uninstalled"
-			&& !this.ut.storage("uninstalled")
+			&& subject.id == this.guid
 		) {
-			this.ut.storage("uninstalled", true);
-			this.uninstall();
+			if(data == "item-uninstalled")
+				this.uninstall();
+			else if(data == "item-cancel-action")
+				this.ut.storage("uninstallAcked", false);
 		}
 	},
+	onUninstalling: function(ext, requiresRestart) {
+		if(ext.id == this.guid)
+			this.uninstall();
+	},
+	onOperationCancelled: function(ext) {
+		if(
+			ext.id == this.guid
+			&& !(ext.pendingOperations & AddonManager.PENDING_UNINSTALL)
+		)
+			this.ut.storage("uninstallAcked", false);
+	},
 	uninstall: function() {
+		if(this.ut.storage("uninstallAcked")) // Here is observer for each browser window...
+			return;
+		this.ut.storage("uninstallAcked", true);
+
 		var ps = this.ut.promptsSvc;
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
 		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
-		var win = this.wu.wm.getMostRecentWindow("Extension:Manager") || window;
+		var win = this.wu.wm.getMostRecentWindow("Extension:Manager")
+			|| this.wu.wm.getMostRecentWindow("Extension:Manager-extensions") // Firefox 1.5
+			|| window;
 		var button = ps.confirmEx(
 			win, this.ut.getLocalized("title"),
 			this.ut.getLocalized("removeSettingsConfirm"),
@@ -1212,7 +1247,7 @@ var handyClicks = {
 
 		//this.ps._prefsDir.remove(true);
 		// Based on components/nsExtensionManager.js from Firefox 3.6
-		function removeDirRecursive(dir) {
+		(function removeDirRecursive(dir) {
 			try {
 				dir.remove(true);
 				return;
@@ -1223,7 +1258,7 @@ var handyClicks = {
 			while(dirEntries.hasMoreElements()) {
 				var entry = dirEntries.getNext().QueryInterface(Components.interfaces.nsIFile);
 				if(entry.isDirectory())
-					arguments.callee.call(this, entry);
+					removeDirRecursive(entry);
 				else {
 					entry.permissions = 0644;
 					entry.remove(false);
@@ -1231,7 +1266,6 @@ var handyClicks = {
 			}
 			dir.permissions = 0755;
 			dir.remove(true);
-		}
-		removeDirRecursive(this.ps._prefsDir);
+		})(this.ps._prefsDir);
 	}
 };
