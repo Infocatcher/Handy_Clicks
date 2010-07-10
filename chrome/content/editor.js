@@ -287,8 +287,10 @@ var handyClicksEditor = {
 		}
 		this.initFuncsList(isCustom, setsObj.action || null, delayed);
 		this.$("hc-editor-enabled" + delayed).checked = typeof setsObj.enabled != "boolean" || setsObj.enabled;
-		if(!delayed)
+		if(!delayed) {
 			this.$("hc-editor-allowMousedown").value = "" + this.ut.getOwnProperty(setsObj, "allowMousedownEvent");
+			this.initImgIgnoreLinks(null, setsObj);
+		}
 	},
 	selectCustomFunc: function(isCustom, delayed) {
 		delayed = delayed || "";
@@ -522,13 +524,15 @@ var handyClicksEditor = {
 		this.loadCustomType(iType);
 		this.initImgIgnoreLinks(iType);
 	},
-	initImgIgnoreLinks: function(iType) {
+	initImgIgnoreLinks: function(iType, setsObj) {
 		iType = iType || this.currentType;
 		var isImg = iType == "img";
 		var ignoreLinks = this.$("hc-editor-imgIgnoreLinks");
 		ignoreLinks.hidden = !isImg;
-		if(isImg)
-			ignoreLinks.checked = this.ut.getOwnProperty(this.ps.prefs, this.shortcut, iType, "ignoreLinks") || false;
+		if(isImg) {
+			setsObj = setsObj || this.ut.getOwnProperty(this.ps.prefs, this.shortcut, iType);
+			ignoreLinks.checked = this.ut.getOwnProperty(setsObj, "ignoreLinks") || false;
+		}
 	},
 	addFuncArgs: function(delayed) {
 		delayed = delayed || "";
@@ -893,11 +897,16 @@ var handyClicksEditor = {
 		var si = funcs.selectedItem;
 		if(!si)
 			return;
+
+		var so = this.getFuncObj(delayed);
+		if(so && this.currentType == "img")
+			so.ignoreLinks = this.$("hc-editor-imgIgnoreLinks").checked;
+
 		this.ut.storage("shortcut", {
 			supports: si.getAttribute("hc_supports"),
 			app:      si.getAttribute("hc_app"),
 			required: si.getAttribute("hc_required"),
-			so: this.getFuncObj(delayed)
+			so:       so
 		});
 	},
 	pasteShortcut: function() {

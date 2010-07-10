@@ -146,14 +146,15 @@
 <!ENTITY hc.editor.mousedownStop "Всегда останавливать">
 
 <!ENTITY hc.editor.tabFunc "Функция">
+<!ENTITY hc.editor.tabFuncTip "Выполняется при наступлении выбранного события">
 <!ENTITY hc.editor.tabFuncDelay "Отложенная функция">
+<!ENTITY hc.editor.tabFuncDelayTip "Выполняется после задержки">
 
 <!ENTITY hc.editor.func "Функция:">
 <!ENTITY hc.editor.funcArgsCaption "Аргументы">
 <!ENTITY hc.editor.funcLabel "Название:">
 <!ENTITY hc.editor.funcArgs "Аргументы:">
 <!ENTITY hc.editor.funcCode "Код">
-<!ENTITY hc.editor.funcCodeTip "Выполняется при клике">
 <!ENTITY hc.editor.funcInit "Инициализация">
 <!ENTITY hc.editor.funcInitTip "Выполняется при (пере)загрузке настроек">
 

@@ -146,14 +146,15 @@
 <!ENTITY hc.editor.mousedownStop "Always stop">
 
 <!ENTITY hc.editor.tabFunc "Function">
+<!ENTITY hc.editor.tabFuncTip "Executes on selected event">
 <!ENTITY hc.editor.tabFuncDelay "Delayed Function">
+<!ENTITY hc.editor.tabFuncDelayTip "Executes after delay">
 
 <!ENTITY hc.editor.func "Function:">
 <!ENTITY hc.editor.funcArgsCaption "Arguments">
 <!ENTITY hc.editor.funcLabel "Label:">
 <!ENTITY hc.editor.funcArgs "Arguments:">
 <!ENTITY hc.editor.funcCode "Code">
-<!ENTITY hc.editor.funcCodeTip "Execites on click">
 <!ENTITY hc.editor.funcInit "Initialization">
 <!ENTITY hc.editor.funcInitTip "Execites on (re)loading settings">
 
