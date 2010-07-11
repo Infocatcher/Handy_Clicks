@@ -36,6 +36,7 @@ menulist[hc_sets="disabled"] .menulist-label {
 }
 #hc-editor-button, #hc-editor-button menuitem {
 	list-style-image: url("icons16.png");
+	-moz-image-region: rect(0 32px 16px 16px); /* Icon for wrong value */
 }
 #hc-editor-button[value="0"], #hc-editor-button menuitem[value="0"] {
 	-moz-image-region: rect(0 48px 16px 32px);

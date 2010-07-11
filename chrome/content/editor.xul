@@ -126,7 +126,8 @@
 
 				<tabbox id="hc-editor-funcTabbox" flex="1">
 					<tabs>
-						<tab label="&hc.editor.tabAction;" accesskey="&hc.editor.tabActionAccesskey;" />
+						<tab label="&hc.editor.tabAction;" accesskey="&hc.editor.tabActionAccesskey;"
+							tooltiptext="&hc.editor.tabActionTip;" />
 						<tab id="hc-editor-funcTab-delay"
 							label="&hc.editor.tabActionDelay;" accesskey="&hc.editor.tabActionDelayAccesskey;"
 							tooltiptext="&hc.editor.tabActionDelayTip;" />
@@ -190,7 +191,7 @@
 								<tabbox id="hc-editor-funcCustomTabbox" flex="1">
 									<tabs>
 										<tab label="&hc.editor.funcCode;" accesskey="&hc.editor.funcCodeAccesskey;"
-											tooltiptext="&hc.editor.funcCodeTip;" selected="true" />
+											selected="true" />
 										<tab label="&hc.editor.funcInit;" accesskey="&hc.editor.funcInitAccesskey;"
 											tooltiptext="&hc.editor.funcInitTip;" hc_empty="true" />
 									</tabs>

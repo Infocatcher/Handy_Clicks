@@ -27,6 +27,7 @@
 
 <!ENTITY hc.editor.tabAction "Действие">
 <!ENTITY hc.editor.tabActionAccesskey "й">
+<!ENTITY hc.editor.tabActionTip "Выполняется при наступлении выбранного события">
 <!ENTITY hc.editor.tabActionDelay "Отложенное действие">
 <!ENTITY hc.editor.tabActionDelayAccesskey "л">
 <!ENTITY hc.editor.tabActionDelayTip "Выполняется через 500 мс"> <!-- "500" will be replaced with correct value -->
@@ -41,7 +42,6 @@
 <!ENTITY hc.editor.funcArgsCaption "Аргументы">
 <!ENTITY hc.editor.funcCode "Код">
 <!ENTITY hc.editor.funcCodeAccesskey "К">
-<!ENTITY hc.editor.funcCodeTip "Выполняется при клике">
 <!ENTITY hc.editor.argsNote "Аргументы:">
 <!ENTITY hc.editor.funcInit "Инициализация">
 <!ENTITY hc.editor.funcInitAccesskey "И">

@@ -429,8 +429,10 @@ var handyClicksEditor = {
 		this.initFuncsList(setsObj, delayed);
 		var enabled = this.ut.getOwnProperty(setsObj, "enabled");
 		this.$("hc-editor-enabled" + delayed).checked = typeof enabled != "boolean" || enabled;
-		if(!delayed)
+		if(!delayed) {
 			this.$("hc-editor-allowMousedown").value = "" + this.ut.getOwnProperty(setsObj, "allowMousedownEvent");
+			this.initImgIgnoreLinks(null, setsObj);
+		}
 	},
 	selectCustomFunc: function(isCustom, delayed) {
 		delayed = delayed || "";
@@ -840,7 +842,6 @@ var handyClicksEditor = {
 		}
 		else {
 			this.initShortcutEditor();
-			this.setDialogButtons();
 		}
 		this.highlightUsedTypes();
 		this.disableUnsupported();
@@ -1149,7 +1150,7 @@ var handyClicksEditor = {
 		this.initFuncEditor(so, delayed, true);
 		if(!isDelayed) {
 			this.$("hc-editor-events").value = so.eventType || "click";
-			this.initImgIgnoreLinks(type, so);
+			//this.initImgIgnoreLinks(type, so);
 		}
 
 		this.disableUnsupported();

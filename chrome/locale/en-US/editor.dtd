@@ -27,6 +27,7 @@
 
 <!ENTITY hc.editor.tabAction "Action">
 <!ENTITY hc.editor.tabActionAccesskey "n">
+<!ENTITY hc.editor.tabActionTip "Executes on selected event">
 <!ENTITY hc.editor.tabActionDelay "Delayed Action">
 <!ENTITY hc.editor.tabActionDelayAccesskey "y">
 <!ENTITY hc.editor.tabActionDelayTip "Performed after 500 ms"> <!-- "500" will be replaced with correct value -->
@@ -41,7 +42,6 @@
 <!ENTITY hc.editor.funcArgsCaption "Arguments">
 <!ENTITY hc.editor.funcCode "Code">
 <!ENTITY hc.editor.funcCodeAccesskey "C">
-<!ENTITY hc.editor.funcCodeTip "Executes on click">
 <!ENTITY hc.editor.argsNote "Arguments:">
 <!ENTITY hc.editor.funcInit "Initialization">
 <!ENTITY hc.editor.funcInitAccesskey "I">
