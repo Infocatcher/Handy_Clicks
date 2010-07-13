@@ -13,7 +13,7 @@ handyClicksUninstaller = {
 		return this.newAddonManager = !("@mozilla.org/extensions/manager;1" in Components.classes);
 	},
 	initUninstallObserver: function() {
-		this.oSvc.addObserver(this, "quit-application", false);
+		this.oSvc.addObserver(this, "quit-application-granted", false);
 		if(this.newAddonManager) {
 			try {
 				// In Gecko 2 XPCOM can starts after "final-ui-startup"
@@ -28,7 +28,7 @@ handyClicksUninstaller = {
 			this.oSvc.addObserver(this, "em-action-requested", false);
 	},
 	destroyUninstallObserver: function() {
-		this.oSvc.removeObserver(this, "quit-application");
+		this.oSvc.removeObserver(this, "quit-application-granted");
 		if(this.newAddonManager)
 			AddonManager.removeAddonListener(this);
 		else
@@ -39,7 +39,7 @@ handyClicksUninstaller = {
 			this.oSvc.removeObserver(this, "final-ui-startup");
 			this.addAddonListener();
 		}
-		else if(topic == "quit-application") {
+		else if(topic == "quit-application-granted") {
 			this.destroyUninstallObserver();
 			if(this.isUninstall && this.uninstallConfirmed) {
 				this.include();
