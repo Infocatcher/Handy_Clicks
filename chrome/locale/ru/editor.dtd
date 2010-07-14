@@ -48,7 +48,6 @@
 <!ENTITY hc.editor.funcInit "Инициализация">
 <!ENTITY hc.editor.funcInitAccesskey "И">
 <!ENTITY hc.editor.funcInitTip "Выполняется при (пере)загрузке настроек">
-<!ENTITY hc.editor.funcInitReturnNote "Должно возвращать: функцию-деструктор или ничего">
 
 <!ENTITY hc.editor.mainTabCustomTypes "Добавленные типы">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "б">

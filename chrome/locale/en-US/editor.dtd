@@ -48,7 +48,6 @@
 <!ENTITY hc.editor.funcInit "Initialization">
 <!ENTITY hc.editor.funcInitAccesskey "I">
 <!ENTITY hc.editor.funcInitTip "Executes on settings (re)loading">
-<!ENTITY hc.editor.funcInitReturnNote "Return: destructor function or nothing">
 
 <!ENTITY hc.editor.mainTabCustomTypes "Custom Types">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "T">

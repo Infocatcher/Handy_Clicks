@@ -1,6 +1,6 @@
 content handyclicks chrome/content/
-resource handyclicks-content chrome/content/res/
 content handyclicks-locale chrome/locale/en-US/
+resource handyclicks-content chrome/content/res/
 
 overlay chrome://browser/content/browser.xul   chrome://handyclicks/content/handyclicks.xul
 overlay chrome://global/content/console.xul    chrome://handyclicks/content/console.xul
@@ -19,5 +19,5 @@ component {50C6263F-F53F-4fbd-A295-9BA84C5FAAC3} components/hcComponent.js
 contract @mozilla.org/commandlinehandler/general-startup;1?type=handyclicks {50C6263F-F53F-4fbd-A295-9BA84C5FAAC3}
 category command-line-handler m-handyclicks @mozilla.org/commandlinehandler/general-startup;1?type=handyclicks
 
-locale  handyclicks en-US chrome/locale/en-US/
-locale  handyclicks ru    chrome/locale/ru/
+locale handyclicks en-US chrome/locale/en-US/
+locale handyclicks ru    chrome/locale/ru/

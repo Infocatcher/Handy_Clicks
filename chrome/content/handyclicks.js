@@ -399,7 +399,7 @@ var handyClicks = {
 
 		// img:
 		if(all || this.itemTypeInSets(sets, "img")) {
-			_it = this.getImg(_it);
+			_it = this.getImg(it);
 			if(_it) {
 				this.itemType = "img";
 				this.item = _it;
