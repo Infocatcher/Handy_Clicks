@@ -327,7 +327,7 @@ var handyClicksPrefSvc = {
 	_destructors: [],
 	registerDestructor: function(destructor, context, notifyFlags) {
 		var dc = this._destructorContext;
-		this._destructors.push([
+		var ds = [
 			destructor,
 			context,
 			notifyFlags,
@@ -336,7 +336,11 @@ var handyClicksPrefSvc = {
 			dc.shortcut,
 			dc.type,
 			dc.isDelayed
-		]);
+		];
+		return this._destructors.push(ds) - 1;
+	},
+	unregisterDestructor: function(uid) {
+		delete this._destructors[uid];
 	},
 
 	destroyCustomFuncs: function(reason) {
@@ -545,7 +549,8 @@ var handyClicksPrefSvc = {
 				p.oSvc.notifyObservers(notifyFlags | this.SETS_BEFORE_RELOAD);
 				p.loadSettings(src);
 				p.oSvc.notifyObservers(notifyFlags | this.SETS_RELOADED);
-			}
+			},
+			this
 		);
 	},
 	createTestBackup: function(pStr) {
