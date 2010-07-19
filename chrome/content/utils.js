@@ -159,7 +159,7 @@ var handyClicksUtils = {
 		this.fixMinimized(win);
 		return this.promptsSvc.confirm(win || window, title, text);
 	},
-	confirmEx: function(title, text, buttonOkTxt, buttonOkDefault, win) {
+	confirmEx: function(title, text, buttonOkText, buttonOkDefault, checkText, checkObj, win) {
 		this.fixMinimized(win);
 		var ps = this.promptsSvc;
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
@@ -167,11 +167,11 @@ var handyClicksUtils = {
 		return ps.confirmEx(
 			win || window,
 			title, text,
-			  ps.BUTTON_POS_0 * (buttonOkTxt ? ps.BUTTON_TITLE_IS_STRING : ps.BUTTON_TITLE_OK)
+			  ps.BUTTON_POS_0 * (buttonOkText ? ps.BUTTON_TITLE_IS_STRING : ps.BUTTON_TITLE_OK)
 			+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL
 			+ ps["BUTTON_POS_" + (buttonOkDefault ? 0 : 1) + "_DEFAULT"],
-			buttonOkTxt, "", "",
-			null, {}
+			buttonOkText, "", "",
+			checkText || null, checkObj || {}
 		) != 1;
 	},
 	fixMinimized: function(win) {

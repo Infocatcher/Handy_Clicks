@@ -223,14 +223,25 @@ var handyClicksFuncs = {
 			return null;
 		var tbr = this.hc.getTabBrowser(true);
 
-		// Open a new tab as a child of the current tab (Tree Style Tab)
-		// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
-		if(!moveTo && !this.ut.isChromeDoc(item.ownerDocument) && "TreeStyleTabService" in window)
-			TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab);
+		if(!moveTo && !this.ut.isChromeDoc(item.ownerDocument)) {
+			// Open a new tab as a child of the current tab (Tree Style Tab)
+			// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
+			if("TreeStyleTabService" in window)
+				TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab);
+
+			// Tab Kit https://addons.mozilla.org/firefox/addon/5447/
+			if("tabkit" in window) {
+				var hasTabKit = true;
+				tabkit.addingTab("related");
+			}
+		}
 
 		var tab = tbr.addTab(uri, this.getRefererForItem(refererPolicy, false, item));
 		if(!loadInBackground)
 			tbr.selectedTab = tab;
+
+		hasTabKit && tabkit.addingTabOver();
+
 		return tab;
 	},
 	testForLinkFeatures: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, winRestriction, target) {
@@ -1123,29 +1134,33 @@ var handyClicksFuncs = {
 				return;
 		}
 
-		if("TreeStyleTabService" in window) {
-			// Open a new tab as a child of the current tab (Tree Style Tab)
+		if("TreeStyleTabService" in window) { // Tree Style Tab
+			var hasTreeStyleTab = true;
 			var _tab = tbr.selectedTab;
 			TreeStyleTabService.readyToOpenChildTab(_tab, true);
 		}
+		var hasTabKit = "tabkit" in window; // Tab Kit
 
 		if(!useDelays) {
-			for(var h in hrefs)
+			for(var h in hrefs) {
+				hasTabKit && tabkit.addingTab("related");
 				tbr.addTab(h, ref);
-			if("TreeStyleTabService" in window)
-				TreeStyleTabService.stopToOpenChildTab(_tab);
+				hasTabKit && tabkit.addingTabOver();
+			}
+			hasTreeStyleTab && TreeStyleTabService.stopToOpenChildTab(_tab);
 			return;
 		}
 		var delay = this.pu.pref("funcs.multipleTabsOpenDelay") || 0;
 		(function delayedOpen() {
 			for(var h in hrefs) {
+				hasTabKit && tabkit.addingTab("related");
 				tbr.addTab(h, ref);
+				hasTabKit && tabkit.addingTabOver();
 				delete hrefs[h];
 				setTimeout(delayedOpen, delay);
 				return;
 			}
-			if("TreeStyleTabService" in window)
-				TreeStyleTabService.stopToOpenChildTab(_tab);
+			hasTreeStyleTab && TreeStyleTabService.stopToOpenChildTab(_tab);
 		})();
 	},
 	$void: function(e) {}, // dummy function
@@ -1182,23 +1197,23 @@ var handyClicksFuncs = {
 	__noSuchMethod__: function(meth, args) {
 		// Support for old names of methods
 		const newMeth = meth
-			//= Expires after 2010-05-20:
+			//= Added: 2010-01-27
 			.replace(/^(_?)open(?:Uri)?In/, "$1openURIIn") // openIn => openURIIn, openUriIn => openURIIn
 			.replace(/^get(\w*)Uri(Of[A-Z]\w*)?$/, "get$1URI$2") // getTabUri => getTabURI, getUriOfItem => getURIOfItem
 			.replace(/^get(\w+)OfItem$/, "getItem$1")
-			//= Expires after 2010-10-20:
+			//= Added: 2010-05-10
 			.replace(/^showOpenUriWithAppsPopup$/, "showOpenURIWithAppsPopup");
 		const oName = "handyClicksFuncs";
 		if(!(newMeth in this)) {
 			var caller = Components.stack.caller;
 			throw new Error(
-				this.ut.errPrefix + 'Method "' + meth + '" does not exist in "' + oName + '" object',
+				this.ut.errPrefix + <>Method "{meth}" does not exist in "{oName}" object</>,
 				caller.filename,
 				caller.lineNumber
 			);
 		}
 		this.ut._warn(new Error(
-			'Function "' + oName + '.' + meth + '" is deprecated. Use "' + oName + '.' + newMeth + '" instead.'
+			<>Function "{oName}.{meth}" is deprecated. Use "{oName}.{newMeth}" instead.</>
 		));
 		return this[newMeth].apply(this, args);
 	}

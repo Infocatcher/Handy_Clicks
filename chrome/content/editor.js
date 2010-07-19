@@ -931,7 +931,7 @@ var handyClicksEditor = {
 	testSettings: function(e) {
 		var invertFocusPref = e && (e.button == 1 || e.button == 0 && this.ut.hasModifier(e));
 		if(e && !invertFocusPref)
-			return;
+			return false;
 
 		this.$("hc-editor-cmd-test").setAttribute("disabled", "true");
 		var ok = false;

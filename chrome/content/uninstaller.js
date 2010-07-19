@@ -42,9 +42,9 @@ handyClicksUninstaller = {
 		else if(topic == "quit-application-granted") {
 			this.destroyUninstallObserver();
 			if(this.isUninstall && this.uninstallConfirmed) {
-				this.include();
+				this.createContext();
 				this.uninstall();
-				this.exclude();
+				this.destroyContext();
 			}
 		}
 		else if(
@@ -78,36 +78,45 @@ handyClicksUninstaller = {
 	},
 	handleUninstalling: function() {
 		this.isUninstall = true;
-		this.include();
+		this.createContext();
 		this.uninstallConfirm();
-		this.exclude();
+		this.destroyContext();
 	},
-	include: function() {
+	createContext: function() {
 		// Simple way for get some required functions
 		const path = "chrome://handyclicks/content/";
 		var temp = {};
-		jsLoader.loadSubScript(path + "utils.js",     temp); this.ut = temp.handyClicksUtils;
-		jsLoader.loadSubScript(path + "winUtils.js",  temp); this.wu = temp.handyClicksWinUtils;
-		jsLoader.loadSubScript(path + "prefUtils.js", temp); this.pu = temp.handyClicksPrefUtils;
-		jsLoader.loadSubScript(path + "prefSvc.js",   temp); this.ps = temp.handyClicksPrefSvc;
+		jsLoader.loadSubScript(path + "sets.js",      temp); this.st = temp.handyClicksSets;
+		jsLoader.loadSubScript(path + "utils.js",     temp); this.ut = this.st.ut = temp.handyClicksUtils;
+		jsLoader.loadSubScript(path + "winUtils.js",  temp); this.wu = this.st.wu = temp.handyClicksWinUtils;
+		jsLoader.loadSubScript(path + "prefUtils.js", temp); this.pu = this.st.pu = temp.handyClicksPrefUtils;
+		jsLoader.loadSubScript(path + "prefSvc.js",   temp); this.ps = this.st.ps = temp.handyClicksPrefSvc;
+		jsLoader.loadSubScript(path + "consts.js",    temp); this.ct = this.st.ct = temp.handyClicksConst;
 	},
-	exclude: function() {
-		delete this.ut;
-		delete this.wu;
-		delete this.pu;
-		delete this.ps;
+	destroyContext: function() {
+		this.st = this.ut = this.wu = this.pu = this.ps = this.ct = null;
 	},
 	uninstallConfirm: function() {
-		this.uninstallConfirmed = this.ut.confirmEx(
+		var export = { value: true };
+		var confirmed = this.uninstallConfirmed = this.ut.confirmEx(
 			this.ut.getLocalized("title"),
 			this.ut.getLocalized("removeSettingsConfirm"),
 			this.ut.getLocalized("removeSettings"),
 			false, // Cancel button is default
+			this.ut.getLocalized("exportAllSettings"), export,
 			this.wu.wm.getMostRecentWindow(null) //this.wu.wm.getMostRecentWindow("Extension:Manager")
 		);
+		if(confirmed && export.value) {
+			try {
+			this.st.exportPrefs();
+			} catch(e) { Components.utils.reportError(e); }
+			try {
+			this.st.exportSets(false, this.ct.EXPORT_FILEPICKER);
+			} catch(e) { Components.utils.reportError(e); }
+		}
 	},
 	uninstall: function() {
-		//this.pu.prefSvc.deleteBranch(this.pu.prefNS);
+		//this.pu.prefSvc.resetBranch(this.pu.prefNS);
 		this.pu.prefSvc.getBranch(this.pu.prefNS)
 			.getChildList("", {})
 			.forEach(

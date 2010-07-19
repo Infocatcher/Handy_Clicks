@@ -569,7 +569,8 @@ var handyClicksPrefSvc = {
 				p.oSvc.notifyObservers(notifyFlags | this.SETS_BEFORE_RELOAD);
 				p.loadSettings(src);
 				p.oSvc.notifyObservers(notifyFlags | this.SETS_RELOADED);
-			}
+			},
+			this
 		);
 	},
 	createTestBackup: function(pStr) {

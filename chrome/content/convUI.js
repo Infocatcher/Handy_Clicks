@@ -6,7 +6,7 @@ function uiMigration(vers) {
 	if(vers >= this.uiVersion)
 		return;
 
-	if(vers < 1) { // Added 2009-11-13
+	if(vers < 1) { //= Added: 2009-11-13
 		// New id for toolbarbutton
 		if(!this.$(this.toolbarButtonId)) {
 			var tbm = /(?:^|,)handyClicks-toggleStatus-tbButton(?:,|$)/;

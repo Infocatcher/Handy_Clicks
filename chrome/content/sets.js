@@ -1953,47 +1953,41 @@ var handyClicksSets = {
 		this.pu.pref("prefsVersion", 0);
 		str.replace(/[\r\n]{1,100}/g, "\n").split(/[\r\n]+/)
 			.splice(1) // Remove header
-			.forEach(
-				function(line, i) {
-					var first = line.charAt(0);
-					if(
-						first == ";" || first == "#"
-						|| first == "[" && line.charAt(line.length - 1) == "]"
-					)
-						return; // Just for fun right now :)
-					var indx = line.indexOf("=");
-					if(indx == -1) {
-						this.ut._warn(new Error("[Import INI] Skipped invalid line #" + (i + 2) + ": " + line));
-						return;
-					}
-					var pName = line.substring(0, indx);
-					if(pName.indexOf(this.pu.prefNS) != 0) {
-						this.ut._warn(new Error("[Import INI] Skipped pref with invalid name: \"" + pName + "\""));
-						return;
-					}
-					var pbr = this.pu.pBr;
-					var pType = this.pu.prefSvc.getPrefType(pName);
-					var isOld = pType == pbr.PREF_INVALID; // Old format?
-					if(isOld) {
-						_oldPrefs.push(pName);
-						this.ut._warn(new Error("[Import INI] Old pref: " + pName));
-					}
-					var pVal = line.substring(indx + 1);
-					if(pType == pbr.PREF_INT || isOld && /^-?\d+$/.test(pVal)) // Convert string to number
-						pVal = Number(pVal);
-					else if(pType == pbr.PREF_BOOL || isOld && (pVal == "true" || pVal == "false")) // ...or boolean
-						pVal = pVal == "true";
-					this.pu.setPref(pName, pVal);
-				},
-				this
-			);
+			.forEach(function(line, i) {
+				var first = line.charAt(0);
+				if(
+					first == ";" || first == "#"
+					|| first == "[" && line.charAt(line.length - 1) == "]"
+				)
+					return; // Just for fun right now :)
+				var indx = line.indexOf("=");
+				if(indx == -1) {
+					this.ut._warn(new Error("[Import INI] Skipped invalid line #" + (i + 2) + ": " + line));
+					return;
+				}
+				var pName = line.substr(0, indx);
+				if(pName.indexOf(this.pu.prefNS) != 0) {
+					this.ut._warn(new Error("[Import INI] Skipped pref with invalid name: \"" + pName + "\""));
+					return;
+				}
+				var pbr = this.pu.pBr;
+				var pType = this.pu.prefSvc.getPrefType(pName);
+				var isOld = pType == pbr.PREF_INVALID; // Old format?
+				if(isOld) {
+					_oldPrefs.push(pName);
+					this.ut._warn(new Error("[Import INI] Old pref: " + pName));
+				}
+				var pVal = line.substr(indx + 1);
+				if(pType == pbr.PREF_INT || isOld && /^-?\d+$/.test(pVal)) // Convert string to number
+					pVal = Number(pVal);
+				else if(pType == pbr.PREF_BOOL || isOld && (pVal == "true" || pVal == "false")) // ...or boolean
+					pVal = pVal == "true";
+				this.pu.setPref(pName, pVal);
+			}, this);
 		this.pu.prefsMigration();
-		_oldPrefs.forEach(
-			function(pName) {
-				this.pu.prefSvc.deleteBranch(pName);
-			},
-			this
-		);
+		_oldPrefs.forEach(function(pName) {
+			this.pu.prefSvc.deleteBranch(pName);
+		}, this);
 		this.pu.savePrefFile();
 		this.reloadPrefpanes(); // Changed prefs don't reloaded by default
 	},
@@ -2001,7 +1995,8 @@ var handyClicksSets = {
 	// Clicking options management
 	// Export/import:
 	exportSets: function(partialExport, targetId, onlyCustomTypes) {
-		this.selectTreePane();
+		if(typeof document == "object")
+			this.selectTreePane();
 		var ct = this.ct;
 		if(targetId == ct.EXPORT_FILEPICKER) {
 			var file = this.pickFile(
@@ -2429,7 +2424,8 @@ var handyClicksSets = {
 		var bDir = this.backupsDir;
 		if(bDir)
 			fp.displayDirectory = bDir;
-		fp.init(window, pTitle, fp[modeSave ? "modeSave" : "modeOpen"]);
+		var win = typeof window == "object" ? window : this.wu.wm.getMostRecentWindow(null);
+		fp.init(win, pTitle, fp[modeSave ? "modeSave" : "modeOpen"]);
 		if(fp.show() == fp.returnCancel)
 			return null;
 		var file = fp.file;

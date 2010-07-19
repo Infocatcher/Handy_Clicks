@@ -8,8 +8,8 @@ function setsMigration(allowSave, vers) {
 
 	if(allowSave)
 		this.prefsFile.moveTo(null, this.prefsFileName + this.names.version + vers + ".js");
-	if(vers < 0.12) { // New file names format
-		//= Expires after 2009-09-15
+	if(vers < 0.12) { //= Added: 2009-07-29
+		// New file names format
 		var convertName = function(s) {
 			return s.replace(/^(handyclicks_prefs)-(\w+-\d+(?:\.\d+)?\.js)$/, "$1_$2");
 		};
@@ -24,15 +24,13 @@ function setsMigration(allowSave, vers) {
 				entry.moveTo(null, newName);
 		}
 	}
-	if(vers < 0.13) {
-		//= [Not critical]
+	if(vers < 0.13) { //= Added: 2009-08-10
 		// Arguments:
 		//   "hidePopup" -> "closePopups" (old)
 		//   "inWin"     -> "winRestriction"
 		//   "toNewWin"  -> "target"
 		// Functions:
 		//   submitFormToNewDoc -> submitForm
-		//= Expires after 2009-09-15
 		var changeArg = function(obj, curName, newName, valConv) {
 			// { p0: 0, curName: 1, p2: 2 } => { p0: 0, newName: 1, p2: 2 }
 			if(!obj.hasOwnProperty(curName))
@@ -81,12 +79,10 @@ function setsMigration(allowSave, vers) {
 			}
 		}
 	}
-	if(vers < 0.14) {
-		//= [Not critical]
+	if(vers < 0.14) { //= Added: 2010-01-27
 		// Functions:
 		//   openIn => openURIIn
 		//   openUriIn => openURIIn
-		//= Expires after 2010-05-20
 		var convAct = this.ut.bind(function(to) {
 			if(this.ut.getOwnProperty(to, "custom"))
 				return;
@@ -114,9 +110,7 @@ function setsMigration(allowSave, vers) {
 			}
 		}
 	}
-	if(vers < 0.2) {
-		//= [Important]
-		//= Added: 2010-05-14, expires after: 2011-05-10
+	if(vers < 0.2) { //= Added: 2010-05-14
 		// Strings are not encoded anymore
 		var recode = this.ut.bind(function(obj, pName) {
 			var pVal = this.ut.getOwnProperty(obj, pName);
