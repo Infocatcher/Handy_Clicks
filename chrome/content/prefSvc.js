@@ -472,10 +472,15 @@ var handyClicksPrefSvc = {
 			);
 		}
 	},
+
 	_destructors: [],
 	registerDestructor: function(destructor, context, notifyFlags) {
-		this._destructors.push([destructor, context, notifyFlags]);
+		return this._destructors.push([destructor, context, notifyFlags]) - 1;
 	},
+	unregisterDestructor: function(uid) {
+		delete this._destructors[uid];
+	},
+
 	destroyCustomFuncs: function(reason) {
 		this._destructors.forEach(
 			function(destructorArr) {

@@ -532,7 +532,7 @@ var handyClicksFuncs = {
 		const popupId = "handyClicks-generatedPopup";
 		var popup = this.e(popupId);
 		popup && pSet.removeChild(popup);
-		popup = xml || <popup xmlns={this.ut.XULNS} />;
+		popup = xml || <menupopup xmlns={this.ut.XULNS} />;
 		popup.@id = popupId;
 		popup.@tooltip = "handyClicks-tooltip";
 		popup.@popupsinherittooltip = "true";

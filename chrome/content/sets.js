@@ -39,10 +39,14 @@ var handyClicksSets = {
 			this.applyButton.hidden = true;
 		else
 			this.applyButton.disabled = true;
+
 		var de = document.documentElement;
 		var prefsButt = de.getButton("extra2");
-		prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
 		prefsButt.setAttribute("type", "menu");
+		//prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
+		// Allow open popup from keyboard:
+		prefsButt.appendChild(this.e("hc-sets-prefsManagementPopup"));
+
 		Array.forEach(
 			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
 			function(col) {
@@ -1090,7 +1094,8 @@ var handyClicksSets = {
 			if(hasTerm && sTerm.some(function(s) { return rowText.indexOf(s) == -1; }))
 				okRow = false;
 
-			this.addProperties(tRow, { hc_search: okRow });
+			//this.addProperties(tRow, { hc_search: okRow });
+			this.addClildsProperties(tRow, { hc_search: okRow }, true);
 			if(!okRow)
 				continue;
 			count++;
