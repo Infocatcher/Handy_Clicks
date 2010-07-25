@@ -154,12 +154,12 @@ var handyClicksSets = {
 		var p = this.ps.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
 			if(!this.ps.isOkShortcut(sh) || !this.ut.isObject(p[sh])) {
-				this.ut._warn(new Error("Invalid shortcut in prefs: \"" + sh + "\""));
+				this.ut._warn(new Error(<>Invalid shortcut in prefs: "{sh}"</>));
 				continue;
 			}
 			var so = p[sh];
 			if(this.ut.isEmptyObj(so)) {
-				this.ut._warn(new Error("Empty settings object in prefs: \"" + sh + "\""));
+				this.ut._warn(new Error(<>Empty settings object in prefs: "{sh}"</>));
 				//delete p[sh];
 				continue;
 			}
@@ -286,7 +286,6 @@ var handyClicksSets = {
 				for(var j = start.value, l = end.value; j <= l; j++) {
 					//var tItem = this.getItemAtIndex(j);
 					var tItem = this.tView.getItemAtIndex(j);
-					//this.ut._log("[" + tItem.__hash + "]");
 					selectedRows[tItem.__hash] = true;
 				}
 			}
@@ -396,14 +395,14 @@ var handyClicksSets = {
 			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}, this._localizeArgs));
 			this.appendTreeCell(daRow, "label", this.getInitCode(da, true));
 
-			this.addClildsProperties(daRow, {
+			this.setClildsProperties(daRow, {
 				hc_disabled: this._forcedDisDa || !fo.enabled || !da.enabled,
 				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel) && ++this._buggy,
 				hc_custom: daCustom,
 				hc_customType: isCustomType
 			}, true);
 
-			this.addProperties(
+			this.setNodeProperties(
 				this.appendTreeCell(daRow, "value", da.enabled), // checkbox
 				{ hc_checkbox: true }
 			);
@@ -412,7 +411,7 @@ var handyClicksSets = {
 				var savedDa = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType, "delayedAction");
 				var overrideDa = savedDa;
 				var equalsDa = this.ut.objEquals(da, savedDa);
-				this.addClildsProperties(daRow, {
+				this.setClildsProperties(daRow, {
 					hc_override: overrideDa && !equalsDa && ++this._overrideDa,
 					hc_equals:   overrideDa &&  equalsDa,
 					hc_new:     !overrideDa &&              ++this._newDa
@@ -431,7 +430,7 @@ var handyClicksSets = {
 			this.rowsCache[daItem.__hash = shortcut + "-" + itemType + "-delayed"] = daRow; // Uses for search
 		}
 
-		this.addProperties(
+		this.setNodeProperties(
 			this.appendTreeCell(tRow, "value", fo.enabled), // checkbox
 			{ hc_checkbox: true }
 		);
@@ -442,7 +441,7 @@ var handyClicksSets = {
 				|| this.ut.isBuggyStr(typeLabel)
 			);
 
-		this.addClildsProperties(tRow, {
+		this.setClildsProperties(tRow, {
 			hc_disabled: !fo.enabled,
 			hc_buggy: isBuggy && ++this._buggy,
 			hc_custom: isCustom,
@@ -467,7 +466,7 @@ var handyClicksSets = {
 					override = true;
 				equals = equals && eqType;
 			}
-			this.addClildsProperties(tRow, {
+			this.setClildsProperties(tRow, {
 				hc_override: override && !equals && ++this._overrides,
 				hc_equals:   override &&  equals,
 				hc_new:     !override            && ++this._new
@@ -523,7 +522,7 @@ var handyClicksSets = {
 	isBuggyFuncObj: function(fo, isCustom, label) {
 		return !this.ps.isOkFuncObj(fo) || !isCustom && this.ut.isBuggyStr(label);
 	},
-	addProperties: function(tar, propsObj) {
+	setNodeProperties: function(tar, propsObj) {
 		var propsVal = tar.getAttribute("properties");
 		var changed = false;
 		for(var p in propsObj) if(propsObj.hasOwnProperty(p)) {
@@ -543,22 +542,22 @@ var handyClicksSets = {
 		}
 		changed && tar.setAttribute("properties", propsVal.replace(/^\s+|\s+$/g, "").replace(/\s+/g, " "));
 	},
-	addClildsProperties: function(parent, propsObj, addToParent) {
+	setClildsProperties: function(parent, propsObj, addToParent) {
 		if(addToParent)
-			this.addProperties(parent, propsObj);
+			this.setNodeProperties(parent, propsObj);
 		Array.forEach(
 			parent.getElementsByTagName("*"),
 			function(elt) {
-				this.addProperties(elt, propsObj);
+				this.setNodeProperties(elt, propsObj);
 			},
 			this
 		);
 	},
-	addsClildsProperties: function(parents, propsObj, addToParent) {
+	setNodesProperties: function(parents, propsObj, addToParent) {
 		Array.forEach(
 			parents,
 			function(parent) {
-				this.addClildsProperties(parent, propsObj, addToParent);
+				this.setClildsProperties(parent, propsObj, addToParent);
 			},
 			this
 		);
@@ -817,17 +816,13 @@ var handyClicksSets = {
 			return;
 		var p = this.ps.prefs;
 		var so = p[sh];
-
-		var tChld = tItem.parentNode;
-
-		var hash = tItem.__shortcut + "-" + tItem.__itemType;
-		delete this.rowsCache[hash + "-delayed"];
-
 		if(tItem.__isDelayed) {
 			var to = so[type];
 			delete to.delayedAction;
 
+			var tChld = tItem.parentNode;
 			tChld.parentNode.removeChild(tChld);
+			delete this.rowsCache[tItem.__hash];
 		}
 		else {
 			delete so[type];
@@ -835,20 +830,19 @@ var handyClicksSets = {
 				delete p[sh];
 
 			this.removeTreeitem(tItem);
-			delete this.rowsCache[hash];
 		}
 		this.searchInSetsTree(null, true);
 	},
 	removeTreeitem: function(tItem) {
-		//delete this.rowsCache[tItem.__hash];
-
 		var tChld = tItem.parentNode;
 		var tBody = this.tBody;
 		tChld.removeChild(tItem);
+		delete this.rowsCache[tItem.__hash];
 		while(!tChld.hasChildNodes() && tChld != tBody) {
 			tItem = tChld.parentNode;
 			tChld = tItem.parentNode;
 			tChld.removeChild(tItem);
+			delete this.rowsCache[tItem.__hash];
 		}
 	},
 	openEditorWindow: function(tItem, mode, add) { // mode: this.ct.EDITOR_MODE_*
@@ -869,7 +863,7 @@ var handyClicksSets = {
 		rowId = this.ut.removePostfix(rowId, this.ct.OTHER_SRC_POSTFIX);
 		if(!(rowId in this.rowsCache))
 			return;
-		this.addClildsProperties(
+		this.setClildsProperties(
 			this.rowsCache[rowId].parentNode, // <treeitem>
 			{ hc_edited: editStat }
 		);
@@ -933,14 +927,14 @@ var handyClicksSets = {
 		var forcedDisDa = this.pu.pref("delayedActionTimeout") <= 0;
 		if(tItem.__isDelayed) {
 			var pDis = !this.checkedState(tItem.parentNode.parentNode); // Check state of parent
-			this.addProperties(tRow, { hc_disabled: forcedDisDa || pDis || !enabled });
+			this.setNodeProperties(tRow, { hc_disabled: forcedDisDa || pDis || !enabled });
 		}
 		else {
-			this.addProperties(tRow, { hc_disabled: !enabled });
+			this.setNodeProperties(tRow, { hc_disabled: !enabled });
 			if(tItem.__delayed) {
 				var cRow = this.getRowForItem(tItem.__delayed);
 				var cDis = !this.checkedState(tItem.__delayed);
-				this.addProperties(cRow, { hc_disabled: forcedDisDa || cDis || !enabled });
+				this.setNodeProperties(cRow, { hc_disabled: forcedDisDa || cDis || !enabled });
 			}
 		}
 
@@ -1391,8 +1385,8 @@ var handyClicksSets = {
 			)
 				okRow = false;
 
-			//this.addProperties(tRow, { hc_search: okRow });
-			this.addClildsProperties(tRow, { hc_search: okRow }, true);
+			//this.setNodeProperties(tRow, { hc_search: okRow });
+			this.setClildsProperties(tRow, { hc_search: okRow }, true);
 			tRow.parentNode.__matched = okRow;
 			if(okRow)
 				matchedRows.push(tRow);
@@ -1403,8 +1397,6 @@ var handyClicksSets = {
 			for(var h in this.rowsCache) {
 				tRow = this.rowsCache[h];
 				var tItem = tRow.parentNode;
-				if(!tItem || !tItem.parentNode) //~ Strange...
-					continue;
 				if(tItem.__matched)
 					continue;
 				if(
@@ -1414,9 +1406,6 @@ var handyClicksSets = {
 				)
 					continue;
 				this.removeTreeitem(tItem);
-				delete this.rowsCache[h];
-				if(!tItem.__isDelayed)
-					delete this.rowsCache[h + "-delayed"];
 			}
 		}
 
@@ -1962,12 +1951,12 @@ var handyClicksSets = {
 					return; // Just for fun right now :)
 				var indx = line.indexOf("=");
 				if(indx == -1) {
-					this.ut._warn(new Error("[Import INI] Skipped invalid line #" + (i + 2) + ": " + line));
+					this.ut._warn(new Error(<>[Import INI] Skipped invalid line #{i + 2}: "{line}"</>));
 					return;
 				}
 				var pName = line.substr(0, indx);
 				if(pName.indexOf(this.pu.prefNS) != 0) {
-					this.ut._warn(new Error("[Import INI] Skipped pref with invalid name: \"" + pName + "\""));
+					this.ut._warn(new Error(<>[Import INI] Skipped pref with invalid name: "{pName}"</>));
 					return;
 				}
 				var pbr = this.pu.pBr;
@@ -1975,7 +1964,7 @@ var handyClicksSets = {
 				var isOld = pType == pbr.PREF_INVALID; // Old format?
 				if(isOld) {
 					_oldPrefs.push(pName);
-					this.ut._warn(new Error("[Import INI] Old pref: " + pName));
+					this.ut._warn(new Error(<>[Import INI] Old pref: "{pName}"</>));
 				}
 				var pVal = line.substr(indx + 1);
 				if(pType == pbr.PREF_INT || isOld && /^-?\d+$/.test(pVal)) // Convert string to number
@@ -2041,9 +2030,9 @@ var handyClicksSets = {
 			this
 		);
 
-		this.addsClildsProperties(its, { hc_copied: true });
+		this.setNodesProperties(its, { hc_copied: true });
 		setTimeout(function(_this, its) {
-			_this.addsClildsProperties(its, { hc_copied: false });
+			_this.setNodesProperties(its, { hc_copied: false });
 		}, 200, this, its);
 
 		return this.ps.getSettingsStr(newTypes, newPrefs);
@@ -2068,9 +2057,12 @@ var handyClicksSets = {
 			default:
 			case ct.IMPORT_FILEPICKER:
 				pSrc = this.pickFile(this.ut.getLocalized("importSets"), false, "js");
+				if(!pSrc)
+					return;
 			break;
 			case ct.IMPORT_CLIPBOARD:
-				pSrc = this.ps.getPrefsStr(this.ut.readFromClipboard(true));
+				pSrc = this.ps.clipboardPrefs; // Valid or empty
+				var fromClip = true;
 			break;
 			case ct.IMPORT_STRING:
 				pSrc = this.ps.getPrefsStr(data);
@@ -2078,9 +2070,9 @@ var handyClicksSets = {
 			case ct.IMPORT_BACKUP:
 				pSrc = this.ps.getFile(data);
 		}
-		if(!pSrc)
-			return;
-		if(!this.checkPrefs(pSrc)) {
+		//if(!pSrc)
+		//	return;
+		if(fromClip ? !pSrc : !this.ps.checkPrefs(pSrc)) {
 			this.ut.alert(
 				this.ut.getLocalized("importErrorTitle"),
 				this.ut.getLocalized("invalidConfigFormat")
@@ -2454,17 +2446,8 @@ var handyClicksSets = {
 		var df = this.pu.pref("sets.dateFormat") || "";
 		return df && (date ? new Date(date) : new Date()).toLocaleFormat(df);
 	},
-	checkPrefs: function(pSrc) {
-		if(pSrc instanceof Components.interfaces.nsILocalFile)
-			pSrc = this.ut.readFromFile(pSrc);
-		if(!this.ps.checkPrefsStr(pSrc))
-			return false;
-		return true;
-	},
+
 	checkClipboard: function() {
-		this.$("hc-sets-cmd-partialImportFromClipboard").setAttribute(
-			"disabled",
-			!this.ps.checkPrefsStr(this.ut.readFromClipboard(true))
-		);
+		this.$("hc-sets-cmd-partialImportFromClipboard").setAttribute("disabled", !this.ps.clipboardPrefs);
 	}
 };

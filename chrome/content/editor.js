@@ -103,7 +103,7 @@ var handyClicksEditor = {
 			this.fixFocusedElement(e);
 	},
 	addTestButtons: function() {
-		var bTest = this.ut.parseFromXML(
+		var testBtn = this.ut.parseFromXML(
 			<button xmlns={this.ut.XULNS}
 				id="hc-editor-buttonTest"
 				class="dialog-button hc-iconic"
@@ -111,7 +111,7 @@ var handyClicksEditor = {
 				onclick="handyClicksEditor.testSettings(event);"
 			/>
 		);
-		var bUndo = this.ut.parseFromXML(
+		var undoBtn = this.ut.parseFromXML(
 			<button xmlns={this.ut.XULNS}
 				id="hc-editor-buttonUndo"
 				class="dialog-button hc-iconic"
@@ -119,12 +119,13 @@ var handyClicksEditor = {
 				disabled="true"
 			/>
 		);
-		var bDel = document.documentElement.getButton("extra2");
-		bDel.id = "hc-editor-buttonDelete";
-		bDel.className += " hc-iconic";
-		var insPoint = bDel.nextSibling, parent = bDel.parentNode;
-		parent.insertBefore(bTest, insPoint);
-		parent.insertBefore(bUndo, insPoint);
+		var delBtn = document.documentElement.getButton("extra2");
+		delBtn.id = "hc-editor-buttonDelete";
+		delBtn.className += " hc-iconic";
+		var insPoint = delBtn.nextSibling;
+		var btnBox = delBtn.parentNode;
+		btnBox.insertBefore(testBtn, insPoint);
+		btnBox.insertBefore(undoBtn, insPoint);
 	},
 	initShortcuts: function() {
 		this.mainTabbox = this.$("hc-editor-mainTabbox");
@@ -307,7 +308,7 @@ var handyClicksEditor = {
 		this._allowUndo = allowUndo;
 		this.initShortcutEditor();
 		this.appendTypesList();
-		this.initImgIgnoreLinks();
+		this.initAdditionalOptions();
 		this.initCustomTypesEditor();
 		this.disableUnsupported();
 		this._allowUndo = false;
@@ -436,7 +437,7 @@ var handyClicksEditor = {
 		this.$("hc-editor-enabled" + delayed).checked = typeof enabled != "boolean" || enabled;
 		if(!delayed) {
 			this.$("hc-editor-allowMousedown").value = "" + this.ut.getOwnProperty(setsObj, "allowMousedownEvent");
-			this.initImgIgnoreLinks(null, setsObj);
+			this.initAdditionalOptions(null, setsObj);
 		}
 	},
 	selectCustomFunc: function(isCustom, delayed) {
@@ -538,12 +539,12 @@ var handyClicksEditor = {
 		var label, _labels = { __proto__: null };
 		for(var cType in cTypes) if(cTypes.hasOwnProperty(cType)) {
 			if(!this.ps.isCustomType(cType)) {
-				this.ut._warn(new Error("Invalid custom type id: " + cType));
+				this.ut._warn(new Error(<>Invalid custom type id: "{cType}"</>));
 				continue;
 			}
 			typeObj = cTypes[cType];
 			if(!this.ut.isObject(typeObj)) {
-				this.ut._warn(new Error("Invalid custom type: " + cType + " (" + typeObj + ")"));
+				this.ut._warn(new Error(<>Invalid custom type: "{cType}" ({typeObj})</>));
 				continue;
 			}
 			label = this.ps.dec(typeObj.label) || cType;
@@ -686,9 +687,9 @@ var handyClicksEditor = {
 	itemTypeChanged: function(iType) {
 		this.addFuncArgs();
 		this.loadCustomType(iType);
-		this.initImgIgnoreLinks(iType);
+		this.initAdditionalOptions(iType);
 	},
-	initImgIgnoreLinks: function(iType, setsObj) {
+	initAdditionalOptions: function(iType, setsObj) {
 		iType = iType || this.currentType;
 		var isImg = iType == "img";
 		this.$("hc-editor-funcOptsAdd").hidden = !isImg;
@@ -696,6 +697,8 @@ var handyClicksEditor = {
 			setsObj = setsObj || this.ut.getOwnProperty(this.ps.prefs, this.shortcut, iType);
 			var ignoreLinks = this.ut.getOwnProperty(setsObj, "ignoreLinks") || false;
 			this.$("hc-editor-imgIgnoreLinks").checked = ignoreLinks;
+			var ignoreSingle = this.ut.getOwnProperty(setsObj, "ignoreSingle") || false;
+			this.$("hc-editor-imgIgnoreSingle").checked = ignoreSingle;
 		}
 	},
 	addFuncArgs: function(delayed, setsObj) {
@@ -738,7 +741,7 @@ var handyClicksEditor = {
 			return "checkbox";
 		if(argName in types.menulists)
 			return "menulist";
-		this.ut._err(new Error("Can't get type of \"" + argName + "\""));
+		this.ut._err(new Error(<>Can't get type of "{argName}"</>));
 		return null;
 	},
 	addControl: function(argName, argType, argVal, delayed) {
@@ -1107,8 +1110,10 @@ var handyClicksEditor = {
 			: evt;
 		if(!isDelayed) {
 			var type = this.currentType;
-			if(type == "img")
-				so.ignoreLinks = this.$("hc-editor-imgIgnoreLinks").checked;
+			if(type == "img") { //~ todo: don't save false values?
+				so.ignoreLinks  = this.$("hc-editor-imgIgnoreLinks") .checked;
+				so.ignoreSingle = this.$("hc-editor-imgIgnoreSingle").checked;
+			}
 		}
 		return so;
 	},
@@ -1166,7 +1171,7 @@ var handyClicksEditor = {
 		this.initFuncEditor(so, delayed, true);
 		if(!isDelayed) {
 			this.$("hc-editor-events").value = so.eventType || "click";
-			//this.initImgIgnoreLinks(type, so);
+			//this.initAdditionalOptions(type, so);
 		}
 
 		this.disableUnsupported();

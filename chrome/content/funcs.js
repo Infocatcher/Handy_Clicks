@@ -52,7 +52,7 @@ var handyClicksFuncs = {
 			? this.forEachTab(this.getTabText)
 			: this.hc.itemType == "ext_mulipletabs"
 				? Array.map(it, this.getTabText, this)
-				: it.textContent || it.label || it.alt || it.title || it.value
+				: it.textContent || it.label || it.alt || it.value || it.title
 					|| (
 						it.getAttribute
 						&& (it.getAttribute("label") || it.getAttribute("value"))
@@ -179,7 +179,7 @@ var handyClicksFuncs = {
 			case "last":     ind = tbr.browsers.length;           break;
 			case "relative": ind = curInd + ++this.relativeIndex; break;
 			default:
-				this.ut._err(new Error("openURIInTab -> invalid moveTo argument: \"" + moveTo + "\""));
+				this.ut._err(new Error(<>openURIInTab -> invalid moveTo argument: "{moveTo}"</>));
 				return;
 		}
 		if(
@@ -429,7 +429,7 @@ var handyClicksFuncs = {
 				wNew = window.outerWidth, hNew = window.outerHeight;
 			break;
 			default:
-				this.ut._err(new Error("openURIInWindow -> invalid moveTo argument: \"" + moveTo + "\""));
+				this.ut._err(new Error(<>openURIInWindow -> invalid moveTo argument: "{moveTo}"</>));
 				return;
 		}
 		if(xCur !== undefined && yCur !== undefined)
@@ -588,7 +588,7 @@ var handyClicksFuncs = {
 	showOpenURIWithAppsPopup: function(items, checkFiles) {
 		var uri = this.getItemURI();
 		if(!uri) {
-			this.ut._err(new Error("Can't get URI of item (" + this.hc.itemType + ")"));
+			this.ut._err(new Error(<>Can't get URI of item ({this.hc.itemType})</>));
 			return;
 		}
 		var uris = Array.concat(uri).map(this.losslessDecodeURI, this);
@@ -1212,9 +1212,7 @@ var handyClicksFuncs = {
 				caller.lineNumber
 			);
 		}
-		this.ut._warn(new Error(
-			<>Function "{oName}.{meth}" is deprecated. Use "{oName}.{newMeth}" instead.</>
-		));
+		this.ut._warn(new Error(<>Function "{oName}.{meth}" is deprecated. Use "{oName}.{newMeth}" instead.</>));
 		return this[newMeth].apply(this, args);
 	}
 };

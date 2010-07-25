@@ -68,7 +68,7 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="2"] {
 }
 
 toolbar[iconsize="small"] #handyClicks-toolbarButton .toolbarbutton-icon {
-	/* Firefox 3.7a3pre resize icons to 18x18 */
+	/* Firefox 3.7a3pre+ resize icons to 18x18 */
 	width: auto;
 	height: auto;
 }

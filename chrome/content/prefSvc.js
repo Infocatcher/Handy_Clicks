@@ -14,7 +14,8 @@ var handyClicksPrefSvc = {
 	setsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
 	get requiredHeader() {
 		delete this.requiredHeader;
-		return this.requiredHeader = this.setsHeader.match(/^([^\n]+?)\.?\n/)[1];
+		// Support for old header format (only first line without ending ".")
+		return this.requiredHeader = this.setsHeader.replace(/\.?[\n\r][\s\S]*$/, "");
 	},
 	get versionInfo() {
 		delete this.versionInfo;
@@ -71,7 +72,7 @@ var handyClicksPrefSvc = {
 				dir.create(dir.DIRECTORY_TYPE, 0755);
 			}
 			catch(e) {
-				this.ut._err(new Error("Can't create directory: " + dir.path));
+				this.ut._err(new Error(<>Can't create directory: "{dir.path}"</>));
 				this.ut._err(e);
 			}
 		}
@@ -122,11 +123,11 @@ var handyClicksPrefSvc = {
 	loadSettings: function(pSrc) {
 		if(this.isMainWnd) {
 			if(!this.hc.enabled) {
-				this._devMode && this.ut._log("loadSettings() -> disabled");
+				this.ut._log("loadSettings() -> disabled");
 				this._loadStatus = this.SETS_LOAD_SKIPPED;
 				return;
 			}
-			this._devMode && this.ut._log("loadSettings()");
+			this.ut._log("loadSettings()");
 		}
 		this.otherSrc = !!pSrc;
 		//this._loadStatus = this.SETS_LOAD_OK;
@@ -232,13 +233,13 @@ var handyClicksPrefSvc = {
 			return cache[type];
 
 		if(!this.isOkCustomType(type)) {
-			this.ut._warn(new Error("Invalid custom type: \"" + type + "\""));
-			this._devMode && this.ut._log("! Type \"" + type + "\" => invalid");
+			this.ut._warn(new Error(<>Invalid custom type: "{type}"</>));
+			this.ut._log(<>! Type "{type}" => invalid</>);
 			return cache[type] = false;
 		}
 		var ct = this.types[type];
 		if(!ct.enabled) {
-			this.ut._log("Type \"" + type + "\" => disabled");
+			this.ut._log(<>Type "{type}" => disabled</>);
 			return cache[type] = false;
 		}
 		try {
@@ -248,7 +249,7 @@ var handyClicksPrefSvc = {
 			ct._define = new Function("event,item", this.dec(df));
 			ct._contextMenuLine = new Error().lineNumber + 1;
 			ct._contextMenu = cm ? new Function("event,item,origItem", this.dec(cm)) : null;
-			this._devMode && this.ut._log("Type \"" + type + "\" => initialized");
+			this.ut._log(<>Type "{type}" => initialized</>);
 			return cache[type] = true;
 		}
 		catch(e) {
@@ -268,7 +269,7 @@ var handyClicksPrefSvc = {
 			this.ut._err(eMsg, href, eLine);
 			this.ut._err(e);
 		}
-		this._devMode && this.ut._log("! Type \"" + type + "\" => initialization error");
+		this.ut._log(<>! Type "{type}" => initialization error</>);
 		return cache[type] = false;
 	},
 	compileCustomTypes: function() {
@@ -364,7 +365,7 @@ var handyClicksPrefSvc = {
 	},
 
 	destroyCustomFuncs: function(reason) {
-		//this._devMode && this.ut._log("destroyCustomFuncs() [" + this._destructors.length + "]");
+		//this.ut._log("destroyCustomFuncs() [" + this._destructors.length + "]");
 		this._destructors.forEach(
 			function(destructorArr) {
 				this.destroyCustomFunc.apply(this, destructorArr.concat(reason));
@@ -709,7 +710,7 @@ var handyClicksPrefSvc = {
 			return decodeURIComponent(s || "");
 		}
 		catch(e) {
-			this.ut._err(new Error("Can't decode URI: " + s));
+			this.ut._err(new Error(<>Can't decode URI: "{s}"</>));
 			this.ut._err(e);
 			return "[invalid URI]";
 		}
@@ -741,40 +742,47 @@ var handyClicksPrefSvc = {
 			.replace(/,+/g, this.keys.sep);
 		return sh || (_short ? "" : this.ut.getLocalized("none"));
 	},
+	checkPrefs: function(pSrc) {
+		return this.checkPrefsStr(
+			pSrc instanceof Components.interfaces.nsILocalFile
+				? this.ut.readFromFile(pSrc)
+				: this.getPrefsStr(pSrc)
+		);
+	},
 	getPrefsStr: function(str) {
 		const add = this.ct.PROTOCOL_SETTINGS_ADD;
 		return str.indexOf(add) == 0
 			? this.decURI(str.substr(add.length))
 			: str;
 	},
-	_hashError: false,
-	_hashMissing: false,
 	checkPrefsStr: function(str) {
 		this._hashError = false;
 		this._hashMissing = true;
-		str = this.getPrefsStr(str);
-		if(str.indexOf(this.requiredHeader) != 0) // Support for old header
+		if(str.indexOf(this.requiredHeader) != 0)
 			return false;
-		const hc = /^var handyClicks[\w$]+\s*=.*$/mg;
-		if(!hc.test(str))
+		const hcVarsRe = /^var handyClicks[\w$]+\s*=.*$/mg;
+		if(!hcVarsRe.test(str))
 			return false;
 
 		const hashRe = /(?:\r\n|\n|\r)\/\/[ \t]?(MD2|MD5|SHA1|SHA512|SHA256|SHA384):[ \t]?([a-f0-9]+)(?=[\n\r]|$)/;
-		if(hashRe.test(str)) { // Added: 2009-12-18
+		if(hashRe.test(str)) { //= Added: 2009-12-18
 			this._hashMissing = false;
 			var hashFunc = RegExp.$1;
 			var hash = RegExp.$2;
-			str = str.replace(hashRe, "");
+			str = RegExp.leftContext + RegExp.rightContext; // str = str.replace(hashRe, "");
 			str = str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Remove comments
 			if(hash != this.getHash(str, hashFunc)) {
 				this._hashError = true;
 				return false;
 			}
 		}
+		else {
+			str = str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Remove comments
+		}
 
 		str = str.replace(/"(?:\\"|[^"\n\r\u2028\u2029])*"/g, "__dummy__") // Replace strings
-		str = str.replace(hc, ""); // Remove handyClicks* vars
-		str = str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Remove comments
+		str = str.replace(hcVarsRe, ""); // Remove handyClicks* vars
+
 		if(/\/\/|\/\*|\*\//.test(str)) // No other comments
 			return false;
 		if(/\Wvar\s+/.test(str)) // No other vars
@@ -784,5 +792,17 @@ var handyClicksPrefSvc = {
 		if(/\W(?:[Ff]unction|eval|Components)\W/.test(str))
 			return false;
 		return true;
+	},
+	get clipboardPrefs() {
+		var cb = this.ut.cb;
+		var cbStr = this.getPrefsStr(this.ut.readFromClipboard(true, cb.kGlobalClipboard));
+		if(this.checkPrefsStr(cbStr))
+			return cbStr;
+		if(!cb.supportsSelectionClipboard())
+			return "";
+		cbStr = this.getPrefsStr(this.ut.readFromClipboard(true, cb.kSelectionClipboard));
+		if(this.checkPrefsStr(cbStr))
+			return cbStr;
+		return "";
 	}
 };

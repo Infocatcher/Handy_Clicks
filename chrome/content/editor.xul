@@ -164,8 +164,10 @@
 										label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
 								</hbox>
 								<hbox id="hc-editor-funcOptsAdd" align="center" hc_notDelay="true">
-									<label value="&hc.editor.funcOptsAdd;" />
+									<label value="&hc.editor.funcOptsAdd;" accesskey="&hc.editor.funcOptsAddAccesskey;"
+										control="hc-editor-imgIgnoreLinks" />
 									<checkbox id="hc-editor-imgIgnoreLinks" label="&hc.editor.ignoreLinks;" />
+									<checkbox id="hc-editor-imgIgnoreSingle" label="&hc.editor.ignoreSingle;" />
 								</hbox>
 							</vbox>
 

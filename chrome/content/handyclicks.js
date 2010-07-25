@@ -221,11 +221,11 @@ var handyClicks = {
 		if(this.mousemoveParams.dist < this.pu.pref("disallowMousemoveDist"))
 			return;
 
-		this._devMode && this.ut._log("mousemoveHandler -> cancel()");
+		this.ut._log("mousemoveHandler -> cancel()");
 		this.cancel();
 	},
 	dragHandler: function(e) {
-		this._devMode && this.ut._log("dragHandler -> cancel()");
+		this.ut._log("dragHandler -> cancel()");
 		this.cancel();
 	},
 	cancel: function() {
@@ -308,8 +308,7 @@ var handyClicks = {
 			|| e.originalTarget !== this.origItem // For "command" event
 		) {
 			this.defineItem(e, sets);
-			if(this._devMode && this.itemType)
-				this.ut._log("[" + e.type + "] " + "this.itemType = " + this.itemType);
+			this.itemType && this.ut._log("[" + e.type + "] " + "this.itemType = " + this.itemType);
 		}
 		var funcObj = this.getFuncObj(sets) || (this.editMode ? {} : null);
 		this.hasSettings = !!funcObj;
@@ -400,7 +399,13 @@ var handyClicks = {
 		// img:
 		if(all || this.itemTypeInSets(sets, "img")) {
 			_it = this.getImg(it);
-			if(_it) {
+			if(
+				_it
+				&& (
+					!this.ut.getOwnProperty(sets, "img", "ignoreSingle")
+					|| _it.ownerDocument.documentURI != _it.src
+				)
+			) {
 				this.itemType = "img";
 				this.item = _it;
 				if(this.ut.getOwnProperty(sets, "img", "ignoreLinks"))
@@ -693,7 +698,7 @@ var handyClicks = {
 
 		if(this.ut.isObject(cm) && typeof cm.hidePopup != "function") {
 			// XUL document with custom context...
-			this.ut._warn(new Error("Error: context menu has no hidePopup() method, id: \"" + cm.id + "\""));
+			this.ut._warn(new Error(<>getItemContext: context menu has no "hidePopup" method, id: "{cm.id}"</>));
 			cm = null;
 		}
 		this._cMenu = cm; // cache
@@ -773,7 +778,7 @@ var handyClicks = {
 			? this.getTreeInfo(it, e, "uri")
 			: it.statusText
 				|| (it.node && it.node.uri)
-				|| (it._placesNode && it._placesNode.uri) // Firefox 3.7a5pre
+				|| (it._placesNode && it._placesNode.uri) // Firefox 3.7a5pre+
 				|| it.getAttribute("siteURI")
 				|| "";
 		return !usePlacesURIs && /^place:/.test(uri) ? "" : uri;
@@ -1020,7 +1025,7 @@ var handyClicks = {
 					this.ut.toErrorConsole, null,
 					this.ut.NOTIFY_ICON_WARNING
 				);
-				this.ut._err(new Error(action + " not found (" + typeof this.fn[action] + ")"));
+				this.ut._err(new Error(<>Function "{action}" not found ({typeof this.fn[action]})</>));
 			}
 		}
 

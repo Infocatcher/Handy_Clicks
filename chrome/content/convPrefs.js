@@ -45,6 +45,6 @@ function prefsMigration(allowSave, vers) {
 	}
 	this.pref("prefsVersion", this.prefsVersion);
 	allowSave && this.savePrefFile();
-	this.ut._log("Format of about:config prefs updated: " + vers + " => " + this.prefsVersion);
+	this.ut._info("Format of about:config prefs updated: " + vers + " => " + this.prefsVersion);
 	return true;
 }

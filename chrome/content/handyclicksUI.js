@@ -13,8 +13,10 @@ var handyClicksUI = {
 		this.setStatus();
 		this.showHideControls();
 		this.loadBlinkStyle();
-		reloadFlag && this.setEditModeStatus();
-		this.registerHotkeys();
+		if(reloadFlag)
+			this.setEditModeStatus();
+		else
+			this.registerHotkeys();
 		this.pu.oSvc.addObserver(this.updUI, this);
 	},
 	destroy: function(reloadFlag) {
@@ -164,7 +166,7 @@ var handyClicksUI = {
 	},
 	checkClipboard: function() {
 		const id = "handyClicks-importFromClipboard";
-		this.$(id).hidden = this.$(id + "Separator").hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard(true));
+		this.$(id).hidden = this.$(id + "Separator").hidden = !this.ps.clipboardPrefs;
 	},
 	fixPopup: function() {
 		if(document.popupNode)
@@ -315,12 +317,13 @@ var handyClicksUI = {
 	registerHotkey: function(kId) {
 		var kElt = this.e("handyClicks-key-" + kId);
 		if(!kElt) {
-			this.ut._warn(new Error("Key element not found: \"" + kId + "\""));
+			this.ut._warn(new Error(<>Key element not found: "{kId}"</>));
 			return;
 		}
 		var keyStr = this.pu.pref("key." + kId);
 		if(!keyStr) { // Key is disabled
-			kElt.setAttribute("key", ""); // Strange things may happens without this for <key command="..." />
+			// Strange things may happens without this for <key command="..." />
+			kElt.parentNode.removeChild(kElt);
 			return;
 		}
 		var tokens = keyStr.split(" ");

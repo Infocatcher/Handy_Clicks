@@ -36,5 +36,5 @@ function uiMigration(vers) {
 		}
 	}
 	this.pu.pref("uiVersion", this.uiVersion).savePrefFile();
-	this.ut._log("UI updated: " + vers + " => " + this.uiVersion);
+	this.ut._info("UI updated: " + vers + " => " + this.uiVersion);
 }

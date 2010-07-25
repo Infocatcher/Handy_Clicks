@@ -120,7 +120,7 @@ function setsMigration(allowSave, vers) {
 				pVal = decodeURIComponent(pVal || "");
 			}
 			catch(e) {
-				this.ut._err(new Error("Can't decode \"" + pName + "\":\n" + pVal));
+				this.ut._err(new Error(<>Can't decode "{pName}":{"\n" + pVal}</>));
 				this.ut._err(e);
 				pVal = "[invalid value]";
 			}
@@ -165,7 +165,7 @@ function setsMigration(allowSave, vers) {
 			recode(to, "contextMenu");
 		}
 	}
-	this.ut._log("Format of prefs file updated: " + vers + " => " + this.setsVersion);
+	this.ut._info("Format of prefs file updated: " + vers + " => " + this.setsVersion);
 	if(allowSave)
 		this.saveSettingsObjects();
 	else

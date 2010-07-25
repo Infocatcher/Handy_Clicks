@@ -17,6 +17,21 @@ var handyClicksSetsUtils = {
 			},
 			this
 		);
+
+		// Insert Apply button between Ok and Cancel
+		var de = document.documentElement;
+		var okBtn = de.getButton("accept");
+		var cancelBtn = de.getButton("cancel");
+		var btnBox = okBtn.parentNode;
+		for(var node = btnBox.firstChild; node; node = node.nextSibling) {
+			if(node == okBtn || node == cancelBtn) {
+				node = node.nextSibling;
+				var applyBtn = de.getButton("extra1");
+				if(node != applyBtn)
+					btnBox.insertBefore(applyBtn, node);
+				break;
+			}
+		}
 	},
 	destroy: function(reloadFlag) {
 		window.removeEventListener("DOMMouseScroll", this, true);

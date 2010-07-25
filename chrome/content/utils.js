@@ -7,11 +7,14 @@ var handyClicksUtils = {
 		return this.consoleSvc = Components.classes["@mozilla.org/consoleservice;1"]
 			.getService(Components.interfaces.nsIConsoleService);
 	},
-	_log: function() {
+	_info: function() {
 		this.consoleSvc.logStringMessage(
 			this.errPrefix
 			+ Array.map(arguments, this.safeToString).join("\n")
 		);
+	},
+	_log: function() {
+		this._devMode && this._info.apply(this, arguments);
 	},
 	_err: function(e, fileName, lineNumber, isWarning) {
 		if(typeof e == "string")
@@ -73,7 +76,7 @@ var handyClicksUtils = {
 			var dt = Date.now() - ts[tId];
 			if(division)
 				dt /= division;
-			this._log("[timer] " + tId + " -> " + dt + " ms");
+			this._log(<>[timer] {tId} -> {dt} ms</>);
 			delete ts[tId];
 			return dt;
 		}
@@ -207,8 +210,13 @@ var handyClicksUtils = {
 		);
 	},
 	getStr: function(src, sName) {
-		try { return this.getBundle(src).GetStringFromName(sName); }
-		catch(e) { return ""; }
+		try {
+			return this.getBundle(src).GetStringFromName(sName);
+		}
+		catch(e) {
+			this._warn(new Error(<>Can't get localized string "{sName}" from "{src}".</>));
+			return "";
+		}
 	},
 	getLocalized: function(sName) {
 		return this._strings[sName] || (
@@ -234,15 +242,14 @@ var handyClicksUtils = {
 			contentType
 		);
 		if(node.namespaceURI == "http://www.mozilla.org/newlayout/xml/parsererror.xml") {
-			this._err(new Error("Invalid XML entity: \"" + eName + "\""));
+			this._warn(new Error(<>Invalid XML entity: "{eName}"</>));
 			return "";
 		}
 		return node.textContent;
 	},
 	getLocalizedEntity: function(eName, dtds, contentType) {
 		return this._entities[eName] || (
-			this._entities[eName] = this.getEntity(eName, dtds)
-				|| this.makeBuggyStr(eName)
+			this._entities[eName] = this.getEntity(eName, dtds) || this.makeBuggyStr(eName)
 		);
 	},
 
@@ -295,7 +302,7 @@ var handyClicksUtils = {
 		catch(e) {
 			if(dontShowErrors)
 				return null;
-			this._err(new Error("Invalid directory alias: \"" + alias + "\""));
+			this._err(new Error(<>Invalid directory alias: "{alias}"</>));
 			this._err(e);
 		}
 		return null;
@@ -334,7 +341,7 @@ var handyClicksUtils = {
 			file.initWithPath(path);
 		}
 		catch(e) {
-			this._err(new Error("Invalid path: \"" + path + "\""));
+			this._err(new Error(<>Invalid path: "{path}"</>));
 			this._err(e);
 			return null;
 		}
@@ -390,7 +397,7 @@ var handyClicksUtils = {
 			fos.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
 		}
 		catch(e) {
-			this._err(new Error("Can't write string to file\"" + file.path + "\""));
+			this._err(new Error(<>Can't write string to file "{file && file.path}"</>));
 			this._err(e);
 			fos.close();
 			return false;
@@ -410,7 +417,7 @@ var handyClicksUtils = {
 			fis.init(file, 0x01, 0444, 0);
 		}
 		catch(e) {
-			this._err(new Error("Can't read string from file\"" + file.path + "\""));
+			this._err(new Error(<>Can't read string from file "{file && file.path}"</>));
 			this._err(e);
 			fis.close();
 			_rff.error = true;
@@ -438,46 +445,59 @@ var handyClicksUtils = {
 		return str;
 	},
 
-	// Clipboard:
-	copyStr: function(str) {
-		Components.classes["@mozilla.org/widget/clipboardhelper;1"]
-			.getService(Components.interfaces.nsIClipboardHelper)
-			.copyString(str);
+	// Clipboard utils:
+	get cb() {
+		delete this.cb;
+		return this.cb = Components.classes["@mozilla.org/widget/clipboard;1"]
+			.getService(Components.interfaces.nsIClipboard);
 	},
-	readFromClipboard: function(trimFlag) {
-		// function readFromClipboard() from chrome://browser/content/browser.js
-		var url;
-
-		try {
-			// Get clipboard.
-			var clipboard = Components.classes["@mozilla.org/widget/clipboard;1"]
-				.getService(Components.interfaces.nsIClipboard);
-
-			// Create tranferable that will transfer the text.
-			var trans = Components.classes["@mozilla.org/widget/transferable;1"]
-				.createInstance(Components.interfaces.nsITransferable);
-
-			trans.addDataFlavor("text/unicode");
-
-			// If available, use selection clipboard, otherwise global one
-			if(clipboard.supportsSelectionClipboard())
-				clipboard.getData(trans, clipboard.kSelectionClipboard);
-			else
-				clipboard.getData(trans, clipboard.kGlobalClipboard);
-
-			var data = {};
-			var dataLen = {};
-			trans.getTransferData("text/unicode", data, dataLen);
-
-			if(data) {
-				data = data.value.QueryInterface(Components.interfaces.nsISupportsString);
-				url = data.data.substring(0, dataLen.value / 2);
-			}
+	get cbHelper() {
+		delete this.cbHelper;
+		return this.cbHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"]
+			.getService(Components.interfaces.nsIClipboardHelper);
+	},
+	get transferableInstance() {
+		return Components.classes["@mozilla.org/widget/transferable;1"]
+			.createInstance(Components.interfaces.nsITransferable);
+	},
+	setClipboardData: function(dataObj, clipId) {
+		var ta = this.transferableInstance;
+		for(var flavor in dataObj) if(dataObj.hasOwnProperty(flavor)) {
+			var value = dataObj[flavor];
+			var str = Components.classes["@mozilla.org/supports-string;1"]
+		    	.createInstance(Components.interfaces.nsISupportsString);
+		    str.data = value;
+			ta.addDataFlavor(flavor);
+			ta.setTransferData(flavor, str, value.length * 2);
 		}
-		catch (ex) {}
-
-		url = url || "";
-		return trimFlag ? this.trim(url) : url;
+		var cb = this.cb;
+		cb.setData(ta, null, clipId === undefined ? cb.kGlobalClipboard : clipId);
+	},
+	getClipboardData: function(flavor, clipId) {
+		if(!flavor)
+			flavor = "text/unicode";
+		var ta = this.transferableInstance;
+		ta.addDataFlavor(flavor);
+		var cb = this.cb;
+		cb.getData(ta, clipId === undefined ? cb.kGlobalClipboard : clipId);
+		var data = {}, len = {};
+		try {
+			ta.getTransferData(flavor, data, len);
+			return data.value
+				.QueryInterface(Components.interfaces.nsISupportsString)
+				.data
+				.substr(0, len.value / 2);
+		}
+		catch(e) {
+			return "";
+		}
+	},
+	copyStr: function(str, clipId) {
+		this.cbHelper.copyStringToClipboard(str, clipId === undefined ? this.cb.kGlobalClipboard : clipId);
+	},
+	readFromClipboard: function(trimFlag, clipId) {
+		var clipStr = this.getClipboardData("text/unicode", clipId);
+		return trimFlag ? this.trim(clipStr) : clipStr;
 	},
 
 	isChromeWin: function(win) {
@@ -502,8 +522,8 @@ var handyClicksUtils = {
 	get fxVersion() {
 		var ver = parseFloat(this.appInfo.version); // 3.0 for "3.0.10"
 		if(this.isSeaMonkey) switch(ver) {
-			case 2:             ver = 3.5; break;
-			case 2.1: default:  ver = 3.7;
+			case 2:            ver = 3.5; break;
+			case 2.1: default: ver = 4;
 		}
 		delete this.fxVersion;
 		return this.fxVersion = ver;
@@ -840,7 +860,6 @@ var handyClicksExtensionsHelper = {
 				this.ut.storage("extensionsPending", false);
 				var scheduledTasks = this.ut.storage("extensionsScheduledTasks");
 				if(scheduledTasks) {
-					//this.ut._log("Run tasks: " + scheduledTasks.length);
 					scheduledTasks.forEach(function(task) {
 						task.func.apply(task.context, task.args);
 					});

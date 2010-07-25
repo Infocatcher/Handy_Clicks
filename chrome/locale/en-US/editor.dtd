@@ -25,7 +25,9 @@
 <!ENTITY hc.editor.enabled "Enabled">
 <!ENTITY hc.editor.enabledAccesskey "b">
 <!ENTITY hc.editor.funcOptsAdd "Additional options:">
+<!ENTITY hc.editor.funcOptsAddAccesskey "s">
 <!ENTITY hc.editor.ignoreLinks "Ignore links">
+<!ENTITY hc.editor.ignoreSingle "Ignore separately opened images">
 
 <!ENTITY hc.editor.tabAction "Action">
 <!ENTITY hc.editor.tabActionAccesskey "n">
