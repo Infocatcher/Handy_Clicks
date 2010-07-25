@@ -97,22 +97,18 @@ handyClicksUninstaller = {
 		this.st = this.ut = this.wu = this.pu = this.ps = this.ct = null;
 	},
 	uninstallConfirm: function() {
-		var export = { value: true };
+		var exportAllSets = { value: true };
 		var confirmed = this.uninstallConfirmed = this.ut.confirmEx(
 			this.ut.getLocalized("title"),
 			this.ut.getLocalized("removeSettingsConfirm"),
 			this.ut.getLocalized("removeSettings"),
 			false, // Cancel button is default
-			this.ut.getLocalized("exportAllSettings"), export,
+			this.ut.getLocalized("exportAllSettings"), exportAllSets,
 			this.wu.wm.getMostRecentWindow(null) //this.wu.wm.getMostRecentWindow("Extension:Manager")
 		);
-		if(confirmed && export.value) {
-			try {
+		if(confirmed && exportAllSets.value) {
 			this.st.exportPrefs();
-			} catch(e) { Components.utils.reportError(e); }
-			try {
 			this.st.exportSets(false, this.ct.EXPORT_FILEPICKER);
-			} catch(e) { Components.utils.reportError(e); }
 		}
 	},
 	uninstall: function() {

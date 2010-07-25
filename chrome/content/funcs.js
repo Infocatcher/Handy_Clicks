@@ -935,12 +935,15 @@ var handyClicksFuncs = {
 			delete tab[p];
 		}
 	},
+	toggleTabPinned: function(e, tab) {
+		tab = this.fixTab(tab);
+		var tbr = this.hc.getTabBrowser(true);
+		tbr[tab.pinned ? "unpinTab" : "pinTab"](tab);
+	},
 	reloadAllTabs: function(e, skipCache) {
-		this.forEachTab(
-			function(tab) {
-				this.reloadTab(e, skipCache, tab);
-			}
-		);
+		this.forEachTab(function(tab) {
+			this.reloadTab(e, skipCache, tab);
+		});
 	},
 	reloadTab: function(e, skipCache, tab) {
 		tab = this.fixTab(tab);

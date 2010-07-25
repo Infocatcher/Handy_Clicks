@@ -666,6 +666,7 @@ var handyClicksEditor = {
 		);
 		this.addFuncArgs(delayed, setsObj);
 	},
+
 	notSupported: function(type, actionItem, supp, app, req) {
 		if(actionItem) {
 			supp = actionItem.getAttribute("hc_supports");
@@ -673,8 +674,31 @@ var handyClicksEditor = {
 			req  = actionItem.getAttribute("hc_required");
 		}
 		return supp && supp.split(/,\s*/).indexOf(type) == -1
-			|| app && app.split(/,\s*/).indexOf(this.ut.appInfo.name) == -1
+			|| app && !this.appSupported(app.split(/,\s*/))
 			|| req && !this.extAvailable(req);
+	},
+	get versComparator() {
+		delete this.versComparator;
+		return this.versComparator = Components.classes["@mozilla.org/xpcom/version-comparator;1"]
+			.getService(Components.interfaces.nsIVersionComparator);
+	},
+	appSupported: function(apps) {
+		return apps.some(function(app) {
+			var appRe = /^(.*?)(?:\s+(\S+)(?:\s+-\s+(\S+))?)?$/;
+			if(!appRe.test(app))
+				return false;
+			var appName    = RegExp.$1;
+			var appMinVers = RegExp.$2;
+			var appMaxVers = RegExp.$3;
+			var info = this.ut.appInfo;
+			if(appName != info.name)
+				return false;
+			if(appMinVers && this.versComparator.compare(appMinVers, info.version) > 0)
+				return false;
+			if(appMaxVers && this.versComparator.compare(appMaxVers, info.version) < 0)
+				return false;
+			return true;
+		}, this);
 	},
 	exts: {
 		SplitBrowser: "{29c4afe1-db19-4298-8785-fcc94d1d6c1d}",
@@ -684,6 +708,7 @@ var handyClicksEditor = {
 	extAvailable: function(eName) {
 		return this.eh.isAvailable(this.exts[eName]);
 	},
+
 	itemTypeChanged: function(iType) {
 		this.addFuncArgs();
 		this.loadCustomType(iType);

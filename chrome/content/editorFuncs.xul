@@ -6,7 +6,8 @@
 			Separator: "," or ", "
 			hc_args:     missing => no args  or string like "refererPolicy, closePopups"
 			hc_supports: missing => all      or string like "tab, tabbar"
-			hc_app:      missing => all      or string like "Firefox, SeaMonkey"
+			hc_app:      missing => all      or string like "Firefox 3.0 - 3.6.*, SeaMonkey"
+			hc_required: missing => nothing  or string like "FlashGot"
 			-->
 			<!-- Built-in actions -->
 			<menuitem value="copyItemText" label="copyItemText" />
@@ -28,6 +29,9 @@
 				hc_supports="tab, tabbar" />
 			<menuitem value="renameTab" label="renameTab"
 				hc_supports="tab, tabbar" />
+			<menuitem value="toggleTabPinned" label="toggleTabPinned"
+				hc_supports="tab, tabbar"
+				hc_app="Firefox 4.0b2pre" />
 			<menuitem value="reloadTab" label="reloadTab"
 				hc_args="skipCache"
 				hc_supports="tab, tabbar" />
