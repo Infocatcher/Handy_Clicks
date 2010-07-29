@@ -51,6 +51,9 @@
 <!ENTITY hc.editor.funcInitAccesskey "И">
 <!ENTITY hc.editor.funcInitTip "Выполняется при (пере)загрузке настроек">
 
+<!ENTITY hc.editor.editCode "Редактировать…">
+<!ENTITY hc.editor.editCodeTip "Редактировать во внешнем редакторе">
+
 <!ENTITY hc.editor.mainTabCustomTypes "Добавленные типы">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "б">
 <!ENTITY hc.editor.internalId "Внутренний id:">

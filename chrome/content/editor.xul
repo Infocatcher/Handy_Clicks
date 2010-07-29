@@ -63,6 +63,9 @@
 		<key id="hc-editor-key-copy" key="c" modifiers="control,shift" oncommand="handyClicksEditor.copySettings();" />
 		<key id="hc-editor-key-paste" key="v" modifiers="control,shift" oncommand="handyClicksEditor.pasteSettings();" />
 
+		<key id="hc-editor-key-rewindFocus" keycode="VK_UP" modifiers="control" oncommand="document.commandDispatcher.rewindFocus();" />
+		<key id="hc-editor-key-rewindFocus" keycode="VK_DOWN" modifiers="control" oncommand="document.commandDispatcher.advanceFocus();" />
+
 		<key id="hc-editor-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksWinUtils.maximizeWindow();" />
 		<key id="hc-editor-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksWinUtils.toggleFullscreen();" />
 		<key id="hc-editor-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksWinUtils.toggleOnTop();" />
@@ -117,8 +120,8 @@
 					</menulist>
 				</hbox>
 
-				<hbox id="hc-editor-funcFixBox" align="right" oncommand="event.stopPropagation();">
-					<checkbox id="hc-editor-funcOptsFixed"
+				<hbox id="hc-editor-funcTabboxToolbar" align="right" oncommand="event.stopPropagation();">
+					<checkbox id="hc-editor-funcOptsFixed" class="hcFloatControl"
 						oncommand="handyClicksEditor.fixFuncOpts(this.checked);"
 						label="&hc.editor.fixActionOpts;" accesskey="&hc.editor.fixActionOptsAccesskey;"
 						tooltiptext="&hc.editor.fixActionOptsTip;" />
@@ -190,6 +193,13 @@
 									<vbox id="hc-editor-funcArgs" flex="1" align="left" />
 								</groupbox>
 
+								<hbox id="hc-editor-funcCustomTabboxToolbar" align="right"
+									oncommand="event.stopPropagation();">
+									<button class="hcFloatControl hcEditCodeButton hc-iconic"
+										label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"
+										oncommand="handyClicksEditor.editCode(this.parentNode.nextSibling);" />
+								</hbox>
+
 								<tabbox id="hc-editor-funcCustomTabbox" flex="1">
 									<tabs>
 										<tab label="&hc.editor.funcCode;" accesskey="&hc.editor.funcCodeAccesskey;"
@@ -241,6 +251,13 @@
 						hc_ondrop="handyClicksEditor.customTypeIdFilter(event);" />
 					<checkbox id="hc-editor-customTypeEnabled" handyclicks_important="enabled"
 						label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
+				</hbox>
+
+				<hbox id="hc-editor-customTypeTabboxToolbar" align="right"
+					oncommand="event.stopPropagation();">
+					<button class="hcFloatControl hcEditCodeButton hc-iconic"
+						label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"
+						oncommand="handyClicksEditor.editCode(this.parentNode.nextSibling);" />
 				</hbox>
 
 				<tabbox id="hc-editor-customTypeTabbox" flex="1">

@@ -55,6 +55,12 @@ var handyClicksEditor = {
 			this.initExtTypes();
 			this.loadLabels();
 			this.createDelayedFuncTab();
+			this.initTabboxToolbar("hc-editor-funcTabboxToolbar");
+			//this.ut.timeout(function() {
+			this.initTabboxToolbar("hc-editor-funcCustomTabboxToolbar");
+			this.initTabboxToolbar("hc-editor-funcCustomTabboxToolbar" + this.delayId);
+			this.initTabboxToolbar("hc-editor-customTypeTabboxToolbar");
+			//}, this);
 			this.addTestButtons();
 		}
 		this.initShortcuts();
@@ -84,8 +90,6 @@ var handyClicksEditor = {
 			}
 		);
 
-		var fb = this.e("hc-editor-funcFixBox");
-		fb.style.marginBottom = "-" + fb.boxObject.height + "px";
 		document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css
 
 		this.applyButton.className += " hc-iconic hc-apply";
@@ -126,6 +130,10 @@ var handyClicksEditor = {
 		var btnBox = delBtn.parentNode;
 		btnBox.insertBefore(testBtn, insPoint);
 		btnBox.insertBefore(undoBtn, insPoint);
+	},
+	initTabboxToolbar: function(tbId) {
+		var tb = this.e(tbId);
+		tb.style.marginBottom = "-" + tb.boxObject.height + "px";
 	},
 	initShortcuts: function() {
 		this.mainTabbox = this.$("hc-editor-mainTabbox");
@@ -191,19 +199,23 @@ var handyClicksEditor = {
 		tabbox.selectedIndex = si;
 		if(typeof line != "number" || !isFinite(line))
 			return;
+		var editor = this.getEditorFromTabbox(tabbox);
+		editor && editor.selectLine(line);
+	},
+	getEditorFromTabbox: function(tabbox) {
 		var panel = tabbox.selectedPanel
 			|| tabbox.getElementsByTagName("tabpanels")[0].getElementsByTagName("tabpanel")[tabbox.selectedIndex]; //~ todo: test
 		var cre = /(?:^|\s)hcEditor(?:\s|$)/;
+		var editor;
 		Array.some(
 			panel.getElementsByTagName("textbox"),
 			function(tb) {
-				if(cre.test(tb.className)) {
-					tb.selectLine(line);
-					return true;
-				}
+				if(cre.test(tb.className))
+					return editor = tb;
 				return false;
 			}
 		);
+		return editor;
 	},
 	loadLabels: function() {
 		["hc-editor-button", "hc-editor-itemTypes", "hc-editor-func"].forEach(
@@ -442,9 +454,10 @@ var handyClicksEditor = {
 	},
 	selectCustomFunc: function(isCustom, delayed) {
 		delayed = delayed || "";
-		this.$("hc-editor-funcArgsBox"      + delayed).collapsed =  isCustom;
-		this.$("hc-editor-funcLabelBox"     + delayed).style.visibility = isCustom ? "" : "hidden";
-		this.$("hc-editor-funcCustomTabbox" + delayed).collapsed = !isCustom;
+		this.$("hc-editor-funcArgsBox"             + delayed).collapsed =  isCustom;
+		this.$("hc-editor-funcLabelBox"            + delayed).style.visibility = isCustom ? "" : "hidden";
+		this.$("hc-editor-funcCustomTabbox"        + delayed).collapsed = !isCustom;
+		this.$("hc-editor-funcCustomTabboxToolbar" + delayed).collapsed = !isCustom;
 	},
 	loadCustomType: function(type) {
 		if(this.ps.isCustomType(type))
@@ -904,6 +917,14 @@ var handyClicksEditor = {
 	},
 	set cantFixFuncOpts(val) {
 		this.$("hc-editor-funcOptsFixed").setAttribute("hc_cantFixFields", val);
+	},
+
+	editCode: function(tabbox) {
+		var editor = this.getEditorFromTabbox(tabbox);
+		if(!editor)
+			return;
+		editor.focus();
+		editor.openExternalEditor();
 	},
 
 	disableUnsupported: function() {

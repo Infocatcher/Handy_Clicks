@@ -436,9 +436,7 @@
 							_this._fileSize = fSize;
 							_this.fade();
 
-							var evt = document.createEvent("Events");
-							evt.initEvent("change", true, true);
-							_this.dispatchEvent(evt);
+							_this.fireChange();
 						};
 						top.addEventListener("focus", upd, false);
 						top.addEventListener("unload", function _unl(e) {
@@ -592,6 +590,45 @@
 				]]>
 				</body>
 			</method>
+			<method name="trimEndSpaces">
+				<body>
+				<![CDATA[
+					const selMarker = "\uffff" + Math.random().toFixed(24).substr(2) + "\uffff";
+
+					var val = this.value;
+					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
+					var newVal = val.substring(0, ss)
+						+ selMarker + val.substring(ss, se) + selMarker
+						+ val.substring(se);
+					newVal = newVal.replace(new RegExp(<>[ \t]*({selMarker})?[ \t]*({selMarker})?[ \t]*$</>, "mg"), "$1$2");
+					ss = newVal.indexOf(selMarker);
+					se = newVal.lastIndexOf(selMarker) - selMarker.length;
+					newVal = newVal.replace(selMarker, "", "g");
+ 					if(newVal != val) {
+						var sTop = ifi.scrollTop;
+						var sLeft = ifi.scrollLeft;
+ 						this.value = newVal;
+ 						ifi.scrollTop = sTop;
+ 						ifi.scrollLeft = sLeft;
+ 						ifi.selectionStart = ss;
+ 						ifi.selectionEnd = se;
+ 						this.fireChange();
+ 					}
+				]]>
+				</body>
+			</method>
+
+			<method name="fireChange">
+				<body>
+				<![CDATA[
+					var evt = this.ownerDocument.createEvent("Events");
+					evt.initEvent("change", true, true);
+					this.dispatchEvent(evt);
+				]]>
+				</body>
+			</method>
 
 			<method name="moveCaret">
 				<parameter name="moveLeft" />
@@ -627,6 +664,7 @@
 			<handler event="keypress" preventdefault="true" key="e" action="this.openExternalEditor();" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(false);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(true);" modifiers="control,shift" />
+			<handler event="keypress" preventdefault="true" keycode="VK_BACK" action="this.trimEndSpaces();" modifiers="alt" />
 
 			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
 			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />

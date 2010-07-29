@@ -41,11 +41,14 @@ var handyClicksSetsUtils = {
 	handleEvent: function(e) {
 		switch(e.type) {
 			case "DOMMouseScroll":
-				this.scrollList(e)
+				(
+					this.scrollList(e)
 					|| this.scrollRadio(e)
 					|| this.scrollNumTextbox(e)
 					|| this.scrollTabs(e)
-					|| this.scrollPanes(e);
+					|| this.scrollPanes(e)
+				)
+				&& this.ut.stopEvent(e);
 			break;
 			case "dragenter": this.dragenterHandler(e); break;
 			case "dragexit":  this.dragexitHandler(e);
