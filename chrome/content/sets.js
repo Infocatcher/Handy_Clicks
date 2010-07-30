@@ -41,11 +41,25 @@ var handyClicksSets = {
 		reloadFlag && this.setDialogButtons();
 
 		if(this.ut.fxVersion >= 3.5) {
-			var s = this.$("hc-sets-tree-searchField");
-			s.type = "search";
-			s._clearSearch = function() { this.value = ""; this.oninput && this.oninput(); };
+			var sf = this.searchField;
+			if(typeof sf._clearSearch == "function") {
+				this._origClearSearch = sf._clearSearch;
+				var hcs = this;
+				sf._clearSearch = function() {
+					var ret = hcs._origClearSearch.apply(this, arguments);
+					hcs.searchInSetsTreeDelay(this);
+					return ret;
+				};
+			}
+		}
+
+		if(this.pu.pref("sets.rememberSearchQuery")) {
+			var sf = this.searchField;
+			sf.value = this.pu.pref("sets.lastSearchQuery") || "";
+			sf._enterSearch && sf._enterSearch();
 		}
 		this.focusSearch();
+		this.searchInSetsTree(sf, true);
 
 		this.instantApply = this.pu.getPref("browser.preferences.instantApply");
 		if(this.instantApply)
@@ -72,13 +86,19 @@ var handyClicksSets = {
 		this.tbo = tr.treeBoxObject;
 		this.tBody = tr.body;
 		this.tSel = tView.selection;
-		this.searcher.init(this, tr, this.$("hc-sets-tree-searchField"));
+		this.searcher.init(this, tr, this.searchField);
 
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
 	destroy: function(reloadFlag) {
 		this.closeEditors();
 		this.treeScrollPos(true);
+		this.pu.pref(
+			"sets.lastSearchQuery",
+			this.pu.pref("sets.rememberSearchQuery")
+				? this.searchField.value
+				: ""
+		);
 		reloadFlag && this.setImportStatus(false);
 		this.rowsCache = this._savedPrefs = this._savedTypes = null;
 
@@ -838,6 +858,8 @@ var handyClicksSets = {
 		var tBody = this.tBody;
 		tChld.removeChild(tItem);
 		delete this.rowsCache[tItem.__hash];
+		if(tItem.__delayed)
+			delete this.rowsCache[tItem.__delayed.__hash];
 		while(!tChld.hasChildNodes() && tChld != tBody) {
 			tItem = tChld.parentNode;
 			tChld = tItem.parentNode;
@@ -1218,11 +1240,13 @@ var handyClicksSets = {
 	focusSearch: function(e) {
 		if(!this.isTreePaneSelected)
 			return;
-		var sIt = this.$("hc-sets-tree-searchField");
-		if(!sIt)
-			return;
-		sIt.select();
-		sIt.focus();
+		var sf = this.searchField;
+		sf.select();
+		sf.focus();
+	},
+	get searchField() {
+		delete this.searchField;
+		return this.searchField = this.$("hc-sets-tree-searchField");
 	},
 
 	_searchDelay: 50,
@@ -1325,8 +1349,8 @@ var handyClicksSets = {
 		// Needs for undo/redo
 		this.ut.timeout(this.searchInSetsTree, this, arguments, 0);
 	},
-	searchInSetsTree: function(sIt, notSelect) {
-		if(sIt && !this._searchTimeout) {
+	searchInSetsTree: function(sf, notSelect) {
+		if(sf && !this._searchTimeout) {
 			var remTime = this._lastSearch + this._searchDelay - Date.now();
 			if(remTime > 0) {
 				this._searchTimeout = setTimeout(
@@ -1342,28 +1366,28 @@ var handyClicksSets = {
 		}
 		this.treeBatch(this._searchInSetsTree, this, arguments);
 	},
-	_searchInSetsTree: function(sIt, notSelect) {
-		sIt = sIt || this.$("hc-sets-tree-searchField");
+	_searchInSetsTree: function(sf, notSelect) {
+		sf = sf || this.searchField;
 		var filterMode = this.$("hc-sets-tree-searchFilterMode").getAttribute("checked") == "true";
 
-		var sTerm = sIt.value;
+		var sTerm = sf.value;
 		var isRegExp = false;
 		var hasTerm = true;
 		if(!/^\/(.+)\/([im]{0,2})$/.test(sTerm))
-			sIt.removeAttribute("hc_isValidRegExp");
+			sf.removeAttribute("hc_isValidRegExp");
 		else {
 			try {
 				sTerm = new RegExp(RegExp.$1, RegExp.$2);
 				isRegExp = true;
-				sIt.setAttribute("hc_isValidRegExp", "true");
+				sf.setAttribute("hc_isValidRegExp", "true");
 			}
 			catch(e) {
-				sIt.setAttribute("hc_isValidRegExp", "false");
+				sf.setAttribute("hc_isValidRegExp", "false");
 			}
 		}
 
 		if(!isRegExp) {
-			sTerm = this.ut.trim(sIt.value);
+			sTerm = this.ut.trim(sf.value);
 			hasTerm = !!sTerm;
 			sTerm = sTerm.toLowerCase().split(/\s+/);
 		}
@@ -1373,26 +1397,20 @@ var handyClicksSets = {
 		var matchedRows = [];
 		for(var h in this.rowsCache) {
 			tRow = this.rowsCache[h];
-			if(!tRow.parentNode || !tRow.parentNode.parentNode)
-				continue;
-			okRow = hasTerm;
-			rowText = this.getRowText(tRow, !isRegExp); //~ todo: cache?
-
-			if(
-				isRegExp
-					? !sTerm.test(rowText)
-					: hasTerm && sTerm.some(function(s) { return rowText.indexOf(s) == -1; })
-			)
-				okRow = false;
-
-			//this.setNodeProperties(tRow, { hc_search: okRow });
-			this.setClildsProperties(tRow, { hc_search: okRow }, true);
+			okRow = true;
+			if(hasTerm) {
+				rowText = this.getRowText(tRow, !isRegExp); //~ todo: cache?
+				okRow = isRegExp
+					? sTerm.test(rowText)
+					: sTerm.every(function(s) { return rowText.indexOf(s) != -1; });
+			}
+			var hl = hasTerm && okRow;
+			this.setClildsProperties(tRow, { hc_search: hl }, true);
 			tRow.parentNode.__matched = okRow;
-			if(okRow)
-				matchedRows.push(tRow);
+			okRow && matchedRows.push(tRow);
 		}
 
-		if(filterMode && hasTerm) {
+		if(hasTerm && filterMode) {
 			this._hasFilter = true;
 			for(var h in this.rowsCache) {
 				tRow = this.rowsCache[h];
@@ -1419,8 +1437,8 @@ var handyClicksSets = {
 		if(!notSelect && matchedRows.length) // Don't select for redraw
 			this.searcher.select();
 
-		this.$("hc-sets-tree-searchResults").value = matchedRows.length || "";
-		sIt.setAttribute("hc_notFound", hasTerm && !matchedRows.length);
+		this.$("hc-sets-tree-searchResults").value = matchedRows.length;
+		sf.setAttribute("hc_notFound", hasTerm && !matchedRows.length);
 
 		this._lastSearch = Date.now();
 	},

@@ -39,13 +39,13 @@
 			<hbox align="center">
 				<label value="&hc.sets.search;" control="hc-sets-tree-searchField" />
 				<hbox id="hc-sets-tree-searchContainer" flex="100">
-					<textbox id="hc-sets-tree-searchField" flex="1"
+					<textbox id="hc-sets-tree-searchField" type="search" flex="1"
 						onkeypress="handyClicksSets.navigateSearchResults(event);"
 						oninput="handyClicksSets.searchInSetsTreeDelay(this);"
 						hc_ondrop="handyClicksSets.searchInSetsTree(this);" />
 				</hbox>
 				<toolbarbutton id="hc-sets-tree-searchFilterMode" type="checkbox" persist="checked"
-					oncommand="handyClicksSets.searchInSetsTree(null, true);"
+					oncommand="handyClicksSets.searchInSetsTreeDelay(null, true);"
 					tooltiptext="&hc.sets.filterTip;" />
 				<label id="hc-sets-tree-searchResults" />
 				<spacer flex="1" />
