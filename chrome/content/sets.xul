@@ -88,6 +88,8 @@
 						<menuitem id="hc-sets-tree-toggleColored" type="checkbox" label="&hc.sets.highlightTree;" oncommand="handyClicksSets.toggleColored();" />
 						<menuitem type="checkbox" hc_pref="sets.localizeArguments" label="&hc.sets.localizeArgs;" />
 						<menuseparator />
+						<menuitem type="checkbox" hc_pref="sets.rememberSearchQuery" label="&hc.sets.rememberSearchQuery;" />
+						<menuseparator />
 						<menuitem type="checkbox" hc_pref="sets.closeTreeViewMenu" label="&hc.sets.closeThisMenu;" />
 					</menupopup>
 				</button>

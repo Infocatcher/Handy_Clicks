@@ -782,12 +782,15 @@ var handyClicksSets = {
 		if(!tIts.length)
 			return;
 
-		var del = tIts.map(
+		const MAX_TYPE_LENGTH = 40;
+		const MAX_LABEL_LENGTH = 50;
+		const MAX_ROWS = 12;
+		var delInfo = tIts.map(
 			function(tItem, i) {
 				var type = tItem.__itemType, sh = tItem.__shortcut;
 				var mdfs = this.ps.getModifiersStr(sh);
 				var button = this.ps.getButtonStr(sh, true);
-				var typeLabel = this.getTypeLabel(type, this.ps.isCustomType(type));
+				var typeLabel = this.cropStr(this.getTypeLabel(type), MAX_TYPE_LENGTH);
 				var fObj = this.ut.getOwnProperty(this.ps.prefs, sh, type);
 				var dObj = this.ut.getOwnProperty(fObj, "delayedAction");
 				var addLabel = "";
@@ -798,29 +801,35 @@ var handyClicksSets = {
 				else {
 					var daLabel = this.ut.canHasProps(dObj) && this.getActionLabel(fObj);
 					if(daLabel)
-						addLabel = "\n\t(" + this.ut.getLocalized("delayed") + ": " + daLabel + ")";
+						addLabel = "\n\t(" + this.ut.getLocalized("delayed") + ": "
+							+ this.cropStr(daLabel, MAX_LABEL_LENGTH) + ")";
 				}
 				var label = this.ut.canHasProps(fObj)
-					? this.getActionLabel(fObj)
+					? this.cropStr(this.getActionLabel(fObj), MAX_LABEL_LENGTH)
 					: "?";
 				return (i + 1) + ". " + mdfs + " + " + button + " + " + typeLabel + " \u21d2 " /* "=>" */
-					+ label.substr(0, 42) + addLabel.substr(0, 42);
+					+ label + addLabel;
 			},
 			this
 		);
-		var maxRows = 12;
-		if(del.length > maxRows)
-			del.splice(maxRows - 2, del.length - maxRows + 1, "\u2026" /* "..." */);
+		if(delInfo.length > MAX_ROWS)
+			delInfo.splice(MAX_ROWS - 2, delInfo.length - MAX_ROWS + 1, "\u2026" /* "..." */);
+		delInfo = delInfo.join("\n");
+
 		if(
 			!this.ut.confirm(
 				this.ut.getLocalized("title"),
 				this.ut.getLocalized("deleteConfirm").replace("%n", tIts.length)
-					+ "\n\n" + del.join("\n")
+					+ "\n\n" + delInfo
 			)
 		)
 			return;
 
-		tIts.forEach(this.deleteItem, this);
+		//tIts.forEach(this.deleteItem, this);
+		this.treeBatch(function(tIts) {
+			tIts.forEach(this.deleteItem, this);
+		}, this, [tIts]);
+
 		this.checkTreeSaved();
 		if(this.instantApply)
 			this.saveSettingsObjectsCheck(true);
@@ -828,21 +837,30 @@ var handyClicksSets = {
 			this.ps.otherSrc && this.ps.reloadSettings(true /* reloadAll */);
 			this.setDialogButtons();
 		}
+		this.searchInSetsTree(null, true);
 	},
-	deleteItem: function(tItem) {
+	cropStr: function(str, maxLen) {
+		return str.length > maxLen
+			? str.substr(0, maxLen - 1) + "\u2026" /* "..." */
+			: str;
+	},
+	deleteItem: function(tItem, indx) {
 		var sh = tItem.__shortcut;
 		var type = tItem.__itemType;
 		if(!sh || !type)
 			return;
 		var p = this.ps.prefs;
 		var so = p[sh];
-		if(tItem.__isDelayed) {
+		if(tItem.__isDelayed) { // Remove delayed action
 			var to = so[type];
 			delete to.delayedAction;
 
-			var tChld = tItem.parentNode;
-			tChld.parentNode.removeChild(tChld);
 			delete this.rowsCache[tItem.__hash];
+
+			var tChld = tItem.parentNode;
+			tItem = tChld.parentNode;
+			tItem.removeChild(tChld);
+			tItem.removeAttribute("container");
 		}
 		else {
 			delete so[type];
@@ -851,20 +869,24 @@ var handyClicksSets = {
 
 			this.removeTreeitem(tItem);
 		}
-		this.searchInSetsTree(null, true);
+		if(indx === undefined)
+			this.searchInSetsTree(null, true);
 	},
 	removeTreeitem: function(tItem) {
-		var tChld = tItem.parentNode;
 		var tBody = this.tBody;
-		tChld.removeChild(tItem);
-		delete this.rowsCache[tItem.__hash];
-		if(tItem.__delayed)
-			delete this.rowsCache[tItem.__delayed.__hash];
-		while(!tChld.hasChildNodes() && tChld != tBody) {
+		var tChld = tItem.parentNode;
+		while(true) {
+			tChld.removeChild(tItem);
+
+			delete this.rowsCache[tItem.__hash];
+			if(tItem.__delayed)
+				delete this.rowsCache[tItem.__delayed.__hash];
+
+			if(tChld.hasChildNodes() || tChld == tBody)
+				break;
+
 			tItem = tChld.parentNode;
 			tChld = tItem.parentNode;
-			tChld.removeChild(tItem);
-			delete this.rowsCache[tItem.__hash];
 		}
 	},
 	openEditorWindow: function(tItem, mode, add) { // mode: this.ct.EDITOR_MODE_*
