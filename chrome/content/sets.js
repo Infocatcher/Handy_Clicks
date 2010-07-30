@@ -795,8 +795,9 @@ var handyClicksSets = {
 			this.ps.otherSrc && this.ps.reloadSettings(true /* reloadAll */);
 			this.setDialogButtons();
 		}
+		this.searchInSetsTree(null, true);
 	},
-	deleteItem: function(tItem) {
+	deleteItem: function(tItem, indx) {
 		var sh = tItem.__shortcut;
 		var type = tItem.__itemType;
 		if(!sh || !type)
@@ -813,7 +814,9 @@ var handyClicksSets = {
 			var to = so[type];
 			delete to.delayedAction;
 
-			tChld.parentNode.removeChild(tChld);
+			tItem = tChld.parentNode;
+			tItem.removeChild(tChld);
+			tItem.removeAttribute("container");
 		}
 		else {
 			delete this.rowsCache[hash];
@@ -829,7 +832,8 @@ var handyClicksSets = {
 				tChld.removeChild(tItem);
 			}
 		}
-		this.searchInSetsTree(null, true);
+		if(indx === undefined)
+			this.searchInSetsTree(null, true);
 	},
 	openEditorWindow: function(tItem, mode, add) { // mode: this.ct.EDITOR_MODE_*
 		var shortcut = tItem

@@ -52,7 +52,7 @@ var handyClicksFuncs = {
 			? this.forEachTab(this.getTabText)
 			: this.hc.itemType == "ext_mulipletabs"
 				? Array.map(it, this.getTabText, this)
-				: it.textContent || it.label || it.alt || it.title || it.value
+				: it.textContent || it.label || it.alt || it.value || it.title
 					|| (
 						it.getAttribute
 						&& (it.getAttribute("label") || it.getAttribute("value"))

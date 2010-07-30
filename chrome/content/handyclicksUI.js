@@ -13,8 +13,10 @@ var handyClicksUI = {
 		this.setStatus();
 		this.showHideControls();
 		this.loadBlinkStyle();
-		reloadFlag && this.setEditModeStatus();
-		this.registerHotkeys();
+		if(reloadFlag)
+			this.setEditModeStatus();
+		else
+			this.registerHotkeys();
 		this.pu.oSvc.addObserver(this.updUI, this);
 	},
 	destroy: function(reloadFlag) {
@@ -316,7 +318,8 @@ var handyClicksUI = {
 		}
 		var keyStr = this.pu.pref("key." + kId);
 		if(!keyStr) { // Key is disabled
-			kElt.setAttribute("key", ""); // Strange things may happens without this for <key command="..." />
+			// Strange things may happens without this for <key command="..." />
+			kElt.parentNode.removeChild(kElt);
 			return;
 		}
 		var tokens = keyStr.split(" ");
