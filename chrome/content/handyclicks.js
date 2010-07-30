@@ -60,9 +60,11 @@ var handyClicks = {
 		this.setStatus();
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], true);
 		this.pu.oSvc.addObserver(this.updUI, this);
-		this.registerHotkeys();
 		this.showHideControls();
-		reloadFlag && this.setEditModeStatus();
+		if(reloadFlag)
+			this.setEditModeStatus();
+		else
+			this.registerHotkeys();
 		this.initUninstallObserver();
 
 		// Styles for blinkNode() function:
@@ -1150,7 +1152,8 @@ var handyClicks = {
 		}
 		var keyStr = this.pu.pref("key." + kId);
 		if(!keyStr) { // Key is disabled
-			kElt.setAttribute("key", ""); // Strange things may happens without this for <key command="..." />
+			// Strange things may happens without this for <key command="..." />
+			kElt.parentNode.removeChild(kElt);
 			return;
 		}
 		var tokens = keyStr.split(" ");
