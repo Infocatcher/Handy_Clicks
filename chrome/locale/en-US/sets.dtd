@@ -76,9 +76,9 @@
 <!ENTITY hc.sets.removeAllUserBackupsAccesskey "R">
 <!ENTITY hc.sets.importIncrementFromFile "Incremental import from file…">
 <!ENTITY hc.sets.importIncrementFromClipboard "Incremental import from clipboard">
-<!ENTITY hc.sets.importOk "Import done">
-<!ENTITY hc.sets.importIncrementOk "Incremental import done">
-<!ENTITY hc.sets.importOkAccesskey "d">
+<!ENTITY hc.sets.importOk "Import">
+<!ENTITY hc.sets.importIncrementOk "Incremental import">
+<!ENTITY hc.sets.importOkAccesskey "m">
 <!ENTITY hc.sets.importCancel "Cancel import">
 <!ENTITY hc.sets.importCancelAccesskey "C">
 

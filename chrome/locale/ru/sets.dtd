@@ -76,9 +76,9 @@
 <!ENTITY hc.sets.removeAllUserBackupsAccesskey "У">
 <!ENTITY hc.sets.importIncrementFromFile "Инкрементный импорт из файла…">
 <!ENTITY hc.sets.importIncrementFromClipboard "Инкрементный импорт из буфера обмена">
-<!ENTITY hc.sets.importOk "Завершить импорт">
-<!ENTITY hc.sets.importIncrementOk "Завершить инкрементный импорт">
-<!ENTITY hc.sets.importOkAccesskey "З">
+<!ENTITY hc.sets.importOk "Импортировать">
+<!ENTITY hc.sets.importIncrementOk "Инкрементный импорт">
+<!ENTITY hc.sets.importOkAccesskey "м">
 <!ENTITY hc.sets.importCancel "Отменить импорт">
 <!ENTITY hc.sets.importCancelAccesskey "О">
 

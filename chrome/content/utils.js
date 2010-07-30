@@ -512,8 +512,8 @@ var handyClicksUtils = {
 	get appInfo() {
 		delete this.appInfo;
 		return this.appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
-			.getService(Components.interfaces.nsIXULAppInfo);
-			//.QueryInterface(Components.interfaces.nsIXULRuntime);
+			.getService(Components.interfaces.nsIXULAppInfo)
+			.QueryInterface(Components.interfaces.nsIXULRuntime);
 	},
 	get isSeaMonkey() {
 		delete this.isSeaMonkey;
@@ -527,6 +527,33 @@ var handyClicksUtils = {
 		}
 		delete this.fxVersion;
 		return this.fxVersion = ver;
+	},
+
+	get lineBreak() {
+		// Based on code of Adblock Plus 1.2.1
+		// chrome\adblockplus.jar\content\utils.js
+		// Platform's line breaks by reading prefs.js
+		var br = "\n";
+		try {
+			var prefFile = this.getFileByAlias("PrefF");
+			var is = Components.classes["@mozilla.org/network/file-input-stream;1"]
+				.createInstance(Components.interfaces.nsIFileInputStream);
+			is.init(prefFile, 0x01, 0444, 0);
+			var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]
+				.createInstance(Components.interfaces.nsIScriptableInputStream);
+			sis.init(is);
+			var data = sis.read(256);
+			sis.close();
+			if(/\r\n?|\n\r?/.test(data))
+				br = RegExp.lastMatch;
+		}
+		catch (e) {
+		}
+		delete this.lineBreak;
+		return this.lineBreak = br;
+	},
+	platformLineBreaks: function(str) {
+		return str.replace(/\r\n?|\n\r?/g, this.lineBreak);
 	},
 
 	isObject: function(obj) {

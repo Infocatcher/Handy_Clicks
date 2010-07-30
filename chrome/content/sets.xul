@@ -119,8 +119,9 @@
 					onmousemove="handyClicksSets.smartSelect(event);" />
 			</tree>
 			<vbox id="hc-sets-tree-buttons">
-				<hbox id="hc-sets-tree-partialImportPanel" hidden="true" pack="center" align="center">
-					<button id="hc-sets-tree-buttonImportOk" class="hc-iconic" oncommand="handyClicksSets.importDone(true);"
+				<hbox id="hc-sets-tree-importPanel" hidden="true" pack="center" align="center">
+					<button id="hc-sets-tree-buttonImportOk" class="hc-iconic"
+						oncommand="handyClicksSets.importDone(true);"
 						accesskey="&hc.sets.importOkAccesskey;"
 						hc_labelFull="&hc.sets.importOk;" hc_labelPartial="&hc.sets.importIncrementOk;" />
 					<grid id="hc-sets-tree-importStatistics" tooltiptext="&hc.sets.importTip;"
@@ -140,7 +141,8 @@
 							</row>
 						</rows>
 					</grid>
-					<button id="hc-sets-tree-buttonImportCancel" class="hc-iconic" oncommand="handyClicksSets.importDone(false);"
+					<button id="hc-sets-tree-buttonImportCancel" class="hc-iconic"
+						oncommand="handyClicksSets.importDone(false);"
 						label="&hc.sets.importCancel;" accesskey="&hc.sets.importCancelAccesskey;" />
 				</hbox>
 				<hbox id="hc-sets-tree-editPanel" pack="center">

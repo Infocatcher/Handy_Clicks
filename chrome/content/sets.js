@@ -2324,7 +2324,7 @@ var handyClicksSets = {
 			if(this.prefsSaved)
 				this.applyButton.disabled = true;
 		}
-		var panel = this.$("hc-sets-tree-partialImportPanel");
+		var panel = this.$("hc-sets-tree-importPanel");
 		panel.hidden = !isImport;
 		if(!isImport)
 			return;
@@ -2335,8 +2335,14 @@ var handyClicksSets = {
 				elt.setAttribute("label", elt.getAttribute(lAttr));
 			}
 		);
-		if(!updMode)
-			this.$("hc-sets-tree-buttonImportOk").focus();
+
+		// Set same width to Ok and Cancel buttons:
+		var okBtn = this.$("hc-sets-tree-buttonImportOk");
+		var cancelBtn = this.$("hc-sets-tree-buttonImportCancel");
+		okBtn.width = cancelBtn.width = null; // Reset width
+		okBtn.width = cancelBtn.width = Math.max(okBtn.boxObject.width, cancelBtn.boxObject.width);
+
+		!updMode && okBtn.focus();
 	},
 	toggleImportType: function() {
 		this.setImportStatus(this._import, !this._importPartial, this._importFromClipboard, true);

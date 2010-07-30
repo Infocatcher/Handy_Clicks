@@ -70,7 +70,7 @@ hbox[hc_fixedFields="true"] {
 	opacity: 0.5;
 }
 .hcEditCodeButton {
-	-moz-image-region: rect(32px 32px 48px 16px);
+	-moz-image-region: rect(32px 112px 48px 96px);
 	min-width: 0;
 }
 .hcEditCodeButton, .hcEditCodeButton * {

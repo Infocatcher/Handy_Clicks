@@ -52,7 +52,7 @@
 <!ENTITY hc.editor.funcInitTip "Executes on settings (re)loading">
 
 <!ENTITY hc.editor.editCode "Edit…">
-<!ENTITY hc.editor.editCodeTip "Edit in external editor">
+<!ENTITY hc.editor.editCodeTip "Edit in external editor…">
 
 <!ENTITY hc.editor.mainTabCustomTypes "Custom Types">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "T">

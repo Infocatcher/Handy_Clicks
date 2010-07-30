@@ -391,8 +391,8 @@
 					var file = this.tempFile;
 					var isNew = !file || !file.exists();
 
+					var ext = ut.pu.pref("editor.externalEditorExtension") || "js";
 					if(isNew) {
-						var ext = ut.pu.pref("editor.externalEditorExtension") || "js";
 						var fName = "handyclicks_" + this.id.replace(/^hc-editor-|Field/g, "") + "." + ext;
 						file = ut.getFileByAlias("TmpD");
 						file.append(fName);
@@ -404,7 +404,7 @@
 							.deleteTemporaryFileOnExit(file);
 					}
 
-					ut.writeToFile(this.value, file);
+					ut.writeToFile(ut.platformLineBreaks(this.value), file);
 
 					if(isNew) {
 						this._lastModifiedTime = file.lastModifiedTime;
@@ -452,6 +452,32 @@
 					}
 
 					var ee = ut.pu.pref("editor.externalEditorPath");
+
+					if(!ee && "nsIWindowsRegKey" in Components.interfaces) try {
+						// Check Windows association
+						var extKey = Components.classes["@mozilla.org/windows-registry-key;1"]
+							.createInstance(Components.interfaces.nsIWindowsRegKey);
+						var hkcr = extKey.ROOT_KEY_CLASSES_ROOT;
+						var accr = extKey.ACCESS_READ;
+						extKey.open(hkcr, "." + ext, accr);
+						var cmdId = extKey.readStringValue("");
+						extKey.close();
+						if(cmdId) {
+							var cmdKey = Components.classes["@mozilla.org/windows-registry-key;1"]
+								.createInstance(Components.interfaces.nsIWindowsRegKey);
+							cmdKey.open(hkcr, cmdId + "\\shell\\open\\command", accr);
+							var cmd = cmdKey.readStringValue("");
+							cmdKey.close();
+							if(cmd) {
+								var wscript = ut.expandEnvironmentVariables("%windir%\\system32\\wscript.exe");
+								if(cmd.toLowerCase().indexOf(wscript.toLowerCase()) != -1)
+									ee = "%windir%\\notepad.exe";
+							}
+						}
+					}
+					catch(e) {
+					}
+
 					if(ee) {
 						var args = [file.path];
 						var eeArgs = ut.pu.pref("editor.externalEditorArgs");
