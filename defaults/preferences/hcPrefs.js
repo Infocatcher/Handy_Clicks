@@ -66,7 +66,7 @@ pref("extensions.handyclicks.sets.lastSearchQuery", "");
 
 pref("extensions.handyclicks.editor.tabSymbol", "	");
 pref("extensions.handyclicks.editor.externalEditorPath", "");
-pref("extensions.handyclicks.editor.externalEditorArgs", "-n%L");
+pref("extensions.handyclicks.editor.externalEditorArgs", "");
 pref("extensions.handyclicks.editor.externalEditorExtension", "js");
 pref("extensions.handyclicks.editor.testFocusMainWindow", true);
 pref("extensions.handyclicks.editor.ui.showCustomFuncsNotes", true);

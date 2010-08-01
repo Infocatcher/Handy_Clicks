@@ -83,8 +83,9 @@
 <!ENTITY hc.sets.importCancel "Отменить импорт">
 <!ENTITY hc.sets.importCancelAccesskey "О">
 
-<!ENTITY hc.sets.importOverrides "Перезаписываемых:">
 <!ENTITY hc.sets.importNew "Новых:">
+<!ENTITY hc.sets.importOverrides "Перезаписываемых:">
+<!ENTITY hc.sets.importDeletable "Удаляемых:">
 <!ENTITY hc.sets.importTip "Обычные настройки / Настройки отложенных действий + Пользовательские типы">
 
 

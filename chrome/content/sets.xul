@@ -41,11 +41,11 @@
 				<hbox id="hc-sets-tree-searchContainer" flex="100">
 					<textbox id="hc-sets-tree-searchField" type="search" flex="1"
 						onkeypress="handyClicksSets.navigateSearchResults(event);"
-						oninput="handyClicksSets.searchInSetsTreeDelay(this);"
-						hc_ondrop="handyClicksSets.searchInSetsTree(this);" />
+						oninput="handyClicksSets.searchInSetsTreeDelay();"
+						hc_ondrop="handyClicksSets.searchInSetsTree();" />
 				</hbox>
 				<toolbarbutton id="hc-sets-tree-searchFilterMode" type="checkbox" persist="checked"
-					oncommand="handyClicksSets.searchInSetsTreeDelay(null, true);"
+					oncommand="handyClicksSets.searchInSetsTreeDelay(true);"
 					tooltiptext="&hc.sets.filterTip;" />
 				<label id="hc-sets-tree-searchResults" />
 				<spacer flex="1" />
@@ -140,6 +140,10 @@
 							<row>
 								<label id="hc-sets-tree-importOverrides" value="&hc.sets.importOverrides;" />
 								<label id="hc-sets-tree-importOverridesValue" value="?/? + ?" />
+							</row>
+							<row id="hc-sets-tree-importRowDeletable">
+								<label id="hc-sets-tree-importDeletable" value="&hc.sets.importDeletable;" />
+								<label id="hc-sets-tree-importDeletableValue" value="?/? + ?" />
 							</row>
 						</rows>
 					</grid>
@@ -269,7 +273,7 @@
 			<checkbox preference="onTopButton" label="&hc.sets.onTopButton;" />
 		</groupbox>
 		<groupbox>
-			<caption label="&hc.sets.externalEditor; (Ctrl+Shift+E)" />
+			<caption label="&hc.sets.externalEditor;" />
 			<hbox align="center">
 				<label value="&hc.sets.externalEditorPath;" tooltiptext="&hc.sets.externalEditorPathNote;" control="hc-sets-externalEditorPath" />
 				<image id="hc-sets-externalEditorIcon" onclick="handyClicksSets.externalEditorEvent(event);" />

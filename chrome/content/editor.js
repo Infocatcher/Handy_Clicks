@@ -457,7 +457,7 @@ var handyClicksEditor = {
 		this.$("hc-editor-funcArgsBox"             + delayed).collapsed =  isCustom;
 		this.$("hc-editor-funcLabelBox"            + delayed).style.visibility = isCustom ? "" : "hidden";
 		this.$("hc-editor-funcCustomTabbox"        + delayed).collapsed = !isCustom;
-		this.$("hc-editor-funcCustomTabboxToolbar" + delayed).collapsed = !isCustom;
+		this.$("hc-editor-funcCustomTabboxToolbar" + delayed).hidden = !isCustom;
 	},
 	loadCustomType: function(type) {
 		if(this.ps.isCustomType(type))

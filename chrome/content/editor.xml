@@ -381,14 +381,14 @@
 				</body>
 			</method>
 
-			<field name="tempFile">null</field>
+			<field name="_tempFile">null</field>
 			<method name="openExternalEditor">
 				<body>
 				<![CDATA[
 					if(!("handyClicksUtils" in top))
 						return;
 					var ut = top.handyClicksUtils;
-					var file = this.tempFile;
+					var file = this._tempFile;
 					var isNew = !file || !file.exists();
 
 					var ext = ut.pu.pref("editor.externalEditorExtension") || "js";
@@ -397,7 +397,7 @@
 						file = ut.getFileByAlias("TmpD");
 						file.append(fName);
 						file.createUnique(file.NORMAL_FILE_TYPE, 0644);
-						this.tempFile = file;
+						this._tempFile = file;
 
 						Components.classes["@mozilla.org/uriloader/external-helper-app-service;1"]
 							.getService(Components.interfaces.nsPIExternalAppLauncher)
@@ -412,16 +412,19 @@
 
 						var _this = this;
 						var upd = function(e) {
-							var file = _this.tempFile;
+							var file = _this._tempFile;
 							if(!file || !file.exists())
 								return;
 							var fTime = file.lastModifiedTime;
 							var fSize = file.fileSize;
-							if(_this._lastModifiedTime == fTime && _this._fileSize == fSize)
+							if(fTime == _this._lastModifiedTime && fSize == _this._fileSize)
 								return;
-							var fVal = ut.readFromFile(file);
-							if(fVal == _this.value)
+							var fVal = ut.readFromFile(file).replace(/\r\n?|\n\r?/g, "\n");
+							if(fVal == _this.value) {
+								_this._lastModifiedTime = fTime;
+								_this._fileSize = fSize;
 								return;
+							}
 
 							var ifi = _this.inputField;
 							var sTop = ifi.scrollTop;
@@ -445,7 +448,7 @@
 								return;
 							win.removeEventListener(e.type, _unl, false);
 							win.removeEventListener("focus", upd, false);
-							var file = _this.tempFile;
+							var file = _this._tempFile;
 							if(file && file.exists())
 								file.remove(false);
 						}, false);
@@ -492,8 +495,7 @@
 							file.launch();
 							this.fade();
 						}
-						catch(e) {
-							// See https://developer.mozilla.org/en/nsILocalFile#Remarks
+						catch(e) { // See https://developer.mozilla.org/en/nsILocalFile#Remarks
 							ut._err(e);
 						}
 					}
@@ -501,29 +503,32 @@
 				</body>
 			</method>
 
+			<field name="_fadeTimeout">null</field>
 			<method name="fade">
 				<body>
 				<![CDATA[
-					const opMax = 1, opMin = 0.5, opDur = 350;
-					const opDelay = 10, opStep = (opMax - opMin)*2*opDelay/opDur;
+					// opacity: opMax ... opMin ... opMax
+					const opMax = 1;
+					const opMin = 0.42;
+					const opDur = 400;
+					const opDelay = 5;
 
-					var op = opMax, sign = -1;
-					var st = this.style;
+					if(this._fadeTimeout)
+						clearTimeout(this._fadeTimeout);
 
-					var opInt = setInterval(
-						function() {
-							if(op < opMin)
-								sign = 1;
-							else if(op > opMax) {
-								clearInterval(opInt);
-								st.opacity = "";
-								return;
-							}
-							st.opacity = op;
-							op += sign*opStep;
-						},
-						opDelay
-					);
+					var endTime = Date.now() + opDur;
+					var stl = this.style;
+					this._fadeTimeout = setTimeout(function(_this) {
+						var remTime = endTime - Date.now();
+						if(remTime < 0) {
+							stl.removeProperty("opacity");
+							_this._fadeTimeout = null;
+							return;
+						}
+						var op = opMin + Math.abs((remTime - opDur/2) * (opMax - opMin) / (opDur/2));
+						stl.setProperty("opacity", op, "important");
+						_this._fadeTimeout = setTimeout(arguments.callee, opDelay, this);
+					}, opDelay, this);
 				]]>
 				</body>
 			</method>

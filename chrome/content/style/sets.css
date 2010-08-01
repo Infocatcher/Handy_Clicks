@@ -144,18 +144,18 @@ menuitem[command="hc-sets-cmd-enable"] {
 	-moz-image-region: rect(0 13px 13px 0);
 }
 
-#hc-sets-tree-importOverrides, #hc-sets-tree-importNew {
+#hc-sets-tree-importStatistics label:first-child {
 	/* Firefox 3.6+: text-align: end; */
 	text-align: right;
 }
-:root[chromedir="rtl"] #hc-sets-tree-importOverrides, #hc-sets-tree-importNew {
+:root[chromedir="rtl"] #hc-sets-tree-importStatistics label:first-child {
 	text-align: left;
 }
-#hc-sets-tree-importOverridesValue, #hc-sets-tree-importNewValue {
+#hc-sets-tree-importStatistics label:last-child {
 	text-align: center;
 }
 #hc-sets-tree-importStatistics label {
-	margin: 1px !important;
+	margin: 0 !important;
 	padding: 0 !important;
 }
 #hc-sets-tree-importStatistics column:not(:last-child) {

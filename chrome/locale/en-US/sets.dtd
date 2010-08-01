@@ -83,8 +83,9 @@
 <!ENTITY hc.sets.importCancel "Cancel import">
 <!ENTITY hc.sets.importCancelAccesskey "C">
 
-<!ENTITY hc.sets.importOverrides "Overrides:">
 <!ENTITY hc.sets.importNew "New:">
+<!ENTITY hc.sets.importOverrides "Overrides:">
+<!ENTITY hc.sets.importDeletable "Deletable:">
 <!ENTITY hc.sets.importTip "Normal settings / Delayed actions settings + Custom types">
 
 

@@ -47,7 +47,7 @@ var handyClicksSets = {
 				var hcs = this;
 				sf._clearSearch = function() {
 					var ret = hcs._origClearSearch.apply(this, arguments);
-					hcs.searchInSetsTreeDelay(this);
+					hcs.searchInSetsTreeDelay();
 					return ret;
 				};
 			}
@@ -59,7 +59,7 @@ var handyClicksSets = {
 			sf._enterSearch && sf._enterSearch();
 		}
 		this.focusSearch();
-		this.searchInSetsTree(sf, true);
+		this.searchInSetsTree(true);
 
 		this.instantApply = this.pu.getPref("browser.preferences.instantApply");
 		if(this.instantApply)
@@ -121,7 +121,8 @@ var handyClicksSets = {
 		);
 	},
 	treeScrollPos: function(saveFlag) {
-		var tr = this.tree, tbo = this.tbo;
+		var tr = this.tree;
+		var tbo = this.tbo;
 		if(saveFlag) {
 			tr.setAttribute("hc_firstVisibleRow", tbo.getFirstVisibleRow());
 			tr.setAttribute("hc_lastVisibleRow", tbo.getLastVisibleRow());
@@ -167,7 +168,7 @@ var handyClicksSets = {
 		this._expandDa = this.pu.pref("sets.treeExpandDelayedAction");
 		this._localizeArgs = this.pu.pref("sets.localizeArguments");
 
-		this._overrides = this._overridesDa = this._new = this._newDa = 0;
+		this._overrides = this._overrideDa = this._new = this._newDa = 0;
 		this._buggy = 0;
 
 		var drawMode = this.pu.pref("sets.treeDrawMode");
@@ -246,27 +247,61 @@ var handyClicksSets = {
 			}
 		}
 		this.markOpenedEditors();
-		if(this._import) {
-			var overridesTypes = 0, newTypes = 0;
-
-			var types = this.ps.types;
-			var savedTypes = this._savedTypes;
-
-			for(var type in types) if(types.hasOwnProperty(type)) {
-				var to = types[type];
-				var oldTo = this.ut.getOwnProperty(savedTypes, type);
-				if(!oldTo)
-					newTypes++;
-				else if(!this.ut.objEquals(to, oldTo))
-					overridesTypes++;
-			}
-
-			var id = "hc-sets-tree-import";
-			this.$(id + "OverridesValue").value = this._overrides + "/" + this._overridesDa + " + " + overridesTypes;
-			this.$(id + "NewValue")      .value = this._new       + "/" + this._newDa       + " + " + newTypes;
-		}
+		if(this._import)
+			this.addImportStatistics();
 		delete this.eltsCache;
 		this._hasFilter = false;
+	},
+	addImportStatistics: function() {
+		var overrideTypes = 0;
+		var newTypes = 0;
+
+		var types = this.ps.types;
+		var savedTypes = this._savedTypes;
+
+		for(var type in types) if(types.hasOwnProperty(type)) {
+			var to = types[type];
+			var oldTo = this.ut.getOwnProperty(savedTypes, type);
+			if(!oldTo)
+				newTypes++;
+			else if(!this.ut.objEquals(to, oldTo))
+				overrideTypes++;
+		}
+
+		var deletable = 0;
+		var deletableDa = 0;
+		var deletableTypes = 0;
+
+		var prefs = this.ps.prefs;
+		var savedPrefs = this._savedPrefs;
+
+		for(var sh in savedPrefs) if(savedPrefs.hasOwnProperty(sh)) {
+			var so = savedPrefs[sh];
+			if(!this.ut.isObject(so))
+				continue;
+			var newSo = this.ut.getOwnProperty(prefs, sh);
+			for(var type in so) if(so.hasOwnProperty(type)) {
+				var to = so[type];
+				var newTo = this.ut.getOwnProperty(newSo, type);
+				if(to && !newTo)
+					deletable++;
+				if(!this.ut.isObject(to))
+					continue;
+				var da = this.ut.getOwnProperty(to, "delayedAction");
+				var newDa = this.ut.getOwnProperty(newTo, "delayedAction");
+				if(da && !newDa)
+					deletableDa++;
+			}
+		}
+
+		for(var type in savedTypes) if(savedTypes.hasOwnProperty(type))
+			if(savedTypes[type] && !this.ut.getOwnProperty(types, type))
+				deletableTypes++;
+
+		const id = "hc-sets-tree-import";
+		this.$(id + "OverridesValue").value = <>{this._overrides}/{this._overrideDa} + {overrideTypes }</>;
+		this.$(id + "NewValue")      .value = <>{this._new      }/{this._newDa     } + {newTypes      }</>;
+		this.$(id + "DeletableValue").value = <>{deletable      }/{deletableDa     } + {deletableTypes}</>;
 	},
 	redrawTree: function() {
 		this.treeBatch(this._redrawTree, this, arguments);
@@ -274,7 +309,7 @@ var handyClicksSets = {
 	_redrawTree: function(dontSearch) {
 		this.ut.removeChilds(this.tBody);
 		this._drawTree();
-		!dontSearch && this.searchInSetsTree(null, true);
+		!dontSearch && this.searchInSetsTree(true);
 		this.setDialogButtons();
 		//document.title = document.title.replace(/\*?$/, this.ps.otherSrc ? "*" : "");
 	},
@@ -511,14 +546,15 @@ var handyClicksSets = {
 		this.rowsCache[tItem.__hash = shortcut + "-" + itemType] = tRow;
 		return tItem;
 	},
-	getCustomTypeLabel: function(type) {
-		var label = this.ut.getOwnProperty(this.ps.types, type, "label");
-		return (label ? this.ps.dec(label) + " " : "") + "[" + this.ps.removeCustomPrefix(type) + "]";
-	},
 	getTypeLabel: function(type, isCustomType) {
 		return (isCustomType === undefined ? this.ps.isCustomType(type) : isCustomType)
 				? this.getCustomTypeLabel(type)
 				: this.ut.getLocalized(type);
+	},
+	getCustomTypeLabel: function(type) {
+		var label = this.ut.getOwnProperty(this.ps.types, type, "label");
+		label = label ? this.ps.dec(label) + " " : "";
+		return <>{label}[{this.ps.removeCustomPrefix(type)}]</>.toString();
 	},
 	getActionLabel: function(fo) {
 		if(fo.custom)
@@ -593,12 +629,13 @@ var handyClicksSets = {
 	},
 	getArguments: function(argsObj, localize) {
 		var res = [];
-		for(var p in argsObj) if(argsObj.hasOwnProperty(p))
+		for(var p in argsObj) if(argsObj.hasOwnProperty(p)) {
 			res.push(
 				localize
 					? this.getLocalizedArguments(argsObj, p)
 					: this.getRawArguments(argsObj, p)
 			)
+		}
 		return res.join(this.oldTree ? ", " : ",\n ");
 	},
 	getLocalizedArguments: function(argsObj, p) {
@@ -698,7 +735,6 @@ var handyClicksSets = {
 		if(n >= pCount) n = 0;
 		else if(n < 0)  n = pCount - 1;
 		prefWin.showPane(panes[n]);
-		//this.focusSearch();
 	},
 
 	addItems: function(e) {
@@ -728,12 +764,9 @@ var handyClicksSets = {
 		var its = this.selectedItems;
 		if(this.editorsLimit(its.length))
 			return;
-		its.forEach(
-			function(it) {
-				this.openEditorWindow(it, this.ct.EDITOR_MODE_SHORTCUT);
-			},
-			this
-		);
+		its.forEach(function(it) {
+			this.openEditorWindow(it, this.ct.EDITOR_MODE_SHORTCUT);
+		}, this);
 	},
 	editItemsTypes: function() {
 		if(!this.isTreePaneSelected)
@@ -741,12 +774,9 @@ var handyClicksSets = {
 		var cIts = this.selectedItemsWithCustomTypes;
 		if(this.editorsLimit(cIts.length))
 			return;
-		cIts.forEach(
-			function(it) {
-				this.openEditorWindow(it, this.ct.EDITOR_MODE_TYPE);
-			},
-			this
-		);
+		cIts.forEach(function(it) {
+			this.openEditorWindow(it, this.ct.EDITOR_MODE_TYPE);
+		}, this);
 	},
 	editorsLimit: function(count) {
 		var lim = this.pu.pref("sets.openEditorsLimit");
@@ -826,9 +856,9 @@ var handyClicksSets = {
 			return;
 
 		//tIts.forEach(this.deleteItem, this);
-		this.treeBatch(function(tIts) {
+		this.treeBatch(function() {
 			tIts.forEach(this.deleteItem, this);
-		}, this, [tIts]);
+		});
 
 		this.checkTreeSaved();
 		if(this.instantApply)
@@ -837,7 +867,7 @@ var handyClicksSets = {
 			this.ps.otherSrc && this.ps.reloadSettings(true /* reloadAll */);
 			this.setDialogButtons();
 		}
-		this.searchInSetsTree(null, true);
+		this.searchInSetsTree(true);
 	},
 	cropStr: function(str, maxLen) {
 		return str.length > maxLen
@@ -870,7 +900,7 @@ var handyClicksSets = {
 			this.removeTreeitem(tItem);
 		}
 		if(indx === undefined)
-			this.searchInSetsTree(null, true);
+			this.searchInSetsTree(true);
 	},
 	removeTreeitem: function(tItem) {
 		var tBody = this.tBody;
@@ -902,8 +932,6 @@ var handyClicksSets = {
 	setItemStatus: function(rowId, editStat) {
 		if(!rowId)
 			return;
-		//rowId = rowId.replace(/@otherSrc$/, "");
-		//rowId = rowId.replace(new RegExp(this.ct.OTHER_SRC_POSTFIX + "$"), "");
 		rowId = this.ut.removePostfix(rowId, this.ct.OTHER_SRC_POSTFIX);
 		if(!(rowId in this.rowsCache))
 			return;
@@ -1061,10 +1089,12 @@ var handyClicksSets = {
 			for(var i = start.value; i <= end.value; i++)
 				selectedRows[i] = false;
 		}
-		tSel.clearSelection();
-		for(var i = 0, rowsCount = this.tView.rowCount; i < rowsCount; i++)
-			if(!(i in selectedRows))
-				tSel.rangedSelect(i, i, true);
+		this.treeBatch(function() {
+			tSel.clearSelection();
+			for(var i = 0, rowsCount = this.tView.rowCount; i < rowsCount; i++)
+				if(!(i in selectedRows))
+					tSel.rangedSelect(i, i, true);
+		});
 	},
 	smartSelect: function _ss(e) {
 		if(e.button == 1)
@@ -1271,10 +1301,6 @@ var handyClicksSets = {
 		return this.searchField = this.$("hc-sets-tree-searchField");
 	},
 
-	_searchDelay: 50,
-	_searchTimeout: null,
-	_lastSearch: 0,
-
 	searcher: {
 		_res: [], // rows numbers
 		_current: 0,
@@ -1365,31 +1391,37 @@ var handyClicksSets = {
 			fm.setAttribute("checked", "true");
 		else
 			fm.removeAttribute("checked");
-		this.searchInSetsTree(null, true);
+		this.searchInSetsTree(true);
+	},
+
+	_searchDelay: 50,
+	_searchTimeout: null,
+	_lastSearch: 0,
+	searchInSetsTree: function() {
+		if(this._searchTimeout)
+			return;
+
+		var remTime = this._lastSearch + this._searchDelay - Date.now();
+		if(remTime > 0) {
+			this._searchTimeout = setTimeout(
+				function(_this, args) {
+					_this._searchTimeout = null;
+					args.callee.apply(_this, args);
+				},
+				remTime,
+				this, arguments
+			);
+			return;
+		}
+
+		this.treeBatch(this._searchInSetsTree, this, arguments);
 	},
 	searchInSetsTreeDelay: function() {
 		// Needs for undo/redo
 		this.ut.timeout(this.searchInSetsTree, this, arguments, 0);
 	},
-	searchInSetsTree: function(sf, notSelect) {
-		if(sf && !this._searchTimeout) {
-			var remTime = this._lastSearch + this._searchDelay - Date.now();
-			if(remTime > 0) {
-				this._searchTimeout = setTimeout(
-					function(_this, args) {
-						args.callee.apply(_this, args);
-						_this._searchTimeout = null;
-					},
-					remTime,
-					this, arguments
-				);
-				return;
-			}
-		}
-		this.treeBatch(this._searchInSetsTree, this, arguments);
-	},
-	_searchInSetsTree: function(sf, notSelect) {
-		sf = sf || this.searchField;
+	_searchInSetsTree: function(dontSelect) {
+		var sf = this.searchField;
 		var filterMode = this.$("hc-sets-tree-searchFilterMode").getAttribute("checked") == "true";
 
 		var sTerm = sf.value;
@@ -1456,7 +1488,7 @@ var handyClicksSets = {
 		}, this);
 		this.searcher.finish();
 
-		if(!notSelect && matchedRows.length) // Don't select for redraw
+		if(!dontSelect && matchedRows.length) // Don't select for redraw
 			this.searcher.select();
 
 		this.$("hc-sets-tree-searchResults").value = matchedRows.length;
@@ -1466,6 +1498,7 @@ var handyClicksSets = {
 	},
 	getRowText: function(tRow, lowerCase) {
 		var tChld = tRow, tItem;
+		var tBody = this.tBody;
 		var rowText = [];
 		do {
 			tItem = tChld.parentNode;
@@ -1485,7 +1518,7 @@ var handyClicksSets = {
 				this
 			);
 		}
-		while(tChld != this.tBody);
+		while(tChld != tBody);
 		rowText = rowText.join("\n");
 		return lowerCase ? rowText.toLowerCase() : rowText;
 	},
@@ -2381,6 +2414,8 @@ var handyClicksSets = {
 		var cancelBtn = this.$("hc-sets-tree-buttonImportCancel");
 		okBtn.width = cancelBtn.width = null; // Reset width
 		okBtn.width = cancelBtn.width = Math.max(okBtn.boxObject.width, cancelBtn.boxObject.width);
+
+		this.$("hc-sets-tree-importRowDeletable").hidden = this._importPartial;
 
 		!updMode && okBtn.focus();
 	},
