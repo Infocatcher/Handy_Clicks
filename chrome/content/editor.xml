@@ -472,9 +472,12 @@
 							var cmd = cmdKey.readStringValue("");
 							cmdKey.close();
 							if(cmd) {
-								var wscript = ut.expandEnvironmentVariables("%windir%\\system32\\wscript.exe");
-								if(cmd.toLowerCase().indexOf(wscript.toLowerCase()) != -1)
-									ee = "%windir%\\notepad.exe";
+								// %SystemRoot%\System32\WScript.exe "%1" %*
+								cmd = ut.expandEnvironmentVariables(cmd);
+								var wscript = ut.expandEnvironmentVariables("%SystemRoot%\\system32\\wscript.exe");
+								var indx = cmd.toLowerCase().indexOf(wscript.toLowerCase());
+								if(indx == 0 || indx == 1)
+									ee = "%SystemRoot%\\notepad.exe";
 							}
 						}
 					}
