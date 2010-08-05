@@ -1,6 +1,7 @@
 var handyClicksUI = {
 	blinkAttr: "__handyclicks__blink__",
 	blinkOpacity: "0.1",
+	blinkDuration: 170,
 
 	uiVersion: 1,
 
@@ -29,7 +30,7 @@ var handyClicksUI = {
 		return temp.uiMigration;
 	},
 	loadBlinkStyle: function() {
-		// Styles for blinkNode() function:
+		// Styles for blinkNode() function
 		var css = "data:text/css," + encodeURIComponent(
 			<><![CDATA[
 				@namespace hc url("urn:handyclicks:namespace");
@@ -52,27 +53,28 @@ var handyClicksUI = {
 		node = node || this.hc.item || this.hc.origItem;
 		if(!node)
 			return;
-		time = time || 170;
+		time = time || this.blinkDuration;
 		var oldFx = this.ut.fxVersion <= 2;
-		this.ut.toArray(node).forEach(
-			function(node) {
-				var attr = this.blinkAttr;
-				node.setAttributeNS("urn:handyclicks:namespace", attr, "true");
-				if(oldFx) {
-					var origStyle = node.hasAttribute("style") && node.getAttribute("style");
-					node.style.setProperty("opacity", this.blinkOpacity, "important");
-				}
-				this._blinkNodeTimeout = this.ut.timeout(
-					function(node, attr, oldFx, origStyle) {
-						node.removeAttributeNS("urn:handyclicks:namespace", attr);
-						oldFx && this.ut.attribute(node, "style", origStyle, true);
-					},
-					this, [node, attr, oldFx, origStyle],
-					time
-				);
-			},
-			this
-		);
+		var nodes = Array.slice(node);
+		if(!nodes.length)
+			nodes = [node];
+		nodes.forEach(function(node) {
+			var attr = this.blinkAttr;
+			node.setAttributeNS("urn:handyclicks:namespace", attr, "true");
+			if(oldFx) {
+				var origStyle = node.hasAttribute("style") && node.getAttribute("style");
+				node.style.setProperty("opacity", this.blinkOpacity, "important");
+			}
+			//node.offsetHeight;
+			this._blinkNodeTimeout = this.ut.timeout(
+				function(node, attr, oldFx, origStyle) {
+					node.removeAttributeNS("urn:handyclicks:namespace", attr);
+					oldFx && this.ut.attribute(node, "style", origStyle, true);
+				},
+				this, [node, attr, oldFx, origStyle],
+				time
+			);
+		}, this);
 	},
 
 	// GUI:
@@ -127,19 +129,16 @@ var handyClicksUI = {
 				onViewToolbarsPopupShowing(e);
 			}
 			catch(e) {
-				this.ut._err(new Error("onViewToolbarsPopupShowing() failed"));
+				this.ut._err("buildSettingsPopup: onViewToolbarsPopupShowing() failed");
 				this.ut._err(e);
 			}
 			var vtSep = this.$("handyClicks-viewToolbarsSeparator");
-			Array.forEach(
-				this.ut.toArray(popup.childNodes),
-				function(ch) {
-					if(!ch.hasAttribute("toolbarindex") && !ch.hasAttribute("toolbarid"))
-						return;
-					ch.setAttribute("oncommand", "onViewToolbarCommand(event);"); // For SeaMonkey
-					popup.insertBefore(ch, vtSep);
-				}
-			);
+			Array.slice(popup.childNodes).forEach(function(ch) {
+				if(!ch.hasAttribute("toolbarindex") && !ch.hasAttribute("toolbarid"))
+					return;
+				ch.setAttribute("oncommand", "onViewToolbarCommand(event);"); // For SeaMonkey
+				popup.insertBefore(ch, vtSep);
+			});
 		}
 
 		if(popup.hasAttribute("hc_additionalItemsAdded"))
@@ -147,7 +146,7 @@ var handyClicksUI = {
 		popup.setAttribute("hc_additionalItemsAdded", "true");
 
 		Array.forEach(
-			this.e("toolbar-context-menu").childNodes,
+			this.$("toolbar-context-menu").childNodes,
 			function(ch) {
 				if(ch.hasAttribute("toolbarindex") || ch.hasAttribute("toolbarid"))
 					return;
@@ -265,12 +264,9 @@ var handyClicksUI = {
 			this.$(id + "statusbarButton"),
 			this.$(id + "toolsMenuitem"),
 			this.$(id + "toolbarButton") || this.paletteButton,
-		].forEach(
-			function(elt) {
-				elt && func.call(context || this, elt);
-			},
-			this
-		);
+		].forEach(function(elt) {
+			elt && func.call(context || this, elt);
+		}, this);
 	},
 
 	// Multiline tooltip:
@@ -317,7 +313,7 @@ var handyClicksUI = {
 	registerHotkey: function(kId) {
 		var kElt = this.e("handyClicks-key-" + kId);
 		if(!kElt) {
-			this.ut._warn(new Error(<>Key element not found: "{kId}"</>));
+			this.ut._warn(<>Key element not found: "{kId}"</>);
 			return;
 		}
 		var keyStr = this.pu.pref("key." + kId);

@@ -31,12 +31,9 @@ var handyClicks = {
 	},
 	setListeners: function(evtTypes, addFlag) {
 		var act = addFlag ? "addEventListener" : "removeEventListener";
-		evtTypes.forEach(
-			function(evtType) {
-				window[act](evtType, this, true);
-			},
-			this
-		);
+		evtTypes.forEach(function(evtType) {
+			window[act](evtType, this, true);
+		}, this);
 	},
 	handleEvent: function(e) {
 		switch(e.type) {
@@ -50,7 +47,7 @@ var handyClicks = {
 			case "draggesture": this.dragHandler(e);        break;
 			case "keypress":
 				if(e.keyCode != e.DOM_VK_ESCAPE)
-					return;
+					break;
 				this.ut.stopEvent(e);
 				this.editMode = false; // this removes event listener
 		}
@@ -339,11 +336,11 @@ var handyClicks = {
 	},
 
 	_ignoreOtherTypes: true,
-	get ignoreOtherTypes() { // Added 2010-06-21
+	get ignoreOtherTypes() { //= Added: 2010-06-21
 		return this._ignoreOtherTypes;
 	},
 	set ignoreOtherTypes(val) {
-		this.ut._err(new Error("Flag \"ignoreOtherTypes\" is deprecated. Use \"checkOtherTypes\" instead."));
+		this.ut._warn('Flag "ignoreOtherTypes" is deprecated. Use "checkOtherTypes" instead.');
 		this._ignoreOtherTypes = val;
 	},
 	defineItem: function(e, sets, forcedAll) {
@@ -698,7 +695,7 @@ var handyClicks = {
 
 		if(this.ut.isObject(cm) && typeof cm.hidePopup != "function") {
 			// XUL document with custom context...
-			this.ut._warn(new Error(<>getItemContext: context menu has no "hidePopup" method, id: "{cm.id}"</>));
+			this.ut._warn(<>getItemContext: context menu has no "hidePopup" method, id: "{cm.id}"</>);
 			cm = null;
 		}
 		this._cMenu = cm; // cache
@@ -791,8 +788,7 @@ var handyClicks = {
 
 		// Based on code of Places' Tooltips ( https://addons.mozilla.org/firefox/addon/7314 )
 		var row = {}, column = {}, cell = {};
-		var tbo = tree.treeBoxObject;
-		tbo.getCellAt(e.clientX, e.clientY, row, column, cell);
+		tree.treeBoxObject.getCellAt(e.clientX, e.clientY, row, column, cell);
 		if(row.value == -1)
 			return "";
 		var view = tree.view;
@@ -804,12 +800,9 @@ var handyClicks = {
 			: "";
 	},
 	createMouseEvents: function(origEvt, item, evtTypes, button) {
-		var evts = evtTypes.map(
-			function(evtType) {
-				return this.createMouseEvent(origEvt, item, evtType, button);
-			},
-			this
-		);
+		var evts = evtTypes.map(function(evtType) {
+			return this.createMouseEvent(origEvt, item, evtType, button);
+		}, this);
 		var _this = this;
 		return function() {
 			_this._enabled = false;
@@ -972,7 +965,7 @@ var handyClicks = {
 			action = this.ps.dec(action);
 			try {
 				var line = new Error().lineNumber + 1;
-				new Function("event,item,origItem", action).call(this.fn, e, this.item, this.origItem);
+				new Function("event,item,origItem", action).call(this.fn, e || this.copyOfEvent, this.item, this.origItem);
 			}
 			catch(err) {
 				var eLine = this.ut.mmLine(this.ut.getProperty(err, "lineNumber") - line + 1);
@@ -1014,7 +1007,7 @@ var handyClicks = {
 						this.ut.toErrorConsole, this.wu.getOpenEditorLink(href),
 						this.ut.NOTIFY_ICON_ERROR
 					);
-					this.ut._err(new Error(eMsg));
+					this.ut._err(eMsg);
 					this.ut._err(err);
 				}
 			}
@@ -1025,7 +1018,7 @@ var handyClicks = {
 					this.ut.toErrorConsole, null,
 					this.ut.NOTIFY_ICON_WARNING
 				);
-				this.ut._err(new Error(<>Function "{action}" not found ({typeof this.fn[action]})</>));
+				this.ut._err(<>Function "{action}" not found ({typeof this.fn[action]})</>);
 			}
 		}
 

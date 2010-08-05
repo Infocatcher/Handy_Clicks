@@ -11,6 +11,13 @@ textbox.hcText {
 	-moz-appearance: none;
 	-moz-box-flex: 1;
 }
+textbox.hcText menuitem[cmd="cmd_undo"],
+textbox.hcText menuitem[cmd="cmd_undo"] + menuseparator,
+textbox.hcText menuitem[cmd="cmd_cut"],
+textbox.hcText menuitem[cmd="cmd_paste"],
+textbox.hcText menuitem[cmd="cmd_delete"] {
+	display: none !important;
+}
 
 menuitem[hc_disabled="true"] {
 	color: graytext; /* Style like disabled, but without accessibility restrictions */
@@ -107,6 +114,7 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 	font-family: "Courier New", monospace;
 	-moz-binding: url("chrome://handyclicks/content/editor.xml#codeEditor");
 }
+
 /* "Fullwindow" feature */
 :root[hc_maximized="true"] *|*:not([hc_maximized="true"]):not(.dialog-content-box) {
 	visibility: collapse;

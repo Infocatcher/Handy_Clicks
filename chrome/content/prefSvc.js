@@ -72,7 +72,7 @@ var handyClicksPrefSvc = {
 				dir.create(dir.DIRECTORY_TYPE, 0755);
 			}
 			catch(e) {
-				this.ut._err(new Error(<>Can't create directory: "{dir.path}"</>));
+				this.ut._err(<>Can't create directory: "{dir.path}"</>);
 				this.ut._err(e);
 			}
 		}
@@ -150,7 +150,7 @@ var handyClicksPrefSvc = {
 			}
 			catch(e) {
 				this._loadStatus = this.SETS_LOAD_EVAL_ERROR;
-				this.ut._err(new Error("Invalid prefs: evalInSandbox() failed"));
+				this.ut._err("Invalid prefs: evalInSandbox() failed");
 				this.ut._err(e);
 				if(this.otherSrc) {
 					this.ut.alert(
@@ -171,7 +171,7 @@ var handyClicksPrefSvc = {
 
 		if(!this.ut.isObject(tmp.prefs) || !this.ut.isObject(tmp.types)) {
 			this._loadStatus = this.SETS_LOAD_INVALID_DATA;
-			this.ut._err(new Error("Loaded prefs or types is not object"));
+			this.ut._err("Loaded prefs or types is not object");
 			if(this.otherSrc) {
 				this.ut.alert(
 					this.ut.getLocalized("errorTitle"),
@@ -233,7 +233,7 @@ var handyClicksPrefSvc = {
 			return cache[type];
 
 		if(!this.isOkCustomType(type)) {
-			this.ut._warn(new Error(<>Invalid custom type: "{type}"</>));
+			this.ut._warn(<>Invalid custom type: "{type}"</>);
 			this.ut._log(<>! Type "{type}" => invalid</>);
 			return cache[type] = false;
 		}
@@ -313,12 +313,12 @@ var handyClicksPrefSvc = {
 			this.handleCustomFuncError(e, line, fObj, sh, type, isDelayed, true);
 		}
 		if(typeof legacyDestructor == "function") { // Added: 2010-06-15
-			this.ut._warn(new Error(
+			this.ut._warn(
 				"Construction \"return destructorFunction;\" is deprecated, use "
 				+ "\"void handyClicksPrefSvc.registerDestructor"
 				+ "(in function destructor, in object context, in unsigned long notifyFlags)\" "
 				+ "instead"
-			));
+			);
 			this.registerDestructor(
 				this.ut.bind(
 					legacyDestructor,
@@ -366,12 +366,9 @@ var handyClicksPrefSvc = {
 
 	destroyCustomFuncs: function(reason) {
 		//this.ut._log("destroyCustomFuncs() [" + this._destructors.length + "]");
-		this._destructors.forEach(
-			function(destructorArr) {
-				this.destroyCustomFunc.apply(this, destructorArr.concat(reason));
-			},
-			this
-		);
+		this._destructors.forEach(function(destructorArr) {
+			this.destroyCustomFunc.apply(this, destructorArr.concat(reason));
+		}, this);
 		this._destructors = [];
 	},
 	destroyCustomFunc: function(destructor, context, notifyFlags, baseLine, fObj, sh, type, isDelayed, reason) {
@@ -509,11 +506,9 @@ var handyClicksPrefSvc = {
 			ex[p] = obj[p];
 			delete obj[p];
 		}
-		arr.sort().forEach(
-			function(p) {
-				obj[p] = ex[p];
-			}
-		);
+		arr.sort().forEach(function(p) {
+			obj[p] = ex[p];
+		});
 		return arr.length > 0;
 	},
 	getHash: function(str, hashFunc) {
@@ -710,7 +705,7 @@ var handyClicksPrefSvc = {
 			return decodeURIComponent(s || "");
 		}
 		catch(e) {
-			this.ut._err(new Error(<>Can't decode URI: "{s}"</>));
+			this.ut._err(<>Can't decode URI: "{s}"</>);
 			this.ut._err(e);
 			return "[invalid URI]";
 		}

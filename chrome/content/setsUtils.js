@@ -47,6 +47,7 @@ var handyClicksSetsUtils = {
 					|| this.scrollNumTextbox(e)
 					|| this.scrollTabs(e)
 					|| this.scrollPanes(e)
+					|| this.scrollTabsToolbar(e)
 				)
 				&& this.ut.stopEvent(e);
 			break;
@@ -277,6 +278,17 @@ var handyClicksSetsUtils = {
 		for(var node = e.target; node; node = node.parentNode) {
 			if(node.localName == "tabs") {
 				node.advanceSelectedTab(this.isScrollForward(e) ? 1 : -1, true);
+				return true;
+			}
+		}
+		return false;
+	},
+	scrollTabsToolbar: function(e) {
+		for(var node = e.target; node; node = node.parentNode) {
+			if(/(?:^|\s)hcTabsToolbar(?:\s|$)/.test(node.className)) {
+				var tabbox = node.nextSibling;
+				var tabs = tabbox.tabs || tabbox.getElementsByTagNameNS(this.ut.XULNS, "tabs")[0];
+				tabs.advanceSelectedTab(this.isScrollForward(e) ? 1 : -1, true);
 				return true;
 			}
 		}

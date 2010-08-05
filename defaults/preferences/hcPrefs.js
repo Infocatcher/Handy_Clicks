@@ -11,6 +11,7 @@ pref("extensions.handyclicks.precompileCustomTypes", false);
 pref("extensions.handyclicks.notifyOpenTime", 3000);
 pref("extensions.handyclicks.notifyInWindowCorner", false);
 pref("extensions.handyclicks.notifyDontCloseUnderCursor", true);
+pref("extensions.handyclicks.notifyRearrangeWindows", true);
 
 pref("extensions.handyclicks.notifyEditMode", 2);
 

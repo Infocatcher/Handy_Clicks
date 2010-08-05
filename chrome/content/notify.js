@@ -3,12 +3,15 @@ var hcNotify = {
 	endColor: 255, // <= 255 (white)
 	hoverColor: "blue", // valid color string
 
+	inWindowCorner: false,
 	_closeTimeout: null,
 	_highlightInterval: null,
 
 	init: function() {
 		var wa = window.arguments[0];
-		// { dur, header, msg, funcLeftClick, funcMiddleClick, icon, inWindowCorner, dontCloseUnderCursor }
+		// Properties:
+		// dur, header, msg, funcLeftClick, funcMiddleClick, icon,
+		// inWindowCorner, dontCloseUnderCursor, rearrangeWindows
 		document.getElementById("hcNotifyHeader").textContent = wa.header + "\n\n";
 		var descElt = document.getElementById("hcNotifyDesc");
 		descElt.textContent = wa.msg;
@@ -29,13 +32,14 @@ var hcNotify = {
 			winW = maxW;
 			window.resizeTo(winW, winH);
 		}
-		var wo = window.opener;
+		var wo = wa.parentWindow || window.opener;
 		var x, y;
 		if(wo.closed) {
 			x = screen.availLeft + screen.availWidth - winW;
 			y = screen.availTop + screen.availHeight - winH;
 		}
 		else if(wa.inWindowCorner || !("handyClicks" in wo) || !wo.handyClicks._xy) { // Show in window corner
+			this.inWindowCorner = true;
 			x = wo.screenX + wo.outerWidth - winW;
 			var sBar = wo.document.getElementById("browser-bottombox") || wo.document.getElementById("status-bar");
 			y = (sBar ? sBar.boxObject.screenY : wo.screenY + wo.outerHeight) - winH;
@@ -55,6 +59,21 @@ var hcNotify = {
 				y = xy.screenY - winH - addH;
 		}
 		window.moveTo(x, y);
+
+		if(wa.inWindowCorner && wa.rearrangeWindows) {
+			var ws = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+				.getService(Components.interfaces.nsIWindowMediator)
+				.getEnumerator(document.documentElement.getAttribute("windowtype"));
+			while(ws.hasMoreElements()) {
+				var w = ws.getNext();
+				if(w == window || !w.hcNotify.inWindowCorner)
+					continue;
+				var dh = -(winH + 2);
+				if(w.screenY + dh >= 0)
+					w.moveBy(0, -(winH + 2));
+			}
+		}
+
 		var notifyBox = this._notifyBox = document.getElementById("hcNotifyBox");
 		if(typeof wa.funcLeftClick == "function")
 			notifyBox.className += " hc-clickable";

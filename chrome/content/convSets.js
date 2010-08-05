@@ -120,7 +120,7 @@ function setsMigration(allowSave, vers) {
 				pVal = decodeURIComponent(pVal || "");
 			}
 			catch(e) {
-				this.ut._err(new Error(<>Can't decode "{pName}":{"\n" + pVal}</>));
+				this.ut._err(<>Can't decode "{pName}":{"\n" + pVal}</>);
 				this.ut._err(e);
 				pVal = "[invalid value]";
 			}

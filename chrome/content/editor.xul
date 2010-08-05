@@ -120,7 +120,8 @@
 					</menulist>
 				</hbox>
 
-				<hbox id="hc-editor-funcTabboxToolbar" align="right" oncommand="event.stopPropagation();">
+				<hbox id="hc-editor-funcTabboxToolbar" align="right" class="hcTabsToolbar"
+					oncommand="event.stopPropagation();">
 					<checkbox id="hc-editor-funcOptsFixed" class="hcFloatControl"
 						oncommand="handyClicksEditor.fixFuncOpts(this.checked);"
 						label="&hc.editor.fixActionOpts;" accesskey="&hc.editor.fixActionOptsAccesskey;"
@@ -193,7 +194,7 @@
 									<vbox id="hc-editor-funcArgs" flex="1" align="left" />
 								</groupbox>
 
-								<hbox id="hc-editor-funcCustomTabboxToolbar" align="right"
+								<hbox id="hc-editor-funcCustomTabboxToolbar" align="right" class="hcTabsToolbar"
 									oncommand="event.stopPropagation();">
 									<button class="hcFloatControl hcEditCodeButton hc-iconic"
 										label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"
@@ -253,7 +254,7 @@
 						label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
 				</hbox>
 
-				<hbox id="hc-editor-customTypeTabboxToolbar" align="right"
+				<hbox id="hc-editor-customTypeTabboxToolbar" align="right" class="hcTabsToolbar"
 					oncommand="event.stopPropagation();">
 					<button class="hcFloatControl hcEditCodeButton hc-iconic"
 						label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"

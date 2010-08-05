@@ -17,11 +17,19 @@ var handyClicksUtils = {
 		this._devMode && this._info.apply(this, arguments);
 	},
 	_err: function(e, fileName, lineNumber, isWarning) {
-		if(typeof e == "string")
-			e = new Error(e);
-		else if(!e || e.constructor !== Error && String(e.constructor) != String(Error)) {
-			Components.utils.reportError(e);
-			return;
+		if(this.isPrimitive(e) || typeof e == "xml") {
+			var caller = Components.stack.caller;
+			if(arguments.callee.caller == this._warn)
+				caller = caller.caller;
+			e = new Error(e, fileName || caller.filename, lineNumber || caller.lineNumber);
+		}
+		else {
+			var g = this.getGlobalForObject(e);
+			if(!e || e.constructor !== (g ? g.Error : Error)) {
+				//setTimeout(function() { throw e; }, 0);
+				Components.utils.reportError(e);
+				return;
+			}
 		}
 		var cErr = Components.classes["@mozilla.org/scripterror;1"]
 			.createInstance(Components.interfaces.nsIScriptError);
@@ -41,7 +49,7 @@ var handyClicksUtils = {
 		this._err(e, fileName, lineNumber, true);
 	},
 	objProps: function(o, mask) { // mask like "id, nodeName, parentNode.id"
-		if(!this.canHasProps(o))
+		if(this.isPrimitive(o))
 			return o;
 		if(!mask)
 			return this._objProps(o);
@@ -55,9 +63,8 @@ var handyClicksUtils = {
 	},
 	_objProps: function(o) {
 		var r = [];
-		var has = "hasOwnProperty" in o;
 		for(var p in o)
-			r.push(p + " = " + (has && o.hasOwnProperty(p) ? "[own] " : "") + this.safeToString(this.safeGet(o, p)));
+			r.push(p + " = " + (Object.hasOwnProperty.call(o, p) ? "[own] " : "") + this.safeToString(this.safeGet(o, p)));
 		return r.join("\n");
 	},
 	safeGet: function(o, p) {
@@ -107,7 +114,7 @@ var handyClicksUtils = {
 	NOTIFY_ICON_DISABLED: "disabled",
 	NOTIFY_ICON_WARNING: "warning",
 	NOTIFY_ICON_ERROR: "error",
-	notify: function(msg, header, funcLeftClick, funcMiddleClick, icon, inWindowCorner) {
+	notify: function(msg, header, funcLeftClick, funcMiddleClick, icon, parentWindow, inWindowCorner) {
 		var dur = this.pu.pref("notifyOpenTime");
 		if(dur <= 0)
 			 return null;
@@ -124,12 +131,14 @@ var handyClicksUtils = {
 			 	icon: icon === undefined ? this.NOTIFY_ICON_NORMAL : icon,
 			 	inWindowCorner: inWindowCorner === undefined ? this.pu.pref("notifyInWindowCorner") : inWindowCorner,
 			 	dontCloseUnderCursor: this.pu.pref("notifyDontCloseUnderCursor"),
+			 	rearrangeWindows: this.pu.pref("notifyRearrangeWindows"),
+			 	parentWindow: parentWindow || window,
 			 	__proto__: null
 			 }
 		);
 	},
-	notifyInWindowCorner: function(msg, header, funcLeftClick, funcMiddleClick, icon) {
-		return this.notify(msg, header, funcLeftClick, funcMiddleClick, icon, true);
+	notifyInWindowCorner: function(msg, header, funcLeftClick, funcMiddleClick, icon, parentWindow) {
+		return this.notify(msg, header, funcLeftClick, funcMiddleClick, icon, parentWindow, true);
 	},
 
 	get toErrorConsole() {
@@ -214,7 +223,7 @@ var handyClicksUtils = {
 			return this.getBundle(src).GetStringFromName(sName);
 		}
 		catch(e) {
-			this._warn(new Error(<>Can't get localized string "{sName}" from "{src}".</>));
+			this._warn(<>Can't get localized string "{sName}" from "{src}".</>);
 			return "";
 		}
 	},
@@ -242,7 +251,7 @@ var handyClicksUtils = {
 			contentType
 		);
 		if(node.namespaceURI == "http://www.mozilla.org/newlayout/xml/parsererror.xml") {
-			this._warn(new Error(<>Invalid XML entity: "{eName}"</>));
+			this._warn(<>Invalid XML entity: "{eName}"</>);
 			return "";
 		}
 		return node.textContent;
@@ -302,7 +311,7 @@ var handyClicksUtils = {
 		catch(e) {
 			if(dontShowErrors)
 				return null;
-			this._err(new Error(<>Invalid directory alias: "{alias}"</>));
+			this._err(<>Invalid directory alias: "{alias}"</>);
 			this._err(e);
 		}
 		return null;
@@ -341,7 +350,7 @@ var handyClicksUtils = {
 			file.initWithPath(path);
 		}
 		catch(e) {
-			this._err(new Error(<>Invalid path: "{path}"</>));
+			this._err(<>Invalid path: "{path}"</>);
 			this._err(e);
 			return null;
 		}
@@ -397,7 +406,7 @@ var handyClicksUtils = {
 			fos.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
 		}
 		catch(e) {
-			this._err(new Error(<>Can't write string to file "{file && file.path}"</>));
+			this._err(<>Can't write string to file "{file && file.path}"</>);
 			this._err(e);
 			fos.close();
 			return false;
@@ -417,7 +426,7 @@ var handyClicksUtils = {
 			fis.init(file, 0x01, 0444, 0);
 		}
 		catch(e) {
-			this._err(new Error(<>Can't read string from file "{file && file.path}"</>));
+			this._err(<>Can't read string from file "{file && file.path}"</>);
 			this._err(e);
 			fis.close();
 			_rff.error = true;
@@ -439,7 +448,7 @@ var handyClicksUtils = {
 			return suc.ConvertToUnicode(str);
 		}
 		catch(e) {
-			this._err(new Error("Can't convert UTF-8 to unicode"));
+			this._err("Can't convert UTF-8 to unicode");
 			this._err(e);
 		}
 		return str;
@@ -556,45 +565,50 @@ var handyClicksUtils = {
 		return str.replace(/\r\n?|\n\r?/g, this.lineBreak);
 	},
 
+	get isArray() { // function(arr)
+		delete this.isArray;
+		return this.isArray = "isArray" in Array //~ todo: check for "[native code]" ?
+			? Array.isArray
+			: function(arr) {
+				arr instanceof Array
+					|| Object.prototype.toString.call(arr) === "[object Array]";
+			};
+	},
 	isObject: function(obj) {
 		return typeof obj == "object" && obj !== null;
 	},
-	isArray: function(arr) {
-		return arr instanceof Array
-			|| Object.prototype.toString.call(arr) === "[object Array]";
-	},
-	canHasProps: function(o) {
-		if(!o)
-			return false;
-		var t = typeof o;
-		return t !== "string" && t !== "number" && t !== "boolean";
-	},
 	isEmptyObj: function(o) { // Error console says "Warning: deprecated __count__ usage" for obj.__count__
-		for(var p in o) if(o.hasOwnProperty(p))
+		for(var p in o) if(Object.hasOwnProperty.call(o, p))
 			return false;
 		return true;
+	},
+	isPrimitive: function(v) {
+		if(v === null || v === undefined)
+			return true;
+		var t = typeof v;
+		return t == "string" || t == "number" || t == "boolean";
 	},
 
 	getOwnProperty: function(obj) { // this.getOwnProperty(obj, "a", "b", "propName") instead of obj.a.b.propName
 		var u;
-		if(!this.canHasProps(obj))
+		if(this.isPrimitive(obj))
 			return u;
 		var a = arguments, p;
 		for(var i = 1, len = a.length - 1; i <= len; i++) {
 			p = a[i];
-			if(!(p in obj) || "hasOwnProperty" in obj && !obj.hasOwnProperty(p))
+			if(!Object.hasOwnProperty.call(obj, p))
 				return u;
 			obj = obj[p];
 			if(i == len)
 				return obj;
-			if(!this.canHasProps(obj))
+			if(this.isPrimitive(obj))
 				return u;
 		}
 		return u;
 	},
 	getProperty: function(obj) {
 		var u;
-		if(!this.canHasProps(obj))
+		if(this.isPrimitive(obj))
 			return u;
 		var a = arguments, p;
 		for(var i = 1, len = a.length - 1; i <= len; i++) {
@@ -604,7 +618,7 @@ var handyClicksUtils = {
 			obj = obj[p];
 			if(i == len)
 				return obj;
-			if(!this.canHasProps(obj))
+			if(this.isPrimitive(obj))
 				return u;
 		}
 		return u;
@@ -613,7 +627,7 @@ var handyClicksUtils = {
 		var a = arguments, p;
 		for(var i = 1, len = a.length - 2; i <= len; i++) {
 			p = a[i];
-			if(!(p in obj) || "hasOwnProperty" in obj && !obj.hasOwnProperty(p) || !this.isObject(obj[p]))
+			if(!Object.hasOwnProperty.call(obj, p) || !this.isObject(obj[p]))
 				obj[p] = {};
 			if(i != len)
 				obj = obj[p];
@@ -621,11 +635,14 @@ var handyClicksUtils = {
 		obj[p] = a[len + 1];
 	},
 
-	toArray: function(a) {
-		return a && typeof a.length == "number" && a.length >= 0
-			? Array.filter(a, function() { return true; })
-			: [a];
+	getGlobalForObject: function(o) {
+		if(this.isPrimitive(o))
+			return null;
+		if("getGlobalForObject" in Components.utils)
+			return Components.utils.getGlobalForObject(o);
+		return o.__parent__ || o.valueOf.call();
 	},
+
 	sortAsNumbers: function(arr) {
 		return arr.sort(function(a, b) {
 			return a - b;
@@ -639,7 +656,7 @@ var handyClicksUtils = {
 		}, this);
 	},
 	getSource: function(o) {
-		return this.canHasProps(o) && !("toSource" in o) // !o.__proto__
+		return !this.isPrimitive(o) && !("toSource" in o) // !o.__proto__
 			? Object.prototype.toSource.call(o)
 			: uneval(o);
 	},
@@ -690,14 +707,12 @@ var handyClicksUtils = {
 		return this.mm(n, 1, 100000);
 	},
 
-	get trim() {
+	get trim() { // function(str)
 		delete this.trim;
-		return this.trim = "trim" in String && String.trim.toString().indexOf("[native code]") != -1
-			? function(s) {
-				return s.trim();
-			}
-			: function(s) {
-				return s.replace(/^\s+|\s+$/g, "");
+		return this.trim = "trim" in String //~ todo: check for "[native code]" ?
+			? String.trim
+			: function(str) {
+				return str.replace(/^\s+|\s+$/g, "");
 			};
 	},
 

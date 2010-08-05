@@ -89,8 +89,8 @@
 							ifi.selectionStart = selStart;
 							ifi.selectionEnd = selEnd;
 					}
-					ifi.scrollTop = sTop + (ifi.scrollHeight - sHeight);
-					ifi.scrollLeft = sLeft + (ifi.scrollWidth - sWidth);
+					ifi.scrollTop  = sTop  + (ifi.scrollHeight - sHeight);
+					ifi.scrollLeft = sLeft + (ifi.scrollWidth  - sWidth);
 				]]>
 				</body>
 			</method>
@@ -173,13 +173,16 @@
 
 					if(isMultiline)
 						this.insertTextEx(block, startLine, endLine, this.INSERT_SELECT_ALL);
-					else
+					else {
+						var dl = bLen1 - bLen0;
 						this.insertTextEx(
-							block, startLine, endLine,
+							block,
+							startLine, endLine,
 							this.INSERT_SELECT_CUSTOM,
-							startPos + bLen1 - bLen0,
-							endPos + bLen1 - bLen0
+							startPos + dl,
+							endPos + dl
 						);
+					}
 				]]>
 				</body>
 			</method>
@@ -572,43 +575,31 @@
 					}
 					var scopeArr = top.handyClicksAutocompleteData[scopeProp];
 					if(reverseFlag)
-						scopeArr = scopeArr.concat().reverse();
+						scopeArr = scopeArr.reverse();
 
 					var found = false;
-					scopeArr.some(
-						function(p) {
-							if(!found && p == curWord) {
-								found = true;
-								return false;
-							}
-							if(found && p.indexOf(lastWord) == 0) {
-								newWord = p;
-								return true;
-							}
+					scopeArr.some(function(p) {
+						if(!found && p == curWord) {
+							found = true;
 							return false;
 						}
-					);
-					if(!newWord) {
-						scopeArr.some(
-							function(p) {
-								if(p.indexOf(lastWord) == 0) {
-									newWord = p;
-									return true;
-								}
-								return false;
-							}
-						);
-					}
+						if(found && p.indexOf(lastWord) == 0)
+							return newWord = p;
+						return false;
+					});
+					!newWord && scopeArr.some(function(p) {
+						if(p.indexOf(lastWord) == 0)
+							return newWord = p;
+						return false;
+					});
 					if(!newWord || newWord == curWord)
 						return;
 
 					var cnt = 0;
-					scopeArr.forEach(
-						function(p) {
-							if(p.indexOf(lastWord) == 0)
-								cnt++;
-						}
-					);
+					scopeArr.forEach(function(p) {
+						if(p.indexOf(lastWord) == 0)
+							cnt++;
+					});
 
 					if(isStr)
 						newWord += strComma;

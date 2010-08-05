@@ -176,7 +176,7 @@ var handyClicksPrefUtils = {
 						tb.focus();
 					}
 					catch(e) {
-						_this.ut._warn(new Error("openAboutConfigFilter: FilterPrefs() failed"));
+						_this.ut._warn("openAboutConfigFilter: FilterPrefs() failed");
 						_this.ut._err(e);
 						setTimeout(setFilter, 5);
 					}

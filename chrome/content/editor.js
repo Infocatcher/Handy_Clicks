@@ -490,7 +490,7 @@ var handyClicksEditor = {
 			return;
 		}
 		var ct = to || cts[cType];
-		if(!this.ut.canHasProps(ct))
+		if(!this.ut.isObject(ct))
 			ct = {};
 		enabledElt.checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
 		const val = to || this._allowUndo ? "value" : "newValue";
@@ -552,12 +552,12 @@ var handyClicksEditor = {
 		var label, _labels = { __proto__: null };
 		for(var cType in cTypes) if(cTypes.hasOwnProperty(cType)) {
 			if(!this.ps.isCustomType(cType)) {
-				this.ut._warn(new Error(<>Invalid custom type id: "{cType}"</>));
+				this.ut._warn(<>Invalid custom type id: "{cType}"</>);
 				continue;
 			}
 			typeObj = cTypes[cType];
 			if(!this.ut.isObject(typeObj)) {
-				this.ut._warn(new Error(<>Invalid custom type: "{cType}" ({typeObj})</>));
+				this.ut._warn(<>Invalid custom type: "{cType}" ({typeObj})</>);
 				continue;
 			}
 			label = this.ps.dec(typeObj.label) || cType;
@@ -632,18 +632,18 @@ var handyClicksEditor = {
 			}
 		}
 		if(!tabPanel || !tabBox) {
-			!noWarnings && this.ut._warn(new Error("getTabForNode: <tabpanel> or <tabbox> not found!"));
+			!noWarnings && this.ut._warn("getTabForNode: <tabpanel> or <tabbox> not found!");
 			return null;
 		}
 		var tabPanels = tabBox.tabpanels || tabBox.getElementsByTagNameNS(this.ut.XULNS, "tabpanels")[0];
 		var tabs = tabBox.tabs || tabBox.getElementsByTagNameNS(this.ut.XULNS, "tabs")[0];
 		if(!tabPanels || !tabs) {
-			!noWarnings && this.ut._warn(new Error("getTabForNode: <tabpanels> or <tabs> not found!"));
+			!noWarnings && this.ut._warn("getTabForNode: <tabpanels> or <tabs> not found!");
 			return null;
 		}
 		var tabPanelIndx = Array.indexOf(tabPanels.childNodes, tabPanel);
 		if(tabPanelIndx == -1) {
-			!noWarnings && this.ut._warn(new Error("getTabForNode: index of <tabpanel> not found!"));
+			!noWarnings && this.ut._warn("getTabForNode: index of <tabpanel> not found!");
 			return null;
 		}
 		return tabs.childNodes[tabPanelIndx];
@@ -748,7 +748,7 @@ var handyClicksEditor = {
 		this.selectCustomFunc(isCustom, delayed);
 		var argBox = this.$("hc-editor-funcArgsBox" + delayed);
 		argBox.hidden = true;
-		if(cFunc == "$custom")
+		if(isCustom)
 			return;
 		var cMi = funcsList.selectedItem;
 		if(!cMi)
@@ -757,12 +757,9 @@ var handyClicksEditor = {
 		if(!cArgs)
 			return;
 		argBox.hidden = false;
-		cArgs.split(/,\s*/).forEach(
-			function(argName) {
-				this.addArgControls(argName, delayed, setsObj);
-			},
-			this
-		);
+		cArgs.split(/,\s*/).forEach(function(argName) {
+			this.addArgControls(argName, delayed, setsObj);
+		}, this);
 	},
 	addArgControls: function(argName, delayed, so) {
 		var setsObj = so || this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
@@ -779,7 +776,7 @@ var handyClicksEditor = {
 			return "checkbox";
 		if(argName in types.menulists)
 			return "menulist";
-		this.ut._err(new Error(<>Can't get type of "{argName}"</>));
+		this.ut._err(<>Can't get type of "{argName}"</>);
 		return null;
 	},
 	addControl: function(argName, argType, argVal, delayed) {
@@ -808,27 +805,24 @@ var handyClicksEditor = {
 				argContainer.appendChild(<label xmlns={ns} value={this.ut.getLocalized(argName)} />);
 				// List of values:
 				var mp = <menupopup xmlns={ns} />;
-				this.types.menulists[argName].forEach(
-					function(val, indx) {
-						var label = this.ut.getLocalized(argName + "[" + val + "]");
-						cfg = this.getAboutConfigEntry(label);
-						var mi = <menuitem xmlns={ns}
-							value={val}
-							label={label}
-							hc_aboutConfigEntry={cfg}
-							tooltiptext={cfg ? cfgTt : ""}
-						/>;
-						if(!cfg) // Firefox 1.5 crashes on actions like mi.@some_attribute = "";
-							delete mi.@hc_aboutConfigEntry;
-						else if(!argVal && indx === 0 || val == argVal) { //~ todo: test!
-							elt.@hc_aboutConfigEntry = cfg;
-							elt.@tooltiptext = cfgTt;
-							elt.@oncommand = "handyClicksEditor.setAboutConfigTooltip(this);";
-						}
-						mp.appendChild(mi);
-					},
-					this
-				);
+				this.types.menulists[argName].forEach(function(val, indx) {
+					var label = this.ut.getLocalized(argName + "[" + val + "]");
+					cfg = this.getAboutConfigEntry(label);
+					var mi = <menuitem xmlns={ns}
+						value={val}
+						label={label}
+						hc_aboutConfigEntry={cfg}
+						tooltiptext={cfg ? cfgTt : ""}
+					/>;
+					if(!cfg) // Firefox 1.5 crashes on actions like mi.@some_attribute = "";
+						delete mi.@hc_aboutConfigEntry;
+					else if(!argVal && indx === 0 || val == argVal) { //~ todo: test!
+						elt.@hc_aboutConfigEntry = cfg;
+						elt.@tooltiptext = cfgTt;
+						elt.@oncommand = "handyClicksEditor.setAboutConfigTooltip(this);";
+					}
+					mp.appendChild(mi);
+				}, this);
 				elt.@value = "" + argVal;
 				elt.appendChild(mp);
 		}
@@ -861,14 +855,13 @@ var handyClicksEditor = {
 	},
 
 	get currentShortcut() {
-		var s = "button=" + this.$("hc-editor-button").value;
-		["ctrl", "shift", "alt", "meta"].forEach(
-			function(mdf) {
-				s += "," + mdf + "=" + this.$("hc-editor-" + mdf).checked;
+		return ["button", "ctrl", "shift", "alt", "meta"].map(
+			function(key) {
+				var elt = this.$("hc-editor-" + key);
+				return key + "=" + (elt.value || elt.checked);
 			},
 			this
-		);
-		return s;
+		).join(",");
 	},
 	get currentType() {
 		return this.$("hc-editor-itemTypes").value || undefined;

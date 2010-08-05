@@ -175,12 +175,12 @@ var handyClicksSets = {
 		var p = this.ps.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
 			if(!this.ps.isOkShortcut(sh) || !this.ut.isObject(p[sh])) {
-				this.ut._warn(new Error(<>Invalid shortcut in prefs: "{sh}"</>));
+				this.ut._warn(<>Invalid shortcut in prefs: "{sh}"</>);
 				continue;
 			}
 			var so = p[sh];
 			if(this.ut.isEmptyObj(so)) {
-				this.ut._warn(new Error(<>Empty settings object in prefs: "{sh}"</>));
+				this.ut._warn(<>Empty settings object in prefs: "{sh}"</>);
 				//delete p[sh];
 				continue;
 			}
@@ -420,7 +420,7 @@ var handyClicksSets = {
 	appendRow: function(parent, shortcut, itemType, fo, forcedLabel, insAfter) {
 		var tItem = document.createElement("treeitem");
 		var tRow = document.createElement("treerow");
-		if(!this.ut.canHasProps(fo))
+		if(!this.ut.isObject(fo))
 			fo = {};
 		var isCustom = !!fo.custom;
 		var isCustomType = this.ps.isCustomType(itemType);
@@ -443,7 +443,7 @@ var handyClicksSets = {
 			var daItem = document.createElement("treeitem");
 			var daRow = document.createElement("treerow");
 
-			if(!this.ut.canHasProps(da))
+			if(!this.ut.isObject(da))
 				da = {};
 
 			this.appendTreeCell(daRow, "label", this.ut.getLocalized("delayed"));
@@ -835,12 +835,12 @@ var handyClicksSets = {
 					fObj = dObj;
 				}
 				else {
-					var daLabel = this.ut.canHasProps(dObj) && this.getActionLabel(fObj);
+					var daLabel = this.ut.isObject(dObj) && this.getActionLabel(fObj);
 					if(daLabel)
 						addLabel = "\n\t(" + this.ut.getLocalized("delayed") + ": "
 							+ this.cropStr(daLabel, MAX_LABEL_LENGTH) + ")";
 				}
-				var label = this.ut.canHasProps(fObj)
+				var label = this.ut.isObject(fObj)
 					? this.cropStr(this.getActionLabel(fObj), MAX_LABEL_LENGTH)
 					: "?";
 				return (i + 1) + ". " + mdfs + " + " + button + " + " + typeLabel + " \u21d2 " /* "=>" */
@@ -984,12 +984,9 @@ var handyClicksSets = {
 			var its = this.selectedItems;
 			if(!its.length)
 				return;
-			its.forEach(
-				function(tItem) {
-					this.toggleRowEnabled(tItem.__index, forcedEnabled);
-				},
-				this
-			);
+			its.forEach(function(tItem) {
+				this.toggleRowEnabled(tItem.__index, forcedEnabled);
+			}, this);
 		}
 		this.ps.otherSrc && this.ps.reloadSettings(true /* applyFlag */);
 		if(this.instantApply && !this.ps.otherSrc)
@@ -1005,14 +1002,14 @@ var handyClicksSets = {
 		var forcedDisDa = this.pu.pref("delayedActionTimeout") <= 0;
 		if(tItem.__isDelayed) {
 			var pDis = !this.checkedState(tItem.parentNode.parentNode); // Check state of parent
-			this.setNodeProperties(tRow, { hc_disabled: forcedDisDa || pDis || !enabled });
+			this.setNodeProperties(tRow, { hc_unsavedDisabled: forcedDisDa || pDis || !enabled });
 		}
 		else {
-			this.setNodeProperties(tRow, { hc_disabled: !enabled });
+			this.setNodeProperties(tRow, { hc_unsavedDisabled: !enabled });
 			if(tItem.__delayed) {
 				var cRow = this.getRowForItem(tItem.__delayed);
 				var cDis = !this.checkedState(tItem.__delayed);
-				this.setNodeProperties(cRow, { hc_disabled: forcedDisDa || cDis || !enabled });
+				this.setNodeProperties(cRow, { hc_unsavedDisabled: forcedDisDa || cDis || !enabled });
 			}
 		}
 
@@ -2047,12 +2044,12 @@ var handyClicksSets = {
 					return; // Just for fun right now :)
 				var indx = line.indexOf("=");
 				if(indx == -1) {
-					this.ut._warn(new Error(<>[Import INI] Skipped invalid line #{i + 2}: "{line}"</>));
+					this.ut._warn(<>[Import INI] Skipped invalid line #{i + 2}: "{line}"</>);
 					return;
 				}
 				var pName = line.substr(0, indx);
 				if(pName.indexOf(this.pu.prefNS) != 0) {
-					this.ut._warn(new Error(<>[Import INI] Skipped pref with invalid name: "{pName}"</>));
+					this.ut._warn(<>[Import INI] Skipped pref with invalid name: "{pName}"</>);
 					return;
 				}
 				var pbr = this.pu.pBr;
@@ -2060,7 +2057,7 @@ var handyClicksSets = {
 				var isOld = pType == pbr.PREF_INVALID; // Old format?
 				if(isOld) {
 					_oldPrefs.push(pName);
-					this.ut._warn(new Error(<>[Import INI] Old pref: "{pName}"</>));
+					this.ut._warn(<>[Import INI] Old pref: "{pName}"</>);
 				}
 				var pVal = line.substr(indx + 1);
 				if(pType == pbr.PREF_INT || isOld && /^-?\d+$/.test(pVal)) // Convert string to number
