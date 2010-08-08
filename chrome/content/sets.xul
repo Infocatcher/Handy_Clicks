@@ -273,6 +273,16 @@
 			<checkbox preference="onTopButton" label="&hc.sets.onTopButton;" />
 		</groupbox>
 		<groupbox>
+			<caption label="&hc.sets.tabulation;" />
+			<radiogroup id="hc-sets-tabulation" orient="horizontal" onselect="handyClicksSets.selectTabulation(this);">
+				<radio label="&hc.sets.tabulationTabs;" />
+				<radio label="&hc.sets.tabulationSpaces;" />
+				<textbox id="hc-sets-tabulationSpaces" type="number" min="2" max="14" increment="1" size="2" />
+				<radio id="hc-sets-tabulationRadioCustom" label="Custom:" />
+				<textbox id="hc-sets-tabulationCustom" size="12" />
+			</radiogroup>
+		</groupbox>
+		<groupbox>
 			<caption label="&hc.sets.externalEditor;" />
 			<hbox align="center">
 				<label value="&hc.sets.externalEditorPath;" tooltiptext="&hc.sets.externalEditorPathNote;" control="hc-sets-externalEditorPath" />

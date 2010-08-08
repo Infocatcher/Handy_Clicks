@@ -95,7 +95,7 @@ var handyClicksUtils = {
 	},
 	removePrefix: function(str, prefix) {
 		return this.hasPrefix(str, prefix)
-			? str.substr(prefix.length, str.length)
+			? str.substr(prefix.length)
 			: str;
 	},
 	hasPostfix: function(str, postfix) {

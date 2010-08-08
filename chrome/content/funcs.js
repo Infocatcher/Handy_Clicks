@@ -914,7 +914,7 @@ var handyClicksFuncs = {
 	},
 	removeTab: function(e, tab) {
 		tab = this.fixTab(tab);
-		this.hc.getTabBrowser().removeTab(tab);
+		this.hc.getTabBrowser().removeTab(tab, { animate: true });
 	},
 	renameTab: function(e, tab) {
 		tab = this.fixTab(tab);

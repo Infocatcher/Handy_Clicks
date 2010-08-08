@@ -238,7 +238,7 @@
 				<hbox align="center">
 					<label value="&hc.editor.funcLabel;"
 						accesskey="&hc.editor.funcLabelAccesskey;" control="hc-editor-customType" />
-					<menulist id="hc-editor-customType" editable="true" spellcheck="true"
+					<menulist id="hc-editor-customType" editable="true" spellcheck="true" flex="1"
 						oncommand="handyClicksEditor.initCustomTypesEditor(); event.stopPropagation();"
 						oninput="handyClicksEditor.customTypeLabel(this);"
 						hc_ondrop="handyClicksEditor.customTypeLabelDelay(this);">
@@ -246,7 +246,7 @@
 					</menulist>
 					<label value="&hc.editor.internalId;"
 						accesskey="&hc.editor.internalIdAccesskey;" control="hc-editor-customTypeExtId" />
-					<textbox id="hc-editor-customTypeExtId"
+					<textbox id="hc-editor-customTypeExtId" flex="1"
 						onkeypress="return handyClicksEditor.customTypeIdFilter(event);"
 						oninput="handyClicksEditor.customTypeIdFilter(event);"
 						hc_ondrop="handyClicksEditor.customTypeIdFilter(event);" />

@@ -119,6 +119,10 @@
 <!ENTITY hc.sets.settingsInterface "Интерфейс настроек">
 <!ENTITY hc.sets.onTopButton "Показывать кнопку «Закрепить» в углу окна"> <!-- see "onTop" in hcs.properties -->
 
+<!ENTITY hc.sets.tabulation "Табуляция">
+<!ENTITY hc.sets.tabulationTabs "Табы">
+<!ENTITY hc.sets.tabulationSpaces "Пробелы:">
+
 <!ENTITY hc.sets.externalEditor "Внешний редактор">
 <!ENTITY hc.sets.externalEditorPath "Путь:">
 <!ENTITY hc.sets.externalEditorPathNote "Если путь не задан, будет запущена ассоциированная программа">

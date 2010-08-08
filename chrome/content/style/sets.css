@@ -253,3 +253,7 @@ button[type="menu"] dropmarker {
 	margin: 2px 4px;
 	-moz-padding-start: 22px;
 }
+
+prefwindow {
+	-moz-binding: url("chrome://handyclicks/content/prefwindow.xml#prefwindow");
+}

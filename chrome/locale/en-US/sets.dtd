@@ -119,6 +119,10 @@
 <!ENTITY hc.sets.settingsInterface "Settings interface">
 <!ENTITY hc.sets.onTopButton "Show “On top” button in the corner"> <!-- see "onTop" in hcs.properties -->
 
+<!ENTITY hc.sets.tabulation "Tabulation">
+<!ENTITY hc.sets.tabulationTabs "Tabs">
+<!ENTITY hc.sets.tabulationSpaces "Spaces:">
+
 <!ENTITY hc.sets.externalEditor "External editor">
 <!ENTITY hc.sets.externalEditorPath "Path:">
 <!ENTITY hc.sets.externalEditorPathNote "If path is empty, will launch associated program">

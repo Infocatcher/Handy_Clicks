@@ -5,14 +5,6 @@ var handyClicksSets = {
 	_savedPrefs: null,
 	_savedTypes: null,
 
-	instantInit: function() {
-		if(this.pu.getPref("browser.preferences.animateFadeIn")) {
-			// Strange bugs with "flex" window
-			this._animateFadeIn = true;
-			this.pu.setPref("browser.preferences.animateFadeIn", false);
-		}
-	},
-
 	init: function(reloadFlag) {
 		this.ps.loadSettings();
 		this.initShortcuts();
@@ -101,9 +93,6 @@ var handyClicksSets = {
 		);
 		reloadFlag && this.setImportStatus(false);
 		this.rowsCache = this._savedPrefs = this._savedTypes = null;
-
-		if(this.hasOwnProperty("_animateFadeIn"))
-			this.pu.setPref("browser.preferences.animateFadeIn", true);
 	},
 	handleEvent: function(e) {
 		if(e.type == "mouseup") {
@@ -1562,6 +1551,8 @@ var handyClicksSets = {
 			this.setDisallowMousemove();
 			this.updateAllDependencies("disallowMousemove");
 		}
+		else if(pName == "editor.tabSymbol")
+			this.setTabulation();
 		else {
 			this.updateAllDependencies();
 			clearTimeout(this._updPrefsUITimeout);
@@ -1574,6 +1565,7 @@ var handyClicksSets = {
 		this.setDisallowMousemove();
 		this.initExternalEditor();
 		this.initResetWarnMsgs();
+		this.setTabulation();
 		this.updateAllDependencies();
 	},
 	setDisallowMousemove: function() {
@@ -1588,8 +1580,63 @@ var handyClicksSets = {
 				val += i;
 		return val;
 	},
+	get minSpaces() {
+		delete this.minSpaces;
+		return this.minSpaces = this.$("hc-sets-tabulationSpaces").getAttribute("min");
+	},
+	get maxSpaces() {
+		delete this.maxSpaces;
+		return this.maxSpaces = this.$("hc-sets-tabulationSpaces").getAttribute("max");
+	},
+	setTabulation: function() {
+		var ts = this.pu.pref("editor.tabSymbol");
+		var rg = this.$("hc-sets-tabulation");
+		var sp = this.$("hc-sets-tabulationSpaces");
+		var custom = this.$("hc-sets-tabulationCustom");
+		var si = 2;
+		if(ts == "\t") {
+			si = 0;
+			sp.value = 8;
+		}
+		else if(/^ +$/.test(ts) && ts.length >= this.minSpaces && ts.length <= this.maxSpaces) {
+			si = 1;
+			sp.value = ts.length;
+		}
+		else {
+			custom.value = ts;
+		}
+		rg.selectedIndex = si;
+		this.$("hc-sets-tabulationRadioCustom").hidden = custom.hidden = si != 2;
+	},
+	get tabulation() {
+		var rg = this.$("hc-sets-tabulation");
+		var sp = this.$("hc-sets-tabulationSpaces");
+		var si = rg.selectedIndex;
+		if(si == 0)
+			return "\t";
+		if(si == 1) {
+			var n = this.ut.mm(Number(this.$("hc-sets-tabulationSpaces").value) || 8, this.minSpaces, this.maxSpaces);
+			return new Array(n + 1).join(" ");
+		}
+		return this.$("hc-sets-tabulationCustom").value || "\t";
+	},
+	selectTabulation: function(rg) {
+		var si = rg.selectedItem;
+		var dis = false;
+		Array.forEach(
+			rg.getElementsByTagName("*"),
+			function(ch) {
+				if(ch.localName == "radio") {
+					dis = ch != si;
+					return;
+				}
+				ch.disabled = dis;
+			}
+		);
+	},
 	saveSettings: function(applyFlag) {
 		this.pu.pref("disallowMousemoveButtons", this.disallowMousemoveButtons);
+		this.pu.pref("editor.tabSymbol", this.tabulation);
 		if(applyFlag && !this.instantApply)
 			this.savePrefpanes();
 		var saved = true;
@@ -1874,7 +1921,9 @@ var handyClicksSets = {
 				return ps.value != ps.valueFromPreferences; // May be string and number on Firefox 3.0
 			},
 			this
-		) || this.disallowMousemoveButtons != this.pu.pref("disallowMousemoveButtons");
+		)
+		|| this.disallowMousemoveButtons != this.pu.pref("disallowMousemoveButtons")
+		|| this.tabulation != this.pu.pref("editor.tabSymbol");
 	},
 	get hasUnsaved() {
 		return this.instantApply
@@ -1905,7 +1954,7 @@ var handyClicksSets = {
 			if(p.getAttribute("instantApply") == "true" || p.getAttribute("hc_instantApply") == "true")
 				return;
 		}
-		else if(ln != "checkbox")
+		else if(ln != "checkbox" && ln != "radio" && ln != "textbox")
 			return;
 		if(this.instantApply)
 			this.saveSettings();

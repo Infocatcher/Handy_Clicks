@@ -520,7 +520,10 @@ var handyClicksEditor = {
 		if(e.type != "keypress")
 			return false;
 		var key = e.charCode;
-		return !key || key < 32 || e.ctrlKey || e.altKey || e.metaKey || !/[^\w$]/.test(String.fromCharCode(key));
+		var okChar = !key || key < 32 || e.ctrlKey || e.altKey || e.metaKey || !/[^\w$]/.test(String.fromCharCode(key));
+		if(!okChar)
+			this.customTypeIdInfo(e.target);
+		return okChar;
 	},
 	_customTypeIdFilter: function(node) {
 		var val = node.value;
@@ -528,6 +531,7 @@ var handyClicksEditor = {
 		if(re.test(val)) {
 			val = val.replace(re, "");
 			node.value = val;
+			this.customTypeIdInfo(node);
 		}
 		val = this.ps.customPrefix + val;
 		var ml = this.$("hc-editor-customType");
@@ -540,6 +544,11 @@ var handyClicksEditor = {
 			ml.selectedItem = null;
 			this.$("hc-editor-customTypeEnabled").checked = true;
 		}
+	},
+	customTypeIdInfo: function(anchor) {
+		var msg = this.ut.getLocalized("allowedChars")
+			.replace("%s", "a-z, A-Z, 0-9, $, _");
+		this.su.showInfoTooltip(anchor, msg, this.su.TOOLTIP_HIDE_DEFAULT, this.su.TOOLTIP_OFFSET_DEFAULT);
 	},
 	appendTypesList: function() {
 		var sep = this.$("hc-editor-customTypesSep");

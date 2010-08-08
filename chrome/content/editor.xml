@@ -45,52 +45,29 @@
 			</property>
 			<method name="insertText">
 				<parameter name="text" />
+				<parameter name="noScroll" />
+				<parameter name="select" />
 				<body>
+				<![CDATA[
+					if(noScroll) {
+						var ifi = this.inputField;
+						var sTop    = ifi.scrollTop;
+						var sHeight = ifi.scrollHeight;
+						var sLeft   = ifi.scrollLeft;
+						var sWidth  = ifi.scrollWidth;
+					}
+
 					if(text)
 						this.editor.insertText(text);
 					else
 						this.editor.deleteSelection(0);
-				</body>
-			</method>
-			<field name="INSERT_SELECT_ALL">0</field>
-			<field name="INSERT_MOVE_CURSOR_TO_START">1</field>
-			<field name="INSERT_SELECT_CUSTOM">2</field>
-			<method name="insertTextEx">
-				<parameter name="text" />
-				<parameter name="startPos" />
-				<parameter name="endPos" />
-				<parameter name="selectFlag" />
-				<parameter name="selStart" />
-				<parameter name="selEnd" />
-				<body>
-				<![CDATA[
-					var ifi = this.inputField;
 
-					var sTop = ifi.scrollTop;
-					var sHeight = ifi.scrollHeight;
-					var sLeft = ifi.scrollLeft;
-					var sWidth = ifi.scrollWidth;
-
-					ifi.selectionStart = startPos;
-					ifi.selectionEnd = endPos;
-
-					this.insertText(text);
-
-					switch(selectFlag) {
-						case this.INSERT_SELECT_ALL:
-							ifi.selectionStart = startPos;
-							ifi.selectionEnd = startPos + text.length;
-						break;
-						case this.INSERT_MOVE_CURSOR_TO_START:
-							ifi.selectionStart = startPos;
-							ifi.selectionEnd = startPos;
-						break;
-						case this.INSERT_SELECT_CUSTOM:
-							ifi.selectionStart = selStart;
-							ifi.selectionEnd = selEnd;
+					if(noScroll) {
+						ifi.scrollTop  = sTop  + (ifi.scrollHeight - sHeight);
+						ifi.scrollLeft = sLeft + (ifi.scrollWidth  - sWidth);
 					}
-					ifi.scrollTop  = sTop  + (ifi.scrollHeight - sHeight);
-					ifi.scrollLeft = sLeft + (ifi.scrollWidth  - sWidth);
+					if(select)
+						this.inputField.selectionStart -= text.length;
 				]]>
 				</body>
 			</method>
@@ -101,39 +78,78 @@
 				<![CDATA[
 					var val = this.value;
 					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
 
-					var startPos = ifi.selectionStart;
-					var endPos = ifi.selectionEnd;
+					var sel = val.substring(ss, se);
+					var lineStart = val.substring(0, ss).match(/[^\r\n]*$/)[0];
+					var lineEnd = val.substring(se).match(/^[^\r\n]*/)[0];
 
-					var sel = val.substring(startPos, endPos);
 					if(!/\n|\r/.test(sel)) {
+						if(/^ {2,}$/.test(indentChar)) {
+							var lenStart = lineStart.length + lineEnd.match(/^ */)[0].length;
+							var maxSpaces = indentChar.length;
+							indentChar = indentChar.substr(0, (maxSpaces - lenStart % maxSpaces) || maxSpaces);
+						}
+						this.insertText(indentChar);
 						if(removeFlag)
-							this.insertTextEx(indentChar, startPos, endPos, this.INSERT_MOVE_CURSOR_TO_START);
-						else
-							this.insertText(indentChar);
+							ifi.selectionStart = ifi.selectionEnd = ss;
 						return;
 					}
-					var startVal = val.substring(0, startPos);
-					var endVal = val.substring(endPos, val.length);
 
-					var selLen = endPos - startPos;
-					var startLine = startVal.search(/(^|\n|\r)[^\n\r]*$/);
-					startLine += RegExp.$1.length;
-					var endLine = startVal.length + selLen + endVal.search(/\r|\n|$/);
-
-					var block = val.substring(startLine, endLine);
+					var block = lineStart + sel + lineEnd;
 					if(removeFlag) {
 						if(/^ {2,}$/.test(indentChar))
 							indentChar = "( {1," + indentChar.length + "}|\\t)";
 						var re = new RegExp("^" + indentChar, "mg");
-						if(re.test(block))
-							block = block.replace(re, "");
-						else
+						if(!re.test(block))
 							return;
+						block = block.replace(re, "");
 					}
-					else
+					else {
 						block = block.replace(/^/mg, indentChar);
-					this.insertTextEx(block, startLine, endLine, this.INSERT_SELECT_ALL);
+					}
+
+					ifi.selectionStart = ss - lineStart.length;
+					ifi.selectionEnd   = se + lineEnd.length;
+					this.insertText(block, true, true);
+				]]>
+				</body>
+			</method>
+			<field name="_allowBackspace">false</field>
+			<method name="removeSpaces">
+				<parameter name="event" />
+				<body>
+				<![CDATA[
+					if(this._allowBackspace)
+						return;
+					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
+					if(ss != se)
+						return;
+					var tab = this.tabSymbol;
+					if(!/^ {2,}$/.test(tab))
+						return;
+					var line = this.value.substring(0, ss).match(/[^\r\n]*$/)[0];
+					var availSpaces = line.match(/ *$/)[0].length;
+					if(availSpaces <= 1)
+						return;
+					var maxSpaces = line.length % tab.length || tab.length;
+					var removeSpaces = Math.min(availSpaces, maxSpaces);
+
+					this._allowBackspace = true;
+					while(--removeSpaces) {
+						var evt = document.createEvent("KeyEvents");
+						evt.initKeyEvent(
+							event.type,
+							event.bubbles, event.cancelable, event.view,
+							event.ctrlKey, event.altKey, event.shiftKey, event.metaKey,
+							event.keyCode, event.charCode
+						);
+						event.originalTarget.dispatchEvent(evt);
+					}
+					this._allowBackspace = false;
 				]]>
 				</body>
 			</method>
@@ -143,45 +159,38 @@
 				<![CDATA[
 					var val = this.value;
 					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
 
-					var startPos = ifi.selectionStart;
-					var endPos = ifi.selectionEnd;
+					var sel = val.substring(ss, se);
 
-					var sel = val.substring(startPos, endPos);
-					var isMultiline = /\n|\r/.test(sel);
+					var lineStart = val.substring(0, ss).match(/[^\r\n]*$/)[0];
+					var lineEnd = val.substring(se).match(/^[^\r\n]*/)[0];
+					var block = lineStart + sel + lineEnd;
 
-					var startVal = val.substring(0, startPos);
-					var endVal = val.substring(endPos, val.length);
-
-					var selLen = endPos - startPos;
-					var startLine = startVal.search(/(^|\n|\r)[^\n\r]*$/);
-					startLine += RegExp.$1.length;
-					var endLine = startVal.length + selLen + endVal.search(/\r|\n|$/);
-
-					var block = val.substring(startLine, endLine);
-					var bLen0 = block.length;
-
-					if(onlyInLineStart)
-						var re = /^\/\//mg, subst = "";
-					else
-						var re = /^(\s*)\/\//mg, subst = "$1";
-					if(re.test(block))
-						block = block.replace(re, subst);
-					else
-						block = block.replace(/^/mg, "//");
-					var bLen1 = block.length;
-
-					if(isMultiline)
-						this.insertTextEx(block, startLine, endLine, this.INSERT_SELECT_ALL);
+					if(onlyInLineStart) {
+						var re = /^\/\//mg;
+						var subst = "";
+					}
 					else {
-						var dl = bLen1 - bLen0;
-						this.insertTextEx(
-							block,
-							startLine, endLine,
-							this.INSERT_SELECT_CUSTOM,
-							startPos + dl,
-							endPos + dl
-						);
+						var re = /^(\s*)\/\//mg;
+						var subst = "$1";
+					}
+					var comment = "//";
+					var hasComments = re.test(block);
+					block = hasComments
+						? block.replace(re, subst)
+						: block.replace(/^/mg, comment);
+
+					ifi.selectionStart = ss - lineStart.length;
+					ifi.selectionEnd   = se + lineEnd.length;
+					if(/\n|\r/.test(sel))
+						this.insertText(block, true, true);
+					else {
+						this.insertText(block, true, false);
+						var dl = (hasComments ? -1 : 1)*comment.length;
+						ifi.selectionStart = Math.max(ss + dl, ss - lineStart.length);
+						ifi.selectionEnd   = se + dl;
 					}
 				]]>
 				</body>
@@ -189,20 +198,7 @@
 			<method name="formatNewLine">
 				<body>
 				<![CDATA[
-					var val = this.value;
-					var ifi = this.inputField;
-
-					var startPos = ifi.selectionStart;
-					var endPos = ifi.selectionEnd;
-
-					var startVal = val.substring(0, startPos);
-					var endVal = val.substring(endPos, val.length);
-
-					var startLine = startVal.search(/(^|\n|\r)[^\n\r]*$/);
-					startLine += RegExp.$1.length;
-
-					var line = val.substring(startLine, startPos);
-
+					var line = this.value.substring(0, this.inputField.selectionStart).match(/[^\r\n]*$/)[0];
 					var indent = /^[ \t]+/.test(line) ? RegExp.lastMatch : "";
 					this.insertText("\n" + indent);
 				]]>
@@ -212,7 +208,7 @@
 				<body>
 				<![CDATA[
 					var currLine = this.currentLine;
-					var currCol = this.currentColumn;
+					var currCol  = this.currentColumn;
 					var num = { value: currLine + ":" + currCol };
 					var ut = "handyClicksUtils" in top && top.handyClicksUtils;
 					var ps = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
@@ -227,14 +223,16 @@
 					);
 					if(!res)
 						return;
-					if(!/^(\+|-)?(\d+)(?:\s*[:;,|\/\\_]\s*(\+|-)?(\d+))?$/.test(num.value))
+					if(!/^(\+|-)?(\d+)(?:\s*[^\d+-]+\s*(\+|-)?(\d+))?$/.test(num.value))
 						return;
 					var line = Number(RegExp.$2);
+					var col  = Number(RegExp.$4);
 					if(RegExp.$1)
 						line = Math.max(1, currLine + line*(RegExp.$1 == "+" ? 1 : -1));
-					var col = Number(RegExp.$4);
 					if(RegExp.$3)
-						col = Math.max(0, currCol + col*(RegExp.$3 == "+" ? 1 : -1));
+						col  = Math.max(1, currCol  + col *(RegExp.$3 == "+" ? 1 : -1));
+					if(line == currLine && col == currCol)
+						return;
 					this.scrollTo(line, col);
 				]]>
 				</body>
@@ -246,13 +244,6 @@
 				]]>
 				</getter>
 			</property>
-			<property name="currentColumn" readonly="true">
-				<getter>
-				<![CDATA[
-					return this.value.substring(0, this.inputField.selectionStart).match(/[^\n\r]*$/)[0].length + 1;
-				]]>
-				</getter>
-			</property>
 			<property name="linesCount" readonly="true">
 				<getter>
 				<![CDATA[
@@ -260,11 +251,24 @@
 				]]>
 				</getter>
 			</property>
+			<property name="currentColumn" readonly="true">
+				<getter>
+				<![CDATA[
+					return this.value.substring(0, this.inputField.selectionStart).match(/[^\n\r]*$/)[0].length + 1;
+				]]>
+				</getter>
+			</property>
 			<property name="columnsCount" readonly="true">
 				<getter>
 				<![CDATA[
 					// For current line
-					return this.value.substr(this.inputField.selectionStart).match(/^[^\n\r]*/)[0].length + 1;
+					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
+					var val = this.value;
+					return val.substring(0, ss).match(/[^\n\r]*$/)[0].length
+						+ val.substring(ss).match(/^[^\n\r]*/)[0].length
+						+ 1;
 				]]>
 				</getter>
 			</property>
@@ -293,10 +297,8 @@
 					if(columnNumber != null && isFinite(columnNumber)) {
 						var maxCol = this.columnsCount;
 						columnNumber = Math.max(1, Math.min(maxCol, columnNumber));
-						if(allowOverflow || columnNumber <= maxCol) {
-							var ifi = this.inputField;
-							ifi.selectionStart = ifi.selectionEnd = ifi.selectionStart - this.currentColumn + columnNumber;
-						}
+						var ifi = this.inputField;
+						ifi.selectionStart = ifi.selectionEnd = ifi.selectionStart - this.currentColumn + columnNumber;
 					}
 					this.scrollSelectionIntoView();
 					this.focus();
@@ -367,8 +369,7 @@
 								parseInt(this.ownerDocument.defaultView.getComputedStyle(this, null).fontSize) + add
 							)
 						) + "px";
-					if(this.id)
-						document.persist(this.id, "style");
+					this.id && document.persist(this.id, "style");
 				]]>
 				</body>
 			</method>
@@ -378,8 +379,7 @@
 					var ww = this.getAttribute("hc_wrapWidth") == "0" ? -1 : 0;
 					this.editor.wrapWidth = ww;
 					this.setAttribute("hc_wrapWidth", ww);
-					if(this.id)
-						document.persist(this.id, "hc_wrapWidth");
+					this.id && document.persist(this.id, "hc_wrapWidth");
 				]]>
 				</body>
 			</method>
@@ -619,7 +619,6 @@
 				<body>
 				<![CDATA[
 					const selMarker = "\uffff" + Math.random().toFixed(24).substr(2) + "\uffff";
-
 					var val = this.value;
 					var ifi = this.inputField;
 					var ss = ifi.selectionStart;
@@ -677,6 +676,7 @@
 			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent(this.tabSymbol, true);" modifiers="shift" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.setIndent(' ', false);" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.setIndent(' ', true);" modifiers="shift" />
+			<handler event="keypress" keycode="VK_BACK" action="this.removeSpaces(event);" />
 			<handler event="keypress" preventdefault="true" key="a" action="this.toggleComments(true);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" key="q" action="this.toggleComments(false);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" keycode="VK_RETURN" action="this.formatNewLine();" />

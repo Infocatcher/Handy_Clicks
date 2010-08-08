@@ -141,7 +141,6 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 }
 #hc-editor-customType {
 	min-width: 12em;
-	max-width: 30em;
 }
 #hc-editor-customTypeExtId {
 	min-width: 9em;

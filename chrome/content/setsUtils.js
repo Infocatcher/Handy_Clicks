@@ -1,8 +1,4 @@
 var handyClicksSetsUtils = {
-	PROMPT_SAVE: 0,
-	PROMPT_CANCEL: 1,
-	PROMPT_DONT_SAVE: 2,
-
 	init: function(reloadFlag) {
 		window.addEventListener("DOMMouseScroll", this, true);
 		window.addEventListener("dragenter", this, true);
@@ -43,11 +39,11 @@ var handyClicksSetsUtils = {
 			case "DOMMouseScroll":
 				(
 					this.scrollList(e)
-					|| this.scrollRadio(e)
+					|| this.scrollRadioMenuitems(e)
 					|| this.scrollNumTextbox(e)
 					|| this.scrollTabs(e)
-					|| this.scrollPanes(e)
 					|| this.scrollTabsToolbar(e)
+					|| this.scrollRadios(e)
 				)
 				&& this.ut.stopEvent(e);
 			break;
@@ -123,27 +119,26 @@ var handyClicksSetsUtils = {
 		}
 	},
 
-	modifiedFlag: "*",
+	modifiedFlag: "* ",
 	get importFlag() {
 		delete this.importFlag;
-		return this.importFlag = this.ut.getLocalized("importFlag");
+		return this.importFlag = this.ut.trim(this.ut.getLocalized("importFlag")) + " ";
 	},
 	removeTitleFlags: function(title) {
-		var modifiedFlag = this.modifiedFlag + " ";
-		var importFlag = this.importFlag + " ";
-		if(title.indexOf(modifiedFlag) == 0)
-			title = title.substr(modifiedFlag.length);
-		if(title.indexOf(importFlag) == 0)
-			title = title.substr(importFlag.length);
+		title = this.ut.removePrefix(title, this.modifiedFlag);
+		title = this.ut.removePrefix(title, this.importFlag);
 		return title;
 	},
 	createTitle: function(title, isModified, isImport) {
 		// [modifiedFlag] [importFlag] [title]
-		return (isModified ? this.modifiedFlag + " " : "")
-			+ (isImport ? this.importFlag + " " : "")
+		return (isModified ? this.modifiedFlag : "")
+			+ (isImport ? this.importFlag : "")
 			+ this.removeTitleFlags(title);
 	},
 
+	PROMPT_SAVE: 0,
+	PROMPT_CANCEL: 1,
+	PROMPT_DONT_SAVE: 2,
 	notifyUnsaved: function() {
 		if(!this.pu.pref("ui.notifyUnsaved"))
 			return this.PROMPT_DONT_SAVE;
@@ -182,43 +177,46 @@ var handyClicksSetsUtils = {
 		if(ln != "menulist" || ml.disabled)
 			return false;
 		var mp = ml.menupopup;
-		var si = ml.selectedItem;
 		var fwd = this.isScrollForward(e);
-		si = fwd
-			? !si || si == mp.lastChild
-				? mp.firstChild
-				: si.nextSibling
-			: !si || si == mp.firstChild
-				? mp.lastChild
-				: si.previousSibling;
-		while(
-			si && (
-				si.getAttribute("disabled") == "true"
-				|| si.localName != "menuitem"
-				|| !this.ut.isElementVisible(si)
+		var si = ml.selectedItem || (fwd ? mp.firstChild : mp.lastChild);
+		var si0 = si;
+		var next = function() {
+			si = fwd
+				? si.nextSibling || mp.firstChild
+				: si.previousSibling || mp.lastChild;
+		};
+		for(;;) {
+			next();
+			if(si == si0)
+				break;
+			if(
+				si.getAttribute("disabled") != "true"
+				&& si.localName == "menuitem"
+				&& this.ut.isElementVisible(si)
 			)
-		)
-			si = fwd ? si.nextSibling : si.previousSibling;
-		ml.selectedItem = si || (fwd ? mp.firstChild : mp.lastChild);
+				break
+		}
+		if(si == ml.selectedItem)
+			return false;
+		ml.selectedItem = si;
 		ml.menuBoxObject.activeChild = ml.mSelectedInternal || ml.selectedInternal;
 		ml.doCommand();
 		return true;
 	},
 	_showTooltip: false,
-	scrollRadio: function(e) {
+	scrollRadioMenuitems: function(e) {
 		var rds = this.getSameLevelRadios(e.target);
 		if(!rds.length)
 			return false;
 		var si, indx;
-		rds.some(
-			function(rd, i) {
-				if(rd.getAttribute("checked") == "true") {
-					si = rd, indx = i;
-					return true;
-				}
-				return false;
+		rds.some(function(rd, i) {
+			if(rd.getAttribute("checked") == "true") {
+				si = rd;
+				indx = i;
+				return true;
 			}
-		);
+			return false;
+		});
 		var fwd = this.isScrollForward(e);
 		indx = fwd
 			? !si || indx == rds.length - 1
@@ -235,14 +233,14 @@ var handyClicksSetsUtils = {
 			this.ut.attribute(rd, "checked", i == indx);
 		}, this);
 		if(this._showTooltip)
-			this.showInfoTooltip(e.target, si.getAttribute("label"));
+			this.showInfoTooltip(e.target, si.getAttribute("label"), this.TOOLTIP_HIDE_QUICK, this.TOOLTIP_OFFSET_CURSOR);
 		return true;
 	},
 	getSameLevelRadios: function(elt) {
 		var isClosedMenu = false;
 		if(elt.localName == "menu" || elt.getAttribute("type") == "menu") {
 			isClosedMenu = elt.getAttribute("open") != "true";
-			elt = elt.hasChildNodes() ? elt.firstChild.firstChild : null;
+			elt = elt.hasChildNodes() && elt.firstChild.firstChild;
 			if(!elt)
 				return null;
 		}
@@ -294,16 +292,46 @@ var handyClicksSetsUtils = {
 		}
 		return false;
 	},
-	scrollPanes: function(e) {
-		var de = document.documentElement;
-		if(de.localName != "prefwindow")
-			return false;
+	scrollRadios: function(e) {
 		for(var node = e.originalTarget; node; node = node.parentNode) {
-			if(
-				node.localName == "radiogroup"
-				&& /(?:^|\s)paneSelector(?:\s|$)/.test(node.className)
-			) {
-				this.st.switchPanes(this.isScrollForward(e));
+			if(node.localName == "radiogroup") {
+				var maxIndx = (node.itemCount || node._getRadioChildren().length) - 1;
+				if(maxIndx < 0)
+					return false;
+				var fwd = this.isScrollForward(e);
+				var si = node.selectedIndex;
+				if(si < 0 || si > maxIndx)
+					si = fwd ? 0 : maxIndx;
+				var si0 = si;
+				var add = fwd ? 1 : -1;
+				var next = function() {
+					si += add;
+					if(si < 0)
+						si = maxIndx;
+					else if(si > maxIndx)
+						si = 0;
+				};
+				var get = function(indx) {
+					if("getItemAtIndex" in node)
+						return node.getItemAtIndex(indx);
+					var children = node._getRadioChildren();
+					return indx >= 0 && indx < children.length ? children[indx] : null;
+				};
+				for(;;) {
+					next();
+					if(si == si0)
+						return false;
+					var it = get(si);
+					if(
+						it.getAttribute("disabled") != "true"
+						&& this.ut.isElementVisible(it)
+					)
+						break
+				}
+				if(si == node.selectedIndex)
+					return false;
+				node.selectedIndex = si;
+				it.doCommand();
 				return true;
 			}
 		}
@@ -352,25 +380,29 @@ var handyClicksSetsUtils = {
 		radio.doCommand();
 	},
 
+	TOOLTIP_OFFSET_DEFAULT: 2,
+	TOOLTIP_OFFSET_CURSOR: 12,
+	TOOLTIP_HIDE_DEFAULT: 2500,
+	TOOLTIP_HIDE_QUICK: 800,
 	get infoTooltip() {
 		delete this.infoTooltip;
 		return this.infoTooltip = document.documentElement.appendChild(
 			this.ut.parseFromXML(
-				<tooltip xmlns={this.ut.XULNS} id="handyClicks-infoTooltip" onmouseover="this.hidePopup();">
-					<label />
+				<tooltip xmlns={this.ut.XULNS} id="handyClicks-infoTooltip" onclick="this.hidePopup();">
+					<description />
 				</tooltip>
 			)
 		);
 	},
-	showInfoTooltip: function _sit(anchor, msg) {
+	showInfoTooltip: function _sit(anchor, msg, delay, offset) {
 		if(!msg)
 			return;
 		var tt = this.infoTooltip;
-		tt.firstChild.setAttribute("value", msg);
+		tt.firstChild.textContent = msg;
 
 		var bo = anchor.boxObject;
 		var x = bo.screenX;
-		var y = bo.screenY + bo.height + 12;
+		var y = bo.screenY + bo.height + (offset === undefined ? this.TOOLTIP_OFFSET_DEFAULT : offset);
 		if("openPopupAtScreen" in tt) // Firefox 3.0+
 			tt.openPopupAtScreen(x, y, false /*isContextMenu*/);
 		else
@@ -380,7 +412,7 @@ var handyClicksSetsUtils = {
 			clearTimeout(_sit.timeout);
 		_sit.timeout = setTimeout(function(tt) {
 			tt.hidePopup();
-		}, 800, tt);
+		}, delay || this.TOOLTIP_HIDE_DEFAULT, tt);
 	},
 
 	extLabels: {
