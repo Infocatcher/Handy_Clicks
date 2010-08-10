@@ -55,6 +55,16 @@
 			onclick="handyClicksUI.doSettings(event);" />
 	</toolbarpalette>
 	<statusbar id="status-bar">
+		<statusbarpanel id="handyClicks-statusbarProgressPanel" insertafter="page-report-button" collapsed="true"
+			popup="_child" context="_child">
+			<label id="handyClicks-statusbarProgressLabel" />
+			<progressmeter id="handyClicks-statusbarProgress" class="progressmeter-statusbar" mode="normal" />
+			<menupopup>
+				<menuitem id="handyClicks-statusbarProgressCancel" class="menuitem-iconic handyClicks-iconic"
+					label="&handyClicks.cancel;"
+					oncommand="handyClicksUI.progressCancel();" />
+			</menupopup>
+		</statusbarpanel>
 		<statusbarpanel id="handyClicks-statusbarButton" insertafter="page-report-button"
 			class="statusbarpanel-iconic"
 			tooltip="handyClicks-tooltip"

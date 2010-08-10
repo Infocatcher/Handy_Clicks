@@ -269,6 +269,45 @@ var handyClicksUI = {
 		}, this);
 	},
 
+	// Progressmeter:
+	userCancelled: false,
+	progressPart: 0,
+	progressCount: 0,
+	get progressPanel() {
+		delete this.progressPanel;
+		return this.progressPanel = this.e("handyClicks-statusbarProgressPanel");
+	},
+	get progressLabel() {
+		delete this.progressLabel;
+		return this.progressLabel = this.e("handyClicks-statusbarProgressLabel");
+	},
+	get progress() {
+		delete this.progress;
+		return this.progress = this.e("handyClicks-statusbarProgress");
+	},
+	get showProgress() {
+		return !this.progressPanel.collapsed;
+	},
+	set showProgress(show) {
+		if(show) {
+			this.userCancelled = false;
+			if(this.progressPanel.collapsed)
+				this.progressPart = this.progressCount = 0;
+			clearTimeout(this._progressHideTimeout);
+		}
+		this.progressPanel.collapsed = !show;
+	},
+	progressCancel: function() {
+		this.userCancelled = true;
+		this.showProgress = false;
+	},
+	_progressHideTimeout: null,
+	progressDelayedHide: function() {
+		this._progressHideTimeout = setTimeout(function(_this) {
+			_this.showProgress = false;
+		}, 300, this);
+	},
+
 	// Multiline tooltip:
 	tooltipAttrBase: "handyclicks_tooltip-",
 	tooltipAttrStyle: "handyclicks_tooltipStyle-",

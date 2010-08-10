@@ -10,3 +10,4 @@
 <!ENTITY handyClicks.editModeAccesskey "р">
 <!ENTITY handyClicks.importFromClipboardLabel "Импортировать настройки из буфера обмена…">
 <!ENTITY handyClicks.importFromClipboardAccesskey "И">
+<!ENTITY handyClicks.cancel "Отменить">

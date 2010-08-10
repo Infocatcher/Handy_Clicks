@@ -10,3 +10,4 @@
 <!ENTITY handyClicks.editModeAccesskey "e">
 <!ENTITY handyClicks.importFromClipboardLabel "Import settings from clipboard…">
 <!ENTITY handyClicks.importFromClipboardAccesskey "I">
+<!ENTITY handyClicks.cancel "Cancel">

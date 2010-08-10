@@ -380,21 +380,21 @@ var handyClicksSetsUtils = {
 		radio.doCommand();
 	},
 
+	TOOLTIP_HIDE_DEFAULT: 2600,
+	TOOLTIP_HIDE_QUICK: 800,
 	TOOLTIP_OFFSET_DEFAULT: 2,
 	TOOLTIP_OFFSET_CURSOR: 12,
-	TOOLTIP_HIDE_DEFAULT: 2500,
-	TOOLTIP_HIDE_QUICK: 800,
 	get infoTooltip() {
 		delete this.infoTooltip;
 		return this.infoTooltip = document.documentElement.appendChild(
 			this.ut.parseFromXML(
-				<tooltip xmlns={this.ut.XULNS} id="handyClicks-infoTooltip" onclick="this.hidePopup();">
+				<tooltip xmlns={this.ut.XULNS} id="handyClicks-infoTooltip" onmouseover="this.hidePopup();">
 					<description />
 				</tooltip>
 			)
 		);
 	},
-	showInfoTooltip: function _sit(anchor, msg, delay, offset) {
+	showInfoTooltip: function _sit(anchor, msg, hideDelay, offset) {
 		if(!msg)
 			return;
 		var tt = this.infoTooltip;
@@ -412,7 +412,7 @@ var handyClicksSetsUtils = {
 			clearTimeout(_sit.timeout);
 		_sit.timeout = setTimeout(function(tt) {
 			tt.hidePopup();
-		}, delay || this.TOOLTIP_HIDE_DEFAULT, tt);
+		}, hideDelay || this.TOOLTIP_HIDE_DEFAULT, tt);
 	},
 
 	extLabels: {

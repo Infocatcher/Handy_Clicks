@@ -156,6 +156,8 @@ var handyClicksEditor = {
 	set applyDisabled(dis) {
 		this.applyButton.disabled = dis;
 		this.$("hc-editor-cmd-test").setAttribute("disabled", dis);
+		if(dis) // Cant'undo
+			this.$("hc-editor-cmd-undo").setAttribute("disabled", "true");
 	},
 	selectTargetTab: function(isDelayed, src, line) {
 		if(this.ut.storage("extensionsPending")) {
@@ -548,7 +550,7 @@ var handyClicksEditor = {
 	customTypeIdInfo: function(anchor) {
 		var msg = this.ut.getLocalized("allowedChars")
 			.replace("%s", "a-z, A-Z, 0-9, $, _");
-		this.su.showInfoTooltip(anchor, msg, this.su.TOOLTIP_HIDE_DEFAULT, this.su.TOOLTIP_OFFSET_DEFAULT);
+		this.su.showInfoTooltip(anchor, msg);
 	},
 	appendTypesList: function() {
 		var sep = this.$("hc-editor-customTypesSep");
@@ -988,7 +990,7 @@ var handyClicksEditor = {
 		var ok = false;
 		switch(this.mainTabbox.selectedIndex) {
 			case this.INDEX_SHORTCUT: ok = this.testShortcut();   break;
-			case this.INDEX_TYPE:     ok = this.testCustomType();
+			case this.INDEX_TYPE:     ok = this.testCustomType(); break;
 			default:                  return false;
 		}
 		ok = ok && this.testMode;

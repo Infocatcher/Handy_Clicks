@@ -88,6 +88,9 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton .toolbarbutton-icon {
 .handyClicks-editItem {
 	-moz-image-region: rect(32px 32px 48px 16px);
 }
+#handyClicks-statusbarProgressCancel {
+	-moz-image-region: rect(48px 32px 64px 16px);
+}
 
 #handyClicks-tooltip {
 	padding: 0;

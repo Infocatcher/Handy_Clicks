@@ -1009,10 +1009,8 @@ var handyClicksFuncs = {
 	get hasMultipleTabHandler() {
 		if("MultipleTabService" in window)
 			return true;
-		else {
-			this.ut._warn(this.getMissingExtWarning("Multiple Tab Handler", 4838));
-			return false;
-		}
+		this.ut._warn(this.getMissingExtWarning("Multiple Tab Handler", 4838));
+		return false;
 	},
 	mthCloseTabs: function(e, tabs) {
 		this.hasMultipleTabHandler && MultipleTabService.closeTabs(tabs || this.hc.item);
@@ -1129,10 +1127,10 @@ var handyClicksFuncs = {
 		var tbr = this.hc.getTabBrowser(true);
 		var ref = this.getRefererForItem(refererPolicy);
 
+		var count = 0;
+		for(var h in hrefs)
+			count++;
 		if("PlacesUIUtils" in window && "_confirmOpenInTabs" in PlacesUIUtils) {
-			var count = 0;
-			for(var h in hrefs)
-				count++;
 			if(!PlacesUIUtils._confirmOpenInTabs(count))
 				return;
 		}
@@ -1140,11 +1138,11 @@ var handyClicksFuncs = {
 		if("TreeStyleTabService" in window) { // Tree Style Tab
 			var hasTreeStyleTab = true;
 			var _tab = tbr.selectedTab;
-			TreeStyleTabService.readyToOpenChildTab(_tab, true);
 		}
 		var hasTabKit = "tabkit" in window; // Tab Kit
 
 		if(!useDelays) {
+			hasTreeStyleTab && TreeStyleTabService.readyToOpenChildTab(_tab, true);
 			for(var h in hrefs) {
 				hasTabKit && tabkit.addingTab("related");
 				tbr.addTab(h, ref);
@@ -1153,17 +1151,41 @@ var handyClicksFuncs = {
 			hasTreeStyleTab && TreeStyleTabService.stopToOpenChildTab(_tab);
 			return;
 		}
+
+		var showProgress = count >= 2;
+		if(showProgress) {
+			this.ui.showProgress = true;
+			var i = this.ui.progressPart;
+			this.ui.progressCount += count;
+			this.ui.progressLabel.value = i + "/" + this.ui.progressCount;
+			this.ui.progress.max = this.ui.progressCount*10;
+			this.ui.progress.value = i*10;
+		}
+
+		var _this = this;
 		var delay = this.pu.pref("funcs.multipleTabsOpenDelay") || 0;
 		(function delayedOpen() {
+			if(_this.ui.userCancelled)
+				return;
 			for(var h in hrefs) {
-				hasTabKit && tabkit.addingTab("related");
-				tbr.addTab(h, ref);
-				hasTabKit && tabkit.addingTabOver();
 				delete hrefs[h];
-				setTimeout(delayedOpen, delay);
+				break;
+			}
+			hasTreeStyleTab && TreeStyleTabService.readyToOpenChildTab(_tab);
+			hasTabKit && tabkit.addingTab("related");
+			tbr.addTab(h, ref);
+			hasTabKit && tabkit.addingTabOver();
+			delete hrefs[h];
+			if(showProgress) {
+				_this.ui.progressLabel.value = ++_this.ui.progressPart + "/" + _this.ui.progressCount;
+				var state = _this.ui.progress.value = _this.ui.progressPart*10;
+				var done = state >= _this.ui.progress.max;
+			}
+			if(_this.ut.isEmptyObj(hrefs)) {
+				showProgress && done && _this.ui.progressDelayedHide();
 				return;
 			}
-			hasTreeStyleTab && TreeStyleTabService.stopToOpenChildTab(_tab);
+			setTimeout(delayedOpen, delay);
 		})();
 	},
 	$void: function(e) {}, // dummy function
