@@ -58,7 +58,7 @@
 		<key id="hc-editor-key-undo" key="u" modifiers="control" command="hc-editor-cmd-undo" />
 		<key id="hc-editor-key-delete" key="d" modifiers="control" oncommand="handyClicksEditor.deleteSettings();" />
 		<key id="hc-editor-key-reload" keycode="VK_F5" oncommand="handyClicksEditor.initUI(true);" />
-		<key id="hc-editor-key-reload" key="r" modifiers="control" oncommand="handyClicksEditor.initUI(true);" />
+		<key id="hc-editor-key-reload2" key="r" modifiers="control" oncommand="handyClicksEditor.initUI(true);" />
 
 		<key id="hc-editor-key-copy" key="c" modifiers="control,shift" oncommand="handyClicksEditor.copySettings();" />
 		<key id="hc-editor-key-paste" key="v" modifiers="control,shift" oncommand="handyClicksEditor.pasteSettings();" />
@@ -66,9 +66,9 @@
 		<key id="hc-editor-key-rewindFocus" keycode="VK_UP" modifiers="control" oncommand="document.commandDispatcher.rewindFocus();" />
 		<key id="hc-editor-key-rewindFocus" keycode="VK_DOWN" modifiers="control" oncommand="document.commandDispatcher.advanceFocus();" />
 
-		<key id="hc-editor-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksWinUtils.maximizeWindow();" />
-		<key id="hc-editor-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksWinUtils.toggleFullscreen();" />
-		<key id="hc-editor-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksWinUtils.toggleOnTop();" />
+		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksWinUtils.maximizeWindow();" />
+		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksWinUtils.toggleFullscreen();" />
+		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksWinUtils.toggleOnTop();" />
 	</keyset>
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">

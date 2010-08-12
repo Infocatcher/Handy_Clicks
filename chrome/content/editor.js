@@ -51,6 +51,7 @@ var handyClicksEditor = {
 
 		if(this.ut.fxVersion == 1.5) // "relative" is not supported
 			this.types.menulists.moveTabTo.pop();
+		this.initShortcuts();
 		if(!reloadFlag) {
 			this.initExtTypes();
 			this.loadLabels();
@@ -62,8 +63,22 @@ var handyClicksEditor = {
 			this.initTabboxToolbar("hc-editor-customTypeTabboxToolbar");
 			//}, this);
 			this.addTestButtons();
+
+			this.applyButton.className += " hc-iconic hc-apply";
+			this.applyButton.setAttribute("hc_key", "hc-editor-key-apply");
+			this.su.setKeysDescDelay();
+
+			Array.forEach( // Add spellcheck feature for <menulist editable="true" />
+				document.getElementsByTagName("menulist"),
+				function(ml) {
+					if(ml.getAttribute("spellcheck") != "true")
+						return;
+					var inp = ml.ownerDocument.getAnonymousElementByAttribute(ml, "anonid", "input");
+					inp && inp.setAttribute("spellcheck", "true");
+				}
+			);
+			document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css
 		}
-		this.initShortcuts();
 		this.ps.loadSettings(this.src || null);
 		this.loadCustomType(this.type);
 		this.selectTargetTab(this.isDelayed);
@@ -80,20 +95,6 @@ var handyClicksEditor = {
 		this.setCompactUI();
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 
-		Array.forEach( // Add spellcheck feature for <menulist editable="true" />
-			document.getElementsByTagName("menulist"),
-			function(ml) {
-				if(ml.getAttribute("spellcheck") != "true")
-					return;
-				var inp = ml.ownerDocument.getAnonymousElementByAttribute(ml, "anonid", "input");
-				inp && inp.setAttribute("spellcheck", "true");
-			}
-		);
-
-		document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css
-
-		this.applyButton.className += " hc-iconic hc-apply";
-
 		window.addEventListener("focus", this, true);
 	},
 	destroy: function(reloadFlag) {
@@ -107,25 +108,28 @@ var handyClicksEditor = {
 			this.fixFocusedElement(e);
 	},
 	addTestButtons: function() {
-		var testBtn = this.ut.parseFromXML(
+		var testBtn = this.testButton = this.ut.parseFromXML(
 			<button xmlns={this.ut.XULNS}
 				id="hc-editor-buttonTest"
 				class="dialog-button hc-iconic"
 				command="hc-editor-cmd-test"
 				onclick="handyClicksEditor.testSettings(event);"
+				hc_key="hc-editor-key-test"
 			/>
 		);
-		var undoBtn = this.ut.parseFromXML(
+		var undoBtn = this.undoButton = this.ut.parseFromXML(
 			<button xmlns={this.ut.XULNS}
 				id="hc-editor-buttonUndo"
 				class="dialog-button hc-iconic"
 				command="hc-editor-cmd-undo"
+				hc_key="hc-editor-key-undo"
 				disabled="true"
 			/>
 		);
-		var delBtn = document.documentElement.getButton("extra2");
+		var delBtn = this.deleteButton = document.documentElement.getButton("extra2");
 		delBtn.id = "hc-editor-buttonDelete";
 		delBtn.className += " hc-iconic";
+		delBtn.setAttribute("hc_key", "hc-editor-key-delete");
 		var insPoint = delBtn.nextSibling;
 		var btnBox = delBtn.parentNode;
 		btnBox.insertBefore(testBtn, insPoint);
@@ -450,7 +454,7 @@ var handyClicksEditor = {
 		var enabled = this.ut.getOwnProperty(setsObj, "enabled");
 		this.$("hc-editor-enabled" + delayed).checked = typeof enabled != "boolean" || enabled;
 		if(!delayed) {
-			this.$("hc-editor-allowMousedown").value = "" + this.ut.getOwnProperty(setsObj, "allowMousedownEvent");
+			this.$("hc-editor-allowMousedown").value = String(this.ut.getOwnProperty(setsObj, "allowMousedownEvent"));
 			this.initAdditionalOptions(null, setsObj);
 		}
 	},
@@ -625,7 +629,7 @@ var handyClicksEditor = {
 			return;
 		}
 		var empty = !tb.textLength;
-		if(tb.__highlightedEmpty == empty)
+		if(tb.hasOwnProperty("__highlightedEmpty") && tb.__highlightedEmpty == empty)
 			return;
 		tb.__highlightedEmpty = empty;
 		var tab = tb.__parentTab || (tb.__parentTab = this.getTabForNode(tb));
@@ -834,7 +838,7 @@ var handyClicksEditor = {
 					}
 					mp.appendChild(mi);
 				}, this);
-				elt.@value = "" + argVal;
+				elt.@value = String(argVal);
 				elt.appendChild(mp);
 		}
 		argContainer.appendChild(elt);

@@ -12,11 +12,14 @@ var handyClicksWinUtils = {
 	get opener() {
 		return typeof top == "undefined" ? null : top;
 	},
-	openWindowByType: function _ow(uri, type, features, args) {
+	openWindowByType: function _ow(uri, type, features, args, closeOpened) {
 		var w = this.wm.getMostRecentWindow(type);
 		_ow.alreadyOpened = !!w;
  		if(w) {
- 			w.focus();
+ 			if(closeOpened)
+ 				w.close();
+ 			else
+ 				w.focus();
  			return w;
  		}
 		w = this.ww.openWindow(
@@ -175,11 +178,15 @@ var handyClicksWinUtils = {
 			wSet.handyClicksSets.markOpenedEditors();
 	},
 
-	openSettings: function(/* importArgs */) {
-		var w = this.openWindowByType(
+	openSettings: function(closeOpened) {
+		return this.openWindowByType(
 			"chrome://handyclicks/content/sets.xul",
-			"handyclicks:settings"
+			"handyclicks:settings",
+			null, null, closeOpened
 		);
+	},
+	openSettingsImport: function(/* importArgs */) {
+		var w = this.openSettings();
 		var args = arguments;
 		args.length && (function _imp() {
 			if("_handyClicksInitialized" in w) {
@@ -209,7 +216,7 @@ var handyClicksWinUtils = {
 	},
 	openSettingsLink: function(uri) {
 		if(uri.indexOf(this.ct.PROTOCOL_SETTINGS_ADD) == 0)
-			this.openSettings(true, this.ct.IMPORT_STRING, uri);
+			this.openSettingsImport(true, this.ct.IMPORT_STRING, uri);
 		else if(uri.indexOf(this.ct.PROTOCOL_SETTINGS_PANE) == 0)
 			this.openSettingsPane(uri.substr(this.ct.PROTOCOL_SETTINGS_PANE.length, uri.length));
 		else if(uri.indexOf(this.ct.PROTOCOL_SETTINGS) == 0)

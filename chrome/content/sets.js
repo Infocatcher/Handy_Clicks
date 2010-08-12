@@ -9,28 +9,13 @@ var handyClicksSets = {
 		this.ps.loadSettings();
 		this.initShortcuts();
 
-		if(reloadFlag)
-			this.redrawTree();
-		else
-			this.drawTree();
-		this.treeScrollPos(false);
-		Array.forEach(
-			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
-			function(col) {
-				if(!col.tooltipText)
-					col.tooltipText = col.getAttribute("label");
-			}
-		);
-
+		this[reloadFlag ? "redrawTree" : "drawTree"]();
 		this.updTreeButtons();
 		this.checkTreeSaved();
-		//this.prefsSaved();
 		this.ps.oSvc.addObserver(this.setsReloading, this);
 
 		this.initPrefs();
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
-
-		reloadFlag && this.setDialogButtons();
 
 		if(this.ut.fxVersion >= 3.5) {
 			var sf = this.searchField;
@@ -44,7 +29,6 @@ var handyClicksSets = {
 				};
 			}
 		}
-
 		if(this.pu.pref("sets.rememberSearchQuery")) {
 			var sf = this.searchField;
 			sf.value = this.pu.pref("sets.lastSearchQuery") || "";
@@ -53,24 +37,10 @@ var handyClicksSets = {
 		this.focusSearch(true);
 		this.searchInSetsTree(true);
 
-		this.instantApply = this.pu.getPref("browser.preferences.instantApply");
-		if(this.instantApply)
-			this.applyButton.hidden = true;
+		if(reloadFlag)
+			this.setDialogButtons();
 		else
-			this.applyButton.disabled = true;
-
-		var de = document.documentElement;
-		var prefsButt = de.getButton("extra2");
-		prefsButt.setAttribute("type", "menu");
-		//prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
-		// Can't open popup from keyboard
-		prefsButt.appendChild(this.e("hc-sets-prefsManagementPopup"));
-		prefsButt.className += " hc-iconic hc-preferences";
-
-		this.applyButton.className += " hc-iconic hc-apply";
-
-		if(this.ut.fxVersion >= 3.6) // Fix wrong restoring
-			window.resizeTo(Number(de.width), Number(de.height));
+			this.startupUI();
 	},
 	initShortcuts: function() {
 		var tr = this.tree = this.$("hc-sets-tree");
@@ -93,6 +63,38 @@ var handyClicksSets = {
 		);
 		reloadFlag && this.setImportStatus(false);
 		this.rowsCache = this._savedPrefs = this._savedTypes = null;
+	},
+	startupUI: function() {
+		this.treeScrollPos(false);
+		Array.forEach(
+			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
+			function(col) {
+				if(!col.tooltipText)
+					col.tooltipText = col.getAttribute("label");
+			}
+		);
+		this.instantApply = this.pu.getPref("browser.preferences.instantApply");
+		if(this.instantApply)
+			this.applyButton.hidden = true;
+		else
+			this.applyButton.disabled = true;
+
+		var de = document.documentElement;
+		var prefsButt = de.getButton("extra2");
+		prefsButt.setAttribute("type", "menu");
+		//prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
+		// Can't open popup from keyboard
+		prefsButt.appendChild(this.e("hc-sets-prefsManagementPopup"));
+		prefsButt.className += " hc-iconic hc-preferences";
+
+		this.applyButton.className += " hc-iconic hc-apply";
+		this.applyButton.setAttribute("hc_key", "hc-sets-key-apply");
+		this.su.setKeysDescDelay();
+
+		if(this.ut.fxVersion >= 3.6) // Fix wrong restoring
+			window.resizeTo(Number(de.width), Number(de.height));
+		if("MozTabSize" in de.style) // Firefox 4.0+
+			this.e("hc-sets-tabSizeBox").removeAttribute("hidden");
 	},
 	handleEvent: function(e) {
 		if(e.type == "mouseup") {

@@ -122,6 +122,7 @@
 <!ENTITY hc.sets.tabulation "Tabulation">
 <!ENTITY hc.sets.tabulationTabs "Tabs">
 <!ENTITY hc.sets.tabulationSpaces "Spaces:">
+<!ENTITY hc.sets.tabSize "Tab size:">
 
 <!ENTITY hc.sets.externalEditor "External editor">
 <!ENTITY hc.sets.externalEditorPath "Path:">

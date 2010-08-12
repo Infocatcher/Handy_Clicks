@@ -72,6 +72,7 @@ hbox[hc_fixedFields="true"] {
 }
 .hcFloatControl {
 	position: relative;
+	z-index: 10000;
 }
 #hc-editor-funcOptsFixed[hc_cantFixFields="true"] {
 	opacity: 0.5;

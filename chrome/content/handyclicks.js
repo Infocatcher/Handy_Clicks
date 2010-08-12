@@ -124,11 +124,13 @@ var handyClicks = {
 			var tar = e.originalTarget;
 			if(
 				this.ut.fxVersion >= 3.6
-				&& "open" in tar
+				&& tar.namespaceURI == this.ut.XULNS
 				&& tar.boxObject
 				&& tar.boxObject instanceof Components.interfaces.nsIMenuBoxObject
-			)
+			) {
+				//tar.boxObject.openMenu(true);
 				tar.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
+			}
 		}
 
 		var delay = this.pu.pref("delayedActionTimeout");
@@ -729,6 +731,7 @@ var handyClicks = {
 		e = e || this.copyOfEvent;
 		document.popupNode = popup.ownerDocument.popupNode = this.itemType == "tab" ? this.item : node;
 
+		//var isContext = e.button == 2;
 		var xy = this.getXY();
 		if("openPopupAtScreen" in popup) // Firefox 3.0+
 			popup.openPopupAtScreen(xy.x, xy.y, true /*isContextMenu*/);

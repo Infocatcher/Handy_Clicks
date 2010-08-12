@@ -73,6 +73,7 @@ var handyClicksSetsUtils = {
 					context="hc-sets-onTopContext"
 					hidden={ !this.pu.pref("ui.onTopButton") }
 					oncommand="handyClicksWinUtils.toggleOnTop();"
+					hc_key="hc-sets-key-toggleOnTop"
 					label={ this.ut.getLocalized("onTop") }
 					tooltiptext={ this.ut.getLocalized("onTopTip") }
 				/>
@@ -413,6 +414,46 @@ var handyClicksSetsUtils = {
 		_sit.timeout = setTimeout(function(tt) {
 			tt.hidePopup();
 		}, hideDelay || this.TOOLTIP_HIDE_DEFAULT, tt);
+	},
+
+	setKeysDescDelay: function() {
+		this.ut.timeout(this.setKeysDesc, this, arguments);
+	},
+	setKeysDesc: function(/* node0, node1, ... */) {
+		var nodes = Array.concat(
+			Array.slice(document.getElementsByAttribute("hc_key", "*")),
+			Array.slice(document.documentElement.getButton("cancel").parentNode.childNodes),
+			Array.slice(arguments)
+		);
+		//~ hack: show fake hidden popup with <menuitem key="keyId" /> to get descriptions
+		var mp = document.documentElement.appendChild(document.createElement("menupopup"));
+		mp.style.visibility = "collapse";
+		nodes.forEach(function(node) {
+			var keyId = node.getAttribute("hc_key");
+			if(!keyId)
+				return;
+			var mi = document.createElement("menuitem");
+			mi.__node = node;
+			mi.setAttribute("key", keyId);
+			mp.appendChild(mi);
+		});
+		mp._onpopupshown = function() {
+			Array.forEach(
+				this.childNodes,
+				function(mi) {
+					var keyDesk = mi.getAttribute("acceltext");
+					if(!keyDesk)
+						return;
+					var node = mi.__node;
+					node.tooltipText = node.tooltipText
+						? node.tooltipText + " (" + keyDesk + ")"
+						: keyDesk;
+				}
+			);
+			this.parentNode.removeChild(this);
+		};
+		mp.setAttribute("onpopupshown", "this._onpopupshown();");
+		mp["openPopup" in mp ? "openPopup" : "showPopup"]();
 	},
 
 	extLabels: {

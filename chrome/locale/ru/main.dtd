@@ -6,6 +6,8 @@
 <!ENTITY handyClicks.settingsAccesskey "Н">
 <!ENTITY handyClicks.allSettingsLabel "Все настройки…">
 <!ENTITY handyClicks.allSettingsAccesskey "В">
+<!ENTITY handyClicks.enableLabel "Включить Handy Clicks">
+<!ENTITY handyClicks.enableAccesskey "В">
 <!ENTITY handyClicks.editModeLabel "Режим редактирования">
 <!ENTITY handyClicks.editModeAccesskey "р">
 <!ENTITY handyClicks.importFromClipboardLabel "Импортировать настройки из буфера обмена…">

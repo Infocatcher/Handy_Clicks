@@ -27,7 +27,7 @@
 		<command id="handyClicks-cmd-editMode" oncommand="handyClicksUI.toggleEditMode();"
 			label="&handyClicks.editModeLabel;" accesskey="&handyClicks.editModeAccesskey;" />
 		<command id="handyClicks-cmd-importFromClipboard"
-			oncommand="handyClicksWinUtils.openSettings(true, handyClicksConst.IMPORT_CLIPBOARD);"
+			oncommand="handyClicksWinUtils.openSettingsImport(true, handyClicksConst.IMPORT_CLIPBOARD);"
 			label="&handyClicks.importFromClipboardLabel;" accesskey="&handyClicks.importFromClipboardAccesskey;" />
 	</commandset>
 	<keyset id="mainKeyset">
@@ -44,15 +44,13 @@
 			label="&handyClicks.menuitemLabel;" accesskey="&handyClicks.menuitemAccesskey;"
 			tooltip="handyClicks-tooltip"
 			key="handyClicks-key-toggleStatus"
-			context="handyClicks-settingsPopup"
-			oncommand="handyClicksUI.doSettings(event);"
-			onclick="if(event.button != 0) handyClicksUI.doSettings(event);" />
+			oncommand="handyClicksUI.handleUIEvent(event);"
+			onclick="if(event.button != 0) handyClicksUI.handleUIEvent(event);" />
 	</menupopup>
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton id="handyClicks-toolbarButton" class="toolbarbutton-1 chromeclass-toolbar-additional"
 			label="&handyClicks.toolbarbuttonLabel;" tooltip="handyClicks-tooltip"
-			context="handyClicks-settingsPopup"
-			onclick="handyClicksUI.doSettings(event);" />
+			onclick="handyClicksUI.handleUIEvent(event);" />
 	</toolbarpalette>
 	<statusbar id="status-bar">
 		<statusbarpanel id="handyClicks-statusbarProgressPanel" insertafter="page-report-button" collapsed="true"
@@ -68,8 +66,7 @@
 		<statusbarpanel id="handyClicks-statusbarButton" insertafter="page-report-button"
 			class="statusbarpanel-iconic"
 			tooltip="handyClicks-tooltip"
-			context="handyClicks-settingsPopup"
-			onclick="handyClicksUI.doSettings(event);" />
+			onclick="handyClicksUI.handleUIEvent(event);" />
 	</statusbar>
 	<popupset id="mainPopupSet">
 		<menupopup id="handyClicks-settingsPopup"
@@ -80,6 +77,9 @@
 				handyclicks_main="true" />
 			<menuitem id="handyClicks-allSettingsMenuitem" class="menuitem-iconic handyClicks-iconic"
 				command="handyClicks-cmd-openAboutConfig" key="handyClicks-key-openAboutConfig" />
+			<menuitem id="handyClicks-enabled" type="checkbox"
+				oncommand="handyClicksUI.toggleStatus();" key="handyClicks-key-toggleStatus"
+				label="&handyClicks.enableLabel;" accesskey="&handyClicks.enableAccesskey;" />
 			<menuseparator id="handyClicks-editModeSeparator" />
 			<menuitem id="handyClicks-editMode" class="menuitem-iconic handyClicks-iconic"
 				command="handyClicks-cmd-editMode" key="handyClicks-key-editMode" />
@@ -103,8 +103,7 @@
 			label="&handyClicks.menuitemLabel;" accesskey="&handyClicks.menuitemAccesskey;"
 			tooltip="handyClicks-tooltip"
 			key="handyClicks-key-toggleStatus"
-			context="handyClicks-settingsPopup"
-			oncommand="handyClicksUI.doSettings(event);"
-			onclick="if(event.button != 0) handyClicksUI.doSettings(event);" />
+			oncommand="handyClicksUI.handleUIEvent(event);"
+			onclick="if(event.button != 0) handyClicksUI.handleUIEvent(event);" />
 	</menupopup>
 </overlay>

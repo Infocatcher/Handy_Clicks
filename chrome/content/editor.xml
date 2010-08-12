@@ -15,6 +15,17 @@
 				}
 				catch(e) {
 				}
+				if("MozTabSize" in this.style) {
+					var top = window.top;
+					var pu = "handyClicksPrefUtils" in top && top.handyClicksPrefUtils;
+					if(pu) {
+						this.style.MozTabSize = Math.max(1, Math.min(24, pu.pref("editor.tabSize")));
+						pu.oSvc.addObserver(function(pName, pVal) {
+							if(pName == "editor.tabSize")
+								this.style.MozTabSize = Math.max(1, Math.min(24, pVal));
+						}, this);
+					}
+				}
 			]]>
 			</constructor>
 			<property name="tabSymbol">

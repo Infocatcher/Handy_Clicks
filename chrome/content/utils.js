@@ -362,7 +362,7 @@ var handyClicksUtils = {
 		var file = this.getLocalFile(path);
 		return file ? file.path : path;
 	},
-	startProcess: function(path, args) {
+	startProcess: function(path, args, w) {
 		args = args || [];
 		var file = this.getLocalFile(path);
 		if(!file) {
@@ -386,7 +386,7 @@ var handyClicksUtils = {
 			.createInstance(Components.interfaces.nsIProcess);
 		try {
 			process.init(file);
-			process.run(false, args, args.length);
+			process[w && process.hasOwnProperty("runw") ? "runw" : "run"](false, args, args.length);
 			return true;
 		}
 		catch(e) {

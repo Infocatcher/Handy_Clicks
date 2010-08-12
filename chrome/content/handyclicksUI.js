@@ -13,6 +13,7 @@ var handyClicksUI = {
 
 		this.setStatus();
 		this.showHideControls();
+		this.setupUIActions();
 		this.loadBlinkStyle();
 		if(reloadFlag)
 			this.setEditModeStatus();
@@ -112,9 +113,11 @@ var handyClicksUI = {
 	buildSettingsPopup: function(e) {
 		this.checkClipboard();
 
+		//this.$("handyClicks-enabled").setAttribute("hidden", );
+
 		var hideAllSets = !this.pu.pref("ui.showAllSettingsMenuitem");
 		this.$("handyClicks-allSettingsMenuitem").setAttribute("hidden", hideAllSets);
-		this.$("handyClicks-editModeSeparator")  .setAttribute("hidden", hideAllSets);
+		//this.$("handyClicks-editModeSeparator")  .setAttribute("hidden", hideAllSets);
 
 		var inheritContext = this.pu.pref("ui.inheritToolbarContextMenu")
 			&& document.popupNode && document.popupNode.localName.indexOf("toolbar") == 0;
@@ -172,16 +175,68 @@ var handyClicksUI = {
 			this.ut.closeMenus(document.popupNode); // For Firefox 2.0
 	},
 
-	doSettings: function(e) {
-		var leftClick = e.type == "command" || e.button == 0;
-		var hasModifier = this.ut.hasModifier(e);
-		if(leftClick && !hasModifier)
-			this.toggleStatus();
-		else if(e.button == 1 || leftClick && hasModifier) {
-			this.wu.openSettings();
-			this.ut.closeMenus(e.target);
+	ACTION_STATUS: 0,
+	ACTION_SETTINGS: 1,
+	ACTION_POPUP: 2,
+	ACTION_EDIT_MODE: 3,
+	ACTION_ALL_SETTINGS: 4,
+	ACTION_SETTINGS_TOGGLE: 5,
+	setupUIActions: function() {
+		this.setControls(function(elt) {
+			var type = this.getTypeByLocalName(elt.localName);
+			var popup = this.pu.pref("ui.action" + type + "LeftClick") == this.ACTION_POPUP
+				? "handyClicks-settingsPopup"
+				: null;
+			var context = this.pu.pref("ui.action" + type + "RightClick") == this.ACTION_POPUP
+				? "handyClicks-settingsPopup"
+				: "_handyClicks-noContext"; // Dummy value
+			this.ut.attribute(elt, "popup", popup);
+			elt.setAttribute("context", context);
+			//if(elt.localName == "menuitem")
+			//	elt.setAttribute("closemenu", popup ? "none" : "auto");
+		});
+	},
+	getTypeByLocalName: function(ln) {
+		switch(ln) {
+			case "menuitem":       return "Menu";
+			case "toolbarbutton":  return "Toolbar";
+			case "statusbarpanel": return "Statusbar";
+			default:               return undefined;
 		}
 	},
+	handleUIEvent: function(e) {
+		var type = this.getTypeByLocalName(e.target.localName);
+		if(!type)
+			return;
+
+		var button;
+		var hasModifier = this.ut.hasModifier(e);
+		var leftClick = e.type == "command" || e.button == 0;
+		if(leftClick && !hasModifier)
+			button = "Left";
+		else if(e.button == 1 || leftClick && hasModifier)
+			button = "Middle";
+		else if(e.button == 2)
+			button = "Right";
+
+		var actionId = this.pu.pref("ui.action" + type + button + "Click");
+		switch(actionId) {
+			case this.ACTION_STATUS:          this.toggleStatus();        break;
+			case this.ACTION_SETTINGS:        this.wu.openSettings();     break;
+			case this.ACTION_POPUP:           this.showSettingsPopup(e);  break;
+			case this.ACTION_EDIT_MODE:       this.toggleEditMode();      break;
+			case this.ACTION_ALL_SETTINGS:    this.pu.openAboutConfig();  break;
+			case this.ACTION_SETTINGS_TOGGLE: this.wu.openSettings(true);
+		}
+		if(e.button != 0 && actionId != this.ACTION_POPUP)
+			this.ut.timeout(this.ut.closeMenus, this.ut, [e.target], 0);
+	},
+	showSettingsPopup: function(e) {
+		// Is better to use "popup" or "context" attribute
+		if(e.button == 1)
+			this.hc.showPopupOnItem(this.$("handyClicks-settingsPopup"), e.target, e);
+	},
+
 	_temFromKey: false,
 	toggleEditMode: function(fromKey) {
 		this._temFromKey = fromKey;
@@ -217,6 +272,8 @@ var handyClicksUI = {
 			this.setStatus();
 		else if(pName.indexOf("ui.showIn") == 0)
 			this.showHideControls();
+		else if(pName.indexOf("ui.action") == 0)
+			this.setupUIActions();
 	},
 	setStatus: function() {
 		var enabled = this.hc.enabled;
@@ -228,6 +285,7 @@ var handyClicksUI = {
 			elt.setAttribute("hc_enabled", enabled);
 			elt.setAttribute(ttAttr, tt);
 		});
+		this.$("handyClicks-enabled").setAttribute("checked", enabled);
 		this.$("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
 	},
 	_restoreIconDelay: 250,

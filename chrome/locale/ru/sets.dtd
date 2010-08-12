@@ -122,6 +122,7 @@
 <!ENTITY hc.sets.tabulation "Табуляция">
 <!ENTITY hc.sets.tabulationTabs "Табы">
 <!ENTITY hc.sets.tabulationSpaces "Пробелы:">
+<!ENTITY hc.sets.tabSize "Ширина табов:">
 
 <!ENTITY hc.sets.externalEditor "Внешний редактор">
 <!ENTITY hc.sets.externalEditorPath "Путь:">

@@ -46,6 +46,7 @@
 				</hbox>
 				<toolbarbutton id="hc-sets-tree-searchFilterMode" type="checkbox" persist="checked"
 					oncommand="handyClicksSets.searchInSetsTreeDelay(true);"
+					hc_key="hc-sets-key-toggleFilterMode"
 					tooltiptext="&hc.sets.filterTip;" />
 				<label id="hc-sets-tree-searchResults" />
 				<spacer flex="1" />
@@ -152,9 +153,9 @@
 						label="&hc.sets.importCancel;" accesskey="&hc.sets.importCancelAccesskey;" />
 				</hbox>
 				<hbox id="hc-sets-tree-editPanel" pack="center">
-					<button id="hc-sets-tree-buttonAdd" class="hc-iconic" label="&hc.sets.cmdAdd;" onclick="handyClicksSets.addItems(event);" oncommand="handyClicksSets.addItems(event);" />
-					<button id="hc-sets-tree-buttonEdit" class="hc-iconic" command="hc-sets-cmd-edit" />
-					<button id="hc-sets-tree-buttonDelete" class="hc-iconic" command="hc-sets-cmd-delete" />
+					<button id="hc-sets-tree-buttonAdd" hc_key="hc-sets-key-add" class="hc-iconic" label="&hc.sets.cmdAdd;" onclick="handyClicksSets.addItems(event);" oncommand="handyClicksSets.addItems(event);" />
+					<button id="hc-sets-tree-buttonEdit" hc_key="hc-sets-key-edit" class="hc-iconic" command="hc-sets-cmd-edit" />
+					<button id="hc-sets-tree-buttonDelete" hc_key="hc-sets-key-delete" class="hc-iconic" command="hc-sets-cmd-delete" />
 					<spacer id="hc-sets-tree-buttonsSpacer" width="16" />
 					<button id="hc-sets-tree-buttonExport" class="hc-iconic" type="menu" label="&hc.sets.export;" accesskey="&hc.sets.exportAccesskey;"
 						onmouseover="handyClicksSets.openMenu(event, this);">
@@ -234,7 +235,7 @@
 				<hbox align="center" hc_depends="disallowMousemove">
 					<label value="&hc.sets.maxDistance;" control="hc-sets-disallowMousemoveDist" />
 					<textbox id="hc-sets-disallowMousemoveDist" preference="disallowMousemoveDist"
-						type="number" min="0" max="150" increment="2" style="width: 4.5em;" />
+						type="number" min="0" max="200" increment="2" size="3" />
 					<label value="&hc.sets.px;" />
 				</hbox>
 			</vbox>
@@ -242,7 +243,7 @@
 		<hbox align="center">
 			<label value="&hc.sets.delayedActionTimeout;" control="hc-sets-delayedActionTimeout" hc_depends="delayedTimeout" />
 			<textbox id="hc-sets-delayedActionTimeout" preference="delayedActionTimeout"
-				type="number" min="0" max="7000" increment="10" style="width: 4.5em;"
+				type="number" min="0" max="10000" increment="10" size="5"
 				hc_requiredFor="delayedTimeout" hc_disabledValues="0" />
 			<label value="&hc.sets.zeroForDisable;" hc_depends="delayedTimeout" />
 		</hbox>
@@ -251,7 +252,7 @@
 			<hbox align="center">
 				<label value="&hc.sets.notifyCloseAfter;" control="hc-sets-notifyOpenTime" hc_depends="notify" />
 				<textbox id="hc-sets-notifyOpenTime" preference="notifyOpenTime"
-					type="number" min="0" max="600000" increment="50" style="width: 5.5em;"
+					type="number" min="0" max="1200000" increment="50" size="7"
 					hc_requiredFor="notify" hc_disabledValues="0" />
 				<label value="&hc.sets.zeroForDisable;" hc_depends="notify" />
 			</hbox>
@@ -263,6 +264,7 @@
 	<prefpane id="hc-sets-pane-editor" label="&hc.sets.editorTitle;" flex="1">
 		<preferences>
 			<preference id="onTopButton" type="bool" name="extensions.handyclicks.ui.onTopButton" />
+			<preference id="tabSize" type="int" name="extensions.handyclicks.editor.tabSize" />
 			<preference id="externalEditorPath" type="string" name="extensions.handyclicks.editor.externalEditorPath" />
 			<preference id="externalEditorArgs" type="string" name="extensions.handyclicks.editor.externalEditorArgs" />
 			<preference id="externalEditorExt" type="string" name="extensions.handyclicks.editor.externalEditorExtension" />
@@ -277,10 +279,14 @@
 			<radiogroup id="hc-sets-tabulation" orient="horizontal" onselect="handyClicksSets.selectTabulation(this);">
 				<radio label="&hc.sets.tabulationTabs;" />
 				<radio label="&hc.sets.tabulationSpaces;" />
-				<textbox id="hc-sets-tabulationSpaces" type="number" min="2" max="14" increment="1" size="2" />
+				<textbox id="hc-sets-tabulationSpaces" type="number" min="2" max="24" increment="1" size="2" />
 				<radio id="hc-sets-tabulationRadioCustom" label="Custom:" />
 				<textbox id="hc-sets-tabulationCustom" size="12" />
 			</radiogroup>
+			<hbox id="hc-sets-tabSizeBox" align="center" hidden="true">
+				<label value="&hc.sets.tabSize;" control="hc-sets-tabSize" />
+				<textbox id="hc-sets-tabSize" preference="tabSize" type="number" min="2" max="24" increment="1" size="2" />
+			</hbox>
 		</groupbox>
 		<groupbox>
 			<caption label="&hc.sets.externalEditor;" />
@@ -369,7 +375,7 @@
 			<hbox align="center">
 				<label value="&hc.sets.openingDelay;" control="hc-sets-multipleTabsOpenDelay" />
 				<textbox id="hc-sets-multipleTabsOpenDelay" preference="multipleTabsOpenDelay"
-					type="number" min="0" max="15000" increment="10" style="width: 5em;" />
+					type="number" min="0" max="60000" increment="10" size="5" />
 				<label value="&hc.sets.ms;" />
 			</hbox>
 		</groupbox>
@@ -413,7 +419,7 @@
 		<key id="hc-sets-key-delete" keycode="VK_DELETE" command="hc-sets-cmd-delete" />
 
 		<key id="hc-sets-key-enable" key="+" command="hc-sets-cmd-enable" />
-		<key id="hc-sets-key-enable" key="=" command="hc-sets-cmd-enable" />
+		<key id="hc-sets-key-enable2" key="=" command="hc-sets-cmd-enable" />
 		<key id="hc-sets-key-disable" key="-" command="hc-sets-cmd-disable" />
 		<key id="hc-sets-key-toggle" key=" " command="hc-sets-cmd-toggle" />
 
