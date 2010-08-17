@@ -93,10 +93,13 @@
 
 <!ENTITY hc.sets.enabled "Включено">
 
-<!ENTITY hc.sets.appearance "Внешний вид">
-<!ENTITY hc.sets.showInToolsMenu "Показывать в меню Инструменты">
-<!ENTITY hc.sets.showInStatusbar "Показывать в строке состояния">
-<!ENTITY hc.sets.showMouseButton "Изменять иконку при обработке клика">
+<!ENTITY hc.sets.delayedActionTimeout "Задержка отложенного действия:">
+<!ENTITY hc.sets.zeroForDisable "мс (0 для отключения)">
+
+<!ENTITY hc.sets.notify "Всплывающие сообщения">
+<!ENTITY hc.sets.notifyCloseAfter "Закрывать через">
+<!ENTITY hc.sets.notifyInWindowCorner "Показывать в углу окна">
+<!ENTITY hc.sets.notifyDontClose "Не закрывать под курсором">
 
 <!ENTITY hc.sets.disallowMousemove "Прекращать обработку кликов при перемещении мыши с зажатыми кнопками (жесты мышью)">
 <!ENTITY hc.sets.left "Левая">
@@ -105,13 +108,29 @@
 <!ENTITY hc.sets.maxDistance "Допустимое перемещение:">
 <!ENTITY hc.sets.px "пикселей">
 
-<!ENTITY hc.sets.delayedActionTimeout "Задержка отложенного действия:">
-<!ENTITY hc.sets.zeroForDisable "мс (0 для отключения)">
 
-<!ENTITY hc.sets.notify "Всплывающие сообщения">
-<!ENTITY hc.sets.notifyCloseAfter "Закрывать через">
-<!ENTITY hc.sets.notifyInWindowCorner "Показывать в углу окна">
-<!ENTITY hc.sets.notifyDontClose "Не закрывать под курсором">
+<!ENTITY hc.sets.organizeTitle "Управление">
+
+<!ENTITY hc.sets.appearance "Внешний вид">
+<!ENTITY hc.sets.showInToolsMenu "Показывать в меню Инструменты">
+<!ENTITY hc.sets.showInStatusbar "Показывать в строке состояния">
+<!ENTITY hc.sets.showMouseButton "Изменять иконку при обработке клика">
+
+<!ENTITY hc.sets.actions "Поведение элементов управления">
+<!ENTITY hc.sets.actionTypeMenu "Меню">
+<!ENTITY hc.sets.actionTypeStatusbar "Строка состояния">
+<!ENTITY hc.sets.actionTypeToolbar "Панель инструментов">
+<!ENTITY hc.sets.actionButtonLeft "Клик ЛКМ">
+<!ENTITY hc.sets.actionButtonMiddle "Клик СКМ">
+<!ENTITY hc.sets.actionButtonRight "Клик ПКМ">
+<!ENTITY hc.sets.actionToggleStatus "Переключить статус">
+<!ENTITY hc.sets.actionOpenSettings "Открыть настройки">
+<!ENTITY hc.sets.actionContext "Показать контекстное меню">
+<!ENTITY hc.sets.actionEditMode "Режим редактирования">
+<!ENTITY hc.sets.actionShowAllSettings "Показать все настройки">
+<!ENTITY hc.sets.actionOpenCloseSettings "Открыть/закрыть настройки">
+<!ENTITY hc.sets.actionReset "Сбросить">
+<!ENTITY hc.sets.actionResetAll "Сбросить всё">
 
 
 <!ENTITY hc.sets.editorTitle "Редактор">

@@ -41,6 +41,11 @@ var handyClicksSets = {
 			this.setDialogButtons();
 		else
 			this.startupUI();
+
+		//if(this.ut.fxVersion >= 3.6) { // Fix wrong restoring
+		//	var de = document.documentElement;
+		//	window.resizeTo(Number(de.width), Number(de.height));
+		//}
 	},
 	initShortcuts: function() {
 		var tr = this.tree = this.$("hc-sets-tree");
@@ -91,8 +96,6 @@ var handyClicksSets = {
 		this.applyButton.setAttribute("hc_key", "hc-sets-key-apply");
 		this.su.setKeysDescDelay();
 
-		if(this.ut.fxVersion >= 3.6) // Fix wrong restoring
-			window.resizeTo(Number(de.width), Number(de.height));
 		if("MozTabSize" in de.style) // Firefox 4.0+
 			this.e("hc-sets-tabSizeBox").removeAttribute("hidden");
 	},
@@ -1555,6 +1558,8 @@ var handyClicksSets = {
 		}
 		else if(pName == "editor.tabSymbol")
 			this.setTabulation();
+		else if(pName.indexOf("ui.action") == 0)
+			this.loadUIAction();
 		else {
 			this.updateAllDependencies();
 			clearTimeout(this._updPrefsUITimeout);
@@ -1581,6 +1586,58 @@ var handyClicksSets = {
 			if(this.$("hc-sets-disallowMousemove-" + i).checked)
 				val += i;
 		return val;
+	},
+	get currentActionPref() {
+		var typeStr = this.$("hc-sets-action-type").value;
+		var buttonStr = this.$("hc-sets-action-button").value;
+		return "ui.action" + typeStr + buttonStr + "Click";
+	},
+	get currentActionTextbox() {
+		var type = this.$("hc-sets-action-type").selectedIndex;
+		var button = this.$("hc-sets-action-button").selectedIndex;
+		var tb = document.getElementsByAttribute("preference", <>action-{type}-{button}</>);
+		return tb.length ? tb[0] : null;
+	},
+	loadUIAction: function() {
+		var tb = this.currentActionTextbox;
+		if(!tb)
+			return;
+		this.$("hc-sets-action-value").value = tb.value || this.pu.pref(this.currentActionPref);
+		this.$("hc-sets-action-reset").setAttribute(
+			"disabled",
+			!this.pu.prefSvc.prefHasUserValue(this.pu.prefNS + this.currentActionPref)
+		);
+		const ns = this.pu.prefNS + "ui.action";
+		var hasChanged = this.pu.prefSvc.getBranch(ns)
+			.getChildList("", {})
+			.some(function(pName) {
+				return this.pu.prefSvc.prefHasUserValue(ns + pName);
+			}, this);
+		this.$("hc-sets-action-resetAll").setAttribute("disabled", !hasChanged);
+	},
+	changeUIAction: function() {
+		var type = this.$("hc-sets-action-type").selectedIndex;
+		var button = this.$("hc-sets-action-button").selectedIndex;
+		var tb = this.currentActionTextbox;
+		if(tb) {
+			tb.value = this.$("hc-sets-action-value").value;
+			this.fireChange(tb);
+		}
+	},
+	resetUIAction: function() {
+		//if(!this.resetPrefsConfirmed)
+		//	return;
+		this.pu.resetPref(this.pu.prefNS + this.currentActionPref);
+	},
+	resetAllUIActions: function() {
+		if(!this.resetPrefsConfirmed)
+			return;
+		const ns = this.pu.prefNS + "ui.action";
+		this.pu.prefSvc.getBranch(ns)
+			.getChildList("", {})
+			.forEach(function(pName) {
+				this.pu.resetPref(ns + pName);
+			}, this);
 	},
 	get minSpaces() {
 		delete this.minSpaces;
@@ -2035,18 +2092,19 @@ var handyClicksSets = {
 
 	// about:config entries
 	// Reset prefs:
+	get resetPrefsConfirmed() {
+		return this.ut.confirm(
+			this.ut.getLocalized("warningTitle"),
+			this.ut.getLocalized("resetPrefsWarning")
+		);
+	},
 	resetPrefs: function() {
-		if(
-			this.ut.confirm(
-				this.ut.getLocalized("warningTitle"),
-				this.ut.getLocalized("resetPrefsWarning")
-			)
-		) {
-			this.pu.prefSvc.getBranch(this.pu.prefNS)
-				.getChildList("", {})
-				.forEach(this.resetPref, this);
-			this.reloadPrefpanes(); // Changed prefs don't reloaded by default
-		}
+		if(!this.resetPrefsConfirmed)
+			return;
+		this.pu.prefSvc.getBranch(this.pu.prefNS)
+			.getChildList("", {})
+			.forEach(this.resetPref, this);
+		this.reloadPrefpanes(); // Changed prefs don't reloaded by default
 	},
 	resetPref: function(pName) {
 		this.pu.resetPref(this.pu.prefNS + pName);

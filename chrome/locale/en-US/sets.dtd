@@ -93,10 +93,13 @@
 
 <!ENTITY hc.sets.enabled "Enabled">
 
-<!ENTITY hc.sets.appearance "Appearance">
-<!ENTITY hc.sets.showInToolsMenu "Show in Tools menu">
-<!ENTITY hc.sets.showInStatusbar "Show in Status Bar">
-<!ENTITY hc.sets.showMouseButton "Change icon when click handling">
+<!ENTITY hc.sets.delayedActionTimeout "Timeout for delayed action:">
+<!ENTITY hc.sets.zeroForDisable "ms (0 for disable)">
+
+<!ENTITY hc.sets.notify "Notify">
+<!ENTITY hc.sets.notifyCloseAfter "Close after">
+<!ENTITY hc.sets.notifyInWindowCorner "Show in window corner">
+<!ENTITY hc.sets.notifyDontClose "Don't close under cursor">
 
 <!ENTITY hc.sets.disallowMousemove "Stop click handling if mouse was moved with holded buttons (mouse gestures)">
 <!ENTITY hc.sets.left "Left">
@@ -105,13 +108,29 @@
 <!ENTITY hc.sets.maxDistance "Allowed distance:">
 <!ENTITY hc.sets.px "pixels">
 
-<!ENTITY hc.sets.delayedActionTimeout "Timeout for delayed action:">
-<!ENTITY hc.sets.zeroForDisable "ms (0 for disable)">
 
-<!ENTITY hc.sets.notify "Notify">
-<!ENTITY hc.sets.notifyCloseAfter "Close after">
-<!ENTITY hc.sets.notifyInWindowCorner "Show in window corner">
-<!ENTITY hc.sets.notifyDontClose "Don't close under cursor">
+<!ENTITY hc.sets.organizeTitle "Organize">
+
+<!ENTITY hc.sets.appearance "Appearance">
+<!ENTITY hc.sets.showInToolsMenu "Show in Tools menu">
+<!ENTITY hc.sets.showInStatusbar "Show in Status Bar">
+<!ENTITY hc.sets.showMouseButton "Change icon when click handling">
+
+<!ENTITY hc.sets.actions "Controls behavior">
+<!ENTITY hc.sets.actionTypeMenu "Menu">
+<!ENTITY hc.sets.actionTypeStatusbar "Statusbar">
+<!ENTITY hc.sets.actionTypeToolbar "Toolbar">
+<!ENTITY hc.sets.actionButtonLeft "Left-click">
+<!ENTITY hc.sets.actionButtonMiddle "Middle-click">
+<!ENTITY hc.sets.actionButtonRight "Right-click">
+<!ENTITY hc.sets.actionToggleStatus "Toggle status">
+<!ENTITY hc.sets.actionOpenSettings "Open settings">
+<!ENTITY hc.sets.actionContext "Show context menu">
+<!ENTITY hc.sets.actionEditMode "Edit mode">
+<!ENTITY hc.sets.actionShowAllSettings "Show all settings">
+<!ENTITY hc.sets.actionOpenCloseSettings "Open/close settings">
+<!ENTITY hc.sets.actionReset "Reset">
+<!ENTITY hc.sets.actionResetAll "Reset All">
 
 
 <!ENTITY hc.sets.editorTitle "Editor">

@@ -88,15 +88,16 @@ var handyClicksReloader = {
 			return;
 		}
 
-		document.loadOverlay("data:application/vnd.mozilla.xul+xml," + encodeURIComponent(
-			'<?xml version="1.0"?>\n'
-			+ sheetsHrefs.map(
-				function(href, indx) {
+		document.loadOverlay(
+			"data:application/vnd.mozilla.xul+xml," + encodeURIComponent(
+				'<?xml version="1.0"?>\n'
+				+ sheetsHrefs.map(function(href, indx) {
 					return '<?xml-stylesheet href="' + href + '" type="text/css"?>';
-				}
-			).join("\n")
-			+ '<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />'
-		), null);
+				}).join("\n")
+				+ '<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />'
+			),
+			null
+		);
 
 		this._log("css [" + sheetsHrefs.length + "] reloaded");
 	},

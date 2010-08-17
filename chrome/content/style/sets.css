@@ -10,11 +10,14 @@ radio[pane="hc-sets-pane-actions"] {
 radio[pane="hc-sets-pane-prefs"] {
 	-moz-image-region: rect(0 64px 32px 32px);
 }
-radio[pane="hc-sets-pane-editor"] {
+radio[pane="hc-sets-pane-organize"] {
 	-moz-image-region: rect(0 96px 32px 64px);
 }
-radio[pane="hc-sets-pane-funcs"] {
+radio[pane="hc-sets-pane-editor"] {
 	-moz-image-region: rect(0 128px 32px 96px);
+}
+radio[pane="hc-sets-pane-funcs"] {
+	-moz-image-region: rect(0 160px 32px 128px);
 }
 
 #hc-sets-tree-searchContainer {
@@ -197,19 +200,23 @@ menuitem[command="hc-sets-cmd-enable"] {
 	-moz-image-region: rect(48px 96px 64px 80px);
 }
 
-checkbox[id^="hc-sets-disallowMousemove-"] {
+checkbox[id^="hc-sets-disallowMousemove-"],
+#hc-sets-action-button > radio {
 	list-style-image: url("icons16.png");
 }
 checkbox[id^="hc-sets-disallowMousemove-"] .checkbox-label-box {
 	-moz-box-align: center;
 }
-#hc-sets-disallowMousemove-0 {
+#hc-sets-disallowMousemove-0,
+#hc-sets-action-button > radio[value="Left"] {
 	-moz-image-region: rect(0 48px 16px 32px);
 }
-#hc-sets-disallowMousemove-1 {
+#hc-sets-disallowMousemove-1,
+#hc-sets-action-button > radio[value="Middle"] {
 	-moz-image-region: rect(0 64px 16px 48px);
 }
-#hc-sets-disallowMousemove-2 {
+#hc-sets-disallowMousemove-2,
+#hc-sets-action-button > radio[value="Right"] {
 	-moz-image-region: rect(0 80px 16px 64px);
 }
 
@@ -231,6 +238,13 @@ menuitem[hc_testBackup="thisSession"] label {
 }
 menuitem[hc_testBackup="afterCrash"] label {
 	font-weight: bold;
+}
+
+.hcHSpacer {
+	width: 16px;
+}
+.hcHSpacerSmall {
+	width: 8px;
 }
 
 button[type="menu"] dropmarker {

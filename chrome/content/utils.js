@@ -570,7 +570,7 @@ var handyClicksUtils = {
 		return this.isArray = "isArray" in Array //~ todo: check for "[native code]" ?
 			? Array.isArray
 			: function(arr) {
-				arr instanceof Array
+				return arr instanceof Array
 					|| Object.prototype.toString.call(arr) === "[object Array]";
 			};
 	},
