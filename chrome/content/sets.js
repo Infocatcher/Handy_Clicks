@@ -42,10 +42,10 @@ var handyClicksSets = {
 		else
 			this.startupUI();
 
-		//if(this.ut.fxVersion >= 3.6) { // Fix wrong restoring
-		//	var de = document.documentElement;
-		//	window.resizeTo(Number(de.width), Number(de.height));
-		//}
+		if(this.ut.fxVersion >= 3.6) { // Fix wrong restoring
+			var de = document.documentElement;
+			window.resizeTo(Number(de.width), Number(de.height));
+		}
 	},
 	initShortcuts: function() {
 		var tr = this.tree = this.$("hc-sets-tree");
@@ -1307,9 +1307,10 @@ var handyClicksSets = {
 		_res: [], // rows numbers
 		_current: 0,
 		_wrapped: false,
-		reset: function() {
+		reset: function(dontResetPosition) {
 			this._res = [];
-			this._current = 0;
+			if(!dontResetPosition)
+				this._current = 0;
 			this.wrapped = this._wrapped = false;
 		},
 		add: function(r) {
@@ -1333,6 +1334,18 @@ var handyClicksSets = {
 				return;
 			if(--this._current < 0)
 				this._wrapped = true, this._current = this.count - 1;
+			this.select();
+		},
+		first: function() {
+			if(!this.isTreePaneSelected)
+				return;
+			this._current = 0;
+			this.select();
+		},
+		last: function() {
+			if(!this.isTreePaneSelected)
+				return;
+			this._current = this.count - 1;
 			this.select();
 		},
 		select: function() {
@@ -1372,19 +1385,24 @@ var handyClicksSets = {
 	},
 	navigateSearchResults: function(e) {
 		var code = e.keyCode;
-		if(code == e.DOM_VK_RETURN && e.ctrlKey)
-			this.searcher.selectAll();
-		else if(code == e.DOM_VK_RETURN && (e.altKey || e.metaKey))
-			this.toggleFilterMode();
-		else if(code == e.DOM_VK_DOWN || code == e.DOM_VK_RETURN && !e.shiftKey)
-			this.searcher.next();
-		else if(code == e.DOM_VK_UP || code == e.DOM_VK_RETURN && e.shiftKey)
-			this.searcher.prev();
-		else if(code == e.DOM_VK_ESCAPE && e.target.value) {
-			if(e.target.type != "search") { // Firefox < 3.5
-				e.target.value = "";
-				this.searchInSetsTree();
-			}
+		var enter = code == e.DOM_VK_RETURN;
+		var up    = code == e.DOM_VK_UP;
+		var down  = code == e.DOM_VK_DOWN;
+		var nav = up || down;
+		var c = e.ctrlKey;
+		var s = e.shiftKey;
+		var a = e.altKey || e.metaKey;
+
+		if     (enter && a && !s || nav && a)  this.toggleFilterMode();   //        Alt+Enter,   Alt+(Up, Down)
+		else if(enter && c && !s || nav && s)  this.searcher.selectAll(); //       Ctrl+Enter, Shift+(Up, Down)
+		else if(enter && c && s || up   && c)  this.searcher.first();     // Ctrl+Shift+Enter, Ctrl+Up
+		else if(enter && a && s || down && c)  this.searcher.last();      //  Alt+Shift+Enter, Ctrl+Down
+		else if(enter &&  s     || up)         this.searcher.prev();      //      Shift+Enter,      Up
+		else if(enter && !s     || down)       this.searcher.next();      //            Enter,      Down
+		else if(code == e.DOM_VK_ESCAPE && e.target.value && e.target.type != "search") {
+			// Firefox < 3.5
+			e.target.value = "";
+			this.searchInSetsTree();
 		}
 		else
 			return;
@@ -1398,7 +1416,7 @@ var handyClicksSets = {
 			fm.setAttribute("checked", "true");
 		else
 			fm.removeAttribute("checked");
-		this.searchInSetsTree(true);
+		this.searchInSetsTree(true, true);
 	},
 
 	_searchDelay: 50,
@@ -1427,7 +1445,7 @@ var handyClicksSets = {
 		// Needs for undo/redo
 		this.ut.timeout(this.searchInSetsTree, this, arguments, 0);
 	},
-	_searchInSetsTree: function(dontSelect) {
+	_searchInSetsTree: function(dontSelect, dontResetPosition) {
 		var sf = this.searchField;
 		var filterMode = this.$("hc-sets-tree-searchFilterMode").getAttribute("checked") == "true";
 
@@ -1493,7 +1511,7 @@ var handyClicksSets = {
 			}
 		}
 
-		this.searcher.reset();
+		this.searcher.reset(dontResetPosition);
 		matchedRows.forEach(function(tRow) {
 			var indx = this.tView.getIndexOfItem(tRow.parentNode);
 			this.searcher.add(indx);
@@ -1573,6 +1591,7 @@ var handyClicksSets = {
 		this.initExternalEditor();
 		this.initResetWarnMsgs();
 		this.setTabulation();
+		this.loadUIAction();
 		this.updateAllDependencies();
 	},
 	setDisallowMousemove: function() {
@@ -1785,7 +1804,7 @@ var handyClicksSets = {
 						text = this.ut.getLocalized("openEditorsWarning").replace("%n", "N");
 					break;
 					case "sets.removeBackupConfirm":
-						text = this.ut.getLocalized("removeBackupConfirm").replace("%f", "file.js");
+						text = this.ut.getLocalized("removeBackupConfirm").replace("%f", this.ps.prefsFileName + ".js");
 					break;
 					case "ui.notifyUnsaved":
 						text = this.ut.getLocalized("notifyUnsaved");
@@ -2661,3 +2680,6 @@ var handyClicksSets = {
 		this.$("hc-sets-cmd-partialImportFromClipboard").setAttribute("disabled", !this.ps.clipboardPrefs);
 	}
 };
+
+// Fake buggy sizeToContent function (we use flex tree)
+function sizeToContent() {}

@@ -197,7 +197,7 @@
 								<hbox id="hc-editor-funcCustomTabboxToolbar" align="right" class="hcTabsToolbar"
 									oncommand="event.stopPropagation();">
 									<button class="hcFloatControl hcEditCodeButton hc-iconic"
-										label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"
+										label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip; (Ctrl+Shift+E)"
 										oncommand="handyClicksEditor.editCode(this.parentNode.nextSibling);" />
 								</hbox>
 
@@ -257,7 +257,7 @@
 				<hbox id="hc-editor-customTypeTabboxToolbar" align="right" class="hcTabsToolbar"
 					oncommand="event.stopPropagation();">
 					<button class="hcFloatControl hcEditCodeButton hc-iconic"
-						label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"
+						label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip; (Ctrl+Shift+E)"
 						oncommand="handyClicksEditor.editCode(this.parentNode.nextSibling);" />
 				</hbox>
 

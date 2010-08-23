@@ -27,7 +27,7 @@
 <!ENTITY hc.editor.funcOptsAdd "Дополнительные настройки:">
 <!ENTITY hc.editor.funcOptsAddAccesskey "и">
 <!ENTITY hc.editor.ignoreLinks "Игнорировать ссылки">
-<!ENTITY hc.editor.ignoreSingle "Игнорировать отдельно открытые картинки">
+<!ENTITY hc.editor.ignoreSingle "Игнорировать отдельно открытые изображения">
 
 <!ENTITY hc.editor.tabAction "Действие">
 <!ENTITY hc.editor.tabActionAccesskey "й">

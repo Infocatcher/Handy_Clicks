@@ -178,6 +178,21 @@ var handyClicksSetsUtils = {
 		if(ln != "menulist" || ml.disabled)
 			return false;
 		var mp = ml.menupopup;
+
+		if(ml.open) {
+			var popupHeight = (mp.boxObject.firstChild || mp).boxObject.height;
+			var childsHeight = 0;
+			Array.forEach(
+				mp.childNodes,
+				function(ch) {
+					childsHeight += ch.boxObject.height;
+				}
+			);
+			//this.ut._log(<>popupHeight: {popupHeight}{"\n"}childsHeight: {childsHeight}</>);
+			if(childsHeight > popupHeight) // Has scrollbar
+				return false;
+		}
+
 		var fwd = this.isScrollForward(e);
 		var si = ml.selectedItem || (fwd ? mp.firstChild : mp.lastChild);
 		var si0 = si;

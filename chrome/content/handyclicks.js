@@ -710,11 +710,21 @@ var handyClicks = {
 		if(!node || !node.ownerDocument.location)
 			return; // e.g. rocker gesture => go back => node.ownerDocument.location === null
 
-		if(this.itemType == "tab" || this.itemType == "ext_mulipletabs") {
+		if(this.itemType == "tab" || this.itemType == "ext_mulipletabs" || this.getTab(node)) {
 			// Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
 			// mousedown -> ...delay... -> this popup -> Tab Scope popup hide this popup
 			var tabscope = this.$("tabscopePopup");
-			tabscope && tabscope.hidePopup();
+			if(tabscope) {
+				var _openPopup = tabscope.openPopup;
+				tabscope.openPopup = function() {};
+				setTimeout(
+					function() {
+						tabscope.openPopup = _openPopup;
+					},
+					this.pu.getPref("extensions.tabscope.popup_delay") || 250
+				);
+				tabscope.hidePopup();
+			}
 		}
 
 		if(!popup)

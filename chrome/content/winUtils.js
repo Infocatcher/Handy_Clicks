@@ -203,7 +203,7 @@ var handyClicksWinUtils = {
 			paneId = idPrefix + paneId;
 		var w = this.openSettings();
 		var showPane = function _sp(e) {
-			e && w.removeEventListener("load", _sp, false);
+			e && w.removeEventListener(e.type, _sp, false);
 			var doc = w.document;
 			var pane = doc.getElementById(paneId);
 			pane && doc.documentElement.showPane(pane);
@@ -211,7 +211,7 @@ var handyClicksWinUtils = {
 		if(this.openWindowByType.alreadyOpened)
 			showPane();
 		else
-			w.addEventListener("load", showPane, false);
+			w.addEventListener("resize", showPane, false); //~ todo: test
 		return w;
 	},
 	openSettingsLink: function(uri) {

@@ -487,11 +487,12 @@
 							cmdKey.close();
 							if(cmd) {
 								// %SystemRoot%\System32\WScript.exe "%1" %*
-								cmd = ut.expandEnvironmentVariables(cmd);
-								var wscript = ut.expandEnvironmentVariables("%SystemRoot%\\system32\\wscript.exe");
-								var indx = cmd.toLowerCase().indexOf(wscript.toLowerCase());
-								if(indx == 0 || indx == 1)
+								var wscript = ut.expandEnvironmentVariables("%SystemRoot%\\system32\\wscript.exe").toLowerCase();
+								var indx = ut.expandEnvironmentVariables(cmd).toLowerCase().indexOf(wscript);
+								if(indx == 0 || indx == 1) {
 									ee = "%SystemRoot%\\notepad.exe";
+									ut._log(<>openExternalEditor: "invalid" association: {cmd + "\n"}Will use "{ee}"</>);
+								}
 							}
 						}
 					}
@@ -513,6 +514,12 @@
 							this.fade();
 						}
 						catch(e) { // See https://developer.mozilla.org/en/nsILocalFile#Remarks
+							ut.notifyInWindowCorner(
+								ut.getLocalized("launchError"),
+								ut.getLocalized("errorTitle"),
+								ut.bind(ut.wu.openSettingsPane, ut.wu, ["editor"])
+							);
+							ut._err("openExternalEditor: file.launch() failed");
 							ut._err(e);
 						}
 					}

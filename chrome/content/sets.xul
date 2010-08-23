@@ -28,6 +28,7 @@
 	oninput="handyClicksSets.dataChanged(event);"
 	oncommand="handyClicksSets.dataChanged(event);"
 	hc_ondrop="handyClicksSets.dataChanged(event);"
+	style='-moz-binding: url("chrome://handyclicks/content/prefwindow.xml#prefwindow"); /* Should be here for CSS reloader */'
 	width="720"
 	height="520"
 	persist="width height screenX screenY sizemode">
@@ -282,13 +283,13 @@
 		<groupbox align="center" orient="horizontal">
 			<caption label="&hc.sets.actions;" />
 			<radiogroup id="hc-sets-action-type" onselect="handyClicksSets.loadUIAction();">
-				<radio value="Menu" label="&hc.sets.actionTypeMenu;" selected="true" />
+				<radio value="Menu" label="&hc.sets.actionTypeMenu;" />
 				<radio value="Statusbar" label="&hc.sets.actionTypeStatusbar;" />
 				<radio value="Toolbar" label="&hc.sets.actionTypeToolbar;" />
 			</radiogroup>
 			<spacer class="hcHSpacerSmall" />
 			<radiogroup id="hc-sets-action-button" onselect="handyClicksSets.loadUIAction();">
-				<radio value="Left" label="&hc.sets.actionButtonLeft;" selected="true" />
+				<radio value="Left" label="&hc.sets.actionButtonLeft;" />
 				<radio value="Middle" label="&hc.sets.actionButtonMiddle;" />
 				<radio value="Right" label="&hc.sets.actionButtonRight;" />
 			</radiogroup>
@@ -371,12 +372,12 @@
 			</hbox>
 			<hbox align="center" hc_depends="externalEditor">
 				<label value="&hc.sets.externalEditorArgs;" control="hc-sets-externalEditorArgs" />
-				<textbox id="hc-sets-externalEditorArgs" preference="externalEditorArgs" style="width: 7em;" />
+				<textbox id="hc-sets-externalEditorArgs" preference="externalEditorArgs" flex="1" />
 				<label value="&hc.sets.externalEditorArgsNote;" />
 			</hbox>
 			<hbox align="center">
 				<label value="&hc.sets.externalEditorExt;" control="hc-sets-externalEditorExt" />
-				<textbox id="hc-sets-externalEditorExt" preference="externalEditorExt" style="width: 5.5em;" />
+				<textbox id="hc-sets-externalEditorExt" preference="externalEditorExt" size="8" />
 			</hbox>
 		</groupbox>
 		<hbox pack="center">
@@ -425,13 +426,25 @@
 				<textbox id="hc-sets-filesLinksMask" preference="filesLinksMask" flex="1" />
 			</hbox>
 		</groupbox>
-		<groupbox>
+		<groupbox orient="horizontal">
 			<caption label="&hc.sets.openURIsInApps;" />
 			<checkbox preference="convertURIs" hc_requiredFor="convert" label="&hc.sets.convertURIs;" />
-			<hbox align="center" hc_depends="convert">
-				<textbox preference="convertURIsCharset" style="width: 10em;" />
-				<label value="&hc.sets.emptyForAutodetect;" />
-			</hbox>
+			<menulist id="hc-sets-convertURIsCharset" hc_depends="convert"
+				ref="NC:DecodersRoot" datasources="rdf:charset-menu"
+				preference="convertURIsCharset"
+				onsyncfrompreference='Components.classes["@mozilla.org/observer-service;1"]
+					.getService(Components.interfaces.nsIObserverService)
+					.notifyObservers(null, "charsetmenu-selected", "other");'>
+				<menupopup>
+					<menuitem label="&hc.sets.autodetect;" value="" />
+					<menuseparator />
+				</menupopup>
+				<template>
+					<menupopup>
+						<menuitem label="rdf:http://home.netscape.com/NC-rdf#Name" value="..." uri="..." />
+					</menupopup>
+				</template>
+			</menulist>
 		</groupbox>
 		<groupbox>
 			<caption label="&hc.sets.similarLinks;" />

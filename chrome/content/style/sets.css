@@ -268,6 +268,14 @@ button[type="menu"] dropmarker {
 	-moz-padding-start: 22px;
 }
 
-prefwindow {
-	-moz-binding: url("chrome://handyclicks/content/prefwindow.xml#prefwindow");
+
+#charsetMenu {
+	/*-moz-appearance: menulist-button !important;*/
+	-moz-appearance: button !important;
+	-moz-user-focus: normal !important;
+}
+#charsetMenu > .menu-text,
+#charsetMenu > .menu-accel-container,
+#charsetMenu menu[ref="NC:BrowserAutodetMenuRoot"] {
+	display: none;
 }

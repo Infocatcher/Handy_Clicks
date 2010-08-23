@@ -567,7 +567,7 @@ var handyClicksUtils = {
 
 	get isArray() { // function(arr)
 		delete this.isArray;
-		return this.isArray = "isArray" in Array //~ todo: check for "[native code]" ?
+		return this.isArray = this.hasNativeMethod(Array, "isArray")
 			? Array.isArray
 			: function(arr) {
 				return arr instanceof Array
@@ -577,7 +577,9 @@ var handyClicksUtils = {
 	isObject: function(obj) {
 		return typeof obj == "object" && obj !== null;
 	},
-	isEmptyObj: function(o) { // Error console says "Warning: deprecated __count__ usage" for obj.__count__
+	isEmptyObj: function(o) {
+		// obj.__count__ is deprecated and removed in Firefox 4.0
+		// Object.keys(o).length
 		for(var p in o) if(Object.hasOwnProperty.call(o, p))
 			return false;
 		return true;
@@ -587,6 +589,13 @@ var handyClicksUtils = {
 			return true;
 		var t = typeof v;
 		return t == "string" || t == "number" || t == "boolean";
+	},
+	isNativeFunction: function(func) {
+		// Example: function alert() {[native code]}
+		return /function \w+\(\) \{\[native code\]\}/.test(Function.prototype.toSource.call(func));
+	},
+	hasNativeMethod: function(obj, methName) {
+		return methName in obj && typeof obj[methName] == "function" && this.isNativeFunction(obj[methName]);
 	},
 
 	getOwnProperty: function(obj) { // this.getOwnProperty(obj, "a", "b", "propName") instead of obj.a.b.propName
@@ -709,7 +718,7 @@ var handyClicksUtils = {
 
 	get trim() { // function(str)
 		delete this.trim;
-		return this.trim = "trim" in String //~ todo: check for "[native code]" ?
+		return this.trim = this.hasNativeMethod(String, "trim")
 			? String.trim
 			: function(str) {
 				return str.replace(/^\s+|\s+$/g, "");

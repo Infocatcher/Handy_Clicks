@@ -172,7 +172,7 @@
 
 <!ENTITY hc.sets.openURIsInApps "Открытие ссылок в других приложениях">
 <!ENTITY hc.sets.convertURIs "Конвертировать ссылки в следующую кодировку:">
-<!ENTITY hc.sets.emptyForAutodetect "(оставьте поле пустым для автоопределения)">
+<!ENTITY hc.sets.autodetect "Автоопределение">
 
 <!ENTITY hc.sets.similarLinks "Открытие похожих ссылок">
 <!ENTITY hc.sets.visibleOnly "Открывать только видимые ссылки">

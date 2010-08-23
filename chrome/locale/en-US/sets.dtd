@@ -172,7 +172,7 @@
 
 <!ENTITY hc.sets.openURIsInApps "Opening URIs in other applications">
 <!ENTITY hc.sets.convertURIs "Convert URIs to following charset:">
-<!ENTITY hc.sets.emptyForAutodetect "(empty for autodetection)">
+<!ENTITY hc.sets.autodetect "Autodetection">
 
 <!ENTITY hc.sets.similarLinks "Similar links opening">
 <!ENTITY hc.sets.visibleOnly "Open visible links only">
