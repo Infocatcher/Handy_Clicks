@@ -25,6 +25,7 @@ var handyClicksPrefSvc = {
 	prefsFileName: "handyclicks_prefs",
 	names: {
 		backup: "_backup-",
+		autoBackup: "_autobackup-",
 		corrupted: "_corrupted-",
 		restored: "_restored-",
 		version: "_version-",
@@ -481,9 +482,9 @@ var handyClicksPrefSvc = {
 			+ "// " + hashFunc + ": " + this.getHash(res, hashFunc) + "\n"
 			+ res;
 	},
-	saveSettingsObjects: function(reloadFlag) {
+	saveSettingsObjects: function(reloadAll) {
 		this.saveSettings(this.getSettingsStr());
-		this.reloadSettings(reloadFlag);
+		this.reloadSettings(reloadAll);
 	},
 	objToSource: function(obj) {
 		return typeof obj == "string"
@@ -609,6 +610,50 @@ var handyClicksPrefSvc = {
 		mFile[leaveOriginal ? "copyTo" : "moveTo"](pDir, fName + "0.js");
 		return mFile.path;
 	},
+	get minBackupInterval() {
+		return (this.pu.pref("sets.backupAutoInterval") || 24*60*60)*1000;
+	},
+	checkForBackup: function() {
+		var entries = this.ps.prefsDir.directoryEntries;
+		var entry, fName, fTime;
+		var _fTimes = [], _files = {};
+		const namePrefix = this.ps.prefsFileName + this.ps.names.autoBackup;
+		while(entries.hasMoreElements()) {
+			entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
+			fName = entry.leafName;
+			if(
+				!entry.isFile()
+				|| !/\.js$/i.test(fName)
+				|| fName.indexOf(namePrefix) != 0
+				|| !/-(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\.js$/.test(fName)
+			)
+				continue;
+			fTime = new Date(0);
+			fTime.setFullYear(RegExp.$1), fTime.setMonth  (RegExp.$2 - 1), fTime.setDate   (RegExp.$3);
+			fTime.setHours   (RegExp.$4), fTime.setMinutes(RegExp.$5),     fTime.setSeconds(RegExp.$6);
+			fTime = fTime.getTime();
+			_fTimes.push(fTime);
+			_files[fTime] = entry; // fTime must be unique
+		}
+		this.ut.sortAsNumbers(_fTimes);
+
+		var max = this.pu.pref("sets.backupAutoDepth");
+
+		var newTime = new Date();
+		var now = newTime.getTime();
+		if(max > 0 && (!_fTimes.length || now >= _fTimes[_fTimes.length - 1] + this.minBackupInterval)) {
+			_fTimes.push(now);
+			fName = namePrefix + newTime.toLocaleFormat("%Y%m%d%H%M%S") + ".js";
+			this.prefsFile.copyTo(null, fName);
+			_files[now] = this.getFile(fName);
+			this.ut._log("Backup: " + _files[now].leafName);
+		}
+		else
+			this.ut._log("No backup");
+
+		while(_fTimes.length > max)
+			_files[_fTimes.shift()].remove(false);
+	},
 	__savedStr: null,
 	get _savedStr() {
 		return this.__savedStr;
@@ -626,6 +671,7 @@ var handyClicksPrefSvc = {
 	saveSettings: function(str) {
 		if(str == this._savedStr)
 			return;
+		this.checkForBackup();
 		var pFile = this.prefsFile;
 		this.moveFiles(pFile, this.names.backup);
 		this.ut.writeToFile(str, pFile);

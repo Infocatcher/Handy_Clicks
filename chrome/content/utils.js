@@ -46,25 +46,55 @@ var handyClicksUtils = {
 	},
 	_warn: function(e, fileName, lineNumber) {
 		// Bug: any string are shown as 1 line
+		// Bug: can't show message with custom fileName
 		this._err(e, fileName, lineNumber, true);
 	},
-	objProps: function(o, mask) { // mask like "id, nodeName, parentNode.id"
+	objProps: function(o, filter, skipNativeFuncs) {
 		if(this.isPrimitive(o))
-			return o;
-		if(!mask)
-			return this._objProps(o);
-		var r = mask.split(/[,;\s]+/).map(
-			function(p) {
-				return p + " = " + this.getProperty.apply(this, [o].concat(p.split(/\s*\.\s*/)));
-			},
-			this
-		);
-		return r.join("\n");
-	},
-	_objProps: function(o) {
+			return String(o);
+
+		var skip = function() {
+			return false;
+		};
+		if(typeof filter == "string") {
+			filter = this.trim(filter).toLowerCase().split(/\s+/);
+			skip = function(p) {
+				p = p.toLowerCase();
+				return filter.some(function(s) {
+					return p.indexOf(s) == -1;
+				});
+			};
+		}
+		else if(filter) {
+			skip = function(p) {
+				return !filter.test(p);
+			};
+		}
+
 		var r = [];
-		for(var p in o)
-			r.push(p + " = " + (Object.hasOwnProperty.call(o, p) ? "[own] " : "") + this.safeToString(this.safeGet(o, p)));
+		for(var p in o) {
+			if(skip(p))
+				continue;
+
+			var prefix = p + " = " + (Object.hasOwnProperty.call(o, p) ? "" : "[inherited] ");
+			var getter = Object.__lookupGetter__.call(o, p);
+			var setter = Object.__lookupSetter__.call(o, p);
+			var value = this.safeGet(o, p);
+
+			if(
+				skipNativeFuncs
+				&& (
+					typeof value == "function" && this.isNativeFunction(value)
+					|| typeof getter == "function" && this.isNativeFunction(getter)
+					|| typeof setter == "function" && this.isNativeFunction(setter)
+				)
+			)
+				continue;
+
+			r.push(prefix + (this.safeToString(value) || '""'));
+			getter && r.push(prefix + "[getter] " + this.safeToString(getter));
+			setter && r.push(prefix + "[setter] " + this.safeToString(setter));
+		}
 		return r.join("\n");
 	},
 	safeGet: function(o, p) {

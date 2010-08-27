@@ -42,6 +42,8 @@
 				hc_supports="tab, tabbar" />
 			<menuitem value="stopAllTabsLoading" label="stopAllTabsLoading"
 				hc_supports="tab, tabbar" />
+			<menuitem value="newTab" label="newTab"
+				hc_supports="tab, tabbar" />
 			<menuseparator id="hc-editor-funcsSep-tabs" />
 
 			<menuitem value="mthCloseTabs" label="mthCloseTabs"

@@ -224,6 +224,8 @@ var handyClicks = {
 		this.cancel();
 	},
 	dragHandler: function(e) {
+		if(!this.disallowMousemove)
+			return;
 		this.ut._log("dragHandler -> cancel()");
 		this.cancel();
 	},
@@ -608,6 +610,22 @@ var handyClicks = {
 		var itln = it.localName.toLowerCase();
 		if(itln == "toolbarbutton")
 			return null;
+		if(itln == "toolbarspacer") { // <toolbarspacer/><tabs/><toolbarspacer/> in Firefox 4
+			var tabsId = "tabbrowser-tabs";
+			for(var tabs = it.nextSibling; tabs; tabs = tabs.nextSibling) {
+				if(tabs.id == tabsId)
+					return tabs;
+				if(tabs.localName != "toolbarspacer")
+					break;
+			}
+			for(var tabs = it.previousSibling; tabs; tabs = tabs.previousSibling) {
+				if(tabs.id == tabsId)
+					return tabs;
+				if(tabs.localName != "toolbarspacer")
+					break;
+			}
+			return null;
+		}
 		const docNode = Node.DOCUMENT_NODE; // 9
 		for(; it && it.nodeType != docNode; it = it.parentNode) {
 			itln = it.localName.toLowerCase();
@@ -982,11 +1000,7 @@ var handyClicks = {
 			}
 			catch(err) {
 				var eLine = this.ut.mmLine(this.ut.getProperty(err, "lineNumber") - line + 1);
-				var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_SHORTCUT + "/" + this.ps.getEvtStr(e || this.copyOfEvent) + "/"
-					+ (this._all ? "$all" : this.itemType) + "/"
-					+ (this.isDeleyed ? this.ct.EDITOR_SHORTCUT_DELAYED : this.ct.EDITOR_SHORTCUT_NORMAL) + "/"
-					+ this.ct.EDITOR_SHORTCUT_CODE
-					+ "?line=" + eLine;
+				var href = this.getEditorLink(e) + "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customFunctionError", this.ps.dec(funcObj.label), this.itemType, err);
 				this.ut.notify(
 					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
@@ -1009,10 +1023,7 @@ var handyClicks = {
 					fnc.apply(this.fn, args);
 				}
 				catch(err) {
-					var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_SHORTCUT + "/" + this.ps.getEvtStr(e || this.copyOfEvent) + "/"
-						+ (this._all ? "$all" : this.itemType) + "/"
-						+ (this.isDeleyed ? this.ct.EDITOR_SHORTCUT_DELAYED : this.ct.EDITOR_SHORTCUT_NORMAL) + "/"
-						+ this.ct.EDITOR_SHORTCUT_CODE;
+					var href = this.getEditorLink(e);
 					var eMsg = this.ut.getLocalized("errorInBuiltInFunction").replace("%f", action);
 					this.ut.notify(
 						eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
@@ -1025,13 +1036,16 @@ var handyClicks = {
 				}
 			}
 			else {
+				var href = this.getEditorLink(e);
+				var eMsg = this.ut.getLocalized("functionNotFound").replace("%f", action);
 				this.ut.notify(
-					this.ut.getLocalized("functionNotFound").replace("%f", action),
-					this.ut.getLocalized("errorTitle"),
-					this.ut.toErrorConsole, null,
+					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
+					this.ut.getLocalized("warningTitle"),
+					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href),
 					this.ut.NOTIFY_ICON_WARNING
 				);
-				this.ut._err(<>Function "{action}" not found ({typeof this.fn[action]})</>);
+				this.ut._err(eMsg, href); // We can't use _warn() with custom file name
+				this.ut._warn(<>Function "{action}" not found ({typeof this.fn[action]})</>);
 			}
 		}
 
@@ -1048,5 +1062,12 @@ var handyClicks = {
 				+ "\n=> " + (funcObj.custom ? (this.ps.dec(funcObj.label) || action.substr(0, 100)) : funcObj.action)
 			);
 		}
+	},
+	getEditorLink: function(e) {
+		return this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_SHORTCUT + "/"
+			+ this.ps.getEvtStr(e || this.copyOfEvent) + "/"
+			+ (this._all ? "$all" : this.itemType) + "/"
+			+ (this.isDeleyed ? this.ct.EDITOR_SHORTCUT_DELAYED : this.ct.EDITOR_SHORTCUT_NORMAL) + "/"
+			+ this.ct.EDITOR_SHORTCUT_CODE;
 	}
 };

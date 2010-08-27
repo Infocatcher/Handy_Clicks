@@ -643,10 +643,10 @@ var handyClicksFuncs = {
 	},
 
 	addEditItem: function(items) {
-		var cmd = "handyClicksFuncs.openEditorForLastEvent();";
-		var label = this.ut.getLocalized("edit");
-		var accesskey = this.ut.getLocalized("editAccesskey");
-		var miClass = "menuitem-iconic handyClicks-iconic handyClicks-editItem";
+		const cmd = "handyClicksFuncs.openEditorForLastEvent();";
+		const label = this.ut.getLocalized("edit");
+		const accesskey = this.ut.getLocalized("editAccesskey");
+		const miClass = "menuitem-iconic handyClicks-iconic handyClicks-editItem";
 		if(this.ut.isArray(items)) {
 			items.push(
 				{ tagName: "menuseparator" },
@@ -1002,6 +1002,9 @@ var handyClicksFuncs = {
 			tbr.moveTabTo(newTab, ind - 1); // Fix bug for last tab moving
 		tbr.moveTabTo(newTab, ind);
 		tbr.selectedTab = newTab;
+	},
+	newTab: function(e) {
+		BrowserOpenTab();
 	},
 
 	// Multiple Tab Handler extension

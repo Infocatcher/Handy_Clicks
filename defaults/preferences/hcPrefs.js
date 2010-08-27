@@ -62,6 +62,8 @@ pref("extensions.handyclicks.key.importFromClipboard", "accel shift VK_F2");
 
 pref("extensions.handyclicks.sets.backupsDir", ""); // Allow import empty value
 pref("extensions.handyclicks.sets.backupDepth", 5);
+pref("extensions.handyclicks.sets.backupAutoDepth", 10);
+pref("extensions.handyclicks.sets.backupAutoInterval", 86400); // 24*60*60
 pref("extensions.handyclicks.sets.backupTestDepth", 5);
 pref("extensions.handyclicks.sets.removeBackupConfirm", true);
 pref("extensions.handyclicks.sets.importJSWarning", true);

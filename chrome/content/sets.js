@@ -42,7 +42,7 @@ var handyClicksSets = {
 		else
 			this.startupUI();
 
-		if(this.ut.fxVersion >= 3.6) { // Fix wrong restoring
+		if(this.ut.fxVersion >= 3.6) { // Fix wrong resizing after sizeToContent() call
 			var de = document.documentElement;
 			window.resizeTo(Number(de.width), Number(de.height));
 		}
@@ -2383,7 +2383,8 @@ var handyClicksSets = {
 			this.removeBackup(mi, e.shiftKey);
 	},
 	get ubPopup() {
-		return this.$("hc-sets-tree-restoreFromBackupPopup");
+		delete this.ubPopup;
+		return this.ubPopup = this.$("hc-sets-tree-restoreFromBackupPopup");
 	},
 	buildRestorePopup: function() {
 		var popup = this.ubPopup;
@@ -2400,22 +2401,27 @@ var handyClicksSets = {
 		var entry, fName;
 		var _fTerms = [], _files = {}, _fTime;
 		var _ubTerms = [], _ubFiles = {}, _ubTime;
-		var mainFile = this.ps.prefsFileName + ".js";
+
+		const fPrefix = this.ps.prefsFileName;
+		const mainFile   = fPrefix + ".js";
+		const corrupted  = fPrefix + this.ps.names.corrupted;
+		const userBackup = fPrefix + this.ps.names.userBackup;
+		const oldBackup  = fPrefix + this.ps.names.version;
+		const testBackup = fPrefix + this.ps.names.testBackup;
 
 		while(entries.hasMoreElements()) {
 			entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
-			if(!entry.isFile())
-				continue;
 			fName = entry.leafName;
 			if(
-				fName.indexOf(this.ps.prefsFileName) != 0
+				!entry.isFile()
+				|| fName.indexOf(fPrefix) != 0
 				|| !/\.js$/i.test(fName)
 				|| fName == mainFile
-				|| fName.indexOf(this.ps.names.corrupted) != -1
+				|| fName.indexOf(corrupted) == 0
 			)
 				continue;
 			if(
-				fName.indexOf(this.ps.names.userBackup) != -1
+				fName.indexOf(userBackup) == 0
 				&& /-(\d{14})(?:-\d+)?\.js$/.test(fName)
 			) {
 				_ubTime = Number(RegExp.$1);
@@ -2450,9 +2456,9 @@ var handyClicksSets = {
 						image={ "moz-icon:file://" + fPath.replace(/\\/g, "/") + "?size=16" }
 						tooltiptext={fPath}
 						hc_fileName={fName}
-						hc_oldBackup={ fName.indexOf(this.ps.names.version) != -1 }
-						hc_userBackup={ fName.indexOf(this.ps.names.userBackup) != -1 }
-						hc_testBackup={ fName.indexOf(this.ps.names.testBackup) != -1 && testBackupStatus }
+						hc_userBackup={ fName.indexOf(userBackup) == 0 }
+						hc_oldBackup={  fName.indexOf(oldBackup)  == 0 }
+						hc_testBackup={ fName.indexOf(testBackup) == 0 && testBackupStatus }
 					/>
 				), sep);
 			},
@@ -2571,35 +2577,27 @@ var handyClicksSets = {
 		this.setImportStatus(this._import, !this._importPartial, this._importFromClipboard, true);
 	},
 	importDone: function(ok) {
-		var confirmed = false;
-		if(ok) {
-			confirmed = this.buggyPrefsConfirm();
-			if(!confirmed)
-				return;
-		}
+		if(ok && !this.buggyPrefsConfirm())
+			return;
 
 		var isPartial = this._importPartial;
 		//var fromClip = this._importFromClipboard;
 		this.setImportStatus(false);
 		if(ok) {
+			this.ps.checkForBackup();
+			// Keep prefs file because content of new file may be equals!
+			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, null, true);
+
 			this.ps.otherSrc = false;
-			if(isPartial)
-				this.mergePrefs();
-			else // Keep prefs file because content of new file may be equals!
-				this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, null, true);
-			if(confirmed) {
-				this.ps.saveSettingsObjects(true);
-				this.setDialogButtons();
-			}
-			else
-				this.saveSettingsObjectsCheck(true);
+			isPartial && this.mergePrefs();
+			this.ps.saveSettingsObjects(true);
 		}
-		else {
+		else { // Cancel import
 			this.ps.loadSettings();
-			this.setDialogButtons();
 			this.updTree();
 		}
 		this.tree.focus();
+		this.setDialogButtons();
 		this._savedPrefs = this._savedTypes = null;
 	},
 	mergePrefs: function() {
@@ -2680,6 +2678,3 @@ var handyClicksSets = {
 		this.$("hc-sets-cmd-partialImportFromClipboard").setAttribute("disabled", !this.ps.clipboardPrefs);
 	}
 };
-
-// Fake buggy sizeToContent function (we use flex tree)
-function sizeToContent() {}
