@@ -115,7 +115,7 @@ menuitem[command="hc-sets-cmd-disable"][disabled="true"] image {
 	/* Firefox 3.6+: text-align: end; */
 	text-align: right;
 }
-:root[chromedir="rtl"] #hc-sets-tree-importOverrides, #hc-sets-tree-importNew {
+:root[chromedir="rtl"] #hc-sets-tree-importOverrides, :root[chromedir="rtl"] #hc-sets-tree-importNew {
 	text-align: left;
 }
 #hc-sets-tree-importOverridesValue, #hc-sets-tree-importNewValue {

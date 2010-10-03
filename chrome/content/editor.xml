@@ -224,7 +224,8 @@
 			<property name="linesCount" readonly="true">
 				<getter>
 				<![CDATA[
-					return this.editor.rootElement.getElementsByTagName("br").length;
+					//return this.editor.rootElement.getElementsByTagName("br").length;
+					return this.value.match(/^.*$/mg).length;
 				]]>
 				</getter>
 			</property>

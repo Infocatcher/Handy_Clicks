@@ -218,14 +218,25 @@ var handyClicksFuncs = {
 			return null;
 		var tbr = this.hc.getTabBrowser(true);
 
-		// Open a new tab as a child of the current tab (Tree Style Tab)
-		// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
-		if(!moveTo && !this.ut.isChromeDoc(item.ownerDocument) && "TreeStyleTabService" in window)
-			TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab);
+		if(!moveTo && !this.ut.isChromeDoc(item.ownerDocument)) {
+			// Open a new tab as a child of the current tab (Tree Style Tab)
+			// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
+			if("TreeStyleTabService" in window)
+				TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab);
+
+			// Tab Kit https://addons.mozilla.org/firefox/addon/5447/
+			if("tabkit" in window) {
+				var hasTabKit = true;
+				tabkit.addingTab("related");
+			}
+		}
 
 		var tab = tbr.addTab(uri, this.getRefererForItem(refererPolicy, false, item));
 		if(!loadInBackground)
 			tbr.selectedTab = tab;
+
+		hasTabKit && tabkit.addingTabOver();
+
 		return tab;
 	},
 	testForLinkFeatures: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, winRestriction, target) {
@@ -1163,29 +1174,33 @@ var handyClicksFuncs = {
 				return;
 		}
 
-		if("TreeStyleTabService" in window) {
-			// Open a new tab as a child of the current tab (Tree Style Tab)
+		if("TreeStyleTabService" in window) { // Tree Style Tab
+			var hasTreeStyleTab = true;
 			var _tab = tbr.selectedTab;
-			TreeStyleTabService.readyToOpenChildTab(_tab, true);
 		}
+		var hasTabKit = "tabkit" in window; // Tab Kit
 
 		if(!useDelays) {
-			for(var h in hrefs)
+			hasTreeStyleTab && TreeStyleTabService.readyToOpenChildTab(_tab, true);
+			for(var h in hrefs) {
+				hasTabKit && tabkit.addingTab("related");
 				tbr.addTab(h, ref);
-			if("TreeStyleTabService" in window)
-				TreeStyleTabService.stopToOpenChildTab(_tab);
+				hasTabKit && tabkit.addingTabOver();
+			}
+			hasTreeStyleTab && TreeStyleTabService.stopToOpenChildTab(_tab);
 			return;
 		}
 		var delay = this.pu.pref("funcs.multipleTabsOpenDelay") || 0;
 		(function delayedOpen() {
 			for(var h in hrefs) {
+				hasTreeStyleTab && TreeStyleTabService.readyToOpenChildTab(_tab);
+				hasTabKit && tabkit.addingTab("related");
 				tbr.addTab(h, ref);
+				hasTabKit && tabkit.addingTabOver();
 				delete hrefs[h];
 				setTimeout(delayedOpen, delay);
 				return;
 			}
-			if("TreeStyleTabService" in window)
-				TreeStyleTabService.stopToOpenChildTab(_tab);
 		})();
 	},
 	$void: function(e) {}, // dummy function
