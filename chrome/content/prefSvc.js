@@ -606,8 +606,7 @@ var handyClicksPrefSvc = {
 			if(file.exists())
 				file.moveTo(pDir, fName + (num + 1) + ".js");
 		}
-		mFile = mFile.clone();
-		mFile[leaveOriginal ? "copyTo" : "moveTo"](pDir, fName + "0.js");
+		mFile.clone()[leaveOriginal ? "copyTo" : "moveTo"](pDir, fName + "0.js");
 		return mFile.path;
 	},
 	get minBackupInterval() {
@@ -628,10 +627,7 @@ var handyClicksPrefSvc = {
 				|| !/-(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\.js$/.test(fName)
 			)
 				continue;
-			fTime = new Date(0);
-			fTime.setFullYear(RegExp.$1), fTime.setMonth  (RegExp.$2 - 1), fTime.setDate   (RegExp.$3);
-			fTime.setHours   (RegExp.$4), fTime.setMinutes(RegExp.$5),     fTime.setSeconds(RegExp.$6);
-			fTime = fTime.getTime();
+			fTime = new Date(RegExp.$1, RegExp.$2 - 1, RegExp.$3, RegExp.$4, RegExp.$5, RegExp.$6).getTime();
 			_fTimes.push(fTime);
 			_files[fTime] = entry; // fTime must be unique
 		}

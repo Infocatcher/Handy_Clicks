@@ -37,7 +37,9 @@ var handyClicksSetsUtils = {
 	handleEvent: function(e) {
 		switch(e.type) {
 			case "DOMMouseScroll":
-				(
+				if(e.target.nodeType == Node.DOCUMENT_NODE)
+					break;
+				if(
 					this.scrollList(e)
 					|| this.scrollRadioMenuitems(e)
 					|| this.scrollNumTextbox(e)
@@ -45,7 +47,7 @@ var handyClicksSetsUtils = {
 					|| this.scrollTabsToolbar(e)
 					|| this.scrollRadios(e)
 				)
-				&& this.ut.stopEvent(e);
+					this.ut.stopEvent(e);
 			break;
 			case "dragenter": this.dragenterHandler(e); break;
 			case "dragexit":  this.dragexitHandler(e);

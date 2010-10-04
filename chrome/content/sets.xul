@@ -29,8 +29,8 @@
 	oncommand="handyClicksSets.dataChanged(event);"
 	hc_ondrop="handyClicksSets.dataChanged(event);"
 	style='-moz-binding: url("chrome://handyclicks/content/prefwindow.xml#prefwindow"); /* Should be here for CSS reloader */'
-	width="720"
-	height="520"
+	width="600"
+	height="445"
 	persist="width height screenX screenY sizemode">
 
 	<!-- "hc_ondrop" attribute will be replaced in init() function from setsUtils.js -->
@@ -221,20 +221,19 @@
 
 		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" handyclicks_important="enabled" />
 		<hbox align="center">
-			<label value="&hc.sets.delayedActionTimeout;" control="hc-sets-delayedActionTimeout" hc_depends="delayedTimeout" />
+			<label value="&hc.sets.delayedActionTimeout;" control="hc-sets-delayedActionTimeout" />
 			<textbox id="hc-sets-delayedActionTimeout" preference="delayedActionTimeout"
-				type="number" min="0" max="10000" increment="10" size="5"
-				hc_requiredFor="delayedTimeout" hc_disabledValues="0" />
-			<label value="&hc.sets.zeroForDisable;" hc_depends="delayedTimeout" />
+				type="number" min="0" max="10000" increment="10" size="5" />
+			<label value="&hc.sets.zeroForDisable;" />
 		</hbox>
 		<groupbox>
 			<caption label="&hc.sets.notify;" />
 			<hbox align="center">
-				<label value="&hc.sets.notifyCloseAfter;" control="hc-sets-notifyOpenTime" hc_depends="notify" />
+				<label value="&hc.sets.notifyCloseAfter;" control="hc-sets-notifyOpenTime" />
 				<textbox id="hc-sets-notifyOpenTime" preference="notifyOpenTime"
 					type="number" min="0" max="1200000" increment="50" size="7"
 					hc_requiredFor="notify" hc_disabledValues="0" />
-				<label value="&hc.sets.zeroForDisable;" hc_depends="notify" />
+				<label value="&hc.sets.zeroForDisable;" />
 			</hbox>
 			<checkbox preference="notifyInWindowCorner" hc_depends="notify" label="&hc.sets.notifyInWindowCorner;" />
 			<checkbox preference="notifyDontCloseUnderCursor" hc_depends="notify" label="&hc.sets.notifyDontClose;" />
@@ -290,13 +289,15 @@
 			<spacer class="hcHSpacerSmall" />
 			<radiogroup id="hc-sets-action-button" onselect="handyClicksSets.loadUIAction();">
 				<radio value="Left" label="&hc.sets.actionButtonLeft;" />
-				<radio value="Middle" label="&hc.sets.actionButtonMiddle;" />
+				<radio value="Middle" label="&hc.sets.actionButtonMiddle;" tooltiptext="&hc.sets.actionButtonMiddleTip;" />
 				<radio value="Right" label="&hc.sets.actionButtonRight;" />
 			</radiogroup>
 			<spacer class="hcHSpacerSmall" />
 			<vbox>
 				<menulist id="hc-sets-action-value" oncommand="handyClicksSets.changeUIAction();">
 					<menupopup>
+						<menuitem value="-1" label="&hc.sets.actionDoNothing;" />
+						<menuseparator />
 						<menuitem value="0" label="&hc.sets.actionToggleStatus;" />
 						<menuitem value="1" label="&hc.sets.actionOpenSettings;" />
 						<menuitem value="2" label="&hc.sets.actionContext;" />

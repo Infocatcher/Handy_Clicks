@@ -104,7 +104,7 @@ var handyClicksFuncs = {
 			function(s) {
 				if(this.isJSURI(s))
 					try { return decodeURI(s); }
-					catch(e) {}
+					catch(e) { this.ut._err(e); }
 				return s;
 			},
 			this
@@ -360,24 +360,28 @@ var handyClicksFuncs = {
 			loadLink();
 	},
 	testForFileLink: function(uri, refererPolicy) {
-		uri = uri || this.getItemURI(this.hc.item);
 		var filesPolicy = this.pu.pref("funcs.filesLinksPolicy");
 		if(filesPolicy == -1)
 			return false;
-		var regexp = this.pu.pref("funcs.filesLinksMask");
-		if(!regexp)
+		uri = uri || this.getItemURI(this.hc.item);
+		const regexpPref = "funcs.filesLinksMask";
+		var regexpStr = this.pu.pref(regexpPref);
+		if(!regexpStr)
 			return false;
 		try {
-			var _regexp = new RegExp(regexp, "i");
+			var regexp = new RegExp(regexpStr, "i");
 		}
 		catch(e) {
-			this.ut.alert(
+			this.ut._err(e);
+			this.ut.notify(
+				this.ut.getLocalized("RegExpError").replace("%r", regexpStr).replace("%err", e),
 				this.ut.getLocalized("errorTitle"),
-				this.ut.getLocalized("RegExpError").replace("%r", regexp).replace("%err", e)
+				this.ut.bind(this.pu.openAboutConfig, this.pu, [this.pu.prefNS + regexpPref]), null,
+				this.ut.NOTIFY_ICON_ERROR
 			);
 			return false;
 		}
-		if(!_regexp.test(uri))
+		if(!regexp.test(uri))
 			return false;
 		if(filesPolicy == 0)
 			this.hc.showPopupOnItem();

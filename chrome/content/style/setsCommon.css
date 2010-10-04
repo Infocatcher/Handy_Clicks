@@ -4,7 +4,7 @@
 	position: fixed !important;
 	top: 0 !important;
 	right: 0 !important;
-	padding: 2px;
+	margin: 2px;
 }
 /* Firefox 3.6+
 #hc-sets-floatToolbar:-moz-locale-dir(rtl) {

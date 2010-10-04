@@ -6,8 +6,14 @@ function setsMigration(allowSave, vers) {
 	if(vers >= this.setsVersion)
 		return;
 
-	if(allowSave)
-		this.prefsFile.moveTo(null, this.prefsFileName + this.names.version + vers + ".js");
+	if(allowSave) {
+		var fNameBase = this.prefsFileName + this.names.version + vers;
+		var fName, i = 0;
+		do fName = fNameBase + (i++ ? "-" + i : "") + ".js";
+		while(this.getFile(fName).exists());
+		this.prefsFile.copyTo(null, fName);
+	}
+
 	if(vers < 0.12) { //= Added: 2009-07-29
 		// New file names format
 		var convertName = function(s) {
