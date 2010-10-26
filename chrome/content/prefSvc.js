@@ -613,6 +613,8 @@ var handyClicksPrefSvc = {
 		return (this.pu.pref("sets.backupAutoInterval") || 24*60*60)*1000;
 	},
 	checkForBackup: function() {
+		if(!this.prefsFile.exists())
+			return;
 		var entries = this.ps.prefsDir.directoryEntries;
 		var entry, fName, fTime;
 		var _fTimes = [], _files = {};

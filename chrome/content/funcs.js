@@ -139,13 +139,6 @@ var handyClicksFuncs = {
 	getTabText: function(tab) {
 		return tab.label || tab.getAttribute("label");
 	},
-	forEachTab: function(fnc, _this, tbr) {
-		return Array.map(
-			(tbr || this.hc.getTabBrowser(true)).tabContainer.childNodes,
-			fnc,
-			_this || this
-		);
-	},
 
 	// Open URI in...
 	openURIInCurrentTab: function(e, refererPolicy, closePopups, uri) {
@@ -824,6 +817,17 @@ var handyClicksFuncs = {
 		this.restorePrefs(origPrefs);
 	},
 
+	get tabs() {
+		var tbr = this.hc.getTabBrowser(true);
+		return tbr.tabs || tbr.tabContainer.childNodes;
+	},
+	get visibleTabs() {
+		var tbr = this.hc.getTabBrowser(true);
+		return tbr.visibleTabs || tbr.tabs || tbr.tabContainer.childNodes;
+	},
+	forEachTab: function(func, context) {
+		return Array.map(this.visibleTabs, func, context || this);
+	},
 	fixTab: function(tab) {
 		tab = tab || this.hc.item;
 		if(!tab || tab.localName != "tab")
@@ -834,9 +838,9 @@ var handyClicksFuncs = {
 		tab = this.fixTab(tab);
 		this.hc.getTabBrowser().removeAllTabsBut(tab);
 	},
-	removeAllTabs: function(e) {
+	removeAllTabs: function(e, allGroups) { //~ todo: allGroups argument?
 		var tbr = this.hc.getTabBrowser();
-		var tabs = tbr.tabContainer.childNodes;
+		var tabs = this.visibleTabs;
 		var len = tabs.length;
 		if(this.warnAboutClosingTabs(len, tbr))
 			for(var i = len - 1; i >= 0; --i)
@@ -845,7 +849,7 @@ var handyClicksFuncs = {
 	removeRightTabs: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
-		var tabs = tbr.tabContainer.childNodes;
+		var tabs = this.visibleTabs;
 		var _tabs = [];
 		for(var i = tabs.length - 1; i >= 0; --i) {
 			if(tabs[i] == tab)
@@ -858,7 +862,7 @@ var handyClicksFuncs = {
 	removeLeftTabs: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
-		var tabs = tbr.tabContainer.childNodes;
+		var tabs = this.visibleTabs;
 		var _tabs = [];
 		for(var i = 0, len = tabs.length; i < len; i++) {
 			if(tabs[i] == tab)
@@ -975,11 +979,9 @@ var handyClicksFuncs = {
 		return false;
 	},
 	stopAllTabsLoading: function(e) {
-		this.forEachTab(
-			function(tab) {
-				this.stopTabLoading(e, tab);
-			}
-		);
+		this.forEachTab(function(tab) {
+			this.stopTabLoading(e, tab);
+		});
 	},
 	stopTabLoading: function(e, tab) {
 		tab = this.fixTab(tab);

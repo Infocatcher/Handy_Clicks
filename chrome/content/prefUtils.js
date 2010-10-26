@@ -106,17 +106,22 @@ var handyClicksPrefUtils = {
 				Array.some(
 					tbr.tabContainer.childNodes,
 					function(tab) {
+						// For Firefox 4 see "visibleTabs" property in chrome://browser/content/tabbrowser.xml
+						if("_removingTabs" in tbr && tbr._removingTabs.indexOf(tab) != -1)
+							return false;
+						//~ todo: add pref?
+						//if(tab.hidden)
+						//	return;
 						var br = tab.linkedBrowser;
 						if(br.currentURI.spec != "about:config")
 							return false;
 						var tb = br.contentDocument.getElementById("textbox");
-						if(tb && tb.wrappedJSObject.value == filter) {
-							//brWin.focus();
-							tbr.selectedTab = tab;
-							br.contentWindow.focus();
-							return true;
-						}
-						return false;
+						if(!tb || (tb.wrappedJSObject || tb).value != filter)
+							return false;
+						//brWin.focus();
+						tbr.selectedTab = tab;
+						br.contentWindow.focus();
+						return true;
 					}
 				)
 			)

@@ -944,19 +944,22 @@ var handyClicksEditor = {
 		const id = "hc-editor-allowMousedown";
 		this.$(id + "Label").disabled = this.$(id).disabled = isMd;
 	},
-	hasCaller: function(calledFunc, func) {
+	hasCaller: function(calledFunc, funcs, funcNames) {
 		for(var caller = calledFunc.caller; caller; caller = caller.caller) {
-			if(caller === func)
+			if(funcs.indexOf(caller) != -1 || funcNames.indexOf(caller.name) != -1)
 				return true;
 			if(caller === calledFunc) // Prevent recursion
 				return false;
 		}
 		return false;
 	},
+	_forbidFocusHandling: false,
 	fixFocusedElement: function _ffe(e) {
+		if(this._forbidFocusHandling)
+			return;
 		// Stack example: _ffe <- this.handleEvent <- _ffe.caller.caller
 		//this.ut._log(new Error().stack);
-		if(!this.hasCaller(_ffe, document.commandDispatcher.advanceFocusIntoSubtree))
+		if(!this.hasCaller(_ffe, [document.commandDispatcher.advanceFocusIntoSubtree], ["_selectNewTab", "focusInit"]))
 			return;
 		var tar = e.target;
 		if(tar.localName != "textbox" || !tar.hasAttribute("tabindex") || tar.getAttribute("readonly") != "true")
@@ -970,9 +973,12 @@ var handyClicksEditor = {
 				function(elt) {
 					if(elt.hasAttribute("tabindex") || elt.getAttribute("readonly") == "true")
 						return false;
+					this._forbidFocusHandling = true;
 					elt.focus();
+					this._forbidFocusHandling = false;
 					return true;
-				}
+				},
+				this
 			);
 			break;
 		}

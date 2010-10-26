@@ -282,13 +282,13 @@
 		<groupbox align="center" orient="horizontal">
 			<caption label="&hc.sets.actions;" />
 			<radiogroup id="hc-sets-action-type" onselect="handyClicksSets.loadUIAction();">
-				<radio value="Menu" label="&hc.sets.actionTypeMenu;" />
+				<radio value="Menu" label="&hc.sets.actionTypeMenu;" selected="true" />
 				<radio value="Statusbar" label="&hc.sets.actionTypeStatusbar;" />
 				<radio value="Toolbar" label="&hc.sets.actionTypeToolbar;" />
 			</radiogroup>
 			<spacer class="hcHSpacerSmall" />
 			<radiogroup id="hc-sets-action-button" onselect="handyClicksSets.loadUIAction();">
-				<radio value="Left" label="&hc.sets.actionButtonLeft;" />
+				<radio value="Left" label="&hc.sets.actionButtonLeft;" selected="true" />
 				<radio value="Middle" label="&hc.sets.actionButtonMiddle;" tooltiptext="&hc.sets.actionButtonMiddleTip;" />
 				<radio value="Right" label="&hc.sets.actionButtonRight;" />
 			</radiogroup>
