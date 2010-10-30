@@ -27,6 +27,8 @@ var handyClicks = {
 	destroy: function(reloadFlag) {
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
 		this.cancelDelayedAction();
+		if(this.editMode)
+			this.editMode = false;
 		this.copyOfEvent = this.origItem = this.item = this.mainItem = this._tabOnMousedown = null;
 	},
 	setListeners: function(evtTypes, addFlag) {
@@ -760,7 +762,7 @@ var handyClicks = {
 		document.popupNode = popup.ownerDocument.popupNode = this.itemType == "tab" ? this.item : node;
 
 		//var isContext = e.button == 2;
-		var xy = this.getXY();
+		var xy = this.getXY(e);
 		if("openPopupAtScreen" in popup) // Firefox 3.0+
 			popup.openPopupAtScreen(xy.x, xy.y, true /*isContextMenu*/);
 		else

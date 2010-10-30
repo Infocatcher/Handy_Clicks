@@ -113,11 +113,10 @@ var handyClicksUI = {
 	buildSettingsPopup: function(e) {
 		this.checkClipboard();
 
-		//this.$("handyClicks-enabled").setAttribute("hidden", );
-
-		var hideAllSets = !this.pu.pref("ui.showAllSettingsMenuitem");
-		this.$("handyClicks-allSettingsMenuitem").setAttribute("hidden", hideAllSets);
-		//this.$("handyClicks-editModeSeparator")  .setAttribute("hidden", hideAllSets);
+		this.$("handyClicks-allSettingsMenuitem").setAttribute(
+			"hidden",
+			!this.pu.pref("ui.showAllSettingsMenuitem")
+		);
 
 		var inheritContext = this.pu.pref("ui.inheritToolbarContextMenu")
 			&& document.popupNode && document.popupNode.localName.indexOf("toolbar") == 0;
@@ -136,10 +135,15 @@ var handyClicksUI = {
 				this.ut._err(e);
 			}
 			var vtSep = this.$("handyClicks-viewToolbarsSeparator");
+			var vtCmd = "onViewToolbarCommand" in window && "onViewToolbarCommand(event);";
 			Array.slice(popup.childNodes).forEach(function(ch) {
-				if(!ch.hasAttribute("toolbarindex") && !ch.hasAttribute("toolbarid"))
+				if(
+					!ch.hasAttribute("toolbarindex")
+					&& !ch.hasAttribute("toolbarid")
+					&& !ch.hasAttribute("toolbarId")
+				)
 					return;
-				ch.setAttribute("oncommand", "onViewToolbarCommand(event);"); // For SeaMonkey
+				vtCmd && ch.setAttribute("oncommand", vtCmd); // For SeaMonkey
 				popup.insertBefore(ch, vtSep);
 			});
 		}
@@ -256,8 +260,18 @@ var handyClicksUI = {
 			elt.setAttribute("hc_editMode", em);
 			elt.setAttribute(ttAttr, tt);
 		});
-		if(!em)
+		if(em) {
+			window.addEventListener("mouseover", this, true);
+			window.addEventListener("mousemove", this, true);
+			window.addEventListener("mouseout",  this, true);
+		}
+		else {
+			window.removeEventListener("mouseover", this, true);
+			window.removeEventListener("mousemove", this, true);
+			window.removeEventListener("mouseout",  this, true);
+			this.emtt.hidePopup();
 			return;
+		}
 		var nem = this.pu.pref("notifyEditMode");
 		if(!(nem == 1 && this._temFromKey && !this.isControlsVisible || nem == 2))
 			return;
@@ -267,6 +281,55 @@ var handyClicksUI = {
 			this.ut.bind(function() { this.hc.editMode = false; }, this)
 		);
 	},
+	handleEvent: function(e) {
+		switch(e.type) {
+			case "mouseover": this.mouseoverHandler(e); break;
+			case "mousemove": this.mousemoveHandler(e); break;
+			case "mouseout":  this.mouseoutHandler(e);
+		}
+	},
+	get emtt() {
+		delete this.emtt;
+		return this.emtt = this.$("handyClicks-editModeTip");
+	},
+	mouseoverHandler: function(e) {
+		this.hc.defineItem(e, {});
+		var type = this.hc.itemType;
+		if(type)
+			this.emtt.firstChild.setAttribute("value", this.ps.getTypeLabel(type));
+		this.mousemoveHandler(e);
+	},
+	mousemoveHandler: function(e) {
+		var tt = this.emtt;
+		if(!this.hc.itemType) {
+			tt.hidePopup();
+			return;
+		}
+		// Are you see these great backward compatibility? >_<
+		if("openPopupAtScreen" in tt) // Firefox 3.0+
+			tt.openPopupAtScreen(e.screenX, e.screenY, false /*isContextMenu*/);
+		else
+			tt.showPopup(document.documentElement, e.screenX, e.screenY, "tooltip", null, null);
+		if(this.ut.fxVersion <= 2)
+			return;
+		var x = e.screenX;
+		var y = e.screenY;
+		if(this.ut.fxVersion <= 3.5) {
+			x = Math.min(screen.width  - tt.boxObject.width,  x);
+			y = Math.min(screen.height - tt.boxObject.height, y);
+			var debo = document.documentElement.boxObject;
+			x += debo.screenX;
+			y += debo.screenY;
+		}
+		if(this.ut.fxVersion != 3.6)
+			y += 22;
+		tt.moveTo(x, y);
+	},
+	mouseoutHandler: function(e) {
+		if(!e.relatedTarget)
+			this.emtt.hidePopup();
+	},
+
 	updUI: function(pName) {
 		if(pName == "enabled")
 			this.setStatus();
@@ -367,38 +430,31 @@ var handyClicksUI = {
 	},
 
 	// Multiline tooltip:
+	get tt() {
+		delete this.tt;
+		return this.tt = this.$("handyClicks-tooltip");
+	},
 	tooltipAttrBase: "handyclicks_tooltip-",
 	tooltipAttrStyle: "handyclicks_tooltipStyle-",
 	tooltipAttrClass: "handyclicks_tooltipClass-",
 	fillInTooltip: function(tooltip) {
+		var tt = this.tt;
+		this.ut.removeChilds(tt);
 		var tNode = document.tooltipNode;
 		var attrBase = this.tooltipAttrBase;
-		var i = 0, cache, lbl, val;
+		var i = 0, val, lbl;
 		for(var attrName = attrBase + i; tNode.hasAttribute(attrName); attrName = attrBase + ++i) {
-			cache = "_" + attrName;
-			lbl = cache in tooltip && tooltip[cache];
-			if(!lbl) {
-				lbl = document.createElement("label");
-				lbl.setAttribute("crop", "center");
-				tooltip.appendChild(lbl);
-				tooltip[cache] = lbl;
-			}
+			val = tNode.getAttribute(attrName);
+			if(!val)
+				continue;
+			lbl = document.createElement("label");
+			lbl.setAttribute("value", val);
+			lbl.setAttribute("crop", "center");
 			this.ut.attribute(lbl, "style", tNode.getAttribute(this.tooltipAttrStyle + i));
 			this.ut.attribute(lbl, "class", tNode.getAttribute(this.tooltipAttrClass + i));
-
-			val = tNode.getAttribute(attrName);
-			lbl.setAttribute("value", val);
-			lbl.hidden = !val; // Hide empty lines
+			tt.appendChild(lbl);
 		}
 		return i > 0;
-	},
-	hideAllLabels: function(tooltip) {
-		Array.forEach(
-			tooltip.childNodes,
-			function(ch) {
-				ch.hidden = true;
-			}
-		);
 	},
 
 	// Hotkeys:

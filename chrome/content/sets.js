@@ -203,7 +203,7 @@ var handyClicksSets = {
 					var sep = " " + this.ps.keys.sep + " ";
 					var label = button + (modifiers ? sep + modifiers : "") + sep;
 					for(var type in so) if(so.hasOwnProperty(type))
-						this.appendRow(this.tBody, sh, type, so[type], label + this.getTypeLabel(type));
+						this.appendRow(this.tBody, sh, type, so[type], label + this.ps.getTypeLabel(type));
 				break;
 				case 3: // Inverse
 					var button = this.ps.getButtonId(sh);
@@ -211,7 +211,7 @@ var handyClicksSets = {
 					var modifiers = this.ps.getModifiersStr(sh);
 					for(var type in so) if(so.hasOwnProperty(type)) {
 						var typeContainer = this.eltsCache[type]
-							|| this.appendContainerItem(this.tBody, type, this.getTypeLabel(type));
+							|| this.appendContainerItem(this.tBody, type, this.ps.getTypeLabel(type));
 						var hash = type + "-" + button;
 						var buttonContainer = this.eltsCache[hash]
 							|| this.appendContainerItem(typeContainer, hash, buttonLabel);
@@ -224,7 +224,7 @@ var handyClicksSets = {
 					var label = button + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
 					for(var type in so) if(so.hasOwnProperty(type)) {
 						var typeContainer = this.eltsCache[type]
-							|| this.appendContainerItem(this.tBody, type, this.getTypeLabel(type));
+							|| this.appendContainerItem(this.tBody, type, this.ps.getTypeLabel(type));
 						this.appendRow(typeContainer, sh, type, so[type], label);
 					}
 				break;
@@ -235,7 +235,7 @@ var handyClicksSets = {
 					var label = sep + button + (modifiers ? sep + modifiers : "");
 					for(var type in so) if(so.hasOwnProperty(type))
 						this.eltsCache[type] = this.appendRow(
-							this.tBody, sh, type, so[type], this.getTypeLabel(type) + label, this.eltsCache[type] || null
+							this.tBody, sh, type, so[type], this.ps.getTypeLabel(type) + label, this.eltsCache[type] || null
 						);
 				break;
 			}
@@ -418,7 +418,7 @@ var handyClicksSets = {
 			fo = {};
 		var isCustom = !!fo.custom;
 		var isCustomType = this.ps.isCustomType(itemType);
-		var typeLabel = this.getTypeLabel(itemType, isCustomType);
+		var typeLabel = this.ps.getTypeLabel(itemType, isCustomType);
 
 		this.appendTreeCell(tRow, "label", forcedLabel || typeLabel);
 		this.appendTreeCell(tRow, "label", fo.eventType);
@@ -545,16 +545,6 @@ var handyClicksSets = {
 		parent.insertBefore(tItem, insAfter && insAfter.nextSibling);
 		this.rowsCache[tItem.__hash = shortcut + "-" + itemType] = tRow;
 		return tItem;
-	},
-	getTypeLabel: function(type, isCustomType) {
-		return (isCustomType === undefined ? this.ps.isCustomType(type) : isCustomType)
-				? this.getCustomTypeLabel(type)
-				: this.ut.getLocalized(type);
-	},
-	getCustomTypeLabel: function(type) {
-		var label = this.ut.getOwnProperty(this.ps.types, type, "label");
-		label = label ? this.ps.dec(label) + " " : "";
-		return <>{label}[{this.ps.removeCustomPrefix(type)}]</>.toString();
 	},
 	getActionLabel: function(fo) {
 		if(fo.custom)
@@ -820,7 +810,7 @@ var handyClicksSets = {
 				var type = tItem.__itemType, sh = tItem.__shortcut;
 				var mdfs = this.ps.getModifiersStr(sh);
 				var button = this.ps.getButtonStr(sh, true);
-				var typeLabel = this.cropStr(this.getTypeLabel(type), MAX_TYPE_LENGTH);
+				var typeLabel = this.cropStr(this.ps.getTypeLabel(type), MAX_TYPE_LENGTH);
 				var fObj = this.ut.getOwnProperty(this.ps.prefs, sh, type);
 				var dObj = this.ut.getOwnProperty(fObj, "delayedAction");
 				var addLabel = "";

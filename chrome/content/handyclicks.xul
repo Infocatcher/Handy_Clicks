@@ -92,8 +92,10 @@
 			<!-- Additional items from "toolbar-context-menu" -->
 		</menupopup>
 		<tooltip id="handyClicks-tooltip" noautohide="true" orient="vertical"
-			onpopupshowing="return handyClicksUI.fillInTooltip(this);"
-			onpopuphidden="handyClicksUI.hideAllLabels(this);">
+			onpopupshowing="return handyClicksUI.fillInTooltip(this);">
+		</tooltip>
+		<tooltip id="handyClicks-editModeTip" noautohide="true" orient="vertical">
+			<label />
 		</tooltip>
 	</popupset>
 

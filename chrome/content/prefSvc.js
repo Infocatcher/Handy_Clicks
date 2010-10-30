@@ -723,6 +723,17 @@ var handyClicksPrefSvc = {
 		return this.ut.removePrefix(type, this.customPrefix);
 	},
 
+	getTypeLabel: function(type, isCustomType) {
+		return (isCustomType === undefined ? this.isCustomType(type) : isCustomType)
+				? this.getCustomTypeLabel(type)
+				: this.ut.getLocalized(type);
+	},
+	getCustomTypeLabel: function(type) {
+		var label = this.ut.getOwnProperty(this.types, type, "label");
+		label = label ? this.dec(label) + " " : "";
+		return <>{label}[{this.removeCustomPrefix(type)}]</>.toString();
+	},
+
 	encForWrite: function(s) {
 		return s
 			? s
