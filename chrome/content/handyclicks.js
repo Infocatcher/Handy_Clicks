@@ -27,16 +27,15 @@ var handyClicks = {
 	destroy: function(reloadFlag) {
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
 		this.cancelDelayedAction();
+		if(this.editMode)
+			this.editMode = false;
 		this.copyOfEvent = this.origItem = this.item = this.mainItem = this._tabOnMousedown = null;
 	},
 	setListeners: function(evtTypes, addFlag) {
 		var act = addFlag ? "addEventListener" : "removeEventListener";
-		evtTypes.forEach(
-			function(evtType) {
-				window[act](evtType, this, true);
-			},
-			this
-		);
+		evtTypes.forEach(function(evtType) {
+			window[act](evtType, this, true);
+		}, this);
 	},
 	handleEvent: function(e) {
 		switch(e.type) {
