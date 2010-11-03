@@ -81,15 +81,14 @@ var handyClicks = {
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
 		this.cancelDelayedAction();
 		this.destroyUninstallObserver();
+		if(this.editMode)
+			this.editMode = false;
 	},
 	setListeners: function(evtTypes, addFlag) {
 		var act = addFlag ? "addEventListener" : "removeEventListener";
-		evtTypes.forEach(
-			function(evtType) {
-				window[act](evtType, this, true);
-			},
-			this
-		);
+		evtTypes.forEach(function(evtType) {
+			window[act](evtType, this, true);
+		}, this);
 	},
 
 	_enabled: true, // Uses for internal disabling
