@@ -29,8 +29,8 @@
 	oncommand="handyClicksSets.dataChanged(event);"
 	hc_ondrop="handyClicksSets.dataChanged(event);"
 	style='-moz-binding: url("chrome://handyclicks/content/prefwindow.xml#prefwindow"); /* Should be here for CSS reloader */'
-	width="600"
-	height="445"
+	width="&hc.sets.defaultWindowWidth;"
+	height="&hc.sets.defaultWindowHeight;"
 	persist="width height screenX screenY sizemode">
 
 	<!-- "hc_ondrop" attribute will be replaced in init() function from setsUtils.js -->

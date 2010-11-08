@@ -11,6 +11,12 @@ var handyClicksAutocompleteData = {
 		var o = document.documentElement.style;
 		for(var p in o)
 			ret.push(p);
+		if("getOwnPropertyNames" in Object) { // JavaScript 1.8.5
+			ret = ret.concat(
+				Object.getOwnPropertyNames(Object),
+				Object.getOwnPropertyNames(Array)
+			);
+		}
 		delete this.jsProps;
 		delete this._jsProps;
 		return this.jsProps = this.uniqueSort(ret.filter(this.lengthFilter, this));

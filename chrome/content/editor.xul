@@ -31,8 +31,8 @@
 	oninput="handyClicksEditor.dataChanged(event);"
 	oncommand="handyClicksEditor.dataChanged(event);"
 	hc_ondrop="handyClicksEditor.dataChanged(event);"
-	width="700"
-	height="500"
+	width="&hc.editor.defaultWindowWidth;"
+	height="&hc.editor.defaultWindowHeight;"
 	persist="width height screenX screenY sizemode">
 
 	<!-- "hc_ondrop" attribute will be replaced in init() function from setsUtils.js -->
