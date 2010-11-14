@@ -51,8 +51,7 @@
 					tooltiptext="&hc.sets.filterTip;" />
 				<label id="hc-sets-tree-searchResults" />
 				<spacer flex="1" />
-				<button id="hc-sets-tree-editMenu" type="menu" label="&hc.sets.editMenu;" accesskey="&hc.sets.editMenuAccesskey;"
-					onmouseover="handyClicksSets.openMenu(event, this);">
+				<button id="hc-sets-tree-editMenu" type="menu" label="&hc.sets.editMenu;" accesskey="&hc.sets.editMenuAccesskey;">
 					<menupopup onpopupshowing="handyClicksSets.initEditMenu(this);">
 						<menuitem id="hc-sets-tree-selectAll" oncommand="handyClicksSets.selectAll();" key="hc-sets-key-selectAll"
 							label="&hc.sets.selectAll;" />
@@ -74,8 +73,7 @@
 							label="&hc.sets.findFilter;" />
 					</menupopup>
 				</button>
-				<button id="hc-sets-tree-viewMenu" type="menu" label="&hc.sets.viewMenu;" accesskey="&hc.sets.viewMenuAccesskey;"
-					onmouseover="handyClicksSets.openMenu(event, this);">
+				<button id="hc-sets-tree-viewMenu" type="menu" label="&hc.sets.viewMenu;" accesskey="&hc.sets.viewMenuAccesskey;">
 					<menupopup onpopupshowing="handyClicksSets.initViewMenu(this);"
 						oncommand="event.stopPropagation(); handyClicksSets.viewMenuCommand(event, this);"
 						onclick="handyClicksSets.viewMenuClick(event, this);">
@@ -162,8 +160,7 @@
 					<button id="hc-sets-tree-buttonEdit" hc_key="hc-sets-key-edit" class="hc-iconic" command="hc-sets-cmd-edit" />
 					<button id="hc-sets-tree-buttonDelete" hc_key="hc-sets-key-delete" class="hc-iconic" command="hc-sets-cmd-delete" />
 					<spacer id="hc-sets-tree-buttonsSpacer" class="hcHSpacer" />
-					<button id="hc-sets-tree-buttonExport" class="hc-iconic" type="menu" label="&hc.sets.export;" accesskey="&hc.sets.exportAccesskey;"
-						onmouseover="handyClicksSets.openMenu(event, this);">
+					<button id="hc-sets-tree-buttonExport" class="hc-iconic" type="menu" label="&hc.sets.export;" accesskey="&hc.sets.exportAccesskey;">
 						<menupopup position="before_start">
 							<menuitem command="hc-sets-cmd-fullExportToFile" key="hc-sets-key-fullExportToFile" />
 							<menuseparator />
@@ -174,8 +171,7 @@
 							<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
 						</menupopup>
 					</button>
-					<button id="hc-sets-tree-buttonImport" class="hc-iconic" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;"
-						onmouseover="handyClicksSets.openMenu(event, this);">
+					<button id="hc-sets-tree-buttonImport" class="hc-iconic" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;">
 						<menupopup position="before_start"
 							onpopupshowing="if(event.target == this) { handyClicksSets.checkClipboard(); handyClicksSets.buildRestorePopup(); }"
 							onpopuphidden="if(event.target == this) handyClicksSets.destroyRestorePopup();">
@@ -296,14 +292,14 @@
 			<vbox>
 				<menulist id="hc-sets-action-value" oncommand="handyClicksSets.changeUIAction();">
 					<menupopup>
-						<menuitem value="-1" label="&hc.sets.actionDoNothing;" />
-						<menuseparator />
 						<menuitem value="0" label="&hc.sets.actionToggleStatus;" />
 						<menuitem value="1" label="&hc.sets.actionOpenSettings;" />
 						<menuitem value="2" label="&hc.sets.actionContext;" />
 						<menuitem value="3" label="&hc.sets.actionEditMode;" />
 						<menuitem value="4" label="&hc.sets.actionShowAllSettings;" />
 						<menuitem value="5" label="&hc.sets.actionOpenCloseSettings;" />
+						<menuseparator />
+						<menuitem value="-1" label="&hc.sets.actionDoNothing;" />
 					</menupopup>
 				</menulist>
 				<hbox pack="center">

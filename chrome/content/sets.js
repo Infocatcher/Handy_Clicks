@@ -46,6 +46,8 @@ var handyClicksSets = {
 			var de = document.documentElement;
 			window.resizeTo(Number(de.width), Number(de.height));
 		}
+
+		window.addEventListener("mouseover", this, true);
 	},
 	initShortcuts: function() {
 		var tr = this.tree = this.$("hc-sets-tree");
@@ -68,6 +70,8 @@ var handyClicksSets = {
 		);
 		reloadFlag && this.setImportStatus(false);
 		this.rowsCache = this._savedPrefs = this._savedTypes = null;
+
+		window.removeEventListener("mouseover", this, true);
 	},
 	startupUI: function() {
 		this.treeScrollPos(false);
@@ -104,6 +108,8 @@ var handyClicksSets = {
 			this.smartSelect(e);
 			this.ut.timeout(this.smartSelectStop, this, [], 10);
 		}
+		else if(e.type == "mouseover")
+			this.openMenu(e);
 	},
 	closeEditors: function() {
 		this.wu.forEachWindow(
@@ -1258,21 +1264,25 @@ var handyClicksSets = {
 		return this.expandTreeLevel(level);
 	},
 
-	openMenu: function(e, menu) {
-		if(e.target != menu)
+	isMenuButton: function(node) {
+		// node.boxObject instanceof Components.interfaces.nsIMenuBoxObject
+		return node.localName == "button" && node.getAttribute("type") == "menu";
+	},
+	openMenu: function(e) {
+		var menu = e.originalTarget;
+		if(!this.isMenuButton(menu))
 			return;
-		Array.some(
-			menu.parentNode.childNodes,
-			function(node) {
-				if(!("open" in node))
-					return false;
-				// node.boxObject instanceof Components.interfaces.nsIMenuBoxObject
-				if(!node.open || node == menu)
-					return false;
+		Array.concat(
+			Array.slice(document.getElementsByTagName("*")),
+			Array.slice(this.applyButton.parentNode.childNodes)
+		).some(function(node) {
+			if(this.isMenuButton(node) && node.open && node != menu) {
 				node.open = false;
-				return menu.open = true;
+				menu.open = true;
+				return true;
 			}
-		);
+			return false;
+		}, this);
 	},
 
 	/*** Search in tree ***/

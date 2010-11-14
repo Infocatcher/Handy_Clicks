@@ -489,7 +489,9 @@ var handyClicksAutocompleteData = {
 		"getService",
 		"createInstance",
 		"QueryInterface",
-		"hasMoreElements"
+		"hasMoreElements",
+		// Other:
+		"wrappedJSObject"
 	],
 	_jsStrings: [
 		"abort",

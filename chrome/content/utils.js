@@ -733,6 +733,7 @@ var handyClicksUtils = {
 			node.hidePopup();
 		_cm.call(this, node.parentNode);
 	},
+
 	hasModifier: function(evt) {
 		return evt.ctrlKey || evt.shiftKey || evt.altKey || evt.metaKey;
 	},
@@ -743,7 +744,7 @@ var handyClicksUtils = {
 	mmLine: function(n) {
 		if(n >= 0xFFFFFFFF)
 			n = 1;
-		return this.mm(n, 1, 100000);
+		return this.mm(n, 1, 1e5);
 	},
 
 	get trim() { // function(str)

@@ -82,6 +82,12 @@
 				]]>
 				</body>
 			</method>
+			<method name="_isSpaces">
+				<parameter name="str" />
+				<body>
+					return /^ {2,}$/.test(str);
+				</body>
+			</method>
 			<method name="setIndent">
 				<parameter name="indentChar" />
 				<parameter name="removeFlag" />
@@ -97,7 +103,7 @@
 					var lineEnd = val.substring(se).match(/^[^\r\n]*/)[0];
 
 					if(!/\n|\r/.test(sel)) {
-						if(/^ {2,}$/.test(indentChar)) {
+						if(this._isSpaces(indentChar)) {
 							var lenStart = lineStart.length + lineEnd.match(/^ */)[0].length;
 							var maxSpaces = indentChar.length;
 							indentChar = indentChar.substr(0, (maxSpaces - lenStart % maxSpaces) || maxSpaces);
@@ -110,7 +116,7 @@
 
 					var block = lineStart + sel + lineEnd;
 					if(removeFlag) {
-						if(/^ {2,}$/.test(indentChar))
+						if(this._isSpaces(indentChar))
 							indentChar = "( {1," + indentChar.length + "}|\\t)";
 						var re = new RegExp("^" + indentChar, "mg");
 						if(!re.test(block))
@@ -140,7 +146,7 @@
 					if(ss != se)
 						return;
 					var tab = this.tabSymbol;
-					if(!/^ {2,}$/.test(tab))
+					if(!this._isSpaces(tab))
 						return;
 					var line = this.value.substring(0, ss).match(/[^\r\n]*$/)[0];
 					var availSpaces = line.match(/ *$/)[0].length;
@@ -374,13 +380,9 @@
 				<![CDATA[
 					this.style.fontSize = add == 0
 						? ""
-						: Math.min(
-							36,
-							Math.max(
-								1,
-								parseInt(this.ownerDocument.defaultView.getComputedStyle(this, null).fontSize) + add
-							)
-						) + "px";
+						: Math.min(48, Math.max(1,
+							parseInt(this.ownerDocument.defaultView.getComputedStyle(this, null).fontSize) + add
+						)) + "px";
 					this.id && document.persist(this.id, "style");
 				]]>
 				</body>
@@ -473,26 +475,24 @@
 
 					if(!ee && "nsIWindowsRegKey" in Components.interfaces) try {
 						// Check Windows association
-						var extKey = Components.classes["@mozilla.org/windows-registry-key;1"]
+						var regKey = Components.classes["@mozilla.org/windows-registry-key;1"]
 							.createInstance(Components.interfaces.nsIWindowsRegKey);
-						var hkcr = extKey.ROOT_KEY_CLASSES_ROOT;
-						var accr = extKey.ACCESS_READ;
-						extKey.open(hkcr, "." + ext, accr);
-						var cmdId = extKey.readStringValue("");
-						extKey.close();
+						var readKey = function(path) {
+							regKey.open(regKey.ROOT_KEY_CLASSES_ROOT, path, regKey.ACCESS_READ);
+							var val = regKey.readStringValue("");
+							regKey.close();
+							return val;
+						};
+						var cmdId = readKey("." + ext);
 						if(cmdId) {
-							var cmdKey = Components.classes["@mozilla.org/windows-registry-key;1"]
-								.createInstance(Components.interfaces.nsIWindowsRegKey);
-							cmdKey.open(hkcr, cmdId + "\\shell\\open\\command", accr);
-							var cmd = cmdKey.readStringValue("");
-							cmdKey.close();
+							var cmd = readKey(cmdId + "\\shell\\open\\command");
 							if(cmd) {
 								// %SystemRoot%\System32\WScript.exe "%1" %*
 								var wscript = ut.expandEnvironmentVariables("%SystemRoot%\\system32\\wscript.exe").toLowerCase();
 								var indx = ut.expandEnvironmentVariables(cmd).toLowerCase().indexOf(wscript);
 								if(indx == 0 || indx == 1) {
 									ee = "%SystemRoot%\\notepad.exe";
-									ut._log(<>openExternalEditor: "invalid" association: {cmd + "\n"}Will use "{ee}"</>);
+									ut._log(<>openExternalEditor: "invalid" association: {cmd}&#10;Will use "{ee}"</>);
 								}
 							}
 						}
@@ -767,6 +767,12 @@
 				else if((d = maxY - ey) < corner) // bottom
 					ifi.scrollTop += c(d);
 
+			]]>
+			</handler>
+			<handler event="DOMMouseScroll">
+			<![CDATA[
+				if(event.ctrlKey && !event.shiftKey && !event.altKey && !event.metaKey)
+					this.textZoom(event.detail > 0 ? 1 : -1);
 			]]>
 			</handler>
 		</handlers>

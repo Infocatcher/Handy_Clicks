@@ -126,13 +126,13 @@
 <!ENTITY hc.sets.actionButtonMiddle "Клик СКМ">
 <!ENTITY hc.sets.actionButtonMiddleTip "Или клик ЛКМ с любым модификатором">
 <!ENTITY hc.sets.actionButtonRight "Клик ПКМ">
-<!ENTITY hc.sets.actionDoNothing "Ничего не делать">
 <!ENTITY hc.sets.actionToggleStatus "Переключить статус">
 <!ENTITY hc.sets.actionOpenSettings "Открыть настройки">
 <!ENTITY hc.sets.actionContext "Показать контекстное меню">
 <!ENTITY hc.sets.actionEditMode "Режим редактирования">
 <!ENTITY hc.sets.actionShowAllSettings "Показать все настройки">
 <!ENTITY hc.sets.actionOpenCloseSettings "Открыть/закрыть настройки">
+<!ENTITY hc.sets.actionDoNothing "Ничего не делать">
 <!ENTITY hc.sets.actionReset "Сбросить">
 <!ENTITY hc.sets.actionResetAll "Сбросить всё">
 
