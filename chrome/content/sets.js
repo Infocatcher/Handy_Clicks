@@ -1672,11 +1672,11 @@ var handyClicksSets = {
 		//var fromClip = this._importFromClipboard;
 		this.setImportStatus(false);
 		if(ok) {
+			// Keep prefs file because content of new file may be equals!
+			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, null, true);
+
 			this.ps.otherSrc = false;
-			if(isPartial)
-				this.mergePrefs();
-			else // Keep prefs file because content of new file may be equals!
-				this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, null, true);
+			isPartial && this.mergePrefs();
 			this.ps.saveSettingsObjects(true);
 		}
 		else {
