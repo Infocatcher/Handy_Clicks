@@ -14,11 +14,10 @@ var handyClicksConsole = {
 		var link = tar.parentNode;
 		var href = link.getAttribute("href") || "";
 		var line = Number(link.getAttribute("line"));
-		if(href.indexOf(this.ct.PROTOCOL_EDITOR) == 0) {
-			e.preventDefault();
-			e.stopPropagation();
-			this.wu.openEditorLink(href, line)
-		}
+		if(!this.wu.openEditorLink(href, line))
+			return;
+		e.preventDefault();
+		e.stopPropagation();
 	},
 	handleEvent: function(e) {
 		if(e.type == "click")

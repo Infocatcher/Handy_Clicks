@@ -119,7 +119,7 @@ var handyClicksUI = {
 		);
 
 		var inheritContext = this.pu.pref("ui.inheritToolbarContextMenu")
-			&& document.popupNode && document.popupNode.localName.indexOf("toolbar") == 0;
+			&& document.popupNode && !this.ut.hasPrefix(document.popupNode.localName, "statusbar");
 		this.$("handyClicks-mainCommandsSeparator").setAttribute("hc_hideAllAfter", !inheritContext);
 		if(!inheritContext)
 			return;
@@ -333,9 +333,9 @@ var handyClicksUI = {
 	updUI: function(pName) {
 		if(pName == "enabled")
 			this.setStatus();
-		else if(pName.indexOf("ui.showIn") == 0)
+		else if(this.ut.hasPrefix(pName, "ui.showIn"))
 			this.showHideControls();
-		else if(pName.indexOf("ui.action") == 0)
+		else if(this.ut.hasPrefix(pName, "ui.action"))
 			this.setupUIActions();
 	},
 	setStatus: function() {
@@ -479,7 +479,7 @@ var handyClicksUI = {
 		var key = tokens.pop() || " ";
 		var modifiers = tokens.join(",");
 		kElt.removeAttribute("disabled");
-		kElt.setAttribute(key.indexOf("VK_") == 0 ? "keycode" : "key", key);
+		kElt.setAttribute(this.ut.hasPrefix(key, "VK_") ? "keycode" : "key", key);
 		kElt.setAttribute("modifiers", modifiers);
 	}
 };

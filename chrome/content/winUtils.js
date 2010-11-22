@@ -140,8 +140,8 @@ var handyClicksWinUtils = {
 	},
 	openEditorLink: function(href, line) {
 		const ed = this.ct.PROTOCOL_EDITOR;
-		if(!href || href.indexOf(ed) != 0)
-			return;
+		if(!href || !this.hasPrefix(href, ed))
+			return null;
 		href = href.replace(/\?(.*)$/, "");
 		var args = RegExp.$1;
 		if(args && typeof line != "number" && /(?:^|&)line=(\d+)(?:&|$)/.test(args))
@@ -160,7 +160,7 @@ var handyClicksWinUtils = {
 			var isDelayed = false;
 			var src = tokens[2];
 		}
-		this.openEditorEx(null, mode, shortcut, itemType, isDelayed, src, line);
+		return this.openEditorEx(null, mode, shortcut, itemType, isDelayed, src, line);
 	},
 	getOpenEditorLink: function(href, line) {
 		var _this = this;
@@ -199,7 +199,7 @@ var handyClicksWinUtils = {
 	},
 	openSettingsPane: function(paneId) {
 		const idPrefix = "hc-sets-pane-";
-		if(paneId.indexOf(idPrefix) != 0)
+		if(!this.hasPrefix(paneId, idPrefix))
 			paneId = idPrefix + paneId;
 		var w = this.openSettings();
 		var showPane = function _sp(e) {
@@ -215,11 +215,17 @@ var handyClicksWinUtils = {
 		return w;
 	},
 	openSettingsLink: function(uri) {
-		if(uri.indexOf(this.ct.PROTOCOL_SETTINGS_ADD) == 0)
+		if(this.hasPrefix(uri, this.ct.PROTOCOL_SETTINGS_ADD))
 			this.openSettingsImport(true, this.ct.IMPORT_STRING, uri);
-		else if(uri.indexOf(this.ct.PROTOCOL_SETTINGS_PANE) == 0)
-			this.openSettingsPane(uri.substr(this.ct.PROTOCOL_SETTINGS_PANE.length, uri.length));
-		else if(uri.indexOf(this.ct.PROTOCOL_SETTINGS) == 0)
+		else if(this.hasPrefix(uri, this.ct.PROTOCOL_SETTINGS_PANE))
+			this.openSettingsPane(uri.substr(this.ct.PROTOCOL_SETTINGS_PANE.length));
+		else if(this.hasPrefix(uri, this.ct.PROTOCOL_SETTINGS))
 			this.openSettings();
+	},
+
+	// See same function in utils.js (winUtils.js are global, but utils.js - not)
+	//~ todo: use global utils
+	hasPrefix: function(str, prefix) {
+		return str.substr(0, prefix.length) == prefix;
 	}
 };

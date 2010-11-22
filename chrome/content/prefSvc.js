@@ -625,7 +625,7 @@ var handyClicksPrefSvc = {
 			if(
 				!entry.isFile()
 				|| !/\.js$/i.test(fName)
-				|| fName.indexOf(namePrefix) != 0
+				|| !this.ut.hasPrefix(fName, namePrefix)
 				|| !/-(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\.js$/.test(fName)
 			)
 				continue;
@@ -801,14 +801,14 @@ var handyClicksPrefSvc = {
 	},
 	getPrefsStr: function(str) {
 		const add = this.ct.PROTOCOL_SETTINGS_ADD;
-		return str.indexOf(add) == 0
-			? this.decURI(str.substr(add.length))
-			: str;
+		if(this.ut.hasPrefix(str, add))
+			return this.decURI(str.substr(add.length));
+		return str;
 	},
 	checkPrefsStr: function(str) {
 		this._hashError = false;
 		this._hashMissing = true;
-		if(str.indexOf(this.requiredHeader) != 0)
+		if(!this.ut.hasPrefix(str, this.requiredHeader))
 			return false;
 		const hcVarsRe = /^var handyClicks[\w$]+\s*=.*$/mg;
 		if(!hcVarsRe.test(str))

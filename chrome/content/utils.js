@@ -121,23 +121,20 @@ var handyClicksUtils = {
 	},
 
 	hasPrefix: function(str, prefix) {
-		return typeof str == "string" && str.indexOf(prefix) == 0;
+		return str.substr(0, prefix.length) == prefix;
 	},
-	removePrefix: function(str, prefix) {
-		return this.hasPrefix(str, prefix)
-			? str.substr(prefix.length)
-			: str;
+	removePrefix: function(str, prefix, forced) {
+		if(forced || this.hasPrefix(str, prefix))
+			return str.substr(prefix.length);
+		return str;
 	},
 	hasPostfix: function(str, postfix) {
-		return typeof str == "string" && str.indexOf(postfix) == str.length - postfix.length;
+		return str.substr(-postfix.length) == postfix;
 	},
-	removePostfix: function(str, postfix) {
-		if(typeof str != "string")
-			return str;
-		var indx = str.indexOf(postfix);
-		return indx == str.length - postfix.length
-			? str.substring(0, indx)
-			: str;
+	removePostfix: function(str, postfix, forced) {
+		if(forced || this.hasPostfix(str, postfix))
+			return str.substr(0, str.length - postfix.length);
+		return str;
 	},
 
 	NOTIFY_ICON_NORMAL: "normal",

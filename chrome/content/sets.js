@@ -1564,7 +1564,7 @@ var handyClicksSets = {
 			this.updTree(false);
 		else if(pName == "sets.localizeArguments")
 			this.updTree();
-		else if(pName.indexOf("editor.externalEditor") == 0) {
+		else if(this.ut.hasPrefix(pName, "editor.externalEditor")) {
 			this.initExternalEditor();
 			this.updateAllDependencies("externalEditor");
 		}
@@ -1576,7 +1576,7 @@ var handyClicksSets = {
 		}
 		else if(pName == "editor.tabSymbol")
 			this.setTabulation();
-		else if(pName.indexOf("ui.action") == 0)
+		else if(this.ut.hasPrefix(pName, "ui.action"))
 			this.loadUIAction();
 		else {
 			this.updateAllDependencies();
@@ -1862,7 +1862,7 @@ var handyClicksSets = {
 				aliasPath = aliasFile.path;
 				aliasLength = aliasPath.length;
 				if(
-					path.indexOf(aliasPath) != 0
+					!this.ut.hasPrefix(path, aliasPath)
 					|| !/\/|\\/.test(path.substr(aliasLength - 1, 2))
 					|| resPath && (level > resLevel || level == resLevel && aliasLength < resLength)
 				)
@@ -2151,7 +2151,7 @@ var handyClicksSets = {
 		if(!file)
 			return;
 		var str = this.ut.readFromFile(file);
-		if(str.indexOf(this.exportPrefsHeader) != 0) {
+		if(!this.ut.hasPrefix(str, this.exportPrefsHeader)) {
 			this.ut.alert(
 				this.ut.getLocalized("importErrorTitle"),
 				this.ut.getLocalized("invalidConfigFormat")
@@ -2176,7 +2176,7 @@ var handyClicksSets = {
 					return;
 				}
 				var pName = line.substr(0, indx);
-				if(pName.indexOf(this.pu.prefNS) != 0) {
+				if(!this.ut.hasPrefix(pName, this.pu.prefNS)) {
 					this.ut._warn(<>[Import INI] Skipped pref with invalid name: "{pName}"</>);
 					return;
 				}
@@ -2414,14 +2414,14 @@ var handyClicksSets = {
 			fName = entry.leafName;
 			if(
 				!entry.isFile()
-				|| fName.indexOf(fPrefix) != 0
+				|| !this.ut.hasPrefix(fName, fPrefix)
 				|| !/\.js$/i.test(fName)
 				|| fName == mainFile
-				|| fName.indexOf(corrupted) == 0
+				|| this.ut.hasPrefix(fName, corrupted)
 			)
 				continue;
 			if(
-				fName.indexOf(userBackup) == 0
+				this.ut.hasPrefix(fName, userBackup)
 				&& /-(\d{14})(?:-\d+)?\.js$/.test(fName)
 			) {
 				_ubTime = Number(RegExp.$1);
@@ -2456,9 +2456,9 @@ var handyClicksSets = {
 						image={ "moz-icon:file://" + fPath.replace(/\\/g, "/") + "?size=16" }
 						tooltiptext={fPath}
 						hc_fileName={fName}
-						hc_userBackup={ fName.indexOf(userBackup) == 0 }
-						hc_oldBackup={  fName.indexOf(oldBackup)  == 0 }
-						hc_testBackup={ fName.indexOf(testBackup) == 0 && testBackupStatus }
+						hc_userBackup={ this.ut.hasPrefix(fName, userBackup) }
+						hc_oldBackup={  this.ut.hasPrefix(fName, oldBackup) }
+						hc_testBackup={ testBackupStatus && this.ut.hasPrefix(fName, testBackup) }
 					/>
 				), sep);
 			},
