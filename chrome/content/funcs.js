@@ -1169,6 +1169,7 @@ var handyClicksFuncs = {
 			this.ui.progressLabel.value = i + "/" + this.ui.progressCount;
 			this.ui.progress.max = this.ui.progressCount*10;
 			this.ui.progress.value = i*10;
+			this.ui.setTaskbarProgressState(i, this.ui.progressCount);
 		}
 
 		var _this = this;
@@ -1188,6 +1189,7 @@ var handyClicksFuncs = {
 			if(showProgress) {
 				_this.ui.progressLabel.value = ++_this.ui.progressPart + "/" + _this.ui.progressCount;
 				var state = _this.ui.progress.value = _this.ui.progressPart*10;
+				_this.ui.setTaskbarProgressState(_this.ui.progressPart, _this.ui.progressCount);
 				var done = state >= _this.ui.progress.max;
 			}
 			if(_this.ut.isEmptyObj(hrefs)) {

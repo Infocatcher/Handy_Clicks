@@ -416,7 +416,40 @@ var handyClicksUI = {
 				this.progressPart = this.progressCount = 0;
 			clearTimeout(this._progressHideTimeout);
 		}
+		else {
+			this.hideTaskbarProgress();
+		}
 		this.progressPanel.collapsed = !show;
+	},
+	get taskbarProgress() {
+		delete this.taskbarProgress;
+		const taskbarId = "@mozilla.org/windows-taskbar;1";
+		const cc = Components.classes;
+		const ci = Components.interfaces;
+		if(!(taskbarId in cc))
+			return this.taskbarProgress = null;
+		var taskbar = cc[taskbarId].getService(ci.nsIWinTaskbar);
+		if(!taskbar.available)
+			return this.taskbarProgress = null;
+		var docShell = window.QueryInterface(ci.nsIInterfaceRequestor)
+			.getInterface(ci.nsIWebNavigation)
+			.QueryInterface(ci.nsIDocShellTreeItem)
+			.treeOwner
+			.QueryInterface(ci.nsIInterfaceRequestor)
+			.getInterface(ci.nsIXULWindow)
+			.docShell;
+		return this.taskbarProgress = taskbar.getTaskbarProgress(docShell);
+	},
+	setTaskbarProgressState: function(current, max, state) {
+		if(this.taskbarProgress)
+			this.taskbarProgress.setProgressState(
+				state === undefined ? Components.interfaces.nsITaskbarProgress.STATE_NORMAL : state,
+				current || 0,
+				max     || 0
+			);
+	},
+	hideTaskbarProgress: function() {
+		this.setTaskbarProgressState(0, 0, Components.interfaces.nsITaskbarProgress.STATE_NO_PROGRESS);
 	},
 	progressCancel: function() {
 		this.userCancelled = true;
