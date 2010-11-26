@@ -66,7 +66,7 @@ var hcNotify = {
 				.getEnumerator(document.documentElement.getAttribute("windowtype"));
 			while(ws.hasMoreElements()) {
 				var w = ws.getNext();
-				if(w == window || !w.hcNotify.inWindowCorner)
+				if(w == window || w.hcNotify && !w.hcNotify.inWindowCorner)
 					continue;
 				var dh = -(winH + 2);
 				if(w.screenY + dh >= 0)

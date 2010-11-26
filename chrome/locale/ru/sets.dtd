@@ -70,6 +70,7 @@
 <!ENTITY hc.sets.import "Импорт">
 <!ENTITY hc.sets.importAccesskey "И">
 <!ENTITY hc.sets.fullImportFromFile "Импорт из файла…">
+
 <!ENTITY hc.sets.restoreFromBackup "Восстановить из резервной копии">
 <!ENTITY hc.sets.openDir "Открыть папку">
 <!ENTITY hc.sets.openDirAccesskey "О">
@@ -77,6 +78,11 @@
 <!ENTITY hc.sets.removeUserBackupsExc10Accesskey "к">
 <!ENTITY hc.sets.removeAllUserBackups "Удалить все пользовательские резервные копии">
 <!ENTITY hc.sets.removeAllUserBackupsAccesskey "У">
+<!ENTITY hc.sets.restoreBackup "Восстановить…">
+<!ENTITY hc.sets.removeBackup "Удалить">
+<!ENTITY hc.sets.restoreBackupIncrement "Инкрементный импорт…">
+<!ENTITY hc.sets.showBackupFile "Показать файл">
+
 <!ENTITY hc.sets.importIncrementFromFile "Инкрементный импорт из файла…">
 <!ENTITY hc.sets.importIncrementFromClipboard "Инкрементный импорт из буфера обмена">
 <!ENTITY hc.sets.importOk "Импортировать">

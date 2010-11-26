@@ -180,6 +180,7 @@
 							<menu id="hc-sets-tree-restoreFromBackupMenu" label="&hc.sets.restoreFromBackup;"
 								oncommand="event.stopPropagation();">
 								<menupopup id="hc-sets-tree-restoreFromBackupPopup"
+									context="hc-sets-tree-restoreFromBackupContext"
 									oncommand="handyClicksSets.handleRestoreCommand(event);"
 									onclick="if(event.button > 0) handyClicksSets.handleRestoreCommand(event);">
 									<menuseparator />
@@ -569,6 +570,18 @@
 				label="&hc.sets.importPrefs;" />
 			<menuitem id="hc-sets-prefs-miExport" class="menuitem-iconic handyClicks-iconic" oncommand="handyClicksSets.exportPrefs();"
 				label="&hc.sets.exportPrefs;" />
+		</menupopup>
+		<menupopup id="hc-sets-tree-restoreFromBackupContext"
+			onpopupshowing="return document.popupNode.hasAttribute('hc_fileName');">
+			<menuitem default="true" label="&hc.sets.restoreBackup;"
+				oncommand="document.popupNode.doCommand();" />
+			<menuitem label="&hc.sets.restoreBackupIncrement;"
+				oncommand="handyClicksSets.importSets(true, handyClicksConst.IMPORT_BACKUP, document.popupNode.getAttribute('hc_fileName'));" />
+			<menuitem label="&hc.sets.showBackupFile;"
+				oncommand="handyClicksSets.reveal(handyClicksPrefSvc.getFile(document.popupNode.getAttribute('hc_fileName')));" />
+			<menuitem id="hc-sets-removeBackup" class="menuitem-iconic handyClicks-iconic"
+				closemenu="none" label="&hc.sets.removeBackup;"
+				oncommand="handyClicksSets.removeBackup(document.popupNode, event); this.parentNode.hidePopup();" />
 		</menupopup>
 		<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical" noautohide="true"
 			onpopupshowing="return !document.tooltipNode.disabled;">

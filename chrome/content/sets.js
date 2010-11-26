@@ -1493,7 +1493,7 @@ var handyClicksSets = {
 				};
 				sf.setAttribute("hc_queryType", "spaceSeparated");
 			}
-		}		
+		}
 
 		if(!hasTerm)
 			dontSelect = true;
@@ -2361,7 +2361,7 @@ var handyClicksSets = {
 			this.ut.bind(this.reveal, this, [bFile])
 		);
 	},
-	removeBackup: function(mi, dontAsk) {
+	removeBackup: function(mi, e) {
 		var fName = mi.getAttribute("hc_fileName");
 		if(!fName)
 			return false;
@@ -2372,6 +2372,7 @@ var handyClicksSets = {
 			return false;
 		}
 
+		var dontAsk = this.ut.hasModifier(e);
 		if(!dontAsk && this.pu.pref("sets.removeBackupConfirm")) {
 			this.ut.closeMenus(mi);
 			this.ut.fixMinimized();
@@ -2398,12 +2399,13 @@ var handyClicksSets = {
 			return;
 		var butt = "button" in e && e.button;
 		if(e.type == "command" || butt == 1) {
-			var hasModifier = this.ut.hasModifier(e);
-			this.importSets(hasModifier || butt == 1/*partialImport*/, this.ct.IMPORT_BACKUP, mi.getAttribute("hc_fileName"));
+			this.importSets(
+				this.ut.hasModifier(e) || butt == 1/*partialImport*/,
+				this.ct.IMPORT_BACKUP,
+				mi.getAttribute("hc_fileName")
+			);
 			this.ut.closeMenus(mi);
 		}
-		else if(butt == 2)
-			this.removeBackup(mi, e.shiftKey);
 	},
 	get ubPopup() {
 		delete this.ubPopup;
@@ -2476,7 +2478,6 @@ var handyClicksSets = {
 					<menuitem xmlns={this.ut.XULNS}
 						label={ fTime + " [" + fSize + " " + bytes + "] \u2013 " + fName }
 						class="menuitem-iconic"
-						image={ "moz-icon:file://" + fPath.replace(/\\/g, "/") + "?size=16" }
 						tooltiptext={fPath}
 						hc_fileName={fName}
 						hc_userBackup={ this.ut.hasPrefix(fName, userBackup) }
@@ -2509,6 +2510,10 @@ var handyClicksSets = {
 		menu.setAttribute("disabled", isEmpty);
 		if(isEmpty)
 			popup.hidePopup();
+		if("__userBackups" in popup)
+			popup.__userBackups = popup.__userBackups.filter(function(file) {
+				return file.exists();
+			});
 		this.$("hc-sets-tree-removeUserBackupsExc10").setAttribute("disabled", ubCount <= 10);
 		this.$("hc-sets-tree-removeAllUserBackups")  .setAttribute("disabled", ubCount == 0);
 	},
@@ -2518,7 +2523,7 @@ var handyClicksSets = {
 		ub.slice(store, ub.length).forEach(
 			function(file) {
 				var fName = /[^\\\/]+$/.test(file.leafName) && RegExp.lastMatch;
-				file.remove(false);
+				file.exists() && file.remove(false);
 				Array.forEach(
 					popup.getElementsByAttribute("hc_fileName", fName),
 					function(mi) {

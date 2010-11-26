@@ -70,6 +70,7 @@
 <!ENTITY hc.sets.import "Import">
 <!ENTITY hc.sets.importAccesskey "I">
 <!ENTITY hc.sets.fullImportFromFile "Import from file…">
+
 <!ENTITY hc.sets.restoreFromBackup "Restore from backup">
 <!ENTITY hc.sets.openDir "Open directory">
 <!ENTITY hc.sets.openDirAccesskey "O">
@@ -77,6 +78,11 @@
 <!ENTITY hc.sets.removeUserBackupsExc10Accesskey "x">
 <!ENTITY hc.sets.removeAllUserBackups "Remove all user backups">
 <!ENTITY hc.sets.removeAllUserBackupsAccesskey "R">
+<!ENTITY hc.sets.restoreBackup "Restore…">
+<!ENTITY hc.sets.removeBackup "Remove">
+<!ENTITY hc.sets.restoreBackupIncrement "Incremental import…">
+<!ENTITY hc.sets.showBackupFile "Show file">
+
 <!ENTITY hc.sets.importIncrementFromFile "Incremental import from file…">
 <!ENTITY hc.sets.importIncrementFromClipboard "Incremental import from clipboard">
 <!ENTITY hc.sets.importOk "Import">
