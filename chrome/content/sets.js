@@ -1450,25 +1450,50 @@ var handyClicksSets = {
 		var filterMode = this.$("hc-sets-tree-searchFilterMode").getAttribute("checked") == "true";
 
 		var sTerm = sf.value;
-		var isRegExp = false;
+		var checkFunc;
+		var caseSensitive = false;
 		var hasTerm = true;
-		if(!/^\/(.+)\/([im]{0,2})$/.test(sTerm))
-			sf.removeAttribute("hc_isValidRegExp");
-		else {
+
+		if(/^\/(.+)\/([im]{0,2})$/.test(sTerm)) { // /RegExp/flags
 			try {
 				sTerm = new RegExp(RegExp.$1, RegExp.$2);
-				isRegExp = true;
-				sf.setAttribute("hc_isValidRegExp", "true");
+				var _ = this.ut.bind(this.ut._log, this.ut);
+				checkFunc = function(rowText) {
+					//_(rowText, sTerm.test(rowText));
+					return sTerm.test(rowText);
+				};
+				caseSensitive = true;
+				sf.setAttribute("hc_queryType", "RegExp");
 			}
 			catch(e) {
-				sf.setAttribute("hc_isValidRegExp", "false");
 			}
 		}
-		if(!isRegExp) {
-			sTerm = this.ut.trim(sf.value);
-			hasTerm = !!sTerm;
-			sTerm = sTerm.toLowerCase().split(/\s+/);
-		}
+
+		if(!checkFunc) {
+			if(/^('|")(.*)\1$/.test(sTerm)) { // "whole string"
+				sTerm = RegExp.$2;
+				if(!sTerm)
+					hasTerm = false;
+				if(RegExp.$1 == '"')
+					caseSensitive = true;
+				else
+					sTerm = sTerm.toLowerCase();
+				checkFunc = function(rowText) {
+					return rowText.indexOf(sTerm) != -1;
+				};
+				sf.setAttribute("hc_queryType", "wholeString");
+			}
+			else { // Threat spaces as "and"
+				sTerm = this.ut.trim(sTerm).toLowerCase();
+				if(!sTerm)
+					hasTerm = false;
+				sTerm = sTerm.split(/\s+/);
+				checkFunc = function(rowText) {
+					return sTerm.every(function(s) { return rowText.indexOf(s) != -1; });
+				};
+				sf.setAttribute("hc_queryType", "spaceSeparated");
+			}
+		}		
 
 		if(!hasTerm)
 			dontSelect = true;
@@ -1482,10 +1507,8 @@ var handyClicksSets = {
 			tRow = this.rowsCache[h];
 			okRow = true;
 			if(hasTerm) {
-				rowText = this.getRowText(tRow, !isRegExp); //~ todo: cache?
-				okRow = isRegExp
-					? sTerm.test(rowText)
-					: sTerm.every(function(s) { return rowText.indexOf(s) != -1; });
+				rowText = this.getRowText(tRow, caseSensitive); //~ todo: cache?
+				okRow = checkFunc(rowText);
 			}
 			var hl = hasTerm && okRow;
 			this.setClildsProperties(tRow, { hc_search: hl }, true);
@@ -1528,7 +1551,7 @@ var handyClicksSets = {
 
 		this._lastSearch = Date.now();
 	},
-	getRowText: function(tRow, lowerCase) {
+	getRowText: function(tRow, caseSensitive) {
 		var tChld = tRow, tItem;
 		var tBody = this.tBody;
 		var rowText = [];
@@ -1552,7 +1575,7 @@ var handyClicksSets = {
 		}
 		while(tChld != tBody);
 		rowText = rowText.join("\n");
-		return lowerCase ? rowText.toLowerCase() : rowText;
+		return caseSensitive ? rowText : rowText.toLowerCase();
 	},
 
 	/*** Prefs pane ***/

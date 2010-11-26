@@ -30,9 +30,13 @@ radio[pane="hc-sets-pane-funcs"] {
 	margin: 0;
 	border: none;
 }
-#hc-sets-tree-searchField[hc_isValidRegExp="true"], #hc-sets-tree-searchField[hc_isValidRegExp="true"] > * {
+#hc-sets-tree-searchField[hc_queryType="RegExp"], #hc-sets-tree-searchField[hc_queryType="RegExp"] > * {
 	background-color: white;
 	color: blue !important;
+}
+#hc-sets-tree-searchField[hc_queryType="wholeString"], #hc-sets-tree-searchField[hc_queryType="wholeString"] > * {
+	background-color: white;
+	color: green !important;
 }
 #hc-sets-tree-searchField[hc_notFound="true"], #hc-sets-tree-searchField[hc_notFound="true"] > * {
 	/* Colors from chrome://global/skin/findBar.css in Firefox 3.0 */

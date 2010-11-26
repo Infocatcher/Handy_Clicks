@@ -705,6 +705,7 @@
 			<handler event="keypress" preventdefault="true" key="0" action="this.textZoom(0);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="g" action="this.goToLine();" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="w" action="this.toggleWordWrap();" modifiers="control" />
+			<handler event="keypress" preventdefault="true" keycode="VK_F4" action="this.openExternalEditor();" />
 			<handler event="keypress" preventdefault="true" key="e" action="this.openExternalEditor();" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(false);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(true);" modifiers="control,shift" />
