@@ -2283,20 +2283,8 @@ var handyClicksSets = {
 	},
 	importSets: function(partialImport, srcId, data) {
 		this.selectTreePane();
-		if(this.pu.pref("sets.importJSWarning")) {
-			this.ut.fixMinimized();
-			var ask = { value: false };
-			var cnf = this.ut.promptsSvc.confirmCheck(
-				window, this.ut.getLocalized("warningTitle"),
-				this.ut.getLocalized("importSetsWarning"),
-				this.ut.getLocalized("importSetsWarningNotShowAgain"), ask
-			);
-			if(!cnf)
-				return;
-			this.pu.pref("sets.importJSWarning", !ask.value);
-		}
-		var pSrc;
 		var ct = this.ct;
+		var pSrc;
 		switch(srcId) {
 			default:
 			case ct.IMPORT_FILEPICKER:
@@ -2305,7 +2293,7 @@ var handyClicksSets = {
 					return;
 			break;
 			case ct.IMPORT_CLIPBOARD:
-				pSrc = this.ps.clipboardPrefs; // Valid or empty
+				pSrc = this.ps.clipboardPrefs;
 				var fromClip = true;
 			break;
 			case ct.IMPORT_STRING:
@@ -2316,7 +2304,11 @@ var handyClicksSets = {
 		}
 		//if(!pSrc)
 		//	return;
-		if(fromClip ? !pSrc : !this.ps.checkPrefs(pSrc)) {
+		if(
+			fromClip
+				? !pSrc // this.ps.clipboardPrefs are valid or empty
+				: !this.ps.checkPrefs(pSrc)
+		) {
 			this.ut.alert(
 				this.ut.getLocalized("importErrorTitle"),
 				this.ut.getLocalized("invalidConfigFormat")
@@ -2333,6 +2325,18 @@ var handyClicksSets = {
 			)
 		)
 			return;
+		if(srcId != ct.IMPORT_BACKUP && this.pu.pref("sets.importJSWarning")) {
+			this.ut.fixMinimized();
+			var ask = { value: false };
+			var cnf = this.ut.promptsSvc.confirmCheck(
+				window, this.ut.getLocalized("warningTitle"),
+				this.ut.getLocalized("importSetsWarning"),
+				this.ut.getLocalized("importSetsWarningNotShowAgain"), ask
+			);
+			if(!cnf)
+				return;
+			this.pu.pref("sets.importJSWarning", !ask.value);
+		}
 		if(!this.ps.otherSrc) {
 			this._savedPrefs = this.ps.prefs;
 			this._savedTypes = this.ps.types;
@@ -2372,7 +2376,7 @@ var handyClicksSets = {
 			return false;
 		}
 
-		var dontAsk = this.ut.hasModifier(e);
+		var dontAsk = this.ut.hasModifier(e) || e.type == "click";
 		if(!dontAsk && this.pu.pref("sets.removeBackupConfirm")) {
 			this.ut.closeMenus(mi);
 			this.ut.fixMinimized();
@@ -2397,15 +2401,11 @@ var handyClicksSets = {
 		var mi = e.target;
 		if(!mi.hasAttribute("hc_fileName"))
 			return;
-		var butt = "button" in e && e.button;
-		if(e.type == "command" || butt == 1) {
-			this.importSets(
-				this.ut.hasModifier(e) || butt == 1/*partialImport*/,
-				this.ct.IMPORT_BACKUP,
-				mi.getAttribute("hc_fileName")
-			);
-			this.ut.closeMenus(mi);
-		}
+		this.importSets(
+			this.ut.hasModifier(e) || e.type == "click",
+			this.ct.IMPORT_BACKUP,
+			mi.getAttribute("hc_fileName")
+		);
 	},
 	get ubPopup() {
 		delete this.ubPopup;
