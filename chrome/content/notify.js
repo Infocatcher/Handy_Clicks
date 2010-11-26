@@ -61,9 +61,7 @@ var hcNotify = {
 		window.moveTo(x, y);
 
 		if(wa.inWindowCorner && wa.rearrangeWindows) {
-			var ws = Components.classes["@mozilla.org/appshell/window-mediator;1"]
-				.getService(Components.interfaces.nsIWindowMediator)
-				.getEnumerator(document.documentElement.getAttribute("windowtype"));
+			var ws = this.ws;
 			while(ws.hasMoreElements()) {
 				var w = ws.getNext();
 				if(w == window || w.hcNotify && !w.hcNotify.inWindowCorner)
@@ -92,6 +90,11 @@ var hcNotify = {
 	destroy: function() {
 		clearTimeout(this._closeTimeout);
 		clearInterval(this._highlightInterval);
+	},
+	get ws() {
+		return Components.classes["@mozilla.org/appshell/window-mediator;1"]
+			.getService(Components.interfaces.nsIWindowMediator)
+			.getEnumerator(document.documentElement.getAttribute("windowtype"));
 	},
 	set borderColor(clr) {
 		this._notifyBox.style.borderColor = clr;
@@ -134,14 +137,23 @@ var hcNotify = {
 	clickHandler: function(e) {
 		this.cancelDelayedClose();
 		var wa = window.arguments[0];
-		window.close();
+		var hasModifier = e.ctrlKey || e.shiftKey || e.altKey || e.metaKey;
+
+		if(e.button == 2 && hasModifier) {
+			var ws = this.ws;
+			while(ws.hasMoreElements())
+				ws.getNext().close();
+		}
+		else
+			window.close();
+
 		if(
-			e.button == 0 && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey
+			e.button == 0 && !hasModifier
 			&& typeof wa.funcLeftClick == "function"
 		)
 			wa.funcLeftClick();
 		else if(
-			(e.button == 1 || (e.button == 0 && (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey)))
+			(e.button == 1 || e.button == 0 && hasModifier)
 			&& typeof wa.funcMiddleClick == "function"
 		)
 			wa.funcMiddleClick();
