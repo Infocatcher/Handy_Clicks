@@ -5,7 +5,6 @@
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	id="handyClicks-notify"
 	windowtype="handyclicks:notify"
-	hidechrome="true"
 	align="start"
 	onload="hcNotify.init();"
 	onunload="hcNotify.destroy();">
@@ -21,5 +20,4 @@
 			<description id="hcNotifyDesc">[Message]</description>
 		</vbox>
 	</hbox>
-
 </window>
