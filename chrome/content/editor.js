@@ -327,7 +327,7 @@ var handyClicksEditor = {
 		this.initShortcutEditor();
 		this.appendTypesList();
 		this.initAdditionalOptions();
-		this.initCustomTypesEditor();
+		this.initCustomTypesEditor(allowUndo && this.currentCustomType);
 		this.disableUnsupported();
 		this._allowUndo = false;
 
@@ -580,7 +580,7 @@ var handyClicksEditor = {
 				label += " (" + ++_labels[label] + ")";
 			else
 				_labels[label] = 1;
-			mi = <menuitem xmlns={this.ut.XULNS} value={cType} label={label} />;
+			mi = <menuitem xmlns={this.ut.XULNS} value={cType} label={label} tooltiptext={cType} />;
 			_mi = mi.copy();
 			mi.@disabled = _mi.@hc_disabled = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
 			parent.insertBefore(this.ut.parseFromXML(mi), sep);
