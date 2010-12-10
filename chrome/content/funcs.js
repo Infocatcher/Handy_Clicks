@@ -367,9 +367,13 @@ var handyClicksFuncs = {
 		catch(e) {
 			this.ut._err(e);
 			this.ut.notify(
-				this.ut.getLocalized("RegExpError").replace("%r", regexpStr).replace("%err", e),
+				this.ut.getLocalized("RegExpError")
+					.replace("%r", regexpStr)
+					.replace("%p", this.pu.prefNS + regexpPref)
+					.replace("%err", e),
 				this.ut.getLocalized("errorTitle"),
-				this.ut.bind(this.pu.openAboutConfig, this.pu, [this.pu.prefNS + regexpPref]), null,
+				this.ut.toErrorConsole,
+				this.ut.bind(this.pu.openAboutConfig, this.pu, [this.pu.prefNS + regexpPref]),
 				this.ut.NOTIFY_ICON_ERROR
 			);
 			return false;

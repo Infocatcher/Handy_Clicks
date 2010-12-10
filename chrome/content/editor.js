@@ -36,6 +36,11 @@ var handyClicksEditor = {
 	funcOptsFixed: false,
 	testMode: false,
 
+	instantInit: function(reloadFlag) {
+		this._startTime = Date.now();
+		window.addEventListener("select", this, true);
+		window.addEventListener("focus",  this, true);
+	},
 	init: function(reloadFlag) {
 		if(this.ut.storage("extensionsPending")) {
 			// Hack for Firefox 3.7a5pre+ (see handyClicksExtensionsHelper.instantInit() in utils.js)
@@ -95,17 +100,55 @@ var handyClicksEditor = {
 		this.setCompactUI();
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 
-		window.addEventListener("focus", this, true);
+		window.addEventListener("keypress", this, true);
 	},
 	destroy: function(reloadFlag) {
 		this.wu.markOpenedEditors();
 		this.testMode && this.undoTestSettings();
-		window.removeEventListener("focus", this, true);
+		window.removeEventListener("keypress", this, true);
+		window.removeEventListener("select",   this, true);
+		window.removeEventListener("focus",    this, true);
 		this._savedShortcutObj = this._savedTypeObj = null;
 	},
+	_lastTabsSelect: 0,
+	get _focusFixTime() {
+		if(Date.now() - this._startTime < 600)
+			return 600;
+		delete this._startTime;
+		delete this._focusFixTime;
+		return this._focusFixTime = 30;
+	},
 	handleEvent: function(e) {
-		if(e.type == "focus")
-			this.fixFocusedElement(e);
+		switch(e.type) {
+			// Select tab -> small delay -> focus on readonly textbox -> move focus to editor textbox
+			case "select":
+				if(e.target.localName == "tabs")
+					this._lastTabsSelect = Date.now();
+			break;
+			case "focus":
+				var node = e.target;
+				if(
+					node.localName != "textbox"
+					|| !node.hasAttribute("tabindex")
+					|| node.getAttribute("readonly") != "true"
+				)
+					return;
+				if(Date.now() - this._lastTabsSelect > this._focusFixTime)
+					return;
+				for(node = node.parentNode; node; node = node.parentNode) {
+					if(node.localName == "tabpanel") {
+						var editor = this.getEditorFromPanel(node);
+						editor && editor.focus();
+						break;
+					}
+				}
+			break;
+			case "keypress":
+				if(e.keyCode == e.DOM_VK_F4 && !this.ut.hasModifier(e)) {
+					this.ut.stopEvent(e);
+					this.editCode();
+				}
+		}
 	},
 	addTestButtons: function() {
 		var testBtn = this.testButton = this.ut.parseFromXML(
@@ -208,9 +251,12 @@ var handyClicksEditor = {
 		var editor = this.getEditorFromTabbox(tabbox);
 		editor && editor.selectLine(line);
 	},
-	getEditorFromTabbox: function(tabbox) {
-		var panel = tabbox.selectedPanel
-			|| tabbox.getElementsByTagName("tabpanels")[0].getElementsByTagName("tabpanel")[tabbox.selectedIndex]; //~ todo: test
+	getSelectedPanel: function(tabbox) {
+		return tabbox.selectedPanel
+			|| tabbox.getElementsByTagName("tabpanels")[0] //~ todo: test
+				.getElementsByTagName("tabpanel")[tabbox.selectedIndex];
+	},
+	getEditorFromPanel: function (panel) {
 		var cre = /(?:^|\s)hcEditor(?:\s|$)/;
 		var editor;
 		Array.some(
@@ -222,6 +268,9 @@ var handyClicksEditor = {
 			}
 		);
 		return editor;
+	},
+	getEditorFromTabbox: function(tabbox) {
+		return this.getEditorFromPanel(this.getSelectedPanel(tabbox));
 	},
 	loadLabels: function() {
 		["hc-editor-button", "hc-editor-itemTypes", "hc-editor-func"].forEach(
@@ -927,9 +976,17 @@ var handyClicksEditor = {
 		this.$("hc-editor-funcOptsFixed").setAttribute("hc_cantFixFields", val);
 	},
 
-	editCode: function(tabbox) {
+	editCode: function() {
+		var tabbox = this.mainTabbox;
+		while(true) {
+			var panel = this.getSelectedPanel(tabbox);
+			var tabboxes = panel.getElementsByTagName("tabbox");
+			if(!tabboxes.length)
+				break;
+			tabbox = tabboxes[0];
+		}
 		var editor = this.getEditorFromTabbox(tabbox);
-		if(!editor)
+		if(!this.ut.isElementVisible(editor))
 			return;
 		editor.focus();
 		editor.openExternalEditor();
@@ -943,45 +1000,6 @@ var handyClicksEditor = {
 		);
 		const id = "hc-editor-allowMousedown";
 		this.$(id + "Label").disabled = this.$(id).disabled = isMd;
-	},
-	hasCaller: function(calledFunc, funcs, funcNames) {
-		for(var caller = calledFunc.caller; caller; caller = caller.caller) {
-			if(funcs.indexOf(caller) != -1 || funcNames.indexOf(caller.name) != -1)
-				return true;
-			if(caller === calledFunc) // Prevent recursion
-				return false;
-		}
-		return false;
-	},
-	_forbidFocusHandling: false,
-	fixFocusedElement: function _ffe(e) {
-		if(this._forbidFocusHandling)
-			return;
-		// Stack example: _ffe <- this.handleEvent <- _ffe.caller.caller
-		//this.ut._log(new Error().stack);
-		if(!this.hasCaller(_ffe, [document.commandDispatcher.advanceFocusIntoSubtree], ["_selectNewTab", "focusInit"]))
-			return;
-		var tar = e.target;
-		if(tar.localName != "textbox" || !tar.hasAttribute("tabindex") || tar.getAttribute("readonly") != "true")
-			return;
-		e.preventDefault();
-		for(var node = tar.parentNode; node; node = node.parentNode) {
-			if(node.localName != "tabpanel")
-				continue;
-			Array.some(
-				node.getElementsByTagName("textbox"),
-				function(elt) {
-					if(elt.hasAttribute("tabindex") || elt.getAttribute("readonly") == "true")
-						return false;
-					this._forbidFocusHandling = true;
-					elt.focus();
-					this._forbidFocusHandling = false;
-					return true;
-				},
-				this
-			);
-			break;
-		}
 	},
 
 	saveSettings: function(applyFlag) {
