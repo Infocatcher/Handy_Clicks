@@ -594,7 +594,7 @@
 					}
 					var scopeArr = top.handyClicksAutocompleteData[scopeProp];
 					if(reverseFlag)
-						scopeArr = scopeArr.reverse();
+						scopeArr = scopeArr.slice().reverse(); // Don't reverse original
 
 					var found = false;
 					scopeArr.some(function(p) {

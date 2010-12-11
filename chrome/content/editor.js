@@ -37,7 +37,7 @@ var handyClicksEditor = {
 	testMode: false,
 
 	instantInit: function(reloadFlag) {
-		this._startTime = Date.now();
+		this._startTime0 = Date.now();
 		window.addEventListener("select", this, true);
 		window.addEventListener("focus",  this, true);
 	},
@@ -101,6 +101,7 @@ var handyClicksEditor = {
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 
 		window.addEventListener("keypress", this, true);
+		this._startTime1 = Date.now();
 	},
 	destroy: function(reloadFlag) {
 		this.wu.markOpenedEditors();
@@ -112,11 +113,13 @@ var handyClicksEditor = {
 	},
 	_lastTabsSelect: 0,
 	get _focusFixTime() {
-		if(Date.now() - this._startTime < 600)
-			return 600;
-		delete this._startTime;
+		var now = Date.now();
+		if(now - (this._startTime1 || this._startTime0) < 500) // Can be very slow, if opened mere than one editor
+			return (this._startTime1 || now) - this._startTime0;
+		delete this._startTime0;
+		delete this._startTime1;
 		delete this._focusFixTime;
-		return this._focusFixTime = 30;
+		return this._focusFixTime = 50;
 	},
 	handleEvent: function(e) {
 		switch(e.type) {
