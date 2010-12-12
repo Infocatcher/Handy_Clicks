@@ -224,6 +224,8 @@ var handyClicks = {
 		this.cancel();
 	},
 	dragHandler: function(e) {
+		if(!this.disallowMousemove)
+			return;
 		this._devMode && this.ut._log("dragHandler -> cancel()");
 		this.cancel();
 	},

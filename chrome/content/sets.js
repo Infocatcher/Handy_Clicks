@@ -2289,35 +2289,26 @@ var handyClicksSets = {
 		this.setImportStatus(this._import, !this._importPartial, this._importFromClipboard, true);
 	},
 	importDone: function(ok) {
-		var confirmed = false;
-		if(ok) {
-			confirmed = this.buggyPrefsConfirm();
-			if(!confirmed)
-				return;
-		}
+		if(ok && !this.buggyPrefsConfirm())
+			return;
 
 		var isPartial = this._importPartial;
 		//var fromClip = this._importFromClipboard;
 		this.setImportStatus(false);
 		if(ok) {
+			// Keep prefs file because content of new file may be equals!
+			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, null, true);
+
 			this.ps.otherSrc = false;
-			if(isPartial)
-				this.mergePrefs();
-			else // Keep prefs file because content of new file may be equals!
-				this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, null, true);
-			if(confirmed) {
-				this.ps.saveSettingsObjects(true);
-				this.setDialogButtons();
-			}
-			else
-				this.saveSettingsObjectsCheck(true);
+			isPartial && this.mergePrefs();
+			this.ps.saveSettingsObjects(true);
 		}
-		else {
+		else { // Cancel import
 			this.ps.loadSettings();
-			this.setDialogButtons();
 			this.updTree();
 		}
 		this.tree.focus();
+		this.setDialogButtons();
 		this._savedPrefs = this._savedTypes = null;
 	},
 	mergePrefs: function() {

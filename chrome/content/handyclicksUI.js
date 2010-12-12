@@ -123,19 +123,18 @@ var handyClicksUI = {
 				onViewToolbarsPopupShowing(e);
 			}
 			catch(e) {
-				this.ut._err(new Error("onViewToolbarsPopupShowing() failed"));
+				this.ut._err(new Error("buildSettingsPopup: onViewToolbarsPopupShowing() failed"));
 				this.ut._err(e);
 			}
 			var vtSep = this.$("handyClicks-viewToolbarsSeparator");
-			Array.forEach(
-				this.ut.toArray(popup.childNodes),
-				function(ch) {
-					if(!ch.hasAttribute("toolbarindex") && !ch.hasAttribute("toolbarid"))
-						return;
-					ch.setAttribute("oncommand", "onViewToolbarCommand(event);"); // For SeaMonkey
-					popup.insertBefore(ch, vtSep);
-				}
-			);
+			var vtCmd = "onViewToolbarCommand" in window && "onViewToolbarCommand(event);";
+			Array.slice(popup.childNodes).forEach(function(ch) {
+				if(!this.isToolbarItem(ch))
+					return;
+				vtCmd && ch.setAttribute("oncommand", vtCmd); // For SeaMonkey
+				ch.id && this.setClonedId(ch);
+				popup.insertBefore(ch, vtSep);
+			}, this);
 		}
 
 		if(popup.hasAttribute("hc_additionalItemsAdded"))
@@ -143,22 +142,27 @@ var handyClicksUI = {
 		popup.setAttribute("hc_additionalItemsAdded", "true");
 
 		Array.forEach(
-			this.e("toolbar-context-menu").childNodes,
+			this.$("toolbar-context-menu").childNodes,
 			function(ch) {
-				if(ch.hasAttribute("toolbarindex") || ch.hasAttribute("toolbarid"))
+				if(this.isToolbarItem(ch))
 					return;
 				var clone = ch.cloneNode(true);
-				if(clone.id)
-					clone.id = "handyClicks-cloned-" + clone.id;
+				clone.id && this.setClonedId(clone);
 				Array.forEach(
 					clone.getElementsByAttribute("id", "*"),
-					function(elt) {
-						elt.id = "handyClicks-cloned-" + elt.id;
-					}
+					this.setClonedId,
+					this
 				);
 				popup.appendChild(clone);
-			}
+			},
+			this
 		);
+	},
+	isToolbarItem: function(node) {
+		return node.hasAttribute("toolbarindex") || node.hasAttribute("toolbarid") || node.hasAttribute("toolbarId");
+	},
+	setClonedId: function(node) {
+		node.id = "handyClicks-cloned-" + node.id;
 	},
 	checkClipboard: function() {
 		const id = "handyClicks-importFromClipboard";
