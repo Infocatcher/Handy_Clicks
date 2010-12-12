@@ -53,7 +53,8 @@
 	</commandset>
 
 	<keyset id="hc-editor-keys">
-		<key id="hc-editor-key-apply" key="s" modifiers="control" oncommand="handyClicksEditor.saveSettings(true);" />
+		<key id="hc-sets-key-apply" key="s" modifiers="control" oncommand="handyClicksEditor.saveSettings(true);" />
+		<key id="hc-sets-key-accept" keycode="VK_RETURN" modifiers="control" oncommand="document.documentElement.acceptDialog();" />
 		<key id="hc-editor-key-test" key="t" modifiers="control" command="hc-editor-cmd-test" />
 		<key id="hc-editor-key-undo" key="u" modifiers="control" command="hc-editor-cmd-undo" />
 		<key id="hc-editor-key-delete" key="d" modifiers="control" oncommand="handyClicksEditor.deleteSettings();" />

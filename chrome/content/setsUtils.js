@@ -4,29 +4,17 @@ var handyClicksSetsUtils = {
 		window.addEventListener("dragenter", this, true);
 		window.addEventListener("dragexit", this, true);
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
-		if(!reloadFlag)
+		if(!reloadFlag) {
+			this.tweakDialogButtons();
 			this.createFloatToolbar();
-		Array.slice(document.getElementsByAttribute("hc_ondrop", "*")).forEach(
-			function(elt) {
-				elt.setAttribute("on" + this.dropEvent, elt.getAttribute("hc_ondrop"));
-				elt.removeAttribute("hc_ondrop");
-			},
-			this
-		);
-
-		// Insert Apply button between Ok and Cancel
-		var de = document.documentElement;
-		var okBtn = de.getButton("accept");
-		var cancelBtn = de.getButton("cancel");
-		var btnBox = okBtn.parentNode;
-		for(var node = btnBox.firstChild; node; node = node.nextSibling) {
-			if(node == okBtn || node == cancelBtn) {
-				node = node.nextSibling;
-				var applyBtn = de.getButton("extra1");
-				if(node != applyBtn)
-					btnBox.insertBefore(applyBtn, node);
-				break;
-			}
+			Array.slice(document.getElementsByAttribute("hc_ondrop", "*")).forEach(
+				function(elt) {
+					elt.setAttribute("on" + this.dropEvent, elt.getAttribute("hc_ondrop"));
+					elt.removeAttribute("hc_ondrop");
+				},
+				this
+			);
+			this.su.setKeysDescDelay();
 		}
 	},
 	destroy: function(reloadFlag) {
@@ -61,6 +49,26 @@ var handyClicksSetsUtils = {
 			: v < 3.7
 				? "dragend"
 				: "drop";
+	},
+	tweakDialogButtons: function() {
+		// Insert Apply button between Ok and Cancel
+		var de = document.documentElement;
+		var okBtn = de.getButton("accept");
+		var applyBtn = de.getButton("extra1");
+		var cancelBtn = de.getButton("cancel");
+		var btnBox = okBtn.parentNode;
+		for(var node = btnBox.firstChild; node; node = node.nextSibling) {
+			if(node == okBtn || node == cancelBtn) {
+				node = node.nextSibling;
+				if(node != applyBtn)
+					btnBox.insertBefore(applyBtn, node);
+				break;
+			}
+		}
+
+		okBtn.setAttribute("hc_key", "hc-sets-key-accept");
+		applyBtn.className += " hc-iconic hc-apply";
+		applyBtn.setAttribute("hc_key", "hc-sets-key-apply");
 	},
 	createFloatToolbar: function() {
 		var de = document.documentElement;

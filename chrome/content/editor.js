@@ -69,10 +69,6 @@ var handyClicksEditor = {
 			//}, this);
 			this.addTestButtons();
 
-			this.applyButton.className += " hc-iconic hc-apply";
-			this.applyButton.setAttribute("hc_key", "hc-editor-key-apply");
-			this.su.setKeysDescDelay();
-
 			Array.forEach( // Add spellcheck feature for <menulist editable="true" />
 				document.getElementsByTagName("menulist"),
 				function(ml) {
@@ -115,7 +111,7 @@ var handyClicksEditor = {
 	get _focusFixTime() {
 		var now = Date.now();
 		if(now - (this._startTime1 || this._startTime0) < 500) // Can be very slow, if opened mere than one editor
-			return (this._startTime1 || now) - this._startTime0;
+			return 150 + (this._startTime1 || now) - this._startTime0;
 		delete this._startTime0;
 		delete this._startTime1;
 		delete this._focusFixTime;
@@ -136,6 +132,7 @@ var handyClicksEditor = {
 					|| node.getAttribute("readonly") != "true"
 				)
 					return;
+				//this.ut._log("focus: " + (Date.now() - this._lastTabsSelect) + " | " + this._focusFixTime);
 				if(Date.now() - this._lastTabsSelect > this._focusFixTime)
 					return;
 				for(node = node.parentNode; node; node = node.parentNode) {

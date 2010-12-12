@@ -96,10 +96,6 @@ var handyClicksSets = {
 		prefsButt.appendChild(this.e("hc-sets-prefsManagementPopup"));
 		prefsButt.className += " hc-iconic hc-preferences";
 
-		this.applyButton.className += " hc-iconic hc-apply";
-		this.applyButton.setAttribute("hc_key", "hc-sets-key-apply");
-		this.su.setKeysDescDelay();
-
 		if("MozTabSize" in de.style) // Firefox 4.0+
 			this.e("hc-sets-tabSizeBox").removeAttribute("hidden");
 	},

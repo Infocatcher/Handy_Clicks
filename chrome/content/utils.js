@@ -264,6 +264,8 @@ var handyClicksUtils = {
 
 	_entities: { __proto__: null }, // cache of strings from *.dtd files
 	getEntity: function(eName, dtds, contentType) {
+		// Strange bug with Greasemonkey 0.8.20100408.6:
+		// getEntity("statusbar.enabled", "chrome://greasemonkey/locale/greasemonkey.dtd");
 		dtds = dtds
 			? "<!DOCTYPE page [\n"
 				+ Array.concat(dtds).map(

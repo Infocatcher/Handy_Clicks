@@ -532,6 +532,7 @@
 		<key id="hc-sets-key-switchPanes-ltr" keycode="VK_TAB" modifiers="control" oncommand="handyClicksSets.switchPanes(true);" />
 		<key id="hc-sets-key-switchPanes-rtl" keycode="VK_TAB" modifiers="control,shift" oncommand="handyClicksSets.switchPanes(false);" />
 		<key id="hc-sets-key-apply" key="s" modifiers="control" oncommand="handyClicksSets.saveSettings(true);" />
+		<key id="hc-sets-key-accept" keycode="VK_RETURN" modifiers="control" oncommand="document.documentElement.acceptDialog();" />
 		<key id="hc-sets-key-reload" keycode="VK_F5" oncommand="handyClicksSets.reloadSettings();" />
 		<key id="hc-sets-key-reload2" key="r" modifiers="control" oncommand="handyClicksSets.reloadSettings();" />
 
