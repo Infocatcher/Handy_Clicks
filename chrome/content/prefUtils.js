@@ -80,11 +80,14 @@ var handyClicksPrefUtils = {
 		}
 		return this;
 	},
-	resetPref: function(pName) {
-		if(this.prefSvc.prefHasUserValue(pName))
-			this.prefSvc.clearUserPref(pName);
-		return this;
+	prefChanged: function(pName) {
+		return this.prefSvc.prefHasUserValue(this.prefNS + pName);
 	},
+	resetPref: function(pName) {
+		if(this.prefChanged(pName))
+			this.prefSvc.clearUserPref(this.prefNS + pName);
+	},
+
 	existPref: function(pName) {
 		return this.prefSvc.getPrefType(pName) != this.pBr.PREF_INVALID;
 	},

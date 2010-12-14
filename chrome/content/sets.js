@@ -774,7 +774,7 @@ var handyClicksSets = {
 		var lim = this.pu.pref("sets.openEditorsLimit");
 		if(lim <= 0 || count <= lim)
 			return false;
-		this.ut.fixMinimized();
+		//this.ut.fixMinimized();
 		var ask = { value: false };
 		var cnf = this.ut.promptsSvc.confirmCheck(
 			window, this.ut.getLocalized("warningTitle"),
@@ -1643,13 +1643,13 @@ var handyClicksSets = {
 		this.$("hc-sets-action-value").value = tb.value || this.pu.pref(this.currentActionPref);
 		this.$("hc-sets-action-reset").setAttribute(
 			"disabled",
-			!this.pu.prefSvc.prefHasUserValue(this.pu.prefNS + this.currentActionPref)
+			!this.pu.prefChanged(this.currentActionPref)
 		);
-		const ns = this.pu.prefNS + "ui.action";
-		var hasChanged = this.pu.prefSvc.getBranch(ns)
+		const ns = "ui.action";
+		var hasChanged = this.pu.prefSvc.getBranch(this.pu.prefNS + ns)
 			.getChildList("", {})
 			.some(function(pName) {
-				return this.pu.prefSvc.prefHasUserValue(ns + pName);
+				return this.pu.prefChanged(ns + pName);
 			}, this);
 		this.$("hc-sets-action-resetAll").setAttribute("disabled", !hasChanged);
 	},
@@ -1665,17 +1665,14 @@ var handyClicksSets = {
 	resetUIAction: function() {
 		//if(!this.resetPrefsConfirmed)
 		//	return;
-		this.pu.resetPref(this.pu.prefNS + this.currentActionPref);
+		this.pu.resetPref(this.currentActionPref);
 	},
 	resetAllUIActions: function() {
 		if(!this.resetPrefsConfirmed)
 			return;
-		const ns = this.pu.prefNS + "ui.action";
-		this.pu.prefSvc.getBranch(ns)
+		this.pu.prefSvc.getBranch(this.pu.prefNS + "ui.action")
 			.getChildList("", {})
-			.forEach(function(pName) {
-				this.pu.resetPref(ns + pName);
-			}, this);
+			.forEach(this.pu.resetPref, this.pu);
 	},
 	get minSpaces() {
 		delete this.minSpaces;
@@ -1787,58 +1784,60 @@ var handyClicksSets = {
 		"sets.importJSWarning",
 		"sets.openEditorsLimit",
 		"sets.removeBackupConfirm",
-		"ui.notifyUnsaved"
+		"ui.notifyUnsaved",
+		"editor.showUnsavedWarning"
 	],
 	initResetWarnMsgs: function() {
-		var notChanged = true;
-		var disabled = this.warnMsgsPrefs.filter(function(pName) {
-			if(this.pu.pref(pName))
-				return false;
-			notChanged = false;
-			return true;
-		}, this);
+		var changed = this.warnMsgsPrefs.filter(this.pu.prefChanged, this.pu);
+		var notChanged = !changed.length;
+		this.$("hc-sets-resetWarnMsgs").disabled = notChanged;
+		if(notChanged)
+			return;
 
-		var tt = this.$("hc-sets-warnMsgsPrefs-tooltip");
 		//~ todo:
 		//   #hc-sets-warnMsgsPrefs-tooltip description { white-space: -moz-pre-wrap; }
 		// for old Firefox versions (it's buggy in Firefox 1.5)?
-		if(disabled.length) {
-			//this.ut.removeChilds(tt);
-			var ttSep = this.$("hc-sets-warnMsgsPrefs-tooltipSep");
-			while(ttSep.nextSibling)
-				tt.removeChild(ttSep.nextSibling);
-			disabled.forEach(function(pName, i) {
-				if(i != 0) {
-					var sep = ttSep.cloneNode(true);
-					sep.removeAttribute("id");
-					tt.appendChild(sep);
-				}
-				var desc = document.createElement("description");
-				var text;
-				switch(pName) {
-					case "sets.importJSWarning":
-						text = this.ut.getLocalized("importSetsWarning");
-					break;
-					case "sets.openEditorsLimit":
-						text = this.ut.getLocalized("openEditorsWarning").replace("%n", "N");
-					break;
-					case "sets.removeBackupConfirm":
-						text = this.ut.getLocalized("removeBackupConfirm").replace("%f", this.ps.prefsFileName + ".js");
-					break;
-					case "ui.notifyUnsaved":
-						text = this.ut.getLocalized("notifyUnsaved");
-				}
-				desc.textContent = text || pName;
-				tt.appendChild(desc);
-			}, this);
-		}
-
-		this.$("hc-sets-resetWarnMsgs").disabled = notChanged;
+		var tt = this.$("hc-sets-warnMsgsPrefs-tooltip");
+		//this.ut.removeChilds(tt);
+		var ttSep = this.$("hc-sets-warnMsgsPrefs-tooltipSep");
+		while(ttSep.nextSibling)
+			tt.removeChild(ttSep.nextSibling);
+		changed.forEach(function(pName, i) {
+			if(i != 0) {
+				var sep = ttSep.cloneNode(true);
+				sep.removeAttribute("id");
+				tt.appendChild(sep);
+			}
+			var desc = document.createElement("description");
+			var text;
+			switch(pName) {
+				case "sets.importJSWarning":
+					text = this.ut.getLocalized("importSetsWarning");
+				break;
+				case "sets.openEditorsLimit":
+					text = this.ut.getLocalized("openEditorsWarning")
+						.replace("%n", "N");
+				break;
+				case "sets.removeBackupConfirm":
+					text = this.ut.getLocalized("removeBackupConfirm")
+						.replace("%f", this.ps.prefsFileName + ".js");
+				break;
+				case "ui.notifyUnsaved":
+					text = this.ut.getLocalized("notifyUnsaved");
+				break;
+				case "editor.showUnsavedWarning":
+					text = this.ut.getLocalized("editorUnsavedWarning");
+				break;
+				default:
+					this.ut._warn(<>initResetWarnMsgs: no description for "{pName}" pref</>);
+					text = pName;
+			}
+			desc.textContent = text;
+			tt.appendChild(desc);
+		}, this);
 	},
 	resetWarnMsgs: function() {
-		this.warnMsgsPrefs.forEach(function(pName) {
-			this.resetPref(pName);
-		}, this);
+		this.warnMsgsPrefs.forEach(this.pu.resetPref, this.pu);
 	},
 	get ee() {
 		return this.$("hc-sets-externalEditorPath");
@@ -2141,11 +2140,8 @@ var handyClicksSets = {
 			return;
 		this.pu.prefSvc.getBranch(this.pu.prefNS)
 			.getChildList("", {})
-			.forEach(this.resetPref, this);
+			.forEach(this.pu.resetPref, this.pu);
 		this.reloadPrefpanes(); // Changed prefs don't reloaded by default
-	},
-	resetPref: function(pName) {
-		this.pu.resetPref(this.pu.prefNS + pName);
 	},
 	// Export/import:
 	exportPrefsHeader: "[Handy Clicks settings]",

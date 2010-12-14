@@ -115,12 +115,7 @@ handyClicksUninstaller = {
 		//this.pu.prefSvc.resetBranch(this.pu.prefNS);
 		this.pu.prefSvc.getBranch(this.pu.prefNS)
 			.getChildList("", {})
-			.forEach(
-				function(pName) {
-					this.pu.resetPref(this.pu.prefNS + pName);
-				},
-				this
-			);
+			.forEach(this.pu.resetPref, this.pu);
 
 		//this.ps._prefsDir.remove(true);
 		// Based on components/nsExtensionManager.js from Firefox 3.6

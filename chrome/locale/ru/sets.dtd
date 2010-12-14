@@ -14,7 +14,7 @@
 
 <!ENTITY hc.sets.clickOptionsTitle "Настройки кликов">
 
-<!ENTITY hc.sets.columnShortcutAndTarget "Кнопки мыши и цель">
+<!ENTITY hc.sets.columnShortcutAndTarget "Кнопка мыши и цель">
 <!ENTITY hc.sets.columnEvent "Событие">
 <!ENTITY hc.sets.columnAction "Действие">
 <!ENTITY hc.sets.columnFunction "Функция">

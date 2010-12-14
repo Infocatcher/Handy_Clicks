@@ -935,6 +935,20 @@ var handyClicksEditor = {
 	},
 
 	loadFuncs: function() {
+		if(!this.applyButton.disabled && this.pu.pref("editor.showUnsavedWarning")) { // this.hasUnsaved
+			var ask = { value: false };
+			var cnf = this.ut.promptsSvc.confirmCheck(
+				window, this.ut.getLocalized("warningTitle"),
+				this.ut.getLocalized("editorUnsavedWarning"),
+				this.ut.getLocalized("dontAskAgain"),
+				ask
+			);
+			if(!cnf)
+				return;
+			if(ask.value)
+				this.pu.pref("editor.showUnsavedWarning", false);
+		}
+
 		this.shortcut = this.currentShortcut;
 		this.type = this.currentType;
 		if(this.funcOptsFixed) {

@@ -47,6 +47,8 @@ var handyClicksUI = {
 		var uri = makeURI(css); // chrome://global/content/contentAreaUtils.js
 		if(!sss.sheetRegistered(uri, sss.AGENT_SHEET))
 			sss.loadAndRegisterSheet(uri, sss.AGENT_SHEET);
+		if(!sss.sheetRegistered(uri, sss.USER_SHEET))
+			sss.loadAndRegisterSheet(uri, sss.USER_SHEET);
 	},
 
 	_blinkNodeTimeout: null,

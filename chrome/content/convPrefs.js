@@ -34,7 +34,7 @@ function prefsMigration(allowSave, vers) {
 	}
 	if(vers < 4) { //= Added: 2010-03-31
 		var pn = "sets.backupDepth";
-		if(this.prefSvc.prefHasUserValue(pns + pn))
+		if(this.prefChanged(pn))
 			this.pref(pn, (this.pref(pn) || 0) + 1);
 	}
 	if(vers < 5) { //= Added: 2010-04-08

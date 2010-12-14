@@ -85,6 +85,7 @@ pref("extensions.handyclicks.editor.testFocusMainWindow", true);
 pref("extensions.handyclicks.editor.ui.showCustomFuncsNotes", true);
 pref("extensions.handyclicks.editor.ui.compact", false);
 pref("extensions.handyclicks.editor.ui.invertWindowTitle", false);
+pref("extensions.handyclicks.editor.showUnsavedWarning", true);
 
 pref("extensions.handyclicks.prefsVersion", 0);
 pref("extensions.handyclicks.uiVersion", 0);
