@@ -230,6 +230,15 @@ checkbox[id^="hc-sets-disallowMousemove-"] .checkbox-label-box {
 #hc-sets-tree-restoreFromBackupPopup menuitem {
 	max-width: none !important;
 }
+#hc-sets-tree-restoreFromBackupPopup menuitem hbox[anonid="accel"] {
+	/*
+	Firefox 1.5 and 2.0:     hbox[anonid="accel"]
+	Firefox 3.0 and heigher: .menu-accel-container
+	*/
+	/* For scrollbar */
+	min-width: 26px !important;
+}
+
 menuitem[hc_oldBackup="true"] image, menuitem[hc_oldBackup="true"] label {
 	opacity: 0.45;
 }

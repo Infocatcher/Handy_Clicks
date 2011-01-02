@@ -182,7 +182,8 @@
 								<menupopup id="hc-sets-tree-restoreFromBackupPopup"
 									context="hc-sets-tree-restoreFromBackupContext"
 									oncommand="handyClicksSets.handleRestoreCommand(event);"
-									onclick="if(event.button == 1) { handyClicksSets.handleRestoreCommand(event); handyClicksUtils.closeMenus(this); }">
+									onclick="if(event.button == 1) { handyClicksSets.handleRestoreCommand(event); handyClicksUtils.closeMenus(this); }"
+									onpopupshowing="handyClicksSets.fixMenuitemsWidth(this);">
 									<menuseparator />
 									<menuitem id="hc-sets-tree-openBackupsDir"
 										oncommand="handyClicksSets.reveal(handyClicksPrefSvc._prefsDir);"
@@ -379,7 +380,9 @@
 			</hbox>
 		</groupbox>
 		<hbox pack="center">
-			<button id="hc-sets-resetWarnMsgs" oncommand="handyClicksSets.resetWarnMsgs();"
+			<button id="hc-sets-resetWarnMsgs"
+				oncommand="handyClicksSets.resetWarnMsgs();"
+				onclick="if(event.button == 2) handyClicksSets.showWarnMsgsPrefs();"
 				label="&hc.sets.resetWarnMsgs;" tooltip="hc-sets-warnMsgsPrefs-tooltip" />
 		</hbox>
 	</prefpane>

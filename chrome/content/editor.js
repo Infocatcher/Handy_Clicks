@@ -935,7 +935,8 @@ var handyClicksEditor = {
 	},
 
 	loadFuncs: function() {
-		if(!this.applyButton.disabled && this.pu.pref("editor.showUnsavedWarning")) { // this.hasUnsaved
+		const warnPref = "editor.unsavedSwitchWarning";
+		if(!this.applyButton.disabled && this.pu.pref(warnPref)) { // this.hasUnsaved
 			var ask = { value: false };
 			var cnf = this.ut.promptsSvc.confirmCheck(
 				window, this.ut.getLocalized("warningTitle"),
@@ -946,7 +947,7 @@ var handyClicksEditor = {
 			if(!cnf)
 				return;
 			if(ask.value)
-				this.pu.pref("editor.showUnsavedWarning", false);
+				this.pu.pref(warnPref, false);
 		}
 
 		this.shortcut = this.currentShortcut;

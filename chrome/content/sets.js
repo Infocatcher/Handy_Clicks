@@ -771,7 +771,8 @@ var handyClicksSets = {
 		}, this);
 	},
 	editorsLimit: function(count) {
-		var lim = this.pu.pref("sets.openEditorsLimit");
+		const limPref = "sets.openEditorsLimit";
+		var lim = this.pu.pref(limPref);
 		if(lim <= 0 || count <= lim)
 			return false;
 		//this.ut.fixMinimized();
@@ -784,7 +785,7 @@ var handyClicksSets = {
 		if(!cnf)
 			return true;
 		if(ask.value)
-			this.pu.pref("sets.openEditorsLimit", 0);
+			this.pu.pref(limPref, 0);
 		return false;
 	},
 	isClickOnRow: function(e) {
@@ -1785,7 +1786,7 @@ var handyClicksSets = {
 		"sets.openEditorsLimit",
 		"sets.removeBackupConfirm",
 		"ui.notifyUnsaved",
-		"editor.showUnsavedWarning"
+		"editor.unsavedWarning"
 	],
 	initResetWarnMsgs: function() {
 		var changed = this.warnMsgsPrefs.filter(this.pu.prefChanged, this.pu);
@@ -1825,7 +1826,7 @@ var handyClicksSets = {
 				case "ui.notifyUnsaved":
 					text = this.ut.getLocalized("notifyUnsaved");
 				break;
-				case "editor.showUnsavedWarning":
+				case "editor.unsavedWarning":
 					text = this.ut.getLocalized("editorUnsavedWarning");
 				break;
 				default:
@@ -1838,6 +1839,16 @@ var handyClicksSets = {
 	},
 	resetWarnMsgs: function() {
 		this.warnMsgsPrefs.forEach(this.pu.resetPref, this.pu);
+	},
+	showWarnMsgsPrefs: function() {
+		if(this.ut.fxVersion < 3)
+			return;
+		function escapeRegExp(str) {
+			return str.replace(/[\\\/.^$+*?|()\[\]{}]/g, "\\$&");
+		}
+		var re = escapeRegExp(this.pu.prefNS)
+			+ "(?:" + this.warnMsgsPrefs.map(escapeRegExp).join("|") + ")";
+		this.pu.openAboutConfig("/" + re + "/");
 	},
 	get ee() {
 		return this.$("hc-sets-externalEditorPath");
@@ -2317,7 +2328,8 @@ var handyClicksSets = {
 			)
 		)
 			return;
-		if(srcId != ct.IMPORT_BACKUP && this.pu.pref("sets.importJSWarning")) {
+		const warnPref = "sets.importJSWarning";
+		if(srcId != ct.IMPORT_BACKUP && this.pu.pref(warnPref)) {
 			this.ut.fixMinimized();
 			var ask = { value: false };
 			var cnf = this.ut.promptsSvc.confirmCheck(
@@ -2327,7 +2339,7 @@ var handyClicksSets = {
 			);
 			if(!cnf)
 				return;
-			this.pu.pref("sets.importJSWarning", !ask.value);
+			this.pu.pref(warnPref, !ask.value);
 		}
 		if(!this.ps.otherSrc) {
 			this._savedPrefs = this.ps.prefs;
@@ -2369,7 +2381,8 @@ var handyClicksSets = {
 		}
 
 		var dontAsk = this.ut.hasModifier(e) || e.type == "click";
-		if(!dontAsk && this.pu.pref("sets.removeBackupConfirm")) {
+		const confirmPref = "sets.removeBackupConfirm";
+		if(!dontAsk && this.pu.pref(confirmPref)) {
 			this.ut.closeMenus(mi);
 			this.ut.fixMinimized();
 			var ask = { value: false };
@@ -2381,7 +2394,7 @@ var handyClicksSets = {
 			if(!cnf)
 				return false;
 			if(ask.value)
-				this.pu.pref("sets.removeBackupConfirm", false);
+				this.pu.pref(confirmPref, false);
 		}
 
 		file.remove(false);
@@ -2488,6 +2501,15 @@ var handyClicksSets = {
 		_ubTerms = _ubFiles = null;
 
 		this.updRestorePopup(ubCount, isEmpty);
+	},
+	fixMenuitemsWidth: function(popup) {
+		this.ut.timeout(function() { // Timeout for Firefox 3.x
+			Array.forEach(popup.childNodes, this.removeMenuitemCrop);
+		}, this);
+	},
+	removeMenuitemCrop: function(mi) {
+		var label = mi.ownerDocument.getAnonymousElementByAttribute(mi, "class", "menu-iconic-text");
+		label && label.removeAttribute("crop");
 	},
 	destroyRestorePopup: function() {
 		delete this.ubPopup.__userBackups;

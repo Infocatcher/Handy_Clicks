@@ -151,7 +151,8 @@ var handyClicksSetsUtils = {
 	PROMPT_CANCEL: 1,
 	PROMPT_DONT_SAVE: 2,
 	notifyUnsaved: function() {
-		if(!this.pu.pref("ui.notifyUnsaved"))
+		const notifyPref = "ui.notifyUnsaved";
+		if(!this.pu.pref(notifyPref))
 			return this.PROMPT_DONT_SAVE;
 		var ps = this.ut.promptsSvc;
 		this.ut.fixMinimized();
@@ -170,7 +171,7 @@ var handyClicksSetsUtils = {
 			this.ut.getLocalized("dontAskAgain"), ask
 		);
 		if(ret != this.PROMPT_CANCEL && ask.value)
-			this.pu.pref("ui.notifyUnsaved", false);
+			this.pu.pref(notifyPref, false);
 		return ret;
 	},
 
