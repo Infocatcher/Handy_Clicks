@@ -520,6 +520,7 @@ var handyClicksFuncs = {
 			this.ut._warn(this.getMissingExtWarning("FlashGot", 220));
 			return;
 		}
+		//~ todo: use popup.triggerNode ? (https://bugzilla.mozilla.org/show_bug.cgi?id=383930)
 		document.popupNode = item || this.hc.item;
 		gFlashGot.downloadPopupLink();
 	},
@@ -1073,6 +1074,7 @@ var handyClicksFuncs = {
 		);
 	},
 	copyImg: function(e, img) {
+		//~ todo: use popup.triggerNode ? (https://bugzilla.mozilla.org/show_bug.cgi?id=383930)
 		document.popupNode = img || this.hc.item;
 		goDoCommand("cmd_copyImageContents");
 	},

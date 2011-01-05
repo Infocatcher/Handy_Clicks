@@ -759,6 +759,7 @@ var handyClicks = {
 
 		//popup = popup || this._cMenu;
 		e = e || this.copyOfEvent;
+		//~ following is only for Firefox < 4.0 (see https://bugzilla.mozilla.org/show_bug.cgi?id=383930)
 		document.popupNode = popup.ownerDocument.popupNode = this.itemType == "tab" ? this.item : node;
 
 		//var isContext = e.button == 2;
