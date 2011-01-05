@@ -109,14 +109,15 @@ var handyClicksUI = {
 
 	buildSettingsPopup: function(e) {
 		this.checkClipboard();
+		
+		var popup = e.target;
+		var pn = popup.triggerNode || document.popupNode; // https://bugzilla.mozilla.org/show_bug.cgi?id=383930
 
 		var inheritContext = this.pu.pref("ui.inheritToolbarContextMenu")
-			&& document.popupNode && document.popupNode.localName.indexOf("toolbar") == 0;
+			&& pn && (pn.localName || "").indexOf("toolbar") == 0;
 		this.$("handyClicks-mainCommandsSeparator").setAttribute("hc_hideAllAfter", !inheritContext);
 		if(!inheritContext)
 			return;
-
-		var popup = e.target;
 
 		if("onViewToolbarsPopupShowing" in window) {
 			try {
@@ -168,9 +169,9 @@ var handyClicksUI = {
 		const id = "handyClicks-importFromClipboard";
 		this.$(id).hidden = this.$(id + "Separator").hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard(true));
 	},
-	fixPopup: function() {
-		if(document.popupNode)
-			this.ut.closeMenus(document.popupNode); // For Firefox 2.0
+	fixPopup: function(popup) {
+		var pn = popup.triggerNode || document.popupNode; // https://bugzilla.mozilla.org/show_bug.cgi?id=383930
+		pn && this.ut.closeMenus(pn); // For Firefox 2.0
 	},
 
 	doSettings: function(e) {

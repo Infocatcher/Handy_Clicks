@@ -512,6 +512,7 @@ var handyClicksFuncs = {
 			this.ut._warn(new Error(this.getMissingExtWarning("FlashGot", 220)));
 			return;
 		}
+		//~ todo: use popup.triggerNode ? (https://bugzilla.mozilla.org/show_bug.cgi?id=383930)
 		document.popupNode = item || this.hc.item;
 		gFlashGot.downloadPopupLink();
 	},

@@ -1816,8 +1816,9 @@ var handyClicksSets = {
 			}
 		);
 	},
-	checkTreeContext: function() {
-		var ln = document.popupNode.localName;
+	checkTreeContext: function(popup) {
+		var pn = popup.triggerNode || document.popupNode; // https://bugzilla.mozilla.org/show_bug.cgi?id=383930
+		var ln = pn.localName;
 		return ln == "treechildren" || ln == "tree";
 	},
 

@@ -61,7 +61,7 @@
 	<popupset id="mainPopupSet">
 		<menupopup id="handyClicks-settingsPopup"
 			onpopupshowing="handyClicksUI.buildSettingsPopup(event);"
-			onpopuphiding="handyClicksUI.fixPopup();">
+			onpopuphiding="handyClicksUI.fixPopup(this);">
 			<menuitem id="handyClicks-settingsMenuitem" class="menuitem-iconic handyClicks-iconic"
 				command="handyClicks-cmd-openSettings" key="handyClicks-key-openSettings"
 				handyclicks_main="true" />
