@@ -510,6 +510,7 @@ var handyClicksFuncs = {
 			this.ut._err(new Error("Missing FlashGot extension ( https://addons.mozilla.org/firefox/addon/220 )"), true);
 			return;
 		}
+		//~ todo: use popup.triggerNode ? (https://bugzilla.mozilla.org/show_bug.cgi?id=383930)
 		document.popupNode = item || this.hc.item;
 		gFlashGot.downloadPopupLink();
 	},
@@ -573,7 +574,6 @@ var handyClicksFuncs = {
 	showGeneratedPopup: function(items) {
 		var popup = this.createPopup(items);
 		this.hc.showPopupOnItem(popup);
-		this.ut.fixIconsSize(popup);
 		return popup;
 	},
 

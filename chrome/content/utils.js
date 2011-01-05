@@ -514,19 +514,6 @@ var handyClicksUtils = {
 		return arguments.length == 1
 			? key in this._storage ? this._storage[key] : null
 			: (this._storage[key] = val);
-	},
-
-	fixIconsSize: function(popup) {
-		var icon = new Image();
-		icon.src = "moz-icon://.js?size=16"; // Sometimes I see 14x14 instead of 16x16 in Windows 7
-		this.timeout(
-			function(icon, popup) {
-				popup.setAttribute("handyclicks_iconSize", icon.width);
-				if(this._devMode && icon.width != 16)
-					this._log("Icon size: " + icon.width + " x " + icon.height);
-			},
-			this, [icon, popup], 0
-		);
 	}
 };
 

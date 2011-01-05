@@ -50,7 +50,7 @@
 			onclick="handyClicks.doSettings(event);" />
 	</statusbar>
 	<popupset id="mainPopupSet">
-		<menupopup id="handyClicks-settingsPopup" onpopupshowing="handyClicks.checkClipboard();" onpopuphiding="handyClicks.fixPopup();">
+		<menupopup id="handyClicks-settingsPopup" onpopupshowing="handyClicks.checkClipboard();" onpopuphiding="handyClicks.fixPopup(this);">
 			<menuitem id="handyClicks-settingsMenuitem" command="handyClicks-cmd-openSettings" key="handyClicks-key-openSettings" handyclicks_main="true" />
 			<menuitem id="handyClicks-editMode" command="handyClicks-cmd-editMode" key="handyClicks-key-editMode" />
 			<menuseparator id="handyClicks-importFromClipboardSeparator" />

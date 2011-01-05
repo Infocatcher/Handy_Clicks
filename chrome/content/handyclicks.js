@@ -680,6 +680,7 @@ var handyClicks = {
 
 		popup = popup || this._cMenu;
 		e = e || this.copyOfEvent;
+		//~ following is only for Firefox < 4.0 (see https://bugzilla.mozilla.org/show_bug.cgi?id=383930)
 		document.popupNode = popup.ownerDocument.popupNode = this.itemType == "tab" ? this.item : node;
 
 		var xy = this.getXY();
@@ -1060,9 +1061,9 @@ var handyClicks = {
 		const id = "handyClicks-importFromClipboard";
 		this.$(id).hidden = this.$(id + "Separator").hidden = !this.ps.checkPrefsStr(this.ut.readFromClipboard(true));
 	},
-	fixPopup: function() {
-		if(document.popupNode)
-			this.closeMenus(document.popupNode); // For Firefox 2.0
+	fixPopup: function(popup) {
+		var pn = popup.triggerNode || document.popupNode; // https://bugzilla.mozilla.org/show_bug.cgi?id=383930
+		pn && this.closeMenus(pn); // For Firefox 2.0
 	},
 	doSettings: function(e) {
 		if(e.type == "command" || e.button == 0)
