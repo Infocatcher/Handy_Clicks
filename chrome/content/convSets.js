@@ -14,20 +14,25 @@ function setsMigration(allowSave, vers) {
 		this.prefsFile.copyTo(null, fName);
 	}
 
-	if(vers < 0.12) { //= Added: 2009-07-29
+	if(vers < 0.12 && allowSave) { //= Added: 2009-07-29
 		// New file names format
 		var convertName = function(s) {
 			return s.replace(/^(handyclicks_prefs)-(\w+-\d+(?:\.\d+)?\.js)$/, "$1_$2");
 		};
 		var entries = this.prefsDir.directoryEntries;
-		var entry, newName;
+		var entry, newName, newFile;
 		while(entries.hasMoreElements()) {
 			entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
 			if(!entry.isFile())
 				continue;
 			newName = convertName(entry.leafName);
-			if(newName != entry.leafName)
-				entry.moveTo(null, newName);
+			if(newName == entry.leafName)
+				continue;
+			//entry.moveTo(null, newName);
+			newFile = entry.parent.clone();
+			newFile.append(newName);
+			newFile.createUnique(newFile.NORMAL_FILE_TYPE, 0644); // Simple way to get unique file name
+			entry.moveTo(null, newFile.leafName);
 		}
 	}
 	if(vers < 0.13) { //= Added: 2009-08-10

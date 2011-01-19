@@ -1074,9 +1074,11 @@ var handyClicksFuncs = {
 		);
 	},
 	copyImg: function(e, img) {
+		img = img || this.hc.item;
 		//~ todo: use popup.triggerNode ? (https://bugzilla.mozilla.org/show_bug.cgi?id=383930)
-		document.popupNode = img || this.hc.item;
+		document.popupNode = img;
 		goDoCommand("cmd_copyImageContents");
+		this.ui.blinkNode(undefined /*default duration*/, img);
 	},
 	get resPath() {
 		delete this.resPath;
