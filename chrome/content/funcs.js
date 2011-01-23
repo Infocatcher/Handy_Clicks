@@ -843,24 +843,35 @@ var handyClicksFuncs = {
 		tab = this.fixTab(tab);
 		this.hc.getTabBrowser().removeAllTabsBut(tab);
 	},
-	removeAllTabs: function(e, allGroups) { //~ todo: allGroups argument?
+	removeAllTabs: function(e) { //~ todo: allGroups argument?
 		var tbr = this.hc.getTabBrowser();
 		var tabs = this.visibleTabs;
 		var len = tabs.length;
-		if(this.warnAboutClosingTabs(len, tbr))
-			for(var i = len - 1; i >= 0; --i)
+		if(!this.warnAboutClosingTabs(len, tbr))
+			return;
+		var curTab = tbr.selectedTab;
+		for(var i = len - 1; i >= 0; i--)
+			if(tabs[i] != curTab) // Avoid reflows after tab reselection
 				tbr.removeTab(tabs[i]);
+		tbr.removeTab(curTab);
 	},
 	removeRightTabs: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
 		var tabs = this.visibleTabs;
 		var _tabs = [];
-		for(var i = tabs.length - 1; i >= 0; --i) {
+		var curTab = tbr.selectedTab;
+		var removeCurTab = false;
+		for(var i = tabs.length - 1; i >= 0; i--) {
 			if(tabs[i] == tab)
 				break;
-			_tabs.push(tabs[i]);
+			if(tabs[i] == curTab) // Avoid reflows after tab reselection
+				removeCurTab = true;
+			else
+				_tabs.push(tabs[i]);
 		}
+		if(removeCurTab)
+			_tabs.push(curTab);
 		if(this.warnAboutClosingTabs(_tabs.length, tbr))
 			_tabs.forEach(tbr.removeTab, tbr);
 	},
@@ -869,11 +880,18 @@ var handyClicksFuncs = {
 		var tbr = this.hc.getTabBrowser();
 		var tabs = this.visibleTabs;
 		var _tabs = [];
+		var curTab = tbr.selectedTab;
+		var removeCurTab = false;
 		for(var i = 0, len = tabs.length; i < len; i++) {
 			if(tabs[i] == tab)
 				break;
-			_tabs.push(tabs[i]);
+			if(tabs[i] == curTab) // Avoid reflows after tab reselection
+				removeCurTab = true;
+			else
+				_tabs.push(tabs[i]);
 		}
+		if(removeCurTab)
+			_tabs.push(curTab);
 		if(this.warnAboutClosingTabs(_tabs.length, tbr))
 			_tabs.forEach(tbr.removeTab, tbr);
 	},
