@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <bindings id="handyClicks-bindings" xmlns="http://www.mozilla.org/xbl">
 	<binding id="codeEditor" extends="chrome://global/content/bindings/textbox.xml#textarea">
-		<implementation>
+		<implementation implements="nsIDOMEventListener">
 			<constructor>
 			<![CDATA[
 				var ww = -1;
@@ -398,14 +398,15 @@
 				</body>
 			</method>
 
-			<field name="_tempFile">null</field>
+			<field name="_linkedFile">null</field>
+			<field name="_isTempFile">false</field>
 			<method name="openExternalEditor">
 				<body>
 				<![CDATA[
 					if(!("handyClicksUtils" in top))
 						return;
 					var ut = top.handyClicksUtils;
-					var file = this._tempFile;
+					var file = this._isTempFile && this._linkedFile;
 					var isNew = !file || !file.exists();
 
 					var ext = ut.pu.pref("editor.externalEditorExtension") || "js";
@@ -414,7 +415,6 @@
 						file = ut.getFileByAlias("TmpD");
 						file.append(fName);
 						file.createUnique(file.NORMAL_FILE_TYPE, 0644);
-						this._tempFile = file;
 
 						Components.classes["@mozilla.org/uriloader/external-helper-app-service;1"]
 							.getService(Components.interfaces.nsPIExternalAppLauncher)
@@ -423,53 +423,8 @@
 
 					ut.writeToFile(ut.platformLineBreaks(this.value), file);
 
-					if(isNew) {
-						this._lastModifiedTime = file.lastModifiedTime;
-						this._fileSize = file.fileSize;
-
-						var _this = this;
-						var upd = function(e) {
-							var file = _this._tempFile;
-							if(!file || !file.exists())
-								return;
-							var fTime = file.lastModifiedTime;
-							var fSize = file.fileSize;
-							if(fTime == _this._lastModifiedTime && fSize == _this._fileSize)
-								return;
-							var fVal = ut.readFromFile(file).replace(/\r\n?|\n\r?/g, "\n");
-							if(fVal == _this.value) {
-								_this._lastModifiedTime = fTime;
-								_this._fileSize = fSize;
-								return;
-							}
-
-							var ifi = _this.inputField;
-							var sTop = ifi.scrollTop;
-							var sLeft = ifi.scrollLeft;
-
-							_this.value = fVal;
-
-							ifi.scrollTop = sTop;
-							ifi.scrollLeft = sLeft;
-
-							_this._lastModifiedTime = fTime;
-							_this._fileSize = fSize;
-							_this.fade();
-
-							_this.fireChange();
-						};
-						top.addEventListener("focus", upd, false);
-						top.addEventListener("unload", function _unl(e) {
-							var win = e.target.defaultView;
-							if(win !== win.top)
-								return;
-							win.removeEventListener(e.type, _unl, false);
-							win.removeEventListener("focus", upd, false);
-							var file = _this._tempFile;
-							if(file && file.exists())
-								file.remove(false);
-						}, false);
-					}
+					if(isNew)
+						this.watchFile(file, true);
 
 					var ee = ut.pu.pref("editor.externalEditorPath");
 
@@ -524,6 +479,118 @@
 							ut._err(e);
 						}
 					}
+				]]>
+				</body>
+			</method>
+			<method name="loadFromFile">
+				<parameter name="watch" />
+				<parameter name="file" />
+				<body>
+				<![CDATA[
+					if(!file || !file.exists()) {
+						if(!("handyClicksUtils" in top))
+							return null;
+						var ut = top.handyClicksUtils;
+						var fp = Components.classes["@mozilla.org/filepicker;1"]
+							.createInstance(Components.interfaces.nsIFilePicker);
+						var ext = "js";
+						fp.defaultExtension = ext;
+						fp.appendFilter(ut.getLocalized(ext + "Files"), "*." + ext);
+						fp.appendFilters(fp.filterAll);
+						fp.init(top, ut.getLocalized(watch ? "linkWithFile" : "loadCodeFromFile"), fp.modeOpen);
+						if(fp.show() == fp.returnCancel)
+							return null;
+						file = fp.file;
+					}
+					if(!file.exists())
+						return null;
+					this.updateFromFile(file);
+					if(watch)
+						this.watchFile(file, false);
+					else
+						this.unwatchFile();
+					return file;
+				]]>
+				</body>
+			</method>
+			<method name="watchFile">
+				<parameter name="file" />
+				<parameter name="isTemp" />
+				<body>
+				<![CDATA[
+					this._linkedFile = file;
+					this._isTempFile = isTemp;
+					this._lastModifiedTime = file.lastModifiedTime;
+					this._fileSize = file.fileSize;
+					top.addEventListener("focus",  this, false);
+					top.addEventListener("unload", this, false);
+				]]>
+				</body>
+			</method>
+			<method name="unwatchFile">
+				<body>
+				<![CDATA[
+					top.removeEventListener("unload", this, false);
+					top.removeEventListener("focus",  this, false);
+					var file = this._linkedFile;
+					if(file && this._isTempFile && file.exists())
+						file.remove(false);
+					this._linkedFile = null;
+				]]>
+				</body>
+			</method>
+			<method name="handleEvent">
+				<parameter name="e" />
+				<body>
+				<![CDATA[
+					switch(e.type) {
+						case "focus":  this.updateFromFile(); break;
+						case "unload": if(e.target.defaultView == top) this.unwatchFile();
+					}
+				]]>
+				</body>
+			</method>
+			<method name="updateFromFile">
+				<parameter name="file" />
+				<body>
+				<![CDATA[
+					if(!("handyClicksUtils" in top))
+						return;
+					var fromLinkedFile = !file;
+					file = file || this._linkedFile;
+					if(!file || !file.exists())
+						return;
+					if(fromLinkedFile) {
+						var fTime = file.lastModifiedTime;
+						var fSize = file.fileSize;
+						if(fTime == this._lastModifiedTime && fSize == this._fileSize)
+							return;
+					}
+					var fVal = top.handyClicksUtils.readFromFile(file).replace(/\r\n?|\n\r?/g, "\n");
+					if(fVal == this.value) {
+						if(fromLinkedFile) {
+							this._lastModifiedTime = fTime;
+							this._fileSize = fSize;
+						}
+						return;
+					}
+
+					var ifi = this.inputField;
+					var sTop = ifi.scrollTop;
+					var sLeft = ifi.scrollLeft;
+
+					this.value = fVal;
+
+					ifi.scrollTop = sTop;
+					ifi.scrollLeft = sLeft;
+
+					if(fromLinkedFile) {
+						this._lastModifiedTime = fTime;
+						this._fileSize = fSize;
+					}
+					this.fade();
+
+					this.fireChange();
 				]]>
 				</body>
 			</method>
@@ -706,6 +773,8 @@
 			<handler event="keypress" preventdefault="true" key="g" action="this.goToLine();" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="w" action="this.toggleWordWrap();" modifiers="control" />
 			<handler event="keypress" preventdefault="true" keycode="VK_F4" action="this.openExternalEditor();" />
+			<handler event="keypress" preventdefault="true" key="o" action="this.loadFromFile(false);" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key="o" action="this.loadFromFile(true);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" key="e" action="this.openExternalEditor();" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(false);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(true);" modifiers="control,shift" />
