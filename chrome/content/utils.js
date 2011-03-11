@@ -568,8 +568,8 @@ var handyClicksUtils = {
 	},
 
 	get lineBreak() {
-		// Based on code of Adblock Plus 1.2.1
-		// chrome\adblockplus.jar\content\utils.js
+		// Based on code of Adblock Plus 1.2.1: chrome\adblockplus.jar\content\utils.js
+		// In newer versions: modules\Utils.jsm
 		// Platform's line breaks by reading prefs.js
 		var br = "\n";
 		try {
@@ -590,8 +590,11 @@ var handyClicksUtils = {
 		delete this.lineBreak;
 		return this.lineBreak = br;
 	},
-	platformLineBreaks: function(str) {
-		return str.replace(/\r\n?|\n\r?/g, this.lineBreak);
+	platformLineBreaks: function(str, lineBreak) {
+		return str.replace(/\r\n?|\n\r?/g, lineBreak || this.lineBreak);
+	},
+	internalLineBreaks: function(str) {
+		return str.replace(/\r\n?|\n\r?/g, "\n");
 	},
 
 	get isArray() { // function(arr)

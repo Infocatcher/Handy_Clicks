@@ -400,13 +400,14 @@
 
 			<field name="_linkedFile">null</field>
 			<field name="_isTempFile">false</field>
+			<field name="_lineBreak">null</field>
 			<method name="openExternalEditor">
 				<body>
 				<![CDATA[
 					if(!("handyClicksUtils" in top))
 						return;
 					var ut = top.handyClicksUtils;
-					var file = this._isTempFile && this._linkedFile;
+					var file = this._linkedFile;
 					var isNew = !file || !file.exists();
 
 					var ext = ut.pu.pref("editor.externalEditorExtension") || "js";
@@ -415,20 +416,26 @@
 						file = ut.getFileByAlias("TmpD");
 						file.append(fName);
 						file.createUnique(file.NORMAL_FILE_TYPE, 0644);
+						this._lineBreak = null; // Will use platform's line breaks
+						this.watchFile(file, true);
 
 						Components.classes["@mozilla.org/uriloader/external-helper-app-service;1"]
 							.getService(Components.interfaces.nsPIExternalAppLauncher)
 							.deleteTemporaryFileOnExit(file);
 					}
 
-					ut.writeToFile(ut.platformLineBreaks(this.value), file);
-
-					if(isNew)
-						this.watchFile(file, true);
+					//ut.writeToFile(ut.platformLineBreaks(this.value), file);
+					//this.updateFile(this.value, file);
+					this.updateFile();
 
 					var ee = ut.pu.pref("editor.externalEditorPath");
+					var eeFile = ee && ut.getLocalFile(ee);
+					var eeFileExists = eeFile && eeFile.exists();
 
-					if(!ee && "nsIWindowsRegKey" in Components.interfaces) try {
+					if(ee && !eeFileExists)
+						ut._warn(<>openExternalEditor: External editor not found: "{ee}"</>);
+
+					if(!eeFileExists && "nsIWindowsRegKey" in Components.interfaces) try {
 						// Check Windows association
 						var regKey = Components.classes["@mozilla.org/windows-registry-key;1"]
 							.createInstance(Components.interfaces.nsIWindowsRegKey);
@@ -443,11 +450,12 @@
 							var cmd = readKey(cmdId + "\\shell\\open\\command");
 							if(cmd) {
 								// %SystemRoot%\System32\WScript.exe "%1" %*
+								//~ todo: other path in x64?
 								var wscript = ut.expandEnvironmentVariables("%SystemRoot%\\system32\\wscript.exe").toLowerCase();
 								var indx = ut.expandEnvironmentVariables(cmd).toLowerCase().indexOf(wscript);
 								if(indx == 0 || indx == 1) {
 									ee = "%SystemRoot%\\notepad.exe";
-									ut._log(<>openExternalEditor: "invalid" association: {cmd}&#10;Will use "{ee}"</>);
+									ut._log(<>openExternalEditor: "invalid" association: {cmd + "\n"}Will use "{ee}"</>);
 								}
 							}
 						}
@@ -493,9 +501,8 @@
 						var ut = top.handyClicksUtils;
 						var fp = Components.classes["@mozilla.org/filepicker;1"]
 							.createInstance(Components.interfaces.nsIFilePicker);
-						var ext = "js";
-						fp.defaultExtension = ext;
-						fp.appendFilter(ut.getLocalized(ext + "Files"), "*." + ext);
+						fp.defaultExtension = "js";
+						fp.appendFilter(ut.getLocalized("jsFiles"), "*.js;*.jsm");
 						fp.appendFilters(fp.filterAll);
 						fp.init(top, ut.getLocalized(watch ? "linkWithFile" : "loadCodeFromFile"), fp.modeOpen);
 						if(fp.show() == fp.returnCancel)
@@ -504,7 +511,7 @@
 					}
 					if(!file.exists())
 						return null;
-					this.updateFromFile(file);
+					this.updateFromFile(file, true /*detectLineBreak*/);
 					if(watch)
 						this.watchFile(file, false);
 					else
@@ -552,10 +559,12 @@
 			</method>
 			<method name="updateFromFile">
 				<parameter name="file" />
+				<parameter name="detectLineBreak" />
 				<body>
 				<![CDATA[
 					if(!("handyClicksUtils" in top))
 						return;
+					var ut = top.handyClicksUtils;
 					var fromLinkedFile = !file;
 					file = file || this._linkedFile;
 					if(!file || !file.exists())
@@ -566,7 +575,10 @@
 						if(fTime == this._lastModifiedTime && fSize == this._fileSize)
 							return;
 					}
-					var fVal = top.handyClicksUtils.readFromFile(file).replace(/\r\n?|\n\r?/g, "\n");
+					var fVal = ut.readFromFile(file);
+					if(detectLineBreak)
+						this._lineBreak = /\r\n?|\n\r?/.test(fVal) ? RegExp.lastMatch : ut.lineBreak;
+					fVal = ut.internalLineBreaks(fVal);
 					if(fVal == this.value) {
 						if(fromLinkedFile) {
 							this._lastModifiedTime = fTime;
@@ -591,6 +603,23 @@
 					this.fade();
 
 					this.fireChange();
+				]]>
+				</body>
+			</method>
+			<method name="updateFile">
+				<parameter name="val" />
+				<parameter name="file" />
+				<body>
+				<![CDATA[
+					if(!("handyClicksUtils" in top))
+						return;
+					var ut = top.handyClicksUtils;
+					val = val || this.value;
+					file = file || this._linkedFile;
+
+					var fVal = ut.internalLineBreaks(ut.readFromFile(file));
+					if(val != fVal)
+						ut.writeToFile(ut.platformLineBreaks(val, this._lineBreak), file);
 				]]>
 				</body>
 			</method>
@@ -716,16 +745,16 @@
 					ss = newVal.indexOf(selMarker);
 					se = newVal.lastIndexOf(selMarker) - selMarker.length;
 					newVal = newVal.replace(selMarker, "", "g");
- 					if(newVal != val) {
+					if(newVal != val) {
 						var sTop = ifi.scrollTop;
 						var sLeft = ifi.scrollLeft;
- 						this.value = newVal;
- 						ifi.scrollTop = sTop;
- 						ifi.scrollLeft = sLeft;
- 						ifi.selectionStart = ss;
- 						ifi.selectionEnd = se;
- 						this.fireChange();
- 					}
+						this.value = newVal;
+						ifi.scrollTop = sTop;
+						ifi.scrollLeft = sLeft;
+						ifi.selectionStart = ss;
+						ifi.selectionEnd = se;
+						this.fireChange();
+					}
 				]]>
 				</body>
 			</method>
