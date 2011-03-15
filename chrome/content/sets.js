@@ -1153,7 +1153,6 @@ var handyClicksSets = {
 			tdm = 0;
 		var checkbox = mp.getElementsByAttribute("value", tdm);
 		checkbox.length && checkbox[0].setAttribute("checked", "true");
-		this.$("hc-sets-tree-toggleColored").setAttribute("checked", this.tree.getAttribute("hc_colored") == "true");
 		var closeMenu = this.pu.pref("sets.closeTreeViewMenu") ? "auto" : "none";
 		Array.forEach(
 			mp.getElementsByTagName("menuitem"),
@@ -1161,6 +1160,8 @@ var handyClicksSets = {
 				mi.setAttribute("closemenu", closeMenu);
 				if(mi.hasAttribute("hc_pref"))
 					mi.setAttribute("checked", this.pu.pref(mi.getAttribute("hc_pref")));
+				else if(mi.hasAttribute("hc_treeAttr"))
+					mi.setAttribute("checked", this.tree.getAttribute(mi.getAttribute("hc_treeAttr")) == "true");
 			},
 			this
 		);
@@ -1170,9 +1171,15 @@ var handyClicksSets = {
 		if(mi.hasAttribute("value"))
 			this.setDrawMode(mi.value);
 		else if(mi.hasAttribute("hc_pref")) {
-			var pName = mi.getAttribute("hc_pref");
-			this.pu.pref(pName, !this.pu.pref(pName)); // => prefsChanged()
+			var prefName = mi.getAttribute("hc_pref");
+			this.pu.pref(prefName, !this.pu.pref(prefName)); // => prefsChanged()
 		}
+		else if(mi.hasAttribute("hc_treeAttr")) {
+			var attrName = mi.getAttribute("hc_treeAttr");
+			var tr = this.tree;
+			tr.setAttribute(attrName, tr.getAttribute(attrName) != "true");
+		}
+
 		if(this.ut.hasModifier(e))
 			popup.hidePopup();
 	},
@@ -1191,10 +1198,6 @@ var handyClicksSets = {
 	setDrawMode: function(dm) {
 		// <preference instantApply="true" ... /> is bad on slow devices (it saves prefs.js file)
 		this.pu.pref("sets.treeDrawMode", Number(dm)); // => prefsChanged()
-	},
-	toggleColored: function() {
-		var tr = this.tree;
-		tr.setAttribute("hc_colored", tr.getAttribute("hc_colored") != "true");
 	},
 
 	get treeContainers() {

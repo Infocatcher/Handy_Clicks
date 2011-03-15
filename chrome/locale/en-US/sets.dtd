@@ -46,6 +46,7 @@
 <!ENTITY hc.sets.drawModeInverseInline "Inverse (inline)">
 <!ENTITY hc.sets.expandDa "Expand delayed actions">
 <!ENTITY hc.sets.highlightTree "Highlight tree">
+<!ENTITY hc.sets.showTreeGrid "Show grid">
 <!ENTITY hc.sets.localizeArgs "Localize arguments">
 <!ENTITY hc.sets.rememberSearchQuery "Remember search query">
 <!ENTITY hc.sets.closeThisMenu "Close this menu after click">

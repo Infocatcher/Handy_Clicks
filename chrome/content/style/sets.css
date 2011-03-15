@@ -78,6 +78,20 @@ tree treecolpicker:focus image {
 	outline: 1px dotted ThreeDDarkShadow;
 }
 
+tree[hc_grid="true"] treechildren::-moz-tree-row {
+	border-bottom: 1px solid ThreeDFace;
+}
+tree[hc_grid="true"] treechildren::-moz-tree-cell {
+	/* We can't use ::-moz-tree-column with highlighted rows */
+	border-right: 1px solid ThreeDFace;
+}
+tree[hc_colored="true"][hc_grid="true"] treechildren::-moz-tree-row {
+	border-bottom: 1px solid #e0dfe3;
+}
+tree[hc_colored="true"][hc_grid="true"] treechildren::-moz-tree-cell {
+	border-right: 1px solid #e0dfe3;
+}
+
 /* Override system colors for use custom colors for highlighting */
 tree[hc_colored="true"] .tree-bodybox, tree[hc_colored="true"] treechildren {
 	color: black;
@@ -127,7 +141,7 @@ tree[hc_colored="true"] treechildren::-moz-tree-row(hover) {
 }
 treechildren::-moz-tree-row(hover) {
 	/*border: 1px dotted -moz-use-text-color;*/
-	border: 1px dotted currentColor;
+	border: 1px dotted currentColor !important;
 }
 treechildren::-moz-tree-cell-text(hc_edited) {
 	font-weight: bold;
