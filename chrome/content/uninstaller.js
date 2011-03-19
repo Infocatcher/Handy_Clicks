@@ -15,14 +15,10 @@ handyClicksUninstaller = {
 	initUninstallObserver: function() {
 		this.oSvc.addObserver(this, "quit-application-granted", false);
 		if(this.newAddonManager) {
-			try {
-				// In Gecko 2 XPCOM can starts after "final-ui-startup"
-				this.addAddonListener();
-			}
-			catch(e) {
-				// Wait for AddonManager startup
-				this.oSvc.addObserver(this, "final-ui-startup", false);
-			}
+			// Firefox 3.7a5pre+:
+			// In Firefox 1.5 we can't use "import" keyword (we get syntax error)
+			Components.utils["import"]("resource://gre/modules/AddonManager.jsm");
+			AddonManager.addAddonListener(this);
 		}
 		else
 			this.oSvc.addObserver(this, "em-action-requested", false);
@@ -35,17 +31,10 @@ handyClicksUninstaller = {
 			this.oSvc.removeObserver(this, "em-action-requested");
 	},
 	observe: function(subject, topic, data) {
-		if(topic == "final-ui-startup") {
-			this.oSvc.removeObserver(this, "final-ui-startup");
-			this.addAddonListener();
-		}
-		else if(topic == "quit-application-granted") {
+		if(topic == "quit-application-granted") {
 			this.destroyUninstallObserver();
-			if(this.isUninstall && this.uninstallConfirmed) {
-				this.createContext();
-				this.uninstall();
-				this.destroyContext();
-			}
+			if(this.isUninstall && this.uninstallConfirmed)
+				this.execInContext(this.uninstall);
 		}
 		else if(
 			topic == "em-action-requested"
@@ -57,13 +46,6 @@ handyClicksUninstaller = {
 			else if(data == "item-cancel-action")
 				this.isUninstall = false;
 		}
-	},
-	addAddonListener: function() {
-		// Firefox 3.7a5pre+:
-		// In Firefox 1.5 we can't use "import" keyword (we get syntax error)
-		Components.utils["import"]("resource://gre/modules/AddonManager.jsm");
-		//AddonManagerPrivate.startup();
-		AddonManager.addAddonListener(this);
 	},
 	onUninstalling: function(ext, requiresRestart) {
 		if(ext.id == this.guid)
@@ -78,8 +60,11 @@ handyClicksUninstaller = {
 	},
 	handleUninstalling: function() {
 		this.isUninstall = true;
+		this.execInContext(this.uninstallConfirm);
+	},
+	execInContext: function(func) {
 		this.createContext();
-		this.uninstallConfirm();
+		func.apply(this);
 		this.destroyContext();
 	},
 	createContext: function() {
