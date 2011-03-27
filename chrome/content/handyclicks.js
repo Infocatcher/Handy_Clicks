@@ -76,6 +76,8 @@ var handyClicks = {
 		var uri = makeURI(data);
 		if(!sss.sheetRegistered(uri, sss.AGENT_SHEET))
 			sss.loadAndRegisterSheet(uri, sss.AGENT_SHEET);
+		if(!sss.sheetRegistered(uri, sss.USER_SHEET))
+			sss.loadAndRegisterSheet(uri, sss.USER_SHEET);
 	},
 	destroy: function(reloadFlag) {
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
@@ -382,7 +384,8 @@ var handyClicks = {
 
 		var it = e.originalTarget;
 		//this.origItem = it;
-
+		if(!it.localName) // it == document
+			return;
 		var itln = it.localName.toLowerCase();
 		var _it, _itln;
 
