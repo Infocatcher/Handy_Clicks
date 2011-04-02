@@ -77,7 +77,7 @@ var handyClicksFuncs = {
 			case "img":
 				uri = it instanceof HTMLCanvasElement
 					? it.toDataURL()
-					: it.src;
+					: it.src || it.getAttribute("src");
 			break;
 			case "bookmark":
 			case "historyItem":
