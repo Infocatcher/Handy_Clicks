@@ -428,8 +428,8 @@ var handyClicksUtils = {
 		}
 	},
 
-	// File I/O:
-	writeToFile: function(str, file) { // UTF-8
+	// File I/O (only UTF-8):
+	writeToFile: function(str, file) {
 		var fos = Components.classes["@mozilla.org/network/file-output-stream;1"]
 			.createInstance(Components.interfaces.nsIFileOutputStream);
 		try {
@@ -448,8 +448,35 @@ var handyClicksUtils = {
 		cos.close(); // this closes fos
 		return true;
 	},
-	readFromFile: function _rff(file) { // UTF-8
-		_rff.error = false;
+	writeToFileAsync: function(str, file, callback, context) {
+		try {
+			Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
+			Components.utils["import"]("resource://gre/modules/FileUtils.jsm");
+		}
+		catch(e) {
+			this.writeToFileAsync = function(str, file, callback, context) {
+				var ok = this.writeToFile(str, file);
+				callback && callback.call(
+					context || this,
+					Components.results[ok ? "NS_OK" : "NS_ERROR_FILE_ACCESS_DENIED"]
+				);
+				return ok;
+			};
+			return this.writeToFileAsync.apply(this, arguments);
+		}
+		var ostream = FileUtils.openSafeFileOutputStream(file);
+		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+		suc.charset = "UTF-8";
+		var istream = suc.convertToInputStream(str);
+		NetUtil.asyncCopy(istream, ostream, this.bind(function(status) {
+			if(!Components.isSuccessCode(status))
+				this.ut._err(<>NetUtil.asyncCopy failed: {this.getErrorName(status)} ({status})</>);
+			callback && callback.call(context || this, status);
+		}, this));
+		return true;
+	},
+	readFromFile: function(file, outErr) {
 		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
 			.createInstance(Components.interfaces.nsIFileInputStream);
 		try {
@@ -459,7 +486,8 @@ var handyClicksUtils = {
 			this._err(<>Can't read string from file "{file && file.path}"</>);
 			this._err(e);
 			fis.close();
-			_rff.error = true;
+			if(outErr)
+				outErr.value = e;
 			return "";
 		}
 		var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]
@@ -469,6 +497,33 @@ var handyClicksUtils = {
 		sis.close();
 		fis.close();
 		return this.convertToUnicode(str);
+	},
+	readFromFileAsync: function(file, callback, context) {
+		try {
+			Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
+		}
+		catch(e) {
+			this.readFromFileAsync = function(file, callback, context) {
+				var err = { value: undefined };
+				var data = this.readFromFile(file, err);
+				var ok = !err.value;
+				callback.call(
+					context || this,
+					Components.results[ok ? "NS_OK" : "NS_ERROR_FILE_ACCESS_DENIED"]
+				);
+				return ok;
+			};
+			return this.readFromFileAsync.apply(this, arguments);
+		}
+		NetUtil.asyncFetch(file, this.bind(function(istream, status) {
+			var data = "";
+			if(Components.isSuccessCode(status))
+				data = this.convertToUnicode(NetUtil.readInputStreamToString(istream, istream.available()));
+			else
+				this.ut._err(<>NetUtil.asyncFetch failed: {this.getErrorName(status)} ({status})</>);
+			callback.call(context || this, data, status);
+		}, this));
+		return true;
 	},
 	convertToUnicode: function(str) {
 		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
@@ -482,6 +537,13 @@ var handyClicksUtils = {
 			this._err(e);
 		}
 		return str;
+	},
+	getErrorName: function(code) {
+		var cr = Components.results;
+		for(var errName in cr)
+			if(cr[errName] == code)
+				return errName;
+		return String(code);
 	},
 
 	// Clipboard utils:

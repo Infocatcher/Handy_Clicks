@@ -21,7 +21,7 @@ var handyClicks = {
 
 	// Initialization:
 	init: function(reloadFlag) {
-		this.ps.loadSettings();
+		this.ps.loadSettingsAsync();
 		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], true);
 	},
 	destroy: function(reloadFlag) {

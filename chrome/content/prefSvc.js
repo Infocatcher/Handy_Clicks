@@ -102,6 +102,9 @@ var handyClicksPrefSvc = {
 		prefs: "handyClicksPrefs",
 		__proto__: null
 	},
+	loadedVersion: -1,
+	types: {},
+	prefs: {},
 	get currentSrc() {
 		if(!this.otherSrc)
 			return null;
@@ -115,25 +118,31 @@ var handyClicksPrefSvc = {
 			tar[p] = this.ut.getOwnProperty(src, this._prefVars[p]);
 	},
 
-	SETS_LOAD_OK: 0,
-	SETS_LOAD_EVAL_ERROR: 1,
+	SETS_LOAD_OK:           0,
+	SETS_LOAD_EVAL_ERROR:   1,
 	SETS_LOAD_INVALID_DATA: 2,
-	SETS_LOAD_SKIPPED: 3,
+	SETS_LOAD_SKIPPED:      3,
 
 	_loadStatus: -1,
-	loadSettings: function(pSrc) {
+	loadSettingsAsync: function(callback, context) {
+		return this.ut.readFromFileAsync(this._prefsFile, function(data, status) {
+			Components.isSuccessCode(status) && this.loadSettings(data, true);
+			callback && callback.call(context, status);
+		}, this);
+	},
+	loadSettings: function(pSrc, fromProfile) {
 		if(this.isMainWnd) {
 			if(!this.hc.enabled) {
 				this.ut._log("loadSettings() -> disabled");
 				this._loadStatus = this.SETS_LOAD_SKIPPED;
 				return;
 			}
-			this.ut._log("loadSettings()");
+			this.ut._log(fromProfile ? "loadSettingsAsync()" : "loadSettings()");
 		}
 		this.otherSrc = !!pSrc;
 		//this._loadStatus = this.SETS_LOAD_OK;
 		pSrc = pSrc || this.prefsFile;
-		var fromProfile = false;
+		//var fromProfile = false;
 		if(pSrc instanceof Components.interfaces.nsILocalFile) {
 			fromProfile = pSrc.equals(this._prefsFile);
 			if(fromProfile && !pSrc.exists()) // Save default (empty) settings
