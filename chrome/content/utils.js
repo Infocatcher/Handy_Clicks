@@ -362,7 +362,7 @@ var handyClicksUtils = {
 	expandInternalVariables: function (str) {
 		return str.replace(
 			/^%([^%]+)%/, //~ todo: may conflict with environment variables => [ProfD]/dir like Thunderbird or some other
-			this.ut.bind(function(s, alias) {
+			this.bind(function(s, alias) {
 				if(alias.toLowerCase() == "profile" || alias == "ProfD")
 					return this.ps._profileDir.path;
 				var aliasFile = this.getFileByAlias(alias);
@@ -401,7 +401,7 @@ var handyClicksUtils = {
 					+ this.getLocalized("openConsole"),
 				this.getLocalized("errorTitle"),
 				this.toErrorConsole, null,
-				this.ut.NOTIFY_ICON_ERROR
+				this.NOTIFY_ICON_ERROR
 			);
 			return false;
 		}
@@ -429,16 +429,18 @@ var handyClicksUtils = {
 	},
 
 	// File I/O (only UTF-8):
-	writeToFile: function(str, file) {
+	writeToFile: function(str, file, outErr) {
 		var fos = Components.classes["@mozilla.org/network/file-output-stream;1"]
 			.createInstance(Components.interfaces.nsIFileOutputStream);
 		try {
 			fos.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
 		}
 		catch(e) {
-			this._err(<>Can't write string to file "{file && file.path}"</>);
+			this._err(<>Can't write string to file "{file instanceof Components.interfaces.nsIFile && file.path}"</>);
 			this._err(e);
 			fos.close();
+			if(outErr)
+				outErr.value = e;
 			return false;
 		}
 		var cos = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
@@ -454,26 +456,34 @@ var handyClicksUtils = {
 			Components.utils["import"]("resource://gre/modules/FileUtils.jsm");
 		}
 		catch(e) {
+			this._log("writeToFileAsync: asynchronous API not available");
 			this.writeToFileAsync = function(str, file, callback, context) {
-				var ok = this.writeToFile(str, file);
-				callback && callback.call(
-					context || this,
-					Components.results[ok ? "NS_OK" : "NS_ERROR_FILE_ACCESS_DENIED"]
-				);
-				return ok;
+				var err = { value: undefined };
+				this.writeToFile(str, file, err);
+				err = err.value;
+				callback && callback.call(context || this, this.getErrorCode(err));
+				return !err;
 			};
 			return this.writeToFileAsync.apply(this, arguments);
 		}
-		var ostream = FileUtils.openSafeFileOutputStream(file);
-		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-		suc.charset = "UTF-8";
-		var istream = suc.convertToInputStream(str);
-		NetUtil.asyncCopy(istream, ostream, this.bind(function(status) {
-			if(!Components.isSuccessCode(status))
-				this.ut._err(<>NetUtil.asyncCopy failed: {this.getErrorName(status)} ({status})</>);
-			callback && callback.call(context || this, status);
-		}, this));
+		try {
+			var ostream = FileUtils.openSafeFileOutputStream(file);
+			var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+				.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+			suc.charset = "UTF-8";
+			var istream = suc.convertToInputStream(str);
+			NetUtil.asyncCopy(istream, ostream, this.bind(function(status) {
+				if(!Components.isSuccessCode(status))
+					this._err(<>NetUtil.asyncCopy failed: {this.getErrorName(status)} ({status})</>);
+				callback && callback.call(context || this, status);
+			}, this));
+		}
+		catch(e) {
+			this._err(<>Can't write string to file "{file instanceof Components.interfaces.nsIFile && file.path}"</>);
+			this._err(e);
+			callback && callback.call(context || this, this.getErrorCode(e));
+			return false;
+		}
 		return true;
 	},
 	readFromFile: function(file, outErr) {
@@ -483,7 +493,7 @@ var handyClicksUtils = {
 			fis.init(file, 0x01, 0444, 0);
 		}
 		catch(e) {
-			this._err(<>Can't read string from file "{file && file.path}"</>);
+			this._err(<>Can't read string from file "{file instanceof Components.interfaces.nsIFile ? file.path : file}"</>);
 			this._err(e);
 			fis.close();
 			if(outErr)
@@ -503,26 +513,32 @@ var handyClicksUtils = {
 			Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
 		}
 		catch(e) {
+			this._log("readFromFileAsync: asynchronous API not available");
 			this.readFromFileAsync = function(file, callback, context) {
 				var err = { value: undefined };
 				var data = this.readFromFile(file, err);
-				var ok = !err.value;
-				callback.call(
-					context || this,
-					Components.results[ok ? "NS_OK" : "NS_ERROR_FILE_ACCESS_DENIED"]
-				);
-				return ok;
+				err = err.value;
+				callback.call(context || this, data, this.getErrorCode(err));
+				return !err;
 			};
 			return this.readFromFileAsync.apply(this, arguments);
 		}
-		NetUtil.asyncFetch(file, this.bind(function(istream, status) {
-			var data = "";
-			if(Components.isSuccessCode(status))
-				data = this.convertToUnicode(NetUtil.readInputStreamToString(istream, istream.available()));
-			else
-				this.ut._err(<>NetUtil.asyncFetch failed: {this.getErrorName(status)} ({status})</>);
-			callback.call(context || this, data, status);
-		}, this));
+		try {
+			NetUtil.asyncFetch(file, this.bind(function(istream, status) {
+				var data = "";
+				if(Components.isSuccessCode(status))
+					data = this.convertToUnicode(NetUtil.readInputStreamToString(istream, istream.available()));
+				else
+					this._err(<>NetUtil.asyncFetch failed: {this.getErrorName(status)} ({status})</>);
+				callback.call(context || this, data, status);
+			}, this));
+		}
+		catch(e) {
+			this._err(<>Can't read string from file "{file instanceof Components.interfaces.nsIFile ? file.path : file}"</>);
+			this._err(e);
+			callback && callback.call(context || this, "", this.getErrorCode(e));
+			return false;
+		}
 		return true;
 	},
 	convertToUnicode: function(str) {
@@ -537,6 +553,13 @@ var handyClicksUtils = {
 			this._err(e);
 		}
 		return str;
+	},
+	getErrorCode: function(err, defaultCode) {
+		return err
+			? /0x[0-9a-fA-F]+\s\((NS_[A-Z_]+)\)/.test(err)
+				? RegExp.$1
+				: defaultCode || "NS_ERROR_FILE_ACCESS_DENIED"
+			: "NS_OK";
 	},
 	getErrorName: function(code) {
 		var cr = Components.results;
