@@ -145,9 +145,13 @@ var handyClicksPrefSvc = {
 		//var fromProfile = false;
 		if(pSrc instanceof Components.interfaces.nsILocalFile) {
 			fromProfile = pSrc.equals(this._prefsFile);
-			if(fromProfile && !pSrc.exists()) // Save default (empty) settings
-				this.saveSettings(this.getSettingsStr({}, {}));
-			pSrc = this.ut.readFromFile(pSrc);
+			if(fromProfile && !pSrc.exists()) { // Save default (empty) settings
+				pSrc = this.getSettingsStr({}, {});
+				this.saveSettingsAsync(pSrc);
+			}
+			else {
+				pSrc = this.ut.readFromFile(pSrc);
+			}
 			if(fromProfile && !this.isMainWnd)
 				this._savedStr = pSrc;
 		}
@@ -495,6 +499,11 @@ var handyClicksPrefSvc = {
 		this.saveSettings(this.getSettingsStr());
 		this.reloadSettings(reloadAll);
 	},
+	saveSettingsObjectsAsync: function(reloadAll, callback, context) {
+		this.saveSettingsAsync(this.getSettingsStr(), function() {
+			this.reloadSettings(reloadAll);
+		}, this);
+	},
 	objToSource: function(obj) {
 		return typeof obj == "string"
 			? '"' + this.encForWrite(obj) + '"'
@@ -675,14 +684,20 @@ var handyClicksPrefSvc = {
 			}
 		);
 	},
-	saveSettings: function(str) {
+	saveSettings: function(str, async, callback, context) {
 		if(str == this._savedStr)
 			return;
 		this.checkForBackup();
 		var pFile = this.prefsFile;
 		this.moveFiles(pFile, this.names.backup);
-		this.ut.writeToFile(str, pFile);
+		if(async)
+			this.ut.writeToFileAsync(str, pFile, callback, context);
+		else
+			this.ut.writeToFile(str, pFile);
 		this._savedStr = str;
+	},
+	saveSettingsAsync: function(str, callback, context) {
+		this.saveSettings(str, true, callback, context);
 	},
 
 	get isMainWnd() {

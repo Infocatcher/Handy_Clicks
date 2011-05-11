@@ -178,7 +178,7 @@ function setsMigration(allowSave, vers) {
 	}
 	this.ut._info("Format of prefs file updated: " + vers + " => " + this.setsVersion);
 	if(allowSave)
-		this.saveSettingsObjects();
+		this.saveSettingsObjectsAsync();
 	else
 		this.loadedVersion = this.setsVersion;
 }
