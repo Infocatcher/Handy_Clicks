@@ -830,6 +830,11 @@ var handyClicksFuncs = {
 		var tbr = this.hc.getTabBrowser(true);
 		return tbr.visibleTabs || tbr.tabs || tbr.tabContainer.childNodes;
 	},
+	get removableTabs() {
+		return Array.slice(this.visibleTabs).filter(function(tab) {
+			return !tab.pinned;
+		});
+	},
 	forEachTab: function(func, context) {
 		return Array.map(this.visibleTabs, func, context || this);
 	},
@@ -845,7 +850,7 @@ var handyClicksFuncs = {
 	},
 	removeAllTabs: function(e) { //~ todo: allGroups argument?
 		var tbr = this.hc.getTabBrowser();
-		var tabs = this.visibleTabs;
+		var tabs = this.removableTabs;
 		var len = tabs.length;
 		if(!this.warnAboutClosingTabs(len, tbr))
 			return;
@@ -858,7 +863,7 @@ var handyClicksFuncs = {
 	removeRightTabs: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
-		var tabs = this.visibleTabs;
+		var tabs = this.removableTabs;
 		var _tabs = [];
 		var curTab = tbr.selectedTab;
 		var removeCurTab = false;
@@ -878,7 +883,7 @@ var handyClicksFuncs = {
 	removeLeftTabs: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
-		var tabs = this.visibleTabs;
+		var tabs = this.removableTabs;
 		var _tabs = [];
 		var curTab = tbr.selectedTab;
 		var removeCurTab = false;

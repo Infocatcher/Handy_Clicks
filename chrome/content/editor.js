@@ -1373,22 +1373,20 @@ var handyClicksEditor = {
 			this.ut.timeout(_hl, this, [fields, false, true], 2500);
 			return;
 		}
-		fields.forEach(
-			function(field) {
-				if(
-					addFlag && field.value
-					&& (field.localName != "menulist" || this.checkMenulist(field))
-				)
-					return;
-				this.ut.attribute(field, "hc_requiredField", addFlag);
-				for(var tab = this.getTabForNode(field); tab; tab = this.getTabForNode(tab, true))
-					this.ut.attribute(tab, "hc_requiredFieldParentTab", addFlag && tab.getAttribute("selected") != "true");
-			},
-			this
-		);
+		fields.forEach(function(field) {
+			if(
+				addFlag && field.value
+				&& (field.localName != "menulist" || this.checkMenulist(field))
+			)
+				return;
+			this.ut.attribute(field, "hc_requiredField", addFlag);
+			for(var tab = this.getTabForNode(field); tab; tab = this.getTabForNode(tab, true))
+				this.ut.attribute(tab, "hc_requiredFieldParentTab", addFlag && tab.getAttribute("selected") != "true");
+		}, this);
 	},
 	checkMenulist: function(ml) {
 		//~ note: disabled state are not checked
-		return this.ut.isElementVisible(ml.selectedItem);
+		//return this.ut.isElementVisible(ml.selectedItem); //???
+		return !!ml.selectedItem;
 	}
 };
