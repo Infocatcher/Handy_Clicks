@@ -20,7 +20,7 @@ var handyClicksFuncs = {
 		if(_uri.charAt(0) != "#")
 			return false;
 		var anchor = _uri.substr(1);
-		return !anchor || (!doc.getElementById(anchor) && !doc.getElementsByName(anchor).length);
+		return !anchor || !doc.getElementById(anchor) && !doc.getElementsByName(anchor).length;
 	},
 
 	copyItemText: function(e, closePopups) {
@@ -851,14 +851,19 @@ var handyClicksFuncs = {
 	removeAllTabs: function(e) { //~ todo: allGroups argument?
 		var tbr = this.hc.getTabBrowser();
 		var tabs = this.removableTabs;
-		var len = tabs.length;
-		if(!this.warnAboutClosingTabs(len, tbr))
-			return;
+		var _tabs = [];
 		var curTab = tbr.selectedTab;
-		for(var i = len - 1; i >= 0; i--)
-			if(tabs[i] != curTab) // Avoid reflows after tab reselection
-				tbr.removeTab(tabs[i]);
-		tbr.removeTab(curTab);
+		var removeCurTab = false;
+		for(var i = 0, len = tabs.length; i < len; i++) {
+			if(tabs[i] == curTab) // Avoid reflows after tab reselection
+				removeCurTab = true;
+			else
+				_tabs.push(tabs[i]);
+		}
+		if(removeCurTab)
+			_tabs.push(curTab);
+		if(this.warnAboutClosingTabs(_tabs.length, tbr))
+			_tabs.forEach(tbr.removeTab, tbr);
 	},
 	removeRightTabs: function(e, tab) {
 		tab = this.fixTab(tab);

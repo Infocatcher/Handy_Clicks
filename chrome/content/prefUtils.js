@@ -67,9 +67,9 @@ var handyClicksPrefUtils = {
 		var pType = this.prefSvc.getPrefType(pName);
 		var isNew = pType == pbr.PREF_INVALID;
 		var vType = typeof pVal;
-		if(pType == pbr.PREF_BOOL || (isNew && vType == "boolean"))
+		if(pType == pbr.PREF_BOOL || isNew && vType == "boolean")
 			this.prefSvc.setBoolPref(pName, pVal);
-		else if(pType == pbr.PREF_INT || (isNew && vType == "number"))
+		else if(pType == pbr.PREF_INT || isNew && vType == "number")
 			this.prefSvc.setIntPref(pName, pVal);
 		else if(pType == pbr.PREF_STRING || isNew) {
 			var ss = this.ss;

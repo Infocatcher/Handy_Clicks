@@ -401,6 +401,7 @@
 			<field name="_linkedFile">null</field>
 			<field name="_isTempFile">false</field>
 			<field name="_lineBreak">null</field>
+			<field name="_hasWatchHandlers">false</field>
 			<method name="openExternalEditor">
 				<body>
 				<![CDATA[
@@ -508,9 +509,9 @@
 						if(fp.show() == fp.returnCancel)
 							return null;
 						file = fp.file;
+						if(!file.exists()) //?
+							return null;
 					}
-					if(!file.exists())
-						return null;
 					this.updateFromFile(file, true /*detectLineBreak*/);
 					if(watch)
 						this.watchFile(file, false);
@@ -529,20 +530,25 @@
 					this._isTempFile = isTemp;
 					this._lastModifiedTime = file.lastModifiedTime;
 					this._fileSize = file.fileSize;
-					top.addEventListener("focus",  this, false);
-					top.addEventListener("unload", this, false);
+					if(!this._hasWatchHandlers) {
+						this._hasWatchHandlers = true;
+						top.addEventListener("focus",  this, false);
+						top.addEventListener("unload", this, false);
+					}
 				]]>
 				</body>
 			</method>
 			<method name="unwatchFile">
 				<body>
 				<![CDATA[
-					top.removeEventListener("unload", this, false);
-					top.removeEventListener("focus",  this, false);
+					if(this._hasWatchHandlers) {
+						top.removeEventListener("unload", this, false);
+						top.removeEventListener("focus",  this, false);
+					}
 					var file = this._linkedFile;
+					this._linkedFile = null;
 					if(file && this._isTempFile && file.exists())
 						file.remove(false);
-					this._linkedFile = null;
 				]]>
 				</body>
 			</method>
@@ -550,9 +556,11 @@
 				<parameter name="e" />
 				<body>
 				<![CDATA[
-					switch(e.type) {
-						case "focus":  this.updateFromFile(); break;
-						case "unload": if(e.target.defaultView == top) this.unwatchFile();
+					if(e.type == "focus")
+						this.updateFromFile();
+					else if(e.type == "unload") {
+						if(e.target.defaultView == top)
+							this.unwatchFile();
 					}
 				]]>
 				</body>
@@ -802,9 +810,9 @@
 			<handler event="keypress" preventdefault="true" key="g" action="this.goToLine();" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="w" action="this.toggleWordWrap();" modifiers="control" />
 			<handler event="keypress" preventdefault="true" keycode="VK_F4" action="this.openExternalEditor();" />
+			<handler event="keypress" preventdefault="true" key="e" action="this.openExternalEditor();" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" key="o" action="this.loadFromFile(false);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="o" action="this.loadFromFile(true);" modifiers="control,shift" />
-			<handler event="keypress" preventdefault="true" key="e" action="this.openExternalEditor();" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(false);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(true);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" keycode="VK_BACK" action="this.trimEndSpaces();" modifiers="alt" />

@@ -3,7 +3,7 @@
 #hc-editor-clickButton {
 	-moz-user-focus: ignore;
 }
-textbox.hcText {
+.hcText {
 	background: transparent !important;
 	border: none;
 	padding: 0;
@@ -11,11 +11,11 @@ textbox.hcText {
 	-moz-appearance: none;
 	-moz-box-flex: 1;
 }
-textbox.hcText menuitem[cmd="cmd_undo"],
-textbox.hcText menuitem[cmd="cmd_undo"] + menuseparator,
-textbox.hcText menuitem[cmd="cmd_cut"],
-textbox.hcText menuitem[cmd="cmd_paste"],
-textbox.hcText menuitem[cmd="cmd_delete"] {
+.hcText menuitem[cmd="cmd_undo"],
+.hcText menuitem[cmd="cmd_undo"] + menuseparator,
+.hcText menuitem[cmd="cmd_cut"],
+.hcText menuitem[cmd="cmd_paste"],
+.hcText menuitem[cmd="cmd_delete"] {
 	display: none !important;
 }
 

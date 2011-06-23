@@ -125,7 +125,14 @@ var handyClicksPrefSvc = {
 
 	_loadStatus: -1,
 	loadSettingsAsync: function(callback, context) {
-		return this.ut.readFromFileAsync(this._prefsFile, function(data, status) {
+		var pFile = this._prefsFile;
+		if(!pFile.exists()) {
+			this.ut._log("loadSettingsAsync() -> save default settings");
+			this.loadSettings(this.defaultSettings(), true);
+			callback && callback.call(context, Components.results.NS_OK);
+			return true;
+		}
+		return this.ut.readFromFileAsync(pFile, function(data, status) {
 			Components.isSuccessCode(status) && this.loadSettings(data, true);
 			callback && callback.call(context, status);
 		}, this);
@@ -145,13 +152,9 @@ var handyClicksPrefSvc = {
 		//var fromProfile = false;
 		if(pSrc instanceof Components.interfaces.nsILocalFile) {
 			fromProfile = pSrc.equals(this._prefsFile);
-			if(fromProfile && !pSrc.exists()) { // Save default (empty) settings
-				pSrc = this.getSettingsStr({}, {});
-				this.saveSettingsAsync(pSrc);
-			}
-			else {
-				pSrc = this.ut.readFromFile(pSrc);
-			}
+			pSrc = fromProfile && !pSrc.exists()
+				? this.defaultSettings()
+				: this.ut.readFromFile(pSrc);
 			if(fromProfile && !this.isMainWnd)
 				this._savedStr = pSrc;
 		}
@@ -416,6 +419,11 @@ var handyClicksPrefSvc = {
 		this.ut._err(e);
 	},
 
+	defaultSettings: function() {
+		var data = this.getSettingsStr({}, {});
+		this.saveSettingsAsync(data);
+		return data;
+	},
 	getSettingsStr: function(types, prefs) {
 		types = types || this.types;
 		prefs = prefs || this.prefs;

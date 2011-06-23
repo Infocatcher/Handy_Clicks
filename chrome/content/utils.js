@@ -49,6 +49,26 @@ var handyClicksUtils = {
 		// Bug: can't show message with custom fileName
 		this._err(e, fileName, lineNumber, true);
 	},
+	_stack: function(isWarning) {
+		for(
+			var stackFrame = Components.stack.caller, funcCaller = arguments.callee.caller, i = 0;
+			stackFrame && stackFrame.filename;
+			stackFrame = stackFrame.caller, funcCaller = funcCaller ? funcCaller.caller : null, i++
+		) {
+			var line = "";
+			var req = new XMLHttpRequest();
+			req.onload = function() {
+				line = (req.responseText.split(/\r\n?|\n\r?/)[stackFrame.lineNumber - 1] || "")
+					.replace(/^\s+/, "");
+			};
+			req.open("GET", stackFrame.filename, false);
+			req.send(null);
+			var funcDesc = String(funcCaller).match(/^.*/)[0].substr(0, 100)
+				+ " \u2026\n"
+				+ line;
+			this._err(" [stack: " + i + "] " + funcDesc, stackFrame.filename, stackFrame.lineNumber, isWarning);
+		}
+	},
 	objProps: function(o, filter, skipNativeFuncs) {
 		if(this.isPrimitive(o))
 			return String(o);
@@ -365,7 +385,7 @@ var handyClicksUtils = {
 			this.bind(function(s, alias) {
 				if(alias.toLowerCase() == "profile" || alias == "ProfD")
 					return this.ps._profileDir.path;
-				var aliasFile = this.getFileByAlias(alias);
+				var aliasFile = this.getFileByAlias(alias, true);
 				return aliasFile ? aliasFile.path : s;
 			}, this)
 		);
@@ -555,6 +575,9 @@ var handyClicksUtils = {
 		return str;
 	},
 	getErrorCode: function(err, defaultCode) {
+		return Components.results[this.getErrorCodeString(err, defaultCode || "NS_OK")];
+	},
+	getErrorCodeString: function(err, defaultCode) {
 		return err
 			? /0x[0-9a-fA-F]+\s\((NS_[A-Z_]+)\)/.test(err)
 				? RegExp.$1
