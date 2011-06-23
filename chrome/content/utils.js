@@ -428,16 +428,15 @@ var handyClicksUtils = {
 		// isElementVisible(elt) || elt.namespaceURI == "http://www.w3.org/2000/svg"
 		return bo.height > 0 && bo.width > 0;
 	},
-	closeMenus: function _cm(node) {
+	closeMenus: function(node) {
 		// Based on function closeMenus from chrome://browser/content/utilityOverlay.js
-		if(!this.isObject(node))
-			return;
-		if(
-			node.namespaceURI == this.XULNS
-			&& (node.localName == "menupopup" || node.localName == "popup")
-		)
-			node.hidePopup();
-		_cm.call(this, node.parentNode);
+		for(; node && "tagName" in node; node = node.parentNode) {
+			if(
+				node.namespaceURI == this.XULNS
+				&& (node.localName == "menupopup" || node.localName == "popup")
+			)
+				node.hidePopup();
+		}
 	},
 
 	mm: function(n, minVal, maxVal) {

@@ -75,7 +75,9 @@ var handyClicksFuncs = {
 				uri = this.getLinkURI(it);
 			break;
 			case "img":
-				uri = it.src;
+				uri = it instanceof HTMLCanvasElement
+					? it.toDataURL()
+					: it.src || it.getAttribute("src");
 			break;
 			case "bookmark":
 			case "historyItem":
@@ -126,7 +128,8 @@ var handyClicksFuncs = {
 			? makeURLAbsolute(it.baseURI, it.getAttributeNS(ns, "href")) // See chrome://browser/content/utilityOverlay.js
 			// Looks like wrapper error with chrome://global/content/bindings/text.xml#text-link binding
 			// on "content" pages (e.g. chrome://global/content/console.xul)
-			: it.href || it.getAttribute("href");
+			: it.href || it.getAttribute("href")
+				|| this.ut.getProperty(it, "repObject", "href"); // Firebug
 	},
 	getTabURI: function(tab) {
 		return "linkedBrowser" in tab
@@ -860,9 +863,18 @@ var handyClicksFuncs = {
 		this.restorePrefs(origPrefs);
 	},
 
+	get tabs() {
+		var tbr = this.hc.getTabBrowser(true);
+		return tbr.tabs || tbr.tabContainer.childNodes;
+	},
 	get visibleTabs() {
 		var tbr = this.hc.getTabBrowser(true);
 		return tbr.visibleTabs || tbr.tabs || tbr.tabContainer.childNodes;
+	},
+	get removableTabs() {
+		return Array.slice(this.visibleTabs).filter(function(tab) {
+			return !tab.pinned;
+		});
 	},
 	forEachTab: function(func, context) {
 		return Array.map(this.visibleTabs, func, context || this);
@@ -877,37 +889,60 @@ var handyClicksFuncs = {
 		tab = this.fixTab(tab);
 		this.hc.getTabBrowser().removeAllTabsBut(tab);
 	},
-	removeAllTabs: function(e) {
+	removeAllTabs: function(e) { //~ todo: allGroups argument?
 		var tbr = this.hc.getTabBrowser();
-		var tabs = this.visibleTabs;
-		var len = tabs.length;
-		if(this.warnAboutClosingTabs(len, tbr))
-			for(var i = len - 1; i >= 0; --i)
-				tbr.removeTab(tabs[i]);
+		var tabs = this.removableTabs;
+		var _tabs = [];
+		var curTab = tbr.selectedTab;
+		var removeCurTab = false;
+		for(var i = 0, len = tabs.length; i < len; i++) {
+			if(tabs[i] == curTab) // Avoid reflows after tab reselection
+				removeCurTab = true;
+			else
+				_tabs.push(tabs[i]);
+		}
+		if(removeCurTab)
+			_tabs.push(curTab);
+		if(this.warnAboutClosingTabs(_tabs.length, tbr))
+			_tabs.forEach(tbr.removeTab, tbr);
 	},
 	removeRightTabs: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
-		var tabs = this.visibleTabs;
+		var tabs = this.removableTabs;
 		var _tabs = [];
-		for(var i = tabs.length - 1; i >= 0; --i) {
+		var curTab = tbr.selectedTab;
+		var removeCurTab = false;
+		for(var i = tabs.length - 1; i >= 0; i--) {
 			if(tabs[i] == tab)
 				break;
-			_tabs.push(tabs[i]);
+			if(tabs[i] == curTab) // Avoid reflows after tab reselection
+				removeCurTab = true;
+			else
+				_tabs.push(tabs[i]);
 		}
+		if(removeCurTab)
+			_tabs.push(curTab);
 		if(this.warnAboutClosingTabs(_tabs.length, tbr))
 			_tabs.forEach(tbr.removeTab, tbr);
 	},
 	removeLeftTabs: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
-		var tabs = this.visibleTabs;
+		var tabs = this.removableTabs;
 		var _tabs = [];
+		var curTab = tbr.selectedTab;
+		var removeCurTab = false;
 		for(var i = 0, len = tabs.length; i < len; i++) {
 			if(tabs[i] == tab)
 				break;
-			_tabs.push(tabs[i]);
+			if(tabs[i] == curTab) // Avoid reflows after tab reselection
+				removeCurTab = true;
+			else
+				_tabs.push(tabs[i]);
 		}
+		if(removeCurTab)
+			_tabs.push(curTab);
 		if(this.warnAboutClosingTabs(_tabs.length, tbr))
 			_tabs.forEach(tbr.removeTab, tbr);
 	},
@@ -961,7 +996,7 @@ var handyClicksFuncs = {
 	},
 	removeTab: function(e, tab) {
 		tab = this.fixTab(tab);
-		this.hc.getTabBrowser().removeTab(tab);
+		this.hc.getTabBrowser().removeTab(tab, { animate: true });
 	},
 	renameTab: function(e, tab) {
 		tab = this.fixTab(tab);
@@ -1005,9 +1040,16 @@ var handyClicksFuncs = {
 	},
 	ensureTabLoaded: function(tab) {
 		// For BarTab ( https://addons.mozilla.org/firefox/addon/67651 )
-		if("BarTap" in window && tab.getAttribute("ontap") == "true") {
-			BarTap.loadTabContents(tab);
-			return true;
+		if(tab.getAttribute("ontap") == "true") {
+			if("BarTabHandler" in window) {
+				BarTabHandler.prototype.loadTab(tab);
+				//~ todo: getTabbrowserForTab(tab).BarTabHandler.loadTab(tab);
+				return true;
+			}
+			if("BarTap" in window) {
+				BarTap.loadTabContents(tab);
+				return true;
+			}
 		}
 		return false;
 	},
@@ -1022,8 +1064,12 @@ var handyClicksFuncs = {
 		br.stop();
 	},
 	undoCloseTab: function(e) {
-		try { gBrowser.undoRemoveTab(); } // Tab Mix Plus
-		catch(err) { undoCloseTab(0); }
+		if("undoCloseTab" in window) // Firefox 2.0+
+			undoCloseTab(0);
+		else if("TMP_ClosedTabs" in window) // Tab Mix Plus
+			TMP_ClosedTabs.undoCloseTab();
+		else if("gSessionManager" in window) // Old Session Manager
+			gSessionManager.undoCloseTab();
 	},
 	cloneTab: function(e, tab) {
 		tab = this.fixTab(tab);
