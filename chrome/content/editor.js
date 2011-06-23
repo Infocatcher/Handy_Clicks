@@ -1275,6 +1275,7 @@ var handyClicksEditor = {
 	},
 	checkMenulist: function(ml) {
 		//~ note: disabled state are not checked
-		return this.ut.isElementVisible(ml.selectedItem);
+		//return this.ut.isElementVisible(ml.selectedItem); //???
+		return !!ml.selectedItem;
 	}
 };

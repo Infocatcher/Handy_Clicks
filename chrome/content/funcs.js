@@ -77,7 +77,7 @@ var handyClicksFuncs = {
 			case "img":
 				uri = it instanceof HTMLCanvasElement
 					? it.toDataURL()
-					: it.src;
+					: it.src || it.getAttribute("src");
 			break;
 			case "bookmark":
 			case "historyItem":
@@ -814,9 +814,18 @@ var handyClicksFuncs = {
 		this.restorePrefs(origPrefs);
 	},
 
+	get tabs() {
+		var tbr = this.hc.getTabBrowser(true);
+		return tbr.tabs || tbr.tabContainer.childNodes;
+	},
 	get visibleTabs() {
 		var tbr = this.hc.getTabBrowser(true);
 		return tbr.visibleTabs || tbr.tabs || tbr.tabContainer.childNodes;
+	},
+	get removableTabs() {
+		return Array.slice(this.visibleTabs).filter(function(tab) {
+			return !tab.pinned;
+		});
 	},
 	forEachTab: function(func, context) {
 		return Array.map(this.visibleTabs, func, context || this);
@@ -831,37 +840,60 @@ var handyClicksFuncs = {
 		tab = this.fixTab(tab);
 		this.hc.getTabBrowser().removeAllTabsBut(tab);
 	},
-	removeAllTabs: function(e) {
+	removeAllTabs: function(e) { //~ todo: allGroups argument?
 		var tbr = this.hc.getTabBrowser();
-		var tabs = this.visibleTabs;
-		var len = tabs.length;
-		if(this.warnAboutClosingTabs(len, tbr))
-			for(var i = len - 1; i >= 0; --i)
-				tbr.removeTab(tabs[i]);
+		var tabs = this.removableTabs;
+		var _tabs = [];
+		var curTab = tbr.selectedTab;
+		var removeCurTab = false;
+		for(var i = 0, len = tabs.length; i < len; i++) {
+			if(tabs[i] == curTab) // Avoid reflows after tab reselection
+				removeCurTab = true;
+			else
+				_tabs.push(tabs[i]);
+		}
+		if(removeCurTab)
+			_tabs.push(curTab);
+		if(this.warnAboutClosingTabs(_tabs.length, tbr))
+			_tabs.forEach(tbr.removeTab, tbr);
 	},
 	removeRightTabs: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
-		var tabs = this.visibleTabs;
+		var tabs = this.removableTabs;
 		var _tabs = [];
-		for(var i = tabs.length - 1; i >= 0; --i) {
+		var curTab = tbr.selectedTab;
+		var removeCurTab = false;
+		for(var i = tabs.length - 1; i >= 0; i--) {
 			if(tabs[i] == tab)
 				break;
-			_tabs.push(tabs[i]);
+			if(tabs[i] == curTab) // Avoid reflows after tab reselection
+				removeCurTab = true;
+			else
+				_tabs.push(tabs[i]);
 		}
+		if(removeCurTab)
+			_tabs.push(curTab);
 		if(this.warnAboutClosingTabs(_tabs.length, tbr))
 			_tabs.forEach(tbr.removeTab, tbr);
 	},
 	removeLeftTabs: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
-		var tabs = this.visibleTabs;
+		var tabs = this.removableTabs;
 		var _tabs = [];
+		var curTab = tbr.selectedTab;
+		var removeCurTab = false;
 		for(var i = 0, len = tabs.length; i < len; i++) {
 			if(tabs[i] == tab)
 				break;
-			_tabs.push(tabs[i]);
+			if(tabs[i] == curTab) // Avoid reflows after tab reselection
+				removeCurTab = true;
+			else
+				_tabs.push(tabs[i]);
 		}
+		if(removeCurTab)
+			_tabs.push(curTab);
 		if(this.warnAboutClosingTabs(_tabs.length, tbr))
 			_tabs.forEach(tbr.removeTab, tbr);
 	},
@@ -915,7 +947,7 @@ var handyClicksFuncs = {
 	},
 	removeTab: function(e, tab) {
 		tab = this.fixTab(tab);
-		this.hc.getTabBrowser().removeTab(tab);
+		this.hc.getTabBrowser().removeTab(tab, { animate: true });
 	},
 	renameTab: function(e, tab) {
 		tab = this.fixTab(tab);

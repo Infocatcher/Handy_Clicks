@@ -301,7 +301,8 @@ var handyClicksUtils = {
 		return null;
 	},
 	expandVariables: function(str) {
-		return this.expandInternalVariables(this.expandEnvironmentVariables(str));
+		// Use %ProfD% for internal and %PROFD% (or any other different case) for environment variable
+		return this.expandEnvironmentVariables(this.expandInternalVariables(str));
 	},
 	expandEnvironmentVariables: function(str) {
 		var env = Components.classes["@mozilla.org/process/environment;1"]
@@ -623,16 +624,15 @@ var handyClicksUtils = {
 		// isElementVisible(elt) || elt.namespaceURI == "http://www.w3.org/2000/svg"
 		return bo.height > 0 && bo.width > 0;
 	},
-	closeMenus: function _cm(node) {
+	closeMenus: function(node) {
 		// Based on function closeMenus from chrome://browser/content/utilityOverlay.js
-		if(!this.isObject(node))
-			return;
-		if(
-			node.namespaceURI == this.XULNS
-			&& (node.localName == "menupopup" || node.localName == "popup")
-		)
-			node.hidePopup();
-		_cm.call(this, node.parentNode);
+		for(; node && "tagName" in node; node = node.parentNode) {
+			if(
+				node.namespaceURI == this.XULNS
+				&& (node.localName == "menupopup" || node.localName == "popup")
+			)
+				node.hidePopup();
+		}
 	},
 	hasModifier: function(evt) {
 		return evt.ctrlKey || evt.shiftKey || evt.altKey || evt.metaKey;
