@@ -77,7 +77,9 @@ pref("extensions.handyclicks.sets.rememberSearchQuery", true);
 pref("extensions.handyclicks.sets.lastSearchQuery", "");
 
 pref("extensions.handyclicks.editor.tabSymbol", "	");
-pref("extensions.handyclicks.editor.tabSize", 8);
+pref("extensions.handyclicks.editor.tabSize", 4);
+pref("extensions.handyclicks.editor.autocomplete", true);
+pref("extensions.handyclicks.editor.autocompleteMinSymbols", 2);
 pref("extensions.handyclicks.editor.externalEditorPath", "");
 pref("extensions.handyclicks.editor.externalEditorArgs", "");
 pref("extensions.handyclicks.editor.externalEditorExtension", "js");

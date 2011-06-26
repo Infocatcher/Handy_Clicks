@@ -1680,11 +1680,11 @@ var handyClicksSets = {
 	},
 	get minSpaces() {
 		delete this.minSpaces;
-		return this.minSpaces = this.$("hc-sets-tabulationSpaces").getAttribute("min");
+		return this.minSpaces = Number(this.$("hc-sets-tabulationSpaces").getAttribute("min"));
 	},
 	get maxSpaces() {
 		delete this.maxSpaces;
-		return this.maxSpaces = this.$("hc-sets-tabulationSpaces").getAttribute("max");
+		return this.maxSpaces = Number(this.$("hc-sets-tabulationSpaces").getAttribute("max"));
 	},
 	setTabulation: function() {
 		var ts = this.pu.pref("editor.tabSymbol");
@@ -1694,7 +1694,7 @@ var handyClicksSets = {
 		var si = 2;
 		if(ts == "\t") {
 			si = 0;
-			sp.value = 8;
+			sp.value = 4;
 		}
 		else if(/^ +$/.test(ts) && ts.length >= this.minSpaces && ts.length <= this.maxSpaces) {
 			si = 1;

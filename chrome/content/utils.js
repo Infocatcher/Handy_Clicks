@@ -404,8 +404,11 @@ var handyClicksUtils = {
 			this._err(e);
 			return null;
 		}
-		try { file.normalize(); } // dir1/dir2/../file -> dir1/file
-		catch(e) {}
+		try {
+			file.normalize(); // dir1/dir2/../file -> dir1/file
+		}
+		catch(e) {
+		}
 		return file;
 	},
 	getLocalPath: function(path) {
@@ -450,6 +453,8 @@ var handyClicksUtils = {
 
 	// File I/O (only UTF-8):
 	writeToFile: function(str, file, outErr) {
+		if(!(file instanceof Components.interfaces.nsILocalFile))
+			file = this.getLocalFile(file);
 		var fos = Components.classes["@mozilla.org/network/file-output-stream;1"]
 			.createInstance(Components.interfaces.nsIFileOutputStream);
 		try {
@@ -471,6 +476,8 @@ var handyClicksUtils = {
 		return true;
 	},
 	writeToFileAsync: function(str, file, callback, context) {
+		if(!(file instanceof Components.interfaces.nsILocalFile))
+			file = this.getLocalFile(file);
 		try {
 			Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
 			Components.utils["import"]("resource://gre/modules/FileUtils.jsm");
@@ -507,6 +514,8 @@ var handyClicksUtils = {
 		return true;
 	},
 	readFromFile: function(file, outErr) {
+		if(!(file instanceof Components.interfaces.nsILocalFile))
+			file = this.getLocalFile(file);
 		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
 			.createInstance(Components.interfaces.nsIFileInputStream);
 		try {
@@ -529,6 +538,8 @@ var handyClicksUtils = {
 		return this.convertToUnicode(str);
 	},
 	readFromFileAsync: function(file, callback, context) {
+		if(!(file instanceof Components.interfaces.nsILocalFile))
+			file = this.getLocalFile(file);
 		try {
 			Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
 		}

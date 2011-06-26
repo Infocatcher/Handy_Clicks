@@ -15,16 +15,23 @@
 				}
 				catch(e) {
 				}
-				if("MozTabSize" in this.style) {
-					var top = window.top;
-					var pu = "handyClicksPrefUtils" in top && top.handyClicksPrefUtils;
-					if(pu) {
+				var top = window.top;
+				var pu = "handyClicksPrefUtils" in top && top.handyClicksPrefUtils;
+				if(pu) {
+					if("MozTabSize" in this.style)
 						this.style.MozTabSize = Math.max(1, Math.min(24, pu.pref("editor.tabSize")));
-						pu.oSvc.addObserver(function(pName, pVal) {
-							if(pName == "editor.tabSize")
+					this.autocomplete = pu.pref("editor.autocomplete");
+					this.autocompleteMinSymbols = Math.max(1, Math.min(16, pu.pref("editor.autocompleteMinSymbols")));
+					pu.oSvc.addObserver(function(pName, pVal) {
+						if(pName == "editor.tabSize") {
+							if("MozTabSize" in this.style)
 								this.style.MozTabSize = Math.max(1, Math.min(24, pVal));
-						}, this);
-					}
+						}
+						else if(pName == "editor.autocomplete")
+							this.autocomplete = pVal;
+						else if(pName == "editor.autocompleteMinSymbols")
+							this.autocompleteMinSymbols = Math.max(1, Math.min(16, pVal));
+					}, this);
 				}
 			]]>
 			</constructor>
@@ -662,8 +669,11 @@
 				</body>
 			</method>
 
+			<field name="autocomplete">true</field>
+			<field name="autocompleteMinSymbols">2</field>
 			<method name="jsAutocomplete">
 				<parameter name="reverseFlag" />
+				<parameter name="alwaysSelect" />
 				<body>
 				<![CDATA[
 					var ifi = this.inputField;
@@ -733,7 +743,7 @@
 
 					this.insertText(newWord.substr(lastWord.length));
 
-					ifi.selectionStart = sPos + (cnt == 1 ? newWord.length : lastWord.length);
+					ifi.selectionStart = sPos + (cnt == 1 && !alwaysSelect ? newWord.length : lastWord.length);
 					ifi.selectionEnd = sPos + newWord.length;
 				]]>
 				</body>
@@ -819,6 +829,25 @@
 
 			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
 			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />
+			<handler event="keypress">
+			<![CDATA[
+				if(
+					!this.autocomplete
+					|| event.ctrlKey
+					|| event.altKey
+					|| event.metaKey
+					|| !/[a-z]/i.test(String.fromCharCode(event.charCode))
+				)
+					return;
+				var offset = this.autocompleteMinSymbols - 1; // Symbol from this keypress event aren't typed yet
+				if(offset > 0 && !/^[a-z]+$/i.test(this.value.substr(this.inputField.selectionStart - offset, offset)))
+					return;
+				setTimeout(function(_this) {
+					_this.jsAutocomplete(false, true);
+				}, 0, this);
+
+			]]>
+			</handler>
 			<handler event="blur">
 			<![CDATA[
 				if(event.originalTarget !== this.inputField || !this.maximized)
