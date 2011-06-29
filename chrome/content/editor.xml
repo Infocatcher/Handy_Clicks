@@ -15,37 +15,64 @@
 				}
 				catch(e) {
 				}
+				if("tabSize" in this.style)
+					this.style.tabSize = this.tabSize;
+				else if("MozTabSize" in this.style)
+					this.style.MozTabSize = this.tabSize;
 				var top = window.top;
 				var pu = "handyClicksPrefUtils" in top && top.handyClicksPrefUtils;
 				if(pu) {
-					if("MozTabSize" in this.style)
-						this.style.MozTabSize = Math.max(1, Math.min(24, pu.pref("editor.tabSize")));
 					this.autocomplete = pu.pref("editor.autocomplete");
-					this.autocompleteMinSymbols = Math.max(1, Math.min(16, pu.pref("editor.autocompleteMinSymbols")));
+					this.autocompleteMinSymbols = Math.max(1, Math.min(30, pu.pref("editor.autocompleteMinSymbols")));
 					pu.oSvc.addObserver(function(pName, pVal) {
 						if(pName == "editor.tabSize") {
-							if("MozTabSize" in this.style)
-								this.style.MozTabSize = Math.max(1, Math.min(24, pVal));
+							if("tabSize" in this.style)
+								this.style.tabSize = this.tabSize;
+							else if("MozTabSize" in this.style)
+								this.style.MozTabSize = this.tabSize;
 						}
 						else if(pName == "editor.autocomplete")
 							this.autocomplete = pVal;
 						else if(pName == "editor.autocompleteMinSymbols")
-							this.autocompleteMinSymbols = Math.max(1, Math.min(16, pVal));
+							this.autocompleteMinSymbols = Math.max(1, Math.min(30, pVal));
 					}, this);
 				}
 			]]>
 			</constructor>
-			<property name="tabSymbol">
+			<property name="tabSize">
 				<getter>
 				<![CDATA[
-					return this.getAttribute("hc_tabSymbol")
-						|| "handyClicksPrefUtils" in top && top.handyClicksPrefUtils.pref("editor.tabSymbol")
-						|| "\t";
+					return Math.max(1, Math.min(100,
+						Number(this.getAttribute("hc_tabSize"))
+						|| "handyClicksPrefUtils" in top && top.handyClicksPrefUtils.pref("editor.tabSize")
+						|| 4
+					));
 				]]>
 				</getter>
 				<setter>
-					this.setAttribute("hc_tabSymbol", val);
+					this.setAttribute("hc_tabSize", val);
 				</setter>
+			</property>
+			<property name="tabSpaces">
+				<getter>
+				<![CDATA[
+					return this.hasAttribute("hc_tabSpaces")
+						? this.getAttribute("hc_tabSpaces") == "true"
+						: "handyClicksPrefUtils" in top && top.handyClicksPrefUtils.pref("editor.tabSpaces");
+				]]>
+				</getter>
+				<setter>
+					this.setAttribute("hc_tabSpaces", val);
+				</setter>
+			</property>
+			<property name="tabSymbol">
+				<getter>
+				<![CDATA[
+					if(!this.tabSpaces)
+						return "\t";
+					return new Array(this.tabSize + 1).join(" ");
+				]]>
+				</getter>
 			</property>
 			<property name="editor" readonly="true">
 				<getter>
@@ -104,6 +131,11 @@
 					var ifi = this.inputField;
 					var ss = ifi.selectionStart;
 					var se = ifi.selectionEnd;
+
+					if(ss != se && this.isAutocompleteSelection) {
+						ifi.selectionStart = se;
+						return;
+					}
 
 					var sel = val.substring(ss, se);
 					var lineStart = val.substring(0, ss).match(/[^\r\n]*$/)[0];
@@ -671,6 +703,7 @@
 
 			<field name="autocomplete">true</field>
 			<field name="autocompleteMinSymbols">2</field>
+			<field name="isAutocompleteSelection">false</field>
 			<method name="jsAutocomplete">
 				<parameter name="reverseFlag" />
 				<parameter name="alwaysSelect" />
@@ -743,8 +776,13 @@
 
 					this.insertText(newWord.substr(lastWord.length));
 
-					ifi.selectionStart = sPos + (cnt == 1 && !alwaysSelect ? newWord.length : lastWord.length);
+					var sel = alwaysSelect || cnt > 1;
+					ifi.selectionStart = sPos + (sel ? lastWord.length : newWord.length);
 					ifi.selectionEnd = sPos + newWord.length;
+					//this.isAutocompleteSelection = sel;
+					setTimeout(function(_this) {
+						_this.isAutocompleteSelection = sel;
+					}, 0, this, sel);
 				]]>
 				</body>
 			</method>
@@ -831,6 +869,7 @@
 			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />
 			<handler event="keypress">
 			<![CDATA[
+				this.isAutocompleteSelection = false;
 				if(
 					!this.autocomplete
 					|| event.ctrlKey
@@ -845,7 +884,6 @@
 				setTimeout(function(_this) {
 					_this.jsAutocomplete(false, true);
 				}, 0, this);
-
 			]]>
 			</handler>
 			<handler event="blur">

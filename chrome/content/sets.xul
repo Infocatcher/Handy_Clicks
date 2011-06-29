@@ -329,6 +329,9 @@
 		<preferences>
 			<preference id="onTopButton" type="bool" name="extensions.handyclicks.ui.onTopButton" />
 			<preference id="tabSize" type="int" name="extensions.handyclicks.editor.tabSize" />
+			<preference id="tabSpaces" type="bool" name="extensions.handyclicks.editor.tabSpaces" />
+			<preference id="autocomplete" type="bool" name="extensions.handyclicks.editor.autocomplete" />
+			<preference id="autocompleteMinSymbols" type="int" name="extensions.handyclicks.editor.autocompleteMinSymbols" />
 			<preference id="externalEditorPath" type="string" name="extensions.handyclicks.editor.externalEditorPath" />
 			<preference id="externalEditorArgs" type="string" name="extensions.handyclicks.editor.externalEditorArgs" />
 			<preference id="externalEditorExt" type="string" name="extensions.handyclicks.editor.externalEditorExtension" />
@@ -338,19 +341,21 @@
 			<caption label="&hc.sets.settingsInterface;" />
 			<checkbox preference="onTopButton" label="&hc.sets.onTopButton;" />
 		</groupbox>
-		<groupbox>
+		<groupbox orient="horizontal" align="center">
 			<caption label="&hc.sets.tabulation;" />
-			<radiogroup id="hc-sets-tabulation" orient="horizontal" onselect="handyClicksSets.selectTabulation(this);">
-				<radio label="&hc.sets.tabulationTabs;" />
-				<radio label="&hc.sets.tabulationSpaces;" />
-				<textbox id="hc-sets-tabulationSpaces" type="number" min="2" max="24" increment="1" size="2" />
-				<radio id="hc-sets-tabulationRadioCustom" label="Custom:" />
-				<textbox id="hc-sets-tabulationCustom" size="12" />
-			</radiogroup>
-			<hbox id="hc-sets-tabSizeBox" align="center" hidden="true">
-				<label value="&hc.sets.tabSize;" control="hc-sets-tabSize" />
-				<textbox id="hc-sets-tabSize" preference="tabSize" type="number" min="2" max="24" increment="1" size="2" />
-			</hbox>
+			<label value="&hc.sets.tabSize;" control="hc-sets-tabSize" />
+			<textbox id="hc-sets-tabSize" preference="tabSize" type="number" min="1" max="100" increment="1" size="2" />
+			<checkbox preference="tabSpaces" label="&hc.sets.tabSpaces;" />
+		</groupbox>
+		<groupbox orient="horizontal" align="center">
+			<caption label="&hc.sets.autocomplete;" />
+			<checkbox preference="autocomplete" hc_requiredFor="autocomplete" label="&hc.sets.autocompleteShowAfter;" />
+			<textbox id="hc-sets-tabSize" hc_depends="autocomplete"
+				preference="autocompleteMinSymbols" type="number" min="1" max="30" increment="1" size="2"
+				onchange="handyClicksSets.setAutocompletePlural(this);"
+				onsyncfrompreference="handyClicksSets.setAutocompletePlural(this);" />
+			<label hc_depends="autocomplete" value="&hc.sets.autocompleteMinSymbols;"
+				hc_labelSingle="&hc.sets.autocompleteMinSymbol;" hc_labelMultiple="&hc.sets.autocompleteMinSymbols;" />
 		</groupbox>
 		<groupbox>
 			<caption label="&hc.sets.externalEditor;" />

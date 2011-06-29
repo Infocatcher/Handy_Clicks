@@ -542,6 +542,8 @@ var handyClicksUtils = {
 			file = this.getLocalFile(file);
 		try {
 			Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
+			if(!("newChannel" in NetUtil))
+				throw "Firefox 3.6";
 		}
 		catch(e) {
 			this._log("readFromFileAsync: asynchronous API not available");

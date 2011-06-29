@@ -76,8 +76,8 @@ pref("extensions.handyclicks.sets.closeTreeViewMenu", true);
 pref("extensions.handyclicks.sets.rememberSearchQuery", true);
 pref("extensions.handyclicks.sets.lastSearchQuery", "");
 
-pref("extensions.handyclicks.editor.tabSymbol", "	");
 pref("extensions.handyclicks.editor.tabSize", 4);
+pref("extensions.handyclicks.editor.tabSpaces", false);
 pref("extensions.handyclicks.editor.autocomplete", true);
 pref("extensions.handyclicks.editor.autocompleteMinSymbols", 2);
 pref("extensions.handyclicks.editor.externalEditorPath", "");

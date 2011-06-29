@@ -43,6 +43,15 @@ function prefsMigration(allowSave, vers) {
 			this.pref("ui.inheritToolbarContextMenu", this.getPref(pn))
 				.prefSvc.deleteBranch(pn);
 	}
+	if(vers < 6) { //= Added 2011-06-27
+		var pn = pns + "editor.tabSymbol";
+		if(this.existPref(pn)) {
+			var tabSymbol = this.getPref(pn);
+			if(/^ +$/.test(tabSymbol))
+				this.pref("editor.tabSize", Math.min(this.pref("editor.tabSize"), tabSymbol.length));
+			this.prefSvc.deleteBranch(pn);
+		}
+	}
 	this.pref("prefsVersion", this.prefsVersion);
 	allowSave && this.savePrefFile();
 	this.ut._info("Format of about:config prefs updated: " + vers + " => " + this.prefsVersion);

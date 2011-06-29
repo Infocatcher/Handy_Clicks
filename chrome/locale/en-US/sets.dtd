@@ -150,9 +150,13 @@
 <!ENTITY hc.sets.onTopButton "Show “On top” button in the corner"> <!-- see "onTop" in hcs.properties -->
 
 <!ENTITY hc.sets.tabulation "Tabulation">
-<!ENTITY hc.sets.tabulationTabs "Tabs">
-<!ENTITY hc.sets.tabulationSpaces "Spaces:">
-<!ENTITY hc.sets.tabSize "Tab size:">
+<!ENTITY hc.sets.tabSize "Size:">
+<!ENTITY hc.sets.tabSpaces "Spaces">
+
+<!ENTITY hc.sets.autocomplete "Autocomplete">
+<!ENTITY hc.sets.autocompleteShowAfter "Show after">
+<!ENTITY hc.sets.autocompleteMinSymbol "symbol">
+<!ENTITY hc.sets.autocompleteMinSymbols "symbols">
 
 <!ENTITY hc.sets.externalEditor "External editor">
 <!ENTITY hc.sets.externalEditorPath "Path:">
