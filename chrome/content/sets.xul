@@ -168,6 +168,7 @@
 							<menuseparator />
 							<menuitem command="hc-sets-cmd-partialExportToFile" key="hc-sets-key-partialExportToFile" />
 							<menuitem command="hc-sets-cmd-partialExportToClipboard" key="hc-sets-key-partialExportToClipboard" />
+							<menuitem command="hc-sets-cmd-exportToHTML" key="hc-sets-key-exportToHTML" />
 							<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
 						</menupopup>
 					</button>
@@ -494,6 +495,8 @@
 			label="&hc.sets.exportSelectedToClipboard;" />
 		<command id="hc-sets-cmd-exportToURI" oncommand="handyClicksSets.exportSets(true, handyClicksConst.EXPORT_CLIPBOARD_URI);"
 			label="&hc.sets.exportToURI;" />
+		<command id="hc-sets-cmd-exportToHTML" oncommand="handyClicksSets.exportSets(true, handyClicksConst.EXPORT_CLIPBOARD_HTML);"
+			label="&hc.sets.exportToHTML;" />
 
 		<command id="hc-sets-cmd-fullImportFromFile" oncommand="handyClicksSets.importSets(false, handyClicksConst.IMPORT_FILEPICKER);"
 			label="&hc.sets.fullImportFromFile;" />
@@ -518,6 +521,7 @@
 		<key id="hc-sets-key-partialExportToFile" key="e" modifiers="control,shift" command="hc-sets-cmd-partialExportToFile" />
 		<key id="hc-sets-key-partialExportToClipboard" key="c" modifiers="control,shift" command="hc-sets-cmd-partialExportToClipboard" />
 		<key id="hc-sets-key-exportToURI" key="c" modifiers="control" command="hc-sets-cmd-exportToURI" />
+		<key id="hc-sets-key-exportToHTML" key="h" modifiers="control" command="hc-sets-cmd-exportToHTML" />
 
 		<key id="hc-sets-key-fullImportFromFile" key="i" modifiers="control" command="hc-sets-cmd-fullImportFromFile" />
 		<key id="hc-sets-key-partialImportFromFile" key="i" modifiers="control,shift" command="hc-sets-cmd-partialImportFromFile" />
@@ -564,6 +568,7 @@
 			<menuitem command="hc-sets-cmd-toggle" key="hc-sets-key-toggle" />
 			<menuseparator />
 			<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
+			<menuitem command="hc-sets-cmd-exportToHTML" key="hc-sets-key-exportToHTML" />
 			<menuitem command="hc-sets-cmd-partialExportToClipboard" key="hc-sets-key-partialExportToClipboard" />
 			<menuitem command="hc-sets-cmd-partialExportToFile" key="hc-sets-key-partialExportToFile" />
 			<menuseparator />

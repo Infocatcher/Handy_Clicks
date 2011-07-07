@@ -20,7 +20,7 @@ const C_CID = Components.ID("{50C6263F-F53F-4fbd-A295-9BA84C5FAAC3}"),
       C_HANDLER = ci.nsICommandLineHandler,
       C_CATEGORY = "m-handyclicks",
       C_ARG_DISABLE = "handyclicks-disable",
-      C_ARG_DISABLE_INFO = "  -handyclicks-disable    Turn off Handy Clicks\n",
+      C_ARG_DISABLE_INFO = "  -handyclicks-disable    Turn off Handy Clicks extension\n",
       C_NAME = "Handy Clicks command-line handler";
 
 const jsLoader = cc["@mozilla.org/moz/jssubscript-loader;1"]
@@ -28,26 +28,27 @@ const jsLoader = cc["@mozilla.org/moz/jssubscript-loader;1"]
 
 jsLoader.loadSubScript("chrome://handyclicks/content/uninstaller.js");
 
-var initialized = false;
 var wu, ct;
-function init() {
-	if(initialized)
-		return;
-	initialized = true;
+function initOnce() {
+	initOnce = function() {};
 	jsLoader.loadSubScript("chrome://handyclicks/content/winUtils.js"); wu = handyClicksWinUtils;
 	jsLoader.loadSubScript("chrome://handyclicks/content/consts.js");   ct = handyClicksConst;
 	wu.ct = ct;
 }
 function handleURI(uri) {
-	if(uri.indexOf(ct.PROTOCOL_SETTINGS) == 0)
+	initOnce();
+	if(hasPrefix(uri, ct.PROTOCOL_SETTINGS))
 		wu.openSettingsLink(uri);
-	else if(uri.indexOf(ct.PROTOCOL_EDITOR) == 0)
+	else if(hasPrefix(uri, ct.PROTOCOL_EDITOR))
 		wu.openEditorLink(uri);
 }
 function disable() {
 	cc["@mozilla.org/preferences-service;1"]
 		.getService(ci.nsIPrefBranch)
 		.setBoolPref("extensions.handyclicks.enabled", false);
+}
+function hasPrefix(str, prefix) {
+	return str.substr(0, prefix.length) == prefix;
 }
 
 /*
@@ -103,7 +104,7 @@ const factory = {
 	createInstance: function(outer, iid) {
 		if(outer != null)
 			throw cr.NS_ERROR_NO_AGGREGATION;
-		init();
+		//init();
 		if(iid.equals(P_HANDLER))
 			return protocol;
 		if(iid.equals(C_HANDLER))

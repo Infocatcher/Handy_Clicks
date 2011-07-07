@@ -645,7 +645,11 @@ var handyClicksSets = {
 	updTreeButtons: function() {
 		var selIts = this.selectedItems;
 		var noSel = !selIts.length;
-		["delete", "edit", "toggle", "partialExportToFile", "partialExportToClipboard", "exportToURI"].forEach(
+		[
+			"delete", "edit", "toggle",
+			"partialExportToFile", "partialExportToClipboard",
+			"exportToURI", "exportToHTML"
+		].forEach(
 			function(id) {
 				this.$("hc-sets-cmd-" + id).setAttribute("disabled", noSel);
 			},
@@ -2196,6 +2200,11 @@ var handyClicksSets = {
 				this.ut.copyStr(pStr);
 			else if(targetId == ct.EXPORT_CLIPBOARD_URI)
 				this.ut.copyStr(ct.PROTOCOL_SETTINGS_ADD + this.ps.encURI(pStr));
+			else if(targetId == ct.EXPORT_CLIPBOARD_HTML) {
+				var uri = ct.PROTOCOL_SETTINGS_ADD + this.ps.encURI(pStr);
+				var label = this.extractLabels(!onlyCustomTypes).join(", ");
+				this.ut.copyStr(<a href={uri}>{label}</a>.toXMLString());
+			}
 			else
 				this.ut.writeToFile(pStr, file);
 		}
@@ -2230,6 +2239,18 @@ var handyClicksSets = {
 		}, 200, this, its);
 
 		return this.ps.getSettingsStr(newTypes, newPrefs);
+	},
+	extractLabels: function(extractShortcuts) {
+		var its = extractShortcuts ? this.selectedItems : this.selectedItemsWithCustomTypes;
+		return its.map(
+			function(it) {
+				var fo = this.ut.getOwnProperty(this.ps.prefs, it.__shortcut, it.__itemType);
+				return this.ut.isObject(fo) && this.getActionLabel(fo);
+			},
+			this
+		).filter(function(label) {
+			return label;
+		});
 	},
 	importSets: function(partialImport, srcId, data) {
 		this.selectTreePane();
