@@ -258,6 +258,7 @@
 	<prefpane id="hc-sets-pane-organize" label="&hc.sets.organizeTitle;" flex="1">
 		<preferences>
 			<preference id="showInToolsMenu" type="bool" name="extensions.handyclicks.ui.showInToolsMenu" />
+			<preference id="showInAppMenu" type="bool" name="extensions.handyclicks.ui.showInAppMenu" />
 			<preference id="showInStatusbar" type="bool" name="extensions.handyclicks.ui.showInStatusbar" />
 			<preference id="showMouseButton" type="bool" name="extensions.handyclicks.ui.showMouseButton" />
 
@@ -275,6 +276,7 @@
 		<groupbox>
 			<caption label="&hc.sets.appearance;" />
 			<checkbox preference="showInToolsMenu" label="&hc.sets.showInToolsMenu;" />
+			<checkbox preference="showInAppMenu" label="&hc.sets.showInAppMenu;" />
 			<checkbox preference="showInStatusbar" label="&hc.sets.showInStatusbar;" />
 			<checkbox preference="showMouseButton" label="&hc.sets.showMouseButton;" />
 		</groupbox>

@@ -9,13 +9,15 @@
 /* Small status icons */
 #handyClicks-statusbarButton,
 toolbar[iconsize="small"] #handyClicks-toolbarButton,
-#handyClicks-toolsMenuitem {
+#handyClicks-toolsMenuitem,
+#handyClicks-appMenuitem {
 	list-style-image: url("icons16.png");
 	-moz-image-region: rect(0 16px 16px 0);
 }
 #handyClicks-statusbarButton[hc_enabled="false"],
 toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
-#handyClicks-toolsMenuitem[hc_enabled="false"] {
+#handyClicks-toolsMenuitem[hc_enabled="false"],
+#handyClicks-appMenuitem[hc_enabled="false"] {
 	-moz-image-region: rect(0 32px 16px 16px);
 }
 
@@ -55,7 +57,8 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="2"] {
 
 #handyClicks-statusbarButton[hc_editMode="true"],
 #handyClicks-toolbarButton[hc_editMode="true"],
-#handyClicks-toolsMenuitem[hc_editMode="true"] {
+#handyClicks-toolsMenuitem[hc_editMode="true"],
+#handyClicks-appMenuitem[hc_editMode="true"] {
 	outline: 1px solid red !important;
 	outline-offset: -1px !important;
 }

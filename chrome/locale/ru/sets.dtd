@@ -123,6 +123,7 @@
 
 <!ENTITY hc.sets.appearance "Внешний вид">
 <!ENTITY hc.sets.showInToolsMenu "Показывать в меню Инструменты">
+<!ENTITY hc.sets.showInAppMenu "Показывать в меню приложения">
 <!ENTITY hc.sets.showInStatusbar "Показывать в строке состояния">
 <!ENTITY hc.sets.showMouseButton "Изменять иконку при обработке клика">
 

@@ -123,6 +123,7 @@
 
 <!ENTITY hc.sets.appearance "Appearance">
 <!ENTITY hc.sets.showInToolsMenu "Show in Tools menu">
+<!ENTITY hc.sets.showInAppMenu "Show in App menu">
 <!ENTITY hc.sets.showInStatusbar "Show in Status Bar">
 <!ENTITY hc.sets.showMouseButton "Change icon when click handling">
 

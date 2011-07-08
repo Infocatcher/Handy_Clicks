@@ -47,6 +47,10 @@ var handyClicksSets = {
 			window.resizeTo(Number(de.width), Number(de.height));
 		}
 
+		var brWin = this.wu.wm.getMostRecentWindow("navigator:browser");
+		if(brWin && !brWin.document.getElementById("appmenu_preferences"))
+			document.getElementsByAttribute("preference", "showInAppMenu")[0].hidden = true;
+
 		window.addEventListener("mouseover", this, true);
 	},
 	initShortcuts: function() {
@@ -1680,7 +1684,9 @@ var handyClicksSets = {
 			return;
 		this.pu.prefSvc.getBranch(this.pu.prefNS + "ui.action")
 			.getChildList("", {})
-			.forEach(this.pu.resetPref, this.pu);
+			.forEach(function(prefName) {
+				this.pu.resetPref("ui.action" + prefName);
+			}, this);
 	},
 	saveSettings: function(applyFlag) {
 		this.pu.pref("disallowMousemoveButtons", this.disallowMousemoveButtons);

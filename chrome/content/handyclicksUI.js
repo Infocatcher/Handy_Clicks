@@ -184,11 +184,11 @@ var handyClicksUI = {
 		pn && this.ut.closeMenus(pn); // For Firefox 2.0
 	},
 
-	ACTION_STATUS: 0,
-	ACTION_SETTINGS: 1,
-	ACTION_POPUP: 2,
-	ACTION_EDIT_MODE: 3,
-	ACTION_ALL_SETTINGS: 4,
+	ACTION_STATUS:          0,
+	ACTION_SETTINGS:        1,
+	ACTION_POPUP:           2,
+	ACTION_EDIT_MODE:       3,
+	ACTION_ALL_SETTINGS:    4,
 	ACTION_SETTINGS_TOGGLE: 5,
 	setupUIActions: function() {
 		this.setControls(function(elt) {
@@ -201,6 +201,7 @@ var handyClicksUI = {
 				: "_handyClicks-noContext"; // Dummy value
 			this.ut.attribute(elt, "popup", popup);
 			elt.setAttribute("context", context);
+			//~ note: "popup" doesn't work for menuitems
 			//if(elt.localName == "menuitem")
 			//	elt.setAttribute("closemenu", popup ? "none" : "auto");
 		});
@@ -241,7 +242,7 @@ var handyClicksUI = {
 			this.ut.timeout(this.ut.closeMenus, this.ut, [e.target], 0);
 	},
 	showSettingsPopup: function(e) {
-		// Is better to use "popup" or "context" attribute
+		// It's better to use "popup" or "context" attribute
 		if(e.button == 1)
 			this.hc.showPopupOnItem(this.$("handyClicks-settingsPopup"), e.target, e);
 	},
@@ -338,7 +339,7 @@ var handyClicksUI = {
 	updUI: function(pName) {
 		if(pName == "enabled")
 			this.setStatus();
-		else if(this.ut.hasPrefix(pName, "ui.showIn"))
+		else if(this.ut.hasPrefix(pName, "ui.showIn") || pName == "ui.showAppMenuSeparator")
 			this.showHideControls();
 		else if(this.ut.hasPrefix(pName, "ui.action"))
 			this.setupUIActions();
@@ -381,15 +382,23 @@ var handyClicksUI = {
 		);
 	},
 	showHideControls: function() {
-		this.$("handyClicks-toolsMenuitem")  .hidden = !this.pu.pref("ui.showInToolsMenu");
+		this.$("handyClicks-toolsMenuitem").hidden = !this.pu.pref("ui.showInToolsMenu");
 		this.$("handyClicks-statusbarButton").hidden = !this.pu.pref("ui.showInStatusbar");
+		var appMi = this.$("handyClicks-appMenuitem");
+		if(appMi) {
+			var appSep = this.$("handyClicks-appMenuitemSeparator");
+			var hide = !this.pu.pref("ui.showInAppMenu");
+			appMi.hidden = hide;
+			appSep.hidden = hide || !this.pu.pref("ui.showAppMenuSeparator");
+		}
 	},
 	setControls: function(func, context) {
 		const id = "handyClicks-";
 		[
-			this.$(id + "statusbarButton"),
 			this.$(id + "toolsMenuitem"),
+			this.$(id + "appMenuitem"),
 			this.$(id + "toolbarButton") || this.paletteButton,
+			this.$(id + "statusbarButton"),
 		].forEach(function(elt) {
 			elt && func.call(context || this, elt);
 		}, this);
