@@ -453,7 +453,7 @@ var handyClicks = {
 		// Selected tabs (Multiple Tab Handler extension):
 		var mth = all || this.itemTypeInSets(sets, "ext_mulipletabs");
 		if(mth || this.itemTypeInSets(sets, "tab")) {
-			_it = this.getTab(it);
+			_it = this.getTab(it, true);
 			if(_it) {
 				if(mth && "MultipleTabService" in window && MultipleTabService.isSelected(_it)) {
 					this.itemType = "ext_mulipletabs";
@@ -583,13 +583,12 @@ var handyClicks = {
 			return it;
 		return null;
 	},
-	getTab: function(it) {
+	getTab: function(it, excludeCloseButton) {
 		if(!it || !it.localName)
 			return null;
 		if(it.namespaceURI != this.ut.XULNS)
 			return null;
-		var itln = it.localName.toLowerCase();
-		if(itln == "toolbarbutton")
+		if(excludeCloseButton && it.localName.toLowerCase() == "toolbarbutton")
 			return null;
 		const docNode = Node.DOCUMENT_NODE; // 9
 		for(; it && it.nodeType != docNode; it = it.parentNode) {

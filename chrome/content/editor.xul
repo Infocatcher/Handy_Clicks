@@ -67,6 +67,8 @@
 		<key id="hc-editor-key-rewindFocus" keycode="VK_UP" modifiers="control" oncommand="document.commandDispatcher.rewindFocus();" />
 		<key id="hc-editor-key-rewindFocus" keycode="VK_DOWN" modifiers="control" oncommand="document.commandDispatcher.advanceFocus();" />
 
+		<key id="hc-editor-key-openErrorConsole" key="j" modifiers="control,shift" oncommand="handyClicksUtils.openErrorConsole();" />
+
 		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksWinUtils.maximizeWindow();" />
 		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksWinUtils.toggleFullscreen();" />
 		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksWinUtils.toggleOnTop();" />

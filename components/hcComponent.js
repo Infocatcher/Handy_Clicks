@@ -12,7 +12,7 @@ const cc = Components.classes,
 const P_CID = Components.ID("{40835331-35F5-4bdf-85AB-6010E332D585}"),
       P_CONTRACTID = "@mozilla.org/network/protocol;1?name=handyclicks",
       P_HANDLER = ci.nsIProtocolHandler,
-      P_CHEME = "handyclicks",
+      P_SCHEME = "handyclicks",
       P_NAME = "Handy Clicks protocol handler";
 
 const C_CID = Components.ID("{50C6263F-F53F-4fbd-A295-9BA84C5FAAC3}"),
@@ -74,7 +74,7 @@ const protocol = {
 		| P_HANDLER.URI_LOADABLE_BY_ANYONE
 		| P_HANDLER.URI_NON_PERSISTABLE
 		| P_HANDLER.URI_DOES_NOT_RETURN_DATA,
-	scheme: P_CHEME,
+	scheme: P_SCHEME,
 	allowPort: function() {
 		return false;
 	},

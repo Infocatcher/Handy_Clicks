@@ -132,7 +132,7 @@
 					var ss = ifi.selectionStart;
 					var se = ifi.selectionEnd;
 
-					if(ss != se && this.isAutocompleteSelection) {
+					if(ss != se && indentChar != " " && this.isAutocompleteSelection) {
 						ifi.selectionStart = se;
 						return;
 					}
@@ -441,6 +441,14 @@
 			<field name="_isTempFile">false</field>
 			<field name="_lineBreak">null</field>
 			<field name="_hasWatchHandlers">false</field>
+			<method name="getDefaultFilename">
+				<parameter name="ext" />
+				<body>
+				<![CDATA[
+					return "handyclicks_" + this.id.replace(/^hc-editor-|Field/g, "") + "." + (ext || "js");
+				]]>
+				</body>
+			</method>
 			<method name="openExternalEditor">
 				<body>
 				<![CDATA[
@@ -452,7 +460,7 @@
 
 					var ext = ut.pu.pref("editor.externalEditorExtension") || "js";
 					if(isNew) {
-						var fName = "handyclicks_" + this.id.replace(/^hc-editor-|Field/g, "") + "." + ext;
+						var fName = this.getDefaultFilename(ext);
 						file = ut.getFileByAlias("TmpD");
 						file.append(fName);
 						file.createUnique(file.NORMAL_FILE_TYPE, 0644);
@@ -506,7 +514,7 @@
 					if(ee) {
 						var args = [file.path];
 						var eeArgs = ut.pu.pref("editor.externalEditorArgs");
-						if(eeArgs)
+						if(eeArgs && eeArgs.indexOf("%L") != -1)
 							args.push(eeArgs.replace("%L", this.currentLine));
 						if(ut.startProcess(ee, args))
 							this.fade();
@@ -536,19 +544,8 @@
 				<body>
 				<![CDATA[
 					if(!file || !file.exists()) {
-						if(!("handyClicksUtils" in top))
-							return null;
-						var ut = top.handyClicksUtils;
-						var fp = Components.classes["@mozilla.org/filepicker;1"]
-							.createInstance(Components.interfaces.nsIFilePicker);
-						fp.defaultExtension = "js";
-						fp.appendFilter(ut.getLocalized("jsFiles"), "*.js;*.jsm");
-						fp.appendFilters(fp.filterAll);
-						fp.init(top, ut.getLocalized(watch ? "linkWithFile" : "loadCodeFromFile"), fp.modeOpen);
-						if(fp.show() == fp.returnCancel)
-							return null;
-						file = fp.file;
-						if(!file.exists()) //?
+						file = this.pickFile(watch ? "linkWithFile" : "loadCodeFromFile");
+						if(!file)
 							return null;
 					}
 					this.updateFromFile(file, true /*detectLineBreak*/);
@@ -557,6 +554,47 @@
 					else
 						this.unwatchFile();
 					return file;
+				]]>
+				</body>
+			</method>
+			<method name="saveToFile">
+				<parameter name="watch" />
+				<body>
+				<![CDATA[
+					var file = this.pickFile("saveCodeToFile", true, this.getDefaultFilename("js"));
+					if(!file)
+						return null;
+					var ut = top.handyClicksUtils;
+					ut.writeToFileAsync(ut.platformLineBreaks(this.value), file, function(status) {
+						if(watch && Components.isSuccessCode(status))
+							this.watchFile(file, false);
+					}, this);
+					return file;
+				]]>
+				</body>
+			</method>
+			<method name="pickFile">
+				<parameter name="titleId" />
+				<parameter name="modeSave" />
+				<parameter name="defaultString" />
+				<body>
+				<![CDATA[
+					if(!("handyClicksUtils" in top))
+						return null;
+					var ut = top.handyClicksUtils;
+					var fp = Components.classes["@mozilla.org/filepicker;1"]
+						.createInstance(Components.interfaces.nsIFilePicker);
+					if(defaultString)
+						fp.defaultString = defaultString;
+					fp.defaultExtension = "js";
+					fp.appendFilter(ut.getLocalized("jsFiles"), "*.js;*.jsm");
+					fp.appendFilters(fp.filterAll);
+					fp.init(top, ut.getLocalized(titleId), fp[modeSave ? "modeSave" : "modeOpen"]);
+					if(fp.show() == fp.returnCancel)
+						return null;
+					if(!modeSave && !fp.file.exists())
+						return null;
+					return fp.file;
 				]]>
 				</body>
 			</method>
@@ -666,7 +704,7 @@
 
 					var fVal = ut.internalLineBreaks(ut.readFromFile(file));
 					if(val != fVal)
-						ut.writeToFile(ut.platformLineBreaks(val, this._lineBreak), file);
+						ut.writeToFileAsync(ut.platformLineBreaks(val, this._lineBreak), file);
 				]]>
 				</body>
 			</method>
@@ -861,6 +899,7 @@
 			<handler event="keypress" preventdefault="true" key="e" action="this.openExternalEditor();" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" key="o" action="this.loadFromFile(false);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="o" action="this.loadFromFile(true);" modifiers="control,shift" />
+			<handler event="keypress" preventdefault="true" key="s" action="this.saveToFile(true);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(false);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(true);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" keycode="VK_BACK" action="this.trimEndSpaces();" modifiers="alt" />
