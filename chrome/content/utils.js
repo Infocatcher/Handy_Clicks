@@ -1069,7 +1069,7 @@ var handyClicksExtensionsHelper = {
 			}, this));
 		}
 	},
-	get exts() {
+	get exts() { // Note: restartless extensions not supported for now
 		var exts = Application.extensions || this.ut.storage("extensions");
 		if(exts) {
 			delete this.exts;

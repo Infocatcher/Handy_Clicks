@@ -47,6 +47,9 @@
 [hc_canDragSwitch="true"] {
 	text-decoration: underline !important;
 }
+tab[hc_disabled="true"][hc_canDragSwitch="true"] {
+	text-decoration: underline line-through !important;
+}
 
 label[tooltiptext]:not([tooltiptext=""]) {
 	border-bottom: 1px dotted;

@@ -94,25 +94,17 @@
 				<parameter name="select" />
 				<body>
 				<![CDATA[
-					if(noScroll) {
-						var ifi = this.inputField;
-						var sTop    = ifi.scrollTop;
-						var sHeight = ifi.scrollHeight;
-						var sLeft   = ifi.scrollLeft;
-						var sWidth  = ifi.scrollWidth;
-					}
+					noScroll && this.saveScrollPos(true);
 
 					if(text)
 						this.editor.insertText(text);
 					else
 						this.editor.deleteSelection(0);
 
-					if(noScroll) {
-						ifi.scrollTop  = sTop  + (ifi.scrollHeight - sHeight);
-						ifi.scrollLeft = sLeft + (ifi.scrollWidth  - sWidth);
-					}
 					if(select)
 						this.inputField.selectionStart -= text.length;
+
+					noScroll && this.restoreScrollPos();
 				]]>
 				</body>
 			</method>
@@ -672,14 +664,9 @@
 						return;
 					}
 
-					var ifi = this.inputField;
-					var sTop = ifi.scrollTop;
-					var sLeft = ifi.scrollLeft;
-
+					this.saveScrollPos();
 					this.value = fVal;
-
-					ifi.scrollTop = sTop;
-					ifi.scrollLeft = sLeft;
+					this.restoreScrollPos();
 
 					if(fromLinkedFile) {
 						this._lastModifiedTime = fTime;
@@ -827,7 +814,10 @@
 			<method name="trimEndSpaces">
 				<body>
 				<![CDATA[
-					const selMarker = "\uffff" + Math.random().toFixed(24).substr(2) + "\uffff";
+					const selMarker = "\uffff"
+						+ Math.random().toFixed(16).substr(2)
+						+ Math.random().toFixed(16).substr(2)
+						+ "\uffff";
 					var val = this.value;
 					var ifi = this.inputField;
 					var ss = ifi.selectionStart;
@@ -839,16 +829,18 @@
 					ss = newVal.indexOf(selMarker);
 					se = newVal.lastIndexOf(selMarker) - selMarker.length;
 					newVal = newVal.replace(selMarker, "", "g");
-					if(newVal != val) {
-						var sTop = ifi.scrollTop;
-						var sLeft = ifi.scrollLeft;
-						this.value = newVal;
-						ifi.scrollTop = sTop;
-						ifi.scrollLeft = sLeft;
-						ifi.selectionStart = ss;
-						ifi.selectionEnd = se;
-						this.fireChange();
-					}
+					if(newVal == val)
+						return;
+
+					this.saveScrollPos();
+
+					this.value = newVal;
+
+					ifi.selectionStart = ss;
+					ifi.selectionEnd = se;
+					this.restoreScrollPos();
+
+					this.fireChange();
 				]]>
 				</body>
 			</method>
@@ -862,7 +854,6 @@
 				]]>
 				</body>
 			</method>
-
 			<method name="moveCaret">
 				<parameter name="moveLeft" />
 				<parameter name="event" />
@@ -876,6 +867,31 @@
 					event.preventDefault();
 					ifi.selectionStart = ifi.selectionEnd = moveLeft ? ss : se;
 					this.scrollSelectionIntoView();
+				]]>
+				</body>
+			</method>
+			<method name="saveScrollPos">
+				<parameter name="recalc" />
+				<body>
+				<![CDATA[
+					var ifi = this.inputField;
+					this.scrollPos = {
+						recalc: recalc,
+						scrollTop:    ifi.scrollTop,
+						scrollLeft:   ifi.scrollLeft,
+						scrollHeight: ifi.scrollHeight,
+						scrollWidth:  ifi.scrollWidth
+					};
+				]]>
+				</body>
+			</method>
+			<method name="restoreScrollPos">
+				<body>
+				<![CDATA[
+					var ifi = this.inputField;
+					var sp = this.scrollPos;
+					ifi.scrollTop  = sp.scrollTop  + (sp.recalc ? ifi.scrollHeight - sp.scrollHeight : 0);
+					ifi.scrollLeft = sp.scrollLeft + (sp.recalc ? ifi.scrollWidth  - sp.scrollWidth  : 0);
 				]]>
 				</body>
 			</method>
@@ -914,11 +930,11 @@
 					|| event.ctrlKey
 					|| event.altKey
 					|| event.metaKey
-					|| !/[a-z]/i.test(String.fromCharCode(event.charCode))
+					|| !/[a-z_]/i.test(String.fromCharCode(event.charCode))
 				)
 					return;
 				var offset = this.autocompleteMinSymbols - 1; // Symbol from this keypress event aren't typed yet
-				if(offset > 0 && !/^[a-z]+$/i.test(this.value.substr(this.inputField.selectionStart - offset, offset)))
+				if(offset > 0 && !/^[a-z_]+$/i.test(this.value.substr(this.inputField.selectionStart - offset, offset)))
 					return;
 				setTimeout(function(_this) {
 					_this.jsAutocomplete(false, true);
