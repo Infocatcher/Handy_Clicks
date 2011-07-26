@@ -31,7 +31,7 @@ var handyClicksReloader = {
 			for(var f in files) {
 				p = files[f];
 				if(p in window)
-					jsLoader.loadSubScript(path + f);
+					jsLoader.loadSubScript(path + f + "?" + Date.now());
 			}
 			handyClicksRegSvc.init(true);
 			this._log("js reloaded (" + (Date.now() - t) + " ms)");

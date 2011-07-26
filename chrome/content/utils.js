@@ -974,64 +974,89 @@ var handyClicksCleanupSvc = {
 	unregisterCleanup: function(uid) {
 		delete this._cleanups[uid];
 	},
-	doCleanup: function(uid) {
+	cleanup: function(uid) {
 		var cs = this._cleanups;
-		if(uid in cs)
-			this.cleanup.apply(this, cs[uid]);
+		if(uid in cs) {
+			this._cleanup.apply(this, cs[uid]);
+			delete cs[uid];
+		}
 	},
-	cleanup: function(func, context, args) {
+	_cleanup: function(func, context, args) {
 		func.apply(context, args);
 	},
 	destroy: function() {
-		this._cleanups.forEach(this.cleanup, this);
+		this._cleanups.forEach(this._cleanup, this);
 		delete this._cleanups;
+
+		this._nodeCleanups.forEach(function(nodeHandler) {
+			nodeHandler.destroy();
+		});
+		delete this._nodeCleanups;
 	},
 
 	_nodeCleanups: [],
-	registerNodeCleanup: function(node, func, context, args) {
-		var win = node.ownerDocument.defaultView;
-		var cleanup = function _cu(e) {
-			var node = _cu.node;
-			var doc = node.ownerDocument;
-			var win = doc.defaultView;
-			if(typeof e == "object") {
-				var type = e.type;
-				if(type == "unload") {
-					if(e.target.defaultView !== win)
-						return;
-				}
-				else if(type == "DOMNodeRemoved")
-					for(node = node.parentNode; node; node = node.parentNode)
-						if(node === doc)
-							return;
-			}
-			win.removeEventListener("unload", _cu, true);
-			win.removeEventListener("DOMNodeRemoved", _cu, true);
-			e && _cu.func.apply(_cu.context, _cu.args);
-			delete _cu.cuSvc._nodeCleanups[_cu.uid];
+	get registerNodeCleanup() { // function(node, func, context, args)
+		this.NodeHandler = function(node, func, context, args, uid) {
+			this.node    = node;
+			this.func    = func;
+			this.context = context;
+			this.args    = args;
+			this.uid     = uid;
+			var doc = this.doc = node.ownerDocument;
+			var win = this.win = doc.defaultView;
+			this._destroyTimeout = 0;
+			win.addEventListener("unload", this, false);
+			win.addEventListener("DOMNodeRemoved", this, false);
 		};
-		cleanup.node = func.node = node;
-		cleanup.func = func;
-		cleanup.context = context;
-		cleanup.args = args;
-		cleanup.cuSvc = this;
-		var uid = this._nodeCleanups.push(cleanup) - 1;
-		cleanup.uid = uid;
-
-		win.addEventListener("unload", cleanup, true);
-		win.addEventListener("DOMNodeRemoved", cleanup, true);
-
-		return uid;
+		this.NodeHandler.prototype = {
+			parent: this,
+			handleEvent: function(e) {
+				switch(e.type) {
+					case "DOMNodeRemoved":
+						if(e.target.ownerDocument != this.doc)
+							break;
+						clearTimeout(this._destroyTimeout);
+						this._destroyTimeout = this.parent.ut.timeout(this.checkNode, this, [], 50);
+					break;
+					case "unload":
+						if(e.target.defaultView === this.win)
+							this.destroy();
+				}
+			},
+			checkNode: function() {
+				var doc = this.doc;
+				for(var node = this.node.parentNode; node; node = node.parentNode)
+					if(node === doc)
+						return;
+				this.destroy();
+			},
+			cancel: function() {
+				var win = this.win;
+				win.removeEventListener("unload", this, false);
+				win.removeEventListener("DOMNodeRemoved", this, false);
+				delete this.parent._nodeCleanups[this.uid];
+			},
+			destroy: function() {
+				this.cancel();
+				this.func.apply(this.context, this.args);
+			}
+		};
+		delete this.registerNodeCleanup;
+		return this.registerNodeCleanup = function(node, func, context, args) {
+			return this._nodeCleanups.push(
+				new this.NodeHandler(node, func, context, args, this._nodeCleanups.length)
+			) - 1;
+		};
 	},
 	unregisterNodeCleanup: function(uid) {
 		var cs = this._nodeCleanups;
 		if(uid in cs)
-			cs[uid](false);
+			cs[uid].cancel();
 	},
-	doNodeCleanup: function(uid) {
+	nodeCleanup: function(uid) {
 		var cs = this._nodeCleanups;
 		if(uid in cs)
-			cs[uid](true);
+			cs[uid].destroy();
 	}
 };
 
