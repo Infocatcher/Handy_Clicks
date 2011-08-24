@@ -22,10 +22,10 @@ var handyClicks = {
 	// Initialization:
 	init: function(reloadFlag) {
 		this.ps.loadSettingsAsync();
-		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], true);
+		this.setListeners(["mousedown", "click", "command", "mouseup", "dblclick", "contextmenu", "popupshowing"], true);
 	},
 	destroy: function(reloadFlag) {
-		this.setListeners(["mousedown", "click", "command", "mouseup", "contextmenu", "dblclick"], false);
+		this.setListeners(["mousedown", "click", "command", "mouseup", "dblclick", "contextmenu", "popupshowing"], false);
 		this.cancelDelayedAction();
 		if(this.editMode)
 			this.editMode = false;
@@ -39,14 +39,15 @@ var handyClicks = {
 	},
 	handleEvent: function(e) {
 		switch(e.type) {
-			case "mousedown":   this.mousedownHandler(e);   break;
-			case "click":       this.clickHandler(e);       break;
-			case "mouseup":     this.mouseupHandler(e);     break;
-			case "command":     this.commandHandler(e);     break;
-			case "dblclick":    this.dblclickHandler(e);    break;
-			case "contextmenu": this.contextmenuHandler(e); break;
-			case "mousemove":   this.mousemoveHandler(e);   break;
-			case "draggesture": this.dragHandler(e);        break;
+			case "mousedown":    this.mousedownHandler(e);    break;
+			case "click":        this.clickHandler(e);        break;
+			case "mouseup":      this.mouseupHandler(e);      break;
+			case "command":      this.commandHandler(e);      break;
+			case "dblclick":     this.dblclickHandler(e);     break;
+			case "contextmenu":  this.contextmenuHandler(e);  break;
+			case "popupshowing": this.popupshowingHandler(e); break;
+			case "mousemove":    this.mousemoveHandler(e);    break;
+			case "draggesture":  this.dragHandler(e);         break;
 			case "keypress":
 				if(e.keyCode != e.DOM_VK_ESCAPE)
 					break;
@@ -182,6 +183,10 @@ var handyClicks = {
 		this.saveXY(e);
 
 		this.ui.restoreIcon();
+
+		setTimeout(function(_this) {
+			_this.flags.stopContextMenu = false;
+		}, 0, this);
 	},
 	commandHandler: function(e) {
 		if(!this.enabled)
@@ -205,6 +210,15 @@ var handyClicks = {
 	contextmenuHandler: function(e) {
 		if(this.enabled && this.flags.stopContextMenu)
 			this.ut.stopEvent(e);
+	},
+	popupshowingHandler: function(e) {
+		// Force prevent any popup
+		// This is for RightToClick extension https://addons.mozilla.org/firefox/addon/righttoclick/
+		if(this.enabled && this.flags.stopContextMenu) {
+			var ln = e.target.localName.toLowerCase();
+			if(ln == "menupopup" || ln == "popup")
+				this.ut.stopEvent(e);
+		}
 	},
 	mousemoveHandler: function(e) {
 		this.saveXY(e);

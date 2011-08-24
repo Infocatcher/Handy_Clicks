@@ -167,30 +167,26 @@ var handyClicksPrefUtils = {
 		var br = tab.linkedBrowser;
 		var oldFx = this.ut.fxVersion <= 3.0;
 		var _this = this;
-		br.addEventListener(
-			"load",
-			function _l(e) {
-				br.removeEventListener("load", _l, true);
-				var cWin = br.contentWindow;
-				(function setFilter() {
-					var tb = cWin.document.getElementById("textbox");
-					if(!tb) {
-						setTimeout(setFilter, 5);
-						return;
-					}
-					tb.setAttribute("value", filter);
-					if(oldFx) try {
-						cWin.wrappedJSObject.FilterPrefs();
-						tb.focus();
-					}
-					catch(e) {
-						_this.ut._warn("openAboutConfigFilter: FilterPrefs() failed");
-						_this.ut._err(e);
-						setTimeout(setFilter, 5);
-					}
-				})();
-			},
-			true
-		);
+		br.addEventListener("load", function _l(e) {
+			br.removeEventListener("load", _l, true);
+			var cWin = br.contentWindow;
+			(function setFilter() {
+				var tb = cWin.document.getElementById("textbox");
+				if(!tb) {
+					setTimeout(setFilter, 5);
+					return;
+				}
+				tb.setAttribute("value", filter);
+				if(oldFx) try {
+					cWin.wrappedJSObject.FilterPrefs();
+					tb.focus();
+				}
+				catch(e) {
+					_this.ut._warn("openAboutConfigFilter: FilterPrefs() failed");
+					_this.ut._err(e);
+					setTimeout(setFilter, 5);
+				}
+			})();
+		}, true);
 	}
 };

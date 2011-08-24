@@ -62,7 +62,11 @@ var handyClicksUtils = {
 					.replace(/^\s+/, "");
 			};
 			req.open("GET", stackFrame.filename, false);
-			req.send(null);
+			try {
+				req.send(null);
+			}
+			catch(e) {
+			}
 			var funcDesc = String(funcCaller).match(/^.*/)[0].substr(0, 100)
 				+ " \u2026\n"
 				+ line;
