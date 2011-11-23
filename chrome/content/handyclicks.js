@@ -778,7 +778,9 @@ var handyClicks = {
 		//var isContext = e.button == 2;
 		var xy = this.getXY(e);
 		if("openPopupAtScreen" in popup) // Firefox 3.0+
-			popup.openPopupAtScreen(xy.x, xy.y, true /*isContextMenu*/);
+			setTimeout(function() { // Hack for Firefox 10
+				popup.openPopupAtScreen(xy.x, xy.y, true /*isContextMenu*/);
+			}, 0);
 		else
 			popup.showPopup(this.ut.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "context", null, null);
 		this.focusOnItem();

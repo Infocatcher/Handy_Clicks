@@ -162,7 +162,8 @@ var handyClicksFuncs = {
 		if(!tab || !moveTo)
 			return;
 		var curTab = tbr.selectedTab;
-		var curInd = curTab._tPos, ind = 0;
+		var curInd = this.getTabPos(curTab);
+		var ind = 0;
 		if(this.ut.fxVersion == 1.5 && moveTo == "relative")
 			moveTo = "after"; // Tab* events is not supported
 		switch(moveTo) {
@@ -835,6 +836,11 @@ var handyClicksFuncs = {
 			return !tab.pinned;
 		});
 	},
+	getTabPos: function(tab) {
+		if("_tPos" in tab) // Firefox
+			return tab._tPos;
+		return Array.indexOf(this.tabs, tab); // SeaMonkey
+	},
 	forEachTab: function(func, context) {
 		return Array.map(this.visibleTabs, func, context || this);
 	},
@@ -1032,7 +1038,7 @@ var handyClicksFuncs = {
 	cloneTab: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
-		var ind = ++tab._tPos;
+		var ind = this.getTabPos(tab) + 1;
 		if("duplicateTab" in tbr) // fx 3.0+
 			var newTab = tbr.duplicateTab(tab);
 		else // Not a real "clone"... Just URI's copy
