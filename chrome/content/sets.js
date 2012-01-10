@@ -9,6 +9,10 @@ var handyClicksSets = {
 		this.ps.loadSettings();
 		this.initShortcuts();
 
+		this._treeBatchMode = true;
+		var tbo = this.tbo;
+		tbo.beginUpdateBatch();
+
 		this[reloadFlag ? "redrawTree" : "drawTree"]();
 		this.updTreeButtons();
 		this.checkTreeSaved();
@@ -35,7 +39,8 @@ var handyClicksSets = {
 			sf._enterSearch && sf._enterSearch();
 		}
 		this.focusSearch(true);
-		this.searchInSetsTree(true);
+		if(!reloadFlag)
+			this.searchInSetsTree(true);
 
 		if(reloadFlag)
 			this.setDialogButtons();
@@ -52,6 +57,9 @@ var handyClicksSets = {
 			document.getElementsByAttribute("preference", "showInAppMenu")[0].hidden = true;
 
 		window.addEventListener("mouseover", this, true);
+
+		tbo.endUpdateBatch();
+		this._treeBatchMode = false;
 	},
 	initShortcuts: function() {
 		var tr = this.tree = this.$("hc-sets-tree");
@@ -151,11 +159,18 @@ var handyClicksSets = {
 		this.setDialogButtons();
 		this.updTree();
 	},
+	_treeBatchMode: false,
 	treeBatch: function(func, context, args) {
-		var tbo = this.tbo;
-		tbo.beginUpdateBatch();
+		if(!this._treeBatchMode) {
+			this._treeBatchMode = true;
+			var tbo = this.tbo;
+			tbo.beginUpdateBatch();
+		}
 		var ret = func.apply(context || this, args);
-		tbo.endUpdateBatch();
+		if(tbo) {
+			tbo.endUpdateBatch();
+			this._treeBatchMode = false;
+		}
 		return ret;
 	},
 	drawTree: function() {
@@ -1839,10 +1854,10 @@ var handyClicksSets = {
 
 		var resPath, resLevel, resLength;
 		[
-			"ProgF", "LocalAppData", "ProfD", "Home", "SysD", "WinD",// "XCurProcD",
+			"ProgF", "LocalAppData", "ProfD", "Home", "SysD", "WinD",// "CurProcD",
 			"UsrApp", "LocApp",
 			"Locl", "LibD",
-			"_SysDrv"//, "_ProfDrv"
+			"hc_SysDrv"//, "hc_ProfDrv"
 		].forEach(function(alias) {
 			var aliasFile = this.ut.getFileByAlias(alias, true), aliasPath, aliasLength;
 			for(var level = 0; aliasFile; aliasFile = this.ut.getFileParent(aliasFile), level++) {

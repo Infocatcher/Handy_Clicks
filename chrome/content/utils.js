@@ -352,9 +352,15 @@ var handyClicksUtils = {
 		return file && file.QueryInterface(Components.interfaces.nsILocalFile);
 	},
 	getFileByAlias: function(alias, dontShowErrors) {
-		if(alias == "_ProfDrv")
+		if(alias == "_ProfDrv" || alias == "_SysDrv") { //= added 2012-01-10
+			this.ut._warn(<>Alias "{alias}" is deprecated. Use "hc{alias}" instead.</>);
+			alias = "hc" + alias;
+		}
+		if(alias == "hc_ProfDrv")
 			return this.getLocalFileRoot(this.ps.profileDir);
-		if(alias == "_SysDrv")
+		if(alias == "hc_CurProcDrv")
+			return this.getLocalFileRoot(this.getFileByAlias("CurProcD"));
+		if(alias == "hc_SysDrv")
 			return this.getLocalFileRoot(this.getFileByAlias("SysD"));
 		try {
 			return Components.classes["@mozilla.org/file/directory_service;1"]
