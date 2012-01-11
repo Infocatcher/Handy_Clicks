@@ -40,7 +40,7 @@
 			<hbox align="center">
 				<label value="&hc.sets.search;" control="hc-sets-tree-searchField" />
 				<hbox id="hc-sets-tree-searchContainer" flex="100">
-					<textbox id="hc-sets-tree-searchField" type="search" flex="1"
+					<textbox id="hc-sets-tree-searchField" type="search" flex="1" persist="hc_value"
 						onkeypress="handyClicksSets.navigateSearchResults(event);"
 						oninput="handyClicksSets.searchInSetsTreeDelay();"
 						hc_ondrop="handyClicksSets.searchInSetsTree();" />

@@ -14,6 +14,12 @@ var handyClicksSets = {
 		tbo.beginUpdateBatch();
 
 		this[reloadFlag ? "redrawTree" : "drawTree"]();
+
+		this.restoreSearchQuery();
+		this.focusSearch(true);
+		if(!reloadFlag)
+			this.searchInSetsTree(true);
+
 		this.updTreeButtons();
 		this.checkTreeSaved();
 		this.ps.oSvc.addObserver(this.setsReloading, this);
@@ -33,14 +39,6 @@ var handyClicksSets = {
 				};
 			}
 		}
-		if(this.pu.pref("sets.rememberSearchQuery")) {
-			var sf = this.searchField;
-			sf.value = this.pu.pref("sets.lastSearchQuery") || "";
-			sf._enterSearch && sf._enterSearch();
-		}
-		this.focusSearch(true);
-		if(!reloadFlag)
-			this.searchInSetsTree(true);
 
 		if(reloadFlag)
 			this.setDialogButtons();
@@ -74,16 +72,29 @@ var handyClicksSets = {
 	destroy: function(reloadFlag) {
 		this.closeEditors();
 		this.treeScrollPos(true);
-		this.pu.pref(
-			"sets.lastSearchQuery",
-			this.pu.pref("sets.rememberSearchQuery")
-				? this.searchField.value
-				: ""
-		);
+		this.saveSearchQuery();
 		reloadFlag && this.setImportStatus(false);
 		this.rowsCache = this._savedPrefs = this._savedTypes = null;
 
 		window.removeEventListener("mouseover", this, true);
+	},
+	restoreSearchQuery: function() {
+		if(!this.pu.pref("sets.rememberSearchQuery"))
+			return false;
+		var sf = this.searchField;
+		var obsoletePref = this.pu.prefNS + "sets.lastSearchQuery"; //= Added: 2012-01-11
+		var lsq = this.pu.getPref(obsoletePref);
+		if(lsq)
+			this.pu.prefSvc.deleteBranch(obsoletePref);
+		else
+			lsq = sf.getAttribute("hc_value");
+		sf.value = lsq;
+		sf._enterSearch && sf._enterSearch();
+		return !!lsq;
+	},
+	saveSearchQuery: function() {
+		var sf = this.searchField;
+		sf.setAttribute("hc_value", this.pu.pref("sets.rememberSearchQuery") ? sf.value : "");
 	},
 	startupUI: function() {
 		this.treeScrollPos(false);
@@ -1623,6 +1634,8 @@ var handyClicksSets = {
 			this.setDisallowMousemove();
 			this.updateAllDependencies("disallowMousemove");
 		}
+		else if(pName == "sets.lastSearchQuery") //~ obsolete
+			this.restoreSearchQuery() && this.redrawTree();
 		else if(this.ut.hasPrefix(pName, "ui.action"))
 			this.loadUIAction();
 		else {

@@ -43,7 +43,7 @@ function prefsMigration(allowSave, vers) {
 			this.pref("ui.inheritToolbarContextMenu", this.getPref(pn))
 				.prefSvc.deleteBranch(pn);
 	}
-	if(vers < 6) { //= Added 2011-06-27
+	if(vers < 6) { //= Added: 2011-06-27
 		var pn = pns + "editor.tabSymbol";
 		if(this.existPref(pn)) {
 			var tabSymbol = this.getPref(pn);

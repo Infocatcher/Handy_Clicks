@@ -76,7 +76,6 @@ pref("extensions.handyclicks.sets.treeExpandDelayedAction", true);
 pref("extensions.handyclicks.sets.localizeArguments", true);
 pref("extensions.handyclicks.sets.closeTreeViewMenu", true);
 pref("extensions.handyclicks.sets.rememberSearchQuery", true);
-pref("extensions.handyclicks.sets.lastSearchQuery", "");
 
 pref("extensions.handyclicks.editor.tabSize", 4);
 pref("extensions.handyclicks.editor.tabSpaces", false);
