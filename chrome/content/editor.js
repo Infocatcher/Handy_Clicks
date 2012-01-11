@@ -127,7 +127,8 @@ var handyClicksEditor = {
 			case "focus":
 				var node = e.target;
 				if(
-					node.localName != "textbox"
+					!("localName" in node)
+					|| node.localName != "textbox"
 					|| !node.hasAttribute("tabindex")
 					|| node.getAttribute("readonly") != "true"
 				)

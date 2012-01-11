@@ -310,7 +310,7 @@ var handyClicksSetsUtils = {
 	},
 	scrollTabsToolbar: function(e) {
 		for(var node = e.target; node; node = node.parentNode) {
-			if(/(?:^|\s)hcTabsToolbar(?:\s|$)/.test(node.className)) {
+			if("className" in node && /(?:^|\s)hcTabsToolbar(?:\s|$)/.test(node.className)) {
 				var tabbox = node.nextSibling;
 				var tabs = tabbox.tabs || tabbox.getElementsByTagNameNS(this.ut.XULNS, "tabs")[0];
 				tabs.advanceSelectedTab(this.isScrollForward(e) ? 1 : -1, true);

@@ -9,16 +9,12 @@ var handyClicksSets = {
 		this.ps.loadSettings();
 		this.initShortcuts();
 
-		this._treeBatchMode = true;
-		var tbo = this.tbo;
-		tbo.beginUpdateBatch();
-
-		this[reloadFlag ? "redrawTree" : "drawTree"]();
-
 		this.restoreSearchQuery();
-		this.focusSearch(true);
-		if(!reloadFlag)
-			this.searchInSetsTree(true);
+		this[reloadFlag ? "updTree" : "drawTree"]();
+
+		!reloadFlag && this.focusSearch(true);
+		//if(!reloadFlag)
+		//	this.searchInSetsTree(true);
 
 		this.updTreeButtons();
 		this.checkTreeSaved();
@@ -33,6 +29,8 @@ var handyClicksSets = {
 				this._origClearSearch = sf._clearSearch;
 				var hcs = this;
 				sf._clearSearch = function() {
+					if(window.closed)
+						return;
 					var ret = hcs._origClearSearch.apply(this, arguments);
 					hcs.searchInSetsTreeDelay();
 					return ret;
@@ -55,9 +53,6 @@ var handyClicksSets = {
 			document.getElementsByAttribute("preference", "showInAppMenu")[0].hidden = true;
 
 		window.addEventListener("mouseover", this, true);
-
-		tbo.endUpdateBatch();
-		this._treeBatchMode = false;
 	},
 	initShortcuts: function() {
 		var tr = this.tree = this.$("hc-sets-tree");
@@ -176,10 +171,12 @@ var handyClicksSets = {
 			this._treeBatchMode = true;
 			var tbo = this.tbo;
 			tbo.beginUpdateBatch();
+			//this.ut._log("beginUpdateBatch");
 		}
 		var ret = func.apply(context || this, args);
 		if(tbo) {
 			tbo.endUpdateBatch();
+			//this.ut._log("endUpdateBatch");
 			this._treeBatchMode = false;
 		}
 		return ret;
@@ -187,7 +184,7 @@ var handyClicksSets = {
 	drawTree: function() {
 		return this.treeBatch(this._drawTree, this, arguments);
 	},
-	_drawTree: function() {
+	_drawTree: function(dontSearch) {
 		this.eltsCache = { __proto__: null };
 		this.rowsCache = { __proto__: null };
 
@@ -280,6 +277,8 @@ var handyClicksSets = {
 			this.addImportStatistics();
 		delete this.eltsCache;
 		this._hasFilter = false;
+
+		!dontSearch && this.searchInSetsTree(true);
 	},
 	addImportStatistics: function() {
 		var overrideTypes = 0;
@@ -337,8 +336,8 @@ var handyClicksSets = {
 	},
 	_redrawTree: function(dontSearch) {
 		this.ut.removeChilds(this.tBody);
-		this._drawTree();
-		!dontSearch && this.searchInSetsTree(true);
+		this._drawTree(dontSearch);
+		//!dontSearch && this.searchInSetsTree(true);
 		this.setDialogButtons();
 		//document.title = document.title.replace(/\*?$/, this.ps.otherSrc ? "*" : "");
 	},
@@ -417,14 +416,14 @@ var handyClicksSets = {
 	},
 	_markOpenedEditors: function() {
 		for(var rowId in this.rowsCache)
-			this.setItemStatus(rowId, false);
+			this._setItemStatus(rowId, false);
 		var wProp = this.wu.winIdProp;
 		var otherSrc = this.ps.otherSrc;
 		this.wu.forEachWindow(
 			"handyclicks:editor",
 			function(w) {
 				if(wProp in w)
-					this.setItemStatus(w[wProp], w.handyClicksPrefSvc.otherSrc == otherSrc);
+					this._setItemStatus(w[wProp], w.handyClicksPrefSvc.otherSrc == otherSrc);
 			},
 			this
 		);
@@ -959,7 +958,10 @@ var handyClicksSets = {
 		var isDelayed = tItem && add !== true && tItem.__isDelayed;
 		this.wu.openEditor(this.ps.currentSrc, mode || this.ct.EDITOR_MODE_SHORTCUT, shortcut, itemType, isDelayed);
 	},
-	setItemStatus: function(rowId, editStat) {
+	setItemStatus: function() {
+		return this.treeBatch(this._setItemStatus, this, arguments);
+	},
+	_setItemStatus: function(rowId, editStat) {
 		if(!rowId)
 			return;
 		rowId = this.ut.removePostfix(rowId, this.ct.OTHER_SRC_POSTFIX);
@@ -1635,7 +1637,7 @@ var handyClicksSets = {
 			this.updateAllDependencies("disallowMousemove");
 		}
 		else if(pName == "sets.lastSearchQuery") //~ obsolete
-			this.restoreSearchQuery() && this.redrawTree();
+			this.restoreSearchQuery() && this.updTree();
 		else if(this.ut.hasPrefix(pName, "ui.action"))
 			this.loadUIAction();
 		else {
