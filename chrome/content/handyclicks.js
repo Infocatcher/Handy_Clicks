@@ -9,6 +9,7 @@ var handyClicks = {
 	flags: {
 		runned: false, // => stop click events
 		stopContextMenu: false, // => stop "contextmenu" event (in Linux: mousedown -> contextmenu -> ... delay ... -> click)
+		allowPopupshowing: false,
 		allowEvents: false, // => allow all events while (flags.runned == false)
 		__proto__: null
 	},
@@ -80,7 +81,7 @@ var handyClicks = {
 			return;
 
 		this.saveXY(e);
-		this.skipFlags();
+		this.resetFlags();
 		var funcObj = this.getFuncObjByEvt(e);
 		if(!funcObj)
 			return;
@@ -131,8 +132,10 @@ var handyClicks = {
 				&& tar.boxObject
 				&& tar.boxObject instanceof Components.interfaces.nsIMenuBoxObject
 			) {
+				this.flags.allowPopupshowing = true;
 				//tar.boxObject.openMenu(true);
 				tar.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
+				this.flags.allowPopupshowing = false;
 			}
 		}
 
@@ -178,7 +181,7 @@ var handyClicks = {
 		this.checkForStopEvent(e);
 		if(this.flags.allowEvents)
 			this.cancelDelayedAction();
-		//this.skipFlagsDelay();
+		//this.resetFlagsDelay();
 		this.removeMoveHandlers();
 		this.saveXY(e);
 
@@ -214,7 +217,7 @@ var handyClicks = {
 	popupshowingHandler: function(e) {
 		// Force prevent any popup
 		// This is for RightToClick extension https://addons.mozilla.org/firefox/addon/righttoclick/
-		if(this.enabled && this.flags.stopContextMenu) {
+		if(this.enabled && this.flags.stopContextMenu && !this.flags.allowPopupshowing) {
 			var ln = e.target.localName.toLowerCase();
 			if(ln == "menupopup" || ln == "popup")
 				this.ut.stopEvent(e);
@@ -295,7 +298,7 @@ var handyClicks = {
 			this.ut.stopEvent(e);
 		}
 	},
-	skipFlags: function() {
+	resetFlags: function() {
 		var fls = this.flags;
 		for(var p in fls)
 			fls[p] = false;
@@ -582,7 +585,7 @@ var handyClicks = {
 			return null;
 		var itln = it.localName.toLowerCase();
 		if(
-			it.type != "menu"
+			(!("type" in it) || it.type != "menu")
 			&& (
 				(
 					/(?:^|\s)bookmark-item(?:\s|$)/.test(it.className)
@@ -681,7 +684,7 @@ var handyClicks = {
 		return this.ps.isOkFuncObj(fObj) && fObj.enabled;
 	},
 	hasParent: function(it, pId) {
-		for(it = it.parentNode; it; it = it.parentNode)
+		for(it = it.parentNode; it && "id" in it; it = it.parentNode)
 			if(it.id == pId)
 				return true;
 		return false;
@@ -777,12 +780,12 @@ var handyClicks = {
 
 		//var isContext = e.button == 2;
 		var xy = this.getXY(e);
+		this.flags.allowPopupshowing = true;
 		if("openPopupAtScreen" in popup) // Firefox 3.0+
-			setTimeout(function() { // Hack for Firefox 10
-				popup.openPopupAtScreen(xy.x, xy.y, true /*isContextMenu*/);
-			}, 0);
+			popup.openPopupAtScreen(xy.x, xy.y, true /*isContextMenu*/);
 		else
 			popup.showPopup(this.ut.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "context", null, null);
+		this.flags.allowPopupshowing = false;
 		this.focusOnItem();
 	},
 	_xy: null,
