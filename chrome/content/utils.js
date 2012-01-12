@@ -49,6 +49,10 @@ var handyClicksUtils = {
 		// Bug: can't show message with custom fileName
 		this._err(e, fileName, lineNumber, true);
 	},
+	_deprecated: function(msg) {
+		var caller = Components.stack.caller.caller;
+		this._warn(msg, caller.filename, caller.lineNumber);
+	},
 	_stack: function(isWarning) {
 		for(
 			var stackFrame = Components.stack.caller, funcCaller = arguments.callee.caller, i = 0;
@@ -353,7 +357,7 @@ var handyClicksUtils = {
 	},
 	getFileByAlias: function(alias, dontShowErrors) {
 		if(alias == "_ProfDrv" || alias == "_SysDrv") { //= added 2012-01-10
-			this.ut._warn(<>Alias "{alias}" is deprecated. Use "hc{alias}" instead.</>);
+			this.ut._deprecated(<>Alias "{alias}" is deprecated. Use "hc{alias}" instead.</>);
 			alias = "hc" + alias;
 		}
 		if(alias == "hc_ProfDrv")
@@ -946,11 +950,13 @@ var handyClicksUtils = {
 		}
 		delete this.storage;
 		return this.storage = function(key, val) {
-			return arguments.length == 1
-				? key in this._storage
-					? this._storage[key]
-					: undefined
-				: (this._storage[key] = val);
+			if(arguments.length == 1)
+				return key in this._storage ? this._storage[key] : undefined;
+			if(val === undefined)
+				delete this._storage[key];
+			else
+				this._storage[key] = val;
+			return val;
 		};
 	}
 };
@@ -1071,6 +1077,10 @@ var handyClicksCleanupSvc = {
 };
 
 var handyClicksExtensionsHelper = {
+	get newAddonManager() {
+		delete this.newAddonManager;
+		return this.newAddonManager = !("@mozilla.org/extensions/manager;1" in Components.classes);
+	},
 	get em() {
 		delete this.em;
 		return this.em = Components.classes["@mozilla.org/extensions/manager;1"]
@@ -1083,53 +1093,121 @@ var handyClicksExtensionsHelper = {
 	},
 	instantInit: function() {
 		if(
-			"Application" in window
-			&& "getExtensions" in Application && !("extensions" in Application)
-			&& !this.ut.storage("extensions")
-			&& !this.ut.storage("extensionsPending")
+			this.newAddonManager
+			&& !this.ut.storage("addons")
+			&& !this.ut.storage("addonsPending")
 		) {
-			// Hack for Firefox 3.7a5pre+
-			// Following code is asynchronous and take some time... so, starts them as soon possible
-			this.ut.storage("extensionsPending", true);
-			Application.getExtensions(this.ut.bind(function(exts) {
-				this.ut.storage("extensions", exts);
-				this.ut.storage("extensionsPending", false);
-				var scheduledTasks = this.ut.storage("extensionsScheduledTasks");
-				if(scheduledTasks) {
-					scheduledTasks.forEach(function(task) {
-						task.func.apply(task.context, task.args);
-					});
-					this.ut.storage("extensionsScheduledTasks", null);
-				}
-			}, this));
+			if("handyClicksSetsUtils" in window)
+				this._instantInit();
+			else
+				this.ut.timeout(this._instantInit, this, [], 1000);
 		}
 	},
-	get exts() { // Note: restartless extensions not supported for now
-		var exts = Application.extensions || this.ut.storage("extensions");
-		if(exts) {
-			delete this.exts;
-			return this.exts = exts;
+	_instantInit: function() {
+		// Hack for Firefox 3.7a5pre+
+		// Following code is asynchronous and take some time... so, starts them as soon possible
+		this.ut.storage("addonsPending", true);
+		Components.utils["import"]("resource://gre/modules/AddonManager.jsm");
+		AddonManager.getAllAddons(this.ut.bind(function(addons) {
+			this.ut.storage("addons", addons);
+			this.ut.storage("addonsPending", undefined);
+			var scheduledTasks = this.ut.storage("addonsScheduledTasks");
+			if(scheduledTasks) {
+				scheduledTasks.forEach(function(task) {
+					task[0].apply(task[1], task[2]);
+				});
+				this.ut.storage("addonsScheduledTasks", undefined);
+			}
+
+			this.onEnabled =
+			this.onDisabled =
+			this.onInstalled =
+			this.onOperationCancelled =
+			this.onPropertyChanged = function(addon) {
+				var guid = addon.id;
+				var addons = this.ut.storage("addons");
+				if(
+					!addons.some(function(addon, i, addons) {
+						if(addon.id == guid) {
+							this.ut._log("Addon changed: " + guid);
+							addons[i] = addon;
+							return true;
+						}
+						return false;
+					}, this)
+				) {
+					this.ut._log("Addon installed: " + guid);
+					addons.push(addon);
+				}
+			};
+
+			this.onUninstalled = function(addon) {
+				var guid = addon.id;
+				this.ut._log("Addon uninstalled: " + guid);
+				var addons = this.ut.storage("addons");
+				addons.some(function(addon, i, addons) {
+					if(addon.id == guid) {
+						this.ut._log("Addon uninstalled: delete");
+						delete addons[i];
+						return true;
+					}
+					return false;
+				}, this);
+			};
+
+			AddonManager.addAddonListener(this);
+		}, this));
+	},
+	destroy: function() {
+		if(this.addons && "AddonManager" in window)
+			AddonManager.removeAddonListener(this);
+	},
+	get pending() {
+		return this.ut.storage("extensionsPending");
+	},
+	schedule: function(func, context, args) {
+		if(!this.ut.storage("addonsScheduledTasks"))
+			this.ut.storage("addonsScheduledTasks", []);
+		this.ut.storage("addonsScheduledTasks").push(arguments);
+	},
+	get addons() {
+		var addons = this.ut.storage("addons");
+		if(addons) {
+			delete this.addons;
+			return this.addons = addons;
 		}
-		return exts;
+		return addons;
 	},
 	isAvailable: function(guid) {
-		return this.isInstalled(guid) && this.isEnabled(guid);
+		var caller = Components.stack.caller;
+		this.ut._deprecated( //= Added: 2012-01-12
+			"Function handyClicksExtensionsHelper.isAvailable() is deprecated. "
+			+ "Use handyClicksExtensionsHelper.isEnabled() instead."
+		);
+		return this.isEnabled(guid);
 	},
 	isInstalled: function(guid) {
-		return "Application" in window
-			? this.exts && this.exts.has(guid)
+		return this.newAddonManager
+			? this.addons.some(function(addon) {
+				return addon.id == guid;
+			})
 			: this.em.getInstallLocation(guid);
 	},
 	isEnabled: function(guid) {
-		if("Application" in window)
-			return this.exts && this.exts.get(guid).enabled;
+		if(this.newAddonManager) {
+			return this.addons.some(function(addon) {
+				return addon.id == guid && addon.isActive;
+			});
+		}
+		if(!this.em.getInstallLocation(guid))
+			return false;
 		var res  = this.rdf.GetResource("urn:mozilla:item:" + guid);
-		var opType = this.getRes(res, "opType");
+		var opType = this.getRDFRes(res, "opType");
 		return opType != "needs-enable" && opType != "needs-install"
-			&& this.getRes(res, "userDisabled") != "true"
-			&& this.getRes(res, "appDisabled") != "true";
+			&& this.getRDFRes(res, "userDisabled") != "true"
+			&& this.getRDFRes(res, "appDisabled") != "true";
 	},
-	getRes: function(res, type) {
+	getRDFRes: function(res, type) {
 		var tar = this.em.datasource.GetTarget(
 			res, this.rdf.GetResource("http://www.mozilla.org/2004/em-rdf#" + type), true
 		);

@@ -1290,7 +1290,7 @@ var handyClicksFuncs = {
 				caller.lineNumber
 			);
 		}
-		this.ut._warn(<>Function "{oName}.{meth}" is deprecated. Use "{oName}.{newMeth}" instead.</>);
+		this.ut._deprecated(<>Function "{oName}.{meth}" is deprecated. Use "{oName}.{newMeth}" instead.</>);
 		return this[newMeth].apply(this, args);
 	}
 };

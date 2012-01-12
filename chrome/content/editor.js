@@ -42,15 +42,8 @@ var handyClicksEditor = {
 		window.addEventListener("focus",  this, true);
 	},
 	init: function(reloadFlag) {
-		if(this.ut.storage("extensionsPending")) {
-			// Hack for Firefox 3.7a5pre+ (see handyClicksExtensionsHelper.instantInit() in utils.js)
-			if(!this.ut.storage("extensionsScheduledTasks"))
-				this.ut.storage("extensionsScheduledTasks", []);
-			this.ut.storage("extensionsScheduledTasks").push({
-				func: arguments.callee,
-				context: this,
-				args: arguments
-			});
+		if(this.eh.pending) {
+			this.eh.schedule(arguments.callee, this, arguments);
 			return;
 		}
 

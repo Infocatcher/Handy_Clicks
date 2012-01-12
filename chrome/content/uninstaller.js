@@ -1,5 +1,5 @@
 // This file is loaded from components/hcComponent.js
-handyClicksUninstaller = {
+var handyClicksUninstaller = {
 	guid: "handyclicks@infocatcher",
 	isUninstall: false,
 	uninstallConfirmed: false,

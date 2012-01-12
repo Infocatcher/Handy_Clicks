@@ -363,7 +363,8 @@ var handyClicks = {
 		return this._ignoreOtherTypes;
 	},
 	set ignoreOtherTypes(val) {
-		this.ut._warn('Flag "ignoreOtherTypes" is deprecated. Use "checkOtherTypes" instead.');
+		var caller = Components.stack.caller;
+		this.ut._deprecated('Flag "ignoreOtherTypes" is deprecated. Use "checkOtherTypes" instead.');
 		this._ignoreOtherTypes = val;
 	},
 	defineItem: function(e, sets, forcedAll) {

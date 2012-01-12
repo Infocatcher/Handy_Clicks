@@ -330,7 +330,7 @@ var handyClicksPrefSvc = {
 			this.handleCustomFuncError(e, line, fObj, sh, type, isDelayed, true);
 		}
 		if(typeof legacyDestructor == "function") { // Added: 2010-06-15
-			this.ut._warn(
+			this.ut._deprecated(
 				"Construction \"return destructorFunction;\" is deprecated, use "
 				+ "\"void handyClicksPrefSvc.registerDestructor"
 				+ "(in function destructor, in object context, in unsigned long notifyFlags)\" "
