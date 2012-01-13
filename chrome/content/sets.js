@@ -956,7 +956,7 @@ var handyClicksSets = {
 			? tItem.__itemType
 			: undefined;
 		var isDelayed = tItem && add !== true && tItem.__isDelayed;
-		this.wu.openEditor(this.ps.currentSrc, mode || this.ct.EDITOR_MODE_SHORTCUT, shortcut, itemType, isDelayed);
+		this.wu.openEditor(this.ps.currentOtherSrc, mode || this.ct.EDITOR_MODE_SHORTCUT, shortcut, itemType, isDelayed);
 	},
 	setItemStatus: function() {
 		return this.treeBatch(this._setItemStatus, this, arguments);

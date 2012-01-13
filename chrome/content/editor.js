@@ -414,10 +414,12 @@ var handyClicksEditor = {
 	},
 	get shortcutUnsaved() {
 		var curr = this.currentShortcutObj;
+		this.ps.sortSettings(curr);
 		return curr && !this.ut.objEquals(curr, this._savedShortcutObj);
 	},
 	get typeUnsaved() {
 		var curr = this.currentTypeObj;
+		this.ps.sortSettings(curr);
 		return curr && !this.ut.objEquals(curr, this._savedTypeObj);
 	},
 	get hasUnsaved() {

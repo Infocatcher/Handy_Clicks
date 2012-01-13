@@ -2,7 +2,7 @@
 // this === handyClicksPrefSvc
 function setsMigration(allowSave, vers) {
 	if(vers === undefined)
-		vers = this.loadedVersion || 0;
+		vers = this.loadedVersion;
 	if(vers >= this.setsVersion)
 		return;
 
@@ -175,6 +175,11 @@ function setsMigration(allowSave, vers) {
 			recode(to, "define");
 			recode(to, "contextMenu");
 		}
+	}
+	if(vers < 0.3) { //= Added: 2012-01-13
+		// See converter in handyClicksPrefSvc.loadSettings() and handyClicksPrefSvc.convertJSToJSON().
+		// So just resave settings.
+		//~ todo: we can do some good things here. Move backups to subfolder?
 	}
 	this.ut._info("Format of prefs file updated: " + vers + " => " + this.setsVersion);
 	if(allowSave)

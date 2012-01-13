@@ -2,36 +2,32 @@ var handyClicksPrefSvc = {
 	oSvc: new HandyClicksObservers(),
 
 	SETS_BEFORE_RELOAD: 1,
-	SETS_RELOADED: 2,
-	SETS_TEST: 4,
-	SETS_TEST_UNDO: 8,
+	SETS_RELOADED:      2,
+	SETS_TEST:          4,
+	SETS_TEST_UNDO:     8,
 
-	DESTROY_REBUILD: 1,
-	DESTROY_WINDOW_UNLOAD: 2,
+	DESTROY_REBUILD:            1,
+	DESTROY_WINDOW_UNLOAD:      2,
 	DESTROY_LAST_WINDOW_UNLOAD: 4,
 
-	setsVersion: 0.2,
+	setsVersion: 0.2, //~ 0.3 [json]
 	setsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
 	get requiredHeader() {
 		delete this.requiredHeader;
 		// Support for old header format (only first line without ending ".")
 		return this.requiredHeader = this.setsHeader.replace(/\.?[\n\r][\s\S]*$/, "");
 	},
-	get versionInfo() {
-		delete this.versionInfo;
-		return this.versionInfo = "var handyClicksPrefsVersion = " + this.setsVersion + ";\n";
-	},
 	prefsDirName: "handyclicks",
 	prefsFileName: "handyclicks_prefs",
 	names: {
-		backup: "_backup-",
-		autoBackup: "_autobackup-",
-		corrupted: "_corrupted-",
-		restored: "_restored-",
-		version: "_version-",
+		backup:       "_backup-",
+		autoBackup:   "_autobackup-",
+		corrupted:    "_corrupted-",
+		restored:     "_restored-",
+		version:      "_version-",
 		beforeImport: "_before_import-",
-		userBackup: "_user_backup-",
-		testBackup: "_test_backup-"
+		userBackup:   "_user_backup-",
+		testBackup:   "_test_backup-"
 	},
 	okShortcut: /^button=[0-2],ctrl=(?:true|false),shift=(?:true|false),alt=(?:true|false),meta=(?:true|false)$/,
 
@@ -96,34 +92,37 @@ var handyClicksPrefSvc = {
 		return this._prefsFile.clone();
 	},
 
-	_prefVars: {
-		loadedVersion: "handyClicksPrefsVersion",
-		types: "handyClicksCustomTypes",
-		prefs: "handyClicksPrefs",
-		__proto__: null
-	},
 	loadedVersion: -1,
 	types: {},
 	prefs: {},
 	get currentSrc() {
+		return {
+			version: this.loadedVersion,
+			types:   this.types,
+			prefs:   this.prefs
+		};
+	},
+	get currentOtherSrc() {
 		if(!this.otherSrc)
 			return null;
-		var ret = {};
-		for(var p in this._prefVars)
-			ret[this._prefVars[p]] = this[p];
-		return ret;
-	},
-	importSrc: function(tar, src) {
-		for(var p in this._prefVars)
-			tar[p] = this.ut.getOwnProperty(src, this._prefVars[p]);
+		return this.currentSrc;
 	},
 
+	SETS_LOAD_UNKNOWN:     -1,
 	SETS_LOAD_OK:           0,
-	SETS_LOAD_EVAL_ERROR:   1,
+	SETS_LOAD_DECODE_ERROR: 1,
 	SETS_LOAD_INVALID_DATA: 2,
 	SETS_LOAD_SKIPPED:      3,
+	get SETS_LOAD_EVAL_ERROR() { //~ todo: remove after all code will be rewrited
+		//= Added: 2012-01-13
+		this.ut._deprecated(
+			"handyClicksPrefSvc.SETS_LOAD_EVAL_ERROR is deprecated"
+			+ ", use handyClicksPrefSvc.SETS_LOAD_DECODE_ERROR instead"
+		);
+		return this.SETS_LOAD_DECODE_ERROR;
+	},
 
-	_loadStatus: -1,
+	_loadStatus: -1, // SETS_LOAD_UNKNOWN
 	loadSettingsAsync: function(callback, context) {
 		var pFile = this._prefsFile;
 		if(!pFile.exists()) {
@@ -138,6 +137,7 @@ var handyClicksPrefSvc = {
 		}, this);
 	},
 	loadSettings: function(pSrc, fromProfile) {
+		this._loadStatus = this.SETS_LOAD_UNKNOWN;
 		if(this.isMainWnd) {
 			if(!this.hc.enabled) {
 				this.ut._log("loadSettings() -> disabled");
@@ -147,9 +147,7 @@ var handyClicksPrefSvc = {
 			this.ut._log(fromProfile ? "loadSettingsAsync()" : "loadSettings()");
 		}
 		this.otherSrc = !!pSrc;
-		//this._loadStatus = this.SETS_LOAD_OK;
 		pSrc = pSrc || this.prefsFile;
-		//var fromProfile = false;
 		if(pSrc instanceof Components.interfaces.nsILocalFile) {
 			fromProfile = pSrc.equals(this._prefsFile);
 			pSrc = fromProfile && !pSrc.exists()
@@ -158,16 +156,32 @@ var handyClicksPrefSvc = {
 			if(fromProfile && !this.isMainWnd)
 				this._savedStr = pSrc;
 		}
-		if(typeof pSrc == "string") {
-			// Uses sandbox instead mozIJSSubScriptLoader for security purposes
-			// Since version 0.1.1.0 we use UTF-8 for store strings and can't use mozIJSSubScriptLoader
-			var sandbox = new Components.utils.Sandbox("about:blank");
+
+		var scope;
+		if(typeof pSrc != "string")
+			scope = pSrc;
+		else {
+			//~ todo:
+			// this.correctSettings()
+			// this.getSettingsStr() -> var str = JSON.stringify(o, censor, "\t")
+
+			pSrc = pSrc.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Remove description
+			if(pSrc.substr(0, 4) == "var ") { //= Added: 2012-01-13
+				this.ut._log("Prefs in old format, try convert to JSON");
+				pSrc = this.convertJSToJSON(pSrc)
+					.replace(/^(\s*)"handyClicksPrefsVersion":/m, '$1"version":')
+					.replace(/^(\s*)"handyClicksCustomTypes":/m,  '$1"types":')
+					.replace(/^(\s*)"handyClicksPrefs":/m,        '$1"prefs":');
+			}
+
 			try {
-				Components.utils.evalInSandbox(pSrc, sandbox);
+				scope = "JSON" in window
+					? JSON.parse(pSrc)
+					: this.JSON.parse(pSrc);
 			}
 			catch(e) {
-				this._loadStatus = this.SETS_LOAD_EVAL_ERROR;
-				this.ut._err("Invalid prefs: evalInSandbox() failed");
+				this._loadStatus = this.SETS_LOAD_DECODE_ERROR;
+				this.ut._err("Invalid prefs: JSON.parse() failed");
 				this.ut._err(e);
 				if(this.otherSrc) {
 					this.ut.alert(
@@ -180,15 +194,15 @@ var handyClicksPrefSvc = {
 				return;
 			}
 		}
-		else
-			var sandbox = pSrc;
 
-		var tmp = {};
-		this.importSrc(tmp, sandbox);
-
-		if(!this.ut.isObject(tmp.prefs) || !this.ut.isObject(tmp.types)) {
+		if(
+			!this.ut.isObject(scope)
+			|| !this.ut.isObject(scope.prefs)
+			|| !this.ut.isObject(scope.types)
+			|| "version" in scope && (typeof scope.version != "number" || !isFinite(scope.version))
+		) {
 			this._loadStatus = this.SETS_LOAD_INVALID_DATA;
-			this.ut._err("Loaded prefs or types is not object");
+			this.ut._err("Loaded prefs or types is not object or invalid \"version\" property");
 			if(this.otherSrc) {
 				this.ut.alert(
 					this.ut.getLocalized("errorTitle"),
@@ -199,8 +213,11 @@ var handyClicksPrefSvc = {
 			this.loadSettingsBackup();
 			return;
 		}
-		this.importSrc(this, sandbox);
-		var vers = this.loadedVersion || 0;
+
+		this.prefs = scope.prefs;
+		this.types = scope.types;
+		var vers = this.loadedVersion = scope.version || 0;
+
 		if(vers < this.setsVersion)
 			this.setsMigration(fromProfile, vers);
 		this._restoringCounter = 0;
@@ -211,6 +228,34 @@ var handyClicksPrefSvc = {
 			this.initCustomFuncs();
 		}
 		this._loadStatus = this.SETS_LOAD_OK;
+	},
+	convertJSToJSON: function(s) {
+		// Note: supported only features used in old settings format
+		return "{\n"
+			+ s
+				// Reencode strings
+				.replace(/"(?:\\"|[^"\n\r])*"/g, function(s) {
+					return s
+						.replace(/(\\+)'/g, function(s, bs) {
+							return bs.length & 1
+								? s.substr(1)
+								: s;
+						})
+						.replace(/\t/g, "\\t");
+				})
+				// Convert vars to properties
+				.replace(/^var (\w+) = /, '"$1": ')
+				.replace(/;([\n\r]+)var (\w+) = /g, ',$1"$2": ')
+				// Recode arguments object
+				.replace(/^\s*arguments: .*$/mg, function(s) {
+					return s.replace(/(\w+):/g, '"$1":');
+				})
+				// Add commas to each property name
+				.replace(/^(\s*)(\w+): /mg, '$1"$2": ')
+				.replace(/;\s*$/, "")
+				//.replace(/^\s+/mg, "")
+				//.replace(/[\n\r]+/g, "")
+			+ "\n}";
 	},
 	loadSettingsBackup: function() {
 		var pFile = this.prefsFile;
@@ -424,10 +469,41 @@ var handyClicksPrefSvc = {
 		this.saveSettingsAsync(data);
 		return data;
 	},
+	correctSettings: function(types, prefs) {
+		types = types || this.types;
+		prefs = prefs || this.prefs;
+		//~ todo
+	},
+	sortSettings: function(o) {
+		//~ todo: use "logical" sort? Place "enabled" first, etc.
+		this.sortObj(o, true);
+	},
 	getSettingsStr: function(types, prefs) {
 		types = types || this.types;
 		prefs = prefs || this.prefs;
 
+		this.sortSettings(types);
+		this.sortSettings(prefs);
+
+		this.correctSettings(types, prefs);
+
+		var o = {
+			version: this.setsVersion,
+			types:   types,
+			prefs:   prefs
+		};
+
+		var json = "JSON" in window
+			? JSON.stringify(o, null, "\t")
+			: this.JSON.stringify(o, null, "\t");
+
+		const hashFunc = "SHA256";
+		return this.setsHeader
+			+ "// " + hashFunc + ": " + this.getHash(json, hashFunc) + "\n"
+			+ json;
+
+
+		//~ todo: move following convert actions to correctSettings()
 		var res = this.versionInfo;
 		var sh, so, type, to, pName, pVal, dName;
 		var forcedDisByType = { __proto__: null };
@@ -498,10 +574,14 @@ var handyClicksPrefSvc = {
 		}
 		res = this.delLastComma(res) + "};";
 
-		const hashFunc = "SHA256";
+		//const hashFunc = "SHA256";
 		return this.setsHeader
 			+ "// " + hashFunc + ": " + this.getHash(res, hashFunc) + "\n"
 			+ res;
+	},
+	get JSON() { // For Firefox < 3.5
+		delete this.JSON;
+		this.rs.loadSubScript("chrome://handyclicks/content/json.js", this);
 	},
 	saveSettingsObjects: function(reloadAll) {
 		this.saveSettings(this.getSettingsStr());
@@ -524,13 +604,15 @@ var handyClicksPrefSvc = {
 	delLastComma: function(str) {
 		return str.replace(/,\n$/, "\n");
 	},
-	sortObj: function(obj) {
+	sortObj: function(obj, deep) {
 		if(!this.ut.isObject(obj))
 			return false;
-		var arr = [], ex = {}, p;
-		for(p in obj) if(obj.hasOwnProperty(p)) {
+		var arr = [], ex = {};
+		for(var p in obj) if(obj.hasOwnProperty(p)) {
+			var val = obj[p];
+			deep && this.sortObj(val, deep);
 			arr.push(p);
-			ex[p] = obj[p];
+			ex[p] = val;
 			delete obj[p];
 		}
 		arr.sort().forEach(function(p) {
@@ -558,17 +640,17 @@ var handyClicksPrefSvc = {
 	},
 	reloadSettings: function(reloadAll) {
 		const pSvc = "handyClicksPrefSvc";
-		var curSrc = this.currentSrc;
+		var curOtherSrc = this.currentOtherSrc;
 		this.wu.forEachWindow(
 			["navigator:browser", "handyclicks:settings", "handyclicks:editor"],
 			function(w) {
 				if(!(pSvc in w) || (!reloadAll && w === window))
 					return;
 				var p = w[pSvc];
-				if(curSrc && !p.otherSrc) //~ ?
+				if(curOtherSrc && !p.otherSrc) //~ ?
 					return;
 				p.oSvc.notifyObservers(this.SETS_BEFORE_RELOAD);
-				p.loadSettings(curSrc);
+				p.loadSettings(curOtherSrc);
 				p.oSvc.notifyObservers(this.SETS_RELOADED);
 			},
 			this
@@ -769,7 +851,7 @@ var handyClicksPrefSvc = {
 	encForWrite: function(s) {
 		return s
 			? s
-				.replace(/["'\\]/g, "\\$&")
+				.replace(/["\\]/g, "\\$&")
 
 				.replace(/\n/g, "\\n")
 				.replace(/\r/g, "\\r")
@@ -838,6 +920,8 @@ var handyClicksPrefSvc = {
 		return str;
 	},
 	checkPrefsStr: function(str) {
+		//~ todo: no additional checks since we use JSON
+
 		this._hashError = false;
 		this._hashMissing = true;
 		if(!this.ut.hasPrefix(str, this.requiredHeader))
