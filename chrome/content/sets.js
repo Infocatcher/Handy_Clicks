@@ -2193,17 +2193,17 @@ var handyClicksSets = {
 					this.ut._warn(<>[Import INI] Skipped pref with invalid name: "{pName}"</>);
 					return;
 				}
-				var pbr = this.pu.pBr;
-				var pType = this.pu.prefSvc.getPrefType(pName);
-				var isOld = pType == pbr.PREF_INVALID; // Old format?
+				var ps = this.pu.prefSvc;
+				var pType = ps.getPrefType(pName);
+				var isOld = pType == ps.PREF_INVALID; // Old format?
 				if(isOld) {
 					_oldPrefs.push(pName);
 					this.ut._warn(<>[Import INI] Old pref: "{pName}"</>);
 				}
 				var pVal = line.substr(indx + 1);
-				if(pType == pbr.PREF_INT || isOld && /^-?\d+$/.test(pVal)) // Convert string to number
+				if(pType == ps.PREF_INT || isOld && /^-?\d+$/.test(pVal)) // Convert string to number
 					pVal = Number(pVal);
-				else if(pType == pbr.PREF_BOOL || isOld && (pVal == "true" || pVal == "false")) // ...or boolean
+				else if(pType == ps.PREF_BOOL || isOld && (pVal == "true" || pVal == "false")) // ...or boolean
 					pVal = pVal == "true";
 				this.pu.setPref(pName, pVal);
 			}, this);

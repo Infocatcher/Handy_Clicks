@@ -11,17 +11,13 @@ var handyClicksPrefUtils = {
 			.getService(Components.interfaces.nsIPrefService)
 			.QueryInterface(Components.interfaces.nsIPrefBranch2);
 	},
-	pBr: Components.interfaces.nsIPrefBranch,
-	ss: Components.interfaces.nsISupportsString,
 
 	// Initialization:
 	instantInit: function(reloadFlag) {
 		var vers = this.pref("prefsVersion") || 0;
 		if(vers < this.prefsVersion)
 			this.prefsMigration(true, vers);
-		const pns = this.prefNS;
-		this.prefSvc.addObserver(pns, this, false);
-		this.prefNSL = pns.length;
+		this.prefSvc.addObserver(this.prefNS, this, false);
 	},
 	get prefsMigration() { // function(allowSave, vers)
 		var temp = {};
@@ -37,7 +33,7 @@ var handyClicksPrefUtils = {
 	observe: function(subject, topic, pName) {
 		if(topic != "nsPref:changed")
 			return;
-		pName = pName.substr(this.prefNSL);
+		pName = pName.substr(this.prefNS.length);
 		this.oSvc.notifyObservers(pName, this.readPref(pName));
 	},
 
@@ -54,29 +50,29 @@ var handyClicksPrefUtils = {
 		return this._prefs[pName] = this.getPref(this.prefNS + pName);
 	},
 	getPref: function(pName, defaultVal) {
-		var pbr = this.pBr;
-		switch(this.prefSvc.getPrefType(pName)) {
-			case pbr.PREF_STRING: return this.prefSvc.getComplexValue(pName, this.ss).data;
-			case pbr.PREF_INT:    return this.prefSvc.getIntPref(pName);
-			case pbr.PREF_BOOL:   return this.prefSvc.getBoolPref(pName);
-			default:              return defaultVal;
+		var ps = this.prefSvc;
+		switch(ps.getPrefType(pName)) {
+			case ps.PREF_STRING: return ps.getComplexValue(pName, Components.interfaces.nsISupportsString).data;
+			case ps.PREF_INT:    return ps.getIntPref(pName);
+			case ps.PREF_BOOL:   return ps.getBoolPref(pName);
+			default:             return defaultVal;
 		}
 	},
 	setPref: function(pName, pVal) {
-		var pbr = this.pBr;
-		var pType = this.prefSvc.getPrefType(pName);
-		var isNew = pType == pbr.PREF_INVALID;
+		var ps = this.prefSvc;
+		var pType = ps.getPrefType(pName);
+		var isNew = pType == ps.PREF_INVALID;
 		var vType = typeof pVal;
-		if(pType == pbr.PREF_BOOL || isNew && vType == "boolean")
-			this.prefSvc.setBoolPref(pName, pVal);
-		else if(pType == pbr.PREF_INT || isNew && vType == "number")
-			this.prefSvc.setIntPref(pName, pVal);
-		else if(pType == pbr.PREF_STRING || isNew) {
-			var ss = this.ss;
+		if(pType == ps.PREF_BOOL || isNew && vType == "boolean")
+			ps.setBoolPref(pName, pVal);
+		else if(pType == ps.PREF_INT || isNew && vType == "number")
+			ps.setIntPref(pName, pVal);
+		else if(pType == ps.PREF_STRING || isNew) {
+			var ss = Components.interfaces.nsISupportsString;
 			var str = Components.classes["@mozilla.org/supports-string;1"]
 				.createInstance(ss);
 			str.data = pVal;
-			this.prefSvc.setComplexValue(pName, ss, str);
+			ps.setComplexValue(pName, ss, str);
 		}
 		return this;
 	},
@@ -89,7 +85,7 @@ var handyClicksPrefUtils = {
 	},
 
 	existPref: function(pName) {
-		return this.prefSvc.getPrefType(pName) != this.pBr.PREF_INVALID;
+		return this.prefSvc.getPrefType(pName) != this.prefSvc.PREF_INVALID;
 	},
 	savePrefFile: function() {
 		this.prefSvc.savePrefFile(null);
