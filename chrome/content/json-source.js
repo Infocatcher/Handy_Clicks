@@ -13,7 +13,7 @@ if (!JSON) {
 }
 
 (function () {
-	'use strict';
+	//'use strict'; we get "useless expression" error in Firefox 1.5
 
 	function f(n) {
 		// Format integers to have at least two digits.

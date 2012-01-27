@@ -8,7 +8,7 @@ if (!JSON) {
 	JSON = {};
 }
 (function () {
-	'use strict';
+	//'use strict'; we get "useless expression" error in Firefox 1.5
 	function f(n) {
 		return n < 10 ? '0' + n : n;
 	}

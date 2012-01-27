@@ -586,7 +586,7 @@ var handyClicks = {
 			return null;
 		var itln = it.localName.toLowerCase();
 		if(
-			(!("type" in it) || it.type != "menu")
+			!("type" in it && it.type == "menu")
 			&& (
 				(
 					/(?:^|\s)bookmark-item(?:\s|$)/.test(it.className)

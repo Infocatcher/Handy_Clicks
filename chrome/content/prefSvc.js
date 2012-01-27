@@ -582,6 +582,7 @@ var handyClicksPrefSvc = {
 	get JSON() { // For Firefox < 3.5
 		delete this.JSON;
 		this.rs.loadSubScript("chrome://handyclicks/content/json.js", this);
+		return this.JSON;
 	},
 	saveSettingsObjects: function(reloadAll) {
 		this.saveSettings(this.getSettingsStr());

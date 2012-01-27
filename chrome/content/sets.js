@@ -30,7 +30,7 @@ var handyClicksSets = {
 				var hcs = this;
 				sf._clearSearch = function() {
 					if(window.closed)
-						return;
+						return null;
 					var ret = hcs._origClearSearch.apply(this, arguments);
 					hcs.searchInSetsTreeDelay();
 					return ret;
