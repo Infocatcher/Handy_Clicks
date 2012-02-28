@@ -66,6 +66,7 @@ function setTimeout(callback, delay) {
 	return timer;
 }
 
+var _lastURI, _timer;
 const protocol = {
 	// nsIProtocolHandler interface implementation
 	defaultPort: -1,
@@ -85,7 +86,18 @@ const protocol = {
 		return url.QueryInterface(ci.nsIURI);
 	},
 	newChannel: function(uri) {
-		handleURI(uri.spec);
+		//handleURI(uri.spec);
+		// See http://tmp.garyr.net/forum/viewtopic.php?p=55624#p55624
+		// and https://bitbucket.org/onemen/tabmixplus/src/1f25033b4a52/chrome/content/links/contentLinks.js#cl-185
+		// We have similar bug...
+		if(uri.spec != _lastURI) {
+			handleURI(uri.spec);
+			_timer && _timer.cancel();
+			_lastURI = uri.spec;
+			_timer = setTimeout(function() {
+				_lastURI = _timer = null;
+			}, 150);
+		}
 		return false;
 	}
 };
