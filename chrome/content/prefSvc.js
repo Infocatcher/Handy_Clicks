@@ -165,7 +165,7 @@ var handyClicksPrefSvc = {
 			// this.correctSettings()
 			// this.getSettingsStr() -> var str = JSON.stringify(o, censor, "\t")
 
-			pSrc = pSrc.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Remove description
+			pSrc = this.removePrefsDesription(pSrc);
 			if(pSrc.substr(0, 4) == "var ") { //= Added: 2012-01-13
 				this.ut._log("Prefs in old format, try convert to JSON");
 				pSrc = this.convertJSToJSON(pSrc)
@@ -175,9 +175,7 @@ var handyClicksPrefSvc = {
 			}
 
 			try {
-				scope = "JSON" in window
-					? JSON.parse(pSrc)
-					: this.JSON.parse(pSrc);
+				scope = this.parseJSON(pSrc, true);
 			}
 			catch(e) {
 				this._loadStatus = this.SETS_LOAD_DECODE_ERROR;
@@ -195,12 +193,7 @@ var handyClicksPrefSvc = {
 			}
 		}
 
-		if(
-			!this.ut.isObject(scope)
-			|| !this.ut.isObject(scope.prefs)
-			|| !this.ut.isObject(scope.types)
-			|| "version" in scope && (typeof scope.version != "number" || !isFinite(scope.version))
-		) {
+		if(!this.isValidPrefs(scope)) {
 			this._loadStatus = this.SETS_LOAD_INVALID_DATA;
 			this.ut._err("Loaded prefs or types is not object or invalid \"version\" property");
 			if(this.otherSrc) {
@@ -920,15 +913,37 @@ var handyClicksPrefSvc = {
 			return this.decURI(str.substr(add.length));
 		return str;
 	},
+	removePrefsDesription: function(str) {
+		return str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, "");
+	},
+	parseJSON: function(str, throwErrors) {
+		try {
+			return "JSON" in window
+				? JSON.parse(str)
+				: this.JSON.parse(str);
+		}
+		catch(e) {
+			if(throwErrors)
+				throw e;
+			else
+				this.ut._err(e);
+		}
+		return null;
+	},
+	isValidPrefs: function(obj) {
+		return this.ut.isObject(obj)
+			&& this.ut.isObject(obj.prefs)
+			&& this.ut.isObject(obj.types)
+			&& (
+				!("version" in obj) // Support for old format
+				|| typeof obj.version == "number" && isFinite(obj.version)
+			);
+	},
 	checkPrefsStr: function(str) {
-		//~ todo: no additional checks since we use JSON
-
 		this._hashError = false;
 		this._hashMissing = true;
+
 		if(!this.ut.hasPrefix(str, this.requiredHeader))
-			return false;
-		const hcVarsRe = /^var handyClicks[\w$]+\s*=.*$/mg;
-		if(!hcVarsRe.test(str))
 			return false;
 
 		const hashRe = /(?:\r\n|\n|\r)\/\/[ \t]?(MD2|MD5|SHA1|SHA512|SHA256|SHA384):[ \t]?([a-f0-9]+)(?=[\n\r]|$)/;
@@ -937,28 +952,18 @@ var handyClicksPrefSvc = {
 			var hashFunc = RegExp.$1;
 			var hash = RegExp.$2;
 			str = RegExp.leftContext + RegExp.rightContext; // str = str.replace(hashRe, "");
-			str = str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Remove comments
+			str = this.removePrefsDesription(str);
 			if(hash != this.getHash(str, hashFunc)) {
 				this._hashError = true;
 				return false;
 			}
 		}
 		else {
-			str = str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Remove comments
+			str = this.removePrefsDesription(str);
 		}
 
-		str = str.replace(/"(?:\\"|[^"\n\r\u2028\u2029])*"/g, "__dummy__") // Replace strings
-		str = str.replace(hcVarsRe, ""); // Remove handyClicks* vars
-
-		if(/\/\/|\/\*|\*\//.test(str)) // No other comments
-			return false;
-		if(/\Wvar\s+/.test(str)) // No other vars
-			return false;
-		if(/['"()=]/.test(str))
-			return false;
-		if(/\W(?:[Ff]unction|eval|Components)\W/.test(str))
-			return false;
-		return true;
+		//~ todo: isJSON() + string tests ?
+		return this.isValidPrefs(this.parseJSON(str));
 	},
 	get clipboardPrefs() {
 		var cb = this.ut.cb;

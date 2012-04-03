@@ -20,6 +20,8 @@ var handyClicksFuncs = {
 		if(_uri.charAt(0) != "#")
 			return false;
 		var anchor = _uri.substr(1);
+		if(anchor.charAt(0) == "!") // site.com/#!... links on JavaScript-based sites like http://twitter.com/
+			return false;
 		return !anchor || !doc.getElementById(anchor) && !doc.getElementsByName(anchor).length;
 	},
 
