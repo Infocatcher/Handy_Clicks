@@ -285,11 +285,9 @@ var handyClicksFuncs = {
 
 		var evts = this.hc.createMouseEvents(e, item, ["mousedown", "mouseup", "click"], 0);
 		var loadLink = this.ut.bind(function() {
-			var origPrefs = this.setPrefs(
-				this.getOpenLinksPrefs(target, loadJSInBackground, refererPolicy, winRestriction, false /* winOpenFix */)
-			);
+			this.setPrefs(target, loadJSInBackground, refererPolicy, winRestriction, false /* winOpenFix */);
 			evts();
-			this.restorePrefs(origPrefs);
+			this.restorePrefs();
 		}, this);
 
 		var load = this.pu.pref("funcs.loadVoidLinksWithHandlers");
@@ -328,9 +326,7 @@ var handyClicksFuncs = {
 		uri = uri || this.getItemURI(item);
 
 		var loadLink = this.ut.bind(function() {
-			var origPrefs = this.setPrefs(
-				this.getOpenLinksPrefs(target, loadJSInBackground, refererPolicy, winRestriction, true /* winOpenFix */)
-			);
+			this.setPrefs(target, loadJSInBackground, refererPolicy, winRestriction, true /* winOpenFix */);
 
 			var oDoc = item.ownerDocument;
 			if(this.ut.isChromeDoc(oDoc))
@@ -338,10 +334,7 @@ var handyClicksFuncs = {
 			else
 				oDoc.location.href = uri;
 
-			//this.restorePrefs(origPrefs);
-			setTimeout(function(_this) {
-				_this.restorePrefs(origPrefs);
-			}, 5, this);
+			this.restorePrefs();
 		}, this);
 
 		var load = this.pu.pref("funcs.loadJavaScriptLinks");
@@ -769,15 +762,6 @@ var handyClicksFuncs = {
 		value = value.replace(/[\u200e\u200f\u202a\u202b\u202c\u202d\u202e]/g, encodeURIComponent);
 		return value;
 	},
-	getOpenLinksPrefs: function(target /* "cur", "win" or "tab" */, bg, refererPolicy, winRestriction, winOpenFix) {
-		return {
-			"browser.tabs.loadDivertedInBackground": target == "tab" && bg || null,
-			"browser.link.open_newwindow.restriction": winRestriction === undefined ? 0 : this.getWinRestriction(winRestriction),
-			"browser.link.open_newwindow": target == "cur" && 1 || target == "win" && 2 || target == "tab" && 3,
-			"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy),
-			"dom.disable_open_during_load": winOpenFix ? false : null
-		};
-	},
 	getWinRestriction: function(inWin) {
 		return inWin === true
 			? 1 // Open in new window
@@ -785,25 +769,45 @@ var handyClicksFuncs = {
 				? this.pu.getPref("browser.link.open_newwindow.restriction")
 				: inWin;
 	},
-	setPrefs: function() {
-		var origs = { __proto__: null };
-		Array.forEach(
-			arguments,
-			function(prefsObj) {
-				for(var p in prefsObj) if(prefsObj.hasOwnProperty(p)) {
-					if(prefsObj[p] === null)
-						continue;
-					origs[p] = this.pu.getPref(p);
-					this.pu.setPref(p, prefsObj[p]);
-				}
-			},
-			this
-		);
-		return origs;
+	setPrefs: function(target /* "cur", "win" or "tab" */, bg, refererPolicy, winRestriction, winOpenFix) {
+		if(arguments.length == 2) { // API usage: function(prefs, key)
+			var apiPrefs = arguments[0];
+			var apiKey   = arguments[1];
+		}
+		var key = "_origPrefs" + (apiKey || "");
+		if(key in this)
+			return;
+		var origs = this[key] = { __proto__: null };
+		var prefs = apiPrefs || {
+			"browser.tabs.loadDivertedInBackground": target == "tab" && bg || null,
+			"browser.link.open_newwindow.restriction": winRestriction === undefined
+				? 0
+				: this.getWinRestriction(winRestriction),
+			"browser.link.open_newwindow": target == "cur" && 1 || target == "win" && 2 || target == "tab" && 3,
+			"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy),
+			"dom.disable_open_during_load": winOpenFix ? false : null,
+			__proto__: null
+		};
+		for(var p in prefs) {
+			if(prefs[p] === null)
+				continue;
+			var orig = this.pu.getPref(p);
+			if(orig === undefined)
+				continue;
+			origs[p] = orig;
+			this.pu.setPref(p, prefs[p]);
+		}
 	},
-	restorePrefs: function(prefsObj) {
-		for(var p in prefsObj)
-			this.pu.setPref(p, prefsObj[p]);
+	restorePrefs: function(key) {
+		key = "_origPrefs" + (key || "");
+		if(!(key in this))
+			return;
+		var prefs = this[key];
+		setTimeout(function(_this) { // For Firefox 3.0+, timeout should be > 0 for Firefox 11.0+
+			for(var p in prefs)
+				_this.pu.setPref(p, prefs[p]);
+			delete _this[key];
+		}, 5, this);
 	},
 	submitForm: function(e, target, loadInBackground, refererPolicy, node) {
 		// Thanks to SubmitToTab! ( https://addons.mozilla.org/firefox/addon/483 )
@@ -813,16 +817,14 @@ var handyClicksFuncs = {
 		var origTarget = form.hasAttribute("target") && form.getAttribute("target");
 		form.target = target == "cur" ? "" : "_blank";
 
-		var origPrefs = this.setPrefs(
-			this.getOpenLinksPrefs(target, loadInBackground, refererPolicy, undefined /* winRestriction */, true /* winOpenFix */)
-		);
+		this.setPrefs(target, loadInBackground, refererPolicy, undefined /* winRestriction */, true /* winOpenFix */);
 
 		this.hc._enabled = false; // Don't stop this "click"
 		node.click();
 		this.hc._enabled = true;
 
 		this.ut.attribute(form, "target", origTarget, true);
-		this.restorePrefs(origPrefs);
+		this.restorePrefs();
 	},
 
 	get tabs() {
