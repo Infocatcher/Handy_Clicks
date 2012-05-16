@@ -1,12 +1,13 @@
 var handyClicks = {
 	ignoreAction: "$ignore",
 
-	copyOfEvent: null,
+	event: null,
 	origItem: null,
 	item: null,
 	mainItem: null,
 	itemType: undefined,
 	flags: {
+		cancelled: false,
 		runned: false, // => stop click events
 		stopContextMenu: false, // => stop "contextmenu" event (in Linux: mousedown -> contextmenu -> ... delay ... -> click)
 		allowPopupshowing: false,
@@ -14,11 +15,16 @@ var handyClicks = {
 		__proto__: null
 	},
 
+	get copyOfEvent() { //= Added: 2012-05-15
+		//~ todo: check old custom code and remove
+		this.ut._deprecated('Field "copyOfEvent" is deprecated. Use "event" instead.');
+		return this.event;
+	},
+
 	_cMenu: null,
 	daTimeout: null, // Delayed Action Timeout
 	evtStrOnMousedown: "",
-	hasMoveHandlers: false,
-	_tabOnMousedown: null,
+	_hasMoveHandlers: false,
 
 	// Initialization:
 	init: function(reloadFlag) {
@@ -30,7 +36,8 @@ var handyClicks = {
 		this.cancelDelayedAction();
 		if(this.editMode)
 			this.editMode = false;
-		this.copyOfEvent = this.origItem = this.item = this.mainItem = this._tabOnMousedown = null;
+		this.removeMoveHandlers();
+		this.event = this.origItem = this.item = this.mainItem = null;
 	},
 	setListeners: function(evtTypes, addFlag) {
 		var act = addFlag ? "addEventListener" : "removeEventListener";
@@ -49,6 +56,7 @@ var handyClicks = {
 			case "popupshowing": this.popupshowingHandler(e); break;
 			case "mousemove":    this.mousemoveHandler(e);    break;
 			case "draggesture":  this.dragHandler(e);         break;
+			case "TabSelect":    this.tabSelectHandler(e);    break;
 			case "keypress":
 				if(e.keyCode != e.DOM_VK_ESCAPE)
 					break;
@@ -93,9 +101,6 @@ var handyClicks = {
 		var allowEvts = this.flags.allowEvents = !em && funcObj.action == this.ignoreAction;
 		this.flags.stopContextMenu = !allowEvts && funcObj.action != "showContextMenu";
 
-		// Fix for switching tabs by Mouse Gestures
-		this._tabOnMousedown = e.view.top === content && this.getTabBrowser(true).selectedTab;
-
 		this.ui.setIcon(e);
 
 		if(!em && funcObj.eventType == "mousedown" && !allowEvts) {
@@ -111,12 +116,12 @@ var handyClicks = {
 			this.ut.stopEvent(e);
 		else if(amd === undefined && !this.ut.isChromeWin(e.view.top)) {
 			// Prevent page handlers, but don't stop Mouse Gestures
-			var cWin = e.view.top === content ? gBrowser.selectedBrowser : e.view.top;
+			var root = e.view.top === content ? gBrowser.selectedBrowser : e.view.top;
 			var _this = this;
-			cWin.addEventListener(
+			root.addEventListener(
 				"mousedown",
-				function _md(e) {
-					cWin.removeEventListener("mousedown", _md, true);
+				function stopMousedown(e) {
+					root.removeEventListener("mousedown", stopMousedown, true);
 					if(_this._enabled)
 						_this.ut.stopEvent(e);
 				},
@@ -154,15 +159,15 @@ var handyClicks = {
 				);
 			}
 		}
-		if(!this.hasMoveHandlers) {
-			this.hasMoveHandlers = true;
+		if(!this._hasMoveHandlers) {
+			this._hasMoveHandlers = true;
 			this.disallowMousemove = this.pu.pref("disallowMousemoveButtons").indexOf(e.button) != -1;
 			this.mousemoveParams = {
 				dist: 0,
 				screenX: e.screenX,
 				screenY: e.screenY
 			};
-			this.setListeners(["mousemove", "draggesture"], true); //~ todo: stop on mouseout ?
+			this.setListeners(["mousemove", "draggesture", "TabSelect"], true); //~ todo: stop on mouseout ?
 		}
 	},
 	clickHandler: function(e) {
@@ -181,7 +186,6 @@ var handyClicks = {
 		this.checkForStopEvent(e);
 		if(this.flags.allowEvents)
 			this.cancelDelayedAction();
-		//this.resetFlagsDelay();
 		this.removeMoveHandlers();
 		this.saveXY(e);
 
@@ -248,8 +252,11 @@ var handyClicks = {
 		this.ut._log("dragHandler -> cancel()");
 		this.cancel();
 	},
+	tabSelectHandler: function(e) {
+		this.cancel();
+	},
 	cancel: function() {
-		this.flags.runned = true;
+		this.flags.cancelled = true;
 		this.flags.stopContextMenu = false; //~ ?
 
 		this.cancelDelayedAction();
@@ -258,16 +265,17 @@ var handyClicks = {
 		this.ui.restoreIcon();
 	},
 	removeMoveHandlers: function() {
-		if(!this.hasMoveHandlers)
+		if(!this._hasMoveHandlers)
 			return;
-		this.setListeners(["mousemove", "draggesture"], false);
-		this.hasMoveHandlers = false;
+		this.setListeners(["mousemove", "draggesture", "TabSelect"], false);
 		this.mousemoveParams = null;
+		this._hasMoveHandlers = false;
 	},
 
 	// Utils for handlers:
 	checkForStopEvent: function _cs(e) {
-		var canStop = this.flags.runned || (this.hasSettings && !this.flags.allowEvents) || this.editMode;
+		var canStop = (this.flags.runned || (this.hasSettings && !this.flags.allowEvents) || this.editMode)
+			&& !this.flags.cancelled;
 		var same = e.originalTarget === this.origItem;
 		var stop = canStop && same;
 		var isMouseup = e.type == "mouseup";
@@ -302,11 +310,6 @@ var handyClicks = {
 		var fls = this.flags;
 		for(var p in fls)
 			fls[p] = false;
-		//this.removeMoveHandlers();
-	},
-	get tabChanged() {
-		var tab = this._tabOnMousedown;
-		return tab && tab != this.getTabBrowser(true).selectedTab;
 	},
 	cancelDelayedAction: function() {
 		clearTimeout(this.daTimeout);
@@ -333,21 +336,12 @@ var handyClicks = {
 		var funcObj = this.getFuncObj(sets) || (this.editMode ? {} : null);
 		this.hasSettings = !!funcObj;
 		if(this.hasSettings) {
-			// fx < 3.0:
-			// Following works:
-			//   this.event = e;
-			//   alert(uneval(this.getXY(this.event)));
-			// Always return "({x:0, y:0})":
-			//   var _this = this;
-			//   setTimeout(function() { alert(uneval(_this.getXY(_this.event))); }, 10);
-			// Returns 65535 in Firefox 1.5:
-			//   setTimeout(function() { alert(_this.event.button); }, 10);
-			this.copyOfEvent = this.cloneObj(e);
+			this.event = e;
 			//this.saveXY(e); // Saves incorrect coordinates...
 			this.origItem = e.originalTarget;
 		}
 		else
-			this.copyOfEvent = this.origItem = null;
+			this.event = this.origItem = null;
 		return funcObj;
 	},
 	getSettings: function(str) {
@@ -775,7 +769,7 @@ var handyClicks = {
 		}
 
 		//popup = popup || this._cMenu;
-		e = e || this.copyOfEvent;
+		e = e || this.event;
 		//~ following is only for Firefox < 4.0 (see https://bugzilla.mozilla.org/show_bug.cgi?id=383930)
 		document.popupNode = popup.ownerDocument.popupNode = this.itemType == "tab" ? this.item : node;
 
@@ -789,31 +783,26 @@ var handyClicks = {
 		this.flags.allowPopupshowing = false;
 		this.focusOnItem();
 	},
-	_xy: null,
+	_xy: {
+		screenX: 0,
+		screenY: 0,
+		clientX: 0,
+		clientY: 0,
+		__proto__: null
+	},
 	saveXY: function(e) {
-		this._xy = {
-			screenX: e.screenX,
-			screenY: e.screenY,
-			clientX: e.clientX,
-			clientY: e.clientY,
-			__proto__: null
-		};
+		var o = this._xy;
+		for(var p in o)
+			o[p] = e[p];
 	},
 	getXY: function(e) {
-		e = e || this._xy || this.copyOfEvent;
+		e = e || this._xy;
 		return this.ut.fxVersion >= 3
 			? { x: e.screenX, y: e.screenY }
 			: { x: e.clientX, y: e.clientY };
 	},
 
 	// Utils:
-	cloneObj: function(obj) {
-		obj = obj || {};
-		var clone = {};
-		for(var p in obj) // Important: this is not real recursive copying of properties!
-			clone[p] = obj[p];
-		return clone;
-	},
 	getTabBrowser: function(tabsRequired) {
 		return "SplitBrowser" in window && !(tabsRequired && "TM_init" in window) // Tab Mix Plus
 			? SplitBrowser.activeBrowser
@@ -837,7 +826,7 @@ var handyClicks = {
 		if(!("PlacesUtils" in window)) // For Firefox 3.0+
 			return "";
 		var tree = (treechildren || this.item).parentNode;
-		e = e || this.copyOfEvent;
+		e = e || this.event;
 
 		// Based on code of Places' Tooltips ( https://addons.mozilla.org/firefox/addon/7314 )
 		var row = {}, column = {}, cell = {};
@@ -968,9 +957,9 @@ var handyClicks = {
 	functionEvent: function(funcObj, e) {
 		if(
 			this.flags.runned
+			|| this.flags.cancelled
 			|| (!this.editMode && e.type != funcObj.eventType)
 			|| !this.itemType // (!this.editMode && !this.itemType)
-			|| this.tabChanged
 		) {
 			//this.editMode = false;
 			return;
@@ -995,7 +984,7 @@ var handyClicks = {
 		this.executeFunction(funcObj, e);
 	},
 	executeDelayedAction: function(da) {
-		if(this.tabChanged)
+		if(this.flags.runned || this.flags.cancelled)
 			return;
 		this.flags.runned = true;
 		if(da)
@@ -1008,7 +997,7 @@ var handyClicks = {
 		this.cancelDelayedAction();
 		this.removeMoveHandlers();
 
-		this.lastEvent = this.copyOfEvent;
+		this.lastEvent = this.event;
 		this.lastItemType = this.itemType;
 		this.lastAll = this._all;
 		this.isDeleyed = !e;
@@ -1018,7 +1007,7 @@ var handyClicks = {
 			action = this.ps.dec(action);
 			try {
 				var line = new Error().lineNumber + 1;
-				new Function("event,item,origItem", action).call(this.fn, e || this.copyOfEvent, this.item, this.origItem);
+				new Function("event,item,origItem", action).call(this.fn, e || this.event, this.item, this.origItem);
 			}
 			catch(err) {
 				var eLine = this.ut.mmLine(this.ut.getProperty(err, "lineNumber") - line + 1);
@@ -1074,7 +1063,7 @@ var handyClicks = {
 		this.focusOnItem();
 
 		if(this._devMode) {
-			var eStr = this.ps.getEvtStr(e || this.copyOfEvent);
+			var eStr = this.ps.getEvtStr(e || this.event);
 			this.ut._log(
 				(e ? e.type : "delayedAction")
 				+ " -> " + this.ps.getModifiersStr(eStr) + " + " + this.ps.getButtonStr(eStr, true)
@@ -1087,7 +1076,7 @@ var handyClicks = {
 	},
 	getEditorLink: function(e) {
 		return this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_SHORTCUT + "/"
-			+ this.ps.getEvtStr(e || this.copyOfEvent) + "/"
+			+ this.ps.getEvtStr(e || this.event) + "/"
 			+ (this._all ? "$all" : this.itemType) + "/"
 			+ (this.isDeleyed ? this.ct.EDITOR_SHORTCUT_DELAYED : this.ct.EDITOR_SHORTCUT_NORMAL) + "/"
 			+ this.ct.EDITOR_SHORTCUT_CODE;

@@ -193,7 +193,8 @@ var handyClicksUI = {
 	setupUIActions: function() {
 		this.setControls(function(elt) {
 			var type = this.getTypeByLocalName(elt.localName);
-			var popup = this.pu.pref("ui.action" + type + "LeftClick") == this.ACTION_POPUP
+			var defaultAction = this.pu.pref("ui.action" + type + "LeftClick");
+			var popup = defaultAction == this.ACTION_POPUP
 				? "handyClicks-settingsPopup"
 				: null;
 			var context = this.pu.pref("ui.action" + type + "RightClick") == this.ACTION_POPUP
@@ -204,6 +205,19 @@ var handyClicksUI = {
 			//~ note: "popup" doesn't work for menuitems
 			//if(elt.localName == "menuitem")
 			//	elt.setAttribute("closemenu", popup ? "none" : "auto");
+			if(type == "Menu") {
+				var key;
+				switch(defaultAction) {
+					case this.ACTION_STATUS:       key = "toggleStatus";    break;
+					case this.ACTION_SETTINGS:     key = "openSettings";    break;
+					case this.ACTION_EDIT_MODE:    key = "editMode";        break;
+					case this.ACTION_ALL_SETTINGS: key = "openAboutConfig";
+				}
+				if(key)
+					elt.setAttribute("key", "handyClicks-key-" + key);
+				else
+					elt.removeAttribute("key");
+			}
 		});
 	},
 	getTypeByLocalName: function(ln) {

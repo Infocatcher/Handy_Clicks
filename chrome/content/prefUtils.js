@@ -9,7 +9,7 @@ var handyClicksPrefUtils = {
 		delete this.prefSvc;
 		return this.prefSvc = Components.classes["@mozilla.org/preferences-service;1"]
 			.getService(Components.interfaces.nsIPrefService)
-			.QueryInterface(Components.interfaces.nsIPrefBranch2);
+			.QueryInterface(Components.interfaces.nsIPrefBranch2 || Components.interfaces.nsIPrefBranch);
 	},
 
 	// Initialization:

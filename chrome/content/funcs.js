@@ -49,7 +49,7 @@ var handyClicksFuncs = {
 	},
 	getItemText: function(it, e, noTrim) {
 		it = it || this.hc.item;
-		e = e || this.hc.copyOfEvent;
+		e = e || this.hc.event;
 		var text = this.hc.itemType == "tabbar"
 			? this.forEachTab(this.getTabText)
 			: this.hc.itemType == "ext_mulipletabs"
@@ -212,7 +212,7 @@ var handyClicksFuncs = {
 		);
 	},
 	_openURIInTab: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction) {
-		e = e || this.hc.copyOfEvent;
+		e = e || this.hc.event;
 		item = item || this.hc.item;
 		uri = uri || this.getItemURI(item);
 		if(this.testForLinkFeatures(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, winRestriction, "tab"))
@@ -241,7 +241,7 @@ var handyClicksFuncs = {
 		return tab;
 	},
 	testForLinkFeatures: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, winRestriction, target) {
-		e = e || this.hc.copyOfEvent;
+		e = e || this.hc.event;
 		item = item || this.hc.item;
 		uri = uri || this.getItemURI(item);
 		if(
@@ -264,7 +264,7 @@ var handyClicksFuncs = {
 		return false;
 	},
 	loadJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target) {
-		e = e || this.hc.copyOfEvent;
+		e = e || this.hc.event;
 		item = item || this.hc.item;
 		uri = uri || this.getItemURI(item);
 
@@ -280,7 +280,7 @@ var handyClicksFuncs = {
 		return false;
 	},
 	loadVoidLinkWithHandler: function(e, item, loadJSInBackground, refererPolicy, winRestriction, target) {
-		e = e || this.hc.copyOfEvent;
+		e = e || this.hc.event;
 		item = item || this.hc.item;
 
 		var evts = this.hc.createMouseEvents(e, item, ["mousedown", "mouseup", "click"], 0);
@@ -436,7 +436,7 @@ var handyClicksFuncs = {
 		this.initWindowMoving(win, xNew, yNew, wNew, hNew);
 	},
 	_openURIInWindow: function(e, item, uri, loadInBackground, refererPolicy) {
-		e = e || this.hc.copyOfEvent;
+		e = e || this.hc.event;
 		item = item || this.hc.item;
 		uri = uri || this.getItemURI(item);
 		if(this.testForLinkFeatures(e, item, uri, loadInBackground, false /* loadJSInBackground */, refererPolicy, undefined, "win"))
@@ -785,17 +785,17 @@ var handyClicksFuncs = {
 				: this.getWinRestriction(winRestriction),
 			"browser.link.open_newwindow": target == "cur" && 1 || target == "win" && 2 || target == "tab" && 3,
 			"network.http.sendRefererHeader": this.getRefererPolicy(refererPolicy),
-			"dom.disable_open_during_load": winOpenFix ? false : null,
-			__proto__: null
+			"dom.disable_open_during_load": winOpenFix ? false : null
 		};
-		for(var p in prefs) {
-			if(prefs[p] === null)
+		for(var p in prefs) if(prefs.hasOwnProperty(p)) {
+			var val = prefs[p];
+			if(val === null)
 				continue;
 			var orig = this.pu.getPref(p);
-			if(orig === undefined)
-				continue;
-			origs[p] = orig;
-			this.pu.setPref(p, prefs[p]);
+			if(orig != undefined && val != orig) {
+				origs[p] = orig;
+				this.pu.setPref(p, val);
+			}
 		}
 	},
 	restorePrefs: function(key) {
