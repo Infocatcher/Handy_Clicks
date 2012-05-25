@@ -353,7 +353,7 @@ var handyClicksUtils = {
 	},
 	getLocalFileRoot: function(file) {
 		file = this.getFileRoot(file);
-		return file && file.QueryInterface(Components.interfaces.nsILocalFile);
+		return file && file.QueryInterface(Components.interfaces.nsILocalFile || Components.interfaces.nsIFile);
 	},
 	getFileByAlias: function(alias, dontShowErrors) {
 		if(alias == "_ProfDrv" || alias == "_SysDrv") { //= added 2012-01-10
@@ -369,7 +369,7 @@ var handyClicksUtils = {
 		try {
 			return Components.classes["@mozilla.org/file/directory_service;1"]
 				.getService(Components.interfaces.nsIProperties)
-				.get(alias, Components.interfaces.nsILocalFile);
+				.get(alias, Components.interfaces.nsILocalFile || Components.interfaces.nsIFile);
 		}
 		catch(e) {
 			if(dontShowErrors)
@@ -409,7 +409,7 @@ var handyClicksUtils = {
 			return path;
 		path = this.expandVariables(path);
 		var file = Components.classes["@mozilla.org/file/local;1"]
-			.createInstance(Components.interfaces.nsILocalFile);
+			.createInstance(Components.interfaces.nsILocalFile || Components.interfaces.nsIFile);
 		try {
 			file.initWithPath(path);
 		}
@@ -467,7 +467,7 @@ var handyClicksUtils = {
 
 	// File I/O (only UTF-8):
 	writeToFile: function(str, file, outErr) {
-		if(!(file instanceof Components.interfaces.nsILocalFile))
+		if(!(file instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)))
 			file = this.getLocalFile(file);
 		var fos = Components.classes["@mozilla.org/network/file-output-stream;1"]
 			.createInstance(Components.interfaces.nsIFileOutputStream);
@@ -490,7 +490,7 @@ var handyClicksUtils = {
 		return true;
 	},
 	writeToFileAsync: function(str, file, callback, context) {
-		if(!(file instanceof Components.interfaces.nsILocalFile))
+		if(!(file instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)))
 			file = this.getLocalFile(file);
 		try {
 			Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
@@ -528,7 +528,7 @@ var handyClicksUtils = {
 		return true;
 	},
 	readFromFile: function(file, outErr) {
-		if(!(file instanceof Components.interfaces.nsILocalFile))
+		if(!(file instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)))
 			file = this.getLocalFile(file);
 		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
 			.createInstance(Components.interfaces.nsIFileInputStream);
@@ -552,7 +552,7 @@ var handyClicksUtils = {
 		return this.convertToUnicode(str);
 	},
 	readFromFileAsync: function(file, callback, context) {
-		if(!(file instanceof Components.interfaces.nsILocalFile))
+		if(!(file instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)))
 			file = this.getLocalFile(file);
 		try {
 			Components.utils["import"]("resource://gre/modules/NetUtil.jsm");

@@ -2359,7 +2359,10 @@ var handyClicksSets = {
 			this.redrawTree();
 		else
 			this.updTree();
-		if(pSrc instanceof Components.interfaces.nsILocalFile && !pSrc.parent.equals(this.ps._prefsDir))
+		if(
+			pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)
+			&& !pSrc.parent.equals(this.ps._prefsDir)
+		)
 			this.backupsDir = pSrc.parent.path;
 	},
 	createBackup: function() {
@@ -2557,7 +2560,7 @@ var handyClicksSets = {
 	reveal: function(file) {
 		// Based on code of function showDownload() from chrome://mozapps/content/downloads/downloads.js in Firefox 3.6
 		// See https://developer.mozilla.org/en/nsILocalFile#Remarks
-		var nsilf = Components.interfaces.nsILocalFile;
+		var nsilf = Components.interfaces.nsILocalFile || Components.interfaces.nsIFile;
 		if(!(file instanceof nsilf))
 			return false;
 		try {
@@ -2703,7 +2706,7 @@ var handyClicksSets = {
 		if(!path)
 			return null;
 		var file = Components.classes["@mozilla.org/file/local;1"]
-			.createInstance(Components.interfaces.nsILocalFile);
+			.createInstance(Components.interfaces.nsILocalFile || Components.interfaces.nsIFile);
 		try {
 			file.initWithPath(path);
 		}

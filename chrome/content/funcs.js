@@ -1157,9 +1157,11 @@ var handyClicksFuncs = {
 
 		// Based on code by Yan ( http://forum.mozilla-russia.org/viewtopic.php?pid=144109#p144109 )
 		var hrefs = { __proto__: null };
-		var gh = Components.classes["@mozilla.org/browser/global-history;2"]
-			.getService(Components.interfaces.nsIGlobalHistory2);
 		var onlyVisible = this.pu.pref("funcs.openOnlyVisibleLinks");
+		if(onlyUnvisited) {
+			var gh = Components.classes["@mozilla.org/browser/global-history;2"]
+				.getService(Components.interfaces.nsIGlobalHistory2 || Components.interfaces.nsIGlobalHistory);
+		}
 		Array.forEach(
 			a.ownerDocument.getElementsByTagName(a.localName),
 			function(a) {
@@ -1184,11 +1186,13 @@ var handyClicksFuncs = {
 
 		var count = 0;
 		for(var h in hrefs)
-			count++;
+			++count;
 		if("PlacesUIUtils" in window && "_confirmOpenInTabs" in PlacesUIUtils) {
 			if(!PlacesUIUtils._confirmOpenInTabs(count))
 				return;
 		}
+		if(!count)
+			return;
 
 		if("TreeStyleTabService" in window) { // Tree Style Tab
 			var hasTreeStyleTab = true;
@@ -1231,7 +1235,6 @@ var handyClicksFuncs = {
 			hasTabKit && tabkit.addingTab("related");
 			tbr.addTab(h, ref);
 			hasTabKit && tabkit.addingTabOver();
-			delete hrefs[h];
 			if(showProgress) {
 				_this.ui.progressLabel.value = ++_this.ui.progressPart + "/" + _this.ui.progressCount;
 				var state = _this.ui.progress.value = _this.ui.progressPart*10;

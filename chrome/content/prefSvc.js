@@ -56,7 +56,7 @@ var handyClicksPrefSvc = {
 		delete this._profileDir;
 		return this._profileDir = Components.classes["@mozilla.org/file/directory_service;1"]
 			.getService(Components.interfaces.nsIProperties)
-			.get("ProfD", Components.interfaces.nsILocalFile);
+			.get("ProfD", Components.interfaces.nsILocalFile || Components.interfaces.nsIFile);
 	},
 	get profileDir() {
 		return this._profileDir.clone();
@@ -148,7 +148,7 @@ var handyClicksPrefSvc = {
 		}
 		this.otherSrc = !!pSrc;
 		pSrc = pSrc || this.prefsFile;
-		if(pSrc instanceof Components.interfaces.nsILocalFile) {
+		if(pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)) {
 			fromProfile = pSrc.equals(this._prefsFile);
 			pSrc = fromProfile && !pSrc.exists()
 				? this.defaultSettings()
@@ -902,7 +902,7 @@ var handyClicksPrefSvc = {
 	},
 	checkPrefs: function(pSrc) {
 		return this.checkPrefsStr(
-			pSrc instanceof Components.interfaces.nsILocalFile
+			pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)
 				? this.ut.readFromFile(pSrc)
 				: this.getPrefsStr(pSrc)
 		);
