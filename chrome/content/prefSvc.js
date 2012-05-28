@@ -175,7 +175,7 @@ var handyClicksPrefSvc = {
 			}
 
 			try {
-				scope = this.parseJSON(pSrc, true);
+				scope = this.JSON.parse(pSrc);
 			}
 			catch(e) {
 				this._loadStatus = this.SETS_LOAD_DECODE_ERROR;
@@ -486,9 +486,7 @@ var handyClicksPrefSvc = {
 			prefs:   prefs
 		};
 
-		var json = "JSON" in window
-			? JSON.stringify(o, null, "\t")
-			: this.JSON.stringify(o, null, "\t");
+		var json = this.JSON.stringify(o, null, "\t");
 
 		const hashFunc = "SHA256";
 		return this.setsHeader
@@ -574,7 +572,10 @@ var handyClicksPrefSvc = {
 	},
 	get JSON() { // For Firefox < 3.5
 		delete this.JSON;
-		this.rs.loadSubScript("chrome://handyclicks/content/json.js", this);
+		if("JSON" in window)
+			this.JSON = JSON;
+		else
+			this.rs.loadSubScript("chrome://handyclicks/content/json.js", this);
 		return this.JSON;
 	},
 	saveSettingsObjects: function(reloadAll) {
@@ -916,20 +917,6 @@ var handyClicksPrefSvc = {
 	removePrefsDesription: function(str) {
 		return str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, "");
 	},
-	parseJSON: function(str, throwErrors) {
-		try {
-			return "JSON" in window
-				? JSON.parse(str)
-				: this.JSON.parse(str);
-		}
-		catch(e) {
-			if(throwErrors)
-				throw e;
-			else
-				this.ut._err(e);
-		}
-		return null;
-	},
 	isValidPrefs: function(obj) {
 		return this.ut.isObject(obj)
 			&& this.ut.isObject(obj.prefs)
@@ -962,8 +949,13 @@ var handyClicksPrefSvc = {
 			str = this.removePrefsDesription(str);
 		}
 
-		//~ todo: isJSON() + string tests ?
-		return this.isValidPrefs(this.parseJSON(str));
+		try {
+			return this.isValidPrefs(this.JSON.parse(str));
+		}
+		catch(e) {
+			this.ut._err(e);
+		}
+		return false;
 	},
 	get clipboardPrefs() {
 		var cb = this.ut.cb;
