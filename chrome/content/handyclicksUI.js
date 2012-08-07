@@ -431,8 +431,25 @@ var handyClicksUI = {
 		return this.progressLabel = this.e("handyClicks-statusbarProgressLabel");
 	},
 	get progress() {
+		var progress = this.e("handyClicks-statusbarProgress");
+		if(!("max" in progress)) { // Firefox < 3.5
+			progress._gain = 1;
+			progress.__defineGetter__("max", function() {
+				return Math.round(this.getAttribute("max") * this._gain);
+			});
+			progress.__defineSetter__("max", function(max) {
+				this._gain = max/100;
+				this.setAttribute("max", 100);
+			});
+			progress.__defineGetter__("value", function() {
+				return Math.round(this.getAttribute("value") * this._gain);
+			});
+			progress.__defineSetter__("value", function(value) {
+				this.setAttribute("value", Math.round(value/this._gain));
+			});
+		}
 		delete this.progress;
-		return this.progress = this.e("handyClicks-statusbarProgress");
+		return this.progress = progress;
 	},
 	get showProgress() {
 		return !this.progressPanel.collapsed;

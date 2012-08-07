@@ -1034,6 +1034,8 @@ var handyClicksFuncs = {
 	undoCloseTab: function(e) {
 		if("undoCloseTab" in window) // Firefox 2.0+
 			undoCloseTab(0);
+		else if("gBrowser" in window && "undoCloseTab" in gBrowser) // SeaMonkey
+			gBrowser.undoCloseTab(0);
 		else if("TMP_ClosedTabs" in window) // Tab Mix Plus
 			TMP_ClosedTabs.undoCloseTab();
 		else if("gSessionManager" in window) // Old Session Manager

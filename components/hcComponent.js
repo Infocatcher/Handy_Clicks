@@ -124,6 +124,7 @@ const factory = {
 		throw cr.NS_ERROR_NO_INTERFACE;
 	},
 	lockFactory: function(lock) {
+		throw cr.NS_ERROR_NOT_IMPLEMENTED;
 	},
 	// nsISupports interface implementation
 	QueryInterface: function(iid) {

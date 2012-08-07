@@ -57,7 +57,7 @@ var handyClicksUtils = {
 		for(
 			var stackFrame = Components.stack.caller, funcCaller = arguments.callee.caller, i = 0;
 			stackFrame && stackFrame.filename;
-			stackFrame = stackFrame.caller, funcCaller = funcCaller ? funcCaller.caller : null, i++
+			stackFrame = stackFrame.caller, funcCaller = funcCaller ? funcCaller.caller : null, ++i
 		) {
 			var line = "";
 			var req = new XMLHttpRequest();
@@ -660,7 +660,7 @@ var handyClicksUtils = {
 			return data.value
 				.QueryInterface(Components.interfaces.nsISupportsString)
 				.data
-				.substr(0, len.value / 2);
+				.substr(0, len.value/2);
 		}
 		catch(e) {
 			return "";
@@ -771,7 +771,7 @@ var handyClicksUtils = {
 		if(this.isPrimitive(obj))
 			return u;
 		var a = arguments, p;
-		for(var i = 1, len = a.length - 1; i <= len; i++) {
+		for(var i = 1, len = a.length - 1; i <= len; ++i) {
 			p = a[i];
 			if(!Object.hasOwnProperty.call(obj, p))
 				return u;
@@ -788,7 +788,7 @@ var handyClicksUtils = {
 		if(this.isPrimitive(obj))
 			return u;
 		var a = arguments, p;
-		for(var i = 1, len = a.length - 1; i <= len; i++) {
+		for(var i = 1, len = a.length - 1; i <= len; ++i) {
 			p = a[i];
 			if(!(p in obj))
 				return u;
@@ -802,7 +802,7 @@ var handyClicksUtils = {
 	},
 	setOwnProperty: function(obj) { // obj, "x", "y", value
 		var a = arguments, p;
-		for(var i = 1, len = a.length - 2; i <= len; i++) {
+		for(var i = 1, len = a.length - 2; i <= len; ++i) {
 			p = a[i];
 			if(!Object.hasOwnProperty.call(obj, p) || !this.isObject(obj[p]))
 				obj[p] = {};
