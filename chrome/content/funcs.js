@@ -175,7 +175,7 @@ var handyClicksFuncs = {
 			case "last":     ind = tbr.browsers.length;           break;
 			case "relative": ind = curInd + ++this.relativeIndex; break;
 			default:
-				this.ut._err(<>openURIInTab: invalid moveTo argument: "{moveTo}"</>);
+				this.ut._err('openURIInTab: invalid moveTo argument: "' + moveTo + '"');
 				return;
 		}
 		if(
@@ -426,7 +426,7 @@ var handyClicksFuncs = {
 				wNew = window.outerWidth, hNew = window.outerHeight;
 			break;
 			default:
-				this.ut._err(<>openURIInWindow: invalid moveTo argument: "{moveTo}"</>);
+				this.ut._err('openURIInWindow: invalid moveTo argument: "' + moveTo + '"');
 				return;
 		}
 		if(xCur !== undefined && yCur !== undefined)
@@ -586,7 +586,7 @@ var handyClicksFuncs = {
 	showOpenURIWithAppsPopup: function(items, checkFiles) {
 		var uri = this.getItemURI();
 		if(!uri) {
-			this.ut._err(<>Can't get URI of item ({this.hc.itemType})</>);
+			this.ut._err("Can't get URI of item (" + this.hc.itemType + ")");
 			return;
 		}
 		var uris = Array.concat(uri).map(this.losslessDecodeURI, this);
@@ -1294,12 +1294,12 @@ var handyClicksFuncs = {
 		if(!(newMeth in this)) {
 			var caller = Components.stack.caller;
 			throw new Error(
-				this.ut.errPrefix + <>Method "{meth}" does not exist in "{oName}" object</>,
+				this.ut.errPrefix + 'Method "' + meth + '" does not exist in "' + oName + '" object',
 				caller.filename,
 				caller.lineNumber
 			);
 		}
-		this.ut._deprecated(<>Function "{oName}.{meth}" is deprecated. Use "{oName}.{newMeth}" instead.</>);
+		this.ut._deprecated('Function "' + oName + "." + meth + '" is deprecated. Use "' + oName + "." + newMeth + '" instead.');
 		return this[newMeth].apply(this, args);
 	}
 };

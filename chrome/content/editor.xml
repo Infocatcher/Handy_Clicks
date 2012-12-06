@@ -473,7 +473,7 @@
 					var eeFileExists = eeFile && eeFile.exists();
 
 					if(ee && !eeFileExists)
-						ut._warn(<>openExternalEditor: External editor not found: "{ee}"</>);
+						ut._warn('openExternalEditor: External editor not found: "' + ee + '"');
 
 					if(!eeFileExists && "nsIWindowsRegKey" in Components.interfaces) try {
 						// Check Windows association
@@ -495,7 +495,7 @@
 								var indx = ut.expandEnvironmentVariables(cmd).toLowerCase().indexOf(wscript);
 								if(indx == 0 || indx == 1) {
 									ee = "%SystemRoot%\\notepad.exe";
-									ut._log(<>openExternalEditor: "invalid" association: {cmd + "\n"}Will use "{ee}"</>);
+									ut._log('openExternalEditor: "invalid" association: ' + cmd + '\nWill use "' + ee + '"');
 								}
 							}
 						}
@@ -825,7 +825,7 @@
 					var newVal = val.substring(0, ss)
 						+ selMarker + val.substring(ss, se) + selMarker
 						+ val.substring(se);
-					newVal = newVal.replace(new RegExp(<>[ \t]*({selMarker})?[ \t]*({selMarker})?[ \t]*$</>, "mg"), "$1$2");
+					newVal = newVal.replace(new RegExp("[ \t]*(" + selMarker + ")?[ \t]*(" + selMarker + ")?[ \t]*$", "mg"), "$1$2");
 					ss = newVal.indexOf(selMarker);
 					se = newVal.lastIndexOf(selMarker) - selMarker.length;
 					newVal = newVal.replace(selMarker, "", "g");

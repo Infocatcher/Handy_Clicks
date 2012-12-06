@@ -69,7 +69,7 @@ var handyClicksPrefSvc = {
 				dir.create(dir.DIRECTORY_TYPE, 0755);
 			}
 			catch(e) {
-				this.ut._err(<>Can't create directory: "{dir.path}"</>);
+				this.ut._err('Can\'t create directory: "' + dir.path + '"');
 				this.ut._err(e);
 			}
 		}
@@ -288,13 +288,13 @@ var handyClicksPrefSvc = {
 			return cache[type];
 
 		if(!this.isOkCustomType(type)) {
-			this.ut._warn(<>Invalid custom type: "{type}"</>);
-			this.ut._log(<>! Type "{type}" => invalid</>);
+			this.ut._warn('Invalid custom type: "' + type + '"');
+			this.ut._log('! Type "' + type + '" => invalid');
 			return cache[type] = false;
 		}
 		var ct = this.types[type];
 		if(!ct.enabled) {
-			this.ut._log(<>Type "{type}" => disabled</>);
+			this.ut._log('Type "' + type + '" => disabled');
 			return cache[type] = false;
 		}
 		try {
@@ -304,7 +304,7 @@ var handyClicksPrefSvc = {
 			ct._define = new Function("event,item", this.dec(df));
 			ct._contextMenuLine = new Error().lineNumber + 1;
 			ct._contextMenu = cm ? new Function("event,item,origItem", this.dec(cm)) : null;
-			this.ut._log(<>Type "{type}" => initialized</>);
+			this.ut._log('Type "' + type + '" => initialized');
 			return cache[type] = true;
 		}
 		catch(e) {
@@ -324,7 +324,7 @@ var handyClicksPrefSvc = {
 			this.ut._err(eMsg, href, eLine);
 			this.ut._err(e);
 		}
-		this.ut._log(<>! Type "{type}" => initialization error</>);
+		this.ut._log('! Type "' + type + '" => initialization error');
 		return cache[type] = false;
 	},
 	compileCustomTypes: function() {
@@ -840,7 +840,7 @@ var handyClicksPrefSvc = {
 	getCustomTypeLabel: function(type) {
 		var label = this.ut.getOwnProperty(this.types, type, "label");
 		label = label ? this.dec(label) + " " : "";
-		return <>{label}[{this.removeCustomPrefix(type)}]</>.toString();
+		return label + "[" + this.removeCustomPrefix(type) + "]";
 	},
 
 	encForWrite: function(s) {
@@ -869,7 +869,7 @@ var handyClicksPrefSvc = {
 			return decodeURIComponent(s || "");
 		}
 		catch(e) {
-			this.ut._err(<>Can't decode URI: "{s}"</>);
+			this.ut._err('Can\'t decode URI: "' + s + '"');
 			this.ut._err(e);
 			return "[invalid URI]";
 		}

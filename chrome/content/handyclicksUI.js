@@ -32,15 +32,11 @@ var handyClicksUI = {
 	},
 	loadBlinkStyle: function() {
 		// Styles for blinkNode() function
-		var css = "data:text/css," + encodeURIComponent(
-			<><![CDATA[
-				@namespace hc url("urn:handyclicks:namespace");
-				*|*:root *|*[hc|%blinkAttr%="true"] {
-					opacity: %blinkOpacity% !important;
-				}
-			]]></>.toString()
-			.replace(/%blinkAttr%/g, this.blinkAttr)
-			.replace(/%blinkOpacity%/g, this.blinkOpacity)
+		var css = "data:text/css," + encodeURIComponent('\
+			@namespace hc url("urn:handyclicks:namespace");\n\
+			*|*:root *|*[hc|' + this.blinkAttr + '="true"] {\n\
+				opacity: ' + this.blinkOpacity + ' !important;\n\
+			}'
 		);
 		var sss = Components.classes["@mozilla.org/content/style-sheet-service;1"]
 			.getService(Components.interfaces.nsIStyleSheetService);
@@ -544,7 +540,7 @@ var handyClicksUI = {
 	registerHotkey: function(kId) {
 		var kElt = this.e("handyClicks-key-" + kId);
 		if(!kElt) {
-			this.ut._warn(<>Key element not found: "{kId}"</>);
+			this.ut._warn('Key element not found: "' + kId + '"');
 			return;
 		}
 		var keyStr = this.pu.pref("key." + kId);

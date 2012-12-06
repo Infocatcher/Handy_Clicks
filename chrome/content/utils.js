@@ -147,7 +147,7 @@ var handyClicksUtils = {
 			var dt = this.now() - ts[tId];
 			if(division)
 				dt /= division;
-			this._log(<>[timer] {tId} -> {dt} ms</>);
+			this._log("[timer] " + tId + " -> " + dt + " ms");
 			delete ts[tId];
 			return dt;
 		}
@@ -284,7 +284,7 @@ var handyClicksUtils = {
 			return this.getBundle(src).GetStringFromName(sName);
 		}
 		catch(e) {
-			this._warn(<>Can't get localized string "{sName}" from "{src}".</>);
+			this._warn('Can\'t get localized string "' + sName + '" from "' + src + '"');
 			return "";
 		}
 	},
@@ -314,7 +314,7 @@ var handyClicksUtils = {
 			contentType
 		);
 		if(node.namespaceURI == "http://www.mozilla.org/newlayout/xml/parsererror.xml") {
-			this._warn(<>Invalid XML entity: "{eName}"</>);
+			this._warn('Invalid XML entity: "' + eName + '"');
 			return "";
 		}
 		return node.textContent;
@@ -363,7 +363,7 @@ var handyClicksUtils = {
 	},
 	getFileByAlias: function(alias, dontShowErrors) {
 		if(alias == "_ProfDrv" || alias == "_SysDrv") { //= added 2012-01-10
-			this.ut._deprecated(<>Alias "{alias}" is deprecated. Use "hc{alias}" instead.</>);
+			this.ut._deprecated('Alias "' + alias + '" is deprecated. Use "hc' + alias + '" instead.');
 			alias = "hc" + alias;
 		}
 		if(alias == "hc_ProfDrv")
@@ -380,7 +380,7 @@ var handyClicksUtils = {
 		catch(e) {
 			if(dontShowErrors)
 				return null;
-			this._err(<>Invalid directory alias: "{alias}"</>);
+			this._err('Invalid directory alias: "' + alias + '"');
 			this._err(e);
 		}
 		return null;
@@ -420,7 +420,7 @@ var handyClicksUtils = {
 			file.initWithPath(path);
 		}
 		catch(e) {
-			this._err(<>Invalid path: "{path}"</>);
+			this._err('Invalid path: "' + path + '"');
 			this._err(e);
 			return null;
 		}
@@ -481,7 +481,7 @@ var handyClicksUtils = {
 			fos.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
 		}
 		catch(e) {
-			this._err(<>Can't write string to file "{file instanceof Components.interfaces.nsIFile && file.path}"</>);
+			this._err('Can\'t write string to file "' + (file instanceof Components.interfaces.nsIFile ? file.path : file) + '"');
 			this._err(e);
 			fos.close();
 			if(outErr)
@@ -521,12 +521,12 @@ var handyClicksUtils = {
 			var istream = suc.convertToInputStream(str);
 			NetUtil.asyncCopy(istream, ostream, this.bind(function(status) {
 				if(!Components.isSuccessCode(status))
-					this._err(<>NetUtil.asyncCopy failed: {this.getErrorName(status)} ({status})</>);
+					this._err("NetUtil.asyncCopy failed: " + this.getErrorName(status) + " (" + status + ")");
 				callback && callback.call(context || this, status);
 			}, this));
 		}
 		catch(e) {
-			this._err(<>Can't write string to file "{file instanceof Components.interfaces.nsIFile && file.path}"</>);
+			this._err('Can\'t write string to file "' + (file instanceof Components.interfaces.nsIFile ? file.path : file) + '"');
 			this._err(e);
 			callback && callback.call(context || this, this.getErrorCode(e));
 			return false;
@@ -542,7 +542,7 @@ var handyClicksUtils = {
 			fis.init(file, 0x01, 0444, 0);
 		}
 		catch(e) {
-			this._err(<>Can't read string from file "{file instanceof Components.interfaces.nsIFile ? file.path : file}"</>);
+			this._err('Can\'t read string from file "' + (file instanceof Components.interfaces.nsIFile ? file.path : file) + '"');
 			this._err(e);
 			fis.close();
 			if(outErr)
@@ -582,12 +582,12 @@ var handyClicksUtils = {
 				if(Components.isSuccessCode(status))
 					data = this.convertToUnicode(NetUtil.readInputStreamToString(istream, istream.available()));
 				else
-					this._err(<>NetUtil.asyncFetch failed: {this.getErrorName(status)} ({status})</>);
+					this._err("NetUtil.asyncFetch failed: " + this.getErrorName(status) + " (" + status + ")");
 				callback.call(context || this, data, status);
 			}, this));
 		}
 		catch(e) {
-			this._err(<>Can't read string from file "{file instanceof Components.interfaces.nsIFile ? file.path : file}"</>);
+			this._err('Can\'t read string from file "' + (file instanceof Components.interfaces.nsIFile ? file.path : file) + '"');
 			this._err(e);
 			callback && callback.call(context || this, "", this.getErrorCode(e));
 			return false;

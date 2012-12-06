@@ -201,12 +201,12 @@ var handyClicksSets = {
 		var p = this.ps.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
 			if(!this.ps.isOkShortcut(sh) || !this.ut.isObject(p[sh])) {
-				this.ut._warn(<>Invalid shortcut in prefs: "{sh}"</>);
+				this.ut._warn('Invalid shortcut in prefs: "' + sh + '"');
 				continue;
 			}
 			var so = p[sh];
 			if(this.ut.isEmptyObj(so)) {
-				this.ut._warn(<>Empty settings object in prefs: "{sh}"</>);
+				this.ut._warn('Empty settings object in prefs: "' + sh + '"');
 				//delete p[sh];
 				continue;
 			}
@@ -327,9 +327,9 @@ var handyClicksSets = {
 				deletableTypes++;
 
 		const id = "hc-sets-tree-import";
-		this.$(id + "OverridesValue").value = <>{this._overrides}/{this._overrideDa} + {overrideTypes }</>;
-		this.$(id + "NewValue")      .value = <>{this._new      }/{this._newDa     } + {newTypes      }</>;
-		this.$(id + "DeletableValue").value = <>{deletable      }/{deletableDa     } + {deletableTypes}</>;
+		this.$(id + "OverridesValue").value = this._overrides + "/" + this._overrideDa + " + " + overrideTypes;
+		this.$(id + "NewValue")      .value = this._new       + "/" + this._newDa      + " + " + newTypes;
+		this.$(id + "DeletableValue").value = deletable       + "/" + deletableDa      + " + " + deletableTypes;
 	},
 	redrawTree: function() {
 		return this.treeBatch(this._redrawTree, this, arguments);
@@ -1675,7 +1675,7 @@ var handyClicksSets = {
 	get currentActionTextbox() {
 		var type = this.$("hc-sets-action-type").selectedIndex;
 		var button = this.$("hc-sets-action-button").selectedIndex;
-		var tb = document.getElementsByAttribute("preference", <>action-{type}-{button}</>);
+		var tb = document.getElementsByAttribute("preference", "action-" + type + "-" + button);
 		return tb.length ? tb[0] : null;
 	},
 	loadUIAction: function() {
@@ -1818,7 +1818,7 @@ var handyClicksSets = {
 					text = this.ut.getLocalized("editorUnsavedWarning");
 				break;
 				default:
-					this.ut._warn(<>initResetWarnMsgs: no description for "{pName}" pref</>);
+					this.ut._warn('initResetWarnMsgs: no description for "' + pName + '" pref');
 					text = pName;
 			}
 			desc.textContent = text;
@@ -2185,12 +2185,12 @@ var handyClicksSets = {
 					return; // Just for fun right now :)
 				var indx = line.indexOf("=");
 				if(indx == -1) {
-					this.ut._warn(<>[Import INI] Skipped invalid line #{i + 2}: "{line}"</>);
+					this.ut._warn("[Import INI] Skipped invalid line #" + (i + 2) + ': "' + line + '"');
 					return;
 				}
 				var pName = line.substr(0, indx);
 				if(!this.ut.hasPrefix(pName, this.pu.prefNS)) {
-					this.ut._warn(<>[Import INI] Skipped pref with invalid name: "{pName}"</>);
+					this.ut._warn('[Import INI] Skipped pref with invalid name: "' + pName + '"');
 					return;
 				}
 				var ps = this.pu.prefSvc;
@@ -2198,7 +2198,7 @@ var handyClicksSets = {
 				var isOld = pType == ps.PREF_INVALID; // Old format?
 				if(isOld) {
 					_oldPrefs.push(pName);
-					this.ut._warn(<>[Import INI] Old pref: "{pName}"</>);
+					this.ut._warn('[Import INI] Old pref: "' + pName + '"');
 				}
 				var pVal = line.substr(indx + 1);
 				if(pType == ps.PREF_INT || isOld && /^-?\d+$/.test(pVal)) // Convert string to number

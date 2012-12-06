@@ -349,7 +349,7 @@ var handyClicksEditor = {
 			this.$("hc-editor-itemTypes").getElementsByAttribute("hc_required", "*"),
 			function(mi) {
 				var ext = mi.getAttribute("hc_required");
-				if(!this.extAvailable(ext)) {
+				if(!this.extEnabled(ext)) {
 					mi.hidden = true;
 					return;
 				}
@@ -612,12 +612,12 @@ var handyClicksEditor = {
 		var label, _labels = { __proto__: null };
 		for(var cType in cTypes) if(cTypes.hasOwnProperty(cType)) {
 			if(!this.ps.isCustomType(cType)) {
-				this.ut._warn(<>Invalid custom type id: "{cType}"</>);
+				this.ut._warn('Invalid custom type id: "' + cType + '"');
 				continue;
 			}
 			typeObj = cTypes[cType];
 			if(!this.ut.isObject(typeObj)) {
-				this.ut._warn(<>Invalid custom type: "{cType}" ({typeObj})</>);
+				this.ut._warn('Invalid custom type: "' + cType + '" (' + typeObj + ")");
 				continue;
 			}
 			label = this.ps.dec(typeObj.label) || cType;
@@ -748,7 +748,7 @@ var handyClicksEditor = {
 		}
 		return supp && supp.split(/,\s*/).indexOf(type) == -1
 			|| app && !this.appSupported(app.split(/,\s*/))
-			|| req && !this.extAvailable(req);
+			|| req && !this.extEnabled(req);
 	},
 	get versComparator() {
 		delete this.versComparator;
@@ -778,8 +778,8 @@ var handyClicksEditor = {
 		FlashGot: "{19503e42-ca3c-4c27-b1e2-9cdb2170ee34}",
 		"Multiple Tab Handler": "multipletab@piro.sakura.ne.jp"
 	},
-	extAvailable: function(eName) {
-		return this.eh.isAvailable(this.exts[eName]);
+	extEnabled: function(eName) {
+		return this.eh.isEnabled(this.exts[eName]);
 	},
 
 	itemTypeChanged: function(iType) {
@@ -836,7 +836,7 @@ var handyClicksEditor = {
 			return "checkbox";
 		if(argName in types.menulists)
 			return "menulist";
-		this.ut._err(<>Can't get type of "{argName}"</>);
+		this.ut._err("Can't get type of \"" + argName + '"');
 		return null;
 	},
 	addControl: function(argName, argType, argVal, delayed) {

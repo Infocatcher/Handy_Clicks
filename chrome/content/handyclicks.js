@@ -748,7 +748,7 @@ var handyClicks = {
 
 		if(this.ut.isObject(cm) && typeof cm.hidePopup != "function") {
 			// XUL document with custom context...
-			this.ut._warn(<>getItemContext: context menu has no "hidePopup" method, id: "{cm.id}"</>);
+			this.ut._warn('getItemContext: context menu has no "hidePopup" method, id: "' + cm.id + '"');
 			cm = null;
 		}
 		this._cMenu = cm; // cache
@@ -1076,7 +1076,7 @@ var handyClicks = {
 					this.ut.NOTIFY_ICON_WARNING
 				);
 				this.ut._err(eMsg, href); // We can't use _warn() with custom file name
-				this.ut._warn(<>Function "{action}" not found ({typeof this.fn[action]})</>);
+				this.ut._warn('Function "' + action + '" not found (' + typeof this.fn[action] + ")");
 			}
 		}
 

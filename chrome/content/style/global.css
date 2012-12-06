@@ -25,9 +25,6 @@ checkbox[handyclicks_important="enabled"] label {
 	padding-top: 1px;
 	padding-bottom: 0;
 }
-checkbox[handyclicks_important="enabled"] html|span {
-	border-bottom: 2px solid transparent;
-}
-checkbox[handyclicks_important="enabled"]:not([checked="true"]) html|span {
-	border-bottom: 2px solid red;
+checkbox[handyclicks_important="enabled"]:not([checked="true"]) {
+	color: red;
 }
