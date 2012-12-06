@@ -135,17 +135,23 @@ var handyClicksUtils = {
 	},
 
 	_timers: { __proto__: null },
+	get now() {
+		delete this.now;
+		return this.now = "performance" in window && "now" in performance
+			? function() { return performance.now(); }
+			: function() { return Date.now(); };
+	},
 	timer: function(tId, division) {
 		var ts = this._timers;
 		if(tId in ts) {
-			var dt = Date.now() - ts[tId];
+			var dt = this.now() - ts[tId];
 			if(division)
 				dt /= division;
 			this._log(<>[timer] {tId} -> {dt} ms</>);
 			delete ts[tId];
 			return dt;
 		}
-		return ts[tId] = Date.now();
+		return ts[tId] = this.now();
 	},
 
 	hasPrefix: function(str, prefix) {

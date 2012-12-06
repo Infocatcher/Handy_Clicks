@@ -36,14 +36,8 @@ var handyClicks = {
 		this.cancelDelayedAction();
 		if(this.editMode)
 			this.editMode = false;
-		this.removeMoveHandlers();
+		this.setMoveHandlers(false);
 		this.event = this.origItem = this.item = this.mainItem = null;
-	},
-	setListeners: function(evtTypes, addFlag) {
-		var act = addFlag ? "addEventListener" : "removeEventListener";
-		evtTypes.forEach(function(evtType) {
-			window[act](evtType, this, true);
-		}, this);
 	},
 	handleEvent: function(e) {
 		switch(e.type) {
@@ -57,12 +51,26 @@ var handyClicks = {
 			case "mousemove":    this.mousemoveHandler(e);    break;
 			case "draggesture":  this.dragHandler(e);         break;
 			case "TabSelect":    this.tabSelectHandler(e);    break;
+			case "DOMMouseScroll": // Legacy
+			case "wheel":        this.wheelHandler(e);        break;
 			case "keypress":
 				if(e.keyCode != e.DOM_VK_ESCAPE)
 					break;
 				this.ut.stopEvent(e);
 				this.editMode = false; // this removes event listener
 		}
+	},
+	setListeners: function(evtTypes, add) {
+		var act = add ? addEventListener : removeEventListener;
+		evtTypes.forEach(function(evtType) {
+			act.call(window, evtType, this, true);
+		}, this);
+	},
+	get wheelEvent() {
+		delete this.wheelEvent;
+		return this.wheelEvent = "WheelEvent" in window
+			? "wheel"
+			: "DOMMouseScroll";
 	},
 
 	_enabled: true, // Uses for internal disabling
@@ -159,16 +167,8 @@ var handyClicks = {
 				);
 			}
 		}
-		if(!this._hasMoveHandlers) {
-			this._hasMoveHandlers = true;
-			this.disallowMousemove = this.pu.pref("disallowMousemoveButtons").indexOf(e.button) != -1;
-			this.mousemoveParams = {
-				dist: 0,
-				screenX: e.screenX,
-				screenY: e.screenY
-			};
-			this.setListeners(["mousemove", "draggesture", "TabSelect"], true); //~ todo: stop on mouseout ?
-		}
+
+		this.setMoveHandlers(e);
 	},
 	clickHandler: function(e) {
 		if(!this.enabled)
@@ -186,7 +186,7 @@ var handyClicks = {
 		this.checkForStopEvent(e);
 		if(this.flags.allowEvents)
 			this.cancelDelayedAction();
-		this.removeMoveHandlers();
+		this.setMoveHandlers(false);
 		this.saveXY(e);
 
 		this.ui.restoreIcon();
@@ -256,21 +256,38 @@ var handyClicks = {
 		this.ut._log("tabSelectHandler -> cancel()");
 		this.cancel();
 	},
+	wheelHandler: function() {
+		this.ut._log("wheelHandler -> cancel()");
+		this.cancel();
+	},
 	cancel: function() {
 		this.flags.cancelled = true;
 		this.flags.stopContextMenu = false; //~ ?
 
 		this.cancelDelayedAction();
-		this.removeMoveHandlers();
+		this.setMoveHandlers(false);
 
 		this.ui.restoreIcon();
 	},
-	removeMoveHandlers: function() {
-		if(!this._hasMoveHandlers)
+	setMoveHandlers: function(add) {
+		if(!add ^ this._hasMoveHandlers)
 			return;
-		this.setListeners(["mousemove", "draggesture", "TabSelect"], false);
-		this.mousemoveParams = null;
-		this._hasMoveHandlers = false;
+		this._hasMoveHandlers = !!add;
+		if(add) {
+			var dist = this.disallowMousemoveDist = this.pu.pref("disallowMousemoveDist");
+			this.disallowMousemove = dist >= 0
+				&& this.pu.pref("disallowMousemoveButtons").indexOf(add.button) != -1;
+			this.mousemoveParams = {
+				dist: 0,
+				screenX: add.screenX,
+				screenY: add.screenY,
+				__proto__: null
+			};
+		}
+		else {
+			this.mousemoveParams = null;
+		}
+		this.setListeners(["mousemove", "draggesture", "TabSelect", this.wheelEvent], add);
 	},
 
 	// Utils for handlers:
@@ -998,7 +1015,7 @@ var handyClicks = {
 	},
 	executeFunction: function(funcObj, e) {
 		this.cancelDelayedAction();
-		this.removeMoveHandlers();
+		this.setMoveHandlers(false);
 
 		this.lastEvent = this.event;
 		this.lastItemType = this.itemType;
