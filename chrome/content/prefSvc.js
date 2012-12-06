@@ -165,21 +165,13 @@ var handyClicksPrefSvc = {
 			// this.correctSettings()
 			// this.getSettingsStr() -> var str = JSON.stringify(o, censor, "\t")
 
-			pSrc = this.removePrefsDesription(pSrc);
-			if(pSrc.substr(0, 4) == "var ") { //= Added: 2012-01-13
-				this.ut._log("Prefs in old format, try convert to JSON");
-				pSrc = this.convertJSToJSON(pSrc)
-					.replace(/^(\s*)"handyClicksPrefsVersion":/m, '$1"version":')
-					.replace(/^(\s*)"handyClicksCustomTypes":/m,  '$1"types":')
-					.replace(/^(\s*)"handyClicksPrefs":/m,        '$1"prefs":');
-			}
-
+			pSrc = this.convertToJSON(this.removePrefsDesription(pSrc));
 			try {
 				scope = this.JSON.parse(pSrc);
 			}
 			catch(e) {
 				this._loadStatus = this.SETS_LOAD_DECODE_ERROR;
-				this.ut._err("Invalid prefs: JSON.parse() failed");
+				this.ut._err("Invalid prefs: JSON.parse() failed:\n" + pSrc);
 				this.ut._err(e);
 				if(this.otherSrc) {
 					this.ut.alert(
@@ -222,7 +214,20 @@ var handyClicksPrefSvc = {
 		}
 		this._loadStatus = this.SETS_LOAD_OK;
 	},
-	convertJSToJSON: function(s) {
+	convertOldJSFormat: function(s) {
+		if(pSrc.substr(0, 4) == "var ") { //= Added: 2012-01-13
+			this.ut._log("Prefs in old format, try convert to JSON");
+			pSrc = this.convertJSToJSON(pSrc)
+				.replace(/^(\s*)"handyClicksPrefsVersion":/m, '$1"version":')
+				.replace(/^(\s*)"handyClicksCustomTypes":/m,  '$1"types":')
+				.replace(/^(\s*)"handyClicksPrefs":/m,        '$1"prefs":');
+		}
+	},
+	convertToJSON: function(s) {
+		if(s.substr(0, 4) != "var ") //= Added: 2012-01-13
+			return s;
+		this.ut._log("Prefs in old format, try convert to JSON");
+
 		// Note: supported only features used in old settings format
 		return "{\n"
 			+ s
@@ -248,6 +253,11 @@ var handyClicksPrefSvc = {
 				.replace(/;\s*$/, "")
 				//.replace(/^\s+/mg, "")
 				//.replace(/[\n\r]+/g, "")
+
+				// Rename properties:
+				.replace(/^(\s*)"handyClicksPrefsVersion":/m, '$1"version":')
+				.replace(/^(\s*)"handyClicksCustomTypes":/m,  '$1"types":')
+				.replace(/^(\s*)"handyClicksPrefs":/m,        '$1"prefs":')
 			+ "\n}";
 	},
 	loadSettingsBackup: function() {
@@ -926,12 +936,14 @@ var handyClicksPrefSvc = {
 				|| typeof obj.version == "number" && isFinite(obj.version)
 			);
 	},
-	checkPrefsStr: function(str) {
+	checkPrefsStr: function(str, silent) {
 		this._hashError = false;
 		this._hashMissing = true;
 
-		if(!this.ut.hasPrefix(str, this.requiredHeader))
+		if(!this.ut.hasPrefix(str, this.requiredHeader)) {
+			!silent && this.ut._err("Invalid prefs: wrong header");
 			return false;
+		}
 
 		const hashRe = /(?:\r\n|\n|\r)\/\/[ \t]?(MD2|MD5|SHA1|SHA512|SHA256|SHA384):[ \t]?([a-f0-9]+)(?=[\n\r]|$)/;
 		if(hashRe.test(str)) { //= Added: 2009-12-18
@@ -942,6 +954,7 @@ var handyClicksPrefSvc = {
 			str = this.removePrefsDesription(str);
 			if(hash != this.getHash(str, hashFunc)) {
 				this._hashError = true;
+				!silent && this.ut._warn("Invalid prefs: wrong checksum");
 				return false;
 			}
 		}
@@ -949,23 +962,32 @@ var handyClicksPrefSvc = {
 			str = this.removePrefsDesription(str);
 		}
 
+		str = this.convertToJSON(str);
 		try {
-			return this.isValidPrefs(this.JSON.parse(str));
+			var prefs = this.JSON.parse(str);
 		}
 		catch(e) {
-			this.ut._err(e);
+			if(!silent) {
+				this.ut._err("Invalid prefs: JSON.parse() failed:\n" + str);
+				this.ut._err(e);
+			}
+			return false;
 		}
-		return false;
+		if(!this.isValidPrefs(prefs)) {
+			!silent && this.ut._err("Invalid prefs: prefs object doesn't contains required fields");
+			return false;
+		}
+		return true;
 	},
 	get clipboardPrefs() {
 		var cb = this.ut.cb;
 		var cbStr = this.getPrefsStr(this.ut.readFromClipboard(true, cb.kGlobalClipboard));
-		if(this.checkPrefsStr(cbStr))
+		if(this.checkPrefsStr(cbStr, true))
 			return cbStr;
 		if(!cb.supportsSelectionClipboard())
 			return "";
 		cbStr = this.getPrefsStr(this.ut.readFromClipboard(true, cb.kSelectionClipboard));
-		if(this.checkPrefsStr(cbStr))
+		if(this.checkPrefsStr(cbStr, true))
 			return cbStr;
 		return "";
 	}

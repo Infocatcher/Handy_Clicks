@@ -1,5 +1,4 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
-@namespace html url("http://www.w3.org/1999/xhtml");
 
 menuitem.handyClicks-iconic {
 	list-style-image: url("icons16.png");
