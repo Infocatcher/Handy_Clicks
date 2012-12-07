@@ -177,7 +177,7 @@ function setsMigration(allowSave, vers) {
 		}
 	}
 	if(vers < 0.3) { //= Added: 2012-01-13
-		// See converter in handyClicksPrefSvc.loadSettings() and handyClicksPrefSvc.convertJSToJSON().
+		// See converter in handyClicksPrefSvc.loadSettings() and handyClicksPrefSvc.convertToJSON().
 		// So just resave settings.
 		//~ todo: we can do some good things here. Move backups to subfolder?
 	}

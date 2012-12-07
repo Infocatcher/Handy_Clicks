@@ -472,10 +472,60 @@ var handyClicksPrefSvc = {
 		this.saveSettingsAsync(data);
 		return data;
 	},
-	correctSettings: function(types, prefs) {
+	correctSettings: function(types, prefs, force) {
 		types = types || this.types;
 		prefs = prefs || this.prefs;
-		//~ todo
+		//~ todo: test
+
+		var forcedDisByType = { __proto__: null };
+
+		for(type in types) if(types.hasOwnProperty(type)) {
+			var to = types[type];
+			if(!this.isCustomType(type) || !this.isOkCustomObj(to)) {
+				delete types[type];
+				continue;
+			}
+			if(to.hasOwnProperty("enabled") && !to.enabled)
+				forcedDisByType[type] = true;
+			if(force) for(var pName in to) if(to.hasOwnProperty(pName))
+				if(pName.charAt(0) == "_")
+					delete to[pName];
+		}
+
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
+			var so = prefs[sh];
+			if(!this.isOkShortcut(sh) || !this.ut.isObject(so)) {
+				delete prefs[sh];
+				continue;
+			}
+			var forcedDis = this.ut.getOwnProperty(so, "$all", "enabled") == true;
+			for(var type in so) if(so.hasOwnProperty(type)) {
+				var to = so[type];
+				if(!this.isOkFuncObj(to)) {
+					delete so[type];
+					continue;
+				}
+				for(var pName in to) if(to.hasOwnProperty(pName)) {
+					if(
+						pName == "enabled"
+						&& (
+							type in forcedDisByType
+							|| forcedDis && type != "$all"
+						)
+					)
+						to.enabled = false;
+					var pVal = to[pName];
+					if(pName == "delayedAction") {
+						if(!this.isOkFuncObj(pVal)) {
+							delete to[pName];
+							continue;
+						}
+						if(to.eventType == "mousedown")
+							pVal.enabled = false;
+					}
+				}
+			}
+		}
 	},
 	sortSettings: function(o) {
 		//~ todo: use "logical" sort? Place "enabled" first, etc.
@@ -485,10 +535,9 @@ var handyClicksPrefSvc = {
 		types = types || this.types;
 		prefs = prefs || this.prefs;
 
+		this.correctSettings(types, prefs, true);
 		this.sortSettings(types);
 		this.sortSettings(prefs);
-
-		this.correctSettings(types, prefs);
 
 		var o = {
 			version: this.setsVersion,
@@ -502,83 +551,6 @@ var handyClicksPrefSvc = {
 		return this.setsHeader
 			+ "// " + hashFunc + ": " + this.getHash(json, hashFunc) + "\n"
 			+ json;
-
-
-		//~ todo: move following convert actions to correctSettings()
-		var res = this.versionInfo;
-		var sh, so, type, to, pName, pVal, dName;
-		var forcedDisByType = { __proto__: null };
-		var forcedDis;
-
-		res += "var handyClicksCustomTypes = {\n";
-		this.sortObj(types);
-		for(type in types) if(types.hasOwnProperty(type)) {
-			if(!this.isCustomType(type))
-				continue;
-			to = types[type];
-			if(!this.isOkCustomObj(to))
-				continue;
-			res += "\t" + this.fixPropName(type) + ": {\n";
-			for(pName in to) if(to.hasOwnProperty(pName)) {
-				if(pName.charAt(0) == "_")
-					continue;
-				pVal = to[pName];
-				res += "\t\t" + pName + ": " + this.objToSource(pVal) + ",\n";
-				if(pName == "enabled" && pVal == false)
-					forcedDisByType[type] = true;
-			}
-			res = this.delLastComma(res) + "\t},\n";
-		}
-		res = this.delLastComma(res) + "};\n";
-
-		res += "var handyClicksPrefs = {\n";
-		this.sortObj(prefs);
-		for(sh in prefs) if(prefs.hasOwnProperty(sh)) {
-			if(!this.isOkShortcut(sh))
-				continue;
-			so = prefs[sh];
-			if(!this.sortObj(so))
-				continue;
-			res += '\t"' + sh + '": {\n';
-			forcedDis = this.ut.getOwnProperty(so, "$all", "enabled") == true;
-			for(type in so) if(so.hasOwnProperty(type)) {
-				to = so[type];
-				if(!this.isOkFuncObj(to))
-					continue;
-				res += "\t\t" + this.fixPropName(type) + ": {\n";
-				for(pName in to) if(to.hasOwnProperty(pName)) {
-					pVal = to[pName];
-					if(
-						pName == "enabled"
-						&& (
-							type in forcedDisByType
-							|| forcedDis && type != "$all"
-						)
-					)
-						pVal = false;
-					if(pName == "delayedAction") {
-						if(!this.isOkFuncObj(pVal))
-							continue;
-						if(to.eventType == "mousedown")
-							pVal.enabled = false;
-						res += "\t\t\t" + pName + ": {\n";
-						for(dName in pVal) if(pVal.hasOwnProperty(dName))
-							res += "\t\t\t\t" + this.fixPropName(dName) + ": " + this.objToSource(pVal[dName]) + ",\n";
-						res = this.delLastComma(res) + "\t\t\t},\n";
-					}
-					else
-						res += "\t\t\t" + this.fixPropName(pName) + ": " + this.objToSource(pVal) + ",\n";
-				}
-				res = this.delLastComma(res) + "\t\t},\n";
-			}
-			res = this.delLastComma(res) + "\t},\n";
-		}
-		res = this.delLastComma(res) + "};";
-
-		//const hashFunc = "SHA256";
-		return this.setsHeader
-			+ "// " + hashFunc + ": " + this.getHash(res, hashFunc) + "\n"
-			+ res;
 	},
 	get JSON() { // For Firefox < 3.5
 		delete this.JSON;
@@ -760,7 +732,7 @@ var handyClicksPrefSvc = {
 			this.ut._log("Backup: " + _files[now].leafName);
 		}
 		else
-			this.ut._log("No backup");
+			this.ut._log("checkForBackup: No backup");
 
 		while(_fTimes.length > max)
 			_files[_fTimes.shift()].remove(false);

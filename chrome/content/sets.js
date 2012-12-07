@@ -1869,10 +1869,10 @@ var handyClicksSets = {
 
 		var resPath, resLevel, resLength;
 		[
-			"ProgF", "LocalAppData", "ProfD", "Home", "SysD", "WinD",// "CurProcD",
+			"ProgF", "LocalAppData", "ProfD", "Home", "SysD", "WinD", /*"CurProcD",*/
 			"UsrApp", "LocApp",
 			"Locl", "LibD",
-			"hc_SysDrv"//, "hc_ProfDrv"
+			"hc_SysDrv", /*"hc_ProfDrv"*/
 		].forEach(function(alias) {
 			var aliasFile = this.ut.getFileByAlias(alias, true), aliasPath, aliasLength;
 			for(var level = 0; aliasFile; aliasFile = this.ut.getFileParent(aliasFile), level++) {

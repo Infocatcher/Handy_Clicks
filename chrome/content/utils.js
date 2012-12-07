@@ -203,14 +203,19 @@ var handyClicksUtils = {
 	},
 
 	get toErrorConsole() {
-		return this.bind(this.openErrorConsole, this);
+		delete this.toErrorConsole;
+		return this.toErrorConsole = this.bind(this.openErrorConsole, this);
 	},
 	openErrorConsole: function() {
 		if("toErrorConsole" in top)
 			return top.toErrorConsole();
 		if("toJavaScriptConsole" in top)
 			return top.toJavaScriptConsole();
-		return this.wu.openWindowByType("chrome://global/content/console.xul", "global:console");
+		var consoleURI = "@zeniko/console2-clh;1" in Components.classes
+			|| "@mozilla.org/commandlinehandler/general-startup;1?type=console2" in Components.classes // Firefox <= 3.6
+			? "chrome://console2/content/console2.xul"
+			: "chrome://global/content/console.xul";
+		return this.wu.openWindowByType(consoleURI, "global:console");
 	},
 
 	get promptsSvc() {
