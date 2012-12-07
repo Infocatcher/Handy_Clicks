@@ -102,7 +102,7 @@ var handyClicksUninstaller = {
 			.getChildList("", {})
 			.forEach(this.pu.resetPref, this.pu);
 
-		//this.ps._prefsDir.remove(true);
+		//this.ps.prefsDir.remove(true);
 		// Based on components/nsExtensionManager.js from Firefox 3.6
 		(function removeDirRecursive(dir) {
 			try {
@@ -123,7 +123,7 @@ var handyClicksUninstaller = {
 			}
 			dir.permissions = 0755;
 			dir.remove(true);
-		})(this.ps._prefsDir);
+		})(this.ps.prefsDir);
 	}
 };
 handyClicksUninstaller.initUninstallObserver();

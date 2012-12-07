@@ -944,7 +944,7 @@ var handyClicks = {
 			function(tag) {
 				var browsers = doc.getElementsByTagNameNS(this.ut.XULNS, tag);
 				var win, brObj;
-				for(var i = 0, len = browsers.length; i < len; i++) {
+				for(var i = 0, len = browsers.length; i < len; ++i) {
 					win = browsers[i].contentWindow;
 					if(win === targetWin) {
 						br = browsers[i];

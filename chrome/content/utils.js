@@ -409,7 +409,7 @@ var handyClicksUtils = {
 			/^%([^%]+)%/, //~ todo: may conflict with environment variables => [ProfD]/dir like Thunderbird or some other
 			this.bind(function(s, alias) {
 				if(alias.toLowerCase() == "profile" || alias == "ProfD")
-					return this.ps._profileDir.path;
+					return this.ps.profileDir.path;
 				var aliasFile = this.getFileByAlias(alias, true);
 				return aliasFile ? aliasFile.path : s;
 			}, this)
@@ -750,7 +750,7 @@ var handyClicksUtils = {
 			? Array.isArray
 			: function(arr) {
 				return arr instanceof Array
-					|| Object.prototype.toString.call(arr) === "[object Array]";
+					|| Object.prototype.toString.call(arr) == "[object Array]";
 			};
 	},
 	isObject: function(obj) {
@@ -771,7 +771,8 @@ var handyClicksUtils = {
 	},
 	isNativeFunction: function(func) {
 		// Example: function alert() {[native code]}
-		return /function \w+\(\) \{\[native code\]\}/.test(Function.prototype.toSource.call(func));
+		return /^function\s+[^()\s]+\s*\(\)\s*\{\s*\[native code\]\s*\}$/
+			.test(Function.prototype.toString.call(func));
 	},
 	hasNativeMethod: function(obj, methName) {
 		return methName in obj && typeof obj[methName] == "function" && this.isNativeFunction(obj[methName]);
@@ -892,7 +893,7 @@ var handyClicksUtils = {
 	mmLine: function(n) {
 		if(n >= 0xFFFFFFFF)
 			n = 1;
-		return this.mm(n, 1, 1e5);
+		return this.mm(n, 1, 5e5);
 	},
 
 	get trim() { // function(str)
@@ -900,7 +901,7 @@ var handyClicksUtils = {
 		return this.trim = this.hasNativeMethod(String, "trim")
 			? String.trim
 			: function(str) {
-				return str.replace(/^\s+|\s+$/g, "");
+				return String(str).replace(/^\s+|\s+$/g, "");
 			};
 	},
 

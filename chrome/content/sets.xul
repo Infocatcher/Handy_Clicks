@@ -187,7 +187,7 @@
 									onpopupshowing="handyClicksSets.fixMenuitemsWidth(this);">
 									<menuseparator />
 									<menuitem id="hc-sets-tree-openBackupsDir"
-										oncommand="handyClicksSets.reveal(handyClicksPrefSvc._prefsDir);"
+										oncommand="handyClicksSets.reveal(handyClicksPrefSvc.backupsDir);"
 										label="&hc.sets.openDir;" accesskey="&hc.sets.openDirAccesskey;" />
 									<menuseparator />
 									<menuitem id="hc-sets-tree-removeUserBackupsExc10"
@@ -594,7 +594,7 @@
 			<menuitem label="&hc.sets.restoreBackupIncrement;"
 				oncommand="handyClicksSets.importSets(true, handyClicksConst.IMPORT_BACKUP, (this.parentNode.triggerNode || document.popupNode).getAttribute('hc_fileName'));" />
 			<menuitem label="&hc.sets.showBackupFile;"
-				oncommand="handyClicksSets.reveal(handyClicksPrefSvc.getFile((this.parentNode.triggerNode || document.popupNode).getAttribute('hc_fileName')));" />
+				oncommand="handyClicksSets.reveal(handyClicksPrefSvc.getBackupFile((this.parentNode.triggerNode || document.popupNode).getAttribute('hc_fileName')));" />
 			<menuitem id="hc-sets-removeBackup" class="menuitem-iconic handyClicks-iconic"
 				closemenu="single" label="&hc.sets.removeBackup;"
 				oncommand="handyClicksSets.removeBackup((this.parentNode.triggerNode || document.popupNode), event);"

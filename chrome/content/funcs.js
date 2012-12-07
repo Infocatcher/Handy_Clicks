@@ -614,7 +614,7 @@ var handyClicksFuncs = {
 		delete item.prop_hc_image;
 
 		const ttBase = "attr_" + this.ui.tooltipAttrBase;
-		var n = 0;
+		var n = -1;
 
 		var file = this.ut.getLocalFile(path);
 		path = file ? file.path : path;
@@ -627,16 +627,16 @@ var handyClicksFuncs = {
 		}
 		item.attr_image = this.getFileURI(this.ut.getLocalPath(img))
 			|| "moz-icon:file://" + (this.ut.getLocalPath(icon) || path).replace(/\\/g, "/") + "?size=16";
-		item[ttBase + n++] = path;
+		item[ttBase + ++n] = path;
 		item.prop_hc_path = path;
 
 		var args = this.ut.getOwnProperty(item, "prop_hc_args");
 		if(this.ut.isArray(args))
-			for(var j = 0, len = args.length; j < len; j++)
-				item[ttBase + n++] = args[j];
+			for(var j = 0, len = args.length; j < len; ++j)
+				item[ttBase + ++n] = args[j];
 		var addNums = uris.length > 1;
 		uris.forEach(function(uri, indx) {
-			item[ttBase + n++] = (addNums ? (indx + 1) + ". " : "") + uri;
+			item[ttBase + ++n] = (addNums ? (indx + 1) + ". " : "") + uri;
 		});
 	},
 
@@ -864,7 +864,7 @@ var handyClicksFuncs = {
 		var _tabs = [];
 		var curTab = tbr.selectedTab;
 		var removeCurTab = false;
-		for(var i = 0, len = tabs.length; i < len; i++) {
+		for(var i = 0, len = tabs.length; i < len; ++i) {
 			if(tabs[i] == curTab) // Avoid reflows after tab reselection
 				removeCurTab = true;
 			else
@@ -882,7 +882,7 @@ var handyClicksFuncs = {
 		var _tabs = [];
 		var curTab = tbr.selectedTab;
 		var removeCurTab = false;
-		for(var i = tabs.length - 1; i >= 0; i--) {
+		for(var i = tabs.length - 1; i >= 0; --i) {
 			if(tabs[i] == tab)
 				break;
 			if(tabs[i] == curTab) // Avoid reflows after tab reselection
@@ -902,7 +902,7 @@ var handyClicksFuncs = {
 		var _tabs = [];
 		var curTab = tbr.selectedTab;
 		var removeCurTab = false;
-		for(var i = 0, len = tabs.length; i < len; i++) {
+		for(var i = 0, len = tabs.length; i < len; ++i) {
 			if(tabs[i] == tab)
 				break;
 			if(tabs[i] == curTab) // Avoid reflows after tab reselection

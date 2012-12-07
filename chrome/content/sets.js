@@ -291,9 +291,9 @@ var handyClicksSets = {
 			var to = types[type];
 			var oldTo = this.ut.getOwnProperty(savedTypes, type);
 			if(!oldTo)
-				newTypes++;
+				++newTypes;
 			else if(!this.ut.objEquals(to, oldTo))
-				overrideTypes++;
+				++overrideTypes;
 		}
 
 		var deletable = 0;
@@ -312,19 +312,19 @@ var handyClicksSets = {
 				var to = so[type];
 				var newTo = this.ut.getOwnProperty(newSo, type);
 				if(to && !newTo)
-					deletable++;
+					++deletable;
 				if(!this.ut.isObject(to))
 					continue;
 				var da = this.ut.getOwnProperty(to, "delayedAction");
 				var newDa = this.ut.getOwnProperty(newTo, "delayedAction");
 				if(da && !newDa)
-					deletableDa++;
+					++deletableDa;
 			}
 		}
 
 		for(var type in savedTypes) if(savedTypes.hasOwnProperty(type))
 			if(savedTypes[type] && !this.ut.getOwnProperty(types, type))
-				deletableTypes++;
+				++deletableTypes;
 
 		const id = "hc-sets-tree-import";
 		this.$(id + "OverridesValue").value = this._overrides + "/" + this._overrideDa + " + " + overrideTypes;
@@ -380,9 +380,9 @@ var handyClicksSets = {
 		var selectedRows = { __proto__: null };
 		var rngCount = this.tSel.getRangeCount();
 		var start = {}, end = {};
-		for(var i = 0; i < rngCount; i++) {
+		for(var i = 0; i < rngCount; ++i) {
 			this.tSel.getRangeAt(i, start, end);
-			for(var j = start.value, l = end.value; j <= l; j++) {
+			for(var j = start.value, l = end.value; j <= l; ++j) {
 				//var tItem = this.getItemAtIndex(j);
 				var tItem = this.tView.getItemAtIndex(j);
 				selectedRows[tItem.__hash] = true;
@@ -702,9 +702,9 @@ var handyClicksSets = {
 			return [];
 		var tItemsArr = [];
 		var start = {}, end = {}, tItem;
-		for(var i = 0; i < rngCount; i++) {
+		for(var i = 0; i < rngCount; ++i) {
 			this.tSel.getRangeAt(i, start, end);
-			for(var j = start.value, l = end.value; j <= l; j++) {
+			for(var j = start.value, l = end.value; j <= l; ++j) {
 				tItem = this.getItemAtIndex(j);
 				if(!tItem || !("__shortcut" in tItem))
 					continue;
@@ -741,7 +741,7 @@ var handyClicksSets = {
 	},
 	getRowForItem: function(item) {
 		var chs = item.childNodes;
-		for(var i = 0, len = chs.length; i < len; i++)
+		for(var i = 0, len = chs.length; i < len; ++i)
 			if(chs[i].localName == "treerow")
 				return chs[i];
 		return null;
@@ -1065,10 +1065,10 @@ var handyClicksSets = {
 		var tSel = this.tSel;
 		var rngCount = tSel.getRangeCount();
 		var start = {}, end = {};
-		for(var i = 0; i < rngCount; i++) {
+		for(var i = 0; i < rngCount; ++i) {
 			tSel.getRangeAt(i, start, end);
-			for(var j = start.value, l = end.value; j <= l; j++)
-				selected++;
+			for(var j = start.value, l = end.value; j <= l; ++j)
+				++selected;
 		}
 
 		this.$("hc-sets-tree-selectAll")      .setAttribute("disabled", !rowCount || selected == rowCount);
@@ -1113,14 +1113,14 @@ var handyClicksSets = {
 		}
 		var selectedRows = { __proto__: null };
 		var start = {}, end = {};
-		for(var t = 0; t < rngCount; t++) {
+		for(var t = 0; t < rngCount; ++t) {
 			tSel.getRangeAt(t, start, end);
-			for(var i = start.value; i <= end.value; i++)
+			for(var i = start.value; i <= end.value; ++i)
 				selectedRows[i] = false;
 		}
 		this.treeBatch(function() {
 			tSel.clearSelection();
-			for(var i = 0, rowsCount = this.tView.rowCount; i < rowsCount; i++)
+			for(var i = 0, rowsCount = this.tView.rowCount; i < rowsCount; ++i)
 				if(!(i in selectedRows))
 					tSel.rangedSelect(i, i, true);
 		});
@@ -1657,12 +1657,12 @@ var handyClicksSets = {
 	},
 	setDisallowMousemove: function() {
 		var buttons = this.pu.pref("disallowMousemoveButtons") || "";
-		for(var i = 0; i <= 2; i++)
+		for(var i = 0; i <= 2; ++i)
 			this.$("hc-sets-disallowMousemove-" + i).checked = buttons.indexOf(i) != -1;
 	},
 	get disallowMousemoveButtons() {
 		var val = "";
-		for(var i = 0; i <= 2; i++)
+		for(var i = 0; i <= 2; ++i)
 			if(this.$("hc-sets-disallowMousemove-" + i).checked)
 				val += i;
 		return val;
@@ -1875,7 +1875,7 @@ var handyClicksSets = {
 			"hc_SysDrv", /*"hc_ProfDrv"*/
 		].forEach(function(alias) {
 			var aliasFile = this.ut.getFileByAlias(alias, true), aliasPath, aliasLength;
-			for(var level = 0; aliasFile; aliasFile = this.ut.getFileParent(aliasFile), level++) {
+			for(var level = 0; aliasFile; aliasFile = this.ut.getFileParent(aliasFile), ++level) {
 				aliasPath = aliasFile.path;
 				aliasLength = aliasPath.length;
 				if(
@@ -2307,7 +2307,7 @@ var handyClicksSets = {
 				pSrc = this.ps.getPrefsStr(data);
 			break;
 			case ct.IMPORT_BACKUP:
-				pSrc = this.ps.getFile(data);
+				pSrc = this.ps.getBackupFile(data);
 		}
 		//if(!pSrc)
 		//	return;
@@ -2361,18 +2361,19 @@ var handyClicksSets = {
 			this.updTree();
 		if(
 			pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)
-			&& !pSrc.parent.equals(this.ps._prefsDir)
+			&& !pSrc.parent.equals(this.ps.prefsDir)
 		)
 			this.backupsDir = pSrc.parent.path;
 	},
 	createBackup: function() {
 		var bName = this.ps.prefsFileName + this.ps.names.userBackup + new Date().toLocaleFormat("%Y%m%d%H%M%S");
-		var bFile, i = 0;
-		do bFile = this.ps.getFile(bName + (i++ ? "-" + i : "") + ".js");
+		var bFile, i = -1; //~ todo: use nsIFile.createUnique() instead ?
+		do bFile = this.ps.getBackupFile(bName + (++i ? "-" + i : "") + ".js");
 		while(bFile.exists());
-		this.ps.prefsFile.copyTo(null, bFile.leafName);
+		this.ps.prefsFile.copyTo(this.ps.backupsDir, bFile.leafName);
 		this.ut.notifyInWindowCorner(
-			this.ut.getLocalized("backupCreated").replace("%f", bFile.leafName), null,
+			this.ut.getLocalized("backupCreated").replace("%f", bFile.path),
+			null,
 			this.ut.bind(this.reveal, this, [bFile])
 		);
 	},
@@ -2380,7 +2381,7 @@ var handyClicksSets = {
 		var fName = mi.getAttribute("hc_fileName");
 		if(!fName)
 			return false;
-		var file = this.ps.getFile(fName);
+		var file = this.ps.getBackupFile(fName);
 		if(!file.exists()) {
 			mi.parentNode.removeChild(mi);
 			this.updRestorePopup();
@@ -2434,7 +2435,7 @@ var handyClicksSets = {
 			popup.removeChild(sep);
 		}
 
-		var entries = this.ps.prefsDir.directoryEntries;
+		var entries = this.ps.backupsDir.directoryEntries;
 		var entry, fName;
 		var _fTerms = [], _files = {}, _fTime;
 		var _ubTerms = [], _ubFiles = {}, _ubTime;
@@ -2635,7 +2636,7 @@ var handyClicksSets = {
 		if(ok) {
 			this.ps.checkForBackup();
 			// Keep prefs file because content of new file may be equals!
-			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, null, true);
+			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, true);
 
 			this.ps.otherSrc = false;
 			isPartial && this.mergePrefs();

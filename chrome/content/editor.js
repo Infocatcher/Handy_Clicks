@@ -640,7 +640,7 @@ var handyClicksEditor = {
 		["hc-editor-itemTypes", "hc-editor-customTypePopup"].forEach(
 			function(pId) {
 				var mis = this.$(pId).getElementsByTagName("menuitem"), mi;
-				for(var i = mis.length - 1; i >= 0; i--) {
+				for(var i = mis.length - 1; i >= 0; --i) {
 					mi = mis[i];
 					if(this.ps.isCustomType(mi.getAttribute("value")))
 						mi.parentNode.removeChild(mi);
@@ -1182,7 +1182,7 @@ var handyClicksEditor = {
 			var args = so.arguments;
 			var aIts = this.$("hc-editor-funcArgs" + delayed).getElementsByAttribute("hc_argName", "*");
 			var aIt, aVal;
-			for(var i = 0, len = aIts.length; i < len; i++) {
+			for(var i = 0, len = aIts.length; i < len; ++i) {
 				aIt = aIts[i];
 				aVal = aIt.getAttribute("value") || aIt.checked;
 				if(typeof aVal == "string") {

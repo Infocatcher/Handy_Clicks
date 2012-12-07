@@ -103,7 +103,7 @@ var handyClicksPrefUtils = {
 			tbr = brWin.gBrowser || brWin.getBrowser();
 			if(
 				Array.some(
-					tbr.tabContainer.childNodes,
+					tbr.tabs || tbr.tabContainer.childNodes,
 					function(tab) {
 						// For Firefox 4 see "visibleTabs" property in chrome://browser/content/tabbrowser.xml
 						if("_removingTabs" in tbr && tbr._removingTabs.indexOf(tab) != -1)
@@ -112,7 +112,7 @@ var handyClicksPrefUtils = {
 						//if(tab.hidden)
 						//	return;
 						var br = tab.linkedBrowser;
-						if(br.currentURI.spec != "about:config")
+						if(!/^about:config\??/.test(br.currentURI.spec))
 							return false;
 						var tb = br.contentDocument.getElementById("textbox");
 						if(!tb || (tb.wrappedJSObject || tb).value != filter)
@@ -153,13 +153,22 @@ var handyClicksPrefUtils = {
 	},
 	openAboutConfigFilter: function(brWin, filter) {
 		brWin.focus();
+
+		var configURI = "about:config";
+		var builtInFilter = this.ut.fxVersion >= 8;
+		if(builtInFilter)
+			configURI += "?filter=" + encodeURIComponent(filter);
+
 		var tbr = brWin.gBrowser || brWin.getBrowser();
 		if(tbr.currentURI.spec == "about:blank" && !tbr.webProgress.isLoadingDocument) {
 			var tab = tbr.selectedTab;
-			tbr.loadURI("about:config");
+			tbr.loadURI(configURI);
 		}
 		else
-			var tab = tbr.selectedTab = tbr.addTab("about:config");
+			var tab = tbr.selectedTab = tbr.addTab(configURI);
+		if(builtInFilter)
+			return;
+
 		var br = tab.linkedBrowser;
 		var oldFx = this.ut.fxVersion <= 3.0;
 		var _this = this;

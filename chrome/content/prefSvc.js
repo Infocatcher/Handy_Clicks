@@ -19,6 +19,7 @@ var handyClicksPrefSvc = {
 	},
 	prefsDirName: "handyclicks",
 	prefsFileName: "handyclicks_prefs",
+	backupsDirName: "backups",
 	names: {
 		backup:       "_backup-",
 		autoBackup:   "_autobackup-",
@@ -44,7 +45,7 @@ var handyClicksPrefSvc = {
 				var ws = this.wu.wm.getEnumerator("navigator:browser");
 				while(ws.hasMoreElements())
 					if("_handyClicksInitialized" in ws.getNext()) // ?
-						count++;
+						++count;
 				reason = count == 0 ? this.DESTROY_LAST_WINDOW_UNLOAD : this.DESTROY_WINDOW_UNLOAD;
 			}
 			this.destroyCustomFuncs(reason);
@@ -52,18 +53,38 @@ var handyClicksPrefSvc = {
 		this.oSvc.destroy();
 	},
 
-	get _profileDir() {
-		delete this._profileDir;
-		return this._profileDir = Components.classes["@mozilla.org/file/directory_service;1"]
+	get profileDir() {
+		delete this.profileDir;
+		return this.profileDir = Components.classes["@mozilla.org/file/directory_service;1"]
 			.getService(Components.interfaces.nsIProperties)
 			.get("ProfD", Components.interfaces.nsILocalFile || Components.interfaces.nsIFile);
 	},
-	get profileDir() {
-		return this._profileDir.clone();
+	get prefsDir() {
+		delete this.prefsDir;
+		return this.prefsDir = this.getSubDir(this.profileDir, this.prefsDirName);
 	},
-	get _prefsDir() {
-		var dir = this.profileDir;
-		dir.append(this.prefsDirName);
+	get prefsFile() {
+		var file = this.prefsDir.clone();
+		file.append(this.prefsFileName + ".js");
+		delete this.prefsFile;
+		return this.prefsFile = file;
+	},
+	get backupsDir() {
+		delete this.backupsDir;
+		return this.backupsDir = this.getSubDir(this.prefsDir, this.backupsDirName);
+	},
+	getSubDir: function(parentDir, dirName) {
+		var dir = parentDir.clone();
+		dir.append(dirName);
+		if(dir.exists() && !dir.isDirectory()) {
+			var tmp, i = -1;
+			do {
+				tmp = parentDir.clone();
+				tmp.append(dir.leafName + "-moved-" + ++i);
+			}
+			while(tmp.exists());
+			dir.clone().moveTo(null, tmp.leafName);
+		}
 		if(!dir.exists()) {
 			try {
 				dir.create(dir.DIRECTORY_TYPE, 0755);
@@ -73,23 +94,12 @@ var handyClicksPrefSvc = {
 				this.ut._err(e);
 			}
 		}
-		delete this._prefsDir;
-		return this._prefsDir = dir;
+		return dir;
 	},
-	get prefsDir() {
-		return this._prefsDir.clone();
-	},
-	getFile: function(fName) {
-		var file = this.prefsDir;
+	getBackupFile: function(fName) {
+		var file = this.backupsDir.clone();
 		file.append(fName);
 		return file;
-	},
-	get _prefsFile() {
-		delete this._prefsFile;
-		return this._prefsFile = this.getFile(this.prefsFileName + ".js");
-	},
-	get prefsFile() {
-		return this._prefsFile.clone();
 	},
 
 	loadedVersion: -1,
@@ -124,7 +134,7 @@ var handyClicksPrefSvc = {
 
 	_loadStatus: -1, // SETS_LOAD_UNKNOWN
 	loadSettingsAsync: function(callback, context) {
-		var pFile = this._prefsFile;
+		var pFile = this.prefsFile;
 		if(!pFile.exists()) {
 			this.ut._log("loadSettingsAsync() -> save default settings");
 			this.loadSettings(this.defaultSettings(), true);
@@ -149,7 +159,7 @@ var handyClicksPrefSvc = {
 		this.otherSrc = !!pSrc;
 		pSrc = pSrc || this.prefsFile;
 		if(pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)) {
-			fromProfile = pSrc.equals(this._prefsFile);
+			fromProfile = pSrc.equals(this.prefsFile);
 			pSrc = fromProfile && !pSrc.exists()
 				? this.defaultSettings()
 				: this.ut.readFromFile(pSrc);
@@ -161,10 +171,6 @@ var handyClicksPrefSvc = {
 		if(typeof pSrc != "string")
 			scope = pSrc;
 		else {
-			//~ todo:
-			// this.correctSettings()
-			// this.getSettingsStr() -> var str = JSON.stringify(o, censor, "\t")
-
 			pSrc = this.convertToJSON(this.removePrefsDesription(pSrc));
 			try {
 				scope = this.JSON.parse(pSrc);
@@ -214,15 +220,6 @@ var handyClicksPrefSvc = {
 		}
 		this._loadStatus = this.SETS_LOAD_OK;
 	},
-	convertOldJSFormat: function(s) {
-		if(pSrc.substr(0, 4) == "var ") { //= Added: 2012-01-13
-			this.ut._log("Prefs in old format, try convert to JSON");
-			pSrc = this.convertJSToJSON(pSrc)
-				.replace(/^(\s*)"handyClicksPrefsVersion":/m, '$1"version":')
-				.replace(/^(\s*)"handyClicksCustomTypes":/m,  '$1"types":')
-				.replace(/^(\s*)"handyClicksPrefs":/m,        '$1"prefs":');
-		}
-	},
 	convertToJSON: function(s) {
 		if(s.substr(0, 4) != "var ") //= Added: 2012-01-13
 			return s;
@@ -265,14 +262,14 @@ var handyClicksPrefSvc = {
 		this._cPath = this.moveFiles(pFile, this.names.corrupted) || this._cPath;
 		if(this._restoringCounter < this.pu.pref("sets.backupDepth")) {
 			var bName = this.prefsFileName + this.names.backup + this._restoringCounter + ".js";
-			var bFile = this.getFile(bName);
+			var bFile = this.getBackupFile(bName);
 			var hasBak = bFile.exists();
 			if(!hasBak) {
-				this._restoringCounter++;
+				++this._restoringCounter;
 				this.loadSettingsBackup();
 				return;
 			}
-			bFile.copyTo(null, this.prefsFileName + ".js");
+			bFile.copyTo(this.prefsDir, this.prefsFileName + ".js");
 			this.moveFiles(bFile, this.names.restored);
 
 			var errTitle = this.ut.getLocalized("errorTitle");
@@ -282,7 +279,7 @@ var handyClicksPrefSvc = {
 				_this.ut.alert(t, m);
 			}, 0, this, errTitle, errMsg);
 
-			this._restoringCounter++;
+			++this._restoringCounter;
 		}
 		this.loadSettings();
 	},
@@ -487,9 +484,9 @@ var handyClicksPrefSvc = {
 			}
 			if(to.hasOwnProperty("enabled") && !to.enabled)
 				forcedDisByType[type] = true;
-			if(force) for(var pName in to) if(to.hasOwnProperty(pName))
-				if(pName.charAt(0) == "_")
-					delete to[pName];
+			//if(force) for(var pName in to) if(to.hasOwnProperty(pName))
+			//	if(pName.charAt(0) == "_")
+			//		delete to[pName];
 		}
 
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
@@ -535,7 +532,7 @@ var handyClicksPrefSvc = {
 		types = types || this.types;
 		prefs = prefs || this.prefs;
 
-		this.correctSettings(types, prefs, true);
+		this.correctSettings(types, prefs);
 		this.sortSettings(types);
 		this.sortSettings(prefs);
 
@@ -545,7 +542,11 @@ var handyClicksPrefSvc = {
 			prefs:   prefs
 		};
 
-		var json = this.JSON.stringify(o, null, "\t");
+		var json = this.JSON.stringify(o, function censor(key, val) {
+			if(key.charAt(0) == "_")
+				return undefined;
+			return val;
+		}, "\t");
 
 		const hashFunc = "SHA256";
 		return this.setsHeader
@@ -568,18 +569,6 @@ var handyClicksPrefSvc = {
 		this.saveSettingsAsync(this.getSettingsStr(), function() {
 			this.reloadSettings(reloadAll);
 		}, this);
-	},
-	objToSource: function(obj) {
-		return typeof obj == "string"
-			? '"' + this.encForWrite(obj) + '"'
-			: uneval(obj).replace(/^\(|\)$/g, "");
-	},
-	fixPropName: function(pName) {
-		var o = {}; o[pName] = 0;
-		return /'|"/.test(uneval(o)) ? '"' + pName + '"' : pName;
-	},
-	delLastComma: function(str) {
-		return str.replace(/,\n$/, "\n");
 	},
 	sortObj: function(obj, deep) {
 		if(!this.ut.isObject(obj))
@@ -664,11 +653,11 @@ var handyClicksPrefSvc = {
 		var eal = Components.classes["@mozilla.org/uriloader/external-helper-app-service;1"]
 			.getService(Components.interfaces.nsPIExternalAppLauncher);
 		while(--num >= 0) {
-			file = this.getFile(fName + num + ".js");
+			file = this.getBackupFile(fName + num + ".js");
 			if(num == 0)
 				bakFile = file.clone();
 			if(file.exists()) {
-				file.moveTo(null, fName + (num + 1) + ".js");
+				file.moveTo(this.backupsDir, fName + (num + 1) + ".js");
 				eal.deleteTemporaryFileOnExit(file);
 			}
 		}
@@ -678,21 +667,37 @@ var handyClicksPrefSvc = {
 		this.ut.storage("testBackupCreated", true);
 	},
 
-	moveFiles: function(mFile, nAdd, depth, leaveOriginal) {
-		depth = typeof depth == "number" ? depth : this.pu.pref("sets.backupDepth");
-		if(depth <= 0 || !mFile.exists())
+	moveFiles: function(firstFile, nameAdd, leaveOriginal, noFirstNum, depth) {
+		if(!firstFile.exists())
 			return null;
-		var num = depth - 1;
-		var fName = this.prefsFileName + nAdd;
-		var pDir = this.prefsDir;
-		var file;
-		while(--num >= 0) {
-			file = this.getFile(fName + num + ".js");
-			if(file.exists())
-				file.moveTo(pDir, fName + (num + 1) + ".js");
+		if(depth === undefined)
+			depth = this.pu.pref("sets.backupDepth");
+		var maxNum = depth - 1;
+		var fName = this.prefsFileName + nameAdd;
+		function getName(n) {
+			if(noFirstNum && n == 0)
+				return fName.replace(/-$/, "") + ".js";
+			return fName + n + ".js";
 		}
-		mFile.clone()[leaveOriginal ? "copyTo" : "moveTo"](pDir, fName + "0.js");
-		return mFile.path;
+		var num, file;
+		num = maxNum;
+		for(;;) {
+			file = this.getBackupFile(getName(++num));
+			if(!file.exists())
+				break;
+			file.remove(false);
+		}
+		if(depth <= 0)
+			return null;
+		var pDir = this.backupsDir;
+		num = maxNum;
+		while(--num >= 0) {
+			file = this.getBackupFile(getName(num));
+			if(file.exists())
+				file.moveTo(pDir, getName(num + 1));
+		}
+		firstFile.clone()[leaveOriginal ? "copyTo" : "moveTo"](pDir, getName(0));
+		return firstFile.path;
 	},
 	get minBackupInterval() {
 		return (this.pu.pref("sets.backupAutoInterval") || 24*60*60)*1000;
@@ -700,10 +705,11 @@ var handyClicksPrefSvc = {
 	checkForBackup: function() {
 		if(!this.prefsFile.exists())
 			return;
-		var entries = this.ps.prefsDir.directoryEntries;
+		var backupsDir = this.backupsDir;
+		var entries = backupsDir.directoryEntries;
 		var entry, fName, fTime;
 		var _fTimes = [], _files = {};
-		const namePrefix = this.ps.prefsFileName + this.ps.names.autoBackup;
+		const namePrefix = this.ps.prefsFileName + this.names.autoBackup;
 		while(entries.hasMoreElements()) {
 			entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
 			fName = entry.leafName;
@@ -727,8 +733,8 @@ var handyClicksPrefSvc = {
 		if(max > 0 && (!_fTimes.length || now >= _fTimes[_fTimes.length - 1] + this.minBackupInterval)) {
 			_fTimes.push(now);
 			fName = namePrefix + newTime.toLocaleFormat("%Y%m%d%H%M%S") + ".js";
-			this.prefsFile.copyTo(null, fName);
-			_files[now] = this.getFile(fName);
+			this.prefsFile.clone().copyTo(backupsDir, fName);
+			_files[now] = this.getBackupFile(fName);
 			this.ut._log("Backup: " + _files[now].leafName);
 		}
 		else
@@ -825,22 +831,10 @@ var handyClicksPrefSvc = {
 		return label + "[" + this.removeCustomPrefix(type) + "]";
 	},
 
-	encForWrite: function(s) {
-		return s
-			? s
-				.replace(/["\\]/g, "\\$&")
-
-				.replace(/\n/g, "\\n")
-				.replace(/\r/g, "\\r")
-
-				.replace(/\u2028/g, "\\u2028")
-				.replace(/\u2029/g, "\\u2029")
-			: "";
+	enc: function(s) { //~todo: Not needed, but still used in editor
+		return s;
 	},
-	enc: function(s) {
-		return s; // Not used now
-	},
-	dec: function(s) {
+	dec: function(s) { //~todo: Not needed, but still used in sets and editor
 		return s || "";
 	},
 	encURI: function(s) {

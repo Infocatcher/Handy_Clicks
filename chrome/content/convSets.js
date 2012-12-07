@@ -2,17 +2,9 @@
 // this === handyClicksPrefSvc
 function setsMigration(allowSave, vers) {
 	if(vers === undefined)
-		vers = this.loadedVersion;
+		vers = this.loadedVersion || 0;
 	if(vers >= this.setsVersion)
 		return;
-
-	if(allowSave) {
-		var fNameBase = this.prefsFileName + this.names.version + vers;
-		var fName, i = 0;
-		do fName = fNameBase + (i++ ? "-" + i : "") + ".js";
-		while(this.getFile(fName).exists());
-		this.prefsFile.copyTo(null, fName);
-	}
 
 	if(vers < 0.12 && allowSave) { //= Added: 2009-07-29
 		// New file names format
@@ -179,11 +171,36 @@ function setsMigration(allowSave, vers) {
 	if(vers < 0.3) { //= Added: 2012-01-13
 		// See converter in handyClicksPrefSvc.loadSettings() and handyClicksPrefSvc.convertToJSON().
 		// So just resave settings.
-		//~ todo: we can do some good things here. Move backups to subfolder?
+
+		// Store backups in separate directory
+		if(allowSave) {
+			var entries = this.prefsDir.directoryEntries;
+			var backupsDir = this.backupsDir;
+			const fPrefix = this.prefsFileName;
+			const mainFile = fPrefix + ".js";
+			while(entries.hasMoreElements()) {
+				var entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
+				var fName = entry.leafName;
+				if(
+					!entry.isFile()
+					|| !this.ut.hasPrefix(fName, fPrefix)
+					|| !/\.js$/i.test(fName)
+					|| fName == mainFile
+				)
+					continue;
+				//entry.moveTo(backupsDir, fName);
+				var newFile = this.getBackupFile(fName);
+				newFile.createUnique(newFile.NORMAL_FILE_TYPE, 0644); // Simple way to get unique file name
+				entry.moveTo(backupsDir, newFile.leafName);
+			}
+		}
+	}
+
+	if(!allowSave)
+		this.loadedVersion = this.setsVersion;
+	else {
+		this.moveFiles(this.prefsFile, this.names.version + vers + "-", true, true);
+		this.saveSettingsObjectsAsync();
 	}
 	this.ut._info("Format of prefs file updated: " + vers + " => " + this.setsVersion);
-	if(allowSave)
-		this.saveSettingsObjectsAsync();
-	else
-		this.loadedVersion = this.setsVersion;
 }

@@ -789,7 +789,7 @@
 					var cnt = 0;
 					scopeArr.forEach(function(p) {
 						if(p.indexOf(lastWord) == 0)
-							cnt++;
+							++cnt;
 					});
 
 					if(isStr)

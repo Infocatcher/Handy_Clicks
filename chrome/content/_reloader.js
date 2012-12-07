@@ -46,7 +46,7 @@ var handyClicksReloader = {
 
 		var sheetsHrefs = [];
 		var nodes = document.childNodes;
-		for(var i = nodes.length - 1; i >= 0; i--) {
+		for(var i = nodes.length - 1; i >= 0; --i) {
 			var node = nodes[i];
 			if(
 				node instanceof XMLStylesheetProcessingInstruction
@@ -67,13 +67,13 @@ var handyClicksReloader = {
 				sheetsHrefs = document[sh];
 			else {
 				var sheets = document.styleSheets;
-				for(var i = sheets.length - 1; i >= 0; i--) {
+				for(var i = sheets.length - 1; i >= 0; --i) {
 					var sheet = sheets[i];
 					var rules = sheet.cssRules;
 					var href = sheet.href;
 					if(href.indexOf(ns) == 0) {
 						sheetsHrefs.push(href);
-						for(var j = rules.length - 1; j >= 0; j--)
+						for(var j = rules.length - 1; j >= 0; --j)
 							sheet.deleteRule(rules[j]);
 					}
 				}
