@@ -429,13 +429,13 @@ var handyClicksSets = {
 		);
 	},
 	appendContainerItem: function(parent, hash, label) {
-		var tItem = this.ut.parseFromXML(
-			<treeitem xmlns={this.ut.XULNS} container="true" open="true">
-				<treerow>
-					<treecell label={label} />
-				</treerow>
-				<treechildren />
-			</treeitem>
+		var tItem = this.ut.parseXULFromString('\
+			<treeitem xmlns="' + this.ut.XULNS + '" container="true" open="true">\
+				<treerow>\
+					<treecell label="' + label + '" />\
+				</treerow>\
+				<treechildren />\
+			</treeitem>'
 		);
 		parent.appendChild(tItem);
 		tItem.__hash = hash;
@@ -2239,7 +2239,11 @@ var handyClicksSets = {
 			else if(targetId == ct.EXPORT_CLIPBOARD_HTML) {
 				var uri = ct.PROTOCOL_SETTINGS_ADD + this.ps.encURI(pStr);
 				var label = this.extractLabels(!onlyCustomTypes).join(", ");
-				this.ut.copyStr(<a href={uri}>{label}</a>.toXMLString());
+				this.ut.copyStr(
+					'<a href="' + this.ut.encodeHTML(uri) + '">'
+					+ this.ut.encodeHTML(label, false)
+					+ "</a>"
+				);
 			}
 			else
 				this.ut.writeToFile(pStr, file);
@@ -2480,27 +2484,24 @@ var handyClicksSets = {
 		var bytes = this.ut.getLocalized("bytes");
 		var testBackupStatus = this.ut.storage("testBackupCreated") ? "thisSession" : "afterCrash";
 
-		this.ut.sortAsNumbers(_fTerms).reverse().forEach(
-			function(time) {
-				var file = _files[time].shift();
-				var fTime = new Date(time).toLocaleString();
-				var fSize = file.fileSize.toString().replace(/(\d)(?=(?:\d{3})+(?:\D|$))/g, "$1 ");
-				var fName = file.leafName;
-				var fPath = file.path;
-				popup.insertBefore(this.ut.parseFromXML(
-					<menuitem xmlns={this.ut.XULNS}
-						label={ fTime + " [" + fSize + " " + bytes + "] \u2013 " + fName }
-						class="menuitem-iconic"
-						tooltiptext={fPath}
-						hc_fileName={fName}
-						hc_userBackup={ this.ut.hasPrefix(fName, userBackup) }
-						hc_oldBackup={  this.ut.hasPrefix(fName, oldBackup) }
-						hc_testBackup={ testBackupStatus && this.ut.hasPrefix(fName, testBackup) }
-					/>
-				), sep);
-			},
-			this
-		);
+		var df = document.createDocumentFragment();
+		this.ut.sortAsNumbers(_fTerms).reverse().forEach(function(time) {
+			var file = _files[time].shift();
+			var fTime = new Date(time).toLocaleString();
+			var fSize = file.fileSize.toString().replace(/(\d)(?=(?:\d{3})+(?:\D|$))/g, "$1 ");
+			var fName = file.leafName;
+			var fPath = file.path;
+			df.appendChild(this.ut.createElement("menuitem", {
+				label: fTime + " [" + fSize + " " + bytes + "] \u2013 " + fName,
+				class: "menuitem-iconic",
+				tooltiptext: fPath,
+				hc_fileName: fName,
+				hc_userBackup: this.ut.hasPrefix(fName, userBackup),
+				hc_oldBackup: this.ut.hasPrefix(fName, oldBackup),
+				hc_testBackup: testBackupStatus && this.ut.hasPrefix(fName, testBackup)
+			}));
+		}, this);
+		popup.insertBefore(df, sep);
 		_fTerms = _files = null;
 
 		popup.__userBackups = this.ut.sortAsNumbers(_ubTerms).reverse().map(function(time) {

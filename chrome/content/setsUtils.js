@@ -74,28 +74,28 @@ var handyClicksSetsUtils = {
 		var de = document.documentElement;
 		de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
 
-		var onTop = this.ut.parseFromXML(
-			<hbox xmlns={this.ut.XULNS} id="hc-sets-floatToolbar"
-				oncommand="event.stopPropagation();">
-				<button id="hc-sets-onTop"
-					class="hcFloatButton"
-					type="checkbox" autoCheck="false"
-					context="hc-sets-onTopContext"
-					hidden={ !this.pu.pref("ui.onTopButton") }
-					oncommand="handyClicksWinUtils.toggleOnTop();"
-					hc_key="hc-sets-key-toggleOnTop"
-					label={ this.ut.getLocalized("onTop") }
-					tooltiptext={ this.ut.getLocalized("onTopTip") }
-				/>
-				<menupopup id="hc-sets-onTopContext"
-					onpopupshowing="handyClicksSetsUtils.initOnTopContext(this);"
-					oncommand="handyClicksSetsUtils.handleOnTopContextCommand(event.target);">
-					<menuitem id="hc-sets-onTopButtonLabel" type="checkbox"
-						hc_pref="ui.onTopButtonLabel"
-						label={ this.ut.getLocalized("onTopButtonLabel") }
-					/>
-				</menupopup>
-			</hbox>
+		var onTop = this.ut.parseXULFromString('\
+			<hbox xmlns="' + this.ut.XULNS + '" id="hc-sets-floatToolbar"\
+				oncommand="event.stopPropagation();">\
+				<button id="hc-sets-onTop"\
+					class="hcFloatButton"\
+					type="checkbox" autoCheck="false"\
+					context="hc-sets-onTopContext"\
+					hidden="' + !this.pu.pref("ui.onTopButton") + '"\
+					oncommand="handyClicksWinUtils.toggleOnTop();"\
+					hc_key="hc-sets-key-toggleOnTop"\
+					label="' + this.ut.getLocalized("onTop") + '"\
+					tooltiptext="' + this.ut.getLocalized("onTopTip") + '"\
+				/>\
+				<menupopup id="hc-sets-onTopContext"\
+					onpopupshowing="handyClicksSetsUtils.initOnTopContext(this);"\
+					oncommand="handyClicksSetsUtils.handleOnTopContextCommand(event.target);">\
+					<menuitem id="hc-sets-onTopButtonLabel" type="checkbox"\
+						hc_pref="ui.onTopButtonLabel"\
+						label="' + this.ut.getLocalized("onTopButtonLabel") + '"\
+					/>\
+				</menupopup>\
+			</hbox>'
 		);
 		de.appendChild(onTop);
 
@@ -413,13 +413,11 @@ var handyClicksSetsUtils = {
 	TOOLTIP_OFFSET_CURSOR: 12,
 	get infoTooltip() {
 		delete this.infoTooltip;
-		return this.infoTooltip = document.documentElement.appendChild(
-			this.ut.parseFromXML(
-				<tooltip xmlns={this.ut.XULNS} id="handyClicks-infoTooltip" onmouseover="this.hidePopup();">
-					<description />
-				</tooltip>
-			)
-		);
+		return this.infoTooltip = document.documentElement.appendChild(this.ut.parseXULFromString('\
+			<tooltip xmlns="' + this.ut.XULNS + '" id="handyClicks-infoTooltip" onmouseover="this.hidePopup();">\
+				<description />\
+			</tooltip>'
+		));
 	},
 	showInfoTooltip: function _sit(anchor, msg, hideDelay, offset) {
 		if(!msg)

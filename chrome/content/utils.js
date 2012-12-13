@@ -368,7 +368,7 @@ var handyClicksUtils = {
 	},
 	getFileByAlias: function(alias, dontShowErrors) {
 		if(alias == "_ProfDrv" || alias == "_SysDrv") { //= added 2012-01-10
-			this.ut._deprecated('Alias "' + alias + '" is deprecated. Use "hc' + alias + '" instead.');
+			this._deprecated('Alias "' + alias + '" is deprecated. Use "hc' + alias + '" instead.');
 			alias = "hc" + alias;
 		}
 		if(alias == "hc_ProfDrv")
@@ -904,8 +904,17 @@ var handyClicksUtils = {
 				return String(str).replace(/^\s+|\s+$/g, "");
 			};
 	},
+	encodeHTML: function(str, encDoubleQuotes) {
+		str = str
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;");
+		if(encDoubleQuotes !== false)
+			str = str.replace(/"/g, "&quot;");
+		return str;
+	},
 
-	// E4X
+	// DOM utils
 	parseFromString: function(str, contentType) {
 		return new DOMParser().parseFromString(str, contentType || "application/xml").documentElement;
 	},
@@ -921,7 +930,19 @@ var handyClicksUtils = {
 			this
 		).join("");
 	},
-	parseFromXML: function(xml) {
+	parseXULFromString: function(str) {
+		return this.parseFromString(str.replace(/>\s+</g, "><"));
+	},
+	createElement: function(name, attrs) {
+		return this.setAttributes(document.createElement(name), attrs);
+	},
+	setAttributes: function(node, attrs) {
+		if(attrs) for(var attrName in attrs) if(attrs.hasOwnProperty(attrName))
+			node.setAttribute(attrName, attrs[attrName]);
+		return node;
+	},
+	parseFromXML: function(xml) { // Deprecated
+		this._deprecated("Called obsolete parseFromXML(), use parseXULFromString() without E4X instead");
 		var pp = XML.prettyPrinting;
 		XML.prettyPrinting = false;
 		var elt = this.parseFromString(xml.toXMLString());

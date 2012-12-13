@@ -145,32 +145,26 @@ var handyClicksEditor = {
 		}
 	},
 	addTestButtons: function() {
-		var testBtn = this.testButton = this.ut.parseFromXML(
-			<button xmlns={this.ut.XULNS}
-				id="hc-editor-buttonTest"
-				class="dialog-button hc-iconic"
-				command="hc-editor-cmd-test"
-				onclick="handyClicksEditor.testSettings(event);"
-				hc_key="hc-editor-key-test"
-			/>
-		);
-		var undoBtn = this.undoButton = this.ut.parseFromXML(
-			<button xmlns={this.ut.XULNS}
-				id="hc-editor-buttonUndo"
-				class="dialog-button hc-iconic"
-				command="hc-editor-cmd-undo"
-				hc_key="hc-editor-key-undo"
-				disabled="true"
-			/>
-		);
+		var df = document.createDocumentFragment();
+		df.appendChild(this.ut.createElement("button", {
+			id: "hc-editor-buttonTest",
+			class: "dialog-button hc-iconic",
+			command: "hc-editor-cmd-test",
+			onclick: "handyClicksEditor.testSettings(event);",
+			hc_key: "hc-editor-key-test"
+		}));
+		df.appendChild(this.ut.createElement("button", {
+			id: "hc-editor-buttonUndo",
+			class: "dialog-button hc-iconic",
+			command: "hc-editor-cmd-undo",
+			hc_key: "hc-editor-key-undo",
+			disabled: "true"
+		}));
 		var delBtn = this.deleteButton = document.documentElement.getButton("extra2");
 		delBtn.id = "hc-editor-buttonDelete";
 		delBtn.className += " hc-iconic";
 		delBtn.setAttribute("hc_key", "hc-editor-key-delete");
-		var insPoint = delBtn.nextSibling;
-		var btnBox = delBtn.parentNode;
-		btnBox.insertBefore(testBtn, insPoint);
-		btnBox.insertBefore(undoBtn, insPoint);
+		delBtn.parentNode.insertBefore(df, delBtn.nextSibling);
 	},
 	initTabboxToolbar: function(tbId) {
 		var tb = this.e(tbId);
@@ -607,31 +601,40 @@ var handyClicksEditor = {
 		var tList = this.$("hc-editor-customTypePopup");
 		this.delCustomTypes();
 		var cTypes = this.ps.types;
-		var typeObj, mi, _mi;
 		var hideSep = true;
-		var label, _labels = { __proto__: null };
+		var _labels = { __proto__: null };
+		var primaryItems = document.createDocumentFragment();
+		var secondaryItems = document.createDocumentFragment();
 		for(var cType in cTypes) if(cTypes.hasOwnProperty(cType)) {
 			if(!this.ps.isCustomType(cType)) {
 				this.ut._warn('Invalid custom type id: "' + cType + '"');
 				continue;
 			}
-			typeObj = cTypes[cType];
+			var typeObj = cTypes[cType];
 			if(!this.ut.isObject(typeObj)) {
 				this.ut._warn('Invalid custom type: "' + cType + '" (' + typeObj + ")");
 				continue;
 			}
-			label = this.ps.dec(typeObj.label) || cType;
+			var label = this.ps.dec(typeObj.label) || cType;
 			if(label in _labels)
 				label += " (" + ++_labels[label] + ")";
 			else
 				_labels[label] = 1;
-			mi = <menuitem xmlns={this.ut.XULNS} value={cType} label={label} tooltiptext={cType} />;
-			_mi = mi.copy();
-			mi.@disabled = _mi.@hc_disabled = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
-			parent.insertBefore(this.ut.parseFromXML(mi), sep);
-			tList.appendChild(this.ut.parseFromXML(_mi));
+			var dis = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
+			var mi = this.ut.createElement("menuitem", {
+				label: label,
+				value: cType,
+				tooltiptext: cType
+			});
+			var _mi = mi.cloneNode(true);
+			mi.setAttribute("disabled", dis);
+			_mi.setAttribute("hc_disabled", dis);
+			primaryItems.appendChild(mi);
+			secondaryItems.appendChild(_mi);
 			hideSep = false;
 		}
+		parent.insertBefore(primaryItems, sep);
+		tList.appendChild(secondaryItems);
 		sep.hidden = hideSep;
 		parent.parentNode.value = this.type || ""; // <menulist>
 		this.highlightUsedTypes();
@@ -840,54 +843,57 @@ var handyClicksEditor = {
 		return null;
 	},
 	addControl: function(argName, argType, argVal, delayed) {
-		const ns = this.ut.XULNS;
-		//default xml namespace = this.ut.XULNS;
-		var argContainer = <hbox xmlns={ns} align="center" class="hc-editor-argsContainer" />;
-		var elt = <{argType} xmlns={ns} hc_argName={argName} />;
-		elt.@onclick = "handyClicksEditor.clickHelper(event);";
+		var argContainer = this.ut.createElement("hbox", {
+			class: "hc-editor-argsContainer",
+			align: "center"
+		});
+		var elt = this.ut.createElement(argType, {
+			hc_argName: argName,
+			onclick: "handyClicksEditor.clickHelper(event);"
+		});
 
 		var cfgTt = this.ut.getLocalized("openAboutConfig");
-		var cfg;
-
 		switch(argType) {
 			case "checkbox":
-				elt.@checked = !!argVal;
-				var label = elt.@label = this.ut.getLocalized(argName);
-
-				cfg = this.getAboutConfigEntry(label);
+				var label = this.ut.getLocalized(argName);
+				elt.setAttribute("checked", !!argVal);
+				elt.setAttribute("label", label);
+				var cfg = this.getAboutConfigEntry(label);
 				if(cfg) {
-					elt.@hc_aboutConfigEntry = cfg;
-					elt.@tooltiptext = cfgTt;
+					elt.setAttribute("hc_aboutConfigEntry", cfg);
+					elt.setAttribute("tooltiptext", cfgTt);
 				}
 			break;
 			case "menulist":
 				// Description:
-				argContainer.appendChild(<label xmlns={ns} value={this.ut.getLocalized(argName)} />);
+				argContainer.appendChild(this.ut.createElement("label", {
+					value: this.ut.getLocalized(argName)
+				}));
 				// List of values:
-				var mp = <menupopup xmlns={ns} />;
+				var mp = document.createElement("menupopup");
 				this.types.menulists[argName].forEach(function(val, indx) {
 					var label = this.ut.getLocalized(argName + "[" + val + "]");
-					cfg = this.getAboutConfigEntry(label);
-					var mi = <menuitem xmlns={ns}
-						value={val}
-						label={label}
-						hc_aboutConfigEntry={cfg}
-						tooltiptext={cfg ? cfgTt : ""}
-					/>;
-					if(!cfg) // Firefox 1.5 crashes on actions like mi.@some_attribute = "";
-						delete mi.@hc_aboutConfigEntry;
-					else if(!argVal && indx === 0 || val == argVal) { //~ todo: test!
-						elt.@hc_aboutConfigEntry = cfg;
-						elt.@tooltiptext = cfgTt;
-						elt.@oncommand = "handyClicksEditor.setAboutConfigTooltip(this);";
+					var cfg = this.getAboutConfigEntry(label);
+					var mi = this.ut.createElement("menuitem", {
+						value: val,
+						label: label
+					});
+					if(cfg) {
+						mi.setAttribute("hc_aboutConfigEntry", cfg);
+						mi.setAttribute("tooltiptext", cfgTt);
+						if(!argVal && indx === 0 || val == argVal) { //~ todo: test!
+							elt.setAttribute("hc_aboutConfigEntry", cfg);
+							elt.setAttribute("tooltiptext", cfgTt);
+							elt.setAttribute("oncommand", "handyClicksEditor.setAboutConfigTooltip(this);");
+						}
 					}
 					mp.appendChild(mi);
 				}, this);
-				elt.@value = String(argVal);
+				elt.setAttribute("value", argVal);
 				elt.appendChild(mp);
 		}
 		argContainer.appendChild(elt);
-		this.$("hc-editor-funcArgs" + delayed).appendChild(this.ut.parseFromXML(argContainer));
+		this.$("hc-editor-funcArgs" + delayed).appendChild(argContainer);
 	},
 	getAboutConfigEntry: function(label) {
 		return /\(([\w-]+(?:\.[\w-]+)+)\)/.test(label) && RegExp.$1;

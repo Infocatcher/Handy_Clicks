@@ -534,20 +534,29 @@ var handyClicksFuncs = {
 
 	// Generated popup:
 	createPopup: function(items) {
-		if(typeof items == "xml")
-			return this.getPopup(items);
-		return this.appendItems(this.getPopup(), items);
+		if(this.ut.isArray(items))
+			return this.appendItems(this.getPopup(), items);
+		return this.getPopup(items);
 	},
-	getPopup: function(xml) {
+	getPopup: function(popup) {
+		if(!popup)
+			popup = document.createElement("popup");
+		else if(typeof popup == "string")
+			popup = this.ut.parseXULFromString(popup);
+		else if(typeof popup == "xml") // Deprecated
+			popup = this.ut.parseFromXML(popup);
+
 		var pSet = this.$("mainPopupSet");
 		const popupId = "handyClicks-generatedPopup";
-		var popup = this.e(popupId);
-		popup && pSet.removeChild(popup);
-		popup = xml || <menupopup xmlns={this.ut.XULNS} />;
-		popup.@id = popupId;
-		popup.@tooltip = "handyClicks-tooltip";
-		popup.@popupsinherittooltip = "true";
-		return pSet.appendChild(this.ut.parseFromXML(popup));
+		var oldPopup = this.e(popupId);
+		oldPopup && pSet.removeChild(oldPopup);
+
+		this.ut.setAttributes(popup, {
+			id: popupId,
+			tooltip: "handyClicks-tooltip",
+			popupsinherittooltip: "true"
+		});
+		return pSet.appendChild(popup);
 	},
 	appendItems: function(parent, items) {
 		items.forEach(function(item) {
@@ -644,10 +653,14 @@ var handyClicksFuncs = {
 		const cmd = "handyClicksFuncs.openEditorForLastEvent();";
 		const label = this.ut.getLocalized("edit");
 		const accesskey = this.ut.getLocalized("editAccesskey");
+		const sepClass = "handyClicks-editItem-separator";
 		const miClass = "menuitem-iconic handyClicks-iconic handyClicks-editItem";
 		if(this.ut.isArray(items)) {
 			items.push(
-				{ tagName: "menuseparator" },
+				{
+					tagName: "menuseparator",
+					attr_class: sepClass
+				},
 				{
 					tagName: "menuitem",
 					attr_oncommand: cmd,
@@ -658,20 +671,32 @@ var handyClicksFuncs = {
 			);
 			return;
 		}
-		var sep = <menuseparator xmlns={this.ut.XULNS} />;
-		var mi = <menuitem xmlns={this.ut.XULNS}
-			oncommand={cmd}
-			class={miClass}
-			label={label}
-			accesskey={accesskey}
-		/>;
-		if(typeof items == "xml") {
-			items.lastChild += sep + mi;
+		if(this.ut.isObject(items) && "nodeName" in items) {
+			var df = document.createDocumentFragment();
+			df.appendChild(this.ut.createElement("menuseparator", {
+				class: sepClass
+			}));
+			df.appendChild(this.ut.createElement("menuitem", {
+				oncommand: cmd,
+				class: miClass,
+				label: label,
+				accesskey: accesskey
+			}));
+			items.appendChild(df);
 			return;
 		}
-		if(this.ut.isObject(items) && "appendChild" in items) {
-			items.appendChild(this.ut.parseFromXML(sep));
-			items.appendChild(this.ut.parseFromXML(mi));
+		if(typeof items == "xml") {
+			this.ut._warn("addEditItem() with E4X is deprecated");
+			eval('\
+				var sep = <menuseparator xmlns={this.ut.XULNS} />;\
+				var mi = <menuitem xmlns={this.ut.XULNS}\
+					oncommand={cmd}\
+					class={miClass}\
+					label={label}\
+					accesskey={accesskey}\
+				/>;\
+				items.lastChild += sep + mi;'
+			);
 			return;
 		}
 		this.ut._warn("addEditItem: unsupported items: (" + typeof items + ") " + items);
