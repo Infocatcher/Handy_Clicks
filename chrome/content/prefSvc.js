@@ -87,7 +87,7 @@ var handyClicksPrefSvc = {
 		}
 		if(!dir.exists()) {
 			try {
-				dir.create(dir.DIRECTORY_TYPE, 0755);
+				dir.create(dir.DIRECTORY_TYPE, this.ut.PERMS_DIRECTORY);
 			}
 			catch(e) {
 				this.ut._err('Can\'t create directory: "' + dir.path + '"');

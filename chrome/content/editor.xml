@@ -455,7 +455,7 @@
 						var fName = this.getDefaultFilename(ext);
 						file = ut.getFileByAlias("TmpD");
 						file.append(fName);
-						file.createUnique(file.NORMAL_FILE_TYPE, 0644);
+						file.createUnique(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
 						this._lineBreak = null; // Will use platform's line breaks
 						this.watchFile(file, true);
 
@@ -506,8 +506,13 @@
 					if(ee) {
 						var args = [file.path];
 						var eeArgs = ut.pu.pref("editor.externalEditorArgs");
-						if(eeArgs && eeArgs.indexOf("%L") != -1)
-							args.push(eeArgs.replace("%L", this.currentLine));
+						if(eeArgs) {
+							if(eeArgs.indexOf("%L") != -1)
+								eeArgs = eeArgs.replace(/%L/g, this.currentLine);
+							if(eeArgs.indexOf("%C") != -1)
+								eeArgs = eeArgs.replace(/%C/g, this.currentColumn);
+							args.push(eeArgs);
+						}
 						if(ut.startProcess(ee, args))
 							this.fade();
 					}
@@ -574,8 +579,7 @@
 					if(!("handyClicksUtils" in top))
 						return null;
 					var ut = top.handyClicksUtils;
-					var fp = Components.classes["@mozilla.org/filepicker;1"]
-						.createInstance(Components.interfaces.nsIFilePicker);
+					var fp = ut.fp;
 					if(defaultString)
 						fp.defaultString = defaultString;
 					fp.defaultExtension = "js";
@@ -696,7 +700,7 @@
 				</body>
 			</method>
 
-			<field name="_fadeTimeout">null</field>
+			<field name="_fadeTimer">0</field>
 			<method name="fade">
 				<body>
 				<![CDATA[
@@ -704,24 +708,42 @@
 					const opMax = 1;
 					const opMin = 0.42;
 					const opDur = 400;
-					const opDelay = 5;
+					const opInterval = 5;
 
-					if(this._fadeTimeout)
-						clearTimeout(this._fadeTimeout);
+					if(this._fadeTimer)
+						clearTimeout(this._fadeTimer);
 
-					var endTime = Date.now() + opDur;
 					var stl = this.style;
-					this._fadeTimeout = setTimeout(function(_this) {
+					var halfDur = Math.round(opDur/2);
+
+					var transition = "transition" in stl && "transition"
+						|| "MozTransition" in stl && "-moz-transition";
+					if(transition) {
+						stl.setProperty(transition, "opacity " + halfDur + "ms ease-out", "important");
+						stl.setProperty("opacity", opMin, "important");
+						this._fadeTimer = setTimeout(function(_this) {
+							stl.removeProperty("opacity");
+							_this._fadeTimer = setTimeout(function() {
+								stl.removeProperty(transition);
+								_this._fadeTimer = 0;
+							}, halfDur + 50);
+						}, halfDur, this);
+						return;
+					}
+
+					// Legacy:
+					var endTime = Date.now() + opDur;
+					this._fadeTimer = setTimeout(function animate(_this) {
 						var remTime = endTime - Date.now();
 						if(remTime < 0) {
 							stl.removeProperty("opacity");
-							_this._fadeTimeout = null;
+							_this._fadeTimer = 0;
 							return;
 						}
-						var op = opMin + Math.abs((remTime - opDur/2) * (opMax - opMin) / (opDur/2));
+						var op = opMin + Math.abs((remTime - halfDur)*(opMax - opMin)/halfDur);
 						stl.setProperty("opacity", op, "important");
-						_this._fadeTimeout = setTimeout(arguments.callee, opDelay, this);
-					}, opDelay, this);
+						_this._fadeTimer = setTimeout(animate, opInterval, this);
+					}, opInterval, this);
 				]]>
 				</body>
 			</method>

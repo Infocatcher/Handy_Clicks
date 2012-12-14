@@ -995,13 +995,27 @@ var handyClicksEditor = {
 
 	editCode: function() {
 		var tabbox = this.mainTabbox;
-		while(true) {
+		for(;;) {
 			var panel = this.getSelectedPanel(tabbox);
 			var tabboxes = panel.getElementsByTagName("tabbox");
 			if(!tabboxes.length)
 				break;
 			tabbox = tabboxes[0];
 		}
+
+		var toolbar = tabbox.previousSibling;
+		var btns = toolbar.getElementsByTagName("button");
+		for(var i = 0, l = btns.length; i < l; ++i) {
+			var btn = btns[i];
+			if(/(?:^|\s)hcEditCodeButton(?:\s|$)/.test(btn.className)) {
+				btn.disabled = true;
+				setTimeout(function() {
+					btn.disabled = false;
+				}, 400);
+				break;
+			}
+		}
+
 		var editor = this.getEditorFromTabbox(tabbox);
 		if(!this.ut.isElementVisible(editor))
 			return;

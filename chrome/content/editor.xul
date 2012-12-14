@@ -31,6 +31,7 @@
 	oninput="handyClicksEditor.dataChanged(event);"
 	oncommand="handyClicksEditor.dataChanged(event);"
 	hc_ondrop="handyClicksEditor.dataChanged(event);"
+	oncut="handyClicksEditor.dataChanged(event);"
 	width="&hc.editor.defaultWindowWidth;"
 	height="&hc.editor.defaultWindowHeight;"
 	persist="width height screenX screenY sizemode">

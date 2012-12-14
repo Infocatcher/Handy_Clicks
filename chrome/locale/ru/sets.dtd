@@ -167,7 +167,7 @@
 <!ENTITY hc.sets.externalEditorMakeRelative "Сделать путь относительным">
 <!ENTITY hc.sets.externalEditorMakeAbsolute "Сделать путь абсолютным">
 <!ENTITY hc.sets.externalEditorArgs "Аргументы:">
-<!ENTITY hc.sets.externalEditorArgsNote "(&#37;L – номер строки)">
+<!ENTITY hc.sets.externalEditorArgsNote "&#37;L – номер строки, &#37;C – номер столбца">
 <!ENTITY hc.sets.externalEditorExt "Расширение временного файла:">
 
 <!ENTITY hc.sets.resetWarnMsgs "Сбросить отключённые предупреждения">

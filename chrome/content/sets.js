@@ -1846,8 +1846,7 @@ var handyClicksSets = {
 	},
 	selectExternalEditor: function() {
 		var ee = this.ee;
-		var fp = Components.classes["@mozilla.org/filepicker;1"]
-			.createInstance(Components.interfaces.nsIFilePicker);
+		var fp = this.ut.fp;
 		fp.appendFilters(fp.filterApps);
 		fp.appendFilters(fp.filterAll);
 		var curDir = this.eeFile;
@@ -1940,12 +1939,32 @@ var handyClicksSets = {
 			var name = eeFile.getVersionInfoField("ProductName")    || "";
 			var vers = eeFile.getVersionInfoField("ProductVersion") || "";
 			tt = name + (name && vers ? " " + vers : vers);
+			this.setDefaultArgs(name);
 		}
 		catch(e) {
 		}
-		if(isRelative)
+		if(isRelative && eeFile)
 			tt += (tt ? "\n" : "") + eeFile.path;
 		this.ut.attribute(img, "tooltiptext", tt);
+	},
+	_prevApp: null,
+	setDefaultArgs: function(app) {
+		if(app == this._prevApp)
+			return;
+		this._prevApp = app;
+		var args;
+		if(app == "AkelPad") {
+			args = "/Call('Scripts::Main', 1, 'EvalCmd.js', "
+				+ "`AkelPad.SendMessage(AkelPad.GetMainWnd(), 1206 /*AKD_GOTOW*/, "
+				+ "0x1 /*GT_LINE*/, AkelPad.MemStrPtr('%L:%C'));`)";
+		}
+		else if(app == "Notepad++")
+			args = "-n%L";
+		else
+			return;
+		var argsField = this.$("hc-sets-externalEditorArgs");
+		argsField.value = args;
+		this.fireChange(argsField);
 	},
 	showExternalEditorFile: function() {
 		var eeFile = this.eeFile;
@@ -2684,8 +2703,7 @@ var handyClicksSets = {
 
 	// Export/import utils:
 	pickFile: function(pTitle, modeSave, ext, date) {
-		var fp = Components.classes["@mozilla.org/filepicker;1"]
-			.createInstance(Components.interfaces.nsIFilePicker);
+		var fp = this.ut.fp;
 		fp.defaultString = this.ps.prefsFileName + (modeSave ? this.getFormattedDate(date) : "") + "." + ext;
 		fp.defaultExtension = ext;
 		fp.appendFilter(this.ut.getLocalized("hcPrefsFiles"), "handyclicks_prefs*." + ext);

@@ -477,13 +477,21 @@ var handyClicksUtils = {
 	},
 
 	// File I/O (only UTF-8):
+	PERMS_FILE_READ:  parseInt("0444", 8),
+	PERMS_FILE_WRITE: parseInt("0644", 8),
+	PERMS_DIRECTORY:  parseInt("0755", 8),
+	get fp() {
+		delete this.fp;
+		return this.fp = Components.classes["@mozilla.org/filepicker;1"]
+			.createInstance(Components.interfaces.nsIFilePicker);
+	},
 	writeToFile: function(str, file, outErr) {
 		if(!(file instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)))
 			file = this.getLocalFile(file);
 		var fos = Components.classes["@mozilla.org/network/file-output-stream;1"]
 			.createInstance(Components.interfaces.nsIFileOutputStream);
 		try {
-			fos.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
+			fos.init(file, 0x02 | 0x08 | 0x20, this.PERMS_FILE_WRITE, 0);
 		}
 		catch(e) {
 			this._err('Can\'t write string to file "' + (file instanceof Components.interfaces.nsIFile ? file.path : file) + '"');
@@ -544,7 +552,7 @@ var handyClicksUtils = {
 		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
 			.createInstance(Components.interfaces.nsIFileInputStream);
 		try {
-			fis.init(file, 0x01, 0444, 0);
+			fis.init(file, 0x01, this.PERMS_FILE_READ, 0);
 		}
 		catch(e) {
 			this._err('Can\'t read string from file "' + (file instanceof Components.interfaces.nsIFile ? file.path : file) + '"');
@@ -723,7 +731,7 @@ var handyClicksUtils = {
 			var prefFile = this.getFileByAlias("PrefF");
 			var is = Components.classes["@mozilla.org/network/file-input-stream;1"]
 				.createInstance(Components.interfaces.nsIFileInputStream);
-			is.init(prefFile, 0x01, 0444, 0);
+			is.init(prefFile, 0x01, this.PERMS_FILE_READ, 0);
 			var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]
 				.createInstance(Components.interfaces.nsIScriptableInputStream);
 			sis.init(is);
@@ -854,12 +862,6 @@ var handyClicksUtils = {
 		e.preventDefault();
 		e.stopPropagation();
 	},
-	attribute: function(node, attr, val, allowEmpty) {
-		if(val || allowEmpty && val === "")
-			node.setAttribute(attr, val);
-		else
-			node.removeAttribute(attr);
-	},
 	isElementVisible: function(elt) {
 		if(!elt)
 			return false;
@@ -940,6 +942,12 @@ var handyClicksUtils = {
 		if(attrs) for(var attrName in attrs) if(attrs.hasOwnProperty(attrName))
 			node.setAttribute(attrName, attrs[attrName]);
 		return node;
+	},
+	attribute: function(node, attr, val, allowEmpty) {
+		if(val || allowEmpty && val === "")
+			node.setAttribute(attr, val);
+		else
+			node.removeAttribute(attr);
 	},
 	parseFromXML: function(xml) { // Deprecated
 		this._deprecated("Called obsolete parseFromXML(), use parseXULFromString() without E4X instead");
