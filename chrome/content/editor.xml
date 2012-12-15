@@ -99,7 +99,7 @@
 					if(text)
 						this.editor.insertText(text);
 					else
-						this.editor.deleteSelection(0);
+						this.editor.deleteSelection(0, 0);
 
 					if(select)
 						this.inputField.selectionStart -= text.length;
@@ -452,7 +452,7 @@
 
 					var ext = ut.pu.pref("editor.externalEditorExtension") || "js";
 					if(isNew) {
-						var fName = this.getDefaultFilename(ext);
+						var fName = "space test " + this.getDefaultFilename(ext);
 						file = ut.getFileByAlias("TmpD");
 						file.append(fName);
 						file.createUnique(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
@@ -507,6 +507,10 @@
 						var args = [file.path];
 						var eeArgs = ut.pu.pref("editor.externalEditorArgs");
 						if(eeArgs) {
+							if(eeArgs.indexOf("%F") != -1) {
+								args = [];
+								eeArgs = eeArgs.replace(/%F/g, file.path);
+							}
 							if(eeArgs.indexOf("%L") != -1)
 								eeArgs = eeArgs.replace(/%L/g, this.currentLine);
 							if(eeArgs.indexOf("%C") != -1)
@@ -962,6 +966,9 @@
 					_this.jsAutocomplete(false, true);
 				}, 0, this);
 			]]>
+			</handler>
+			<handler event="keypress" keycode="VK_BACK" modifiers="control">
+				this.insertText("");
 			</handler>
 			<handler event="blur">
 			<![CDATA[

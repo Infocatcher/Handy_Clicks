@@ -45,7 +45,8 @@ var handyClicksSets = {
 
 		if(this.ut.fxVersion >= 3.6) { // Fix wrong resizing after sizeToContent() call
 			var de = document.documentElement;
-			window.resizeTo(Number(de.width), Number(de.height));
+			if(de.getAttribute("sizemode") == "normal")
+				window.resizeTo(Number(de.width), Number(de.height));
 		}
 
 		var brWin = this.wu.wm.getMostRecentWindow("navigator:browser");
@@ -660,7 +661,7 @@ var handyClicksSets = {
 					: this.getRawArguments(argsObj, p)
 			)
 		}
-		return res.join(this.oldTree ? ", " : ",\n ");
+		return res.join(this.oldTree ? ", " : ", \n");
 	},
 	getLocalizedArguments: function(argsObj, p) {
 		var argVal = argsObj[p];
@@ -1912,11 +1913,14 @@ var handyClicksSets = {
 		else
 			this.makeRelativePath();
 	},
-	initExternalEditor: function _iee(delay) {
-		if(delay) {
-			this.ut.timeout(_iee, this, [], 5);
+	externalEditorChanged: function eec(delayed) {
+		if(delayed) {
+			this.ut.timeout(eec, this, [], 5);
 			return;
 		}
+		this.initExternalEditor(true);
+	},
+	initExternalEditor: function(changed) {
 		var eeFile = this.eeFile;
 		var img = this.$("hc-sets-externalEditorIcon");
 		if(eeFile && eeFile.exists()) {
@@ -1928,6 +1932,12 @@ var handyClicksSets = {
 			img.setAttribute("hc_validPath", "false");
 		}
 		var butt = this.$("hc-sets-externalEditorButton");
+		if(!butt.hasAttribute("width")) {
+			butt.setAttribute("label", butt.getAttribute("hc_labelMakeAbsolute"));
+			var w = butt.boxObject.width;
+			butt.setAttribute("label", butt.getAttribute("hc_labelMakeRelative"));
+			butt.setAttribute("width", Math.max(butt.boxObject.width, w));
+		}
 		var isRelative = /^%[^%]+%/.test(this.ee.value);
 		butt.setAttribute(
 			"label",
@@ -1935,13 +1945,17 @@ var handyClicksSets = {
 		);
 		img.removeAttribute("tooltiptext");
 		var tt = "";
-		if(eeFile instanceof Components.interfaces.nsILocalFileWin) try {
-			var name = eeFile.getVersionInfoField("ProductName")    || "";
-			var vers = eeFile.getVersionInfoField("ProductVersion") || "";
-			tt = name + (name && vers ? " " + vers : vers);
-			this.setDefaultArgs(name);
-		}
-		catch(e) {
+		if(eeFile instanceof Components.interfaces.nsILocalFileWin) {
+			var getVI = function(f) {
+				try { return eeFile.getVersionInfoField(f) || ""; }
+				catch(e) { return ""; }
+			};
+			var name = getVI("ProductName");
+			var vers = getVI("ProductVersion");
+			if(name)
+				tt = name + (vers && vers != "0, 0, 0, 0" ? " " + vers : "");
+			if(changed)
+				this.setDefaultArgs(name);
 		}
 		if(isRelative && eeFile)
 			tt += (tt ? "\n" : "") + eeFile.path;
@@ -1960,6 +1974,8 @@ var handyClicksSets = {
 		}
 		else if(app == "Notepad++")
 			args = "-n%L";
+		else if(app.substr(0, 12) == "Sublime Text")
+			args = "%F:%L:%C";
 		else
 			return;
 		var argsField = this.$("hc-sets-externalEditorArgs");

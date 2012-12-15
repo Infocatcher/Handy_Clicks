@@ -4,8 +4,8 @@ var hcNotify = {
 	hoverColor: "blue", // valid color string
 
 	inWindowCorner: false,
-	_closeTimeout: null,
-	_highlightInterval: null,
+	_closeTimeout: 0,
+	_highlightInterval: 0,
 
 	init: function() {
 		var wa = window.arguments[0];

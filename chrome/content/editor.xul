@@ -225,7 +225,8 @@
 											<textbox class="hcEditor" id="hc-editor-funcInitField" flex="1"
 												accesskey="&hc.editor.editAccesskey;"
 												oninput="handyClicksEditor.highlightEmpty(this, true);"
-												hc_ondrop="handyClicksEditor.highlightEmpty(this, true);" />
+												hc_ondrop="handyClicksEditor.highlightEmpty(this, true);"
+												oncut="handyClicksEditor.highlightEmpty(this, true);" />
 										</tabpanel>
 									</tabpanels>
 								</tabbox>
@@ -245,7 +246,8 @@
 					<menulist id="hc-editor-customType" editable="true" spellcheck="true" flex="1"
 						oncommand="handyClicksEditor.initCustomTypesEditor(); event.stopPropagation();"
 						oninput="handyClicksEditor.customTypeLabel(this);"
-						hc_ondrop="handyClicksEditor.customTypeLabelDelay(this);">
+						hc_ondrop="handyClicksEditor.customTypeLabelDelay(this);"
+						oncut="handyClicksEditor.customTypeLabelDelay(this);">
 						<menupopup id="hc-editor-customTypePopup" />
 					</menulist>
 					<label value="&hc.editor.internalId;"
@@ -253,7 +255,8 @@
 					<textbox id="hc-editor-customTypeExtId" flex="1"
 						onkeypress="return handyClicksEditor.customTypeIdFilter(event);"
 						oninput="handyClicksEditor.customTypeIdFilter(event);"
-						hc_ondrop="handyClicksEditor.customTypeIdFilter(event);" />
+						hc_ondrop="handyClicksEditor.customTypeIdFilter(event);"
+						oncut="handyClicksEditor.customTypeIdFilter(event);" />
 					<checkbox id="hc-editor-customTypeEnabled" handyclicks_important="enabled"
 						label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
 				</hbox>
@@ -289,7 +292,8 @@
 							<textbox class="hcEditor" id="hc-editor-customTypeContext" flex="1"
 								accesskey="&hc.editor.editAccesskey;"
 								oninput="handyClicksEditor.highlightEmpty(this, true);"
-								hc_ondrop="handyClicksEditor.highlightEmpty(this, true);" />
+								hc_ondrop="handyClicksEditor.highlightEmpty(this, true);"
+								oncut="handyClicksEditor.highlightEmpty(this, true);" />
 						</tabpanel>
 					</tabpanels>
 				</tabbox>

@@ -51,7 +51,8 @@ tab[hc_disabled="true"][hc_canDragSwitch="true"] {
 	text-decoration: underline line-through !important;
 }
 
-label[tooltiptext]:not([tooltiptext=""]) {
+label[tooltiptext]:not([tooltiptext=""]),
+label[tooltip] {
 	border-bottom: 1px dotted;
 	cursor: help;
 }

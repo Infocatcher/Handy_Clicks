@@ -44,7 +44,8 @@
 					<textbox id="hc-sets-tree-searchField" type="search" flex="1" persist="hc_value"
 						onkeypress="handyClicksSets.navigateSearchResults(event);"
 						oninput="handyClicksSets.searchInSetsTreeDelay();"
-						hc_ondrop="handyClicksSets.searchInSetsTree();" />
+						hc_ondrop="handyClicksSets.searchInSetsTree();"
+						oncut="handyClicksSets.searchInSetsTree();" />
 				</hbox>
 				<toolbarbutton id="hc-sets-tree-searchFilterMode" type="checkbox" persist="checked"
 					oncommand="handyClicksSets.searchInSetsTreeDelay(true);"
@@ -368,9 +369,10 @@
 				<image id="hc-sets-externalEditorIcon" onclick="handyClicksSets.externalEditorEvent(event);" />
 				<textbox id="hc-sets-externalEditorPath" preference="externalEditorPath" flex="1"
 					onkeypress="handyClicksSets.externalEditorEvent(event);"
-					oninput="handyClicksSets.initExternalEditor(true);"
-					onchange="handyClicksSets.initExternalEditor();"
-					hc_ondrop="handyClicksSets.initExternalEditor();"
+					oninput="handyClicksSets.externalEditorChanged(true);"
+					onchange="handyClicksSets.externalEditorChanged();"
+					hc_ondrop="handyClicksSets.externalEditorChanged();"
+					oncut="handyClicksSets.externalEditorChanged(true);"
 					hc_requiredFor="externalEditor" hc_enabledRegExp="[/\\]\S|^%[^%]+%." />
 				<button oncommand="handyClicksSets.selectExternalEditor();" label="&hc.sets.externalEditorBrowse;" />
 				<button id="hc-sets-externalEditorButton" oncommand="handyClicksSets.convertPath();"
@@ -379,7 +381,7 @@
 					hc_depends="externalEditor" />
 			</hbox>
 			<hbox align="center" hc_depends="externalEditor">
-				<label value="&hc.sets.externalEditorArgs;" tooltiptext="&hc.sets.externalEditorArgsNote;" control="hc-sets-externalEditorArgs" />
+				<label value="&hc.sets.externalEditorArgs;" tooltip="hc-sets-externalEditorArgs-tooltip" control="hc-sets-externalEditorArgs" />
 				<textbox id="hc-sets-externalEditorArgs" preference="externalEditorArgs" flex="1" />
 			</hbox>
 			<hbox align="center">
@@ -471,6 +473,17 @@
 		https://developer.mozilla.org/En/Preferences_System/Prefwindow#Issues_when_using_prefpanes_in_prefwindow
 		https://bugzilla.mozilla.org/show_bug.cgi?id=296418
 	-->
+	<script type="application/javascript">
+	<![CDATA[
+		// Hack for persist="sizemode"
+		var _sizeToContent = sizeToContent;
+		sizeToContent = function() {
+			if(document.documentElement.getAttribute("sizemode") == "normal")
+				return _sizeToContent.apply(this, arguments);
+			return undefined;
+		};
+	]]>
+	</script>
 	<script type="application/javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/winUtils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/prefUtils.js" />
@@ -600,6 +613,9 @@
 				oncommand="handyClicksSets.removeBackup((this.parentNode.triggerNode || document.popupNode), event);"
 				onclick="if(event.button == 1) { handyClicksSets.removeBackup((this.parentNode.triggerNode || document.popupNode), event); this.parentNode.hidePopup(); }" />
 		</menupopup>
+		<tooltip id="hc-sets-externalEditorArgs-tooltip">
+			<description>&hc.sets.externalEditorArgsNote;</description>
+		</tooltip>
 		<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical" noautohide="true"
 			onpopupshowing="return !document.tooltipNode.disabled;">
 			<description class="header">&hc.sets.resetWarnMsgsTip;</description>

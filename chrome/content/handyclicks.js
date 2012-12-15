@@ -179,6 +179,8 @@ var handyClicks = {
 		var funcObj = this.getFuncObjByEvt(e);
 		if(funcObj)
 			this.functionEvent(funcObj, e);
+		else if(this.editMode)
+			this.ui.notifyEditMode();
 	},
 	mouseupHandler: function(e) {
 		if(!this.enabled)

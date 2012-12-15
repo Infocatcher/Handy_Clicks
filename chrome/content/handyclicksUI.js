@@ -92,14 +92,14 @@ var handyClicksUI = {
 		return null;
 	},
 
-	get isControlsVisible() {
+	get controlsVisible() {
 		return this.ut.isElementVisible(this.$("handyClicks-statusbarButton"))
 			|| this.ut.isElementVisible(this.$(this.toolbarButtonId));
 	},
 	toggleStatus: function(fromKey) {
 		var en = !this.hc.enabled;
 		this.hc.enabled = en;
-		if(!fromKey || this.isControlsVisible)
+		if(!fromKey || this.controlsVisible)
 			return;
 		this.ut.notifyInWindowCorner(
 			this.ut.getLocalized(en ? "enabled" : "disabled"), null,
@@ -267,9 +267,11 @@ var handyClicksUI = {
 	},
 	setEditModeStatus: function(em) {
 		em = em === undefined ? this.hc.editMode : em;
-		var exitKey = this.ut.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE") || "Esc";
 		var tt = em
-			? this.ut.getLocalized("editModeTip").replace("%key", exitKey)
+			? this.ut.getLocalized("editModeTip").replace(
+				"%key",
+				this.ut.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE") || "Esc"
+			)
 			: "";
 		var ttAttr = this.tooltipAttrBase + "1";
 		this.setControls(function(elt) {
@@ -280,22 +282,28 @@ var handyClicksUI = {
 			window.addEventListener("mouseover", this, true);
 			window.addEventListener("mousemove", this, true);
 			window.addEventListener("mouseout",  this, true);
+			this.notifyEditMode();
 		}
 		else {
 			window.removeEventListener("mouseover", this, true);
 			window.removeEventListener("mousemove", this, true);
 			window.removeEventListener("mouseout",  this, true);
 			this.emtt.hidePopup();
-			return;
 		}
+	},
+	notifyEditMode: function(force) {
 		var nem = this.pu.pref("notifyEditMode");
-		if(!(nem == 1 && this._temFromKey && !this.isControlsVisible || nem == 2))
-			return;
-		this.ut.notifyInWindowCorner(
-			this.ut.getLocalized("editModeNote").replace("%key", exitKey),
-			this.ut.getLocalized("editModeTitle"),
-			this.ut.bind(function() { this.hc.editMode = false; }, this)
-		);
+		if(
+			nem == 1 && (this._temFromKey && !this.controlsVisible || force)
+			|| nem == 2
+		) {
+			var exitKey = this.ut.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE") || "Esc";
+			this.ut.notifyInWindowCorner(
+				this.ut.getLocalized("editModeNote").replace("%key", exitKey),
+				this.ut.getLocalized("editModeTitle"),
+				this.ut.bind(function() { this.hc.editMode = false; }, this)
+			);
+		}
 	},
 	handleEvent: function(e) {
 		switch(e.type) {
