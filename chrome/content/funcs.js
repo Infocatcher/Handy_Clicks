@@ -239,10 +239,11 @@ var handyClicksFuncs = {
 		e = e || this.hc.copyOfEvent;
 		item = item || this.hc.item;
 		uri = uri || this.getItemURI(item);
+		var isImg = this.hc.itemType == "img";
 		if(
 			this.testForHighlander(uri)
-			|| this.loadJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target)
-			|| this.testForFileLink(uri, refererPolicy)
+			|| !isImg && this.loadJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target)
+			|| !isImg && this.testForFileLink(uri, refererPolicy)
 		)
 			return true;
 		return false;
