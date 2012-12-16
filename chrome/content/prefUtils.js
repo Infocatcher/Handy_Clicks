@@ -160,7 +160,7 @@ var handyClicksPrefUtils = {
 			configURI += "?filter=" + encodeURIComponent(filter);
 
 		var tbr = brWin.gBrowser || brWin.getBrowser();
-		if(tbr.currentURI.spec == "about:blank" && !tbr.webProgress.isLoadingDocument) {
+		if(this.ut.isBlankPageURL(tbr.currentURI.spec) && !tbr.webProgress.isLoadingDocument) {
 			var tab = tbr.selectedTab;
 			tbr.loadURI(configURI);
 		}

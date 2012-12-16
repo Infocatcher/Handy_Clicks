@@ -915,6 +915,11 @@ var handyClicksUtils = {
 			str = str.replace(/"/g, "&quot;");
 		return str;
 	},
+	isBlankPageURL: function(uri) {
+		if("isBlankPageURL" in window)
+			return isBlankPageURL(uri);
+		return uri == "about:blank";
+	},
 
 	// DOM utils
 	parseFromString: function(str, contentType) {
