@@ -532,15 +532,17 @@ var handyClicksFuncs = {
 
 	// Generated popup:
 	createPopup: function(items) {
-		if(typeof items == "xml")
-			return this.getPopup(items);
-		return this.appendItems(this.getPopup(), items);
+		if(this.ut.isArray(items))
+			return this.appendItems(this.getPopup(), items);
+		return this.getPopup(items);
 	},
 	getPopup: function(xml) {
 		var pSet = this.$("mainPopupSet");
 		const popupId = "handyClicks-generatedPopup";
 		var popup = this.e(popupId);
 		popup && pSet.removeChild(popup);
+		if(xml && typeof xml == "object" && "nodeName" in xml)
+			xml = new XML(this.ut.serializeToString(xml));
 		popup = xml || <menupopup xmlns={this.ut.XULNS} />;
 		popup.@id = popupId;
 		popup.@tooltip = "handyClicks-tooltip";
@@ -635,6 +637,16 @@ var handyClicksFuncs = {
 	},
 
 	addEditItem: function(items) {
+		if(this.ut.isObject(items) && "nodeName" in items) {
+			var df = document.createDocumentFragment();
+			df.appendChild(document.createElement("menuseparator"));
+			df.appendChild(this.ut.createElement("menuitem", {
+				label: this.ut.getLocalized("edit"),
+				oncommand: "handyClicksFuncs.openEditorForLastEvent();"
+			}));
+			items.appendChild(df);
+			return;
+		}
 		if(typeof items == "xml") {
 			items.lastChild += <menuseparator xmlns={this.ut.XULNS} />;
 			items.lastChild += <menuitem xmlns={this.ut.XULNS}

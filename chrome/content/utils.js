@@ -482,6 +482,27 @@ var handyClicksUtils = {
 		XML.prettyPrinting = pp;
 		return elt;
 	},
+	// API from version 0.1.2.x:
+	parseXULFromString: function(str) {
+		return this.parseFromString(str.replace(/>\s+</g, "><"));
+	},
+	createElement: function(name, attrs) {
+		return this.setAttributes(document.createElement(name), attrs);
+	},
+	setAttributes: function(node, attrs) {
+		if(attrs) for(var attrName in attrs) if(attrs.hasOwnProperty(attrName))
+			node.setAttribute(attrName, attrs[attrName]);
+		return node;
+	},
+	encodeHTML: function(str, encDoubleQuotes) {
+		str = str
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;");
+		if(encDoubleQuotes !== false)
+			str = str.replace(/"/g, "&quot;");
+		return str;
+	},
 
 	removeChilds: function(elt) {
 		while(elt.hasChildNodes())
