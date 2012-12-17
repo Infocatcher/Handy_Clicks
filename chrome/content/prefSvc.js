@@ -109,8 +109,19 @@ var handyClicksPrefSvc = {
 		return ret;
 	},
 	importSrc: function(tar, src) {
-		for(var p in this._prefVars)
-			tar[p] = this.ut.getOwnProperty(src, this._prefVars[p]);
+		var pv = this._prefVars;
+		if(src.hasOwnProperty("json") && !(pv.prefs in src)) {
+			// Newer versions uses JSON
+			src = src.json;
+			tar.loadedVersion = src.version || 0;
+			tar.types = src.types;
+			tar.prefs = src.prefs;
+			if(tar == this)
+				this.ut._log("Import prefs from new JSON format, version: " + tar.loadedVersion);
+			return;
+		}
+		for(var p in pv)
+			tar[p] = this.ut.getOwnProperty(src, pv[p]);
 	},
 	_loadError: 0,
 	_skippedLoad: false,
@@ -137,7 +148,15 @@ var handyClicksPrefSvc = {
 				this._savedStr = pSrc;
 		}
 		if(typeof pSrc == "string") {
-			// Uses sandbox instead mozIJSSubScriptLoader for security purposes
+			// Uses sandbox instead of mozIJSSubScriptLoader for security purposes
+			if(pSrc.substr(-1) == "}") {
+				// Looks like new JSON format
+				pSrc = pSrc.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Remove comments
+				if(/^\{\s*"[^"]*":/.test(pSrc)) {
+					pSrc = "var json = " + pSrc;
+					this.ut._log("Detected prefs in new JSON format");
+				}
+			}
 			var sandbox = new Components.utils.Sandbox("about:blank");
 			try {
 				Components.utils.evalInSandbox(pSrc, sandbox);
@@ -178,7 +197,7 @@ var handyClicksPrefSvc = {
 		}
 		this.importSrc(this, sandbox);
 		var vers = this.loadedVersion || 0;
-		if(vers < this.setsVersion)
+		if(vers != this.setsVersion)
 			this.setsMigration(fromProfile, vers);
 		this._restoringCounter = 0;
 		if(this.isMainWnd) {

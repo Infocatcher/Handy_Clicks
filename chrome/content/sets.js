@@ -1653,7 +1653,7 @@ var handyClicksSets = {
 		}
 		catch(e) {
 		}
-		if(isRelative)
+		if(isRelative && eeFile)
 			tt += (tt ? "\n" : "") + eeFile.path;
 		this.ut.attribute(img, "tooltiptext", tt);
 	},

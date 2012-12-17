@@ -3,7 +3,7 @@
 function setsMigration(allowSave, vers) {
 	if(vers === undefined)
 		vers = this.loadedVersion || 0;
-	if(vers >= this.setsVersion)
+	if(vers == this.setsVersion)
 		return;
 
 	if(allowSave)

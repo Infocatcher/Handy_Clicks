@@ -531,15 +531,17 @@ var handyClicksFuncs = {
 
 	// Generated popup:
 	createPopup: function(items) {
-		if(typeof items == "xml")
-			return this.getPopup(items);
-		return this.appendItems(this.getPopup(), items);
+		if(this.ut.isArray(items))
+			return this.appendItems(this.getPopup(), items);
+		return this.getPopup(items);
 	},
 	getPopup: function(xml) {
 		var pSet = this.$("mainPopupSet");
 		const popupId = "handyClicks-generatedPopup";
 		var popup = this.e(popupId);
 		popup && pSet.removeChild(popup);
+		if(xml && typeof xml == "object" && "nodeName" in xml)
+			xml = new XML(this.ut.serializeToString(xml));
 		popup = xml || <menupopup xmlns={this.ut.XULNS} />;
 		popup.@id = popupId;
 		popup.@tooltip = "handyClicks-tooltip";
@@ -642,6 +644,18 @@ var handyClicksFuncs = {
 		var label = this.ut.getLocalized("edit");
 		var accesskey = this.ut.getLocalized("editAccesskey");
 		var miClass = "menuitem-iconic handyClicks-iconic handyClicks-editItem";
+		if(this.ut.isObject(items) && "nodeName" in items) {
+			var df = document.createDocumentFragment();
+			df.appendChild(document.createElement("menuseparator"));
+			df.appendChild(this.ut.createElement("menuitem", {
+				oncommand: cmd,
+				class: miClass,
+				label: label,
+				accesskey: accesskey
+			}));
+			items.appendChild(df);
+			return;
+		}
 		if(this.ut.isArray(items)) {
 			items.push(
 				{ tagName: "menuseparator" },
