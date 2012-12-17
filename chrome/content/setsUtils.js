@@ -1,6 +1,6 @@
 var handyClicksSetsUtils = {
 	init: function(reloadFlag) {
-		window.addEventListener("DOMMouseScroll", this, true);
+		window.addEventListener(this.ut.wheelEvent, this, true);
 		window.addEventListener("dragenter", this, true);
 		window.addEventListener("dragexit", this, true);
 		if(this.hasSizeModeChangeEvent)
@@ -24,7 +24,7 @@ var handyClicksSetsUtils = {
 		}
 	},
 	destroy: function(reloadFlag) {
-		window.removeEventListener("DOMMouseScroll", this, true);
+		window.removeEventListener(this.ut.wheelEvent, this, true);
 		window.removeEventListener("dragenter", this, true);
 		window.removeEventListener("dragexit", this, true);
 		if(this.hasSizeModeChangeEvent)
@@ -36,7 +36,8 @@ var handyClicksSetsUtils = {
 	},
 	handleEvent: function(e) {
 		switch(e.type) {
-			case "DOMMouseScroll":
+			case "DOMMouseScroll": // Legacy
+			case "wheel":
 				if(e.target.nodeType == Node.DOCUMENT_NODE)
 					break;
 				if(
@@ -199,7 +200,9 @@ var handyClicksSetsUtils = {
 	},
 
 	isScrollForward: function(e) {
-		var fwd = e.detail > 0;
+		var fwd = "deltaY" in e
+			? e.deltaY > 0 // wheel
+			: e.detail > 0; // DOMMouseScroll
 		return this.pu.pref("ui.reverseScrollDirection") ? !fwd : fwd;
 	},
 	scrollList: function(e) {

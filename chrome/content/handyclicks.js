@@ -66,12 +66,6 @@ var handyClicks = {
 			act.call(window, evtType, this, true);
 		}, this);
 	},
-	get wheelEvent() {
-		delete this.wheelEvent;
-		return this.wheelEvent = "WheelEvent" in window
-			? "wheel"
-			: "DOMMouseScroll";
-	},
 
 	_enabled: true, // Uses for internal disabling
 	get enabled() {
@@ -289,7 +283,7 @@ var handyClicks = {
 		else {
 			this.mousemoveParams = null;
 		}
-		this.setListeners(["mousemove", "draggesture", "TabSelect", this.wheelEvent], add);
+		this.setListeners(["mousemove", "draggesture", "TabSelect", this.ut.wheelEvent], add);
 	},
 
 	// Utils for handlers:

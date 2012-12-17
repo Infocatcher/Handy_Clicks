@@ -475,6 +475,12 @@ var handyClicksUtils = {
 			return false;
 		}
 	},
+	get canRunw() {
+		delete this.canRunw;
+		return this.canRunw = Components.classes["@mozilla.org/process/util;1"]
+			.createInstance(Components.interfaces.nsIProcess)
+			.hasOwnProperty("runw");
+	},
 
 	// File I/O (only UTF-8):
 	PERMS_FILE_READ:  parseInt("0444", 8),
@@ -858,6 +864,12 @@ var handyClicksUtils = {
 			: uneval(o);
 	},
 
+	get wheelEvent() {
+		delete this.wheelEvent;
+		return this.wheelEvent = "WheelEvent" in window
+			? "wheel"
+			: "DOMMouseScroll";
+	},
 	stopEvent: function(e) {
 		e.preventDefault();
 		e.stopPropagation();

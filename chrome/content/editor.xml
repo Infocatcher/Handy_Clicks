@@ -15,22 +15,15 @@
 				}
 				catch(e) {
 				}
-				if("tabSize" in this.style)
-					this.style.tabSize = this.tabSize;
-				else if("MozTabSize" in this.style)
-					this.style.MozTabSize = this.tabSize;
+				this.setTabSize();
 				var top = window.top;
 				var pu = "handyClicksPrefUtils" in top && top.handyClicksPrefUtils;
 				if(pu) {
 					this.autocomplete = pu.pref("editor.autocomplete");
 					this.autocompleteMinSymbols = Math.max(1, Math.min(30, pu.pref("editor.autocompleteMinSymbols")));
 					pu.oSvc.addObserver(function(pName, pVal) {
-						if(pName == "editor.tabSize") {
-							if("tabSize" in this.style)
-								this.style.tabSize = this.tabSize;
-							else if("MozTabSize" in this.style)
-								this.style.MozTabSize = this.tabSize;
-						}
+						if(pName == "editor.tabSize")
+							this.setTabSize();
 						else if(pName == "editor.autocomplete")
 							this.autocomplete = pVal;
 						else if(pName == "editor.autocompleteMinSymbols")
@@ -53,6 +46,19 @@
 					this.setAttribute("hc_tabSize", val);
 				</setter>
 			</property>
+			<method name="setTabSize">
+				<parameter name="tabSize" />
+				<body>
+				<![CDATA[
+					if(!tabSize)
+						tabSize = this.tabSize;
+					if("tabSize" in this.style)
+						this.style.tabSize = tabSize;
+					else if("MozTabSize" in this.style)
+						this.style.MozTabSize = tabSize;
+				]]>
+				</body>
+			</method>
 			<property name="tabSpaces">
 				<getter>
 				<![CDATA[
@@ -225,10 +231,62 @@
 						var subst = "$1";
 					}
 					var comment = "//";
-					var hasComments = re.test(block);
-					block = hasComments
-						? block.replace(re, subst)
-						: block.replace(/^/mg, comment);
+					var lines = block.split("\n");
+					//var hasComments = re.test(block);
+					var hasComments = lines.every(function(line) {
+						re.lastIndex = 0;
+						return re.test(line);
+					});
+					//block = hasComments
+					//	? block.replace(re, subst)
+					//	: block.replace(/^/mg, comment);
+					if(hasComments)
+						block = block.replace(re, subst);
+					else if(onlyInLineStart)
+						block = block.replace(/^/mg, comment);
+					else {
+						var spacePrefix = "";
+						var spacePrefixLen = 0;
+						var linesCnt = lines.length;
+
+						// Note: spaces + tabs mix aren't supported!
+						var minSpLen = Infinity;
+						for(var i = 0; i < linesCnt; ++i) {
+							var line = lines[i];
+							if(/^[ \t]*$/.test(line))
+								continue;
+							if(!/^[ \t]+/.test(line)) {
+								spacePrefix = "";
+								break;
+							}
+							var sp = RegExp.lastMatch;
+							if(sp.length < minSpLen) {
+								minSpLen = sp.length;
+								spacePrefix = sp;
+							}
+						}
+						if(spacePrefix) {
+							spacePrefixLen = spacePrefix.length;
+							for(var i = 0; i < linesCnt; ++i) {
+								var line = lines[i];
+								if(!line)
+									continue;
+								if(
+									/^[ \t]+$/.test(line) && line.length < spacePrefixLen
+										? spacePrefix.substr(0, line.length) != line
+										: line.substr(0, spacePrefixLen) != spacePrefix
+								) {
+									spacePrefix = "";
+									spacePrefixLen = 0;
+									break;
+								}
+							}
+						}
+
+						for(var i = 0; i < linesCnt; ++i)
+							lines[i] = spacePrefix + "//" + lines[i].substr(spacePrefixLen);
+						block = lines.join("\n");
+					}
 
 					ifi.selectionStart = ss - lineStart.length;
 					ifi.selectionEnd   = se + lineEnd.length;
@@ -378,6 +436,7 @@
 						);
 					}
 					catch(e) {
+						Components.utils.reportError(e);
 					}
 				]]>
 				</body>
@@ -435,12 +494,12 @@
 			<field name="_hasWatchHandlers">false</field>
 			<method name="getDefaultFilename">
 				<parameter name="ext" />
+				<parameter name="allowUnicode" />
 				<body>
 				<![CDATA[
 					var type = this.id.replace(/^hc-editor-|Field/g, "");
 					var label;
-					var ut = "handyClicksUtils" in top && top.handyClicksUtils;
-					if(ut && ut.pu.pref("editor.externalEditorLabelInFileName")) {
+					if(allowUnicode) {
 						var tb = document.getElementById(
 							type.substr(0, 4) == "func"
 								? "hc-editor-funcLabel"
@@ -466,7 +525,10 @@
 
 					var ext = ut.pu.pref("editor.externalEditorExtension") || "js";
 					if(isNew) {
-						var fName = this.getDefaultFilename(ext);
+						var fName = this.getDefaultFilename(
+							ext,
+							ut.canRunw && ut.pu.pref("editor.externalEditorLabelInFileName")
+						);
 						file = ut.getFileByAlias("TmpD");
 						file.append(fName);
 						file.createUnique(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
@@ -576,7 +638,7 @@
 				<parameter name="watch" />
 				<body>
 				<![CDATA[
-					var file = this.pickFile("saveCodeToFile", true, this.getDefaultFilename("js"));
+					var file = this.pickFile("saveCodeToFile", true, this.getDefaultFilename("js", true));
 					if(!file)
 						return null;
 					var ut = top.handyClicksUtils;
@@ -911,12 +973,14 @@
 				</body>
 			</method>
 			<method name="saveScrollPos">
-				<parameter name="recalc" />
+				<parameter name="recalcHeight" />
+				<parameter name="recalcWidth" />
 				<body>
 				<![CDATA[
 					var ifi = this.inputField;
 					this.scrollPos = {
-						recalc: recalc,
+						recalcWidth:  recalcWidth,
+						recalcHeight: recalcHeight,
 						scrollTop:    ifi.scrollTop,
 						scrollLeft:   ifi.scrollLeft,
 						scrollHeight: ifi.scrollHeight,
@@ -930,8 +994,12 @@
 				<![CDATA[
 					var ifi = this.inputField;
 					var sp = this.scrollPos;
-					ifi.scrollTop  = sp.scrollTop  + (sp.recalc ? ifi.scrollHeight - sp.scrollHeight : 0);
-					ifi.scrollLeft = sp.scrollLeft + (sp.recalc ? ifi.scrollWidth  - sp.scrollWidth  : 0);
+					function restore() {
+						ifi.scrollTop  = sp.scrollTop  + (sp.recalcHeight ? ifi.scrollHeight - sp.scrollHeight : 0);
+						ifi.scrollLeft = sp.scrollLeft + (sp.recalcWidth  ? ifi.scrollWidth  - sp.scrollWidth  : 0);
+					}
+					restore();
+					setTimeout(restore, 0); // New Firefox versions are async...
 				]]>
 				</body>
 			</method>
