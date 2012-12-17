@@ -84,6 +84,7 @@ pref("extensions.handyclicks.editor.autocompleteMinSymbols", 2);
 pref("extensions.handyclicks.editor.externalEditorPath", "");
 pref("extensions.handyclicks.editor.externalEditorArgs", "");
 pref("extensions.handyclicks.editor.externalEditorExtension", "js");
+pref("extensions.handyclicks.editor.externalEditorLabelInFileName", true);
 pref("extensions.handyclicks.editor.testFocusMainWindow", true);
 pref("extensions.handyclicks.editor.ui.showCustomFuncsNotes", true);
 pref("extensions.handyclicks.editor.ui.compact", false);

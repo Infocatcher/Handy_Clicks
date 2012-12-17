@@ -437,7 +437,21 @@
 				<parameter name="ext" />
 				<body>
 				<![CDATA[
-					return "handyclicks_" + this.id.replace(/^hc-editor-|Field/g, "") + "." + (ext || "js");
+					var type = this.id.replace(/^hc-editor-|Field/g, "");
+					var label;
+					var ut = "handyClicksUtils" in top && top.handyClicksUtils;
+					if(ut && ut.pu.pref("editor.externalEditorLabelInFileName")) {
+						var tb = document.getElementById(
+							type.substr(0, 4) == "func"
+								? "hc-editor-funcLabel"
+								: "hc-editor-customType"
+						);
+						var label = (tb && tb.value || "")
+							.replace(/\s+/g, "_")
+							// Based on code of Session Manager 0.7.9.2
+							.replace(/[<>:"\/\\|*?^\x00-\x1f]+/g, "_");
+					}
+					return "handyclicks_" + type + (label ? "_[" + label + "]" : "") + "." + (ext || "js");
 				]]>
 				</body>
 			</method>
@@ -452,7 +466,7 @@
 
 					var ext = ut.pu.pref("editor.externalEditorExtension") || "js";
 					if(isNew) {
-						var fName = "space test " + this.getDefaultFilename(ext);
+						var fName = this.getDefaultFilename(ext);
 						file = ut.getFileByAlias("TmpD");
 						file.append(fName);
 						file.createUnique(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
@@ -515,9 +529,9 @@
 								eeArgs = eeArgs.replace(/%L/g, this.currentLine);
 							if(eeArgs.indexOf("%C") != -1)
 								eeArgs = eeArgs.replace(/%C/g, this.currentColumn);
-							args.push(eeArgs);
+							args.push.apply(args, eeArgs.split(/[\r\n]+/));
 						}
-						if(ut.startProcess(ee, args))
+						if(ut.startProcess(ee, args, true))
 							this.fade();
 					}
 					else {

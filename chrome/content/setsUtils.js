@@ -3,6 +3,12 @@ var handyClicksSetsUtils = {
 		window.addEventListener("DOMMouseScroll", this, true);
 		window.addEventListener("dragenter", this, true);
 		window.addEventListener("dragexit", this, true);
+		if(this.hasSizeModeChangeEvent)
+			window.addEventListener("sizemodechange", this, false);
+		else {
+			window.addEventListener("resize", this, false); // Can detect only maximize/restore
+			this.legacySizeModeChange();
+		}
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 		if(!reloadFlag) {
 			this.tweakDialogButtons();
@@ -21,6 +27,12 @@ var handyClicksSetsUtils = {
 		window.removeEventListener("DOMMouseScroll", this, true);
 		window.removeEventListener("dragenter", this, true);
 		window.removeEventListener("dragexit", this, true);
+		if(this.hasSizeModeChangeEvent)
+			window.removeEventListener("sizemodechange", this, false);
+		else {
+			window.removeEventListener("resize", this, false);
+			clearInterval(this._sizeModeChangeTimer);
+		}
 	},
 	handleEvent: function(e) {
 		switch(e.type) {
@@ -38,7 +50,10 @@ var handyClicksSetsUtils = {
 					this.ut.stopEvent(e);
 			break;
 			case "dragenter": this.dragenterHandler(e); break;
-			case "dragexit":  this.dragexitHandler(e);
+			case "dragexit":  this.dragexitHandler(e);  break;
+			case "sizemodechange":
+			case "resize": // Legacy
+				this.wu.checkWindowStatus();
 		}
 	},
 	get dropEvent() {
@@ -79,7 +94,8 @@ var handyClicksSetsUtils = {
 				oncommand="event.stopPropagation();">\
 				<button id="hc-sets-onTop"\
 					class="hcFloatButton"\
-					type="checkbox" autoCheck="false"\
+					type="checkbox"\
+					autoCheck="false"\
 					context="hc-sets-onTopContext"\
 					hidden="' + !this.pu.pref("ui.onTopButton") + '"\
 					oncommand="handyClicksWinUtils.toggleOnTop();"\
@@ -99,15 +115,7 @@ var handyClicksSetsUtils = {
 		);
 		de.appendChild(onTop);
 
-		var onTop = de.getAttribute("hc_onTop") == "true";
-		if(!onTop && opener) {
-			var xulWin = this.wu.getXulWin(opener);
-			onTop = xulWin.zLevel > xulWin.normalZ;
-		}
-		if(onTop)
-			this.wu.toggleOnTop(true);
-		else
-			this.wu.showOnTopStatus();
+		this.wu.checkWindowStatus(true);
 	},
 	initOnTopContext: function(popup) {
 		Array.forEach(
@@ -120,6 +128,21 @@ var handyClicksSetsUtils = {
 	},
 	handleOnTopContextCommand: function(mi) {
 		this.pu.pref(mi.getAttribute("hc_pref"), mi.getAttribute("checked") == "true");
+	},
+
+	get hasSizeModeChangeEvent() {
+		delete this.hasSizeModeChangeEvent;
+		return this.hasSizeModeChangeEvent = this.ut.fxVersion >= 8;
+	},
+	_sizeModeChangeTimer: 0,
+	legacySizeModeChange: function() {
+		var lastState = window.windowState;
+		this._sizeModeChangeTimer = setInterval(function(_this) {
+			var state = window.windowState;
+			if(state != lastState)
+				_this.wu.checkWindowStatus();
+			lastState = state;
+		}, 350, this);
 	},
 	prefsChanged: function(pName, pVal) {
 		switch(pName) {

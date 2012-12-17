@@ -43,6 +43,9 @@
 #hc-sets-onTop[hc_hideLabel="true"] label {
 	display: none;
 }
+#hc-sets-onTop[hc_onTopNA="true"] {
+	opacity: 0.7;
+}
 
 [hc_canDragSwitch="true"] {
 	text-decoration: underline !important;

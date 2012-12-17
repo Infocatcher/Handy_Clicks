@@ -938,7 +938,11 @@ var handyClicksEditor = {
 
 	loadFuncs: function() {
 		const warnPref = "editor.unsavedSwitchWarning";
-		if(!this.applyButton.disabled && this.pu.pref(warnPref)) { // this.hasUnsaved
+		if(
+			!this.funcOptsFixed // Nothing to lost with fixed options
+			&& !this.applyButton.disabled // this.hasUnsaved
+			&& this.pu.pref(warnPref)
+		) {
 			var ask = { value: false };
 			var cnf = this.ut.promptsSvc.confirmCheck(
 				window, this.ut.getLocalized("warningTitle"),

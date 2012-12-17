@@ -380,13 +380,15 @@
 					hc_labelMakeAbsolute="&hc.sets.externalEditorMakeAbsolute;"
 					hc_depends="externalEditor" />
 			</hbox>
-			<hbox align="center" hc_depends="externalEditor">
-				<label value="&hc.sets.externalEditorArgs;" tooltip="hc-sets-externalEditorArgs-tooltip" control="hc-sets-externalEditorArgs" />
-				<textbox id="hc-sets-externalEditorArgs" preference="externalEditorArgs" flex="1" />
-			</hbox>
-			<hbox align="center">
-				<label value="&hc.sets.externalEditorExt;" control="hc-sets-externalEditorExt" />
-				<textbox id="hc-sets-externalEditorExt" preference="externalEditorExt" size="8" />
+			<hbox align="top">
+				<hbox id="hc-sets-externalEditorArgs-box" align="top" flex="1" hc_depends="externalEditor">
+					<label value="&hc.sets.externalEditorArgs;" tooltip="hc-sets-externalEditorArgs-tooltip" control="hc-sets-externalEditorArgs" />
+					<textbox id="hc-sets-externalEditorArgs" preference="externalEditorArgs" multiline="true" rows="2" wrap="off" flex="1" />
+				</hbox>
+				<vbox id="hc-sets-externalEditorExt-box" align="top">
+					<label value="&hc.sets.externalEditorExt;" control="hc-sets-externalEditorExt" />
+					<textbox id="hc-sets-externalEditorExt" preference="externalEditorExt" size="8" />
+				</vbox>
 			</hbox>
 		</groupbox>
 		<hbox pack="center">

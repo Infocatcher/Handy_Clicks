@@ -39,7 +39,7 @@
 <!ENTITY hc.editor.tabActionDelayTip "Выполняется через &#37;n мс">
 <!ENTITY hc.editor.fixActionOpts "Зафиксировать">
 <!ENTITY hc.editor.fixActionOptsAccesskey "З">
-<!ENTITY hc.editor.fixActionOptsTip "Зафиксировать настройки действия">
+<!ENTITY hc.editor.fixActionOptsTip "Зафиксировать настройки действия (для копирования настроек)">
 
 <!ENTITY hc.editor.func "Функция:">
 <!ENTITY hc.editor.funcAccesskey "Ф">

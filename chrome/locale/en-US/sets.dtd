@@ -167,7 +167,10 @@
 <!ENTITY hc.sets.externalEditorMakeRelative "Make path relative">
 <!ENTITY hc.sets.externalEditorMakeAbsolute "Make path absolute">
 <!ENTITY hc.sets.externalEditorArgs "Arguments:">
-<!ENTITY hc.sets.externalEditorArgsNote "&#37;F – path to file (will be added automatically, if missing)&#10;&#37;L – line number&#10;&#37;C – column number">
+<!ENTITY hc.sets.externalEditorArgsNote "1 line = 1 argument
+&#37;F – path to file (will be added automatically, if missing)
+&#37;L – line number
+&#37;C – column number">
 <!ENTITY hc.sets.externalEditorExt "Extension of temp file:">
 
 <!ENTITY hc.sets.resetWarnMsgs "Reset warning messages">

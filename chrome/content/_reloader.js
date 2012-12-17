@@ -44,6 +44,15 @@ var handyClicksReloader = {
 	reloadStyles: function() {
 		const ns = "chrome://handyclicks/";
 
+		Array.forEach( // Save text in textboxes with custom bindings
+			document.getElementsByTagName("textbox"),
+			function(tb) {
+				var binding = window.getComputedStyle(tb, null).MozBinding || "";
+				if(binding.indexOf(ns) != -1)
+					tb.setAttribute("value", tb.value);
+			}
+		);
+
 		var sheetsHrefs = [];
 		var nodes = document.childNodes;
 		for(var i = nodes.length - 1; i >= 0; --i) {
@@ -88,11 +97,12 @@ var handyClicksReloader = {
 			return;
 		}
 
+		var rnd = "?" + Date.now();
 		document.loadOverlay(
 			"data:application/vnd.mozilla.xul+xml," + encodeURIComponent(
 				'<?xml version="1.0"?>\n'
 				+ sheetsHrefs.map(function(href, indx) {
-					return '<?xml-stylesheet href="' + href + '" type="text/css"?>';
+					return '<?xml-stylesheet href="' + href.replace(/\?\d+$/, "") + rnd + '" type="text/css"?>';
 				}).join("\n")
 				+ '<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />'
 			),

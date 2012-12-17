@@ -53,6 +53,8 @@ var handyClicksSets = {
 		if(brWin && !brWin.document.getElementById("appmenu_preferences"))
 			document.getElementsByAttribute("preference", "showInAppMenu")[0].hidden = true;
 
+		this.e("hc-sets-externalEditorArgs-box").height = this.e("hc-sets-externalEditorExt-box").boxObject.height;
+
 		window.addEventListener("mouseover", this, true);
 	},
 	initShortcuts: function() {
