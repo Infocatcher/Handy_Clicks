@@ -8,6 +8,9 @@ pref("extensions.handyclicks.disallowMousemoveDist", 12);
 pref("extensions.handyclicks.delayedActionTimeout", 500);
 pref("extensions.handyclicks.precompileCustomTypes", false);
 
+pref("extensions.handyclicks.types.links.CSSEditor", true);
+pref("extensions.handyclicks.types.images.SpeedDial", false);
+
 pref("extensions.handyclicks.notifyOpenTime", 3000);
 pref("extensions.handyclicks.notifyInWindowCorner", false);
 pref("extensions.handyclicks.notifyDontCloseUnderCursor", true);

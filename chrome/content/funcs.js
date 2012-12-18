@@ -131,7 +131,9 @@ var handyClicksFuncs = {
 			// Looks like wrapper error with chrome://global/content/bindings/text.xml#text-link binding
 			// on "content" pages (e.g. chrome://global/content/console.xul)
 			: it.href || it.getAttribute("href")
-				|| this.ut.getProperty(it, "repObject", "href"); // Firebug
+				|| this.ut.getProperty(it, "repObject", "href") // Firebug
+				|| this.hc.getCSSEditorURI(it)
+				|| this.hc.getWebConsoleURI(it);
 	},
 	getTabURI: function(tab) {
 		return "linkedBrowser" in tab
@@ -219,7 +221,12 @@ var handyClicksFuncs = {
 			return null;
 		var tbr = this.hc.getTabBrowser(true);
 
-		if(!moveTo && !this.ut.isChromeDoc(item.ownerDocument)) {
+		if(
+			!moveTo && (
+				!this.ut.isChromeDoc(item.ownerDocument)
+				|| item.ownerDocument.documentURI.substr(0, 34) == "chrome://browser/content/devtools/"
+			)
+		) {
 			// Open a new tab as a child of the current tab (Tree Style Tab)
 			// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
 			if("TreeStyleTabService" in window)
@@ -303,23 +310,16 @@ var handyClicksFuncs = {
 			loadLink();
 	},
 	hasHandlers: function(it) {
-		it = it || this.hc.item;
-		if(!it)
-			return false;
-		it = it.wrappedJSObject;
-		if(!it)
-			return false;
-		return ["onmousedown", "onmouseup", "onclick"].some(function(h) {
+		it = this.ut.unwrap(it || this.hc.item);
+		return it && ["onmousedown", "onmouseup", "onclick"].some(function(h) {
 			return h in it;
 		});
 	},
 	getItemHandlers: function(item) {
-		item = (item || this.hc.item).wrappedJSObject;
-		var hnds = ["onmousedown", "onmouseup", "onclick"].filter(
-			function(h) {
-				return h in item;
-			}
-		);
+		item = this.ut.unwrap(item || this.hc.item);
+		var hnds = ["onmousedown", "onmouseup", "onclick"].filter(function(h) {
+			return h in item;
+		});
 		return hnds.length ? " (" + hnds.join(", ") + ")" : "";
 	},
 	loadNotVoidJavaScriptLink: function(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target) {

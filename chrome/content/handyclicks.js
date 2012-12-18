@@ -173,8 +173,15 @@ var handyClicks = {
 		var funcObj = this.getFuncObjByEvt(e);
 		if(funcObj)
 			this.functionEvent(funcObj, e);
-		else if(this.editMode)
-			this.ui.notifyEditMode();
+		else if(this.editMode) {
+			var tar = e.originalTarget;
+			if(
+				tar.namespaceURI != this.ut.XULNS
+				|| !tar.boxObject
+				|| !(tar.boxObject instanceof Components.interfaces.nsIMenuBoxObject)
+			)
+				this.ui.notifyEditMode();
+		}
 	},
 	mouseupHandler: function(e) {
 		if(!this.enabled)
@@ -349,7 +356,7 @@ var handyClicks = {
 			this.defineItem(e, sets);
 			this.itemType && this.ut._log("[" + e.type + "] " + "this.itemType = " + this.itemType);
 		}
-		var funcObj = this.getFuncObj(sets) || (this.editMode ? {} : null);
+		var funcObj = this.getFuncObj(sets) || this.editMode && { action: null };
 		this.hasSettings = !!funcObj;
 		if(this.hasSettings) {
 			this.event = e;
@@ -533,6 +540,11 @@ var handyClicks = {
 				|| it instanceof HTMLCanvasElement
 			)
 			&& !this.ut.isChromeDoc(it.ownerDocument) // Not for interface...
+			&& ( // Speed Dial has own settings for right clicks
+				it.ownerDocument.documentURI != "chrome://speeddial/content/speeddial.xul"
+				|| !/(?:^|\s)speeddial-container(?:\s|$)/.test(it.parentNode.className)
+				|| this.pu.pref("types.images.SpeedDial")
+			)
 		)
 			return it;
 		return null;
@@ -543,8 +555,11 @@ var handyClicks = {
 		if(
 			it.namespaceURI == this.ut.XULNS
 			&& this.inObject(it, "href") && (it.href || it.hasAttribute("href"))
-			&& (it.accessibleType || it.wrappedJSObject.accessibleType) == Components.interfaces.nsIAccessibleProvider.XULLink
+			&& this.ut.unwrap(it).accessibleType == Components.interfaces.nsIAccessibleProvider.XULLink
 		)
+			return it;
+
+		if(this.getCSSEditorURI(it) || this.getWebConsoleURI(it))
 			return it;
 
 		const docNode = Node.DOCUMENT_NODE; // 9
@@ -685,8 +700,8 @@ var handyClicks = {
 		//   "wrappedJSObject" in o => false
 		//   o.wrappedJSObject      => [object XULElement]
 
-		//return p in o || "wrappedJSObject" in o && p in o.wrappedJSObject;
-		return p in o || o.wrappedJSObject && p in o.wrappedJSObject;
+		//return p in o || o.wrappedJSObject && p in o.wrappedJSObject;
+		return p in o || p in this.ut.unwrap(o);
 	},
 	itemTypeInSets: function(sets, iType) {
 		return sets.hasOwnProperty(iType) && this.isOkFuncObj(sets[iType]);
@@ -826,6 +841,34 @@ var handyClicks = {
 	},
 	closeMenus: function(it) {
 		this.ut.closeMenus(it || this.item);
+	},
+	uri: function(uri) {
+		return /^[\w-]+:\S*$/.test(uri) && uri;
+	},
+	getCSSEditorURI: function(it) {
+		if(!this.pu.pref("types.links.CSSEditor"))
+			return null;
+		var docURI = it.ownerDocument.documentURI;
+		if(docURI == "chrome://browser/content/devtools/cssruleview.xul") { // Rules tab
+			return it.className == "ruleview-rule-source"
+				&& this.ut.getProperty(it, "parentNode", "_ruleEditor", "rule", "sheet", "href");
+		}
+		if(docURI == "chrome://browser/content/devtools/csshtmltree.xul") {
+			return it instanceof HTMLAnchorElement // Computed tab
+				&& !it.href
+				&& !it.getAttribute("href")
+				&& it.className == "link"
+				&& it.parentNode.className == "rule-link"
+				&& this.uri(it.title);
+		}
+		return null;
+	},
+	getWebConsoleURI: function(it) {
+		return it.namespaceURI == this.ut.XULNS
+			&& /(?:^|\s)webconsole-location(?:\s|$)/.test(it.className)
+			&& /(?:^|\s)text-link(?:\s|$)/.test(it.className)
+			&& (it.parentNode.id || "").substr(0, 12) == "console-msg-"
+			&& this.uri(it.getAttribute("title"));
 	},
 	getBookmarkURI:	function(it, e, usePlacesURIs) {
 		var ln = it.localName;

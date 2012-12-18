@@ -71,10 +71,10 @@ prefwindow[animated="true"] #hc-sets-tree-content {
 }
 
 /* Allow access from keyboard */
-tree treecolpicker {
+treecolpicker {
 	-moz-user-focus: normal;
 }
-tree treecolpicker:focus image {
+treecolpicker:focus image {
 	outline: 1px dotted ThreeDDarkShadow;
 }
 
@@ -93,7 +93,8 @@ tree[hc_colored="true"][hc_grid="true"] treechildren::-moz-tree-cell {
 }
 
 /* Override system colors for use custom colors for highlighting */
-tree[hc_colored="true"] .tree-bodybox, tree[hc_colored="true"] treechildren {
+tree[hc_colored="true"] .tree-bodybox,
+tree[hc_colored="true"] treechildren {
 	color: black;
 	background-color: white;
 }

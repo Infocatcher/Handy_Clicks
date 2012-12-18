@@ -105,7 +105,8 @@
 			onpopupshowing="return handyClicksUI.fillInTooltip(this);">
 		</tooltip>
 		<tooltip id="handyClicks-editModeTip" noautohide="true" orient="vertical">
-			<label />
+			<label id="handyClicks-editModeTip-header" value="&handyClicks.editModeTipHeader;" />
+			<label id="handyClicks-editModeTip-value" />
 		</tooltip>
 	</popupset>
 

@@ -791,6 +791,16 @@ var handyClicksUtils = {
 	hasNativeMethod: function(obj, methName) {
 		return methName in obj && typeof obj[methName] == "function" && this.isNativeFunction(obj[methName]);
 	},
+	unwrap: function(o) {
+		this.unwrap = "XPCNativeWrapper" in window && "unwrap" in XPCNativeWrapper
+			? function(o) {
+				return o && XPCNativeWrapper.unwrap(o);
+			}
+			: function(o) {
+				return o && o.wrappedJSObject || o
+			};
+		return this.unwrap.apply(this, arguments);
+	},
 
 	getOwnProperty: function(obj) { // this.getOwnProperty(obj, "a", "b", "propName") instead of obj.a.b.propName
 		var u;
@@ -976,8 +986,9 @@ var handyClicksUtils = {
 	},
 
 	removeChilds: function(elt) {
-		while(elt.hasChildNodes())
-			elt.removeChild(elt.lastChild);
+		//while(elt.hasChildNodes())
+		//	elt.removeChild(elt.lastChild);
+		elt.textContent = "";
 	},
 
 	get storage() { // return function(key, val)

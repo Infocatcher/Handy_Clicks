@@ -320,7 +320,7 @@ var handyClicksUI = {
 		this.hc.defineItem(e, {});
 		var type = this.hc.itemType;
 		if(type)
-			this.emtt.firstChild.setAttribute("value", this.ps.getTypeLabel(type));
+			this.emtt.lastChild.setAttribute("value", this.ps.getTypeLabel(type));
 		this.mousemoveHandler(e);
 	},
 	mousemoveHandler: function(e) {

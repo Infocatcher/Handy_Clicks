@@ -69,9 +69,8 @@ var handyClicksRegSvc = {
 		var s = {
 			__proto__: this.globals
 		};
-		var oName;
 		for(var p in _s) {
-			oName = _s[p];
+			var oName = _s[p];
 			if(oName in window)
 				s[p] = window[oName];
 		}
@@ -87,9 +86,9 @@ var handyClicksRegSvc = {
 			s[p].__proto__ = proto;
 	},
 	callMethods: function(methName, reloadFlag) {
-		var s = this.s, o;
+		var s = this.s;
 		for(var p in s) if(s.hasOwnProperty(p)) {
-			o = s[p];
+			var o = s[p];
 			if(o !== this && o.hasOwnProperty(methName))
 				o[methName](reloadFlag);
 		}

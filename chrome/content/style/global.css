@@ -1,9 +1,9 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-menuitem.handyClicks-iconic {
+.handyClicks-iconic {
 	list-style-image: url("icons16.png");
 }
-menuitem.handyClicks-iconic image {
+.handyClicks-iconic image {
 	width: auto !important;
 	height: auto !important;
 	min-width: 0 !important;
@@ -11,7 +11,7 @@ menuitem.handyClicks-iconic image {
 	max-width: none !important;
 	max-height: none !important;
 }
-menuitem.handyClicks-iconic[disabled="true"] image {
+.handyClicks-iconic[disabled="true"] .menu-iconic-icon {
 	opacity: 0.32;
 }
 
