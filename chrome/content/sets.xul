@@ -550,8 +550,7 @@
 
 		<key id="hc-sets-key-selectAll" key="a" modifiers="control" oncommand="handyClicksSets.selectAll();" />
 		<key id="hc-sets-key-clearSelection" key="a" modifiers="control,shift" oncommand="handyClicksSets.clearSelection();" />
-		<key id="hc-sets-key-invertSelection" key="*" oncommand="handyClicksSets.invertSelection();" />
-		<key id="hc-sets-key-invertSelection2" key="*" modifiers="control" oncommand="handyClicksSets.invertSelection();" />
+		<key id="hc-sets-key-invertSelection" key="*" modifiers="control" oncommand="handyClicksSets.invertSelection();" />
 		<key id="hc-sets-key-focusSearch" key="f" modifiers="control" oncommand="handyClicksSets.focusSearch();" />
 		<key id="hc-sets-key-focusSetsTree" key="t" modifiers="control" oncommand="handyClicksSets.focusSetsTree();" />
 		<key id="hc-sets-key-toggleFilterMode" key="f" modifiers="control,shift" oncommand="handyClicksSets.toggleFilterMode();" />

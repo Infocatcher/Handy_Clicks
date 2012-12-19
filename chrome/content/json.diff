@@ -1,0 +1,103 @@
+--- a/json2.js
++++ b/json.js
+@@ -165,32 +165,27 @@
+ }
+ 
+ (function () {
+-    'use strict';
++    //'use strict'; we get "useless expression" error in Firefox 1.5
+ 
+     function f(n) {
+         // Format integers to have at least two digits.
+         return n < 10 ? '0' + n : n;
+     }
+ 
+-    if (typeof Date.prototype.toJSON !== 'function') {
+-
+-        Date.prototype.toJSON = function (key) {
+-
+-            return isFinite(this.valueOf())
+-                ? this.getUTCFullYear()     + '-' +
+-                    f(this.getUTCMonth() + 1) + '-' +
+-                    f(this.getUTCDate())      + 'T' +
+-                    f(this.getUTCHours())     + ':' +
+-                    f(this.getUTCMinutes())   + ':' +
+-                    f(this.getUTCSeconds())   + 'Z'
+-                : null;
+-        };
+-
+-        String.prototype.toJSON      =
+-            Number.prototype.toJSON  =
+-            Boolean.prototype.toJSON = function (key) {
+-                return this.valueOf();
+-            };
++    //~ We dont't modify native prototypes
++    function dateToJSON(key) {
++        return isFinite(this.valueOf())
++            ? this.getUTCFullYear()     + '-' +
++                f(this.getUTCMonth() + 1) + '-' +
++                f(this.getUTCDate())      + 'T' +
++                f(this.getUTCHours())     + ':' +
++                f(this.getUTCMinutes())   + ':' +
++                f(this.getUTCSeconds())   + 'Z'
++            : null;
++    }
++    function evalInSandbox(s) {
++        var sandbox = new Components.utils.Sandbox("about:blank");
++        return Components.utils.evalInSandbox(s, sandbox);
+     }
+ 
+     var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+@@ -240,9 +235,23 @@
+ 
+ // If the value has a toJSON method, call it to obtain a replacement value.
+ 
+-        if (value && typeof value === 'object' &&
+-                typeof value.toJSON === 'function') {
+-            value = value.toJSON(key);
++        var valueType = Object.prototype.toString.call(value);
++
++        //~ Worse than prototype-based detection but pollutions free :)
++        //if (value && typeof value === 'object' &&
++        //      typeof value.toJSON === 'function') {
++        //  value = value.toJSON(key);
++        //}
++        if(value && typeof value === "object") {
++            switch(valueType) {
++                case "[object Date]":
++                    value = dateToJSON(key);
++                break;
++                case "[object String]":
++                case "[object Number]":
++                case "[object Boolean]":
++                    value = value.valueOf();
++            }
+         }
+ 
+ // If we were called with a replacer function, then call the replacer to
+@@ -292,7 +301,7 @@
+ 
+ // Is the value an array?
+ 
+-            if (Object.prototype.toString.apply(value) === '[object Array]') {
++            if (valueType === '[object Array]') {
+ 
+ // The value is an array. Stringify every element. Use null as a placeholder
+ // for non-JSON values.
+@@ -352,6 +361,7 @@
+             gap = mind;
+             return v;
+         }
++        return undefined; //~ for javascript.options.strict = true
+     }
+ 
+ // If the JSON object does not yet have a stringify method, give it one.
+@@ -469,7 +479,7 @@
+ // in JavaScript: it can begin a block or an object literal. We wrap the text
+ // in parens to eliminate the ambiguity.
+ 
+-                j = eval('(' + text + ')');
++                j = evalInSandbox('(' + text + ')');
+ 
+ // In the optional fourth stage, we recursively walk the new structure, passing
+ // each name/value pair to a reviver function for possible transformation.

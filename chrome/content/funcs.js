@@ -231,8 +231,8 @@ var handyClicksFuncs = {
 			// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
 			if("TreeStyleTabService" in window)
 				TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab);
-
-			// Tab Kit https://addons.mozilla.org/firefox/addon/5447/
+			// Tab Kit https://addons.mozilla.org/firefox/addon/tab-kit/
+			// TabKit 2nd Edition https://addons.mozilla.org/firefox/addon/tabkit-2nd-edition/
 			if("tabkit" in window) {
 				var hasTabKit = true;
 				tabkit.addingTab("related");

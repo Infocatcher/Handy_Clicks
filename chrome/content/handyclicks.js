@@ -12,6 +12,7 @@ var handyClicks = {
 		stopContextMenu: false, // => stop "contextmenu" event (in Linux: mousedown -> contextmenu -> ... delay ... -> click)
 		allowPopupshowing: false,
 		allowEvents: false, // => allow all events while (flags.runned == false)
+		allowEditModeEvents: false,
 		__proto__: null
 	},
 
@@ -110,11 +111,30 @@ var handyClicks = {
 			return;
 		}
 
+		var emAllowEvent = false;
+		if(em) {
+			var tar = e.originalTarget;
+			if(tar.namespaceURI == this.ut.XULNS) {
+				var nn = tar.nodeName;
+				emAllowEvent = this.flags.allowEditModeEvents = nn == "xul:scrollbarbutton" || nn == "xul:slider";
+				if(
+					this.ut.fxVersion >= 3.6
+					&& tar.boxObject
+					&& tar.boxObject instanceof Components.interfaces.nsIMenuBoxObject
+				) {
+					this.flags.allowPopupshowing = true;
+					//tar.boxObject.openMenu(true);
+					tar.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
+					this.flags.allowPopupshowing = false;
+				}
+			}
+		}
+
 		var amd = this.ut.getOwnProperty(funcObj, "allowMousedownEvent");
 		// true      - don't stop
 		// undefined - smart
 		// false     - always stop
-		if(amd === false || em)
+		if(amd === false || em && !emAllowEvent)
 			this.ut.stopEvent(e);
 		else if(amd === undefined && !this.ut.isChromeWin(e.view.top)) {
 			// Prevent page handlers, but don't stop Mouse Gestures
@@ -129,21 +149,6 @@ var handyClicks = {
 				},
 				true
 			);
-		}
-
-		if(em) {
-			var tar = e.originalTarget;
-			if(
-				this.ut.fxVersion >= 3.6
-				&& tar.namespaceURI == this.ut.XULNS
-				&& tar.boxObject
-				&& tar.boxObject instanceof Components.interfaces.nsIMenuBoxObject
-			) {
-				this.flags.allowPopupshowing = true;
-				//tar.boxObject.openMenu(true);
-				tar.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
-				this.flags.allowPopupshowing = false;
-			}
 		}
 
 		var delay = this.pu.pref("delayedActionTimeout");
@@ -297,6 +302,8 @@ var handyClicks = {
 	checkForStopEvent: function _cs(e) {
 		var canStop = (this.flags.runned || (this.hasSettings && !this.flags.allowEvents) || this.editMode)
 			&& !this.flags.cancelled;
+		if(canStop && this.editMode && this.flags.allowEditModeEvents)
+			return;
 		var same = e.originalTarget === this.origItem;
 		var stop = canStop && same;
 		var isMouseup = e.type == "mouseup";
@@ -387,7 +394,6 @@ var handyClicks = {
 	defineItem: function(e, sets, forcedAll) {
 		this._all = this.itemTypeInSets(sets, "$all");
 		var all = forcedAll || this._all;
-		//all = this.editMode || all;
 		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "ext_mulipletabs", "submitButton"
 		this.item = this.mainItem = null;
 
@@ -398,13 +404,13 @@ var handyClicks = {
 		var _it;
 
 		// Custom:
-		var cts = this.ps.types, ct;
+		var cts = this.ps.types;
 		for(var type in cts) if(cts.hasOwnProperty(type)) {
 			if(
 				(all || this.itemTypeInSets(sets, type))
 				&& this.ps.initCustomType(type)
 			) {
-				ct = cts[type];
+				var ct = cts[type];
 				this._ignoreOtherTypes = true; // Deprecated, see "ignoreOtherTypes" setter and getter
 				this.checkOtherTypes = false;
 				try {
@@ -434,12 +440,23 @@ var handyClicks = {
 			}
 		}
 
-		// img:
+		var checkSimpleType = this.ut.bind(function(type, getter) {
+			if(all || this.itemTypeInSets(sets, type)) {
+				var _it = getter.call(this, it, e);
+				if(_it) {
+					this.itemType = type;
+					this.item = _it;
+					return true;
+				}
+			}
+			return false;
+		}, this);
+
+		// Image or link:
 		if(all || this.itemTypeInSets(sets, "img")) {
 			_it = this.getImg(it);
 			if(
-				_it
-				&& (
+				_it && (
 					!this.ut.getOwnProperty(sets, "img", "ignoreSingle")
 					|| _it.ownerDocument.documentURI != _it.src
 				)
@@ -450,42 +467,12 @@ var handyClicks = {
 					return;
 			}
 		}
-
-		// Link:
-		if(all || this.itemTypeInSets(sets, "link")) {
-			_it = this.getLink(it);
-			if(_it) {
-				this.itemType = "link";
-				this.item = _it;
-				return;
-			}
-		}
-
+		if(checkSimpleType("link", this.getLink))
+			return;
 		if(this.itemType == "img")
 			return;
 
-		// History item:
-		if(all || this.itemTypeInSets(sets, "historyItem")) {
-			_it = this.getHistoryItem(it, e);
-			if(_it) {
-				this.itemType = "historyItem";
-				this.item = _it;
-				return;
-			}
-		}
-
-		// Bookmark:
-		if(all || this.itemTypeInSets(sets, "bookmark")) {
-			_it = this.getBookmarkItem(it, e);
-			if(_it) {
-				this.itemType = "bookmark";
-				this.item = _it;
-				return;
-			}
-		}
-
-		// Tab:
-		// Selected tabs (Multiple Tab Handler extension):
+		// Tab or selected tabs (Multiple Tab Handler extension):
 		var mth = all || this.itemTypeInSets(sets, "ext_mulipletabs");
 		if(mth || this.itemTypeInSets(sets, "tab")) {
 			_it = this.getTab(it, true);
@@ -502,33 +489,23 @@ var handyClicks = {
 			}
 		}
 
-		// Tab bar:
-		if(all || this.itemTypeInSets(sets, "tabbar")) {
-			_it = this.getTabbar(it);
-			if(_it) {
-				this.itemType = "tabbar";
-				this.item = _it;
+		// Other simple types:
+		var types = {
+			historyItem:  this.getHistoryItem,
+			bookmark:     this.getBookmarkItem,
+			tabbar:       this.getTabbar,
+			submitButton: this.getSubmitButton,
+			__proto__: null
+		};
+		for(var type in types)
+			if(checkSimpleType(type, types[type]))
 				return;
-			}
-		}
 
-		// Submit button:
-		if(all || this.itemTypeInSets(sets, "submitButton")) {
-			_it = this.getSubmitButton(it);
-			if(_it) {
-				this.itemType = "submitButton";
-				this.item = _it;
-				return;
-			}
-		}
-
-		if(!forcedAll && this.editMode && !this.itemType) // Nothing found?
+		if(!forcedAll && !this.itemType && this.editMode) // Nothing found?
 			this.defineItem(e, sets, true); // Try again with disabled types.
 	},
 
 	getImg: function(it) {
-		if(!it || !it.localName)
-			return null;
 		var itln = it.localName.toLowerCase();
 		if(itln == "_moz_generated_content_before") { // Alt-text
 			it = it.parentNode;
@@ -550,8 +527,6 @@ var handyClicks = {
 		return null;
 	},
 	getLink: function(it) {
-		if(!it || !it.localName)
-			return null;
 		if(
 			it.namespaceURI == this.ut.XULNS
 			&& this.inObject(it, "href") && (it.href || it.hasAttribute("href"))
@@ -589,8 +564,6 @@ var handyClicks = {
 		return null;
 	},
 	getHistoryItem: function(it, e) {
-		if(!it || !it.localName)
-			return null;
 		if(it.namespaceURI != this.ut.XULNS)
 			return null;
 		var itln = it.localName.toLowerCase();
@@ -605,8 +578,6 @@ var handyClicks = {
 		return null;
 	},
 	getBookmarkItem: function(it, e) {
-		if(!it || !it.localName)
-			return null;
 		if(it.namespaceURI != this.ut.XULNS)
 			return null;
 		var itln = it.localName.toLowerCase();
@@ -627,8 +598,6 @@ var handyClicks = {
 		return null;
 	},
 	getTab: function(it, excludeCloseButton) {
-		if(!it || !it.localName)
-			return null;
 		if(it.namespaceURI != this.ut.XULNS)
 			return null;
 		if(excludeCloseButton && it.localName.toLowerCase() == "toolbarbutton")
@@ -647,8 +616,6 @@ var handyClicks = {
 		return null;
 	},
 	getTabbar: function(it) {
-		if(!it || !it.localName)
-			return null;
 		if(it.namespaceURI != this.ut.XULNS)
 			return null;
 		var itln = it.localName.toLowerCase();
@@ -681,8 +648,6 @@ var handyClicks = {
 		return null;
 	},
 	getSubmitButton: function(it) {
-		if(!it || !it.localName)
-			return null;
 		var itln = it.localName.toLowerCase();
 		if(itln == "input" && it.type == "submit" && this.inObject(it, "form") && it.form)
 			return it;

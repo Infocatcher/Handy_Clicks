@@ -883,6 +883,7 @@ var handyClicksUtils = {
 	stopEvent: function(e) {
 		e.preventDefault();
 		e.stopPropagation();
+		//this._log("stopEvent " + e.type + "\n" + arguments.callee.caller);
 	},
 	isElementVisible: function(elt) {
 		if(!elt)
