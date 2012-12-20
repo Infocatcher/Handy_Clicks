@@ -52,8 +52,22 @@ function prefsMigration(allowSave, vers) {
 			this.prefSvc.deleteBranch(pn);
 		}
 	}
+	if(vers < 7) { //= Added: 2012-12-19
+		// Move prefs from editor.externalEditor* to editor.external.* branch
+		var ns = "editor.externalEditor";
+		this.prefSvc.getBranch(pns + ns)
+			.getChildList("", {})
+			.forEach(function(pName) {
+				const fullId = pns + ns + pName;
+				this.setPref( // We use setPref() to don't cache preferences
+					pns + "editor.external." + pName.charAt(0).toLowerCase() + pName.substr(1),
+					this.getPref(fullId)
+				);
+				this.prefSvc.deleteBranch(fullId);
+			}, this);
+	}
 	this.pref("prefsVersion", this.prefsVersion);
-	allowSave && this.savePrefFile();
+	allowSave && this.ut.timeout(this.savePrefFile, this);
 	this.ut._info("Format of about:config prefs updated: " + vers + " => " + this.prefsVersion);
 	return true;
 }

@@ -70,22 +70,15 @@ hbox[hc_fixedFields="true"] {
 	outline-offset: -1px;
 	background-color: ThreeDFace;
 }
-.hcFloatControl {
-	position: relative;
-	z-index: 10000;
-}
 #hc-editor-funcOptsFixed[hc_cantFixFields="true"] {
 	opacity: 0.5;
 }
+
 .hcEditCodeButton {
 	-moz-image-region: rect(32px 112px 48px 96px);
-	min-width: 0;
 }
-.hcEditCodeButton, .hcEditCodeButton * {
-	margin-top: 0 !important;
-	margin-bottom: 0 !important;
-	padding-top: 0 !important;
-	padding-bottom: 0 !important;
+.hcOpenCodeButton {
+	-moz-image-region: rect(32px 128px 48px 112px);
 }
 
 tab[hc_disabled="true"] {

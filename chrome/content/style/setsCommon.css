@@ -17,16 +17,19 @@
 	left: 0 !important;
 }
 
-.hcFloatButton {
-	margin: 0 !important;
-	padding: 0 2px !important;
-	min-width: 0;
-	-moz-margin-start: 2px !important;
+.hcFloatControl, .hcFloatButton {
+	position: relative;
+	z-index: 10000;
 }
-.hcFloatButton * {
+.hcFloatButton, .hcFloatButton * {
 	margin: 0 !important;
 	padding: 0 !important;
 	min-width: 0 !important;
+	min-height: 0 !important;
+}
+.hcFloatButton {
+	-moz-margin-start: 2px !important;
+	padding: 0 2px !important;
 }
 
 #hc-sets-onTop {

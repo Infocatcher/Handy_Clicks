@@ -55,6 +55,8 @@
 
 <!ENTITY hc.editor.editCode "Edit…">
 <!ENTITY hc.editor.editCodeTip "Edit in external editor…">
+<!ENTITY hc.editor.openCode "Open…">
+<!ENTITY hc.editor.openCodeTip "Load code from file…">
 
 <!ENTITY hc.editor.mainTabCustomTypes "Custom Types">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "T">

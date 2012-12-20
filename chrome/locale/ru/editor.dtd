@@ -55,6 +55,8 @@
 
 <!ENTITY hc.editor.editCode "Редактировать…">
 <!ENTITY hc.editor.editCodeTip "Редактировать во внешнем редакторе…">
+<!ENTITY hc.editor.openCode "Открыть…">
+<!ENTITY hc.editor.openCodeTip "Загрузить код из файла…">
 
 <!ENTITY hc.editor.mainTabCustomTypes "Добавленные типы">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "б">

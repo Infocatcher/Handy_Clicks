@@ -523,11 +523,11 @@
 					var file = this._linkedFile;
 					var isNew = !file || !file.exists();
 
-					var ext = ut.pu.pref("editor.externalEditorExtension") || "js";
+					var ext = ut.pu.pref("editor.external.extension") || "js";
 					if(isNew) {
 						var fName = this.getDefaultFilename(
 							ext,
-							ut.canRunw && ut.pu.pref("editor.externalEditorLabelInFileName")
+							ut.canRunw && ut.pu.pref("editor.external.labelInFileName")
 						);
 						file = ut.getFileByAlias("TmpD");
 						file.append(fName);
@@ -540,78 +540,83 @@
 							.deleteTemporaryFileOnExit(file);
 					}
 
-					//ut.writeToFile(ut.platformLineBreaks(this.value), file);
-					//this.updateFile(this.value, file);
-					this.updateFile();
+					this.updateFile(function(status) {
+						if(!Components.isSuccessCode(status)) {
+							var err = "openExternalEditor() failed: can't write string to file!\nFile: " + file.path
+								+ "\nError: " + ut.getErrorName(status);
+							ut._err(err);
+							ut.alert(ut.getLocalized("errorTitle"), err);
+							return;
+						}
+						var ee = ut.pu.pref("editor.external.path");
+						var eeFile = ee && ut.getLocalFile(ee);
+						var eeFileExists = eeFile && eeFile.exists();
 
-					var ee = ut.pu.pref("editor.externalEditorPath");
-					var eeFile = ee && ut.getLocalFile(ee);
-					var eeFileExists = eeFile && eeFile.exists();
+						if(ee && !eeFileExists)
+							ut._warn('openExternalEditor: External editor not found: "' + ee + '"');
 
-					if(ee && !eeFileExists)
-						ut._warn('openExternalEditor: External editor not found: "' + ee + '"');
-
-					if(!eeFileExists && "nsIWindowsRegKey" in Components.interfaces) try {
-						// Check Windows association
-						var regKey = Components.classes["@mozilla.org/windows-registry-key;1"]
-							.createInstance(Components.interfaces.nsIWindowsRegKey);
-						var readKey = function(path) {
-							regKey.open(regKey.ROOT_KEY_CLASSES_ROOT, path, regKey.ACCESS_READ);
-							var val = regKey.readStringValue("");
-							regKey.close();
-							return val;
-						};
-						var cmdId = readKey("." + ext);
-						if(cmdId) {
-							var cmd = readKey(cmdId + "\\shell\\open\\command");
-							if(cmd) {
-								// %SystemRoot%\System32\WScript.exe "%1" %*
-								//~ todo: other path in x64?
-								var wscript = ut.expandEnvironmentVariables("%SystemRoot%\\system32\\wscript.exe").toLowerCase();
-								var indx = ut.expandEnvironmentVariables(cmd).toLowerCase().indexOf(wscript);
-								if(indx == 0 || indx == 1) {
-									ee = "%SystemRoot%\\notepad.exe";
-									ut._log('openExternalEditor: "invalid" association: ' + cmd + '\nWill use "' + ee + '"');
+						if(!eeFileExists && "nsIWindowsRegKey" in Components.interfaces) try {
+							// Check Windows association
+							var regKey = Components.classes["@mozilla.org/windows-registry-key;1"]
+								.createInstance(Components.interfaces.nsIWindowsRegKey);
+							var readKey = function(path) {
+								regKey.open(regKey.ROOT_KEY_CLASSES_ROOT, path, regKey.ACCESS_READ);
+								var val = regKey.readStringValue("");
+								regKey.close();
+								return val;
+							};
+							var cmdId = readKey("." + ext);
+							if(cmdId) {
+								var cmd = readKey(cmdId + "\\shell\\open\\command");
+								if(cmd) {
+									// %SystemRoot%\System32\WScript.exe "%1" %*
+									//~ todo: other path in x64?
+									var wscript = ut.expandEnvironmentVariables("%SystemRoot%\\system32\\wscript.exe").toLowerCase();
+									var indx = ut.expandEnvironmentVariables(cmd).toLowerCase().indexOf(wscript);
+									if(indx == 0 || indx == 1) {
+										ee = "%SystemRoot%\\notepad.exe";
+										ut._log('openExternalEditor: "invalid" association: ' + cmd + '\nWill use "' + ee + '"');
+									}
 								}
 							}
 						}
-					}
-					catch(e) {
-					}
+						catch(e) {
+						}
 
-					if(ee) {
-						var args = [file.path];
-						var eeArgs = ut.pu.pref("editor.externalEditorArgs");
-						if(eeArgs) {
-							if(eeArgs.indexOf("%F") != -1) {
-								args = [];
-								eeArgs = eeArgs.replace(/%F/g, file.path);
+						if(ee) {
+							var args = [file.path];
+							var eeArgs = ut.pu.pref("editor.external.args");
+							if(eeArgs) {
+								if(eeArgs.indexOf("%F") != -1) {
+									args = [];
+									eeArgs = eeArgs.replace(/%F/g, file.path);
+								}
+								if(eeArgs.indexOf("%L") != -1)
+									eeArgs = eeArgs.replace(/%L/g, this.currentLine);
+								if(eeArgs.indexOf("%C") != -1)
+									eeArgs = eeArgs.replace(/%C/g, this.currentColumn);
+								args.push.apply(args, eeArgs.split(/[\r\n]+/));
 							}
-							if(eeArgs.indexOf("%L") != -1)
-								eeArgs = eeArgs.replace(/%L/g, this.currentLine);
-							if(eeArgs.indexOf("%C") != -1)
-								eeArgs = eeArgs.replace(/%C/g, this.currentColumn);
-							args.push.apply(args, eeArgs.split(/[\r\n]+/));
+							if(ut.startProcess(ee, args, true))
+								this.fade();
 						}
-						if(ut.startProcess(ee, args, true))
-							this.fade();
-					}
-					else {
-						//~ todo: association may be "invalid" (like wscript.exe on Windows) or missing
-						try {
-							file.launch();
-							this.fade();
+						else {
+							//~ todo: association may be "invalid" (like wscript.exe on Windows) or missing
+							try {
+								file.launch();
+								this.fade();
+							}
+							catch(e) { // See https://developer.mozilla.org/en/nsILocalFile#Remarks
+								ut.notifyInWindowCorner(
+									ut.getLocalized("launchError"),
+									ut.getLocalized("errorTitle"),
+									ut.bind(ut.wu.openSettingsPane, ut.wu, ["editor"])
+								);
+								ut._err("openExternalEditor: file.launch() failed");
+								ut._err(e);
+							}
 						}
-						catch(e) { // See https://developer.mozilla.org/en/nsILocalFile#Remarks
-							ut.notifyInWindowCorner(
-								ut.getLocalized("launchError"),
-								ut.getLocalized("errorTitle"),
-								ut.bind(ut.wu.openSettingsPane, ut.wu, ["editor"])
-							);
-							ut._err("openExternalEditor: file.launch() failed");
-							ut._err(e);
-						}
-					}
+					}, this);
 				]]>
 				</body>
 			</method>
@@ -642,7 +647,10 @@
 					if(!file)
 						return null;
 					var ut = top.handyClicksUtils;
-					ut.writeToFileAsync(ut.platformLineBreaks(this.value), file, function(status) {
+					var val = ut.platformLineBreaks(this.value);
+					if(ut.pu.pref("editor.external.saveWithBOM"))
+						val = "\ufeff" + val;
+					ut.writeToFileAsync(val, file, function(status) {
 						if(watch && Components.isSuccessCode(status))
 							this.watchFile(file, false);
 					}, this);
@@ -679,6 +687,8 @@
 				<parameter name="isTemp" />
 				<body>
 				<![CDATA[
+					if(this._linkedFile)
+						this.unwatchFile();
 					this._linkedFile = file;
 					this._isTempFile = isTemp;
 					this._lastModifiedTime = file.lastModifiedTime;
@@ -687,6 +697,7 @@
 						this._hasWatchHandlers = true;
 						top.addEventListener("focus",  this, false);
 						top.addEventListener("unload", this, false);
+						top.addEventListener("HandyClicks:editor:change", this, false);
 					}
 				]]>
 				</body>
@@ -695,8 +706,10 @@
 				<body>
 				<![CDATA[
 					if(this._hasWatchHandlers) {
-						top.removeEventListener("unload", this, false);
+						this._hasWatchHandlers = false;
 						top.removeEventListener("focus",  this, false);
+						top.removeEventListener("unload", this, false);
+						top.removeEventListener("HandyClicks:editor:change", this, false);
 					}
 					var file = this._linkedFile;
 					this._linkedFile = null;
@@ -709,11 +722,24 @@
 				<parameter name="e" />
 				<body>
 				<![CDATA[
-					if(e.type == "focus")
+					var type = e.type;
+					if(type == "focus")
 						this.updateFromFile();
-					else if(e.type == "unload") {
-						if(e.target.defaultView == top)
+					else if(type == "unload") {
+						if(e.target.defaultView == e.currentTarget)
 							this.unwatchFile();
+					}
+					else if(type == "HandyClicks:editor:change") {
+						var trg = e.target;
+						Components.classes["@mozilla.org/consoleservice;1"]
+							.getService(Components.interfaces.nsIConsoleService)
+							.logStringMessage("xxx " + trg);
+						for(var p = this; p; p = p.parentNode) {
+							if(p == trg) {
+								this.unwatchFile();
+								break;
+							}
+						}
 					}
 				]]>
 				</body>
@@ -736,46 +762,62 @@
 						if(fTime == this._lastModifiedTime && fSize == this._fileSize)
 							return;
 					}
-					var fVal = ut.readFromFile(file);
-					if(detectLineBreak)
-						this._lineBreak = /\r\n?|\n\r?/.test(fVal) ? RegExp.lastMatch : ut.lineBreak;
-					fVal = ut.internalLineBreaks(fVal);
-					if(fVal == this.value) {
+					ut.readFromFileAsync(file, function(fVal, status) {
+						if(!Components.isSuccessCode(status)) {
+							var err = "updateFromFile() failed: can't read string from file!\nFile: " + file.path
+								+ "\nError: " + ut.getErrorName(status);
+							ut._err(err);
+							ut.alert(ut.getLocalized("errorTitle"), err);
+							return;
+						}
+						if(detectLineBreak)
+							this._lineBreak = /\r\n?|\n\r?/.test(fVal) ? RegExp.lastMatch : ut.lineBreak;
+						fVal = ut.internalLineBreaks(fVal);
 						if(fromLinkedFile) {
 							this._lastModifiedTime = fTime;
 							this._fileSize = fSize;
 						}
-						return;
-					}
-
-					this.saveScrollPos();
-					this.value = fVal;
-					this.restoreScrollPos();
-
-					if(fromLinkedFile) {
-						this._lastModifiedTime = fTime;
-						this._fileSize = fSize;
-					}
-					this.fade();
-
-					this.fireChange();
+						if(fVal == this.value)
+							return;
+						this.saveScrollPos();
+						this.value = fVal;
+						this.restoreScrollPos();
+						this.fade();
+						this.fireChange();
+					}, this);
 				]]>
 				</body>
 			</method>
 			<method name="updateFile">
-				<parameter name="val" />
+				<parameter name="callback" />
+				<parameter name="context" />
+				<parameter name="value" />
 				<parameter name="file" />
 				<body>
 				<![CDATA[
 					if(!("handyClicksUtils" in top))
 						return;
 					var ut = top.handyClicksUtils;
-					val = val || this.value;
 					file = file || this._linkedFile;
-
-					var fVal = ut.internalLineBreaks(ut.readFromFile(file));
-					if(val != fVal)
-						ut.writeToFileAsync(ut.platformLineBreaks(val, this._lineBreak), file);
+					function _callback(status) {
+						callback && callback.call(context || window, status);
+					}
+					ut.readFromFileAsync(file, function(savedValue, status) {
+						if(!Components.isSuccessCode(status)) {
+							_callback(status);
+							return;
+						}
+						value = value || this.value;
+						savedValue = ut.internalLineBreaks(savedValue);
+						if(value == savedValue)
+							_callback(Components.results.NS_OK);
+						else {
+							if(ut.pu.pref("editor.external.saveWithBOM"))
+								value = "\ufeff" + value;
+							value = ut.platformLineBreaks(value, this._lineBreak);
+							ut.writeToFileAsync(value, file, callback, context);
+						}
+					}, this) || _callback(Components.results.NS_ERROR_FILE_ACCESS_DENIED);
 				]]>
 				</body>
 			</method>
@@ -1019,11 +1061,13 @@
 			<handler event="keypress" preventdefault="true" key="0" action="this.textZoom(0);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="g" action="this.goToLine();" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="w" action="this.toggleWordWrap();" modifiers="control" />
+			<!-- Hotkeys moved to editor.xul
 			<handler event="keypress" preventdefault="true" keycode="VK_F4" action="this.openExternalEditor();" />
 			<handler event="keypress" preventdefault="true" key="e" action="this.openExternalEditor();" modifiers="control,shift" />
-			<handler event="keypress" preventdefault="true" key="o" action="this.loadFromFile(false);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="o" action="this.loadFromFile(true);" modifiers="control,shift" />
+			<handler event="keypress" preventdefault="true" key="o" action="this.loadFromFile(false);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="s" action="this.saveToFile(true);" modifiers="control,shift" />
+			-->
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(false);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(true);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" keycode="VK_BACK" action="this.trimEndSpaces();" modifiers="alt" />

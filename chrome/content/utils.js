@@ -487,8 +487,7 @@ var handyClicksUtils = {
 	PERMS_FILE_WRITE: parseInt("0644", 8),
 	PERMS_DIRECTORY:  parseInt("0755", 8),
 	get fp() {
-		delete this.fp;
-		return this.fp = Components.classes["@mozilla.org/filepicker;1"]
+		return Components.classes["@mozilla.org/filepicker;1"]
 			.createInstance(Components.interfaces.nsIFilePicker);
 	},
 	writeToFile: function(str, file, outErr) {
@@ -500,7 +499,7 @@ var handyClicksUtils = {
 			fos.init(file, 0x02 | 0x08 | 0x20, this.PERMS_FILE_WRITE, 0);
 		}
 		catch(e) {
-			this._err('Can\'t write string to file "' + (file instanceof Components.interfaces.nsIFile ? file.path : file) + '"');
+			this._err("Can't write string to file " + this._fileInfo(file));
 			this._err(e);
 			fos.close();
 			if(outErr)
@@ -540,12 +539,12 @@ var handyClicksUtils = {
 			var istream = suc.convertToInputStream(str);
 			NetUtil.asyncCopy(istream, ostream, this.bind(function(status) {
 				if(!Components.isSuccessCode(status))
-					this._err("NetUtil.asyncCopy failed: " + this.getErrorName(status) + " (" + status + ")");
+					this._err("NetUtil.asyncCopy() failed: " + this.getErrorName(status));
 				callback && callback.call(context || this, status);
 			}, this));
 		}
 		catch(e) {
-			this._err('Can\'t write string to file "' + (file instanceof Components.interfaces.nsIFile ? file.path : file) + '"');
+			this._err("Can't write string to file " + this._fileInfo(file));
 			this._err(e);
 			callback && callback.call(context || this, this.getErrorCode(e));
 			return false;
@@ -561,7 +560,7 @@ var handyClicksUtils = {
 			fis.init(file, 0x01, this.PERMS_FILE_READ, 0);
 		}
 		catch(e) {
-			this._err('Can\'t read string from file "' + (file instanceof Components.interfaces.nsIFile ? file.path : file) + '"');
+			this._err("Can't read string from file " + this._fileInfo(file));
 			this._err(e);
 			fis.close();
 			if(outErr)
@@ -585,7 +584,7 @@ var handyClicksUtils = {
 				throw "Firefox 3.6";
 		}
 		catch(e) {
-			this._log("readFromFileAsync: asynchronous API not available");
+			this._log("readFromFileAsync(): asynchronous API not available");
 			this.readFromFileAsync = function(file, callback, context) {
 				var err = { value: undefined };
 				var data = this.readFromFile(file, err);
@@ -598,15 +597,29 @@ var handyClicksUtils = {
 		try {
 			NetUtil.asyncFetch(file, this.bind(function(istream, status) {
 				var data = "";
-				if(Components.isSuccessCode(status))
-					data = this.convertToUnicode(NetUtil.readInputStreamToString(istream, istream.available()));
-				else
-					this._err("NetUtil.asyncFetch failed: " + this.getErrorName(status) + " (" + status + ")");
+				if(Components.isSuccessCode(status)) {
+					try { // Firefox 7.0a1+ throws after istream.available() on empty files
+						data = NetUtil.readInputStreamToString(
+							istream,
+							istream.available(),
+							{ charset: "UTF-8", replacement: "\ufffd" } // Only Gecko 11.0+
+						);
+						if(NetUtil.readInputStreamToString.length < 3)
+							data = this.convertToUnicode(data);
+					}
+					catch(e) {
+						if(this.getErrorCodeString(e) != "NS_BASE_STREAM_CLOSED")
+							Components.utils.reportError(e);
+					}
+				}
+				else {
+					this._err("NetUtil.asyncFetch() failed: " + this.getErrorName(status));
+				}
 				callback.call(context || this, data, status);
 			}, this));
 		}
 		catch(e) {
-			this._err('Can\'t read string from file "' + (file instanceof Components.interfaces.nsIFile ? file.path : file) + '"');
+			this._err("Can't read string from file " + this._fileInfo(file));
 			this._err(e);
 			callback && callback.call(context || this, "", this.getErrorCode(e));
 			return false;
@@ -627,7 +640,7 @@ var handyClicksUtils = {
 		return str;
 	},
 	getErrorCode: function(err, defaultCode) {
-		return Components.results[this.getErrorCodeString(err, defaultCode || "NS_OK")];
+		return Components.results[this.getErrorCodeString(err, defaultCode)];
 	},
 	getErrorCodeString: function(err, defaultCode) {
 		return err
@@ -642,6 +655,11 @@ var handyClicksUtils = {
 			if(cr[errName] == code)
 				return errName;
 		return String(code);
+	},
+	_fileInfo: function(file) {
+		return file instanceof Components.interfaces.nsIFile
+			? '"' + file.path + '"'
+			: "<not a file> " + file;
 	},
 
 	// Clipboard utils:
@@ -729,27 +747,8 @@ var handyClicksUtils = {
 	},
 
 	get lineBreak() {
-		// Based on code of Adblock Plus 1.2.1: chrome\adblockplus.jar\content\utils.js
-		// In newer versions: modules\Utils.jsm
-		// Platform's line breaks by reading prefs.js
-		var br = "\n";
-		try {
-			var prefFile = this.getFileByAlias("PrefF");
-			var is = Components.classes["@mozilla.org/network/file-input-stream;1"]
-				.createInstance(Components.interfaces.nsIFileInputStream);
-			is.init(prefFile, 0x01, this.PERMS_FILE_READ, 0);
-			var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]
-				.createInstance(Components.interfaces.nsIScriptableInputStream);
-			sis.init(is);
-			var data = sis.read(256);
-			sis.close();
-			if(/\r\n?|\n\r?/.test(data))
-				br = RegExp.lastMatch;
-		}
-		catch (e) {
-		}
 		delete this.lineBreak;
-		return this.lineBreak = br;
+		return this.lineBreak = this.appInfo.OS == "WINNT" ? "\r\n" : "\n";
 	},
 	platformLineBreaks: function(str, lineBreak) {
 		return str.replace(/\r\n?|\n\r?/g, lineBreak || this.lineBreak);

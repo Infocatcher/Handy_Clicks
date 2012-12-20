@@ -89,13 +89,11 @@ var handyClicksEditor = {
 		this.setCompactUI();
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 
-		window.addEventListener("keypress", this, true);
 		this._startTime1 = Date.now();
 	},
 	destroy: function(reloadFlag) {
 		this.wu.markOpenedEditors();
 		this.testMode && this.undoTestSettings();
-		window.removeEventListener("keypress", this, true);
 		window.removeEventListener("select",   this, true);
 		window.removeEventListener("focus",    this, true);
 		this._savedShortcutObj = this._savedTypeObj = null;
@@ -135,12 +133,6 @@ var handyClicksEditor = {
 						editor && editor.focus();
 						break;
 					}
-				}
-			break;
-			case "keypress":
-				if(e.keyCode == e.DOM_VK_F4 && !this.ut.hasModifier(e)) {
-					this.ut.stopEvent(e);
-					this.editCode();
 				}
 		}
 	},
@@ -378,6 +370,11 @@ var handyClicksEditor = {
 		this.setWinTitle();
 		this.setDialogButtons();
 	},
+	fireEditorChange: function(node) {
+		var evt = document.createEvent("Events");
+		evt.initEvent("HandyClicks:editor:change", true, false);
+		node.dispatchEvent(evt);
+	},
 
 	setDialogButtons: function() {
 		var shModified = this.shortcutUnsaved;
@@ -552,6 +549,8 @@ var handyClicksEditor = {
 			this.typeSaved();
 			this.setDialogButtons();
 		}
+
+		this.fireEditorChange(this.$("hc-editor-itemTypePanel"));
 	},
 	customTypeLabel: function(it) {
 		if(it.getElementsByAttribute("label", it.value)[0])
@@ -972,6 +971,8 @@ var handyClicksEditor = {
 		this.setWinId();
 		this.setWinTitle();
 		this.setDialogButtons();
+
+		this.fireEditorChange(this.$("hc-editor-shortcutPanel"));
 	},
 	setClickOptions: function(e) {
 		this.$("hc-editor-button").value = e.button;
@@ -998,6 +999,12 @@ var handyClicksEditor = {
 	},
 
 	editCode: function() {
+		this.doEditorCommand("hcEditCodeButton", "openExternalEditor");
+	},
+	openCode: function() {
+		this.doEditorCommand("hcOpenCodeButton", "loadFromFile", true);
+	},
+	doEditorCommand: function(btnClass, cmd/*, arg1, ...*/) {
 		var tabbox = this.mainTabbox;
 		for(;;) {
 			var panel = this.getSelectedPanel(tabbox);
@@ -1007,16 +1014,16 @@ var handyClicksEditor = {
 			tabbox = tabboxes[0];
 		}
 
-		var toolbar = tabbox.previousSibling;
-		var btns = toolbar.getElementsByTagName("button");
-		for(var i = 0, l = btns.length; i < l; ++i) {
-			var btn = btns[i];
-			if(/(?:^|\s)hcEditCodeButton(?:\s|$)/.test(btn.className)) {
-				btn.disabled = true;
-				setTimeout(function() {
-					btn.disabled = false;
-				}, 400);
-				break;
+		if(btnClass) {
+			var btnClassRe = new RegExp("(?:^|\\s)" + btnClass + "(?:\\s|$)");
+			var toolbar = tabbox.previousSibling;
+			var btns = toolbar.getElementsByTagName("button");
+			for(var i = 0, l = btns.length; i < l; ++i) {
+				var btn = btns[i];
+				if(btnClassRe.test(btn.className)) {
+					btn.disabled = true;
+					break;
+				}
 			}
 		}
 
@@ -1024,7 +1031,12 @@ var handyClicksEditor = {
 		if(!this.ut.isElementVisible(editor))
 			return;
 		editor.focus();
-		editor.openExternalEditor();
+		var args = Array.slice(arguments, 2);
+		editor[cmd].apply(editor, args);
+
+		btn && setTimeout(function() {
+			btn.disabled = false;
+		}, 400);
 	},
 
 	disableUnsupported: function() {
