@@ -430,6 +430,8 @@ var handyClicksUtils = {
 			return null;
 		}
 		try {
+			if(file.isDirectory()) //~ Hack: correctly handle install drive
+				file.append(".");
 			file.normalize(); // dir1/dir2/../file -> dir1/file
 		}
 		catch(e) {
@@ -1198,14 +1200,14 @@ var handyClicksExtensionsHelper = {
 				if(
 					!addons.some(function(addon, i, addons) {
 						if(addon.id == guid) {
-							this.ut._log("Addon changed: " + guid);
+							//this.ut._log("Addon changed: " + guid);
 							addons[i] = addon;
 							return true;
 						}
 						return false;
 					}, this)
 				) {
-					this.ut._log("Addon installed: " + guid);
+					//this.ut._log("Addon installed: " + guid);
 					addons.push(addon);
 				}
 			};
@@ -1246,14 +1248,6 @@ var handyClicksExtensionsHelper = {
 			return this.addons = addons;
 		}
 		return addons;
-	},
-	isAvailable: function(guid) {
-		var caller = Components.stack.caller;
-		this.ut._deprecated( //= Added: 2012-01-12
-			"Function handyClicksExtensionsHelper.isAvailable() is deprecated. "
-			+ "Use handyClicksExtensionsHelper.isEnabled() instead."
-		);
-		return this.isEnabled(guid);
 	},
 	isInstalled: function(guid) {
 		return this.newAddonManager

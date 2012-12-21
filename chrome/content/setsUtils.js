@@ -391,7 +391,8 @@ var handyClicksSetsUtils = {
 		return false;
 	},
 
-	dragSwitch: true,
+	_dragSwitchTimer: 0,
+	_lastDragOverNode: null,
 	dragenterHandler: function(e) {
 		var tar = e.originalTarget;
 		var ln = tar.localName;
@@ -399,27 +400,39 @@ var handyClicksSetsUtils = {
 			return;
 		var selectHandler;
 		if(ln == "tab")
-			selectHandler = "selectTab";
+			selectHandler = this.selectTab;
 		else if(ln == "radio" && /(?:^|\s)paneSelector(?:\s|$)/.test(tar.parentNode.className))
-			selectHandler = "selectRadio";
+			selectHandler = this.selectRadio;
 		if(!selectHandler)
 			return;
-		tar.setAttribute("hc_canDragSwitch", "true");
-		this.dragSwitch = true;
+
+		var prevNode = this._lastDragOverNode;
+		if(tar != prevNode) {
+			if(prevNode)
+				prevNode.removeAttribute("hc_canDragSwitch");
+			this._lastDragOverNode = tar;
+			tar.setAttribute("hc_canDragSwitch", "true");
+		}
+
 		var _this = this;
 		var dragSwitch = function() {
 			tar.removeAttribute("hc_canDragSwitch");
-			if(_this.dragSwitch)
-				_this[selectHandler](tar);
+			selectHandler.call(_this, tar);
 		};
 		var delay = this.pu.pref("ui.dragSwitchDelay");
-		if(delay > 0 && this.ut.fxVersion >= 3)
-			setTimeout(dragSwitch, delay);
-		else
+		if(delay <= 0 || this.ut.fxVersion < 3)
 			dragSwitch();
+		else {
+			clearTimeout(this._dragSwitchTimer);
+			this._dragSwitchTimer = setTimeout(dragSwitch, delay);
+		}
 	},
 	dragexitHandler: function(e) {
-		this.dragSwitch = false;
+		clearTimeout(this._dragSwitchTimer);
+		if(this._lastDragOverNode) {
+			this._lastDragOverNode.removeAttribute("hc_canDragSwitch");
+			this._lastDragOverNode = null;
+		}
 	},
 	selectTab: function(tab) {
 		for(var node = tab.parentNode; node; node = node.parentNode) {

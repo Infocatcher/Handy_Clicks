@@ -15,6 +15,8 @@
 				}
 				catch(e) {
 				}
+				if(this.hasAttribute("hc_fontSize"))
+					this.style.fontSize = this.getAttribute("hc_fontSize");
 				this.setTabSize();
 				var top = window.top;
 				var pu = "handyClicksPrefUtils" in top && top.handyClicksPrefUtils;
@@ -52,10 +54,11 @@
 				<![CDATA[
 					if(!tabSize)
 						tabSize = this.tabSize;
-					if("tabSize" in this.style)
-						this.style.tabSize = tabSize;
-					else if("MozTabSize" in this.style)
-						this.style.MozTabSize = tabSize;
+					var s = this.style;
+					if("tabSize" in s)
+						s.tabSize = tabSize;
+					else if("MozTabSize" in s)
+						s.MozTabSize = tabSize;
 				]]>
 				</body>
 			</method>
@@ -68,7 +71,7 @@
 				]]>
 				</getter>
 				<setter>
-					this.setAttribute("hc_tabSpaces", val);
+					this.setAttribute("hc_tabSpaces", !!val);
 				</setter>
 			</property>
 			<property name="tabSymbol">
@@ -170,12 +173,12 @@
 				]]>
 				</body>
 			</method>
-			<field name="_allowBackspace">false</field>
+			<field name="_disableRemoveSpaces">false</field>
 			<method name="removeSpaces">
 				<parameter name="event" />
 				<body>
 				<![CDATA[
-					if(this._allowBackspace)
+					if(this._disableRemoveSpaces)
 						return;
 					var ifi = this.inputField;
 					var ss = ifi.selectionStart;
@@ -185,14 +188,24 @@
 					var tab = this.tabSymbol;
 					if(!this._isSpaces(tab))
 						return;
-					var line = this.value.substring(0, ss).match(/[^\r\n]*$/)[0];
-					var availSpaces = line.match(/ *$/)[0].length;
-					if(availSpaces <= 1)
-						return;
-					var maxSpaces = line.length % tab.length || tab.length;
+					var value = this.value;
+					if(event.keyCode == event.DOM_VK_BACK_SPACE) {
+						var line = value.substring(0, ss).match(/[^\r\n]*$/)[0];
+						var availSpaces = line.match(/ *$/)[0].length;
+						if(availSpaces <= 1)
+							return;
+						var maxSpaces = line.length % tab.length || tab.length;
+					}
+					else /*if(event.keyCode == event.DOM_VK_DELETE)*/ {
+						var availSpaces = value.substr(ss).match(/^ */)[0].length;
+						if(availSpaces <= 1)
+							return;
+						var line = value.substring(0, ss).match(/[^\r\n]*$/)[0];
+						var maxSpaces = (tab.length - line.length % tab.length) || tab.length;
+					}
 					var removeSpaces = Math.min(availSpaces, maxSpaces);
 
-					this._allowBackspace = true;
+					this._disableRemoveSpaces = true;
 					while(--removeSpaces) {
 						var evt = document.createEvent("KeyEvents");
 						evt.initKeyEvent(
@@ -203,7 +216,7 @@
 						);
 						event.originalTarget.dispatchEvent(evt);
 					}
-					this._allowBackspace = false;
+					this._disableRemoveSpaces = false;
 				]]>
 				</body>
 			</method>
@@ -468,12 +481,14 @@
 				<parameter name="add" />
 				<body>
 				<![CDATA[
-					this.style.fontSize = add == 0
+					var fs = add == 0
 						? ""
 						: Math.min(48, Math.max(1,
 							parseInt(this.ownerDocument.defaultView.getComputedStyle(this, null).fontSize) + add
 						)) + "px";
-					this.id && document.persist(this.id, "style");
+					this.style.fontSize = fs;
+					this.setAttribute("hc_fontSize", fs);
+					this.id && this.ownerDocument.persist(this.id, "hc_fontSize");
 				]]>
 				</body>
 			</method>
@@ -483,7 +498,7 @@
 					var ww = this.getAttribute("hc_wrapWidth") == "0" ? -1 : 0;
 					this.editor.wrapWidth = ww;
 					this.setAttribute("hc_wrapWidth", ww);
-					this.id && document.persist(this.id, "hc_wrapWidth");
+					this.id && this.ownerDocument.persist(this.id, "hc_wrapWidth");
 				]]>
 				</body>
 			</method>
@@ -1052,6 +1067,7 @@
 			<handler event="keypress" preventdefault="true" key=" " action="this.setIndent(' ', false);" />
 			<handler event="keypress" preventdefault="true" key=" " action="this.setIndent(' ', true);" modifiers="shift" />
 			<handler event="keypress" keycode="VK_BACK" action="this.removeSpaces(event);" />
+			<handler event="keypress" keycode="VK_DELETE" action="this.removeSpaces(event);" />
 			<handler event="keypress" preventdefault="true" key="a" action="this.toggleComments(true);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" key="q" action="this.toggleComments(false);" modifiers="control,shift" />
 			<handler event="keypress" preventdefault="true" keycode="VK_RETURN" action="this.formatNewLine();" />

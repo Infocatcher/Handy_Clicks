@@ -2194,7 +2194,7 @@ var handyClicksSets = {
 					this
 				).sort().join("\n");
 		this.ut.writeToFile(data, file);
-		this.backupsDir = file.parent.path;
+		this.backupsDir = file.parent;
 	},
 	importPrefs: function() {
 		var file = this.pickFile(this.ut.getLocalized("importPrefs"), false, "ini");
@@ -2208,7 +2208,7 @@ var handyClicksSets = {
 			);
 			return;
 		}
-		this.backupsDir = file.parent.path;
+		this.backupsDir = file.parent;
 		var _oldPrefs = [];
 		this.pu.pref("prefsVersion", 0);
 		str.replace(/[\r\n]{1,100}/g, "\n").split(/[\r\n]+/)
@@ -2265,7 +2265,7 @@ var handyClicksSets = {
 			);
 			if(!file)
 				return;
-			this.backupsDir = file.parent.path;
+			this.backupsDir = file.parent;
 		}
 		if(partialExport) {
 			var pStr = this.extractPrefs(!onlyCustomTypes);
@@ -2404,7 +2404,7 @@ var handyClicksSets = {
 			pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)
 			&& !pSrc.parent.equals(this.ps.prefsDir)
 		)
-			this.backupsDir = pSrc.parent.path;
+			this.backupsDir = pSrc.parent;
 	},
 	createBackup: function() {
 		var bName = this.ps.prefsFileName + this.ps.names.userBackup + new Date().toLocaleFormat("%Y%m%d%H%M%S");
@@ -2477,7 +2477,6 @@ var handyClicksSets = {
 		}
 
 		var entries = this.ps.backupsDir.directoryEntries;
-		var entry, fName;
 		var _fTerms = [], _files = {}, _fTime;
 		var _ubTerms = [], _ubFiles = {}, _ubTime;
 
@@ -2489,8 +2488,8 @@ var handyClicksSets = {
 		const testBackup = fPrefix + this.ps.names.testBackup;
 
 		while(entries.hasMoreElements()) {
-			entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
-			fName = entry.leafName;
+			var entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
+			var fName = entry.leafName;
 			if(
 				!entry.isFile()
 				|| !this.ut.hasPrefix(fName, fPrefix)
@@ -2741,19 +2740,14 @@ var handyClicksSets = {
 	},
 	get backupsDir() {
 		var path = this.pu.pref("sets.backupsDir");
-		if(!path)
-			return null;
-		var file = Components.classes["@mozilla.org/file/local;1"]
-			.createInstance(Components.interfaces.nsILocalFile || Components.interfaces.nsIFile);
-		try {
-			file.initWithPath(path);
-		}
-		catch(e) {
-			return null;
-		}
-		return file.exists() && file.isDirectory() && file;
+		var file = path && this.ut.getLocalFile(path);
+		return file && file.exists() && file.isDirectory() && file;
 	},
-	set backupsDir(path) {
+	set backupsDir(dir) {
+		var path = dir.path;
+		var curDrv = this.ut.getFileRoot(this.ps.profileDir).path;
+		if(path.substr(0, curDrv.length) == curDrv)
+			path = "%hc_ProfDrv%" + path.substr(curDrv.length);
 		this.pu.pref("sets.backupsDir", path);
 	},
 	getFormattedDate: function(date) {

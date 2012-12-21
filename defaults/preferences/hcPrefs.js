@@ -70,6 +70,7 @@ pref("extensions.handyclicks.sets.backupDepth", 5);
 pref("extensions.handyclicks.sets.backupAutoDepth", 10);
 pref("extensions.handyclicks.sets.backupAutoInterval", 86400); // 24*60*60
 pref("extensions.handyclicks.sets.backupTestDepth", 5);
+pref("extensions.handyclicks.sets.backupCorruptedDepth", 15);
 pref("extensions.handyclicks.sets.removeBackupConfirm", true);
 pref("extensions.handyclicks.sets.importJSWarning", true);
 pref("extensions.handyclicks.sets.openEditorsLimit", 5);
