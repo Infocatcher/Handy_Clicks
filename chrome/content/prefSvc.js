@@ -537,7 +537,7 @@ var handyClicksPrefSvc = {
 	},
 	sortSettings: function(o) {
 		//~ todo: use "logical" sort? Place "enabled" first, etc.
-		this.sortObj(o, true);
+		return this.sortObj(o, true);
 	},
 	getSettingsStr: function(types, prefs) {
 		types = types || this.types;
@@ -583,7 +583,7 @@ var handyClicksPrefSvc = {
 	},
 	sortObj: function(obj, deep) {
 		if(!this.ut.isObject(obj))
-			return false;
+			return obj;
 		var arr = [], ex = {};
 		for(var p in obj) if(obj.hasOwnProperty(p)) {
 			var val = obj[p];
@@ -595,7 +595,7 @@ var handyClicksPrefSvc = {
 		arr.sort().forEach(function(p) {
 			obj[p] = ex[p];
 		});
-		return arr.length > 0;
+		return obj;
 	},
 	getHash: function(str, hashFunc) {
 		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]

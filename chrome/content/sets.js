@@ -837,17 +837,15 @@ var handyClicksSets = {
 		this.tbo.getCellAt(e.clientX, e.clientY, row, col, cell);
 		return row.value > -1 && this.tView.isContainer(row.value);
 	},
-	deleteItems: function() {
-		if(!this.isTreePaneSelected)
-			return;
-		var tIts = this.selectedItems;
+	getItemsInfo: function(tIts) {
+		if(!tIts)
+			tIts = this.selectedItems;
 		if(!tIts.length)
-			return;
-
+			return [];
 		const MAX_TYPE_LENGTH = 40;
 		const MAX_LABEL_LENGTH = 50;
 		const MAX_ROWS = 12;
-		var delInfo = tIts.map(
+		var info = tIts.map(
 			function(tItem, i) {
 				var type = tItem.__itemType, sh = tItem.__shortcut;
 				var mdfs = this.ps.getModifiersStr(sh);
@@ -874,20 +872,29 @@ var handyClicksSets = {
 			},
 			this
 		);
-		if(delInfo.length > MAX_ROWS)
-			delInfo.splice(MAX_ROWS - 2, delInfo.length - MAX_ROWS + 1, "\u2026" /* "..." */);
-		delInfo = delInfo.join("\n");
-
+		if(info.length > MAX_ROWS)
+			info.splice(MAX_ROWS - 2, info.length - MAX_ROWS + 1, "\u2026" /* "..." */);
+		return info;
+	},
+	cropStr: function(str, maxLen) {
+		return str.length > maxLen
+			? str.substr(0, maxLen - 1) + "\u2026" /* "..." */
+			: str;
+	},
+	deleteItems: function() {
+		if(!this.isTreePaneSelected)
+			return;
+		var tIts = this.selectedItems;
 		if(
-			!this.ut.confirm(
+			!tIts.length
+			|| !this.ut.confirm(
 				this.ut.getLocalized("title"),
 				this.ut.getLocalized("deleteConfirm").replace("%n", tIts.length)
-					+ "\n\n" + delInfo
+					+ "\n\n" + this.getItemsInfo(tIts).join("\n")
 			)
 		)
 			return;
 
-		//tIts.forEach(this.deleteItem, this);
 		this.treeBatch(function() {
 			tIts.forEach(this.deleteItem, this);
 		});
@@ -900,11 +907,6 @@ var handyClicksSets = {
 			this.setDialogButtons();
 		}
 		this.searchInSetsTree(true);
-	},
-	cropStr: function(str, maxLen) {
-		return str.length > maxLen
-			? str.substr(0, maxLen - 1) + "\u2026" /* "..." */
-			: str;
 	},
 	deleteItem: function(tItem, indx) {
 		var sh = tItem.__shortcut;
@@ -1777,7 +1779,7 @@ var handyClicksSets = {
 		"sets.openEditorsLimit",
 		"sets.removeBackupConfirm",
 		"ui.notifyUnsaved",
-		"editor.unsavedWarning"
+		"editor.unsavedSwitchWarning"
 	],
 	initResetWarnMsgs: function() {
 		var changed = this.warnMsgsPrefs.filter(this.pu.prefChanged, this.pu);
@@ -1817,8 +1819,8 @@ var handyClicksSets = {
 				case "ui.notifyUnsaved":
 					text = this.ut.getLocalized("notifyUnsaved");
 				break;
-				case "editor.unsavedWarning":
-					text = this.ut.getLocalized("editorUnsavedWarning");
+				case "editor.unsavedSwitchWarning":
+					text = this.ut.getLocalized("editorUnsavedSwitchWarning");
 				break;
 				default:
 					this.ut._warn('initResetWarnMsgs: no description for "' + pName + '" pref');
@@ -2276,8 +2278,11 @@ var handyClicksSets = {
 			else if(targetId == ct.EXPORT_CLIPBOARD_HTML) {
 				var uri = ct.PROTOCOL_SETTINGS_ADD + this.ps.encURI(pStr);
 				var label = this.extractLabels(!onlyCustomTypes).join(", ");
+				var info = this.ut.encodeHTML(this.getItemsInfo().join(" \n"))
+					.replace(/\n/g, "&#10;")
+					.replace(/\u21d2/g, "&#8658;");
 				this.ut.copyStr(
-					'<a href="' + this.ut.encodeHTML(uri) + '">'
+					'<a href="' + this.ut.encodeHTML(uri) + '" title="' + info + '">'
 					+ this.ut.encodeHTML(label, false)
 					+ "</a>"
 				);
@@ -2402,7 +2407,7 @@ var handyClicksSets = {
 			this.updTree();
 		if(
 			pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)
-			&& !pSrc.parent.equals(this.ps.prefsDir)
+			&& !this.ut.hasPrefix(pSrc.path, this.ps.prefsDir.path)
 		)
 			this.backupsDir = pSrc.parent;
 	},

@@ -74,13 +74,11 @@ var handyClicksEditor = {
 			document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css
 		}
 		this.ps.loadSettings(this.src || null);
-		this.loadCustomType(this.type);
 		this.selectTargetTab(this.isDelayed);
 		this.initUI();
 
 		this.dataSaved();
 		//this.applyDisabled = true;
-		this.setDialogButtons();
 
 		this.ps.oSvc.addObserver(this.setsReloading, this);
 
@@ -171,6 +169,8 @@ var handyClicksEditor = {
 		this.shortcut = wa[2];
 		this.type = wa[3];
 		this.isDelayed = wa[4];
+		this.customType = null;
+		this.customTypeLabel = "";
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
 	setsReloading: function(notifyReason) {
@@ -356,12 +356,13 @@ var handyClicksEditor = {
 		this.initShortcutEditor();
 		this.appendTypesList();
 		this.initAdditionalOptions();
-		this.initCustomTypesEditor(allowUndo && this.currentCustomType);
+		this.initCustomTypesEditor(allowUndo ? this.currentCustomType : this.type);
+		//this.loadCustomType(this.type);
 		this.disableUnsupported();
 		this._allowUndo = false;
 
 		this.setWinTitle();
-		this.setDialogButtons();
+		//this.setDialogButtons(); // Called in initShortcutEditor()
 	},
 	editorModeChanged: function() {
 		if(!("_handyClicksInitialized" in window))
@@ -459,20 +460,14 @@ var handyClicksEditor = {
 
 		so = this.ut.getOwnProperty(so, "delayedAction") || {};
 		this.initFuncEditor(so, this.delayId);
+		this.currentShortcut = this.shortcut;
 
-		var butt = /(?:^|,)button=([0-2])(?:,|$)/.test(this.shortcut) ? RegExp.$1 : "0";
-		this.$("hc-editor-button").value = butt;
-		this.$("hc-editor-events-command").disabled = butt != "0";
-		["ctrl", "shift", "alt", "meta"].forEach(
-			function(mdf) {
-				var re = new RegExp("(?:^|,)" + mdf + "=true(?:,|$)");
-				this.$("hc-editor-" + mdf).checked = re.test(this.shortcut);
-			},
-			this
-		);
-
-		this.shortcutSaved();
-		this.setDialogButtons();
+		this.ut.timeout(function() {
+			// Very strange, looks like <checkbox> binding aren't initialized
+			// (see "so.arguments = {}" and following in getFuncObj())
+			this.shortcutSaved();
+			this.setDialogButtons();
+		}, this);
 	},
 	initFuncEditor: function(setsObj, delayed, allowUndo) {
 		var isCustom = this.ut.getOwnProperty(setsObj, "custom");
@@ -510,16 +505,47 @@ var handyClicksEditor = {
 			return;
 		e.preventDefault();
 		var tar = e.target;
-		var cType = tar.value;
-		this.loadCustomType(cType);
-		this.mainTabbox.selectedIndex = this.INDEX_TYPE;
 		var mp = tar.parentNode;
 		if("hidePopup" in mp)
 			mp.hidePopup();
+
+		var cType = tar.value;
+		this.loadCustomType(cType);
+		this.mainTabbox.selectedIndex = this.INDEX_TYPE;
 	},
 	initCustomTypesEditor: function(cType, to) {
+		var cList = this.$("hc-editor-customType");
+		if(
+			this.customType
+			&& !this.testMode
+			&& this._savedTypeObj
+			&& !this.ut.objEquals( //~ todo: add API for this?
+				this.ps.sortSettings(this.getTypeObj(this.customTypeLabel)),
+				this._savedTypeObj
+			)
+		) {
+			var res = this.su.notifyUnsaved(
+				this.ut.getLocalized("editorUnsavedSwitchWarning"),
+				"editor.unsavedSwitchWarning"
+			);
+			if(res == this.su.PROMPT_CANCEL) {
+				this.currentCustomType = this.customType;
+				cList.value = this.customTypeLabel;
+				return;
+			}
+			if(res == this.su.PROMPT_SAVE) {
+				var customType = this.currentCustomType;
+				var customTypeLabel = cList.value;
+				this.currentCustomType = this.customType;
+				cList.value = this.customTypeLabel;
+				if(!this.saveCustomType(true))
+					return;
+				this.currentCustomType = customType;
+				cList.value = customTypeLabel;
+			}
+		}
+
 		if(!to) {
-			var cList = this.$("hc-editor-customType");
 			if(!cType) {
 				var sItem = cList.selectedItem;
 				cType = sItem ? sItem.value : null;
@@ -541,8 +567,9 @@ var handyClicksEditor = {
 		contextField[val] = this.ps.dec(ct.contextMenu);
 		this.highlightEmpty(contextField);
 		if(!to) {
-			cList.value = this.ps.dec(ct.label);
+			cList.value = this.customTypeLabel = this.ps.dec(ct.label);
 			this.$("hc-editor-customTypeExtId").value = this.ps.removeCustomPrefix(cType);
+			this.customType = cType;
 			this.setWinId();
 			this.setWinTitle();
 			//this.applyDisabled = true;
@@ -552,12 +579,14 @@ var handyClicksEditor = {
 
 		this.fireEditorChange(this.$("hc-editor-itemTypePanel"));
 	},
-	customTypeLabel: function(it) {
-		if(it.getElementsByAttribute("label", it.value)[0])
+	customTypeLabelChanged: function(it) {
+		var val = it.value;
+		this.customTypeLabel = val;
+		if(it.getElementsByAttribute("label", val)[0])
 			this.initCustomTypesEditor();
 	},
-	customTypeLabelDelay: function(it) {
-		this.ut.timeout(this.customTypeLabel, this, [it], 0);
+	customTypeLabelChangedDelay: function(it) {
+		this.ut.timeout(this.customTypeLabelChanged, this, arguments, 0);
 	},
 	customTypeIdFilter: function(e) {
 		this.ut.timeout(this._customTypeIdFilter, this, [e.target], 0);
@@ -785,9 +814,9 @@ var handyClicksEditor = {
 	},
 
 	itemTypeChanged: function(iType) {
-		this.addFuncArgs();
-		this.loadCustomType(iType);
-		this.initAdditionalOptions(iType);
+		this.ut.timeout(this.loadCustomType, this, [iType]);
+		//this.addFuncArgs();
+		//this.initAdditionalOptions(iType);
 	},
 	initAdditionalOptions: function(iType, setsObj) {
 		iType = iType || this.currentType;
@@ -855,7 +884,7 @@ var handyClicksEditor = {
 		switch(argType) {
 			case "checkbox":
 				var label = this.ut.getLocalized(argName);
-				elt.setAttribute("checked", !!argVal);
+				argVal && elt.setAttribute("checked", "true");
 				elt.setAttribute("label", label);
 				var cfg = this.getAboutConfigEntry(label);
 				if(cfg) {
@@ -928,31 +957,59 @@ var handyClicksEditor = {
 			this
 		).join(",");
 	},
+	set currentShortcut(shortcut) {
+		var butt = /(?:^|,)button=([0-2])(?:,|$)/.test(shortcut) ? RegExp.$1 : "0";
+		this.$("hc-editor-button").value = butt;
+		this.$("hc-editor-events-command").disabled = butt != "0";
+		["ctrl", "shift", "alt", "meta"].forEach(
+			function(mdf) {
+				var re = new RegExp("(?:^|,)" + mdf + "=true(?:,|$)");
+				this.$("hc-editor-" + mdf).checked = re.test(shortcut);
+			},
+			this
+		);
+	},
 	get currentType() {
 		return this.$("hc-editor-itemTypes").value || undefined;
+	},
+	set currentType(type) {
+		return this.$("hc-editor-itemTypes").value = type;
 	},
 	get currentCustomType() {
 		return this.ps.customPrefix + this.$("hc-editor-customTypeExtId").value;
 	},
+	set currentCustomType(customType) {
+		this.$("hc-editor-customTypeExtId").value = this.ps.removeCustomPrefix(customType || "");
+	},
 
 	loadFuncs: function() {
-		const warnPref = "editor.unsavedSwitchWarning";
 		if(
 			!this.funcOptsFixed // Nothing to lost with fixed options
-			&& !this.applyButton.disabled // this.hasUnsaved
-			&& this.pu.pref(warnPref)
+			//~ todo: we can't use this.shortcutUnsaved because shortcut already changed!
+			//~ compare manually? (like in initCustomTypesEditor())
+			//&& this.shortcutUnsaved
+			&& !this.applyButton.disabled
 		) {
-			var ask = { value: false };
-			var cnf = this.ut.promptsSvc.confirmCheck(
-				window, this.ut.getLocalized("warningTitle"),
-				this.ut.getLocalized("editorUnsavedWarning"),
-				this.ut.getLocalized("dontAskAgain"),
-				ask
+			var res = this.su.notifyUnsaved(
+				this.ut.getLocalized("editorUnsavedSwitchWarning")
+					+ this.ut.getLocalized("fixNote"),
+				"editor.unsavedSwitchWarning"
 			);
-			if(!cnf)
+			if(res == this.su.PROMPT_CANCEL) {
+				this.currentType = this.type;
+				this.currentShortcut = this.shortcut;
 				return;
-			if(ask.value)
-				this.pu.pref(warnPref, false);
+			}
+			if(res == this.su.PROMPT_SAVE) {
+				var type = this.currentType;
+				var shortcut = this.currentShortcut;
+				this.currentType = this.type;
+				this.currentShortcut = this.shortcut;
+				if(!this.saveShortcut(true))
+					return;
+				this.currentType = type;
+				this.currentShortcut = shortcut;
+			}
 		}
 
 		this.shortcut = this.currentShortcut;
@@ -970,7 +1027,7 @@ var handyClicksEditor = {
 		this.disableUnsupported();
 		this.setWinId();
 		this.setWinTitle();
-		this.setDialogButtons();
+		//this.setDialogButtons(); // Called in initShortcutEditor()
 
 		this.fireEditorChange(this.$("hc-editor-shortcutPanel"));
 	},
@@ -1080,13 +1137,17 @@ var handyClicksEditor = {
 		return ok;
 	},
 	undoTestSettings: function(reloadAll) {
-		this.testMode = false;
-		//this.ps.reloadSettings(reloadAll);
-		this.ps.testSettings(false);
-		this.ps.loadSettings();
-		if(reloadAll) {
-			this.initUI(true);
-			this.$("hc-editor-cmd-undo").setAttribute("disabled", "true");
+		try {
+			//this.ps.reloadSettings(reloadAll);
+			this.ps.testSettings(false);
+			this.ps.loadSettings();
+			if(reloadAll) {
+				this.initUI(true);
+				this.$("hc-editor-cmd-undo").setAttribute("disabled", "true");
+			}
+		}
+		finally {
+			this.testMode = false;
 		}
 	},
 	deleteSettings: function() {
@@ -1214,21 +1275,21 @@ var handyClicksEditor = {
 		}
 		else {
 			so.action = fnc;
-			so.arguments = {};
-			var args = so.arguments;
-			var aIts = this.$("hc-editor-funcArgs" + delayed).getElementsByAttribute("hc_argName", "*");
-			var aIt, aVal;
-			for(var i = 0, len = aIts.length; i < len; ++i) {
-				aIt = aIts[i];
-				aVal = aIt.getAttribute("value") || aIt.checked;
-				if(typeof aVal == "string") {
-					if(aVal == "null")
-						aVal = null;
-					else if(/^-?\d+$/.test(aVal))
-						aVal = Number(aVal);
-				}
-				args[aIt.getAttribute("hc_argName")] = aVal;
-			}
+			var args = so.arguments = {};
+			Array.forEach(
+				this.$("hc-editor-funcArgs" + delayed).getElementsByAttribute("hc_argName", "*"),
+				function(argElt) {
+					var argVal = argElt.getAttribute("value") || argElt.checked;
+					if(typeof argVal == "string") {
+						if(argVal == "null")
+							argVal = null;
+						else if(/^-?\d+$/.test(argVal))
+							argVal = Number(argVal);
+					}
+					args[argElt.getAttribute("hc_argName")] = argVal;
+				},
+				this
+			);
 		}
 		so.eventType = isDelayed
 			? "__delayed__" // Required for handyClicksPrefSvc.isOkFuncObj()
@@ -1335,7 +1396,7 @@ var handyClicksEditor = {
 			)
 		)
 			return false;
-		cts[cType] = this.getTypeObj(newEnabl, label, def);
+		cts[cType] = this.getTypeObj(label, def, newEnabl);
 
 		this.testMode = testFlag; //~ todo: test!
 		if(testFlag)
@@ -1366,11 +1427,11 @@ var handyClicksEditor = {
 			return null;
 		return this.getTypeObj();
 	},
-	getTypeObj: function(enabled, label, def) {
+	getTypeObj: function(label, def, enabled) {
 		var ct = {
-			enabled: arguments.length >= 1 ? enabled : this.$("hc-editor-customTypeEnabled").checked,
-			label:  this.ps.enc(arguments.length >= 2 ? label : this.$("hc-editor-customType")      .value),
-			define: this.ps.enc(arguments.length >= 3 ? def   : this.$("hc-editor-customTypeDefine").value)
+			enabled: enabled !== undefined ? enabled : this.$("hc-editor-customTypeEnabled").checked,
+			label:  this.ps.enc(label !== undefined ? label : this.$("hc-editor-customType")      .value),
+			define: this.ps.enc(def   !== undefined ? def   : this.$("hc-editor-customTypeDefine").value)
 		};
 		var cMenu = this.$("hc-editor-customTypeContext").value;
 		ct.contextMenu = cMenu ? this.ps.enc(cMenu) : null;

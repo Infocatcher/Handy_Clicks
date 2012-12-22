@@ -171,22 +171,32 @@ menulist[hc_aboutConfigEntry] .menulist-label,
 	margin-top: 1px;
 	margin-bottom: 1px;
 }
-:root[hc_compactUI="true"] button {
-	margin-top: 1px !important;
-	margin-bottom: 1px !important;
-	padding-top: 0 !important;
-	padding-bottom: 0 !important;
+:root[hc_compactUI="true"] .menulist-label-box {
+	margin-top: 0;
+	margin-bottom: 0;
+	border-top: none;
+	border-bottom: none;
+}
+:root[hc_compactUI="true"] button:not(.dialog-button) {
+	margin-top: 1px;
+	margin-bottom: 1px;
+	padding-top: 0;
+	padding-bottom: 0;
 }
 :root[hc_compactUI="true"] button.dialog-button {
-	margin-top: 6px !important;
-	padding-top: 1px !important;
-	padding-bottom: 1px !important;
+	margin-top: 6px;
 }
-:root[hc_compactUI="true"] button * {
-	margin-top: 0 !important;
-	margin-bottom: 0 !important;
-	padding-top: 0 !important;
-	padding-bottom: 0 !important;
+:root[hc_compactUI="true"] button:not(.dialog-button) * {
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+:root[hc_compactUI="true"] checkbox {
+	margin-right: 2px;
+	margin-left: 2px;
+	-moz-padding-start: 2px;
+	-moz-padding-end: 1px;
 }
 :root[hc_compactUI="true"] .hcEditor {
   margin: 0;

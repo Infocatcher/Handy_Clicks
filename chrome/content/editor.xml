@@ -746,9 +746,6 @@
 					}
 					else if(type == "HandyClicks:editor:change") {
 						var trg = e.target;
-						Components.classes["@mozilla.org/consoleservice;1"]
-							.getService(Components.interfaces.nsIConsoleService)
-							.logStringMessage("xxx " + trg);
 						for(var p = this; p; p = p.parentNode) {
 							if(p == trg) {
 								this.unwatchFile();

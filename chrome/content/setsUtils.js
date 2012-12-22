@@ -34,12 +34,16 @@ var handyClicksSetsUtils = {
 			clearInterval(this._sizeModeChangeTimer);
 		}
 	},
+	disableScroll: false,
 	handleEvent: function(e) {
 		switch(e.type) {
 			case "DOMMouseScroll": // Legacy
 			case "wheel":
-				if(e.target.nodeType == Node.DOCUMENT_NODE)
+				if(e.target.nodeType == Node.DOCUMENT_NODE || this.disableScroll)
 					break;
+				var aw = this.wu.ww.activeWindow;
+				if(aw && aw.location.href == "chrome://global/content/commonDialog.xul")
+					break; // Scroll still works for disabled window...
 				if(
 					this.scrollList(e)
 					|| this.scrollRadioMenuitems(e)
@@ -174,9 +178,12 @@ var handyClicksSetsUtils = {
 	PROMPT_SAVE: 0,
 	PROMPT_CANCEL: 1,
 	PROMPT_DONT_SAVE: 2,
-	notifyUnsaved: function() {
-		const notifyPref = "ui.notifyUnsaved";
-		if(!this.pu.pref(notifyPref))
+	notifyUnsaved: function(msg, dontAskAgainPref) {
+		if(!msg)
+			msg = this.ut.getLocalized("notifyUnsaved");
+		if(!dontAskAgainPref)
+			dontAskAgainPref = "ui.notifyUnsaved";
+		if(!this.pu.pref(dontAskAgainPref))
 			return this.PROMPT_DONT_SAVE;
 		var ps = this.ut.promptsSvc;
 		this.ut.fixMinimized();
@@ -186,16 +193,17 @@ var handyClicksSetsUtils = {
 		var ret = ps.confirmEx(
 			window,
 			this.ut.getLocalized("warningTitle"),
-			this.ut.getLocalized("notifyUnsaved"),
+			msg,
 			  ps["BUTTON_POS_" + this.PROMPT_SAVE]      * ps.BUTTON_TITLE_SAVE
 			+ ps["BUTTON_POS_" + this.PROMPT_CANCEL]    * ps.BUTTON_TITLE_CANCEL
 			+ ps["BUTTON_POS_" + this.PROMPT_DONT_SAVE] * ps.BUTTON_TITLE_DONT_SAVE
 			+ ps["BUTTON_POS_" + this.PROMPT_SAVE + "_DEFAULT"],
 			"", "", "",
-			this.ut.getLocalized("dontAskAgain"), ask
+			this.ut.getLocalized("dontAskAgain"),
+			ask
 		);
 		if(ret != this.PROMPT_CANCEL && ask.value)
-			this.pu.pref(notifyPref, false);
+			this.pu.pref(dontAskAgainPref, false);
 		return ret;
 	},
 

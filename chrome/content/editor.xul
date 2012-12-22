@@ -47,9 +47,9 @@
 	<script type="application/javascript" src="chrome://handyclicks/content/regSvc.js" />
 
 	<commandset id="hc-editor-commands">
-		<command id="hc-editor-cmd-test" oncommand="handyClicksEditor.testSettings(); event.stopPropagation();"
+		<command id="hc-editor-cmd-test" oncommand="event.stopPropagation(); handyClicksEditor.testSettings();"
 			disabled="true" label="&hc.editor.test;" accesskey="&hc.editor.testAccesskey;" />
-		<command id="hc-editor-cmd-undo" oncommand="handyClicksEditor.undoTestSettings(true); event.stopPropagation();"
+		<command id="hc-editor-cmd-undo" oncommand="event.stopPropagation(); handyClicksEditor.undoTestSettings(true);"
 			disabled="true" label="&hc.editor.undo;" accesskey="&hc.editor.undoAccesskey;" />
 	</commandset>
 
@@ -257,10 +257,10 @@
 					<label value="&hc.editor.funcLabel;"
 						accesskey="&hc.editor.funcLabelAccesskey;" control="hc-editor-customType" />
 					<menulist id="hc-editor-customType" editable="true" spellcheck="true" flex="1"
-						oncommand="handyClicksEditor.initCustomTypesEditor(); event.stopPropagation();"
-						oninput="handyClicksEditor.customTypeLabel(this);"
-						hc_ondrop="handyClicksEditor.customTypeLabelDelay(this);"
-						oncut="handyClicksEditor.customTypeLabelDelay(this);">
+						oncommand="event.stopPropagation(); handyClicksEditor.initCustomTypesEditor();"
+						oninput="handyClicksEditor.customTypeLabelChanged(this);"
+						hc_ondrop="handyClicksEditor.customTypeLabelChangedDelay(this);"
+						oncut="handyClicksEditor.customTypeLabelChangedDelay(this);">
 						<menupopup id="hc-editor-customTypePopup" />
 					</menulist>
 					<label value="&hc.editor.internalId;"
