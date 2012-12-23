@@ -3,7 +3,6 @@
 <!ENTITY hc.sets.defaultWindowWidth "630">
 <!ENTITY hc.sets.defaultWindowHeight "500">
 <!ENTITY hc.sets.apply "Применить">
-<!ENTITY hc.sets.applyAccesskey "П">
 <!ENTITY hc.sets.settings "Настройки">
 <!ENTITY hc.sets.settingsAccesskey "Н">
 
@@ -71,7 +70,6 @@
 
 <!ENTITY hc.sets.import "Импорт">
 <!ENTITY hc.sets.importAccesskey "И">
-<!ENTITY hc.sets.fullImportFromFile "Импорт из файла…">
 
 <!ENTITY hc.sets.restoreFromBackup "Восстановить из резервной копии">
 <!ENTITY hc.sets.openDir "Открыть папку">
@@ -82,16 +80,19 @@
 <!ENTITY hc.sets.removeAllUserBackupsAccesskey "У">
 <!ENTITY hc.sets.restoreBackup "Восстановить…">
 <!ENTITY hc.sets.removeBackup "Удалить">
-<!ENTITY hc.sets.restoreBackupIncrement "Инкрементный импорт…">
 <!ENTITY hc.sets.showBackupFile "Показать файл">
 
-<!ENTITY hc.sets.importIncrementFromFile "Инкрементный импорт из файла…">
-<!ENTITY hc.sets.importIncrementFromClipboard "Инкрементный импорт из буфера обмена">
+<!ENTITY hc.sets.importFromFile "Импорт из файла…">
+<!ENTITY hc.sets.importFromClipboard "Импорт из буфера обмена">
 <!ENTITY hc.sets.importOk "Импортировать">
-<!ENTITY hc.sets.importIncrementOk "Инкрементный импорт">
 <!ENTITY hc.sets.importOkAccesskey "м">
-<!ENTITY hc.sets.importCancel "Отменить импорт">
+<!ENTITY hc.sets.importCancel "Отменить">
 <!ENTITY hc.sets.importCancelAccesskey "О">
+
+<!ENTITY hc.sets.importIncrement "Добавить">
+<!ENTITY hc.sets.importIncrementAccesskey "Д">
+<!ENTITY hc.sets.importReplace "Заменить">
+<!ENTITY hc.sets.importReplaceAccesskey "З">
 
 <!ENTITY hc.sets.importNew "Новых:">
 <!ENTITY hc.sets.importOverrides "Перезаписываемых:">

@@ -359,15 +359,14 @@
 			<property name="currentLine" readonly="true">
 				<getter>
 				<![CDATA[
-					return this.value.substring(0, this.inputField.selectionStart).match(/^.*$/mg).length;
+					return this.value.substring(0, this.inputField.selectionStart).split("\n").length;
 				]]>
 				</getter>
 			</property>
 			<property name="linesCount" readonly="true">
 				<getter>
 				<![CDATA[
-					//return this.editor.rootElement.getElementsByTagName("br").length;
-					return this.value.match(/^.*$/mg).length;
+					return this.value.split("\n").length;
 				]]>
 				</getter>
 			</property>
@@ -382,9 +381,7 @@
 				<getter>
 				<![CDATA[
 					// For current line
-					var ifi = this.inputField;
-					var ss = ifi.selectionStart;
-					var se = ifi.selectionEnd;
+					var ss = this.inputField.selectionStart;
 					var val = this.value;
 					return val.substring(0, ss).match(/[^\n\r]*$/)[0].length
 						+ val.substring(ss).match(/^[^\n\r]*/)[0].length
@@ -1073,6 +1070,8 @@
 			<handler event="keypress" preventdefault="true" key="-" action="this.textZoom(-1);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="0" action="this.textZoom(0);" modifiers="control" />
 			<handler event="keypress" preventdefault="true" key="g" action="this.goToLine();" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key="l" action="this.goToLine();" modifiers="control" /><!-- As in view source -->
+			<handler event="keypress" preventdefault="true" key="j" action="this.goToLine();" modifiers="control" /><!-- As in Scratchpad -->
 			<handler event="keypress" preventdefault="true" key="w" action="this.toggleWordWrap();" modifiers="control" />
 			<!-- Hotkeys moved to editor.xul
 			<handler event="keypress" preventdefault="true" keycode="VK_F4" action="this.openExternalEditor();" />
@@ -1163,7 +1162,6 @@
 					ifi.scrollTop -= c(d);
 				else if((d = maxY - ey) < corner) // bottom
 					ifi.scrollTop += c(d);
-
 			]]>
 			</handler>
 			<handler event="DOMMouseScroll">

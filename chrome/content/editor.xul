@@ -20,7 +20,6 @@
 	title="&hc.editor.title;"
 	buttons="accept,cancel,extra1,extra2"
 	buttonlabelextra1="&hc.editor.apply;"
-	buttonaccesskeyextra1="&hc.editor.applyAccesskey;"
 	buttonlabelextra2="&hc.editor.delete;"
 	buttonaccesskeyextra2="&hc.editor.deleteAccesskey;"
 	ondialogaccept="return handyClicksEditor.saveSettings();"

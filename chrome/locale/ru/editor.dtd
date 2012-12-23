@@ -5,7 +5,6 @@
 <!ENTITY hc.editor.defaultWindowWidth "700">
 <!ENTITY hc.editor.defaultWindowHeight "500">
 <!ENTITY hc.editor.apply "Применить">
-<!ENTITY hc.editor.applyAccesskey "П">
 <!ENTITY hc.editor.delete "Удалить">
 <!ENTITY hc.editor.deleteAccesskey "У">
 <!ENTITY hc.editor.test "Протестировать">

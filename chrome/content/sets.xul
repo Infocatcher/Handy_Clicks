@@ -18,7 +18,6 @@
 	title="&hc.sets.title;"
 	buttons="accept,cancel,extra1,extra2"
 	buttonlabelextra1="&hc.sets.apply;"
-	buttonaccesskeyextra1="&hc.sets.applyAccesskey;"
 	buttonlabelextra2="&hc.sets.settings;"
 	buttonaccesskeyextra2="&hc.sets.settingsAccesskey;"
 	ondialogaccept="return handyClicksSets.saveSettings();"
@@ -27,8 +26,8 @@
 	onchange="handyClicksSets.dataChanged(event);"
 	oninput="handyClicksSets.dataChanged(event);"
 	oncommand="handyClicksSets.dataChanged(event);"
-	hc_ondrop="handyClicksSets.dataChanged(event);"
-	oncut="handyClicksSets.dataChanged(event);"
+	hc_ondrop="handyClicksSets.dataChanged(event, true);"
+	oncut="handyClicksSets.dataChanged(event, true);"
 	style='-moz-binding: url("chrome://handyclicks/content/prefwindow.xml#prefwindow"); /* Should be here for CSS reloader */'
 	width="&hc.sets.defaultWindowWidth;"
 	height="&hc.sets.defaultWindowHeight;"
@@ -125,23 +124,25 @@
 					onmousemove="handyClicksSets.smartSelect(event);" />
 			</tree>
 			<vbox id="hc-sets-tree-buttons">
-				<hbox id="hc-sets-tree-importPanel" hidden="true" pack="center" align="center">
-					<button id="hc-sets-tree-buttonImportOk" class="hc-iconic"
-						oncommand="handyClicksSets.importDone(true);"
-						accesskey="&hc.sets.importOkAccesskey;"
-						hc_labelFull="&hc.sets.importOk;" hc_labelPartial="&hc.sets.importIncrementOk;" />
-					<grid id="hc-sets-tree-importStatistics" tooltiptext="&hc.sets.importTip;"
-						ondblclick="handyClicksSets.toggleImportType();">
+				<hbox id="hc-sets-tree-importPanel" hidden="true" pack="center" align="end">
+					<radiogroup id="hc-sets-tree-importType"
+						oncommand="handyClicksSets.toggleImportType(this.value == 'true');">
+						<radio id="hc-sets-tree-importPartial" value="true"
+							label="&hc.sets.importIncrement;" accesskey="&hc.sets.importIncrementAccesskey;" />
+						<radio id="hc-sets-tree-importFull" value="false"
+							label="&hc.sets.importReplace;" accesskey="&hc.sets.importReplaceAccesskey;" />
+					</radiogroup>
+					<grid id="hc-sets-tree-importStatistics" tooltiptext="&hc.sets.importTip;">
 						<columns>
 							<column />
 							<column />
 						</columns>
 						<rows>
-							<row>
+							<row onclick="if(event.button == 0) handyClicksSets.doSearch('%new%');">
 								<label id="hc-sets-tree-importNew" value="&hc.sets.importNew;" />
 								<label id="hc-sets-tree-importNewValue" value="?/? + ?" />
 							</row>
-							<row>
+							<row onclick="if(event.button == 0) handyClicksSets.doSearch('%ovr%');">
 								<label id="hc-sets-tree-importOverrides" value="&hc.sets.importOverrides;" />
 								<label id="hc-sets-tree-importOverridesValue" value="?/? + ?" />
 							</row>
@@ -151,6 +152,9 @@
 							</row>
 						</rows>
 					</grid>
+					<button id="hc-sets-tree-buttonImportOk" class="hc-iconic"
+						oncommand="handyClicksSets.importDone(true);"
+						label="&hc.sets.importOk;" accesskey="&hc.sets.importOkAccesskey;" />
 					<button id="hc-sets-tree-buttonImportCancel" class="hc-iconic"
 						oncommand="handyClicksSets.importDone(false);"
 						label="&hc.sets.importCancel;" accesskey="&hc.sets.importCancelAccesskey;" />
@@ -178,8 +182,6 @@
 						<menupopup position="before_start"
 							onpopupshowing="if(event.target == this) { handyClicksSets.checkClipboard(); handyClicksSets.buildRestorePopup(); }"
 							onpopuphidden="if(event.target == this) handyClicksSets.destroyRestorePopup();">
-							<menuitem command="hc-sets-cmd-fullImportFromFile" key="hc-sets-key-fullImportFromFile" />
-							<menuseparator />
 							<menu id="hc-sets-tree-restoreFromBackupMenu" label="&hc.sets.restoreFromBackup;"
 								oncommand="event.stopPropagation();">
 								<menupopup id="hc-sets-tree-restoreFromBackupPopup"
@@ -201,8 +203,8 @@
 								</menupopup>
 							</menu>
 							<menuseparator />
-							<menuitem command="hc-sets-cmd-partialImportFromFile" key="hc-sets-key-partialImportFromFile" />
-							<menuitem command="hc-sets-cmd-partialImportFromClipboard" key="hc-sets-key-partialImportFromClipboard" />
+							<menuitem command="hc-sets-cmd-importFromFile" key="hc-sets-key-importFromFile" />
+							<menuitem command="hc-sets-cmd-importFromClipboard" key="hc-sets-key-importFromClipboard" />
 						</menupopup>
 					</button>
 				</hbox>
@@ -515,12 +517,11 @@
 		<command id="hc-sets-cmd-exportToHTML" oncommand="handyClicksSets.exportSets(true, handyClicksConst.EXPORT_CLIPBOARD_HTML);"
 			label="&hc.sets.exportToHTML;" />
 
-		<command id="hc-sets-cmd-fullImportFromFile" oncommand="handyClicksSets.importSets(false, handyClicksConst.IMPORT_FILEPICKER);"
-			label="&hc.sets.fullImportFromFile;" />
-		<command id="hc-sets-cmd-partialImportFromFile" oncommand="handyClicksSets.importSets(true, handyClicksConst.IMPORT_FILEPICKER);"
-			label="&hc.sets.importIncrementFromFile;" />
-		<command id="hc-sets-cmd-partialImportFromClipboard" oncommand="handyClicksSets.importSets(true, handyClicksConst.IMPORT_CLIPBOARD);"
-			label="&hc.sets.importIncrementFromClipboard;" />
+		<command id="hc-sets-cmd-fullImportFromFile" oncommand="handyClicksSets.importSets(false, handyClicksConst.IMPORT_FILEPICKER);" />
+		<command id="hc-sets-cmd-importFromFile" oncommand="handyClicksSets.importSets(true, handyClicksConst.IMPORT_FILEPICKER);"
+			label="&hc.sets.importFromFile;" />
+		<command id="hc-sets-cmd-importFromClipboard" oncommand="handyClicksSets.importSets(true, handyClicksConst.IMPORT_CLIPBOARD);"
+			label="&hc.sets.importFromClipboard;" />
 	</commandset>
 	<keyset id="hc-sets-keys">
 		<key id="hc-sets-key-add" keycode="VK_INSERT" command="hc-sets-cmd-add" />
@@ -541,11 +542,11 @@
 		<key id="hc-sets-key-exportToHTML" key="h" modifiers="control" command="hc-sets-cmd-exportToHTML" />
 
 		<key id="hc-sets-key-fullImportFromFile" key="i" modifiers="control" command="hc-sets-cmd-fullImportFromFile" />
-		<key id="hc-sets-key-partialImportFromFile" key="i" modifiers="control,shift" command="hc-sets-cmd-partialImportFromFile" />
-		<!-- Command "hc-sets-cmd-partialImportFromClipboard" updates only on popupshowing -->
-		<key id="hc-sets-key-partialImportFromClipboard" key="v" modifiers="control,shift"
+		<key id="hc-sets-key-importFromFile" key="i" modifiers="control,shift" command="hc-sets-cmd-importFromFile" />
+		<!-- Command "hc-sets-cmd-importFromClipboard" updates only on popupshowing -->
+		<key id="hc-sets-key-importFromClipboard" key="v" modifiers="control,shift"
 			oncommand="handyClicksSets.importSets(true, handyClicksConst.IMPORT_CLIPBOARD);" />
-		<key id="hc-sets-key-partialImportFromClipboard2" key="v" modifiers="control"
+		<key id="hc-sets-key-importFromClipboard2" key="v" modifiers="control"
 			oncommand="handyClicksSets.importSets(true, handyClicksConst.IMPORT_CLIPBOARD);" />
 
 		<key id="hc-sets-key-selectAll" key="a" modifiers="control" oncommand="handyClicksSets.selectAll();" />
@@ -588,7 +589,7 @@
 			<menuitem command="hc-sets-cmd-partialExportToClipboard" key="hc-sets-key-partialExportToClipboard" />
 			<menuitem command="hc-sets-cmd-partialExportToFile" key="hc-sets-key-partialExportToFile" />
 			<menuseparator />
-			<menuitem command="hc-sets-cmd-partialImportFromClipboard" key="hc-sets-key-partialImportFromClipboard" />
+			<menuitem command="hc-sets-cmd-importFromClipboard" key="hc-sets-key-importFromClipboard" />
 		</menupopup>
 		<menupopup id="hc-sets-prefsManagementPopup" position="before_start">
 			<menuitem id="hc-sets-prefs-all" class="menuitem-iconic handyClicks-iconic" oncommand="handyClicksPrefUtils.openAboutConfig();"
@@ -605,10 +606,9 @@
 			onpopupshowing="return (this.triggerNode || document.popupNode).hasAttribute('hc_fileName');">
 			<menuitem default="true" label="&hc.sets.restoreBackup;"
 				oncommand="(this.parentNode.triggerNode || document.popupNode).doCommand();" />
-			<menuitem label="&hc.sets.restoreBackupIncrement;"
-				oncommand="handyClicksSets.importSets(true, handyClicksConst.IMPORT_BACKUP, (this.parentNode.triggerNode || document.popupNode).getAttribute('hc_fileName'));" />
 			<menuitem label="&hc.sets.showBackupFile;"
 				oncommand="handyClicksSets.reveal(handyClicksPrefSvc.getBackupFile((this.parentNode.triggerNode || document.popupNode).getAttribute('hc_fileName')));" />
+			<menuseparator />
 			<menuitem id="hc-sets-removeBackup" class="menuitem-iconic handyClicks-iconic"
 				closemenu="single" label="&hc.sets.removeBackup;"
 				oncommand="handyClicksSets.removeBackup((this.parentNode.triggerNode || document.popupNode), event);"

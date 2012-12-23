@@ -34,31 +34,14 @@ var handyClicksSetsUtils = {
 			clearInterval(this._sizeModeChangeTimer);
 		}
 	},
-	disableScroll: false,
 	handleEvent: function(e) {
 		switch(e.type) {
 			case "DOMMouseScroll": // Legacy
-			case "wheel":
-				if(e.target.nodeType == Node.DOCUMENT_NODE || this.disableScroll)
-					break;
-				var aw = this.wu.ww.activeWindow;
-				if(aw && aw.location.href == "chrome://global/content/commonDialog.xul")
-					break; // Scroll still works for disabled window...
-				if(
-					this.scrollList(e)
-					|| this.scrollRadioMenuitems(e)
-					|| this.scrollNumTextbox(e)
-					|| this.scrollTabs(e)
-					|| this.scrollTabsToolbar(e)
-					|| this.scrollRadios(e)
-				)
-					this.ut.stopEvent(e);
-			break;
-			case "dragenter": this.dragenterHandler(e); break;
-			case "dragexit":  this.dragexitHandler(e);  break;
-			case "sizemodechange":
+			case "wheel":          this.handleScroll(e);     break;
+			case "dragenter":      this.dragenterHandler(e); break;
+			case "dragexit":       this.dragexitHandler(e);  break;
 			case "resize": // Legacy
-				this.wu.checkWindowStatus();
+			case "sizemodechange": this.wu.checkWindowStatus();
 		}
 	},
 	get dropEvent() {
@@ -178,16 +161,16 @@ var handyClicksSetsUtils = {
 	PROMPT_SAVE: 0,
 	PROMPT_CANCEL: 1,
 	PROMPT_DONT_SAVE: 2,
-	notifyUnsaved: function(msg, dontAskAgainPref) {
+	notifyUnsaved: function(msg, askPref) {
 		if(!msg)
 			msg = this.ut.getLocalized("notifyUnsaved");
-		if(!dontAskAgainPref)
-			dontAskAgainPref = "ui.notifyUnsaved";
-		if(!this.pu.pref(dontAskAgainPref))
+		if(!askPref)
+			askPref = "ui.notifyUnsaved";
+		if(!this.pu.pref(askPref))
 			return this.PROMPT_DONT_SAVE;
 		var ps = this.ut.promptsSvc;
 		this.ut.fixMinimized();
-		var ask = { value: false };
+		var dontAsk = { value: false };
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
 		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
 		var ret = ps.confirmEx(
@@ -200,13 +183,38 @@ var handyClicksSetsUtils = {
 			+ ps["BUTTON_POS_" + this.PROMPT_SAVE + "_DEFAULT"],
 			"", "", "",
 			this.ut.getLocalized("dontAskAgain"),
-			ask
+			dontAsk
 		);
-		if(ret != this.PROMPT_CANCEL && ask.value)
-			this.pu.pref(dontAskAgainPref, false);
+		if(ret != this.PROMPT_CANCEL && dontAsk.value)
+			this.pu.pref(askPref, false);
 		return ret;
 	},
 
+	disableScroll: false,
+	_allowScroll: 0,
+	handleScroll: function(e) {
+		if(this.disableScroll || e.target.nodeType == Node.DOCUMENT_NODE)
+			return;
+		var aw = this.wu.ww.activeWindow;
+		if(aw && aw.location.href == "chrome://global/content/commonDialog.xul")
+			return; // Scroll still works for disabled window...
+
+		// Forbid too quickly scroll
+		var now = Date.now();
+		if(now < this._allowScroll)
+			return;
+		this._allowScroll = now + 50;
+
+		if(
+			this.scrollList(e)
+			|| this.scrollRadioMenuitems(e)
+			|| this.scrollNumTextbox(e)
+			|| this.scrollTabs(e)
+			|| this.scrollTabsToolbar(e)
+			|| this.scrollRadios(e)
+		)
+			this.ut.stopEvent(e);
+	},
 	isScrollForward: function(e) {
 		var fwd = "deltaY" in e
 			? e.deltaY > 0 // wheel

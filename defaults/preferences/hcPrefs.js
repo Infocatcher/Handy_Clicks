@@ -73,6 +73,7 @@ pref("extensions.handyclicks.sets.backupTestDepth", 5);
 pref("extensions.handyclicks.sets.backupCorruptedDepth", 15);
 pref("extensions.handyclicks.sets.removeBackupConfirm", true);
 pref("extensions.handyclicks.sets.importJSWarning", true);
+pref("extensions.handyclicks.sets.incompleteImportWarning", true);
 pref("extensions.handyclicks.sets.openEditorsLimit", 5);
 pref("extensions.handyclicks.sets.dateFormat", "_%Y-%m-%d_%H-%M"); // String for new Date().toLocaleFormat()
 pref("extensions.handyclicks.sets.treeDrawMode", 0);

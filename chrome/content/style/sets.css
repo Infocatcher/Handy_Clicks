@@ -135,7 +135,8 @@ tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_search) {
 	color: #00e !important;
 }
 tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_search) {
-	font-style: italic;
+	/*color: graytext;*/
+	border-bottom: 1px dotted graytext;
 }
 tree[hc_colored="true"] treechildren::-moz-tree-row(hover) {
 	border: 1px dotted black;
@@ -169,6 +170,25 @@ menuitem[command="hc-sets-cmd-enable"] {
 	-moz-image-region: rect(0 13px 13px 0);
 }
 
+#hc-sets-tree-importPanel {
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+#hc-sets-tree-importPartial,
+#hc-sets-tree-importFull,
+#hc-sets-tree-importPartial *,
+#hc-sets-tree-importFull * {
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+#hc-sets-tree-importFull {
+	margin-top: -2px !important;
+}
+#hc-sets-tree-importStatistics {
+	margin: 0 4px;
+}
 #hc-sets-tree-importStatistics label:first-child {
 	/* Firefox 3.6+: text-align: end; */
 	text-align: right;
@@ -185,6 +205,13 @@ menuitem[command="hc-sets-cmd-enable"] {
 }
 #hc-sets-tree-importStatistics column:not(:last-child) {
 	-moz-padding-end: 0.6em !important;
+}
+#hc-sets-tree-importStatistics row[onclick],
+#hc-sets-tree-importStatistics row[onclick] * {
+	cursor: pointer;
+}
+#hc-sets-tree-importStatistics row[onclick]:hover {
+	opacity: 0.7;
 }
 
 #hc-sets-tree-buttons button {

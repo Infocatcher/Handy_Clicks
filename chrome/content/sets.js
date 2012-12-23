@@ -87,7 +87,7 @@ var handyClicksSets = {
 		else
 			lsq = sf.getAttribute("hc_value");
 		sf.value = lsq;
-		sf._enterSearch && sf._enterSearch();
+		//sf._enterSearch && sf._enterSearch();
 		return !!lsq;
 	},
 	saveSearchQuery: function() {
@@ -174,12 +174,10 @@ var handyClicksSets = {
 			this._treeBatchMode = true;
 			var tbo = this.tbo;
 			tbo.beginUpdateBatch();
-			//this.ut._log("beginUpdateBatch");
 		}
 		var ret = func.apply(context || this, args);
 		if(tbo) {
 			tbo.endUpdateBatch();
-			//this.ut._log("endUpdateBatch");
 			this._treeBatchMode = false;
 		}
 		return ret;
@@ -342,7 +340,6 @@ var handyClicksSets = {
 		this._drawTree(dontSearch);
 		//!dontSearch && this.searchInSetsTree(true);
 		this.setDialogButtons();
-		//document.title = document.title.replace(/\*?$/, this.ps.otherSrc ? "*" : "");
 	},
 	updTree: function() {
 		return this.treeBatch(this._updTree, this, arguments);
@@ -815,15 +812,17 @@ var handyClicksSets = {
 		if(lim <= 0 || count <= lim)
 			return false;
 		//this.ut.fixMinimized();
-		var ask = { value: false };
-		var cnf = this.ut.promptsSvc.confirmCheck(
-			window, this.ut.getLocalized("warningTitle"),
+		var dontAsk = { value: false };
+		var ok = this.ut.promptsSvc.confirmCheck(
+			window,
+			this.ut.getLocalized("warningTitle"),
 			this.ut.getLocalized("openEditorsWarning").replace("%n", count),
-			this.ut.getLocalized("dontAskAgain"), ask
+			this.ut.getLocalized("dontAskAgain"),
+			dontAsk
 		);
-		if(!cnf)
+		if(!ok)
 			return true;
-		if(ask.value)
+		if(dontAsk.value)
 			this.pu.pref(limPref, 0);
 		return false;
 	},
@@ -1466,7 +1465,17 @@ var handyClicksSets = {
 	_searchDelay: 50,
 	_searchTimeout: null,
 	_lastSearch: 0,
-	searchInSetsTree: function() {
+	searchProperties: {
+		hc_override: "\0\ufffd\0",
+		hc_new:      "\0\ufffd\ufffd\0",
+		__proto__: null
+	},
+	doSearch: function(str) {
+		var sf = this.searchField;
+		sf.value = str;
+		this.searchInSetsTree(true);
+	},
+	searchInSetsTree: function(dontSelect, dontResetPosition) {
 		if(this._searchTimeout)
 			return;
 
@@ -1475,7 +1484,7 @@ var handyClicksSets = {
 			this._searchTimeout = setTimeout(
 				function(_this, args) {
 					_this._searchTimeout = null;
-					args.callee.apply(_this, args);
+					_this.searchInSetsTree.apply(_this, args);
 				},
 				remTime,
 				this, arguments
@@ -1485,7 +1494,7 @@ var handyClicksSets = {
 
 		this.treeBatch(this._searchInSetsTree, this, arguments);
 	},
-	searchInSetsTreeDelay: function() {
+	searchInSetsTreeDelay: function(dontSelect, dontResetPosition) {
 		// Needs for undo/redo
 		this.ut.timeout(this.searchInSetsTree, this, arguments, 0);
 	},
@@ -1498,12 +1507,16 @@ var handyClicksSets = {
 		var caseSensitive = false;
 		var hasTerm = true;
 
+		if(this._import) {
+			sTerm = sTerm
+				.replace("%ovr%", this.searchProperties.hc_override)
+				.replace("%new%", this.searchProperties.hc_new);
+		}
+
 		if(/^\/(.+)\/([im]{0,2})$/.test(sTerm)) { // /RegExp/flags
 			try {
 				sTerm = new RegExp(RegExp.$1, RegExp.$2);
-				var _ = this.ut.bind(this.ut._log, this.ut);
 				checkFunc = function(rowText) {
-					//_(rowText, sTerm.test(rowText));
 					return sTerm.test(rowText);
 				};
 				caseSensitive = true;
@@ -1527,13 +1540,15 @@ var handyClicksSets = {
 				};
 				sf.setAttribute("hc_queryType", "wholeString");
 			}
-			else { // Threat spaces as "and"
+			else { // Threat spaces as "and" (default)
 				sTerm = this.ut.trim(sTerm).toLowerCase();
 				if(!sTerm)
 					hasTerm = false;
 				sTerm = sTerm.split(/\s+/);
 				checkFunc = function(rowText) {
-					return sTerm.every(function(s) { return rowText.indexOf(s) != -1; });
+					return sTerm.every(function(s) {
+						return rowText.indexOf(s) != -1;
+					});
 				};
 				sf.setAttribute("hc_queryType", "spaceSeparated");
 			}
@@ -1608,14 +1623,22 @@ var handyClicksSets = {
 				delete tItem.__tempIgnore;
 				continue;
 			}
+			var row = this.getRowForItem(tItem);
 			Array.forEach(
-				this.getRowForItem(tItem).getElementsByAttribute("label", "*"),
+				row.getElementsByAttribute("label", "*"),
 				function(elt) {
 					var label = elt.getAttribute("label");
 					label && rowText.push(label);
 				},
 				this
 			);
+			if(this._import) {
+				var props = row.getAttribute("properties");
+				props && props.split(/\s+/).forEach(function(prop) {
+					if(prop in this.searchProperties)
+						rowText.push(this.searchProperties[prop]);
+				}, this);
+			}
 		}
 		while(tChld != tBody);
 		rowText = rowText.join("\n");
@@ -1733,11 +1756,7 @@ var handyClicksSets = {
 		else
 			saved = this.saveSettingsObjectsCheck(applyFlag);
 		this.setDialogButtons();
-		if(
-			saved
-			&& !applyFlag && this.ps.otherSrc
-			&& !this.ut.confirm(this.ut.getLocalized("title"), this.ut.getLocalized("importIncomplete"))
-		)
+		if(!applyFlag && !this.checkImport())
 			return false;
 		return saved;
 	},
@@ -1752,7 +1771,7 @@ var handyClicksSets = {
 		if(!this.buggyPrefsConfirm())
 			return false;
 		this.ps.saveSettingsObjects(reloadFlag);
-		this.setDialogButtons();
+		//this.setDialogButtons();
 		return true;
 	},
 	savePrefpanes: function() {
@@ -1764,7 +1783,7 @@ var handyClicksSets = {
 		);
 		this.pu.savePrefFile();
 		//this.prefsSaved();
-		this.setDialogButtons();
+		//this.setDialogButtons();
 	},
 	reloadPrefpanes: function() {
 		Array.forEach(
@@ -1779,7 +1798,8 @@ var handyClicksSets = {
 		"sets.openEditorsLimit",
 		"sets.removeBackupConfirm",
 		"ui.notifyUnsaved",
-		"editor.unsavedSwitchWarning"
+		"editor.unsavedSwitchWarning",
+		"sets.incompleteImportWarning"
 	],
 	initResetWarnMsgs: function() {
 		var changed = this.warnMsgsPrefs.filter(this.pu.prefChanged, this.pu);
@@ -1821,6 +1841,9 @@ var handyClicksSets = {
 				break;
 				case "editor.unsavedSwitchWarning":
 					text = this.ut.getLocalized("editorUnsavedSwitchWarning");
+				break;
+				case "sets.incompleteImportWarning":
+					text = this.ut.getLocalized("importIncomplete");
 				break;
 				default:
 					this.ut._warn('initResetWarnMsgs: no description for "' + pName + '" pref');
@@ -2018,14 +2041,37 @@ var handyClicksSets = {
 		node.dispatchEvent(evt);
 	},
 
-	checkSaved: function() {
-		if(!this.hasUnsaved)
+	checkSaved: function(onlyTree) {
+		if(!this.checkImport(onlyTree))
+			return false;
+		if(onlyTree ? !this.treeUnsaved : !this.hasUnsaved)
 			return true;
 		var res = this.su.notifyUnsaved();
 		if(res == this.su.PROMPT_CANCEL)
 			return false;
 		if(res == this.su.PROMPT_SAVE)
 			this.saveSettings();
+		return true;
+	},
+	checkImport: function(isImport) {
+		//return !this.ps.otherSrc
+		//	|| this.ut.confirm(this.ut.getLocalized("title"), this.ut.getLocalized("importIncomplete"));
+		if(!this.ps.otherSrc)
+			return true;
+		var askPref = "sets.incompleteImportWarning";
+		var dontAsk = { value: false };
+		var ok = this.ut.confirmEx(
+			this.ut.getLocalized("warningTitle"),
+			this.ut.getLocalized("importIncomplete"),
+			this.ut.getLocalized(isImport ? "continue" : "closeSettings"),
+			false,
+			this.ut.getLocalized("dontAskAgain"),
+			dontAsk
+		);
+		if(!ok)
+			return false;
+		if(dontAsk.value)
+			this.pu.pref(askPref, false);
 		return true;
 	},
 
@@ -2064,13 +2110,12 @@ var handyClicksSets = {
 			: this.treeUnsaved || this.prefsUnsaved;
 	},
 
-	dataChanged: function(e, tar) {
-		if(!tar) {
-			// Strange things may happens after Ctrl+(Shift+)Z
-			this.ut.timeout(arguments.callee, this, [e, e.target], 5);
+	dataChanged: function(e, delayed) {
+		if(delayed) {
+			this.ut.timeout(this.dataChanged, this, [e], 5);
 			return;
 		}
-		//var tar = e.target;
+		var tar = e.target;
 		if(!("hasAttribute" in tar))
 			return;
 		var ln = tar.localName;
@@ -2092,9 +2137,8 @@ var handyClicksSets = {
 		if(this.instantApply)
 			this.saveSettings();
 		else {
-			//this.ut.timeout(this.setDialogButtons, this, [], 5);
+			//this.ut.timeout(this.setDialogButtons, this);
 			this.setDialogButtons();
-			//this.applyButton.disabled = this._prefsSaved = false;
 		}
 	},
 	updateAllDependencies: function(depId) {
@@ -2381,22 +2425,26 @@ var handyClicksSets = {
 		const warnPref = "sets.importJSWarning";
 		if(srcId != ct.IMPORT_BACKUP && this.pu.pref(warnPref)) {
 			this.ut.fixMinimized();
-			var ask = { value: false };
-			var cnf = this.ut.promptsSvc.confirmCheck(
-				window, this.ut.getLocalized("warningTitle"),
+			var dontAsk = { value: false };
+			var ok = this.ut.promptsSvc.confirmCheck(
+				window,
+				this.ut.getLocalized("warningTitle"),
 				this.ut.getLocalized("importSetsWarning"),
-				this.ut.getLocalized("importSetsWarningNotShowAgain"), ask
+				this.ut.getLocalized("importSetsWarningNotShowAgain"),
+				dontAsk
 			);
-			if(!cnf)
+			if(!ok)
 				return;
-			this.pu.pref(warnPref, !ask.value);
+			this.pu.pref(warnPref, !dontAsk.value);
 		}
+		if(!this.checkSaved(true))
+			return;
 		if(!this.ps.otherSrc) {
 			this._savedPrefs = this.ps.prefs;
 			this._savedTypes = this.ps.types;
 		}
 		this.ps.loadSettings(pSrc);
-		this.setDialogButtons();
+		//this.setDialogButtons();
 		//this.ps.reloadSettings(false);
 		if(this.ps._loadStatus)
 			return;
@@ -2439,15 +2487,16 @@ var handyClicksSets = {
 		if(!dontAsk && this.pu.pref(confirmPref)) {
 			this.ut.closeMenus(mi);
 			this.ut.fixMinimized();
-			var ask = { value: false };
-			var cnf = this.ut.promptsSvc.confirmCheck(
+			var dontAsk = { value: false };
+			var ok = this.ut.promptsSvc.confirmCheck(
 				window, this.ut.getLocalized("title"),
 				this.ut.getLocalized("removeBackupConfirm").replace("%f", fName),
-				this.ut.getLocalized("dontAskAgain"), ask
+				this.ut.getLocalized("dontAskAgain"),
+				dontAsk
 			);
-			if(!cnf)
+			if(!ok)
 				return false;
-			if(ask.value)
+			if(dontAsk.value)
 				this.pu.pref(confirmPref, false);
 		}
 
@@ -2640,33 +2689,31 @@ var handyClicksSets = {
 		this._importFromClipboard = isImport && fromClipboard;
 		if(!updMode) {
 			this.closeEditors();
-			if(this.prefsSaved)
-				this.applyButton.disabled = true;
+			this.checkTreeSaved();
 		}
-		var panel = this.$("hc-sets-tree-importPanel");
-		panel.hidden = !isImport;
-		if(!isImport)
+		this.$("hc-sets-tree-importPanel").hidden = !isImport;
+		if(!isImport) {
+			var search = this.searchField.value;
+			var newSearch = search.replace(/%(?:new|ovr)%/g, "");
+			if(newSearch != search) // Don't confuse user with empty tree
+				this.doSearch(this.ut.trim(newSearch));
 			return;
-		const lAttr = "hc_label" + (isPartial ? "Partial" : "Full");
-		Array.forEach(
-			panel.getElementsByAttribute(lAttr, "*"),
-			function(elt) {
-				elt.setAttribute("label", elt.getAttribute(lAttr));
-			}
-		);
+		}
 
-		// Set same width to Ok and Cancel buttons:
-		var okBtn = this.$("hc-sets-tree-buttonImportOk");
-		var cancelBtn = this.$("hc-sets-tree-buttonImportCancel");
-		okBtn.width = cancelBtn.width = null; // Reset width
-		okBtn.width = cancelBtn.width = Math.max(okBtn.boxObject.width, cancelBtn.boxObject.width);
-
-		this.$("hc-sets-tree-importRowDeletable").hidden = this._importPartial;
-
-		!updMode && okBtn.focus();
+		this.$("hc-sets-tree-importType").value =
+			this.$("hc-sets-tree-importRowDeletable").hidden = isPartial;
+		if(
+			Array.indexOf(
+				this.$("hc-sets-tree-importPanel").getElementsByTagName("*"),
+				document.commandDispatcher.focusedElement
+			) == -1
+		)
+			this.$("hc-sets-tree-buttonImportOk").focus();
 	},
-	toggleImportType: function() {
-		this.setImportStatus(this._import, !this._importPartial, this._importFromClipboard, true);
+	toggleImportType: function(isPartial) {
+		if(isPartial === undefined)
+			isPartial = !this._importPartial;
+		this.setImportStatus(this._import, isPartial, this._importFromClipboard, true);
 	},
 	importDone: function(ok) {
 		if(ok && !this.buggyPrefsConfirm())
@@ -2761,6 +2808,6 @@ var handyClicksSets = {
 	},
 
 	checkClipboard: function() {
-		this.$("hc-sets-cmd-partialImportFromClipboard").setAttribute("disabled", !this.ps.clipboardPrefs);
+		this.$("hc-sets-cmd-importFromClipboard").setAttribute("disabled", !this.ps.clipboardPrefs);
 	}
 };
