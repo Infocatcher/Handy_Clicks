@@ -863,11 +863,33 @@ var handyClicksUtils = {
 		});
 	},
 
-	objEquals: function(o1) {
+	objEquals: function() {
+		Array.forEach(arguments, function(o) {
+			this.sortObj(o, true);
+		}, this);
+		return this.objEqualsRaw.apply(this, arguments);
+	},
+	objEqualsRaw: function(o1) {
 		var s = this.getSource(o1);
 		return Array.slice(arguments, 1).every(function(o) {
 			return this.getSource(o) === s;
 		}, this);
+	},
+	sortObj: function(obj, deep) {
+		if(!this.isObject(obj))
+			return obj;
+		var arr = [], ex = { __proto__: null };
+		for(var p in obj) if(Object.hasOwnProperty.call(obj, p)) {
+			var val = obj[p];
+			deep && this.sortObj(val, deep);
+			arr.push(p);
+			ex[p] = val;
+			delete obj[p];
+		}
+		arr.sort().forEach(function(p) {
+			obj[p] = ex[p];
+		});
+		return obj;
 	},
 	getSource: function(o) {
 		return !this.isPrimitive(o) && !("toSource" in o) // !o.__proto__

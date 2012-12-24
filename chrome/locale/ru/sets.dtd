@@ -52,7 +52,9 @@
 
 <!ENTITY hc.sets.cmdAdd "Добавить…">
 <!ENTITY hc.sets.cmdEdit "Редактировать…">
+<!ENTITY hc.sets.cmdEditSaved "Редактировать сохраненную версию…">
 <!ENTITY hc.sets.cmdEditType "Редактировать добавленный тип…">
+<!ENTITY hc.sets.cmdEditTypeSaved "Редактировать сохраненный добавленный тип…">
 <!ENTITY hc.sets.cmdDel "Удалить">
 
 <!ENTITY hc.sets.cmdEnable "Включить">

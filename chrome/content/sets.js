@@ -422,8 +422,12 @@ var handyClicksSets = {
 		this.wu.forEachWindow(
 			"handyclicks:editor",
 			function(w) {
-				if(wProp in w)
-					this._setItemStatus(w[wProp], w.handyClicksPrefSvc.otherSrc == otherSrc);
+				if(
+					wProp in w
+					&& "handyClicksPrefSvc" in w
+					&& w.handyClicksPrefSvc.otherSrc == otherSrc
+				)
+					this._setItemStatus(w[wProp], true);
 			},
 			this
 		);
@@ -678,23 +682,31 @@ var handyClicksSets = {
 			"delete", "edit", "toggle",
 			"partialExportToFile", "partialExportToClipboard",
 			"exportToURI", "exportToHTML"
-		].forEach(
-			function(id) {
-				this.$("hc-sets-cmd-" + id).setAttribute("disabled", noSel);
-			},
-			this
-		);
-		this.$("hc-sets-cmd-enable").setAttribute(
-			"disabled",
-			noSel || !selIts.some(function(it) { return !this.checkedState(it); }, this)
-		);
-		this.$("hc-sets-cmd-disable").setAttribute(
-			"disabled",
-			noSel || !selIts.some(function(it) { return this.checkedState(it); }, this)
-		);
-		var noTypes = noSel || !selIts.some(function(it) { return it.__isCustomType; });
+		].forEach(function(id) {
+			this.$("hc-sets-cmd-" + id).setAttribute("disabled", noSel);
+		}, this);
+		var hasEnabled = false;
+		var hasDisabled = false;
+		selIts.some(function(it) {
+			if(this.checkedState(it))
+				hasEnabled = true;
+			else
+				hasDisabled = true;
+			return hasEnabled && hasDisabled;
+		}, this).length;
+		this.$("hc-sets-cmd-enable").setAttribute("disabled", noSel || !hasDisabled);
+		this.$("hc-sets-cmd-disable").setAttribute("disabled", noSel || !hasEnabled);
+		var noTypes = noSel || !selIts.some(function(it) {
+			return it.__isCustomType;
+		});
 		this.$("hc-sets-cmd-editType").setAttribute("disabled", noTypes);
 		this.$("hc-sets-editType").hidden = noTypes;
+
+		var noImport = !this._import;
+		this.$("hc-sets-cmd-editSaved").setAttribute("disabled", noSel || noImport);
+		this.$("hc-sets-editSaved").hidden = noImport;
+		this.$("hc-sets-cmd-editSavedType").setAttribute("disabled", noTypes || noImport);
+		this.$("hc-sets-editSavedType").hidden = noTypes || noImport;
 	},
 	get selectedItems() {
 		var rngCount = this.tSel.getRangeCount();
@@ -780,7 +792,7 @@ var handyClicksSets = {
 		}
 		this.openEditorWindow();
 	},
-	editItems: function(e) {
+	editItems: function(e, forceEditSaved) {
 		if(e && !this.isClickOnRow(e)) {
 			this.addItems();
 			return;
@@ -792,18 +804,20 @@ var handyClicksSets = {
 		var its = this.selectedItems;
 		if(this.editorsLimit(its.length))
 			return;
+		var src = forceEditSaved ? null : undefined;
 		its.forEach(function(it) {
-			this.openEditorWindow(it, this.ct.EDITOR_MODE_SHORTCUT);
+			this.openEditorWindow(it, this.ct.EDITOR_MODE_SHORTCUT, false, src);
 		}, this);
 	},
-	editItemsTypes: function() {
+	editItemsTypes: function(forceEditSaved) {
 		if(!this.isTreePaneSelected)
 			return;
 		var cIts = this.selectedItemsWithCustomTypes;
 		if(this.editorsLimit(cIts.length))
 			return;
+		var src = forceEditSaved ? null : undefined;
 		cIts.forEach(function(it) {
-			this.openEditorWindow(it, this.ct.EDITOR_MODE_TYPE);
+			this.openEditorWindow(it, this.ct.EDITOR_MODE_TYPE, false, src);
 		}, this);
 	},
 	editorsLimit: function(count) {
@@ -841,11 +855,17 @@ var handyClicksSets = {
 			tIts = this.selectedItems;
 		if(!tIts.length)
 			return [];
+
 		const MAX_TYPE_LENGTH = 40;
 		const MAX_LABEL_LENGTH = 50;
 		const MAX_ROWS = 12;
+
+		if(tIts.length > MAX_ROWS)
+			tIts.splice(MAX_ROWS - 2, tIts.length - MAX_ROWS + 1, "\u2026" /* "..." */);
 		var info = tIts.map(
 			function(tItem, i) {
+				if(typeof tItem == "string")
+					return tItem;
 				var type = tItem.__itemType, sh = tItem.__shortcut;
 				var mdfs = this.ps.getModifiersStr(sh);
 				var button = this.ps.getButtonStr(sh, true);
@@ -871,8 +891,7 @@ var handyClicksSets = {
 			},
 			this
 		);
-		if(info.length > MAX_ROWS)
-			info.splice(MAX_ROWS - 2, info.length - MAX_ROWS + 1, "\u2026" /* "..." */);
+
 		return info;
 	},
 	cropStr: function(str, maxLen) {
@@ -952,7 +971,7 @@ var handyClicksSets = {
 			tChld = tItem.parentNode;
 		}
 	},
-	openEditorWindow: function(tItem, mode, add) { // mode: this.ct.EDITOR_MODE_*
+	openEditorWindow: function(tItem, mode, add, src) { // mode: this.ct.EDITOR_MODE_*
 		var shortcut = tItem
 			? tItem.__shortcut
 			: undefined;
@@ -960,7 +979,9 @@ var handyClicksSets = {
 			? tItem.__itemType
 			: undefined;
 		var isDelayed = tItem && add !== true && tItem.__isDelayed;
-		this.wu.openEditor(this.ps.currentOtherSrc, mode || this.ct.EDITOR_MODE_SHORTCUT, shortcut, itemType, isDelayed);
+		if(src === undefined)
+			src = this.ps.currentOtherSrc;
+		this.wu.openEditor(src, mode || this.ct.EDITOR_MODE_SHORTCUT, shortcut, itemType, isDelayed);
 	},
 	setItemStatus: function() {
 		return this.treeBatch(this._setItemStatus, this, arguments);
@@ -2296,6 +2317,7 @@ var handyClicksSets = {
 		}, this);
 		this.pu.savePrefFile();
 		this.reloadPrefpanes(); // Changed prefs don't reloaded by default
+		this.ut.notifyInWindowCorner(this.ut.getLocalized("configSuccessfullyImported"));
 	},
 
 	// Clicking options management
@@ -2382,6 +2404,7 @@ var handyClicksSets = {
 		this.selectTreePane();
 		var ct = this.ct;
 		var pSrc;
+		this.ps.checkPrefsStr.checkCustomCode = true;
 		switch(srcId) {
 			default:
 			case ct.IMPORT_FILEPICKER:
@@ -2399,8 +2422,6 @@ var handyClicksSets = {
 			case ct.IMPORT_BACKUP:
 				pSrc = this.ps.getBackupFile(data);
 		}
-		//if(!pSrc)
-		//	return;
 		if(
 			fromClip
 				? !pSrc // this.ps.clipboardPrefs are valid or empty
@@ -2423,7 +2444,7 @@ var handyClicksSets = {
 		)
 			return;
 		const warnPref = "sets.importJSWarning";
-		if(srcId != ct.IMPORT_BACKUP && this.pu.pref(warnPref)) {
+		if(srcId != ct.IMPORT_BACKUP && this.ps._hasCustomCode && this.pu.pref(warnPref)) {
 			this.ut.fixMinimized();
 			var dontAsk = { value: false };
 			var ok = this.ut.promptsSvc.confirmCheck(

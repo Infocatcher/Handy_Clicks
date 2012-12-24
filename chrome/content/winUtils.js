@@ -155,7 +155,7 @@ var handyClicksWinUtils = {
 		);
 		w.arguments = [pSrc, mode || "shortcut", shortcut, itemType, isDelayed];
 		w[wProp] = winId;
-		this.markOpenedEditors(winId, true);
+		this.markOpenedEditors(winId, true, !!pSrc);
 		return w;
 	},
 	openEditorEx: function(pSrc, mode, shortcut, itemType, isDelayed, src, line) {
@@ -199,14 +199,17 @@ var handyClicksWinUtils = {
 			_this.openEditorLink(href, line);
 		};
 	},
-	markOpenedEditors: function(winId, editStat) {
+	markOpenedEditors: function(winId, editStat, otherSrc) {
 		var wSet = this.wm.getMostRecentWindow("handyclicks:settings");
-		if(!wSet)
+		if(!wSet || !("_handyClicksInitialized" in wSet))
 			return;
-		if(arguments.length)
-			wSet.handyClicksSets.setItemStatus(winId, editStat);
-		else
+		if(!arguments.length)
 			wSet.handyClicksSets.markOpenedEditors();
+		else if(
+			"handyClicksPrefSvc" in wSet
+			&& wSet.handyClicksPrefSvc.otherSrc == otherSrc
+		)
+			wSet.handyClicksSets.setItemStatus(winId, editStat);
 	},
 
 	openSettings: function(closeOpened) {

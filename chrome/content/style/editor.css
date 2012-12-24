@@ -1,4 +1,5 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace html url("http://www.w3.org/1999/xhtml");
 
 #hc-editor-clickButton {
 	-moz-user-focus: ignore;
@@ -21,6 +22,10 @@
 
 menuitem[hc_disabled="true"] {
 	color: graytext; /* Style like disabled, but without accessibility restrictions */
+}
+#hc-editor-customType[hc_notUsed="true"] html|*.menulist-editable-input,
+#hc-editor-customTypePopup > menuitem[hc_notUsed="true"] {
+	color: red;
 }
 menuitem[hc_sets="enabled"],
 menulist[hc_sets="enabled"] .menulist-label {

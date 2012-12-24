@@ -435,7 +435,7 @@ var handyClicksEditor = {
 			case this.INDEX_TYPE:     winId = cType;                              break;
 			default: return;
 		}
-		window[this.wu.winIdProp] = winId;
+		window[this.wu.winIdProp] = winId + (this.ps.otherSrc ? this.ct.OTHER_SRC_POSTFIX : "");
 		this.wu.markOpenedEditors();
 	},
 	setWinTitle: function() {
@@ -568,8 +568,7 @@ var handyClicksEditor = {
 		this.highlightEmpty(contextField);
 		if(!to) {
 			cList.value = this.customTypeLabel = this.ps.dec(ct.label);
-			this.$("hc-editor-customTypeExtId").value = this.ps.removeCustomPrefix(cType);
-			this.customType = cType;
+			this.customType = this.currentCustomType = cType;
 			this.setWinId();
 			this.setWinTitle();
 			//this.applyDisabled = true;
@@ -649,10 +648,15 @@ var handyClicksEditor = {
 			else
 				_labels[label] = 1;
 			var dis = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
+			var notUsed = !this.typeUsed(cType);
+			var tip = notUsed
+				? this.ut.getLocalized("customTypeNotUsed") + " \n" + cType
+				: cType;
 			var mi = this.ut.createElement("menuitem", {
 				label: label,
 				value: cType,
-				tooltiptext: cType
+				tooltiptext: tip,
+				hc_notUsed: notUsed
 			});
 			var _mi = mi.cloneNode(true);
 			mi.setAttribute("disabled", dis);
@@ -666,6 +670,15 @@ var handyClicksEditor = {
 		sep.hidden = hideSep;
 		parent.parentNode.value = this.type || ""; // <menulist>
 		this.highlightUsedTypes();
+	},
+	typeUsed: function(type, prefs) {
+		prefs = prefs || this.ps.prefs;
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
+			var so = prefs[sh];
+			if(this.ut.isObject(so) && so.hasOwnProperty(type))
+				return true;
+		}
+		return false;
 	},
 	delCustomTypes: function() {
 		["hc-editor-itemTypes", "hc-editor-customTypePopup"].forEach(
@@ -980,6 +993,13 @@ var handyClicksEditor = {
 	},
 	set currentCustomType(customType) {
 		this.$("hc-editor-customTypeExtId").value = this.ps.removeCustomPrefix(customType || "");
+		var notUsed = !this.typeUsed(customType);
+		var labelField = this.$("hc-editor-customType");
+		labelField.setAttribute("hc_notUsed", notUsed);
+		if(notUsed)
+			labelField.setAttribute("tooltiptext", this.ut.getLocalized("customTypeNotUsed"));
+		else
+			labelField.removeAttribute("tooltiptext");
 	},
 
 	loadFuncs: function() {
@@ -1438,7 +1458,7 @@ var handyClicksEditor = {
 		return ct;
 	},
 	deleteCustomType: function() {
-		delete this.ps.types[this.ps.customPrefix + this.$("hc-editor-customTypeExtId").value];
+		delete this.ps.types[this.currentCustomType];
 		if(this.ps.otherSrc)
 			this.ps.reloadSettings();
 		else

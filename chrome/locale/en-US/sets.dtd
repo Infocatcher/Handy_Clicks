@@ -52,7 +52,9 @@
 
 <!ENTITY hc.sets.cmdAdd "Add…">
 <!ENTITY hc.sets.cmdEdit "Edit…">
+<!ENTITY hc.sets.cmdEditSaved "Edit saved…">
 <!ENTITY hc.sets.cmdEditType "Edit custom type…">
+<!ENTITY hc.sets.cmdEditTypeSaved "Edit saved custom type…">
 <!ENTITY hc.sets.cmdDel "Delete">
 
 <!ENTITY hc.sets.cmdEnable "Enable">

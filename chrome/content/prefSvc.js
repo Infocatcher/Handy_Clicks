@@ -537,7 +537,7 @@ var handyClicksPrefSvc = {
 	},
 	sortSettings: function(o) {
 		//~ todo: use "logical" sort? Place "enabled" first, etc.
-		return this.sortObj(o, true);
+		return this.ut.sortObj(o, true);
 	},
 	getSettingsStr: function(types, prefs) {
 		types = types || this.types;
@@ -581,22 +581,6 @@ var handyClicksPrefSvc = {
 			this.reloadSettings(reloadAll);
 		}, this);
 	},
-	sortObj: function(obj, deep) {
-		if(!this.ut.isObject(obj))
-			return obj;
-		var arr = [], ex = {};
-		for(var p in obj) if(obj.hasOwnProperty(p)) {
-			var val = obj[p];
-			deep && this.sortObj(val, deep);
-			arr.push(p);
-			ex[p] = val;
-			delete obj[p];
-		}
-		arr.sort().forEach(function(p) {
-			obj[p] = ex[p];
-		});
-		return obj;
-	},
 	getHash: function(str, hashFunc) {
 		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
 			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
@@ -618,16 +602,25 @@ var handyClicksPrefSvc = {
 	reloadSettings: function(reloadAll) {
 		const pSvc = "handyClicksPrefSvc";
 		var curOtherSrc = this.currentOtherSrc;
+		var types = ["handyclicks:settings", "handyclicks:editor"];
+		if(!curOtherSrc)
+			types.push("navigator:browser");
 		this.wu.forEachWindow(
-			["navigator:browser", "handyclicks:settings", "handyclicks:editor"],
+			types,
 			function(w) {
 				if(!(pSvc in w) || (!reloadAll && w === window))
 					return;
 				var p = w[pSvc];
-				if(curOtherSrc && !p.otherSrc) //~ ?
+				if(!curOtherSrc && p.otherSrc && "handyClicksSets" in w) {
+					var s = w.handyClicksSets;
+					//~ todo: may be deleted via garbage collector in old Firefox versions?
+					s._savedPrefs = this.prefs;
+					s._savedTypes = this.types;
+					s.updTree();
 					return;
+				}
 				p.oSvc.notifyObservers(this.SETS_BEFORE_RELOAD);
-				p.loadSettings(curOtherSrc);
+				p.loadSettings(curOtherSrc && p.otherSrc ? curOtherSrc : p.currentOtherSrc);
 				p.oSvc.notifyObservers(this.SETS_RELOADED);
 			},
 			this
@@ -922,9 +915,12 @@ var handyClicksPrefSvc = {
 				|| typeof obj.version == "number" && isFinite(obj.version)
 			);
 	},
-	checkPrefsStr: function(str, silent) {
+	checkPrefsStr: function _cps(str, silent) {
+		var checkCustom = _cps.hasOwnProperty("checkCustomCode");
+		delete _cps.checkCustomCode;
 		this._hashError = false;
 		this._hashMissing = true;
+		this._hasCustomCode = checkCustom ? false : undefined;
 
 		if(!this.ut.hasPrefix(str, this.requiredHeader)) {
 			!silent && this.ut._err("Invalid prefs: wrong header");
@@ -950,7 +946,7 @@ var handyClicksPrefSvc = {
 
 		str = this.convertToJSON(str);
 		try {
-			var prefs = this.JSON.parse(str);
+			var prefsObj = this.JSON.parse(str);
 		}
 		catch(e) {
 			if(!silent) {
@@ -959,11 +955,37 @@ var handyClicksPrefSvc = {
 			}
 			return false;
 		}
-		if(!this.isValidPrefs(prefs)) {
+		if(!this.isValidPrefs(prefsObj)) {
 			!silent && this.ut._err("Invalid prefs: prefs object doesn't contains required fields");
 			return false;
 		}
+		if(checkCustom)
+			this._hasCustomCode = this.hasCustomCode(prefsObj);
 		return true;
+	},
+	hasCustomCode: function(prefsObj) {
+		var types = prefsObj.types;
+		for(var type in types) if(types.hasOwnProperty(type))
+			if(this.ut.isObject(types[type]))
+				return true;
+		var prefs = prefsObj.prefs;
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
+			var so = prefs[sh];
+			if(!this.ut.isObject(so))
+				continue;
+			for(var type in so) if(so.hasOwnProperty(type)) {
+				var to = so[type];
+				if(
+					this.ut.isObject(to)
+					&& (
+						this.ut.getOwnProperty(to, "custom")
+						|| this.ut.getOwnProperty(to, "delayedAction", "custom")
+					)
+				)
+					return true;
+			}
+		}
+		return false;
 	},
 	get clipboardPrefs() {
 		var cb = this.ut.cb;

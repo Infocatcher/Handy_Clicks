@@ -227,6 +227,12 @@ menuitem[command="hc-sets-cmd-enable"] {
 #hc-sets-editType {
 	-moz-image-region: rect(32px 48px 48px 32px);
 }
+#hc-sets-editSaved {
+	-moz-image-region: rect(32px 144px 48px 128px);
+}
+#hc-sets-editSavedType {
+	-moz-image-region: rect(32px 160px 48px 144px);
+}
 #hc-sets-tree-buttonDelete, menuitem[command="hc-sets-cmd-delete"], #hc-sets-removeBackup {
 	-moz-image-region: rect(32px 64px 48px 48px);
 }
