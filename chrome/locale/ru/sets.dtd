@@ -22,6 +22,19 @@
 <!ENTITY hc.sets.columnEnabled "Включено">
 
 <!ENTITY hc.sets.search "Найти:">
+<!ENTITY hc.sets.searchTip "Пробел = и
+
+Специальные варианты:
+'строка целиком'
+&quot;Строка целиком с Учётом Регистра&quot;
+/регулярное выражение/i
+
+Заменители:
+&#37;custom&#37; – свой код
+&#37;type&#37; – добавленный тип
+&#37;dis&#37; – отключено
+&#37;ovr&#37; – заменяемые (при импорте)
+&#37;new&#37; – добавляемые (при импорте)">
 <!ENTITY hc.sets.filterTip "Фильтр">
 
 <!ENTITY hc.sets.editMenu "Правка">
@@ -170,7 +183,7 @@
 <!ENTITY hc.sets.externalEditorMakeRelative "Сделать путь относительным">
 <!ENTITY hc.sets.externalEditorMakeAbsolute "Сделать путь абсолютным">
 <!ENTITY hc.sets.externalEditorArgs "Аргументы:">
-<!ENTITY hc.sets.externalEditorArgsNote "1 строка = 1 аргумент
+<!ENTITY hc.sets.externalEditorArgsTip "1 строка = 1 аргумент
 &#37;F – путь к файлу (будет добавлен автоматически, если отсутствует)
 &#37;L – номер строки
 &#37;C – номер столбца">

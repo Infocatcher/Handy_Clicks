@@ -22,6 +22,19 @@
 <!ENTITY hc.sets.columnEnabled "Enabled">
 
 <!ENTITY hc.sets.search "Search:">
+<!ENTITY hc.sets.searchTip "Space = and
+
+Special:
+'whole string'
+&quot;Whole string and Match Case&quot;
+/regular expression/i
+
+Placeholders:
+&#37;custom&#37; – custom code
+&#37;type&#37; – custom type
+&#37;dis&#37; – disabled
+&#37;ovr&#37; – overrided (import)
+&#37;new&#37; – new (import)">
 <!ENTITY hc.sets.filterTip "Filter">
 
 <!ENTITY hc.sets.editMenu "Edit">
@@ -170,7 +183,7 @@
 <!ENTITY hc.sets.externalEditorMakeRelative "Make path relative">
 <!ENTITY hc.sets.externalEditorMakeAbsolute "Make path absolute">
 <!ENTITY hc.sets.externalEditorArgs "Arguments:">
-<!ENTITY hc.sets.externalEditorArgsNote "1 line = 1 argument
+<!ENTITY hc.sets.externalEditorArgsTip "1 line = 1 argument
 &#37;F – path to file (will be added automatically, if missing)
 &#37;L – line number
 &#37;C – column number">

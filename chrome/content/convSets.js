@@ -23,7 +23,8 @@ function setsMigration(allowSave, vers) {
 			//entry.moveTo(null, newName);
 			newFile = entry.parent.clone();
 			newFile.append(newName);
-			newFile.createUnique(newFile.NORMAL_FILE_TYPE, 0644); // Simple way to get unique file name
+			// Simple way to get unique file name
+			newFile.createUnique(newFile.NORMAL_FILE_TYPE, this.ut.PERMS_FILE_WRITE);
 			entry.moveTo(null, newFile.leafName);
 		}
 	}
@@ -190,7 +191,8 @@ function setsMigration(allowSave, vers) {
 					continue;
 				//entry.moveTo(backupsDir, fName);
 				var newFile = this.getBackupFile(fName);
-				newFile.createUnique(newFile.NORMAL_FILE_TYPE, 0644); // Simple way to get unique file name
+				// Simple way to get unique file name
+				newFile.createUnique(newFile.NORMAL_FILE_TYPE, this.ut.PERMS_FILE_WRITE);
 				entry.moveTo(backupsDir, newFile.leafName);
 			}
 		}

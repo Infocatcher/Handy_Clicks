@@ -809,6 +809,20 @@ var handyClicksSets = {
 			this.openEditorWindow(it, this.ct.EDITOR_MODE_SHORTCUT, false, src);
 		}, this);
 	},
+	editButtonClick: function(e) {
+		var btn = e.button;
+		if(btn == 0)
+			return;
+		var hasModifier = this.ut.hasModifier(e);
+		var cmdId = btn == 1
+			? "hc-sets-cmd-editSaved"
+			: btn == 2 && hasModifier
+				? "hc-sets-cmd-editSavedType"
+				: "hc-sets-cmd-editType";
+		var cmd = this.$(cmdId);
+		if(cmd.getAttribute("disabled") != "true")
+			cmd.doCommand();
+	},
 	editItemsTypes: function(forceEditSaved) {
 		if(!this.isTreePaneSelected)
 			return;
@@ -1486,10 +1500,25 @@ var handyClicksSets = {
 	_searchDelay: 50,
 	_searchTimeout: null,
 	_lastSearch: 0,
-	searchProperties: {
-		hc_override: "\0\ufffd\0",
-		hc_new:      "\0\ufffd\ufffd\0",
+	searchPlaceholders: {
+		hc_override:   "%ovr%",
+		hc_new:        "%new%",
+		hc_custom:     "%custom%",
+		hc_customType: "%type%",
+		hc_disabled:   "%dis%",
+		hc_buggy:      "%bug%",
 		__proto__: null
+	},
+	get searchReplacements() {
+		delete this.searchReplacements;
+		var sr = this.searchReplacements = { __proto__: null };
+		var sp = this.searchPlaceholders;
+		var s = "";
+		for(var p in sp) {
+			s += "\0";
+			sr[p] = "\uffff" + s + "\uffff";
+		}
+		return sr;
 	},
 	doSearch: function(str) {
 		var sf = this.searchField;
@@ -1528,10 +1557,11 @@ var handyClicksSets = {
 		var caseSensitive = false;
 		var hasTerm = true;
 
-		if(this._import) {
-			sTerm = sTerm
-				.replace("%ovr%", this.searchProperties.hc_override)
-				.replace("%new%", this.searchProperties.hc_new);
+		if(sTerm.indexOf("%") != -1) {
+			var sp = this.searchPlaceholders;
+			var sr = this.searchReplacements;
+			for(var p in sp)
+				sTerm = sTerm.replace(sp[p], sr[p]);
 		}
 
 		if(/^\/(.+)\/([im]{0,2})$/.test(sTerm)) { // /RegExp/flags
@@ -1653,13 +1683,12 @@ var handyClicksSets = {
 				},
 				this
 			);
-			if(this._import) {
-				var props = row.getAttribute("properties");
-				props && props.split(/\s+/).forEach(function(prop) {
-					if(prop in this.searchProperties)
-						rowText.push(this.searchProperties[prop]);
-				}, this);
-			}
+			var props = row.getAttribute("properties");
+			var sr = this.searchReplacements;
+			props && props.split(/\s+/).forEach(function(prop) {
+				if(prop in sr)
+					rowText.push(sr[prop]);
+			});
 		}
 		while(tChld != tBody);
 		rowText = rowText.join("\n");
@@ -2715,7 +2744,9 @@ var handyClicksSets = {
 		this.$("hc-sets-tree-importPanel").hidden = !isImport;
 		if(!isImport) {
 			var search = this.searchField.value;
-			var newSearch = search.replace(/%(?:new|ovr)%/g, "");
+			var newSearch = search
+				.replace(this.searchPlaceholders.hc_override, "")
+				.replace(this.searchPlaceholders.hc_new, "");
 			if(newSearch != search) // Don't confuse user with empty tree
 				this.doSearch(this.ut.trim(newSearch));
 			return;

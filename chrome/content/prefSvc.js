@@ -225,10 +225,11 @@ var handyClicksPrefSvc = {
 		}
 		this._loadStatus = this.SETS_LOAD_OK;
 	},
-	convertToJSON: function(s) {
+	convertToJSON: function(s, silent) {
 		if(s.substr(0, 4) != "var ") //= Added: 2012-01-13
 			return s;
-		this.ut._log("Prefs in old format, try convert to JSON");
+		if(!silent)
+			this.ut._log("Prefs in old format, try convert to JSON");
 
 		// Note: supported only features used in old settings format
 		return "{\n"
@@ -944,7 +945,7 @@ var handyClicksPrefSvc = {
 			str = this.removePrefsDesription(str);
 		}
 
-		str = this.convertToJSON(str);
+		str = this.convertToJSON(str, silent);
 		try {
 			var prefsObj = this.JSON.parse(str);
 		}

@@ -119,10 +119,10 @@ tree[hc_colored="true"] treechildren::-moz-tree-row(hc_custom, hc_customType) {
 	background-color: #dffff7;
 }
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_disabled) {
-	background-color: #F0EEDF;
+	background-color: #f0eedf;
 }
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_unsavedDisabled) {
-	background-color: #f5f4eb;
+	background-color: #f7f5ee;
 }
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy) {
 	background-color: #faa;

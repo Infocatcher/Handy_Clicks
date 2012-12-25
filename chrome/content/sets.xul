@@ -41,6 +41,7 @@
 				<label value="&hc.sets.search;" control="hc-sets-tree-searchField" />
 				<hbox id="hc-sets-tree-searchContainer" flex="100">
 					<textbox id="hc-sets-tree-searchField" type="search" flex="1" persist="hc_value"
+						tooltip="hc-sets-search-tooltip"
 						onkeypress="handyClicksSets.navigateSearchResults(event);"
 						oninput="handyClicksSets.searchInSetsTreeDelay();"
 						hc_ondrop="handyClicksSets.searchInSetsTree();"
@@ -163,7 +164,9 @@
 					<button id="hc-sets-tree-buttonAdd" hc_key="hc-sets-key-add" class="hc-iconic" label="&hc.sets.cmdAdd;"
 						onclick="handyClicksSets.addItems(event);"
 						oncommand="handyClicksSets.addItems(event);" />
-					<button id="hc-sets-tree-buttonEdit" hc_key="hc-sets-key-edit" class="hc-iconic" command="hc-sets-cmd-edit" />
+					<button id="hc-sets-tree-buttonEdit" hc_key="hc-sets-key-edit" class="hc-iconic"
+						command="hc-sets-cmd-edit"
+						onclick="handyClicksSets.editButtonClick(event);" />
 					<button id="hc-sets-tree-buttonDelete" hc_key="hc-sets-key-delete" class="hc-iconic" command="hc-sets-cmd-delete" />
 					<spacer id="hc-sets-tree-buttonsSpacer" class="hcHSpacer" />
 					<button id="hc-sets-tree-buttonExport" class="hc-iconic" type="menu" label="&hc.sets.export;" accesskey="&hc.sets.exportAccesskey;">
@@ -624,8 +627,11 @@
 				oncommand="handyClicksSets.removeBackup((this.parentNode.triggerNode || document.popupNode), event);"
 				onclick="if(event.button == 1) { handyClicksSets.removeBackup((this.parentNode.triggerNode || document.popupNode), event); this.parentNode.hidePopup(); }" />
 		</menupopup>
+		<tooltip id="hc-sets-search-tooltip">
+			<description>&hc.sets.searchTip;</description>
+		</tooltip>
 		<tooltip id="hc-sets-externalEditorArgs-tooltip">
-			<description>&hc.sets.externalEditorArgsNote;</description>
+			<description>&hc.sets.externalEditorArgsTip;</description>
 		</tooltip>
 		<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical" noautohide="true"
 			onpopupshowing="return !document.tooltipNode.disabled;">
