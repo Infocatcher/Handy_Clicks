@@ -757,7 +757,10 @@ var handyClicksPrefSvc = {
 		if(str.indexOf(this.requiredHeader) != 0) // Support for old header
 			return false;
 		const hc = /^var handyClicks[\w$]+\s*=.*$/mg;
-		if(!hc.test(str))
+		if(
+			!hc.test(str)
+			&& !/^[ \t]*"prefs":/m.test(str) // New JSON format
+		)
 			return false;
 
 		const hashRe = /(?:\r\n|\n|\r)\/\/[ \t]?(MD2|MD5|SHA1|SHA512|SHA256|SHA384):[ \t]?([a-f0-9]+)(?=[\n\r]|$)/;
@@ -765,17 +768,20 @@ var handyClicksPrefSvc = {
 			this._hashMissing = false;
 			var hashFunc = RegExp.$1;
 			var hash = RegExp.$2;
-			str = str.replace(hashRe, "");
-			str = str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Remove comments
+			str = str
+				.replace(hashRe, "")
+				.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Remove comments
 			if(hash != this.getHash(str, hashFunc)) {
 				this._hashError = true;
 				return false;
 			}
 		}
 
-		str = str.replace(/"(?:\\"|[^"\n\r\u2028\u2029])*"/g, "__dummy__") // Replace strings
-		str = str.replace(hc, ""); // Remove handyClicks* vars
-		str = str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Remove comments
+		str = str
+			.replace(/"(?:\\"|[^"\n\r\u2028\u2029])*"/g, "__dummy__") // Replace strings
+			.replace(/^([ \t]*)"([^"]+)":/mg, "$1$2") // New JSON format
+			.replace(hc, "") // Remove handyClicks* vars
+			.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, ""); // Remove comments
 		if(/\/\/|\/\*|\*\//.test(str)) // No other comments
 			return false;
 		if(/\Wvar\s+/.test(str)) // No other vars
