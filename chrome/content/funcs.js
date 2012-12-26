@@ -155,12 +155,12 @@ var handyClicksFuncs = {
 	},
 	relativeIndex: 0,
 	openURIInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, closePopups, winRestriction) {
+		var tab = this._openURIInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction);
 		var tbr = this.hc.getTabBrowser(true);
 		if(moveTo == "relative") {
 			var tabCont = tbr.tabContainer;
 			tabCont.__handyClicks__resetRelativeIndex = false;
 		}
-		var tab = this._openURIInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction);
 		if(closePopups)
 			this.hc.closeMenus();
 		if(!tab || !moveTo)
@@ -251,6 +251,7 @@ var handyClicksFuncs = {
 		e = e || this.hc.event;
 		item = item || this.hc.item;
 		uri = uri || this.getItemURI(item);
+		this.urlSecurityCheck(item.ownerDocument, uri);
 		var isImg = this.hc.itemType == "img";
 		if(
 			this.testForHighlander(uri)
@@ -259,6 +260,24 @@ var handyClicksFuncs = {
 		)
 			return true;
 		return false;
+	},
+	get secMan() {
+		delete this.secMan;
+		return this.secMan = Components.classes["@mozilla.org/scriptsecuritymanager;1"]
+			.getService(Components.interfaces.nsIScriptSecurityManager);
+	},
+	urlSecurityCheck: function(doc, url) {
+		var secMan = this.secMan;
+		try {
+			if("checkLoadURIStrWithPrincipal" in secMan) // Firefox 3.0+
+				secMan.checkLoadURIStrWithPrincipal(doc.nodePrincipal, url, secMan.STANDARD);
+			else
+				secMan.checkLoadURIStr(doc.documentURI, url, secMan.STANDARD);
+		}
+		catch(e) {
+			Components.utils.reportError(e);
+			throw new Error("Load of " + url + " from " + doc.documentURI + " denied.");
+		}
 	},
 	testForHighlander: function(uri) {
 		// Highlander ( https://addons.mozilla.org/firefox/addon/4086 )

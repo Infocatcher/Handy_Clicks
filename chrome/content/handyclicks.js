@@ -1059,12 +1059,17 @@ var handyClicks = {
 				}
 				catch(err) {
 					var href = this.getEditorLink(e);
-					var eMsg = this.ut.getLocalized("errorInBuiltInFunction").replace("%f", action);
+					var securityError = /Load of \S* from \S* denied\./.test(err);
+					var eMsg = securityError
+						? this.ut.getLocalized("securityError")
+							.replace("%u", this.fn.getItemURI())
+							.replace("%s", this.item.ownerDocument.documentURI)
+						: this.ut.getLocalized("errorInBuiltInFunction").replace("%f", action);
 					this.ut.notify(
 						eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
-						this.ut.getLocalized("errorTitle"),
+						this.ut.getLocalized(securityError ? "warningTitle" : "errorTitle"),
 						this.ut.toErrorConsole, this.wu.getOpenEditorLink(href),
-						this.ut.NOTIFY_ICON_ERROR
+						securityError ? this.ut.NOTIFY_ICON_WARNING : this.ut.NOTIFY_ICON_ERROR
 					);
 					this.ut._err(eMsg);
 					this.ut._err(err);
