@@ -481,11 +481,16 @@ var handyClicksPrefSvc = {
 		this.saveSettingsAsync(data);
 		return data;
 	},
-	correctSettings: function(types, prefs, force) {
+	correctSettings: function(types, prefs/*, force*/) {
 		types = types || this.types;
 		prefs = prefs || this.prefs;
 		//~ todo: test
 
+		//var corrected = false;
+		//function del(o, p) {
+		//	delete o[p];
+		//	corrected = true;
+		//}
 		var forcedDisByType = { __proto__: null };
 
 		for(type in types) if(types.hasOwnProperty(type)) {
@@ -578,8 +583,10 @@ var handyClicksPrefSvc = {
 		this.reloadSettings(reloadAll);
 	},
 	saveSettingsObjectsAsync: function(reloadAll, callback, context) {
-		this.saveSettingsAsync(this.getSettingsStr(), function() {
-			this.reloadSettings(reloadAll);
+		this.saveSettingsAsync(this.getSettingsStr(), function(status) {
+			if(Components.isSuccessCode(status))
+				this.reloadSettings(reloadAll);
+			callback && callback.call(context || this, status);
 		}, this);
 	},
 	getHash: function(str, hashFunc) {
@@ -629,10 +636,13 @@ var handyClicksPrefSvc = {
 	},
 
 	testSettings: function(isTest) {
-		var src, notifyFlags = this.SETS_TEST;
+		var src = null;
+		var notifyFlags = this.SETS_TEST;
 		if(isTest) {
 			src = this.getSettingsStr();
 			this.createTestBackup(src);
+		}
+		else {
 			notifyFlags |= this.SETS_TEST_UNDO;
 		}
 		const pSvc = "handyClicksPrefSvc";
@@ -648,6 +658,16 @@ var handyClicksPrefSvc = {
 			},
 			this
 		);
+	},
+	get hasTestSettings() {
+		const pSvc = "handyClicksPrefSvc";
+		var ws = this.wu.wm.getEnumerator("navigator:browser");
+		while(ws.hasMoreElements()) {
+			var w = ws.getNext();
+			if(pSvc in w && w[pSvc].otherSrc)
+				return true;
+		}
+		return false;
 	},
 	createTestBackup: function(pStr) {
 		var num = this.pu.pref("sets.backupTestDepth") - 1;
@@ -772,19 +792,35 @@ var handyClicksPrefSvc = {
 		);
 	},
 	saveSettings: function(str, async, callback, context) {
-		if(str == this._savedStr)
+		if(str == this._savedStr) {
+			callback && callback.call(context || this, Components.results.NS_OK);
 			return;
+		}
 		this.checkForBackup();
 		var pFile = this.prefsFile;
 		this.moveFiles(pFile, this.names.backup);
-		if(async)
-			this.ut.writeToFileAsync(str, pFile, callback, context);
-		else
-			this.ut.writeToFile(str, pFile);
-		this._savedStr = str;
+		if(async) {
+			this.ut.writeToFileAsync(str, pFile, this.ut.bind(function(status) {
+				if(Components.isSuccessCode(status))
+					this._savedStr = str;
+				else
+					this.saveError(status);
+				callback && callback.call(context || this, status);
+			}, this));
+		}
+		else {
+			var err = {};
+			if(this.ut.writeToFile(str, pFile, err))
+				this._savedStr = str;
+			else
+				this.saveError(this.ut.getErrorCode(e));
+		}
 	},
 	saveSettingsAsync: function(str, callback, context) {
 		this.saveSettings(str, true, callback, context);
+	},
+	saveError: function(status) {
+		//~ todo
 	},
 
 	get isMainWnd() {

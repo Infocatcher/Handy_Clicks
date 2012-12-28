@@ -32,15 +32,13 @@ var handyClicksWinUtils = {
 	},
 	forEachWindow: function(winTypes, func, context) {
 		var wm = this.wm;
-		Array.concat(winTypes).forEach(
-			function(winType) {
-				var ws = wm.getEnumerator(winType), w;
-				while(ws.hasMoreElements()) {
-					w = ws.getNext();
-					func.call(context || w, w);
-				}
+		Array.concat(winTypes).forEach(function(winType) {
+			var ws = wm.getEnumerator(winType);
+			while(ws.hasMoreElements()) {
+				var w = ws.getNext();
+				func.call(context || w, w);
 			}
-		);
+		});
 	},
 	maximizeWindow: function(win) {
 		win = win || top;

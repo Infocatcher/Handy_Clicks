@@ -1053,12 +1053,16 @@ var handyClicksSets = {
 				this.toggleRowEnabled(tItem.__index, forcedEnabled);
 			}, this);
 		}
+		function callback() {
+			this.checkTreeSaved();
+			this.setDialogButtons();
+			this.updTreeButtons();
+		}
 		this.ps.otherSrc && this.ps.reloadSettings(true /* applyFlag */);
 		if(this.instantApply && !this.ps.otherSrc)
-			this.saveSettingsObjectsCheck(true);
-		this.checkTreeSaved();
-		this.setDialogButtons();
-		this.updTreeButtons();
+			this.saveSettingsObjectsCheck(true, callback, this);
+		else
+			callback.call(this);
 	},
 	toggleRowEnabled: function(rowIndx, forcedEnabled) {
 		var tItem = this.getItemAtIndex(rowIndx);
@@ -1798,13 +1802,22 @@ var handyClicksSets = {
 	},
 	saveSettings: function(applyFlag) {
 		this.pu.pref("disallowMousemoveButtons", this.disallowMousemoveButtons);
-		if(applyFlag && !this.instantApply)
-			this.savePrefpanes();
+		if(applyFlag && !this.instantApply) {
+			if(applyFlag)
+				this.ut.timeout(this.savePrefpanes, this);
+			else
+				this.savePrefpanes();
+		}
 		var saved = true;
 		if(this.ps.otherSrc)
 			this.ps.reloadSettings(applyFlag);
-		else
-			saved = this.saveSettingsObjectsCheck(applyFlag);
+		else {
+			saved = this.saveSettingsObjectsCheck(applyFlag, this.setDialogButtons, this);
+			if(applyFlag) {
+				this.applyButton.disabled = true; // Don't wait for callback
+				return saved;
+			}
+		}
 		this.setDialogButtons();
 		if(!applyFlag && !this.checkImport())
 			return false;
@@ -1817,10 +1830,13 @@ var handyClicksSets = {
 			this.ut.getLocalized("save")
 		);
 	},
-	saveSettingsObjectsCheck: function(reloadFlag) {
+	saveSettingsObjectsCheck: function(applyFlag, callback, context) {
 		if(!this.buggyPrefsConfirm())
 			return false;
-		this.ps.saveSettingsObjects(reloadFlag);
+		if(applyFlag)
+			this.ps.saveSettingsObjectsAsync(applyFlag, callback, context);
+		else
+			this.ps.saveSettingsObjects(applyFlag);
 		//this.setDialogButtons();
 		return true;
 	},

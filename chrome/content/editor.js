@@ -183,8 +183,8 @@ var handyClicksEditor = {
 	set applyDisabled(dis) {
 		this.applyButton.disabled = dis;
 		this.$("hc-editor-cmd-test").setAttribute("disabled", dis);
-		if(dis) // Cant'undo
-			this.$("hc-editor-cmd-undo").setAttribute("disabled", "true");
+		if(dis)
+			this.$("hc-editor-cmd-undo").setAttribute("disabled", !this.ps.hasTestSettings);
 	},
 	selectTargetTab: function hce_selectTargetTab(isDelayed, src, line) {
 		if(this.ut.storage("extensionsPending")) {
@@ -1158,10 +1158,9 @@ var handyClicksEditor = {
 	},
 	undoTestSettings: function(reloadAll) {
 		try {
-			//this.ps.reloadSettings(reloadAll);
 			this.ps.testSettings(false);
-			this.ps.loadSettings();
 			if(reloadAll) {
+				this.ps.loadSettings();
 				this.initUI(true);
 				this.$("hc-editor-cmd-undo").setAttribute("disabled", "true");
 			}
@@ -1233,23 +1232,45 @@ var handyClicksEditor = {
 
 		this.ut.setOwnProperty(this.ps.prefs, sh, type, so);
 
+		this.applySettings(testFlag, applyFlag, function(status) {
+			if(status !== undefined && !Components.isSuccessCode(status))
+				return;
+			var prefs = this.ps.prefs;
+			var to = this.ut.getOwnProperty(prefs, sh, type);
+			var enabled = this.ut.getOwnProperty(to, "enabled");
+			var daEnabled = this.ut.getOwnProperty(to, "delayedAction", "enabled");
+			if(typeof daEnabled != "boolean")
+				daEnabled = true;
+			var enabledItem = this.$("hc-editor-enabled");
+			var daEnabledItem = this.$("hc-editor-enabled" + this.delayId);
+			if(enabledItem.checked == enabled && daEnabledItem.checked == daEnabled)
+				return;
+			//~ todo: notify ?
+			enabledItem.checked = enabled;
+			daEnabledItem.checked = daEnabled;
+			this.setDialogButtons();
+		});
+		return true;
+	},
+	applySettings: function(testFlag, applyFlag, callback) {
+		var loadCorrectedSettings = this.ut.bind(callback, this);
 		this.testMode = testFlag; //~ todo: test!
 		if(testFlag)
 			this.ps.testSettings(true);
 		else {
 			if(this.ps.otherSrc)
 				this.ps.reloadSettings(applyFlag);
-			else
-				this.ps.saveSettingsObjects(applyFlag);
-			if(!applyFlag) // ondialogaccept
-				return true;
-			//this.applyDisabled = true;
+			else {
+				if(!applyFlag) // ondialogaccept
+					this.ps.saveSettingsObjects(applyFlag);
+				else {
+					this.applyDisabled = true; // Don't wait for callback
+					this.ps.saveSettingsObjectsAsync(applyFlag, loadCorrectedSettings);
+				}
+				return;
+			}
 		}
-
-		this.$("hc-editor-enabled").checked = this.ut.getOwnProperty(this.ps.prefs, sh, type, "enabled");
-		var dae = this.ut.getOwnProperty(this.ps.prefs, sh, type, "delayedAction", "enabled");
-		this.$("hc-editor-enabled" + this.delayId).checked = typeof dae == "boolean" ? dae : true;
-		return true;
+		loadCorrectedSettings();
 	},
 	testShortcut: function() {
 		return this.saveShortcut(true, true);
@@ -1418,21 +1439,20 @@ var handyClicksEditor = {
 			return false;
 		cts[cType] = this.getTypeObj(label, def, newEnabl);
 
-		this.testMode = testFlag; //~ todo: test!
-		if(testFlag)
-			this.ps.testSettings(true);
-		else {
-			if(this.ps.otherSrc)
-				this.ps.reloadSettings(applyFlag);
-			else
-				this.ps.saveSettingsObjects(applyFlag);
-			if(!applyFlag) // ondialogaccept
-				return true;
-			//this.applyDisabled = true;
-		}
+		var loadCorrectedSettings = this.ut.bind(function(status) {
+			if(status !== undefined && !Components.isSuccessCode(status))
+				return;
+			this.appendTypesList();
+			this.setWinTitle(); // Label changed?
+		}, this);
 
-		this.appendTypesList();
-		this.setWinTitle(); // Label changed?
+		this.applySettings(testFlag, applyFlag, function(status) {
+			if(status !== undefined && !Components.isSuccessCode(status))
+				return;
+			this.appendTypesList();
+			this.setWinTitle(); // Label changed?
+			this.setDialogButtons(); // ?
+		});
 		return true;
 	},
 	testCustomType: function() {

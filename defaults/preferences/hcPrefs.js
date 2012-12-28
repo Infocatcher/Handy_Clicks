@@ -48,7 +48,7 @@ pref("extensions.handyclicks.funcs.loadVoidLinksWithHandlers", true);
 pref("extensions.handyclicks.funcs.notifyVoidLinksWithHandlers", true);
 
 pref("extensions.handyclicks.funcs.filesLinksPolicy", -1);
-pref("extensions.handyclicks.funcs.filesLinksMask", "^[^?&=#]+\.(?:zip|rar|7z|gz|tar|bz2|iso|cab|exe|msi|xpi|jar)$");
+pref("extensions.handyclicks.funcs.filesLinksMask", "^[^?&=#]+\.(?:zip|rar|7z|gz|tar|bz2|iso|cab|exe|msi|msu|xpi|jar)$");
 
 pref("extensions.handyclicks.funcs.decodeURIs", true);
 
