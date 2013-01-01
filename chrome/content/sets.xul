@@ -36,182 +36,179 @@
 	<!-- "hc_ondrop" attribute will be replaced in init() function from setsUtils.js -->
 
 	<prefpane id="hc-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1">
-		<vbox flex="1">
-			<hbox align="center">
-				<label value="&hc.sets.search;" control="hc-sets-tree-searchField" />
-				<hbox id="hc-sets-tree-searchContainer" flex="100">
-					<textbox id="hc-sets-tree-searchField" type="search" flex="1" persist="hc_value"
-						tooltip="hc-sets-search-tooltip"
-						onkeypress="handyClicksSets.navigateSearchResults(event);"
-						oninput="handyClicksSets.searchInSetsTreeDelay();"
-						hc_ondrop="handyClicksSets.searchInSetsTree();"
-						oncut="handyClicksSets.searchInSetsTree();" />
-				</hbox>
-				<toolbarbutton id="hc-sets-tree-searchFilterMode" type="checkbox" persist="checked"
-					oncommand="handyClicksSets.searchInSetsTreeDelay(true);"
-					hc_key="hc-sets-key-toggleFilterMode"
-					tooltiptext="&hc.sets.filterTip;" />
-				<label id="hc-sets-tree-searchResults" />
-				<spacer flex="1" />
-				<button id="hc-sets-tree-editMenu" type="menu" label="&hc.sets.editMenu;" accesskey="&hc.sets.editMenuAccesskey;">
-					<menupopup onpopupshowing="handyClicksSets.initEditMenu(this);">
-						<menuitem id="hc-sets-tree-selectAll" oncommand="handyClicksSets.selectAll();" key="hc-sets-key-selectAll"
-							label="&hc.sets.selectAll;" />
-						<menuitem id="hc-sets-tree-clearSelection" oncommand="handyClicksSets.clearSelection();" key="hc-sets-key-clearSelection"
-							label="&hc.sets.clearSelection;" />
-						<menuitem id="hc-sets-tree-invertSelection" oncommand="handyClicksSets.invertSelection();" key="hc-sets-key-invertSelection"
-							label="&hc.sets.invertSelection;" />
+		<hbox align="center">
+			<label value="&hc.sets.search;" control="hc-sets-tree-searchField" />
+			<hbox id="hc-sets-tree-searchContainer" flex="100">
+				<textbox id="hc-sets-tree-searchField" type="search" flex="1" persist="hc_value"
+					tooltip="hc-sets-search-tooltip"
+					onkeypress="handyClicksSets.navigateSearchResults(event);"
+					oninput="handyClicksSets.searchInSetsTreeDelay();"
+					hc_ondrop="handyClicksSets.searchInSetsTree();"
+					oncut="handyClicksSets.searchInSetsTree();" />
+			</hbox>
+			<toolbarbutton id="hc-sets-tree-searchFilterMode" type="checkbox" persist="checked"
+				oncommand="handyClicksSets.searchInSetsTreeDelay(true);"
+				hc_key="hc-sets-key-toggleFilterMode"
+				tooltiptext="&hc.sets.filterTip;" />
+			<label id="hc-sets-tree-searchResults" />
+			<spacer flex="1" />
+			<button id="hc-sets-tree-editMenu" type="menu" label="&hc.sets.editMenu;" accesskey="&hc.sets.editMenuAccesskey;">
+				<menupopup onpopupshowing="handyClicksSets.initEditMenu(this);">
+					<menuitem id="hc-sets-tree-selectAll" oncommand="handyClicksSets.selectAll();" key="hc-sets-key-selectAll"
+						label="&hc.sets.selectAll;" />
+					<menuitem id="hc-sets-tree-clearSelection" oncommand="handyClicksSets.clearSelection();" key="hc-sets-key-clearSelection"
+						label="&hc.sets.clearSelection;" />
+					<menuitem id="hc-sets-tree-invertSelection" oncommand="handyClicksSets.invertSelection();" key="hc-sets-key-invertSelection"
+						label="&hc.sets.invertSelection;" />
+					<menuseparator />
+					<menuitem id="hc-sets-tree-find" oncommand="handyClicksSets.focusSearch();" key="hc-sets-key-focusSearch"
+						label="&hc.sets.find;" />
+					<menuitem id="hc-sets-tree-findNext" oncommand="handyClicksSets.searcher.next();" key="hc-sets-key-findNext"
+						label="&hc.sets.findNext;" />
+					<menuitem id="hc-sets-tree-findPrev" oncommand="handyClicksSets.searcher.prev();" key="hc-sets-key-findPrev"
+						label="&hc.sets.findPrev;" />
+					<menuitem id="hc-sets-tree-findSelectAll" oncommand="handyClicksSets.searcher.selectAll();" key="hc-sets-key-findSelectAll"
+						label="&hc.sets.findSelectAll;" />
+					<menuseparator />
+					<menuitem id="hc-sets-tree-findFilter" type="checkbox" oncommand="handyClicksSets.toggleFilterMode();" key="hc-sets-key-toggleFilterMode"
+						label="&hc.sets.findFilter;" />
+				</menupopup>
+			</button>
+			<button id="hc-sets-tree-viewMenu" type="menu" label="&hc.sets.viewMenu;" accesskey="&hc.sets.viewMenuAccesskey;">
+				<menupopup onpopupshowing="handyClicksSets.initViewMenu(this);"
+					oncommand="event.stopPropagation(); handyClicksSets.viewMenuCommand(event, this);"
+					onclick="handyClicksSets.viewMenuClick(event, this);">
+					<menuitem value="0" type="radio" label="&hc.sets.drawModeNormal;" />
+					<menuitem value="1" type="radio" label="&hc.sets.drawModeNormalCompact;" />
+					<menuitem value="2" type="radio" label="&hc.sets.drawModeNormalInline;" />
+					<menuitem value="3" type="radio" label="&hc.sets.drawModeInverse;" />
+					<menuitem value="4" type="radio" label="&hc.sets.drawModeInverseCompact;" />
+					<menuitem value="5" type="radio" label="&hc.sets.drawModeInverseInline;" />
+					<menuseparator />
+					<menuitem type="checkbox" hc_pref="sets.treeExpandDelayedAction" label="&hc.sets.expandDa;" />
+					<menuitem type="checkbox" hc_treeAttr="hc_colored" label="&hc.sets.highlightTree;" />
+					<menuitem type="checkbox" hc_treeAttr="hc_grid" label="&hc.sets.showTreeGrid;" />
+					<menuitem type="checkbox" hc_pref="sets.localizeArguments" label="&hc.sets.localizeArgs;" />
+					<menuseparator />
+					<menuitem type="checkbox" hc_pref="sets.rememberSearchQuery" label="&hc.sets.rememberSearchQuery;" />
+					<menuseparator />
+					<menuitem type="checkbox" hc_pref="sets.closeTreeViewMenu" label="&hc.sets.closeThisMenu;" />
+				</menupopup>
+			</button>
+		</hbox>
+		<tree id="hc-sets-tree" flex="1" enableColumnDrag="true" treelines="true" context="hc-sets-tree-context"
+			hc_colored="true" persist="hc_colored hc_grid"
+			onselect="handyClicksSets.updTreeButtons();">
+			<treecols id="hc-sets-tree-columns">
+				<treecol id="hc-sets-tree-columnShortcutAndTarget" flex="1" primary="true" persist="width ordinal"
+					label="&hc.sets.columnShortcutAndTarget;"
+					onclick="handyClicksSets.treeHeaderClick(event);" />
+				<splitter class="tree-splitter" />
+				<treecol id="hc-sets-tree-columnEvent" flex="1" label="&hc.sets.columnEvent;" persist="hidden width ordinal" />
+				<splitter class="tree-splitter" />
+				<treecol id="hc-sets-tree-columnAction" flex="1" label="&hc.sets.columnAction;" persist="hidden width ordinal" />
+				<splitter class="tree-splitter" />
+				<treecol id="hc-sets-tree-columnFunction" flex="1" label="&hc.sets.columnFunction;" persist="hidden width ordinal" />
+				<splitter class="tree-splitter" />
+				<treecol id="hc-sets-tree-columnArguments" flex="1" label="&hc.sets.columnArguments;" persist="hidden width ordinal" />
+				<splitter class="tree-splitter" />
+				<treecol id="hc-sets-tree-columnInit" flex="1" label="&hc.sets.columnInit;" hidden="true" persist="hidden width ordinal" />
+				<splitter class="tree-splitter" />
+				<treecol id="hc-sets-tree-columnEnabled" type="checkbox" width="18" label="&hc.sets.columnEnabled;" persist="hidden width ordinal" />
+			</treecols>
+			<treechildren id="hc-sets-tree-content"
+				onclick="handyClicksSets.treeClick(event);"
+				ondblclick="handyClicksSets.editItems(event);"
+				onmousedown="handyClicksSets.smartSelect(event); handyClicksSets.treeClick(event);"
+				onmousemove="handyClicksSets.smartSelect(event);" />
+		</tree>
+		<vbox id="hc-sets-tree-buttons">
+			<hbox id="hc-sets-tree-importPanel" hidden="true" pack="center" align="end">
+				<radiogroup id="hc-sets-tree-importType"
+					oncommand="handyClicksSets.toggleImportType(this.value == 'true');">
+					<radio id="hc-sets-tree-importPartial" value="true"
+						label="&hc.sets.importIncrement;" accesskey="&hc.sets.importIncrementAccesskey;" />
+					<radio id="hc-sets-tree-importFull" value="false"
+						label="&hc.sets.importReplace;" accesskey="&hc.sets.importReplaceAccesskey;" />
+				</radiogroup>
+				<grid id="hc-sets-tree-importStatistics" tooltiptext="&hc.sets.importTip;">
+					<columns>
+						<column />
+						<column />
+					</columns>
+					<rows>
+						<row onclick="if(event.button == 0) handyClicksSets.doSearch('%new%');">
+							<label id="hc-sets-tree-importNew" value="&hc.sets.importNew;" />
+							<label id="hc-sets-tree-importNewValue" value="?/? + ?" />
+						</row>
+						<row onclick="if(event.button == 0) handyClicksSets.doSearch('%ovr%');">
+							<label id="hc-sets-tree-importOverrides" value="&hc.sets.importOverrides;" />
+							<label id="hc-sets-tree-importOverridesValue" value="?/? + ?" />
+						</row>
+						<row id="hc-sets-tree-importRowDeletable">
+							<label id="hc-sets-tree-importDeletable" value="&hc.sets.importDeletable;" />
+							<label id="hc-sets-tree-importDeletableValue" value="?/? + ?" />
+						</row>
+					</rows>
+				</grid>
+				<button id="hc-sets-tree-buttonImportOk" class="hc-iconic"
+					oncommand="handyClicksSets.importDone(true);"
+					label="&hc.sets.importOk;" accesskey="&hc.sets.importOkAccesskey;" />
+				<button id="hc-sets-tree-buttonImportCancel" class="hc-iconic"
+					oncommand="handyClicksSets.importDone(false);"
+					label="&hc.sets.importCancel;" accesskey="&hc.sets.importCancelAccesskey;" />
+			</hbox>
+			<hbox id="hc-sets-tree-editPanel" pack="center">
+				<button id="hc-sets-tree-buttonAdd" hc_key="hc-sets-key-add" class="hc-iconic" label="&hc.sets.cmdAdd;"
+					onclick="handyClicksSets.addItems(event);"
+					oncommand="handyClicksSets.addItems(event);" />
+				<button id="hc-sets-tree-buttonEdit" hc_key="hc-sets-key-edit" class="hc-iconic"
+					command="hc-sets-cmd-edit"
+					onclick="handyClicksSets.editButtonClick(event);" />
+				<button id="hc-sets-tree-buttonDelete" hc_key="hc-sets-key-delete" class="hc-iconic" command="hc-sets-cmd-delete" />
+				<spacer id="hc-sets-tree-buttonsSpacer" class="hcHSpacer" />
+				<button id="hc-sets-tree-buttonExport" class="hc-iconic" type="menu" label="&hc.sets.export;" accesskey="&hc.sets.exportAccesskey;">
+					<menupopup position="before_start">
+						<menuitem command="hc-sets-cmd-fullExportToFile" key="hc-sets-key-fullExportToFile" />
 						<menuseparator />
-						<menuitem id="hc-sets-tree-find" oncommand="handyClicksSets.focusSearch();" key="hc-sets-key-focusSearch"
-							label="&hc.sets.find;" />
-						<menuitem id="hc-sets-tree-findNext" oncommand="handyClicksSets.searcher.next();" key="hc-sets-key-findNext"
-							label="&hc.sets.findNext;" />
-						<menuitem id="hc-sets-tree-findPrev" oncommand="handyClicksSets.searcher.prev();" key="hc-sets-key-findPrev"
-							label="&hc.sets.findPrev;" />
-						<menuitem id="hc-sets-tree-findSelectAll" oncommand="handyClicksSets.searcher.selectAll();" key="hc-sets-key-findSelectAll"
-							label="&hc.sets.findSelectAll;" />
+						<menuitem oncommand="handyClicksSets.createBackup();" key="hc-sets-key-createBackup" label="&hc.sets.createBackup;" />
 						<menuseparator />
-						<menuitem id="hc-sets-tree-findFilter" type="checkbox" oncommand="handyClicksSets.toggleFilterMode();" key="hc-sets-key-toggleFilterMode"
-							label="&hc.sets.findFilter;" />
+						<menuitem command="hc-sets-cmd-partialExportToFile" key="hc-sets-key-partialExportToFile" />
+						<menuitem command="hc-sets-cmd-partialExportToClipboard" key="hc-sets-key-partialExportToClipboard" />
+						<menuitem command="hc-sets-cmd-exportToHTML" key="hc-sets-key-exportToHTML" />
+						<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
 					</menupopup>
 				</button>
-				<button id="hc-sets-tree-viewMenu" type="menu" label="&hc.sets.viewMenu;" accesskey="&hc.sets.viewMenuAccesskey;">
-					<menupopup onpopupshowing="handyClicksSets.initViewMenu(this);"
-						oncommand="event.stopPropagation(); handyClicksSets.viewMenuCommand(event, this);"
-						onclick="handyClicksSets.viewMenuClick(event, this);">
-						<menuitem value="0" type="radio" label="&hc.sets.drawModeNormal;" />
-						<menuitem value="1" type="radio" label="&hc.sets.drawModeNormalCompact;" />
-						<menuitem value="2" type="radio" label="&hc.sets.drawModeNormalInline;" />
-						<menuitem value="3" type="radio" label="&hc.sets.drawModeInverse;" />
-						<menuitem value="4" type="radio" label="&hc.sets.drawModeInverseCompact;" />
-						<menuitem value="5" type="radio" label="&hc.sets.drawModeInverseInline;" />
+				<button id="hc-sets-tree-buttonImport" class="hc-iconic" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;">
+					<menupopup position="before_start"
+						onpopupshowing="if(event.target == this) { handyClicksSets.checkClipboard(); handyClicksSets.buildRestorePopup(); }"
+						onpopuphidden="if(event.target == this) handyClicksSets.destroyRestorePopup();">
+						<menu id="hc-sets-tree-restoreFromBackupMenu" label="&hc.sets.restoreFromBackup;"
+							oncommand="event.stopPropagation();">
+							<menupopup id="hc-sets-tree-restoreFromBackupPopup"
+								context="hc-sets-tree-restoreFromBackupContext"
+								oncommand="handyClicksSets.handleRestoreCommand(event);"
+								onclick="if(event.button == 1) { handyClicksSets.handleRestoreCommand(event); handyClicksUtils.closeMenus(this); }"
+								onpopupshowing="handyClicksSets.fixMenuitemsWidth(this);">
+								<menuseparator />
+								<menuitem id="hc-sets-tree-openBackupsDir"
+									oncommand="handyClicksSets.reveal(handyClicksPrefSvc.backupsDir);"
+									label="&hc.sets.openDir;" accesskey="&hc.sets.openDirAccesskey;" />
+								<menuseparator />
+								<menuitem id="hc-sets-tree-removeUserBackupsExc10"
+									oncommand="handyClicksSets.removeOldUserBackups(10);" closemenu="none"
+									label="&hc.sets.removeUserBackupsExc10;" accesskey="&hc.sets.removeUserBackupsExc10Accesskey;" />
+								<menuitem id="hc-sets-tree-removeAllUserBackups"
+									oncommand="handyClicksSets.removeOldUserBackups(0);" closemenu="none"
+									label="&hc.sets.removeAllUserBackups;" accesskey="&hc.sets.removeAllUserBackupsAccesskey;" />
+							</menupopup>
+						</menu>
 						<menuseparator />
-						<menuitem type="checkbox" hc_pref="sets.treeExpandDelayedAction" label="&hc.sets.expandDa;" />
-						<menuitem type="checkbox" hc_treeAttr="hc_colored" label="&hc.sets.highlightTree;" />
-						<menuitem type="checkbox" hc_treeAttr="hc_grid" label="&hc.sets.showTreeGrid;" />
-						<menuitem type="checkbox" hc_pref="sets.localizeArguments" label="&hc.sets.localizeArgs;" />
-						<menuseparator />
-						<menuitem type="checkbox" hc_pref="sets.rememberSearchQuery" label="&hc.sets.rememberSearchQuery;" />
-						<menuseparator />
-						<menuitem type="checkbox" hc_pref="sets.closeTreeViewMenu" label="&hc.sets.closeThisMenu;" />
+						<menuitem command="hc-sets-cmd-importFromFile" key="hc-sets-key-importFromFile" />
+						<menuitem command="hc-sets-cmd-importFromClipboard" key="hc-sets-key-importFromClipboard" />
 					</menupopup>
 				</button>
 			</hbox>
-
-			<tree id="hc-sets-tree" flex="1" enableColumnDrag="true" treelines="true" context="hc-sets-tree-context"
-				hc_colored="true" persist="hc_colored hc_grid"
-				onselect="handyClicksSets.updTreeButtons();">
-				<treecols id="hc-sets-tree-columns">
-					<treecol id="hc-sets-tree-columnShortcutAndTarget" flex="1" primary="true" persist="width ordinal"
-						label="&hc.sets.columnShortcutAndTarget;"
-						onclick="handyClicksSets.treeHeaderClick(event);" />
-					<splitter class="tree-splitter" />
-					<treecol id="hc-sets-tree-columnEvent" flex="1" label="&hc.sets.columnEvent;" persist="hidden width ordinal" />
-					<splitter class="tree-splitter" />
-					<treecol id="hc-sets-tree-columnAction" flex="1" label="&hc.sets.columnAction;" persist="hidden width ordinal" />
-					<splitter class="tree-splitter" />
-					<treecol id="hc-sets-tree-columnFunction" flex="1" label="&hc.sets.columnFunction;" persist="hidden width ordinal" />
-					<splitter class="tree-splitter" />
-					<treecol id="hc-sets-tree-columnArguments" flex="1" label="&hc.sets.columnArguments;" persist="hidden width ordinal" />
-					<splitter class="tree-splitter" />
-					<treecol id="hc-sets-tree-columnInit" flex="1" label="&hc.sets.columnInit;" hidden="true" persist="hidden width ordinal" />
-					<splitter class="tree-splitter" />
-					<treecol id="hc-sets-tree-columnEnabled" type="checkbox" width="18" label="&hc.sets.columnEnabled;" persist="hidden width ordinal" />
-				</treecols>
-				<treechildren id="hc-sets-tree-content"
-					onclick="handyClicksSets.treeClick(event);"
-					ondblclick="handyClicksSets.editItems(event);"
-					onmousedown="handyClicksSets.smartSelect(event); handyClicksSets.treeClick(event);"
-					onmousemove="handyClicksSets.smartSelect(event);" />
-			</tree>
-			<vbox id="hc-sets-tree-buttons">
-				<hbox id="hc-sets-tree-importPanel" hidden="true" pack="center" align="end">
-					<radiogroup id="hc-sets-tree-importType"
-						oncommand="handyClicksSets.toggleImportType(this.value == 'true');">
-						<radio id="hc-sets-tree-importPartial" value="true"
-							label="&hc.sets.importIncrement;" accesskey="&hc.sets.importIncrementAccesskey;" />
-						<radio id="hc-sets-tree-importFull" value="false"
-							label="&hc.sets.importReplace;" accesskey="&hc.sets.importReplaceAccesskey;" />
-					</radiogroup>
-					<grid id="hc-sets-tree-importStatistics" tooltiptext="&hc.sets.importTip;">
-						<columns>
-							<column />
-							<column />
-						</columns>
-						<rows>
-							<row onclick="if(event.button == 0) handyClicksSets.doSearch('%new%');">
-								<label id="hc-sets-tree-importNew" value="&hc.sets.importNew;" />
-								<label id="hc-sets-tree-importNewValue" value="?/? + ?" />
-							</row>
-							<row onclick="if(event.button == 0) handyClicksSets.doSearch('%ovr%');">
-								<label id="hc-sets-tree-importOverrides" value="&hc.sets.importOverrides;" />
-								<label id="hc-sets-tree-importOverridesValue" value="?/? + ?" />
-							</row>
-							<row id="hc-sets-tree-importRowDeletable">
-								<label id="hc-sets-tree-importDeletable" value="&hc.sets.importDeletable;" />
-								<label id="hc-sets-tree-importDeletableValue" value="?/? + ?" />
-							</row>
-						</rows>
-					</grid>
-					<button id="hc-sets-tree-buttonImportOk" class="hc-iconic"
-						oncommand="handyClicksSets.importDone(true);"
-						label="&hc.sets.importOk;" accesskey="&hc.sets.importOkAccesskey;" />
-					<button id="hc-sets-tree-buttonImportCancel" class="hc-iconic"
-						oncommand="handyClicksSets.importDone(false);"
-						label="&hc.sets.importCancel;" accesskey="&hc.sets.importCancelAccesskey;" />
-				</hbox>
-				<hbox id="hc-sets-tree-editPanel" pack="center">
-					<button id="hc-sets-tree-buttonAdd" hc_key="hc-sets-key-add" class="hc-iconic" label="&hc.sets.cmdAdd;"
-						onclick="handyClicksSets.addItems(event);"
-						oncommand="handyClicksSets.addItems(event);" />
-					<button id="hc-sets-tree-buttonEdit" hc_key="hc-sets-key-edit" class="hc-iconic"
-						command="hc-sets-cmd-edit"
-						onclick="handyClicksSets.editButtonClick(event);" />
-					<button id="hc-sets-tree-buttonDelete" hc_key="hc-sets-key-delete" class="hc-iconic" command="hc-sets-cmd-delete" />
-					<spacer id="hc-sets-tree-buttonsSpacer" class="hcHSpacer" />
-					<button id="hc-sets-tree-buttonExport" class="hc-iconic" type="menu" label="&hc.sets.export;" accesskey="&hc.sets.exportAccesskey;">
-						<menupopup position="before_start">
-							<menuitem command="hc-sets-cmd-fullExportToFile" key="hc-sets-key-fullExportToFile" />
-							<menuseparator />
-							<menuitem oncommand="handyClicksSets.createBackup();" key="hc-sets-key-createBackup" label="&hc.sets.createBackup;" />
-							<menuseparator />
-							<menuitem command="hc-sets-cmd-partialExportToFile" key="hc-sets-key-partialExportToFile" />
-							<menuitem command="hc-sets-cmd-partialExportToClipboard" key="hc-sets-key-partialExportToClipboard" />
-							<menuitem command="hc-sets-cmd-exportToHTML" key="hc-sets-key-exportToHTML" />
-							<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
-						</menupopup>
-					</button>
-					<button id="hc-sets-tree-buttonImport" class="hc-iconic" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;">
-						<menupopup position="before_start"
-							onpopupshowing="if(event.target == this) { handyClicksSets.checkClipboard(); handyClicksSets.buildRestorePopup(); }"
-							onpopuphidden="if(event.target == this) handyClicksSets.destroyRestorePopup();">
-							<menu id="hc-sets-tree-restoreFromBackupMenu" label="&hc.sets.restoreFromBackup;"
-								oncommand="event.stopPropagation();">
-								<menupopup id="hc-sets-tree-restoreFromBackupPopup"
-									context="hc-sets-tree-restoreFromBackupContext"
-									oncommand="handyClicksSets.handleRestoreCommand(event);"
-									onclick="if(event.button == 1) { handyClicksSets.handleRestoreCommand(event); handyClicksUtils.closeMenus(this); }"
-									onpopupshowing="handyClicksSets.fixMenuitemsWidth(this);">
-									<menuseparator />
-									<menuitem id="hc-sets-tree-openBackupsDir"
-										oncommand="handyClicksSets.reveal(handyClicksPrefSvc.backupsDir);"
-										label="&hc.sets.openDir;" accesskey="&hc.sets.openDirAccesskey;" />
-									<menuseparator />
-									<menuitem id="hc-sets-tree-removeUserBackupsExc10"
-										oncommand="handyClicksSets.removeOldUserBackups(10);" closemenu="none"
-										label="&hc.sets.removeUserBackupsExc10;" accesskey="&hc.sets.removeUserBackupsExc10Accesskey;" />
-									<menuitem id="hc-sets-tree-removeAllUserBackups"
-										oncommand="handyClicksSets.removeOldUserBackups(0);" closemenu="none"
-										label="&hc.sets.removeAllUserBackups;" accesskey="&hc.sets.removeAllUserBackupsAccesskey;" />
-								</menupopup>
-							</menu>
-							<menuseparator />
-							<menuitem command="hc-sets-cmd-importFromFile" key="hc-sets-key-importFromFile" />
-							<menuitem command="hc-sets-cmd-importFromClipboard" key="hc-sets-key-importFromClipboard" />
-						</menupopup>
-					</button>
-				</hbox>
-			</vbox>
 		</vbox>
 	</prefpane>
 
@@ -245,20 +242,18 @@
 			<checkbox preference="notifyDontCloseUnderCursor" hc_depends="notify" label="&hc.sets.notifyDontClose;" />
 		</groupbox>
 		<groupbox>
-			<caption label="&hc.sets.disallowMousemove;" />
-			<vbox>
-				<hbox hc_requiredFor="disallowMousemove">
-					<checkbox id="hc-sets-disallowMousemove-0" label="&hc.sets.left;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
-					<checkbox id="hc-sets-disallowMousemove-1" label="&hc.sets.middle;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
-					<checkbox id="hc-sets-disallowMousemove-2" label="&hc.sets.right;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
-				</hbox>
-				<hbox align="center" hc_depends="disallowMousemove">
-					<label value="&hc.sets.maxDistance;" control="hc-sets-disallowMousemoveDist" />
-					<textbox id="hc-sets-disallowMousemoveDist" preference="disallowMousemoveDist"
-						type="number" min="0" max="200" increment="2" size="3" />
-					<label value="&hc.sets.px;" />
-				</hbox>
-			</vbox>
+			<caption label="&hc.sets.disallowMousemove;" tooltiptext="&hc.sets.disallowMousemoveTip;" />
+			<hbox hc_requiredFor="disallowMousemove">
+				<checkbox id="hc-sets-disallowMousemove-0" label="&hc.sets.left;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
+				<checkbox id="hc-sets-disallowMousemove-1" label="&hc.sets.middle;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
+				<checkbox id="hc-sets-disallowMousemove-2" label="&hc.sets.right;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
+			</hbox>
+			<hbox align="center" hc_depends="disallowMousemove">
+				<label value="&hc.sets.maxDistance;" control="hc-sets-disallowMousemoveDist" />
+				<textbox id="hc-sets-disallowMousemoveDist" preference="disallowMousemoveDist"
+					type="number" min="0" max="200" increment="2" size="3" />
+				<label value="&hc.sets.px;" />
+			</hbox>
 		</groupbox>
 	</prefpane>
 

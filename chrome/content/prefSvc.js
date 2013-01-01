@@ -85,7 +85,7 @@ var handyClicksPrefSvc = {
 			var tmp = dir.clone(), i = -1;
 			do tmp.leafName = dir.leafName + "-moved-" + ++i;
 			while(tmp.exists());
-			dir.clone().moveTo(null, tmp.leafName);
+			this.ut.moveFileTo(dir.clone(), null, tmp.leafName);
 		}
 		if(!dir.exists()) {
 			try {
@@ -275,7 +275,7 @@ var handyClicksPrefSvc = {
 		if(pFile.exists()) { // Backups disabled
 			var tmp = pFile.clone();
 			// But save backup anyway :)
-			tmp.moveTo(this.backupsDir, this.prefsFileName + this.names.corrupted.replace(/-$/, "") + ".js");
+			this.ut.moveFileTo(tmp, this.backupsDir, this.prefsFileName + this.names.corrupted.replace(/-$/, "") + ".js");
 			corruptedPath = tmp.path;
 		}
 		while(++this._restoringCounter <= this.pu.pref("sets.backupDepth")) {
@@ -283,7 +283,7 @@ var handyClicksPrefSvc = {
 			var bFile = this.getBackupFile(bName);
 			if(bFile.exists()) {
 				var bakPath = this.moveFiles(bFile, this.names.restored, true);
-				bFile.moveTo(pFile.parent, pFile.leafName);
+				this.ut.moveFileTo(bFile, pFile.parent, pFile.leafName);
 				break;
 			}
 		}
@@ -682,7 +682,7 @@ var handyClicksPrefSvc = {
 			if(num == 0)
 				bakFile = file.clone();
 			if(file.exists()) {
-				file.moveTo(this.backupsDir, fName + (num + 1) + ".js");
+				this.ut.moveFileTo(file, this.backupsDir, fName + (num + 1) + ".js");
 				eal.deleteTemporaryFileOnExit(file);
 			}
 		}
@@ -713,7 +713,7 @@ var handyClicksPrefSvc = {
 			file = this.getBackupFile(getName(++num), pDir);
 			if(!file.exists())
 				break;
-			file.remove(false);
+			this.ut.removeFile(file, true);
 		}
 		if(depth <= 0)
 			return null;
@@ -721,14 +721,14 @@ var handyClicksPrefSvc = {
 		while(--num >= 0) {
 			file = this.getBackupFile(getName(num), pDir);
 			if(file.exists())
-				file.moveTo(pDir, getName(num + 1));
+				this.ut.moveFileTo(file, pDir, getName(num + 1));
 		}
 		var tmp = firstFile.clone();
 		var name = getName(0);
 		if(!leaveOriginal)
-			tmp.moveTo(pDir, name);
+			this.ut.moveFileTo(tmp, pDir, name);
 		else {
-			firstFile.copyTo(pDir, name);
+			this.ut.copyFileTo(firstFile, pDir, name);
 			tmp.leafName = name;
 		}
 		return tmp.path;
@@ -767,7 +767,7 @@ var handyClicksPrefSvc = {
 		if(max > 0 && (!_fTimes.length || now >= _fTimes[_fTimes.length - 1] + this.minBackupInterval)) {
 			_fTimes.push(now);
 			fName = namePrefix + newTime.toLocaleFormat("%Y%m%d%H%M%S") + ".js";
-			this.prefsFile.clone().copyTo(backupsDir, fName);
+			this.ut.copyFileTo(this.prefsFile, backupsDir, fName);
 			_files[now] = this.getBackupFile(fName);
 			this.ut._log("Backup: " + _files[now].leafName);
 		}
@@ -775,7 +775,7 @@ var handyClicksPrefSvc = {
 			this.ut._log("checkForBackup: No backup");
 
 		while(_fTimes.length > max)
-			_files[_fTimes.shift()].remove(false);
+			this.ut.removeFile(_files[_fTimes.shift()], false);
 	},
 	__savedStr: null,
 	get _savedStr() {
@@ -813,14 +813,20 @@ var handyClicksPrefSvc = {
 			if(this.ut.writeToFile(str, pFile, err))
 				this._savedStr = str;
 			else
-				this.saveError(this.ut.getErrorCode(e));
+				this.saveError(this.ut.getErrorCode(err.value));
 		}
 	},
 	saveSettingsAsync: function(str, callback, context) {
 		this.saveSettings(str, true, callback, context);
 	},
 	saveError: function(status) {
-		//~ todo
+		this.ut.alert(
+			this.ut.getLocalized("errorTitle"),
+			this.ut.getLocalized("saveError")
+				.replace("%f", this.prefsFile.path)
+				.replace("%e", this.ut.getErrorName(status))
+		);
+		this.ut.reveal(this.prefsFile);
 	},
 
 	get isMainWnd() {

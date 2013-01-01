@@ -68,18 +68,33 @@ var handyClicksUninstaller = {
 		this.destroyContext();
 	},
 	createContext: function() {
-		// Simple way for get some required functions
+		// Simple way to get some required functions
 		const path = "chrome://handyclicks/content/";
 		var temp = {};
-		jsLoader.loadSubScript(path + "sets.js",      temp); this.st = temp.handyClicksSets;
-		jsLoader.loadSubScript(path + "utils.js",     temp); this.ut = this.st.ut = temp.handyClicksUtils;
-		jsLoader.loadSubScript(path + "winUtils.js",  temp); this.wu = this.st.wu = temp.handyClicksWinUtils;
-		jsLoader.loadSubScript(path + "prefUtils.js", temp); this.pu = this.st.pu = temp.handyClicksPrefUtils;
-		jsLoader.loadSubScript(path + "prefSvc.js",   temp); this.ps = this.st.ps = temp.handyClicksPrefSvc;
-		jsLoader.loadSubScript(path + "consts.js",    temp); this.ct = this.st.ct = temp.handyClicksConst;
+		jsLoader.loadSubScript(path + "sets.js",      temp);
+		jsLoader.loadSubScript(path + "utils.js",     temp);
+		jsLoader.loadSubScript(path + "winUtils.js",  temp);
+		jsLoader.loadSubScript(path + "prefUtils.js", temp);
+		jsLoader.loadSubScript(path + "prefSvc.js",   temp);
+		jsLoader.loadSubScript(path + "consts.js",    temp);
+		var shortcuts = {
+			un: this,
+			st: temp.handyClicksSets,
+			ut: temp.handyClicksUtils,
+			wu: temp.handyClicksWinUtils,
+			pu: temp.handyClicksPrefUtils,
+			ps: temp.handyClicksPrefSvc,
+			ct: temp.handyClicksConst,
+			__proto__: null
+		};
+		for(var p in shortcuts) {
+			var o = shortcuts[p];
+			for(var p in shortcuts)
+				o[p] = shortcuts[p];
+		}
 	},
 	destroyContext: function() {
-		this.st = this.ut = this.wu = this.pu = this.ps = this.ct = null;
+		this.un = this.st = this.ut = this.wu = this.pu = this.ps = this.ct = null;
 	},
 	uninstallConfirm: function() {
 		var exportAllSets = { value: true };
@@ -104,9 +119,10 @@ var handyClicksUninstaller = {
 
 		//this.ps.prefsDir.remove(true);
 		// Based on components/nsExtensionManager.js from Firefox 3.6
+		var ut = this.ut;
 		(function removeDirRecursive(dir) {
 			try {
-				dir.remove(true);
+				ut.removeFile(dir, true);
 				return;
 			}
 			catch(e) {
@@ -116,13 +132,10 @@ var handyClicksUninstaller = {
 				var entry = dirEntries.getNext().QueryInterface(Components.interfaces.nsIFile);
 				if(entry.isDirectory())
 					removeDirRecursive(entry);
-				else {
-					entry.permissions = 0644;
-					entry.remove(false);
-				}
+				else
+					ut.removeFile(entry, false);
 			}
-			dir.permissions = 0755;
-			dir.remove(true);
+			ut.removeFile(dir, true);
 		})(this.ps.prefsDir);
 	}
 };

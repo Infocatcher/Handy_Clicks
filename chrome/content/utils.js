@@ -16,10 +16,10 @@ var handyClicksUtils = {
 	_log: function() {
 		this._devMode && this._info.apply(this, arguments);
 	},
-	_err: function(e, fileName, lineNumber, isWarning) {
+	_err: function _err(e, fileName, lineNumber, isWarning) {
 		if(this.isPrimitive(e) || typeof e == "xml") {
 			var caller = Components.stack.caller;
-			if(arguments.callee.caller == this._warn)
+			if(_err.caller == this._warn)
 				caller = caller.caller;
 			e = new Error(e, fileName || caller.filename, lineNumber || caller.lineNumber);
 		}
@@ -53,9 +53,11 @@ var handyClicksUtils = {
 		var caller = Components.stack.caller.caller;
 		this._warn(msg, caller.filename, caller.lineNumber);
 	},
-	_stack: function(isWarning) {
+	_stack: function _stack(desc, isWarning) {
+		if(desc)
+			desc += " ";
 		for(
-			var stackFrame = Components.stack.caller, funcCaller = arguments.callee.caller, i = 0;
+			var stackFrame = Components.stack.caller, funcCaller = _stack.caller, i = 0;
 			stackFrame && stackFrame.filename;
 			stackFrame = stackFrame.caller, funcCaller = funcCaller ? funcCaller.caller : null, ++i
 		) {
@@ -74,7 +76,7 @@ var handyClicksUtils = {
 			var funcDesc = String(funcCaller).match(/^.*/)[0].substr(0, 100)
 				+ " \u2026\n"
 				+ line;
-			this._err(" [stack: " + i + "] " + funcDesc, stackFrame.filename, stackFrame.lineNumber, isWarning);
+			this._err(desc + "[stack: " + i + "] " + funcDesc, stackFrame.filename, stackFrame.lineNumber, isWarning);
 		}
 	},
 	objProps: function(o, filter, skipNativeFuncs) {
@@ -442,6 +444,53 @@ var handyClicksUtils = {
 		var file = this.getLocalFile(path);
 		return file ? file.path : path;
 	},
+	ensureFilePermissions: function(file, mask) {
+		try {
+			if(file.exists())
+				file.permissions |= mask;
+		}
+		catch(e) {
+			this._err("Can't change file permissions: " + file.path);
+			Components.utils.reportError(e);
+		}
+	},
+	copyFileTo: function(file, newParentDir, newName) {
+		var target = (newParentDir || file.parent).clone();
+		target.leafName = newName;
+		if(target.exists())
+			this.removeFile(file, true);
+		this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_READ);
+		try {
+			file.copyTo(newParentDir, newName);
+		}
+		catch(e) {
+			this._err("Can't copy " + file.path + " to " + target.path);
+			Components.utils.reportError(e);
+		}
+	},
+	moveFileTo: function(file, newParentDir, newName) {
+		var target = (newParentDir || file.parent).clone();
+		target.leafName = newName;
+		this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_WRITE);
+		this.ensureFilePermissions(target, this.PERMS_FILE_OWNER_WRITE);
+		try {
+			file.moveTo(newParentDir, newName);
+		}
+		catch(e) {
+			this._err("Can't move " + file.path + " to " + target.path);
+			Components.utils.reportError(e);
+		}
+	},
+	removeFile: function(file, recursive) {
+		this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_WRITE);
+		try {
+			file.remove(recursive);
+		}
+		catch(e) {
+			this._err("Can't remove file " + file.path);
+			Components.utils.reportError(e);
+		}
+	},
 	startProcess: function(path, args, w) {
 		args = args || [];
 		var file = this.getLocalFile(path);
@@ -483,11 +532,46 @@ var handyClicksUtils = {
 			.createInstance(Components.interfaces.nsIProcess)
 			.hasOwnProperty("runw");
 	},
+	reveal: function(file) {
+		// Based on code of function showDownload() from chrome://mozapps/content/downloads/downloads.js in Firefox 3.6
+		// See https://developer.mozilla.org/en/nsILocalFile#Remarks
+		var nsilf = Components.interfaces.nsILocalFile || Components.interfaces.nsIFile;
+		if(!(file instanceof nsilf))
+			return false;
+		try {
+			file.reveal();
+			return true;
+		}
+		catch(e) {
+			this._err(e);
+		}
+		if(!file.isDirectory()) {
+			file = file.parent.QueryInterface(nsilf);
+			if(!file)
+				return false;
+		}
+		try {
+			file.launch();
+			return true;
+		}
+		catch(e) {
+			this._err(e);
+		}
+		var uri = Components.classes["@mozilla.org/network/io-service;1"]
+			.getService(Components.interfaces.nsIIOService)
+			.newFileURI(file);
+		Components.classes["@mozilla.org/uriloader/external-protocol-service;1"]
+			.getService(Components.interfaces.nsIExternalProtocolService)
+			.loadUrl(uri);
+		return true;
+	},
 
 	// File I/O (only UTF-8):
-	PERMS_FILE_READ:  parseInt("0444", 8),
-	PERMS_FILE_WRITE: parseInt("0644", 8),
-	PERMS_DIRECTORY:  parseInt("0755", 8),
+	PERMS_FILE_READ:        parseInt("0444", 8),
+	PERMS_FILE_WRITE:       parseInt("0644", 8),
+	PERMS_FILE_OWNER_READ:  parseInt("0400", 8),
+	PERMS_FILE_OWNER_WRITE: parseInt("0600", 8),
+	PERMS_DIRECTORY:        parseInt("0755", 8),
 	get fp() {
 		return Components.classes["@mozilla.org/filepicker;1"]
 			.createInstance(Components.interfaces.nsIFilePicker);
@@ -495,6 +579,7 @@ var handyClicksUtils = {
 	writeToFile: function(str, file, outErr) {
 		if(!(file instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)))
 			file = this.getLocalFile(file);
+		this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_WRITE);
 		var fos = Components.classes["@mozilla.org/network/file-output-stream;1"]
 			.createInstance(Components.interfaces.nsIFileOutputStream);
 		try {
@@ -534,6 +619,7 @@ var handyClicksUtils = {
 			return this.writeToFileAsync.apply(this, arguments);
 		}
 		try {
+			this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_WRITE);
 			var ostream = FileUtils.openSafeFileOutputStream(file);
 			var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
 				.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
@@ -556,6 +642,7 @@ var handyClicksUtils = {
 	readFromFile: function(file, outErr) {
 		if(!(file instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)))
 			file = this.getLocalFile(file);
+		this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_READ);
 		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
 			.createInstance(Components.interfaces.nsIFileInputStream);
 		try {
@@ -597,6 +684,7 @@ var handyClicksUtils = {
 			return this.readFromFileAsync.apply(this, arguments);
 		}
 		try {
+			this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_READ);
 			NetUtil.asyncFetch(file, this.bind(function(istream, status) {
 				var data = "";
 				if(Components.isSuccessCode(status)) {

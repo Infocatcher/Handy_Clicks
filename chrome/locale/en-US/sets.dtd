@@ -127,7 +127,8 @@ Placeholders:
 <!ENTITY hc.sets.notifyInWindowCorner "Show in window corner">
 <!ENTITY hc.sets.notifyDontClose "Don't close under cursor">
 
-<!ENTITY hc.sets.disallowMousemove "Stop click handling if mouse was moved with holded buttons (mouse gestures)">
+<!ENTITY hc.sets.disallowMousemove "Stop clicks handling if mouse was moved with pressed button">
+<!ENTITY hc.sets.disallowMousemoveTip "Mouse gestures, drag-and-drop">
 <!ENTITY hc.sets.left "Left">
 <!ENTITY hc.sets.middle "Middle">
 <!ENTITY hc.sets.right "Right">

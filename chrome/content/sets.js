@@ -2200,12 +2200,13 @@ var handyClicksSets = {
 		}
 		else if(ln != "checkbox" && ln != "radio" && ln != "textbox")
 			return;
+		if(tar == this.searchField)
+			return;
 		if(this.instantApply)
-			this.saveSettings();
-		else {
+			this.saveSettings(true);
+		else
 			//this.ut.timeout(this.setDialogButtons, this);
 			this.setDialogButtons();
-		}
 	},
 	updateAllDependencies: function(depId) {
 		Array.forEach(
@@ -2402,7 +2403,7 @@ var handyClicksSets = {
 				this.ut.writeToFile(pStr, file);
 		}
 		else // Do not start full export to clipboard!
-			this.ps.prefsFile.copyTo(file.parent, file.leafName);
+			this.ut.copyFileTo(this.ps.prefsFile, file.parent, file.leafName);
 	},
 	extractPrefs: function(extractShortcuts) {
 		//~ todo: with "extractShortcuts == false" iser see empty tree on import
@@ -2530,7 +2531,7 @@ var handyClicksSets = {
 		var bFile, i = -1; //~ todo: use nsIFile.createUnique() instead ?
 		do bFile = this.ps.getBackupFile(bName + (++i ? "-" + i : "") + ".js");
 		while(bFile.exists());
-		this.ps.prefsFile.copyTo(this.ps.backupsDir, bFile.leafName);
+		this.ut.copyFileTo(this.ps.prefsFile, this.ps.backupsDir, bFile.leafName);
 		this.ut.notifyInWindowCorner(
 			this.ut.getLocalized("backupCreated").replace("%f", bFile.path),
 			null,
@@ -2716,37 +2717,7 @@ var handyClicksSets = {
 		this.updRestorePopup(store);
 	},
 	reveal: function(file) {
-		// Based on code of function showDownload() from chrome://mozapps/content/downloads/downloads.js in Firefox 3.6
-		// See https://developer.mozilla.org/en/nsILocalFile#Remarks
-		var nsilf = Components.interfaces.nsILocalFile || Components.interfaces.nsIFile;
-		if(!(file instanceof nsilf))
-			return false;
-		try {
-			file.reveal();
-			return true;
-		}
-		catch(e) {
-			this.ut._err(e);
-		}
-		if(!file.isDirectory()) {
-			file = file.parent.QueryInterface(nsilf);
-			if(!file)
-				return false;
-		}
-		try {
-			file.launch();
-			return true;
-		}
-		catch(e) {
-			this.ut._err(e);
-		}
-		var uri = Components.classes["@mozilla.org/network/io-service;1"]
-			.getService(Components.interfaces.nsIIOService)
-			.newFileURI(file);
-		Components.classes["@mozilla.org/uriloader/external-protocol-service;1"]
-			.getService(Components.interfaces.nsIExternalProtocolService)
-			.loadUrl(uri);
-		return true;
+		return this.ut.reveal(file);
 	},
 
 	setImportStatus: function(isImport, isPartial, fromClipboard, updMode) {

@@ -68,6 +68,9 @@ button[tooltip]:not([disabled="true"]) {
 button[tooltip]:not([disabled="true"]) label {
 	border-bottom: 1px dotted;
 }
+caption[tooltiptext] > .caption-text {
+	cursor: help;
+}
 
 button.hc-iconic .button-icon {
 	/* It's important to use "button .button-icon" ! */
