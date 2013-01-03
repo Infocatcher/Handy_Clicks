@@ -1284,7 +1284,8 @@ var handyClicksFuncs = {
 			hasTabKit && tabkit.addingTabOver();
 			if(showProgress) {
 				_this.ui.progressLabel.value = ++_this.ui.progressPart + "/" + _this.ui.progressCount;
-				var state = _this.ui.progress.value = _this.ui.progressPart*10;
+				var state = _this.ui.progressPart*10;
+				_this.ui.progress.value = state;
 				_this.ui.setTaskbarProgressState(_this.ui.progressPart, _this.ui.progressCount);
 				var done = state >= _this.ui.progress.max;
 			}

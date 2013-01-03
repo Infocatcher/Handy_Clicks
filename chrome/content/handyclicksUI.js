@@ -498,7 +498,8 @@ var handyClicksUI = {
 			);
 	},
 	hideTaskbarProgress: function() {
-		this.setTaskbarProgressState(0, 0, Components.interfaces.nsITaskbarProgress.STATE_NO_PROGRESS);
+		if(this.taskbarProgress)
+			this.setTaskbarProgressState(0, 0, Components.interfaces.nsITaskbarProgress.STATE_NO_PROGRESS);
 	},
 	progressCancel: function() {
 		this.userCancelled = true;

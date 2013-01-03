@@ -86,6 +86,13 @@ var hcNotify = {
 		window.onmouseover = window.onmouseout = function(e) {
 			_this.mouseHandler(e);
 		};
+		window.onmouseup = function(e) {
+			// mousedown and "drag" anything outside the window
+			// -> mouseout from window => delayedClose()
+			// -> move mouse => wrong mouseover => cancelDelayedClose()
+			if(e.target == document)
+				_this.delayedClose();
+		};
 	},
 	destroy: function() {
 		clearTimeout(this._closeTimeout);

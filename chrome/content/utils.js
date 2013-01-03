@@ -999,11 +999,17 @@ var handyClicksUtils = {
 	isElementVisible: function(elt) {
 		if(!elt)
 			return false;
-		var bo = elt.boxObject;
-		if(!bo)
-			bo = "getBoundingClientRect" in elt
-				? elt.getBoundingClientRect()
-				: elt.ownerDocument.getBoxObjectFor(elt);
+		var bo;
+		if(elt.namespaceURI == this.XULNS)
+			bo = elt.boxObject;
+		if(!bo && "getBoundingClientRect" in elt)
+			bo = elt.getBoundingClientRect();
+		else
+			bo = elt.ownerDocument.getBoxObjectFor(elt);
+		if(bo.width === undefined && bo.top && bo.left) {
+			bo.width = bo.right - bo.left;
+			bo.height = bo.bottom - bo.top;
+		}
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=530985
 		// isElementVisible(elt) || elt.namespaceURI == "http://www.w3.org/2000/svg"
 		return bo.height > 0 && bo.width > 0;
