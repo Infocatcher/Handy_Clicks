@@ -1,4 +1,7 @@
 var hcNotify = {
+	_transition: null,
+	showHideDiration: 200,
+
 	startColor: 0, // >= 0 (black)
 	endColor: 255, // <= 255 (white)
 	hoverColor: "blue", // valid color string
@@ -75,8 +78,22 @@ var hcNotify = {
 		var notifyBox = this._notifyBox = document.getElementById("hcNotifyBox");
 		if(typeof wa.funcLeftClick == "function")
 			notifyBox.className += " hc-clickable";
-		this._colorDelta = this.endColor - this.startColor;
+
 		this._dur = wa.dur;
+		var s = notifyBox.style;
+		var transition = this._transition = "transition" in s && "transition"
+			|| "MozTransition" in s && "MozTransition";
+		if(transition) {
+			this._dur = Math.max(0, this._dur - this.showHideDiration);
+			s.opacity = 0;
+			setTimeout(function(_this) {
+				s[transition] = "opacity " + _this.showHideDiration + "ms ease-in-out";
+				s.opacity = 1;
+			}, 0, this);
+		}
+
+		//~ todo: rewrite using CSS transitions
+		this._colorDelta = this.endColor - this.startColor;
 		this.delayedClose();
 		if(wa.dontCloseUnderCursor)
 			this.initDontClose();
@@ -121,7 +138,14 @@ var hcNotify = {
 		this.borderColor = this.numToColor(this.startColor + Math.round(this._colorDelta*persent));
 	},
 	delayedClose: function() {
-		this._closeTimeout = setTimeout(window.close, this._dur);
+		if(!this._transition)
+			this._closeTimeout = setTimeout(window.close, this._dur);
+		else {
+			this._closeTimeout = setTimeout(function(_this) {
+				_this._notifyBox.style.opacity = 0;
+				_this._closeTimeout = setTimeout(window.close, _this.showHideDiration);
+			}, this._dur, this);
+		}
 		this._startTime = Date.now();
 		var _this = this;
 		this._highlightInterval = setInterval(
