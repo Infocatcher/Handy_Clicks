@@ -560,7 +560,7 @@ var handyClicksFuncs = {
 	},
 	getPopup: function(popup) {
 		if(!popup)
-			popup = document.createElement("popup");
+			popup = document.createElement("menupopup");
 		else if(typeof popup == "string")
 			popup = this.ut.parseXULFromString(popup);
 		else if(typeof popup == "xml") // Deprecated
@@ -781,6 +781,8 @@ var handyClicksFuncs = {
 	losslessDecodeURI: function(value) {
 		if(!value)
 			return "";
+		if(!/^(?:http|ftp)s?:/i.test(value) && !this.pu.pref("funcs.decodeURIs.unknownProtocols"))
+			return value;
 		// chrome://browser/content/browser.js, function losslessDecodeURI() in Firefox 3.0+
 
 		// Try to decode as UTF-8 if there's no encoding sequence that we would break.

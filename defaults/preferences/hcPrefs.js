@@ -51,6 +51,7 @@ pref("extensions.handyclicks.funcs.filesLinksPolicy", -1);
 pref("extensions.handyclicks.funcs.filesLinksMask", "^[^?&=#]+\.(?:zip|rar|7z|gz|tar|bz2|iso|cab|exe|msi|msu|xpi|jar)$");
 
 pref("extensions.handyclicks.funcs.decodeURIs", true);
+pref("extensions.handyclicks.funcs.decodeURIs.unknownProtocols", false);
 
 pref("extensions.handyclicks.funcs.convertURIs", false); // for Windows
 pref("extensions.handyclicks.funcs.convertURIsCharset", ""); // use defaults

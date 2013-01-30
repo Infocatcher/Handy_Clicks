@@ -637,6 +637,11 @@ var handyClicks = {
 			}
 			return null;
 		}
+		if(
+			/(?:^|\s)treestyletab-toolbar-inner-box(?:\s|$)/.test(it.className)
+			&& it.parentNode.id == "TabsToolbar"
+		)
+			return it.parentNode.getElementsByAttribute("id", "tabbrowser-tabs")[0];
 		const docNode = Node.DOCUMENT_NODE; // 9
 		for(; it && it.nodeType != docNode; it = it.parentNode) {
 			itln = it.localName.toLowerCase();
