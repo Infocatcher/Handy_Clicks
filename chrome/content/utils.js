@@ -613,7 +613,7 @@ var handyClicksUtils = {
 				var err = { value: undefined };
 				this.writeToFile(str, file, err);
 				err = err.value;
-				callback && callback.call(context || this, this.getErrorCode(err));
+				callback && callback.call(context || this, this.getErrorCode(err), err ? undefined : str);
 				return !err;
 			};
 			return this.writeToFileAsync.apply(this, arguments);
@@ -626,9 +626,10 @@ var handyClicksUtils = {
 			suc.charset = "UTF-8";
 			var istream = suc.convertToInputStream(str);
 			NetUtil.asyncCopy(istream, ostream, this.bind(function(status) {
-				if(!Components.isSuccessCode(status))
+				var err = !Components.isSuccessCode(status);
+				if(err)
 					this._err("NetUtil.asyncCopy() failed: " + this.getErrorName(status));
-				callback && callback.call(context || this, status);
+				callback && callback.call(context || this, status, err ? undefined : str);
 			}, this));
 		}
 		catch(e) {
@@ -874,8 +875,7 @@ var handyClicksUtils = {
 	},
 	isNativeFunction: function(func) {
 		// Example: function alert() {[native code]}
-		return /^function\s+[^()\s]+\s*\(\)\s*\{\s*\[native code\]\s*\}$/
-			.test(Function.prototype.toString.call(func));
+		return /\[native code\]\s*\}$/.test(Function.toString.call(func));
 	},
 	hasNativeMethod: function(obj, methName) {
 		return methName in obj && typeof obj[methName] == "function" && this.isNativeFunction(obj[methName]);

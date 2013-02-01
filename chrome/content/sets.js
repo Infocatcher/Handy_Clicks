@@ -1936,6 +1936,9 @@ var handyClicksSets = {
 		return this.$("hc-sets-externalEditorPath");
 	},
 	get eeFile() {
+		var path = this.ee.value;
+		if(!path || /^\w+$/.test(path))
+			return null;
 		return this.ut.getLocalFile(this.ee.value);
 	},
 	selectExternalEditor: function() {
@@ -2018,11 +2021,15 @@ var handyClicksSets = {
 		var img = this.$("hc-sets-externalEditorIcon");
 		if(eeFile && eeFile.exists()) {
 			img.src = "moz-icon:file://" + eeFile.path.replace(/\\/g, "/") + "?size=16";
-			img.setAttribute("hc_validPath", "true");
+			img.setAttribute("hc_existingPath", "true");
+		}
+		else if(this.ee.value == "Scratchpad") {
+			img.src = this.ut.isSeaMonkey ? "" : "chrome://branding/content/icon16.png";
+			img.setAttribute("hc_existingPath", "false");
 		}
 		else {
 			img.src = "";
-			img.setAttribute("hc_validPath", "false");
+			img.setAttribute("hc_existingPath", "false");
 		}
 		var butt = this.$("hc-sets-externalEditorButton");
 		if(!butt.hasAttribute("width")) {

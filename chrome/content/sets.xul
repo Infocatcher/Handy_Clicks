@@ -365,7 +365,10 @@
 		<groupbox>
 			<caption label="&hc.sets.externalEditor;" />
 			<hbox align="center">
-				<label value="&hc.sets.externalEditorPath;" tooltiptext="&hc.sets.externalEditorPathNote;" control="hc-sets-externalEditorPath" />
+				<label value="&hc.sets.externalEditorPath;" tooltip="hc-sets-externalEditorPath-tooltip" control="hc-sets-externalEditorPath" />
+				<tooltip id="hc-sets-externalEditorPath-tooltip">
+					<description>&hc.sets.externalEditorPathNote;</description>
+				</tooltip>
 				<image id="hc-sets-externalEditorIcon" onclick="handyClicksSets.externalEditorEvent(event);" />
 				<textbox id="hc-sets-externalEditorPath" preference="externalEditorPath" flex="1"
 					onkeypress="handyClicksSets.externalEditorEvent(event);"
@@ -383,6 +386,9 @@
 			<hbox align="top">
 				<hbox id="hc-sets-externalEditorArgs-box" align="top" flex="1" hc_depends="externalEditor">
 					<label value="&hc.sets.externalEditorArgs;" tooltip="hc-sets-externalEditorArgs-tooltip" control="hc-sets-externalEditorArgs" />
+					<tooltip id="hc-sets-externalEditorArgs-tooltip">
+						<description>&hc.sets.externalEditorArgsTip;</description>
+					</tooltip>
 					<textbox id="hc-sets-externalEditorArgs" preference="externalEditorArgs" multiline="true" rows="2" wrap="off" flex="1" />
 				</hbox>
 				<vbox id="hc-sets-externalEditorExt-box" align="top">
@@ -624,9 +630,6 @@
 		</menupopup>
 		<tooltip id="hc-sets-search-tooltip">
 			<description>&hc.sets.searchTip;</description>
-		</tooltip>
-		<tooltip id="hc-sets-externalEditorArgs-tooltip">
-			<description>&hc.sets.externalEditorArgsTip;</description>
 		</tooltip>
 		<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical" noautohide="true"
 			onpopupshowing="return !document.tooltipNode.disabled;">

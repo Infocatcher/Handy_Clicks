@@ -552,7 +552,7 @@
 							.deleteTemporaryFileOnExit(file);
 					}
 
-					this.updateFile(function(status) {
+					this.updateFile(function(status, value) {
 						if(!Components.isSuccessCode(status)) {
 							var err = "openExternalEditor() failed: can't write string to file!\nFile: " + file.path
 								+ "\nError: " + ut.getErrorName(status);
@@ -561,6 +561,61 @@
 							return;
 						}
 						var ee = ut.pu.pref("editor.external.path");
+
+						if(ee == "Scratchpad") try {
+							//var val = ut.internalLineBreaks(value);
+							var val = this.value;
+							Components.utils["import"]("resource:///modules/devtools/scratchpad-manager.jsm");
+							var _this = this;
+							var setCaret = function(e) {
+								e && w.removeEventListener(e.type, setCaret, false);
+								function setEditorCaret(Scratchpad) {
+									var ifi = _this.inputField;
+									Scratchpad.editor.setSelection(ifi.selectionStart, ifi.selectionEnd);
+								}
+								if(w.Scratchpad.initialized) {
+									setEditorCaret(w.Scratchpad);
+									return;
+								}
+								w.Scratchpad.addObserver({
+									onReady: function(Scratchpad) {
+										Scratchpad.removeObserver(this);
+										setEditorCaret(Scratchpad);
+									}
+								});
+							};
+							var ws = ut.wu.wm.getEnumerator("devtools:scratchpad");
+							while(ws.hasMoreElements()) {
+								var w = ws.getNext();
+								if(
+									"Scratchpad" in w
+									&& "filename" in w.Scratchpad
+									&& w.Scratchpad.filename == file.path
+								) {
+									if(w.Scratchpad.getText() != val)
+										w.Scratchpad.setText(val);
+									setCaret();
+									this.fade();
+									w.focus();
+									return;
+								}
+							}
+
+							var w = ScratchpadManager.openScratchpad({
+								filename: file.path,
+								text: val,
+								executionContext: 2, // Chrome context
+								saved: true
+							});
+							w && w.addEventListener("load", setCaret, false);
+							this.fade();
+							return;
+						}
+						catch(e) {
+							ut._err("openExternalEditor: ScratchpadManager.openScratchpad() failed");
+							ut._err(e);
+						}
+
 						var eeFile = ee && ut.getLocalFile(ee);
 						var eeFileExists = eeFile && eeFile.exists();
 
@@ -808,8 +863,8 @@
 						return;
 					var ut = top.handyClicksUtils;
 					file = file || this._linkedFile;
-					function _callback(status) {
-						callback && callback.call(context || window, status);
+					function _callback(status, value) {
+						callback && callback.call(context || window, status, value);
 					}
 					ut.readFromFileAsync(file, function(savedValue, status) {
 						if(!Components.isSuccessCode(status)) {
@@ -819,7 +874,7 @@
 						value = value || this.value;
 						savedValue = ut.internalLineBreaks(savedValue);
 						if(value == savedValue)
-							_callback(Components.results.NS_OK);
+							_callback(Components.results.NS_OK, value);
 						else {
 							if(ut.pu.pref("editor.external.saveWithBOM"))
 								value = "\ufeff" + value;

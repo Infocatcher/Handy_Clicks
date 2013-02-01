@@ -179,7 +179,8 @@
 
 <!ENTITY hc.sets.externalEditor "Внешний редактор">
 <!ENTITY hc.sets.externalEditorPath "Путь:">
-<!ENTITY hc.sets.externalEditorPathNote "Если путь не задан, будет запущена ассоциированная программа">
+<!ENTITY hc.sets.externalEditorPathNote "Если путь не задан, будет запущена ассоциированная программа.
+Или используйте «Scratchpad» вместо пути для запуска встроенного в браузер редактора (если доступен).">
 <!ENTITY hc.sets.externalEditorBrowse "Обзор…">
 <!ENTITY hc.sets.externalEditorMakeRelative "Сделать путь относительным">
 <!ENTITY hc.sets.externalEditorMakeAbsolute "Сделать путь абсолютным">
