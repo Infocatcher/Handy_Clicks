@@ -963,13 +963,14 @@ var handyClicksUtils = {
 			return this.getSource(o) === s;
 		}, this);
 	},
-	sortObj: function(obj, deep) {
+	sortObj: function(obj, deep, ignore) {
 		if(!this.isObject(obj))
 			return obj;
 		var arr = [], ex = { __proto__: null };
 		for(var p in obj) if(Object.hasOwnProperty.call(obj, p)) {
 			var val = obj[p];
-			deep && this.sortObj(val, deep);
+			if(deep && (!ignore || ignore.indexOf(p) == -1))
+				this.sortObj(val, deep, ignore);
 			arr.push(p);
 			ex[p] = val;
 			delete obj[p];

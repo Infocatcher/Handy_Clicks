@@ -293,7 +293,7 @@ var handyClicksSets = {
 			var oldTo = this.ut.getOwnProperty(savedTypes, type);
 			if(!oldTo)
 				++newTypes;
-			else if(!this.ut.objEquals(to, oldTo))
+			else if(!this.ps.settingsEquals(to, oldTo))
 				++overrideTypes;
 		}
 
@@ -503,7 +503,7 @@ var handyClicksSets = {
 			if(this._import) { //~ todo: test!
 				var savedDa = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType, "delayedAction");
 				var overrideDa = savedDa;
-				var equalsDa = this.ut.objEquals(da, savedDa);
+				var equalsDa = this.ps.settingsEquals(da, savedDa);
 				this.setClildsProperties(daRow, {
 					hc_override: overrideDa && !equalsDa && ++this._overrideDa,
 					hc_equals:   overrideDa &&  equalsDa,
@@ -550,11 +550,11 @@ var handyClicksSets = {
 				fo.delayedAction = null;
 
 			var override = saved;
-			var equals = this.ut.objEquals(fo, saved);
+			var equals = this.ps.settingsEquals(fo, saved);
 			if(isCustomType) {
 				var newType = this.ut.getOwnProperty(this.ps.types, itemType);
 				var savedType = this.ut.getOwnProperty(this._savedTypes, itemType);
-				var eqType = this.ut.objEquals(newType, savedType);
+				var eqType = this.ps.settingsEquals(newType, savedType);
 				if(!eqType && (saved || savedType))
 					override = true;
 				equals = equals && eqType;

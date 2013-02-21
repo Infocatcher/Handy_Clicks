@@ -543,7 +543,11 @@ var handyClicksPrefSvc = {
 	},
 	sortSettings: function(o) {
 		//~ todo: use "logical" sort? Place "enabled" first, etc.
-		return this.ut.sortObj(o, true);
+		return this.ut.sortObj(o, true, ["arguments"]);
+	},
+	settingsEquals: function() {
+		Array.forEach(arguments, this.sortSettings, this);
+		return this.ut.objEqualsRaw.apply(this.ut, arguments);
 	},
 	getSettingsStr: function(types, prefs) {
 		types = types || this.types;
