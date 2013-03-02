@@ -764,12 +764,25 @@ var handyClicksUtils = {
 		return this.cbHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"]
 			.getService(Components.interfaces.nsIClipboardHelper);
 	},
-	get transferableInstance() {
-		return Components.classes["@mozilla.org/widget/transferable;1"]
+	getTransferable: function(sourceWindow) {
+		var ta = Components.classes["@mozilla.org/widget/transferable;1"]
 			.createInstance(Components.interfaces.nsITransferable);
+		if(
+			sourceWindow
+			&& sourceWindow instanceof Components.interfaces.nsIDOMWindow
+			&& "init" in ta
+		) try {
+			Components.utils.import("chrome://gre/modules/PrivateBrowsingUtils.jsm");
+			var privacyContext = PrivateBrowsingUtils.privacyContextFromWindow(sourceWindow);
+			ta.init(privacyContext);
+		}
+		catch(e) {
+			Components.utils.reportError(e);
+		}
+		return ta;
 	},
-	setClipboardData: function(dataObj, clipId) {
-		var ta = this.transferableInstance;
+	setClipboardData: function(dataObj, sourceWindow, clipId) {
+		var ta = this.getTransferable(sourceWindow);
 		for(var flavor in dataObj) if(dataObj.hasOwnProperty(flavor)) {
 			var value = dataObj[flavor];
 			var str = Components.classes["@mozilla.org/supports-string;1"]
@@ -784,7 +797,7 @@ var handyClicksUtils = {
 	getClipboardData: function(flavor, clipId) {
 		if(!flavor)
 			flavor = "text/unicode";
-		var ta = this.transferableInstance;
+		var ta = this.getTransferable();
 		ta.addDataFlavor(flavor);
 		var cb = this.cb;
 		cb.getData(ta, clipId === undefined ? cb.kGlobalClipboard : clipId);
@@ -800,8 +813,12 @@ var handyClicksUtils = {
 			return "";
 		}
 	},
-	copyStr: function(str, clipId) {
-		this.cbHelper.copyStringToClipboard(str, clipId === undefined ? this.cb.kGlobalClipboard : clipId);
+	copyStr: function(str, sourceDocument, clipId) {
+		this.cbHelper.copyStringToClipboard(
+			str,
+			clipId === undefined ? this.cb.kGlobalClipboard : clipId,
+			sourceDocument || document
+		);
 	},
 	readFromClipboard: function(trimFlag, clipId) {
 		var clipStr = this.getClipboardData("text/unicode", clipId);

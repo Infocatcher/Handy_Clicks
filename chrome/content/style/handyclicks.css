@@ -95,6 +95,18 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton .toolbarbutton-icon {
 	-moz-image-region: rect(48px 32px 64px 16px);
 }
 
+#handyClicks-statusbarProgressLabel {
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+#handyClicks-statusbarProgressLabel {
+	margin: 0 !important;
+	-moz-margin-end: 4px !important;
+	padding: 0 !important;
+}
+
 #handyClicks-tooltip {
 	padding: 0;
 }

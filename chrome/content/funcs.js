@@ -29,7 +29,7 @@ var handyClicksFuncs = {
 		var text = this.getItemText();
 		if(text) {
 			text = Array.concat(text);
-			this.ut.copyStr(text.join("\n"));
+			this.ut.copyStr(text.join("\n"), e.target.ownerDocument);
 			this.ui.blinkNode();
 		}
 		if(closePopups)
@@ -41,7 +41,7 @@ var handyClicksFuncs = {
 			link = Array.concat(link);
 			if(this.pu.pref("funcs.decodeURIs"))
 				link = link.map(this.losslessDecodeURI, this);
-			this.ut.copyStr(link.join("\n"));
+			this.ut.copyStr(link.join("\n"), e.target.ownerDocument);
 			this.ui.blinkNode();
 		}
 		if(closePopups)
@@ -1207,10 +1207,6 @@ var handyClicksFuncs = {
 		// Based on code by Yan ( http://forum.mozilla-russia.org/viewtopic.php?pid=144109#p144109 )
 		var hrefs = { __proto__: null };
 		var onlyVisible = this.pu.pref("funcs.openOnlyVisibleLinks");
-		if(onlyUnvisited) {
-			var gh = Components.classes["@mozilla.org/browser/global-history;2"]
-				.getService(Components.interfaces.nsIGlobalHistory2 || Components.interfaces.nsIGlobalHistory);
-		}
 		Array.forEach(
 			a.ownerDocument.getElementsByTagName(a.localName),
 			function(a) {
@@ -1218,7 +1214,6 @@ var handyClicksFuncs = {
 				var h = this.getLinkURI(a);
 				if(
 					t == term && h && !this.isJSURI(h)
-					&& (!onlyUnvisited || !gh.isVisited(makeURI(h))) // chrome://global/content/contentAreaUtils.js
 					&& (
 						!onlyVisible || this.ut.isElementVisible(a)
 						// See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
@@ -1230,6 +1225,45 @@ var handyClicksFuncs = {
 			this
 		);
 
+		if(!onlyUnvisited)
+			this.openLinks(hrefs, refererPolicy, useDelays);
+		else {
+			this.filterVisited(hrefs, this.ut.bind(function() {
+				this.openLinks(hrefs, refererPolicy, useDelays);
+			}, this));
+		}
+	},
+	get asyncHistory() {
+		delete this.asyncHistory;
+		return this.asyncHistory = "mozIAsyncHistory" in Components.interfaces
+			&& Components.classes["@mozilla.org/browser/history;1"]
+				.getService(Components.interfaces.mozIAsyncHistory);
+	},
+	filterVisited: function(hrefs, callback) {
+		// Used makeURI() from chrome://global/content/contentAreaUtils.js
+		var asyncHistory = this.asyncHistory;
+		if(!asyncHistory || !("isURIVisited" in asyncHistory)) { // Gecko < 11.0
+			var gh = Components.classes["@mozilla.org/browser/global-history;2"]
+				.getService(Components.interfaces.nsIGlobalHistory2 || Components.interfaces.nsIGlobalHistory);
+			for(var h in hrefs)
+				if(gh.isVisited(makeURI(h)))
+					delete hrefs[h];
+			callback();
+			return;
+		}
+		var count = 0;
+		function isURIVisitedCallback(uri, isVisited) {
+			if(isVisited)
+				delete hrefs[uri.spec];
+			if(!--count)
+				callback();
+		}
+		for(var h in hrefs) {
+			++count;
+			asyncHistory.isURIVisited(makeURI(h), isURIVisitedCallback);
+		}
+	},
+	openLinks: function(hrefs, refererPolicy, useDelays) {
 		var tbr = this.hc.getTabBrowser(true);
 		var ref = this.getRefererForItem(refererPolicy);
 
