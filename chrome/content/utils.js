@@ -157,7 +157,12 @@ var handyClicksUtils = {
 	},
 
 	hasPrefix: function(str, prefix) {
-		return str.substr(0, prefix.length) == prefix;
+		var f = this.hasPrefix = this.hasNativeMethod(String, "startsWith")
+			? String.startsWith
+			: function(str, prefix) {
+				return str.substr(0, prefix.length) == prefix;
+			};
+		return f.apply(this, arguments);
 	},
 	removePrefix: function(str, prefix, forced) {
 		if(forced || this.hasPrefix(str, prefix))
@@ -165,7 +170,12 @@ var handyClicksUtils = {
 		return str;
 	},
 	hasPostfix: function(str, postfix) {
-		return str.substr(-postfix.length) == postfix;
+		var f = this.hasPostfix = this.hasNativeMethod(String, "endsWith")
+			? String.endsWith
+			: function(str, postfix) {
+				return str.substr(-postfix.length) == postfix;
+			};
+		return f.apply(this, arguments);
 	},
 	removePostfix: function(str, postfix, forced) {
 		if(forced || this.hasPostfix(str, postfix))
@@ -865,14 +875,14 @@ var handyClicksUtils = {
 		return str.replace(/\r\n?|\n\r?/g, "\n");
 	},
 
-	get isArray() { // function(arr)
-		delete this.isArray;
-		return this.isArray = this.hasNativeMethod(Array, "isArray")
+	isArray: function(str) {
+		var f = this.isArray = this.hasNativeMethod(Array, "isArray")
 			? Array.isArray
 			: function(arr) {
 				return arr instanceof Array
 					|| Object.prototype.toString.call(arr) == "[object Array]";
 			};
+		return f.apply(this, arguments);
 	},
 	isObject: function(obj) {
 		return typeof obj == "object" && obj !== null;
@@ -1056,13 +1066,13 @@ var handyClicksUtils = {
 		return this.mm(n, 1, 5e5);
 	},
 
-	get trim() { // function(str)
-		delete this.trim;
-		return this.trim = this.hasNativeMethod(String, "trim")
+	trim: function(str) {
+		var f = this.trim = this.hasNativeMethod(String, "trim")
 			? String.trim
 			: function(str) {
 				return String(str).replace(/^\s+|\s+$/g, "");
 			};
+		return f.apply(this, arguments);
 	},
 	encodeHTML: function(str, encDoubleQuotes) {
 		str = str
@@ -1127,7 +1137,7 @@ var handyClicksUtils = {
 		elt.textContent = "";
 	},
 
-	get storage() { // return function(key, val)
+	storage: function(key, val) {
 		const ns = "__handyClicks__";
 		if("Application" in window) { // Firefox 3.0+
 			var st = Application.storage;
@@ -1153,8 +1163,7 @@ var handyClicksUtils = {
 			}
 			this._storage = hw[ns];
 		}
-		delete this.storage;
-		return this.storage = function(key, val) {
+		var f  = this.storage = function(key, val) {
 			if(arguments.length == 1)
 				return key in this._storage ? this._storage[key] : undefined;
 			if(val === undefined)
@@ -1163,6 +1172,7 @@ var handyClicksUtils = {
 				this._storage[key] = val;
 			return val;
 		};
+		return f.apply(this, arguments);
 	}
 };
 
@@ -1216,7 +1226,7 @@ var handyClicksCleanupSvc = {
 	},
 
 	_nodeCleanups: [],
-	get registerNodeCleanup() { // function(node, func, context, args)
+	registerNodeCleanup: function(node, func, context, args) {
 		this.NodeHandler = function(node, func, context, args, uid) {
 			this.node    = node;
 			this.func    = func;
@@ -1262,12 +1272,12 @@ var handyClicksCleanupSvc = {
 				this.func.apply(this.context, this.args);
 			}
 		};
-		delete this.registerNodeCleanup;
-		return this.registerNodeCleanup = function(node, func, context, args) {
+		var f = this.registerNodeCleanup = function(node, func, context, args) {
 			return this._nodeCleanups.push(
 				new this.NodeHandler(node, func, context, args, this._nodeCleanups.length)
 			) - 1;
 		};
+		return f.apply(this, arguments);
 	},
 	unregisterNodeCleanup: function(uid) {
 		var cs = this._nodeCleanups;
