@@ -782,7 +782,7 @@ var handyClicksUtils = {
 			&& sourceWindow instanceof Components.interfaces.nsIDOMWindow
 			&& "init" in ta
 		) try {
-			Components.utils.import("chrome://gre/modules/PrivateBrowsingUtils.jsm");
+			Components.utils["import"]("chrome://gre/modules/PrivateBrowsingUtils.jsm");
 			var privacyContext = PrivateBrowsingUtils.privacyContextFromWindow(sourceWindow);
 			ta.init(privacyContext);
 		}
@@ -1074,13 +1074,19 @@ var handyClicksUtils = {
 			};
 		return f.apply(this, arguments);
 	},
-	encodeHTML: function(str, encDoubleQuotes) {
+	encodeHTML: function(str, encDoubleQuotes, isAttr) {
 		str = str
 			.replace(/&/g, "&amp;")
 			.replace(/</g, "&lt;")
 			.replace(/>/g, "&gt;");
 		if(encDoubleQuotes !== false)
 			str = str.replace(/"/g, "&quot;");
+		if(isAttr) {
+			str = str
+				.replace(/\t/g, "&#x9;")
+				.replace(/\n/g, "&#xA;")
+				.replace(/\r/g, "&#xD;");
+		}
 		return str;
 	},
 	isBlankPageURL: function(uri) {

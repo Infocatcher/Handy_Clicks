@@ -29,7 +29,7 @@ var handyClicksFuncs = {
 		var text = this.getItemText();
 		if(text) {
 			text = Array.concat(text);
-			this.ut.copyStr(text.join("\n"), e.target.ownerDocument);
+			this.ut.copyStr(text.join(this.ut.lineBreak), this.getSourceDocument());
 			this.ui.blinkNode();
 		}
 		if(closePopups)
@@ -41,11 +41,28 @@ var handyClicksFuncs = {
 			link = Array.concat(link);
 			if(this.pu.pref("funcs.decodeURIs"))
 				link = link.map(this.losslessDecodeURI, this);
-			this.ut.copyStr(link.join("\n"), e.target.ownerDocument);
+			this.ut.copyStr(link.join(this.ut.lineBreak), this.getSourceDocument());
 			this.ui.blinkNode();
 		}
 		if(closePopups)
 			this.hc.closeMenus();
+	},
+	getSourceDocument: function(node) {
+		var items = node || this.hc.item;
+		var privateDoc;
+		items && Array.some(items, function(node) {
+			if(
+				node.localName == "tab"
+				&& "linkedBrowser" in node
+				&& "PrivateBrowsingUtils" in window // Firefox 20.0+
+				&& PrivateBrowsingUtils.isWindowPrivate(node.linkedBrowser.contentWindow)
+			)
+				return privateDoc = node.linkedBrowser.contentDocument;
+			return false;
+		});
+		// This should be better in most (?) cases...
+		// Like https://addons.mozilla.org/addon/private-tab/
+		return privateDoc || content.document;
 	},
 	getItemText: function(it, e, noTrim) {
 		it = it || this.hc.item;

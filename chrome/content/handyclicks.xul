@@ -39,7 +39,7 @@
 		<key id="handyClicks-key-importFromClipboard" command="handyClicks-cmd-importFromClipboard" disabled="true" />
 	</keyset>
 	<menupopup id="menu_ToolsPopup">
-		<menuitem id="handyClicks-toolsMenuitem" insertbefore="sanitizeSeparator"
+		<menuitem id="handyClicks-toolsMenuitem" insertafter="menu_pageInfo,menu_inspector,javascriptConsole"
 			class="menuitem-iconic"
 			label="&handyClicks.menuitemLabel;" accesskey="&handyClicks.menuitemAccesskey;"
 			tooltip="handyClicks-tooltip"
