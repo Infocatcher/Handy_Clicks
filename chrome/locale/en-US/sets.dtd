@@ -143,6 +143,7 @@ Placeholders:
 <!ENTITY hc.sets.showInAppMenu "Show in App menu">
 <!ENTITY hc.sets.showInStatusbar "Show in Status Bar">
 <!ENTITY hc.sets.showMouseButton "Change icon when click handling">
+<!ENTITY hc.sets.customizableProgressBar "Use customizable progress bar">
 
 <!ENTITY hc.sets.actions "Controls behavior">
 <!ENTITY hc.sets.actionTypeMenu "Menu">

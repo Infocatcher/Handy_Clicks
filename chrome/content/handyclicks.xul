@@ -61,11 +61,15 @@
 		<toolbarbutton id="handyClicks-toolbarButton" class="toolbarbutton-1 chromeclass-toolbar-additional"
 			label="&handyClicks.toolbarbuttonLabel;" tooltip="handyClicks-tooltip"
 			onclick="handyClicksUI.handleUIEvent(event);" />
+		<toolbaritem id="handyClicks-toolbarProgressContainer" collapsed="true" label="&handyClicks.progress;"
+			popup="_child" context="_child" align="center" />
 	</toolbarpalette>
 	<statusbar id="status-bar">
 		<statusbarpanel id="handyClicks-statusbarProgressPanel" insertafter="page-report-button" collapsed="true"
 			popup="_child" context="_child">
-			<label id="handyClicks-statusbarProgressLabel" />
+			<box id="handyClicks-statusbarProgressLabel-box" align="center" pack="end">
+				<label id="handyClicks-statusbarProgressLabel" />
+			</box>
 			<progressmeter id="handyClicks-statusbarProgress" class="progressmeter-statusbar" mode="normal" />
 			<menupopup>
 				<menuitem id="handyClicks-statusbarProgressCancel" class="menuitem-iconic handyClicks-iconic"

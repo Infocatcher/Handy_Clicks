@@ -14,12 +14,16 @@ var handyClicksUI = {
 		this.setStatus();
 		this.showHideControls();
 		this.setupUIActions();
-		this.loadBlinkStyle();
 		if(reloadFlag)
 			this.setEditModeStatus();
 		else
 			this.registerHotkeys();
 		this.pu.oSvc.addObserver(this.updUI, this);
+
+		this.ut.timeout(function() {
+			this.setupProgress();
+			this.loadBlinkStyle();
+		}, this);
 	},
 	destroy: function(reloadFlag) {
 		clearTimeout(this._restoreIconTimeout);
@@ -79,15 +83,21 @@ var handyClicksUI = {
 	// GUI:
 	toolbarButtonId: "handyClicks-toolbarButton",
 	get paletteButton() {
+		var elt = this.getFromPalette(this.toolbarButtonId);
+		if(elt) {
+			delete this.paletteButton;
+			return this.paletteButton = elt;
+		}
+		return null;
+	},
+	getFromPalette: function(id) {
 		var tb = "gNavToolbox" in window && gNavToolbox
 			|| "getNavToolbox" in window && getNavToolbox() // Firefox 3.0
 			|| this.e("navigator-toolbox"); // Firefox <= 2.0
-		if(!tb || !("palette" in tb))
-			return null;
-		var elt = tb.palette.getElementsByAttribute("id", this.toolbarButtonId);
-		if(elt.length) {
-			delete this.paletteButton;
-			return this.paletteButton = elt[0];
+		if(tb && "palette" in tb) {
+			var elts = tb.palette.getElementsByAttribute("id", id);
+			if(elts.length)
+				return elts[0];
 		}
 		return null;
 	},
@@ -361,6 +371,8 @@ var handyClicksUI = {
 			this.showHideControls();
 		else if(this.ut.hasPrefix(pName, "ui.action"))
 			this.setupUIActions();
+		else if(pName == "ui.customizableProgressBar")
+			this.setupProgress();
 	},
 	setStatus: function() {
 		var enabled = this.hc.enabled;
@@ -423,19 +435,43 @@ var handyClicksUI = {
 	},
 
 	// Progressmeter:
+	setupProgress: function() {
+		var sbPanel = this.e("handyClicks-statusbarProgressPanel");
+		var tbPanel = this.e("handyClicks-toolbarProgressContainer")
+			|| this.getFromPalette("handyClicks-toolbarProgressContainer");
+
+		var visiblePanel, hiddenPanel;
+		if(this.pu.pref("ui.customizableProgressBar")) {
+			visiblePanel = tbPanel;
+			hiddenPanel = sbPanel;
+		}
+		else {
+			visiblePanel = sbPanel;
+			hiddenPanel = tbPanel;
+		}
+		if(visiblePanel.hasChildNodes())
+			return;
+
+		hiddenPanel.collapsed = true;
+		while(hiddenPanel.hasChildNodes())
+			visiblePanel.appendChild(hiddenPanel.firstChild);
+
+		this.progressPanel = visiblePanel;
+		this.progressLabelNode = visiblePanel.getElementsByAttribute("id", "handyClicks-statusbarProgressLabel")[0];
+		this.progressNode = visiblePanel.getElementsByAttribute("id", "handyClicks-statusbarProgress")[0];
+	},
 	userCancelled: false,
 	progressPart: 0,
 	progressCount: 0,
-	get progressPanel() {
-		delete this.progressPanel;
-		return this.progressPanel = this.e("handyClicks-statusbarProgressPanel");
-	},
 	get progressLabel() {
-		delete this.progressLabel;
-		return this.progressLabel = this.e("handyClicks-statusbarProgressLabel");
+		// We can't use "value" getter/setter for label inside toolbar palette
+		return this.progressLabelNode.getAttribute("value");
+	},
+	set progressLabel(val) {
+		return this.progressLabelNode.setAttribute("value", val);
 	},
 	get progress() {
-		var progress = this.e("handyClicks-statusbarProgress");
+		var progress = this.progressNode;
 		if(!("max" in progress)) { // Firefox < 3.5
 			progress._gain = 1;
 			progress.__defineGetter__("max", function() {

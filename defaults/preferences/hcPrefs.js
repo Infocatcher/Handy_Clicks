@@ -22,6 +22,7 @@ pref("extensions.handyclicks.ui.showInToolsMenu", true);
 pref("extensions.handyclicks.ui.showInAppMenu", true);
 pref("extensions.handyclicks.ui.showAppMenuSeparator", false);
 pref("extensions.handyclicks.ui.showInStatusbar", true);
+pref("extensions.handyclicks.ui.customizableProgressBar", true);
 pref("extensions.handyclicks.ui.showAllSettingsMenuitem", false);
 pref("extensions.handyclicks.ui.showMouseButton", true);
 pref("extensions.handyclicks.ui.inheritToolbarContextMenu", true);

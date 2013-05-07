@@ -143,6 +143,7 @@
 <!ENTITY hc.sets.showInAppMenu "Показывать в меню приложения">
 <!ENTITY hc.sets.showInStatusbar "Показывать в строке состояния">
 <!ENTITY hc.sets.showMouseButton "Изменять иконку при обработке клика">
+<!ENTITY hc.sets.customizableProgressBar "Использовать настраиваемую полосу прогресса">
 
 <!ENTITY hc.sets.actions "Поведение элементов управления">
 <!ENTITY hc.sets.actionTypeMenu "Меню">

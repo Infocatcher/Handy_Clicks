@@ -899,9 +899,20 @@ var handyClicksFuncs = {
 		var tbr = this.hc.getTabBrowser(true);
 		return tbr.visibleTabs || tbr.tabs || tbr.tabContainer.childNodes;
 	},
-	get removableTabs() {
+	getSimilarTabs: function(tab) {
+		if(!tab) {
+			if(this.hc.itemType == "tab")
+				tab = this.hc.item;
+			else {
+				var tbr = this.hc.getTabBrowser();
+				tab = tbr.selectedTab;
+			}
+			if(!tab)
+				return Array.slice(this.visibleTabs);
+		}
+		var pinned = tab.pinned;
 		return Array.slice(this.visibleTabs).filter(function(tab) {
-			return !tab.pinned;
+			return tab.pinned == pinned;
 		});
 	},
 	getTabPos: function(tab) {
@@ -920,11 +931,20 @@ var handyClicksFuncs = {
 	},
 	removeOtherTabs: function(e, tab) {
 		tab = this.fixTab(tab);
-		this.hc.getTabBrowser().removeAllTabsBut(tab);
+		var tbr = this.hc.getTabBrowser();
+		//tbr.removeAllTabsBut(tab);
+		var tabs = this.getSimilarTabs(tab).filter(function(t) {
+			return t != tab;
+		});
+		if(this.warnAboutClosingTabs(tabs.length, tbr)) {
+			if(tabs.indexOf(tbr.selectedTab) != -1)
+				tbr.selectedTab = tab;
+			tabs.forEach(tbr.removeTab, tbr);
+		}
 	},
 	removeAllTabs: function(e) { //~ todo: allGroups argument?
 		var tbr = this.hc.getTabBrowser();
-		var tabs = this.removableTabs;
+		var tabs = this.getSimilarTabs();
 		var _tabs = [];
 		var curTab = tbr.selectedTab;
 		var removeCurTab = false;
@@ -942,7 +962,7 @@ var handyClicksFuncs = {
 	removeRightTabs: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
-		var tabs = this.removableTabs;
+		var tabs = this.getSimilarTabs(tab);
 		var _tabs = [];
 		var curTab = tbr.selectedTab;
 		var removeCurTab = false;
@@ -962,7 +982,7 @@ var handyClicksFuncs = {
 	removeLeftTabs: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
-		var tabs = this.removableTabs;
+		var tabs = this.getSimilarTabs(tab);
 		var _tabs = [];
 		var curTab = tbr.selectedTab;
 		var removeCurTab = false;
@@ -1316,7 +1336,7 @@ var handyClicksFuncs = {
 			this.ui.showProgress = true;
 			var i = this.ui.progressPart;
 			this.ui.progressCount += count;
-			this.ui.progressLabel.value = i + "/" + this.ui.progressCount;
+			this.ui.progressLabel = i + "/" + this.ui.progressCount;
 			this.ui.progress.max = this.ui.progressCount*10;
 			this.ui.progress.value = i*10;
 			this.ui.setTaskbarProgressState(i, this.ui.progressCount);
@@ -1336,7 +1356,7 @@ var handyClicksFuncs = {
 			tbr.addTab(h, ref);
 			hasTabKit && tabkit.addingTabOver();
 			if(showProgress) {
-				_this.ui.progressLabel.value = ++_this.ui.progressPart + "/" + _this.ui.progressCount;
+				_this.ui.progressLabel = ++_this.ui.progressPart + "/" + _this.ui.progressCount;
 				var state = _this.ui.progressPart*10;
 				_this.ui.progress.value = state;
 				_this.ui.setTaskbarProgressState(_this.ui.progressPart, _this.ui.progressCount);

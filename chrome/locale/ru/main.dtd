@@ -15,4 +15,5 @@
 
 <!ENTITY handyClicks.importFromClipboardLabel "Импортировать настройки из буфера обмена…">
 <!ENTITY handyClicks.importFromClipboardAccesskey "И">
+<!ENTITY handyClicks.progress "Handy Clicks: Прогресс"> <!-- Visible only in "Customize Toolbar" dialog -->
 <!ENTITY handyClicks.cancel "Отменить">

@@ -263,6 +263,7 @@
 			<preference id="showInAppMenu" type="bool" name="extensions.handyclicks.ui.showInAppMenu" />
 			<preference id="showInStatusbar" type="bool" name="extensions.handyclicks.ui.showInStatusbar" />
 			<preference id="showMouseButton" type="bool" name="extensions.handyclicks.ui.showMouseButton" />
+			<preference id="customizableProgressBar" type="bool" name="extensions.handyclicks.ui.customizableProgressBar" />
 
 			<preference id="action-0-0" type="int" name="extensions.handyclicks.ui.actionMenuLeftClick" />
 			<preference id="action-0-1" type="int" name="extensions.handyclicks.ui.actionMenuMiddleClick" />
@@ -281,6 +282,7 @@
 			<checkbox preference="showInAppMenu" label="&hc.sets.showInAppMenu;" />
 			<checkbox preference="showInStatusbar" label="&hc.sets.showInStatusbar;" />
 			<checkbox preference="showMouseButton" label="&hc.sets.showMouseButton;" />
+			<checkbox preference="customizableProgressBar" label="&hc.sets.customizableProgressBar;" />
 		</groupbox>
 		<groupbox align="center" orient="horizontal">
 			<caption label="&hc.sets.actions;" />
