@@ -653,7 +653,8 @@ var handyClicksUtils = {
 	readFromFile: function(file, outErr) {
 		if(!(file instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)))
 			file = this.getLocalFile(file);
-		this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_READ);
+		// Don't check permissions: this is slow
+		//this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_READ);
 		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
 			.createInstance(Components.interfaces.nsIFileInputStream);
 		try {
@@ -695,7 +696,8 @@ var handyClicksUtils = {
 			return this.readFromFileAsync.apply(this, arguments);
 		}
 		try {
-			this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_READ);
+			// Don't check permissions: this is slow
+			//this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_READ);
 			NetUtil.asyncFetch(file, this.bind(function(istream, status) {
 				var data = "";
 				if(Components.isSuccessCode(status)) {

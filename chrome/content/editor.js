@@ -99,12 +99,12 @@ var handyClicksEditor = {
 	_lastTabsSelect: 0,
 	get _focusFixTime() {
 		var now = Date.now();
-		if(now - (this._startTime1 || this._startTime0) < 500) // Can be very slow, if opened mere than one editor
-			return 150 + (this._startTime1 || now) - this._startTime0;
+		if(now - (this._startTime1 || this._startTime0) < 600) // Can be very slow, if opened mere than one editor
+			return 160 + (this._startTime1 || now) - this._startTime0;
 		delete this._startTime0;
 		delete this._startTime1;
 		delete this._focusFixTime;
-		return this._focusFixTime = 50;
+		return this._focusFixTime = 60;
 	},
 	handleEvent: function(e) {
 		switch(e.type) {
