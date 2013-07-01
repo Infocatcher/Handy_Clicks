@@ -8,13 +8,18 @@ var handyClicksConsole = {
 	clickHandler: function(e) {
 		if(e.button != 0)
 			return;
-		var tar = e.originalTarget;
-		if(!/(?:^|\s)text-link(?:\s|$)/.test(tar.className))
+		var trg = e.originalTarget;
+		if(!/(?:^|\s)text-link(?:\s|$)/.test(trg.className))
 			return;
-		var link = tar.parentNode;
-		var href = link.getAttribute("href") || "";
-		var line = Number(link.getAttribute("line"));
-		if(!this.wu.openEditorLink(href, line))
+		var link = /(?:^|\s)webconsole-location(?:\s|$)/.test(trg.className)
+			? trg
+			: trg.parentNode;
+		var href = link.getAttribute("href")
+			|| link.getAttribute("title")
+			|| "";
+		var line = link.getAttribute("line")
+			|| /:(\d+)$/.test(link.getAttribute("value")) && RegExp.$1;
+		if(!this.wu.openEditorLink(href, +line))
 			return;
 		e.preventDefault();
 		e.stopPropagation();

@@ -5,6 +5,7 @@ resource handyclicks-content chrome/content/res/
 overlay chrome://browser/content/browser.xul   chrome://handyclicks/content/handyclicks.xul
 overlay chrome://global/content/console.xul    chrome://handyclicks/content/console.xul
 overlay chrome://console2/content/console2.xul chrome://handyclicks/content/console.xul
+overlay chrome://browser/content/devtools/webconsole.xul chrome://handyclicks/content/console.xul
 
 # SeaMonkey:
 overlay chrome://navigator/content/navigator.xul chrome://handyclicks/content/handyclicks.xul
