@@ -144,13 +144,13 @@ const module = {
 		compMgr.QueryInterface(ci.nsIComponentRegistrar);
 		compMgr.registerFactoryLocation(P_CID, P_NAME, P_CONTRACTID, fileSpec, location, type);
 		compMgr.registerFactoryLocation(C_CID, C_NAME, C_CONTRACTID, fileSpec, location, type);
-		this.catMan.addCategoryEntry("command-line-handler", C_CATEGORY, C_CONTRACTID, true, true);
+		this.catMan.addCategoryEntry("command-line-handler", C_CATEGORY, C_CONTRACTID, false, true);
 	},
 	unregisterSelf: function(compMgr, fileSpec, location) {
 		compMgr.QueryInterface(ci.nsIComponentRegistrar);
 		compMgr.unregisterFactoryLocation(P_CID, fileSpec);
 		compMgr.unregisterFactoryLocation(C_CID, fileSpec);
-		this.catMan.deleteCategoryEntry("command-line-handler", C_CATEGORY);
+		this.catMan.deleteCategoryEntry("command-line-handler", C_CATEGORY, false);
 	},
 	getClassObject: function(compMgr, cid, iid) {
 		if(!cid.equals(P_CID) && !cid.equals(C_CID))

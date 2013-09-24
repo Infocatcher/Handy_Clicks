@@ -8,7 +8,7 @@
 		<em:type>2</em:type>
 		<em:unpack>true</em:unpack>
 		<em:name>Handy Clicks</em:name>
-		<em:version>0.1.2.3pre33</em:version>
+		<em:version>0.1.2.3pre34</em:version>
 		<em:description>More clicks options</em:description>
 		<em:creator>Infocatcher</em:creator>
 		<em:contributor>Anton Glazatov (some editor features)</em:contributor>
@@ -27,7 +27,7 @@
 			<Description>
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
 				<em:minVersion>1.5</em:minVersion>
-				<em:maxVersion>24.0a1</em:maxVersion>
+				<em:maxVersion>27.0a1</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 
@@ -35,7 +35,7 @@
 			<Description>
 				<em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
 				<em:minVersion>2.0</em:minVersion>
-				<em:maxVersion>2.21a1</em:maxVersion>
+				<em:maxVersion>2.24a1</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 
