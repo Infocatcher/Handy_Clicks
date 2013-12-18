@@ -1027,6 +1027,12 @@ var handyClicksUtils = {
 			? "wheel"
 			: "DOMMouseScroll";
 	},
+	get dragStartEvent() {
+		delete this.dragStartEvent;
+		return this.dragStartEvent = "ondragstart" in window
+			? "dragstart"
+			: "draggesture";
+	},
 	stopEvent: function(e) {
 		e.preventDefault();
 		e.stopPropagation();

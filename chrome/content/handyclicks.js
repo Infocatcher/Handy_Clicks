@@ -50,7 +50,8 @@ var handyClicks = {
 			case "contextmenu":  this.contextmenuHandler(e);  break;
 			case "popupshowing": this.popupshowingHandler(e); break;
 			case "mousemove":    this.mousemoveHandler(e);    break;
-			case "draggesture":  this.dragHandler(e);         break;
+			case "draggesture": // Legacy
+			case "dragstart":    this.dragHandler(e);         break;
 			case "TabSelect":    this.tabSelectHandler(e);    break;
 			case "DOMMouseScroll": // Legacy
 			case "wheel":        this.wheelHandler(e);        break;
@@ -304,7 +305,7 @@ var handyClicks = {
 		else {
 			this.mousemoveParams = null;
 		}
-		this.setListeners(["mousemove", "draggesture", "TabSelect", this.ut.wheelEvent], add);
+		this.setListeners(["mousemove", "TabSelect", this.ut.dragStartEvent, this.ut.wheelEvent], add);
 	},
 
 	// Utils for handlers:
