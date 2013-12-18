@@ -1,0 +1,73 @@
+<!-- &#37;x (&#37; - percent symbol) will be replaced with some value -->
+
+<!-- Editor -->
+<!ENTITY hc.editor.title "Handy Clicks: Editor">
+<!ENTITY hc.editor.defaultWindowWidth "700">
+<!ENTITY hc.editor.defaultWindowHeight "500">
+<!ENTITY hc.editor.apply "Apply">
+<!ENTITY hc.editor.delete "Delete">
+<!ENTITY hc.editor.deleteAccesskey "d">
+<!ENTITY hc.editor.test "Test">
+<!ENTITY hc.editor.testAccesskey "s">
+<!ENTITY hc.editor.undo "Undo">
+<!ENTITY hc.editor.undoAccesskey "U">
+
+<!ENTITY hc.editor.mainTabActions "Actions">
+<!ENTITY hc.editor.mainTabActionsAccesskey "o">
+<!ENTITY hc.editor.clickHere "Click here">
+<!ENTITY hc.editor.clickHereTip "Click to select mouse button and modifiers">
+
+<!ENTITY hc.editor.event "Event:">
+<!ENTITY hc.editor.eventAccesskey "v">
+<!ENTITY hc.editor.mousedownEvent "“Mousedown” event:">
+<!ENTITY hc.editor.mousedownAllow "Don't stop">
+<!ENTITY hc.editor.mousedownSmart "Smart">
+<!ENTITY hc.editor.mousedownStop "Always stop">
+<!ENTITY hc.editor.enabled "Enabled">
+<!ENTITY hc.editor.enabledAccesskey "b">
+<!ENTITY hc.editor.funcOptsAdd "Additional options:">
+<!ENTITY hc.editor.funcOptsAddAccesskey "s">
+<!ENTITY hc.editor.ignoreLinks "Ignore links">
+<!ENTITY hc.editor.ignoreSingle "Ignore separately opened images">
+
+<!ENTITY hc.editor.tabAction "Action">
+<!ENTITY hc.editor.tabActionAccesskey "n">
+<!ENTITY hc.editor.tabActionTip "Executes on selected event">
+<!ENTITY hc.editor.tabActionDelay "Delayed Action">
+<!ENTITY hc.editor.tabActionDelayAccesskey "y">
+<!ENTITY hc.editor.tabActionDelayTip "Performed after &#37;n ms">
+<!ENTITY hc.editor.fixActionOpts "Fix">
+<!ENTITY hc.editor.fixActionOptsAccesskey "x">
+<!ENTITY hc.editor.fixActionOptsTip "Fix action options (for options copying)">
+
+<!ENTITY hc.editor.func "Function:">
+<!ENTITY hc.editor.funcAccesskey "F">
+<!ENTITY hc.editor.funcLabel "Label:">
+<!ENTITY hc.editor.funcLabelAccesskey "L">
+<!ENTITY hc.editor.funcArgsCaption "Arguments">
+<!ENTITY hc.editor.funcCode "Code">
+<!ENTITY hc.editor.funcCodeAccesskey "C">
+<!ENTITY hc.editor.argsNote "Arguments:">
+<!ENTITY hc.editor.funcInit "Initialization">
+<!ENTITY hc.editor.funcInitAccesskey "I">
+<!ENTITY hc.editor.funcInitTip "Executes on settings (re)loading">
+
+<!ENTITY hc.editor.editCode "Edit…">
+<!ENTITY hc.editor.editCodeTip "Edit in external editor…">
+<!ENTITY hc.editor.openCode "Open…">
+<!ENTITY hc.editor.openCodeTip "Load code from file…">
+
+<!ENTITY hc.editor.mainTabCustomTypes "Custom Types">
+<!ENTITY hc.editor.mainTabCustomTypesAccesskey "T">
+<!ENTITY hc.editor.internalId "Internal id:">
+<!ENTITY hc.editor.internalIdAccesskey "r">
+<!ENTITY hc.editor.defineItem "Item definition">
+<!ENTITY hc.editor.defineItemAccesskey "I">
+<!ENTITY hc.editor.defineReturnNote "Return: node or null"> <!-- Do not translate "null"! -->
+<!ENTITY hc.editor.defineContext "Context menu of item">
+<!ENTITY hc.editor.defineContextAccesskey "C">
+<!ENTITY hc.editor.defineContextTip "Leave this field empty for autodetection">
+
+<!-- Invisible accesskeys -->
+<!ENTITY hc.editor.itemTypesAccesskey "m">
+<!ENTITY hc.editor.editAccesskey "e">

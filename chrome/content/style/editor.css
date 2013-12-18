@@ -1,0 +1,208 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace html url("http://www.w3.org/1999/xhtml");
+
+#hc-editor-clickButton {
+	-moz-user-focus: ignore;
+}
+.hcText {
+	background: transparent !important;
+	border: none;
+	padding: 0;
+	margin-top: 1px;
+	-moz-appearance: none;
+	-moz-box-flex: 1;
+}
+.hcText menuitem[cmd="cmd_undo"],
+.hcText menuitem[cmd="cmd_undo"] + menuseparator,
+.hcText menuitem[cmd="cmd_cut"],
+.hcText menuitem[cmd="cmd_paste"],
+.hcText menuitem[cmd="cmd_delete"] {
+	display: none !important;
+}
+
+menuitem[hc_disabled="true"] {
+	color: graytext; /* Style like disabled, but without accessibility restrictions */
+}
+#hc-editor-customType[hc_notUsed="true"] html|*.menulist-editable-input,
+#hc-editor-customTypePopup > menuitem[hc_notUsed="true"] {
+	color: red;
+}
+menuitem[hc_sets="enabled"],
+menulist[hc_sets="enabled"] .menulist-label {
+	/*color: -moz-hyperlinktext;*/
+	text-decoration: underline;
+}
+menuitem[hc_sets="disabled"] label,
+menulist[hc_sets="disabled"] .menulist-label {
+	/*color: -moz-visitedhyperlinktext;*/
+	text-decoration: line-through;
+}
+
+#hc-editor-button menuitem.menuitem-iconic > .menu-iconic-left {
+	display: -moz-box !important;
+	-moz-appearance: none !important;
+	-moz-margin-end: 2px;
+}
+#hc-editor-button menuitem.menuitem-iconic > .menu-accel-container {
+	display: none;
+}
+#hc-editor-button, #hc-editor-button menuitem {
+	list-style-image: url("icons16.png");
+	-moz-image-region: rect(0 32px 16px 16px); /* Icon for wrong value */
+}
+#hc-editor-button[value="0"], #hc-editor-button menuitem[value="0"] {
+	-moz-image-region: rect(0 48px 16px 32px);
+}
+#hc-editor-button[value="1"], #hc-editor-button menuitem[value="1"] {
+	-moz-image-region: rect(0 64px 16px 48px);
+}
+#hc-editor-button[value="2"], #hc-editor-button menuitem[value="2"] {
+	-moz-image-region: rect(0 80px 16px 64px);
+}
+
+#hc-editor-buttonDelete {
+	-moz-image-region: rect(32px 64px 48px 48px);
+}
+#hc-editor-buttonTest {
+	-moz-image-region: rect(48px 16px 64px 0);
+}
+#hc-editor-buttonUndo {
+	-moz-image-region: rect(48px 64px 64px 48px);
+}
+
+hbox[hc_fixedFields="true"] {
+	outline: 1px solid ThreeDShadow;
+	outline-offset: -1px;
+	background-color: ThreeDFace;
+}
+#hc-editor-funcOptsFixed[hc_cantFixFields="true"] {
+	opacity: 0.5;
+}
+
+.hcEditCodeButton {
+	-moz-image-region: rect(32px 112px 48px 96px);
+}
+.hcOpenCodeButton {
+	-moz-image-region: rect(32px 128px 48px 112px);
+}
+
+tab[hc_disabled="true"] {
+	text-decoration: line-through;
+}
+tab[hc_empty="true"] label {
+	opacity: 0.6;
+}
+
+[hc_requiredField="true"], tab[hc_requiredFieldParentTab="true"] {
+	outline: 1px solid red;
+	outline-offset: -1px;
+}
+
+:root[hc_fxVersion="3.0"] menuitem[hc_sets="disabled"],
+:root[hc_fxVersion="3.0"] menulist[hc_sets="disabled"] .menulist-label-box {
+	/* Firefox 3.0 don't show line-through without this */
+	text-decoration: underline;
+}
+
+menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-label-box {
+	/* Empty menulists */
+	min-height: 1em;
+}
+
+.hcEditor {
+	font-family: "Courier New", monospace;
+	-moz-binding: url("chrome://handyclicks/content/editor.xml#codeEditor");
+}
+
+/* "Fullwindow" feature */
+:root[hc_maximized="true"] *|*:not([hc_maximized="true"]):not(.dialog-content-box) {
+	visibility: collapse;
+}
+:root[hc_maximized="true"] .hcEditor *|*:not(autorepeatbutton) {
+	visibility: visible !important; /* For anonymous nodes inside textbox.hcEditor */
+}
+[hc_maximized="true"]:not(.hcEditor) {
+	/* Hide all borders */
+	margin: 0 !important;
+	padding: 0 !important;
+	border: none !important;
+	-moz-appearance: none !important;
+}
+.hcEditor[hc_maximized="true"] {
+	margin: 0 !important;
+}
+
+#hc-editor-funcSets {
+	overflow: auto;
+}
+#hc-editor-itemTypes {
+	max-width: 22em;
+}
+#hc-editor-customType {
+	min-width: 12em;
+}
+#hc-editor-customTypeExtId {
+	min-width: 9em;
+}
+
+#hc-editor-funcTab-delay [hc_notDelay="true"],
+#hc-editor-funcTab [hc_notFunc="true"] {
+	display: none;
+}
+
+menulist[hc_aboutConfigEntry] .menulist-label,
+[hc_aboutConfigEntry] {
+	cursor: help;
+}
+[hc_aboutConfigEntry] :not([hc_aboutConfigEntry]) {
+	cursor: default;
+}
+
+:root[hc_showCustomFuncsNotes="false"] .hcNotesBox {
+	display: none;
+}
+
+/* Compact style */
+:root[hc_compactUI="true"] tabpanels {
+	padding: 4px;
+}
+:root[hc_compactUI="true"] tab {
+	padding: 0px 4px 1px 4px;
+}
+:root[hc_compactUI="true"] tab[selected="true"] {
+	padding: 0px 6px 3px 6px;
+}
+:root[hc_compactUI="true"] menulist {
+	margin-top: 1px;
+	margin-bottom: 1px;
+}
+:root[hc_compactUI="true"] .menulist-label-box {
+	margin-top: 0;
+	margin-bottom: 0;
+	border-top: none;
+	border-bottom: none;
+}
+:root[hc_compactUI="true"] button:not(.dialog-button) {
+	margin-top: 1px;
+	margin-bottom: 1px;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+:root[hc_compactUI="true"] button.dialog-button {
+	margin-top: 6px;
+}
+:root[hc_compactUI="true"] button:not(.dialog-button) * {
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+:root[hc_compactUI="true"] checkbox {
+	margin-right: 2px;
+	margin-left: 2px;
+	-moz-padding-start: 2px;
+	-moz-padding-end: 1px;
+}
+:root[hc_compactUI="true"] .hcEditor {
+  margin: 0;
+}

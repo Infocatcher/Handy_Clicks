@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<menulist id="hc-editor-func">
+		<menupopup id="hc-editor-funcPopup">
+			<!--
+			Separator: "," or ", "
+			hc_args:     missing => no args  or string like "refererPolicy, closePopups"
+			hc_supports: missing => all      or string like "tab, tabbar"
+			hc_app:      missing => all      or string like "Firefox 3.0 - 3.6.*, SeaMonkey"
+			hc_required: missing => nothing  or string like "FlashGot"
+			-->
+			<!-- Built-in actions -->
+			<menuitem value="copyItemText" label="copyItemText" />
+			<menuitem value="copyItemLink" label="copyItemLink" />
+			<menuseparator id="hc-editor-funcsSep-clip" />
+			<menuitem value="removeTab" label="removeTab"
+				hc_supports="tab, tabbar" />
+			<menuitem value="removeOtherTabs" label="removeOtherTabs"
+				hc_supports="tab, tabbar" />
+			<menuitem value="removeAllTabs" label="removeAllTabs"
+				hc_supports="tab, tabbar" />
+			<menuitem value="removeLeftTabs" label="removeLeftTabs"
+				hc_supports="tab, tabbar" />
+				<menuitem value="removeRightTabs" label="removeRightTabs"
+				hc_supports="tab, tabbar" />
+			<menuitem value="undoCloseTab" label="undoCloseTab"
+				hc_supports="tab, tabbar" />
+			<menuitem value="cloneTab" label="cloneTab"
+				hc_supports="tab, tabbar" />
+			<menuitem value="renameTab" label="renameTab"
+				hc_supports="tab, tabbar" />
+			<menuitem value="toggleTabPinned" label="toggleTabPinned"
+				hc_supports="tab, tabbar"
+				hc_app="Firefox 4.0b2pre" />
+			<menuitem value="reloadTab" label="reloadTab"
+				hc_args="skipCache"
+				hc_supports="tab, tabbar" />
+			<menuitem value="reloadAllTabs" label="reloadAllTabs"
+				hc_args="skipCache"
+				hc_supports="tab, tabbar" />
+			<menuitem value="stopTabLoading" label="stopTabLoading"
+				hc_supports="tab, tabbar" />
+			<menuitem value="stopAllTabsLoading" label="stopAllTabsLoading"
+				hc_supports="tab, tabbar" />
+			<menuitem value="newTab" label="newTab"
+				hc_supports="tab, tabbar" />
+			<menuseparator id="hc-editor-funcsSep-tabs" />
+
+			<menuitem value="mthCloseTabs" label="mthCloseTabs"
+				hc_extLabel="Multiple Tab Handler"
+				hc_supports="ext_mulipletabs" />
+			<menuitem value="mthCloseOtherTabs" label="mthCloseOtherTabs"
+				hc_extLabel="Multiple Tab Handler"
+				hc_supports="ext_mulipletabs" />
+			<menuitem value="mthReloadTabs" label="mthReloadTabs"
+				hc_extLabel="Multiple Tab Handler"
+				hc_supports="ext_mulipletabs" />
+			<menuitem value="mthAddBookmarkFor" label="mthAddBookmarkFor"
+				hc_extLabel="Multiple Tab Handler"
+				hc_supports="ext_mulipletabs" />
+			<menuitem value="mthDuplicateTabs" label="mthDuplicateTabs"
+				hc_extLabel="Multiple Tab Handler"
+				hc_supports="ext_mulipletabs" />
+			<menuitem value="mthSplitWindowFromTabs" label="mthSplitWindowFromTabs"
+				hc_extLabel="Multiple Tab Handler"
+				hc_supports="ext_mulipletabs" />
+			<menuseparator id="hc-editor-funcsSep-mulipletabs" />
+
+			<menuitem value="openURIInTab" label="openURIInTab"
+				hc_args="loadInBackground, loadJSInBackground, refererPolicy, moveTabTo, closePopups, winRestriction"
+				hc_supports="link, img, tab, bookmark, historyItem" />
+			<menuitem value="openURIInCurrentTab" label="openURIInCurrentTab"
+				hc_args="refererPolicy, closePopups"
+				hc_supports="link, img, bookmark, historyItem" />
+			<menuitem value="openURIInWindow" label="openURIInWindow"
+				hc_args="loadInBackground, refererPolicy, moveWinTo, closePopups"
+				hc_supports="link, img, tab, bookmark, historyItem" />
+			<menuitem value="openURIInSidebar" label="openURIInSidebar"
+				hc_args="closePopups"
+				hc_supports="link, img, tab, bookmark, historyItem"
+				hc_app="Firefox" />
+			<menuseparator id="hc-editor-funcsSep-links" />
+
+			<menuitem value="showContextMenu" label="showContextMenu" />
+			<menuitem value="openSimilarLinksInTabs" label="openSimilarLinksInTabs"
+				hc_args="refererPolicy"
+				hc_supports="link" />
+			<menuitem value="reloadImg" label="reloadImg"
+				hc_supports="img" />
+			<menuitem value="copyImg" label="copyImg"
+				hc_supports="img" />
+			<menuitem value="submitForm" label="submitForm"
+				hc_args="target, loadInBackground, refererPolicy"
+				hc_supports="submitButton" />
+			<menuseparator id="hc-editor-funcsSep-misc" />
+
+			<menuitem value="downloadWithFlashGot" label="downloadWithFlashGot"
+				hc_required="FlashGot"
+				hc_supports="link" />
+			<menuitem value="openURIInSplitBrowser" label="openURIInSplitBrowser"
+				hc_required="SplitBrowser"
+				hc_args="position, closePopups"
+				hc_supports="link, img, tab, bookmark, historyItem" />
+			<menuseparator id="hc-editor-funcsSep-exts" />
+
+			<menuitem value="$void" label="$void" hc_notDelay="true" />
+			<menuitem value="$ignore" label="$ignore" hc_notDelay="true" />
+			<menuitem value="$auto" label="$auto" hc_notFunc="true" />
+
+			<!-- Custom code -->
+			<menuseparator id="hc-editor-funcsSep" />
+			<menuitem value="$custom" label="$custom" />
+		</menupopup>
+	</menulist>
+</overlay>

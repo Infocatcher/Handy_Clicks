@@ -1,0 +1,219 @@
+<!-- Options dialog -->
+<!ENTITY hc.sets.title "Handy Clicks: Настройки">
+<!ENTITY hc.sets.defaultWindowWidth "630">
+<!ENTITY hc.sets.defaultWindowHeight "510">
+<!ENTITY hc.sets.apply "Применить">
+<!ENTITY hc.sets.settings "Настройки">
+<!ENTITY hc.sets.settingsAccesskey "Н">
+
+<!ENTITY hc.sets.exportPrefs "Экспорт настроек в файл…">
+<!ENTITY hc.sets.importPrefs "Импорт настроек из файла…">
+<!ENTITY hc.sets.defaults "Сбросить настройки">
+<!ENTITY hc.sets.allPrefs "Все настройки…">
+
+<!ENTITY hc.sets.clickOptionsTitle "Настройки кликов">
+
+<!ENTITY hc.sets.columnShortcutAndTarget "Кнопка мыши и цель">
+<!ENTITY hc.sets.columnEvent "Событие">
+<!ENTITY hc.sets.columnAction "Действие">
+<!ENTITY hc.sets.columnFunction "Функция">
+<!ENTITY hc.sets.columnArguments "Аргументы">
+<!ENTITY hc.sets.columnInit "Инициализация">
+<!ENTITY hc.sets.columnEnabled "Включено">
+
+<!ENTITY hc.sets.search "Найти:">
+<!ENTITY hc.sets.searchTip "Пробел = и
+
+Специальные варианты:
+'строка целиком'
+&quot;Строка целиком с Учётом Регистра&quot;
+/регулярное выражение/i
+
+Заменители:
+&#37;custom&#37; – свой код
+&#37;type&#37; – добавленный тип
+&#37;dis&#37; – отключено
+&#37;ovr&#37; – заменяемые (при импорте)
+&#37;new&#37; – добавляемые (при импорте)">
+<!ENTITY hc.sets.filterTip "Фильтр">
+
+<!ENTITY hc.sets.editMenu "Правка">
+<!ENTITY hc.sets.editMenuAccesskey "П">
+<!ENTITY hc.sets.selectAll "Выделить всё">
+<!ENTITY hc.sets.clearSelection "Снять всё выделение">
+<!ENTITY hc.sets.invertSelection "Инвертировать выделение">
+<!ENTITY hc.sets.find "Найти…">
+<!ENTITY hc.sets.findNext "Найти далее вниз">
+<!ENTITY hc.sets.findPrev "Найти далее вверх">
+<!ENTITY hc.sets.findSelectAll "Выделить всё найденное">
+<!ENTITY hc.sets.findFilter "Включить фильтр">
+
+<!ENTITY hc.sets.viewMenu "Вид">
+<!ENTITY hc.sets.viewMenuAccesskey "В">
+<!ENTITY hc.sets.drawModeNormal "Нормальный">
+<!ENTITY hc.sets.drawModeNormalCompact "Нормальный (компактный)">
+<!ENTITY hc.sets.drawModeNormalInline "Нормальный (линейный)">
+<!ENTITY hc.sets.drawModeInverse "Инвертированный">
+<!ENTITY hc.sets.drawModeInverseCompact "Инвертированный (компактный)">
+<!ENTITY hc.sets.drawModeInverseInline "Инвертированный (линейный)">
+<!ENTITY hc.sets.expandDa "Разворачивать отложенные действия">
+<!ENTITY hc.sets.highlightTree "Раскраска дерева">
+<!ENTITY hc.sets.showTreeGrid "Показывать сетку">
+<!ENTITY hc.sets.localizeArgs "Переводить аргументы">
+<!ENTITY hc.sets.rememberSearchQuery "Запоминать поисковый запрос">
+<!ENTITY hc.sets.closeThisMenu "Закрывать это меню после клика">
+
+<!ENTITY hc.sets.cmdAdd "Добавить…">
+<!ENTITY hc.sets.cmdEdit "Редактировать…">
+<!ENTITY hc.sets.cmdEditSaved "Редактировать сохраненную версию…">
+<!ENTITY hc.sets.cmdEditType "Редактировать добавленный тип…">
+<!ENTITY hc.sets.cmdEditTypeSaved "Редактировать сохраненный добавленный тип…">
+<!ENTITY hc.sets.cmdDel "Удалить">
+
+<!ENTITY hc.sets.cmdEnable "Включить">
+<!ENTITY hc.sets.cmdDisable "Отключить">
+<!ENTITY hc.sets.cmdToggle "Переключить">
+
+<!ENTITY hc.sets.export "Экспорт">
+<!ENTITY hc.sets.exportAccesskey "Э">
+<!ENTITY hc.sets.fullExportToFile "Экспорт в файл…">
+<!ENTITY hc.sets.createBackup "Сделать резервную копию">
+<!ENTITY hc.sets.exportSelectedToFile "Экспорт выделенного в файл…">
+<!ENTITY hc.sets.exportSelectedToClipboard "Экспорт выделенного в буфер обмена">
+<!ENTITY hc.sets.exportToURI "Копировать ссылку">
+<!ENTITY hc.sets.exportToHTML "Копировать в формате HTML">
+
+<!ENTITY hc.sets.import "Импорт">
+<!ENTITY hc.sets.importAccesskey "И">
+
+<!ENTITY hc.sets.restoreFromBackup "Восстановить из резервной копии">
+<!ENTITY hc.sets.openDir "Открыть папку">
+<!ENTITY hc.sets.openDirAccesskey "О">
+<!ENTITY hc.sets.removeUserBackupsExc10 "Удалить пользовательские резервные копии кроме 10 самых новых">
+<!ENTITY hc.sets.removeUserBackupsExc10Accesskey "к">
+<!ENTITY hc.sets.removeAllUserBackups "Удалить все пользовательские резервные копии">
+<!ENTITY hc.sets.removeAllUserBackupsAccesskey "У">
+<!ENTITY hc.sets.restoreBackup "Восстановить…">
+<!ENTITY hc.sets.removeBackup "Удалить">
+<!ENTITY hc.sets.showBackupFile "Показать файл">
+
+<!ENTITY hc.sets.importFromFile "Импорт из файла…">
+<!ENTITY hc.sets.importFromClipboard "Импорт из буфера обмена">
+<!ENTITY hc.sets.importOk "Импортировать">
+<!ENTITY hc.sets.importOkAccesskey "м">
+<!ENTITY hc.sets.importCancel "Отменить">
+<!ENTITY hc.sets.importCancelAccesskey "О">
+
+<!ENTITY hc.sets.importIncrement "Добавить">
+<!ENTITY hc.sets.importIncrementAccesskey "Д">
+<!ENTITY hc.sets.importReplace "Заменить">
+<!ENTITY hc.sets.importReplaceAccesskey "З">
+
+<!ENTITY hc.sets.importNew "Новых:">
+<!ENTITY hc.sets.importOverrides "Перезаписываемых:">
+<!ENTITY hc.sets.importDeletable "Удаляемых:">
+<!ENTITY hc.sets.importTip "Обычные настройки / Настройки отложенных действий + Пользовательские типы">
+
+
+<!ENTITY hc.sets.clickPrefsTitle "Настройки">
+
+<!ENTITY hc.sets.enabled "Включено">
+
+<!ENTITY hc.sets.delayedActionTimeout "Задержка отложенного действия:">
+<!ENTITY hc.sets.zeroForDisable "мс (0 для отключения)">
+
+<!ENTITY hc.sets.notify "Всплывающие сообщения">
+<!ENTITY hc.sets.notifyCloseAfter "Закрывать через">
+<!ENTITY hc.sets.notifyInWindowCorner "Показывать в углу окна">
+<!ENTITY hc.sets.notifyDontClose "Не закрывать под курсором">
+
+<!ENTITY hc.sets.disallowMousemove "Прекращать обработку кликов при перемещении мыши с зажатыми кнопками">
+<!ENTITY hc.sets.disallowMousemoveTip "Жесты мышью, перетаскивание">
+<!ENTITY hc.sets.left "Левая">
+<!ENTITY hc.sets.middle "Средняя">
+<!ENTITY hc.sets.right "Правая">
+<!ENTITY hc.sets.maxDistance "Допустимое перемещение:">
+<!ENTITY hc.sets.px "пикселей">
+
+
+<!ENTITY hc.sets.organizeTitle "Управление">
+
+<!ENTITY hc.sets.appearance "Внешний вид">
+<!ENTITY hc.sets.showInToolsMenu "Показывать в меню Инструменты">
+<!ENTITY hc.sets.showInAppMenu "Показывать в меню приложения">
+<!ENTITY hc.sets.showInStatusbar "Показывать в строке состояния">
+<!ENTITY hc.sets.showMouseButton "Изменять иконку при обработке клика">
+<!ENTITY hc.sets.customizableProgressBar "Использовать настраиваемую полосу прогресса">
+
+<!ENTITY hc.sets.actions "Поведение элементов управления">
+<!ENTITY hc.sets.actionTypeMenu "Меню">
+<!ENTITY hc.sets.actionTypeStatusbar "Строка состояния">
+<!ENTITY hc.sets.actionTypeToolbar "Панель инструментов">
+<!ENTITY hc.sets.actionButtonLeft "Клик ЛКМ">
+<!ENTITY hc.sets.actionButtonMiddle "Клик СКМ">
+<!ENTITY hc.sets.actionButtonMiddleTip "Или клик ЛКМ с любым модификатором">
+<!ENTITY hc.sets.actionButtonRight "Клик ПКМ">
+<!ENTITY hc.sets.actionToggleStatus "Переключить статус">
+<!ENTITY hc.sets.actionOpenSettings "Открыть настройки">
+<!ENTITY hc.sets.actionContext "Показать контекстное меню">
+<!ENTITY hc.sets.actionEditMode "Режим редактирования">
+<!ENTITY hc.sets.actionShowAllSettings "Показать все настройки">
+<!ENTITY hc.sets.actionOpenCloseSettings "Открыть/закрыть настройки">
+<!ENTITY hc.sets.actionDoNothing "Ничего не делать">
+<!ENTITY hc.sets.actionReset "Сбросить">
+<!ENTITY hc.sets.actionResetAll "Сбросить всё">
+
+
+<!ENTITY hc.sets.editorTitle "Редактор">
+
+<!ENTITY hc.sets.settingsInterface "Интерфейс настроек">
+<!ENTITY hc.sets.onTopButton "Показывать кнопку «Закрепить» в углу окна"> <!-- see "onTop" in hcs.properties -->
+
+<!ENTITY hc.sets.tabulation "Табуляция">
+<!ENTITY hc.sets.tabSize "Ширина:">
+<!ENTITY hc.sets.tabSpaces "Пробелы">
+
+<!ENTITY hc.sets.autocomplete "Автодополнение">
+<!ENTITY hc.sets.autocompleteShowAfter "Показывать после">
+<!ENTITY hc.sets.autocompleteMinSymbol "символа">
+<!ENTITY hc.sets.autocompleteMinSymbols "символов">
+
+<!ENTITY hc.sets.externalEditor "Внешний редактор">
+<!ENTITY hc.sets.externalEditorPath "Путь:">
+<!ENTITY hc.sets.externalEditorPathNote "Если путь не задан, будет запущена ассоциированная программа.
+Или используйте «Scratchpad» вместо пути для запуска встроенного в браузер редактора (если доступен).">
+<!ENTITY hc.sets.externalEditorBrowse "Обзор…">
+<!ENTITY hc.sets.externalEditorMakeRelative "Сделать путь относительным">
+<!ENTITY hc.sets.externalEditorMakeAbsolute "Сделать путь абсолютным">
+<!ENTITY hc.sets.externalEditorArgs "Аргументы:">
+<!ENTITY hc.sets.externalEditorArgsTip "1 строка = 1 аргумент
+&#37;F – путь к файлу (будет добавлен автоматически, если отсутствует)
+&#37;L – номер строки
+&#37;C – номер столбца">
+<!ENTITY hc.sets.externalEditorExt "Расширение временного файла:">
+
+<!ENTITY hc.sets.resetWarnMsgs "Сбросить отключённые предупреждения">
+<!ENTITY hc.sets.resetWarnMsgsTip "Отключённые предупреждения:">
+
+
+<!ENTITY hc.sets.builtInFuncsTitle "Встроенные функции">
+
+<!ENTITY hc.sets.jsLinks "JavaScript-ссылки (javascript: …)">
+<!ENTITY hc.sets.voidLinks "«Пустые» ссылки с обработчиками кликов">
+<!ENTITY hc.sets.linkLoad "Открывать">
+<!ENTITY hc.sets.linkNotify "Сообщать">
+
+<!ENTITY hc.sets.fileLinks "Ссылки на файлы">
+<!ENTITY hc.sets.fileLinksNotCheck "Не проверять">
+<!ENTITY hc.sets.fileLinksShowContext "Показывать контекстное меню">
+<!ENTITY hc.sets.fileLinksOpen "Открывать в текущей вкладке">
+<!ENTITY hc.sets.fileLinksFilter "Фильтр (RegExp):">
+
+<!ENTITY hc.sets.openURIsInApps "Открытие ссылок в других приложениях">
+<!ENTITY hc.sets.convertURIs "Конвертировать ссылки в следующую кодировку:">
+<!ENTITY hc.sets.autodetect "Автоопределение">
+
+<!ENTITY hc.sets.similarLinks "Открытие похожих ссылок">
+<!ENTITY hc.sets.visibleOnly "Открывать только видимые ссылки">
+<!ENTITY hc.sets.openingDelay "Интервал:">
+<!ENTITY hc.sets.ms "мс">

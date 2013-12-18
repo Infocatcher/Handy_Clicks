@@ -1,0 +1,322 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/global.css" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/setsCommon.css" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/editor.css" type="text/css"?>
+
+<?xul-overlay href="chrome://handyclicks/content/editorFuncs.xul"?>
+
+<!DOCTYPE dialog [
+	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/editor.dtd">
+	%locale;
+	<!ENTITY % default SYSTEM "chrome://handyclicks-locale/content/editor.dtd">
+	%default;
+]>
+
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	id="handyClicks-editor"
+	windowtype="handyclicks:editor"
+	title="&hc.editor.title;"
+	buttons="accept,cancel,extra1,extra2"
+	buttonlabelextra1="&hc.editor.apply;"
+	buttonlabelextra2="&hc.editor.delete;"
+	buttonaccesskeyextra2="&hc.editor.deleteAccesskey;"
+	ondialogaccept="return handyClicksEditor.saveSettings();"
+	ondialogcancel="return handyClicksEditor.checkSaved();"
+	ondialogextra1="handyClicksEditor.saveSettings(true);"
+	ondialogextra2="handyClicksEditor.deleteSettings();"
+	onchange="handyClicksEditor.dataChanged(event);"
+	oninput="handyClicksEditor.dataChanged(event);"
+	oncommand="handyClicksEditor.dataChanged(event);"
+	hc_ondrop="handyClicksEditor.dataChanged(event);"
+	oncut="handyClicksEditor.dataChanged(event);"
+	width="&hc.editor.defaultWindowWidth;"
+	height="&hc.editor.defaultWindowHeight;"
+	persist="width height screenX screenY sizemode">
+
+	<!-- "hc_ondrop" attribute will be replaced in init() function from setsUtils.js -->
+
+	<script type="application/javascript" src="chrome://handyclicks/content/utils.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/winUtils.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/prefUtils.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/setsUtils.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/prefSvc.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/editor.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/regSvc.js" />
+
+	<commandset id="hc-editor-commands">
+		<command id="hc-editor-cmd-test" oncommand="event.stopPropagation(); handyClicksEditor.testSettings();"
+			disabled="true" label="&hc.editor.test;" accesskey="&hc.editor.testAccesskey;" />
+		<command id="hc-editor-cmd-undo" oncommand="event.stopPropagation(); handyClicksEditor.undoTestSettings(true);"
+			disabled="true" label="&hc.editor.undo;" accesskey="&hc.editor.undoAccesskey;" />
+	</commandset>
+
+	<keyset id="hc-editor-keys">
+		<key id="hc-sets-key-apply" key="s" modifiers="control" oncommand="handyClicksEditor.saveSettings(true);" />
+		<key id="hc-sets-key-accept" keycode="VK_RETURN" modifiers="control" oncommand="document.documentElement.acceptDialog();" />
+		<key id="hc-editor-key-test" key="t" modifiers="control" command="hc-editor-cmd-test" />
+		<key id="hc-editor-key-undo" key="u" modifiers="control" command="hc-editor-cmd-undo" />
+		<key id="hc-editor-key-delete" key="d" modifiers="control" oncommand="handyClicksEditor.deleteSettings();" />
+		<key id="hc-editor-key-reload" keycode="VK_F5" oncommand="handyClicksEditor.initUI(true);" />
+		<key id="hc-editor-key-reload2" key="r" modifiers="control" oncommand="handyClicksEditor.initUI(true);" />
+
+		<key id="hc-editor-key-editCode" key="E" modifiers="control,shift" oncommand="handyClicksEditor.editCode();" />
+		<key id="hc-editor-key-editCode2" keycode="VK_F4" oncommand="handyClicksEditor.editCode();" />
+		<key id="hc-editor-key-openCode" key="O" modifiers="control,shift" oncommand="handyClicksEditor.openCode();" />
+		<key id="hc-editor-key-openCodeNoWatch" key="O" modifiers="control"
+			oncommand="handyClicksEditor.doEditorCommand(null, 'loadFromFile', false);" />
+		<key id="hc-editor-key-saveCode" key="S" modifiers="control,shift"
+			oncommand="handyClicksEditor.doEditorCommand(null, 'saveToFile', true);" />
+
+		<key id="hc-editor-key-copy" key="c" modifiers="control,shift" oncommand="handyClicksEditor.copySettings();" />
+		<key id="hc-editor-key-paste" key="v" modifiers="control,shift" oncommand="handyClicksEditor.pasteSettings();" />
+
+		<key id="hc-editor-key-rewindFocus" keycode="VK_UP" modifiers="control" oncommand="document.commandDispatcher.rewindFocus();" />
+		<key id="hc-editor-key-rewindFocus" keycode="VK_DOWN" modifiers="control" oncommand="document.commandDispatcher.advanceFocus();" />
+
+		<key id="hc-editor-key-openErrorConsole" key="j" modifiers="control,shift" oncommand="handyClicksUtils.openErrorConsole();" />
+
+		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksWinUtils.maximizeWindow();" />
+		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksWinUtils.toggleFullscreen();" />
+		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksWinUtils.toggleOnTop();" />
+	</keyset>
+
+	<tabbox id="hc-editor-mainTabbox" flex="1">
+		<tabs onselect="handyClicksEditor.editorModeChanged();">
+			<tab id="hc-editor-shortcutTab" selected="true"
+				label="&hc.editor.mainTabActions;" accesskey="&hc.editor.mainTabActionsAccesskey;" />
+			<tab id="hc-editor-itemTypeTab"
+				label="&hc.editor.mainTabCustomTypes;" accesskey="&hc.editor.mainTabCustomTypesAccesskey;" />
+		</tabs>
+		<tabpanels flex="1">
+			<tabpanel id="hc-editor-shortcutPanel" flex="1" orient="vertical">
+				<hbox id="hc-editor-targetBox" align="center"
+					onchange="event.stopPropagation(); handyClicksEditor.loadFuncs();"
+					oncommand="event.stopPropagation(); handyClicksEditor.loadFuncs();"
+					hc_ondrop="event.stopPropagation();">
+					<!-- Prevent bubbling of all events from this box (any modifacation will not change apply button state) -->
+					<button id="hc-editor-clickButton" onclick="handyClicksEditor.setClickOptions(event);"
+						label="&hc.editor.clickHere;" tooltiptext="&hc.editor.clickHereTip;" />
+					<menulist id="hc-editor-button">
+						<menupopup>
+							<menuitem value="0" label="button0short" tooltiptext="button0" class="menuitem-iconic" />
+							<menuitem value="1" label="button1short" tooltiptext="button1" class="menuitem-iconic" />
+							<menuitem value="2" label="button2short" tooltiptext="button2" class="menuitem-iconic" />
+						</menupopup>
+					</menulist>
+					<checkbox id="hc-editor-ctrl" label="ctrl" />
+					<checkbox id="hc-editor-shift" label="shift" />
+					<checkbox id="hc-editor-alt" label="alt" />
+					<checkbox id="hc-editor-meta" label="meta" />
+					<!-- Dummy label for accesskey -->
+					<label style="margin: 0; padding: 0; border: none;"
+						accesskey="&hc.editor.itemTypesAccesskey;" control="hc-editor-itemTypes" />
+					<menulist id="hc-editor-itemTypes"
+						oncommand="handyClicksEditor.itemTypeChanged(this.value);"
+						onclick="handyClicksEditor.editCustomType(event);">
+						<menupopup>
+							<menuseparator id="hc-editor-customTypesSep" />
+							<menuitem value="img" label="img" />
+							<menuitem value="link" label="link" />
+							<menuitem value="historyItem" label="historyItem" />
+							<menuitem value="bookmark" label="bookmark" />
+							<menuitem value="tab" label="tab" />
+							<menuitem value="ext_mulipletabs" label="ext_mulipletabs" hc_required="Multiple Tab Handler" />
+							<menuitem value="tabbar" label="tabbar" />
+							<menuitem value="submitButton" label="submitButton" />
+							<menuseparator />
+							<menuitem value="$all" label="$all" />
+						</menupopup>
+					</menulist>
+				</hbox>
+
+				<hbox id="hc-editor-funcTabboxToolbar" align="right" class="hcTabsToolbar"
+					oncommand="event.stopPropagation();">
+					<checkbox id="hc-editor-funcOptsFixed" class="hcFloatControl"
+						oncommand="handyClicksEditor.fixFuncOpts(this.checked);"
+						label="&hc.editor.fixActionOpts;" accesskey="&hc.editor.fixActionOptsAccesskey;"
+						tooltiptext="&hc.editor.fixActionOptsTip;" />
+				</hbox>
+
+				<tabbox id="hc-editor-funcTabbox" flex="1">
+					<tabs>
+						<tab label="&hc.editor.tabAction;" accesskey="&hc.editor.tabActionAccesskey;"
+							tooltiptext="&hc.editor.tabActionTip;" />
+						<tab id="hc-editor-funcTab-delay"
+							label="&hc.editor.tabActionDelay;" accesskey="&hc.editor.tabActionDelayAccesskey;"
+							hc_tooltiptext="&hc.editor.tabActionDelayTip;" />
+					</tabs>
+					<tabpanels id="hc-editor-funcsTab" flex="1">
+						<tabpanel id="hc-editor-funcTab" flex="1" orient="vertical">
+
+							<vbox id="hc-editor-funcOpts"
+								oncommand="handyClicksEditor.disableUnsupported();"
+								onchange="handyClicksEditor.disableUnsupported();">
+								<hbox align="center">
+									<label hc_notDelay="true" value="&hc.editor.event;"
+										accesskey="&hc.editor.eventAccesskey;" control="hc-editor-events" />
+									<menulist id="hc-editor-events" hc_notDelay="true">
+										<menupopup>
+											<menuitem value="mousedown" label="Mousedown" />
+											<menuitem value="click" label="Click" />
+											<menuitem id="hc-editor-events-command" value="command" label="Command" />
+											<menuitem value="dblclick" label="Dblclick" />
+										</menupopup>
+									</menulist>
+
+									<label id="hc-editor-allowMousedownLabel" hc_notDelay="true"
+										value="&hc.editor.mousedownEvent;" control="hc-editor-allowMousedown" />
+									<menulist id="hc-editor-allowMousedown" hc_notDelay="true">
+										<menupopup>
+											<menuitem value="true" label="&hc.editor.mousedownAllow;" />
+											<menuitem value="undefined" label="&hc.editor.mousedownSmart;" />
+											<menuitem value="false" label="&hc.editor.mousedownStop;" />
+										</menupopup>
+									</menulist>
+
+									<checkbox id="hc-editor-enabled" handyclicks_important="enabled"
+										label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
+								</hbox>
+								<hbox id="hc-editor-funcOptsAdd" align="center" hc_notDelay="true">
+									<label value="&hc.editor.funcOptsAdd;" accesskey="&hc.editor.funcOptsAddAccesskey;"
+										control="hc-editor-imgIgnoreLinks" />
+									<checkbox id="hc-editor-imgIgnoreLinks" label="&hc.editor.ignoreLinks;" />
+									<checkbox id="hc-editor-imgIgnoreSingle" label="&hc.editor.ignoreSingle;" />
+								</hbox>
+							</vbox>
+
+							<hbox align="center">
+								<label value="&hc.editor.func;"
+									accesskey="&hc.editor.funcAccesskey;" control="hc-editor-func" />
+								<menulist id="hc-editor-func"
+									oncommand="handyClicksEditor.addFuncArgs(this.id.replace(/^hc-editor-func/, ''));">
+									<!-- See editorFuncs.xul -->
+								</menulist>
+								<hbox id="hc-editor-funcLabelBox" align="center" flex="1">
+									<label value="&hc.editor.funcLabel;"
+										accesskey="&hc.editor.funcLabelAccesskey;" control="hc-editor-funcLabel" />
+									<textbox id="hc-editor-funcLabel" flex="1" spellcheck="true" />
+								</hbox>
+							</hbox>
+							<vbox id="hc-editor-funcSets" flex="1">
+								<groupbox id="hc-editor-funcArgsBox">
+									<caption label="&hc.editor.funcArgsCaption;" />
+									<vbox id="hc-editor-funcArgs" flex="1" align="left" />
+								</groupbox>
+
+								<hbox id="hc-editor-funcCustomTabboxToolbar" align="right" class="hcTabsToolbar"
+									oncommand="event.stopPropagation();">
+									<button class="hcEditCodeButton hcFloatButton hc-iconic"
+										label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"
+										hc_key="hc-editor-key-editCode"
+										oncommand="handyClicksEditor.editCode();" />
+									<button class="hcOpenCodeButton hcFloatButton hc-iconic"
+										label="&hc.editor.openCode;" tooltiptext="&hc.editor.openCodeTip;"
+										hc_key="hc-editor-key-openCode"
+										oncommand="handyClicksEditor.openCode();" />
+								</hbox>
+
+								<tabbox id="hc-editor-funcCustomTabbox" flex="1">
+									<tabs>
+										<tab label="&hc.editor.funcCode;" accesskey="&hc.editor.funcCodeAccesskey;"
+											selected="true" />
+										<tab label="&hc.editor.funcInit;" accesskey="&hc.editor.funcInitAccesskey;"
+											tooltiptext="&hc.editor.funcInitTip;" hc_empty="true" />
+									</tabs>
+									<tabpanels flex="1">
+										<tabpanel flex="1" orient="vertical">
+											<hbox class="hcNotesBox">
+												<textbox class="hcText" readonly="true" tabindex="1"
+													value="&hc.editor.argsNote; event, item, origItem" />
+											</hbox>
+											<textbox class="hcEditor" id="hc-editor-funcField" flex="1"
+												accesskey="&hc.editor.editAccesskey;" />
+										</tabpanel>
+										<tabpanel flex="1" orient="vertical">
+											<textbox class="hcEditor" id="hc-editor-funcInitField" flex="1"
+												accesskey="&hc.editor.editAccesskey;"
+												oninput="handyClicksEditor.highlightEmpty(this, true);"
+												hc_ondrop="handyClicksEditor.highlightEmpty(this, true);"
+												oncut="handyClicksEditor.highlightEmpty(this, true);" />
+										</tabpanel>
+									</tabpanels>
+								</tabbox>
+							</vbox>
+
+						</tabpanel>
+						<!-- See createDelayedFuncTab() function in editor.js
+						<tabpanel id="hc-editor-funcTab-delay" flex="1" orient="vertical"> ... </tabpanel>
+						-->
+					</tabpanels>
+				</tabbox>
+			</tabpanel>
+			<tabpanel id="hc-editor-itemTypePanel" flex="1" orient="vertical">
+				<hbox align="center">
+					<label value="&hc.editor.funcLabel;"
+						accesskey="&hc.editor.funcLabelAccesskey;" control="hc-editor-customType" />
+					<menulist id="hc-editor-customType" editable="true" spellcheck="true" flex="1"
+						oncommand="event.stopPropagation(); handyClicksEditor.initCustomTypesEditor();"
+						oninput="handyClicksEditor.customTypeLabelChanged(this);"
+						hc_ondrop="handyClicksEditor.customTypeLabelChangedDelay(this);"
+						oncut="handyClicksEditor.customTypeLabelChangedDelay(this);">
+						<menupopup id="hc-editor-customTypePopup" />
+					</menulist>
+					<label value="&hc.editor.internalId;"
+						accesskey="&hc.editor.internalIdAccesskey;" control="hc-editor-customTypeExtId" />
+					<textbox id="hc-editor-customTypeExtId" flex="1"
+						onkeypress="return handyClicksEditor.customTypeIdFilter(event);"
+						oninput="handyClicksEditor.customTypeIdFilter(event);"
+						hc_ondrop="handyClicksEditor.customTypeIdFilter(event);"
+						oncut="handyClicksEditor.customTypeIdFilter(event);" />
+					<checkbox id="hc-editor-customTypeEnabled" handyclicks_important="enabled"
+						label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
+				</hbox>
+
+				<hbox id="hc-editor-customTypeTabboxToolbar" align="right" class="hcTabsToolbar"
+					oncommand="event.stopPropagation();">
+					<button class="hcEditCodeButton hcFloatButton hc-iconic"
+						label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"
+						hc_key="hc-editor-key-editCode"
+						oncommand="handyClicksEditor.editCode();" />
+					<button class="hcOpenCodeButton hcFloatButton hc-iconic"
+						label="&hc.editor.openCode;" tooltiptext="&hc.editor.openCodeTip;"
+						hc_key="hc-editor-key-openCode"
+						oncommand="handyClicksEditor.openCode();" />
+				</hbox>
+
+				<tabbox id="hc-editor-customTypeTabbox" flex="1">
+					<tabs>
+						<tab label="&hc.editor.defineItem;" accesskey="&hc.editor.defineItemAccesskey;" />
+						<tab hc_empty="true" label="&hc.editor.defineContext;" accesskey="&hc.editor.defineContextAccesskey;"
+							tooltiptext="&hc.editor.defineContextTip;" />
+					</tabs>
+					<tabpanels flex="1">
+						<tabpanel id="hc-editor-customTypeDefinePanel" flex="1" orient="vertical">
+							<hbox class="hcNotesBox">
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.argsNote; event, item" />
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturnNote;" />
+							</hbox>
+							<textbox class="hcEditor" id="hc-editor-customTypeDefine" flex="1"
+								accesskey="&hc.editor.editAccesskey;" />
+						</tabpanel>
+						<tabpanel id="hc-editor-customTypeContextPanel" flex="1" orient="vertical">
+							<hbox class="hcNotesBox">
+								<textbox class="hcText" readonly="true" tabindex="1"
+									value="&hc.editor.argsNote; event, item, origItem" />
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturnNote;" />
+							</hbox>
+							<textbox class="hcEditor" id="hc-editor-customTypeContext" flex="1"
+								accesskey="&hc.editor.editAccesskey;"
+								oninput="handyClicksEditor.highlightEmpty(this, true);"
+								hc_ondrop="handyClicksEditor.highlightEmpty(this, true);"
+								oncut="handyClicksEditor.highlightEmpty(this, true);" />
+						</tabpanel>
+					</tabpanels>
+				</tabbox>
+
+			</tabpanel>
+		</tabpanels>
+	</tabbox>
+
+</dialog>

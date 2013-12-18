@@ -1,0 +1,19 @@
+<!-- Main window -->
+<!ENTITY handyClicks.menuitemLabel "Handy Clicks">
+<!ENTITY handyClicks.menuitemAccesskey "H">
+<!ENTITY handyClicks.menuitemAppAccesskey "H">
+<!ENTITY handyClicks.toolbarbuttonLabel "Handy Clicks">
+<!ENTITY handyClicks.settingsLabel "Настройки…">
+<!ENTITY handyClicks.settingsAccesskey "Н">
+<!ENTITY handyClicks.allSettingsLabel "Все настройки…">
+<!ENTITY handyClicks.allSettingsAccesskey "В">
+<!ENTITY handyClicks.enableLabel "Включить Handy Clicks">
+<!ENTITY handyClicks.enableAccesskey "В">
+<!ENTITY handyClicks.editModeLabel "Режим редактирования">
+<!ENTITY handyClicks.editModeAccesskey "р">
+<!ENTITY handyClicks.editModeTipHeader "Handy Clicks:">
+
+<!ENTITY handyClicks.importFromClipboardLabel "Импортировать настройки из буфера обмена…">
+<!ENTITY handyClicks.importFromClipboardAccesskey "И">
+<!ENTITY handyClicks.progress "Handy Clicks: Прогресс"> <!-- Visible only in "Customize Toolbar" dialog -->
+<!ENTITY handyClicks.cancel "Отменить">

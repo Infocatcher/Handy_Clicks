@@ -1,0 +1,101 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+#hc-sets-floatToolbar {
+	position: fixed !important;
+	top: 0 !important;
+	right: 0 !important;
+	margin: 2px;
+}
+/* Firefox 3.6+
+#hc-sets-floatToolbar:-moz-locale-dir(rtl) {
+	right: auto !important;
+	left: 0 !important;
+}
+*/
+:root[chromedir="rtl"] #hc-sets-floatToolbar {
+	right: auto !important;
+	left: 0 !important;
+}
+
+.hcFloatControl, .hcFloatButton {
+	position: relative;
+	z-index: 10000;
+}
+.hcFloatButton, .hcFloatButton * {
+	margin: 0 !important;
+	padding: 0 !important;
+	min-width: 0 !important;
+	min-height: 0 !important;
+}
+.hcFloatButton {
+	-moz-margin-start: 2px !important;
+	padding: 0 2px !important;
+}
+
+#hc-sets-onTop {
+	list-style-image: url("icons16.png");
+	-moz-image-region: rect(16px 32px 32px 16px);
+}
+#hc-sets-onTop[checked="true"] {
+	-moz-image-region: rect(16px 16px 32px 0);
+	text-decoration: underline;
+}
+#hc-sets-onTop label {
+	-moz-margin-start: 2px !important;
+}
+#hc-sets-onTop[hc_hideLabel="true"] label {
+	display: none;
+}
+#hc-sets-onTop[hc_onTopNA="true"] {
+	opacity: 0.7;
+}
+
+[hc_canDragSwitch="true"] {
+	text-decoration: underline !important;
+}
+tab[hc_disabled="true"][hc_canDragSwitch="true"] {
+	text-decoration: underline line-through !important;
+}
+
+label[tooltiptext]:not([tooltiptext=""]),
+label[tooltip] {
+	border-bottom: 1px dotted;
+	cursor: help;
+}
+button[tooltip]:not([disabled="true"]) {
+	cursor: help;
+}
+button[tooltip]:not([disabled="true"]) label {
+	border-bottom: 1px dotted;
+}
+caption[tooltiptext] > .caption-text {
+	cursor: help;
+}
+
+button.hc-iconic .button-icon {
+	/* It's important to use "button .button-icon" ! */
+	/* Without them we can see same icon instead of dropmarker on Linux */
+	list-style-image: url("icons16.png");
+}
+button .button-icon {
+	/* We can see strange things on Firefox 1.5 and 2.0 without them */
+	opacity: 0.999;
+}
+button.hc-iconic .button-text {
+	-moz-margin-start: 2px !important;
+}
+button.hc-iconic[disabled="true"] .button-icon {
+	opacity: 0.32;
+}
+
+button.hc-apply {
+	-moz-image-region: rect(48px 48px 64px 32px);
+}
+button.hc-preferences {
+	-moz-image-region: rect(48px 80px 64px 64px);
+}
+
+#handyClicks-infoTooltip {
+	margin: 0;
+	padding: 0;
+}

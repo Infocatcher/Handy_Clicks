@@ -1,0 +1,219 @@
+<!-- Options dialog -->
+<!ENTITY hc.sets.title "Handy Clicks: Settings">
+<!ENTITY hc.sets.defaultWindowWidth "590">
+<!ENTITY hc.sets.defaultWindowHeight "510">
+<!ENTITY hc.sets.apply "Apply">
+<!ENTITY hc.sets.settings "Settings">
+<!ENTITY hc.sets.settingsAccesskey "S">
+
+<!ENTITY hc.sets.exportPrefs "Export preferences to file…">
+<!ENTITY hc.sets.importPrefs "Import preferences from file…">
+<!ENTITY hc.sets.defaults "Reset to defaults">
+<!ENTITY hc.sets.allPrefs "All preferences…">
+
+<!ENTITY hc.sets.clickOptionsTitle "Clicks Options">
+
+<!ENTITY hc.sets.columnShortcutAndTarget "Shortcut and target">
+<!ENTITY hc.sets.columnEvent "Event">
+<!ENTITY hc.sets.columnAction "Action">
+<!ENTITY hc.sets.columnFunction "Function">
+<!ENTITY hc.sets.columnArguments "Arguments">
+<!ENTITY hc.sets.columnInit "Initialization">
+<!ENTITY hc.sets.columnEnabled "Enabled">
+
+<!ENTITY hc.sets.search "Search:">
+<!ENTITY hc.sets.searchTip "Space = and
+
+Special:
+'whole string'
+&quot;Whole string and Match Case&quot;
+/regular expression/i
+
+Placeholders:
+&#37;custom&#37; – custom code
+&#37;type&#37; – custom type
+&#37;dis&#37; – disabled
+&#37;ovr&#37; – overrided (import)
+&#37;new&#37; – new (import)">
+<!ENTITY hc.sets.filterTip "Filter">
+
+<!ENTITY hc.sets.editMenu "Edit">
+<!ENTITY hc.sets.editMenuAccesskey "E">
+<!ENTITY hc.sets.selectAll "Select all">
+<!ENTITY hc.sets.clearSelection "Clear selection">
+<!ENTITY hc.sets.invertSelection "Invert selection">
+<!ENTITY hc.sets.find "Find…">
+<!ENTITY hc.sets.findNext "Find next down">
+<!ENTITY hc.sets.findPrev "Find next up">
+<!ENTITY hc.sets.findSelectAll "Select all search results">
+<!ENTITY hc.sets.findFilter "Enable filter">
+
+<!ENTITY hc.sets.viewMenu "View">
+<!ENTITY hc.sets.viewMenuAccesskey "V">
+<!ENTITY hc.sets.drawModeNormal "Normal">
+<!ENTITY hc.sets.drawModeNormalCompact "Normal (compact)">
+<!ENTITY hc.sets.drawModeNormalInline "Normal (inline)">
+<!ENTITY hc.sets.drawModeInverse "Inverse">
+<!ENTITY hc.sets.drawModeInverseCompact "Inverse (compact)">
+<!ENTITY hc.sets.drawModeInverseInline "Inverse (inline)">
+<!ENTITY hc.sets.expandDa "Expand delayed actions">
+<!ENTITY hc.sets.highlightTree "Highlight tree">
+<!ENTITY hc.sets.showTreeGrid "Show grid">
+<!ENTITY hc.sets.localizeArgs "Localize arguments">
+<!ENTITY hc.sets.rememberSearchQuery "Remember search query">
+<!ENTITY hc.sets.closeThisMenu "Close this menu after click">
+
+<!ENTITY hc.sets.cmdAdd "Add…">
+<!ENTITY hc.sets.cmdEdit "Edit…">
+<!ENTITY hc.sets.cmdEditSaved "Edit saved…">
+<!ENTITY hc.sets.cmdEditType "Edit custom type…">
+<!ENTITY hc.sets.cmdEditTypeSaved "Edit saved custom type…">
+<!ENTITY hc.sets.cmdDel "Delete">
+
+<!ENTITY hc.sets.cmdEnable "Enable">
+<!ENTITY hc.sets.cmdDisable "Disable">
+<!ENTITY hc.sets.cmdToggle "Toggle">
+
+<!ENTITY hc.sets.export "Export">
+<!ENTITY hc.sets.exportAccesskey "E">
+<!ENTITY hc.sets.fullExportToFile "Export to file…">
+<!ENTITY hc.sets.createBackup "Create backup">
+<!ENTITY hc.sets.exportSelectedToFile "Export selected to file…">
+<!ENTITY hc.sets.exportSelectedToClipboard "Export selected to clipboard">
+<!ENTITY hc.sets.exportToURI "Copy URI">
+<!ENTITY hc.sets.exportToHTML "Copy in HTML format">
+
+<!ENTITY hc.sets.import "Import">
+<!ENTITY hc.sets.importAccesskey "I">
+
+<!ENTITY hc.sets.restoreFromBackup "Restore from backup">
+<!ENTITY hc.sets.openDir "Open directory">
+<!ENTITY hc.sets.openDirAccesskey "O">
+<!ENTITY hc.sets.removeUserBackupsExc10 "Remove user backups except newest 10">
+<!ENTITY hc.sets.removeUserBackupsExc10Accesskey "x">
+<!ENTITY hc.sets.removeAllUserBackups "Remove all user backups">
+<!ENTITY hc.sets.removeAllUserBackupsAccesskey "R">
+<!ENTITY hc.sets.restoreBackup "Restore…">
+<!ENTITY hc.sets.removeBackup "Remove">
+<!ENTITY hc.sets.showBackupFile "Show file">
+
+<!ENTITY hc.sets.importFromFile "Import from file…">
+<!ENTITY hc.sets.importFromClipboard "Import from clipboard">
+<!ENTITY hc.sets.importOk "Import">
+<!ENTITY hc.sets.importOkAccesskey "m">
+<!ENTITY hc.sets.importCancel "Cancel">
+<!ENTITY hc.sets.importCancelAccesskey "C">
+
+<!ENTITY hc.sets.importIncrement "Add">
+<!ENTITY hc.sets.importIncrementAccesskey "A">
+<!ENTITY hc.sets.importReplace "Replace">
+<!ENTITY hc.sets.importReplaceAccesskey "R">
+
+<!ENTITY hc.sets.importNew "New:">
+<!ENTITY hc.sets.importOverrides "Overrides:">
+<!ENTITY hc.sets.importDeletable "Deletable:">
+<!ENTITY hc.sets.importTip "Normal settings / Delayed actions settings + Custom types">
+
+
+<!ENTITY hc.sets.clickPrefsTitle "Preferences">
+
+<!ENTITY hc.sets.enabled "Enabled">
+
+<!ENTITY hc.sets.delayedActionTimeout "Timeout for delayed action:">
+<!ENTITY hc.sets.zeroForDisable "ms (0 to disable)">
+
+<!ENTITY hc.sets.notify "Notify">
+<!ENTITY hc.sets.notifyCloseAfter "Close after">
+<!ENTITY hc.sets.notifyInWindowCorner "Show in window corner">
+<!ENTITY hc.sets.notifyDontClose "Don't close under cursor">
+
+<!ENTITY hc.sets.disallowMousemove "Stop clicks handling if mouse was moved with pressed button">
+<!ENTITY hc.sets.disallowMousemoveTip "Mouse gestures, drag-and-drop">
+<!ENTITY hc.sets.left "Left">
+<!ENTITY hc.sets.middle "Middle">
+<!ENTITY hc.sets.right "Right">
+<!ENTITY hc.sets.maxDistance "Allowed distance:">
+<!ENTITY hc.sets.px "pixels">
+
+
+<!ENTITY hc.sets.organizeTitle "Organize">
+
+<!ENTITY hc.sets.appearance "Appearance">
+<!ENTITY hc.sets.showInToolsMenu "Show in Tools menu">
+<!ENTITY hc.sets.showInAppMenu "Show in App menu">
+<!ENTITY hc.sets.showInStatusbar "Show in Status Bar">
+<!ENTITY hc.sets.showMouseButton "Change icon when click handling">
+<!ENTITY hc.sets.customizableProgressBar "Use customizable progress bar">
+
+<!ENTITY hc.sets.actions "Controls behavior">
+<!ENTITY hc.sets.actionTypeMenu "Menu">
+<!ENTITY hc.sets.actionTypeStatusbar "Statusbar">
+<!ENTITY hc.sets.actionTypeToolbar "Toolbar">
+<!ENTITY hc.sets.actionButtonLeft "Left-click">
+<!ENTITY hc.sets.actionButtonMiddle "Middle-click">
+<!ENTITY hc.sets.actionButtonMiddleTip "Or left-click with any modifier">
+<!ENTITY hc.sets.actionButtonRight "Right-click">
+<!ENTITY hc.sets.actionToggleStatus "Toggle status">
+<!ENTITY hc.sets.actionOpenSettings "Open settings">
+<!ENTITY hc.sets.actionContext "Show context menu">
+<!ENTITY hc.sets.actionEditMode "Edit mode">
+<!ENTITY hc.sets.actionShowAllSettings "Show all settings">
+<!ENTITY hc.sets.actionOpenCloseSettings "Open/close settings">
+<!ENTITY hc.sets.actionDoNothing "Do nothing">
+<!ENTITY hc.sets.actionReset "Reset">
+<!ENTITY hc.sets.actionResetAll "Reset All">
+
+
+<!ENTITY hc.sets.editorTitle "Editor">
+
+<!ENTITY hc.sets.settingsInterface "Settings interface">
+<!ENTITY hc.sets.onTopButton "Show “On top” button in the corner"> <!-- see "onTop" in hcs.properties -->
+
+<!ENTITY hc.sets.tabulation "Tabulation">
+<!ENTITY hc.sets.tabSize "Size:">
+<!ENTITY hc.sets.tabSpaces "Spaces">
+
+<!ENTITY hc.sets.autocomplete "Autocomplete">
+<!ENTITY hc.sets.autocompleteShowAfter "Show after">
+<!ENTITY hc.sets.autocompleteMinSymbol "symbol">
+<!ENTITY hc.sets.autocompleteMinSymbols "symbols">
+
+<!ENTITY hc.sets.externalEditor "External editor">
+<!ENTITY hc.sets.externalEditorPath "Path:">
+<!ENTITY hc.sets.externalEditorPathNote "If path is empty, will launch associated program.
+Or use “Scratchpad” instead of path to launch built-in browser editor (if available).">
+<!ENTITY hc.sets.externalEditorBrowse "Browse…">
+<!ENTITY hc.sets.externalEditorMakeRelative "Make path relative">
+<!ENTITY hc.sets.externalEditorMakeAbsolute "Make path absolute">
+<!ENTITY hc.sets.externalEditorArgs "Arguments:">
+<!ENTITY hc.sets.externalEditorArgsTip "1 line = 1 argument
+&#37;F – path to file (will be added automatically, if missing)
+&#37;L – line number
+&#37;C – column number">
+<!ENTITY hc.sets.externalEditorExt "Extension of temp file:">
+
+<!ENTITY hc.sets.resetWarnMsgs "Reset warning messages">
+<!ENTITY hc.sets.resetWarnMsgsTip "Disabled warnings:">
+
+
+<!ENTITY hc.sets.builtInFuncsTitle "Built-in functions">
+
+<!ENTITY hc.sets.jsLinks "JavaScript-links (javascript: …)">
+<!ENTITY hc.sets.voidLinks "“Void” links with click handlers">
+<!ENTITY hc.sets.linkLoad "Load">
+<!ENTITY hc.sets.linkNotify "Notify">
+
+<!ENTITY hc.sets.fileLinks "File links">
+<!ENTITY hc.sets.fileLinksNotCheck "Not check">
+<!ENTITY hc.sets.fileLinksShowContext "Show context menu">
+<!ENTITY hc.sets.fileLinksOpen "Open in current tab">
+<!ENTITY hc.sets.fileLinksFilter "Filter (RegExp):">
+
+<!ENTITY hc.sets.openURIsInApps "Opening URIs in other applications">
+<!ENTITY hc.sets.convertURIs "Convert URIs to following charset:">
+<!ENTITY hc.sets.autodetect "Autodetection">
+
+<!ENTITY hc.sets.similarLinks "Similar links opening">
+<!ENTITY hc.sets.visibleOnly "Open visible links only">
+<!ENTITY hc.sets.openingDelay "Delay:">
+<!ENTITY hc.sets.ms "ms">

@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/global.css" type="text/css"?>
+<?xml-stylesheet href="chrome://handyclicks/content/style/handyclicks.css" type="text/css"?>
+
+<!DOCTYPE overlay [
+	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/main.dtd">
+	%locale;
+	<!ENTITY % default SYSTEM "chrome://handyclicks-locale/content/main.dtd">
+	%default;
+]>
+
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/javascript" src="chrome://handyclicks/content/utils.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/winUtils.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/prefUtils.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/prefSvc.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/handyclicks.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/handyclicksUI.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/funcs.js" />
+	<script type="application/javascript" src="chrome://handyclicks/content/regSvc.js" />
+
+	<commandset id="mainCommandSet">
+		<command id="handyClicks-cmd-openSettings" oncommand="handyClicksWinUtils.openSettings();"
+			label="&handyClicks.settingsLabel;" accesskey="&handyClicks.settingsAccesskey;" />
+		<command id="handyClicks-cmd-openAboutConfig" oncommand="handyClicksPrefUtils.openAboutConfig();"
+			label="&handyClicks.allSettingsLabel;" accesskey="&handyClicks.allSettingsAccesskey;" />
+		<command id="handyClicks-cmd-editMode" oncommand="handyClicksUI.toggleEditMode();"
+			label="&handyClicks.editModeLabel;" accesskey="&handyClicks.editModeAccesskey;" />
+		<command id="handyClicks-cmd-importFromClipboard"
+			oncommand="handyClicksWinUtils.openSettingsImport(true, handyClicksConst.IMPORT_CLIPBOARD);"
+			label="&handyClicks.importFromClipboardLabel;" accesskey="&handyClicks.importFromClipboardAccesskey;" />
+	</commandset>
+	<keyset id="mainKeyset">
+		<!-- See registerHotkeys() in handyclicksUI.js -->
+		<key id="handyClicks-key-toggleStatus" oncommand="handyClicksUI.toggleStatus(true);" disabled="true" />
+		<key id="handyClicks-key-openSettings" command="handyClicks-cmd-openSettings" disabled="true" />
+		<key id="handyClicks-key-openAboutConfig" command="handyClicks-cmd-openAboutConfig" disabled="true" />
+		<key id="handyClicks-key-editMode" oncommand="handyClicksUI.toggleEditMode(true);" disabled="true" />
+		<key id="handyClicks-key-importFromClipboard" command="handyClicks-cmd-importFromClipboard" disabled="true" />
+	</keyset>
+	<menupopup id="menu_ToolsPopup">
+		<menuitem id="handyClicks-toolsMenuitem" insertafter="menu_pageInfo,menu_inspector,javascriptConsole"
+			class="menuitem-iconic"
+			label="&handyClicks.menuitemLabel;" accesskey="&handyClicks.menuitemAccesskey;"
+			tooltip="handyClicks-tooltip"
+			key="handyClicks-key-toggleStatus"
+			oncommand="handyClicksUI.handleUIEvent(event);"
+			onclick="if(event.button != 0) handyClicksUI.handleUIEvent(event);" />
+	</menupopup>
+	<menupopup id="appmenu_customizeMenu"> <!-- Firefox 4 -->
+		<menuitem id="handyClicks-appMenuitem" insertafter="appmenu_preferences"
+			class="menuitem-iconic"
+			label="&handyClicks.menuitemLabel;" accesskey="&handyClicks.menuitemAppAccesskey;"
+			tooltip="handyClicks-tooltip"
+			key="handyClicks-key-toggleStatus"
+			oncommand="handyClicksUI.handleUIEvent(event);"
+			onclick="if(event.button != 0) handyClicksUI.handleUIEvent(event);" />
+		<menuseparator id="handyClicks-appMenuitemSeparator" insertafter="appmenu_preferences" />
+	</menupopup>
+	<toolbarpalette id="BrowserToolbarPalette">
+		<toolbarbutton id="handyClicks-toolbarButton" class="toolbarbutton-1 chromeclass-toolbar-additional"
+			label="&handyClicks.toolbarbuttonLabel;" tooltip="handyClicks-tooltip"
+			onclick="handyClicksUI.handleUIEvent(event);" />
+		<toolbaritem id="handyClicks-toolbarProgressContainer" collapsed="true" label="&handyClicks.progress;"
+			popup="_child" context="_child" align="center" />
+	</toolbarpalette>
+	<statusbar id="status-bar">
+		<statusbarpanel id="handyClicks-statusbarProgressPanel" insertafter="page-report-button" collapsed="true"
+			popup="_child" context="_child">
+			<box id="handyClicks-statusbarProgressLabel-box" align="center" pack="end">
+				<label id="handyClicks-statusbarProgressLabel" />
+			</box>
+			<progressmeter id="handyClicks-statusbarProgress" class="progressmeter-statusbar" mode="normal" />
+			<menupopup>
+				<menuitem id="handyClicks-statusbarProgressCancel" class="menuitem-iconic handyClicks-iconic"
+					label="&handyClicks.cancel;"
+					oncommand="handyClicksUI.progressCancel();" />
+			</menupopup>
+		</statusbarpanel>
+		<statusbarpanel id="handyClicks-statusbarButton" insertafter="page-report-button"
+			class="statusbarpanel-iconic"
+			tooltip="handyClicks-tooltip"
+			onclick="handyClicksUI.handleUIEvent(event);" />
+	</statusbar>
+	<popupset id="mainPopupSet">
+		<menupopup id="handyClicks-settingsPopup"
+			onpopupshowing="if(event.target == this) handyClicksUI.buildSettingsPopup(event);"
+			onpopuphiding="if(event.target == this) handyClicksUI.fixPopup(this);">
+			<menuitem id="handyClicks-settingsMenuitem" class="menuitem-iconic handyClicks-iconic"
+				command="handyClicks-cmd-openSettings" key="handyClicks-key-openSettings"
+				handyclicks_main="true" />
+			<menuitem id="handyClicks-allSettingsMenuitem" class="menuitem-iconic handyClicks-iconic"
+				command="handyClicks-cmd-openAboutConfig" key="handyClicks-key-openAboutConfig" />
+			<menuitem id="handyClicks-enabled" type="checkbox"
+				oncommand="handyClicksUI.toggleStatus();" key="handyClicks-key-toggleStatus"
+				label="&handyClicks.enableLabel;" accesskey="&handyClicks.enableAccesskey;" />
+			<menuseparator id="handyClicks-editModeSeparator" />
+			<menuitem id="handyClicks-editMode" class="menuitem-iconic handyClicks-iconic"
+				command="handyClicks-cmd-editMode" key="handyClicks-key-editMode" />
+			<menuseparator id="handyClicks-importFromClipboardSeparator" />
+			<menuitem id="handyClicks-importFromClipboard" class="menuitem-iconic handyClicks-iconic"
+				command="handyClicks-cmd-importFromClipboard" key="handyClicks-key-importFromClipboard" />
+			<menuseparator id="handyClicks-mainCommandsSeparator" />
+			<!-- Toolbars -->
+			<menuseparator id="handyClicks-viewToolbarsSeparator" />
+			<!-- Additional items from "toolbar-context-menu" -->
+		</menupopup>
+		<tooltip id="handyClicks-tooltip" noautohide="true" orient="vertical"
+			onpopupshowing="return handyClicksUI.fillInTooltip(this);">
+		</tooltip>
+		<tooltip id="handyClicks-editModeTip" noautohide="true" orient="vertical">
+			<label id="handyClicks-editModeTip-header" value="&handyClicks.editModeTipHeader;" />
+			<label id="handyClicks-editModeTip-value" />
+		</tooltip>
+	</popupset>
+
+	<!-- SeaMonkey -->
+	<menupopup id="taskPopup">
+		<menuitem id="handyClicks-toolsMenuitem" insertafter="downloadmgr" class="menuitem-iconic"
+			label="&handyClicks.menuitemLabel;" accesskey="&handyClicks.menuitemAccesskey;"
+			tooltip="handyClicks-tooltip"
+			key="handyClicks-key-toggleStatus"
+			oncommand="handyClicksUI.handleUIEvent(event);"
+			onclick="if(event.button != 0) handyClicksUI.handleUIEvent(event);" />
+	</menupopup>
+</overlay>

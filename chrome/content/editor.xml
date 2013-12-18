@@ -1,0 +1,1230 @@
+<?xml version="1.0"?>
+<bindings id="handyClicks-bindings" xmlns="http://www.mozilla.org/xbl">
+	<binding id="codeEditor" extends="chrome://global/content/bindings/textbox.xml#textarea">
+		<implementation implements="nsIDOMEventListener">
+			<constructor>
+			<![CDATA[
+				var ww = -1;
+				if(this.hasAttribute("hc_wrapWidth")) {
+					var _ww = Number(this.getAttribute("hc_wrapWidth"));
+					if(isFinite(_ww))
+						ww = _ww;
+				}
+				try { // Strange bug in Firefox 1.5
+					this.editor.wrapWidth = ww;
+				}
+				catch(e) {
+				}
+				if(this.hasAttribute("hc_fontSize"))
+					this.style.fontSize = this.getAttribute("hc_fontSize");
+				this.setTabSize();
+				var top = window.top;
+				var pu = "handyClicksPrefUtils" in top && top.handyClicksPrefUtils;
+				if(pu) {
+					this.autocomplete = pu.pref("editor.autocomplete");
+					this.autocompleteMinSymbols = Math.max(1, Math.min(30, pu.pref("editor.autocompleteMinSymbols")));
+					pu.oSvc.addObserver(function(pName, pVal) {
+						if(pName == "editor.tabSize")
+							this.setTabSize();
+						else if(pName == "editor.autocomplete")
+							this.autocomplete = pVal;
+						else if(pName == "editor.autocompleteMinSymbols")
+							this.autocompleteMinSymbols = Math.max(1, Math.min(30, pVal));
+					}, this);
+				}
+			]]>
+			</constructor>
+			<property name="tabSize">
+				<getter>
+				<![CDATA[
+					return Math.max(1, Math.min(100,
+						Number(this.getAttribute("hc_tabSize"))
+						|| "handyClicksPrefUtils" in top && top.handyClicksPrefUtils.pref("editor.tabSize")
+						|| 4
+					));
+				]]>
+				</getter>
+				<setter>
+					this.setAttribute("hc_tabSize", val);
+				</setter>
+			</property>
+			<method name="setTabSize">
+				<parameter name="tabSize" />
+				<body>
+				<![CDATA[
+					if(!tabSize)
+						tabSize = this.tabSize;
+					var s = this.style;
+					if("tabSize" in s)
+						s.tabSize = tabSize;
+					else if("MozTabSize" in s)
+						s.MozTabSize = tabSize;
+				]]>
+				</body>
+			</method>
+			<property name="tabSpaces">
+				<getter>
+				<![CDATA[
+					return this.hasAttribute("hc_tabSpaces")
+						? this.getAttribute("hc_tabSpaces") == "true"
+						: "handyClicksPrefUtils" in top && top.handyClicksPrefUtils.pref("editor.tabSpaces");
+				]]>
+				</getter>
+				<setter>
+					this.setAttribute("hc_tabSpaces", !!val);
+				</setter>
+			</property>
+			<property name="tabSymbol">
+				<getter>
+				<![CDATA[
+					if(!this.tabSpaces)
+						return "\t";
+					return new Array(this.tabSize + 1).join(" ");
+				]]>
+				</getter>
+			</property>
+			<property name="editor" readonly="true">
+				<getter>
+					return this.inputField // Thanks to Custom Buttons!
+						.QueryInterface(Components.interfaces.nsIDOMNSEditableElement)
+						.editor
+						.QueryInterface(Components.interfaces.nsIPlaintextEditor);
+				</getter>
+			</property>
+			<property name="newValue">
+				<setter>
+					this.value = val;
+					this.editor.transactionManager.clear();
+				</setter>
+			</property>
+			<method name="insertText">
+				<parameter name="text" />
+				<parameter name="noScroll" />
+				<parameter name="select" />
+				<body>
+				<![CDATA[
+					noScroll && this.saveScrollPos(true);
+
+					if(text)
+						this.editor.insertText(text);
+					else
+						this.editor.deleteSelection(0, 0);
+
+					if(select)
+						this.inputField.selectionStart -= text.length;
+
+					noScroll && this.restoreScrollPos();
+				]]>
+				</body>
+			</method>
+			<method name="_isSpaces">
+				<parameter name="str" />
+				<body>
+					return /^ {2,}$/.test(str);
+				</body>
+			</method>
+			<method name="setIndent">
+				<parameter name="indentChar" />
+				<parameter name="removeFlag" />
+				<body>
+				<![CDATA[
+					var val = this.value;
+					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
+
+					if(ss != se && indentChar != " " && this.isAutocompleteSelection) {
+						ifi.selectionStart = se;
+						return;
+					}
+
+					var sel = val.substring(ss, se);
+					var lineStart = val.substring(0, ss).match(/[^\r\n]*$/)[0];
+					var lineEnd = val.substring(se).match(/^[^\r\n]*/)[0];
+
+					if(!/\n|\r/.test(sel)) {
+						if(this._isSpaces(indentChar)) {
+							var lenStart = lineStart.length + lineEnd.match(/^ */)[0].length;
+							var maxSpaces = indentChar.length;
+							indentChar = indentChar.substr(0, (maxSpaces - lenStart % maxSpaces) || maxSpaces);
+						}
+						this.insertText(indentChar);
+						if(removeFlag)
+							ifi.selectionStart = ifi.selectionEnd = ss;
+						return;
+					}
+
+					var block = lineStart + sel + lineEnd;
+					if(removeFlag) {
+						if(this._isSpaces(indentChar))
+							indentChar = "( {1," + indentChar.length + "}|\\t)";
+						var re = new RegExp("^" + indentChar, "mg");
+						if(!re.test(block))
+							return;
+						block = block.replace(re, "");
+					}
+					else {
+						block = block.replace(/^/mg, indentChar);
+					}
+
+					ifi.selectionStart = ss - lineStart.length;
+					ifi.selectionEnd   = se + lineEnd.length;
+					this.insertText(block, true, true);
+				]]>
+				</body>
+			</method>
+			<field name="_disableRemoveSpaces">false</field>
+			<method name="removeSpaces">
+				<parameter name="event" />
+				<body>
+				<![CDATA[
+					if(this._disableRemoveSpaces)
+						return;
+					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
+					if(ss != se)
+						return;
+					var tab = this.tabSymbol;
+					if(!this._isSpaces(tab))
+						return;
+					var value = this.value;
+					if(event.keyCode == event.DOM_VK_BACK_SPACE) {
+						var line = value.substring(0, ss).match(/[^\r\n]*$/)[0];
+						var availSpaces = line.match(/ *$/)[0].length;
+						if(availSpaces <= 1)
+							return;
+						var maxSpaces = line.length % tab.length || tab.length;
+					}
+					else /*if(event.keyCode == event.DOM_VK_DELETE)*/ {
+						var availSpaces = value.substr(ss).match(/^ */)[0].length;
+						if(availSpaces <= 1)
+							return;
+						var line = value.substring(0, ss).match(/[^\r\n]*$/)[0];
+						var maxSpaces = (tab.length - line.length % tab.length) || tab.length;
+					}
+					var removeSpaces = Math.min(availSpaces, maxSpaces);
+
+					this._disableRemoveSpaces = true;
+					while(--removeSpaces) {
+						var evt = document.createEvent("KeyEvents");
+						evt.initKeyEvent(
+							event.type,
+							event.bubbles, event.cancelable, event.view,
+							event.ctrlKey, event.altKey, event.shiftKey, event.metaKey,
+							event.keyCode, event.charCode
+						);
+						event.originalTarget.dispatchEvent(evt);
+					}
+					this._disableRemoveSpaces = false;
+				]]>
+				</body>
+			</method>
+			<method name="toggleComments">
+				<parameter name="onlyInLineStart" />
+				<body>
+				<![CDATA[
+					var val = this.value;
+					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
+
+					var sel = val.substring(ss, se);
+
+					var lineStart = val.substring(0, ss).match(/[^\r\n]*$/)[0];
+					var lineEnd = val.substring(se).match(/^[^\r\n]*/)[0];
+					var block = lineStart + sel + lineEnd;
+
+					if(onlyInLineStart) {
+						var re = /^\/\//mg;
+						var subst = "";
+					}
+					else {
+						var re = /^(\s*)\/\//mg;
+						var subst = "$1";
+					}
+					var comment = "//";
+					var lines = block.split("\n");
+					//var hasComments = re.test(block);
+					var hasComments = lines.every(function(line) {
+						re.lastIndex = 0;
+						return re.test(line);
+					});
+					//block = hasComments
+					//	? block.replace(re, subst)
+					//	: block.replace(/^/mg, comment);
+					if(hasComments)
+						block = block.replace(re, subst);
+					else if(onlyInLineStart)
+						block = block.replace(/^/mg, comment);
+					else {
+						var spacePrefix = "";
+						var spacePrefixLen = 0;
+						var linesCnt = lines.length;
+
+						// Note: spaces + tabs mix aren't supported!
+						var minSpLen = Infinity;
+						for(var i = 0; i < linesCnt; ++i) {
+							var line = lines[i];
+							if(/^[ \t]*$/.test(line))
+								continue;
+							if(!/^[ \t]+/.test(line)) {
+								spacePrefix = "";
+								break;
+							}
+							var sp = RegExp.lastMatch;
+							if(sp.length < minSpLen) {
+								minSpLen = sp.length;
+								spacePrefix = sp;
+							}
+						}
+						if(spacePrefix) {
+							spacePrefixLen = spacePrefix.length;
+							for(var i = 0; i < linesCnt; ++i) {
+								var line = lines[i];
+								if(!line)
+									continue;
+								if(
+									/^[ \t]+$/.test(line) && line.length < spacePrefixLen
+										? spacePrefix.substr(0, line.length) != line
+										: line.substr(0, spacePrefixLen) != spacePrefix
+								) {
+									spacePrefix = "";
+									spacePrefixLen = 0;
+									break;
+								}
+							}
+						}
+
+						for(var i = 0; i < linesCnt; ++i)
+							lines[i] = spacePrefix + "//" + lines[i].substr(spacePrefixLen);
+						block = lines.join("\n");
+					}
+
+					ifi.selectionStart = ss - lineStart.length;
+					ifi.selectionEnd   = se + lineEnd.length;
+					if(/\n|\r/.test(sel))
+						this.insertText(block, true, true);
+					else {
+						this.insertText(block, true, false);
+						var dl = (hasComments ? -1 : 1)*comment.length;
+						ifi.selectionStart = Math.max(ss + dl, ss - lineStart.length);
+						ifi.selectionEnd   = se + dl;
+					}
+				]]>
+				</body>
+			</method>
+			<method name="formatNewLine">
+				<body>
+				<![CDATA[
+					var line = this.value.substring(0, this.inputField.selectionStart).match(/[^\r\n]*$/)[0];
+					var indent = /^[ \t]+/.test(line) ? RegExp.lastMatch : "";
+					this.insertText("\n" + indent);
+				]]>
+				</body>
+			</method>
+			<method name="goToLine">
+				<body>
+				<![CDATA[
+					var currLine = this.currentLine;
+					var currCol  = this.currentColumn;
+					var num = { value: currLine + ":" + currCol };
+					var ut = "handyClicksUtils" in top && top.handyClicksUtils;
+					var ps = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+						.getService(Components.interfaces.nsIPromptService);
+					var res = ps.prompt(
+						top,
+						ut ? ut.getLocalized("goToLineTitle") : "Go to line\u2026",
+						(ut ? ut.getLocalized("goToLineMessage") : "Line number (1 \u2026 %max):")
+							.replace("%max", this.linesCount),
+						num,
+						null, {}
+					);
+					if(!res)
+						return;
+					if(!/^(\+|-)?(\d+)(?:\s*[^\d+-]+\s*(\+|-)?(\d+))?$/.test(num.value))
+						return;
+					var line = Number(RegExp.$2);
+					var col  = Number(RegExp.$4);
+					if(RegExp.$1)
+						line = Math.max(1, currLine + line*(RegExp.$1 == "+" ? 1 : -1));
+					if(RegExp.$3)
+						col  = Math.max(1, currCol  + col *(RegExp.$3 == "+" ? 1 : -1));
+					if(line == currLine && col == currCol)
+						return;
+					this.scrollTo(line, col);
+				]]>
+				</body>
+			</method>
+			<property name="currentLine" readonly="true">
+				<getter>
+				<![CDATA[
+					return this.value.substring(0, this.inputField.selectionStart).split("\n").length;
+				]]>
+				</getter>
+			</property>
+			<property name="linesCount" readonly="true">
+				<getter>
+				<![CDATA[
+					return this.value.split("\n").length;
+				]]>
+				</getter>
+			</property>
+			<property name="currentColumn" readonly="true">
+				<getter>
+				<![CDATA[
+					return this.value.substring(0, this.inputField.selectionStart).match(/[^\n\r]*$/)[0].length + 1;
+				]]>
+				</getter>
+			</property>
+			<property name="columnsCount" readonly="true">
+				<getter>
+				<![CDATA[
+					// For current line
+					var ss = this.inputField.selectionStart;
+					var val = this.value;
+					return val.substring(0, ss).match(/[^\n\r]*$/)[0].length
+						+ val.substring(ss).match(/^[^\n\r]*/)[0].length
+						+ 1;
+				]]>
+				</getter>
+			</property>
+			<method name="scrollTo">
+				<parameter name="lineNumber" />
+				<parameter name="columnNumber" />
+				<parameter name="allowOverflow" />
+				<body>
+				<![CDATA[
+					if(allowOverflow === undefined)
+						allowOverflow = true;
+					// Thanks to Custom Buttons!
+					if(lineNumber != null && isFinite(lineNumber)) {
+						var editor = this.editor;
+						var maxLine = this.linesCount;
+						if(lineNumber > maxLine && !allowOverflow)
+							editor.endOfDocument();
+						else {
+							lineNumber = Math.min(lineNumber, maxLine);
+							editor.beginningOfDocument();
+							var sc = editor.selectionController;
+							while(--lineNumber > 0)
+								sc.lineMove(true, false);
+						}
+					}
+					if(columnNumber != null && isFinite(columnNumber)) {
+						var maxCol = this.columnsCount;
+						columnNumber = Math.max(1, Math.min(maxCol, columnNumber));
+						var ifi = this.inputField;
+						ifi.selectionStart = ifi.selectionEnd = ifi.selectionStart - this.currentColumn + columnNumber;
+					}
+					this.scrollSelectionIntoView();
+					this.focus();
+				]]>
+				</body>
+			</method>
+			<method name="selectLine">
+				<parameter name="lineNumber" />
+				<body>
+				<![CDATA[
+					// Thanks to Custom Buttons!
+					this.scrollTo(lineNumber, null, false);
+					this.editor.selectionController.intraLineMove(true, true);
+					this.focus();
+				]]>
+				</body>
+			</method>
+			<method name="scrollSelectionIntoView">
+				<body>
+				<![CDATA[
+					// Thanks to Custom Buttons!
+					try {
+						var sc = this.editor.selectionController;
+						sc.scrollSelectionIntoView(
+							sc.SELECTION_NORMAL,
+							sc.SELECTION_ANCHOR_REGION,
+							true
+						);
+					}
+					catch(e) {
+						Components.utils.reportError(e);
+					}
+				]]>
+				</body>
+			</method>
+			<property name="maximized">
+				<getter>
+				<![CDATA[
+					return this.getAttribute("hc_maximized") == "true";
+				]]>
+				</getter>
+				<setter>
+				<![CDATA[
+					var node = this;
+					for(; node && "setAttribute" in node; node = node.parentNode) {
+						if(val) node.setAttribute("hc_maximized", "true");
+						else    node.removeAttribute("hc_maximized");
+					}
+				]]>
+				</setter>
+			</property>
+			<method name="toggleMaximized">
+				<body>
+				<![CDATA[
+					this.maximized = !this.maximized;
+				]]>
+				</body>
+			</method>
+			<method name="textZoom">
+				<parameter name="add" />
+				<body>
+				<![CDATA[
+					var fs = add == 0
+						? ""
+						: Math.min(48, Math.max(1,
+							parseInt(this.ownerDocument.defaultView.getComputedStyle(this, null).fontSize) + add
+						)) + "px";
+					this.style.fontSize = fs;
+					this.setAttribute("hc_fontSize", fs);
+					this.id && this.ownerDocument.persist(this.id, "hc_fontSize");
+				]]>
+				</body>
+			</method>
+			<method name="toggleWordWrap">
+				<body>
+				<![CDATA[
+					var ww = this.getAttribute("hc_wrapWidth") == "0" ? -1 : 0;
+					this.editor.wrapWidth = ww;
+					this.setAttribute("hc_wrapWidth", ww);
+					this.id && this.ownerDocument.persist(this.id, "hc_wrapWidth");
+				]]>
+				</body>
+			</method>
+
+			<field name="_linkedFile">null</field>
+			<field name="_isTempFile">false</field>
+			<field name="_lineBreak">null</field>
+			<field name="_hasWatchHandlers">false</field>
+			<method name="getDefaultFilename">
+				<parameter name="ext" />
+				<parameter name="allowUnicode" />
+				<body>
+				<![CDATA[
+					var type = this.id.replace(/^hc-editor-|Field/g, "");
+					var label;
+					if(allowUnicode) {
+						var tb = document.getElementById(
+							type.substr(0, 4) == "func"
+								? "hc-editor-funcLabel"
+								: "hc-editor-customType"
+						);
+						var label = (tb && tb.value || "")
+							.replace(/\s+/g, "_")
+							// Based on code of Session Manager 0.7.9.2
+							.replace(/[<>:"\/\\|*?^\x00-\x1f]+/g, "_");
+					}
+					return "handyclicks_" + type + (label ? "_[" + label + "]" : "") + "." + (ext || "js");
+				]]>
+				</body>
+			</method>
+			<method name="openExternalEditor">
+				<body>
+				<![CDATA[
+					if(!("handyClicksUtils" in top))
+						return;
+					var ut = top.handyClicksUtils;
+					var file = this._linkedFile;
+					var isNew = !file || !file.exists();
+
+					var ext = ut.pu.pref("editor.external.extension") || "js";
+					if(isNew) {
+						var fName = this.getDefaultFilename(
+							ext,
+							ut.canRunw && ut.pu.pref("editor.external.labelInFileName")
+						);
+						file = ut.getFileByAlias("TmpD");
+						file.append(fName);
+						file.createUnique(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
+						this._lineBreak = null; // Will use platform's line breaks
+						this.watchFile(file, true);
+
+						Components.classes["@mozilla.org/uriloader/external-helper-app-service;1"]
+							.getService(Components.interfaces.nsPIExternalAppLauncher)
+							.deleteTemporaryFileOnExit(file);
+					}
+
+					this.updateFile(function(status, value) {
+						if(!Components.isSuccessCode(status)) {
+							var err = "openExternalEditor() failed: can't write string to file!\nFile: " + file.path
+								+ "\nError: " + ut.getErrorName(status);
+							ut._err(err);
+							ut.alert(ut.getLocalized("errorTitle"), err);
+							return;
+						}
+						var ee = ut.pu.pref("editor.external.path");
+
+						if(ee == "Scratchpad") try {
+							//var val = ut.internalLineBreaks(value);
+							var val = this.value;
+							Components.utils["import"]("resource:///modules/devtools/scratchpad-manager.jsm");
+							var _this = this;
+							var setCaret = function(e) {
+								e && w.removeEventListener(e.type, setCaret, false);
+								function setEditorCaret(Scratchpad) {
+									var ifi = _this.inputField;
+									Scratchpad.editor.setSelection(ifi.selectionStart, ifi.selectionEnd);
+								}
+								if(w.Scratchpad.initialized) {
+									setEditorCaret(w.Scratchpad);
+									return;
+								}
+								w.Scratchpad.addObserver({
+									onReady: function(Scratchpad) {
+										Scratchpad.removeObserver(this);
+										setEditorCaret(Scratchpad);
+									}
+								});
+							};
+							var ws = ut.wu.wm.getEnumerator("devtools:scratchpad");
+							while(ws.hasMoreElements()) {
+								var w = ws.getNext();
+								if(
+									"Scratchpad" in w
+									&& "filename" in w.Scratchpad
+									&& w.Scratchpad.filename == file.path
+								) {
+									if(w.Scratchpad.getText() != val)
+										w.Scratchpad.setText(val);
+									setCaret();
+									this.fade();
+									w.focus();
+									return;
+								}
+							}
+
+							var w = ScratchpadManager.openScratchpad({
+								filename: file.path,
+								text: val,
+								executionContext: 2, // Chrome context
+								saved: true
+							});
+							w && w.addEventListener("load", setCaret, false);
+							this.fade();
+							return;
+						}
+						catch(e) {
+							ut._err("openExternalEditor: ScratchpadManager.openScratchpad() failed");
+							ut._err(e);
+						}
+
+						var eeFile = ee && ut.getLocalFile(ee);
+						var eeFileExists = eeFile && eeFile.exists();
+
+						if(ee && !eeFileExists)
+							ut._warn('openExternalEditor: External editor not found: "' + ee + '"');
+
+						if(!eeFileExists && "nsIWindowsRegKey" in Components.interfaces) try {
+							// Check Windows association
+							var regKey = Components.classes["@mozilla.org/windows-registry-key;1"]
+								.createInstance(Components.interfaces.nsIWindowsRegKey);
+							var readKey = function(path) {
+								regKey.open(regKey.ROOT_KEY_CLASSES_ROOT, path, regKey.ACCESS_READ);
+								var val = regKey.readStringValue("");
+								regKey.close();
+								return val;
+							};
+							var cmdId = readKey("." + ext);
+							if(cmdId) {
+								var cmd = readKey(cmdId + "\\shell\\open\\command");
+								if(cmd) {
+									// %SystemRoot%\System32\WScript.exe "%1" %*
+									//~ todo: other path in x64?
+									var wscript = ut.expandEnvironmentVariables("%SystemRoot%\\system32\\wscript.exe").toLowerCase();
+									var indx = ut.expandEnvironmentVariables(cmd).toLowerCase().indexOf(wscript);
+									if(indx == 0 || indx == 1) {
+										ee = "%SystemRoot%\\notepad.exe";
+										ut._log('openExternalEditor: "invalid" association: ' + cmd + '\nWill use "' + ee + '"');
+									}
+								}
+							}
+						}
+						catch(e) {
+						}
+
+						if(ee) {
+							var args = [file.path];
+							var eeArgs = ut.pu.pref("editor.external.args");
+							if(eeArgs) {
+								if(eeArgs.indexOf("%F") != -1) {
+									args = [];
+									eeArgs = eeArgs.replace(/%F/g, file.path);
+								}
+								if(eeArgs.indexOf("%L") != -1)
+									eeArgs = eeArgs.replace(/%L/g, this.currentLine);
+								if(eeArgs.indexOf("%C") != -1)
+									eeArgs = eeArgs.replace(/%C/g, this.currentColumn);
+								args.push.apply(args, eeArgs.split(/[\r\n]+/));
+							}
+							if(ut.startProcess(ee, args, true))
+								this.fade();
+						}
+						else {
+							//~ todo: association may be "invalid" (like wscript.exe on Windows) or missing
+							try {
+								file.launch();
+								this.fade();
+							}
+							catch(e) { // See https://developer.mozilla.org/en/nsILocalFile#Remarks
+								ut.notifyInWindowCorner(
+									ut.getLocalized("launchError"),
+									ut.getLocalized("errorTitle"),
+									ut.bind(ut.wu.openSettingsPane, ut.wu, ["editor"])
+								);
+								ut._err("openExternalEditor: file.launch() failed");
+								ut._err(e);
+							}
+						}
+					}, this);
+				]]>
+				</body>
+			</method>
+			<method name="loadFromFile">
+				<parameter name="watch" />
+				<parameter name="file" />
+				<body>
+				<![CDATA[
+					if(!file || !file.exists()) {
+						file = this.pickFile(watch ? "linkWithFile" : "loadCodeFromFile");
+						if(!file)
+							return null;
+					}
+					this.updateFromFile(file, true /*detectLineBreak*/);
+					if(watch)
+						this.watchFile(file, false);
+					else
+						this.unwatchFile();
+					return file;
+				]]>
+				</body>
+			</method>
+			<method name="saveToFile">
+				<parameter name="watch" />
+				<body>
+				<![CDATA[
+					var file = this.pickFile("saveCodeToFile", true, this.getDefaultFilename("js", true));
+					if(!file)
+						return null;
+					var ut = top.handyClicksUtils;
+					var val = ut.platformLineBreaks(this.value);
+					if(ut.pu.pref("editor.external.saveWithBOM"))
+						val = "\ufeff" + val;
+					ut.writeToFileAsync(val, file, function(status) {
+						if(watch && Components.isSuccessCode(status))
+							this.watchFile(file, false);
+					}, this);
+					return file;
+				]]>
+				</body>
+			</method>
+			<method name="pickFile">
+				<parameter name="titleId" />
+				<parameter name="modeSave" />
+				<parameter name="defaultString" />
+				<body>
+				<![CDATA[
+					if(!("handyClicksUtils" in top))
+						return null;
+					var ut = top.handyClicksUtils;
+					var fp = ut.fp;
+					if(defaultString)
+						fp.defaultString = defaultString;
+					fp.defaultExtension = "js";
+					fp.appendFilter(ut.getLocalized("jsFiles"), "*.js;*.jsm");
+					fp.appendFilters(fp.filterAll);
+					fp.init(top, ut.getLocalized(titleId), fp[modeSave ? "modeSave" : "modeOpen"]);
+					if(fp.show() == fp.returnCancel)
+						return null;
+					if(!modeSave && !fp.file.exists())
+						return null;
+					return fp.file;
+				]]>
+				</body>
+			</method>
+			<method name="watchFile">
+				<parameter name="file" />
+				<parameter name="isTemp" />
+				<body>
+				<![CDATA[
+					if(this._linkedFile)
+						this.unwatchFile();
+					this._linkedFile = file;
+					this._isTempFile = isTemp;
+					this._lastModifiedTime = file.lastModifiedTime;
+					this._fileSize = file.fileSize;
+					if(!this._hasWatchHandlers) {
+						this._hasWatchHandlers = true;
+						top.addEventListener("focus",  this, false);
+						top.addEventListener("unload", this, false);
+						top.addEventListener("HandyClicks:editor:change", this, false);
+					}
+				]]>
+				</body>
+			</method>
+			<method name="unwatchFile">
+				<body>
+				<![CDATA[
+					if(this._hasWatchHandlers) {
+						this._hasWatchHandlers = false;
+						top.removeEventListener("focus",  this, false);
+						top.removeEventListener("unload", this, false);
+						top.removeEventListener("HandyClicks:editor:change", this, false);
+					}
+					var file = this._linkedFile;
+					this._linkedFile = null;
+					if(file && this._isTempFile && file.exists())
+						file.remove(false);
+				]]>
+				</body>
+			</method>
+			<method name="handleEvent">
+				<parameter name="e" />
+				<body>
+				<![CDATA[
+					var type = e.type;
+					if(type == "focus")
+						this.updateFromFile();
+					else if(type == "unload") {
+						if(e.target.defaultView == e.currentTarget)
+							this.unwatchFile();
+					}
+					else if(type == "HandyClicks:editor:change") {
+						var trg = e.target;
+						for(var p = this; p; p = p.parentNode) {
+							if(p == trg) {
+								this.unwatchFile();
+								break;
+							}
+						}
+					}
+				]]>
+				</body>
+			</method>
+			<method name="updateFromFile">
+				<parameter name="file" />
+				<parameter name="detectLineBreak" />
+				<body>
+				<![CDATA[
+					if(!("handyClicksUtils" in top))
+						return;
+					var ut = top.handyClicksUtils;
+					var fromLinkedFile = !file;
+					file = file || this._linkedFile;
+					if(!file || !file.exists())
+						return;
+					if(fromLinkedFile) {
+						var fTime = file.lastModifiedTime;
+						var fSize = file.fileSize;
+						if(fTime == this._lastModifiedTime && fSize == this._fileSize)
+							return;
+					}
+					ut.readFromFileAsync(file, function(fVal, status) {
+						if(!Components.isSuccessCode(status)) {
+							var err = "updateFromFile() failed: can't read string from file!\nFile: " + file.path
+								+ "\nError: " + ut.getErrorName(status);
+							ut._err(err);
+							ut.alert(ut.getLocalized("errorTitle"), err);
+							return;
+						}
+						if(detectLineBreak)
+							this._lineBreak = /\r\n?|\n\r?/.test(fVal) ? RegExp.lastMatch : ut.lineBreak;
+						fVal = ut.internalLineBreaks(fVal);
+						if(fromLinkedFile) {
+							this._lastModifiedTime = fTime;
+							this._fileSize = fSize;
+						}
+						if(fVal == this.value)
+							return;
+						this.saveScrollPos();
+						this.value = fVal;
+						this.restoreScrollPos();
+						this.fade();
+						this.fireChange();
+					}, this);
+				]]>
+				</body>
+			</method>
+			<method name="updateFile">
+				<parameter name="callback" />
+				<parameter name="context" />
+				<parameter name="value" />
+				<parameter name="file" />
+				<body>
+				<![CDATA[
+					if(!("handyClicksUtils" in top))
+						return;
+					var ut = top.handyClicksUtils;
+					file = file || this._linkedFile;
+					function _callback(status, value) {
+						callback && callback.call(context || window, status, value);
+					}
+					ut.readFromFileAsync(file, function(savedValue, status) {
+						if(!Components.isSuccessCode(status)) {
+							_callback(status);
+							return;
+						}
+						value = value || this.value;
+						savedValue = ut.internalLineBreaks(savedValue);
+						if(value == savedValue)
+							_callback(Components.results.NS_OK, value);
+						else {
+							if(ut.pu.pref("editor.external.saveWithBOM"))
+								value = "\ufeff" + value;
+							value = ut.platformLineBreaks(value, this._lineBreak);
+							ut.writeToFileAsync(value, file, callback, context);
+						}
+					}, this) || _callback(Components.results.NS_ERROR_FILE_ACCESS_DENIED);
+				]]>
+				</body>
+			</method>
+
+			<field name="_fadeTimer">0</field>
+			<method name="fade">
+				<body>
+				<![CDATA[
+					// opacity: opMax ... opMin ... opMax
+					const opMax = 1;
+					const opMin = 0.42;
+					const opDur = 400;
+					const opInterval = 5;
+
+					if(this._fadeTimer)
+						clearTimeout(this._fadeTimer);
+
+					var stl = this.style;
+					var halfDur = Math.round(opDur/2);
+
+					var transition = "transition" in stl && "transition"
+						|| "MozTransition" in stl && "-moz-transition";
+					if(transition) {
+						stl.setProperty(transition, "opacity " + halfDur + "ms ease-out", "important");
+						stl.setProperty("opacity", opMin, "important");
+						this._fadeTimer = setTimeout(function(_this) {
+							stl.removeProperty("opacity");
+							_this._fadeTimer = setTimeout(function() {
+								stl.removeProperty(transition);
+								_this._fadeTimer = 0;
+							}, halfDur + 50);
+						}, halfDur, this);
+						return;
+					}
+
+					// Legacy:
+					var endTime = Date.now() + opDur;
+					this._fadeTimer = setTimeout(function animate(_this) {
+						var remTime = endTime - Date.now();
+						if(remTime < 0) {
+							stl.removeProperty("opacity");
+							_this._fadeTimer = 0;
+							return;
+						}
+						var op = opMin + Math.abs((remTime - halfDur)*(opMax - opMin)/halfDur);
+						stl.setProperty("opacity", op, "important");
+						_this._fadeTimer = setTimeout(animate, opInterval, this);
+					}, opInterval, this);
+				]]>
+				</body>
+			</method>
+
+			<field name="autocomplete">true</field>
+			<field name="autocompleteMinSymbols">2</field>
+			<field name="isAutocompleteSelection">false</field>
+			<method name="jsAutocomplete">
+				<parameter name="reverseFlag" />
+				<parameter name="alwaysSelect" />
+				<body>
+				<![CDATA[
+					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
+					var val = this.value;
+					var selText = val.substring(ss, se);
+					if(selText && !/^[\w$]+['"]?$/.test(selText))
+						return;
+					var startText = val.substring(0, ss);
+
+					if(!/(?:(\.)\s*|('|"))?([\w$]+)$/.test(startText))
+						return;
+					var isProp = !!RegExp.$1;
+					var isStr = !!RegExp.$2, strComma = RegExp.$2;
+					var lastWord = RegExp.$3;
+
+					var scopeProp = isProp
+						? "jsProps"
+						: isStr
+							? "jsStrings"
+							: "jsStatements";
+
+					var newWord;
+					var curWordOrig = lastWord + selText;
+					var curWord = curWordOrig.replace(/['"]$/, "");
+
+					if(!("handyClicksAutocompleteData" in top)) {
+						Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+							.getService(Components.interfaces.mozIJSSubScriptLoader)
+							.loadSubScript(new Error().fileName.replace(/[^\/]+$/, "") + "editorAutocompleteData.js");
+					}
+					var scopeArr = top.handyClicksAutocompleteData[scopeProp];
+					if(reverseFlag)
+						scopeArr = scopeArr.slice().reverse(); // Don't reverse original
+
+					var found = false;
+					scopeArr.some(function(p) {
+						if(!found && p == curWord) {
+							found = true;
+							return false;
+						}
+						if(found && p.indexOf(lastWord) == 0)
+							return newWord = p;
+						return false;
+					});
+					!newWord && scopeArr.some(function(p) {
+						if(p.indexOf(lastWord) == 0)
+							return newWord = p;
+						return false;
+					});
+					if(!newWord || newWord == curWord)
+						return;
+
+					var cnt = 0;
+					scopeArr.forEach(function(p) {
+						if(p.indexOf(lastWord) == 0)
+							++cnt;
+					});
+
+					if(isStr)
+						newWord += strComma;
+
+					var sPos = startText.lastIndexOf(lastWord);
+					ifi.selectionStart = sPos + lastWord.length;
+					ifi.selectionEnd = sPos + curWordOrig.length;
+
+					this.insertText(newWord.substr(lastWord.length));
+
+					var sel = alwaysSelect || cnt > 1;
+					ifi.selectionStart = sPos + (sel ? lastWord.length : newWord.length);
+					ifi.selectionEnd = sPos + newWord.length;
+					//this.isAutocompleteSelection = sel;
+					setTimeout(function(_this) {
+						_this.isAutocompleteSelection = sel;
+					}, 0, this, sel);
+				]]>
+				</body>
+			</method>
+			<method name="trimEndSpaces">
+				<body>
+				<![CDATA[
+					const selMarker = "\uffff"
+						+ Math.random().toFixed(16).substr(2)
+						+ Math.random().toFixed(16).substr(2)
+						+ "\uffff";
+					var val = this.value;
+					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
+					var newVal = val.substring(0, ss)
+						+ selMarker + val.substring(ss, se) + selMarker
+						+ val.substring(se);
+					newVal = newVal.replace(new RegExp("[ \t]*(" + selMarker + ")?[ \t]*(" + selMarker + ")?[ \t]*$", "mg"), "$1$2");
+					ss = newVal.indexOf(selMarker);
+					se = newVal.lastIndexOf(selMarker) - selMarker.length;
+					newVal = newVal.replace(selMarker, "", "g");
+					if(newVal == val)
+						return;
+
+					this.saveScrollPos();
+
+					this.value = newVal;
+
+					ifi.selectionStart = ss;
+					ifi.selectionEnd = se;
+					this.restoreScrollPos();
+
+					this.fireChange();
+				]]>
+				</body>
+			</method>
+
+			<method name="fireChange">
+				<body>
+				<![CDATA[
+					var evt = this.ownerDocument.createEvent("Events");
+					evt.initEvent("change", true, true);
+					this.dispatchEvent(evt);
+				]]>
+				</body>
+			</method>
+			<method name="moveCaret">
+				<parameter name="moveLeft" />
+				<parameter name="event" />
+				<body>
+				<![CDATA[
+					var ifi = this.inputField;
+					var ss = ifi.selectionStart;
+					var se = ifi.selectionEnd;
+					if(ss == se)
+						return;
+					event.preventDefault();
+					ifi.selectionStart = ifi.selectionEnd = moveLeft ? ss : se;
+					this.scrollSelectionIntoView();
+				]]>
+				</body>
+			</method>
+			<method name="saveScrollPos">
+				<parameter name="recalcHeight" />
+				<parameter name="recalcWidth" />
+				<body>
+				<![CDATA[
+					var ifi = this.inputField;
+					this.scrollPos = {
+						recalcWidth:  recalcWidth,
+						recalcHeight: recalcHeight,
+						scrollTop:    ifi.scrollTop,
+						scrollLeft:   ifi.scrollLeft,
+						scrollHeight: ifi.scrollHeight,
+						scrollWidth:  ifi.scrollWidth
+					};
+				]]>
+				</body>
+			</method>
+			<method name="restoreScrollPos">
+				<body>
+				<![CDATA[
+					var ifi = this.inputField;
+					var sp = this.scrollPos;
+					function restore() {
+						ifi.scrollTop  = sp.scrollTop  + (sp.recalcHeight ? ifi.scrollHeight - sp.scrollHeight : 0);
+						ifi.scrollLeft = sp.scrollLeft + (sp.recalcWidth  ? ifi.scrollWidth  - sp.scrollWidth  : 0);
+					}
+					restore();
+					setTimeout(restore, 0); // New Firefox versions are async...
+				]]>
+				</body>
+			</method>
+		</implementation>
+		<handlers>
+			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent(this.tabSymbol, false);" />
+			<handler event="keypress" preventdefault="true" keycode="VK_TAB" action="this.setIndent(this.tabSymbol, true);" modifiers="shift" />
+			<handler event="keypress" preventdefault="true" key=" " action="this.setIndent(' ', false);" />
+			<handler event="keypress" preventdefault="true" key=" " action="this.setIndent(' ', true);" modifiers="shift" />
+			<handler event="keypress" keycode="VK_BACK" action="this.removeSpaces(event);" />
+			<handler event="keypress" keycode="VK_DELETE" action="this.removeSpaces(event);" />
+			<handler event="keypress" preventdefault="true" key="a" action="this.toggleComments(true);" modifiers="control,shift" />
+			<handler event="keypress" preventdefault="true" key="q" action="this.toggleComments(false);" modifiers="control,shift" />
+			<handler event="keypress" preventdefault="true" keycode="VK_RETURN" action="this.formatNewLine();" />
+			<handler event="keypress" preventdefault="true" keycode="VK_F12" action="this.toggleMaximized();" />
+			<handler event="keypress" preventdefault="true" key="+" action="this.textZoom(1);" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key="-" action="this.textZoom(-1);" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key="0" action="this.textZoom(0);" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key="g" action="this.goToLine();" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key="l" action="this.goToLine();" modifiers="control" /><!-- As in view source -->
+			<handler event="keypress" preventdefault="true" key="j" action="this.goToLine();" modifiers="control" /><!-- As in Scratchpad -->
+			<handler event="keypress" preventdefault="true" key="w" action="this.toggleWordWrap();" modifiers="control" />
+			<!-- Hotkeys moved to editor.xul
+			<handler event="keypress" preventdefault="true" keycode="VK_F4" action="this.openExternalEditor();" />
+			<handler event="keypress" preventdefault="true" key="e" action="this.openExternalEditor();" modifiers="control,shift" />
+			<handler event="keypress" preventdefault="true" key="o" action="this.loadFromFile(true);" modifiers="control,shift" />
+			<handler event="keypress" preventdefault="true" key="o" action="this.loadFromFile(false);" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key="s" action="this.saveToFile(true);" modifiers="control,shift" />
+			-->
+			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(false);" modifiers="control" />
+			<handler event="keypress" preventdefault="true" key=" " action="this.jsAutocomplete(true);" modifiers="control,shift" />
+			<handler event="keypress" preventdefault="true" keycode="VK_BACK" action="this.trimEndSpaces();" modifiers="alt" />
+
+			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
+			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />
+			<handler event="keypress">
+			<![CDATA[
+				this.isAutocompleteSelection = false;
+				if(
+					!this.autocomplete
+					|| event.ctrlKey
+					|| event.altKey
+					|| event.metaKey
+					|| !/[a-z_]/i.test(String.fromCharCode(event.charCode))
+				)
+					return;
+				var offset = this.autocompleteMinSymbols - 1; // Symbol from this keypress event aren't typed yet
+				if(offset > 0 && !/^[a-z_]+$/i.test(this.value.substr(this.inputField.selectionStart - offset, offset)))
+					return;
+				setTimeout(function(_this) {
+					_this.jsAutocomplete(false, true);
+				}, 0, this);
+			]]>
+			</handler>
+			<handler event="keypress" keycode="VK_BACK" modifiers="control">
+				this.insertText("");
+			</handler>
+			<handler event="blur">
+			<![CDATA[
+				if(event.originalTarget !== this.inputField || !this.maximized)
+					return;
+				setTimeout(function(_this) {
+					if(document.commandDispatcher.focusedElement !== _this.inputField) // E.g. user press Ctrl+Tab
+						_this.maximized = false;
+				}, 0, this);
+			]]>
+			</handler>
+			<handler event="dragover">
+			<![CDATA[
+				if(event.shiftKey)
+					return;
+
+				var ex = event.screenX, ey = event.screenY;
+
+				var dragSpeed = 0;
+				var now = Date.now();
+				if("_dragData" in this) {
+					var dd = this._dragData;
+					var dt = now - dd.t;
+					dragSpeed = dt < 5
+						? 100 // Just ignore...
+						: Math.pow(Math.pow(dd.x - ex, 2) + Math.pow(dd.y - ey, 2), 0.5)/dt*1000; // px/s
+				}
+				this._dragData = { t: now, x: ex, y: ey };
+				if(dragSpeed > 4)
+					return;
+
+				var bo = this.boxObject;
+				var minX = bo.screenX, maxX = minX + bo.width;
+				var minY = bo.screenY, maxY = minY + bo.height;
+
+				//if(ex < minX || ex > maxX || ey < minY || ey > maxY)
+				//	return;
+
+				const corner = 30;
+
+				var c = function(offset) {
+					var d = corner - offset;
+					return Math.round(Math.min(corner*1.6, d + Math.pow(d, d/corner*1.15) - 1));
+				};
+				var d, ifi = this.inputField;
+
+				if((d = ex - minX) < corner) // left
+					ifi.scrollLeft -= c(d);
+				else if((d = maxX - ex) < corner) // right
+					ifi.scrollLeft += c(d);
+
+				if((d = ey - minY) < corner) // top
+					ifi.scrollTop -= c(d);
+				else if((d = maxY - ey) < corner) // bottom
+					ifi.scrollTop += c(d);
+			]]>
+			</handler>
+			<handler event="DOMMouseScroll">
+			<![CDATA[
+				if(event.ctrlKey && !event.shiftKey && !event.altKey && !event.metaKey)
+					this.textZoom(event.detail > 0 ? 1 : -1);
+			]]>
+			</handler>
+		</handlers>
+	</binding>
+</bindings>

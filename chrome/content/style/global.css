@@ -1,0 +1,29 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+.handyClicks-iconic {
+	list-style-image: url("icons16.png");
+}
+.handyClicks-iconic image {
+	width: auto !important;
+	height: auto !important;
+	min-width: 0 !important;
+	min-height: 0 !important;
+	max-width: none !important;
+	max-height: none !important;
+}
+.handyClicks-iconic[disabled="true"] .menu-iconic-icon {
+	opacity: 0.32;
+}
+
+menuitem[handyclicks_main="true"] {
+	font-weight: bold;
+}
+
+checkbox[handyclicks_important="enabled"] label {
+	font-weight: bold;
+	padding-top: 1px;
+	padding-bottom: 0;
+}
+checkbox[handyclicks_important="enabled"]:not([checked="true"]) {
+	color: red;
+}

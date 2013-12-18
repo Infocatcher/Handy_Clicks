@@ -1,0 +1,19 @@
+<!-- Main window -->
+<!ENTITY handyClicks.menuitemLabel "Handy Clicks">
+<!ENTITY handyClicks.menuitemAccesskey "H">
+<!ENTITY handyClicks.menuitemAppAccesskey "H">
+<!ENTITY handyClicks.toolbarbuttonLabel "Handy Clicks">
+<!ENTITY handyClicks.settingsLabel "Settings…">
+<!ENTITY handyClicks.settingsAccesskey "S">
+<!ENTITY handyClicks.allSettingsLabel "All settings…">
+<!ENTITY handyClicks.allSettingsAccesskey "A">
+<!ENTITY handyClicks.enableLabel "Enable Handy Clicks">
+<!ENTITY handyClicks.enableAccesskey "n">
+<!ENTITY handyClicks.editModeLabel "Start edit mode">
+<!ENTITY handyClicks.editModeAccesskey "e">
+<!ENTITY handyClicks.editModeTipHeader "Handy Clicks:">
+
+<!ENTITY handyClicks.importFromClipboardLabel "Import settings from clipboard…">
+<!ENTITY handyClicks.importFromClipboardAccesskey "I">
+<!ENTITY handyClicks.progress "Handy Clicks: Progress"> <!-- Visible only in "Customize Toolbar" dialog -->
+<!ENTITY handyClicks.cancel "Cancel">

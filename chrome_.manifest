@@ -1,0 +1,26 @@
+content handyclicks jar:chrome/handyclicks.jar!/content/
+content handyclicks-locale jar:chrome/handyclicks.jar!/locale/en-US/
+resource handyclicks-content jar:chrome/handyclicks.jar!/content/res/
+
+overlay chrome://browser/content/browser.xul   chrome://handyclicks/content/handyclicks.xul
+overlay chrome://global/content/console.xul    chrome://handyclicks/content/console.xul
+overlay chrome://console2/content/console2.xul chrome://handyclicks/content/console.xul
+overlay chrome://browser/content/devtools/webconsole.xul chrome://handyclicks/content/console.xul
+
+# SeaMonkey:
+overlay chrome://navigator/content/navigator.xul chrome://handyclicks/content/handyclicks.xul
+
+style chrome://global/content/customizeToolbar.xul chrome://handyclicks/content/style/handyclicks.css
+
+skin handyclicks-icon classic/1.0 ./
+
+# Gecko 2 components registration:
+component {40835331-35F5-4bdf-85AB-6010E332D585} components/hcComponent.js
+contract @mozilla.org/network/protocol;1?name=handyclicks {40835331-35F5-4bdf-85AB-6010E332D585}
+
+component {50C6263F-F53F-4fbd-A295-9BA84C5FAAC3} components/hcComponent.js
+contract @mozilla.org/commandlinehandler/general-startup;1?type=handyclicks {50C6263F-F53F-4fbd-A295-9BA84C5FAAC3}
+category command-line-handler m-handyclicks @mozilla.org/commandlinehandler/general-startup;1?type=handyclicks
+
+locale handyclicks en-US jar:chrome/handyclicks.jar!/locale/en-US/
+locale handyclicks ru    jar:chrome/handyclicks.jar!/locale/ru/

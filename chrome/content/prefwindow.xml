@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<bindings id="handyClicks-prefwindowBindings" xmlns="http://www.mozilla.org/xbl">
+	<binding id="prefwindow" extends="chrome://global/content/bindings/preferences.xml#prefwindow">
+		<implementation>
+			<!-- Forbid browser.preferences.animateFadeIn (we have buggy tree pane resizing) -->
+			<field name="_shouldAnimate">false</field>
+		</implementation>
+	</binding>
+</bindings>

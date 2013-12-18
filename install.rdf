@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+	<Description about="urn:mozilla:install-manifest">
+
+		<em:id>handyclicks@infocatcher</em:id>
+		<em:type>2</em:type>
+		<em:unpack>true</em:unpack>
+		<em:name>Handy Clicks</em:name>
+		<em:version>0.1.3pre</em:version>
+		<em:description>More clicks options</em:description>
+		<em:creator>Infocatcher</em:creator>
+		<em:contributor>Anton Glazatov (some editor features)</em:contributor>
+		<em:contributor>Fugue and Diagona icons (http://p.yusukekamiyamane.com/)</em:contributor>
+		<em:contributor>Gnome icons (http://art.gnome.org/themes/icon)</em:contributor>
+		<em:contributor>Tango icons (http://tango.freedesktop.org/Tango_Icon_Library)</em:contributor>
+		<em:contributor>Gloss icons (http://momentumdesignlab.com/)</em:contributor>
+		<em:optionsURL>chrome://handyclicks/content/setsOpener.xul</em:optionsURL>
+		<em:iconURL>chrome://handyclicks-icon/skin/icon.png</em:iconURL>
+		<em:updateURL>http://infocatcher.ucoz.net/ext/fx/handy_clicks/update-dev.rdf</em:updateURL>
+		<em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLgtEbrhCdZetIAanFNvkT441WwBgXcg1Zzlo5s5
+		              j9VLByj/L6UXAVqSria1dejjkKfxVbRXvqalJ7mENRambKpZ4AfV3dBCKUDjME56CMaAK7+DxMqaM3
+		              KEDKXn8XfqL2qkFsgcVjqh6AfltKRcyLGkU9+YQ82EXo6xm47hywoQIDAQAB</em:updateKey>
+
+		<em:targetApplication> <!-- Firefox -->
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>1.5</em:minVersion>
+				<em:maxVersion>29.0a1</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+
+		<em:targetApplication> <!-- SeaMonkey -->
+			<Description>
+				<em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
+				<em:minVersion>2.0</em:minVersion>
+				<em:maxVersion>2.26a1</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+
+		<em:localized>
+			<Description>
+				<em:locale>en-US</em:locale>
+				<em:name>Handy Clicks</em:name>
+				<em:description>More clicks options</em:description>
+				<em:creator>Infocatcher</em:creator>
+				<em:contributor>Anton Glazatov (some editor features)</em:contributor>
+				<em:contributor>Fugue and Diagona icons (http://p.yusukekamiyamane.com/)</em:contributor>
+				<em:contributor>Gnome icons (http://art.gnome.org/themes/icon)</em:contributor>
+				<em:contributor>Tango icons (http://tango.freedesktop.org/Tango_Icon_Library)</em:contributor>
+				<em:contributor>Gloss icons (http://momentumdesignlab.com/)</em:contributor>
+			</Description>
+		</em:localized>
+
+		<em:localized>
+			<Description>
+				<em:locale>ru</em:locale>
+				<em:name>Handy Clicks</em:name>
+				<em:description>Больше настроек кликов</em:description>
+				<em:creator>Infocatcher</em:creator>
+				<em:contributor>Anton Glazatov (некоторые функции редактора)</em:contributor>
+				<em:contributor>Иконки Fugue и Diagona (http://p.yusukekamiyamane.com/)</em:contributor>
+				<em:contributor>Иконки Gnome (http://art.gnome.org/themes/icon)</em:contributor>
+				<em:contributor>Иконки Tango (http://tango.freedesktop.org/Tango_Icon_Library)</em:contributor>
+				<em:contributor>Иконки Gloss (http://momentumdesignlab.com/)</em:contributor>
+			</Description>
+		</em:localized>
+
+	</Description>
+</RDF>

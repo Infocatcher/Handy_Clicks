@@ -1,0 +1,28 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+#hcNotifyBox {
+	border: 2px solid black;
+	padding: 10px;
+}
+#hcNotifyBox.hc-clickable, #hcNotifyBox.hc-clickable * {
+	cursor: pointer;
+}
+#hcNotifyImg {
+	list-style-image: url("icons24.png");
+	-moz-image-region: rect(0 24px 24px 0);
+}
+#hcNotifyImg[hc_icon="disabled"] {
+	-moz-image-region: rect(0 48px 24px 24px);
+}
+#hcNotifyImg[hc_icon="warning"] {
+	-moz-image-region: rect(24px 24px 48px 0);
+}
+#hcNotifyImg[hc_icon="error"] {
+	-moz-image-region: rect(24px 48px 48px 24px);
+}
+#hcNotifyContainer {
+	margin-left: 5px;
+}
+* {
+	-moz-user-select: text !important;
+}

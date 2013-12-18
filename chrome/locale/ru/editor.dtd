@@ -1,0 +1,73 @@
+<!-- &#37;x (&#37; - percent symbol) will be replaced with some value -->
+
+<!-- Editor -->
+<!ENTITY hc.editor.title "Handy Clicks: Редактор">
+<!ENTITY hc.editor.defaultWindowWidth "700">
+<!ENTITY hc.editor.defaultWindowHeight "500">
+<!ENTITY hc.editor.apply "Применить">
+<!ENTITY hc.editor.delete "Удалить">
+<!ENTITY hc.editor.deleteAccesskey "У">
+<!ENTITY hc.editor.test "Протестировать">
+<!ENTITY hc.editor.testAccesskey "т">
+<!ENTITY hc.editor.undo "Отменить">
+<!ENTITY hc.editor.undoAccesskey "О">
+
+<!ENTITY hc.editor.mainTabActions "Действия">
+<!ENTITY hc.editor.mainTabActionsAccesskey "Д">
+<!ENTITY hc.editor.clickHere "Кликните здесь">
+<!ENTITY hc.editor.clickHereTip "Кликните для выбора кнопки мыши и модификаторов">
+
+<!ENTITY hc.editor.event "Событие:">
+<!ENTITY hc.editor.eventAccesskey "С">
+<!ENTITY hc.editor.mousedownEvent "Событие «mousedown»:">
+<!ENTITY hc.editor.mousedownAllow "Не останавливать">
+<!ENTITY hc.editor.mousedownSmart "Авто">
+<!ENTITY hc.editor.mousedownStop "Всегда останавливать">
+<!ENTITY hc.editor.enabled "Включено">
+<!ENTITY hc.editor.enabledAccesskey "В">
+<!ENTITY hc.editor.funcOptsAdd "Дополнительные настройки:">
+<!ENTITY hc.editor.funcOptsAddAccesskey "и">
+<!ENTITY hc.editor.ignoreLinks "Игнорировать ссылки">
+<!ENTITY hc.editor.ignoreSingle "Игнорировать отдельно открытые изображения">
+
+<!ENTITY hc.editor.tabAction "Действие">
+<!ENTITY hc.editor.tabActionAccesskey "й">
+<!ENTITY hc.editor.tabActionTip "Выполняется при наступлении выбранного события">
+<!ENTITY hc.editor.tabActionDelay "Отложенное действие">
+<!ENTITY hc.editor.tabActionDelayAccesskey "л">
+<!ENTITY hc.editor.tabActionDelayTip "Выполняется через &#37;n мс">
+<!ENTITY hc.editor.fixActionOpts "Зафиксировать">
+<!ENTITY hc.editor.fixActionOptsAccesskey "З">
+<!ENTITY hc.editor.fixActionOptsTip "Зафиксировать настройки действия (для копирования настроек)">
+
+<!ENTITY hc.editor.func "Функция:">
+<!ENTITY hc.editor.funcAccesskey "Ф">
+<!ENTITY hc.editor.funcLabel "Название:">
+<!ENTITY hc.editor.funcLabelAccesskey "Н">
+<!ENTITY hc.editor.funcArgsCaption "Аргументы">
+<!ENTITY hc.editor.funcCode "Код">
+<!ENTITY hc.editor.funcCodeAccesskey "К">
+<!ENTITY hc.editor.argsNote "Аргументы:">
+<!ENTITY hc.editor.funcInit "Инициализация">
+<!ENTITY hc.editor.funcInitAccesskey "И">
+<!ENTITY hc.editor.funcInitTip "Выполняется при (пере)загрузке настроек">
+
+<!ENTITY hc.editor.editCode "Редактировать…">
+<!ENTITY hc.editor.editCodeTip "Редактировать во внешнем редакторе…">
+<!ENTITY hc.editor.openCode "Открыть…">
+<!ENTITY hc.editor.openCodeTip "Загрузить код из файла…">
+
+<!ENTITY hc.editor.mainTabCustomTypes "Добавленные типы">
+<!ENTITY hc.editor.mainTabCustomTypesAccesskey "б">
+<!ENTITY hc.editor.internalId "Внутренний id:">
+<!ENTITY hc.editor.internalIdAccesskey "й">
+<!ENTITY hc.editor.defineItem "Определение элемента">
+<!ENTITY hc.editor.defineItemAccesskey "э">
+<!ENTITY hc.editor.defineReturnNote "Должно возвращать: элемент или null"> <!-- Do not translate "null"! -->
+<!ENTITY hc.editor.defineContext "Контекстное меню элемента">
+<!ENTITY hc.editor.defineContextAccesskey "К">
+<!ENTITY hc.editor.defineContextTip "Для автоопределения оставьте поле пустым">
+
+<!-- Invisible accesskeys -->
+<!ENTITY hc.editor.itemTypesAccesskey "э">
+<!ENTITY hc.editor.editAccesskey "р">

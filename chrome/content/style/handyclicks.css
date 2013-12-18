@@ -1,0 +1,118 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+#handyClicks-statusbarButton {
+	cursor: pointer;
+	padding-right: 1px;
+	padding-left: 2px; /* Fix for not centered icon */
+}
+
+/* Small status icons */
+#handyClicks-statusbarButton,
+toolbar[iconsize="small"] #handyClicks-toolbarButton,
+#handyClicks-toolsMenuitem,
+#handyClicks-appMenuitem {
+	list-style-image: url("icons16.png");
+	-moz-image-region: rect(0 16px 16px 0);
+}
+#handyClicks-statusbarButton[hc_enabled="false"],
+toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
+#handyClicks-toolsMenuitem[hc_enabled="false"],
+#handyClicks-appMenuitem[hc_enabled="false"] {
+	-moz-image-region: rect(0 32px 16px 16px);
+}
+
+/* Large status icons */
+#handyClicks-toolbarButton {
+	list-style-image: url("icons24.png");
+	-moz-image-region: rect(0 24px 24px 0);
+}
+#handyClicks-toolbarButton[hc_enabled="false"] {
+	-moz-image-region: rect(0 48px 24px 24px);
+}
+
+/* Small mouse buttons icons */
+#handyClicks-statusbarButton[hc_button="0"],
+toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="0"] {
+	-moz-image-region: rect(0 48px 16px 32px);
+}
+#handyClicks-statusbarButton[hc_button="1"],
+toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="1"] {
+	-moz-image-region: rect(0 64px 16px 48px);
+}
+#handyClicks-statusbarButton[hc_button="2"],
+toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="2"] {
+	-moz-image-region: rect(0 80px 16px 64px);
+}
+
+/* Large mouse buttons icons */
+#handyClicks-toolbarButton[hc_button="0"] {
+	-moz-image-region: rect(0 72px 24px 48px);
+}
+#handyClicks-toolbarButton[hc_button="1"] {
+	-moz-image-region: rect(0 96px 24px 72px);
+}
+#handyClicks-toolbarButton[hc_button="2"] {
+	-moz-image-region: rect(0 120px 24px 96px);
+}
+
+#handyClicks-statusbarButton[hc_editMode="true"],
+#handyClicks-toolbarButton[hc_editMode="true"],
+#handyClicks-toolsMenuitem[hc_editMode="true"],
+#handyClicks-appMenuitem[hc_editMode="true"] {
+	outline: 1px solid red !important;
+	outline-offset: -1px !important;
+}
+
+#handyClicks-mainCommandsSeparator[hc_hideAllAfter="true"],
+#handyClicks-mainCommandsSeparator[hc_hideAllAfter="true"] ~ *,
+#handyClicks-mainCommandsSeparator + menuseparator,
+#handyClicks-viewToolbarsSeparator + menuseparator {
+	display: none !important;
+}
+
+toolbar[iconsize="small"] #handyClicks-toolbarButton .toolbarbutton-icon {
+	/* Firefox 3.7a3pre+ resize icons to 18x18 */
+	width: auto;
+	height: auto;
+}
+
+#handyClicks-settingsMenuitem {
+	-moz-image-region: rect(48px 80px 64px 64px);
+}
+#handyClicks-allSettingsMenuitem {
+	-moz-image-region: rect(48px 96px 64px 80px);
+}
+#handyClicks-editMode {
+	-moz-image-region: rect(48px 112px 64px 96px);
+}
+#handyClicks-importFromClipboard {
+	-moz-image-region: rect(32px 96px 48px 80px);
+}
+.handyClicks-editItem {
+	-moz-image-region: rect(32px 32px 48px 16px);
+}
+#handyClicks-statusbarProgressCancel {
+	-moz-image-region: rect(48px 32px 64px 16px);
+}
+
+#handyClicks-statusbarProgressLabel-box {
+	min-width: 3.5em !important;
+}
+#handyClicks-statusbarProgressLabel {
+	margin: 0 !important;
+	-moz-margin-end: 4px !important;
+	padding: 0 !important;
+}
+toolbarpaletteitem #handyClicks-toolbarProgressContainer {
+	visibility: visible !important;
+}
+
+#handyClicks-tooltip {
+	padding: 0;
+}
+.handyClicks-invalidPath image, .handyClicks-invalidPath label {
+	opacity: 0.5;
+}
+.handyClicks-invalidPathTip {
+	color: red;
+}

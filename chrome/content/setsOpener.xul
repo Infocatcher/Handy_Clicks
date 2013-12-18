@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	id="handyClicks-settingsOpener"
+	windowtype="handyClicks:settingsOpener">
+	<script type="application/javascript">
+	<![CDATA[
+	// Prevent modal windows
+	var w = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+		.getService(Components.interfaces.nsIWindowMediator)
+		.getMostRecentWindow("handyclicks:settings");
+	if(!w) {
+		 Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
+			.getService(Components.interfaces.nsIWindowWatcher)
+			.openWindow(
+				window.opener,
+				"chrome://handyclicks/content/sets.xul", "_blank",
+				"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0",
+				null
+			);
+		window.close();
+	}
+	else {
+		var _f = function f() {
+			f.w.focus();
+		};
+		_f.w = w;
+		window.opener.setTimeout(_f, 0);
+		window.close();
+	}
+	]]>
+	</script>
+</window>
