@@ -629,6 +629,7 @@
 						catch(e) {
 							ut._err("openExternalEditor: ScratchpadManager.openScratchpad() failed");
 							ut._err(e);
+							ee = "";
 						}
 
 						var eeFile = ee && ut.getLocalFile(ee);
