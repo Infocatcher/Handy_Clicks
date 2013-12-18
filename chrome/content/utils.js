@@ -865,6 +865,10 @@ var handyClicksUtils = {
 		delete this.fxVersion;
 		return this.fxVersion = ver;
 	},
+	get osVersion() {
+		delete this.osVersion; // String like "Windows NT 6.1"
+		return this.osVersion = /\S\s+(\d.*)/.test(navigator.oscpu) ? parseFloat(RegExp.$1) : 0;
+	},
 
 	get lineBreak() {
 		delete this.lineBreak;

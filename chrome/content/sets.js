@@ -55,6 +55,14 @@ var handyClicksSets = {
 
 		this.e("hc-sets-externalEditorArgs-box").height = this.e("hc-sets-externalEditorExt-box").boxObject.height;
 
+		if(
+			this.ut.fxVersion >= 25
+			&& this.ut.appInfo.OS == "WINNT"
+			&& this.ut.osVersion >= 6
+			&& document.querySelector(":-moz-system-metric(windows-default-theme)")
+		)
+			this.tree.setAttribute("hc_hasOverlayBackground", "true");
+
 		window.addEventListener("mouseover", this, true);
 	},
 	initShortcuts: function() {

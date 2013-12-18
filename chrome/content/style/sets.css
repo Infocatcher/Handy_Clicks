@@ -98,14 +98,20 @@ tree[hc_colored="true"] treechildren {
 	color: black;
 	background-color: white;
 }
+tree[hc_colored="true"][hc_hasOverlayBackground="false"] treechildren::-moz-tree-row(selected),
+tree[hc_colored="true"][hc_hasOverlayBackground="false"] treechildren::-moz-tree-cell-text(selected) {
+	background-color: #d7d8dd !important;
+}
 tree[hc_colored="true"] treechildren::-moz-tree-row(selected),
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(selected) {
-	background-color: #d7d8dd !important;
 	color: black !important;
+}
+tree[hc_colored="true"][hc_hasOverlayBackground="false"] treechildren::-moz-tree-row(selected, focus),
+tree[hc_colored="true"][hc_hasOverlayBackground="false"] treechildren::-moz-tree-cell-text(selected, focus) {
+	background-color: #bfc1ca !important;
 }
 tree[hc_colored="true"] treechildren::-moz-tree-row(selected, focus),
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(selected, focus) {
-	background-color: #bfc1ca !important;
 	color: black !important;
 }
 
@@ -138,10 +144,10 @@ tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_search) {
 	/*color: graytext;*/
 	border-bottom: 1px dotted graytext;
 }
-tree[hc_colored="true"] treechildren::-moz-tree-row(hover) {
+tree[hc_colored="true"][hc_hasOverlayBackground="false"] treechildren::-moz-tree-row(hover) {
 	border: 1px dotted black;
 }
-treechildren::-moz-tree-row(hover) {
+tree[hc_hasOverlayBackground="false"] treechildren::-moz-tree-row(hover) {
 	/*border: 1px dotted -moz-use-text-color;*/
 	border: 1px dotted currentColor !important;
 }
