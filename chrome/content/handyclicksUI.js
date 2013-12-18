@@ -163,6 +163,13 @@ var handyClicksUI = {
 			function(ch) {
 				if(this.isToolbarItem(ch))
 					return;
+				if(
+					ch.localName == "menuseparator"
+					&& popup.lastChild
+					&& popup.lastChild.localName == "menuseparator"
+					&& this.ut.isElementVisible(popup.lastChild)
+				)
+					return;
 				var clone = ch.cloneNode(true);
 				clone.id && this.setClonedId(clone);
 				Array.forEach(
