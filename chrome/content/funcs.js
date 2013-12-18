@@ -336,7 +336,21 @@ var handyClicksFuncs = {
 		});
 		var loadLink = this.ut.bind(function() {
 			this.setPrefs(target, loadJSInBackground, refererPolicy, winRestriction, false /* winOpenFix */);
+
+			if(this.pu.pref("funcs.workaroundForMousedownImitation")) {
+				// https://github.com/Infocatcher/Right_Links/issues/2
+				// Tabs becomes not clickable after "mousedown" imitation,
+				// so we try to catch "mousedown" before browser's listeners
+				var doc = item.ownerDocument;
+				var root = this.dwu.getParentForNode(doc, true) || doc.defaultView;
+				root.addEventListener("mousedown", function fix(e) {
+					root.removeEventListener(e.type, fix, false);
+					e.preventDefault();
+					//e.stopPropagation();
+				}, false);
+			}
 			evts();
+
 			this.restorePrefs();
 		}, this);
 
@@ -350,6 +364,11 @@ var handyClicksFuncs = {
 			);
 		if(load)
 			loadLink();
+	},
+	get dwu() {
+		delete this.dwu;
+		return this.dwu = Components.classes["@mozilla.org/inspector/dom-utils;1"]
+			.getService(Components.interfaces.inIDOMUtils);
 	},
 	hasHandlers: function(it) {
 		it = this.ut.unwrap(it || this.hc.item);
