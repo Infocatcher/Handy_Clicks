@@ -160,6 +160,8 @@ var hcNotify = {
 		clearTimeout(this._closeTimeout);
 		clearInterval(this._highlightInterval);
 		this.borderColor = this.hoverColor;
+		if(this._transition)
+			this._notifyBox.style.opacity = 1;
 	},
 	mouseHandler: function(e) {
 		if(!e.relatedTarget)
