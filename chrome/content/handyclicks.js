@@ -97,6 +97,15 @@ var handyClicks = {
 		if(!funcObj)
 			return;
 
+		if( // Workaround for https://addons.mozilla.org/addon/budaneki/
+			this.itemType == "link"
+			&& e.button == 0
+			&& this.item.parentNode
+			&& this.item.parentNode.id == "budaneki-icon-menu-clonned"
+			&& this.item.ownerDocument == document
+		)
+			return;
+
 		if(this._cMenu && typeof this._cMenu.hidePopup == "function") // ?
 			this._cMenu.hidePopup();
 
