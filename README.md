@@ -1,0 +1,1 @@
+Provides more clicks options: you can set some built-in action (or write any custom action) for click (right-click, Shift+left-click, etc.) on some items like links (or you can add detect function for any other items).
