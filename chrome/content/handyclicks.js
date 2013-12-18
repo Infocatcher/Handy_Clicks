@@ -522,6 +522,8 @@ var handyClicks = {
 				|| !/(?:^|\s)speeddial-container(?:\s|$)/.test(it.parentNode.className)
 				|| this.pu.pref("types.images.SpeedDial")
 			)
+			// InFormEnter https://addons.mozilla.org/addon/informenter/
+			&& (it.src || "").substr(0, 32) != "chrome://informenter/skin/marker"
 		)
 			return it;
 		return null;
@@ -530,7 +532,11 @@ var handyClicks = {
 		if(
 			it.namespaceURI == this.ut.XULNS
 			&& this.inObject(it, "href") && (it.href || it.hasAttribute("href"))
-			&& this.ut.unwrap(it).accessibleType == Components.interfaces.nsIAccessibleProvider.XULLink
+			//&& this.ut.unwrap(it).accessibleType == Components.interfaces.nsIAccessibleProvider.XULLink
+			&& (
+				typeof it.open == "function" // Comes from chrome://global/content/bindings/text.xml#text-link binding
+				|| it.wrappedJSObject && typeof it.wrappedJSObject.open == "function"
+			)
 		)
 			return it;
 
@@ -819,24 +825,37 @@ var handyClicks = {
 		if(!this.pu.pref("types.links.CSSEditor"))
 			return null;
 		var docURI = it.ownerDocument.documentURI;
-		if(docURI == "chrome://browser/content/devtools/cssruleview.xul") { // Rules tab
-			return it.className == "ruleview-rule-source"
+		// Rules tab
+		if(
+			docURI == "chrome://browser/content/devtools/cssruleview.xul"
+			|| docURI == "chrome://browser/content/devtools/cssruleview.xhtml" // Firefox 22+
+		) {
+			if(it.localName == "label")
+				it = it.parentNode;
+			return it.classList
+				&& it.classList.contains("ruleview-rule-source")
 				&& this.ut.getProperty(it, "parentNode", "_ruleEditor", "rule", "sheet", "href");
 		}
-		if(docURI == "chrome://browser/content/devtools/csshtmltree.xul") {
-			return it instanceof HTMLAnchorElement // Computed tab
+		// Computed tab
+		if(
+			docURI == "chrome://browser/content/devtools/csshtmltree.xul"
+			|| docURI == "chrome://browser/content/devtools/computedview.xhtml" // Firefox 22+
+		) {
+			return it instanceof HTMLAnchorElement
 				&& !it.href
 				&& !it.getAttribute("href")
-				&& it.className == "link"
-				&& it.parentNode.className == "rule-link"
+				&& it.classList
+				&& it.classList.contains("link")
+				&& it.parentNode.classList.contains("rule-link")
 				&& this.uri(it.title);
 		}
 		return null;
 	},
 	getWebConsoleURI: function(it) {
-		return it.namespaceURI == this.ut.XULNS
-			&& /(?:^|\s)webconsole-location(?:\s|$)/.test(it.className)
-			&& /(?:^|\s)text-link(?:\s|$)/.test(it.className)
+		return it.namespaceURI == this.XULNS
+			&& it.classList
+			&& it.classList.contains("webconsole-location")
+			&& it.classList.contains("text-link")
 			&& (it.parentNode.id || "").substr(0, 12) == "console-msg-"
 			&& this.uri(it.getAttribute("title"));
 	},
@@ -886,13 +905,34 @@ var handyClicks = {
 	createMouseEvent: function(origEvt, item, evtType, button) {
 		item = item || origEvt.originalTarget;
 		var doc = item.ownerDocument;
-		var evt = doc.createEvent("MouseEvents");
-		evt.initMouseEvent( // https://developer.mozilla.org/en/DOM/event.initMouseEvent
-			evtType, true /* canBubble */, true /* cancelable */, doc.defaultView, 1,
-			origEvt.screenX, origEvt.screenY, origEvt.clientX, origEvt.clientY,
-			false, false, false, false,
-			button, null
-		);
+		var win = doc.defaultView;
+		if(typeof win.MouseEvent == "function") { // Firefox 11+
+			var evt = new win.MouseEvent(evtType, {
+				bubbles: true,
+				cancelable: true,
+				view: win,
+				detail: 1,
+				screenX: origEvt.screenX,
+				screenY: origEvt.screenY,
+				clientX: origEvt.clientX,
+				clientY: origEvt.clientY,
+				ctrlKey:  false,
+				altKey:   false,
+				shiftKey: false,
+				metaKey:  false,
+				button:   button,
+				relatedTarget: null
+			});
+		}
+		else {
+			var evt = doc.createEvent("MouseEvents");
+			evt.initMouseEvent( // https://developer.mozilla.org/en/DOM/event.initMouseEvent
+				evtType, true /* canBubble */, true /* cancelable */, win, 1,
+				origEvt.screenX, origEvt.screenY, origEvt.clientX, origEvt.clientY,
+				false, false, false, false,
+				button, null
+			);
+		}
 		return evt;
 	},
 	focusOnItem: function(forced, it) {
