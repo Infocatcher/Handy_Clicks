@@ -889,9 +889,11 @@ var handyClicks = {
 			? node[prop]
 			: "";
 	},
-	createMouseEvents: function(origEvt, item, evtTypes, button) {
+	createMouseEvents: function(origEvt, item, evtTypes, opts) {
+		if(typeof opts == "number")
+			opts = { button: opts };
 		var evts = evtTypes.map(function(evtType) {
-			return this.createMouseEvent(origEvt, item, evtType, button);
+			return this.createMouseEvent(origEvt, item, evtType, opts);
 		}, this);
 		var _this = this;
 		return function() {
@@ -902,7 +904,7 @@ var handyClicks = {
 			_this._enabled = true;
 		};
 	},
-	createMouseEvent: function(origEvt, item, evtType, button) {
+	createMouseEvent: function(origEvt, item, evtType, opts) {
 		item = item || origEvt.originalTarget;
 		var doc = item.ownerDocument;
 		var win = doc.defaultView;
@@ -916,11 +918,11 @@ var handyClicks = {
 				screenY: origEvt.screenY,
 				clientX: origEvt.clientX,
 				clientY: origEvt.clientY,
-				ctrlKey:  false,
-				altKey:   false,
-				shiftKey: false,
-				metaKey:  false,
-				button:   button,
+				ctrlKey:  opts.ctrlKey  || false,
+				altKey:   opts.altKey   || false,
+				shiftKey: opts.shiftKey || false,
+				metaKey:  opts.metaKey  || false,
+				button:   opts.button   || 0,
 				relatedTarget: null
 			});
 		}
@@ -929,8 +931,8 @@ var handyClicks = {
 			evt.initMouseEvent( // https://developer.mozilla.org/en/DOM/event.initMouseEvent
 				evtType, true /* canBubble */, true /* cancelable */, win, 1,
 				origEvt.screenX, origEvt.screenY, origEvt.clientX, origEvt.clientY,
-				false, false, false, false,
-				button, null
+				opts.ctrlKey || false, opts.altKey || false, opts.shiftKey || false, opts.metaKey || false,
+				opts.button || 0, null
 			);
 		}
 		return evt;

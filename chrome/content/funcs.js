@@ -20,9 +20,11 @@ var handyClicksFuncs = {
 		if(_uri.charAt(0) != "#")
 			return false;
 		var anchor = _uri.substr(1);
+		if(!anchor) // <a href="#">
+			return true;
 		if(anchor.charAt(0) == "!") // site.com/#!... links on JavaScript-based sites like http://twitter.com/
 			return false;
-		return !anchor || !doc.getElementById(anchor) && !doc.getElementsByName(anchor).length;
+		return !doc.getElementById(anchor) && !doc.getElementsByName(anchor).length && 2;
 	},
 
 	copyItemText: function(e, closePopups) {
@@ -317,17 +319,21 @@ var handyClicksFuncs = {
 			this.loadNotVoidJavaScriptLink(e, item, uri, loadJSInBackground, refererPolicy, winRestriction, target);
 			return true;
 		}
-		else if(voidURI || this.isDummyURI(item, uri) || target == "cur" && this.hasHandlers(item)) {
-			this.loadVoidLinkWithHandler(e, item, loadJSInBackground, refererPolicy, winRestriction, target);
+		var dummyURI = !voidURI && this.isDummyURI(item, uri);
+		if(voidURI || dummyURI || target == "cur" && this.hasHandlers(item)) {
+			this.loadVoidLinkWithHandler(e, item, loadJSInBackground, refererPolicy, winRestriction, target, dummyURI);
 			return true;
 		}
 		return false;
 	},
-	loadVoidLinkWithHandler: function(e, item, loadJSInBackground, refererPolicy, winRestriction, target) {
+	loadVoidLinkWithHandler: function(e, item, loadJSInBackground, refererPolicy, winRestriction, target, dummyURI) {
 		e = e || this.hc.event;
 		item = item || this.hc.item;
 
-		var evts = this.hc.createMouseEvents(e, item, ["mousedown", "mouseup", "click"], 0);
+		var evts = this.hc.createMouseEvents(e, item, ["mousedown", "mouseup", "click"], {
+			button: 0,
+			ctrlKey: target != "cur" && dummyURI == 2 // Link may be real
+		});
 		var loadLink = this.ut.bind(function() {
 			this.setPrefs(target, loadJSInBackground, refererPolicy, winRestriction, false /* winOpenFix */);
 			evts();
