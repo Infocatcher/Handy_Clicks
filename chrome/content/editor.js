@@ -257,7 +257,7 @@ var handyClicksEditor = {
 			this.localizeLabels,
 			this
 		);
-		["ctrl", "shift", "alt", "meta"].forEach(
+		["ctrl", "shift", "alt", "meta", "os"].forEach(
 			function(mdf) {
 				var elt = this.$("hc-editor-" + mdf);
 				elt.setAttribute("label", this.ps.keys[elt.getAttribute("label")]);
@@ -962,19 +962,24 @@ var handyClicksEditor = {
 	},
 
 	get currentShortcut() {
-		return ["button", "ctrl", "shift", "alt", "meta"].map(
+		return ["button", "ctrl", "shift", "alt", "meta", "os"].map(
 			function(key) {
 				var elt = this.$("hc-editor-" + key);
-				return key + "=" + (elt.value || elt.checked);
+				var val = elt.value || elt.checked;
+				if(key == "os" && !val)
+					return "";
+				return key + "=" + val;
 			},
 			this
-		).join(",");
+		).filter(function(data) {
+			return data;
+		}).join(",");
 	},
 	set currentShortcut(shortcut) {
 		var butt = /(?:^|,)button=([0-2])(?:,|$)/.test(shortcut) ? RegExp.$1 : "0";
 		this.$("hc-editor-button").value = butt;
 		this.$("hc-editor-events-command").disabled = butt != "0";
-		["ctrl", "shift", "alt", "meta"].forEach(
+		["ctrl", "shift", "alt", "meta", "os"].forEach(
 			function(mdf) {
 				var re = new RegExp("(?:^|,)" + mdf + "=true(?:,|$)");
 				this.$("hc-editor-" + mdf).checked = re.test(shortcut);
@@ -1059,6 +1064,7 @@ var handyClicksEditor = {
 			},
 			this
 		);
+		this.$("hc-editor-os").checked = e.getModifierState && e.getModifierState("OS");
 		this.loadFuncs();
 	},
 

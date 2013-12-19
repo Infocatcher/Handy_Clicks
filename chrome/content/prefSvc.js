@@ -31,7 +31,7 @@ var handyClicksPrefSvc = {
 		userBackup:   "_user_backup-",
 		testBackup:   "_test_backup-"
 	},
-	okShortcut: /^button=[0-2],ctrl=(?:true|false),shift=(?:true|false),alt=(?:true|false),meta=(?:true|false)$/,
+	okShortcut: /^button=[0-2](?:,(?:ctrl|shift|alt|meta|os)=(?:true|false))*$/,
 
 	otherSrc: false,
 	_restoringCounter: 0,
@@ -842,7 +842,8 @@ var handyClicksPrefSvc = {
 			+ ",ctrl=" + e.ctrlKey
 			+ ",shift=" + e.shiftKey
 			+ ",alt=" + e.altKey
-			+ ",meta=" + e.metaKey;
+			+ ",meta=" + e.metaKey
+			+ (e.getModifierState && e.getModifierState("OS") ? ",os=true" : "");
 	},
 	isOkShortcut: function(s) {
 		return s && this.okShortcut.test(s);
@@ -924,6 +925,7 @@ var handyClicksPrefSvc = {
 			shift: this.ut.getStr(src, "VK_SHIFT")           || "Shift",
 			alt:   this.ut.getStr(src, "VK_ALT")             || "Alt",
 			meta:  this.ut.getStr(src, "VK_META")            || "Meta",
+			os:    this.ut.getStr(src, "VK_WIN")             || "Win",
 			sep:   this.ut.getStr(src, "MODIFIER_SEPARATOR") || "+",
 			__proto__: null
 		};
