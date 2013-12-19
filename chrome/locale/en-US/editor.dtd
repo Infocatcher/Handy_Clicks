@@ -16,6 +16,7 @@
 <!ENTITY hc.editor.mainTabActionsAccesskey "o">
 <!ENTITY hc.editor.clickHere "Click here">
 <!ENTITY hc.editor.clickHereTip "Click to select mouse button and modifiers">
+<!ENTITY hc.editor.osKeyNote "Works only in Firefox 15+ and SeaMonkey 2.12+">
 
 <!ENTITY hc.editor.event "Event:">
 <!ENTITY hc.editor.eventAccesskey "v">
