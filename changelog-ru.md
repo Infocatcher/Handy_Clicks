@@ -14,5 +14,8 @@
 `*` Удалены хаки для асинхронного AddonManager'а (это должно улучшить производительность при запуске) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/6">#6</a>).<br>
 `x` Различные мелкие исправления.<br>
 
+##### 0.1.3pre (2013-12-18)
+`*` Опубликовано на GitHub.<br>
+
 ##### Старые версии
 <a href="http://infocatcher.ucoz.net/ext/fx/handy_clicks/changelog.txt">changelog.txt</a>

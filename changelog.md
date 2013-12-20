@@ -14,5 +14,8 @@
 `*` Removed hacks for async AddonManager (this should improve startup performance) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/6">#6</a>).<br>
 `x` Some minor fixes.<br>
 
+##### 0.1.3pre (2013-12-18)
+`*` Published on GitHub.<br>
+
 ##### Older versions
 <a title="Available only in Russian, sorry" href="https://translate.google.com/translate?sl=ru&tl=en&u=http%3A%2F%2Finfocatcher.ucoz.net%2Fext%2Ffx%2Fhandy_clicks%2Fchangelog.txt">changelog.txt</a>
