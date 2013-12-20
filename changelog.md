@@ -12,6 +12,7 @@
 `x` Imported some recent fixes from <a href="https://addons.mozilla.org/addon/right-links/">Right Links</a> extension (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/1">#1</a>).<br>
 `+` Added support for OS modifier key (typically this is Windows key) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/5">#5</a>).<br>
 `*` Removed hacks for async AddonManager (this should improve startup performance) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/6">#6</a>).<br>
+`+` Added F1 hotkey to search field in settings window (shows tooltip with brief help).
 `x` Some minor fixes.<br>
 
 ##### 0.1.3pre (2013-12-18)

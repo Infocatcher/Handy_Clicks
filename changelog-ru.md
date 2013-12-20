@@ -12,6 +12,7 @@
 `x` Импортированы последние исправления из расширения <a href="https://addons.mozilla.org/addon/right-links/">Right Links</a> (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/1">#1</a>).<br>
 `+` Добавлена поддержка клавиши-модификатора OS (обычно это клавиша Windows) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/5">#5</a>).<br>
 `*` Удалены хаки для асинхронного AddonManager'а (это должно улучшить производительность при запуске) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/6">#6</a>).<br>
+`+` Добавлена горячая клавиша F1 для поля поиска в окне настроек (показывает всплывающую подсказку с краткой справкой).
 `x` Различные мелкие исправления.<br>
 
 ##### 0.1.3pre (2013-12-18)
