@@ -124,13 +124,16 @@ tree[hc_colored="true"] treechildren::-moz-tree-row(hc_customType) {
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_custom, hc_customType) {
 	background-color: #dffff7;
 }
-tree[hc_colored="true"] treechildren::-moz-tree-row(hc_disabled) {
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_disabled),
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_disabled, hc_customType) {
 	background-color: #f0eedf;
 }
-tree[hc_colored="true"] treechildren::-moz-tree-row(hc_unsavedDisabled) {
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_unsavedDisabled),
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_unsavedDisabled, hc_customType) {
 	background-color: #f7f5ee;
 }
-tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy) {
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy),
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy, hc_customType) {
 	background-color: #faa;
 }
 tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_buggy) {
