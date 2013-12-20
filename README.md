@@ -14,6 +14,7 @@ Note: some hotkeys described in the interface and not listed here.
 
 ##### Hotkeys in settings windows
 <table>
+<tr><td>F5, Ctrl+R            </td><td>Reload (load saved settings)        </td></tr>
 <tr><td>F10                   </td><td>Maximize/restore window             </td></tr>
 <tr><td>F11                   </td><td>Toggle fullscreen mode              </td></tr>
 </table>
