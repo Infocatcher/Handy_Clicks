@@ -469,7 +469,7 @@ var handyClicksSetsUtils = {
 	get infoTooltip() {
 		delete this.infoTooltip;
 		return this.infoTooltip = document.documentElement.appendChild(this.ut.parseXULFromString('\
-			<tooltip xmlns="' + this.ut.XULNS + '" id="handyClicks-infoTooltip" onmouseover="this.hidePopup();">\
+			<tooltip xmlns="' + this.ut.XULNS + '" id="handyClicks-infoTooltip">\
 				<description />\
 			</tooltip>'
 		));
@@ -483,10 +483,16 @@ var handyClicksSetsUtils = {
 		var bo = anchor.boxObject;
 		var x = bo.screenX;
 		var y = bo.screenY + bo.height + (offset === undefined ? this.TOOLTIP_OFFSET_DEFAULT : offset);
+		tt.onmouseover = null; // Trick to show tooltip under cursor
 		if("openPopupAtScreen" in tt) // Firefox 3.0+
 			tt.openPopupAtScreen(x, y, false /*isContextMenu*/);
 		else
 			tt.showPopup(anchor, x, y, "tooltip", null, null);
+		setTimeout(function() {
+			tt.onmouseover = function() {
+				this.hidePopup();
+			};
+		}, 25);
 
 		if(_sit.hasOwnProperty("timeout"))
 			clearTimeout(_sit.timeout);
