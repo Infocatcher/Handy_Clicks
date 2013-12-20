@@ -196,15 +196,8 @@ var handyClicksEditor = {
 			this.$("hc-editor-cmd-undo").setAttribute("disabled", !this.ps.hasTestSettings);
 	},
 	selectTargetTab: function hce_selectTargetTab(isDelayed, src, line) {
-		if(this.ut.storage("extensionsPending")) {
-			// Hack for Firefox 3.7a5pre+ (see handyClicksExtensionsHelper.instantInit() in utils.js)
-			if(!this.ut.storage("extensionsScheduledTasks"))
-				this.ut.storage("extensionsScheduledTasks", []);
-			this.ut.storage("extensionsScheduledTasks").push({
-				func: hce_selectTargetTab,
-				context: this,
-				args: arguments
-			});
+		if(this.eh.pending) {
+			this.eh.schedule(hce_selectTargetTab, this, arguments);
 			return;
 		}
 
