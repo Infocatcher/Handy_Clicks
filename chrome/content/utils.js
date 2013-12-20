@@ -1193,6 +1193,20 @@ var handyClicksUtils = {
 			return val;
 		};
 		return f.apply(this, arguments);
+	},
+
+	get xcr() {
+		delete this.xcr;
+		return this.xcr = Components.classes["@mozilla.org/chrome/chrome-registry;1"]
+			.getService(Components.interfaces.nsIXULChromeRegistry);
+	},
+	packageAvailable: function(packageName) {
+		try {
+			return /^[a-z]/.test(this.xcr.getSelectedLocale(packageName));
+		}
+		catch(e) {
+		}
+		return false;
 	}
 };
 

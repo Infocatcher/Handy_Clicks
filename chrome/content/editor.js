@@ -42,11 +42,6 @@ var handyClicksEditor = {
 		window.addEventListener("focus",  this, true);
 	},
 	init: function hce_init(reloadFlag) {
-		if(this.eh.pending) {
-			this.eh.schedule(hce_init, this, arguments);
-			return;
-		}
-
 		if(this.ut.fxVersion == 1.5) // "relative" is not supported
 			this.types.menulists.moveTabTo.pop();
 		this.initShortcuts();
@@ -196,11 +191,6 @@ var handyClicksEditor = {
 			this.$("hc-editor-cmd-undo").setAttribute("disabled", !this.ps.hasTestSettings);
 	},
 	selectTargetTab: function hce_selectTargetTab(isDelayed, src, line) {
-		if(this.eh.pending) {
-			this.eh.schedule(hce_selectTargetTab, this, arguments);
-			return;
-		}
-
 		this.mainTabbox.selectedIndex = this.editorMode == this.ct.EDITOR_MODE_TYPE
 			? this.INDEX_TYPE
 			: this.INDEX_SHORTCUT;
@@ -819,13 +809,14 @@ var handyClicksEditor = {
 			return true;
 		}, this);
 	},
-	exts: {
-		SplitBrowser: "{29c4afe1-db19-4298-8785-fcc94d1d6c1d}",
-		FlashGot: "{19503e42-ca3c-4c27-b1e2-9cdb2170ee34}",
-		"Multiple Tab Handler": "multipletab@piro.sakura.ne.jp"
+	extPackages: {
+		FlashGot: "flashgot",
+		"Multiple Tab Handler": "multipletab",
+		SplitBrowser: "splitbrowser",
+		__proto__: null
 	},
 	extEnabled: function(eName) {
-		return this.eh.isEnabled(this.exts[eName]);
+		return this.ut.packageAvailable(this.extPackages[eName]);
 	},
 
 	itemTypeChanged: function(iType) {
