@@ -1475,6 +1475,14 @@ var handyClicksSets = {
 	},
 	navigateSearchResults: function(e) {
 		var code = e.keyCode;
+		if(code == e.DOM_VK_F1) {
+			var tt = this.$("hc-sets-search-tooltip");
+			var anchor = this.$("hc-sets-tree-searchContainer");
+			// See chrome://global/content/xul.css: tooltip { margin-top: 21px; }
+			var offset = -21 + this.su.TOOLTIP_OFFSET_DEFAULT;
+			this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_SLOW, offset);
+			return;
+		}
 		var enter = code == e.DOM_VK_RETURN;
 		var up    = code == e.DOM_VK_UP;
 		var down  = code == e.DOM_VK_DOWN;

@@ -464,6 +464,7 @@ var handyClicksSetsUtils = {
 
 	TOOLTIP_HIDE_DEFAULT: 2600,
 	TOOLTIP_HIDE_QUICK: 800,
+	TOOLTIP_HIDE_SLOW: 5000,
 	TOOLTIP_OFFSET_DEFAULT: 2,
 	TOOLTIP_OFFSET_CURSOR: 12,
 	get infoTooltip() {
@@ -474,12 +475,13 @@ var handyClicksSetsUtils = {
 			</tooltip>'
 		));
 	},
-	showInfoTooltip: function _sit(anchor, msg, hideDelay, offset) {
-		if(!msg)
-			return;
-		var tt = this.infoTooltip;
-		tt.firstChild.textContent = msg;
-
+	showInfoTooltip: function _sit(anchor, msg, hideDelay, offset, tt) {
+		if(!tt) {
+			if(!msg)
+				return;
+			tt = this.infoTooltip;
+			tt.firstChild.textContent = msg;
+		}
 		var bo = anchor.boxObject;
 		var x = bo.screenX;
 		var y = bo.screenY + bo.height + (offset === undefined ? this.TOOLTIP_OFFSET_DEFAULT : offset);
@@ -493,12 +495,14 @@ var handyClicksSetsUtils = {
 				this.hidePopup();
 			};
 		}, 25);
-
 		if(_sit.hasOwnProperty("timeout"))
 			clearTimeout(_sit.timeout);
 		_sit.timeout = setTimeout(function(tt) {
 			tt.hidePopup();
 		}, hideDelay || this.TOOLTIP_HIDE_DEFAULT, tt);
+	},
+	showTooltip: function(tt, anchor, hideDelay, offset) {
+		this.showInfoTooltip(anchor, "", hideDelay, offset, tt);
 	},
 
 	setKeysDescDelay: function() {
