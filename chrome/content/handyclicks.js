@@ -680,7 +680,7 @@ var handyClicks = {
 	},
 
 	inObject: function(o, p) {
-		// this.ut._log("inObject", "wrappedJSObject" in o, o.wrappedJSObject);
+		// this.ut._log("inObject(): " + ("wrappedJSObject" in o) + " " + o.wrappedJSObject);
 		// Open chrome://global/content/console.xul in tab
 		// and click on <xul:label class="text-link" />
 		//   "wrappedJSObject" in o => false

@@ -7,13 +7,15 @@ var handyClicksUtils = {
 		return this.consoleSvc = Components.classes["@mozilla.org/consoleservice;1"]
 			.getService(Components.interfaces.nsIConsoleService);
 	},
-	_info: function() {
-		this.consoleSvc.logStringMessage(
-			this.errPrefix
-			+ Array.map(arguments, this.safeToString).join("\n")
-		);
+	ts: function() {
+		var d = new Date();
+		var ms = d.getMilliseconds();
+		return d.toLocaleFormat("%M:%S:") + "000".substr(String(ms).length) + ms;
 	},
-	_log: function() {
+	_info: function(s) {
+		this.consoleSvc.logStringMessage(this.errPrefix + this.ts() + " " + this.safeToString(s));
+	},
+	_log: function(s) {
 		this._devMode && this._info.apply(this, arguments);
 	},
 	_err: function _err(e, fileName, lineNumber, isWarning) {
