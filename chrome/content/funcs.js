@@ -506,7 +506,7 @@ var handyClicksFuncs = {
 		var win = window.openDialog(
 			getBrowserURL(),
 			"_blank",
-			"chrome,all,dialog=no" + (loadInBackground ? ",alwaysLowered" : ""), // Thanks to All-in-One Gestures!
+			"chrome,all,dialog=0" + (loadInBackground ? ",alwaysLowered" : ""), // Thanks to All-in-One Gestures!
 			uri, null,
 			this.getRefererForItem(refererPolicy), null, false
 		);

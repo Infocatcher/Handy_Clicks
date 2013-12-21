@@ -9,12 +9,12 @@
 		.getService(Components.interfaces.nsIWindowMediator)
 		.getMostRecentWindow("handyclicks:settings");
 	if(!w) {
-		 Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
+		Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
 			.getService(Components.interfaces.nsIWindowWatcher)
 			.openWindow(
 				window.opener,
 				"chrome://handyclicks/content/sets.xul", "_blank",
-				"chrome,titlebar,toolbar,centerscreen,resizable,dialog=0",
+				"chrome,all,toolbar,centerscreen,resizable,dialog=0",
 				null
 			);
 		window.close();

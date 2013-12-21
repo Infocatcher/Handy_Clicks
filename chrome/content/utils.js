@@ -194,7 +194,7 @@ var handyClicksUtils = {
 		return window.openDialog(
 			 "chrome://handyclicks/content/notify.xul",
 			 "_blank",
-			 "chrome,dialog=1,titlebar=0,popup=1",
+			 "chrome,popup,titlebar=0",
 			 {
 			 	dur: dur,
 			 	header: header || this.getLocalized("title"),

@@ -24,7 +24,7 @@ var handyClicksWinUtils = {
  		}
 		w = this.ww.openWindow(
 			this.opener, uri, "_blank",
-			features || "chrome,titlebar=1,toolbar=1,centerscreen,resizable,dialog=0", null
+			features || "chrome,all,toolbar,centerscreen,resizable,dialog=0", null
 		);
 		if(args)
 			w.arguments = args;
@@ -149,7 +149,7 @@ var handyClicksWinUtils = {
 		_oe.alreadyOpened = false;
 		w = this.ww.openWindow(
 			this.opener, "chrome://handyclicks/content/editor.xul", "_blank",
-			"chrome,resizable,centerscreen,dialog=0", null
+			"chrome,all,toolbar,centerscreen,resizable,dialog=0", null
 		);
 		w.arguments = [pSrc, mode || "shortcut", shortcut, itemType, isDelayed];
 		w[wProp] = winId;

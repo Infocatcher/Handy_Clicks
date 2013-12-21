@@ -137,7 +137,7 @@ var handyClicksPrefUtils = {
 		// Open new browser window:
 		brWin = window.openDialog(
 			this.pu.getPref("browser.chromeURL") || "chrome://browser/content/",
-			"_blank", "chrome,all,dialog=no",
+			"_blank", "chrome,all,dialog=0",
 			"about:blank",
 			null, null, null, false
 		);
