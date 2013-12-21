@@ -62,7 +62,7 @@
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "T">
 <!ENTITY hc.editor.internalId "Internal id:">
 <!ENTITY hc.editor.internalIdAccesskey "r">
-<!ENTITY hc.editor.defineItem "Item definition">
+<!ENTITY hc.editor.defineItem "Item detection">
 <!ENTITY hc.editor.defineItemAccesskey "I">
 <!ENTITY hc.editor.defineReturnNote "Return: node or null"> <!-- Do not translate "null"! -->
 <!ENTITY hc.editor.defineContext "Context menu of item">
