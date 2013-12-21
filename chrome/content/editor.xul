@@ -38,7 +38,6 @@
 	<!-- "hc_ondrop" attribute will be replaced in init() function from setsUtils.js -->
 
 	<script type="application/javascript" src="chrome://handyclicks/content/utils.js" />
-	<script type="application/javascript" src="chrome://handyclicks/content/winUtils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/prefUtils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/setsUtils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/prefSvc.js" />
@@ -77,9 +76,9 @@
 
 		<key id="hc-editor-key-openErrorConsole" key="j" modifiers="control,shift" oncommand="handyClicksUtils.openErrorConsole();" />
 
-		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksWinUtils.maximizeWindow();" />
-		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksWinUtils.toggleFullscreen();" />
-		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksWinUtils.toggleOnTop();" />
+		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksEditor.wu.maximizeWindow();" />
+		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksEditor.wu.toggleFullscreen();" />
+		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksEditor.wu.toggleOnTop();" />
 	</keyset>
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">

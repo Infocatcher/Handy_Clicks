@@ -42,6 +42,12 @@ var handyClicksRegSvc = {
 		e: function(id) {
 			return document.getElementById(id);
 		},
+		get fn() {
+			return this.rs.lazyLoad("fn", "handyClicksFuncs", "funcs.js");
+		},
+		get wu() {
+			return this.rs.lazyLoad("wu", "handyClicksWinUtils", "winUtils.js");
+		},
 		get _devMode() {
 			return this.pu.pref("devMode");
 		}
@@ -51,7 +57,6 @@ var handyClicksRegSvc = {
 			cn: "handyClicksConsole",
 			cs: "handyClicksCleanupSvc",
 			ed: "handyClicksEditor",
-			fn: "handyClicksFuncs",
 			hc: "handyClicks",
 			ps: "handyClicksPrefSvc",
 			pu: "handyClicksPrefUtils",
@@ -61,7 +66,6 @@ var handyClicksRegSvc = {
 			su: "handyClicksSetsUtils",
 			ui: "handyClicksUI",
 			ut: "handyClicksUtils",
-			wu: "handyClicksWinUtils",
 			ct: "handyClicksConst",
 			__proto__: null
 		};
@@ -76,11 +80,30 @@ var handyClicksRegSvc = {
 		delete this.s;
 		return this.s = s;
 	},
+	lazyLoad: function(shortcut, objName, file) {
+		if(!(objName in window)) {
+			// Note: we don't load utils.js from console.xul overlay
+			this.ut && this.ut._log("Load " + file + " into " + document.documentURI + "\n" + new Error().stack);
+			this.loadSubScript("chrome://handyclicks/content/" + file);
+		}
+		var o = window[objName];
+		o.__proto__ = this.s;
+		delete this.globals[shortcut];
+		return this.globals[shortcut] = o;
+	},
+	lazyUnload: function(shortcut, objName) {
+		if(objName in window)
+			this.globals[shortcut].__proto__ = Object.prototype;
+	},
 	registerShortcuts: function(regFlag) {
+		if(!regFlag) {
+			this.lazyUnload("fn", "handyClicksFuncs");
+			this.lazyUnload("wu", "handyClicksWinUtils");
+		}
 		var s = this.s;
 		var proto = regFlag
 			? s
-			: ({}).__proto__; // Object.prototype
+			: Object.prototype; // ({}).__proto__
 		for(var p in s) if(s.hasOwnProperty(p))
 			s[p].__proto__ = proto;
 	},

@@ -495,7 +495,6 @@
 	]]>
 	</script>
 	<script type="application/javascript" src="chrome://handyclicks/content/utils.js" />
-	<script type="application/javascript" src="chrome://handyclicks/content/winUtils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/prefUtils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/setsUtils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/prefSvc.js" />
@@ -577,9 +576,9 @@
 		<key id="hc-sets-key-reload" keycode="VK_F5" oncommand="handyClicksSets.reloadSettings();" />
 		<key id="hc-sets-key-reload2" key="r" modifiers="control" oncommand="handyClicksSets.reloadSettings();" />
 
-		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksWinUtils.maximizeWindow();" />
-		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksWinUtils.toggleFullscreen();" />
-		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksWinUtils.toggleOnTop();" />
+		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksSets.wu.maximizeWindow();" />
+		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksSets.wu.toggleFullscreen();" />
+		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksSets.wu.toggleOnTop();" />
 	</keyset>
 	<popupset id="hc-sets-popupset">
 		<menupopup id="hc-sets-tree-context"

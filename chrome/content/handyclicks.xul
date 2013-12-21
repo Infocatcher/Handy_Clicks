@@ -11,23 +11,21 @@
 
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<script type="application/javascript" src="chrome://handyclicks/content/utils.js" />
-	<script type="application/javascript" src="chrome://handyclicks/content/winUtils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/prefUtils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/prefSvc.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/handyclicks.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/handyclicksUI.js" />
-	<script type="application/javascript" src="chrome://handyclicks/content/funcs.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/regSvc.js" />
 
 	<commandset id="mainCommandSet">
-		<command id="handyClicks-cmd-openSettings" oncommand="handyClicksWinUtils.openSettings();"
+		<command id="handyClicks-cmd-openSettings" oncommand="handyClicks.wu.openSettings();"
 			label="&handyClicks.settingsLabel;" accesskey="&handyClicks.settingsAccesskey;" />
 		<command id="handyClicks-cmd-openAboutConfig" oncommand="handyClicksPrefUtils.openAboutConfig();"
 			label="&handyClicks.allSettingsLabel;" accesskey="&handyClicks.allSettingsAccesskey;" />
 		<command id="handyClicks-cmd-editMode" oncommand="handyClicksUI.toggleEditMode();"
 			label="&handyClicks.editModeLabel;" accesskey="&handyClicks.editModeAccesskey;" />
 		<command id="handyClicks-cmd-importFromClipboard"
-			oncommand="handyClicksWinUtils.openSettingsImport(true, handyClicksConst.IMPORT_CLIPBOARD);"
+			oncommand="handyClicks.wu.openSettingsImport(true, handyClicksConst.IMPORT_CLIPBOARD);"
 			label="&handyClicks.importFromClipboardLabel;" accesskey="&handyClicks.importFromClipboardAccesskey;" />
 	</commandset>
 	<keyset id="mainKeyset">
