@@ -1447,8 +1447,17 @@ var handyClicksSets = {
 			this.treeBatch(function() {
 				this.expandTree();
 				this.tSel.select(i);
-				this.tbo.ensureRowIsVisible(i);
+				this.scrollToRow(i);
 			});
+		},
+		scrollToRow: function(i) {
+			var pos = 0.5;
+			var tbo = this.tbo;
+			var first = tbo.getFirstVisibleRow();
+			var visibleRows = tbo.height/tbo.rowHeight;
+			var newFirst = i - pos*visibleRows + 1;
+			tbo.scrollByLines(Math.round(newFirst - first));
+			tbo.ensureRowIsVisible(i); // Should be visible, but...
 		},
 		selectAll: function() {
 			if(this.isTreePaneSelected)
