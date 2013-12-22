@@ -1461,7 +1461,7 @@ var handyClicksSets = {
 				tSel.rangedSelect(i, i, true);
 			});
 		},
-		_unwrapTimeout: null,
+		_unwrapTimeout: 0,
 		_unwrapDelay: 700,
 		set wrapped(val) {
 			clearTimeout(this._unwrapTimeout);
@@ -1522,7 +1522,7 @@ var handyClicksSets = {
 	},
 
 	_searchDelay: 50,
-	_searchTimeout: null,
+	_searchTimeout: 0,
 	_lastSearch: 0,
 	searchPlaceholders: {
 		hc_override:   "%ovr%",
@@ -1557,7 +1557,7 @@ var handyClicksSets = {
 		if(remTime > 0) {
 			this._searchTimeout = setTimeout(
 				function(_this, args) {
-					_this._searchTimeout = null;
+					_this._searchTimeout = 0;
 					_this.searchInSetsTree.apply(_this, args);
 				},
 				remTime,
@@ -1720,7 +1720,7 @@ var handyClicksSets = {
 	},
 
 	/*** Prefs pane ***/
-	_updPrefsUITimeout: null,
+	_updPrefsUITimeout: 0,
 	prefsChanged: function(pName, pVal) {
 		if(pName == "sets.treeDrawMode")
 			this.redrawTree();

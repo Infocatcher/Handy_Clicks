@@ -51,7 +51,7 @@ var handyClicksUI = {
 			sss.loadAndRegisterSheet(uri, sss.USER_SHEET);
 	},
 
-	_blinkNodeTimeout: null,
+	_blinkNodeTimeout: 0,
 	blinkNode: function(time, node) {
 		node = node || this.hc.item || this.hc.origItem;
 		if(!node)
@@ -395,7 +395,7 @@ var handyClicksUI = {
 		this.$("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
 	},
 	_restoreIconDelay: 250,
-	_restoreIconTimeout: null,
+	_restoreIconTimeout: 0,
 	_hasIcon: false,
 	setIcon: function(e) {
 		if(!this.pu.pref("ui.showMouseButton"))
@@ -411,12 +411,7 @@ var handyClicksUI = {
 		if(!this._hasIcon)
 			return;
 		clearTimeout(this._restoreIconTimeout);
-		this._restoreIconTimeout = this.ut.timeout(
-			function() {
-				this.setIcon();
-			},
-			this, [], this._restoreIconDelay
-		);
+		this._restoreIconTimeout = this.ut.timeout(this.setIcon, this, [], this._restoreIconDelay);
 	},
 	showHideControls: function() {
 		this.$("handyClicks-toolsMenuitem").hidden = !this.pu.pref("ui.showInToolsMenu");
@@ -550,7 +545,7 @@ var handyClicksUI = {
 		this.userCancelled = true;
 		this.showProgress = false;
 	},
-	_progressHideTimeout: null,
+	_progressHideTimeout: 0,
 	progressDelayedHide: function() {
 		this._progressHideTimeout = setTimeout(function(_this) {
 			_this.showProgress = false;

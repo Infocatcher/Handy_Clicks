@@ -23,7 +23,7 @@ var handyClicks = {
 	},
 
 	_cMenu: null,
-	daTimeout: null, // Delayed Action Timeout
+	daTimeout: 0, // Delayed Action Timeout
 	evtStrOnMousedown: "",
 	_hasMoveHandlers: false,
 
