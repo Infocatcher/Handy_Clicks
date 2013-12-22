@@ -420,7 +420,9 @@ var handyClicksUI = {
 	},
 	showHideControls: function() {
 		this.$("handyClicks-toolsMenuitem").hidden = !this.pu.pref("ui.showInToolsMenu");
-		this.$("handyClicks-statusbarButton").hidden = !this.pu.pref("ui.showInStatusbar");
+		var statusBtn = this.$("handyClicks-statusbarButton");
+		if(statusBtn)
+			statusBtn.hidden = !this.pu.pref("ui.showInStatusbar");
 		var appMi = this.$("handyClicks-appMenuitem");
 		if(appMi) {
 			var appSep = this.$("handyClicks-appMenuitemSeparator");
