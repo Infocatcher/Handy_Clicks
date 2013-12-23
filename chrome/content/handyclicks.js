@@ -30,10 +30,7 @@ var handyClicks = {
 	// Initialization:
 	init: function(reloadFlag) {
 		this.ps.loadSettingsAsync();
-		this.initListeners(true);
-	},
-	initListeners: function(enabled) {
-		this.setListeners(["mousedown", "click", "command", "mouseup", "dblclick", "contextmenu", "popupshowing"], enabled);
+		//this.initListeners(true);
 	},
 	destroy: function(reloadFlag) {
 		this.initListeners(false);
@@ -64,6 +61,14 @@ var handyClicks = {
 				this.ut.stopEvent(e);
 				this.editMode = false; // this removes event listener
 		}
+	},
+	_hasListeners: false,
+	initListeners: function(enable) {
+		if(enable == this._hasListeners)
+			return;
+		this._hasListeners = enable;
+		this.setListeners(["mousedown", "click", "command", "mouseup", "dblclick", "contextmenu", "popupshowing"], enable);
+		this.ut._log("initListeners(" + enable + ")");
 	},
 	setListeners: function(evtTypes, add) {
 		var act = add ? addEventListener : removeEventListener;

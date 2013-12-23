@@ -374,6 +374,7 @@ var handyClicksUI = {
 		var enabled = this.hc.enabled;
 		if(enabled && this.ps._loadStatus == this.ps.SETS_LOAD_SKIPPED)
 			this.ps.loadSettingsAsync();
+		this.hc.initListeners(enabled);
 		var tt = this.ut.getLocalized(enabled ? "enabledTip" : "disabledTip");
 		var ttAttr = this.tooltipAttrBase + "0";
 		this.setControls(function(elt) {
