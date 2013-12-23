@@ -445,7 +445,7 @@ var handyClicksUI = {
 			|| this.getFromPalette("handyClicks-toolbarProgressContainer");
 
 		var visiblePanel, hiddenPanel;
-		if(this.pu.pref("ui.customizableProgressBar")) {
+		if(!sbPanel || this.pu.pref("ui.customizableProgressBar")) {
 			visiblePanel = tbPanel;
 			hiddenPanel = sbPanel;
 		}
@@ -453,13 +453,12 @@ var handyClicksUI = {
 			visiblePanel = sbPanel;
 			hiddenPanel = tbPanel;
 		}
-		if(visiblePanel.hasChildNodes())
-			return;
 
-		hiddenPanel.collapsed = true;
-		while(hiddenPanel.hasChildNodes())
-			visiblePanel.appendChild(hiddenPanel.firstChild);
-
+		if(hiddenPanel && !visiblePanel.hasChildNodes()) {
+			hiddenPanel.collapsed = true;
+			while(hiddenPanel.hasChildNodes())
+				visiblePanel.appendChild(hiddenPanel.firstChild);
+		}
 		this.progressPanel = visiblePanel;
 		this.progressLabelNode = visiblePanel.getElementsByAttribute("id", "handyClicks-statusbarProgressLabel")[0];
 		this.progressNode = visiblePanel.getElementsByAttribute("id", "handyClicks-statusbarProgress")[0];
