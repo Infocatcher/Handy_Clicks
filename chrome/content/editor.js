@@ -454,12 +454,9 @@ var handyClicksEditor = {
 		this.initFuncEditor(so, this.delayId);
 		this.currentShortcut = this.shortcut;
 
-		this.ut.timeout(function() {
-			// Very strange, looks like <checkbox> binding aren't initialized
-			// (see "so.arguments = {}" and following in getFuncObj())
-			this.shortcutSaved();
-			this.setDialogButtons();
-		}, this);
+		// Note: may fail here, see notes in getFuncObj() ("so.arguments = {}" and following)
+		this.shortcutSaved();
+		this.setDialogButtons();
 	},
 	initFuncEditor: function(setsObj, delayed, allowUndo) {
 		var isCustom = this.ut.getOwnProperty(setsObj, "custom");
@@ -1324,7 +1321,10 @@ var handyClicksEditor = {
 			Array.forEach(
 				this.$("hc-editor-funcArgs" + delayed).getElementsByAttribute("hc_argName", "*"),
 				function(argElt) {
-					var argVal = argElt.getAttribute("value") || argElt.checked;
+					// Note: we can't use argElt.checked here, this doesn't work for just added
+					// checkboxes, looks like corresponding binding isn't loaded yet.
+					var argVal = argElt.getAttribute("value")
+						|| argElt.getAttribute("checked") == "true";
 					if(typeof argVal == "string") {
 						if(argVal == "null")
 							argVal = null;
