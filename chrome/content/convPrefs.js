@@ -66,6 +66,8 @@ function prefsMigration(allowSave, vers) {
 				this.prefSvc.deleteBranch(fullId);
 			}, this);
 	}
+	if(vers < 8) //= Added: 2013-12-23
+		this.prefSvc.deleteBranch(pns + "uiVersion");
 	this.pref("prefsVersion", this.prefsVersion);
 	allowSave && this.ut.timeout(this.savePrefFile, this);
 	this.ut._info("Format of about:config prefs updated: " + vers + " => " + this.prefsVersion);

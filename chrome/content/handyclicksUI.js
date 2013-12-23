@@ -3,14 +3,8 @@ var handyClicksUI = {
 	blinkOpacity: "0.1",
 	blinkDuration: 170,
 
-	uiVersion: 1,
-
 	// Initialization:
 	init: function(reloadFlag) {
-		var vers = this.pu.pref("uiVersion") || 0;
-		if(vers < this.uiVersion)
-			this.uiMigration(vers);
-
 		this.setStatus();
 		this.showHideControls();
 		this.setupUIActions();
@@ -28,11 +22,6 @@ var handyClicksUI = {
 	destroy: function(reloadFlag) {
 		clearTimeout(this._restoreIconTimeout);
 		clearTimeout(this._blinkNodeTimeout);
-	},
-	get uiMigration() { // function(vers)
-		var temp = {};
-		this.rs.loadSubScript("chrome://handyclicks/content/convUI.js", temp);
-		return temp.uiMigration;
 	},
 	loadBlinkStyle: function() {
 		// Styles for blinkNode() function
