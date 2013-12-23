@@ -455,8 +455,10 @@ var handyClicksEditor = {
 		this.currentShortcut = this.shortcut;
 
 		// Note: may fail here, see notes in getFuncObj() ("so.arguments = {}" and following)
-		this.shortcutSaved();
-		this.setDialogButtons();
+		this.ut.timeout(function() {
+			this.shortcutSaved();
+			this.setDialogButtons();
+		}, this);
 	},
 	initFuncEditor: function(setsObj, delayed, allowUndo) {
 		var isCustom = this.ut.getOwnProperty(setsObj, "custom");
