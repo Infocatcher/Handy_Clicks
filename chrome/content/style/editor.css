@@ -179,8 +179,6 @@ menulist[hc_aboutConfigEntry] .menulist-label,
 :root[hc_compactUI="true"] .menulist-label-box {
 	margin-top: 0;
 	margin-bottom: 0;
-	border-top: none;
-	border-bottom: none;
 }
 :root[hc_compactUI="true"] button:not(.dialog-button) {
 	margin-top: 1px;
