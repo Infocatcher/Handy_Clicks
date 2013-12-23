@@ -30,10 +30,13 @@ var handyClicks = {
 	// Initialization:
 	init: function(reloadFlag) {
 		this.ps.loadSettingsAsync();
-		this.setListeners(["mousedown", "click", "command", "mouseup", "dblclick", "contextmenu", "popupshowing"], true);
+		this.initListeners(true);
+	},
+	initListeners: function(enabled) {
+		this.setListeners(["mousedown", "click", "command", "mouseup", "dblclick", "contextmenu", "popupshowing"], enabled);
 	},
 	destroy: function(reloadFlag) {
-		this.setListeners(["mousedown", "click", "command", "mouseup", "dblclick", "contextmenu", "popupshowing"], false);
+		this.initListeners(false);
 		this.cancelDelayedAction();
 		if(this.editMode)
 			this.editMode = false;
