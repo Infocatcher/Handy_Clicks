@@ -83,7 +83,7 @@ var handyClicksRegSvc = {
 	lazyLoad: function(shortcut, objName, file) {
 		if(!(objName in window)) {
 			// Note: we don't load utils.js from console.xul overlay
-			this.ut && this.ut._log("Load " + file + " into " + document.documentURI + "\n" + new Error().stack);
+			this.ut && this.ut._log("Load " + file + " into " + document.documentURI);
 			this.loadSubScript("chrome://handyclicks/content/" + file);
 		}
 		var o = window[objName];
