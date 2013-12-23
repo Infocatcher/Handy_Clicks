@@ -137,7 +137,19 @@ var handyClicksPrefSvc = {
 	},
 
 	_loadStatus: -1, // SETS_LOAD_UNKNOWN
+	skipLoad: function() {
+		if(this.isMainWnd && !this.hc.enabled) {
+			this.ut._log("skipLoad() -> disabled");
+			this._loadStatus = this.SETS_LOAD_SKIPPED;
+			return true;
+		}
+		return false;
+	},
 	loadSettingsAsync: function(callback, context) {
+		if(this.skipLoad()) {
+			callback && callback.call(context, Components.results.NS_OK);
+			return true;
+		}
 		var pFile = this.prefsFile;
 		if(!pFile.exists()) {
 			this.ut._log("loadSettingsAsync() -> save default settings");
@@ -151,15 +163,11 @@ var handyClicksPrefSvc = {
 		}, this);
 	},
 	loadSettings: function(pSrc, fromProfile) {
+		if(this.skipLoad())
+			return;
 		this._loadStatus = this.SETS_LOAD_UNKNOWN;
-		if(this.isMainWnd) {
-			if(!this.hc.enabled) {
-				this.ut._log("loadSettings() -> disabled");
-				this._loadStatus = this.SETS_LOAD_SKIPPED;
-				return;
-			}
+		if(this.isMainWnd)
 			this.ut._log(fromProfile ? "loadSettingsAsync()" : "loadSettings()");
-		}
 		//this.otherSrc = !!pSrc;
 		pSrc = pSrc || this.prefsFile;
 		if(pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)) {
