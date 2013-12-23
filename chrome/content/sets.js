@@ -701,7 +701,7 @@ var handyClicksSets = {
 			else
 				hasDisabled = true;
 			return hasEnabled && hasDisabled;
-		}, this).length;
+		}, this);
 		this.$("hc-sets-cmd-enable").setAttribute("disabled", noSel || !hasDisabled);
 		this.$("hc-sets-cmd-disable").setAttribute("disabled", noSel || !hasEnabled);
 		var noTypes = noSel || !selIts.some(function(it) {
