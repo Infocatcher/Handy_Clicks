@@ -929,12 +929,12 @@ var handyClicksPrefSvc = {
 		delete this.keys;
 		const src = "chrome://global-platform/locale/platformKeys.properties";
 		return this.keys = {
-			ctrl:  this.ut.getStr(src, "VK_CONTROL")         || "Ctrl",
-			shift: this.ut.getStr(src, "VK_SHIFT")           || "Shift",
-			alt:   this.ut.getStr(src, "VK_ALT")             || "Alt",
-			meta:  this.ut.getStr(src, "VK_META")            || "Meta",
-			os:    this.ut.getStr(src, "VK_WIN")             || "Win",
-			sep:   this.ut.getStr(src, "MODIFIER_SEPARATOR") || "+",
+			ctrl:  this.ut.getStr(src, "VK_CONTROL", "Ctrl"),
+			shift: this.ut.getStr(src, "VK_SHIFT", "Shift"),
+			alt:   this.ut.getStr(src, "VK_ALT", "Alt"),
+			meta:  this.ut.getStr(src, "VK_META", "Meta"),
+			os:    this.ut.getStr(src, "VK_WIN", "Win"),
+			sep:   this.ut.getStr(src, "MODIFIER_SEPARATOR", "+"),
 			__proto__: null
 		};
 	},

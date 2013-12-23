@@ -298,14 +298,14 @@ var handyClicksUtils = {
 				.createBundle(src)
 		);
 	},
-	getStr: function(src, sName) {
+	getStr: function(src, sName, defaultStr) {
 		try {
 			return this.getBundle(src).GetStringFromName(sName);
 		}
 		catch(e) {
 			this._warn('Can\'t get localized string "' + sName + '" from "' + src + '"');
-			return "";
 		}
+		return defaultStr || "";
 	},
 	getLocalized: function(sName) {
 		return this._strings[sName] || (
