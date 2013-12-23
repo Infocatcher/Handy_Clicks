@@ -46,6 +46,8 @@ var handyClicksEditor = {
 			this.types.menulists.moveTabTo.pop();
 		this.initShortcuts();
 		if(!reloadFlag) {
+			if(this.type)
+				this.currentType = this.type;
 			this.initExtTypes();
 			this.loadLabels();
 			this.createDelayedFuncTab();
