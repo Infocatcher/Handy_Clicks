@@ -196,6 +196,20 @@ var handyClicksAutocompleteData = {
 		"item",
 		"namedItem",
 
+		// MutationObserver:
+		"MutationObserver",
+		//"observe",
+		"disconnect",
+		"takeRecords",
+		// MutationRecord:
+		"type",
+		"target",
+		"addedNodes",
+		"removedNodes",
+		"attributeName",
+		"attributeNamespace",
+		"oldValue",
+
 		// Special:
 		"__iterator__",
 		"__proto__",
