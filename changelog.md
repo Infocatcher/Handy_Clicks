@@ -12,8 +12,11 @@
 `x` Imported some recent fixes from <a href="https://addons.mozilla.org/addon/right-links/">Right Links</a> extension (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/1">#1</a>).<br>
 `+` Added support for OS modifier key (typically this is Windows key) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/5">#5</a>).<br>
 `*` Removed hacks for async AddonManager (this should improve startup performance) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/6">#6</a>).<br>
-`+` Added F1 hotkey to search field in settings window (shows tooltip with brief help).
-`x` Some minor fixes.<br>
+`+` Added F1 hotkey to search field in settings window (shows tooltip with brief help).<br>
+`*` Improved startup performance: now used lazy loading for some scripts (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/9">#9</a>, <a href="https://github.com/Infocatcher/Handy_Clicks/issues/10">#10</a>).<br>
+`*` Improved navigation between search results: current row now placed at center of view.<br>
+`*` Improved startup performance in disabled mode: now extension don't read settings file and don't handle clicks-related events (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/11">#11</a>).<br>
+`*` Some minor improvements and fixes.<br>
 
 ##### 0.1.3pre (2013-12-18)
 `*` Published on GitHub.<br>
