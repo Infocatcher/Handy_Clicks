@@ -56,6 +56,9 @@ radio[pane="hc-sets-pane-funcs"] {
 #hc-sets-tree-searchFilterMode[checked="true"] {
 	-moz-image-region: rect(16px 48px 32px 32px);
 }
+#hc-sets-tree-searchFilterMode > .toolbarbutton-icon {
+	margin: 0; /* Correct margin in Firefox 3.0 and older */
+}
 #hc-sets-tree-searchResults {
 	min-width: 1.6em;
 	opacity: 0.5;
