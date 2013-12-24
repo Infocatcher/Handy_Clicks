@@ -27,9 +27,15 @@ var handyClicks = {
 	evtStrOnMousedown: "",
 	_hasMoveHandlers: false,
 
-	// Initialization:
+	_settingsLoaded: false,
+	_settingsLoadTimer: 0,
 	init: function(reloadFlag) {
-		this.ps.loadSettingsAsync();
+		//this.ps.loadSettingsAsync();
+		this._settingsLoadTimer = this.ut.timeout(function() {
+			this._settingsLoaded = true;
+			this.ut._log("Preload settings => loadSettingsAsync()");
+			this.ps.loadSettingsAsync();
+		}, this, [], 50);
 		//this.initListeners(true);
 	},
 	destroy: function(reloadFlag) {
@@ -363,6 +369,12 @@ var handyClicks = {
 
 	// Settings service:
 	getFuncObjByEvt: function(e) {
+		if(!this._settingsLoaded) {
+			this._settingsLoaded = true;
+			clearTimeout(this._settingsLoadTimer);
+			this.ut._log(e.type + " => loadSettings()");
+			this.ps.loadSettings();
+		}
 		this.hasSettings = false;
 		var evtStr = this.ps.getEvtStr(e);
 		var isMousedown = e.type == "mousedown";
