@@ -51,6 +51,10 @@ var handyClicksPrefSvc = {
 			}
 			this.destroyCustomFuncs(reason);
 		}
+		// Force unload prefs to avoid memory leaks
+		this.types = {};
+		this.prefs = {};
+		this._loadStatus = this.SETS_LOAD_UNKNOWN;
 		this.oSvc.destroy();
 	},
 
