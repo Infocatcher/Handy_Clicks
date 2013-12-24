@@ -42,12 +42,17 @@ var handyClicksPrefSvc = {
 			if(reloadFlag)
 				reason = this.DESTROY_REBUILD;
 			else {
-				var count = 0;
-				var ws = this.wu.wm.getEnumerator("navigator:browser");
-				while(ws.hasMoreElements())
-					if("_handyClicksInitialized" in ws.getNext()) // ?
-						++count;
-				reason = count == 0 ? this.DESTROY_LAST_WINDOW_UNLOAD : this.DESTROY_WINDOW_UNLOAD;
+				var lastWinUnload = true;
+				// Note: private windows doesn't have "windowtype" in SeaMonkey
+				var ws = this.wu.wm.getEnumerator(this.ut.isSeaMonkey ? null : "navigator:browser");
+				while(ws.hasMoreElements()) {
+					var w = ws.getNext();
+					if("handyClicks" in w && "_handyClicksInitialized" in w) {
+						lastWinUnload = false;
+						break;
+					}
+				}
+				reason = lastWinUnload ? this.DESTROY_LAST_WINDOW_UNLOAD : this.DESTROY_WINDOW_UNLOAD;
 			}
 			this.destroyCustomFuncs(reason);
 		}
