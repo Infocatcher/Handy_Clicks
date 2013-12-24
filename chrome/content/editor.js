@@ -930,7 +930,7 @@ var handyClicksEditor = {
 					}
 					mp.appendChild(mi);
 				}, this);
-				elt.setAttribute("value", argVal);
+				elt.setAttribute("value", "" + argVal);
 				elt.appendChild(mp);
 		}
 		argContainer.appendChild(elt);
