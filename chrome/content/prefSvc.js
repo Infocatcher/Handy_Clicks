@@ -632,13 +632,18 @@ var handyClicksPrefSvc = {
 		const pSvc = "handyClicksPrefSvc";
 		var curOtherSrc = this.currentOtherSrc;
 		var types = ["handyclicks:settings", "handyclicks:editor"];
-		if(!curOtherSrc)
-			types.push("navigator:browser");
+		if(!curOtherSrc) {
+			if(this.ut.isSeaMonkey)
+				types = null;
+			else
+				types.push("navigator:browser");
+		}
 		this.wu.forEachWindow(
 			types,
 			function(w) {
 				if(!(pSvc in w) || (!reloadAll && w === window))
 					return;
+				// Note: we don't need special checks for SeaMonkey, "pSvc in w" should be enough
 				var p = w[pSvc];
 				if(!curOtherSrc && p.otherSrc && "handyClicksSets" in w) {
 					var s = w.handyClicksSets;
@@ -668,9 +673,12 @@ var handyClicksPrefSvc = {
 		}
 		const pSvc = "handyClicksPrefSvc";
 		this.wu.forEachWindow(
-			"navigator:browser",
+			this.ut.isSeaMonkey ? null : "navigator:browser",
 			function(w) {
-				if(!(pSvc in w))
+				if(
+					!(pSvc in w)
+					|| !("handyClicks" in w) // Make sure it's a browser window, for SeaMonkey
+				)
 					return;
 				var p = w[pSvc];
 				p.oSvc.notifyObservers(notifyFlags | this.SETS_BEFORE_RELOAD);
@@ -682,10 +690,10 @@ var handyClicksPrefSvc = {
 	},
 	get hasTestSettings() {
 		const pSvc = "handyClicksPrefSvc";
-		var ws = this.wu.wm.getEnumerator("navigator:browser");
+		var ws = this.wu.wm.getEnumerator(this.ut.isSeaMonkey ? null : "navigator:browser");
 		while(ws.hasMoreElements()) {
 			var w = ws.getNext();
-			if(pSvc in w && w[pSvc].otherSrc)
+			if("handyClicks" in w && pSvc in w && w[pSvc].otherSrc)
 				return true;
 		}
 		return false;

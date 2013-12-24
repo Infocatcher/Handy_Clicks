@@ -1156,8 +1156,20 @@ var handyClicksEditor = {
 			this.$("hc-editor-cmd-undo").setAttribute("disabled", "false");
 			var focus = this.pu.pref("editor.testFocusMainWindow");
 			if(invertFocusPref ? !focus : focus) {
-				var mainWin = this.wu.wm.getMostRecentWindow("navigator:browser");
-				mainWin && mainWin.focus();
+				if(this.ut.isSeaMonkey) { // Detect private browser windows
+					var ws = this.wu.wm.getEnumerator(null);
+					while(ws.hasMoreElements()) {
+						var w = ws.getNext();
+						if("handyClicks" in w) {
+							w.focus();
+							break;
+						}
+					}
+				}
+				else {
+					var mainWin = this.wu.wm.getMostRecentWindow("navigator:browser");
+					mainWin && mainWin.focus();
+				}
 			}
 		}
 		return ok;
