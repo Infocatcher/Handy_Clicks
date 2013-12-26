@@ -496,7 +496,7 @@ var handyClicksSets = {
 			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}, this._localizeArgs));
 			this.appendTreeCell(daRow, "label", this.getInitCode(da, true));
 
-			this.setClildsProperties(daRow, {
+			this.setChildNodesProperties(daRow, {
 				hc_disabled: this._forcedDisDa || !fo.enabled || !da.enabled,
 				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel) && ++this._buggy,
 				hc_custom: daCustom,
@@ -512,7 +512,7 @@ var handyClicksSets = {
 				var savedDa = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType, "delayedAction");
 				var overrideDa = savedDa;
 				var equalsDa = this.ps.settingsEquals(da, savedDa);
-				this.setClildsProperties(daRow, {
+				this.setChildNodesProperties(daRow, {
 					hc_override: overrideDa && !equalsDa && ++this._overrideDa,
 					hc_equals:   overrideDa &&  equalsDa,
 					hc_new:     !overrideDa &&              ++this._newDa
@@ -542,7 +542,7 @@ var handyClicksSets = {
 				|| this.ut.isBuggyStr(typeLabel)
 			);
 
-		this.setClildsProperties(tRow, {
+		this.setChildNodesProperties(tRow, {
 			hc_disabled: !fo.enabled,
 			hc_buggy: isBuggy && ++this._buggy,
 			hc_custom: isCustom,
@@ -567,7 +567,7 @@ var handyClicksSets = {
 					override = true;
 				equals = equals && eqType;
 			}
-			this.setClildsProperties(tRow, {
+			this.setChildNodesProperties(tRow, {
 				hc_override: override && !equals && ++this._overrides,
 				hc_equals:   override &&  equals,
 				hc_new:     !override            && ++this._new
@@ -634,7 +634,7 @@ var handyClicksSets = {
 		}
 		changed && tar.setAttribute("properties", propsVal.replace(/^\s+|\s+$/g, "").replace(/\s+/g, " "));
 	},
-	setClildsProperties: function(parent, propsObj, addToParent) {
+	setChildNodesProperties: function(parent, propsObj, addToParent) {
 		if(addToParent)
 			this.setNodeProperties(parent, propsObj);
 		Array.forEach(
@@ -649,7 +649,7 @@ var handyClicksSets = {
 		Array.forEach(
 			parents,
 			function(parent) {
-				this.setClildsProperties(parent, propsObj, addToParent);
+				this.setChildNodesProperties(parent, propsObj, addToParent);
 			},
 			this
 		);
@@ -1014,7 +1014,7 @@ var handyClicksSets = {
 		rowId = this.ut.removePostfix(rowId, this.ct.OTHER_SRC_POSTFIX);
 		if(!(rowId in this.rowsCache))
 			return;
-		this.setClildsProperties(
+		this.setChildNodesProperties(
 			this.rowsCache[rowId].parentNode, // <treeitem>
 			{ hc_edited: editStat }
 		);
@@ -1654,7 +1654,7 @@ var handyClicksSets = {
 				okRow = checkFunc(rowText);
 			}
 			var hl = hasTerm && okRow;
-			this.setClildsProperties(tRow, { hc_search: hl }, true);
+			this.setChildNodesProperties(tRow, { hc_search: hl }, true);
 			tRow.parentNode.__matched = okRow;
 			okRow && matchedRows.push(tRow);
 		}
