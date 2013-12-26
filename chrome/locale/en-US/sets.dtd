@@ -87,8 +87,8 @@ Placeholders:
 <!ENTITY hc.sets.importAccesskey "I">
 
 <!ENTITY hc.sets.restoreFromBackup "Restore from backup">
-<!ENTITY hc.sets.openDir "Open directory">
-<!ENTITY hc.sets.openDirAccesskey "O">
+<!ENTITY hc.sets.openBackupDir "Open backups directory">
+<!ENTITY hc.sets.openBackupDirAccesskey "O">
 <!ENTITY hc.sets.removeUserBackupsExc10 "Remove user backups except newest 10">
 <!ENTITY hc.sets.removeUserBackupsExc10Accesskey "x">
 <!ENTITY hc.sets.removeAllUserBackups "Remove all user backups">

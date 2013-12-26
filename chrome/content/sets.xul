@@ -193,7 +193,7 @@
 								<menuseparator />
 								<menuitem id="hc-sets-tree-openBackupsDir"
 									oncommand="handyClicksSets.reveal(handyClicksPrefSvc.backupsDir);"
-									label="&hc.sets.openDir;" accesskey="&hc.sets.openDirAccesskey;" />
+									label="&hc.sets.openBackupDir;" accesskey="&hc.sets.openBackupDirAccesskey;" />
 								<menuseparator />
 								<menuitem id="hc-sets-tree-removeUserBackupsExc10"
 									oncommand="handyClicksSets.removeOldUserBackups(10);" closemenu="none"
