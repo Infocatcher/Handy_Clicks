@@ -119,7 +119,9 @@ var handyClicksUI = {
 		var pn = popup.triggerNode || document.popupNode; // https://bugzilla.mozilla.org/show_bug.cgi?id=383930
 
 		var inheritContext = this.pu.pref("ui.inheritToolbarContextMenu")
-			&& pn && !this.ut.hasPrefix(pn.localName, "statusbar");
+			&& pn
+			&& !this.ut.hasPrefix(pn.localName, "statusbar")
+			&& pn.localName != "browser";
 		this.$("handyClicks-mainCommandsSeparator").setAttribute("hc_hideAllAfter", !inheritContext);
 		if(!inheritContext)
 			return;
@@ -259,8 +261,34 @@ var handyClicksUI = {
 	},
 	showSettingsPopup: function(e) {
 		// It's better to use "popup" or "context" attribute
-		if(e.button == 1)
+		if(e && e.button == 1)
 			this.hc.showPopupOnItem(this.$("handyClicks-settingsPopup"), e.target, e);
+		if(e)
+			return;
+
+		// Based on code from Right Links https://addons.mozilla.org/addon/right-links/
+		var popup = this.$("handyClicks-settingsPopup");
+		var anchor = gBrowser.selectedBrowser;
+		document.popupNode = anchor;
+		if("openPopup" in popup) // Firefox 3.0+
+			popup.openPopup(anchor, "overlap", false);
+		else
+			popup.showPopup(anchor, -1, -1, "popup", "topleft", "topleft");
+		// Select first menuitem
+		// Unfortunately ordinal popup doesn't have nsIMenuBoxObject interface with activeChild field
+		var keyCode = KeyboardEvent.DOM_VK_DOWN;
+		key("keydown",  keyCode);
+		key("keypress", keyCode);
+		key("keyup",    keyCode);
+		function key(type, code) {
+			var evt = document.createEvent("KeyboardEvent");
+			evt.initKeyEvent(
+				type, true /*bubbles*/, true /*cancelable*/, window,
+				false /*ctrlKey*/, false /*altKey*/, false /*shiftKey*/, false /*metaKey*/,
+				code /*keyCode*/, 0 /*charCode*/
+			);
+			popup.dispatchEvent(evt);
+		}
 	},
 
 	_temFromKey: false,

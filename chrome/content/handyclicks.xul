@@ -35,6 +35,7 @@
 		<key id="handyClicks-key-openAboutConfig" command="handyClicks-cmd-openAboutConfig" disabled="true" />
 		<key id="handyClicks-key-editMode" oncommand="handyClicksUI.toggleEditMode(true);" disabled="true" />
 		<key id="handyClicks-key-importFromClipboard" command="handyClicks-cmd-importFromClipboard" disabled="true" />
+		<key id="handyClicks-key-showSettingsPopup" oncommand="handyClicksUI.showSettingsPopup();" disabled="true" />
 	</keyset>
 	<menupopup id="menu_ToolsPopup">
 		<menuitem id="handyClicks-toolsMenuitem" insertafter="menu_pageInfo,menu_inspector,javascriptConsole"

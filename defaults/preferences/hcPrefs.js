@@ -68,6 +68,7 @@ pref("extensions.handyclicks.key.openSettings", "shift VK_F2");
 pref("extensions.handyclicks.key.openAboutConfig", "");
 pref("extensions.handyclicks.key.editMode", "accel VK_F2");
 pref("extensions.handyclicks.key.importFromClipboard", "accel shift VK_F2");
+pref("extensions.handyclicks.key.showSettingsPopup", "");
 
 pref("extensions.handyclicks.sets.backupsDir", ""); // Allow import empty value
 pref("extensions.handyclicks.sets.backupDepth", 5);
