@@ -69,6 +69,10 @@ menulist[hc_sets="disabled"] .menulist-label {
 #hc-editor-buttonUndo {
 	-moz-image-region: rect(48px 64px 64px 48px);
 }
+:root[hc_globallyDisabled="true"] #hc-editor-buttonTest,
+:root[hc_globallyDisabled="true"] #hc-editor-buttonUndo {
+	text-decoration: line-through;
+}
 
 hbox[hc_fixedFields="true"] {
 	outline: 1px solid ThreeDShadow;

@@ -9,6 +9,7 @@ var handyClicksSetsUtils = {
 			window.addEventListener("resize", this, false); // Can detect only maximize/restore
 			this.legacySizeModeChange();
 		}
+		this.setEnabledStatus();
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 		if(!reloadFlag) {
 			this.tweakDialogButtons();
@@ -118,6 +119,12 @@ var handyClicksSetsUtils = {
 		this.pu.pref(mi.getAttribute("hc_pref"), mi.getAttribute("checked") == "true");
 	},
 
+	setEnabledStatus: function(enabled) {
+		if(enabled === undefined)
+			enabled = this.pu.pref("enabled");
+		document.documentElement.setAttribute("hc_globallyDisabled", !enabled);
+	},
+
 	get hasSizeModeChangeEvent() {
 		delete this.hasSizeModeChangeEvent;
 		return this.hasSizeModeChangeEvent = this.ut.fxVersion >= 8;
@@ -134,6 +141,9 @@ var handyClicksSetsUtils = {
 	},
 	prefsChanged: function(pName, pVal) {
 		switch(pName) {
+			case "enabled":
+				this.setEnabledStatus(pVal);
+			break;
 			case "ui.onTopButton":
 			case "ui.onTopButtonLabel":
 			case "ui.onTopBorderColor":
