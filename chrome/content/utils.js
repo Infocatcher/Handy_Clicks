@@ -151,7 +151,8 @@ var handyClicksUtils = {
 			var dt = this.now() - ts[tId];
 			if(division)
 				dt /= division;
-			this._log("[timer] " + tId + " -> " + dt + " ms");
+			var dtr = Math.floor(dt) == dt ? dt : dt.toFixed(3);
+			this._log("[timer] " + tId + " -> " + dtr + " ms");
 			delete ts[tId];
 			return dt;
 		}
