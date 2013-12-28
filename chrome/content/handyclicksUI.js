@@ -2,6 +2,7 @@ var handyClicksUI = {
 	blinkAttr: "__handyclicks__blink__",
 	blinkOpacity: "0.1",
 	blinkDuration: 170,
+	attrNS: "urn:handyclicks:namespace",
 
 	// Initialization:
 	init: function(reloadFlag) {
@@ -16,7 +17,7 @@ var handyClicksUI = {
 
 		this.ut.timeout(function() {
 			this.setupProgress();
-			this.loadBlinkStyle();
+			//this.loadBlinkStyle();
 		}, this);
 	},
 	destroy: function(reloadFlag) {
@@ -25,9 +26,18 @@ var handyClicksUI = {
 	},
 	loadBlinkStyle: function() {
 		// Styles for blinkNode() function
+		this.loadBlinkStyle = function() {};
+		this.ut._log("loadBlinkStyle()");
+		var priorityHack = (function() {
+			var rnd = Math.random().toFixed(16).substr(2);
+			var hack = "*|*";
+			for(var i = 0; i < 16; ++i)
+				hack += ":not(#__priorityHack-" + rnd + "-" + i + ")";
+			return hack;
+		})();
 		var css = "data:text/css," + encodeURIComponent('\
-			@namespace hc url("urn:handyclicks:namespace");\n\
-			*|*:root *|*[hc|' + this.blinkAttr + '="true"] {\n\
+			@namespace hc url("' + this.attrNS + '");\n\
+			' + priorityHack + '[hc|' + this.blinkAttr + '="true"] {\n\
 				opacity: ' + this.blinkOpacity + ' !important;\n\
 			}'
 		);
@@ -45,6 +55,7 @@ var handyClicksUI = {
 		node = node || this.hc.item || this.hc.origItem;
 		if(!node)
 			return;
+		this.loadBlinkStyle();
 		time = time || this.blinkDuration;
 		var oldFx = this.ut.fxVersion <= 2;
 		var nodes = Array.slice(node);
@@ -52,7 +63,7 @@ var handyClicksUI = {
 			nodes = [node];
 		nodes.forEach(function(node) {
 			var attr = this.blinkAttr;
-			node.setAttributeNS("urn:handyclicks:namespace", attr, "true");
+			node.setAttributeNS(this.attrNS, attr, "true");
 			if(oldFx) {
 				var origStyle = node.hasAttribute("style") && node.getAttribute("style");
 				node.style.setProperty("opacity", this.blinkOpacity, "important");
@@ -60,7 +71,7 @@ var handyClicksUI = {
 			//node.offsetHeight;
 			this._blinkNodeTimeout = this.ut.timeout(
 				function(node, attr, oldFx, origStyle) {
-					node.removeAttributeNS("urn:handyclicks:namespace", attr);
+					node.removeAttributeNS(this.attrNS, attr);
 					oldFx && this.ut.attribute(node, "style", origStyle, true);
 				},
 				this, [node, attr, oldFx, origStyle],
