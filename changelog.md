@@ -16,6 +16,11 @@
 `*` Improved startup performance: now used lazy loading for some scripts (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/9">#9</a>, <a href="https://github.com/Infocatcher/Handy_Clicks/issues/10">#10</a>).<br>
 `*` Improved navigation between search results: current row now placed at center of view.<br>
 `*` Improved startup performance in disabled mode: now extension don't read settings file and don't handle clicks-related events (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/11">#11</a>).<br>
+`*` Improved startup performance: now settings file loaded after small delay.<br>
+`x` Fixed possible memory leak with settings data.<br>
+`x` Fixed handling of private windows in SeaMonkey (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/12">#12</a>).<br>
+`+` Added special styles for Test/Undo buttons in disabled mode.<br>
+`+` Added ability to open settings menu from keyboard (<em>extensions.handyclicks.key.showSettingsPopup</em> preference).<br>
 `*` Some minor improvements and fixes.<br>
 
 ##### 0.1.3pre (2013-12-18)
