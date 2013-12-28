@@ -6,6 +6,7 @@
 `*` – improved<br>
 
 ##### master/HEAD
+##### 0.1.3pre2 (2013-12-28)
 `x` Corrected settings tree appearance on Windows with Aero theme (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/4">#4</a>).<br>
 `x` Correctly focus already opened Scratchpad with CodeMirror backend (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/7">#7</a>).<br>
 `x` Fixed unwanted separator in toolbar button context menu on Firefox 29.0a1.<br>

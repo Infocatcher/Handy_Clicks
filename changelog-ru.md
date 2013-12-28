@@ -6,6 +6,7 @@
 `*` – улучшено<br>
 
 ##### master/HEAD
+##### 0.1.3pre2 (2013-12-28)
 `x` Подправлена раскраска дерева настроек в Windows при использовании темы Aero (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/4">#4</a>).<br>
 `x` Исправлен перевод фокуса на уже открытый Scratchpad, если он использует CodeMirror (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/7">#7</a>).<br>
 `x` Исправлено добавление лишнего разделителя в контекстное меню кнопки для панелей инструментов в Firefox 29.0a1.<br>
