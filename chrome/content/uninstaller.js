@@ -12,6 +12,16 @@ var handyClicksUninstaller = {
 		delete this.newAddonManager;
 		return this.newAddonManager = !("@mozilla.org/extensions/manager;1" in Components.classes);
 	},
+	lazyInit: function() {
+		// User can't remove our extensino without any UI windows, so it's better to wait for
+		// any window before import AddonManager.jsm
+		this.oSvc.addObserver(this, "domwindowopened", false);
+	},
+	lazyDestroy: function() {
+		this.lazyDestroy = function() {};
+		this.oSvc.removeObserver(this, "domwindowopened");
+		return true;
+	},
 	initUninstallObserver: function() {
 		this.oSvc.addObserver(this, "quit-application-granted", false);
 		if(this.newAddonManager) {
@@ -31,7 +41,18 @@ var handyClicksUninstaller = {
 			this.oSvc.removeObserver(this, "em-action-requested");
 	},
 	observe: function(subject, topic, data) {
-		if(topic == "quit-application-granted") {
+		if(topic == "domwindowopened") {
+			var _this = this;
+			subject.addEventListener("load", function load(e) {
+				subject.removeEventListener("load", load, false);
+				subject.setTimeout(function() {
+					if(_this.lazyDestroy())
+						_this.initUninstallObserver();
+				}, 0);
+			}, false);
+		}
+		else if(topic == "quit-application-granted") {
+			this.lazyDestroy();
 			this.destroyUninstallObserver();
 			if(this.isUninstall && this.uninstallConfirmed)
 				this.execInContext(this.uninstall);
@@ -141,4 +162,4 @@ var handyClicksUninstaller = {
 		})(this.ps.prefsDir);
 	}
 };
-handyClicksUninstaller.initUninstallObserver();
+handyClicksUninstaller.lazyInit();
