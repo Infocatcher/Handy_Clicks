@@ -92,8 +92,10 @@ var handyClicksUninstaller = {
 			for(var p in shortcuts)
 				o[p] = shortcuts[p];
 		}
+		this.pu.instantInit();
 	},
 	destroyContext: function() {
+		this.pu.destroy();
 		this.un = this.st = this.ut = this.wu = this.pu = this.ps = this.ct = null;
 	},
 	uninstallConfirm: function() {
