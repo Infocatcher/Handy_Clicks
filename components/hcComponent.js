@@ -34,6 +34,9 @@ function initOnce() {
 	jsLoader.loadSubScript("chrome://handyclicks/content/winUtils.js"); wu = handyClicksWinUtils;
 	jsLoader.loadSubScript("chrome://handyclicks/content/consts.js");   ct = handyClicksConst;
 	wu.ct = ct;
+	wu.ut = {
+		hasPrefix: hasPrefix
+	};
 }
 function handleURI(uri) {
 	initOnce();
