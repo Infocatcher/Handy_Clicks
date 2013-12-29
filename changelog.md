@@ -6,6 +6,10 @@
 `*` – improved<br>
 
 ##### master/HEAD
+`*` Slightly improved startup performance: now styles for “blink” node feature are loaded just before first usage.<br>
+`x` Fixed: correctly remember target directory during export from uninstall dialog.<br>
+`*` Slightly improved startup performance: initialize uninstaller only after first window will be opened.<br>
+
 ##### 0.1.3pre2 (2013-12-28)
 `x` Corrected settings tree appearance on Windows with Aero theme (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/4">#4</a>).<br>
 `x` Correctly focus already opened Scratchpad with CodeMirror backend (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/7">#7</a>).<br>
