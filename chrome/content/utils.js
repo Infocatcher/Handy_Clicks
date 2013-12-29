@@ -47,7 +47,7 @@ var handyClicksUtils = {
 		this.consoleSvc.logMessage(cErr);
 	},
 	_warn: function(e, fileName, lineNumber) {
-		// Bug: any string are shown as 1 line
+		// Bug: any string is shown as 1 line
 		// Bug: can't show message with custom fileName
 		this._err(e, fileName, lineNumber, true);
 	},

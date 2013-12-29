@@ -2195,7 +2195,7 @@ var handyClicksSets = {
 		return Array.some(
 			document.getElementsByTagName("preference"),
 			function(ps) {
-				// Sometimes value are not updated after actions like Ctrl+Z
+				// Sometimes value isn't updated after actions like Ctrl+Z
 				var elts = document.getElementsByAttribute("preference", ps.id);
 				if(elts.length)
 					ps.value = ps.getElementValue(elts[0]);

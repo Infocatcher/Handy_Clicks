@@ -1539,8 +1539,7 @@ var handyClicksEditor = {
 		}, this);
 	},
 	checkMenulist: function(ml) {
-		//~ note: disabled state are not checked
-		//return this.ut.isElementVisible(ml.selectedItem); //???
+		//~ note: disabled state isn't checked
 		if(ml.getAttribute("editable") == "true")
 			return !!ml.value;
 		return !!ml.selectedItem;

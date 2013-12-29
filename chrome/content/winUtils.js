@@ -255,7 +255,7 @@ var handyClicksWinUtils = {
 			this.openSettings();
 	},
 
-	// See same function in utils.js (winUtils.js are global, but utils.js - not)
+	// See the same function in utils.js (winUtils.js is global, but utils.js - not)
 	//~ todo: use global utils
 	hasPrefix: function(str, prefix) {
 		return str.substr(0, prefix.length) == prefix;
