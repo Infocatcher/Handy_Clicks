@@ -1832,8 +1832,12 @@ var handyClicksSets = {
 	saveSettings: function(applyFlag) {
 		this.pu.pref("disallowMousemoveButtons", this.disallowMousemoveButtons);
 		if(applyFlag && !this.instantApply) {
-			if(applyFlag)
-				this.ut.timeout(this.savePrefpanes, this);
+			if(applyFlag) {
+				this.ut.timeout(function() {
+					this.savePrefpanes();
+					this.setDialogButtons();
+				}, this);
+			}
 			else
 				this.savePrefpanes();
 		}
