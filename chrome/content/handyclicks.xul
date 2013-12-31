@@ -44,7 +44,7 @@
 			tooltip="handyClicks-tooltip"
 			key="handyClicks-key-toggleStatus"
 			oncommand="handyClicksUI.handleUIEvent(event);"
-			onclick="if(event.button != 0) handyClicksUI.handleUIEvent(event);" />
+			onclick="handyClicksUI.handleUIEvent(event);" />
 	</menupopup>
 	<menupopup id="appmenu_customizeMenu"> <!-- Firefox 4 -->
 		<menuitem id="handyClicks-appMenuitem" insertafter="appmenu_preferences"
@@ -53,7 +53,7 @@
 			tooltip="handyClicks-tooltip"
 			key="handyClicks-key-toggleStatus"
 			oncommand="handyClicksUI.handleUIEvent(event);"
-			onclick="if(event.button != 0) handyClicksUI.handleUIEvent(event);" />
+			onclick="handyClicksUI.handleUIEvent(event);" />
 		<menuseparator id="handyClicks-appMenuitemSeparator" insertafter="appmenu_preferences" />
 	</menupopup>
 	<toolbarpalette id="BrowserToolbarPalette">
@@ -120,6 +120,6 @@
 			tooltip="handyClicks-tooltip"
 			key="handyClicks-key-toggleStatus"
 			oncommand="handyClicksUI.handleUIEvent(event);"
-			onclick="if(event.button != 0) handyClicksUI.handleUIEvent(event);" />
+			onclick="handyClicksUI.handleUIEvent(event);" />
 	</menupopup>
 </overlay>

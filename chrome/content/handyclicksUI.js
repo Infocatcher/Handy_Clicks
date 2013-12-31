@@ -218,8 +218,8 @@ var handyClicksUI = {
 			this.ut.attribute(elt, "popup", popup);
 			elt.setAttribute("context", context);
 			//~ note: "popup" doesn't work for menuitems
-			//if(elt.localName == "menuitem")
-			//	elt.setAttribute("closemenu", popup ? "none" : "auto");
+			if(elt.localName == "menuitem")
+				elt.setAttribute("closemenu", popup ? "none" : "auto");
 			if(type == "Menu") {
 				var key;
 				switch(defaultAction) {
@@ -259,6 +259,11 @@ var handyClicksUI = {
 			button = "Right";
 
 		var actionId = this.pu.pref("ui.action" + type + button + "Click");
+		if(leftClick) {
+			var isMenuPopup = type == "Menu" && actionId == this.ACTION_POPUP;
+			if(e.type == (isMenuPopup ? "command" : "click"))
+				return;
+		}
 		switch(actionId) {
 			case this.ACTION_STATUS:          this.toggleStatus();        break;
 			case this.ACTION_SETTINGS:        this.wu.openSettings();     break;
@@ -272,10 +277,14 @@ var handyClicksUI = {
 	},
 	showSettingsPopup: function(e) {
 		// It's better to use "popup" or "context" attribute
-		if(e && e.button == 1)
-			this.hc.showPopupOnItem(this.$("handyClicks-settingsPopup"), e.target, e);
-		if(e)
+		if(e) {
+			if(
+				e.button == 0 && e.target.localName == "menuitem"
+				|| e.button == 1
+			)
+				this.hc.showPopupOnItem(this.$("handyClicks-settingsPopup"), e.target, e);
 			return;
+		}
 
 		// Based on code from Right Links https://addons.mozilla.org/addon/right-links/
 		var popup = this.$("handyClicks-settingsPopup");

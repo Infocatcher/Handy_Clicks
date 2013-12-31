@@ -1793,11 +1793,12 @@ var handyClicksSets = {
 		var tb = this.currentActionTextbox;
 		if(!tb)
 			return;
-		this.$("hc-sets-action-value").value = tb.value || this.pu.pref(this.currentActionPref);
-		this.$("hc-sets-action-reset").setAttribute(
-			"disabled",
-			!this.pu.prefChanged(this.currentActionPref)
-		);
+		var prefName = this.currentActionPref;
+		var ml = this.$("hc-sets-action-value");
+		ml.value = tb.value || this.pu.pref(prefName);
+		this.$("hc-sets-action-reset").setAttribute("disabled", !this.pu.prefChanged(prefName));
+		//ml.getElementsByAttribute("value", 2 /*ACTION_POPUP*/)[0]
+		//	.setAttribute("disabled", prefName == "ui.actionMenuLeftClick");
 		const ns = "ui.action";
 		var hasChanged = this.pu.prefSvc.getBranch(this.pu.prefNS + ns)
 			.getChildList("", {})
