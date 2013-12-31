@@ -267,7 +267,7 @@ var handyClicksUI = {
 			case this.ACTION_ALL_SETTINGS:    this.pu.openAboutConfig();  break;
 			case this.ACTION_SETTINGS_TOGGLE: this.wu.openSettings(true);
 		}
-		if(e.button != 0 && actionId != this.ACTION_POPUP)
+		if(!leftClick && actionId != this.ACTION_POPUP)
 			this.ut.timeout(this.ut.closeMenus, this.ut, [e.target], 0);
 	},
 	showSettingsPopup: function(e) {
