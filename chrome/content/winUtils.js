@@ -169,7 +169,7 @@ var handyClicksWinUtils = {
 	},
 	openEditorLink: function(href, line) {
 		const ed = this.ct.PROTOCOL_EDITOR;
-		if(!href || !this.ut.hasPrefix(href, ed))
+		if(!href || !this.hasPrefix(href, ed))
 			return null;
 		href = href.replace(/\?(.*)$/, "");
 		var args = RegExp.$1;
@@ -231,7 +231,7 @@ var handyClicksWinUtils = {
 	},
 	openSettingsPane: function(paneId) {
 		const idPrefix = "hc-sets-pane-";
-		if(!this.ut.hasPrefix(paneId, idPrefix))
+		if(!this.hasPrefix(paneId, idPrefix))
 			paneId = idPrefix + paneId;
 		var w = this.openSettings();
 		var showPane = function _sp(e) {
@@ -247,11 +247,17 @@ var handyClicksWinUtils = {
 		return w;
 	},
 	openSettingsLink: function(uri) {
-		if(this.ut.hasPrefix(uri, this.ct.PROTOCOL_SETTINGS_ADD))
+		if(this.hasPrefix(uri, this.ct.PROTOCOL_SETTINGS_ADD))
 			this.openSettingsImport(true, this.ct.IMPORT_STRING, uri);
-		else if(this.ut.hasPrefix(uri, this.ct.PROTOCOL_SETTINGS_PANE))
+		else if(this.hasPrefix(uri, this.ct.PROTOCOL_SETTINGS_PANE))
 			this.openSettingsPane(uri.substr(this.ct.PROTOCOL_SETTINGS_PANE.length));
-		else if(this.ut.hasPrefix(uri, this.ct.PROTOCOL_SETTINGS))
+		else if(this.hasPrefix(uri, this.ct.PROTOCOL_SETTINGS))
 			this.openSettings();
+	},
+
+	// See the same function in utils.js (winUtils.js is global, but utils.js - not)
+	//~ todo: use global utils
+	hasPrefix: function(str, prefix) {
+		return str.substr(0, prefix.length) == prefix;
 	}
 };
