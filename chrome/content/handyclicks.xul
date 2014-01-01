@@ -59,6 +59,7 @@
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton id="handyClicks-toolbarButton" class="toolbarbutton-1 chromeclass-toolbar-additional"
 			label="&handyClicks.toolbarbuttonLabel;" tooltip="handyClicks-tooltip"
+			oncommand="handyClicksUI.handleUIEvent(event);"
 			onclick="handyClicksUI.handleUIEvent(event);" />
 		<toolbaritem id="handyClicks-toolbarProgressContainer" collapsed="true" label="&handyClicks.progress;"
 			popup="_child" context="_child" align="center" />
@@ -79,6 +80,7 @@
 		<statusbarpanel id="handyClicks-statusbarButton" insertafter="page-report-button"
 			class="statusbarpanel-iconic"
 			tooltip="handyClicks-tooltip"
+			oncommand="handyClicksUI.handleUIEvent(event);"
 			onclick="handyClicksUI.handleUIEvent(event);" />
 	</statusbar>
 	<popupset id="mainPopupSet">
