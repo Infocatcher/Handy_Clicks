@@ -56,6 +56,7 @@ pref("extensions.handyclicks.funcs.decodeURIs.unknownProtocols", false);
 
 pref("extensions.handyclicks.funcs.convertURIs", false); // for Windows
 pref("extensions.handyclicks.funcs.convertURIsCharset", ""); // use defaults
+pref("extensions.handyclicks.funcs.preferRunw", true); // Use Unicode nsIProcess.runw(), if available
 
 pref("extensions.handyclicks.funcs.multipleTabsOpenDelay", 200);
 pref("extensions.handyclicks.funcs.openOnlyVisibleLinks", true);

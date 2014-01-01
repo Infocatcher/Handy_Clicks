@@ -818,7 +818,7 @@ var handyClicksFuncs = {
 		var args = tar.hc_args || [];
 		//args.push(popup.hc_uri);
 		var uris = Array.concat(popup.hc_uri).map(this.convertStrFromUnicode, this);
-		this.ut.startProcess(tar.hc_path, Array.concat(args, uris), true);
+		this.ut.startProcess(tar.hc_path, Array.concat(args, uris), this.pu.pref("funcs.preferRunw"));
 	},
 	losslessDecodeURI: function(value) {
 		if(!value)
