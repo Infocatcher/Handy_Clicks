@@ -1817,18 +1817,35 @@ var handyClicksSets = {
 		}
 	},
 	resetUIAction: function() {
-		//if(!this.resetPrefsConfirmed)
-		//	return;
-		this.pu.resetPref(this.currentActionPref);
+		var tb = this.currentActionTextbox;
+		if(!tb)
+			return;
+		var prefName = this.currentActionPref;
+		var defaultBranch = this.pu.prefSvc.getDefaultBranch(this.pu.prefNS);
+		var defaultVal = this.pu.getPref(prefName, undefined, defaultBranch);
+		if(defaultVal !== undefined && defaultVal != tb.value) {
+			tb.value = defaultVal;
+			this.fireChange(tb);
+			this.loadUIAction();
+		}
 	},
 	resetAllUIActions: function() {
-		if(!this.resetPrefsConfirmed)
-			return;
-		this.pu.prefSvc.getBranch(this.pu.prefNS + "ui.action")
-			.getChildList("", {})
-			.forEach(function(prefName) {
-				this.pu.resetPref("ui.action" + prefName);
-			}, this);
+		var ns = this.pu.prefNS + "ui.action";
+		var defaultBranch = this.pu.prefSvc.getDefaultBranch(ns);
+		var changed = false;
+		defaultBranch.getChildList("", {}).forEach(function(prefName) {
+			var pref = document.getElementsByAttribute("name", ns + prefName)[0];
+			var tb = pref && document.getElementsByAttribute("preference", pref.id)[0];
+			if(!tb)
+				return;
+			var defaultVal = this.pu.getPref(prefName, undefined, defaultBranch);
+			if(defaultVal !== undefined && defaultVal != tb.value) {
+				changed = true;
+				tb.value = defaultVal;
+				this.fireChange(tb);
+			}
+		}, this);
+		changed && this.loadUIAction();
 	},
 	saveSettings: function(applyFlag) {
 		this.pu.pref("disallowMousemoveButtons", this.disallowMousemoveButtons);
