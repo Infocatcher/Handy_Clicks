@@ -1789,6 +1789,10 @@ var handyClicksSets = {
 		var tb = document.getElementsByAttribute("preference", "action-" + type + "-" + button);
 		return tb.length ? tb[0] : null;
 	},
+	getControlByPrefName: function(prefName) {
+		var pref = document.getElementsByAttribute("name", prefName)[0];
+		return pref && document.getElementsByAttribute("preference", pref.id)[0];
+	},
 	loadUIAction: function() {
 		var tb = this.currentActionTextbox;
 		if(!tb)
@@ -1796,14 +1800,21 @@ var handyClicksSets = {
 		var prefName = this.currentActionPref;
 		var ml = this.$("hc-sets-action-value");
 		ml.value = tb.value || this.pu.pref(prefName);
-		this.$("hc-sets-action-reset").setAttribute("disabled", !this.pu.prefChanged(prefName));
+
+		var defaultBranch = this.pu.prefSvc.getDefaultBranch(this.pu.prefNS);
+		var _this = this;
+		function prefChanged(pName, tb) {
+			return _this.pu.getPref(pName, undefined, defaultBranch) != tb.value;
+		}
+		this.$("hc-sets-action-reset").setAttribute("disabled", !prefChanged(prefName, tb));
 		//ml.getElementsByAttribute("value", 2 /*ACTION_POPUP*/)[0]
 		//	.setAttribute("disabled", prefName == "ui.actionMenuLeftClick");
 		const ns = "ui.action";
 		var hasChanged = this.pu.prefSvc.getBranch(this.pu.prefNS + ns)
 			.getChildList("", {})
 			.some(function(pName) {
-				return this.pu.prefChanged(ns + pName);
+				var tb = this.getControlByPrefName(this.pu.prefNS + ns + pName);
+				return tb && prefChanged(ns + pName, tb);
 			}, this);
 		this.$("hc-sets-action-resetAll").setAttribute("disabled", !hasChanged);
 	},
@@ -1814,6 +1825,7 @@ var handyClicksSets = {
 		if(tb) {
 			tb.value = this.$("hc-sets-action-value").value;
 			this.fireChange(tb);
+			this.loadUIAction();
 		}
 	},
 	resetUIAction: function() {
@@ -1834,8 +1846,7 @@ var handyClicksSets = {
 		var defaultBranch = this.pu.prefSvc.getDefaultBranch(ns);
 		var changed = false;
 		defaultBranch.getChildList("", {}).forEach(function(prefName) {
-			var pref = document.getElementsByAttribute("name", ns + prefName)[0];
-			var tb = pref && document.getElementsByAttribute("preference", pref.id)[0];
+			var tb = this.getControlByPrefName(ns + prefName);
 			if(!tb)
 				return;
 			var defaultVal = this.pu.getPref(prefName, undefined, defaultBranch);
