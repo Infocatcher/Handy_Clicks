@@ -49,32 +49,38 @@ var handyClicksPrefUtils = {
 	readPref: function(pName) {
 		return this._prefs[pName] = this.getPref(this.prefNS + pName);
 	},
-	getPref: function(pName, defaultVal) {
-		var ps = this.prefSvc;
+	getPref: function(pName, defaultVal, prefBranch) {
+		var ps = prefBranch || this.prefSvc;
 		switch(ps.getPrefType(pName)) {
-			case ps.PREF_STRING: return ps.getComplexValue(pName, Components.interfaces.nsISupportsString).data;
-			case ps.PREF_INT:    return ps.getIntPref(pName);
 			case ps.PREF_BOOL:   return ps.getBoolPref(pName);
-			default:             return defaultVal;
+			case ps.PREF_INT:    return ps.getIntPref(pName);
+			case ps.PREF_STRING: return ps.getComplexValue(pName, Components.interfaces.nsISupportsString).data;
 		}
+		return defaultVal;
 	},
-	setPref: function(pName, pVal) {
-		var ps = this.prefSvc;
+	setPref: function(pName, val, prefBranch) {
+		var ps = prefBranch || this.prefSvc;
 		var pType = ps.getPrefType(pName);
-		var isNew = pType == ps.PREF_INVALID;
-		var vType = typeof pVal;
-		if(pType == ps.PREF_BOOL || isNew && vType == "boolean")
-			ps.setBoolPref(pName, pVal);
-		else if(pType == ps.PREF_INT || isNew && vType == "number")
-			ps.setIntPref(pName, pVal);
-		else if(pType == ps.PREF_STRING || isNew) {
-			var ss = Components.interfaces.nsISupportsString;
-			var str = Components.classes["@mozilla.org/supports-string;1"]
-				.createInstance(ss);
-			str.data = pVal;
-			ps.setComplexValue(pName, ss, str);
+		if(pType == ps.PREF_INVALID)
+			pType = this.getValueType(val);
+		switch(pType) {
+			case ps.PREF_BOOL:   ps.setBoolPref(pName, val); break;
+			case ps.PREF_INT:    ps.setIntPref(pName, val);  break;
+			case ps.PREF_STRING:
+				var ss = Components.interfaces.nsISupportsString;
+				var str = Components.classes["@mozilla.org/supports-string;1"]
+					.createInstance(ss);
+				str.data = val;
+				ps.setComplexValue(pName, ss, str);
 		}
 		return this;
+	},
+	getValueType: function(val) {
+		switch(typeof val) {
+			case "boolean": return this.prefSvc.PREF_BOOL;
+			case "number":  return this.prefSvc.PREF_INT;
+		}
+		return this.prefSvc.PREF_STRING;
 	},
 	prefChanged: function(pName) {
 		return this.prefSvc.prefHasUserValue(this.prefNS + pName);
