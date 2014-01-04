@@ -71,7 +71,7 @@ var handyClicksEditor = {
 			document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css
 
 			var mouseEvt = typeof MouseEvent == "function" // Firefox 11+
-				&& ("" + MouseEvent).charAt(0) != "[" // Trick for Firefox 2.0
+				&& ("" + MouseEvent).charAt(0) != "[" // Trick for Firefox <= 2.0
 				? new MouseEvent("click")
 				: document.createEvent("MouseEvents");
 			if(!("getModifierState" in mouseEvt)) { // Works only in Firefox 15+
