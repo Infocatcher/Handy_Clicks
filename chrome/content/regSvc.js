@@ -16,7 +16,7 @@ var handyClicksRegSvc = {
 		window.removeEventListener("unload", this, false);
 		this.callMethods("destroy", reloadFlag);
 		this.registerShortcuts(false);
-		this.s = this.globals._elts = null; // We can't undo this!
+		this.s = this.globals = this.globals._elts = null; // We can't undo this!
 		delete window._handyClicksInitialized;
 	},
 	handleEvent: function(e) {
@@ -34,23 +34,27 @@ var handyClicksRegSvc = {
 		var jsl = this.jsLoader;
 		return jsl.loadSubScript.apply(jsl, arguments);
 	},
-	globals: {
-		_elts: { __proto__: null },
-		$: function(id) {
-			return this._elts[id] || (this._elts[id] = document.getElementById(id));
-		},
-		e: function(id) {
-			return document.getElementById(id);
-		},
-		get fn() {
-			return this.rs.lazyLoad("fn", "handyClicksFuncs", "funcs.js");
-		},
-		get wu() {
-			return this.rs.lazyLoad("wu", "handyClicksWinUtils", "winUtils.js");
-		},
-		get _devMode() {
-			return this.pu.pref("devMode");
-		}
+	get globals() {
+		var _this = this;
+		delete this.globals;
+		return this.globals = {
+			_elts: { __proto__: null },
+			$: function(id) {
+				return this._elts[id] || (this._elts[id] = document.getElementById(id));
+			},
+			e: function(id) {
+				return document.getElementById(id);
+			},
+			get fn() {
+				return _this.lazyLoad("fn", "handyClicksFuncs", "funcs.js");
+			},
+			get wu() {
+				return _this.lazyLoad("wu", "handyClicksWinUtils", "winUtils.js");
+			},
+			get _devMode() {
+				return this.pu.pref("devMode");
+			}
+		};
 	},
 	get s() {
 		var _s = {
