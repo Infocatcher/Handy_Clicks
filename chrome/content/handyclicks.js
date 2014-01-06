@@ -606,7 +606,7 @@ var handyClicks = {
 		if(
 			(
 				this.hasParent(it, "goPopup")
-				|| itln == "treechildren" && (it.parentNode.id || "").toLowerCase().indexOf("history") != -1 // Sidebar
+				|| itln == "treechildren" && this.isHistoryTree(it.parentNode)
 			)
 			&& this.getBookmarkURI(it, e)
 		)
@@ -625,7 +625,7 @@ var handyClicks = {
 					&& (itln == "toolbarbutton" || itln == "menuitem")
 				)
 				|| itln == "menuitem" && it.hasAttribute("siteURI")
-				|| itln == "treechildren" && (it.parentNode.id || "").toLowerCase().indexOf("bookmark") != -1 // Sidebar
+				|| itln == "treechildren" && this.isBookmarkTree(it.parentNode)
 			)
 			&& !this.hasParent(it, "goPopup")
 			&& this.getBookmarkURI(it, e)
@@ -720,6 +720,20 @@ var handyClicks = {
 			if(it.id == pId)
 				return true;
 		return false;
+	},
+	isBookmarkTree: function(tree) {
+		return this.isPlacesTree(tree)
+			&& /[:&]folder=/.test(tree.getAttribute("place"));
+	},
+	isHistoryTree: function(tree) {
+		if(!this.isPlacesTree(tree))
+			return false;
+		var place = tree.getAttribute("place");
+		return !/[:&]folder=/.test(place) // Exclude bookmarks
+			&& !/[:&]transition=7(?:&|$)/.test(place); // Exclude downloads
+	},
+	isPlacesTree: function(tree) {
+		return tree.getAttribute("type") == "places";
 	},
 	getFuncObj: function(sets) {
 		return this.itemType // see .defineItem()
@@ -908,16 +922,18 @@ var handyClicks = {
 
 		// Based on code of Places' Tooltips ( https://addons.mozilla.org/firefox/addon/7314 )
 		var row = {}, column = {}, cell = {};
+		tree = tree.wrappedJSObject || tree; // For page in tab, Firefox <= 3.6
 		tree.treeBoxObject.getCellAt(e.clientX, e.clientY, row, column, cell);
 		if(row.value == -1)
 			return "";
-		var view = tree.view;
-		if(!("nodeForTreeIndex" in view))
+		try {
+			var node = tree.view.nodeForTreeIndex(row.value);
+		}
+		catch(e) {
+		}
+		if(!node || !PlacesUtils.nodeIsURI(node))
 			return "";
-		var node = view.nodeForTreeIndex(row.value);
-		return PlacesUtils.nodeIsURI(node)
-			? node[prop]
-			: "";
+		return node[prop];
 	},
 	createMouseEvents: function(origEvt, item, evtTypes, opts) {
 		if(typeof opts == "number")
