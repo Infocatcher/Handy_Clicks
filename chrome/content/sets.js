@@ -2164,6 +2164,22 @@ var handyClicksSets = {
 					this.showExternalEditorFile();
 			break;
 			case "keypress":
+				if(
+					e.charCode
+					&& String.fromCharCode(e.charCode).toLowerCase() == "c"
+				) {
+					var ee = this.ee;
+					var val = ee.value;
+					if(
+						val.toLowerCase() == "s"
+						&& ee.inputField.selectionStart == val.length
+					) {
+						e.preventDefault();
+						ee.value = "Scratchpad";
+						this.fireChange(ee);
+						break;
+					}
+				}
 				if(e.keyCode != e.DOM_VK_RETURN)
 					break;
 				this.ut.stopEvent(e);
