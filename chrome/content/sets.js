@@ -1995,7 +1995,12 @@ var handyClicksSets = {
 		this.pu.openAboutConfig("/" + re + "/");
 	},
 	get ee() {
-		return this.$("hc-sets-externalEditorPath");
+		var ee = this.e("hc-sets-externalEditorPath");
+		// Trick for Firefox 4+, first this.ee.value = "..." may clear undo buffer otherwise
+		if("editor" in ee)
+			ee.editor; // Ensure initialized
+		delete this.ee;
+		return this.ee = ee;
 	},
 	get eeFile() {
 		var path = this.ee.value;
