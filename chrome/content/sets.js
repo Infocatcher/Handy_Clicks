@@ -2166,6 +2166,7 @@ var handyClicksSets = {
 			case "keypress":
 				if(
 					e.charCode
+					&& !e.ctrlKey && !e.altKey && !e.metaKey
 					&& String.fromCharCode(e.charCode).toLowerCase() == "c"
 				) {
 					var ee = this.ee;
