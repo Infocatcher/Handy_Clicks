@@ -1761,10 +1761,11 @@ var handyClicksSets = {
 	},
 	initPrefs: function() {
 		this.setDisallowMousemove();
-		this.initExternalEditor();
 		this.initResetWarnMsgs();
 		this.loadUIAction();
 		this.updateAllDependencies();
+		// This is relatively slow, will execute after small delay
+		this.ut.timeout(this.initExternalEditor, this);
 	},
 	setDisallowMousemove: function() {
 		var buttons = this.pu.pref("disallowMousemoveButtons") || "";

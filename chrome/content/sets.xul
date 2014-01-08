@@ -381,6 +381,7 @@
 					hc_requiredFor="externalEditor" hc_enabledRegExp="[/\\]\S|^%[^%]+%." />
 				<button oncommand="handyClicksSets.selectExternalEditor();" label="&hc.sets.externalEditorBrowse;" />
 				<button id="hc-sets-externalEditorButton" oncommand="handyClicksSets.convertPath();"
+					label="&hc.sets.externalEditorMakeRelative;"
 					hc_labelMakeRelative="&hc.sets.externalEditorMakeRelative;"
 					hc_labelMakeAbsolute="&hc.sets.externalEditorMakeAbsolute;"
 					hc_depends="externalEditor" />
