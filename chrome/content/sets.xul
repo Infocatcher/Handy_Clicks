@@ -486,13 +486,18 @@
 	-->
 	<script type="application/javascript">
 	<![CDATA[
-		// Hack for persist="sizemode"
-		var _sizeToContent = sizeToContent;
-		sizeToContent = function() {
-			if(document.documentElement.getAttribute("sizemode") == "normal")
-				return _sizeToContent.apply(this, arguments);
-			return undefined;
-		};
+		if(window instanceof Components.interfaces.nsIDOMChromeWindow) {
+			// Hack for persist="sizemode"
+			var _sizeToContent = sizeToContent;
+			sizeToContent = function() {
+				if(document.documentElement.getAttribute("sizemode") == "normal")
+					return _sizeToContent.apply(this, arguments);
+				return undefined;
+			};
+		}
+		else { // Don't resize browser window from tab
+			resizeTo = resizeBy = sizeToContent = function disabledInTab() {};
+		}
 	]]>
 	</script>
 	<script type="application/javascript" src="chrome://handyclicks/content/utils.js" />
