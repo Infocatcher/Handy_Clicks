@@ -873,8 +873,7 @@ var handyClicksSets = {
 		return row.value > -1 && this.tView.isContainer(row.value);
 	},
 	getItemsInfo: function(tIts) {
-		if(!tIts)
-			tIts = this.selectedItems;
+		tIts = tIts ? tIts.slice() : this.selectedItems;
 		var itsCount = tIts.length;
 		if(!itsCount)
 			return [];
