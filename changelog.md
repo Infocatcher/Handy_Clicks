@@ -15,6 +15,7 @@
 `x` Fixed possible problems with lazy load optimization (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/10">#10</a>).<br>
 `+` Added support for any tree with bookmarks/history items (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/15">#15</a>).<br>
 `x` Correctly delete more than 12 items from click options.<br>
+`+` Added ability to not save scroll position in click options (checkbox in View menu and <em>extensions.handyclicks.sets.rememberScrollPosition</em> preference).<br>
 `*` Some minor improvements and fixes.<br>
 
 ##### 0.1.3pre2 (2013-12-28)
