@@ -2702,14 +2702,6 @@ var handyClicksSets = {
 	},
 	buildRestorePopup: function() {
 		var popup = this.ubPopup;
-		//this.ut.removeChilds(popup);
-		var sep;
-		for(;;) {
-			sep = popup.firstChild;
-			if(sep.localName == "menuseparator")
-				break;
-			popup.removeChild(sep);
-		}
 
 		var entries = this.ps.backupsDir.directoryEntries;
 		var _fTerms = [], _files = {}, _fTime;
@@ -2772,6 +2764,15 @@ var handyClicksSets = {
 				hc_testBackup: testBackupStatus && this.ut.hasPrefix(fName, testBackup)
 			}));
 		}, this);
+
+		//this.ut.removeChilds(popup);
+		var sep;
+		for(;;) {
+			sep = popup.firstChild;
+			if(sep.localName == "menuseparator")
+				break;
+			popup.removeChild(sep);
+		}
 		popup.insertBefore(df, sep);
 		_fTerms = _files = null;
 
