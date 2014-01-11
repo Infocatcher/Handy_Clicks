@@ -90,7 +90,7 @@ var handyClicksSets = {
 		var sf = this.searchField;
 		var obsoletePref = this.pu.prefNS + "sets.lastSearchQuery"; //= Added: 2012-01-11
 		var lsq = this.pu.getPref(obsoletePref);
-		if(lsq)
+		if(lsq != undefined)
 			this.pu.prefSvc.deleteBranch(obsoletePref);
 		else
 			lsq = sf.getAttribute("hc_value");
@@ -100,7 +100,10 @@ var handyClicksSets = {
 	},
 	saveSearchQuery: function() {
 		var sf = this.searchField;
-		sf.setAttribute("hc_value", this.pu.pref("sets.rememberSearchQuery") ? sf.value : "");
+		if(this.pu.pref("sets.rememberSearchQuery"))
+			sf.setAttribute("hc_value", sf.value);
+		else
+			sf.removeAttribute("hc_value");
 	},
 	startupUI: function() {
 		this.treeScrollPos(false);
