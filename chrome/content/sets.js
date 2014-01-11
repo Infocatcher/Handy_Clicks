@@ -2681,7 +2681,7 @@ var handyClicksSets = {
 	},
 	initImportPopup: function() {
 		this.checkClipboard();
-		this.buildRestorePopup();
+		this.ut.timeout(this.buildRestorePopup, this);
 	},
 	destroyImportPopup: function() {
 		this.destroyRestorePopup();
@@ -2781,7 +2781,7 @@ var handyClicksSets = {
 		});
 		_ubTerms = _ubFiles = null;
 
-		this.updRestorePopup(ubCount, isEmpty);
+		this.updRestorePopup(ubCount, isEmpty, true);
 	},
 	fixMenuitemsWidth: function(popup) {
 		this.ut.timeout(function() { // Timeout for Firefox 3.x
@@ -2795,7 +2795,7 @@ var handyClicksSets = {
 	destroyRestorePopup: function() {
 		delete this.ubPopup.__userBackups;
 	},
-	updRestorePopup: function(ubCount, isEmpty) {
+	updRestorePopup: function(ubCount, isEmpty, dontCleanup) {
 		var popup = this.ubPopup;
 		if(ubCount === undefined)
 			ubCount = popup.getElementsByAttribute("hc_userBackup", "true").length;
@@ -2805,10 +2805,11 @@ var handyClicksSets = {
 		menu.setAttribute("disabled", isEmpty);
 		if(isEmpty)
 			popup.hidePopup();
-		if("__userBackups" in popup)
+		if("__userBackups" in popup && !dontCleanup) this.ut.timeout(function() {
 			popup.__userBackups = popup.__userBackups.filter(function(file) {
 				return file.exists();
 			});
+		}, this);
 		this.$("hc-sets-tree-removeUserBackupsExc10").setAttribute("disabled", ubCount <= 10);
 		this.$("hc-sets-tree-removeAllUserBackups")  .setAttribute("disabled", ubCount == 0);
 	},
