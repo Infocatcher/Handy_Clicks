@@ -875,18 +875,19 @@ var handyClicksSets = {
 	getItemsInfo: function(tIts) {
 		if(!tIts)
 			tIts = this.selectedItems;
-		if(!tIts.length)
+		var itsCount = tIts.length;
+		if(!itsCount)
 			return [];
 
 		const MAX_TYPE_LENGTH = 40;
 		const MAX_LABEL_LENGTH = 50;
 		const MAX_ROWS = 12;
 
-		if(tIts.length > MAX_ROWS)
-			tIts.splice(MAX_ROWS - 2, tIts.length - MAX_ROWS + 1, "\u2026" /* "..." */);
+		if(itsCount > MAX_ROWS)
+			tIts.splice(MAX_ROWS - 2, itsCount - MAX_ROWS + 1, "\u2026" /* "..." */);
 		var info = tIts.map(
 			function(tItem, i) {
-				if(typeof tItem == "string")
+				if(typeof tItem == "string") // Cropped mark
 					return tItem;
 				var type = tItem.__itemType, sh = tItem.__shortcut;
 				var mdfs = this.ps.getModifiersStr(sh);
@@ -908,7 +909,10 @@ var handyClicksSets = {
 				var label = this.ut.isObject(fObj)
 					? this.cropStr(this.getActionLabel(fObj), MAX_LABEL_LENGTH)
 					: "?";
-				return (i + 1) + ". " + mdfs + " + " + button + " + " + typeLabel + " \u21d2 " /* "=>" */
+				var n = i + 1;
+				if(n == MAX_ROWS)
+					n = itsCount;
+				return n + ". " + mdfs + " + " + button + " + " + typeLabel + " \u21d2 " /* "=>" */
 					+ label + addLabel;
 			},
 			this
