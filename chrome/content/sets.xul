@@ -91,6 +91,7 @@
 					<menuitem type="checkbox" hc_pref="sets.localizeArguments" label="&hc.sets.localizeArgs;" />
 					<menuseparator />
 					<menuitem type="checkbox" hc_pref="sets.rememberSearchQuery" label="&hc.sets.rememberSearchQuery;" />
+					<menuitem type="checkbox" hc_pref="sets.rememberScrollPosition" label="&hc.sets.rememberScrollPosition;" />
 					<menuseparator />
 					<menuitem type="checkbox" hc_pref="sets.closeTreeViewMenu" label="&hc.sets.closeThisMenu;" />
 				</menupopup>

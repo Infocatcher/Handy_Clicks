@@ -61,6 +61,7 @@ Placeholders:
 <!ENTITY hc.sets.showTreeGrid "Show grid">
 <!ENTITY hc.sets.localizeArgs "Localize arguments">
 <!ENTITY hc.sets.rememberSearchQuery "Remember search query">
+<!ENTITY hc.sets.rememberScrollPosition "Remember scroll position">
 <!ENTITY hc.sets.closeThisMenu "Close this menu after click">
 
 <!ENTITY hc.sets.cmdAdd "Add…">
