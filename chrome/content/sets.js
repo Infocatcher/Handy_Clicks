@@ -149,17 +149,24 @@ var handyClicksSets = {
 		);
 	},
 	treeScrollPos: function(saveFlag) {
-		if(!this.pu.pref("sets.rememberScrollPosition"))
-			return;
+		var rememberScrollPos = this.pu.pref("sets.rememberScrollPosition");
 		var tr = this.tree;
 		var tbo = this.tbo;
 		if(saveFlag) {
-			tr.setAttribute("hc_firstVisibleRow", tbo.getFirstVisibleRow());
-			tr.setAttribute("hc_lastVisibleRow", tbo.getLastVisibleRow());
+			if(rememberScrollPos) {
+				tr.setAttribute("hc_firstVisibleRow", tbo.getFirstVisibleRow());
+				tr.setAttribute("hc_lastVisibleRow", tbo.getLastVisibleRow());
+			}
+			else {
+				tr.removeAttribute("hc_firstVisibleRow");
+				tr.removeAttribute("hc_lastVisibleRow");
+			}
 			document.persist(tr.id, "hc_firstVisibleRow");
 			document.persist(tr.id, "hc_lastVisibleRow");
 			return;
 		}
+		if(!rememberScrollPos)
+			return;
 		if(!tr.hasAttribute("hc_firstVisibleRow"))
 			return;
 		var maxRowsIndx = this.tView.rowCount - 1;
