@@ -149,6 +149,8 @@ var handyClicksSets = {
 		);
 	},
 	treeScrollPos: function(saveFlag) {
+		if(!this.pu.pref("sets.rememberScrollPosition"))
+			return;
 		var tr = this.tree;
 		var tbo = this.tbo;
 		if(saveFlag) {
