@@ -9,6 +9,13 @@
 `*` Slightly improved startup performance: now styles for “blink” node feature are loaded just before first usage.<br>
 `x` Fixed: correctly remember target directory during export from uninstall dialog.<br>
 `*` Slightly improved startup performance: initialize uninstaller only after first window will be opened.<br>
+`*` Added ability to show context menu after left-click on menu item.<br>
+`*` Now used undoable way to reset controls behavior.<br>
+`*` Improved way to open Unicode URIs in other applications (handyClicksFuncs.showOpenURIWithAppsPopup() API and <em>extensions.handyclicks.funcs.preferRunw</em> preference).<br>
+`x` Fixed possible problems with lazy load optimization (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/10">#10</a>).<br>
+`+` Added support for any tree with bookmarks/history items (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/15">#15</a>).<br>
+`x` Correctly delete more than 12 items from click options.<br>
+`*` Some minor improvements and fixes.<br>
 
 ##### 0.1.3pre2 (2013-12-28)
 `x` Corrected settings tree appearance on Windows with Aero theme (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/4">#4</a>).<br>
