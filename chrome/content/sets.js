@@ -2679,6 +2679,13 @@ var handyClicksSets = {
 		this.updRestorePopup();
 		return true;
 	},
+	initImportPopup: function() {
+		this.checkClipboard();
+		this.buildRestorePopup();
+	},
+	destroyImportPopup: function() {
+		this.destroyRestorePopup();
+	},
 	handleRestoreCommand: function(e) {
 		var mi = e.target;
 		if(!mi.hasAttribute("hc_fileName"))
