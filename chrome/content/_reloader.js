@@ -111,22 +111,18 @@ var handyClicksReloader = {
 
 		this._log("css [" + sheetsHrefs.length + "] reloaded");
 	},
-	_lastKeydown: 0,
+	_lastAction: 0,
 	keydownHandler: function(e) {
 		if(e.ctrlKey && !e.shiftKey && e.altKey && !e.metaKey && this.devMode) {
-			var now = Date.now();
-			if(now - this._lastKeydown < 300)
+			if(Date.now() - this._lastAction < 300)
 				return;
-			this._lastKeydown = now;
-			var key = String.fromCharCode(e.keyCode);
-			if(key == "R") { // Ctrl+Alt+R
-				this.stopEvent(e);
-				this.reloadScripts();
+			switch(String.fromCharCode(e.keyCode).toLowerCase()) {
+				case "r": this.reloadScripts(); break;
+				case "c": this.reloadStyles();  break;
+				default: return;
 			}
-			else if(key == "C") { // Ctrl+Alt+C
-				this.stopEvent(e);
-				this.reloadStyles();
-			}
+			this._lastAction = Date.now();
+			this.stopEvent(e);
 		}
 	},
 	stopEvent: function(e) {
