@@ -1,5 +1,5 @@
 var handyClicksUtils = {
-	errPrefix: "[Handy Clicks]: ",
+	errPrefix: "[Handy Clicks] ",
 	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
 
 	get consoleSvc() {

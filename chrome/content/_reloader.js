@@ -26,10 +26,10 @@ var handyClicksReloader = {
 			__proto__: null
 		};
 		try {
-			var t = Date.now(), p;
+			var t = Date.now();
 			handyClicksRegSvc.destroy(true);
 			for(var f in files) {
-				p = files[f];
+				var p = files[f];
 				if(p in window)
 					jsLoader.loadSubScript(path + f + "?" + Date.now());
 			}
@@ -115,7 +115,7 @@ var handyClicksReloader = {
 	keydownHandler: function(e) {
 		if(e.ctrlKey && !e.shiftKey && e.altKey && !e.metaKey && this.devMode) {
 			var now = Date.now();
-			if(now - this._lastKeydown < 100)
+			if(now - this._lastKeydown < 300)
 				return;
 			this._lastKeydown = now;
 			var key = String.fromCharCode(e.keyCode);
@@ -136,7 +136,7 @@ var handyClicksReloader = {
 	get prefSvc() {
 		delete this.prefSvc;
 		return this.prefSvc = Components.classes["@mozilla.org/preferences-service;1"]
-			.getService(Components.interfaces.nsIPrefBranch2);
+			.getService(Components.interfaces.nsIPrefBranch2 || Components.interfaces.nsIPrefBranch);
 	},
 	get devMode() {
 		return this.prefSvc.getBoolPref("extensions.handyclicks.devMode");
@@ -144,10 +144,15 @@ var handyClicksReloader = {
 	get path() {
 		return /[^\\\/]+$/.test(location.href) ? RegExp.lastMatch : location.href;
 	},
+	ts: function() {
+		var d = new Date();
+		var ms = d.getMilliseconds();
+		return d.toLocaleFormat("%M:%S:") + "000".substr(String(ms).length) + ms;
+	},
 	_log: function(msg) {
 		Components.classes["@mozilla.org/consoleservice;1"]
 			.getService(Components.interfaces.nsIConsoleService)
-			.logStringMessage("[Handy Clicks]: " + this.path + ": " + msg);
+			.logStringMessage("[Handy Clicks] " + this.ts() + " " + this.path + ": " + msg);
 	},
 	handleEvent: function(e) {
 		if(e.type == "keydown")
