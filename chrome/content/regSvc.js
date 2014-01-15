@@ -1,8 +1,8 @@
 var handyClicksRegSvc = {
+	rl: null,
 	instantInit: function(reloadFlag) {
 		window.addEventListener("load", this, false);
 		this.loadSubScript("chrome://handyclicks/content/consts.js");
-		this.loadSubScript("chrome://handyclicks/content/_reloader.js");
 		this.registerShortcuts(true);
 		this.callMethods("instantInit", reloadFlag);
 	},
@@ -11,10 +11,20 @@ var handyClicksRegSvc = {
 		window.addEventListener("unload", this, false);
 		this.callMethods("init", reloadFlag);
 		window._handyClicksInitialized = true;
+		setTimeout(function(_this) {
+			_this.delayedInit(reloadFlag);
+		}, 0, this);
+	},
+	delayedInit: function(reloadFlag) {
+		var noCache = reloadFlag ? "?" + Date.now() : "";
+		this.loadSubScript("chrome://handyclicks/content/_reloader.js" + noCache);
+		var rl = this.rl = handyClicksReloader;
+		rl.init(reloadFlag);
 	},
 	destroy: function(reloadFlag) { // window "unlod"
 		window.removeEventListener("unload", this, false);
 		this.callMethods("destroy", reloadFlag);
+		this.rl && this.rl.destroy(reloadFlag);
 		this.registerShortcuts(false);
 		this.s = this.globals = this.globals._elts = null; // We can't undo this!
 		delete window._handyClicksInitialized;
@@ -64,7 +74,6 @@ var handyClicksRegSvc = {
 			hc: "handyClicks",
 			ps: "handyClicksPrefSvc",
 			pu: "handyClicksPrefUtils",
-			rl: "handyClicksReloader",
 			rs: "handyClicksRegSvc",
 			st: "handyClicksSets",
 			su: "handyClicksSetsUtils",
