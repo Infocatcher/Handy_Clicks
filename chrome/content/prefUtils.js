@@ -3,7 +3,7 @@ var handyClicksPrefUtils = {
 
 	// Preferences:
 	prefNS: "extensions.handyclicks.",
-	prefsVersion: 8,
+	prefsVersion: 9,
 
 	get prefSvc() {
 		delete this.prefSvc;

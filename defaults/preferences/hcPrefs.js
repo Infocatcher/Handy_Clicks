@@ -105,4 +105,5 @@ pref("extensions.handyclicks.editor.external.labelInFileName", true);
 pref("extensions.handyclicks.editor.external.saveWithBOM", true);
 
 pref("extensions.handyclicks.prefsVersion", 0);
-pref("extensions.handyclicks.devMode", true);
+
+pref("extensions.handyclicks.debug", false);

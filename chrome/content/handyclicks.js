@@ -1184,7 +1184,7 @@ var handyClicks = {
 
 		this.focusOnItem();
 
-		if(this._devMode) {
+		if(this._debug) {
 			var eStr = this.ps.getEvtStr(e || this.event);
 			this.ut._log(
 				(e ? e.type : "delayedAction")

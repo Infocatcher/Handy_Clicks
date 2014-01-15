@@ -113,7 +113,7 @@ var handyClicksReloader = {
 	},
 	_lastAction: 0,
 	keydownHandler: function(e) {
-		if(e.ctrlKey && !e.shiftKey && e.altKey && !e.metaKey && this.devMode) {
+		if(e.ctrlKey && !e.shiftKey && e.altKey && !e.metaKey && this.debug) {
 			if(Date.now() - this._lastAction < 300)
 				return;
 			switch(String.fromCharCode(e.keyCode).toLowerCase()) {
@@ -134,8 +134,8 @@ var handyClicksReloader = {
 		return this.prefSvc = Components.classes["@mozilla.org/preferences-service;1"]
 			.getService(Components.interfaces.nsIPrefBranch2 || Components.interfaces.nsIPrefBranch);
 	},
-	get devMode() {
-		return this.prefSvc.getBoolPref("extensions.handyclicks.devMode");
+	get debug() {
+		return this.prefSvc.getBoolPref("extensions.handyclicks.debug");
 	},
 	get path() {
 		return /[^\\\/]+$/.test(location.href) ? RegExp.lastMatch : location.href;

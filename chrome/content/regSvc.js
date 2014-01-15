@@ -61,8 +61,8 @@ var handyClicksRegSvc = {
 			get wu() {
 				return _this.lazyLoad("wu", "handyClicksWinUtils", "winUtils.js");
 			},
-			get _devMode() {
-				return this.pu.pref("devMode");
+			get _debug() {
+				return this.pu.pref("debug");
 			}
 		};
 	},
