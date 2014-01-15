@@ -11,7 +11,7 @@
 <!ENTITY hc.sets.defaults "Reset to defaults">
 <!ENTITY hc.sets.allPrefs "All preferences…">
 
-<!ENTITY hc.sets.clickOptionsTitle "Clicks Options">
+<!ENTITY hc.sets.clickOptionsTitle "Clicks options">
 
 <!ENTITY hc.sets.columnShortcutAndTarget "Shortcut and target">
 <!ENTITY hc.sets.columnEvent "Event">
