@@ -1,5 +1,5 @@
 /* XPM */
-static char * Z:\_ext\_dev\Handy_Clicks\icons\editor_icon32_v2_xpm[] = {
+static char * editor_icon_xpm[] = {
 "16 16 99 2",
 "  	c None",
 ". 	c #9AA7B1",
