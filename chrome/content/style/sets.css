@@ -2,22 +2,22 @@
 
 /* Icons */
 radio[pane] {
-	list-style-image: url("prefs32.png");
+	list-style-image: url("icons32.png");
 }
 radio[pane="hc-sets-pane-actions"] {
-	-moz-image-region: rect(0 32px 32px 0);
+	-moz-image-region: rect(64px 32px 96px 0);
 }
 radio[pane="hc-sets-pane-prefs"] {
-	-moz-image-region: rect(0 64px 32px 32px);
+	-moz-image-region: rect(64px 64px 96px 32px);
 }
 radio[pane="hc-sets-pane-organize"] {
-	-moz-image-region: rect(0 96px 32px 64px);
+	-moz-image-region: rect(64px 96px 96px 64px);
 }
 radio[pane="hc-sets-pane-editor"] {
-	-moz-image-region: rect(0 128px 32px 96px);
+	-moz-image-region: rect(64px 128px 96px 96px);
 }
 radio[pane="hc-sets-pane-funcs"] {
-	-moz-image-region: rect(0 160px 32px 128px);
+	-moz-image-region: rect(64px 160px 96px 128px);
 }
 
 #hc-sets-tree-searchContainer {

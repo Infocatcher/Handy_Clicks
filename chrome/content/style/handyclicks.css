@@ -6,7 +6,7 @@
 	padding-left: 2px; /* Fix for not centered icon */
 }
 
-/* Small status icons */
+/* 16x16 status icons */
 #handyClicks-statusbarButton,
 toolbar[iconsize="small"] #handyClicks-toolbarButton,
 #handyClicks-toolsMenuitem,
@@ -21,7 +21,7 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
 	-moz-image-region: rect(0 32px 16px 16px);
 }
 
-/* Large status icons */
+/* 24x24 status icons */
 #handyClicks-toolbarButton {
 	list-style-image: url("icons24.png");
 	-moz-image-region: rect(0 24px 24px 0);
@@ -30,7 +30,18 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
 	-moz-image-region: rect(0 48px 24px 24px);
 }
 
-/* Small mouse buttons icons */
+/* 32x32 status icons (Australis, menu panel and customization area) */
+#handyClicks-toolbarButton[cui-areatype="menu-panel"],
+#customization-palette > toolbarpaletteitem[place="palette"] > #handyClicks-toolbarButton {
+	list-style-image: url("icons32.png");
+	-moz-image-region: rect(0 32px 32px 0);
+}
+#handyClicks-toolbarButton[cui-areatype="menu-panel"][hc_enabled="false"],
+#customization-palette > toolbarpaletteitem[place="palette"] > #handyClicks-toolbarButton[hc_enabled="false"] {
+	-moz-image-region: rect(0 64px 32px 32px);
+}
+
+/* 16x16 mouse buttons icons */
 #handyClicks-statusbarButton[hc_button="0"],
 toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="0"] {
 	-moz-image-region: rect(0 48px 16px 32px);
@@ -44,7 +55,7 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="2"] {
 	-moz-image-region: rect(0 80px 16px 64px);
 }
 
-/* Large mouse buttons icons */
+/* 24x24 mouse buttons icons */
 #handyClicks-toolbarButton[hc_button="0"] {
 	-moz-image-region: rect(0 72px 24px 48px);
 }
@@ -53,6 +64,20 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="2"] {
 }
 #handyClicks-toolbarButton[hc_button="2"] {
 	-moz-image-region: rect(0 120px 24px 96px);
+}
+
+/* 32x32 mouse buttons icons */
+#handyClicks-toolbarButton[cui-areatype="menu-panel"][hc_button="0"],
+#customization-palette > toolbarpaletteitem[place="palette"] > #handyClicks-toolbarButton[hc_button="0"] {
+	-moz-image-region: rect(0 96px 32px 64px);
+}
+#handyClicks-toolbarButton[cui-areatype="menu-panel"][hc_button="1"],
+#customization-palette > toolbarpaletteitem[place="palette"] > #handyClicks-toolbarButton[hc_button="1"] {
+	-moz-image-region: rect(0 128px 32px 96px);
+}
+#handyClicks-toolbarButton[cui-areatype="menu-panel"][hc_button="2"],
+#customization-palette > toolbarpaletteitem[place="palette"] > #handyClicks-toolbarButton[hc_button="2"] {
+	-moz-image-region: rect(0 160px 32px 128px);
 }
 
 #handyClicks-statusbarButton[hc_editMode="true"],

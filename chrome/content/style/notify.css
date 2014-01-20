@@ -8,17 +8,18 @@
 	cursor: pointer;
 }
 #hcNotifyImg {
-	list-style-image: url("icons24.png");
-	-moz-image-region: rect(0 24px 24px 0);
+	list-style-image: url("icons32.png");
+	-moz-image-region: rect(0 32px 32px 0);
+	margin-top: 2px;
 }
 #hcNotifyImg[hc_icon="disabled"] {
-	-moz-image-region: rect(0 48px 24px 24px);
+	-moz-image-region: rect(0 64px 32px 32px);
 }
 #hcNotifyImg[hc_icon="warning"] {
-	-moz-image-region: rect(24px 24px 48px 0);
+	-moz-image-region: rect(32px 32px 64px 0);
 }
 #hcNotifyImg[hc_icon="error"] {
-	-moz-image-region: rect(24px 48px 48px 24px);
+	-moz-image-region: rect(32px 64px 64px 32px);
 }
 #hcNotifyContainer {
 	margin-left: 5px;
