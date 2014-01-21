@@ -236,8 +236,9 @@ var handyClicksPrefSvc = {
 		this._restoringCounter = 0;
 		if(this.isMainWnd) {
 			this._typesCache = { __proto__: null };
-			if(this.pu.pref("precompileCustomTypes"))
-				this.compileCustomTypes();
+			if(this.pu.pref("precompileCustomTypes")) setTimeout(function(_this) {
+				_this.compileCustomTypes();
+			}, 0, this);
 			this.initCustomFuncs();
 		}
 		this._loadStatus = this.SETS_LOAD_OK;
@@ -365,8 +366,11 @@ var handyClicksPrefSvc = {
 	},
 	compileCustomTypes: function() {
 		var types = this.types;
-		for(var type in types) if(types.hasOwnProperty(type))
-			this.initCustomType(type);
+		for(var type in types) if(types.hasOwnProperty(type)) {
+			setTimeout(function(_this, type) {
+				_this.initCustomType(type);
+			}, 0, this, type);
+		}
 	},
 	initCustomFuncs: function() {
 		this.destroyCustomFuncs(this.DESTROY_REBUILD);
