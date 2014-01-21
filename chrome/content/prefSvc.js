@@ -443,7 +443,7 @@ var handyClicksPrefSvc = {
 		catch(err) {
 			var eLine = fObj._errorLine = this.ut.mmLine(this.ut.getProperty(err, "lineNumber") - line + 1);
 			var href = fObj._editorLink = this.hc.getEditorLink() + "?line=" + eLine;
-			var eMsg = this.ut.errInfo("customFunctionError", fObj.label, this.hc.itemType, err);
+			var eMsg = this.ut.errInfo("customFunctionCompileError", fObj.label, this.hc.itemType, err);
 			this.ut.notify(
 				eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 				this.ut.getLocalized("errorTitle"),
