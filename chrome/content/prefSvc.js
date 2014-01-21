@@ -337,9 +337,9 @@ var handyClicksPrefSvc = {
 			var df = ct.define;
 			var cm = ct.contextMenu;
 			ct._defineLine = new Error().lineNumber + 1;
-			ct._define = new Function("event,item", this.dec(df));
+			ct._define = new Function("event,item", df);
 			ct._contextMenuLine = new Error().lineNumber + 1;
-			ct._contextMenu = cm ? new Function("event,item,origItem", this.dec(cm)) : null;
+			ct._contextMenu = cm ? new Function("event,item,origItem", cm) : null;
 			this.ut._log('Type "' + type + '" => initialized');
 			return cache[type] = true;
 		}
@@ -350,7 +350,7 @@ var handyClicksPrefSvc = {
 			var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
 				+ ("_contextMenuLine" in ct ? this.ct.EDITOR_TYPE_CONTEXT : this.ct.EDITOR_TYPE_DEFINE)
 				+ "?line=" + eLine;
-			var eMsg = this.ut.errInfo("customTypeCompileError", this.dec(ct.label), type, e);
+			var eMsg = this.ut.errInfo("customTypeCompileError", ct.label, type, e);
 			this.ut.notifyInWindowCorner(
 				eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 				this.ut.getLocalized("errorTitle"),
@@ -398,7 +398,7 @@ var handyClicksPrefSvc = {
 		try {
 			var line = new Error().lineNumber + 2;
 			this.saveDestructorContext(line, fObj, sh, type, isDelayed);
-			var legacyDestructor = new Function(this.dec(rawCode)).call(this.ut);
+			var legacyDestructor = new Function(rawCode).call(this.ut);
 		}
 		catch(e) {
 			this.handleCustomFuncError(e, line, fObj, sh, type, isDelayed, true);
@@ -480,7 +480,7 @@ var handyClicksPrefSvc = {
 			+ "?line=" + eLine;
 		var eMsg = this.ut.errInfo(
 			isInit ? "funcInitError" : "funcDestroyError",
-			this.dec(this.ut.getOwnProperty(fObj, "label")),
+			this.ut.getOwnProperty(fObj, "label"),
 			type, e
 		);
 		this.ut.notifyInWindowCorner(
@@ -913,14 +913,16 @@ var handyClicksPrefSvc = {
 	},
 	getCustomTypeLabel: function(type) {
 		var label = this.ut.getOwnProperty(this.types, type, "label");
-		label = label ? this.dec(label) + " " : "";
+		label = label ? label + " " : "";
 		return label + "[" + this.removeCustomPrefix(type) + "]";
 	},
 
 	enc: function(s) { //~todo: Not needed, but still used in editor
+		this.ut._deprecated("handyClicksPrefSvc.enc() is deprecated and not needed anymore");
 		return s;
 	},
 	dec: function(s) { //~todo: Not needed, but still used in sets and editor
+		this.ut._deprecated("handyClicksPrefSvc.dec() is deprecated and not needed anymore");
 		return s || "";
 	},
 	encURI: function(s) {

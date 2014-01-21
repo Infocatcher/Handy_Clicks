@@ -606,7 +606,7 @@ var handyClicksSets = {
 	},
 	getActionLabel: function(fo) {
 		if(fo.custom)
-			return this.ps.dec(fo.label);
+			return fo.label || "";
 		var act = fo.action;
 		if(act in this.su.extLabels)
 			return this.su.getExtLabel(act);
@@ -614,7 +614,7 @@ var handyClicksSets = {
 	},
 	getActionCode: function(action, isCustom) {
 		return isCustom
-			? this.ut.getLocalized("customFunction") + (this.oldTree ? " " : "\n") + this.ps.dec(action)
+			? this.ut.getLocalized("customFunction") + (this.oldTree ? " " : "\n") + (action || "")
 			: action;
 	},
 	getInitCode: function(fo) {

@@ -451,7 +451,7 @@ var handyClicks = {
 					var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
 						+ this.ct.EDITOR_TYPE_DEFINE
 						+ "?line=" + eLine;
-					var eMsg = this.ut.errInfo("customTypeDefineError", this.ps.dec(ct.label), type, e);
+					var eMsg = this.ut.errInfo("customTypeDefineError", ct.label, type, e);
 					this.ut.notify(
 						eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 						this.ut.getLocalized("errorTitle"),
@@ -763,7 +763,7 @@ var handyClicks = {
 				var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + this.itemType + "/"
 					+ this.ct.EDITOR_TYPE_CONTEXT
 					+ "?line=" + eLine;
-				var eMsg = this.ut.errInfo("customTypeContextMenuError", this.ps.dec(ct.label), this.itemType, e);
+				var eMsg = this.ut.errInfo("customTypeContextMenuError", ct.label, this.itemType, e);
 				this.ut.notify(
 					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 					this.ut.getLocalized("errorTitle"),
@@ -1121,7 +1121,6 @@ var handyClicks = {
 
 		var action = funcObj.action;
 		if(funcObj.custom) {
-			action = this.ps.dec(action);
 			try {
 				var line = new Error().lineNumber + 1;
 				new Function("event,item,origItem", action).call(this.fn, e || this.event, this.item, this.origItem);
@@ -1129,7 +1128,7 @@ var handyClicks = {
 			catch(err) {
 				var eLine = this.ut.mmLine(this.ut.getProperty(err, "lineNumber") - line + 1);
 				var href = this.getEditorLink(e) + "?line=" + eLine;
-				var eMsg = this.ut.errInfo("customFunctionError", this.ps.dec(funcObj.label), this.itemType, err);
+				var eMsg = this.ut.errInfo("customFunctionError", funcObj.label, this.itemType, err);
 				this.ut.notify(
 					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
 					this.ut.getLocalized("errorTitle"),
@@ -1192,7 +1191,7 @@ var handyClicks = {
 				+ "\n=> executeFunction()"
 				+ "\nnodeName = " + (this.origItem ? this.origItem.nodeName : "?")
 				+ ", itemType = " + this.itemType
-				+ "\n=> " + (funcObj.custom ? (this.ps.dec(funcObj.label) || action.substr(0, 100)) : funcObj.action)
+				+ "\n=> " + (funcObj.custom ? (funcObj.label || action.substr(0, 100)) : funcObj.action)
 			);
 		}
 	},

@@ -468,11 +468,11 @@ var handyClicksEditor = {
 		this.selectCustomFunc(isCustom, delayed);
 		if(isCustom) {
 			const val = allowUndo || this._allowUndo ? "value" : "newValue";
-			this.$("hc-editor-funcField" + delayed)[val]  = this.ps.dec(this.ut.getOwnProperty(setsObj, "action"));
-			this.$("hc-editor-funcLabel" + delayed).value = this.ps.dec(this.ut.getOwnProperty(setsObj, "label"));
+			this.$("hc-editor-funcField" + delayed)[val]  = this.ut.getOwnProperty(setsObj, "action") || "";
+			this.$("hc-editor-funcLabel" + delayed).value = this.ut.getOwnProperty(setsObj, "label") || "";
 
 			var initField = this.$("hc-editor-funcInitField" + delayed);
-			initField[val] = this.ps.dec(this.ut.getOwnProperty(setsObj, "init"));
+			initField[val] = this.ut.getOwnProperty(setsObj, "init") || "";
 			this.highlightEmpty(initField);
 		}
 		this.initFuncsList(setsObj, delayed);
@@ -556,12 +556,12 @@ var handyClicksEditor = {
 			ct = {};
 		enabledElt.checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
 		const val = to || this._allowUndo ? "value" : "newValue";
-		this.$("hc-editor-customTypeDefine")[val] = this.ps.dec(ct.define);
+		this.$("hc-editor-customTypeDefine")[val] = ct.define || "";
 		var contextField = this.$("hc-editor-customTypeContext");
-		contextField[val] = this.ps.dec(ct.contextMenu);
+		contextField[val] = ct.contextMenu || "";
 		this.highlightEmpty(contextField);
 		if(!to) {
-			cList.value = this.customTypeLabel = this.ps.dec(ct.label);
+			cList.value = this.customTypeLabel = ct.label || "";
 			this.customType = this.currentCustomType = cType;
 			this.setWinId();
 			this.setWinTitle();
@@ -636,7 +636,7 @@ var handyClicksEditor = {
 				this.ut._warn('Invalid custom type: "' + cType + '" (' + typeObj + ")");
 				continue;
 			}
-			var label = this.ps.dec(typeObj.label) || cType;
+			var label = typeObj.label || cType;
 			if(label in _labels)
 				label += " (" + ++_labels[label] + ")";
 			else
@@ -1323,14 +1323,14 @@ var handyClicksEditor = {
 		var isCustom = fnc == "$custom";
 		if(isCustom) {
 			so.custom = isCustom;
-			so.label = this.ps.enc(this.$("hc-editor-funcLabel" + delayed).value);
+			so.label = this.$("hc-editor-funcLabel" + delayed).value;
 			var action = this.$("hc-editor-funcField" + delayed).value;
 			if(!action)
 				return null;
-			so.action = this.ps.enc(action);
+			so.action = action;
 			var init = this.$("hc-editor-funcInitField" + delayed).value;
 			if(init)
-				so.init = this.ps.enc(init);
+				so.init = init;
 		}
 		else {
 			so.action = fnc;
@@ -1491,11 +1491,11 @@ var handyClicksEditor = {
 	getTypeObj: function(label, def, enabled) {
 		var ct = {
 			enabled: enabled !== undefined ? enabled : this.$("hc-editor-customTypeEnabled").checked,
-			label:  this.ps.enc(label !== undefined ? label : this.$("hc-editor-customType")      .value),
-			define: this.ps.enc(def   !== undefined ? def   : this.$("hc-editor-customTypeDefine").value)
+			label:  label !== undefined ? label : this.$("hc-editor-customType")      .value,
+			define: def   !== undefined ? def   : this.$("hc-editor-customTypeDefine").value
 		};
 		var cMenu = this.$("hc-editor-customTypeContext").value;
-		ct.contextMenu = cMenu ? this.ps.enc(cMenu) : null;
+		ct.contextMenu = cMenu || null;
 		return ct;
 	},
 	deleteCustomType: function() {
