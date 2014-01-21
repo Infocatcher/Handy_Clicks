@@ -172,29 +172,51 @@ var handyClicksFuncs = {
 		if(closePopups)
 			this.hc.closeMenus();
 	},
-	relativeIndex: 0,
 	openURIInTab: function(e, loadInBackground, loadJSInBackground, refererPolicy, moveTo, closePopups, winRestriction) {
-		var tab = this._openURIInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction);
 		var tbr = this.hc.getTabBrowser(true);
+		var curInd = this.getTabPos(tbr.selectedTab);
+		var tab = this._openURIInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction);
+		if(this.ut.fxVersion == 1.5 && moveTo == "relative")
+			moveTo = "after"; // Tab* events aren't supported
 		if(moveTo == "relative") {
 			var tabCont = tbr.tabContainer;
-			tabCont.__handyClicks__resetRelativeIndex = false;
+			var relIndex = "__handyClicks_relativeIndex";
+			if(!(relIndex in tabCont))
+				tabCont[relIndex] = 0;
+			if(!(relIndex in window)) {
+				window[relIndex] = true;
+				var resetRelIndex = function(e) {
+					var tab = e.originalTarget || e.target;
+					var tabs = getTabContainer(tab);
+					tabs[relIndex] = 0;
+				};
+				var getTabContainer = function(tab) {
+					for(var tabs = tab.parentNode; tabs; tabs = tabs.parentNode)
+						if(tabs.localName == "tabs")
+							return tabs;
+					return null;
+				};
+				window.addEventListener("TabSelect", resetRelIndex, false);
+				window.addEventListener("TabClose", resetRelIndex, false);
+				this.cs.registerCleanup(function() {
+					window.removeEventListener("TabSelect", resetRelIndex, false);
+					window.removeEventListener("TabClose", resetRelIndex, false);
+					delete window[relIndex];
+					delete gBrowser.tabContainer[relIndex];
+				});
+			}
 		}
 		if(closePopups)
 			this.hc.closeMenus();
 		if(!tab || !moveTo)
 			return;
-		var curTab = tbr.selectedTab;
-		var curInd = this.getTabPos(curTab);
 		var ind = 0;
-		if(this.ut.fxVersion == 1.5 && moveTo == "relative")
-			moveTo = "after"; // Tab* events is not supported
 		switch(moveTo) {
 			case "first":    ind = 0;                             break;
 			case "before":   ind = curInd;                        break;
 			case "after":    ind = curInd + 1;                    break;
 			case "last":     ind = tbr.browsers.length;           break;
-			case "relative": ind = curInd + ++this.relativeIndex; break;
+			case "relative": ind = curInd + ++tabCont[relIndex];  break;
 			default:
 				this.ut._err('openURIInTab: invalid moveTo argument: "' + moveTo + '"');
 				return;
@@ -206,31 +228,6 @@ var handyClicksFuncs = {
 		)
 			tbr.moveTabTo(tab, 0); // Fix bug for last tab moving
 		tbr.moveTabTo(tab, ind);
-
-		if(moveTo != "relative")
-			return;
-		tabCont.__handyClicks__resetRelativeIndex = true;
-		if(tabCont.__handyClicks__listeners)
-			return;
-		tabCont.__handyClicks__listeners = true;
-		var _this = this;
-		var _resetRelativeIndex = function(e) {
-			if(!tabCont.__handyClicks__resetRelativeIndex)
-				return;
-			_this.relativeIndex = 0;
-		};
-		tabCont.addEventListener("TabClose", _resetRelativeIndex, true);
-		tabCont.addEventListener("TabSelect", _resetRelativeIndex, true);
-
-		this.cs.registerNodeCleanup(
-			tbr,
-			function(rri) {
-				this.__handyClicks__listeners = false;
-				this.removeEventListener("TabClose", rri, true);
-				this.removeEventListener("TabSelect", rri, true);
-			},
-			tabCont, [_resetRelativeIndex]
-		);
 	},
 	_openURIInTab: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction) {
 		e = e || this.hc.event;
