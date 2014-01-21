@@ -1119,13 +1119,13 @@ var handyClicks = {
 		this.lastAll = this._all;
 		this.isDeleyed = !e;
 
-		var action = funcObj.action;
 		if(funcObj.custom) {
-			try {
-				var line = new Error().lineNumber + 1;
-				new Function("event,item,origItem", action).call(this.fn, e || this.event, this.item, this.origItem);
+			var fnc = this.ps.getCustomFunc(funcObj);
+			if(fnc) try {
+				fnc.call(this.fn, e || this.event, this.item, this.origItem);
 			}
 			catch(err) {
+				var line = funcObj._line;
 				var eLine = this.ut.mmLine(this.ut.getProperty(err, "lineNumber") - line + 1);
 				var href = this.getEditorLink(e) + "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customFunctionError", funcObj.label, this.itemType, err);
@@ -1140,6 +1140,7 @@ var handyClicks = {
 			}
 		}
 		else {
+			var action = funcObj.action;
 			var fnc = action in this.fn && this.fn[action];
 			if(typeof fnc == "function") {
 				var args = [e];

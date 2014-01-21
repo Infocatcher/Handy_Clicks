@@ -427,6 +427,36 @@ var handyClicksPrefSvc = {
 			);
 		}
 	},
+	getCustomFunc: function(fObj) {
+		var useCache = this.pu.pref("cacheCustomFunctions");
+		if(useCache && "_function" in fObj) {
+			var fn = fObj._function;
+			if(!fn)
+				this.ut._err("Syntax error in function: " + fObj.label, fObj._editorLink, fObj._errorLine);
+			return fn;
+		}
+		this.ut._log("Compile: " + fObj.label);
+		try {
+			var line = fObj._line = new Error().lineNumber + 1;
+			var fn = new Function("event,item,origItem", fObj.action);
+		}
+		catch(err) {
+			var eLine = fObj._errorLine = this.ut.mmLine(this.ut.getProperty(err, "lineNumber") - line + 1);
+			var href = fObj._editorLink = this.hc.getEditorLink() + "?line=" + eLine;
+			var eMsg = this.ut.errInfo("customFunctionError", fObj.label, this.hc.itemType, err);
+			this.ut.notify(
+				eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
+				this.ut.getLocalized("errorTitle"),
+				this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
+				this.ut.NOTIFY_ICON_ERROR
+			);
+			this.ut._err(eMsg, href, eLine);
+			this.ut._err(err);
+		}
+		if(useCache)
+			fObj._function = fn;
+		return fn;
+	},
 
 	saveDestructorContext: function(baseLine, fObj, sh, type, isDelayed) {
 		this._destructorContext = {
