@@ -1287,12 +1287,12 @@ var handyClicksCleanupSvc = {
 	cleanup: function(uid) {
 		var cs = this._cleanups;
 		if(uid in cs) {
-			this._cleanup.apply(this, cs[uid]);
+			this._cleanup(cs[uid]);
 			delete cs[uid];
 		}
 	},
-	_cleanup: function(func, context, args) {
-		func.apply(context, args);
+	_cleanup: function(args) {
+		args[0].apply(args[1] || window, args[2] || []);
 	},
 	destroy: function() {
 		this._cleanups.forEach(this._cleanup, this);
