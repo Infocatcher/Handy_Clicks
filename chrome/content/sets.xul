@@ -583,6 +583,8 @@
 		<key id="hc-sets-key-reload" keycode="VK_F5" oncommand="handyClicksSets.reloadSettings();" />
 		<key id="hc-sets-key-reload2" key="r" modifiers="control" oncommand="handyClicksSets.reloadSettings();" />
 
+		<key id="hc-editor-key-openErrorConsole" key="j" modifiers="control,shift" oncommand="handyClicksUtils.openErrorConsole();" />
+
 		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksSets.wu.maximizeWindow();" />
 		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksSets.wu.toggleFullscreen();" />
 		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksSets.wu.toggleOnTop();" />
