@@ -1177,7 +1177,7 @@ var handyClicks = {
 					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href),
 					this.ut.NOTIFY_ICON_WARNING
 				);
-				this.ut._err(eMsg, href); // We can't use _warn() with custom file name
+				this.ut._err(eMsg, href);
 				this.ut._warn('Function "' + action + '" not found (' + typeof this.fn[action] + ")");
 			}
 		}

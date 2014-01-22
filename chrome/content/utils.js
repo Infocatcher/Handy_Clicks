@@ -47,8 +47,7 @@ var handyClicksUtils = {
 		this.consoleSvc.logMessage(cErr);
 	},
 	_warn: function(e, fileName, lineNumber) {
-		// Bug: any string is shown as 1 line
-		// Bug: can't show message with custom fileName
+		// Bug: any string is shown as 1 line in Firefox 2.0 and older
 		this._err(e, fileName, lineNumber, true);
 	},
 	_deprecated: function(msg) {
