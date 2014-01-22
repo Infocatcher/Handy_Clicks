@@ -17,6 +17,7 @@
 `x` Correctly delete more than 12 items from click options.<br>
 `+` Added ability to not save scroll position in click options (checkbox in View menu and <em>extensions.handyclicks.sets.rememberScrollPosition</em> preference).<br>
 `*` Slightly improved performance of Import menu.<br>
+`*` Changed default actions for left- and middle-click on menu item (Settings – Organize – Controls behavior), be careful!<br>
 `*` Some minor improvements and fixes.<br>
 
 ##### 0.1.3pre2 (2013-12-28)
