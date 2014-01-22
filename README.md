@@ -41,3 +41,7 @@ Note: some hotkeys described in the interface and not listed here.
 <tr><td>Ctrl+Shift+S*         </td><td>Save code to file                   </td></tr>
 </table>
 \* – “global” hotkey, works even if editor field isn't focused.
+
+##### Troubleshooting
+Turn off from command line: `firefox -handyclicks-disable`.
+Log debug messages into error console: <em>extensions.handyclicks.debug</em> preference.
