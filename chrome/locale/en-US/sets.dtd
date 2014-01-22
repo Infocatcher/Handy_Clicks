@@ -156,10 +156,10 @@ Placeholders:
 <!ENTITY hc.sets.actionButtonRight "Right-click">
 <!ENTITY hc.sets.actionToggleStatus "Toggle status">
 <!ENTITY hc.sets.actionOpenSettings "Open settings">
+<!ENTITY hc.sets.actionOpenCloseSettings "Open/close settings">
+<!ENTITY hc.sets.actionShowAllSettings "Show all settings">
 <!ENTITY hc.sets.actionContext "Show context menu">
 <!ENTITY hc.sets.actionEditMode "Edit mode">
-<!ENTITY hc.sets.actionShowAllSettings "Show all settings">
-<!ENTITY hc.sets.actionOpenCloseSettings "Open/close settings">
 <!ENTITY hc.sets.actionDoNothing "Do nothing">
 <!ENTITY hc.sets.actionReset "Reset">
 <!ENTITY hc.sets.actionResetAll "Reset All">

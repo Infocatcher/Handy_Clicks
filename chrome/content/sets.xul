@@ -304,10 +304,10 @@
 					<menupopup>
 						<menuitem value="0" label="&hc.sets.actionToggleStatus;" />
 						<menuitem value="1" label="&hc.sets.actionOpenSettings;" />
+						<menuitem value="5" label="&hc.sets.actionOpenCloseSettings;" />
+						<menuitem value="4" label="&hc.sets.actionShowAllSettings;" />
 						<menuitem value="2" label="&hc.sets.actionContext;" />
 						<menuitem value="3" label="&hc.sets.actionEditMode;" />
-						<menuitem value="4" label="&hc.sets.actionShowAllSettings;" />
-						<menuitem value="5" label="&hc.sets.actionOpenCloseSettings;" />
 						<menuseparator />
 						<menuitem value="-1" label="&hc.sets.actionDoNothing;" />
 					</menupopup>
