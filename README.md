@@ -35,6 +35,8 @@ Note: some hotkeys described in the interface and not listed here.
 <tr><td>Ctrl+0                </td><td>Reset font size                     </td></tr>
 <tr><td>Ctrl+W                </td><td>Toggle word wrap                    </td></tr>
 <tr><td>F12                   </td><td>Toggle “fullwindow” mode            </td></tr>
+<tr><td>Ctrl+Space            </td><td>Autocomplete                        </td></tr>
+<tr><td>Ctrl+Shift+Space      </td><td>Autocomplete in reversed order      </td></tr>
 <tr><td>Ctrl+Shift+E, F4*     </td><td>Open in external editor             </td></tr>
 <tr><td>Ctrl+O*               </td><td>Load code from file                 </td></tr>
 <tr><td>Ctrl+Shift+O*         </td><td>Load code from file and sync changes</td></tr>
@@ -44,4 +46,4 @@ Note: some hotkeys described in the interface and not listed here.
 
 #### Troubleshooting
 Turn off from command line: `firefox -handyclicks-disable`.
-Log debug messages into error console: <em>extensions.handyclicks.debug</em> preference.
+<br>Log debug messages into error console: <em>extensions.handyclicks.debug</em> preference.
