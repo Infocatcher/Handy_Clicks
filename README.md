@@ -12,12 +12,20 @@ This is very old project (version 0.0.1.0a1 was created at 2008-08-28), it conta
 Note: some hotkeys described in the interface and not listed here.
 <br>Hotkeys for browser window can be changed using <em>extensions.handyclicks.key.</em>* preferences on about:config page.
 
-##### Hotkeys in settings windows
+##### Hotkeys in all settings windows
 <table>
 <tr><td>F5, Ctrl+R            </td><td>Reload (load saved settings)        </td></tr>
 <tr><td>Ctrl+Shift+J          </td><td>Open error console                  </td></tr>
 <tr><td>F10                   </td><td>Maximize/restore window             </td></tr>
 <tr><td>F11                   </td><td>Toggle fullscreen mode              </td></tr>
+</table>
+
+##### Hotkeys in editor window
+<table>
+<tr><td>Ctrl+Shift+C          </td><td>Copy settings to internal buffer     </td></tr>
+<tr><td>Ctrl+Shift+V          </td><td>Paste settings from internal buffer  </td></tr>
+<tr><td>Ctrl+Down             </td><td>Focus next field (like Tab)          </td></tr>
+<tr><td>Ctrl+Up               </td><td>Focus previous field (like Shift+Tab)</td></tr>
 </table>
 
 ##### Hotkeys in code editor
