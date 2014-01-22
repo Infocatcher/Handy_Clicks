@@ -42,6 +42,6 @@ Note: some hotkeys described in the interface and not listed here.
 </table>
 \* – “global” hotkey, works even if editor field isn't focused.
 
-##### Troubleshooting
+#### Troubleshooting
 Turn off from command line: `firefox -handyclicks-disable`.
 Log debug messages into error console: <em>extensions.handyclicks.debug</em> preference.
