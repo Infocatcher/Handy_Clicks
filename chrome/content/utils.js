@@ -1102,10 +1102,11 @@ var handyClicksUtils = {
 	},
 	closeMenus: function(node) {
 		// Based on function closeMenus from chrome://browser/content/utilityOverlay.js
-		for(; node && "tagName" in node; node = node.parentNode) {
+		for(; node && "localName" in node; node = node.parentNode) {
+			var ln = node.localName;
 			if(
 				node.namespaceURI == this.XULNS
-				&& (node.localName == "menupopup" || node.localName == "popup")
+				&& (ln == "menupopup" || ln == "popup" || ln == "panel")
 			)
 				node.hidePopup();
 		}

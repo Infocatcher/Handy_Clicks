@@ -102,7 +102,7 @@ var handyClicksFuncs = {
 			break;
 			case "bookmark":
 			case "historyItem":
-				uri = this.hc.getBookmarkURI(it);
+				uri = it.getAttribute("targetURI") || this.hc.getBookmarkURI(it);
 			break;
 			case "tab":
 				uri = this.getTabURI(it);
@@ -116,6 +116,7 @@ var handyClicksFuncs = {
 			default: // Support for custom types
 				uri = this.getLinkURI(it)
 					|| it.src
+					|| it.getAttribute("targetURI")
 					|| this.hc.getBookmarkURI(it)
 					|| this.getTabURI(it);
 		}

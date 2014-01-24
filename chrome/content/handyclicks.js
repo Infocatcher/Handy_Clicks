@@ -611,6 +611,11 @@ var handyClicks = {
 			&& this.getBookmarkURI(it, e)
 		)
 			return it;
+		if(
+			it.hasAttribute("targetURI")
+			&& this.hasParent(it, "PanelUI-history")
+		)
+			return it;
 		return null;
 	},
 	getBookmarkItem: function(it, e) {
