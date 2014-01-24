@@ -115,7 +115,8 @@ var handyClicksFuncs = {
 			break;
 			default: // Support for custom types
 				uri = this.getLinkURI(it)
-					|| it.src
+					|| it.src || it.getAttribute("src")
+					|| it instanceof HTMLCanvasElement && it.toDataURL()
 					|| it.getAttribute("targetURI")
 					|| this.hc.getBookmarkURI(it)
 					|| this.getTabURI(it);
