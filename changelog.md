@@ -17,7 +17,17 @@
 `x` Correctly delete more than 12 items from click options.<br>
 `+` Added ability to not save scroll position in click options (checkbox in View menu and <em>extensions.handyclicks.sets.rememberScrollPosition</em> preference).<br>
 `*` Slightly improved performance of Import menu.<br>
+`*` Preference <em>extensions.handyclicks.devMode</em> renamed to <em>extensions.handyclicks.debug</em>.<br>
+`x` Fixed hotkeys for scripts/styles reloader (Ctrl+Alt+R and Ctrl+Alt+C with <em>extensions.handyclicks.debug</em> = true).<br>
+`*` Load scripts/styles reloader after small delay to improve startup performance.<br>
+`*` Updated icons: now used <a href="http://fatcow.com/free-icons/">Farm-fresh icons by FatCow Web Hosting</a>, also added 32x32 icons for Australis (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/16">#16</a>).<br>
+`*` Improved performance of <em>extensions.handyclicks.precompileCustomTypes</em> option.<br>
+`+` Added ability to cache already created custom functions to improve performance (<em>extensions.handyclicks.cacheCustomFunctions</em> preference).<br>
+`+` Added support for <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">Browser Console</a> (but <a href="https://addons.mozilla.org/ru/firefox/addon/console²/">Console²</a> will be used instaed, if available).<br>
+`*` Improved performance, if used “move tab: relative” option (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/14">#14</a>).<br>
+`+` Added hotkey for error console (Ctrl+Shift+J) to settings window.<br>
 `*` Changed default actions for left- and middle-click on menu item (Settings – Organize – Controls behavior), be careful!<br>
+`+` Added support for history menu inside Australis menu-button.<br>
 `*` Some minor improvements and fixes.<br>
 
 ##### 0.1.3pre2 (2013-12-28)

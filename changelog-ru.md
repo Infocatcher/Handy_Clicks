@@ -17,7 +17,17 @@
 `x` Исправлено удаление более 12 элементов из настроек кликов.<br>
 `+` Добавлена возможность отключить запоминание положения прокрутки в настройках кликов (галочка в меню Вид и настройка <em>extensions.handyclicks.sets.rememberScrollPosition</em>).<br>
 `*` Немного улучшена производительность меню Импорт.<br>
+`*` Настройка <em>extensions.handyclicks.devMode</em> переименована в <em>extensions.handyclicks.debug</em>.<br>
+`x` Исправлена работа сочетаний клавиш для перезагрузчика скриптов/стилей (Ctrl+Alt+R и Ctrl+Alt+C при <em>extensions.handyclicks.debug</em> = true).<br>
+`*` Перезагрузчик скриптов/стилей теперь загружается после небольшой задержки для улучшения производительности при запуске.<br>
+`*` Обновлены иконки: теперь используются <a href="http://fatcow.com/free-icons/">иконки Farm-fresh от FatCow Web Hosting</a>, также добавлены иконки 32x32 для Australis (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/16">#16</a>).<br>
+`*` Улучшена производительность настройки <em>extensions.handyclicks.precompileCustomTypes</em>.<br>
+`+` Добавлена возможность кэшировать уже созданные пользовательские функции для улучшения производительности (настройка <em>extensions.handyclicks.cacheCustomFunctions</em>).<br>
+`+` Добавлена поддержка для <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">консоли браузера</a> (но будет использоваться расширение <a href="https://addons.mozilla.org/ru/firefox/addon/console²/">Console²</a>, если доступно).<br>
+`*` Улучшена производительность, если используется настройка «перемещать вкладку: относительно» (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/14">#14</a>).<br>
+`+` В окно настроек добавлено сочетание клавиш для консоли ошибок (Ctrl+Shift+J).<br>
 `*` Изменены действия по умолчанию для клика левой и вредней кнопкой мыши по пункту меню (Настройки – Управление – Поведение элементов управления), будьте внимательны!<br>
+`+` Добавлена поддержка истории внутри кнопки-меню в Australis.<br>
 `*` Различные мелкие улучшения и исправления.<br>
 
 ##### 0.1.3pre2 (2013-12-28)
