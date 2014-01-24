@@ -23,7 +23,7 @@
 `*` Обновлены иконки: теперь используются <a href="http://fatcow.com/free-icons/">иконки Farm-fresh от FatCow Web Hosting</a>, также добавлены иконки 32x32 для Australis (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/16">#16</a>).<br>
 `*` Улучшена производительность настройки <em>extensions.handyclicks.precompileCustomTypes</em>.<br>
 `+` Добавлена возможность кэшировать уже созданные пользовательские функции для улучшения производительности (настройка <em>extensions.handyclicks.cacheCustomFunctions</em>).<br>
-`+` Добавлена поддержка для <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">консоли браузера</a> (но будет использоваться расширение <a href="https://addons.mozilla.org/ru/firefox/addon/console²/">Console²</a>, если доступно).<br>
+`+` Добавлена поддержка для <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">консоли браузера</a> (но будет использоваться расширение <a href="https://addons.mozilla.org/addon/console²/">Console²</a>, если доступно).<br>
 `*` Улучшена производительность, если используется настройка «перемещать вкладку: относительно» (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/14">#14</a>).<br>
 `+` В окно настроек добавлено сочетание клавиш для консоли ошибок (Ctrl+Shift+J).<br>
 `*` Изменены действия по умолчанию для клика левой и вредней кнопкой мыши по пункту меню (Настройки – Управление – Поведение элементов управления), будьте внимательны!<br>
