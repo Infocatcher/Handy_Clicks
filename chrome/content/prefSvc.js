@@ -979,8 +979,8 @@ var handyClicksPrefSvc = {
 		return this.ut.getLocalized(this.getButtonId(sh, _short));
 	},
 	get keys() {
-		delete this.keys;
 		const src = "chrome://global-platform/locale/platformKeys.properties";
+		delete this.keys;
 		return this.keys = {
 			ctrl:  this.ut.getStr(src, "VK_CONTROL", "Ctrl"),
 			shift: this.ut.getStr(src, "VK_SHIFT", "Shift"),
@@ -992,12 +992,14 @@ var handyClicksPrefSvc = {
 		};
 	},
 	getModifiersStr: function(sh, _short) { // "button=0,ctrl=true,shift=true,alt=false,meta=false"
-		var _this = this;
+		var keys = this.keys;
 		sh = sh
 			.replace(/[a-z]+=(?:false|\d),?/g, "")
 			.replace(/,+$/g, "")
-			.replace(/([a-z]+)=true/g, function($0, $1) { return _this.keys[$1] || $1; })
-			.replace(/,+/g, this.keys.sep);
+			.replace(/([a-z]+)=true/g, function($0, $1) {
+				return keys[$1] || $1;
+			})
+			.replace(/,+/g, keys.sep);
 		return sh || (_short ? "" : this.ut.getLocalized("none"));
 	},
 	checkPrefs: function(pSrc) {
