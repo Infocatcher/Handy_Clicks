@@ -340,19 +340,26 @@ var handyClicksUtils = {
 				.createBundle(src)
 		);
 	},
-	getStr: function(src, sName, defaultStr) {
+	getStr: function(src, sName, defaultStr, _callerLevel) {
 		try {
 			return this.getBundle(src).GetStringFromName(sName);
 		}
 		catch(e) {
-			this._warn('Can\'t get localized string "' + sName + '" from "' + src + '"');
+			var caller = Components.stack.caller;
+			while(caller && _callerLevel--)
+				caller = caller.caller;
+			this._warn(
+				'Can\'t get localized string "' + sName + '" from "' + src + '"',
+				caller.filename,
+				caller.lineNumber
+			);
 		}
 		return defaultStr || "";
 	},
 	getLocalized: function(sName) {
 		return this._strings[sName] || (
-			this._strings[sName] = this.getStr("chrome://handyclicks/locale/hcs.properties", sName)
-				|| this.getStr("chrome://handyclicks-locale/content/hcs.properties", sName)
+			this._strings[sName] = this.getStr("chrome://handyclicks/locale/hcs.properties", sName, "", 1)
+				|| this.getStr("chrome://handyclicks-locale/content/hcs.properties", sName, "", 1)
 				|| this.makeBuggyStr(sName)
 		);
 	},
