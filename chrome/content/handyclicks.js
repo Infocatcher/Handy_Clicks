@@ -141,15 +141,18 @@ var handyClicks = {
 			if(tar.namespaceURI == this.ut.XULNS) {
 				var nn = tar.nodeName;
 				emAllowEvent = this.flags.allowEditModeEvents = nn == "xul:scrollbarbutton" || nn == "xul:slider";
-				if(
-					this.ut.fxVersion >= 3.6
-					&& e.button == 0
-					&& this.isMenu(tar)
-				) {
-					this.flags.allowPopupshowing = true;
-					//tar.boxObject.openMenu(true);
-					tar.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
-					this.flags.allowPopupshowing = false;
+				if(e.button == 0 && this.isMenu(tar)) {
+					if(this.ut.fxVersion >= 3.6) {
+						this.flags.allowPopupshowing = true;
+						tar.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
+						this.flags.allowPopupshowing = false;
+					}
+					else {
+						this.flags.allowPopupshowing = true;
+						this.ut.timeout(function() {
+							this.flags.allowPopupshowing = false;
+						}, this);
+					}
 				}
 			}
 		}
