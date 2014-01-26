@@ -143,6 +143,7 @@ var handyClicks = {
 				emAllowEvent = this.flags.allowEditModeEvents = nn == "xul:scrollbarbutton" || nn == "xul:slider";
 				if(
 					this.ut.fxVersion >= 3.6
+					&& e.button == 0
 					&& this.isMenu(tar)
 				) {
 					this.flags.allowPopupshowing = true;
