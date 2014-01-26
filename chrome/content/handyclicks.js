@@ -214,7 +214,8 @@ var handyClicks = {
 	mouseupHandler: function(e) {
 		if(!this.enabled)
 			return;
-		this.checkForStopEvent(e);
+		if(this.settingsType != "command")
+			this.checkForStopEvent(e);
 		if(this.flags.allowEvents)
 			this.cancelDelayedAction();
 		this.setMoveHandlers(false);
@@ -383,6 +384,7 @@ var handyClicks = {
 			this.ps.loadSettings();
 		}
 		this.hasSettings = false;
+		this.settingsType = "";
 		var evtStr = this.ps.getEvtStr(e);
 		var isMousedown = e.type == "mousedown";
 		if(isMousedown)
@@ -403,6 +405,7 @@ var handyClicks = {
 		var funcObj = this.getFuncObj(sets) || this.editMode && { action: null };
 		this.hasSettings = !!funcObj;
 		if(this.hasSettings) {
+			this.settingsType = funcObj.eventType || "";
 			this.event = e;
 			//this.saveXY(e); // Saves incorrect coordinates...
 			this.origItem = e.originalTarget;
