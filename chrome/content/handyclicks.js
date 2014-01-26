@@ -387,7 +387,7 @@ var handyClicks = {
 		var isMousedown = e.type == "mousedown";
 		if(isMousedown)
 			this.evtStrOnMousedown = evtStr;
-		else if(!this.item) // mousedown, scroll => switch to another tab => mouseup, click
+		else if(!this.item && e.type != "command") // mousedown, scroll => switch to another tab => mouseup, click
 			return null;
 		var sets = this.getSettings(evtStr);
 		if(!sets)
