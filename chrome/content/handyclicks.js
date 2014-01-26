@@ -143,8 +143,7 @@ var handyClicks = {
 				emAllowEvent = this.flags.allowEditModeEvents = nn == "xul:scrollbarbutton" || nn == "xul:slider";
 				if(
 					this.ut.fxVersion >= 3.6
-					&& tar.boxObject
-					&& tar.boxObject instanceof Components.interfaces.nsIMenuBoxObject
+					&& this.isMenu(tar)
 				) {
 					this.flags.allowPopupshowing = true;
 					//tar.boxObject.openMenu(true);
@@ -204,11 +203,7 @@ var handyClicks = {
 			this.functionEvent(funcObj, e);
 		else if(this.editMode) {
 			var tar = e.originalTarget;
-			if(
-				tar.namespaceURI != this.ut.XULNS
-				|| !tar.boxObject
-				|| !(tar.boxObject instanceof Components.interfaces.nsIMenuBoxObject)
-			)
+			if(!this.isMenu(tar))
 				this.ui.notifyEditMode();
 		}
 	},
@@ -243,6 +238,12 @@ var handyClicks = {
 		var funcObj = this.getFuncObjByEvt(e);
 		if(funcObj)
 			this.functionEvent(funcObj, e);
+	},
+
+	isMenu: function(node) {
+		return node.namespaceURI == this.ut.XULNS
+			&& node.boxObject
+			&& node.boxObject instanceof Components.interfaces.nsIMenuBoxObject;
 	},
 
 	// Special handlers:
@@ -335,10 +336,12 @@ var handyClicks = {
 			_cs.time = Date.now();
 		if(
 			e.type == "command"
-				? canStop
+				? stop && !this.isMenu(e.originalTarget) || (
+					canStop
 					&& e.originalTarget.localName == "command"
 					&& _cs.hasOwnProperty("time")
 					&& Date.now() - _cs.time < 100
+				)
 				: stop
 		) {
 			if(isMouseup && e.view.top === content) { // Prevent page handlers, but don't stop FireGestures extension
