@@ -1087,6 +1087,7 @@ var handyClicksUtils = {
 	stopEvent: function(e) {
 		e.preventDefault();
 		e.stopPropagation();
+		e.stopImmediatePropagation && e.stopImmediatePropagation();
 		//this._log("stopEvent " + e.type + "\n" + arguments.callee.caller);
 	},
 	isElementVisible: function(elt) {
