@@ -345,6 +345,8 @@ var handyClicksUtils = {
 			return this.getBundle(src).GetStringFromName(sName);
 		}
 		catch(e) {
+			if(_callerLevel == -1)
+				return defaultStr || "";
 			var caller = Components.stack.caller;
 			while(caller && _callerLevel--)
 				caller = caller.caller;
