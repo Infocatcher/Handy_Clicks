@@ -28,6 +28,7 @@
 `+` Added hotkey for error console (Ctrl+Shift+J) to settings window.<br>
 `*` Changed default actions for left- and middle-click on menu item (Settings – Organize – Controls behavior), be careful!<br>
 `+` Added support for history menu inside Australis menu-button.<br>
+`x` Fixed actions execution on “command” event.<br> 
 `*` Some minor improvements and fixes.<br>
 
 ##### 0.1.3pre2 (2013-12-28)
