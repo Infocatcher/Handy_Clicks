@@ -131,15 +131,16 @@
 					</menulist>
 				</hbox>
 
-				<hbox id="hc-editor-funcTabboxToolbar" align="right" class="hcTabsToolbar"
-					oncommand="event.stopPropagation();">
-					<checkbox id="hc-editor-funcOptsFixed" class="hcFloatControl"
-						oncommand="handyClicksEditor.fixFuncOpts(this.checked);"
-						label="&hc.editor.fixActionOpts;" accesskey="&hc.editor.fixActionOptsAccesskey;"
-						tooltiptext="&hc.editor.fixActionOptsTip;" />
-				</hbox>
-
 				<tabbox id="hc-editor-funcTabbox" flex="1">
+					<hbox class="hcTabsToolbarWrapper">
+						<hbox id="hc-editor-funcTabboxToolbar" class="hcTabsToolbar"
+							oncommand="event.stopPropagation();">
+							<checkbox id="hc-editor-funcOptsFixed" class="hcFloatControl"
+								oncommand="handyClicksEditor.fixFuncOpts(this.checked);"
+								label="&hc.editor.fixActionOpts;" accesskey="&hc.editor.fixActionOptsAccesskey;"
+								tooltiptext="&hc.editor.fixActionOptsTip;" />
+						</hbox>
+					</hbox>
 					<tabs>
 						<tab label="&hc.editor.tabAction;" accesskey="&hc.editor.tabActionAccesskey;"
 							tooltiptext="&hc.editor.tabActionTip;" />
@@ -205,19 +206,20 @@
 									<vbox id="hc-editor-funcArgs" flex="1" align="left" />
 								</groupbox>
 
-								<hbox id="hc-editor-funcCustomTabboxToolbar" align="right" class="hcTabsToolbar"
-									oncommand="event.stopPropagation();">
-									<button class="hcEditCodeButton hcFloatButton hc-iconic"
-										label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"
-										hc_key="hc-editor-key-editCode"
-										oncommand="handyClicksEditor.editCode();" />
-									<button class="hcOpenCodeButton hcFloatButton hc-iconic"
-										label="&hc.editor.openCode;" tooltiptext="&hc.editor.openCodeTip;"
-										hc_key="hc-editor-key-openCode"
-										oncommand="handyClicksEditor.openCode();" />
-								</hbox>
-
 								<tabbox id="hc-editor-funcCustomTabbox" flex="1">
+									<hbox class="hcTabsToolbarWrapper">
+										<hbox id="hc-editor-funcCustomTabboxToolbar" class="hcTabsToolbar"
+											oncommand="event.stopPropagation();">
+											<button class="hcEditCodeButton hcFloatButton hc-iconic"
+												label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"
+												hc_key="hc-editor-key-editCode"
+												oncommand="handyClicksEditor.editCode();" />
+											<button class="hcOpenCodeButton hcFloatButton hc-iconic"
+												label="&hc.editor.openCode;" tooltiptext="&hc.editor.openCodeTip;"
+												hc_key="hc-editor-key-openCode"
+												oncommand="handyClicksEditor.openCode();" />
+										</hbox>
+									</hbox>
 									<tabs>
 										<tab label="&hc.editor.funcCode;" accesskey="&hc.editor.funcCodeAccesskey;"
 											selected="true" />
@@ -273,19 +275,20 @@
 						label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
 				</hbox>
 
-				<hbox id="hc-editor-customTypeTabboxToolbar" align="right" class="hcTabsToolbar"
-					oncommand="event.stopPropagation();">
-					<button class="hcEditCodeButton hcFloatButton hc-iconic"
-						label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"
-						hc_key="hc-editor-key-editCode"
-						oncommand="handyClicksEditor.editCode();" />
-					<button class="hcOpenCodeButton hcFloatButton hc-iconic"
-						label="&hc.editor.openCode;" tooltiptext="&hc.editor.openCodeTip;"
-						hc_key="hc-editor-key-openCode"
-						oncommand="handyClicksEditor.openCode();" />
-				</hbox>
-
 				<tabbox id="hc-editor-customTypeTabbox" flex="1">
+					<hbox class="hcTabsToolbarWrapper">
+						<hbox id="hc-editor-customTypeTabboxToolbar" class="hcTabsToolbar"
+							oncommand="event.stopPropagation();">
+							<button class="hcEditCodeButton hcFloatButton hc-iconic"
+								label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"
+								hc_key="hc-editor-key-editCode"
+								oncommand="handyClicksEditor.editCode();" />
+							<button class="hcOpenCodeButton hcFloatButton hc-iconic"
+								label="&hc.editor.openCode;" tooltiptext="&hc.editor.openCodeTip;"
+								hc_key="hc-editor-key-openCode"
+								oncommand="handyClicksEditor.openCode();" />
+						</hbox>
+					</hbox>
 					<tabs>
 						<tab label="&hc.editor.defineItem;" accesskey="&hc.editor.defineItemAccesskey;" />
 						<tab hc_empty="true" label="&hc.editor.defineContext;" accesskey="&hc.editor.defineContextAccesskey;"

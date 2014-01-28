@@ -83,6 +83,15 @@ hbox[hc_fixedFields="true"] {
 	opacity: 0.5;
 }
 
+.hcTabsToolbarWrapper {
+	height: 4em !important;
+	margin-bottom: -4em !important;
+	-moz-box-align: baseline;
+	-moz-box-pack: end;
+}
+.hcTabsToolbar {
+	position: relative;
+}
 .hcEditCodeButton {
 	-moz-image-region: rect(32px 112px 48px 96px);
 }

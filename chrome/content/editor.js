@@ -51,12 +51,6 @@ var handyClicksEditor = {
 			this.initExtTypes();
 			this.loadLabels();
 			this.createDelayedFuncTab();
-			this.initTabboxToolbar("hc-editor-funcTabboxToolbar");
-			//this.ut.timeout(function() {
-			this.initTabboxToolbar("hc-editor-funcCustomTabboxToolbar");
-			this.initTabboxToolbar("hc-editor-funcCustomTabboxToolbar" + this.delayId);
-			this.initTabboxToolbar("hc-editor-customTypeTabboxToolbar");
-			//}, this);
 			this.addTestButtons();
 
 			Array.forEach( // Add spellcheck feature for <menulist editable="true" />
@@ -162,10 +156,6 @@ var handyClicksEditor = {
 		delBtn.className += " hc-iconic";
 		delBtn.setAttribute("hc_key", "hc-editor-key-delete");
 		delBtn.parentNode.insertBefore(df, delBtn.nextSibling);
-	},
-	initTabboxToolbar: function(tbId) {
-		var tb = this.e(tbId);
-		tb.style.marginBottom = "-" + tb.boxObject.height + "px";
 	},
 	initShortcuts: function() {
 		this.mainTabbox = this.$("hc-editor-mainTabbox");
