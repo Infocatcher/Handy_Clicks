@@ -663,9 +663,43 @@ var handyClicksUtils = {
 		cos.close(); // this closes fos
 		return true;
 	},
+	get textEncoder() {
+		delete this.textEncoder;
+		if("TextEncoder" in window) // Firefox 18+
+			return this.textEncoder = new TextEncoder();
+		return this.textEncoder = null;
+	},
 	writeToFileAsync: function(str, file, callback, context) {
 		if(!(file instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)))
 			file = this.getLocalFile(file);
+
+		var encoder = this.textEncoder;
+		if(encoder) {
+			this._log("writeToFileAsync(): will use OS.File.writeAtomic()");
+			Components.utils["import"]("resource://gre/modules/osfile.jsm");
+			var onFailure = function(err) {
+				if(err instanceof Error)
+					Components.utils.reportError(err);
+				this._err("Can't write string to file " + this._fileInfo(file) + "\n" + err);
+				callback.call(context || this, Components.results.NS_ERROR_FAILURE);
+			}.bind(this);
+			try {
+				var arr = encoder.encode(str);
+			}
+			catch(e) {
+				onFailure(e);
+				return false;
+			}
+			// Note: we move file into backups directory first, so "tmpPath" parameter isn't needed
+			OS.File.writeAtomic(file.path, arr/*, { tmpPath: file.path + ".tmp" }*/).then(
+				function onSuccess() {
+					callback.call(context || this, Components.results.NS_OK, str);
+				}.bind(this),
+				onFailure
+			).then(null, onFailure);
+			return true
+		}
+
 		try {
 			Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
 			Components.utils["import"]("resource://gre/modules/FileUtils.jsm");
@@ -681,6 +715,7 @@ var handyClicksUtils = {
 			};
 			return this.writeToFileAsync.apply(this, arguments);
 		}
+		this._log("writeToFileAsync(): will use NetUtil.asyncCopy()");
 		try {
 			this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_WRITE);
 			var ostream = FileUtils.openSafeFileOutputStream(file);
