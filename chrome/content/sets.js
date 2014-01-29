@@ -614,7 +614,9 @@ var handyClicksSets = {
 	},
 	getActionCode: function(action, isCustom) {
 		return isCustom
-			? this.ut.getLocalized("customFunction") + (this.oldTree ? " " : "\n") + (action || "")
+			? this.ut.getLocalized("customFunction")
+				+ (this.oldTree ? " " : "\n")
+				+ this.cropCode(action || "")
 			: action;
 	},
 	getInitCode: function(fo) {
@@ -622,6 +624,13 @@ var handyClicksSets = {
 		return init
 			? this.getActionCode(init, true)
 			: "";
+	},
+	maxCodeLength: 1000,
+	cropCode: function(code) {
+		var maxLen = this.maxCodeLength;
+		if(code.length > maxLen)
+			return code.substr(0, maxLen) + "\n[\u2026]"; // "[...]"
+		return code;
 	},
 	isBuggyFuncObj: function(fo, isCustom, label) {
 		return !this.ps.isOkFuncObj(fo) || !isCustom && this.ut.isBuggyStr(label);
