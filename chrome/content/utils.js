@@ -729,9 +729,36 @@ var handyClicksUtils = {
 		fis.close();
 		return this.convertToUnicode(str);
 	},
+	get textDecoder() {
+		delete this.textDecoder;
+		if("TextDecoder" in window) // Firefox 18+
+			return this.textDecoder = new TextDecoder();
+		return this.textDecoder = null;
+	},
 	readFromFileAsync: function(file, callback, context) {
 		if(!(file instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)))
 			file = this.getLocalFile(file);
+
+		var decoder = this.textDecoder;
+		if(decoder) {
+			this._log("readFromFileAsync(): will use OS.File.read()");
+			Components.utils["import"]("resource://gre/modules/osfile.jsm");
+			var onFailure = function(err) {
+				if(err instanceof Error)
+					Components.utils.reportError(err);
+				this._err("Can't read string from file " + this._fileInfo(file) + "\n" + err);
+				callback.call(context || this, "", Components.results.NS_ERROR_FAILURE);
+			}.bind(this);
+			OS.File.read(file.path).then(
+				function onSuccess(arr) {
+					var data = decoder.decode(arr);
+					callback.call(context || this, data, Components.results.NS_OK);
+				}.bind(this),
+				onFailure
+			).then(null, onFailure);
+			return true;
+		}
+
 		try {
 			Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
 			if(!("newChannel" in NetUtil))
@@ -748,6 +775,7 @@ var handyClicksUtils = {
 			};
 			return this.readFromFileAsync.apply(this, arguments);
 		}
+		this._log("readFromFileAsync(): will use NetUtil.asyncFetch()");
 		try {
 			// Don't check permissions: this is slow
 			//this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_READ);
