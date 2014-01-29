@@ -625,7 +625,10 @@ var handyClicksSets = {
 			? this.getActionCode(init, true)
 			: "";
 	},
-	maxCodeLength: 1000,
+	get maxCodeLength() {
+		delete this.maxCodeLength;
+		return this.maxCodeLength = this.pu.pref("sets.codeLengthLimit");
+	},
 	cropCode: function(code) {
 		var maxLen = this.maxCodeLength;
 		if(code.length > maxLen)
@@ -1761,6 +1764,11 @@ var handyClicksSets = {
 			this.updTree(false);
 		else if(pName == "sets.localizeArguments")
 			this.updTree();
+		else if(pName == "sets.codeLengthLimit") {
+			delete this.maxCodeLength;
+			this.maxCodeLength = pVal;
+			this.redrawTree();
+		}
 		else if(this.ut.hasPrefix(pName, "editor.externalEditor")) {
 			this.initExternalEditor();
 			this.updateAllDependencies("externalEditor");
