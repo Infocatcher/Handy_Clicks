@@ -675,7 +675,7 @@ var handyClicksUtils = {
 			file = this.getLocalFile(file);
 
 		var encoder = this.textEncoder;
-		if(encoder) {
+		if(encoder && this.fxVersion >= 20) {
 			this._log("writeToFileAsync(): will use OS.File.writeAtomic()");
 			Components.utils["import"]("resource://gre/modules/osfile.jsm");
 			var onFailure = function(err) {
@@ -691,7 +691,10 @@ var handyClicksUtils = {
 				return false;
 			}
 			// Note: we move file into backups directory first, so "tmpPath" parameter isn't needed
-			OS.File.writeAtomic(file.path, arr/*, { tmpPath: file.path + ".tmp" }*/).then(
+			var options = {};
+			if(this.fxVersion < 25)
+				options.tmpPath = file.path + ".tmp";
+			OS.File.writeAtomic(file.path, arr, options).then(
 				function onSuccess() {
 					callback.call(context || this, Components.results.NS_OK, str);
 				}.bind(this),
@@ -775,7 +778,7 @@ var handyClicksUtils = {
 			file = this.getLocalFile(file);
 
 		var decoder = this.textDecoder;
-		if(decoder) {
+		if(decoder && this.fxVersion >= 20) {
 			this._log("readFromFileAsync(): will use OS.File.read()");
 			Components.utils["import"]("resource://gre/modules/osfile.jsm");
 			var onFailure = function(err) {
