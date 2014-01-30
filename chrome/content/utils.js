@@ -27,7 +27,7 @@ var handyClicksUtils = {
 		}
 		else {
 			var g = this.getGlobalForObject(e);
-			if(!e || e.constructor !== (g ? g.Error : Error)) {
+			if(!e || typeof e != "object") {
 				//setTimeout(function() { throw e; }, 0);
 				Components.utils.reportError(e);
 				return;
@@ -35,11 +35,12 @@ var handyClicksUtils = {
 		}
 		var cErr = Components.classes["@mozilla.org/scripterror;1"]
 			.createInstance(Components.interfaces.nsIScriptError);
+		// WorkerErrorEvent: message, filename, lineno
 		cErr.init(
 			this.errPrefix + e.message,
-			fileName || e.fileName,
+			fileName || e.fileName || e.filename,
 			null,
-			lineNumber || e.lineNumber || 0,
+			lineNumber || e.lineNumber || e.lineno || 0,
 			e.columnNumber || 0,
 			isWarning ? cErr.warningFlag : cErr.errorFlag,
 			null
@@ -678,9 +679,8 @@ var handyClicksUtils = {
 			this._log("writeToFileAsync(): will use OS.File.writeAtomic()");
 			Components.utils["import"]("resource://gre/modules/osfile.jsm");
 			var onFailure = function(err) {
-				if(err instanceof Error)
-					Components.utils.reportError(err);
-				this._err("Can't write string to file " + this._fileInfo(file) + "\n" + err);
+				err && this._err(err);
+				this._err("Can't write string to file " + this._fileInfo(file));
 				callback.call(context || this, Components.results.NS_ERROR_FAILURE);
 			}.bind(this);
 			try {
@@ -779,9 +779,8 @@ var handyClicksUtils = {
 			this._log("readFromFileAsync(): will use OS.File.read()");
 			Components.utils["import"]("resource://gre/modules/osfile.jsm");
 			var onFailure = function(err) {
-				if(err instanceof Error)
-					Components.utils.reportError(err);
-				this._err("Can't read string from file " + this._fileInfo(file) + "\n" + err);
+				err && this._err(err);
+				this._err("Can't read string from file " + this._fileInfo(file));
 				callback.call(context || this, "", Components.results.NS_ERROR_FAILURE);
 			}.bind(this);
 			OS.File.read(file.path).then(
