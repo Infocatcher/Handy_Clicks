@@ -68,9 +68,9 @@ pref("extensions.handyclicks.funcs.trimStrings", true);
 pref("extensions.handyclicks.funcs.workaroundForMousedownImitation", true);
 
 pref("extensions.handyclicks.key.toggleStatus", "VK_F2");
-pref("extensions.handyclicks.key.openSettings", "shift VK_F2");
+pref("extensions.handyclicks.key.openSettings", "accel VK_F2");
 pref("extensions.handyclicks.key.openAboutConfig", "");
-pref("extensions.handyclicks.key.editMode", "accel VK_F2");
+pref("extensions.handyclicks.key.editMode", "access VK_F2");
 pref("extensions.handyclicks.key.importFromClipboard", "accel shift VK_F2");
 pref("extensions.handyclicks.key.showSettingsPopup", "");
 
