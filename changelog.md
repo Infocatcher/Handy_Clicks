@@ -28,7 +28,11 @@
 `+` Added hotkey for error console (Ctrl+Shift+J) to settings window.<br>
 `*` Changed default actions for left- and middle-click on menu item (Settings – Organize – Controls behavior), be careful!<br>
 `+` Added support for history menu inside Australis menu-button.<br>
-`x` Fixed actions execution on “command” event.<br> 
+`x` Fixed actions execution on “command” event.<br>
+`*` Slightly improved startup performance of editor window (optimized creation of toolbars after tabs).<br>
+`*` Improved performance: some read/write operations moved to separate thread (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/17">#17</a>).<br>
+`*` Crop too long custom codes in settings tree to improve performance (<em>extensions.handyclicks.sets.codeLengthLimit</em> preference).<br>
+`*` Changed default hotkeys to open settings (Shift+F2 → Ctrl+F2) and to start edit mode (Ctrl+F2 → Alt+F2) (<em>extensions.handyclicks.key.</em>* preferences), be careful!<br>
 `*` Some minor improvements and fixes.<br>
 
 ##### 0.1.3pre2 (2013-12-28)
