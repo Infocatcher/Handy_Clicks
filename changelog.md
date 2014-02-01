@@ -6,6 +6,7 @@
 `*` – improved<br>
 
 ##### master/HEAD
+##### 0.1.3pre3 (2014-02-01)
 `*` Slightly improved startup performance: now styles for “blink” node feature are loaded just before first usage.<br>
 `x` Fixed: correctly remember target directory during export from uninstall dialog.<br>
 `*` Slightly improved startup performance: initialize uninstaller only after first window will be opened.<br>
