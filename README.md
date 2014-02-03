@@ -131,3 +131,6 @@ Turn off from command line: `firefox -handyclicks-disable`.
 </tbody>
 </table>
 \* Note: you should always use shortcut because script may use lazy loading.
+
+#### Scripts
+<a href="https://github.com/Infocatcher/Handy_Clicks_scripts">Scripts repository</a>
