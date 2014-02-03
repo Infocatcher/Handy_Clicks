@@ -134,7 +134,7 @@ Turn off from command line: `firefox -handyclicks-disable`.
 
 ##### API functions:
 DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGeneratedPopup</a>(in nsIVariant items)
-DOMNode <a href="#handyclicksfuncsshowopenuriwithappspopup">handyClicksFuncs.showOpenURIWithAppsPopup</a>(in array items, in boolean checkPaths)
+<br>DOMNode <a href="#handyclicksfuncsshowopenuriwithappspopup">handyClicksFuncs.showOpenURIWithAppsPopup</a>(in array items, in boolean checkPaths)
 
 ###### handyClicksFuncs.showGeneratedPopup()
 Creates popup from <a href="https://github.com/Infocatcher/Handy_Clicks_scripts/blob/master/Link/browsersMenu.js">special array</a> or <a href="https://github.com/Infocatcher/Handy_Clicks_scripts/blob/master/Link/copyMenu.js">string</a> and shows it.
