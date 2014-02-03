@@ -66,12 +66,21 @@ var handyClicksFuncs = {
 		// Like https://addons.mozilla.org/addon/private-tab/
 		return privateDoc || content.document;
 	},
-	getItemText: function(it, e, noTrim) {
+	getItemText: function(it, itemType, e, noTrim) {
 		it = it || this.hc.item;
+		itemType = itemType || this.hc.itemType;
 		e = e || this.hc.event;
-		var text = this.hc.itemType == "tabbar"
+		if(typeof itemType == "object") { //= Added: 2014-02-03
+			this.ut._deprecated(
+				"handyClicksFuncs.getItemText(item, event, noTrim) arguments is deprecated. "
+				+ "Use handyClicksFuncs.getItemText(item, itemType, event, noTrim) instead"
+			);
+			noTrim = e;
+			e = itemType || this.hc.event;
+		}
+		var text = itemType == "tabbar"
 			? this.forEachTab(this.getTabText)
-			: this.hc.itemType == "ext_mulipletabs"
+			: itemType == "ext_mulipletabs"
 				? Array.map(it, this.getTabText, this)
 				: it.textContent || it.label || it.alt || it.value || it.title
 					|| (
