@@ -674,6 +674,7 @@ var handyClicksFuncs = {
 		var popup = this.showGeneratedPopup(items);
 		popup.setAttribute("oncommand", "handyClicksFuncs.openUriWithApp(event, this);");
 		popup.hc_uri = uri;
+		return popup;
 	},
 	addAppsProps: function(items, uris, checkFiles) {
 		items.forEach(function(item) {
