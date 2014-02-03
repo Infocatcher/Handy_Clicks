@@ -55,3 +55,79 @@ Note: some hotkeys described in the interface and not listed here.
 #### Troubleshooting
 Turn off from command line: `firefox -handyclicks-disable`.
 <br>Log debug messages into error console: <em>extensions.handyclicks.debug</em> preference.
+
+#### API
+##### Execution context
+<table>
+<thead>
+<tr>
+	<th>Shortcut</th>
+	<th>Global object*</th>
+	<th>File</th>
+	<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+	<td>this</td>
+	<td>handyClicksFuncs</td>
+	<td><a href="chrome/content/funcs.js">chrome://handyclicks/content/funcs.js</a></td>
+	<td>Built-in functions</td>
+</tr>
+<tr>
+	<td>this.hc</td>
+	<td>handyClicks</td>
+	<td><a href="chrome/content/handyclicks.js">chrome://handyclicks/content/handyclicks.js</a></td>
+	<td>Core with functions to detect built-in types</td>
+</tr>
+<tr>
+	<td>this.ut</td>
+	<td>handyClicksUtils</td>
+	<td><a href="chrome/content/utils.js">chrome://handyclicks/content/utils.js</a></td>
+	<td>Various utils</td>
+</tr>
+<tr>
+	<td>this.cs</td>
+	<td>handyClicksCleanupSvc</td>
+	<td><a href="chrome/content/utils.js">chrome://handyclicks/content/utils.js</a></td>
+	<td>Cleanup/destructors</td>
+</tr>
+<tr>
+	<td>this.wu</td>
+	<td>handyClicksWinUtils</td>
+	<td><a href="chrome/content/winUtils.js">chrome://handyclicks/content/winUtils.js</a></td>
+	<td>Working with windows</td>
+</tr>
+<tr>
+	<td>this.pu</td>
+	<td>handyClicksPrefUtils</td>
+	<td><a href="chrome/content/prefUtils.js">chrome://handyclicks/content/prefUtils.js</a></td>
+	<td>Working with about:config preferences</td>
+</tr>
+<tr>
+	<td>this.ct</td>
+	<td>handyClicksConst</td>
+	<td><a href="chrome/content/consts.js">chrome://handyclicks/content/consts.js</a></td>
+	<td>Some global constants</td>
+</tr>
+<tr>
+	<td>this.ui</td>
+	<td>handyClicksUI</td>
+	<td><a href="chrome/content/handyclicksUI.js">chrome://handyclicks/content/handyclicksUI.js</a></td>
+	<td>Some UI-related things</td>
+</tr>
+<tr>
+	<td>this.ps</td>
+	<td>handyClicksPrefSvc</td>
+	<td><a href="chrome/content/prefSvc.js">chrome://handyclicks/content/prefSvc.js</a></td>
+	<td>Settings service</td>
+</tr>
+<tr>
+	<td>this.rs</td>
+	<td>handyClicksRegSvc</td>
+	<td><a href="chrome/content/regSvc.js">chrome://handyclicks/content/regSvc.js</a></td>
+	<td>Registration service</td>
+</tr>
+</tbody>
+</table>
+\* Note: you should always use shortcut because script may use lazy loading.
