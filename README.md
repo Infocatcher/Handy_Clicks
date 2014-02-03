@@ -186,7 +186,7 @@ this.showGeneratedPopup(items);
 ```
 
 ###### handyClicksFuncs.showOpenURIWithAppsPopup()
-Shows special popup to open link in other browser, very similar to `handyClicksFuncs.showGeneratedPopup()`.
+Shows special popup to open link in other browser, very similar to <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGeneratedPopup</a>().
 ```js
 // Open link in other browser
 var items = [
