@@ -132,5 +132,73 @@ Turn off from command line: `firefox -handyclicks-disable`.
 </table>
 \* Note: you should always use shortcut because script may use lazy loading.
 
+##### API functions:
+DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGeneratedPopup</a>(in nsIVariant items)
+DOMNode <a href="#handyclicksfuncsshowopenuriwithappspopup">handyClicksFuncs.showOpenURIWithAppsPopup</a>(in array items, in boolean checkPaths)
+
+###### handyClicksFuncs.showGeneratedPopup()
+Creates popup from <a href="https://github.com/Infocatcher/Handy_Clicks_scripts/blob/master/Link/browsersMenu.js">special array</a> or <a href="https://github.com/Infocatcher/Handy_Clicks_scripts/blob/master/Link/copyMenu.js">string</a> and shows it.
+```js
+// Simple popup
+var items = [
+	{ tagName: "menuitem", attr_label: "Label - 0", attr_oncommand: "alert(this.label);" },
+	{ tagName: "menuseparator" },
+	{ tagName: "menuitem", attr_label: "Label - 1", prop_onclick: function() { alert(this.label); } },
+	{ tagName: "menuitem", attr_label: "Label - 2", attr_oncommand: "alert(this.label);", "attr_handyclicks_tooltip-0": "tooltip-0" },
+	{ tagName: "menuitem", attr_label: "Label - 3", attr_oncommand: "alert(this.label);", "attr_handyclicks_tooltip-0": "tooltip-0", "attr_handyclicks_tooltip-1": "tooltip-1" },
+];
+this.showGeneratedPopup(items);
+```
+```js
+// Popup with submenu
+var items = [
+	{ tagName: "menuitem", attr_label: "Label - 0", prop_className: "menuitem-iconic", attr_image: "moz-icon://.js?size=16" },
+	{ tagName: "menuseparator" },
+	{
+		tagName: "menu",
+		attr_label: "Menu",
+		childNodes: [
+			{
+				tagName: "menupopup",
+				childNodes: [
+					{ tagName: "menuitem", attr_label: "Label - 1" },
+					{ tagName: "menuitem", attr_label: "Label - 2" }
+				]
+			}
+		]
+	},
+];
+var popup = this.showGeneratedPopup(items);
+popup.setAttribute("oncommand", "alert(event.target.label);");
+```
+```js
+// Create popup from XUL string
+var items = '\
+	<menupopup xmlns="' + this.ut.XULNS + '"\
+		oncommand="alert(event.target.label);">\
+		<menuitem label="Item 1" tooltiptext="Tip 1" />\
+		<menuitem label="Item 2" tooltiptext="Tip 2" />\
+		<menuseparator />\
+		<menuitem label="Item 3" tooltiptext="Tip 3" />\
+	</menupopup>';
+this.addEditItem(items);
+this.showGeneratedPopup(items);
+```
+
+###### handyClicksFuncs.showOpenURIWithAppsPopup()
+Shows special popup to open link in other browser, very similar to `handyClicksFuncs.showGeneratedPopup()`.
+```js
+// Open link in other browser
+var items = [
+	{ tagName: "menuitem", attr_label: "Internet Explorer", prop_hc_path: "%ProgF%\\Internet Explorer\\iexplore.exe" },
+	{ tagName: "menuitem", attr_label: "Google Chrome", prop_hc_path: "%LocalAppData%\\Google\\Chrome\\Application\\chrome.exe" },
+	{ tagName: "menuitem", attr_label: "Seamonkey", prop_hc_path: "%ProgF%\\SeaMonkey\\seamonkey.exe" },
+	{ tagName: "menuseparator" },
+	{ tagName: "menuitem", attr_label: "Opera portable", prop_hc_path: "%ProfD%\\..\\..\\..\\Opera\\Opera.exe" },
+	{ tagName: "menuitem", attr_label: "Google Chrome portable", prop_hc_path: "%ProfD%\\..\\..\\..\\GoogleChromePortable\\GoogleChromePortable.exe" }
+];
+this.showOpenUriWithAppsPopup(items, true /* check paths */);
+```
+
 #### Scripts
 <a href="https://github.com/Infocatcher/Handy_Clicks_scripts">Scripts repository</a>
