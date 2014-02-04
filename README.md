@@ -137,12 +137,12 @@ DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGener
 <br>DOMNode <a href="#handyclicksfuncsshowopenuriwithappspopup">handyClicksFuncs.showOpenURIWithAppsPopup</a>(in array items, in boolean checkPaths)
 <br>string <a href="#handyclicksfuncsgetitemuri">handyClicksFuncs.getItemURI</a>([in DOMNode item[, in string itemType[, in boolean noTrim]]])
 <br>string <a href="#handyclicksfuncsgetitemtext">handyClicksFuncs.getItemText</a>([in DOMNode item[, in string itemType[, in DOMEvent event[, in boolean noTrim]]]])
-<br><a href="#handyclicksprefutilsgetpref">handyClicksPrefUtils.getPref</a>(in string prefName[, in nsIVariant defaultValue[, in nsIPrefBranch prefBranch]])
-<br><a href="#handyclicksprefutilssetpref">handyClicksPrefUtils.setPref</a>(in string prefName, in nsIVariant value[, in nsIPrefBranch prefBranch])
-<br><a href="#handyclicksutils_info">handyClicksUtils._info</a>(in string message)
-<br><a href="#handyclicksutils_log">handyClicksUtils._log</a>(in string message)
-<br><a href="#handyclicksutils_err">handyClicksUtils._err</a>(in string/error message[, in string fileName[, in string lineNumber]])
-<br><a href="#handyclicksutils_warn">handyClicksUtils._warn</a>(in string/error message[, in string fileName[, in string lineNumber]])
+<br>nsIVariant <a href="#handyclicksprefutilsgetpref">handyClicksPrefUtils.getPref</a>(in string prefName[, in nsIVariant defaultValue[, in nsIPrefBranch prefBranch]])
+<br>void <a href="#handyclicksprefutilssetpref">handyClicksPrefUtils.setPref</a>(in string prefName, in nsIVariant value[, in nsIPrefBranch prefBranch])
+<br>void <a href="#handyclicksutils_info">handyClicksUtils.\_info</a>(in string message)
+<br>void <a href="#handyclicksutils_log">handyClicksUtils.\_log</a>(in string message)
+<br>void <a href="#handyclicksutils_err">handyClicksUtils.\_err</a>(in string/error message[, in string fileName[, in string lineNumber]])
+<br>void <a href="#handyclicksutils_warn">handyClicksUtils.\_warn</a>(in string/error message[, in string fileName[, in string lineNumber]])
 
 ###### handyClicksFuncs.showGeneratedPopup()
 Creates popup from <a href="https://github.com/Infocatcher/Handy_Clicks_scripts/blob/master/Link/browsersMenu.js">special array</a> or <a href="https://github.com/Infocatcher/Handy_Clicks_scripts/blob/master/Link/copyMenu.js">string</a> and shows it.
