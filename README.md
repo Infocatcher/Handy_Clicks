@@ -135,6 +135,8 @@ Turn off from command line: `firefox -handyclicks-disable`.
 ##### API functions:
 DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGeneratedPopup</a>(in array/string/DOMNode items)
 <br>DOMNode <a href="#handyclicksfuncsshowopenuriwithappspopup">handyClicksFuncs.showOpenURIWithAppsPopup</a>(in array items, in boolean checkPaths)
+<br><a href="#handyclicksprefutilsgetpref">handyClicksPrefUtils.getPref</a>(in string prefName[, in nsIVariant defaultValue[, in nsIPrefBranch prefBranch]])
+<br><a href="#handyclicksprefutilssetpref">handyClicksPrefUtils.setPref</a>(in string prefName, in nsIVariant value[, in nsIPrefBranch prefBranch])
 
 ###### handyClicksFuncs.showGeneratedPopup()
 Creates popup from <a href="https://github.com/Infocatcher/Handy_Clicks_scripts/blob/master/Link/browsersMenu.js">special array</a> or <a href="https://github.com/Infocatcher/Handy_Clicks_scripts/blob/master/Link/copyMenu.js">string</a> and shows it.
@@ -198,6 +200,22 @@ var items = [
 	{ tagName: "menuitem", attr_label: "Google Chrome portable", prop_hc_path: "%ProfD%\\..\\..\\..\\GoogleChromePortable\\GoogleChromePortable.exe" }
 ];
 this.showOpenUriWithAppsPopup(items, true /* check paths */);
+```
+
+###### handyClicksPrefUtils.getPref()
+Reads preference from about:config storage.
+```js
+var tab = gBrowser.addTab("https://mozilla.org/");
+if(!this.pu.getPref("browser.tabs.loadInBackground"))
+	gBrowser.selectedTab = tab;
+```
+
+###### handyClicksPrefUtils.setPref()
+Writes preference to about:config storage.
+```js
+// Toggle boolean preference
+var pref = "middlemouse.scrollbarPosition";
+this.pu.setPref(pref, !this.pu.getPref(pref));
 ```
 
 #### Scripts
