@@ -139,6 +139,10 @@ DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGener
 <br>string <a href="#handyclicksfuncsgetitemtext">handyClicksFuncs.getItemText</a>([in DOMNode item[, in string itemType[, in DOMEvent event[, in boolean noTrim]]]])
 <br><a href="#handyclicksprefutilsgetpref">handyClicksPrefUtils.getPref</a>(in string prefName[, in nsIVariant defaultValue[, in nsIPrefBranch prefBranch]])
 <br><a href="#handyclicksprefutilssetpref">handyClicksPrefUtils.setPref</a>(in string prefName, in nsIVariant value[, in nsIPrefBranch prefBranch])
+<br><a href="#handyclicksutils_info">handyClicksUtils._info</a>(in string message)
+<br><a href="#handyclicksutils_log">handyClicksUtils._log</a>(in string message)
+<br><a href="#handyclicksutils_err">handyClicksUtils._err</a>(in string/error message[, in string fileName[, in string lineNumber]])
+<br><a href="#handyclicksutils_warn">handyClicksUtils._warn</a>(in string/error message[, in string fileName[, in string lineNumber]])
 
 ###### handyClicksFuncs.showGeneratedPopup()
 Creates popup from <a href="https://github.com/Infocatcher/Handy_Clicks_scripts/blob/master/Link/browsersMenu.js">special array</a> or <a href="https://github.com/Infocatcher/Handy_Clicks_scripts/blob/master/Link/copyMenu.js">string</a> and shows it.
@@ -225,6 +229,18 @@ Writes preference to about:config storage.
 var pref = "middlemouse.scrollbarPosition";
 this.pu.setPref(pref, !this.pu.getPref(pref));
 ```
+
+###### handyClicksUtils._info()
+Logs message into <a href="https://developer.mozilla.org/en-US/docs/Error_Console">error</a>/<a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">browser</a> console.
+
+###### handyClicksUtils._log()
+Logs message into <a href="https://developer.mozilla.org/en-US/docs/Error_Console">error</a>/<a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">browser</a> console, like <a href="#handyclicksutils_info">handyClicksUtils._info</a>(), but only if <em>extensions.handyclicks.debug</em> = `true`.
+
+###### handyClicksUtils._err()
+Logs error message into <a href="https://developer.mozilla.org/en-US/docs/Error_Console">error</a>/<a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">browser</a> console.
+
+###### handyClicksUtils._warn()
+Logs warning message into <a href="https://developer.mozilla.org/en-US/docs/Error_Console">error</a>/<a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">browser</a> console.
 
 #### Scripts
 <a href="https://github.com/Infocatcher/Handy_Clicks_scripts">Scripts repository</a>
