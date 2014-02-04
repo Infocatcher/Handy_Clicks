@@ -135,6 +135,8 @@ Turn off from command line: `firefox -handyclicks-disable`.
 ##### API functions:
 DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGeneratedPopup</a>(in array/string/DOMNode items)
 <br>DOMNode <a href="#handyclicksfuncsshowopenuriwithappspopup">handyClicksFuncs.showOpenURIWithAppsPopup</a>(in array items, in boolean checkPaths)
+<br>string <a href="#handyclicksfuncsgetitemuri">handyClicksFuncs.getItemURI</a>([in DOMNode item[, in string itemType[, in boolean noTrim]]])
+<br>string <a href="#handyclicksfuncsgetitemtext">handyClicksFuncs.getItemText</a>([in DOMNode item[, in string itemType[, in DOMEvent event[, in boolean noTrim]]]])
 <br><a href="#handyclicksprefutilsgetpref">handyClicksPrefUtils.getPref</a>(in string prefName[, in nsIVariant defaultValue[, in nsIPrefBranch prefBranch]])
 <br><a href="#handyclicksprefutilssetpref">handyClicksPrefUtils.setPref</a>(in string prefName, in nsIVariant value[, in nsIPrefBranch prefBranch])
 
@@ -201,6 +203,12 @@ var items = [
 ];
 this.showOpenUriWithAppsPopup(items, true /* check paths */);
 ```
+
+###### handyClicksFuncs.getItemURI()
+Gets URI of link-like item.
+
+###### handyClicksFuncs.getItemText()
+Gets text of item, like “text” from `<a href="#">text</a>`.
 
 ###### handyClicksPrefUtils.getPref()
 Reads preference from about:config storage.
