@@ -666,7 +666,7 @@ var handyClicksFuncs = {
 		var uri = this.getItemURI();
 		if(!uri) {
 			this.ut._err("Can't get URI of item (" + this.hc.itemType + ")");
-			return;
+			return null;
 		}
 		var uris = Array.concat(uri).map(this.losslessDecodeURI, this);
 		this.addAppsProps(items, uris, checkFiles);
