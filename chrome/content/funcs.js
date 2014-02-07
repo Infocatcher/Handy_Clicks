@@ -187,9 +187,11 @@ var handyClicksFuncs = {
 		var tbr = this.hc.getTabBrowser(true);
 		var curInd = this.getTabPos(tbr.selectedTab);
 		var tab = this._openURIInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction);
+		if(tab && tab.ownerDocument != document)
+			moveTo = null;
 		if(this.ut.fxVersion == 1.5 && moveTo == "relative")
 			moveTo = "after"; // Tab* events aren't supported
-		if(moveTo == "relative") {
+		if(tab && moveTo == "relative") {
 			var tabCont = tbr.tabContainer;
 			var relIndex = "__handyClicks_relativeIndex";
 			if(!(relIndex in tabCont))
@@ -240,37 +242,62 @@ var handyClicksFuncs = {
 			tbr.moveTabTo(tab, 0); // Fix bug for last tab moving
 		tbr.moveTabTo(tab, ind);
 	},
+	get isOldAddTab() {
+		delete this.isOldAddTab;
+		return this.isOldAddTab = this.ut.isSeaMonkey
+			? this.ut.fxVersion < 4
+			: this.ut.fxVersion < 3.6;
+	},
 	_openURIInTab: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction) {
 		e = e || this.hc.event;
 		item = item || this.hc.item;
 		uri = uri || this.getItemURI(item);
 		if(this.testForLinkFeatures(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, winRestriction, "tab"))
 			return null;
-		var tbr = this.hc.getTabBrowser(true);
 
+		var win = window;
+		var openAsChild = !moveTo && (
+			!this.ut.isChromeDoc(item.ownerDocument)
+			|| item.ownerDocument.documentURI.substr(0, 34) == "chrome://browser/content/devtools/"
+		);
+		var relatedToCurrent = openAsChild;
 		if(
-			!moveTo && (
-				!this.ut.isChromeDoc(item.ownerDocument)
-				|| item.ownerDocument.documentURI.substr(0, 34) == "chrome://browser/content/devtools/"
-			)
+			"getTopWin" in win
+			&& getTopWin.length > 0 // Only in Firefox for now
+			&& !win.toolbar.visible // Popup window
+			&& this.pu.pref("funcs.dontUseTabsInPopupWindows")
 		) {
-			// Open a new tab as a child of the current tab (Tree Style Tab)
-			// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
-			if("TreeStyleTabService" in window)
-				TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab);
-			// Tab Kit https://addons.mozilla.org/firefox/addon/tab-kit/
-			// TabKit 2nd Edition https://addons.mozilla.org/firefox/addon/tabkit-2nd-edition/
-			if("tabkit" in window) {
-				var hasTabKit = true;
-				tabkit.addingTab("related");
-			}
+			win = getTopWin(true);
+			relatedToCurrent = openAsChild = false;
+			win.setTimeout(win.focus, 0);
 		}
 
-		var tab = tbr.addTab(uri, this.getRefererForItem(refererPolicy, false, item));
+		var tbr = win.handyClicks.getTabBrowser(true); // D'oh...
+		if(openAsChild) {
+			// Open a new tab as a child of the current tab (Tree Style Tab)
+			// http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api
+			if("TreeStyleTabService" in win)
+				win.TreeStyleTabService.readyToOpenChildTab(tbr.selectedTab);
+			// Tab Kit https://addons.mozilla.org/firefox/addon/tab-kit/
+			// TabKit 2nd Edition https://addons.mozilla.org/firefox/addon/tabkit-2nd-edition/
+			if("tabkit" in win)
+				win.tabkit.addingTab("related");
+		}
+
+		var ref = this.getRefererForItem(refererPolicy, false, item);
+		if(this.isOldAddTab)
+			var tab = tbr.addTab(uri, ref);
+		else {
+			var tab = tbr.addTab(uri, {
+				referrerURI: ref,
+				relatedToCurrent: relatedToCurrent
+			});
+		}
 		if(!loadInBackground)
 			tbr.selectedTab = tab;
 
-		hasTabKit && tabkit.addingTabOver();
+		if(openAsChild && "tabkit" in win)
+			win.tabkit.addingTabOver();
 
 		return tab;
 	},

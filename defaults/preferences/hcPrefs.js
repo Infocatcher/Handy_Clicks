@@ -66,6 +66,7 @@ pref("extensions.handyclicks.funcs.openOnlyVisibleLinks", true);
 pref("extensions.handyclicks.funcs.trimStrings", true);
 
 pref("extensions.handyclicks.funcs.workaroundForMousedownImitation", true);
+pref("extensions.handyclicks.funcs.dontUseTabsInPopupWindows", true);
 
 pref("extensions.handyclicks.key.toggleStatus", "VK_F2");
 pref("extensions.handyclicks.key.openSettings", "accel VK_F2");
