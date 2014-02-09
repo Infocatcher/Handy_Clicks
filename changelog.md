@@ -7,6 +7,7 @@
 
 ##### master/HEAD
 `*` Changed API: handyClicksFuncs.getItemText(item, event, noTrim) arguments is deprecated, use handyClicksFuncs.getItemText(item, <ins>itemType</ins>, event, noTrim) instead.<br>
+`x` Fixed detection of “Open …” menu items in RSS bookmarks in Firefox 4+.<br>
 
 ##### 0.1.3pre3 (2014-02-01)
 `*` Slightly improved startup performance: now styles for “blink” node feature are loaded just before first usage.<br>
