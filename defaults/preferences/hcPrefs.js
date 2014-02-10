@@ -72,7 +72,7 @@ pref("extensions.handyclicks.funcs.dontUseTabsInPopupWindows", true);
 pref("extensions.handyclicks.key.toggleStatus", "VK_F2");
 pref("extensions.handyclicks.key.openSettings", "accel VK_F2");
 pref("extensions.handyclicks.key.openAboutConfig", "");
-pref("extensions.handyclicks.key.editMode", "access VK_F2");
+pref("extensions.handyclicks.key.editMode", "alt VK_F2");
 pref("extensions.handyclicks.key.importFromClipboard", "accel shift VK_F2");
 pref("extensions.handyclicks.key.showSettingsPopup", "");
 
