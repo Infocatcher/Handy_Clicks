@@ -475,6 +475,7 @@ var handyClicksUI = {
 			this.$(id + "appMenuitem"),
 			this.$(id + "toolbarButton") || this.paletteButton,
 			this.$(id + "statusbarButton"),
+			this.$(id + "editModeTip-icon")
 		].forEach(function(elt) {
 			elt && func.call(context || this, elt);
 		}, this);

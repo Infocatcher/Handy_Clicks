@@ -43,15 +43,18 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
 
 /* 16x16 mouse buttons icons */
 #handyClicks-statusbarButton[hc_button="0"],
-toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="0"] {
+toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="0"],
+#handyClicks-editModeTip-icon[hc_button="0"] {
 	-moz-image-region: rect(0 48px 16px 32px);
 }
 #handyClicks-statusbarButton[hc_button="1"],
-toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="1"] {
+toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="1"],
+#handyClicks-editModeTip-icon[hc_button="1"] {
 	-moz-image-region: rect(0 64px 16px 48px);
 }
 #handyClicks-statusbarButton[hc_button="2"],
-toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="2"] {
+toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="2"],
+#handyClicks-editModeTip-icon[hc_button="2"] {
 	-moz-image-region: rect(0 80px 16px 64px);
 }
 
