@@ -432,7 +432,6 @@ var handyClicksUI = {
 		this.$("handyClicks-enabled").setAttribute("checked", enabled);
 		this.$("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
 	},
-	_restoreIconDelay: 250,
 	_restoreIconTimeout: 0,
 	_hasIcon: false,
 	setIcon: function(e) {
@@ -448,8 +447,9 @@ var handyClicksUI = {
 	restoreIcon: function() {
 		if(!this._hasIcon)
 			return;
+		var delay = this.pu.pref("ui.showMouseButton.restoreDelay");
 		clearTimeout(this._restoreIconTimeout);
-		this._restoreIconTimeout = this.ut.timeout(this.setIcon, this, [], this._restoreIconDelay);
+		this._restoreIconTimeout = this.ut.timeout(this.setIcon, this, [], delay);
 	},
 	showHideControls: function() {
 		this.$("handyClicks-toolsMenuitem").hidden = !this.pu.pref("ui.showInToolsMenu");
