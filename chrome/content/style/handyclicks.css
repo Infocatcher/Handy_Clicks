@@ -141,3 +141,19 @@ toolbarpaletteitem #handyClicks-toolbarProgressContainer {
 .handyClicks-invalidPathTip {
 	color: red;
 }
+
+#handyClicks-editModeTip {
+	padding: 1px;
+}
+#handyClicks-editModeTip-icon {
+	list-style-image: url("icons16.png");
+	-moz-image-region: rect(0 16px 16px 0);
+	margin-top: 4px;
+}
+#handyClicks-editModeTip-header {
+	font-weight: bold;
+	margin: 1px;
+}
+#handyClicks-editModeTip-value {
+	margin: 1px;
+}

@@ -109,9 +109,12 @@
 		<tooltip id="handyClicks-tooltip" noautohide="true" orient="vertical"
 			onpopupshowing="return handyClicksUI.fillInTooltip(this);">
 		</tooltip>
-		<tooltip id="handyClicks-editModeTip" noautohide="true" orient="vertical">
-			<label id="handyClicks-editModeTip-header" value="&handyClicks.editModeTipHeader;" />
-			<label id="handyClicks-editModeTip-value" />
+		<tooltip id="handyClicks-editModeTip" noautohide="true" orient="horizontal" align="start">
+			<image id="handyClicks-editModeTip-icon" />
+			<vbox id="handyClicks-editModeTip-content">
+				<label id="handyClicks-editModeTip-header" value="&handyClicks.editModeTipHeader;" />
+				<label id="handyClicks-editModeTip-value" />
+			</vbox>
 		</tooltip>
 	</popupset>
 

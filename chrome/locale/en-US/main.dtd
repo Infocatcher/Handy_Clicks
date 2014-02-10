@@ -11,7 +11,7 @@
 <!ENTITY handyClicks.enableAccesskey "n">
 <!ENTITY handyClicks.editModeLabel "Start edit mode">
 <!ENTITY handyClicks.editModeAccesskey "e">
-<!ENTITY handyClicks.editModeTipHeader "Handy Clicks:">
+<!ENTITY handyClicks.editModeTipHeader "Handy Clicks">
 
 <!ENTITY handyClicks.importFromClipboardLabel "Import settings from clipboard…">
 <!ENTITY handyClicks.importFromClipboardAccesskey "I">

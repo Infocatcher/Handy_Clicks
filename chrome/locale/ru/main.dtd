@@ -11,7 +11,7 @@
 <!ENTITY handyClicks.enableAccesskey "В">
 <!ENTITY handyClicks.editModeLabel "Режим редактирования">
 <!ENTITY handyClicks.editModeAccesskey "р">
-<!ENTITY handyClicks.editModeTipHeader "Handy Clicks:">
+<!ENTITY handyClicks.editModeTipHeader "Handy Clicks">
 
 <!ENTITY handyClicks.importFromClipboardLabel "Импортировать настройки из буфера обмена…">
 <!ENTITY handyClicks.importFromClipboardAccesskey "И">
