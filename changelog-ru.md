@@ -8,6 +8,7 @@
 ##### master/HEAD
 `*` Изменение API: аргументы handyClicksFuncs.getItemText(item, event, noTrim) устарели, используйте вместо них handyClicksFuncs.getItemText(item, <ins>itemType</ins>, event, noTrim).<br>
 `x` Исправлено определение пунктов меню «Открыть …» RSS-закладок в Firefox 4+.<br>
+`+` Добавлена настройка <em>extensions.handyclicks.ui.showMouseButton.restoreDelay</em> для коррекции опции «Изменять иконку при обработке клика».<br>
 
 ##### 0.1.3pre3 (2014-02-01)
 `*` Немного улучшена производительность при запуске: теперь стили для «мигания» узла загружаются непосредственно перед первым использованием.<br>
