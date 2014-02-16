@@ -1580,10 +1580,10 @@ var handyClicksSets = {
 		}
 		return sr;
 	},
-	doSearch: function(str) {
+	doSearch: function(str, dontSelect) {
 		var sf = this.searchField;
 		sf.value = str;
-		this.searchInSetsTree(true);
+		this.searchInSetsTree(dontSelect);
 	},
 	searchInSetsTree: function(dontSelect, dontResetPosition) {
 		if(this._searchTimeout)
@@ -2868,7 +2868,7 @@ var handyClicksSets = {
 				.replace(this.searchPlaceholders.hc_override, "")
 				.replace(this.searchPlaceholders.hc_new, "");
 			if(newSearch != search) // Don't confuse user with empty tree
-				this.doSearch(this.ut.trim(newSearch));
+				this.doSearch(this.ut.trim(newSearch), true);
 			return;
 		}
 
