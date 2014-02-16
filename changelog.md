@@ -7,8 +7,12 @@
 
 ##### master/HEAD
 `*` Changed API: handyClicksFuncs.getItemText(item, event, noTrim) arguments is deprecated, use handyClicksFuncs.getItemText(item, <ins>itemType</ins>, event, noTrim) instead.<br>
+`*` Don't use tabs in popup windows (<em>extensions.handyclicks.funcs.dontUseTabsInPopupWindows</em> preference, doesn't work with “moveTo” argument) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/8">#8</a>).<br>
 `x` Fixed detection of “Open …” menu items in RSS bookmarks in Firefox 4+.<br>
 `+` Added <em>extensions.handyclicks.ui.showMouseButton.restoreDelay</em> preference to configure “Change icon when click handling” feature.<br>
+`x` Fixed default value for <em>extensions.handyclicks.key.editMode</em> preference (`access` modifier works, but isn't displayed in menu).<br>
+`*` Redesigned edit mode tooltip.<br>
+`*` Slightly improved performance of settings tree drawing.<br>
 
 ##### 0.1.3pre3 (2014-02-01)
 `*` Slightly improved startup performance: now styles for “blink” node feature are loaded just before first usage.<br>

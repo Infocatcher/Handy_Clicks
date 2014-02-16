@@ -7,8 +7,12 @@
 
 ##### master/HEAD
 `*` Изменение API: аргументы handyClicksFuncs.getItemText(item, event, noTrim) устарели, используйте вместо них handyClicksFuncs.getItemText(item, <ins>itemType</ins>, event, noTrim).<br>
+`*` По умолчанию больше не используются вкладки в popup-окнах (настройка <em>extensions.handyclicks.funcs.dontUseTabsInPopupWindows</em>, не работает с аргументом «moveTo») (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/8">#8</a>).<br>
 `x` Исправлено определение пунктов меню «Открыть …» RSS-закладок в Firefox 4+.<br>
 `+` Добавлена настройка <em>extensions.handyclicks.ui.showMouseButton.restoreDelay</em> для коррекции опции «Изменять иконку при обработке клика».<br>
+`x` Исправлено значение по умолчанию для настройки <em>extensions.handyclicks.key.editMode</em> (модификатор `access` работает, но не отображается в меню).<br>
+`*` Обновлен внешний вид всплывающей подсказки режима редактирования.<br>
+`*` Немного улучшена производительность отрисовки дерева настроек.<br>
 
 ##### 0.1.3pre3 (2014-02-01)
 `*` Немного улучшена производительность при запуске: теперь стили для «мигания» узла загружаются непосредственно перед первым использованием.<br>
