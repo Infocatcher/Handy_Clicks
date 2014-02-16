@@ -218,6 +218,7 @@ var handyClicksSets = {
 		this._overrides = this._overrideDa = this._new = this._newDa = 0;
 		this._buggy = 0;
 
+		var df = document.createDocumentFragment();
 		var drawMode = this.pu.pref("sets.treeDrawMode");
 		var p = this.ps.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
@@ -237,7 +238,7 @@ var handyClicksSets = {
 					var button = this.ps.getButtonId(sh);
 					var modifiers = this.ps.getModifiersStr(sh);
 					var buttonContainer = this.eltsCache[button]
-						|| this.appendContainerItem(this.tBody, button, this.ut.getLocalized(button));
+						|| this.appendContainerItem(df, button, this.ut.getLocalized(button));
 					var modifiersContainer = this.eltsCache[sh]
 						|| this.appendContainerItem(buttonContainer, sh, modifiers);
 					this.appendItems(modifiersContainer, so, sh);
@@ -247,7 +248,7 @@ var handyClicksSets = {
 					var modifiers = this.ps.getModifiersStr(sh, true);
 					var label = button + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
 					var buttonContainer = this.eltsCache[sh]
-						|| this.appendContainerItem(this.tBody, sh, label);
+						|| this.appendContainerItem(df, sh, label);
 					this.appendItems(buttonContainer, so, sh);
 				break;
 				case 2: // Normal (inline)
@@ -256,7 +257,7 @@ var handyClicksSets = {
 					var sep = " " + this.ps.keys.sep + " ";
 					var label = button + (modifiers ? sep + modifiers : "") + sep;
 					for(var type in so) if(so.hasOwnProperty(type))
-						this.appendRow(this.tBody, sh, type, so[type], label + this.ps.getTypeLabel(type));
+						this.appendRow(df, sh, type, so[type], label + this.ps.getTypeLabel(type));
 				break;
 				case 3: // Inverse
 					var button = this.ps.getButtonId(sh);
@@ -264,7 +265,7 @@ var handyClicksSets = {
 					var modifiers = this.ps.getModifiersStr(sh);
 					for(var type in so) if(so.hasOwnProperty(type)) {
 						var typeContainer = this.eltsCache[type]
-							|| this.appendContainerItem(this.tBody, type, this.ps.getTypeLabel(type));
+							|| this.appendContainerItem(df, type, this.ps.getTypeLabel(type));
 						var hash = type + "-" + button;
 						var buttonContainer = this.eltsCache[hash]
 							|| this.appendContainerItem(typeContainer, hash, buttonLabel);
@@ -277,7 +278,7 @@ var handyClicksSets = {
 					var label = button + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
 					for(var type in so) if(so.hasOwnProperty(type)) {
 						var typeContainer = this.eltsCache[type]
-							|| this.appendContainerItem(this.tBody, type, this.ps.getTypeLabel(type));
+							|| this.appendContainerItem(df, type, this.ps.getTypeLabel(type));
 						this.appendRow(typeContainer, sh, type, so[type], label);
 					}
 				break;
@@ -288,11 +289,12 @@ var handyClicksSets = {
 					var label = sep + button + (modifiers ? sep + modifiers : "");
 					for(var type in so) if(so.hasOwnProperty(type))
 						this.eltsCache[type] = this.appendRow(
-							this.tBody, sh, type, so[type], this.ps.getTypeLabel(type) + label, this.eltsCache[type] || null
+							df, sh, type, so[type], this.ps.getTypeLabel(type) + label, this.eltsCache[type] || null
 						);
 				break;
 			}
 		}
+		this.tBody.appendChild(df);
 		this.markOpenedEditors();
 		if(this._import)
 			this.addImportStatistics();
