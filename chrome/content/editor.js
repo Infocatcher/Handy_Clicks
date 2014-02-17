@@ -87,6 +87,7 @@ var handyClicksEditor = {
 		this.setFuncsNotes();
 		this.setCompactUI();
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
+		this.checkForCrashBackups();
 
 		this._startTime1 = Date.now();
 	},
@@ -1110,6 +1111,41 @@ var handyClicksEditor = {
 		btn && setTimeout(function() {
 			btn.disabled = false;
 		}, 400);
+	},
+
+	hasCrashBackup: false,
+	checkForCrashBackups: function() {
+		setTimeout(function(_this) {
+			_this._checkForCrashBackups();
+		}, 500, this);
+	},
+	_checkForCrashBackups: function() {
+		var bakPath = this._hasCrashBackup();
+		if(bakPath) {
+			this.hasCrashBackup = true;
+			document.documentElement.setAttribute("hc_hasCrashBackup", "true");
+			this.ut.notifyInWindowCorner(
+				"Found at least one not removed temporary file with custom function!\nYou can use Edit... button to restore it\n" + bakPath,
+				this.ut.getLocalized("warningTitle"),
+				null,
+				null,
+				this.ut.NOTIFY_ICON_WARNING
+			);
+		}
+	},
+	_hasCrashBackup: function() {
+		var tempDir = this.ps._tempDir;
+		if(!tempDir)
+			return false;
+		var activeFiles = this.ut.storage("activeTempFiles") || { __proto__: null };
+		var entries = tempDir.directoryEntries;
+		while(entries.hasMoreElements()) {
+			var entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
+			var fName = entry.leafName;
+			if(fName.substr(0, 3) == "hc_" && !(entry.path in activeFiles))
+				return entry.path;
+		}
+		return false;
 	},
 
 	disableUnsupported: function() {

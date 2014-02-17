@@ -717,14 +717,20 @@
 				<parameter name="file" />
 				<body>
 				<![CDATA[
+					var isTemp = false;
 					if(!file || !file.exists()) {
 						file = this.pickFile(watch ? "linkWithFile" : "loadCodeFromFile");
 						if(!file)
 							return null;
+						if("handyClicksUtils" in top) {
+							var ut = top.handyClicksUtils;
+							if(file.parent && ut.ps.tempDir.equals(file.parent))
+								isTemp = true;
+						}
 					}
 					this.updateFromFile(file, true /*detectLineBreak*/);
 					if(watch)
-						this.watchFile(file, false);
+						this.watchFile(file, isTemp);
 					else
 						this.unwatchFile();
 					return file;
@@ -765,6 +771,8 @@
 					fp.defaultExtension = "js";
 					fp.appendFilter(ut.getLocalized("jsFiles"), "*.js;*.jsm");
 					fp.appendFilters(fp.filterAll);
+					if(ut.ed.hasCrashBackup)
+						fp.displayDirectory = ut.ps.tempDir;
 					fp.init(top, ut.getLocalized(titleId), fp[modeSave ? "modeSave" : "modeOpen"]);
 					if(fp.show() == fp.returnCancel)
 						return null;
@@ -791,6 +799,13 @@
 						top.addEventListener("unload", this, false);
 						top.addEventListener("HandyClicks:editor:change", this, false);
 					}
+					if(isTemp && "handyClicksUtils" in top) {
+						var ut = top.handyClicksUtils;
+						var activeTempFiles = ut.storage("activeTempFiles");
+						if(!activeTempFiles)
+							ut.storage("activeTempFiles", (activeTempFiles = { __proto__: null }));
+						activeTempFiles[file.path] = true;
+					}
 				]]>
 				</body>
 			</method>
@@ -805,8 +820,14 @@
 					}
 					var file = this._linkedFile;
 					this._linkedFile = null;
-					if(file && this._isTempFile && file.exists())
+					if(file && this._isTempFile && file.exists()) {
 						file.remove(false);
+						if("handyClicksUtils" in top) {
+							var activeTempFiles = top.handyClicksUtils.storage("activeTempFiles");
+							if(activeTempFiles)
+								delete activeTempFiles[file.path];
+						}
+					}
 				]]>
 				</body>
 			</method>

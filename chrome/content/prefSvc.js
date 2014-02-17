@@ -88,6 +88,13 @@ var handyClicksPrefSvc = {
 		delete this.tempDir;
 		return this.tempDir = this.getSubDir(this.prefsDir, this.tempDirName);
 	},
+	get _tempDir() { // Don't create directory automatically
+		var tempDir = this.prefsDir.clone();
+		tempDir.append(this.tempDirName);
+		if(tempDir.exists() && tempDir.isDirectory())
+			return tempDir;
+		return null;
+	},
 	get corruptedDir() {
 		delete this.corruptedDir;
 		return this.corruptedDir = this.getSubDir(this.prefsDir, this.corruptedDirName);
