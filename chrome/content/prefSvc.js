@@ -20,6 +20,7 @@ var handyClicksPrefSvc = {
 	prefsDirName: "handyclicks",
 	prefsFileName: "handyclicks_prefs",
 	backupsDirName: "backups",
+	tempDirName: "temp",
 	corruptedDirName: "corrupted",
 	names: {
 		backup:       "_backup-",
@@ -82,6 +83,10 @@ var handyClicksPrefSvc = {
 	get backupsDir() {
 		delete this.backupsDir;
 		return this.backupsDir = this.getSubDir(this.prefsDir, this.backupsDirName);
+	},
+	get tempDir() {
+		delete this.tempDir;
+		return this.tempDir = this.getSubDir(this.prefsDir, this.tempDirName);
 	},
 	get corruptedDir() {
 		delete this.corruptedDir;

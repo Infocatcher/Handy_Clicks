@@ -522,7 +522,7 @@
 							// Based on code of Session Manager 0.7.9.2
 							.replace(/[<>:"\/\\|*?^\x00-\x1f]+/g, "_");
 					}
-					return "handyclicks_" + type + (label ? "_[" + label + "]" : "") + "." + (ext || "js");
+					return "hc_" + type + (label ? "_[" + label + "]" : "") + "." + (ext || "js");
 				]]>
 				</body>
 			</method>
@@ -541,7 +541,8 @@
 							ext,
 							ut.canRunw && ut.pu.pref("editor.external.labelInFileName")
 						);
-						file = ut.getFileByAlias("TmpD");
+						//file = ut.getFileByAlias("TmpD");
+						file = ut.ps.tempDir.clone();
 						file.append(fName);
 						file.createUnique(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
 						this._lineBreak = null; // Will use platform's line breaks
