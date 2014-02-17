@@ -602,13 +602,18 @@
 							var ws = ut.wu.wm.getEnumerator("devtools:scratchpad");
 							while(ws.hasMoreElements()) {
 								var w = ws.getNext();
+								var Scratchpad = "Scratchpad" in w && w.Scratchpad;
 								if(
-									"Scratchpad" in w
-									&& "filename" in w.Scratchpad
-									&& w.Scratchpad.filename == file.path
+									Scratchpad
+									&& "filename" in Scratchpad
+									&& Scratchpad.filename == file.path
 								) {
-									if(w.Scratchpad.getText() != val)
-										w.Scratchpad.setText(val);
+									if(!("getText" in Scratchpad) || !("setText" in Scratchpad)) {
+										ut._warn("Found Scratchpad window without getText() or setText() API");
+										continue;
+									}
+									if(Scratchpad.getText() != val)
+										Scratchpad.setText(val);
 									setCaret();
 									this.fade();
 									w.focus();
