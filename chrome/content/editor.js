@@ -87,7 +87,7 @@ var handyClicksEditor = {
 		this.setFuncsNotes();
 		this.setCompactUI();
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
-		this.checkForCrashBackups();
+		this.checkForCrashBackups(700);
 
 		this._startTime1 = Date.now();
 	},
@@ -1077,6 +1077,7 @@ var handyClicksEditor = {
 	},
 	openCode: function() {
 		this.doEditorCommand("hcOpenCodeButton", "loadFromFile", true);
+		this.checkForCrashBackups(100, true);
 	},
 	doEditorCommand: function(btnClass, cmd/*, arg1, ...*/) {
 		var tabbox = this.mainTabbox;
@@ -1114,16 +1115,16 @@ var handyClicksEditor = {
 	},
 
 	hasCrashBackup: false,
-	checkForCrashBackups: function() {
+	checkForCrashBackups: function(delay, silent) {
 		setTimeout(function(_this) {
-			_this._checkForCrashBackups();
-		}, 500, this);
+			_this._checkForCrashBackups(silent);
+		}, delay || 500, this);
 	},
-	_checkForCrashBackups: function() {
+	_checkForCrashBackups: function(silent) {
 		var bakPath = this._hasCrashBackup();
-		if(bakPath) {
-			this.hasCrashBackup = true;
-			document.documentElement.setAttribute("hc_hasCrashBackup", "true");
+		this.ut.attribute(document.documentElement, "hc_hasCrashBackup", bakPath);
+		this.hasCrashBackup = !!bakPath;
+		if(bakPath && !silent) {
 			this.ut.notifyInWindowCorner(
 				this.ut.getLocalized("hasCrashBackup").replace("%f", bakPath),
 				this.ut.getLocalized("warningTitle"),

@@ -98,6 +98,10 @@ hbox[hc_fixedFields="true"] {
 .hcOpenCodeButton {
 	-moz-image-region: rect(32px 128px 48px 112px);
 }
+:root[hc_hasCrashBackup] .hcOpenCodeButton {
+	outline: 1px solid red;
+	outline-offset: -1px;
+}
 
 tab[hc_disabled="true"] {
 	text-decoration: line-through;
