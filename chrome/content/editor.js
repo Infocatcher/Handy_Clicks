@@ -1125,7 +1125,7 @@ var handyClicksEditor = {
 			this.hasCrashBackup = true;
 			document.documentElement.setAttribute("hc_hasCrashBackup", "true");
 			this.ut.notifyInWindowCorner(
-				"Found at least one not removed temporary file with custom function!\nYou can use Edit... button to restore it\n" + bakPath,
+				this.ut.getLocalized("hasCrashBackup").replace("%f", bakPath),
 				this.ut.getLocalized("warningTitle"),
 				null,
 				null,
