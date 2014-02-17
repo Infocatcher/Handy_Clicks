@@ -561,6 +561,7 @@
 							return;
 						}
 						var ee = ut.pu.pref("editor.external.path");
+						var eeArgs;
 
 						if(ee == "Scratchpad") try {
 							//var val = ut.internalLineBreaks(value);
@@ -634,7 +635,7 @@
 						catch(e) {
 							ut._err("openExternalEditor: ScratchpadManager.openScratchpad() failed");
 							ut._err(e);
-							ee = "";
+							ee = eeArgs = "";
 						}
 
 						var eeFile = ee && ut.getLocalFile(ee);
@@ -663,6 +664,7 @@
 									var indx = ut.expandEnvironmentVariables(cmd).toLowerCase().indexOf(wscript);
 									if(indx == 0 || indx == 1) {
 										ee = "%SystemRoot%\\notepad.exe";
+										eeArgs = "";
 										ut._log('openExternalEditor: "invalid" association: ' + cmd + '\nWill use "' + ee + '"');
 									}
 								}
@@ -673,7 +675,8 @@
 
 						if(ee) {
 							var args = [file.path];
-							var eeArgs = ut.pu.pref("editor.external.args");
+							if(eeArgs == undefined)
+								eeArgs = ut.pu.pref("editor.external.args");
 							if(eeArgs) {
 								if(eeArgs.indexOf("%F") != -1) {
 									args = [];
