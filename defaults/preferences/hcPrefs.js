@@ -104,7 +104,7 @@ pref("extensions.handyclicks.editor.unsavedSwitchWarning", true);
 pref("extensions.handyclicks.editor.ui.showCustomFuncsNotes", true);
 pref("extensions.handyclicks.editor.ui.compact", false);
 pref("extensions.handyclicks.editor.ui.invertWindowTitle", false);
-pref("extensions.handyclicks.editor.external.path", "");
+pref("extensions.handyclicks.editor.external.path", "Scratchpad");
 pref("extensions.handyclicks.editor.external.args", "");
 pref("extensions.handyclicks.editor.external.extension", "js");
 pref("extensions.handyclicks.editor.external.labelInFileName", true);
