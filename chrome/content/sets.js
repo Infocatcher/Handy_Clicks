@@ -2775,12 +2775,11 @@ var handyClicksSets = {
 			var fPath = file.path;
 			df.appendChild(this.ut.createElement("menuitem", {
 				label: fTime + " [" + fSize + " " + bytes + "] \u2013 " + fName,
-				class: "menuitem-iconic",
 				tooltiptext: fPath,
 				hc_fileName: fName,
 				hc_userBackup: this.ut.hasPrefix(fName, userBackup),
 				hc_oldBackup: this.ut.hasPrefix(fName, oldBackup),
-				hc_testBackup: testBackupStatus && this.ut.hasPrefix(fName, testBackup)
+				hc_testBackup: this.ut.hasPrefix(fName, testBackup) && testBackupStatus
 			}));
 		}, this);
 
