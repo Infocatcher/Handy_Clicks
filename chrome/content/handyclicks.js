@@ -1208,7 +1208,7 @@ var handyClicks = {
 				+ "\n=> executeFunction()"
 				+ "\nnodeName = " + (this.origItem ? this.origItem.nodeName : "?")
 				+ ", itemType = " + this.itemType
-				+ "\n=> " + (funcObj.custom ? (funcObj.label || action.substr(0, 100)) : funcObj.action)
+				+ "\n=> " + (funcObj.custom ? (funcObj.label || funcObj.action.substr(0, 100)) : funcObj.action)
 			);
 		}
 	},
