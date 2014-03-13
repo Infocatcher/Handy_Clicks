@@ -426,7 +426,7 @@ var handyClicksUI = {
 	},
 	setStatus: function() {
 		var enabled = this.hc.enabled;
-		if(enabled && this.ps._loadStatus == this.ps.SETS_LOAD_SKIPPED)
+		if(enabled && !this.hc._settingsLoadTimer && this.ps._loadStatus == this.ps.SETS_LOAD_SKIPPED)
 			this.ps.loadSettingsAsync();
 		this.hc.initListeners(enabled);
 		var tt = this.ut.getLocalized(enabled ? "enabledTip" : "disabledTip");

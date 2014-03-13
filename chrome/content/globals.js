@@ -30,7 +30,6 @@ var g = window.handyClicksGlobals = {
 	get cs() { return lazy("cs", "handyClicksCleanupSvc"); },
 	get ed() { return lazy("ed", "handyClicksEditor");     },
 	get hc() { return lazy("hc", "handyClicks");           },
-	get ps() { return lazy("ps", "handyClicksPrefSvc");    },
 	get pu() { return lazy("pu", "handyClicksPrefUtils");  },
 	get rs() { return lazy("rs", "handyClicksRegSvc");     },
 	get st() { return lazy("st", "handyClicksSets");       },
@@ -40,22 +39,41 @@ var g = window.handyClicksGlobals = {
 
 	get ct() { return lazy("ct", "handyClicksConst",    "consts.js");   },
 	get fn() { return lazy("fn", "handyClicksFuncs",    "funcs.js");    },
+	get ps() { return lazy("ps", "handyClicksPrefSvc",  "prefSvc.js");  },
 	get wu() { return lazy("wu", "handyClicksWinUtils", "winUtils.js"); },
 
-	initializableShortcuts: ["cn", "cs", "ed", "hc", "ps", "pu", "rs", "st", "su", "ui", "ut"],
-	get initializable() {
-		return g.initializableShortcuts.map(function(s) {
-			return g[s];
-		}).filter(function(o) {
-			return o;
-		});
+	objects: {
+		handyClicksConsole:    "cn",
+		handyClicksCleanupSvc: "cs",
+		handyClicksEditor:     "ed",
+		handyClicks:           "hc",
+		handyClicksPrefSvc:    "ps",
+		handyClicksPrefUtils:  "pu",
+		handyClicksRegSvc:     "rs",
+		handyClicksSets:       "st",
+		handyClicksSetsUtils:  "su",
+		handyClicksUI:         "ui",
+		handyClicksUtils:      "ut",
+		handyClicksConst:      "ct",
+		handyClicksFuncs:      "fn",
+		handyClicksPrefSvc:    "ps",
+		handyClicksWinUtils:   "wu",
+		__proto__: null
+	},
+	get callable() {
+		var callable = [];
+		var objects = this.objects;
+		for(var p in objects)
+			if(p in window)
+				callable.push(window[p]);
+		return callable;
 	},
 	shutdown: function() {
 		// Remove all cycle references to simplify garbage collection
 		// Be careful, we can't undo this!
-		g.initializableShortcuts.forEach(function(s) {
-			delete g[s];
-		});
+		var objects = this.objects;
+		for(var p in objects)
+			delete g[objects[p]];
 		delete g.g;
 		g._elts = null;
 	}

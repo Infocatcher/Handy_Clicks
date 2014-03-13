@@ -34,6 +34,11 @@ var handyClicks = {
 	init: function(reloadFlag) {
 		//this.ps.loadSettingsAsync();
 		this._settingsLoadTimer = this.ut.timeout(function() {
+			this._settingsLoadTimer = 0;
+			if(!this.enabled) {
+				this.ut._log("Preload settings: disabled => do nothing");
+				return;
+			}
 			this._settingsLoaded = true;
 			this.ut._log("Preload settings => loadSettingsAsync()");
 			this.ps.loadSettingsAsync();

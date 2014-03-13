@@ -39,7 +39,7 @@ var handyClicksRegSvc = {
 		return jsl.loadSubScript.apply(jsl, arguments);
 	},
 	callMethods: function(methName, reloadFlag) {
-		this.initializable.forEach(function(o) {
+		this.callable.forEach(function(o) {
 			if(o !== this && o.hasOwnProperty(methName))
 				o[methName](reloadFlag);
 		}, this);
