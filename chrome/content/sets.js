@@ -73,7 +73,6 @@ var handyClicksSets = {
 		this.tbo = tr.treeBoxObject;
 		this.tBody = tr.body;
 		this.tSel = tView.selection;
-		this.searcher.__proto__ = this;
 
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
@@ -1424,94 +1423,9 @@ var handyClicksSets = {
 		return this.searchField = this.$("hc-sets-tree-searchField");
 	},
 
-	searcher: {
-		_res: [], // rows numbers
-		_current: 0,
-		_wrapped: false,
-		reset: function(dontResetPosition) {
-			this._res = [];
-			if(!dontResetPosition)
-				this._current = 0;
-			this.wrapped = this._wrapped = false;
-		},
-		add: function(r) {
-			this._res.push(r);
-		},
-		finish: function() {
-			this.ut.sortAsNumbers(this._res);
-		},
-		get count() {
-			return this._res.length;
-		},
-		next: function() {
-			if(!this.isTreePaneSelected)
-				return;
-			if(++this._current >= this.count)
-				this._wrapped = true, this._current = 0;
-			this.select();
-		},
-		prev: function() {
-			if(!this.isTreePaneSelected)
-				return;
-			if(--this._current < 0)
-				this._wrapped = true, this._current = this.count - 1;
-			this.select();
-		},
-		first: function() {
-			if(!this.isTreePaneSelected)
-				return;
-			this._current = 0;
-			this.select();
-		},
-		last: function() {
-			if(!this.isTreePaneSelected)
-				return;
-			this._current = this.count - 1;
-			this.select();
-		},
-		select: function() {
-			if(!this.count)
-				return;
-			var i = this._res[this._current];
-			this.wrapped = this._wrapped;
-			this._wrapped = false; // Reset flag
-			this.treeBatch(function() {
-				this.expandTree();
-				this.tSel.select(i);
-				this.scrollToRow(i);
-			});
-		},
-		scrollToRow: function(i) {
-			var pos = 0.5;
-			var tbo = this.tbo;
-			var first = tbo.getFirstVisibleRow();
-			var visibleRows = tbo.height/tbo.rowHeight;
-			var newFirst = i - pos*visibleRows + 1;
-			tbo.scrollByLines(Math.round(newFirst - first));
-			tbo.ensureRowIsVisible(i); // Should be visible, but...
-		},
-		selectAll: function() {
-			if(this.isTreePaneSelected)
-				this.treeBatch(this._selectAll, this, arguments);
-		},
-		_selectAll: function() {
-			var tSel = this.tSel;
-			tSel.clearSelection();
-			this._res.forEach(function(i) {
-				tSel.rangedSelect(i, i, true);
-			});
-		},
-		_unwrapTimeout: 0,
-		_unwrapDelay: 700,
-		set wrapped(val) {
-			clearTimeout(this._unwrapTimeout);
-			this.searchField.setAttribute("hc_wrapped", val);
-			if(!val)
-				return;
-			this._unwrapTimeout = setTimeout(function(_this) {
-				_this.searchField.setAttribute("hc_wrapped", "false");
-			}, this._unwrapDelay, this);
-		}
+	get searcher() {
+		delete this.searcher;
+		return this.searcher = handyClicksSetsSearcher;
 	},
 	navigateSearchResults: function(e) {
 		var code = e.keyCode;
@@ -2984,5 +2898,97 @@ var handyClicksSets = {
 
 	checkClipboard: function() {
 		this.$("hc-sets-cmd-importFromClipboard").setAttribute("disabled", !this.ps.clipboardPrefs);
+	}
+};
+
+var handyClicksSetsSearcher = {
+	__proto__: handyClicksSets,
+
+	_res: [], // rows numbers
+	_current: 0,
+	_wrapped: false,
+	reset: function(dontResetPosition) {
+		this._res = [];
+		if(!dontResetPosition)
+			this._current = 0;
+		this.wrapped = this._wrapped = false;
+	},
+	add: function(r) {
+		this._res.push(r);
+	},
+	finish: function() {
+		this.ut.sortAsNumbers(this._res);
+	},
+	get count() {
+		return this._res.length;
+	},
+	next: function() {
+		if(!this.isTreePaneSelected)
+			return;
+		if(++this._current >= this.count)
+			this._wrapped = true, this._current = 0;
+		this.select();
+	},
+	prev: function() {
+		if(!this.isTreePaneSelected)
+			return;
+		if(--this._current < 0)
+			this._wrapped = true, this._current = this.count - 1;
+		this.select();
+	},
+	first: function() {
+		if(!this.isTreePaneSelected)
+			return;
+		this._current = 0;
+		this.select();
+	},
+	last: function() {
+		if(!this.isTreePaneSelected)
+			return;
+		this._current = this.count - 1;
+		this.select();
+	},
+	select: function() {
+		if(!this.count)
+			return;
+		var i = this._res[this._current];
+		this.wrapped = this._wrapped;
+		this._wrapped = false; // Reset flag
+		this.treeBatch(function() {
+			this.expandTree();
+			this.tSel.select(i);
+			this.scrollToRow(i);
+		});
+	},
+	scrollToRow: function(i) {
+		var pos = 0.5;
+		var tbo = this.tbo;
+		var first = tbo.getFirstVisibleRow();
+		var visibleRows = tbo.height/tbo.rowHeight;
+		var newFirst = i - pos*visibleRows + 1;
+		tbo.scrollByLines(Math.round(newFirst - first));
+		tbo.ensureRowIsVisible(i); // Should be visible, but...
+	},
+	selectAll: function() {
+		if(this.isTreePaneSelected)
+			this.treeBatch(this._selectAll, this, arguments);
+	},
+	_selectAll: function() {
+		var tSel = this.tSel;
+		tSel.clearSelection();
+		this._res.forEach(function(i) {
+			tSel.rangedSelect(i, i, true);
+		});
+	},
+	_unwrapTimeout: 0,
+	_unwrapDelay: 700,
+	set wrapped(val) {
+		clearTimeout(this._unwrapTimeout);
+		this.searchField.setAttribute("hc_wrapped", val);
+		if(!val)
+			return;
+		this._unwrapTimeout = setTimeout(function(_this) {
+			_this.searchField.setAttribute("hc_wrapped", "false");
+		}, this._unwrapDelay, this);
 	}
 };
