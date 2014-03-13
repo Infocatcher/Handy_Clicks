@@ -1,4 +1,6 @@
 var handyClicksUtils = {
+	__proto__: handyClicksGlobals,
+
 	errPrefix: "[Handy Clicks] ",
 	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
 

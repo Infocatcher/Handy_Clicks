@@ -1,4 +1,6 @@
 var handyClicksConsole = {
+	__proto__: handyClicksGlobals,
+
 	init: function(reloadFlag) {
 		window.addEventListener("click", this, true);
 	},

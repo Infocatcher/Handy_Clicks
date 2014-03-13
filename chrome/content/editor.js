@@ -1,4 +1,6 @@
 var handyClicksEditor = {
+	__proto__: handyClicksGlobals,
+
 	delayId: "-delay",
 
 	// "hc-editor-mainTabbox":

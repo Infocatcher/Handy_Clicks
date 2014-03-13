@@ -28,6 +28,7 @@ const jsLoader = cc["@mozilla.org/moz/jssubscript-loader;1"]
 
 jsLoader.loadSubScript("chrome://handyclicks/content/uninstaller.js");
 
+var handyClicksGlobals = {};
 var wu, ct;
 function initOnce() {
 	initOnce = function() {};

@@ -10,6 +10,7 @@
 ]>
 
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/javascript" src="chrome://handyclicks/content/globals.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/prefUtils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/prefSvc.js" />
@@ -25,7 +26,7 @@
 		<command id="handyClicks-cmd-editMode" oncommand="handyClicksUI.toggleEditMode();"
 			label="&handyClicks.editModeLabel;" accesskey="&handyClicks.editModeAccesskey;" />
 		<command id="handyClicks-cmd-importFromClipboard"
-			oncommand="handyClicks.wu.openSettingsImport(true, handyClicksConst.IMPORT_CLIPBOARD);"
+			oncommand="handyClicks.wu.openSettingsImport(true, handyClicks.ct.IMPORT_CLIPBOARD);"
 			label="&handyClicks.importFromClipboardLabel;" accesskey="&handyClicks.importFromClipboardAccesskey;" />
 	</commandset>
 	<keyset id="mainKeyset">

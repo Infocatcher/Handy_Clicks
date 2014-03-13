@@ -501,6 +501,7 @@
 		}
 	]]>
 	</script>
+	<script type="application/javascript" src="chrome://handyclicks/content/globals.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/prefUtils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/setsUtils.js" />
@@ -520,21 +521,21 @@
 		<command id="hc-sets-cmd-disable" oncommand="handyClicksSets.toggleEnabled(null, false);" label="&hc.sets.cmdDisable;" />
 		<command id="hc-sets-cmd-toggle" oncommand="handyClicksSets.toggleEnabled();" label="&hc.sets.cmdToggle;" />
 
-		<command id="hc-sets-cmd-fullExportToFile" oncommand="handyClicksSets.exportSets(false, handyClicksConst.EXPORT_FILEPICKER);"
+		<command id="hc-sets-cmd-fullExportToFile" oncommand="handyClicksSets.exportSets(false, handyClicksSets.ct.EXPORT_FILEPICKER);"
 			label="&hc.sets.fullExportToFile;" />
-		<command id="hc-sets-cmd-partialExportToFile" oncommand="handyClicksSets.exportSets(true, handyClicksConst.EXPORT_FILEPICKER);"
+		<command id="hc-sets-cmd-partialExportToFile" oncommand="handyClicksSets.exportSets(true, handyClicksSets.ct.EXPORT_FILEPICKER);"
 			label="&hc.sets.exportSelectedToFile;" />
-		<command id="hc-sets-cmd-partialExportToClipboard" oncommand="handyClicksSets.exportSets(true, handyClicksConst.EXPORT_CLIPBOARD_STRING);"
+		<command id="hc-sets-cmd-partialExportToClipboard" oncommand="handyClicksSets.exportSets(true, handyClicksSets.ct.EXPORT_CLIPBOARD_STRING);"
 			label="&hc.sets.exportSelectedToClipboard;" />
-		<command id="hc-sets-cmd-exportToURI" oncommand="handyClicksSets.exportSets(true, handyClicksConst.EXPORT_CLIPBOARD_URI);"
+		<command id="hc-sets-cmd-exportToURI" oncommand="handyClicksSets.exportSets(true, handyClicksSets.ct.EXPORT_CLIPBOARD_URI);"
 			label="&hc.sets.exportToURI;" />
-		<command id="hc-sets-cmd-exportToHTML" oncommand="handyClicksSets.exportSets(true, handyClicksConst.EXPORT_CLIPBOARD_HTML);"
+		<command id="hc-sets-cmd-exportToHTML" oncommand="handyClicksSets.exportSets(true, handyClicksSets.ct.EXPORT_CLIPBOARD_HTML);"
 			label="&hc.sets.exportToHTML;" />
 
-		<command id="hc-sets-cmd-fullImportFromFile" oncommand="handyClicksSets.importSets(false, handyClicksConst.IMPORT_FILEPICKER);" />
-		<command id="hc-sets-cmd-importFromFile" oncommand="handyClicksSets.importSets(true, handyClicksConst.IMPORT_FILEPICKER);"
+		<command id="hc-sets-cmd-fullImportFromFile" oncommand="handyClicksSets.importSets(false, handyClicksSets.ct.IMPORT_FILEPICKER);" />
+		<command id="hc-sets-cmd-importFromFile" oncommand="handyClicksSets.importSets(true, handyClicksSets.ct.IMPORT_FILEPICKER);"
 			label="&hc.sets.importFromFile;" />
-		<command id="hc-sets-cmd-importFromClipboard" oncommand="handyClicksSets.importSets(true, handyClicksConst.IMPORT_CLIPBOARD);"
+		<command id="hc-sets-cmd-importFromClipboard" oncommand="handyClicksSets.importSets(true, handyClicksSets.ct.IMPORT_CLIPBOARD);"
 			label="&hc.sets.importFromClipboard;" />
 	</commandset>
 	<keyset id="hc-sets-keys">

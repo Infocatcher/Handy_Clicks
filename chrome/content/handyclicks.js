@@ -1,4 +1,6 @@
 var handyClicks = {
+	__proto__: handyClicksGlobals,
+
 	ignoreAction: "$ignore",
 
 	event: null,

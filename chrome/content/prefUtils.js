@@ -1,4 +1,6 @@
 var handyClicksPrefUtils = {
+	__proto__: handyClicksGlobals,
+
 	oSvc: new HandyClicksObservers(),
 
 	// Preferences:
@@ -21,7 +23,7 @@ var handyClicksPrefUtils = {
 	},
 	get prefsMigration() { // function(allowSave, vers)
 		var temp = {};
-		this.rs.loadSubScript("chrome://handyclicks/content/convPrefs.js", temp);
+		this.jsLoader.loadSubScript("chrome://handyclicks/content/convPrefs.js", temp);
 		return temp.prefsMigration;
 	},
 	destroy: function(reloadFlag) {

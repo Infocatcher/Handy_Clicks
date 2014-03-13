@@ -1,4 +1,6 @@
 var handyClicksSets = {
+	__proto__: handyClicksGlobals,
+
 	_import: false,
 	_importPartial: false,
 	_importFromClipboard: false,

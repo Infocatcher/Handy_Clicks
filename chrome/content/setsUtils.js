@@ -1,4 +1,6 @@
 var handyClicksSetsUtils = {
+	__proto__: handyClicksGlobals,
+
 	init: function(reloadFlag) {
 		window.addEventListener(this.ut.wheelEvent, this, true);
 		window.addEventListener("dragenter", this, true);

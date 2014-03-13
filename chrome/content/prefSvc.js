@@ -1,4 +1,6 @@
 var handyClicksPrefSvc = {
+	__proto__: handyClicksGlobals,
+
 	oSvc: new HandyClicksObservers(),
 
 	SETS_BEFORE_RELOAD: 1,
@@ -327,7 +329,7 @@ var handyClicksPrefSvc = {
 	},
 	get setsMigration() { // function(allowSave, vers)
 		var temp = {};
-		this.rs.loadSubScript("chrome://handyclicks/content/convSets.js", temp);
+		this.jsLoader.loadSubScript("chrome://handyclicks/content/convSets.js", temp);
 		return temp.setsMigration;
 	},
 
@@ -642,7 +644,7 @@ var handyClicksPrefSvc = {
 		if("JSON" in window)
 			this.JSON = JSON;
 		else
-			this.rs.loadSubScript("chrome://handyclicks/content/json.js", this);
+			this.jsLoader.loadSubScript("chrome://handyclicks/content/json.js", this);
 		return this.JSON;
 	},
 	saveSettingsObjects: function(reloadAll) {

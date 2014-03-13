@@ -1,4 +1,6 @@
 var handyClicksFuncs = {
+	__proto__: handyClicksGlobals,
+
 	isVoidURI: function(uri) {
 		uri = (uri || "").replace(/(?:\s|%20)+/g, " ");
 		return /^javascript: *(?:|\/\/|void *(?: +0|\( *0 *\))) *;? *$/i.test(uri);

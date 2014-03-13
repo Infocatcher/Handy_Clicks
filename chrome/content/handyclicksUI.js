@@ -1,4 +1,6 @@
 var handyClicksUI = {
+	__proto__: handyClicksGlobals,
+
 	blinkAttr: "__handyclicks__blink__",
 	blinkOpacity: "0.1",
 	blinkDuration: 170,
