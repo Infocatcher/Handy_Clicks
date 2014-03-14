@@ -42,7 +42,7 @@ var handyClicksUtils = {
 			this.errPrefix + e.message,
 			fileName || e.fileName || e.filename,
 			null,
-			lineNumber || e.lineNumber || e.lineno || 0,
+			lineNumber || this.getLineNumber(e) || 0,
 			e.columnNumber || 0,
 			isWarning ? cErr.warningFlag : cErr.errorFlag,
 			null
@@ -82,6 +82,9 @@ var handyClicksUtils = {
 				+ line;
 			this._err(desc + "[stack: " + i + "] " + funcDesc, stackFrame.filename, stackFrame.lineNumber, isWarning);
 		}
+	},
+	getLineNumber: function(err) {
+		return err && (err.lineNumber || err.lineno) || undefined;
 	},
 	objProps: function(o, filter, skipNativeFuncs) {
 		if(this.isPrimitive(o))

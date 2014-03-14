@@ -361,7 +361,7 @@ var handyClicksPrefSvc = {
 		catch(e) {
 			ct._invalid = true;
 			var line = ct._contextMenuLine || ct._defineLine;
-			var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - line + 1);
+			var eLine = this.ut.mmLine(this.ut.getLineNumber(e) - line + 1);
 			var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
 				+ ("_contextMenuLine" in ct ? this.ct.EDITOR_TYPE_CONTEXT : this.ct.EDITOR_TYPE_DEFINE)
 				+ "?line=" + eLine;
@@ -455,7 +455,7 @@ var handyClicksPrefSvc = {
 			var fn = new Function("event,item,origItem", fObj.action);
 		}
 		catch(err) {
-			var eLine = fObj._errorLine = this.ut.mmLine(this.ut.getProperty(err, "lineNumber") - line + 1);
+			var eLine = fObj._errorLine = this.ut.mmLine(this.ut.getLineNumber(err) - line + 1);
 			var href = fObj._editorLink = this.hc.getEditorLink() + "?line=" + eLine;
 			var eMsg = this.ut.errInfo("customFunctionCompileError", fObj.label, this.hc.itemType, err);
 			this.ut.notify(
@@ -521,7 +521,7 @@ var handyClicksPrefSvc = {
 		}
 	},
 	handleCustomFuncError: function(e, baseLine, fObj, sh, type, isDelayed, isInit) {
-		var eLine = this.ut.mmLine(this.ut.getProperty(e, "lineNumber") - baseLine + 1);
+		var eLine = this.ut.mmLine(this.ut.getLineNumber(e) - baseLine + 1);
 		var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_SHORTCUT + "/" + sh + "/" + type + "/"
 			+ (isDelayed ? this.ct.EDITOR_SHORTCUT_DELAYED : this.ct.EDITOR_SHORTCUT_NORMAL) + "/"
 			+ this.ct.EDITOR_SHORTCUT_INIT
