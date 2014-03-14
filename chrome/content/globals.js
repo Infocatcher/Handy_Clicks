@@ -47,7 +47,6 @@ var g = window.handyClicksGlobals = {
 		handyClicksCleanupSvc: "cs",
 		handyClicksEditor:     "ed",
 		handyClicks:           "hc",
-		handyClicksPrefSvc:    "ps",
 		handyClicksPrefUtils:  "pu",
 		handyClicksRegSvc:     "rs",
 		handyClicksSets:       "st",
