@@ -19,7 +19,14 @@ var g = window.handyClicksGlobals = {
 			.getService(Components.interfaces.mozIJSSubScriptLoader);
 	},
 	get _debug() {
-		return g.pu && g.pu.pref("debug");
+		if(!g.pu)
+			return false;
+		g.pu.oSvc.addObserver(function(pName, pVal) {
+			if(pName == "debug")
+				g._debug = pVal;
+		});
+		delete g._debug;
+		return g._debug = g.pu.pref("debug");
 	},
 	_log: function(s) {
 		// Note: we don't load utils.js from console.xul overlay
