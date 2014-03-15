@@ -15,6 +15,7 @@
 `*` Slightly improved performance of settings tree drawing.<br>
 `*` Changed default value for <em>extensions.handyclicks.editor.external.path</em> preference: now used Scratchpad as default editor (if available).<br>
 `*` Changed: use %profile%/handyclicks/temp/ folder for external editor and notify about not removed temp files after crash.<br>
+`*` Improved performance (and compatibility with future browser versions): no longer mutate [[Prototype]] of already created objects (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/18">#18</a>).<br>
 
 ##### 0.1.3pre3 (2014-02-01)
 `*` Slightly improved startup performance: now styles for “blink” node feature are loaded just before first usage.<br>
