@@ -18,7 +18,7 @@ var handyClicksUtils = {
 		this.consoleSvc.logStringMessage(this.errPrefix + this.ts() + " " + this.safeToString(s));
 	},
 	_log: function(s) {
-		this._debug && this._info.apply(this, arguments);
+		this._debug && this._info(s);
 	},
 	_err: function _err(e, fileName, lineNumber, isWarning) {
 		if(this.isPrimitive(e) || typeof e == "xml") {
