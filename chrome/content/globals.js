@@ -78,13 +78,6 @@ var g = window.handyClicksGlobals = {
 	}
 };
 
-function set(s, p) {
-	if(p in window) {
-		delete g[s];
-		return g[s] = window[p];
-	}
-	return null;
-}
 function lazy(s, p, file) {
 	var has = p in window;
 	if(!has && file) {
