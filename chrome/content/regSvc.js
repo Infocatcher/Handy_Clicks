@@ -2,6 +2,8 @@ var handyClicksRegSvc = {
 	__proto__: handyClicksGlobals,
 
 	instantInit: function(reloadFlag) {
+		var dt = (this.now() - this._startTime).toFixed(2);
+		this._log("Scripts loaded into " + document.documentURI + ": " + dt + " ms");
 		window.addEventListener("load", this, false);
 		this.callMethods("instantInit", reloadFlag);
 	},
@@ -39,10 +41,13 @@ var handyClicksRegSvc = {
 		return jsl.loadSubScript.apply(jsl, arguments);
 	},
 	callMethods: function(methName, reloadFlag) {
+		var t = this.now();
 		this.callable.forEach(function(o) {
 			if(o !== this && o.hasOwnProperty(methName))
 				o[methName](reloadFlag);
 		}, this);
+		var dt = (this.now() - t).toFixed(2);
+		this._log(methName + "() in " + document.documentURI + ": " + dt + " ms");
 	}
 };
 handyClicksRegSvc.instantInit();

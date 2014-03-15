@@ -6,6 +6,9 @@ var g = window.handyClicksGlobals = {
 		return g.g = g;
 	},
 
+	now: now,
+	_startTime: now(),
+
 	_elts: { __proto__: null },
 	$: function(id) {
 		return g._elts[id] || (g._elts[id] = document.getElementById(id));
@@ -97,6 +100,12 @@ function lazy(s, p, file) {
 		return g[s] = window[p];
 	}
 	return null;
+}
+function now() {
+	now = "performance" in window && "now" in performance
+		? function() { return performance.now(); }
+		: function() { return Date.now(); };
+	return now();
 }
 
 })();

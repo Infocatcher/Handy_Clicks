@@ -144,12 +144,6 @@ var handyClicksUtils = {
 	},
 
 	_timers: { __proto__: null },
-	get now() {
-		delete this.now;
-		return this.now = "performance" in window && "now" in performance
-			? function() { return performance.now(); }
-			: function() { return Date.now(); };
-	},
 	timer: function(tId, division) {
 		var ts = this._timers;
 		if(tId in ts) {
