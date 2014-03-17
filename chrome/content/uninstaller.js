@@ -93,14 +93,33 @@ var handyClicksUninstaller = {
 	createContext: function() {
 		// Simple way to get some required functions
 		const path = "chrome://handyclicks/content/";
-		jsLoader.loadSubScript(path + "sets.js");
-		jsLoader.loadSubScript(path + "utils.js");
-		jsLoader.loadSubScript(path + "prefUtils.js");
-		jsLoader.loadSubScript(path + "prefSvc.js");
+		var temp = this._temp = { __proto__: null };
+		jsLoader.loadSubScript(path + "sets.js",      temp);
+		jsLoader.loadSubScript(path + "utils.js",     temp);
+		jsLoader.loadSubScript(path + "prefUtils.js", temp);
+		jsLoader.loadSubScript(path + "prefSvc.js",   temp);
+		var g = this.g;
+		var objects = g.objects;
+		for(var name in temp) if(name in objects) {
+			var p = objects[name];
+			delete g[p];
+			g[p] = temp[name];
+		}
 		this.pu.instantInit();
 	},
 	destroyContext: function() {
 		this.pu.destroy();
+		var temp = this._temp;
+		delete this._temp;
+		var g = this.g;
+		var objects = g.objects;
+		for(var name in temp) {
+			delete global[name];
+			if(name in objects) {
+				var p = objects[name];
+				delete g[p];
+			}
+		}
 	},
 	uninstallConfirm: function() {
 		var exportAllSets = { value: true };
