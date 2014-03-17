@@ -128,11 +128,11 @@ var handyClicksUninstaller = {
 		this._log("[uninstaller] uninstallConfirm()");
 		var exportAllSets = { value: true };
 		var confirmed = this.uninstallConfirmed = this.ut.confirmEx(
-			this.ut.getLocalized("title"),
-			this.ut.getLocalized("removeSettingsConfirm"),
-			this.ut.getLocalized("removeSettings"),
+			this.getLocalized("title"),
+			this.getLocalized("removeSettingsConfirm"),
+			this.getLocalized("removeSettings"),
 			false, // Cancel button is default
-			this.ut.getLocalized("exportAllSettings"), exportAllSets,
+			this.getLocalized("exportAllSettings"), exportAllSets,
 			this.wu.wm.getMostRecentWindow(null) //this.wu.wm.getMostRecentWindow("Extension:Manager")
 		);
 		if(confirmed && exportAllSets.value) {

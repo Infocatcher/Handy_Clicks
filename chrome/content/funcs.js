@@ -394,9 +394,9 @@ var handyClicksFuncs = {
 		var load = this.pu.pref("funcs.loadVoidLinksWithHandlers");
 		if(this.pu.pref("funcs.notifyVoidLinksWithHandlers"))
 			this.ut.notify(
-				this.ut.getLocalized("voidLinkWithHandler").replace(/\s*%h/, this.getItemHandlers(item))
-					+ (load ? "" : this.ut.getLocalized("clickForOpen")),
-				this.ut.getLocalized("title"),
+				this.getLocalized("voidLinkWithHandler").replace(/\s*%h/, this.getItemHandlers(item))
+					+ (load ? "" : this.getLocalized("clickForOpen")),
+				this.getLocalized("title"),
 				!load && loadLink
 			);
 		if(load)
@@ -439,9 +439,9 @@ var handyClicksFuncs = {
 		var load = this.pu.pref("funcs.loadJavaScriptLinks");
 		if(this.pu.pref("funcs.notifyJavaScriptLinks"))
 			this.ut.notify(
-				this.ut.getLocalized("javaScriptLink")
-					+ (load ? "" : this.ut.getLocalized("clickForOpen")),
-				this.ut.getLocalized("title"),
+				this.getLocalized("javaScriptLink")
+					+ (load ? "" : this.getLocalized("clickForOpen")),
+				this.getLocalized("title"),
 				!load && loadLink
 			);
 		if(load)
@@ -462,11 +462,11 @@ var handyClicksFuncs = {
 		catch(e) {
 			this.ut._err(e);
 			this.ut.notify(
-				this.ut.getLocalized("RegExpError")
+				this.getLocalized("RegExpError")
 					.replace("%r", regexpStr)
 					.replace("%p", this.pu.prefNS + regexpPref)
 					.replace("%err", e),
-				this.ut.getLocalized("errorTitle"),
+				this.getLocalized("errorTitle"),
 				this.ut.toErrorConsole,
 				this.ut.bind(this.pu.openAboutConfig, this.pu, [this.pu.prefNS + regexpPref]),
 				this.ut.NOTIFY_ICON_ERROR
@@ -751,8 +751,8 @@ var handyClicksFuncs = {
 
 	addEditItem: function(items) {
 		const cmd = "handyClicksFuncs.openEditorForLastEvent();";
-		const label = this.ut.getLocalized("edit");
-		const accesskey = this.ut.getLocalized("editAccesskey");
+		const label = this.getLocalized("edit");
+		const accesskey = this.getLocalized("editAccesskey");
 		const sepClass = "handyClicks-editItem-separator";
 		const miClass = "menuitem-iconic handyClicks-iconic handyClicks-editItem";
 		if(this.ut.isArray(items)) {
@@ -968,7 +968,7 @@ var handyClicksFuncs = {
 		node.click();
 		this.hc._enabled = true;
 
-		this.ut.attribute(form, "target", origTarget, true);
+		this.attribute(form, "target", origTarget, true);
 		this.restorePrefs();
 	},
 
@@ -1137,8 +1137,8 @@ var handyClicksFuncs = {
 		var doc = tab.linkedBrowser.contentDocument;
 		var curTitle = doc.title;
 		var newTitle = this.ut.prompt(
-			this.ut.getLocalized("renameTabTitle"),
-			this.ut.getLocalized("tabNewName"),
+			this.getLocalized("renameTabTitle"),
+			this.getLocalized("tabNewName"),
 			curTitle
 		);
 		const p = "__handyClicks__title";
@@ -1270,7 +1270,7 @@ var handyClicksFuncs = {
 					"load",
 					function _l() {
 						img.removeEventListener("load", _l, false);
-						_this.ut.attribute(img, "style", origStyle, true);
+						_this.attribute(img, "style", origStyle, true);
 					},
 					false
 				);
@@ -1308,14 +1308,14 @@ var handyClicksFuncs = {
 		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
 		this.ut.fixMinimized();
 		var button = ps.confirmEx(
-			window, this.ut.getLocalized("title"),
-			this.ut.getLocalized("openSimilarLinksConfirm"),
+			window, this.getLocalized("title"),
+			this.getLocalized("openSimilarLinksConfirm"),
 			  ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING
 			+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_CANCEL
 			+ ps.BUTTON_POS_2 * ps.BUTTON_TITLE_IS_STRING
 			+ ps.BUTTON_POS_0_DEFAULT,
-			this.ut.getLocalized("openButton"), "", this.ut.getLocalized("openWithDelaysButton"),
-			this.ut.getLocalized("openOnlyVisited"), onlyUnvisited
+			this.getLocalized("openButton"), "", this.getLocalized("openWithDelaysButton"),
+			this.getLocalized("openOnlyVisited"), onlyUnvisited
 		);
 		if(button == 1)
 			return;

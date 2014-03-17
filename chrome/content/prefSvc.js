@@ -217,8 +217,8 @@ var handyClicksPrefSvc = {
 				this.ut._err(e);
 				if(this.otherSrc) {
 					this.ut.alert(
-						this.ut.getLocalized("errorTitle"),
-						this.ut.getLocalized("invalidConfigFormat")
+						this.getLocalized("errorTitle"),
+						this.getLocalized("invalidConfigFormat")
 					);
 					return;
 				}
@@ -232,8 +232,8 @@ var handyClicksPrefSvc = {
 			this.ut._err("Loaded prefs or types is not object or invalid \"version\" property");
 			if(this.otherSrc) {
 				this.ut.alert(
-					this.ut.getLocalized("errorTitle"),
-					this.ut.getLocalized("invalidConfigFormat")
+					this.getLocalized("errorTitle"),
+					this.getLocalized("invalidConfigFormat")
 				);
 				return;
 			}
@@ -319,9 +319,9 @@ var handyClicksPrefSvc = {
 				break;
 			}
 		}
-		var errTitle = this.ut.getLocalized("errorTitle");
-		var errMsg = this.ut.getLocalized("badJSFile").replace("%f", corruptedPath)
-			+ (bakPath ? this.ut.getLocalized("restoredFromBackup").replace("%f", bakPath) : "")
+		var errTitle = this.getLocalized("errorTitle");
+		var errMsg = this.getLocalized("badJSFile").replace("%f", corruptedPath)
+			+ (bakPath ? this.getLocalized("restoredFromBackup").replace("%f", bakPath) : "")
 		setTimeout(function(_this, t, m) {
 			_this.ut.alert(t, m);
 		}, 0, this, errTitle, errMsg);
@@ -367,8 +367,8 @@ var handyClicksPrefSvc = {
 				+ "?line=" + eLine;
 			var eMsg = this.ut.errInfo("customTypeCompileError", ct.label, type, e);
 			this.ut.notifyInWindowCorner(
-				eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
-				this.ut.getLocalized("errorTitle"),
+				eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
+				this.getLocalized("errorTitle"),
 				this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
 				this.ut.NOTIFY_ICON_ERROR
 			);
@@ -459,8 +459,8 @@ var handyClicksPrefSvc = {
 			var href = fObj._editorLink = this.hc.getEditorLink() + "?line=" + eLine;
 			var eMsg = this.ut.errInfo("customFunctionCompileError", fObj.label, this.hc.itemType, err);
 			this.ut.notify(
-				eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
-				this.ut.getLocalized("errorTitle"),
+				eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
+				this.getLocalized("errorTitle"),
 				this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
 				this.ut.NOTIFY_ICON_ERROR
 			);
@@ -532,8 +532,8 @@ var handyClicksPrefSvc = {
 			type, e
 		);
 		this.ut.notifyInWindowCorner(
-			eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
-			this.ut.getLocalized("errorTitle"),
+			eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
+			this.getLocalized("errorTitle"),
 			this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
 			this.ut.NOTIFY_ICON_ERROR
 		);
@@ -898,8 +898,8 @@ var handyClicksPrefSvc = {
 	},
 	saveError: function(status) {
 		this.ut.alert(
-			this.ut.getLocalized("errorTitle"),
-			this.ut.getLocalized("saveError")
+			this.getLocalized("errorTitle"),
+			this.getLocalized("saveError")
 				.replace("%f", this.prefsFile.path)
 				.replace("%e", this.ut.getErrorName(status))
 		);
@@ -957,7 +957,7 @@ var handyClicksPrefSvc = {
 	getTypeLabel: function(type, isCustomType) {
 		return (isCustomType === undefined ? this.isCustomType(type) : isCustomType)
 				? this.getCustomTypeLabel(type)
-				: this.ut.getLocalized(type);
+				: this.getLocalized(type);
 	},
 	getCustomTypeLabel: function(type) {
 		var label = this.ut.getOwnProperty(this.types, type, "label");
@@ -990,7 +990,7 @@ var handyClicksPrefSvc = {
 		return /button=([0-2])/.test(sh) ? "button" + RegExp.$1 + (_short ? "short" : "") : "?";
 	},
 	getButtonStr: function(sh, _short) {
-		return this.ut.getLocalized(this.getButtonId(sh, _short));
+		return this.getLocalized(this.getButtonId(sh, _short));
 	},
 	get keys() {
 		const src = "chrome://global-platform/locale/platformKeys.properties";
@@ -1014,7 +1014,7 @@ var handyClicksPrefSvc = {
 				return keys[$1] || $1;
 			})
 			.replace(/,+/g, keys.sep);
-		return sh || (_short ? "" : this.ut.getLocalized("none"));
+		return sh || (_short ? "" : this.getLocalized("none"));
 	},
 	checkPrefs: function(pSrc) {
 		return this.checkPrefsStr(

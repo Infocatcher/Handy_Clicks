@@ -91,15 +91,15 @@ var handyClicksSetsUtils = {
 					hidden="' + !this.pu.pref("ui.onTopButton") + '"\
 					oncommand="handyClicksSetsUtils.wu.toggleOnTop();"\
 					hc_key="hc-sets-key-toggleOnTop"\
-					label="' + this.ut.getLocalized("onTop") + '"\
-					tooltiptext="' + this.ut.getLocalized("onTopTip") + '"\
+					label="' + this.getLocalized("onTop") + '"\
+					tooltiptext="' + this.getLocalized("onTopTip") + '"\
 				/>\
 				<menupopup id="hc-sets-onTopContext"\
 					onpopupshowing="handyClicksSetsUtils.initOnTopContext(this);"\
 					oncommand="handyClicksSetsUtils.handleOnTopContextCommand(event.target);">\
 					<menuitem id="hc-sets-onTopButtonLabel" type="checkbox"\
 						hc_pref="ui.onTopButtonLabel"\
-						label="' + this.ut.getLocalized("onTopButtonLabel") + '"\
+						label="' + this.getLocalized("onTopButtonLabel") + '"\
 					/>\
 				</menupopup>\
 			</hbox>'
@@ -156,7 +156,7 @@ var handyClicksSetsUtils = {
 	modifiedFlag: "* ",
 	get importFlag() {
 		delete this.importFlag;
-		return this.importFlag = this.ut.trim(this.ut.getLocalized("importFlag")) + " ";
+		return this.importFlag = this.ut.trim(this.getLocalized("importFlag")) + " ";
 	},
 	removeTitleFlags: function(title) {
 		title = this.ut.removePrefix(title, this.modifiedFlag);
@@ -175,7 +175,7 @@ var handyClicksSetsUtils = {
 	PROMPT_DONT_SAVE: 2,
 	notifyUnsaved: function(msg, askPref) {
 		if(!msg)
-			msg = this.ut.getLocalized("notifyUnsaved");
+			msg = this.getLocalized("notifyUnsaved");
 		if(!askPref)
 			askPref = "ui.notifyUnsaved";
 		if(!this.pu.pref(askPref))
@@ -187,14 +187,14 @@ var handyClicksSetsUtils = {
 		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
 		var ret = ps.confirmEx(
 			window,
-			this.ut.getLocalized("warningTitle"),
+			this.getLocalized("warningTitle"),
 			msg,
 			  ps["BUTTON_POS_" + this.PROMPT_SAVE]      * ps.BUTTON_TITLE_SAVE
 			+ ps["BUTTON_POS_" + this.PROMPT_CANCEL]    * ps.BUTTON_TITLE_CANCEL
 			+ ps["BUTTON_POS_" + this.PROMPT_DONT_SAVE] * ps.BUTTON_TITLE_DONT_SAVE
 			+ ps["BUTTON_POS_" + this.PROMPT_SAVE + "_DEFAULT"],
 			"", "", "",
-			this.ut.getLocalized("dontAskAgain"),
+			this.getLocalized("dontAskAgain"),
 			dontAsk
 		);
 		if(ret != this.PROMPT_CANCEL && dontAsk.value)
@@ -311,7 +311,7 @@ var handyClicksSetsUtils = {
 		//si.setAttribute("checked", "true");
 		rds.forEach(function(rd, i) {
 			// Strange things happens for hidden items...
-			this.ut.attribute(rd, "checked", i == indx);
+			this.attribute(rd, "checked", i == indx);
 		}, this);
 		if(this._showTooltip)
 			this.showInfoTooltip(e.target, si.getAttribute("label"), this.TOOLTIP_HIDE_QUICK, this.TOOLTIP_OFFSET_CURSOR);

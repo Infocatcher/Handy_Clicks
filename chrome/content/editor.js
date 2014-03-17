@@ -259,9 +259,9 @@ var handyClicksEditor = {
 			ml.getElementsByTagName("menuitem"),
 			function(mi) {
 				if(!mi.hasAttribute("hc_extLabel"))
-					mi.setAttribute("label", this.ut.getLocalized(mi.getAttribute("label")));
+					mi.setAttribute("label", this.getLocalized(mi.getAttribute("label")));
 				if(mi.hasAttribute("tooltiptext"))
-					mi.setAttribute("tooltiptext", this.ut.getLocalized(mi.getAttribute("tooltiptext")));
+					mi.setAttribute("tooltiptext", this.getLocalized(mi.getAttribute("tooltiptext")));
 			},
 			this
 		);
@@ -512,7 +512,7 @@ var handyClicksEditor = {
 			)
 		) {
 			var res = this.su.notifyUnsaved(
-				this.ut.getLocalized("editorUnsavedSwitchWarning"),
+				this.getLocalized("editorUnsavedSwitchWarning"),
 				"editor.unsavedSwitchWarning"
 			);
 			if(res == this.su.PROMPT_CANCEL) {
@@ -605,7 +605,7 @@ var handyClicksEditor = {
 		}
 	},
 	customTypeIdInfo: function(anchor) {
-		var msg = this.ut.getLocalized("allowedChars")
+		var msg = this.getLocalized("allowedChars")
 			.replace("%s", "a-z, A-Z, 0-9, $, _");
 		this.su.showInfoTooltip(anchor, msg);
 	},
@@ -637,7 +637,7 @@ var handyClicksEditor = {
 			var dis = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
 			var notUsed = !this.typeUsed(cType);
 			var tip = notUsed
-				? this.ut.getLocalized("customTypeNotUsed") + " \n" + cType
+				? this.getLocalized("customTypeNotUsed") + " \n" + cType
 				: cType;
 			var mi = this.ut.createElement("menuitem", {
 				label: label,
@@ -886,10 +886,10 @@ var handyClicksEditor = {
 			onclick: "handyClicksEditor.clickHelper(event);"
 		});
 
-		var cfgTt = this.ut.getLocalized("openAboutConfig");
+		var cfgTt = this.getLocalized("openAboutConfig");
 		switch(argType) {
 			case "checkbox":
-				var label = this.ut.getLocalized(argName);
+				var label = this.getLocalized(argName);
 				argVal && elt.setAttribute("checked", "true");
 				elt.setAttribute("label", label);
 				var cfg = this.getAboutConfigEntry(label);
@@ -901,12 +901,12 @@ var handyClicksEditor = {
 			case "menulist":
 				// Description:
 				argContainer.appendChild(this.ut.createElement("label", {
-					value: this.ut.getLocalized(argName)
+					value: this.getLocalized(argName)
 				}));
 				// List of values:
 				var mp = document.createElement("menupopup");
 				this.types.menulists[argName].forEach(function(val, indx) {
-					var label = this.ut.getLocalized(argName + "[" + val + "]");
+					var label = this.getLocalized(argName + "[" + val + "]");
 					var cfg = this.getAboutConfigEntry(label);
 					var mi = this.ut.createElement("menuitem", {
 						value: val,
@@ -947,7 +947,7 @@ var handyClicksEditor = {
 		var si = ml.selectedItem;
 		if(si && si.hasAttribute("hc_aboutConfigEntry")) {
 			ml.setAttribute("hc_aboutConfigEntry", si.getAttribute("hc_aboutConfigEntry"));
-			ml.setAttribute("tooltiptext", this.ut.getLocalized("openAboutConfig"));
+			ml.setAttribute("tooltiptext", this.getLocalized("openAboutConfig"));
 			return;
 		}
 		ml.removeAttribute("hc_aboutConfigEntry");
@@ -995,7 +995,7 @@ var handyClicksEditor = {
 		var labelField = this.$("hc-editor-customType");
 		labelField.setAttribute("hc_notUsed", notUsed);
 		if(notUsed)
-			labelField.setAttribute("tooltiptext", this.ut.getLocalized("customTypeNotUsed"));
+			labelField.setAttribute("tooltiptext", this.getLocalized("customTypeNotUsed"));
 		else
 			labelField.removeAttribute("tooltiptext");
 	},
@@ -1009,8 +1009,8 @@ var handyClicksEditor = {
 			&& !this.applyButton.disabled
 		) {
 			var res = this.su.notifyUnsaved(
-				this.ut.getLocalized("editorUnsavedSwitchWarning")
-					+ this.ut.getLocalized("fixNote"),
+				this.getLocalized("editorUnsavedSwitchWarning")
+					+ this.getLocalized("fixNote"),
 				"editor.unsavedSwitchWarning"
 			);
 			if(res == this.su.PROMPT_CANCEL) {
@@ -1124,12 +1124,12 @@ var handyClicksEditor = {
 	},
 	_checkForCrashBackups: function(silent) {
 		var bakPath = this._hasCrashBackup();
-		this.ut.attribute(document.documentElement, "hc_hasCrashBackup", bakPath);
+		this.attribute(document.documentElement, "hc_hasCrashBackup", bakPath);
 		this.hasCrashBackup = !!bakPath;
 		if(bakPath && !silent) {
 			this.ut.notifyInWindowCorner(
-				this.ut.getLocalized("hasCrashBackup").replace("%f", bakPath),
-				this.ut.getLocalized("warningTitle"),
+				this.getLocalized("hasCrashBackup").replace("%f", bakPath),
+				this.getLocalized("warningTitle"),
 				null,
 				null,
 				this.ut.NOTIFY_ICON_WARNING
@@ -1270,8 +1270,8 @@ var handyClicksEditor = {
 				req.push(this.$("hc-editor-funcField" + this.delayId));
 			this.highlightRequiredFields(req, true);
 			this.ut.alert(
-				this.ut.getLocalized("errorTitle"),
-				this.ut.getLocalized("editorIncomplete")
+				this.getLocalized("errorTitle"),
+				this.getLocalized("editorIncomplete")
 			);
 			this.highlightRequiredFields(req, false);
 			return false;
@@ -1467,8 +1467,8 @@ var handyClicksEditor = {
 			];
 			this.highlightRequiredFields(req, true);
 			this.ut.alert(
-				this.ut.getLocalized("errorTitle"),
-				this.ut.getLocalized("editorIncomplete")
+				this.getLocalized("errorTitle"),
+				this.getLocalized("editorIncomplete")
 			);
 			this.highlightRequiredFields(req, false);
 			return false;
@@ -1482,8 +1482,8 @@ var handyClicksEditor = {
 		if(
 			!newEnabl && curEnabl && this.typeActive(cType)
 			&& !this.ut.confirm(
-				this.ut.getLocalized("warningTitle"),
-				this.ut.getLocalized("typeDisablingWarning")
+				this.getLocalized("warningTitle"),
+				this.getLocalized("typeDisablingWarning")
 			)
 		)
 			return false;
@@ -1562,9 +1562,9 @@ var handyClicksEditor = {
 				&& (field.localName != "menulist" || this.checkMenulist(field))
 			)
 				return;
-			this.ut.attribute(field, "hc_requiredField", addFlag);
+			this.attribute(field, "hc_requiredField", addFlag);
 			for(var tab = this.getTabForNode(field); tab; tab = this.getTabForNode(tab, true))
-				this.ut.attribute(tab, "hc_requiredFieldParentTab", addFlag && tab.getAttribute("selected") != "true");
+				this.attribute(tab, "hc_requiredFieldParentTab", addFlag && tab.getAttribute("selected") != "true");
 		}, this);
 	},
 	checkMenulist: function(ml) {

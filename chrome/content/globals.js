@@ -20,6 +20,12 @@ var g = window.handyClicksGlobals = {
 	e: function(id) {
 		return document.getElementById(id);
 	},
+	attribute: function(node, attr, val, allowEmpty) {
+		if(val || allowEmpty && val === "")
+			node.setAttribute(attr, val);
+		else
+			node.removeAttribute(attr);
+	},
 
 	get jsLoader() {
 		delete g.jsLoader;
@@ -32,6 +38,41 @@ var g = window.handyClicksGlobals = {
 				func.apply(context, args);
 			},
 			delay || 0, func, context, args || []
+		);
+	},
+
+	_strings: { __proto__: null }, // cache of strings from stringbundle
+	_bundles: { __proto__: null },
+	getBundle: function(src) {
+		return g._bundles[src] || (
+			g._bundles[src] = Components.classes["@mozilla.org/intl/stringbundle;1"]
+				.getService(Components.interfaces.nsIStringBundleService)
+				.createBundle(src)
+		);
+	},
+	getStr: function(src, sName, defaultStr, _callerLevel) {
+		try {
+			return g.getBundle(src).GetStringFromName(sName);
+		}
+		catch(e) {
+			if(_callerLevel == -1)
+				return defaultStr || "";
+			var caller = Components.stack.caller;
+			while(caller && _callerLevel--)
+				caller = caller.caller;
+			g.ut._warn(
+				'Can\'t get localized string "' + sName + '" from "' + src + '"',
+				caller.filename,
+				caller.lineNumber
+			);
+		}
+		return defaultStr || "";
+	},
+	getLocalized: function(sName) {
+		return g._strings[sName] || (
+			g._strings[sName] = g.getStr("chrome://handyclicks/locale/hcs.properties", sName, "", 1)
+				|| g.getStr("chrome://handyclicks-locale/content/hcs.properties", sName, "", 1)
+				|| g.ut.makeBuggyStr(sName)
 		);
 	},
 

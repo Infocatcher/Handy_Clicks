@@ -74,7 +74,7 @@ var handyClicksUI = {
 			this._blinkNodeTimeout = this.timeout(
 				function(node, attr, oldFx, origStyle) {
 					node.removeAttributeNS(this.attrNS, attr);
-					oldFx && this.ut.attribute(node, "style", origStyle, true);
+					oldFx && this.attribute(node, "style", origStyle, true);
 				},
 				this, [node, attr, oldFx, origStyle],
 				time
@@ -114,7 +114,7 @@ var handyClicksUI = {
 		if(!fromKey || this.controlsVisible)
 			return;
 		this.ut.notifyInWindowCorner(
-			this.ut.getLocalized(en ? "enabled" : "disabled"), null,
+			this.getLocalized(en ? "enabled" : "disabled"), null,
 			this.ut.bind(this.wu.openSettings, this.wu), null,
 			en ? this.ut.NOTIFY_ICON_NORMAL : this.ut.NOTIFY_ICON_DISABLED
 		);
@@ -217,7 +217,7 @@ var handyClicksUI = {
 			var context = this.pu.pref("ui.action" + type + "RightClick") == this.ACTION_POPUP
 				? "handyClicks-settingsPopup"
 				: "_handyClicks-noContext"; // Dummy value
-			this.ut.attribute(elt, "popup", popup);
+			this.attribute(elt, "popup", popup);
 			elt.setAttribute("context", context);
 			//~ note: "popup" doesn't work for menuitems
 			if(elt.localName == "menuitem")
@@ -324,7 +324,7 @@ var handyClicksUI = {
 	setEditModeStatus: function(em) {
 		em = em === undefined ? this.hc.editMode : em;
 		var tt = em
-			? this.ut.getLocalized("editModeTip").replace(
+			? this.getLocalized("editModeTip").replace(
 				"%key",
 				this.ut.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE") || "Esc"
 			)
@@ -355,8 +355,8 @@ var handyClicksUI = {
 		) {
 			var exitKey = this.ut.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE") || "Esc";
 			this.ut.notifyInWindowCorner(
-				this.ut.getLocalized("editModeNote").replace("%key", exitKey),
-				this.ut.getLocalized("editModeTitle"),
+				this.getLocalized("editModeNote").replace("%key", exitKey),
+				this.getLocalized("editModeTitle"),
 				this.ut.bind(function() { this.hc.editMode = false; }, this)
 			);
 		}
@@ -429,7 +429,7 @@ var handyClicksUI = {
 		if(enabled && !this.hc._settingsLoadTimer && this.ps._loadStatus == this.ps.SETS_LOAD_SKIPPED)
 			this.ps.loadSettingsAsync();
 		this.hc.initListeners(enabled);
-		var tt = this.ut.getLocalized(enabled ? "enabledTip" : "disabledTip");
+		var tt = this.getLocalized(enabled ? "enabledTip" : "disabledTip");
 		var ttAttr = this.tooltipAttrBase + "0";
 		this.setControls(function(elt) {
 			elt.setAttribute("hc_enabled", enabled);
@@ -447,7 +447,7 @@ var handyClicksUI = {
 		var icon = e ? String(e.button || 0) : null;
 		this._hasIcon = !!icon;
 		this.setControls(function(elt) {
-			this.ut.attribute(elt, "hc_button", icon);
+			this.attribute(elt, "hc_button", icon);
 		});
 	},
 	restoreIcon: function() {
@@ -617,8 +617,8 @@ var handyClicksUI = {
 			lbl = document.createElement("label");
 			lbl.setAttribute("value", val);
 			lbl.setAttribute("crop", "center");
-			this.ut.attribute(lbl, "style", tNode.getAttribute(this.tooltipAttrStyle + i));
-			this.ut.attribute(lbl, "class", tNode.getAttribute(this.tooltipAttrClass + i));
+			this.attribute(lbl, "style", tNode.getAttribute(this.tooltipAttrStyle + i));
+			this.attribute(lbl, "class", tNode.getAttribute(this.tooltipAttrClass + i));
 			tt.appendChild(lbl);
 		}
 		return i > 0;
@@ -646,7 +646,7 @@ var handyClicksUI = {
 		var key = tokens.pop() || " ";
 		var modifiers = tokens.join(",");
 		kElt.removeAttribute("disabled");
-		kElt.setAttribute(this.ut.hasPrefix(key, "VK_") ? "keycode" : "key", key);
+		kElt.setAttribute(key.substr(0, 3) == "VK_" ? "keycode" : "key", key);
 		kElt.setAttribute("modifiers", modifiers);
 	}
 };

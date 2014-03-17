@@ -211,7 +211,7 @@ var handyClicksSets = {
 		this.rowsCache = { __proto__: null };
 
 		var daTime = this.pu.pref("delayedActionTimeout");
-		this._daAfter = this.ut.getLocalized("after").replace("%t", daTime);
+		this._daAfter = this.getLocalized("after").replace("%t", daTime);
 		this._forcedDisDa = daTime <= 0;
 		this._expandDa = this.pu.pref("sets.treeExpandDelayedAction");
 		this._localizeArgs = this.pu.pref("sets.localizeArguments");
@@ -239,7 +239,7 @@ var handyClicksSets = {
 					var button = this.ps.getButtonId(sh);
 					var modifiers = this.ps.getModifiersStr(sh);
 					var buttonContainer = this.eltsCache[button]
-						|| this.appendContainerItem(df, button, this.ut.getLocalized(button));
+						|| this.appendContainerItem(df, button, this.getLocalized(button));
 					var modifiersContainer = this.eltsCache[sh]
 						|| this.appendContainerItem(buttonContainer, sh, modifiers);
 					this.appendItems(modifiersContainer, so, sh);
@@ -262,7 +262,7 @@ var handyClicksSets = {
 				break;
 				case 3: // Inverse
 					var button = this.ps.getButtonId(sh);
-					var buttonLabel = this.ut.getLocalized(button);
+					var buttonLabel = this.getLocalized(button);
 					var modifiers = this.ps.getModifiersStr(sh);
 					for(var type in so) if(so.hasOwnProperty(type)) {
 						var typeContainer = this.eltsCache[type]
@@ -501,7 +501,7 @@ var handyClicksSets = {
 			if(!this.ut.isObject(da))
 				da = {};
 
-			this.appendTreeCell(daRow, "label", this.ut.getLocalized("delayed"));
+			this.appendTreeCell(daRow, "label", this.getLocalized("delayed"));
 			this.appendTreeCell(daRow, "label", this._daAfter);
 
 			var daCustom = !!da.custom;
@@ -613,11 +613,11 @@ var handyClicksSets = {
 		var act = fo.action;
 		if(act in this.su.extLabels)
 			return this.su.getExtLabel(act);
-		return this.ut.getLocalized(act);
+		return this.getLocalized(act);
 	},
 	getActionCode: function(action, isCustom) {
 		return isCustom
-			? this.ut.getLocalized("customFunction")
+			? this.getLocalized("customFunction")
 				+ (this.oldTree ? " " : "\n")
 				+ this.cropCode(action || "")
 			: action;
@@ -704,8 +704,8 @@ var handyClicksSets = {
 	getLocalizedArguments: function(argsObj, p) {
 		var argVal = argsObj[p];
 		return typeof argVal == "boolean"
-			? this.ut.getLocalized(p) + ": " + this.ut.getLocalized(argVal ? "yes" : "no")
-			: this.ut.getLocalized(p) + " " + this.ut.getLocalized(p + "[" + argVal + "]");
+			? this.getLocalized(p) + ": " + this.getLocalized(argVal ? "yes" : "no")
+			: this.getLocalized(p) + " " + this.getLocalized(p + "[" + argVal + "]");
 	},
 	getRawArguments: function(argsObj, p) {
 		return p + " = " + uneval(argsObj[p]);
@@ -878,9 +878,9 @@ var handyClicksSets = {
 		var dontAsk = { value: false };
 		var ok = this.ut.promptsSvc.confirmCheck(
 			window,
-			this.ut.getLocalized("warningTitle"),
-			this.ut.getLocalized("openEditorsWarning").replace("%n", count),
-			this.ut.getLocalized("dontAskAgain"),
+			this.getLocalized("warningTitle"),
+			this.getLocalized("openEditorsWarning").replace("%n", count),
+			this.getLocalized("dontAskAgain"),
 			dontAsk
 		);
 		if(!ok)
@@ -923,13 +923,13 @@ var handyClicksSets = {
 				var dObj = this.ut.getOwnProperty(fObj, "delayedAction");
 				var addLabel = "";
 				if(tItem.__isDelayed) {
-					typeLabel += " (" + this.ut.getLocalized("delayed") + ")";
+					typeLabel += " (" + this.getLocalized("delayed") + ")";
 					fObj = dObj;
 				}
 				else {
 					var daLabel = this.ut.isObject(dObj) && this.getActionLabel(fObj);
 					if(daLabel)
-						addLabel = "\n\t(" + this.ut.getLocalized("delayed") + ": "
+						addLabel = "\n\t(" + this.getLocalized("delayed") + ": "
 							+ this.cropStr(daLabel, MAX_LABEL_LENGTH) + ")";
 				}
 				var label = this.ut.isObject(fObj)
@@ -958,8 +958,8 @@ var handyClicksSets = {
 		if(
 			!tIts.length
 			|| !this.ut.confirm(
-				this.ut.getLocalized("title"),
-				this.ut.getLocalized("deleteConfirm").replace("%n", tIts.length)
+				this.getLocalized("title"),
+				this.getLocalized("deleteConfirm").replace("%n", tIts.length)
 					+ "\n\n" + this.getItemsInfo(tIts).join("\n")
 			)
 		)
@@ -1838,9 +1838,9 @@ var handyClicksSets = {
 	},
 	buggyPrefsConfirm: function() {
 		return !this._buggy || this.ut.confirmEx(
-			this.ut.getLocalized("warningTitle"),
-			this.ut.getLocalized("saveBuggyConfirm").replace("%n", this._buggy),
-			this.ut.getLocalized("save")
+			this.getLocalized("warningTitle"),
+			this.getLocalized("saveBuggyConfirm").replace("%n", this._buggy),
+			this.getLocalized("save")
 		);
 	},
 	saveSettingsObjectsCheck: function(applyFlag, callback, context) {
@@ -1905,24 +1905,24 @@ var handyClicksSets = {
 			var text;
 			switch(pName) {
 				case "sets.importJSWarning":
-					text = this.ut.getLocalized("importSetsWarning");
+					text = this.getLocalized("importSetsWarning");
 				break;
 				case "sets.openEditorsLimit":
-					text = this.ut.getLocalized("openEditorsWarning")
+					text = this.getLocalized("openEditorsWarning")
 						.replace("%n", "N");
 				break;
 				case "sets.removeBackupConfirm":
-					text = this.ut.getLocalized("removeBackupConfirm")
+					text = this.getLocalized("removeBackupConfirm")
 						.replace("%f", this.ps.prefsFileName + ".js");
 				break;
 				case "ui.notifyUnsaved":
-					text = this.ut.getLocalized("notifyUnsaved");
+					text = this.getLocalized("notifyUnsaved");
 				break;
 				case "editor.unsavedSwitchWarning":
-					text = this.ut.getLocalized("editorUnsavedSwitchWarning");
+					text = this.getLocalized("editorUnsavedSwitchWarning");
 				break;
 				case "sets.incompleteImportWarning":
-					text = this.ut.getLocalized("importIncomplete");
+					text = this.getLocalized("importIncomplete");
 				break;
 				default:
 					this.ut._warn('initResetWarnMsgs: no description for "' + pName + '" pref');
@@ -1971,7 +1971,7 @@ var handyClicksSets = {
 			if(curDir)
 				fp.displayDirectory = curDir;
 		}
-		fp.init(window, this.ut.getLocalized("selectEditor"), fp.modeOpen);
+		fp.init(window, this.getLocalized("selectEditor"), fp.modeOpen);
 		if(fp.show() != fp.returnOK)
 			return;
 		ee.value = fp.file.path;
@@ -2077,7 +2077,7 @@ var handyClicksSets = {
 		}
 		if(isRelative && eeFile)
 			tt += (tt ? "\n" : "") + eeFile.path;
-		this.ut.attribute(img, "tooltiptext", tt);
+		this.attribute(img, "tooltiptext", tt);
 	},
 	_prevApp: null,
 	setDefaultArgs: function(app) {
@@ -2163,17 +2163,17 @@ var handyClicksSets = {
 	},
 	checkImport: function(isImport) {
 		//return !this.ps.otherSrc
-		//	|| this.ut.confirm(this.ut.getLocalized("title"), this.ut.getLocalized("importIncomplete"));
+		//	|| this.ut.confirm(this.getLocalized("title"), this.getLocalized("importIncomplete"));
 		if(!this.ps.otherSrc)
 			return true;
 		var askPref = "sets.incompleteImportWarning";
 		var dontAsk = { value: false };
 		var ok = this.ut.confirmEx(
-			this.ut.getLocalized("warningTitle"),
-			this.ut.getLocalized("importIncomplete"),
-			this.ut.getLocalized(isImport ? "continue" : "closeSettings"),
+			this.getLocalized("warningTitle"),
+			this.getLocalized("importIncomplete"),
+			this.getLocalized(isImport ? "continue" : "closeSettings"),
 			false,
-			this.ut.getLocalized("dontAskAgain"),
+			this.getLocalized("dontAskAgain"),
 			dontAsk
 		);
 		if(!ok)
@@ -2321,8 +2321,8 @@ var handyClicksSets = {
 	// Reset prefs:
 	get resetPrefsConfirmed() {
 		return this.ut.confirm(
-			this.ut.getLocalized("warningTitle"),
-			this.ut.getLocalized("resetPrefsWarning")
+			this.getLocalized("warningTitle"),
+			this.getLocalized("resetPrefsWarning")
 		);
 	},
 	resetPrefs: function() {
@@ -2336,7 +2336,7 @@ var handyClicksSets = {
 	// Export/import:
 	exportPrefsHeader: "[Handy Clicks settings]",
 	exportPrefs: function() {
-		var file = this.pickFile(this.ut.getLocalized("exportPrefs"), true, "ini");
+		var file = this.pickFile(this.getLocalized("exportPrefs"), true, "ini");
 		if(!file)
 			return;
 		var data = this.exportPrefsHeader + "\n"
@@ -2352,14 +2352,14 @@ var handyClicksSets = {
 		this.backupsDir = file.parent;
 	},
 	importPrefs: function() {
-		var file = this.pickFile(this.ut.getLocalized("importPrefs"), false, "ini");
+		var file = this.pickFile(this.getLocalized("importPrefs"), false, "ini");
 		if(!file)
 			return;
 		var str = this.ut.readFromFile(file);
 		if(!this.ut.hasPrefix(str, this.exportPrefsHeader)) {
 			this.ut.alert(
-				this.ut.getLocalized("importErrorTitle"),
-				this.ut.getLocalized("invalidConfigFormat")
+				this.getLocalized("importErrorTitle"),
+				this.getLocalized("invalidConfigFormat")
 			);
 			return;
 		}
@@ -2405,7 +2405,7 @@ var handyClicksSets = {
 		}, this);
 		this.pu.savePrefFile();
 		this.reloadPrefpanes(); // Changed prefs don't reloaded by default
-		this.ut.notifyInWindowCorner(this.ut.getLocalized("configSuccessfullyImported"));
+		this.ut.notifyInWindowCorner(this.getLocalized("configSuccessfullyImported"));
 	},
 
 	// Clicking options management
@@ -2416,7 +2416,7 @@ var handyClicksSets = {
 		var ct = this.ct;
 		if(targetId == ct.EXPORT_FILEPICKER) {
 			var file = this.pickFile(
-				this.ut.getLocalized("exportSets"), true, "js",
+				this.getLocalized("exportSets"), true, "js",
 				!partialExport && this.ps.prefsFile.lastModifiedTime
 			);
 			if(!file)
@@ -2496,7 +2496,7 @@ var handyClicksSets = {
 		switch(srcId) {
 			default:
 			case ct.IMPORT_FILEPICKER:
-				pSrc = this.pickFile(this.ut.getLocalized("importSets"), false, "js");
+				pSrc = this.pickFile(this.getLocalized("importSets"), false, "js");
 				if(!pSrc)
 					return;
 			break;
@@ -2516,18 +2516,18 @@ var handyClicksSets = {
 				: !this.ps.checkPrefs(pSrc)
 		) {
 			this.ut.alert(
-				this.ut.getLocalized("importErrorTitle"),
-				this.ut.getLocalized("invalidConfigFormat")
-					+ (this.ps._hashError ? this.ut.getLocalized("invalidHash") : "")
+				this.getLocalized("importErrorTitle"),
+				this.getLocalized("invalidConfigFormat")
+					+ (this.ps._hashError ? this.getLocalized("invalidHash") : "")
 			);
 			return;
 		}
 		if(
 			this.ps._hashMissing
 			&& !this.ut.confirmEx(
-				this.ut.getLocalized("warningTitle"),
-				this.ut.getLocalized("hashMissingConfirm"),
-				this.ut.getLocalized("continueImport")
+				this.getLocalized("warningTitle"),
+				this.getLocalized("hashMissingConfirm"),
+				this.getLocalized("continueImport")
 			)
 		)
 			return;
@@ -2537,9 +2537,9 @@ var handyClicksSets = {
 			var dontAsk = { value: false };
 			var ok = this.ut.promptsSvc.confirmCheck(
 				window,
-				this.ut.getLocalized("warningTitle"),
-				this.ut.getLocalized("importSetsWarning"),
-				this.ut.getLocalized("importSetsWarningNotShowAgain"),
+				this.getLocalized("warningTitle"),
+				this.getLocalized("importSetsWarning"),
+				this.getLocalized("importSetsWarningNotShowAgain"),
 				dontAsk
 			);
 			if(!ok)
@@ -2575,7 +2575,7 @@ var handyClicksSets = {
 		while(bFile.exists());
 		this.ut.copyFileTo(this.ps.prefsFile, this.ps.backupsDir, bFile.leafName);
 		this.ut.notifyInWindowCorner(
-			this.ut.getLocalized("backupCreated").replace("%f", bFile.path),
+			this.getLocalized("backupCreated").replace("%f", bFile.path),
 			null,
 			this.ut.bind(this.reveal, this, [bFile])
 		);
@@ -2598,9 +2598,9 @@ var handyClicksSets = {
 			this.ut.fixMinimized();
 			var dontAsk = { value: false };
 			var ok = this.ut.promptsSvc.confirmCheck(
-				window, this.ut.getLocalized("title"),
-				this.ut.getLocalized("removeBackupConfirm").replace("%f", fName),
-				this.ut.getLocalized("dontAskAgain"),
+				window, this.getLocalized("title"),
+				this.getLocalized("removeBackupConfirm").replace("%f", fName),
+				this.getLocalized("dontAskAgain"),
 				dontAsk
 			);
 			if(!ok)
@@ -2679,7 +2679,7 @@ var handyClicksSets = {
 		var isEmpty = _fTerms.length == 0;
 		var ubCount = _ubTerms.length;
 
-		var bytes = this.ut.getLocalized("bytes");
+		var bytes = this.getLocalized("bytes");
 		var testBackupStatus = this.ut.storage("testBackupCreated") ? "thisSession" : "afterCrash";
 
 		var df = document.createDocumentFragment();
@@ -2864,8 +2864,8 @@ var handyClicksSets = {
 		var fp = this.ut.fp;
 		fp.defaultString = this.ps.prefsFileName + (modeSave ? this.getFormattedDate(date) : "") + "." + ext;
 		fp.defaultExtension = ext;
-		fp.appendFilter(this.ut.getLocalized("hcPrefsFiles"), "handyclicks_prefs*." + ext);
-		fp.appendFilter(this.ut.getLocalized(ext + "Files"), "*." + ext + (ext == "js" ? ";*.jsm" : ""));
+		fp.appendFilter(this.getLocalized("hcPrefsFiles"), "handyclicks_prefs*." + ext);
+		fp.appendFilter(this.getLocalized(ext + "Files"), "*." + ext + (ext == "js" ? ";*.jsm" : ""));
 		fp.appendFilters(fp.filterAll);
 		var bDir = this.backupsDir;
 		if(bDir)

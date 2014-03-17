@@ -300,42 +300,6 @@ var handyClicksUtils = {
 		};
 	},
 
-	// Localized strings:
-	_strings: { __proto__: null }, // cache of strings from stringbundle
-	_bundles: { __proto__: null },
-	getBundle: function(src) {
-		return this._bundles[src] || (
-			this._bundles[src] = Components.classes["@mozilla.org/intl/stringbundle;1"]
-				.getService(Components.interfaces.nsIStringBundleService)
-				.createBundle(src)
-		);
-	},
-	getStr: function(src, sName, defaultStr, _callerLevel) {
-		try {
-			return this.getBundle(src).GetStringFromName(sName);
-		}
-		catch(e) {
-			if(_callerLevel == -1)
-				return defaultStr || "";
-			var caller = Components.stack.caller;
-			while(caller && _callerLevel--)
-				caller = caller.caller;
-			this._warn(
-				'Can\'t get localized string "' + sName + '" from "' + src + '"',
-				caller.filename,
-				caller.lineNumber
-			);
-		}
-		return defaultStr || "";
-	},
-	getLocalized: function(sName) {
-		return this._strings[sName] || (
-			this._strings[sName] = this.getStr("chrome://handyclicks/locale/hcs.properties", sName, "", 1)
-				|| this.getStr("chrome://handyclicks-locale/content/hcs.properties", sName, "", 1)
-				|| this.makeBuggyStr(sName)
-		);
-	},
-
 	_entities: { __proto__: null }, // cache of strings from *.dtd files
 	getEntity: function(eName, dtds, contentType) {
 		// Strange bug with Greasemonkey 0.8.20100408.6:
@@ -1224,12 +1188,6 @@ var handyClicksUtils = {
 		if(attrs) for(var attrName in attrs) if(attrs.hasOwnProperty(attrName))
 			node.setAttribute(attrName, attrs[attrName]);
 		return node;
-	},
-	attribute: function(node, attr, val, allowEmpty) {
-		if(val || allowEmpty && val === "")
-			node.setAttribute(attr, val);
-		else
-			node.removeAttribute(attr);
 	},
 	parseFromXML: function(xml) { // Deprecated
 		this._deprecated("Called obsolete parseFromXML(), use parseXULFromString() without E4X instead");

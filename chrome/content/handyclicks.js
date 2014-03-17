@@ -470,8 +470,8 @@ var handyClicks = {
 						+ "?line=" + eLine;
 					var eMsg = this.ut.errInfo("customTypeDefineError", ct.label, type, e);
 					this.ut.notify(
-						eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
-						this.ut.getLocalized("errorTitle"),
+						eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
+						this.getLocalized("errorTitle"),
 						this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
 						this.ut.NOTIFY_ICON_ERROR
 					);
@@ -787,8 +787,8 @@ var handyClicks = {
 					+ "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customTypeContextMenuError", ct.label, this.itemType, e);
 				this.ut.notify(
-					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
-					this.ut.getLocalized("errorTitle"),
+					eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
+					this.getLocalized("errorTitle"),
 					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
 					this.ut.NOTIFY_ICON_ERROR
 				);
@@ -1153,8 +1153,8 @@ var handyClicks = {
 				var href = this.getEditorLink(e) + "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customFunctionError", funcObj.label, this.itemType, err);
 				this.ut.notify(
-					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
-					this.ut.getLocalized("errorTitle"),
+					eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
+					this.getLocalized("errorTitle"),
 					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
 					this.ut.NOTIFY_ICON_ERROR
 				);
@@ -1177,13 +1177,13 @@ var handyClicks = {
 					var href = this.getEditorLink(e);
 					var securityError = /Load of \S* from \S* denied\./.test(err);
 					var eMsg = securityError
-						? this.ut.getLocalized("securityError")
+						? this.getLocalized("securityError")
 							.replace("%u", this.fn.getItemURI())
 							.replace("%s", this.item.ownerDocument.documentURI)
-						: this.ut.getLocalized("errorInBuiltInFunction").replace("%f", action);
+						: this.getLocalized("errorInBuiltInFunction").replace("%f", action);
 					this.ut.notify(
-						eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
-						this.ut.getLocalized(securityError ? "warningTitle" : "errorTitle"),
+						eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
+						this.getLocalized(securityError ? "warningTitle" : "errorTitle"),
 						this.ut.toErrorConsole, this.wu.getOpenEditorLink(href),
 						securityError ? this.ut.NOTIFY_ICON_WARNING : this.ut.NOTIFY_ICON_ERROR
 					);
@@ -1193,10 +1193,10 @@ var handyClicks = {
 			}
 			else {
 				var href = this.getEditorLink(e);
-				var eMsg = this.ut.getLocalized("functionNotFound").replace("%f", action);
+				var eMsg = this.getLocalized("functionNotFound").replace("%f", action);
 				this.ut.notify(
-					eMsg + this.ut.getLocalized("openConsole") + this.ut.getLocalized("openEditor"),
-					this.ut.getLocalized("warningTitle"),
+					eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
+					this.getLocalized("warningTitle"),
 					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href),
 					this.ut.NOTIFY_ICON_WARNING
 				);
