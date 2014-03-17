@@ -253,7 +253,7 @@ var handyClicksSetsUtils = {
 					childsHeight += ch.boxObject.height;
 				}
 			);
-			//this.ut._log("popupHeight: " + popupHeight + "\nchildsHeight: " + childsHeight);
+			//this._log("popupHeight: " + popupHeight + "\nchildsHeight: " + childsHeight);
 			if(childsHeight > popupHeight) // Has scrollbar
 				return false;
 		}

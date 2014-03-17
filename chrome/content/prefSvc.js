@@ -162,7 +162,7 @@ var handyClicksPrefSvc = {
 	_loadStatus: -1, // SETS_LOAD_UNKNOWN
 	skipLoad: function() {
 		if(this.isMainWnd && !this.hc.enabled) {
-			this.ut._log("skipLoad() -> disabled");
+			this._log("skipLoad() -> disabled");
 			this._loadStatus = this.SETS_LOAD_SKIPPED;
 			return true;
 		}
@@ -175,7 +175,7 @@ var handyClicksPrefSvc = {
 		}
 		var pFile = this.prefsFile;
 		if(!pFile.exists()) {
-			this.ut._log("loadSettingsAsync() -> save default settings");
+			this._log("loadSettingsAsync() -> save default settings");
 			this.loadSettings(this.defaultSettings(), true);
 			callback && callback.call(context, Components.results.NS_OK);
 			return true;
@@ -190,7 +190,7 @@ var handyClicksPrefSvc = {
 			return;
 		this._loadStatus = this.SETS_LOAD_UNKNOWN;
 		if(this.isMainWnd)
-			this.ut._log(fromProfile ? "loadSettingsAsync()" : "loadSettings()");
+			this._log(fromProfile ? "loadSettingsAsync()" : "loadSettings()");
 		//this.otherSrc = !!pSrc;
 		pSrc = pSrc || this.prefsFile;
 		if(pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)) {
@@ -261,7 +261,7 @@ var handyClicksPrefSvc = {
 		if(s.substr(0, 4) != "var ") //= Added: 2012-01-13
 			return s;
 		if(!silent)
-			this.ut._log("Prefs in old format, try convert to JSON");
+			this._log("Prefs in old format, try convert to JSON");
 
 		// Note: supported only features used in old settings format
 		return "{\n"
@@ -340,12 +340,12 @@ var handyClicksPrefSvc = {
 
 		if(!this.isOkCustomType(type)) {
 			this.ut._warn('Invalid custom type: "' + type + '"');
-			this.ut._log('! Type "' + type + '" => invalid');
+			this._log('! Type "' + type + '" => invalid');
 			return cache[type] = false;
 		}
 		var ct = this.types[type];
 		if(!ct.enabled) {
-			this.ut._log('Type "' + type + '" => disabled');
+			this._log('Type "' + type + '" => disabled');
 			return cache[type] = false;
 		}
 		try {
@@ -355,7 +355,7 @@ var handyClicksPrefSvc = {
 			ct._define = new Function("event,item", df);
 			ct._contextMenuLine = new Error().lineNumber + 1;
 			ct._contextMenu = cm ? new Function("event,item,origItem", cm) : null;
-			this.ut._log('Type "' + type + '" => initialized');
+			this._log('Type "' + type + '" => initialized');
 			return cache[type] = true;
 		}
 		catch(e) {
@@ -375,7 +375,7 @@ var handyClicksPrefSvc = {
 			this.ut._err(eMsg, href, eLine);
 			this.ut._err(e);
 		}
-		this.ut._log('! Type "' + type + '" => initialization error');
+		this._log('! Type "' + type + '" => initialization error');
 		return cache[type] = false;
 	},
 	compileCustomTypes: function() {
@@ -449,7 +449,7 @@ var handyClicksPrefSvc = {
 				this.ut._err("Syntax error in function: " + fObj.label, fObj._editorLink, fObj._errorLine);
 			return fn;
 		}
-		this.ut._log("Compile: " + fObj.label);
+		this._log("Compile: " + fObj.label);
 		try {
 			var line = fObj._line = new Error().lineNumber + 1;
 			var fn = new Function("event,item,origItem", fObj.action);
@@ -504,7 +504,7 @@ var handyClicksPrefSvc = {
 	},
 
 	destroyCustomFuncs: function(reason) {
-		//this.ut._log("destroyCustomFuncs() [" + this._destructors.length + "]");
+		//this._log("destroyCustomFuncs() [" + this._destructors.length + "]");
 		this._destructors.forEach(function(destructorArr) {
 			this.destroyCustomFunc.apply(this, destructorArr.concat(reason));
 		}, this);
@@ -846,10 +846,10 @@ var handyClicksPrefSvc = {
 			fName = namePrefix + newTime.toLocaleFormat("%Y%m%d%H%M%S") + ".js";
 			this.ut.copyFileTo(this.prefsFile, backupsDir, fName);
 			_files[now] = this.getBackupFile(fName);
-			this.ut._log("Backup: " + _files[now].leafName);
+			this._log("Backup: " + _files[now].leafName);
 		}
 		else
-			this.ut._log("checkForBackup: No backup");
+			this._log("checkForBackup: No backup");
 
 		while(_fTimes.length > max)
 			this.ut.removeFile(_files[_fTimes.shift()], false);

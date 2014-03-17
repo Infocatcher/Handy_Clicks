@@ -29,7 +29,7 @@ var handyClicksUI = {
 	loadBlinkStyle: function() {
 		// Styles for blinkNode() function
 		this.loadBlinkStyle = function() {};
-		this.ut._log("loadBlinkStyle()");
+		this._log("loadBlinkStyle()");
 		var priorityHack = (function() {
 			var rnd = Math.random().toFixed(16).substr(2);
 			var hack = "*|*";

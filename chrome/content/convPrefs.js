@@ -72,6 +72,6 @@ function prefsMigration(allowSave, vers) {
 		this.prefSvc.deleteBranch(pns + "devMode"); // Renamed to "debug" and disabled by default
 	this.pref("prefsVersion", this.prefsVersion);
 	allowSave && this.ut.timeout(this.savePrefFile, this);
-	this.ut._info("Format of about:config prefs updated: " + vers + " => " + this.prefsVersion);
+	this._info("Format of about:config prefs updated: " + vers + " => " + this.prefsVersion);
 	return true;
 }

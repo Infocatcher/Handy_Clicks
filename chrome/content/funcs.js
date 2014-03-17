@@ -152,7 +152,7 @@ var handyClicksFuncs = {
 			return s;
 		var isArr = this.ut.isArray(s);
 		s = Array.concat(s)
-			.map(this.ut.safeToString, this.ut)
+			.map(this.safeToString, this)
 			.map(this.ut.trim, this.ut);
 		return isArr ? s : s.toString();
 	},
@@ -836,7 +836,7 @@ var handyClicksFuncs = {
 		var charset = this.charset;
 		if(!charset)
 			return str;
-		this.ut._log("convertStrFromUnicode -> charset -> " + charset);
+		this._log("convertStrFromUnicode -> charset -> " + charset);
 		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
 			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
 		suc.charset = charset;

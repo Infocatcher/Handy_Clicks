@@ -36,11 +36,11 @@ var handyClicks = {
 		this._settingsLoadTimer = this.ut.timeout(function() {
 			this._settingsLoadTimer = 0;
 			if(!this.enabled) {
-				this.ut._log("Preload settings: disabled => do nothing");
+				this._log("Preload settings: disabled => do nothing");
 				return;
 			}
 			this._settingsLoaded = true;
-			this.ut._log("Preload settings => loadSettingsAsync()");
+			this._log("Preload settings => loadSettingsAsync()");
 			this.ps.loadSettingsAsync();
 		}, this, [], 50);
 		//this.initListeners(true);
@@ -81,7 +81,7 @@ var handyClicks = {
 			return;
 		this._hasListeners = enable;
 		this.setListeners(["mousedown", "click", "command", "mouseup", "dblclick", "contextmenu", "popupshowing"], enable);
-		this.ut._log("initListeners(" + enable + ")");
+		this._log("initListeners(" + enable + ")");
 	},
 	setListeners: function(evtTypes, add) {
 		var act = add ? addEventListener : removeEventListener;
@@ -288,21 +288,21 @@ var handyClicks = {
 		if(this.mousemoveParams.dist < this.pu.pref("disallowMousemoveDist"))
 			return;
 
-		this.ut._log("mousemoveHandler -> cancel()");
+		this._log("mousemoveHandler -> cancel()");
 		this.cancel();
 	},
 	dragHandler: function(e) {
 		if(!this.disallowMousemove)
 			return;
-		this.ut._log("dragHandler -> cancel()");
+		this._log("dragHandler -> cancel()");
 		this.cancel();
 	},
 	tabSelectHandler: function(e) {
-		this.ut._log("tabSelectHandler -> cancel()");
+		this._log("tabSelectHandler -> cancel()");
 		this.cancel();
 	},
 	wheelHandler: function() {
-		this.ut._log("wheelHandler -> cancel()");
+		this._log("wheelHandler -> cancel()");
 		this.cancel();
 	},
 	cancel: function() {
@@ -387,7 +387,7 @@ var handyClicks = {
 		if(!this._settingsLoaded) {
 			this._settingsLoaded = true;
 			clearTimeout(this._settingsLoadTimer);
-			this.ut._log(e.type + " => loadSettings()");
+			this._log(e.type + " => loadSettings()");
 			this.ps.loadSettings();
 		}
 		this.hasSettings = false;
@@ -407,7 +407,7 @@ var handyClicks = {
 			|| e.originalTarget !== this.origItem // For "command" event
 		) {
 			this.defineItem(e, sets);
-			this.itemType && this.ut._log("[" + e.type + "] " + "this.itemType = " + this.itemType);
+			this.itemType && this._log("[" + e.type + "] " + "this.itemType = " + this.itemType);
 		}
 		var funcObj = this.getFuncObj(sets) || this.editMode && { action: null };
 		this.hasSettings = !!funcObj;
@@ -722,7 +722,7 @@ var handyClicks = {
 	},
 
 	inObject: function(o, p) {
-		// this.ut._log("inObject(): " + ("wrappedJSObject" in o) + " " + o.wrappedJSObject);
+		// this._log("inObject(): " + ("wrappedJSObject" in o) + " " + o.wrappedJSObject);
 		// Open chrome://global/content/console.xul in tab
 		// and click on <xul:label class="text-link" />
 		//   "wrappedJSObject" in o => false
@@ -1051,7 +1051,7 @@ var handyClicks = {
 				doc = brObj.document;
 			}
 		}
-		this.ut._log("getContextMenu() -> " + id + " -> " + (doc && id && doc.getElementById(id)));
+		this._log("getContextMenu() -> " + id + " -> " + (doc && id && doc.getElementById(id)));
 		return id ? doc.getElementById(id) : null;
 	},
 	getBrowserForNode: function(node) {
@@ -1209,7 +1209,7 @@ var handyClicks = {
 
 		if(this._debug) {
 			var eStr = this.ps.getEvtStr(e || this.event);
-			this.ut._log(
+			this._log(
 				(e ? e.type : "delayedAction")
 				+ " -> " + this.ps.getModifiersStr(eStr) + " + " + this.ps.getButtonStr(eStr, true)
 				+ "\n=> executeFunction()"

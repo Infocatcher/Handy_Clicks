@@ -126,7 +126,7 @@ var handyClicksEditor = {
 					|| node.getAttribute("readonly") != "true"
 				)
 					return;
-				//this.ut._log("focus: " + (Date.now() - this._lastTabsSelect) + " | " + this._focusFixTime);
+				//this._log("focus: " + (Date.now() - this._lastTabsSelect) + " | " + this._focusFixTime);
 				if(Date.now() - this._lastTabsSelect > this._focusFixTime)
 					return;
 				for(node = node.parentNode; node; node = node.parentNode) {
