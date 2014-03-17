@@ -26,6 +26,14 @@ var g = window.handyClicksGlobals = {
 		return g.jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 			.getService(Components.interfaces.mozIJSSubScriptLoader);
 	},
+	timeout: function(func, context, args, delay) {
+		return setTimeout(
+			function(func, context, args) {
+				func.apply(context, args);
+			},
+			delay || 0, func, context, args || []
+		);
+	},
 
 	get _debug() {
 		if(!g.pu || typeof window == "undefined") try {
@@ -119,7 +127,7 @@ var g = window.handyClicksGlobals = {
 function lazy(s, p, file) {
 	var has = p in window;
 	if(!has && file) {
-		g._log("Load " + file + " into " + document.documentURI);
+		g._log("Load " + file + " into " + document.documentURI + (s == "ut" ? "\n" + new Error().stack : ""));
 		g.jsLoader.loadSubScript("chrome://handyclicks/content/" + file, window, "UTF-8");
 		has = p in window; // = true ?
 	}

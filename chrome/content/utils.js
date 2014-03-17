@@ -299,15 +299,6 @@ var handyClicksUtils = {
 			return func.apply(context, args || arguments);
 		};
 	},
-	timeout: function(func, context, args, delay) {
-		//return setTimeout(this.bind(func, context, args), delay || 0);
-		return setTimeout(
-			function(func, context, args) {
-				func.apply(context, args);
-			},
-			delay || 0, func, context, args || []
-		);
-	},
 
 	// Localized strings:
 	_strings: { __proto__: null }, // cache of strings from stringbundle
@@ -1358,7 +1349,7 @@ var handyClicksCleanupSvc = {
 						if(e.target.ownerDocument != this.doc)
 							break;
 						clearTimeout(this._destroyTimeout);
-						this._destroyTimeout = this.parent.ut.timeout(this.checkNode, this, [], 50);
+						this._destroyTimeout = this.parent.timeout(this.checkNode, this, [], 50);
 					break;
 					case "unload":
 						if(e.target.defaultView === this.win)

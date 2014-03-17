@@ -17,7 +17,7 @@ var handyClicksUI = {
 			this.registerHotkeys();
 		this.pu.oSvc.addObserver(this.updUI, this);
 
-		this.ut.timeout(function() {
+		this.timeout(function() {
 			this.setupProgress();
 			//this.loadBlinkStyle();
 		}, this);
@@ -71,7 +71,7 @@ var handyClicksUI = {
 				node.style.setProperty("opacity", this.blinkOpacity, "important");
 			}
 			//node.offsetHeight;
-			this._blinkNodeTimeout = this.ut.timeout(
+			this._blinkNodeTimeout = this.timeout(
 				function(node, attr, oldFx, origStyle) {
 					node.removeAttributeNS(this.attrNS, attr);
 					oldFx && this.ut.attribute(node, "style", origStyle, true);
@@ -275,7 +275,7 @@ var handyClicksUI = {
 			case this.ACTION_SETTINGS_TOGGLE: this.wu.openSettings(true);
 		}
 		if(!leftClick && actionId != this.ACTION_POPUP)
-			this.ut.timeout(this.ut.closeMenus, this.ut, [e.target], 0);
+			this.timeout(this.ut.closeMenus, this.ut, [e.target], 0);
 	},
 	showSettingsPopup: function(e) {
 		// It's better to use "popup" or "context" attribute
@@ -316,7 +316,7 @@ var handyClicksUI = {
 	_temFromKey: false,
 	toggleEditMode: function(fromKey) {
 		this._temFromKey = fromKey;
-		this.ut.timeout(function() {
+		this.timeout(function() {
 			this.hc.editMode = !this.hc.editMode;
 			this._temFromKey = false;
 		}, this);
@@ -455,7 +455,7 @@ var handyClicksUI = {
 			return;
 		var delay = this.pu.pref("ui.showMouseButton.restoreDelay");
 		clearTimeout(this._restoreIconTimeout);
-		this._restoreIconTimeout = this.ut.timeout(this.setIcon, this, [], delay);
+		this._restoreIconTimeout = this.timeout(this.setIcon, this, [], delay);
 	},
 	showHideControls: function() {
 		this.$("handyClicks-toolsMenuitem").hidden = !this.pu.pref("ui.showInToolsMenu");

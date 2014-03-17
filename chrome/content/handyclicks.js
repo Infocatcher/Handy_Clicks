@@ -33,7 +33,7 @@ var handyClicks = {
 	_settingsLoadTimer: 0,
 	init: function(reloadFlag) {
 		//this.ps.loadSettingsAsync();
-		this._settingsLoadTimer = this.ut.timeout(function() {
+		this._settingsLoadTimer = this.timeout(function() {
 			this._settingsLoadTimer = 0;
 			if(!this.enabled) {
 				this._log("Preload settings: disabled => do nothing");
@@ -156,7 +156,7 @@ var handyClicks = {
 					}
 					else {
 						this.flags.allowPopupshowing = true;
-						this.ut.timeout(function() {
+						this.timeout(function() {
 							this.flags.allowPopupshowing = false;
 						}, this);
 					}
@@ -193,7 +193,7 @@ var handyClicks = {
 				|| this.isOkFuncObj(delayedAction) // Other action after delay
 			) {
 				this.cancelDelayedAction(); // Only one timeout... (for dblclick event)
-				this.daTimeout = this.ut.timeout(
+				this.daTimeout = this.timeout(
 					this.executeDelayedAction,
 					this, [delayedAction],
 					delay
@@ -1114,7 +1114,7 @@ var handyClicks = {
 			this.ui.blinkNode();
 			this.closeMenus(e.originalTarget);
 			//this.wu.openEditor(null, this.ct.EDITOR_MODE_SHORTCUT, this.ps.getEvtStr(e), this._all ? "$all" : this.itemType);
-			this.ut.timeout( // Wait for blinkNode redraw
+			this.timeout( // Wait for blinkNode redraw
 				this.wu.openEditor,
 				this.wu,
 				[null, this.ct.EDITOR_MODE_SHORTCUT, this.ps.getEvtStr(e), this._all ? "$all" : this.itemType]

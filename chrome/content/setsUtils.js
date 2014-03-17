@@ -518,7 +518,7 @@ var handyClicksSetsUtils = {
 	},
 
 	setKeysDescDelay: function() {
-		this.ut.timeout(this.setKeysDesc, this, arguments);
+		this.timeout(this.setKeysDesc, this, arguments);
 	},
 	setKeysDesc: function(/* node0, node1, ... */) {
 		var nodes = Array.concat(

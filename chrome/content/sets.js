@@ -132,7 +132,7 @@ var handyClicksSets = {
 	handleEvent: function(e) {
 		if(e.type == "mouseup") {
 			this.smartSelect(e);
-			this.ut.timeout(this.smartSelectStop, this, [], 10);
+			this.timeout(this.smartSelectStop, this, [], 10);
 		}
 		else if(e.type == "mouseover")
 			this.openMenu(e);
@@ -1524,7 +1524,7 @@ var handyClicksSets = {
 	},
 	searchInSetsTreeDelay: function(dontSelect, dontResetPosition) {
 		// Needs for undo/redo
-		this.ut.timeout(this.searchInSetsTree, this, arguments, 0);
+		this.timeout(this.searchInSetsTree, this, arguments, 0);
 	},
 	_searchInSetsTree: function(dontSelect, dontResetPosition) {
 		var sf = this.searchField;
@@ -1715,7 +1715,7 @@ var handyClicksSets = {
 		this.loadUIAction();
 		this.updateAllDependencies();
 		// This is relatively slow, will execute after small delay
-		this.ut.timeout(this.initExternalEditor, this);
+		this.timeout(this.initExternalEditor, this);
 	},
 	setDisallowMousemove: function() {
 		var buttons = this.pu.pref("disallowMousemoveButtons") || "";
@@ -1813,7 +1813,7 @@ var handyClicksSets = {
 		this.pu.pref("disallowMousemoveButtons", this.disallowMousemoveButtons);
 		if(applyFlag && !this.instantApply) {
 			if(applyFlag) {
-				this.ut.timeout(function() {
+				this.timeout(function() {
 					this.savePrefpanes();
 					this.setDialogButtons();
 				}, this);
@@ -2029,7 +2029,7 @@ var handyClicksSets = {
 	},
 	externalEditorChanged: function eec(delayed) {
 		if(delayed) {
-			this.ut.timeout(eec, this, [], 5);
+			this.timeout(eec, this, [], 5);
 			return;
 		}
 		this.initExternalEditor(true);
@@ -2220,7 +2220,7 @@ var handyClicksSets = {
 
 	dataChanged: function(e, delayed) {
 		if(delayed) {
-			this.ut.timeout(this.dataChanged, this, [e], 5);
+			this.timeout(this.dataChanged, this, [e], 5);
 			return;
 		}
 		var tar = e.target;
@@ -2247,7 +2247,7 @@ var handyClicksSets = {
 		if(this.instantApply)
 			this.saveSettings(true);
 		else
-			//this.ut.timeout(this.setDialogButtons, this);
+			//this.timeout(this.setDialogButtons, this);
 			this.setDialogButtons();
 	},
 	updateAllDependencies: function(depId) {
@@ -2616,7 +2616,7 @@ var handyClicksSets = {
 	},
 	initImportPopup: function() {
 		this.checkClipboard();
-		this.ut.timeout(this.buildRestorePopup, this);
+		this.timeout(this.buildRestorePopup, this);
 	},
 	destroyImportPopup: function() {
 		this.destroyRestorePopup();
@@ -2718,7 +2718,7 @@ var handyClicksSets = {
 		this.updRestorePopup(ubCount, isEmpty, true);
 	},
 	fixMenuitemsWidth: function(popup) {
-		this.ut.timeout(function() { // Timeout for Firefox 3.x
+		this.timeout(function() { // Timeout for Firefox 3.x
 			Array.forEach(popup.childNodes, this.removeMenuitemCrop);
 		}, this);
 	},
@@ -2739,7 +2739,7 @@ var handyClicksSets = {
 		menu.setAttribute("disabled", isEmpty);
 		if(isEmpty)
 			popup.hidePopup();
-		if("__userBackups" in popup && !dontCleanup) this.ut.timeout(function() {
+		if("__userBackups" in popup && !dontCleanup) this.timeout(function() {
 			popup.__userBackups = popup.__userBackups.filter(function(file) {
 				return file.exists();
 			});
