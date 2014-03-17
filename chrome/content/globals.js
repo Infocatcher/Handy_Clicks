@@ -148,7 +148,7 @@ var g = window.handyClicksGlobals = {
 	},
 	get callable() {
 		var callable = [];
-		var objects = this.objects;
+		var objects = g.objects;
 		for(var p in objects)
 			if(p in window)
 				callable.push(window[p]);
@@ -157,7 +157,7 @@ var g = window.handyClicksGlobals = {
 	shutdown: function() {
 		// Remove all cycle references to simplify garbage collection
 		// Be careful, we can't undo this!
-		var objects = this.objects;
+		var objects = g.objects;
 		for(var p in objects)
 			delete g[objects[p]];
 		delete g.g;
