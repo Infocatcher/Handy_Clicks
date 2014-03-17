@@ -1,25 +1,8 @@
 var handyClicksUtils = {
 	__proto__: handyClicksGlobals,
 
-	errPrefix: "[Handy Clicks] ",
 	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
 
-	get consoleSvc() {
-		delete this.consoleSvc;
-		return this.consoleSvc = Components.classes["@mozilla.org/consoleservice;1"]
-			.getService(Components.interfaces.nsIConsoleService);
-	},
-	ts: function() {
-		var d = new Date();
-		var ms = d.getMilliseconds();
-		return d.toLocaleFormat("%M:%S:") + "000".substr(String(ms).length) + ms;
-	},
-	_info: function(s) {
-		this.consoleSvc.logStringMessage(this.errPrefix + this.ts() + " " + this.safeToString(s));
-	},
-	_log: function(s) {
-		this._debug && this._info(s);
-	},
 	_err: function _err(e, fileName, lineNumber, isWarning) {
 		if(this.isPrimitive(e) || typeof e == "xml") {
 			var caller = Components.stack.caller;
@@ -137,10 +120,6 @@ var handyClicksUtils = {
 	safeGet: function(o, p) {
 		try { return o[p]; }
 		catch(e) { return e; }
-	},
-	safeToString: function(object) { // var obj = { __proto__: null }; => obj.valueOf() and obj.toString() is missing
-		try { return String(object); }
-		catch(e) { return String(e); }
 	},
 
 	_timers: { __proto__: null },
@@ -1326,27 +1305,6 @@ var handyClicksUtils = {
 		catch(e) {
 		}
 		return false;
-	}
-};
-
-function HandyClicksObservers() {
-	this.observers = [];
-}
-HandyClicksObservers.prototype = {
-	notifyObservers: function() {
-		var args = arguments;
-		this.observers.forEach(function(ob) {
-			ob[0].apply(ob[1], args);
-		});
-	},
-	addObserver: function(func, context) {
-		return this.observers.push(arguments) - 1;
-	},
-	removeObserver: function(oId) {
-		delete this.observers[oId];
-	},
-	destroy: function() {
-		delete this.observers;
 	}
 };
 

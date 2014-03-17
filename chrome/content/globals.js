@@ -1,6 +1,7 @@
 (function() {
 
 var g = window.handyClicksGlobals = {
+	errPrefix: "[Handy Clicks] ",
 	get g() {
 		delete g.g;
 		return g.g = g;
@@ -16,11 +17,13 @@ var g = window.handyClicksGlobals = {
 	e: function(id) {
 		return document.getElementById(id);
 	},
+
 	get jsLoader() {
 		delete g.jsLoader;
 		return g.jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 			.getService(Components.interfaces.mozIJSSubScriptLoader);
 	},
+
 	get _debug() {
 		if(!g.pu)
 			return false;
@@ -31,13 +34,28 @@ var g = window.handyClicksGlobals = {
 		delete g._debug;
 		return g._debug = g.pu.pref("debug");
 	},
+	get consoleSvc() {
+		delete g.consoleSvc;
+		return g.consoleSvc = Components.classes["@mozilla.org/consoleservice;1"]
+			.getService(Components.interfaces.nsIConsoleService);
+	},
+	ts: function() {
+		var d = new Date();
+		var ms = d.getMilliseconds();
+		return d.toLocaleFormat("%M:%S:") + "000".substr(String(ms).length) + ms;
+	},
+	_info: function(s) {
+		g.consoleSvc.logStringMessage(g.errPrefix + g.ts() + " " + g.safeToString(s));
+	},
 	_log: function(s) {
-		// Note: we don't load utils.js from console.xul overlay
-		g.ut && g.ut._log(s);
+		g._debug && g._info(s);
+	},
+	safeToString: function(o) { // var o = { __proto__: null }; => o.valueOf() and o.toString() is missing
+		try { return "" + o; }
+		catch(e) { return "" + e; }
 	},
 
 	get cn() { return lazy("cn", "handyClicksConsole");    },
-	get cs() { return lazy("cs", "handyClicksCleanupSvc"); },
 	get ed() { return lazy("ed", "handyClicksEditor");     },
 	get hc() { return lazy("hc", "handyClicks");           },
 	get pu() { return lazy("pu", "handyClicksPrefUtils");  },
@@ -45,11 +63,12 @@ var g = window.handyClicksGlobals = {
 	get st() { return lazy("st", "handyClicksSets");       },
 	get su() { return lazy("su", "handyClicksSetsUtils");  },
 	get ui() { return lazy("ui", "handyClicksUI");         },
-	get ut() { return lazy("ut", "handyClicksUtils");      },
 
+	get cs() { return lazy("cs", "handyClicksCleanupSvc", "utils.js");  },
 	get ct() { return lazy("ct", "handyClicksConst",    "consts.js");   },
 	get fn() { return lazy("fn", "handyClicksFuncs",    "funcs.js");    },
 	get ps() { return lazy("ps", "handyClicksPrefSvc",  "prefSvc.js");  },
+	get ut() { return lazy("ut", "handyClicksUtils",    "utils.js");    },
 	get wu() { return lazy("wu", "handyClicksWinUtils", "winUtils.js"); },
 
 	objects: {
@@ -109,3 +128,24 @@ function now() {
 }
 
 })();
+
+function HandyClicksObservers() {
+	this.observers = [];
+}
+HandyClicksObservers.prototype = {
+	notifyObservers: function() {
+		var args = arguments;
+		this.observers.forEach(function(ob) {
+			ob[0].apply(ob[1], args);
+		});
+	},
+	addObserver: function(func, context) {
+		return this.observers.push(arguments) - 1;
+	},
+	removeObserver: function(oId) {
+		delete this.observers[oId];
+	},
+	destroy: function() {
+		delete this.observers;
+	}
+};
