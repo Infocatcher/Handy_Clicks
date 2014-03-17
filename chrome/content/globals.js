@@ -168,8 +168,13 @@ var g = window.handyClicksGlobals = {
 function lazy(s, p, file) {
 	var has = p in window;
 	if(!has && file) {
-		g._log("Load " + file + " into " + document.documentURI + (s == "ut" ? "\n" + new Error().stack : ""));
+		var t = now();
 		g.jsLoader.loadSubScript("chrome://handyclicks/content/" + file, window, "UTF-8");
+		g._log(
+			"Load " + file + " into " + document.documentURI
+			+ ": " + (now() - t).toFixed(2) + " ms"
+			+ (s == "ut" ? "\n" + new Error().stack : "")
+		);
 		has = p in window; // = true ?
 	}
 	if(has) {
