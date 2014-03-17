@@ -92,6 +92,7 @@ var handyClicksUninstaller = {
 	},
 	createContext: function() {
 		// Simple way to get some required functions
+		this._log("[uninstaller] createContext()");
 		const path = "chrome://handyclicks/content/";
 		var temp = this._temp = { __proto__: null };
 		jsLoader.loadSubScript(path + "sets.js",      temp);
@@ -108,6 +109,7 @@ var handyClicksUninstaller = {
 		this.pu.instantInit();
 	},
 	destroyContext: function() {
+		this._log("[uninstaller] destroyContext()");
 		this.pu.destroy();
 		var temp = this._temp;
 		delete this._temp;
@@ -120,8 +122,10 @@ var handyClicksUninstaller = {
 				delete g[p];
 			}
 		}
+		this._log("[uninstaller] destroyContext(): done");
 	},
 	uninstallConfirm: function() {
+		this._log("[uninstaller] uninstallConfirm()");
 		var exportAllSets = { value: true };
 		var confirmed = this.uninstallConfirmed = this.ut.confirmEx(
 			this.ut.getLocalized("title"),

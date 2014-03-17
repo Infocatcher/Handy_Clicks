@@ -28,8 +28,14 @@ var g = window.handyClicksGlobals = {
 	},
 
 	get _debug() {
-		if(!g.pu)
+		if(!g.pu || typeof window == "undefined") try {
+			return Components.classes["@mozilla.org/preferences-service;1"]
+				.getService(Components.interfaces.nsIPrefBranch)
+				.getBoolPref("extensions.handyclicks.debug");
+		}
+		catch(e) {
 			return false;
+		}
 		g.pu.oSvc.addObserver(function(pName, pVal) {
 			if(pName == "debug")
 				g._debug = pVal;
