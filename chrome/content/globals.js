@@ -1,6 +1,7 @@
 (function(window) {
 
-var document = window.document || {
+var inWindow = "document" in window;
+var document = inWindow ? window.document : {
 	documentURI: new Error().fileName
 };
 var g = window.handyClicksGlobals = {
@@ -77,7 +78,7 @@ var g = window.handyClicksGlobals = {
 	},
 
 	get _debug() {
-		if(!g.pu || typeof window == "undefined") try {
+		if(!g.pu || !inWindow) try {
 			return Components.classes["@mozilla.org/preferences-service;1"]
 				.getService(Components.interfaces.nsIPrefBranch)
 				.getBoolPref("extensions.handyclicks.debug");
