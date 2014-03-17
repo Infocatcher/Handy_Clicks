@@ -1,5 +1,8 @@
-(function() {
+(function(window) {
 
+var document = window.document || {
+	documentURI: new Error().fileName
+};
 var g = window.handyClicksGlobals = {
 	errPrefix: "[Handy Clicks] ",
 	get g() {
@@ -127,7 +130,7 @@ function now() {
 	return now();
 }
 
-})();
+})(this);
 
 function HandyClicksObservers() {
 	this.observers = [];

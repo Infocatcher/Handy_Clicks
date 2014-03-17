@@ -1,5 +1,7 @@
 // This file is loaded from components/hcComponent.js
 var handyClicksUninstaller = {
+	__proto__: handyClicksGlobals,
+
 	guid: "handyclicks@infocatcher",
 	isUninstall: false,
 	uninstallConfirmed: false,
@@ -91,33 +93,14 @@ var handyClicksUninstaller = {
 	createContext: function() {
 		// Simple way to get some required functions
 		const path = "chrome://handyclicks/content/";
-		var temp = {};
-		jsLoader.loadSubScript(path + "sets.js",      temp);
-		jsLoader.loadSubScript(path + "utils.js",     temp);
-		jsLoader.loadSubScript(path + "winUtils.js",  temp);
-		jsLoader.loadSubScript(path + "prefUtils.js", temp);
-		jsLoader.loadSubScript(path + "prefSvc.js",   temp);
-		jsLoader.loadSubScript(path + "consts.js",    temp);
-		var shortcuts = {
-			un: this,
-			st: temp.handyClicksSets,
-			ut: temp.handyClicksUtils,
-			wu: temp.handyClicksWinUtils,
-			pu: temp.handyClicksPrefUtils,
-			ps: temp.handyClicksPrefSvc,
-			ct: temp.handyClicksConst,
-			__proto__: null
-		};
-		for(var p in shortcuts) {
-			var o = shortcuts[p];
-			for(var p in shortcuts)
-				o[p] = shortcuts[p];
-		}
+		jsLoader.loadSubScript(path + "sets.js");
+		jsLoader.loadSubScript(path + "utils.js");
+		jsLoader.loadSubScript(path + "prefUtils.js");
+		jsLoader.loadSubScript(path + "prefSvc.js");
 		this.pu.instantInit();
 	},
 	destroyContext: function() {
 		this.pu.destroy();
-		this.un = this.st = this.ut = this.wu = this.pu = this.ps = this.ct = null;
 	},
 	uninstallConfirm: function() {
 		var exportAllSets = { value: true };

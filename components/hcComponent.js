@@ -26,22 +26,15 @@ const C_CID = Components.ID("{50C6263F-F53F-4fbd-A295-9BA84C5FAAC3}"),
 const jsLoader = cc["@mozilla.org/moz/jssubscript-loader;1"]
 	.getService(ci.mozIJSSubScriptLoader);
 
+jsLoader.loadSubScript("chrome://handyclicks/content/globals.js");
 jsLoader.loadSubScript("chrome://handyclicks/content/uninstaller.js");
 
-var handyClicksGlobals = {};
-var wu, ct;
-function initOnce() {
-	initOnce = function() {};
-	jsLoader.loadSubScript("chrome://handyclicks/content/winUtils.js"); wu = handyClicksWinUtils;
-	jsLoader.loadSubScript("chrome://handyclicks/content/consts.js");   ct = handyClicksConst;
-	wu.ct = ct;
-}
 function handleURI(uri) {
-	initOnce();
-	if(hasPrefix(uri, ct.PROTOCOL_SETTINGS))
-		wu.openSettingsLink(uri);
-	else if(hasPrefix(uri, ct.PROTOCOL_EDITOR))
-		wu.openEditorLink(uri);
+	var g = handyClicksGlobals;
+	if(hasPrefix(uri, g.ct.PROTOCOL_SETTINGS))
+		g.wu.openSettingsLink(uri);
+	else if(hasPrefix(uri, g.ct.PROTOCOL_EDITOR))
+		g.wu.openEditorLink(uri);
 }
 function disable() {
 	cc["@mozilla.org/preferences-service;1"]
