@@ -22,7 +22,7 @@
 	-moz-image-region: rect(32px 64px 64px 32px);
 }
 #hcNotifyContainer {
-	margin-left: 5px;
+	-moz-margin-start: 5px;
 }
 * {
 	-moz-user-select: text !important;
