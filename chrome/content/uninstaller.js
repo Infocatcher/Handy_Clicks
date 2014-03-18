@@ -18,6 +18,8 @@ var handyClicksUninstaller = {
 		// User can't remove our extensino without any UI windows, so it's better to wait for
 		// any window before import AddonManager.jsm
 		this.oSvc.addObserver(this, "domwindowopened", false);
+		var win = this.wu.wm.getMostRecentWindow(null);
+		win && this.onWindowLoaded(win, 50);
 	},
 	lazyDestroy: function() {
 		this.lazyDestroy = function() {};
@@ -47,10 +49,7 @@ var handyClicksUninstaller = {
 			var _this = this;
 			subject.addEventListener("load", function load(e) {
 				subject.removeEventListener("load", load, false);
-				subject.setTimeout(function() {
-					if(_this.lazyDestroy())
-						_this.initUninstallObserver();
-				}, 0);
+				_this.onWindowLoaded(subject);
 			}, false);
 		}
 		else if(topic == "quit-application-granted") {
@@ -69,6 +68,12 @@ var handyClicksUninstaller = {
 			else if(data == "item-cancel-action")
 				this.isUninstall = false;
 		}
+	},
+	onWindowLoaded: function(win, delay) {
+		win.setTimeout(function(_this) {
+			if(_this.lazyDestroy())
+				_this.initUninstallObserver();
+		}, delay || 0, this);
 	},
 	onUninstalling: function(ext, requiresRestart) {
 		if(ext.id == this.guid)
@@ -94,6 +99,7 @@ var handyClicksUninstaller = {
 		// Simple way to get some required functions
 		this._log("[uninstaller] createContext()");
 		const path = "chrome://handyclicks/content/";
+		const jsLoader = this.jsLoader;
 		var temp = this._temp = { __proto__: null };
 		jsLoader.loadSubScript(path + "sets.js",      temp);
 		jsLoader.loadSubScript(path + "utils.js",     temp);

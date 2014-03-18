@@ -23,12 +23,17 @@ const C_CID = Components.ID("{50C6263F-F53F-4fbd-A295-9BA84C5FAAC3}"),
       C_ARG_DISABLE_INFO = "  -handyclicks-disable    Turn off Handy Clicks extension\n",
       C_NAME = "Handy Clicks command-line handler";
 
-const jsLoader = cc["@mozilla.org/moz/jssubscript-loader;1"]
-	.getService(ci.mozIJSSubScriptLoader);
-
 var global = this;
-jsLoader.loadSubScript("chrome://handyclicks/content/globals.js");
-jsLoader.loadSubScript("chrome://handyclicks/content/uninstaller.js");
+this.__defineGetter__("handyClicksGlobals", function() {
+	delete this.handyClicksGlobals;
+	cc["@mozilla.org/moz/jssubscript-loader;1"]
+		.getService(ci.mozIJSSubScriptLoader)
+		.loadSubScript("chrome://handyclicks/content/globals.js");
+	return handyClicksGlobals;
+});
+setTimeout(function() {
+	handyClicksGlobals.jsLoader.loadSubScript("chrome://handyclicks/content/uninstaller.js");
+}, 200);
 
 function handleURI(uri) {
 	var g = handyClicksGlobals;
