@@ -464,7 +464,7 @@ var handyClicks = {
 					_it = ct._define.call(this, e, it);
 				}
 				catch(e) {
-					var eLine = this.ut.mmLine(this.ut.getLineNumber(e) - ct._defineLine + 1);
+					var eLine = this.ut.getRealLineNumber(e, ct._defineLine);
 					var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
 						+ this.ct.EDITOR_TYPE_DEFINE
 						+ "?line=" + eLine;
@@ -781,7 +781,7 @@ var handyClicks = {
 				cm = _cm.call(this.fn, e, this.item, this.origItem);
 			}
 			catch(e) {
-				var eLine = this.ut.mmLine(this.ut.getLineNumber(e) - ct._contextMenuLine + 1);
+				var eLine = this.ut.getRealLineNumber(e, ct._contextMenuLine);
 				var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + this.itemType + "/"
 					+ this.ct.EDITOR_TYPE_CONTEXT
 					+ "?line=" + eLine;
@@ -1148,8 +1148,7 @@ var handyClicks = {
 				fnc.call(this.fn, e || this.event, this.item, this.origItem);
 			}
 			catch(err) {
-				var line = funcObj._line;
-				var eLine = this.ut.mmLine(this.ut.getLineNumber(err) - line + 1);
+				var eLine = this.ut.getRealLineNumber(err, funcObj._line);
 				var href = this.getEditorLink(e) + "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customFunctionError", funcObj.label, this.itemType, err);
 				this.ut.notify(

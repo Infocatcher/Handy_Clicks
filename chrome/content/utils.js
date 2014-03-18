@@ -69,6 +69,19 @@ var handyClicksUtils = {
 	getLineNumber: function(err) {
 		return err && (err.lineNumber || err.lineno) || undefined;
 	},
+	getRealLineNumber: function(err, baseLine) {
+		// Usage:
+		// var line = new Error().lineNumber + 1;
+		// try { new Function(...)(); }
+		// catch(err) { var realLine = getRealLineNumber(err, line); }
+		var line = this.getLineNumber(err);
+		if(
+			/ line (\d+) > Function$/.test(err.fileName) // Firefox 30+
+			&& RegExp.$1 == baseLine
+		)
+			return line; //~ todo: use mmLine() anyway ?
+		return this.mmLine(line - baseLine + 1);
+	},
 	objProps: function(o, filter, skipNativeFuncs) {
 		if(this.isPrimitive(o))
 			return String(o);
