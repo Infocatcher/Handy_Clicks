@@ -24,6 +24,17 @@
 #hcNotifyContainer {
 	-moz-margin-start: 5px;
 }
+#hcNotifyClose {
+	/* Based on styles for .tabs-closebutton from chrome://browser/skin/browser.css */
+	-moz-user-focus: normal;
+	outline-offset: -4px;
+	-moz-appearance: none;
+	border: none;
+	margin: -12px 0 -4px;
+	-moz-margin-start: 0;
+	-moz-margin-end: -12px;
+	padding: 10px;
+}
 * {
 	-moz-user-select: text !important;
 }
