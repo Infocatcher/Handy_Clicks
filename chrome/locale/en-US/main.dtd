@@ -17,3 +17,6 @@
 <!ENTITY handyClicks.importFromClipboardAccesskey "I">
 <!ENTITY handyClicks.progress "Handy Clicks: Progress"> <!-- Visible only in "Customize Toolbar" dialog -->
 <!ENTITY handyClicks.cancel "Cancel">
+
+<!-- Notify window -->
+<!ENTITY handyClicks.close "Close">

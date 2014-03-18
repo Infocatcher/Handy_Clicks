@@ -2,6 +2,13 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/notify.css" type="text/css"?>
 
+<!DOCTYPE window [
+	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/main.dtd">
+	%locale;
+	<!ENTITY % default SYSTEM "chrome://handyclicks-locale/content/main.dtd">
+	%default;
+]>
+
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	id="handyClicks-notify"
 	windowtype="handyclicks:notify"
@@ -21,7 +28,8 @@
 				<spacer flex="1" />
 				<toolbarbutton id="hcNotifyClose" class="close-icon"
 					oncommand="window.close();"
-					onclick="if(event.button == 0) event.stopPropagation();" />
+					onclick="if(event.button == 0) event.stopPropagation();"
+					tooltiptext="&handyClicks.close;" />
 			</hbox>
 			<description id="hcNotifyDesc">[Message]</description>
 		</vbox>
