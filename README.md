@@ -75,6 +75,12 @@ Turn off from command line: `firefox -handyclicks-disable`.
 	<td>Built-in functions</td>
 </tr>
 <tr>
+	<td>this.g</td>
+	<td>handyClicksGlobals</td>
+	<td><a href="chrome/content/globals.js">chrome://handyclicks/content/globals.js</a></td>
+	<td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain">[[Prototype]]</a> of all handyClicks* objects</td>
+</tr>
+<tr>
 	<td>this.hc</td>
 	<td>handyClicks</td>
 	<td><a href="chrome/content/handyclicks.js">chrome://handyclicks/content/handyclicks.js</a></td>
@@ -139,8 +145,8 @@ DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGener
 <br>string <a href="#handyclicksfuncsgetitemtext">handyClicksFuncs.getItemText</a>([in DOMNode item[, in string itemType[, in DOMEvent event[, in boolean noTrim]]]])
 <br>nsIVariant <a href="#handyclicksprefutilsgetpref">handyClicksPrefUtils.getPref</a>(in string prefName[, in nsIVariant defaultValue[, in nsIPrefBranch prefBranch]])
 <br>void <a href="#handyclicksprefutilssetpref">handyClicksPrefUtils.setPref</a>(in string prefName, in nsIVariant value[, in nsIPrefBranch prefBranch])
-<br>void <a href="#handyclicksutils_info">handyClicksUtils.\_info</a>(in string message)
-<br>void <a href="#handyclicksutils_log">handyClicksUtils.\_log</a>(in string message)
+<br>void <a href="#handyclicksglobals_info">handyClicksGlobals.\_info</a>(in string message)
+<br>void <a href="#handyclicksglobals_log">handyClicksGlobals.\_log</a>(in string message)
 <br>void <a href="#handyclicksutils_err">handyClicksUtils.\_err</a>(in string/error message[, in string fileName[, in string lineNumber]])
 <br>void <a href="#handyclicksutils_warn">handyClicksUtils.\_warn</a>(in string/error message[, in string fileName[, in string lineNumber]])
 
@@ -230,10 +236,13 @@ var pref = "middlemouse.scrollbarPosition";
 this.pu.setPref(pref, !this.pu.getPref(pref));
 ```
 
-###### handyClicksUtils._info()
+###### handyClicksGlobals._info()
 Logs message into <a href="https://developer.mozilla.org/en-US/docs/Error_Console">error</a>/<a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">browser</a> console.
+```js
+this._info("Some message");
+```
 
-###### handyClicksUtils._log()
+###### handyClicksGlobals._log()
 Logs message into <a href="https://developer.mozilla.org/en-US/docs/Error_Console">error</a>/<a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">browser</a> console, like <a href="#handyclicksutils_info">handyClicksUtils._info</a>(), but only if <em>extensions.handyclicks.debug</em> = `true`.
 
 ###### handyClicksUtils._err()
