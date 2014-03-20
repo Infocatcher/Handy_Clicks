@@ -266,7 +266,7 @@ this.ut.notify(
 ```
 
 ###### handyClicksUtils.notifyInWindowCorner()
-Like like <a href="#handyclicksutilsnotify">handyClicksUtils.notify</a>(), but force shows notification message in window corner.
+Like <a href="#handyclicksutilsnotify">handyClicksUtils.notify</a>(), but force shows notification message in window corner.
 
 ###### handyClicksGlobals._info()
 Logs message into <a href="https://developer.mozilla.org/en-US/docs/Error_Console">error</a>/<a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">browser</a> console.
