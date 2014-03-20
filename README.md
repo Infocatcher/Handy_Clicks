@@ -145,6 +145,8 @@ DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGener
 <br>string <a href="#handyclicksfuncsgetitemtext">handyClicksFuncs.getItemText</a>([in DOMNode item[, in string itemType[, in DOMEvent event[, in boolean noTrim]]]])
 <br>nsIVariant <a href="#handyclicksprefutilsgetpref">handyClicksPrefUtils.getPref</a>(in string prefName[, in nsIVariant defaultValue[, in nsIPrefBranch prefBranch]])
 <br>void <a href="#handyclicksprefutilssetpref">handyClicksPrefUtils.setPref</a>(in string prefName, in nsIVariant value[, in nsIPrefBranch prefBranch])
+<br>DOMWindow <a href="#handyclicksutilsnotify">handyClicksUtils.notify</a>(in string message[, in string header[, in function functionLeftClick[, in function functionMiddleClick[, in integer icon[, in DOMWindow parentWindow]]]]])
+<br>DOMWindow <a href="#handyclicksutilsnotifyinwindowcorner">handyClicksUtils.notifyInWindowCorner</a>(in string message[, in string header[, in function functionLeftClick[, in function functionMiddleClick[, in integer icon[, in DOMWindow parentWindow]]]]])
 <br>void <a href="#handyclicksglobals_info">handyClicksGlobals.\_info</a>(in string message)
 <br>void <a href="#handyclicksglobals_log">handyClicksGlobals.\_log</a>(in string message)
 <br>void <a href="#handyclicksutils_err">handyClicksUtils.\_err</a>(in string/error message[, in string fileName[, in string lineNumber]])
@@ -235,6 +237,36 @@ Writes preference to about:config storage.
 var pref = "middlemouse.scrollbarPosition";
 this.pu.setPref(pref, !this.pu.getPref(pref));
 ```
+
+###### handyClicksUtils.notify()
+Shows notification message under cursor (or in window corner, if <em>extensions.handyclicks.notifyInWindowCorner</em> is set to `true`).
+<br>Icons:
+```js
+handyClicksUtils.NOTIFY_ICON_NORMAL
+handyClicksUtils.NOTIFY_ICON_DISABLED
+handyClicksUtils.NOTIFY_ICON_WARNING
+handyClicksUtils.NOTIFY_ICON_ERROR
+```
+Example:
+```js
+this.ut.notify("Simple message with default title");
+```
+```js
+this.ut.notify(
+	"Something went wrong…",
+	this.ut.getLocalized("warningTitle"),
+	function() {
+		alert("Left-click");
+	},
+	function() {
+		alert("Middle-click");
+	},
+	this.ut.NOTIFY_ICON_WARNING
+);
+```
+
+###### handyClicksUtils.notifyInWindowCorner()
+Like like <a href="#handyclicksutilsnotify">handyClicksUtils.notify</a>(), but force shows notification message in window corner.
 
 ###### handyClicksGlobals._info()
 Logs message into <a href="https://developer.mozilla.org/en-US/docs/Error_Console">error</a>/<a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">browser</a> console.
