@@ -57,6 +57,7 @@ pref("extensions.handyclicks.funcs.filesLinksMask", "^[^?&=#]+\.(?:zip|rar|7z|gz
 
 pref("extensions.handyclicks.funcs.decodeURIs", true);
 pref("extensions.handyclicks.funcs.decodeURIs.unknownProtocols", false);
+pref("extensions.handyclicks.funcs.decodeURIs.spaces", false);
 
 pref("extensions.handyclicks.funcs.convertURIs", false); // for Windows
 pref("extensions.handyclicks.funcs.convertURIsCharset", ""); // use defaults

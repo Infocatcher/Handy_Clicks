@@ -44,7 +44,7 @@ var handyClicksFuncs = {
 		if(link) {
 			link = Array.concat(link);
 			if(this.pu.pref("funcs.decodeURIs"))
-				link = link.map(this.losslessDecodeURI, this);
+				link = link.map(this.decodeURI, this);
 			this.ut.copyStr(link.join(this.ut.lineBreak), this.getSourceDocument());
 			this.ui.blinkNode();
 		}
@@ -858,11 +858,19 @@ var handyClicksFuncs = {
 		var uris = Array.concat(popup.hc_uri).map(this.convertStrFromUnicode, this);
 		this.ut.startProcess(tar.hc_path, Array.concat(args, uris), this.pu.pref("funcs.preferRunw"));
 	},
+	decodeURI: function(uri) {
+		if(!uri)
+			return "";
+		if(!/^(?:http|ftp)s?:/i.test(uri) && !this.pu.pref("funcs.decodeURIs.unknownProtocols"))
+			return uri;
+		var decoded = this.losslessDecodeURI(uri);
+		if(!this.pu.pref("funcs.decodeURIs.spaces"))
+			decoded = decoded.replace(/\s/g, encodeURIComponent);
+		return decoded;
+	},
 	losslessDecodeURI: function(value) {
 		if(!value)
 			return "";
-		if(!/^(?:http|ftp)s?:/i.test(value) && !this.pu.pref("funcs.decodeURIs.unknownProtocols"))
-			return value;
 
 		var win = window;
 		if(!("losslessDecodeURI" in win))
