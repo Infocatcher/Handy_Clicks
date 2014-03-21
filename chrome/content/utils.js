@@ -330,7 +330,8 @@ var handyClicksUtils = {
 			dtds + '<page xmlns="' + this.XULNS + '">&' + eName + ';</page>',
 			contentType
 		);
-		if(node.namespaceURI == "http://www.mozilla.org/newlayout/xml/parsererror.xml") {
+		//if(node.namespaceURI == "http://www.mozilla.org/newlayout/xml/parsererror.xml") {
+		if(node.localName != "page") {
 			this._warn('Invalid XML entity: "' + eName + '"');
 			return "";
 		}
