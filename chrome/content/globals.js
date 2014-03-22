@@ -116,7 +116,6 @@ var g = window.handyClicksGlobals = {
 
 	get cn() { return lazy("cn", "handyClicksConsole");    },
 	get ed() { return lazy("ed", "handyClicksEditor");     },
-	get hc() { return lazy("hc", "handyClicks");           },
 	get pu() { return lazy("pu", "handyClicksPrefUtils");  },
 	get rs() { return lazy("rs", "handyClicksRegSvc");     },
 	get st() { return lazy("st", "handyClicksSets");       },
@@ -126,6 +125,7 @@ var g = window.handyClicksGlobals = {
 	get cs() { return lazy("cs", "handyClicksCleanupSvc", "utils.js");  },
 	get ct() { return lazy("ct", "handyClicksConst",    "consts.js");   },
 	get fn() { return lazy("fn", "handyClicksFuncs",    "funcs.js");    },
+	get hc() { return lazy("hc", "handyClicks",         "handyclicks.js"); },
 	get ps() { return lazy("ps", "handyClicksPrefSvc",  "prefSvc.js");  },
 	get ut() { return lazy("ut", "handyClicksUtils",    "utils.js");    },
 	get wu() { return lazy("wu", "handyClicksWinUtils", "winUtils.js"); },

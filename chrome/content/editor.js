@@ -1189,7 +1189,7 @@ var handyClicksEditor = {
 					var ws = this.wu.wm.getEnumerator(null);
 					while(ws.hasMoreElements()) {
 						var w = ws.getNext();
-						if("handyClicks" in w) {
+						if("handyClicksUI" in w) {
 							w.focus();
 							break;
 						}

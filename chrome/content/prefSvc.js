@@ -50,7 +50,7 @@ var handyClicksPrefSvc = {
 				var ws = this.wu.wm.getEnumerator(this.ut.isSeaMonkey ? null : "navigator:browser");
 				while(ws.hasMoreElements()) {
 					var w = ws.getNext();
-					if("handyClicks" in w && "_handyClicksInitialized" in w) {
+					if("handyClicksUI" in w && "_handyClicksInitialized" in w) {
 						lastWinUnload = false;
 						break;
 					}
@@ -724,7 +724,7 @@ var handyClicksPrefSvc = {
 			function(w) {
 				if(
 					!(pSvc in w)
-					|| !("handyClicks" in w) // Make sure it's a browser window, for SeaMonkey
+					|| !("handyClicksUI" in w) // Make sure it's a browser window, for SeaMonkey
 				)
 					return;
 				var p = w[pSvc];
@@ -740,7 +740,7 @@ var handyClicksPrefSvc = {
 		var ws = this.wu.wm.getEnumerator(this.ut.isSeaMonkey ? null : "navigator:browser");
 		while(ws.hasMoreElements()) {
 			var w = ws.getNext();
-			if("handyClicks" in w && pSvc in w && w[pSvc].otherSrc)
+			if("handyClicksUI" in w && pSvc in w && w[pSvc].otherSrc)
 				return true;
 		}
 		return false;
@@ -907,7 +907,7 @@ var handyClicksPrefSvc = {
 
 	get isMainWnd() {
 		delete this.isMainWnd;
-		return this.isMainWnd = "handyClicks" in window;
+		return this.isMainWnd = "handyClicksUI" in window;
 	},
 	getEvtStr: function(e) {
 		return "button=" + (e.button || 0)
