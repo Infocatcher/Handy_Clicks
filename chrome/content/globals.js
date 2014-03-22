@@ -122,13 +122,13 @@ var g = window.handyClicksGlobals = {
 	get su() { return lazy("su", "handyClicksSetsUtils");  },
 	get ui() { return lazy("ui", "handyClicksUI");         },
 
-	get cs() { return lazy("cs", "handyClicksCleanupSvc", "utils.js");  },
-	get ct() { return lazy("ct", "handyClicksConst",    "consts.js");   },
-	get fn() { return lazy("fn", "handyClicksFuncs",    "funcs.js");    },
-	get hc() { return lazy("hc", "handyClicks",         "handyclicks.js"); },
-	get ps() { return lazy("ps", "handyClicksPrefSvc",  "prefSvc.js");  },
-	get ut() { return lazy("ut", "handyClicksUtils",    "utils.js");    },
-	get wu() { return lazy("wu", "handyClicksWinUtils", "winUtils.js"); },
+	get cs() { return lazy("cs", "handyClicksCleanupSvc", "utils.js");       },
+	get ct() { return lazy("ct", "handyClicksConst",      "consts.js");      },
+	get fn() { return lazy("fn", "handyClicksFuncs",      "funcs.js");       },
+	get hc() { return lazy("hc", "handyClicks",           "handyclicks.js"); },
+	get ps() { return lazy("ps", "handyClicksPrefSvc",    "prefSvc.js");     },
+	get ut() { return lazy("ut", "handyClicksUtils",      "utils.js");       },
+	get wu() { return lazy("wu", "handyClicksWinUtils",   "winUtils.js");    },
 
 	objects: {
 		handyClicksConsole:    "cn",
