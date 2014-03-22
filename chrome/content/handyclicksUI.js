@@ -6,7 +6,14 @@ var handyClicksUI = {
 	blinkDuration: 170,
 	attrNS: "urn:handyclicks:namespace",
 
-	// Initialization:
+	get coreLoaded() {
+		if("handyClicks" in window) {
+			delete this.coreLoaded;
+			return this.coreLoaded = true;
+		}
+		return false;
+	},
+
 	init: function(reloadFlag) {
 		this.setStatus();
 		this.showHideControls();
@@ -50,6 +57,18 @@ var handyClicksUI = {
 			sss.loadAndRegisterSheet(uri, sss.AGENT_SHEET);
 		if(!sss.sheetRegistered(uri, sss.USER_SHEET))
 			sss.loadAndRegisterSheet(uri, sss.USER_SHEET);
+	},
+
+	get editMode() {
+		return this.coreLoaded && this.hc.editMode;
+	},
+	set editMode(em) {
+		if(em || this.coreLoaded)
+			this.hc.editMode = em;
+	},
+	initListeners: function(enable) {
+		if(enable || this.coreLoaded)
+			this.hc.initListeners(enable);
 	},
 
 	_blinkNodeTimeout: 0,
@@ -317,12 +336,12 @@ var handyClicksUI = {
 	toggleEditMode: function(fromKey) {
 		this._temFromKey = fromKey;
 		this.timeout(function() {
-			this.hc.editMode = !this.hc.editMode;
+			this.editMode = !this.editMode;
 			this._temFromKey = false;
 		}, this);
 	},
 	setEditModeStatus: function(em) {
-		em = em === undefined ? this.hc.editMode : em;
+		em = em === undefined ? this.editMode : em;
 		var tt = em
 			? this.getLocalized("editModeTip").replace(
 				"%key",
@@ -357,7 +376,7 @@ var handyClicksUI = {
 			this.ut.notifyInWindowCorner(
 				this.getLocalized("editModeNote").replace("%key", exitKey),
 				this.getLocalized("editModeTitle"),
-				this.ut.bind(function() { this.hc.editMode = false; }, this)
+				this.ut.bind(function() { this.editMode = false; }, this)
 			);
 		}
 	},
@@ -425,10 +444,10 @@ var handyClicksUI = {
 			this.setupProgress();
 	},
 	setStatus: function() {
-		var enabled = this.hc.enabled;
+		var enabled = this.pu.pref("enabled");
 		if(enabled && !this.hc._settingsLoadTimer && this.ps._loadStatus == this.ps.SETS_LOAD_SKIPPED)
 			this.ps.loadSettingsAsync();
-		this.hc.initListeners(enabled);
+		this.initListeners(enabled);
 		var tt = this.getLocalized(enabled ? "enabledTip" : "disabledTip");
 		var ttAttr = this.tooltipAttrBase + "0";
 		this.setControls(function(elt) {
