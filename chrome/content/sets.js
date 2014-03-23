@@ -359,7 +359,7 @@ var handyClicksSets = {
 		return this.treeBatch(this._redrawTree, this, arguments);
 	},
 	_redrawTree: function(dontSearch) {
-		this.ut.removeChilds(this.tBody);
+		this.tBody.textContent = "";
 		this._drawTree(dontSearch);
 		//!dontSearch && this.searchInSetsTree(true);
 		this.setDialogButtons();
@@ -1891,7 +1891,6 @@ var handyClicksSets = {
 		//   #hc-sets-warnMsgsPrefs-tooltip description { white-space: -moz-pre-wrap; }
 		// for old Firefox versions (it's buggy in Firefox 1.5)?
 		var tt = this.$("hc-sets-warnMsgsPrefs-tooltip");
-		//this.ut.removeChilds(tt);
 		var ttSep = this.$("hc-sets-warnMsgsPrefs-tooltipSep");
 		while(ttSep.nextSibling)
 			tt.removeChild(ttSep.nextSibling);
@@ -2699,7 +2698,6 @@ var handyClicksSets = {
 			}));
 		}, this);
 
-		//this.ut.removeChilds(popup);
 		var sep;
 		for(;;) {
 			sep = popup.firstChild;

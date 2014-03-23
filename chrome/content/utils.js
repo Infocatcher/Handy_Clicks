@@ -1213,6 +1213,10 @@ var handyClicksUtils = {
 	},
 
 	removeChilds: function(elt) {
+		this._deprecated( //= Added: 2014-03-23
+			"handyClicksUtils.removeChilds(node) is deprecated"
+			+ ', use node.textContent = "" instead'
+		);
 		//while(elt.hasChildNodes())
 		//	elt.removeChild(elt.lastChild);
 		elt.textContent = "";

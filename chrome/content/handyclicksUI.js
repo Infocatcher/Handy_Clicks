@@ -625,7 +625,7 @@ var handyClicksUI = {
 	tooltipAttrClass: "handyclicks_tooltipClass-",
 	fillInTooltip: function(tooltip) {
 		var tt = this.tt;
-		this.ut.removeChilds(tt);
+		tt.textContent = "";
 		var tNode = document.tooltipNode;
 		var attrBase = this.tooltipAttrBase;
 		var i = 0, val, lbl;
