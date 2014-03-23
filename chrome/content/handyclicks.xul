@@ -12,7 +12,6 @@
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<script type="application/javascript" src="chrome://handyclicks/content/globals.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/prefUtils.js" />
-	<script type="application/javascript" src="chrome://handyclicks/content/handyclicks.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/handyclicksUI.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/regSvc.js" />
 
