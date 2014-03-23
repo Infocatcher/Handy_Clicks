@@ -1278,7 +1278,7 @@ var handyClicksUtils = {
 var handyClicksCleanupSvc = {
 	_cleanups: [],
 	registerCleanup: function(func, context, args) {
-		return this._cleanups.push(arguments) - 1;
+		return this._cleanups.push([func, context || window, args]) - 1;
 	},
 	unregisterCleanup: function(uid) {
 		delete this._cleanups[uid];

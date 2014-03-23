@@ -204,7 +204,7 @@ HandyClicksObservers.prototype = {
 		});
 	},
 	addObserver: function(func, context) {
-		return this.observers.push(arguments) - 1;
+		return this.observers.push([func, context || window]) - 1;
 	},
 	removeObserver: function(oId) {
 		delete this.observers[oId];
