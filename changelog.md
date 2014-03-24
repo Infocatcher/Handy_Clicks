@@ -20,6 +20,7 @@
 `*` Slightly improved startup performance: load uninstaller after small delay (to not block browser startup).<br>
 `x` Fixed error line numbers detection in Firefox 30+ (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/20">#20</a>).<br>
 `*` Copy URIs with `%20` instead of spaces by default (<em>extensions.handyclicks.funcs.decodeURIs.spaces</em> preference).<br>
+`*` Improved startup performance in disabled mode: handyclicks.js will be loaded only after enabling (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/21">#21</a>).<br>
 
 ##### 0.1.3pre3 (2014-02-01)
 `*` Slightly improved startup performance: now styles for “blink” node feature are loaded just before first usage.<br>
