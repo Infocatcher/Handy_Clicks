@@ -63,7 +63,7 @@ var handyClicks = {
 	_settingsLoaded: false,
 	_settingsLoadTimer: 0,
 	preloadSettings: function() {
-		if(this._settingsLoadTimer)
+		if(this._settingsLoadTimer || this._settingsLoaded)
 			return;
 		this._settingsLoadTimer = this.timeout(function() {
 			this._settingsLoadTimer = 0;
