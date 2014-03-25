@@ -29,22 +29,6 @@ var handyClicks = {
 	evtStrOnMousedown: "",
 	_hasMoveHandlers: false,
 
-	_settingsLoaded: false,
-	_settingsLoadTimer: 0,
-	init: function(reloadFlag) {
-		//this.ps.loadSettingsAsync();
-		this._settingsLoadTimer = this.timeout(function() {
-			this._settingsLoadTimer = 0;
-			if(!this.enabled) {
-				this._log("Preload settings: disabled => do nothing");
-				return;
-			}
-			this._settingsLoaded = true;
-			this._log("Preload settings => loadSettingsAsync()");
-			this.ps.loadSettingsAsync();
-		}, this, [], 50);
-		//this.initListeners(true);
-	},
 	destroy: function(reloadFlag) {
 		this.initListeners(false);
 		this.cancelDelayedAction();
@@ -53,6 +37,7 @@ var handyClicks = {
 		this.setMoveHandlers(false);
 		this.event = this.origItem = this.item = this.mainItem = null;
 	},
+
 	handleEvent: function(e) {
 		switch(e.type) {
 			case "mousedown":    this.mousedownHandler(e);    break;
@@ -74,6 +59,22 @@ var handyClicks = {
 				this.ut.stopEvent(e);
 				this.editMode = false; // this removes event listener
 		}
+	},
+	_settingsLoaded: false,
+	_settingsLoadTimer: 0,
+	preloadSettings: function() {
+		if(this._settingsLoadTimer)
+			return;
+		this._settingsLoadTimer = this.timeout(function() {
+			this._settingsLoadTimer = 0;
+			if(!this.enabled) {
+				this._log("Preload settings: disabled => do nothing");
+				return;
+			}
+			this._settingsLoaded = true;
+			this._log("Preload settings => loadSettingsAsync()");
+			this.ps.loadSettingsAsync();
+		}, this, [], 50);
 	},
 	_hasListeners: false,
 	initListeners: function(enable) {
