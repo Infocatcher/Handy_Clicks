@@ -149,15 +149,6 @@ var handyClicksPrefSvc = {
 	SETS_LOAD_OK:           0,
 	SETS_LOAD_DECODE_ERROR: 1,
 	SETS_LOAD_INVALID_DATA: 2,
-	get SETS_LOAD_EVAL_ERROR() { //~ todo: remove after all code will be rewrited
-		//= Added: 2012-01-13
-		this.ut._deprecated(
-			"handyClicksPrefSvc.SETS_LOAD_EVAL_ERROR is deprecated"
-			+ ", use handyClicksPrefSvc.SETS_LOAD_DECODE_ERROR instead"
-		);
-		return this.SETS_LOAD_DECODE_ERROR;
-	},
-
 	_loadStatus: -1, // SETS_LOAD_UNKNOWN
 	loadSettingsAsync: function(callback, context) {
 		var pFile = this.prefsFile;
