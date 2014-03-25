@@ -15,7 +15,7 @@
 `*` Slightly improved performance of settings tree drawing.<br>
 `*` Changed default value for <em>extensions.handyclicks.editor.external.path</em> preference: now used Scratchpad as default editor (if available).<br>
 `*` Changed: use %profile%/handyclicks/temp/ folder for external editor and notify about not removed temp files after crash.<br>
-`*` Improved performance (and compatibility with future browser versions): no longer mutate [[Prototype]] of already created objects (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/18">#18</a>).<br>
+`*` Improved performance (and compatibility with future browser versions): no longer mutate [[Prototype]] of already created objects, also now used lazy loading for prefSvc.js (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/18">#18</a>).<br>
 `*` Improved startup performance: now used lazy loading for utils.js (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/19">#19</a>).<br>
 `*` Slightly improved startup performance: load uninstaller after small delay (to not block browser startup).<br>
 `x` Fixed error line numbers detection in Firefox 30+ (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/20">#20</a>).<br>
