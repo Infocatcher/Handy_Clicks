@@ -584,13 +584,7 @@ var handyClicksFuncs = {
 		);
 	},
 	restoreZLevel: function(win) {
-		var ci = Components.interfaces;
-		var xulWin = win.QueryInterface(ci.nsIInterfaceRequestor)
-			.getInterface(ci.nsIWebNavigation)
-			.QueryInterface(ci.nsIDocShellTreeItem)
-			.treeOwner
-			.QueryInterface(ci.nsIInterfaceRequestor)
-			.getInterface(ci.nsIXULWindow);
+		var xulWin = this.wu.getXulWin(win);
 		xulWin.zLevel = xulWin.normalZ;
 	},
 
