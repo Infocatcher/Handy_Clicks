@@ -149,7 +149,6 @@ var handyClicksPrefSvc = {
 	SETS_LOAD_OK:           0,
 	SETS_LOAD_DECODE_ERROR: 1,
 	SETS_LOAD_INVALID_DATA: 2,
-	SETS_LOAD_SKIPPED:      3,
 	get SETS_LOAD_EVAL_ERROR() { //~ todo: remove after all code will be rewrited
 		//= Added: 2012-01-13
 		this.ut._deprecated(
@@ -160,19 +159,7 @@ var handyClicksPrefSvc = {
 	},
 
 	_loadStatus: -1, // SETS_LOAD_UNKNOWN
-	skipLoad: function() {
-		if(this.isMainWnd && !this.hc.enabled) {
-			this._log("skipLoad() -> disabled");
-			this._loadStatus = this.SETS_LOAD_SKIPPED;
-			return true;
-		}
-		return false;
-	},
 	loadSettingsAsync: function(callback, context) {
-		if(this.skipLoad()) {
-			callback && callback.call(context, Components.results.NS_OK);
-			return true;
-		}
 		var pFile = this.prefsFile;
 		if(!pFile.exists()) {
 			this._log("loadSettingsAsync() -> save default settings");
@@ -186,8 +173,6 @@ var handyClicksPrefSvc = {
 		}, this);
 	},
 	loadSettings: function(pSrc, fromProfile) {
-		if(this.skipLoad())
-			return;
 		this._loadStatus = this.SETS_LOAD_UNKNOWN;
 		if(this.isMainWnd)
 			this._log(fromProfile ? "loadSettingsAsync()" : "loadSettings()");
