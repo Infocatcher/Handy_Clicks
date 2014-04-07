@@ -272,21 +272,21 @@ var handyClicksUtils = {
 			.getService(Components.interfaces.nsIPromptService);
 	},
 	alert: function(title, text, win) {
-		this.fixMinimized(win);
+		this.ensureNotMinimized(win);
 		this.promptsSvc.alert(win || window, title, text);
 	},
 	prompt: function(title, text, defVal, win) {
-		this.fixMinimized(win);
+		this.ensureNotMinimized(win);
 		var ret = { value: defVal };
 		var res = this.promptsSvc.prompt(win || window, title, text, ret, null, {});
 		return res ? ret.value : null;
 	},
 	confirm: function(title, text, win) {
-		this.fixMinimized(win);
+		this.ensureNotMinimized(win);
 		return this.promptsSvc.confirm(win || window, title, text);
 	},
 	confirmEx: function(title, text, buttonOkText, buttonOkDefault, checkText, checkObj, win) {
-		this.fixMinimized(win);
+		this.ensureNotMinimized(win);
 		var ps = this.promptsSvc;
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
 		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
@@ -300,7 +300,11 @@ var handyClicksUtils = {
 			checkText || null, checkObj || {}
 		) != 1;
 	},
-	fixMinimized: function(win) {
+	fixMinimized: function(win) { //= Added: 2014-04-07
+		this._deprecated("handyClicksUtils.fixMinimized() is deprecated. Use handyClicksUtils.ensureNotMinimized() instead.");
+		return this.ensureNotMinimized.apply(this, arguments);
+	},
+	ensureNotMinimized: function(win) {
 		// See https://bugzilla.mozilla.org/show_bug.cgi?id=350299
 		win = win || window;
 		if(win.windowState == win.STATE_MINIMIZED)

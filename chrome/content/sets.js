@@ -874,7 +874,7 @@ var handyClicksSets = {
 		var lim = this.pu.pref(limPref);
 		if(lim <= 0 || count <= lim)
 			return false;
-		//this.ut.fixMinimized();
+		//this.ut.ensureNotMinimized();
 		var dontAsk = { value: false };
 		var ok = this.ut.promptsSvc.confirmCheck(
 			window,
@@ -2532,7 +2532,7 @@ var handyClicksSets = {
 			return;
 		const warnPref = "sets.importJSWarning";
 		if(srcId != ct.IMPORT_BACKUP && this.ps._hasCustomCode && this.pu.pref(warnPref)) {
-			this.ut.fixMinimized();
+			this.ut.ensureNotMinimized();
 			var dontAsk = { value: false };
 			var ok = this.ut.promptsSvc.confirmCheck(
 				window,
@@ -2594,7 +2594,7 @@ var handyClicksSets = {
 		const confirmPref = "sets.removeBackupConfirm";
 		if(!dontAsk && this.pu.pref(confirmPref)) {
 			this.ut.closeMenus(mi);
-			this.ut.fixMinimized();
+			this.ut.ensureNotMinimized();
 			var dontAsk = { value: false };
 			var ok = this.ut.promptsSvc.confirmCheck(
 				window, this.getLocalized("title"),

@@ -1308,7 +1308,7 @@ var handyClicksFuncs = {
 		var onlyUnvisited = { value: false };
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=345067
 		// confirmEx always returns 1 if the user closes the window using the close button in the titlebar
-		this.ut.fixMinimized();
+		this.ut.ensureNotMinimized();
 		var button = ps.confirmEx(
 			window, this.getLocalized("title"),
 			this.getLocalized("openSimilarLinksConfirm"),
