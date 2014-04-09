@@ -44,7 +44,7 @@
 			oncommand="handyClicksUI.handleUIEvent(event);"
 			onclick="handyClicksUI.handleUIEvent(event);" />
 	</menupopup>
-	<menupopup id="appmenu_customizeMenu"> <!-- Firefox 4 -->
+	<menupopup id="appmenu_customizeMenu"> <!-- Firefox 4+ -->
 		<menuitem id="handyClicks-appMenuitem" insertafter="appmenu_preferences"
 			class="menuitem-iconic"
 			label="&handyClicks.menuitemLabel;" accesskey="&handyClicks.menuitemAppAccesskey;"
@@ -53,6 +53,16 @@
 			oncommand="handyClicksUI.handleUIEvent(event);"
 			onclick="handyClicksUI.handleUIEvent(event);" />
 		<menuseparator id="handyClicks-appMenuitemSeparator" insertafter="appmenu_preferences" />
+	</menupopup>
+	<menupopup id="menu_newPreferencesmenuPopup"> <!-- Firefox 29+ with Classic Theme Restorer extension -->
+		<menuitem id="handyClicks-appMenuitem" insertafter="menu_preferences"
+			class="menuitem-iconic"
+			label="&handyClicks.menuitemLabel;" accesskey="&handyClicks.menuitemAppAccesskey;"
+			tooltip="handyClicks-tooltip"
+			key="handyClicks-key-toggleStatus"
+			oncommand="handyClicksUI.handleUIEvent(event);"
+			onclick="handyClicksUI.handleUIEvent(event);" />
+		<menuseparator id="handyClicks-appMenuitemSeparator" insertafter="menu_preferences" />
 	</menupopup>
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton id="handyClicks-toolbarButton" class="toolbarbutton-1 chromeclass-toolbar-additional"

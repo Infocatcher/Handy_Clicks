@@ -28,6 +28,24 @@ var handyClicksUI = {
 			this.setupProgress();
 			//this.loadBlinkStyle();
 		}, this);
+		this.timeout(function() {
+			// Fix position of item in App menu from Classic Theme Restorer
+			var mi = this.$("handyClicks-appMenuitem");
+			if(mi) {
+				var popup = mi.parentNode;
+				if(popup.id == "menu_newPreferencesmenuPopup") {
+					var insPos = popup.getElementsByAttribute("id", "menu_preferences")[0];
+					if(
+						insPos
+						&& insPos.parentNode == popup
+						&& insPos != document.getElementById("menu_preferences")
+					) {
+						popup.insertBefore(mi, insPos.nextSibling);
+						popup.insertBefore(this.$("handyClicks-appMenuitemSeparator"), mi);
+					}
+				}
+			}
+		}, this, [], 50);
 	},
 	destroy: function(reloadFlag) {
 		clearTimeout(this._restoreIconTimeout);
