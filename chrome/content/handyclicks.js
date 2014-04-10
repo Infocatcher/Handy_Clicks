@@ -8,6 +8,7 @@ var handyClicks = {
 	item: null,
 	mainItem: null,
 	itemType: undefined,
+	itemData: null,
 	flags: {
 		cancelled: false,
 		runned: false, // => stop click events
@@ -35,7 +36,7 @@ var handyClicks = {
 		if(this.editMode)
 			this.editMode = false;
 		this.setMoveHandlers(false);
-		this.event = this.origItem = this.item = this.mainItem = null;
+		this.event = this.origItem = this.item = this.mainItem = this.itemData = null;
 	},
 
 	handleEvent: function(e) {
@@ -443,7 +444,7 @@ var handyClicks = {
 		this._all = this.itemTypeInSets(sets, "$all");
 		var all = forcedAll || this._all;
 		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "ext_mulipletabs", "submitButton"
-		this.item = this.mainItem = null;
+		this.item = this.mainItem = this.itemData = null;
 
 		//var it = this.origItem = e.originalTarget;
 		var it = e.originalTarget;
@@ -648,7 +649,10 @@ var handyClicks = {
 					&& (itln == "toolbarbutton" || itln == "menuitem")
 				)
 				|| itln == "menuitem" && (it.hasAttribute("siteURI") || it.hasAttribute("targetURI"))
-				|| itln == "treechildren" && this.isBookmarkTree(it.parentNode)
+				|| itln == "treechildren" && (
+					this.isBookmarkTree(it.parentNode)
+					|| this.isFeedSidebar(it)
+				)
 			)
 			&& !this.hasParent(it, "goPopup")
 			&& this.getBookmarkURI(it, e)
@@ -941,8 +945,9 @@ var handyClicks = {
 	getTreeInfo: function(treechildren, e, prop) { // "uri" or "title"
 		if(!("PlacesUtils" in window)) // For Firefox 3.0+
 			return "";
-		var tree = (treechildren || this.item).parentNode;
+		treechildren = treechildren || this.item;
 		e = e || this.event;
+		var tree = treechildren.parentNode;
 
 		// Based on code of Places' Tooltips ( https://addons.mozilla.org/firefox/addon/7314 )
 		var row = {}, column = {}, cell = {};
@@ -950,6 +955,8 @@ var handyClicks = {
 		tree.treeBoxObject.getCellAt(e.clientX, e.clientY, row, column, cell);
 		if(row.value == -1)
 			return "";
+		if(this.isFeedSidebar(treechildren))
+			return this.getFeedSidebarURI(tree, row.value);
 		try {
 			var node = tree.view.nodeForTreeIndex(row.value);
 		}
@@ -958,6 +965,33 @@ var handyClicks = {
 		if(!node || !PlacesUtils.nodeIsURI(node))
 			return "";
 		return node[prop];
+	},
+	isFeedSidebar: function(treechildren) {
+		return treechildren.id == "feedbar_tree_container"; // Feed Sidebar
+	},
+	getFeedSidebarURI: function(tree, treeIndx) {
+		var emulateClick = "javascript:void 0";
+		try {
+			// Based on code from resource://feedbar-modules/treeview.js, Feed Sidebar 8.0.3,
+			// see FEEDBAR.onTreeClick()
+			// Note: full_preview.html?idx=... link doesn't work without additional code
+			if(tree.view.isContainer(treeIndx))
+				return "";
+			this.itemData = {
+				treeIndx: treeIndx,
+				onBeforeLoad: function() {
+					FEEDBAR.setCellRead(treeIndx, true);
+				}
+			};
+			if(this.pu.getPref("extensions.feedbar.showFullPreview") || !window.navigator.onLine)
+				//return "chrome://feedbar/content/full_preview.html?idx=" + treeIndx;
+				return emulateClick;
+			return FEEDBAR.getCellLink(treeIndx);
+		}
+		catch(e) {
+			Components.utils.reportError(e);
+		}
+		return emulateClick; // Better fallback?
 	},
 	createMouseEvents: function(origEvt, item, evtTypes, opts) {
 		if(typeof opts == "number")
@@ -1023,6 +1057,14 @@ var handyClicks = {
 		}
 		catch(e) {
 			this.ut._err(e);
+		}
+	},
+	beforeLoad: function(item, uri) {
+		if(this.itemData && this.itemData.onBeforeLoad) try {
+			this.itemData.onBeforeLoad();
+		}
+		catch(e) {
+			Components.utils.reportError(e);
 		}
 	},
 

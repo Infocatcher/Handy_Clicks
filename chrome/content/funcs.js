@@ -315,6 +315,7 @@ var handyClicksFuncs = {
 			|| !isImg && this.testForFileLink(uri, refererPolicy)
 		)
 			return true;
+		this.hc.beforeLoad(item, uri);
 		return false;
 	},
 	get secMan() {
@@ -367,9 +368,10 @@ var handyClicksFuncs = {
 		e = e || this.hc.event;
 		item = item || this.hc.item;
 
+		var isTree = item.localName == "treechildren";
 		var evts = this.hc.createMouseEvents(e, item, ["mousedown", "mouseup", "click"], {
-			button: 0,
-			ctrlKey: target != "cur" && dummyURI == 2 // Link may be real
+			button: isTree ? 1 : 0,
+			ctrlKey: isTree ? false : target != "cur" && dummyURI == 2 // Link may be real
 		});
 		var loadLink = this.ut.bind(function() {
 			this.setPrefs(target, loadJSInBackground, refererPolicy, winRestriction, false /* winOpenFix */);
