@@ -3,12 +3,13 @@ var handyClicks = {
 
 	ignoreAction: "$ignore",
 
-	event: null,
-	origItem: null,
-	item: null,
-	mainItem: null,
-	itemType: undefined,
-	itemData: null,
+	event: null, // event object, that triggered action
+	origItem: null, // event.originalTarget
+	item: null, // detected item (e.g. XUL tab)
+	mainItem: null, // clicked item for multiple items (e.g. selected tabs)
+	itemType: undefined, // name of item type (e.g. "tab")
+	itemData: null, // special item-specific data (object), currently used only itemData.onBeforeLoad
+	settingsType: "", // event type to run action (from options)
 	flags: {
 		cancelled: false,
 		runned: false, // => stop click events
