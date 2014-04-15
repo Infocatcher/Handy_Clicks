@@ -214,7 +214,8 @@ var handyClicks = {
 	clickHandler: function(e) {
 		if(!this.enabled)
 			return;
-		this.checkForStopEvent(e); // Can stop "contextmenu" event in Windows
+		// Note: also stops "contextmenu" event on Windows and "command" event
+		this.checkForStopEvent(e);
 		if(this.flags.allowEvents)
 			return;
 		var funcObj = this.getFuncObjByEvt(e);
@@ -229,8 +230,9 @@ var handyClicks = {
 	mouseupHandler: function(e) {
 		if(!this.enabled)
 			return;
-		if(this.settingsType != "command")
-			this.checkForStopEvent(e);
+		// Note: also stops "command" event
+		//if(this.settingsType != "command")
+		this.checkForStopEvent(e);
 		if(this.flags.allowEvents)
 			this.cancelDelayedAction();
 		this.setMoveHandlers(false);
@@ -350,6 +352,12 @@ var handyClicks = {
 		if(canStop && this.editMode && this.flags.allowEditModeEvents)
 			return;
 		var same = e.originalTarget === this.origItem;
+		if(
+			same
+			&& this.settingsType == "command"
+			&& (e.type == "click" || e.type == "mouseup")
+		)
+			return;
 		var stop = canStop && same;
 		var isMouseup = e.type == "mouseup";
 		if(stop && isMouseup)
