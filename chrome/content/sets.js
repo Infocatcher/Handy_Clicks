@@ -219,7 +219,9 @@ var handyClicksSets = {
 		this._overrides = this._overrideDa = this._new = this._newDa = 0;
 		this._buggy = 0;
 
-		var df = document.createDocumentFragment();
+		var df = this.ut.fxVersion >= 2
+			? document.createDocumentFragment()
+			: this.tBody;
 		var drawMode = this.pu.pref("sets.treeDrawMode");
 		var p = this.ps.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
@@ -295,7 +297,8 @@ var handyClicksSets = {
 				break;
 			}
 		}
-		this.tBody.appendChild(df);
+		if(df != this.tBody)
+			this.tBody.appendChild(df);
 		this.markOpenedEditors();
 		if(this._import)
 			this.addImportStatistics();
