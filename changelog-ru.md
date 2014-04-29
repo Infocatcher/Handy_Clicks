@@ -21,7 +21,6 @@
 `x` Исправлено определение номеров строк с ошибкой в Firefox 30+ (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/20">#20</a>).<br>
 `*` Ссылки теперь копируются с `%20` вместо пробелов (настройка <em>extensions.handyclicks.funcs.decodeURIs.spaces</em>).<br>
 `*` Улучшена производительность при запуске в отключенном режиме: handyclicks.js будет загружен только после включения (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/21">#21</a>).<br>
-`+` Добавлена поддержка кнопки-меню приложения от расширения <a href="https://addons.mozilla.org/addon/classicthemerestorer/">Classic Theme Restorer</a> в Firefox 29+ (Australis).<br>
 
 ##### 0.1.3pre3 (2014-02-01)
 `*` Немного улучшена производительность при запуске: теперь стили для «мигания» узла загружаются непосредственно перед первым использованием.<br>
