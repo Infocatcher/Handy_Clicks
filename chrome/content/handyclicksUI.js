@@ -107,7 +107,7 @@ var handyClicksUI = {
 				var origStyle = node.hasAttribute("style") && node.getAttribute("style");
 				node.style.setProperty("opacity", this.blinkOpacity, "important");
 			}
-			//node.offsetHeight;
+			node.scrollHeight || node.offsetHeight; // Force redraw
 			this._blinkNodeTimeout = this.timeout(
 				function(node, attr, oldFx, origStyle) {
 					node.removeAttributeNS(this.attrNS, attr);
