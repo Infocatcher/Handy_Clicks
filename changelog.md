@@ -19,6 +19,7 @@
 `*` Improved startup performance: now used lazy loading for utils.js (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/19">#19</a>).<br>
 `*` Slightly improved startup performance: load uninstaller after small delay (to not block browser startup).<br>
 `x` Fixed error line numbers detection in Firefox 30+ (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/20">#20</a>).<br>
+`+` Added “Close” button to notification popup window.<br>
 `*` Copy URIs with `%20` instead of spaces by default (<em>extensions.handyclicks.funcs.decodeURIs.spaces</em> preference).<br>
 `*` Improved startup performance in disabled mode: handyclicks.js will be loaded only after enabling (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/21">#21</a>).<br>
 `+` Added support for <a href="https://addons.mozilla.org/addon/feed-sidebar/">Feed Sidebar</a> extension (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/22">#22</a>).<br>

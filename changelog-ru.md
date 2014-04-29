@@ -19,6 +19,7 @@
 `*` Улучшена производительность при запуске: теперь используется ленивая загрузка для utils.js (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/19">#19</a>).<br>
 `*` Немного улучшена производительность при запуске: загрузка модуля удаления настроек теперь производится после небольшой задержки (чтобы не блокировать процесс запуска браузера).<br>
 `x` Исправлено определение номеров строк с ошибкой в Firefox 30+ (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/20">#20</a>).<br>
+`+` Во всплывающее окно оповещений добавлена кнопка «Закрыть».<br>
 `*` Ссылки теперь копируются с `%20` вместо пробелов (настройка <em>extensions.handyclicks.funcs.decodeURIs.spaces</em>).<br>
 `*` Улучшена производительность при запуске в отключенном режиме: handyclicks.js будет загружен только после включения (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/21">#21</a>).<br>
 `+` Добавлена поддержка расширения <a href="https://addons.mozilla.org/addon/feed-sidebar/">Feed Sidebar</a> (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/22">#22</a>).<br>
