@@ -6,6 +6,7 @@
 `*` – improved<br>
 
 ##### master/HEAD
+##### 0.1.3pre4 (2014-04-29)
 `*` Changed API: handyClicksFuncs.getItemText(item, event, noTrim) arguments is deprecated, use handyClicksFuncs.getItemText(item, <ins>itemType</ins>, event, noTrim) instead.<br>
 `*` Don't use tabs in popup windows (<em>extensions.handyclicks.funcs.dontUseTabsInPopupWindows</em> preference, doesn't work with “moveTo” argument) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/8">#8</a>).<br>
 `x` Fixed detection of “Open …” menu items in RSS bookmarks in Firefox 4+.<br>

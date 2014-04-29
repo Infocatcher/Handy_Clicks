@@ -6,6 +6,7 @@
 `*` – улучшено<br>
 
 ##### master/HEAD
+##### 0.1.3pre4 (2014-04-29)
 `*` Изменение API: аргументы handyClicksFuncs.getItemText(item, event, noTrim) устарели, используйте вместо них handyClicksFuncs.getItemText(item, <ins>itemType</ins>, event, noTrim).<br>
 `*` По умолчанию больше не используются вкладки в popup-окнах (настройка <em>extensions.handyclicks.funcs.dontUseTabsInPopupWindows</em>, не работает с аргументом «moveTo») (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/8">#8</a>).<br>
 `x` Исправлено определение пунктов меню «Открыть …» RSS-закладок в Firefox 4+.<br>
