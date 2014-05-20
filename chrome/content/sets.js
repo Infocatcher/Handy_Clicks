@@ -52,8 +52,16 @@ var handyClicksSets = {
 		}
 
 		var brWin = this.wu.wm.getMostRecentWindow("navigator:browser");
-		if(brWin && !brWin.document.getElementById("appmenu_preferences"))
-			document.getElementsByAttribute("preference", "showInAppMenu")[0].hidden = true;
+		if(brWin) {
+			if(!brWin.document.getElementById("appmenu_preferences"))
+				document.getElementsByAttribute("preference", "showInAppMenu")[0].hidden = true;
+			if(!brWin.document.getElementById("status-bar")) {
+				// Note: still available in Firefox 32.0a1, but can't be restored without extensions
+				// + see https://bugzilla.mozilla.org/show_bug.cgi?id=956731
+				document.getElementsByAttribute("preference", "showInStatusbar")[0].hidden = true;
+				document.getElementsByAttribute("value", "Statusbar")[0].hidden = true;
+			}
+		}
 
 		this.e("hc-sets-externalEditorArgs-box").height = this.e("hc-sets-externalEditorExt-box").boxObject.height;
 
