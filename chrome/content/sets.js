@@ -55,9 +55,10 @@ var handyClicksSets = {
 		if(brWin) {
 			if(!brWin.document.getElementById("appmenu_preferences"))
 				document.getElementsByAttribute("preference", "showInAppMenu")[0].hidden = true;
-			if(!brWin.document.getElementById("status-bar")) {
-				// Note: still available in Firefox 32.0a1, but can't be restored without extensions
-				// + see https://bugzilla.mozilla.org/show_bug.cgi?id=956731
+			var statusBar = brWin.document.getElementById("status-bar");
+			// Note: still available in Firefox 32.0a1, but can't be restored without extensions
+			// + see https://bugzilla.mozilla.org/show_bug.cgi?id=956731
+			if(!statusBar || statusBar.parentNode.hasAttribute("toolbar-delegate")) {
 				document.getElementsByAttribute("preference", "showInStatusbar")[0].hidden = true;
 				document.getElementsByAttribute("value", "Statusbar")[0].hidden = true;
 			}
