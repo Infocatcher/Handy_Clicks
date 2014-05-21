@@ -26,14 +26,20 @@ var handyClicksConsole = {
 			var line = link.getAttribute("line")
 				|| /:(\d+)$/.test(link.getAttribute("value")) && RegExp.$1;
 		}
-		else if( // Browser Console in Firefox 27+
-			ns == "http://www.w3.org/1999/xhtml"
-			&& trg.localName == "a"
-			&& /(?:^|\s)location(?:\s|$)/.test(trg.className)
-		) {
-			var href = trg.href;
-			var line = trg.sourceLine
-				|| /:(\d+)$/.test(trg.textContent) && RegExp.$1;
+		else if(ns == "http://www.w3.org/1999/xhtml") { // Browser Console in Firefox 27+
+			var maxDeep = 2;
+			for(var a = trg; a; a = a.parentNode) {
+				if(a.localName == "a") {
+					if(/(?:^|\s)(?:message-)?location(?:\s|$)/.test(a.className)) {
+						var href = a.href;
+						var line = a.sourceLine
+							|| /:(\d+)$/.test(a.textContent) && RegExp.$1;
+					}
+					break;
+				}
+				if(--maxDeep <= 0)
+					break;
+			}
 		}
 		if(href && line && this.wu.openEditorLink(href, +line)) {
 			e.preventDefault();
