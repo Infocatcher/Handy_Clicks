@@ -118,6 +118,7 @@ var handyClicks = {
 	},
 
 	// Handlers:
+	mousedownPos: { __proto__: null },
 	mousedownHandler: function(e) {
 		if(!this.enabled)
 			return;
@@ -127,6 +128,10 @@ var handyClicks = {
 		var funcObj = this.getFuncObjByEvt(e);
 		if(!funcObj)
 			return;
+
+		var mdPos = this.mousedownPos;
+		mdPos.screenX = e.screenX;
+		mdPos.screenY = e.screenY;
 
 		if( // Workaround for https://addons.mozilla.org/addon/budaneki/
 			this.itemType == "link"
@@ -236,6 +241,49 @@ var handyClicks = {
 		this.checkForStopEvent(e);
 		if(this.flags.allowEvents)
 			this.cancelDelayedAction();
+		var trg = e.originalTarget;
+		if(
+			this.item
+			&& trg != this.origItem
+			// Workaround for Multi Links https://addons.mozilla.org/addon/multi-links/
+			&& trg.id == "multilinks-selection-container"
+			&& "MultiLinks_Wrapper" in window
+			&& this.item.localName.toLowerCase() == "a" // Multi Links supports only <a> links
+			// If mouse was moved, Multi Links will open that link itself
+			&& this.mousedownPos.screenX == e.screenX
+			&& this.mousedownPos.screenY == e.screenY
+			&& (!this.mousemoveParams || !this.mousemoveParams.dist)
+		) {
+			this._log(e.type + ": workaround for Multi Links");
+			// Too many tricks...
+			var mdEvent = this.event;
+			var fakeEvent = {
+				type: "click",
+				target:         mdEvent.target,
+				originalTarget: mdEvent.originalTarget,
+				__proto__: e
+			};
+			var noop = function() {};
+			for(var p in e) {
+				if( // Don't stop "mouseup" event to not break Multi Links
+					p == "preventDefault"
+					|| p == "stopPropagation"
+					|| p == "stopImmediatePropagation"
+				) {
+					fakeEvent[p] = noop;
+					continue;
+				}
+				var v = e[p];
+				if(typeof v == "function") {
+					fakeEvent[p] = (function(v) {
+						return function() {
+							return v.apply(e, arguments);
+						};
+					})(v);
+				}
+			}
+			this.clickHandler(fakeEvent);
+		}
 		this.setMoveHandlers(false);
 		this.saveXY(e);
 
