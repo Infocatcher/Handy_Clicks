@@ -6,6 +6,11 @@
 `*` – улучшено<br>
 
 ##### master/HEAD
+`*` Добавлено скрытие настроек строки состояния в Firefox 29+ (только если строка состояния не восстановлена другим расширением).<br>
+`x` Исправлена поддержка <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">консоли браузера</a> в Firefox 29+.<br>
+`x` Добавлен workaround для расширения <a href="https://addons.mozilla.org/addon/multi-links/">Multi Links</a> (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/23">#23</a>).<br>
+`+` В контекстное меню кнопки добавлены пункты «Переместить на панель инструментов» и «Удалить из меню», для кнопки-меню в Firefox 29+ (Australis).<br>
+
 ##### 0.1.3pre4 (2014-04-29)
 `*` Изменение API: аргументы handyClicksFuncs.getItemText(item, event, noTrim) устарели, используйте вместо них handyClicksFuncs.getItemText(item, <ins>itemType</ins>, event, noTrim).<br>
 `*` По умолчанию больше не используются вкладки в popup-окнах (настройка <em>extensions.handyclicks.funcs.dontUseTabsInPopupWindows</em>, не работает с аргументом «moveTo») (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/8">#8</a>).<br>

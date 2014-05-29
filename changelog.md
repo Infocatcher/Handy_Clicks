@@ -6,6 +6,11 @@
 `*` – improved<br>
 
 ##### master/HEAD
+`*` Hide options about status bar in Firefox 29+ (only if status bar not restored by another extension).<br>
+`x` Fixed support for <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">Browser Console</a> in Firefox 29+.<br>
+`x` Added workaround for <a href="https://addons.mozilla.org/addon/multi-links/">Multi Links</a> extension (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/23">#23</a>).<br>
+`+` Added “Move to Toolbar” and “Remove from Menu” items to button context menu, for menu-button in Firefox 29+ (Australis).<br>
+
 ##### 0.1.3pre4 (2014-04-29)
 `*` Changed API: handyClicksFuncs.getItemText(item, event, noTrim) arguments is deprecated, use handyClicksFuncs.getItemText(item, <ins>itemType</ins>, event, noTrim) instead.<br>
 `*` Don't use tabs in popup windows (<em>extensions.handyclicks.funcs.dontUseTabsInPopupWindows</em> preference, doesn't work with “moveTo” argument) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/8">#8</a>).<br>
