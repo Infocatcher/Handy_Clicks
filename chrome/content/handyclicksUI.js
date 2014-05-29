@@ -222,13 +222,7 @@ var handyClicksUI = {
 					&& this.ut.isElementVisible(popup.lastChild)
 				)
 					return;
-				var clone = ch.cloneNode(true);
-				clone.id && this.setClonedId(clone);
-				Array.forEach(
-					clone.getElementsByAttribute("id", "*"),
-					this.setClonedId,
-					this
-				);
+				var clone = this.safeClone(ch);
 				popup.appendChild(clone);
 			},
 			this
@@ -240,12 +234,12 @@ var handyClicksUI = {
 			var moveToMenu = popup.getElementsByClassName("customize-context-moveToPanel")[0];
 			var removeFromToolbar = popup.getElementsByClassName("customize-context-removeFromToolbar")[0];
 			if(moveToToolbar && moveToMenu) {
-				var mi = moveToMenu.parentNode.insertBefore(moveToToolbar.cloneNode(true), moveToMenu);
+				var mi = moveToMenu.parentNode.insertBefore(this.safeClone(moveToToolbar), moveToMenu);
 				this._toolbarContextItems.push(moveToMenu);
 				this._menuContextItems.push(mi);
 			}
 			if(removeFromMenu && removeFromToolbar) {
-				var mi = removeFromToolbar.parentNode.insertBefore(removeFromMenu.cloneNode(true), removeFromToolbar);
+				var mi = removeFromToolbar.parentNode.insertBefore(this.safeClone(removeFromMenu), removeFromToolbar);
 				this._toolbarContextItems.push(removeFromToolbar);
 				this._menuContextItems.push(mi);
 			}
@@ -253,6 +247,16 @@ var handyClicksUI = {
 	},
 	isToolbarItem: function(node) {
 		return node.hasAttribute("toolbarindex") || node.hasAttribute("toolbarid") || node.hasAttribute("toolbarId");
+	},
+	safeClone: function(node) {
+		var clone = node.cloneNode(true);
+		clone.id && this.setClonedId(clone);
+		Array.forEach(
+			clone.getElementsByAttribute("id", "*"),
+			this.setClonedId,
+			this
+		);
+		return clone;
 	},
 	setClonedId: function(node) {
 		node.id = "handyClicks-cloned-" + node.id;
