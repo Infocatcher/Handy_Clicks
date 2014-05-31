@@ -4,6 +4,12 @@
 <?xml-stylesheet href="chrome://handyclicks/content/style/global.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/setsCommon.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
+<?xml-stylesheet href='data:text/css,
+/* Should be here for CSS reloader */
+preferences {
+	-moz-binding: url("chrome://handyclicks/content/prefwindow.xml#preferences");
+}
+' type="text/css"?>
 
 <!DOCTYPE prefwindow [
 	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/sets.dtd">

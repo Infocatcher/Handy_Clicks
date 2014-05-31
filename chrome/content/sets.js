@@ -124,7 +124,7 @@ var handyClicksSets = {
 					col.tooltipText = col.getAttribute("label");
 			}
 		);
-		this.instantApply = this.pu.getPref("browser.preferences.instantApply");
+		this.instantApply = document.documentElement.instantApply;
 		if(this.instantApply)
 			this.applyButton.hidden = true;
 		else

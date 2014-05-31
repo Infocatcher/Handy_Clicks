@@ -95,6 +95,11 @@ pref("extensions.handyclicks.sets.codeLengthLimit", 1000); // Crop too long cust
 pref("extensions.handyclicks.sets.closeTreeViewMenu", true);
 pref("extensions.handyclicks.sets.rememberSearchQuery", true);
 pref("extensions.handyclicks.sets.rememberScrollPosition", true);
+pref("extensions.handyclicks.sets.overrideInstantApply", -1);
+// Override browser.preferences.instantApply behavior:
+// -1 - don't change (use browser defaults)
+//  0 - override to false
+//  1 - override to true
 
 pref("extensions.handyclicks.editor.tabSize", 4);
 pref("extensions.handyclicks.editor.tabSpaces", false);
