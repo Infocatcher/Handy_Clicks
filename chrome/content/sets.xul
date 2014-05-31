@@ -6,6 +6,9 @@
 <?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
 <?xml-stylesheet href='data:text/css,
 /* Should be here for CSS reloader */
+prefwindow {
+	-moz-binding: url("chrome://handyclicks/content/prefwindow.xml#prefwindow");
+}
 preferences {
 	-moz-binding: url("chrome://handyclicks/content/prefwindow.xml#preferences");
 }
@@ -34,7 +37,6 @@ preferences {
 	oncommand="handyClicksSets.dataChanged(event);"
 	hc_ondrop="handyClicksSets.dataChanged(event, true);"
 	oncut="handyClicksSets.dataChanged(event, true);"
-	style='-moz-binding: url("chrome://handyclicks/content/prefwindow.xml#prefwindow"); /* Should be here for CSS reloader */'
 	width="&hc.sets.defaultWindowWidth;"
 	height="&hc.sets.defaultWindowHeight;"
 	persist="width height screenX screenY sizemode">
