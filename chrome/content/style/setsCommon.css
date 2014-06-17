@@ -68,7 +68,8 @@ button[tooltip]:not([disabled="true"]) {
 button[tooltip]:not([disabled="true"]) label {
 	border-bottom: 1px dotted;
 }
-caption[tooltiptext] > .caption-text {
+caption[tooltiptext] > .caption-text,
+menuitem[tooltiptext] {
 	cursor: help;
 }
 
