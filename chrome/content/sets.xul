@@ -357,7 +357,7 @@ preferences {
 		<groupbox>
 			<caption label="&hc.sets.settingsInterface;" />
 			<checkbox preference="onTopButton" label="&hc.sets.onTopButton;" />
-			<hbox align="center">
+			<hbox id="hc-sets-overrideInstantApply-box" align="center">
 				<label value="&hc.sets.overrideInstantApply;" tooltiptext="&hc.sets.overrideInstantApplyTip;" />
 				<menulist preference="overrideInstantApply">
 					<menupopup>

@@ -74,6 +74,9 @@ var handyClicksSets = {
 		)
 			this.tree.setAttribute("hc_hasOverlayBackground", "true");
 
+		if(this.ut.fxVersion <= 2)
+			this.e("hc-sets-overrideInstantApply-box").hidden = true;
+
 		window.addEventListener("mouseover", this, true);
 	},
 	initShortcuts: function() {
