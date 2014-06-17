@@ -2060,18 +2060,8 @@ var handyClicksSets = {
 			img.src = "";
 			img.setAttribute("hc_existingPath", "false");
 		}
-		var butt = this.$("hc-sets-externalEditorButton");
-		if(!butt.hasAttribute("width")) {
-			butt.setAttribute("label", butt.getAttribute("hc_labelMakeAbsolute"));
-			var w = butt.boxObject.width;
-			butt.setAttribute("label", butt.getAttribute("hc_labelMakeRelative"));
-			butt.setAttribute("width", Math.max(butt.boxObject.width, w));
-		}
 		var isRelative = /^%[^%]+%/.test(this.ee.value);
-		butt.setAttribute(
-			"label",
-			butt.getAttribute(isRelative ? "hc_labelMakeAbsolute" : "hc_labelMakeRelative")
-		);
+		this.$("hc-sets-externalEditorButtonDeck").selectedIndex = isRelative ? 1 : 0;
 		img.removeAttribute("tooltiptext");
 		var tt = "";
 		if(eeFile instanceof Components.interfaces.nsILocalFileWin) {

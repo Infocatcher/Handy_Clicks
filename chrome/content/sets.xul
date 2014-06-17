@@ -410,11 +410,14 @@ preferences {
 					oncut="handyClicksSets.externalEditorChanged(true);"
 					hc_requiredFor="externalEditor" hc_enabledRegExp="[/\\]\S|^%[^%]+%." />
 				<button oncommand="handyClicksSets.selectExternalEditor();" label="&hc.sets.externalEditorBrowse;" />
-				<button id="hc-sets-externalEditorButton" oncommand="handyClicksSets.convertPath();"
-					label="&hc.sets.externalEditorMakeRelative;"
-					hc_labelMakeRelative="&hc.sets.externalEditorMakeRelative;"
-					hc_labelMakeAbsolute="&hc.sets.externalEditorMakeAbsolute;"
-					hc_depends="externalEditor" />
+				<deck id="hc-sets-externalEditorButtonDeck" oncommand="handyClicksSets.convertPath();">
+					<button id="hc-sets-externalEditorButtonRelative"
+						label="&hc.sets.externalEditorMakeRelative;"
+						hc_depends="externalEditor" />
+					<button id="hc-sets-externalEditorButtonAbsolute"
+						label="&hc.sets.externalEditorMakeAbsolute;"
+						hc_depends="externalEditor" />
+				</deck>
 			</hbox>
 			<hbox align="top">
 				<hbox id="hc-sets-externalEditorArgs-box" align="top" flex="1" hc_depends="externalEditor">
