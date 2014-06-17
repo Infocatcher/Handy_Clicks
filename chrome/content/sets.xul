@@ -372,8 +372,9 @@ preferences {
 					var notSaved = pref.valueFromPreferences != pref.value;
 					if(notSaved)
 						pref.valueFromPreferences = pref.value;
+					if(!document.documentElement.cancelDialog())
+						return;
 					window.openDialog(location.href, "", "chrome,all,toolbar,centerscreen,resizable,dialog=0");
-					window.close();
 					if(notSaved)
 						handyClicksPrefUtils.savePrefFile();' />
 			</hbox>
