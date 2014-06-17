@@ -1821,16 +1821,16 @@ var handyClicksSets = {
 		}, this);
 		changed && this.loadUIAction();
 	},
-	saveSettings: function(applyFlag) {
+	saveSettings: function(applyFlag, forceSavePrefs) {
 		this.pu.pref("disallowMousemoveButtons", this.disallowMousemoveButtons);
-		if(applyFlag && !this.instantApply) {
+		if(!this.instantApply) {
 			if(applyFlag) {
 				this.timeout(function() {
 					this.savePrefpanes();
 					this.setDialogButtons();
 				}, this);
 			}
-			else
+			else if(forceSavePrefs)
 				this.savePrefpanes();
 		}
 		var saved = true;
@@ -2159,7 +2159,7 @@ var handyClicksSets = {
 		if(res == this.su.PROMPT_CANCEL)
 			return false;
 		if(res == this.su.PROMPT_SAVE)
-			this.saveSettings();
+			this.saveSettings(false, true);
 		return true;
 	},
 	checkImport: function(isImport) {
