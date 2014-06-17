@@ -25,7 +25,8 @@ var handyClicksSets = {
 		this.initPrefs();
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 
-		if(this.ut.fxVersion >= 3.5) {
+		var fxVersion = this.ut.fxVersion;
+		if(fxVersion >= 3.5) {
 			var sf = this.searchField;
 			if(typeof sf._clearSearch == "function") {
 				this._origClearSearch = sf._clearSearch;
@@ -45,7 +46,7 @@ var handyClicksSets = {
 		else
 			this.startupUI();
 
-		if(this.ut.fxVersion >= 3.6) { // Fix wrong resizing after sizeToContent() call
+		if(fxVersion >= 3.6) { // Fix wrong resizing after sizeToContent() call
 			var de = document.documentElement;
 			if(de.getAttribute("sizemode") == "normal")
 				window.resizeTo(Number(de.width), Number(de.height));
@@ -67,14 +68,14 @@ var handyClicksSets = {
 		this.e("hc-sets-externalEditorArgs-box").height = this.e("hc-sets-externalEditorExt-box").boxObject.height;
 
 		if(
-			this.ut.fxVersion >= 25
+			fxVersion >= 25
 			&& this.ut.appInfo.OS == "WINNT"
 			&& this.ut.osVersion >= 6
 			&& document.querySelector(":-moz-system-metric(windows-default-theme)")
 		)
 			this.tree.setAttribute("hc_hasOverlayBackground", "true");
 
-		if(this.ut.fxVersion <= 2)
+		if(fxVersion <= 2)
 			this.e("hc-sets-overrideInstantApply-box").hidden = true;
 
 		window.addEventListener("mouseover", this, true);
