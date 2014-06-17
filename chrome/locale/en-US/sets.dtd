@@ -177,6 +177,7 @@ Placeholders:
 <!ENTITY hc.sets.overrideInstantApply.useBrowserSettingsTip "browser.preferences.instantApply preference">
 <!ENTITY hc.sets.overrideInstantApply.forceOff "force show">
 <!ENTITY hc.sets.overrideInstantApply.forceOn "force hide">
+<!ENTITY hc.sets.reopenWindow "Reopen window">
 
 <!ENTITY hc.sets.tabulation "Tabulation">
 <!ENTITY hc.sets.tabSize "Size:">

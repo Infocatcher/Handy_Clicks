@@ -367,6 +367,15 @@ preferences {
 						<menuitem value="1" label="&hc.sets.overrideInstantApply.forceOn;" />
 					</menupopup>
 				</menulist>
+				<button label="&hc.sets.reopenWindow;" oncommand='
+					var pref = document.getElementById("overrideInstantApply");
+					var notSaved = pref.valueFromPreferences != pref.value;
+					if(notSaved)
+						pref.valueFromPreferences = pref.value;
+					window.openDialog(location.href, "", "chrome,all,toolbar,centerscreen,resizable,dialog=0");
+					window.close();
+					if(notSaved)
+						handyClicksPrefUtils.savePrefFile();' />
 			</hbox>
 		</groupbox>
 		<groupbox orient="horizontal" align="center">
