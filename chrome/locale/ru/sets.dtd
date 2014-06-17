@@ -168,7 +168,15 @@
 <!ENTITY hc.sets.editorTitle "Редактор">
 
 <!ENTITY hc.sets.settingsInterface "Интерфейс настроек">
-<!ENTITY hc.sets.onTopButton "Показывать кнопку «Закрепить» в углу окна"> <!-- see "onTop" in hcs.properties -->
+<!-- Used "onTop" string from hcs.properties -->
+<!ENTITY hc.sets.onTopButton "Показывать кнопку «Закрепить» в углу окна">
+<!-- Used "button-accept" string from chrome://global/locale/dialog.properties -->
+<!ENTITY hc.sets.overrideInstantApply "Кнопки «OK» и «&hc.sets.apply;»:">
+<!ENTITY hc.sets.overrideInstantApplyTip "Изменения вступают в силу только после переоткрытия окна">
+<!ENTITY hc.sets.overrideInstantApply.useBrowserSettings "использовать настройки браузера">
+<!ENTITY hc.sets.overrideInstantApply.useBrowserSettingsTip "настройка browser.preferences.instantApply">
+<!ENTITY hc.sets.overrideInstantApply.forceOff "принудительно показывать">
+<!ENTITY hc.sets.overrideInstantApply.forceOn "принудительно скрывать">
 
 <!ENTITY hc.sets.tabulation "Табуляция">
 <!ENTITY hc.sets.tabSize "Ширина:">

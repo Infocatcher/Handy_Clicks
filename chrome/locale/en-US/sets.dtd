@@ -168,7 +168,15 @@ Placeholders:
 <!ENTITY hc.sets.editorTitle "Editor">
 
 <!ENTITY hc.sets.settingsInterface "Settings interface">
-<!ENTITY hc.sets.onTopButton "Show “On top” button in the corner"> <!-- see "onTop" in hcs.properties -->
+<!-- Used "onTop" string from hcs.properties -->
+<!ENTITY hc.sets.onTopButton "Show “On top” button in the corner">
+<!-- Used "button-accept" string from chrome://global/locale/dialog.properties -->
+<!ENTITY hc.sets.overrideInstantApply "“OK” and “&hc.sets.apply;” buttons:">
+<!ENTITY hc.sets.overrideInstantApplyTip "Changes take effect only after window reopening">
+<!ENTITY hc.sets.overrideInstantApply.useBrowserSettings "use browser settings">
+<!ENTITY hc.sets.overrideInstantApply.useBrowserSettingsTip "browser.preferences.instantApply preference">
+<!ENTITY hc.sets.overrideInstantApply.forceOff "force show">
+<!ENTITY hc.sets.overrideInstantApply.forceOn "force hide">
 
 <!ENTITY hc.sets.tabulation "Tabulation">
 <!ENTITY hc.sets.tabSize "Size:">

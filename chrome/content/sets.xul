@@ -344,6 +344,7 @@ preferences {
 	<prefpane id="hc-sets-pane-editor" label="&hc.sets.editorTitle;" flex="1">
 		<preferences>
 			<preference id="onTopButton" type="bool" name="extensions.handyclicks.ui.onTopButton" />
+			<preference id="overrideInstantApply" type="int" name="extensions.handyclicks.sets.overrideInstantApply" />
 			<preference id="tabSize" type="int" name="extensions.handyclicks.editor.tabSize" />
 			<preference id="tabSpaces" type="bool" name="extensions.handyclicks.editor.tabSpaces" />
 			<preference id="autocomplete" type="bool" name="extensions.handyclicks.editor.autocomplete" />
@@ -356,6 +357,17 @@ preferences {
 		<groupbox>
 			<caption label="&hc.sets.settingsInterface;" />
 			<checkbox preference="onTopButton" label="&hc.sets.onTopButton;" />
+			<hbox align="center">
+				<label value="&hc.sets.overrideInstantApply;" tooltiptext="&hc.sets.overrideInstantApplyTip;" />
+				<menulist preference="overrideInstantApply">
+					<menupopup>
+						<menuitem value="-1" label="&hc.sets.overrideInstantApply.useBrowserSettings;"
+							tooltiptext="&hc.sets.overrideInstantApply.useBrowserSettingsTip;" />
+						<menuitem value="0" label="&hc.sets.overrideInstantApply.forceOff;" />
+						<menuitem value="1" label="&hc.sets.overrideInstantApply.forceOn;" />
+					</menupopup>
+				</menulist>
+			</hbox>
 		</groupbox>
 		<groupbox orient="horizontal" align="center">
 			<caption label="&hc.sets.tabulation;" />
