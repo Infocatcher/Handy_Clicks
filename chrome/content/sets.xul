@@ -376,7 +376,8 @@ preferences {
 						return;
 					var args = "chrome,all,resizable,dialog=0"
 						+ ",left=" + window.screenX + ",top=" + window.screenY;
-					window.openDialog(location.href, "", args);
+					window.openDialog(location.href, "", args)
+						.focus();
 					if(notSaved)
 						handyClicksPrefUtils.savePrefFile();' />
 			</hbox>
