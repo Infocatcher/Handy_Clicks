@@ -413,7 +413,7 @@ preferences {
 					hc_ondrop="handyClicksSets.externalEditorChanged();"
 					oncut="handyClicksSets.externalEditorChanged(true);"
 					hc_requiredFor="externalEditor" hc_enabledRegExp="[/\\]\S|^%[^%]+%." />
-				<button oncommand="handyClicksSets.selectExternalEditor();" label="&hc.sets.externalEditorBrowse;" />
+				<button icon="open" oncommand="handyClicksSets.selectExternalEditor();" label="&hc.sets.externalEditorBrowse;" />
 				<deck id="hc-sets-externalEditorButtonDeck" oncommand="handyClicksSets.convertPath();">
 					<button id="hc-sets-externalEditorButtonRelative"
 						label="&hc.sets.externalEditorMakeRelative;"
