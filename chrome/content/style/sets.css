@@ -23,12 +23,15 @@ radio[pane="hc-sets-pane-funcs"] {
 #hc-sets-tree-searchContainer {
 	-moz-appearance: textfield;
 	margin: 2px;
+	padding: 1px;
 	max-width: 400px;
 }
 #hc-sets-tree-searchField {
 	-moz-appearance: none;
 	margin: 0;
 	border: none;
+	padding-top: 2px;
+	padding-bottom: 2px;
 }
 #hc-sets-tree-searchField[hc_queryType="RegExp"], #hc-sets-tree-searchField[hc_queryType="RegExp"] > * {
 	background-color: white;

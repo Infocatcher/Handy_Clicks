@@ -40,6 +40,9 @@ var handyClicksSets = {
 				};
 			}
 		}
+		else if(fxVersion <= 2) {
+			this.$("hc-sets-tree-searchContainer").style.padding = "0";
+		}
 
 		if(reloadFlag)
 			this.setDialogButtons();
