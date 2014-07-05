@@ -74,7 +74,7 @@
 					this.setAttribute("hc_tabSpaces", !!val);
 				</setter>
 			</property>
-			<property name="tabSymbol">
+			<property name="tabSymbol" readonly="true">
 				<getter>
 				<![CDATA[
 					if(!this.tabSpaces)
