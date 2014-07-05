@@ -358,23 +358,17 @@
 			</method>
 			<property name="currentLine" readonly="true">
 				<getter>
-				<![CDATA[
 					return this.value.substring(0, this.inputField.selectionStart).split("\n").length;
-				]]>
 				</getter>
 			</property>
 			<property name="linesCount" readonly="true">
 				<getter>
-				<![CDATA[
 					return this.value.split("\n").length;
-				]]>
 				</getter>
 			</property>
 			<property name="currentColumn" readonly="true">
 				<getter>
-				<![CDATA[
 					return this.value.substring(0, this.inputField.selectionStart).match(/[^\n\r]*$/)[0].length + 1;
-				]]>
 				</getter>
 			</property>
 			<property name="columnsCount" readonly="true">
@@ -469,9 +463,7 @@
 			</property>
 			<method name="toggleMaximized">
 				<body>
-				<![CDATA[
 					this.maximized = !this.maximized;
-				]]>
 				</body>
 			</method>
 			<method name="textZoom">
