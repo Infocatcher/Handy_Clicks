@@ -1198,9 +1198,7 @@
 				}, 0, this);
 			]]>
 			</handler>
-			<handler event="keypress" keycode="VK_BACK" modifiers="control">
-				this.insertText("");
-			</handler>
+			<handler event="keypress" keycode="VK_BACK" modifiers="control" action="this.insertText('');" />
 			<handler event="blur">
 			<![CDATA[
 				if(event.originalTarget !== this.inputField || !this.maximized)
