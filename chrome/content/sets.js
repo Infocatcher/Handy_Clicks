@@ -2892,6 +2892,9 @@ var handyClicksSets = {
 		return file && file.exists() && file.isDirectory() && file;
 	},
 	set backupsDir(dir) {
+		var savedDir = this.backupsDir;
+		if(savedDir && dir.equals(savedDir))
+			return; // May be manually changed to use some custom alias, don't override!
 		var path = dir.path;
 		var curDrv = this.ut.getFileRoot(this.ps.profileDir).path;
 		if(path.substr(0, curDrv.length) == curDrv)
