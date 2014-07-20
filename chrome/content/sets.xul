@@ -7,10 +7,10 @@
 <?xml-stylesheet href='data:text/css,
 /* Should be here for CSS reloader */
 prefwindow {
-	-moz-binding: url("chrome://handyclicks/content/prefwindow.xml#prefwindow");
+	-moz-binding: url("chrome://handyclicks/content/prefwindow.xml%23prefwindow");
 }
 preferences {
-	-moz-binding: url("chrome://handyclicks/content/prefwindow.xml#preferences");
+	-moz-binding: url("chrome://handyclicks/content/prefwindow.xml%23preferences");
 }
 ' type="text/css"?>
 
