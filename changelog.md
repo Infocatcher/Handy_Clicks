@@ -11,6 +11,7 @@
 `x` Added workaround for <a href="https://addons.mozilla.org/addon/multi-links/">Multi Links</a> extension (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/23">#23</a>).<br>
 `+` Added “Move to Toolbar” and “Remove from Menu” items to button context menu, for menu-button in Firefox 29+ (Australis).<br>
 `+` Added ability to override <em>browser.preferences.instantApply</em> for settings window (<em>extensions.handyclicks.sets.overrideInstantApply</em> preference) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/24">#24</a>).<br>
+`x` Fixed charset menu in Firefox 32+ (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/26">#26</a>).<br>
 
 ##### 0.1.3pre4 (2014-04-29)
 `*` Changed API: handyClicksFuncs.getItemText(item, event, noTrim) arguments is deprecated, use handyClicksFuncs.getItemText(item, <ins>itemType</ins>, event, noTrim) instead.<br>

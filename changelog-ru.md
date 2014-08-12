@@ -11,6 +11,7 @@
 `x` Добавлен workaround для расширения <a href="https://addons.mozilla.org/addon/multi-links/">Multi Links</a> (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/23">#23</a>).<br>
 `+` В контекстное меню кнопки добавлены пункты «Переместить на панель инструментов» и «Удалить из меню», для кнопки-меню в Firefox 29+ (Australis).<br>
 `+` Добавлена возможность переопределить <em>browser.preferences.instantApply</em> для окна настроек (настройка <em>extensions.handyclicks.sets.overrideInstantApply</em>) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/24">#24</a>).<br>
+`x` Исправлено меню кодировок в Firefox 32+ (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/26">#26</a>).<br>
 
 ##### 0.1.3pre4 (2014-04-29)
 `*` Изменение API: аргументы handyClicksFuncs.getItemText(item, event, noTrim) устарели, используйте вместо них handyClicksFuncs.getItemText(item, <ins>itemType</ins>, event, noTrim).<br>
