@@ -145,6 +145,29 @@ var handyClicksSets = {
 		prefsButt.appendChild(this.e("hc-sets-prefsManagementPopup"));
 		prefsButt.className += " hc-iconic hc-preferences";
 	},
+	buildCharsetMenu: function(popup) {
+		Components.classes["@mozilla.org/observer-service;1"]
+			.getService(Components.interfaces.nsIObserverService)
+			.notifyObservers(null, "charsetmenu-selected", "other");
+		if(popup.lastChild.localName != "menuseparator")
+			return;
+		try { // Firefox 32+
+			var CharsetMenu = Components.utils["import"]("resource://gre/modules/CharsetMenu.jsm", {}).CharsetMenu;
+			var df = document.createDocumentFragment();
+			CharsetMenu.build(df, true, false); // Works only with empty nodes!
+			popup.appendChild(df);
+			Array.forEach(
+				popup.getElementsByTagName("menuitem"),
+				function(mi) {
+					if(!mi.hasAttribute("value"))
+						mi.setAttribute("value", mi.getAttribute("charset"));
+				}
+			);
+		}
+		catch(e) {
+			Components.utils.reportError(e);
+		}
+	},
 	handleEvent: function(e) {
 		if(e.type == "mouseup") {
 			this.smartSelect(e);

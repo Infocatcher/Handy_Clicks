@@ -491,9 +491,9 @@ preferences {
 			<menulist id="hc-sets-convertURIsCharset" hc_depends="convert"
 				ref="NC:DecodersRoot" datasources="rdf:charset-menu"
 				preference="convertURIsCharset"
-				onsyncfrompreference='Components.classes["@mozilla.org/observer-service;1"]
-					.getService(Components.interfaces.nsIObserverService)
-					.notifyObservers(null, "charsetmenu-selected", "other");'>
+				onsyncfrompreference='
+					handyClicksSets.buildCharsetMenu(this.firstChild);
+					this.setAttribute("onsyncfrompreference", "");'>
 				<menupopup>
 					<menuitem label="&hc.sets.autodetect;" value="" />
 					<menuseparator />
