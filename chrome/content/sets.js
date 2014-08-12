@@ -161,6 +161,7 @@ var handyClicksSets = {
 				function(mi) {
 					if(!mi.hasAttribute("value"))
 						mi.setAttribute("value", mi.getAttribute("charset"));
+					mi.removeAttribute("type"); // Remove type="radio"
 				}
 			);
 		}
