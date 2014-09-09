@@ -4,6 +4,7 @@
 	windowtype="handyClicks:settingsOpener">
 	<script type="application/javascript">
 	// Hack to open options in not modal window
+	window.resizeTo(0, 0);
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
 		.getService(Components.interfaces.nsIWindowMediator);
 	var w = wm.getMostRecentWindow("handyclicks:settings");
