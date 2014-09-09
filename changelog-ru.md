@@ -6,6 +6,7 @@
 `*` – улучшено<br>
 
 ##### master/HEAD
+##### 0.1.3pre5 (2014-09-09)
 `*` Добавлено скрытие настроек строки состояния в Firefox 29+ (только если строка состояния не восстановлена другим расширением).<br>
 `x` Исправлена поддержка <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">консоли браузера</a> в Firefox 29+.<br>
 `x` Добавлен workaround для расширения <a href="https://addons.mozilla.org/addon/multi-links/">Multi Links</a> (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/23">#23</a>).<br>
