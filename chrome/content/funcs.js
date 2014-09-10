@@ -1270,11 +1270,12 @@ var handyClicksFuncs = {
 			stl.setProperty("background", "url(\"" + this.resPath + "loading.gif\") center no-repeat", "important");
 
 		// See https://github.com/Infocatcher/Custom_Buttons/tree/master/Reload_Broken_Images
-		try {
+		if(img instanceof Components.interfaces.nsIImageLoadingContent && img.currentURI) try {
 			var uri = img.currentURI;
-			var tools = Components.classes["@mozilla.org/image/tools;1"]
-				.getService(Components.interfaces.imgITools);
-			var cache = "getImgCacheForDocument" in tools // Gecko 18
+			var tools = "imgITools" in Components.interfaces
+				&& Components.classes["@mozilla.org/image/tools;1"]
+					.getService(Components.interfaces.imgITools);
+			var cache = tools && "getImgCacheForDocument" in tools // Gecko 18+
 				? tools.getImgCacheForDocument(img.ownerDocument)
 				: Components.classes["@mozilla.org/image/cache;1"]
 					.getService(Components.interfaces.imgICache);
