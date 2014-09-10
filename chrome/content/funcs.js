@@ -1260,8 +1260,9 @@ var handyClicksFuncs = {
 		if(!src)
 			return;
 		var origStyle = img.hasAttribute("style") && img.getAttribute("style");
-		var w = this.getStyle(img, "width");
-		var h = this.getStyle(img, "height");
+		var cs = this.getStyle(img);
+		var w = cs.width;
+		var h = cs.height;
 		img.style.setProperty("width", w, "important");
 		img.style.setProperty("height", h, "important");
 		if(parseInt(w) > 24 || parseInt(h) > 24)
@@ -1297,7 +1298,10 @@ var handyClicksFuncs = {
 	},
 	getStyle: function(item, propName) {
 		item = item || this.hc.item;
-		return item.ownerDocument.defaultView.getComputedStyle(item, null)[propName];
+		var cs = item.ownerDocument.defaultView.getComputedStyle(item, null);
+		if(propName)
+			return cs && cs[propName];
+		return cs;
 	},
 	openSimilarLinksInTabs: function(e, refererPolicy, a) {
 		a = a || this.hc.item;
