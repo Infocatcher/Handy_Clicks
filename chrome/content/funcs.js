@@ -1267,21 +1267,17 @@ var handyClicksFuncs = {
 		img.style.setProperty("height", h, "important");
 		if(parseInt(w) > 24 || parseInt(h) > 24)
 			img.style.setProperty("background", "url(\"" + this.resPath + "loading.gif\") center no-repeat", "important");
-		img.setAttribute("src", this.resPath + "spacer.gif"); // transparent gif 1x1
-		setTimeout(
-			function(_this) {
-				img.setAttribute("src", src);
-				img.addEventListener(
-					"load",
-					function _l() {
-						img.removeEventListener("load", _l, false);
-						_this.attribute(img, "style", origStyle, true);
-					},
-					false
-				);
-			},
-			0, this
-		);
+		img.src = this.resPath + "spacer.gif"; // transparent gif 1x1
+		setTimeout(function(_this) {
+			function done(e) {
+				img.removeEventListener("load", done, false);
+				img.removeEventListener("error", done, false);
+				_this.attribute(img, "style", origStyle, true);
+			}
+			img.addEventListener("load", done, false);
+			img.addEventListener("error", done, false);
+			img.src = src;
+		}, 0, this);
 	},
 	copyImg: function(e, img) {
 		img = img || this.hc.item;
