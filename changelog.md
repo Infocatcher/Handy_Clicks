@@ -6,6 +6,8 @@
 `*` – improved<br>
 
 ##### master/HEAD
+`x` Fixed hiding of special window that open options in non-modal window.<br>
+
 ##### 0.1.3pre5 (2014-09-09)
 `*` Hide options about status bar in Firefox 29+ (only if status bar not restored by another extension).<br>
 `x` Fixed support for <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">Browser Console</a> in Firefox 29+.<br>
