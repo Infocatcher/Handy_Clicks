@@ -204,7 +204,10 @@ var handyClicksSetsUtils = {
 
 	_allowScroll: 0,
 	handleScroll: function(e) {
-		if(e.target.nodeType == Node.DOCUMENT_NODE)
+		if(
+			e.target.nodeType == Node.DOCUMENT_NODE
+			|| !this.pu.pref("sets.scrollLists")
+		)
 			return;
 		var aw = this.wu.ww.activeWindow;
 		if(aw && aw.location.href == "chrome://global/content/commonDialog.xul")

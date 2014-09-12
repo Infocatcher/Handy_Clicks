@@ -100,6 +100,7 @@ pref("extensions.handyclicks.sets.overrideInstantApply", -1);
 // -1 - don't change (use browser defaults)
 //  0 - override to false
 //  1 - override to true
+pref("extensions.handyclicks.sets.scrollLists", true);
 
 pref("extensions.handyclicks.editor.tabSize", 4);
 pref("extensions.handyclicks.editor.tabSpaces", false);
