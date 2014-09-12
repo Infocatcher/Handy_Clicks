@@ -202,10 +202,9 @@ var handyClicksSetsUtils = {
 		return ret;
 	},
 
-	disableScroll: false,
 	_allowScroll: 0,
 	handleScroll: function(e) {
-		if(this.disableScroll || e.target.nodeType == Node.DOCUMENT_NODE)
+		if(e.target.nodeType == Node.DOCUMENT_NODE)
 			return;
 		var aw = this.wu.ww.activeWindow;
 		if(aw && aw.location.href == "chrome://global/content/commonDialog.xul")
