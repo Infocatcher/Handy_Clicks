@@ -213,11 +213,22 @@ var handyClicksSetsUtils = {
 		if(aw && aw.location.href == "chrome://global/content/commonDialog.xul")
 			return; // Scroll still works for disabled window...
 
-		if(
-			aw && aw != e.target.ownerDocument.defaultView.top
-			&& this.pu.pref("sets.scrollLists.onlyInActiveWindow")
-		)
-			return;
+		if(aw) try {
+			var topWin = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+				.getInterface(Components.interfaces.nsIWebNavigation)
+				.QueryInterface(Components.interfaces.nsIDocShellTreeItem)
+				.rootTreeItem
+				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+				.getInterface(Components.interfaces.nsIDOMWindow);
+			if(
+				aw != topWin
+				&& this.pu.pref("sets.scrollLists.onlyInActiveWindow")
+			)
+				return;
+		}
+		catch(e) {
+			Components.utils.reportError(e);
+		}
 
 		// Forbid too quickly scroll
 		var now = Date.now();
