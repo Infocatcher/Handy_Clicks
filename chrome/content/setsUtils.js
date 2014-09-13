@@ -213,6 +213,12 @@ var handyClicksSetsUtils = {
 		if(aw && aw.location.href == "chrome://global/content/commonDialog.xul")
 			return; // Scroll still works for disabled window...
 
+		if(
+			aw && aw != e.target.ownerDocument.defaultView.top
+			&& this.pu.pref("sets.scrollLists.onlyInActiveWindow")
+		)
+			return;
+
 		// Forbid too quickly scroll
 		var now = Date.now();
 		if(now < this._allowScroll)
