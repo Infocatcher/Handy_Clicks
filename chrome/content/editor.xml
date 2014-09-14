@@ -6,7 +6,7 @@
 			<![CDATA[
 				var ww = -1;
 				if(this.hasAttribute("hc_wrapWidth")) {
-					var _ww = Number(this.getAttribute("hc_wrapWidth"));
+					var _ww = +this.getAttribute("hc_wrapWidth");
 					if(isFinite(_ww))
 						ww = _ww;
 				}
@@ -38,7 +38,7 @@
 				<getter>
 				<![CDATA[
 					return Math.max(1, Math.min(100,
-						Number(this.getAttribute("hc_tabSize"))
+						+this.getAttribute("hc_tabSize")
 						|| "handyClicksPrefUtils" in top && top.handyClicksPrefUtils.get("editor.tabSize")
 						|| 4
 					));
@@ -344,8 +344,8 @@
 						return;
 					if(!/^(\+|-)?(\d+)(?:\s*[^\d+-]+\s*(\+|-)?(\d+))?$/.test(num.value))
 						return;
-					var line = Number(RegExp.$2);
-					var col  = Number(RegExp.$4);
+					var line = +RegExp.$2;
+					var col  = +RegExp.$4;
 					if(RegExp.$1)
 						line = Math.max(1, currLine + line*(RegExp.$1 == "+" ? 1 : -1));
 					if(RegExp.$3)

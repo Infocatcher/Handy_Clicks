@@ -52,7 +52,7 @@ var handyClicksSets = {
 		if(fxVersion >= 3.6) { // Fix wrong resizing after sizeToContent() call
 			var de = document.documentElement;
 			if(de.getAttribute("sizemode") == "normal")
-				window.resizeTo(Number(de.width), Number(de.height));
+				window.resizeTo(+de.width, +de.height);
 		}
 
 		var brWin = this.wu.wm.getMostRecentWindow("navigator:browser");
@@ -216,8 +216,8 @@ var handyClicksSets = {
 		var maxRowsIndx = this.tView.rowCount - 1;
 		if(maxRowsIndx < 0)
 			return;
-		var fvr = Number(tr.getAttribute("hc_firstVisibleRow"));
-		var lvr = Number(tr.getAttribute("hc_lastVisibleRow"));
+		var fvr = +tr.getAttribute("hc_firstVisibleRow");
+		var lvr = +tr.getAttribute("hc_lastVisibleRow");
 		if(lvr > maxRowsIndx)
 			fvr -= lvr - maxRowsIndx;
 		tbo.scrollToRow(this.ut.mm(fvr, 0, maxRowsIndx));
@@ -2426,7 +2426,7 @@ var handyClicksSets = {
 				}
 				var pVal = line.substr(indx + 1);
 				if(pType == ps.PREF_INT || isOld && /^-?\d+$/.test(pVal)) // Convert string to number
-					pVal = Number(pVal);
+					pVal = +pVal;
 				else if(pType == ps.PREF_BOOL || isOld && (pVal == "true" || pVal == "false")) // ...or boolean
 					pVal = pVal == "true";
 				this.pu.setPref(pName, pVal);
@@ -2696,7 +2696,7 @@ var handyClicksSets = {
 				this.ut.hasPrefix(fName, userBackup)
 				&& /-(\d{14})(?:-\d+)?\.js$/.test(fName)
 			) {
-				_ubTime = Number(RegExp.$1);
+				_ubTime = +RegExp.$1;
 				if(!(_ubTime in _ubFiles))
 					_ubFiles[_ubTime] = [];
 				_ubFiles[_ubTime].push(entry);

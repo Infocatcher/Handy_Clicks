@@ -1375,7 +1375,7 @@ var handyClicksEditor = {
 						if(argVal == "null")
 							argVal = null;
 						else if(/^-?\d+$/.test(argVal))
-							argVal = Number(argVal);
+							argVal = +argVal;
 					}
 					args[argElt.getAttribute("hc_argName")] = argVal;
 				},

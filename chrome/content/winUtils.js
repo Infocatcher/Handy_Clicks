@@ -176,7 +176,7 @@ var handyClicksWinUtils = {
 		href = href.replace(/\?(.*)$/, "");
 		var args = RegExp.$1;
 		if(args && typeof line != "number" && /(?:^|&)line=(\d+)(?:&|$)/.test(args))
-			line = Number(RegExp.$1);
+			line = +RegExp.$1;
 		var tokens = href.substr(ed.length).split("/");
 		var mode = tokens[0];
 		if(mode == this.ct.EDITOR_MODE_SHORTCUT) {
