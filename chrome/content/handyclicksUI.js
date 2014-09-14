@@ -164,13 +164,13 @@ var handyClicksUI = {
 
 		this.$("handyClicks-allSettingsMenuitem").setAttribute(
 			"hidden",
-			!this.pu.pref("ui.showAllSettingsMenuitem")
+			!this.pu.get("ui.showAllSettingsMenuitem")
 		);
 
 		var popup = e.target;
 		var pn = popup.triggerNode || document.popupNode; // https://bugzilla.mozilla.org/show_bug.cgi?id=383930
 
-		var inheritContext = this.pu.pref("ui.inheritToolbarContextMenu")
+		var inheritContext = this.pu.get("ui.inheritToolbarContextMenu")
 			&& pn
 			&& !this.ut.hasPrefix(pn.localName, "statusbar")
 			&& pn.localName != "browser";
@@ -279,11 +279,11 @@ var handyClicksUI = {
 	setupUIActions: function() {
 		this.setControls(function(elt) {
 			var type = this.getTypeByLocalName(elt.localName);
-			var defaultAction = this.pu.pref("ui.action" + type + "LeftClick");
+			var defaultAction = this.pu.get("ui.action" + type + "LeftClick");
 			var popup = defaultAction == this.ACTION_POPUP
 				? "handyClicks-settingsPopup"
 				: null;
-			var context = this.pu.pref("ui.action" + type + "RightClick") == this.ACTION_POPUP
+			var context = this.pu.get("ui.action" + type + "RightClick") == this.ACTION_POPUP
 				? "handyClicks-settingsPopup"
 				: "_handyClicks-noContext"; // Dummy value
 			this.attribute(elt, "popup", popup);
@@ -329,7 +329,7 @@ var handyClicksUI = {
 		else if(e.button == 2)
 			button = "Right";
 
-		var actionId = this.pu.pref("ui.action" + type + button + "Click");
+		var actionId = this.pu.get("ui.action" + type + button + "Click");
 		if(leftClick) {
 			var isMenuPopup = type == "Menu" && actionId == this.ACTION_POPUP;
 			if(e.type == (isMenuPopup ? "command" : "click"))
@@ -417,7 +417,7 @@ var handyClicksUI = {
 		}
 	},
 	notifyEditMode: function(force) {
-		var nem = this.pu.pref("notifyEditMode");
+		var nem = this.pu.get("notifyEditMode");
 		if(
 			nem == 1 && (this._temFromKey && !this.controlsVisible || force)
 			|| nem == 2
@@ -494,7 +494,7 @@ var handyClicksUI = {
 			this.setupProgress();
 	},
 	setStatus: function() {
-		var enabled = this.pu.pref("enabled");
+		var enabled = this.pu.get("enabled");
 		enabled && this.hc.preloadSettings();
 		this.initListeners(enabled);
 		var tt = this.getLocalized(enabled ? "enabledTip" : "disabledTip");
@@ -509,7 +509,7 @@ var handyClicksUI = {
 	_restoreIconTimeout: 0,
 	_hasIcon: false,
 	setIcon: function(e) {
-		if(!this.pu.pref("ui.showMouseButton"))
+		if(!this.pu.get("ui.showMouseButton"))
 			return;
 		clearTimeout(this._restoreIconTimeout);
 		var icon = e ? String(e.button || 0) : null;
@@ -521,21 +521,21 @@ var handyClicksUI = {
 	restoreIcon: function() {
 		if(!this._hasIcon)
 			return;
-		var delay = this.pu.pref("ui.showMouseButton.restoreDelay");
+		var delay = this.pu.get("ui.showMouseButton.restoreDelay");
 		clearTimeout(this._restoreIconTimeout);
 		this._restoreIconTimeout = this.timeout(this.setIcon, this, [], delay);
 	},
 	showHideControls: function() {
-		this.$("handyClicks-toolsMenuitem").hidden = !this.pu.pref("ui.showInToolsMenu");
+		this.$("handyClicks-toolsMenuitem").hidden = !this.pu.get("ui.showInToolsMenu");
 		var statusBtn = this.$("handyClicks-statusbarButton");
 		if(statusBtn)
-			statusBtn.hidden = !this.pu.pref("ui.showInStatusbar");
+			statusBtn.hidden = !this.pu.get("ui.showInStatusbar");
 		var appMi = this.$("handyClicks-appMenuitem");
 		if(appMi) {
 			var appSep = this.$("handyClicks-appMenuitemSeparator");
-			var hide = !this.pu.pref("ui.showInAppMenu");
+			var hide = !this.pu.get("ui.showInAppMenu");
 			appMi.hidden = hide;
-			appSep.hidden = hide || !this.pu.pref("ui.showAppMenuSeparator");
+			appSep.hidden = hide || !this.pu.get("ui.showAppMenuSeparator");
 		}
 	},
 	setControls: function(func, context) {
@@ -558,7 +558,7 @@ var handyClicksUI = {
 			|| this.getFromPalette("handyClicks-toolbarProgressContainer");
 
 		var visiblePanel, hiddenPanel;
-		if(!sbPanel || this.pu.pref("ui.customizableProgressBar")) {
+		if(!sbPanel || this.pu.get("ui.customizableProgressBar")) {
 			visiblePanel = tbPanel;
 			hiddenPanel = sbPanel;
 		}
@@ -704,7 +704,7 @@ var handyClicksUI = {
 			this.ut._warn('Key element not found: "' + kId + '"');
 			return;
 		}
-		var keyStr = this.pu.pref("key." + kId);
+		var keyStr = this.pu.get("key." + kId);
 		if(!keyStr) { // Key is disabled
 			// Strange things may happens without this for <key command="..." />
 			kElt.parentNode.removeChild(kElt);

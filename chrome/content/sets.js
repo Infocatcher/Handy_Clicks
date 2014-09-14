@@ -102,7 +102,7 @@ var handyClicksSets = {
 		window.removeEventListener("mouseover", this, true);
 	},
 	restoreSearchQuery: function() {
-		if(!this.pu.pref("sets.rememberSearchQuery"))
+		if(!this.pu.get("sets.rememberSearchQuery"))
 			return false;
 		var sf = this.searchField;
 		var obsoletePref = this.pu.prefNS + "sets.lastSearchQuery"; //= Added: 2012-01-11
@@ -117,7 +117,7 @@ var handyClicksSets = {
 	},
 	saveSearchQuery: function() {
 		var sf = this.searchField;
-		if(this.pu.pref("sets.rememberSearchQuery"))
+		if(this.pu.get("sets.rememberSearchQuery"))
 			sf.setAttribute("hc_value", sf.value);
 		else
 			sf.removeAttribute("hc_value");
@@ -193,7 +193,7 @@ var handyClicksSets = {
 		);
 	},
 	treeScrollPos: function(saveFlag) {
-		var rememberScrollPos = this.pu.pref("sets.rememberScrollPosition");
+		var rememberScrollPos = this.pu.get("sets.rememberScrollPosition");
 		var tr = this.tree;
 		var tbo = this.tbo;
 		if(saveFlag) {
@@ -250,11 +250,11 @@ var handyClicksSets = {
 		this.eltsCache = { __proto__: null };
 		this.rowsCache = { __proto__: null };
 
-		var daTime = this.pu.pref("delayedActionTimeout");
+		var daTime = this.pu.get("delayedActionTimeout");
 		this._daAfter = this.getLocalized("after").replace("%t", daTime);
 		this._forcedDisDa = daTime <= 0;
-		this._expandDa = this.pu.pref("sets.treeExpandDelayedAction");
-		this._localizeArgs = this.pu.pref("sets.localizeArguments");
+		this._expandDa = this.pu.get("sets.treeExpandDelayedAction");
+		this._localizeArgs = this.pu.get("sets.localizeArguments");
 
 		this._overrides = this._overrideDa = this._new = this._newDa = 0;
 		this._buggy = 0;
@@ -262,7 +262,7 @@ var handyClicksSets = {
 		var df = this.ut.fxVersion >= 2
 			? document.createDocumentFragment()
 			: this.tBody;
-		var drawMode = this.pu.pref("sets.treeDrawMode");
+		var drawMode = this.pu.get("sets.treeDrawMode");
 		var p = this.ps.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
 			if(!this.ps.isOkShortcut(sh) || !this.ut.isObject(p[sh])) {
@@ -673,7 +673,7 @@ var handyClicksSets = {
 	},
 	get maxCodeLength() {
 		delete this.maxCodeLength;
-		return this.maxCodeLength = this.pu.pref("sets.codeLengthLimit");
+		return this.maxCodeLength = this.pu.get("sets.codeLengthLimit");
 	},
 	cropCode: function(code) {
 		var maxLen = this.maxCodeLength;
@@ -914,7 +914,7 @@ var handyClicksSets = {
 	},
 	editorsLimit: function(count) {
 		const limPref = "sets.openEditorsLimit";
-		var lim = this.pu.pref(limPref);
+		var lim = this.pu.get(limPref);
 		if(lim <= 0 || count <= lim)
 			return false;
 		//this.ut.ensureNotMinimized();
@@ -929,7 +929,7 @@ var handyClicksSets = {
 		if(!ok)
 			return true;
 		if(dontAsk.value)
-			this.pu.pref(limPref, 0);
+			this.pu.set(limPref, 0);
 		return false;
 	},
 	isClickOnRow: function(e) {
@@ -1149,7 +1149,7 @@ var handyClicksSets = {
 		var tItem = this.getItemAtIndex(rowIndx);
 		var tRow = this.getRowForItem(tItem);
 		var enabled = this.checkedState(tItem, forcedEnabled === undefined ? null : forcedEnabled);
-		var forcedDisDa = this.pu.pref("delayedActionTimeout") <= 0;
+		var forcedDisDa = this.pu.get("delayedActionTimeout") <= 0;
 		if(tItem.__isDelayed) {
 			var pDis = !this.checkedState(tItem.parentNode.parentNode); // Check state of parent
 			this.setNodeProperties(tRow, { hc_unsavedDisabled: forcedDisDa || pDis || !enabled });
@@ -1311,18 +1311,18 @@ var handyClicksSets = {
 	},
 
 	initViewMenu: function(mp) {
-		var tdm = this.pu.pref("sets.treeDrawMode");
+		var tdm = this.pu.get("sets.treeDrawMode");
 		if(tdm < 0 || tdm > 5) // see drawTree() and switch(drawMode) { ... }
 			tdm = 0;
 		var checkbox = mp.getElementsByAttribute("value", tdm);
 		checkbox.length && checkbox[0].setAttribute("checked", "true");
-		var closeMenu = this.pu.pref("sets.closeTreeViewMenu") ? "auto" : "none";
+		var closeMenu = this.pu.get("sets.closeTreeViewMenu") ? "auto" : "none";
 		Array.forEach(
 			mp.getElementsByTagName("menuitem"),
 			function(mi) {
 				mi.setAttribute("closemenu", closeMenu);
 				if(mi.hasAttribute("hc_pref"))
-					mi.setAttribute("checked", this.pu.pref(mi.getAttribute("hc_pref")));
+					mi.setAttribute("checked", this.pu.get(mi.getAttribute("hc_pref")));
 				else if(mi.hasAttribute("hc_treeAttr"))
 					mi.setAttribute("checked", this.tree.getAttribute(mi.getAttribute("hc_treeAttr")) == "true");
 			},
@@ -1335,7 +1335,7 @@ var handyClicksSets = {
 			this.setDrawMode(mi.value);
 		else if(mi.hasAttribute("hc_pref")) {
 			var prefName = mi.getAttribute("hc_pref");
-			this.pu.pref(prefName, !this.pu.pref(prefName)); // => prefsChanged()
+			this.pu.set(prefName, !this.pu.get(prefName)); // => prefsChanged()
 		}
 		else if(mi.hasAttribute("hc_treeAttr")) {
 			var attrName = mi.getAttribute("hc_treeAttr");
@@ -1353,14 +1353,14 @@ var handyClicksSets = {
 			var mi = e.target;
 			mi.doCommand();
 			mi.setAttribute("checked", mi.getAttribute("type") == "radio" || mi.getAttribute("checked") != "true");
-			if(this.pu.pref("sets.closeTreeViewMenu"))
+			if(this.pu.get("sets.closeTreeViewMenu"))
 				return;
 		}
 		popup.hidePopup();
 	},
 	setDrawMode: function(dm) {
 		// <preference instantApply="true" ... /> is bad on slow devices (it saves prefs.js file)
-		this.pu.pref("sets.treeDrawMode", Number(dm)); // => prefsChanged()
+		this.pu.set("sets.treeDrawMode", +dm); // => prefsChanged()
 	},
 
 	get treeContainers() {
@@ -1761,7 +1761,7 @@ var handyClicksSets = {
 		this.timeout(this.initExternalEditor, this);
 	},
 	setDisallowMousemove: function() {
-		var buttons = this.pu.pref("disallowMousemoveButtons") || "";
+		var buttons = this.pu.get("disallowMousemoveButtons") || "";
 		for(var i = 0; i <= 2; ++i)
 			this.$("hc-sets-disallowMousemove-" + i).checked = buttons.indexOf(i) != -1;
 	},
@@ -1793,7 +1793,7 @@ var handyClicksSets = {
 			return;
 		var prefName = this.currentActionPref;
 		var ml = this.$("hc-sets-action-value");
-		ml.value = tb.value || this.pu.pref(prefName);
+		ml.value = tb.value || this.pu.get(prefName);
 
 		var defaultBranch = this.pu.prefSvc.getDefaultBranch(this.pu.prefNS);
 		var _this = this;
@@ -1853,7 +1853,7 @@ var handyClicksSets = {
 		changed && this.loadUIAction();
 	},
 	saveSettings: function(applyFlag, forceSavePrefs) {
-		this.pu.pref("disallowMousemoveButtons", this.disallowMousemoveButtons);
+		this.pu.set("disallowMousemoveButtons", this.disallowMousemoveButtons);
 		if(!this.instantApply) {
 			if(applyFlag) {
 				this.timeout(function() {
@@ -2211,7 +2211,7 @@ var handyClicksSets = {
 		if(!ok)
 			return false;
 		if(dontAsk.value)
-			this.pu.pref(askPref, false);
+			this.pu.set(askPref, false);
 		return true;
 	},
 
@@ -2242,7 +2242,7 @@ var handyClicksSets = {
 			},
 			this
 		)
-		|| this.disallowMousemoveButtons != this.pu.pref("disallowMousemoveButtons");
+		|| this.disallowMousemoveButtons != this.pu.get("disallowMousemoveButtons");
 	},
 	get hasUnsaved() {
 		return this.instantApply
@@ -2376,7 +2376,7 @@ var handyClicksSets = {
 				.getChildList("", {})
 				.map(
 					function(pName) {
-						return this.pu.prefNS + pName + "=" + this.pu.pref(pName);
+						return this.pu.prefNS + pName + "=" + this.pu.get(pName);
 					},
 					this
 				).sort().join("\n");
@@ -2397,7 +2397,7 @@ var handyClicksSets = {
 		}
 		this.backupsDir = file.parent;
 		var _oldPrefs = [];
-		this.pu.pref("prefsVersion", 0);
+		this.pu.set("prefsVersion", 0);
 		str.replace(/[\r\n]{1,100}/g, "\n").split(/[\r\n]+/)
 			.splice(1) // Remove header
 			.forEach(function(line, i) {
@@ -2564,7 +2564,7 @@ var handyClicksSets = {
 		)
 			return;
 		const warnPref = "sets.importJSWarning";
-		if(srcId != ct.IMPORT_BACKUP && this.ps._hasCustomCode && this.pu.pref(warnPref)) {
+		if(srcId != ct.IMPORT_BACKUP && this.ps._hasCustomCode && this.pu.get(warnPref)) {
 			this.ut.ensureNotMinimized();
 			var dontAsk = { value: false };
 			var ok = this.ut.promptsSvc.confirmCheck(
@@ -2576,7 +2576,7 @@ var handyClicksSets = {
 			);
 			if(!ok)
 				return;
-			this.pu.pref(warnPref, !dontAsk.value);
+			this.pu.set(warnPref, !dontAsk.value);
 		}
 		if(!this.checkSaved(true))
 			return;
@@ -2625,7 +2625,7 @@ var handyClicksSets = {
 
 		var dontAsk = this.ut.hasModifier(e) || e.type == "click";
 		const confirmPref = "sets.removeBackupConfirm";
-		if(!dontAsk && this.pu.pref(confirmPref)) {
+		if(!dontAsk && this.pu.get(confirmPref)) {
 			this.ut.closeMenus(mi);
 			this.ut.ensureNotMinimized();
 			var dontAsk = { value: false };
@@ -2638,7 +2638,7 @@ var handyClicksSets = {
 			if(!ok)
 				return false;
 			if(dontAsk.value)
-				this.pu.pref(confirmPref, false);
+				this.pu.set(confirmPref, false);
 		}
 
 		file.remove(false);
@@ -2911,7 +2911,7 @@ var handyClicksSets = {
 		return file;
 	},
 	get backupsDir() {
-		var path = this.pu.pref("sets.backupsDir");
+		var path = this.pu.get("sets.backupsDir");
 		var file = path && this.ut.getLocalFile(path);
 		return file && file.exists() && file.isDirectory() && file;
 	},
@@ -2923,10 +2923,10 @@ var handyClicksSets = {
 		var curDrv = this.ut.getFileRoot(this.ps.profileDir).path;
 		if(path.substr(0, curDrv.length) == curDrv)
 			path = "%hc_ProfDrv%" + path.substr(curDrv.length);
-		this.pu.pref("sets.backupsDir", path);
+		this.pu.set("sets.backupsDir", path);
 	},
 	getFormattedDate: function(date) {
-		var df = this.pu.pref("sets.dateFormat") || "";
+		var df = this.pu.get("sets.dateFormat") || "";
 		return df && (date ? new Date(date) : new Date()).toLocaleFormat(df);
 	},
 

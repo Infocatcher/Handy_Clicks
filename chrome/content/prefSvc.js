@@ -226,7 +226,7 @@ var handyClicksPrefSvc = {
 		this._restoringCounter = 0;
 		if(this.isMainWnd) {
 			this._typesCache = { __proto__: null };
-			if(this.pu.pref("precompileCustomTypes")) setTimeout(function(_this) {
+			if(this.pu.get("precompileCustomTypes")) setTimeout(function(_this) {
 				_this.compileCustomTypes();
 			}, 0, this);
 			this.initCustomFuncs();
@@ -278,7 +278,7 @@ var handyClicksPrefSvc = {
 			this.names.corrupted,
 			false,
 			false,
-			this.pu.pref("sets.backupCorruptedDepth")
+			this.pu.get("sets.backupCorruptedDepth")
 		);
 		if(pFile.exists()) { // Backups disabled
 			var tmp = pFile.clone();
@@ -286,7 +286,7 @@ var handyClicksPrefSvc = {
 			this.ut.moveFileTo(tmp, this.backupsDir, this.prefsFileName + this.names.corrupted.replace(/-$/, "") + ".js");
 			corruptedPath = tmp.path;
 		}
-		while(++this._restoringCounter <= this.pu.pref("sets.backupDepth")) {
+		while(++this._restoringCounter <= this.pu.get("sets.backupDepth")) {
 			var bName = this.prefsFileName + this.names.backup + (this._restoringCounter - 1) + ".js";
 			var bFile = this.getBackupFile(bName);
 			if(bFile.exists()) {
@@ -417,7 +417,7 @@ var handyClicksPrefSvc = {
 		}
 	},
 	getCustomFunc: function(fObj) {
-		var useCache = this.pu.pref("cacheCustomFunctions");
+		var useCache = this.pu.get("cacheCustomFunctions");
 		if(useCache && "_function" in fObj) {
 			var fn = fObj._function;
 			if(!fn)
@@ -722,7 +722,7 @@ var handyClicksPrefSvc = {
 		return false;
 	},
 	createTestBackup: function(pStr) {
-		var num = this.pu.pref("sets.backupTestDepth") - 1;
+		var num = this.pu.get("sets.backupTestDepth") - 1;
 		if(num < 0)
 			return;
 		var fName = this.prefsFileName + this.names.testBackup;
@@ -748,7 +748,7 @@ var handyClicksPrefSvc = {
 		if(!firstFile.exists())
 			return null;
 		if(depth === undefined)
-			depth = this.pu.pref("sets.backupDepth");
+			depth = this.pu.get("sets.backupDepth");
 		var pDir = nameAdd == this.names.corrupted
 			? this.corruptedDir
 			: this.backupsDir;
@@ -786,7 +786,7 @@ var handyClicksPrefSvc = {
 		return tmp.path;
 	},
 	get minBackupInterval() {
-		return (this.pu.pref("sets.backupAutoInterval") || 24*60*60)*1000;
+		return (this.pu.get("sets.backupAutoInterval") || 24*60*60)*1000;
 	},
 	checkForBackup: function() {
 		if(!this.prefsFile.exists())
@@ -812,7 +812,7 @@ var handyClicksPrefSvc = {
 		}
 		this.ut.sortAsNumbers(_fTimes);
 
-		var max = this.pu.pref("sets.backupAutoDepth");
+		var max = this.pu.get("sets.backupAutoDepth");
 
 		var newTime = new Date();
 		var now = newTime.getTime();

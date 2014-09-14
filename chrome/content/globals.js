@@ -91,7 +91,7 @@ var g = window.handyClicksGlobals = {
 				g._debug = pVal;
 		});
 		delete g._debug;
-		return g._debug = g.pu.pref("debug");
+		return g._debug = g.pu.get("debug");
 	},
 	get consoleSvc() {
 		delete g.consoleSvc;

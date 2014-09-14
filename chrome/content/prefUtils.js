@@ -16,7 +16,7 @@ var handyClicksPrefUtils = {
 
 	// Initialization:
 	instantInit: function(reloadFlag) {
-		var vers = this.pref("prefsVersion") || 0;
+		var vers = this.get("prefsVersion") || 0;
 		if(vers < this.prefsVersion)
 			this.prefsMigration(true, vers);
 		this.prefSvc.addObserver(this.prefNS, this, false);

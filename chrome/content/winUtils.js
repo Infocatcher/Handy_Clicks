@@ -111,16 +111,16 @@ var handyClicksWinUtils = {
 		var root = top.document.documentElement;
 		if(onTop === undefined)
 			onTop = root.getAttribute(this.onTopAttr) == "true";
-		var btnVisible = this.pu.pref("ui.onTopButton");
+		var btnVisible = this.pu.get("ui.onTopButton");
 		var btn = this.onTopBtn;;
 		btn.hidden = !btnVisible;
 		if(btnVisible) {
 			btn.setAttribute("checked", onTop); // + autoCheck="false"
-			btn.setAttribute("hc_hideLabel", !this.pu.pref("ui.onTopButtonLabel"));
+			btn.setAttribute("hc_hideLabel", !this.pu.get("ui.onTopButtonLabel"));
 		}
 		var s = root.style;
 		if(onTop && !btnVisible) {
-			s.outline = "2px groove " + (this.pu.pref("ui.onTopBorderColor") || "orange");
+			s.outline = "2px groove " + (this.pu.get("ui.onTopBorderColor") || "orange");
 			s.outlineOffset = "-2px";
 		}
 		else {
@@ -129,7 +129,7 @@ var handyClicksWinUtils = {
 	},
 	toggleOnTopButton: function() {
 		const p = "ui.onTopButton";
-		this.pu.pref(p, !this.pu.pref(p));
+		this.pu.set(p, !this.pu.get(p));
 	},
 
 	winIdProp: "__handyClicks__winId",

@@ -182,7 +182,7 @@ var handyClicksUtils = {
 	NOTIFY_ICON_WARNING: "warning",
 	NOTIFY_ICON_ERROR: "error",
 	notify: function(msg, header, funcLeftClick, funcMiddleClick, icon, parentWindow, inWindowCorner) {
-		var dur = this.pu.pref("notifyOpenTime");
+		var dur = this.pu.get("notifyOpenTime");
 		if(dur <= 0)
 			 return null;
 		return window.openDialog(
@@ -196,9 +196,9 @@ var handyClicksUtils = {
 			 	funcLeftClick: funcLeftClick,
 			 	funcMiddleClick: funcMiddleClick,
 			 	icon: icon === undefined ? this.NOTIFY_ICON_NORMAL : icon,
-			 	inWindowCorner: inWindowCorner === undefined ? this.pu.pref("notifyInWindowCorner") : inWindowCorner,
-			 	dontCloseUnderCursor: this.pu.pref("notifyDontCloseUnderCursor"),
-			 	rearrangeWindows: this.pu.pref("notifyRearrangeWindows"),
+			 	inWindowCorner: inWindowCorner === undefined ? this.pu.get("notifyInWindowCorner") : inWindowCorner,
+			 	dontCloseUnderCursor: this.pu.get("notifyDontCloseUnderCursor"),
+			 	rearrangeWindows: this.pu.get("notifyRearrangeWindows"),
 			 	parentWindow: parentWindow || window,
 			 	__proto__: null
 			 }

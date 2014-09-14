@@ -88,7 +88,7 @@ var handyClicksSetsUtils = {
 					type="checkbox"\
 					autoCheck="false"\
 					context="hc-sets-onTopContext"\
-					hidden="' + !this.pu.pref("ui.onTopButton") + '"\
+					hidden="' + !this.pu.get("ui.onTopButton") + '"\
 					oncommand="handyClicksSetsUtils.wu.toggleOnTop();"\
 					hc_key="hc-sets-key-toggleOnTop"\
 					label="' + this.getLocalized("onTop") + '"\
@@ -112,18 +112,18 @@ var handyClicksSetsUtils = {
 		Array.forEach(
 			popup.getElementsByTagName("menuitem"),
 			function(mi) {
-				mi.setAttribute("checked", this.pu.pref(mi.getAttribute("hc_pref")));
+				mi.setAttribute("checked", this.pu.get(mi.getAttribute("hc_pref")));
 			},
 			this
 		);
 	},
 	handleOnTopContextCommand: function(mi) {
-		this.pu.pref(mi.getAttribute("hc_pref"), mi.getAttribute("checked") == "true");
+		this.pu.set(mi.getAttribute("hc_pref"), mi.getAttribute("checked") == "true");
 	},
 
 	setEnabledStatus: function(enabled) {
 		if(enabled === undefined)
-			enabled = this.pu.pref("enabled");
+			enabled = this.pu.get("enabled");
 		document.documentElement.setAttribute("hc_globallyDisabled", !enabled);
 	},
 
@@ -178,7 +178,7 @@ var handyClicksSetsUtils = {
 			msg = this.getLocalized("notifyUnsaved");
 		if(!askPref)
 			askPref = "ui.notifyUnsaved";
-		if(!this.pu.pref(askPref))
+		if(!this.pu.get(askPref))
 			return this.PROMPT_DONT_SAVE;
 		var ps = this.ut.promptsSvc;
 		this.ut.ensureNotMinimized();
@@ -198,7 +198,7 @@ var handyClicksSetsUtils = {
 			dontAsk
 		);
 		if(ret != this.PROMPT_CANCEL && dontAsk.value)
-			this.pu.pref(askPref, false);
+			this.pu.set(askPref, false);
 		return ret;
 	},
 
@@ -206,7 +206,7 @@ var handyClicksSetsUtils = {
 	handleScroll: function(e) {
 		if(
 			e.target.nodeType == Node.DOCUMENT_NODE
-			|| !this.pu.pref("sets.scrollLists")
+			|| !this.pu.get("sets.scrollLists")
 		)
 			return;
 		var aw = this.wu.ww.activeWindow;
@@ -222,7 +222,7 @@ var handyClicksSetsUtils = {
 				.getInterface(Components.interfaces.nsIDOMWindow);
 			if(
 				aw != topWin
-				&& this.pu.pref("sets.scrollLists.onlyInActiveWindow")
+				&& this.pu.get("sets.scrollLists.onlyInActiveWindow")
 			)
 				return;
 		}
@@ -250,7 +250,7 @@ var handyClicksSetsUtils = {
 		var fwd = "deltaY" in e
 			? e.deltaY > 0 // wheel
 			: e.detail > 0; // DOMMouseScroll
-		return this.pu.pref("ui.reverseScrollDirection") ? !fwd : fwd;
+		return this.pu.get("ui.reverseScrollDirection") ? !fwd : fwd;
 	},
 	scrollList: function(e) {
 		var ml = e.target;
@@ -466,7 +466,7 @@ var handyClicksSetsUtils = {
 			tar.removeAttribute("hc_canDragSwitch");
 			selectHandler.call(_this, tar);
 		};
-		var delay = this.pu.pref("ui.dragSwitchDelay");
+		var delay = this.pu.get("ui.dragSwitchDelay");
 		if(delay <= 0 || this.ut.fxVersion < 3)
 			dragSwitch();
 		else {

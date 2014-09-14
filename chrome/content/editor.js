@@ -290,20 +290,20 @@ var handyClicksEditor = {
 	},
 	setTooltip: function(delay) {
 		if(delay === undefined)
-			delay = this.pu.pref("delayedActionTimeout")
+			delay = this.pu.get("delayedActionTimeout");
 		var dTab = this.$("hc-editor-funcTab-delay");
 		dTab.tooltipText = dTab.getAttribute("hc_tooltiptext").replace("%n", delay);
 	},
 	setFuncsNotes: function(show) {
 		document.documentElement.setAttribute(
 			"hc_showCustomFuncsNotes",
-			show === undefined ? this.pu.pref("editor.ui.showCustomFuncsNotes") : show
+			show === undefined ? this.pu.get("editor.ui.showCustomFuncsNotes") : show
 		);
 	},
 	setCompactUI: function(compact) {
 		document.documentElement.setAttribute(
 			"hc_compactUI",
-			compact === undefined ? this.pu.pref("editor.ui.compact") : compact
+			compact === undefined ? this.pu.get("editor.ui.compact") : compact
 		);
 	},
 	prefsChanged: function(pName, pVal) {
@@ -437,7 +437,7 @@ var handyClicksEditor = {
 		var baseTitle = this.su.removeTitleFlags(document.title)
 			.replace(/\s+\[.+\]\*?$/, "")
 			.replace(/^.*? \u2013 /, "");
-		document.title = this.pu.pref("editor.ui.invertWindowTitle")
+		document.title = this.pu.get("editor.ui.invertWindowTitle")
 			? title + " \u2013 " + baseTitle
 			: baseTitle + " [" + title + "]";
 	},
@@ -1183,7 +1183,7 @@ var handyClicksEditor = {
 		ok = ok && this.testMode;
 		if(ok) {
 			this.$("hc-editor-cmd-undo").setAttribute("disabled", "false");
-			var focus = this.pu.pref("editor.testFocusMainWindow");
+			var focus = this.pu.get("editor.testFocusMainWindow");
 			if(invertFocusPref ? !focus : focus) {
 				if(this.ut.isSeaMonkey) { // Detect private browser windows
 					var ws = this.wu.wm.getEnumerator(null);

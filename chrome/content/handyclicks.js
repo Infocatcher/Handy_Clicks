@@ -101,10 +101,10 @@ var handyClicks = {
 
 	_enabled: true, // Uses for internal disabling
 	get enabled() {
-		return this._enabled && this.pu.pref("enabled");
+		return this._enabled && this.pu.get("enabled");
 	},
 	set enabled(on) {
-		this.pu.pref("enabled", on);
+		this.pu.set("enabled", on);
 	},
 
 	_editMode: false,
@@ -199,7 +199,7 @@ var handyClicks = {
 			);
 		}
 
-		var delay = this.pu.pref("delayedActionTimeout");
+		var delay = this.pu.get("delayedActionTimeout");
 		if(delay > 0 && !em) {
 			var delayedAction = this.ut.getOwnProperty(funcObj, "delayedAction");
 			if(
@@ -344,7 +344,7 @@ var handyClicks = {
 			screenX: x,
 			screenY: y
 		};
-		if(this.mousemoveParams.dist < this.pu.pref("disallowMousemoveDist"))
+		if(this.mousemoveParams.dist < this.pu.get("disallowMousemoveDist"))
 			return;
 
 		this._log("mousemoveHandler -> cancel()");
@@ -378,9 +378,9 @@ var handyClicks = {
 			return;
 		this._hasMoveHandlers = !!add;
 		if(add) {
-			var dist = this.disallowMousemoveDist = this.pu.pref("disallowMousemoveDist");
+			var dist = this.disallowMousemoveDist = this.pu.get("disallowMousemoveDist");
 			this.disallowMousemove = dist >= 0
-				&& this.pu.pref("disallowMousemoveButtons").indexOf(add.button) != -1;
+				&& this.pu.get("disallowMousemoveButtons").indexOf(add.button) != -1;
 			this.mousemoveParams = {
 				dist: 0,
 				screenX: add.screenX,
@@ -632,7 +632,7 @@ var handyClicks = {
 			&& ( // Speed Dial has own settings for right clicks
 				it.ownerDocument.documentURI != "chrome://speeddial/content/speeddial.xul"
 				|| !/(?:^|\s)speeddial-container(?:\s|$)/.test(it.parentNode.className)
-				|| this.pu.pref("types.images.SpeedDial")
+				|| this.pu.get("types.images.SpeedDial")
 			)
 			// InFormEnter https://addons.mozilla.org/addon/informenter/
 			&& (it.src || "").substr(0, 32) != "chrome://informenter/skin/marker"
@@ -956,7 +956,7 @@ var handyClicks = {
 		return /^[\w-]+:\S*$/.test(uri) && uri;
 	},
 	getCSSEditorURI: function(it) {
-		if(!this.pu.pref("types.links.CSSEditor"))
+		if(!this.pu.get("types.links.CSSEditor"))
 			return null;
 		var docURI = it.ownerDocument.documentURI;
 		// Rules tab
@@ -1105,7 +1105,7 @@ var handyClicks = {
 		return evt;
 	},
 	focusOnItem: function(forced, it) {
-		if(!forced && !this.pu.pref("focusOnItems"))
+		if(!forced && !this.pu.get("focusOnItems"))
 			return;
 		it = it || this.mainItem || this.item;
 		if(

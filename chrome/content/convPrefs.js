@@ -2,7 +2,7 @@
 // this === handyClicksPrefUtils
 function prefsMigration(allowSave, vers) {
 	if(vers === undefined)
-		vers = this.pref("prefsVersion") || 0;
+		vers = this.get("prefsVersion") || 0;
 	if(vers >= this.prefsVersion)
 		return false;
 
@@ -18,37 +18,39 @@ function prefsMigration(allowSave, vers) {
 		].forEach(
 			function(pId) {
 				const fullId = pns + pId;
-				if(this.existPref(fullId))
-					this.pref("funcs." + pId, this.getPref(fullId))
-						.prefSvc.deleteBranch(fullId);
+				if(this.existPref(fullId)) {
+					this.set("funcs." + pId, this.getPref(fullId));
+					this.prefSvc.deleteBranch(fullId);
+				}
 			},
 			this
 		);
 	}
 	if(vers < 2) //= Added: 2009-11-13
-		this.pu.prefSvc.deleteBranch(pns + "forceStopMousedownEvent");
+		this.prefSvc.deleteBranch(pns + "forceStopMousedownEvent");
 	if(vers < 3) { //= Added: 2010-02-04
-		var dm = this.pref("sets.treeDrawMode") || 0;
+		var dm = this.get("sets.treeDrawMode") || 0;
 		if(dm >= 2)
-			this.pref("sets.treeDrawMode", dm + 1);
+			this.set("sets.treeDrawMode", dm + 1);
 	}
 	if(vers < 4) { //= Added: 2010-03-31
 		var pn = "sets.backupDepth";
 		if(this.prefChanged(pn))
-			this.pref(pn, (this.pref(pn) || 0) + 1);
+			this.set(pn, (this.get(pn) || 0) + 1);
 	}
 	if(vers < 5) { //= Added: 2010-04-08
 		var pn = pns + "ui.showCustomizeToolbars";
-		if(this.existPref(pn))
-			this.pref("ui.inheritToolbarContextMenu", this.getPref(pn))
-				.prefSvc.deleteBranch(pn);
+		if(this.existPref(pn)) {
+			this.set("ui.inheritToolbarContextMenu", this.getPref(pn));
+			this.prefSvc.deleteBranch(pn);
+		}
 	}
 	if(vers < 6) { //= Added: 2011-06-27
 		var pn = pns + "editor.tabSymbol";
 		if(this.existPref(pn)) {
 			var tabSymbol = this.getPref(pn);
 			if(/^ +$/.test(tabSymbol))
-				this.pref("editor.tabSize", Math.min(this.pref("editor.tabSize"), tabSymbol.length));
+				this.set("editor.tabSize", Math.min(this.get("editor.tabSize"), tabSymbol.length));
 			this.prefSvc.deleteBranch(pn);
 		}
 	}
@@ -70,7 +72,7 @@ function prefsMigration(allowSave, vers) {
 		this.prefSvc.deleteBranch(pns + "uiVersion");
 	if(vers < 9) //= Added: 2014-01-16
 		this.prefSvc.deleteBranch(pns + "devMode"); // Renamed to "debug" and disabled by default
-	this.pref("prefsVersion", this.prefsVersion);
+	this.set("prefsVersion", this.prefsVersion);
 	allowSave && this.timeout(this.savePrefFile, this);
 	this._info("Format of about:config prefs updated: " + vers + " => " + this.prefsVersion);
 	return true;

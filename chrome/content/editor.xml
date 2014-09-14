@@ -21,8 +21,8 @@
 				var top = window.top;
 				var pu = "handyClicksPrefUtils" in top && top.handyClicksPrefUtils;
 				if(pu) {
-					this.autocomplete = pu.pref("editor.autocomplete");
-					this.autocompleteMinSymbols = Math.max(1, Math.min(30, pu.pref("editor.autocompleteMinSymbols")));
+					this.autocomplete = pu.get("editor.autocomplete");
+					this.autocompleteMinSymbols = Math.max(1, Math.min(30, pu.get("editor.autocompleteMinSymbols")));
 					pu.oSvc.addObserver(function(pName, pVal) {
 						if(pName == "editor.tabSize")
 							this.setTabSize();
@@ -39,7 +39,7 @@
 				<![CDATA[
 					return Math.max(1, Math.min(100,
 						Number(this.getAttribute("hc_tabSize"))
-						|| "handyClicksPrefUtils" in top && top.handyClicksPrefUtils.pref("editor.tabSize")
+						|| "handyClicksPrefUtils" in top && top.handyClicksPrefUtils.get("editor.tabSize")
 						|| 4
 					));
 				]]>
@@ -67,7 +67,7 @@
 				<![CDATA[
 					return this.hasAttribute("hc_tabSpaces")
 						? this.getAttribute("hc_tabSpaces") == "true"
-						: "handyClicksPrefUtils" in top && top.handyClicksPrefUtils.pref("editor.tabSpaces");
+						: "handyClicksPrefUtils" in top && top.handyClicksPrefUtils.get("editor.tabSpaces");
 				]]>
 				</getter>
 				<setter>
@@ -527,11 +527,11 @@
 					var file = this._linkedFile;
 					var isNew = !file || !file.exists();
 
-					var ext = ut.pu.pref("editor.external.extension") || "js";
+					var ext = ut.pu.get("editor.external.extension") || "js";
 					if(isNew) {
 						var fName = this.getDefaultFilename(
 							ext,
-							ut.canRunw && ut.pu.pref("editor.external.labelInFileName")
+							ut.canRunw && ut.pu.get("editor.external.labelInFileName")
 						);
 						//file = ut.getFileByAlias("TmpD");
 						file = ut.ps.tempDir.clone();
@@ -553,7 +553,7 @@
 							ut.alert(ut.getLocalized("errorTitle"), err);
 							return;
 						}
-						var ee = ut.pu.pref("editor.external.path");
+						var ee = ut.pu.get("editor.external.path");
 						var eeArgs;
 
 						if(ee == "Scratchpad") try {
@@ -669,7 +669,7 @@
 						if(ee) {
 							var args = [file.path];
 							if(eeArgs == undefined)
-								eeArgs = ut.pu.pref("editor.external.args");
+								eeArgs = ut.pu.get("editor.external.args");
 							if(eeArgs) {
 								if(eeArgs.indexOf("%F") != -1) {
 									args = [];
@@ -738,7 +738,7 @@
 						return null;
 					var ut = top.handyClicksUtils;
 					var val = ut.platformLineBreaks(this.value);
-					if(ut.pu.pref("editor.external.saveWithBOM"))
+					if(ut.pu.get("editor.external.saveWithBOM"))
 						val = "\ufeff" + val;
 					ut.writeToFileAsync(val, file, function(status) {
 						if(watch && Components.isSuccessCode(status))
@@ -914,7 +914,7 @@
 						if(value == savedValue)
 							_callback(Components.results.NS_OK, value);
 						else {
-							if(ut.pu.pref("editor.external.saveWithBOM"))
+							if(ut.pu.get("editor.external.saveWithBOM"))
 								value = "\ufeff" + value;
 							value = ut.platformLineBreaks(value, this._lineBreak);
 							ut.writeToFileAsync(value, file, callback, context);

@@ -43,7 +43,7 @@ var handyClicksFuncs = {
 		var link = this.getItemURI() || "";
 		if(link) {
 			link = Array.concat(link);
-			if(this.pu.pref("funcs.decodeURIs"))
+			if(this.pu.get("funcs.decodeURIs"))
 				link = link.map(this.decodeURI, this);
 			this.ut.copyStr(link.join(this.ut.lineBreak), this.getSourceDocument());
 			this.ui.blinkNode();
@@ -148,7 +148,7 @@ var handyClicksFuncs = {
 		return noTrim ? uri : this.trimStr(uri);
 	},
 	trimStr: function(s) {
-		if(!this.pu.pref("funcs.trimStrings"))
+		if(!this.pu.get("funcs.trimStrings"))
 			return s;
 		var isArr = this.ut.isArray(s);
 		s = Array.concat(s)
@@ -267,7 +267,7 @@ var handyClicksFuncs = {
 			"getTopWin" in win
 			&& getTopWin.length > 0 // Only in Firefox for now
 			&& !win.toolbar.visible // Popup window
-			&& this.pu.pref("funcs.dontUseTabsInPopupWindows")
+			&& this.pu.get("funcs.dontUseTabsInPopupWindows")
 		) {
 			win = getTopWin(true);
 			relatedToCurrent = openAsChild = false;
@@ -376,7 +376,7 @@ var handyClicksFuncs = {
 		var loadLink = this.ut.bind(function() {
 			this.setPrefs(target, loadJSInBackground, refererPolicy, winRestriction, false /* winOpenFix */);
 
-			if(this.pu.pref("funcs.workaroundForMousedownImitation")) {
+			if(this.pu.get("funcs.workaroundForMousedownImitation")) {
 				// https://github.com/Infocatcher/Right_Links/issues/2
 				// Tabs becomes not clickable after "mousedown" imitation,
 				// so we try to catch "mousedown" before browser's listeners
@@ -393,8 +393,8 @@ var handyClicksFuncs = {
 			this.restorePrefs();
 		}, this);
 
-		var load = this.pu.pref("funcs.loadVoidLinksWithHandlers");
-		if(this.pu.pref("funcs.notifyVoidLinksWithHandlers"))
+		var load = this.pu.get("funcs.loadVoidLinksWithHandlers");
+		if(this.pu.get("funcs.notifyVoidLinksWithHandlers"))
 			this.ut.notify(
 				this.getLocalized("voidLinkWithHandler").replace(/\s*%h/, this.getItemHandlers(item))
 					+ (load ? "" : this.getLocalized("clickForOpen")),
@@ -438,8 +438,8 @@ var handyClicksFuncs = {
 			this.restorePrefs();
 		}, this);
 
-		var load = this.pu.pref("funcs.loadJavaScriptLinks");
-		if(this.pu.pref("funcs.notifyJavaScriptLinks"))
+		var load = this.pu.get("funcs.loadJavaScriptLinks");
+		if(this.pu.get("funcs.notifyJavaScriptLinks"))
 			this.ut.notify(
 				this.getLocalized("javaScriptLink")
 					+ (load ? "" : this.getLocalized("clickForOpen")),
@@ -450,12 +450,12 @@ var handyClicksFuncs = {
 			loadLink();
 	},
 	testForFileLink: function(uri, refererPolicy) {
-		var filesPolicy = this.pu.pref("funcs.filesLinksPolicy");
+		var filesPolicy = this.pu.get("funcs.filesLinksPolicy");
 		if(filesPolicy == -1)
 			return false;
 		uri = uri || this.getItemURI(this.hc.item);
 		const regexpPref = "funcs.filesLinksMask";
-		var regexpStr = this.pu.pref(regexpPref);
+		var regexpStr = this.pu.get(regexpPref);
 		if(!regexpStr)
 			return false;
 		try {
@@ -818,8 +818,8 @@ var handyClicksFuncs = {
 	},
 	get charset() {
 		var charset = "";
-		if(this.pu.pref("funcs.convertURIs")) {
-			charset = this.pu.pref("funcs.convertURIsCharset");
+		if(this.pu.get("funcs.convertURIs")) {
+			charset = this.pu.get("funcs.convertURIsCharset");
 			if(!charset) {
 				charset = this.pu.getPref("intl.charset.default");
 				if(!charset || this.ut.hasPrefix(charset, "chrome://"))
@@ -852,15 +852,15 @@ var handyClicksFuncs = {
 		var args = tar.hc_args || [];
 		//args.push(popup.hc_uri);
 		var uris = Array.concat(popup.hc_uri).map(this.convertStrFromUnicode, this);
-		this.ut.startProcess(tar.hc_path, Array.concat(args, uris), this.pu.pref("funcs.preferRunw"));
+		this.ut.startProcess(tar.hc_path, Array.concat(args, uris), this.pu.get("funcs.preferRunw"));
 	},
 	decodeURI: function(uri) {
 		if(!uri)
 			return "";
-		if(!/^(?:http|ftp)s?:/i.test(uri) && !this.pu.pref("funcs.decodeURIs.unknownProtocols"))
+		if(!/^(?:http|ftp)s?:/i.test(uri) && !this.pu.get("funcs.decodeURIs.unknownProtocols"))
 			return uri;
 		var decoded = this.losslessDecodeURI(uri);
-		if(!this.pu.pref("funcs.decodeURIs.spaces"))
+		if(!this.pu.get("funcs.decodeURIs.spaces"))
 			decoded = decoded.replace(/\s/g, encodeURIComponent);
 		return decoded;
 	},
@@ -1349,7 +1349,7 @@ var handyClicksFuncs = {
 
 		// Based on code by Yan ( http://forum.mozilla-russia.org/viewtopic.php?pid=144109#p144109 )
 		var hrefs = { __proto__: null };
-		var onlyVisible = this.pu.pref("funcs.openOnlyVisibleLinks");
+		var onlyVisible = this.pu.get("funcs.openOnlyVisibleLinks");
 		Array.forEach(
 			a.ownerDocument.getElementsByTagName(a.localName),
 			function(a) {
@@ -1449,7 +1449,7 @@ var handyClicksFuncs = {
 		}
 
 		var _this = this;
-		var delay = this.pu.pref("funcs.multipleTabsOpenDelay") || 0;
+		var delay = this.pu.get("funcs.multipleTabsOpenDelay") || 0;
 		(function delayedOpen() {
 			if(_this.ui.userCancelled)
 				return;
