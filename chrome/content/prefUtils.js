@@ -35,20 +35,32 @@ var handyClicksPrefUtils = {
 	observe: function(subject, topic, pName) {
 		if(topic != "nsPref:changed")
 			return;
-		pName = pName.substr(this.prefNS.length);
-		this.oSvc.notifyObservers(pName, this.readPref(pName));
+		var shortName = pName.substr(this.prefNS.length);
+		var val = this._prefs[shortName] = this.getPref(pName);
+		this.oSvc.notifyObservers(shortName, val);
 	},
 
 	// API functions:
 	_prefs: { __proto__: null }, // Prefs cache
-	pref: function(pName, pVal) {
+	get: function(pName, defaultVal) {
+		var cache = this._prefs;
+		return pName in cache
+			? cache[pName]
+			: (cache[pName] = this.getPref(this.prefNS + pName, defaultVal));
+	},
+	set: function(pName, val) {
+		return this.setPref(this.prefNS + pName, val);
+	},
+	pref: function(pName, val) {
+		this.ut._deprecated("handyClicksPrefUtils.pref() is deprecated, use handyClicksPrefUtils.get() or set() instead");
 		if(arguments.length == 2)
-			return this.setPref(this.prefNS + pName, pVal);
+			return this.setPref(this.prefNS + pName, val);
 		if(pName in this._prefs)
 			return this._prefs[pName];
 		return this.readPref(pName);
 	},
 	readPref: function(pName) {
+		this.ut._deprecated("handyClicksPrefUtils.readPref() is deprecated");
 		return this._prefs[pName] = this.getPref(this.prefNS + pName);
 	},
 	getPref: function(pName, defaultVal, prefBranch) {
