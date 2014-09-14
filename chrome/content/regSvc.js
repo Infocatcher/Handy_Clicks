@@ -36,7 +36,7 @@ var handyClicksRegSvc = {
 		}
 	},
 	loadSubScript: function(/*path, obj*/) {
-		this.ut._deprecated("handyClicksRegSvc.loadSubScript() is depracated, use handyClicksGlobals.jsLoader.loadSubScript() instead");
+		this.ut._deprecated("handyClicksRegSvc.loadSubScript() is deprecated, use handyClicksGlobals.jsLoader.loadSubScript() instead");
 		var jsl = this.jsLoader;
 		return jsl.loadSubScript.apply(jsl, arguments);
 	},
