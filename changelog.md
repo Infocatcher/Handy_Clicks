@@ -8,6 +8,7 @@
 ##### master/HEAD
 `x` Fixed hiding of special window that open options in non-modal window.<br>
 `*` Improve “reload image” function: correct and remove image from cache before reloading.<br>
+`+` Added ability to configure or disable “scroll to switch” feature (<em>extensions.handyclicks.sets.scrollLists</em> and <em>extensions.handyclicks.sets.scrollLists.onlyInActiveWindow</em> preferences).<br>
 
 ##### 0.1.3pre5 (2014-09-09)
 `*` Hide options about status bar in Firefox 29+ (only if status bar not restored by another extension).<br>
