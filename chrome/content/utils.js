@@ -3,10 +3,10 @@ var handyClicksUtils = {
 
 	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
 
-	_err: function _err(e, fileName, lineNumber, isWarning) {
+	_err: function(e, fileName, lineNumber, isWarning) {
 		if(this.isPrimitive(e) || typeof e == "xml") {
 			var caller = Components.stack.caller;
-			if(_err.caller == this._warn)
+			if(isWarning) // Don't call directly, always use _warn()!
 				caller = caller.caller;
 			e = new Error(e, fileName || caller.filename, lineNumber || caller.lineNumber);
 		}
