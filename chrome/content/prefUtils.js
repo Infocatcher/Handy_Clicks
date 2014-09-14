@@ -51,7 +51,7 @@ var handyClicksPrefUtils = {
 	set: function(pName, val) {
 		return this.setPref(this.prefNS + pName, val);
 	},
-	pref: function(pName, val) {
+	pref: function(pName, val) { //= Deprecated since 2014-09-14
 		this.ut._deprecated("handyClicksPrefUtils.pref() is deprecated, use handyClicksPrefUtils.get() or set() instead");
 		if(arguments.length == 2)
 			return this.setPref(this.prefNS + pName, val);
@@ -59,7 +59,7 @@ var handyClicksPrefUtils = {
 			return this._prefs[pName];
 		return this.readPref(pName);
 	},
-	readPref: function(pName) {
+	readPref: function(pName) { //= Deprecated since 2014-09-14
 		this.ut._deprecated("handyClicksPrefUtils.readPref() is deprecated");
 		return this._prefs[pName] = this.getPref(this.prefNS + pName);
 	},
