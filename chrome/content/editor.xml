@@ -567,12 +567,26 @@
 									try { // It's better to just focus already opened Scratchpad
 										var ifi = _this.inputField;
 										if("Editor" in w) { // Looks like CodeMirror
+											var startAnchor, endAnchor;
 											var global = Components.utils.getGlobalForObject(w.Editor.prototype);
-											var cm = global.editors.get(Scratchpad.editor); // CodeMirror instance
-											Scratchpad.editor.setSelection(
-												cm.posFromIndex(ifi.selectionStart),
-												cm.posFromIndex(ifi.selectionEnd)
-											);
+											if(global && "editors" in global) {
+												var cm = global.editors.get(Scratchpad.editor); // CodeMirror instance
+												startAnchor = cm.posFromIndex(ifi.selectionStart);
+												endAnchor = cm.posFromIndex(ifi.selectionEnd);
+											}
+											else { // We can't get raw CodeMirror instance in Firefox 34+
+												var getAnchor = function(pos) {
+													var lines = val.substr(0, pos).split("\n");
+													var last = Math.max(0, lines.length - 1);
+													return {
+														line: last,
+														ch: (lines[last] || "").length
+													};
+												};
+												startAnchor = getAnchor(ifi.selectionStart);
+												endAnchor = getAnchor(ifi.selectionEnd);
+											}
+											Scratchpad.editor.setSelection(startAnchor, endAnchor);
 										}
 										else {
 											Scratchpad.editor.setSelection(ifi.selectionStart, ifi.selectionEnd);
