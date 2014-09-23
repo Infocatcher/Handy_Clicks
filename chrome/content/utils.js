@@ -643,7 +643,7 @@ var handyClicksUtils = {
 			}
 			// Note: we move file into backups directory first, so "tmpPath" parameter isn't needed
 			var options = {};
-			if(this.fxVersion < 25)
+			if(this.fxVersion < 25 || this.appInfo.name == "Pale Moon")
 				options.tmpPath = file.path + ".tmp";
 			OS.File.writeAtomic(file.path, arr, options).then(
 				function onSuccess() {
