@@ -793,8 +793,8 @@ var handyClicksEditor = {
 	},
 	appSupported: function(apps) {
 		return apps.some(function(app) {
-			var appRe = /^(.*?)(?:\s+(\S+)(?:\s+-\s+(\S+))?)?$/;
-			if(!appRe.test(app))
+			// App Name [MinVersion[ - MaxVersion]]
+			if(!/^(.*?)(?:\s+(\d\S*)(?:\s+-\s+(\d\S*))?)?$/.test(app))
 				return false;
 			var appName    = RegExp.$1;
 			var appMinVers = RegExp.$2;
