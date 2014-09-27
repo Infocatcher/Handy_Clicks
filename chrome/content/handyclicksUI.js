@@ -311,8 +311,8 @@ var handyClicksUI = {
 			case "menuitem":       return "Menu";
 			case "toolbarbutton":  return "Toolbar";
 			case "statusbarpanel": return "Statusbar";
-			default:               return undefined;
 		}
+		return undefined;
 	},
 	handleUIEvent: function(e) {
 		var type = this.getTypeByLocalName(e.target.localName);
