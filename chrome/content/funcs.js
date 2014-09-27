@@ -169,7 +169,7 @@ var handyClicksFuncs = {
 	},
 	getTabURI: function(tab) {
 		return "linkedBrowser" in tab
-			? tab.linkedBrowser.contentDocument.location.href
+			? tab.linkedBrowser.currentURI.spec
 			: "";
 	},
 	getTabText: function(tab) {
