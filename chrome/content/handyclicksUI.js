@@ -17,7 +17,6 @@ var handyClicksUI = {
 	init: function(reloadFlag) {
 		this.setStatus();
 		this.showHideControls();
-		this.setupUIActions();
 		if(reloadFlag)
 			this.setEditModeStatus();
 		else
@@ -25,6 +24,7 @@ var handyClicksUI = {
 		this.pu.oSvc.addObserver(this.updUI, this);
 
 		this.timeout(function() {
+			this.setupUIActions();
 			this.setupProgress();
 			//this.loadBlinkStyle();
 		}, this);
