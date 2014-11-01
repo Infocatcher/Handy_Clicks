@@ -864,15 +864,15 @@ var handyClicksFuncs = {
 			decoded = decoded.replace(/\s/g, encodeURIComponent);
 		return decoded;
 	},
-	losslessDecodeURI: function(value) {
-		if(!value)
+	losslessDecodeURI: function(uri) {
+		if(!uri)
 			return "";
 
 		var win = window;
 		if(!("losslessDecodeURI" in win))
 			win = this.wu.wm.getMostRecentWindow("navigator:browser");
 		if(win && "losslessDecodeURI" in win) try {
-			return win.losslessDecodeURI({ spec: value });
+			return win.losslessDecodeURI({ spec: uri });
 		}
 		catch(e) {
 			Components.utils.reportError(e);
@@ -882,8 +882,8 @@ var handyClicksFuncs = {
 		// chrome://browser/content/browser.js in Firefox 36.0a1 (2014-11-01)
 
 		// Try to decode as UTF-8 if there's no encoding sequence that we would break.
-		if(!/%25(?:3B|2F|3F|3A|40|26|3D|2B|24|2C|23)/i.test(value)) try {
-			value = decodeURI(value)
+		if(!/%25(?:3B|2F|3F|3A|40|26|3D|2B|24|2C|23)/i.test(uri)) try {
+			uri = decodeURI(uri)
 				// 1. decodeURI decodes %25 to %, which creates unintended
 				//    encoding sequences. Re-encode it, unless it's part of
 				//    a sequence that survived decodeURI, i.e. one for:
@@ -900,17 +900,17 @@ var handyClicksFuncs = {
 		// Encode invisible characters (C0/C1 control characters, U+007F [DEL],
 		// U+00A0 [no-break space], line and paragraph separator,
 		// object replacement character) (bug 452979, bug 909264)
-		value = value.replace(/[\u0000-\u001f\u007f-\u00a0\u2028\u2029\ufffc]/g, encodeURIComponent);
+		uri = uri.replace(/[\u0000-\u001f\u007f-\u00a0\u2028\u2029\ufffc]/g, encodeURIComponent);
 
 		// Encode default ignorable characters (bug 546013)
 		// except ZWNJ (U+200C) and ZWJ (U+200D) (bug 582186).
 		// This includes all bidirectional formatting characters.
 		// (RFC 3987 sections 3.2 and 4.1 paragraph 6)
-		value = value.replace(
+		uri = uri.replace(
 			/[\u00ad\u034f\u061c\u115f-\u1160\u17b4-\u17b5\u180b-\u180d\u200b\u200e-\u200f\u202a-\u202e\u2060-\u206f\u3164\ufe00-\ufe0f\ufeff\uffa0\ufff0-\ufff8]|\ud834[\udd73-\udd7a]|[\udb40-\udb43][\udc00-\udfff]/g,
 			encodeURIComponent
 		);
-		return value;
+		return uri;
 	},
 	getWinRestriction: function(inWin) {
 		return inWin === true
