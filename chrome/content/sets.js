@@ -2118,9 +2118,8 @@ var handyClicksSets = {
 		this._prevApp = app;
 		var args;
 		if(app == "AkelPad") {
-			args = "/Call('Scripts::Main', 1, 'EvalCmd.js', "
-				+ "`AkelPad.SendMessage(AkelPad.GetMainWnd(), 1206 /*AKD_GOTOW*/, "
-				+ "0x1 /*GT_LINE*/, AkelPad.MemStrPtr('%L:%C'));`)";
+			args = "/Call('Scripts::Main', 1, 'EvalCmd.js', `AkelPad.SendMessage("
+				+ "AkelPad.GetMainWnd(), 1204 /*AKD_GOTO*/, 0x1 /*GT_LINE*/, '%L:%C');`)";
 		}
 		else if(app == "Notepad++")
 			args = "-n%L";
