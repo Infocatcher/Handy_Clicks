@@ -843,7 +843,7 @@ var handyClicksFuncs = {
 			str = suc.ConvertToUnicode(unescape(str)); // Thanks to IE Tab!
 			str = decodeURI(str);
 		}
-		return suc.ConvertFromUnicode(str);
+		return suc.ConvertFromUnicode(str) + suc.Finish();
 	},
 	openUriWithApp: function(e, popup) {
 		var tar = e.target;
