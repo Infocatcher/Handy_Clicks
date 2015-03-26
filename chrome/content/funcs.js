@@ -833,17 +833,15 @@ var handyClicksFuncs = {
 		if(!charset)
 			return str;
 		this._log("convertStrFromUnicode -> charset -> " + charset);
-		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-		suc.charset = charset;
+		var uc = this.ut.unicodeConverter(charset);
 		try {
 			str = decodeURIComponent(str); // to UTF-8
 		}
 		catch(e) { // does not work in fx 1.5
-			str = suc.ConvertToUnicode(unescape(str)); // Thanks to IE Tab!
+			str = uc.ConvertToUnicode(unescape(str)); // Thanks to IE Tab!
 			str = decodeURI(str);
 		}
-		return suc.ConvertFromUnicode(str) + suc.Finish();
+		return uc.ConvertFromUnicode(str) + uc.Finish();
 	},
 	openUriWithApp: function(e, popup) {
 		var tar = e.target;

@@ -673,10 +673,8 @@ var handyClicksUtils = {
 		try {
 			this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_WRITE);
 			var ostream = FileUtils.openSafeFileOutputStream(file);
-			var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-				.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-			suc.charset = "UTF-8";
-			var istream = suc.convertToInputStream(str);
+			var uc = this.unicodeConverter("UTF-8");
+			var istream = uc.convertToInputStream(str);
 			NetUtil.asyncCopy(istream, ostream, this.bind(function(status) {
 				var err = !Components.isSuccessCode(status);
 				if(err)
@@ -799,17 +797,21 @@ var handyClicksUtils = {
 		return true;
 	},
 	convertToUnicode: function(str) {
-		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-		suc.charset = "utf8";
+		var uc = this.unicodeConverter("UTF-8");
 		try {
-			return suc.ConvertToUnicode(str);
+			return uc.ConvertToUnicode(str);
 		}
 		catch(e) {
 			this._err("Can't convert UTF-8 to unicode");
 			this._err(e);
 		}
 		return str;
+	},
+	unicodeConverter: function(charset) {
+		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+		suc.charset = charset;
+		return suc;
 	},
 	getErrorCode: function(err, defaultCode) {
 		return Components.results[this.getErrorCodeString(err, defaultCode)];

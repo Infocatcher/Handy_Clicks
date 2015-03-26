@@ -634,11 +634,9 @@ var handyClicksPrefSvc = {
 		}, this);
 	},
 	getHash: function(str, hashFunc) {
-		var suc = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-		suc.charset = "UTF-8";
+		var uc = this.ut.unicodeConverter("UTF-8");
 		var result = {};
-		var data = suc.convertToByteArray(str, result);
+		var data = uc.convertToByteArray(str, result);
 		var ch = Components.classes["@mozilla.org/security/hash;1"]
 			.createInstance(Components.interfaces.nsICryptoHash);
 		ch.init(ch[hashFunc]);
