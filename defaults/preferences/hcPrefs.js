@@ -12,6 +12,7 @@ pref("extensions.handyclicks.cacheCustomFunctions", true);
 pref("extensions.handyclicks.precompileCustomTypes", false);
 
 pref("extensions.handyclicks.types.links.CSSEditor", true);
+pref("extensions.handyclicks.types.images.canvas", true);
 pref("extensions.handyclicks.types.images.SpeedDial", false);
 
 pref("extensions.handyclicks.notifyOpenTime", 3000);

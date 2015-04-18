@@ -626,7 +626,7 @@ var handyClicks = {
 		if(
 			(
 				(itln == "img" || itln == "image") && it.hasAttribute("src")
-				|| it instanceof HTMLCanvasElement
+				|| (it instanceof HTMLCanvasElement && this.pu.get("types.images.canvas"))
 			)
 			&& !this.ut.isChromeDoc(it.ownerDocument) // Not for interface...
 			&& ( // Speed Dial has own settings for right clicks
