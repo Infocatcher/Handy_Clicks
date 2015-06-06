@@ -1229,8 +1229,16 @@ var handyClicksUtils = {
 	},
 
 	storage: function(key, val) {
-		const ns = "__handyClicks__";
-		if("Application" in window) { // Firefox 3.0+
+		const ns = "_handyClicksStorage";
+		if("Services" in window) { // Firefox 4.0+
+			// Simple replacement for Application.storage
+			// See https://bugzilla.mozilla.org/show_bug.cgi?id=1090880
+			//var global = Components.utils.getGlobalForObject(Services);
+			// Ensure, that we have global object (because window.Services may be overwriten)
+			var global = Components.utils["import"]("resource://gre/modules/Services.jsm", {});
+			this._storage = global[ns] || (global[ns] = global.Object.create(null));
+		}
+		else if("Application" in window) { // Firefox 3.0+
 			var st = Application.storage;
 			if(!st.has(ns))
 				st.set(ns, { __proto__: null });
