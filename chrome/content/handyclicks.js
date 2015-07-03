@@ -7,6 +7,7 @@ var handyClicks = {
 	origItem: null, // event.originalTarget
 	item: null, // detected item (e.g. XUL tab)
 	mainItem: null, // clicked item for multiple items (e.g. selected tabs)
+	handledItem: null, // API for another extensions to detect that item was handled by Handy Clicks
 	itemType: undefined, // name of item type (e.g. "tab")
 	itemData: null, // special item-specific data (object), currently used only itemData.onBeforeLoad
 	settingsType: "", // event type to run action (from options)
@@ -41,7 +42,7 @@ var handyClicks = {
 	},
 	cleanup: function() {
 		this.itemType = undefined;
-		this.event = this.origItem = this.item = this.mainItem = this.itemData = null;
+		this.event = this.origItem = this.item = this.mainItem = this.handledItem = this.itemData = null;
 	},
 
 	handleEvent: function(e) {
@@ -209,7 +210,7 @@ var handyClicks = {
 				this.cancelDelayedAction(); // Only one timeout... (for dblclick event)
 				this.daTimeout = this.timeout(
 					this.executeDelayedAction,
-					this, [delayedAction],
+					this, [delayedAction, e],
 					delay
 				);
 			}
@@ -1229,24 +1230,27 @@ var handyClicks = {
 		}
 		this.executeFunction(funcObj, e);
 	},
-	executeDelayedAction: function(da) {
+	executeDelayedAction: function(da, e) {
 		if(this.flags.runned || this.flags.cancelled)
 			return;
 		this.flags.runned = true;
 		if(da)
-			this.executeFunction(da);
-		else
+			this.executeFunction(da, e, true);
+		else {
 			this.showPopupOnItem();
+			this.handledItem = e && e.originalTarget;
+		}
 		this.ui.restoreIcon();
 	},
-	executeFunction: function(funcObj, e) {
+	executeFunction: function(funcObj, e, isDeleyed) {
 		this.cancelDelayedAction();
 		this.setMoveHandlers(false);
 
 		this.lastEvent = this.event;
 		this.lastItemType = this.itemType;
 		this.lastAll = this._all;
-		this.isDeleyed = !e;
+		this.isDeleyed = !!isDeleyed;
+		this.handledItem = e && e.originalTarget;
 
 		if(funcObj.custom) {
 			var fnc = this.ps.getCustomFunc(funcObj);
