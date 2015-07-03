@@ -1284,6 +1284,10 @@ var handyClicks = {
 		}
 		else {
 			var action = funcObj.action;
+			if(action == this.ignoreAction) { // DblClicker extension or something similar?
+				this._log("Something went wrong: detected " + e.type + " for " + action);
+				return;
+			}
 			var fnc = action in this.fn && this.fn[action];
 			if(typeof fnc == "function") {
 				var args = [e];
