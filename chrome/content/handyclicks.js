@@ -44,6 +44,13 @@ var handyClicks = {
 		this.itemType = undefined;
 		this.event = this.origItem = this.item = this.mainItem = this.handledItem = this.itemData = null;
 	},
+	_forceCleanupTimer: 0,
+	forceCleanup: function() {
+		if(this._forceCleanupTimer)
+			clearTimeout(this._forceCleanupTimer);
+		this._forceCleanupTimer = 0;
+		this.handledItem = null;
+	},
 
 	handleEvent: function(e) {
 		switch(e.type) {
@@ -126,6 +133,7 @@ var handyClicks = {
 
 		this.saveXY(e);
 		this.resetFlags();
+		this.forceCleanup();
 		var funcObj = this.getFuncObjByEvt(e);
 		if(!funcObj)
 			return;
@@ -293,6 +301,9 @@ var handyClicks = {
 		setTimeout(function(_this) {
 			_this.flags.stopContextMenu = false;
 		}, 0, this);
+		this._forceCleanupTimer = setTimeout(function(_this) {
+			_this.forceCleanup();
+		}, 500, this);
 	},
 	commandHandler: function(e) {
 		if(!this.enabled)
