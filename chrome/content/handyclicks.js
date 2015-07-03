@@ -1330,7 +1330,7 @@ var handyClicks = {
 		if(this._debug) {
 			var eStr = this.ps.getEvtStr(e || this.event);
 			this._log(
-				(e ? e.type : "delayedAction")
+				(isDeleyed ? "delayedAction" : e.type)
 				+ " -> " + this.ps.getModifiersStr(eStr) + " + " + this.ps.getButtonStr(eStr, true)
 				+ "\n=> executeFunction()"
 				+ "\nnodeName = " + (this.origItem ? this.origItem.nodeName : "?")
