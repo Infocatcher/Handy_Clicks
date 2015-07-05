@@ -11,6 +11,7 @@
 `+` Added ability to configure or disable “scroll to switch” feature (<em>extensions.handyclicks.sets.scrollLists</em> and <em>extensions.handyclicks.sets.scrollLists.onlyInActiveWindow</em> preferences).<br>
 `+` Added ability to ignore image-like <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas">canvas</a> nodes (<em>extensions.handyclicks.types.images.canvas</em> preference, e.g. to disable in case of performance problems).<br>
 `x` Fixed compatibility with future Firefox versions (bug <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1090880">1090880</a>, <a href="https://github.com/Infocatcher/Handy_Clicks/issues/28">#28</a>).<br>
+`x` Correctly decode URIs in Firefox 40+.<br>
 
 ##### 0.1.3pre5 (2014-09-09)
 `*` Hide options about status bar in Firefox 29+ (only if status bar not restored by another extension).<br>
