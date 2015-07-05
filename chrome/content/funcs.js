@@ -870,7 +870,7 @@ var handyClicksFuncs = {
 		if(!("losslessDecodeURI" in win))
 			win = this.wu.wm.getMostRecentWindow("navigator:browser");
 		if(win && "losslessDecodeURI" in win) try {
-			return win.losslessDecodeURI({ spec: uri });
+			return win.losslessDecodeURI(win.makeURI(uri));
 		}
 		catch(e) {
 			Components.utils.reportError(e);
