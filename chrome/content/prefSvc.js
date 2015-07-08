@@ -328,9 +328,9 @@ var handyClicksPrefSvc = {
 			var df = ct.define;
 			var cm = ct.contextMenu;
 			ct._defineLine = new Error().lineNumber + 1;
-			ct._define = new Function("event,item", df);
+			ct._define = new Function("event,item", this.expandCode(df));
 			ct._contextMenuLine = new Error().lineNumber + 1;
-			ct._contextMenu = cm ? new Function("event,item,origItem", cm) : null;
+			ct._contextMenu = cm ? new Function("event,item,origItem", this.expandCode(cm)) : null;
 			this._log('Type "' + type + '" => initialized');
 			return cache[type] = true;
 		}
@@ -391,7 +391,7 @@ var handyClicksPrefSvc = {
 		try {
 			var line = new Error().lineNumber + 2;
 			this.saveDestructorContext(line, fObj, sh, type, isDelayed);
-			var legacyDestructor = new Function(rawCode).call(this.ut);
+			var legacyDestructor = new Function(this.expandCode(rawCode)).call(this.ut);
 		}
 		catch(e) {
 			this.handleCustomFuncError(e, line, fObj, sh, type, isDelayed, true);
@@ -427,7 +427,7 @@ var handyClicksPrefSvc = {
 		this._log("Compile: " + fObj.label);
 		try {
 			var line = fObj._line = new Error().lineNumber + 1;
-			var fn = new Function("event,item,origItem", fObj.action);
+			var fn = new Function("event,item,origItem", this.expandCode(fObj.action));
 		}
 		catch(err) {
 			var eLine = fObj._errorLine = this.ut.getRealLineNumber(err, line);
@@ -445,6 +445,17 @@ var handyClicksPrefSvc = {
 		if(useCache)
 			fObj._function = fn;
 		return fn;
+	},
+	expandCode: function(code) {
+		// Usage: "//> path/to/file.js"
+		if(!/^\/\/>\s*([^\n\r]+\.js)$/.test(code))
+			return code;
+		var path = RegExp.$1;
+		var file = this.ut.getLocalFile(path);
+		var data = file && this.ut.readFromFile(file);
+		if(!data)
+			throw this.ut.getLocalized("fileNotFound").replace("%f", file ? file.path : path);
+		return data;
 	},
 
 	saveDestructorContext: function(baseLine, fObj, sh, type, isDelayed) {
