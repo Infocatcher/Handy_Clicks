@@ -435,6 +435,8 @@ var handyClicksUtils = {
 	getLocalFile: function(path) {
 		if(!path)
 			return path;
+		if(this.appInfo.OS == "WINNT")
+			path = path.replace(/\//g, "\\");
 		path = this.expandVariables(path);
 		var file = Components.classes["@mozilla.org/file/local;1"]
 			.createInstance(Components.interfaces.nsILocalFile || Components.interfaces.nsIFile);
