@@ -524,8 +524,15 @@
 					if(!("handyClicksUtils" in top))
 						return;
 					var ut = top.handyClicksUtils;
-					var file = this._linkedFile;
-					var isNew = !file || !file.exists();
+
+					var path = ut.ps.getSourcePath(this.value);
+					var file = path && ut.getLocalFile(path);
+					var isExternal = !!file;
+
+					if(!file) {
+						file = this._linkedFile;
+						var isNew = !file || !file.exists();
+					}
 
 					var ext = ut.pu.get("editor.external.extension") || "js";
 					if(isNew) {
@@ -545,14 +552,7 @@
 							.deleteTemporaryFileOnExit(file);
 					}
 
-					this.updateFile(function(status, value) {
-						if(!Components.isSuccessCode(status)) {
-							var err = "openExternalEditor() failed: can't write string to file!\nFile: " + file.path
-								+ "\nError: " + ut.getErrorName(status);
-							ut._err(err);
-							ut.alert(ut.getLocalized("errorTitle"), err);
-							return;
-						}
+					var openInEditor = ut.bind(function() {
 						var ee = ut.pu.get("editor.external.path");
 						var eeArgs;
 
@@ -714,6 +714,21 @@
 								ut._err(e);
 							}
 						}
+					}, this);
+
+					if(isExternal) {
+						openInEditor();
+						return;
+					}
+					this.updateFile(function(status, value) {
+						if(!Components.isSuccessCode(status)) {
+							var err = "openExternalEditor() failed: can't write string to file!\nFile: " + file.path
+								+ "\nError: " + ut.getErrorName(status);
+							ut._err(err);
+							ut.alert(ut.getLocalized("errorTitle"), err);
+							return;
+						}
+						openInEditor();
 					}, this);
 				]]>
 				</body>

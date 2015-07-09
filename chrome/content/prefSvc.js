@@ -446,11 +446,14 @@ var handyClicksPrefSvc = {
 			fObj._function = fn;
 		return fn;
 	},
-	expandCode: function(code) {
+	getSourcePath: function(code) {
 		// Usage: "//> path/to/file.js"
-		if(!/^\/\/>\s*([^\n\r]+\.js)$/.test(code))
+		return /^\/\/>\s*([^\n\r]+\.js)$/.test(code) && RegExp.$1;
+	},
+	expandCode: function(code) {
+		var path = this.getSourcePath(code);
+		if(!path)
 			return code;
-		var path = RegExp.$1;
 		var file = this.ut.getLocalFile(path);
 		var data = file && this.ut.readFromFile(file);
 		if(!data)
