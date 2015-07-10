@@ -566,6 +566,18 @@
 								e && w.removeEventListener(e.type, setCaret, false);
 								function setEditorCaret(Scratchpad) {
 									try { // It's better to just focus already opened Scratchpad
+										if(lineNumber === undefined && isExternal)
+											lineNumber = 0;
+										if(lineNumber !== undefined) {
+											if("setCursor" in Scratchpad.editor) // CodeMirror
+												Scratchpad.editor.setCursor({ line: lineNumber, ch: 0 });
+											else {
+												setTimeout(function() { // Wait to correctly update scroll position
+													Scratchpad.editor.setCaretPosition(lineNumber, 0);
+												}, 0);
+											}
+											return;
+										}
 										var ifi = _this.inputField;
 										if("Editor" in w) { // Looks like CodeMirror
 											var startAnchor, endAnchor;
@@ -621,7 +633,7 @@
 										ut._warn("Found Scratchpad window without getText() or setText() API");
 										continue;
 									}
-									if(Scratchpad.getText() != val)
+									if(!isExternal && Scratchpad.getText() != val)
 										Scratchpad.setText(val);
 									setCaret();
 									this.fade();
@@ -632,7 +644,7 @@
 
 							var w = ScratchpadManager.openScratchpad({
 								filename: file.path,
-								text: val,
+								text: isExternal ? ut.readFromFile(file) : val, //~ todo: use readFromFileAsync()
 								executionContext: 2, // Chrome context
 								saved: true
 							});
