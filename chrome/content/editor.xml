@@ -519,6 +519,7 @@
 				</body>
 			</method>
 			<method name="openExternalEditor">
+				<parameter name="lineNumber" />
 				<body>
 				<![CDATA[
 					if(!("handyClicksUtils" in top))
@@ -690,9 +691,9 @@
 									eeArgs = eeArgs.replace(/%F/g, file.path);
 								}
 								if(eeArgs.indexOf("%L") != -1)
-									eeArgs = eeArgs.replace(/%L/g, this.currentLine);
+									eeArgs = eeArgs.replace(/%L/g, isExternal ? lineNumber || 1 : this.currentLine);
 								if(eeArgs.indexOf("%C") != -1)
-									eeArgs = eeArgs.replace(/%C/g, this.currentColumn);
+									eeArgs = eeArgs.replace(/%C/g, isExternal ? 1 : this.currentColumn);
 								args.push.apply(args, eeArgs.split(/[\r\n]+/));
 							}
 							if(ut.startProcess(ee, args, true))
