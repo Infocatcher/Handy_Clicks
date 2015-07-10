@@ -217,7 +217,12 @@ var handyClicksEditor = {
 		if(typeof line != "number" || !isFinite(line))
 			return;
 		var editor = this.getEditorFromTabbox(tabbox);
-		editor && editor.selectLine(line);
+		if(!editor)
+			return;
+		if(this.ps.getSourcePath(editor.value))
+			editor.openExternalEditor(line);
+		else
+			editor.selectLine(line);
 	},
 	getSelectedPanel: function(tabbox) {
 		return tabbox.selectedPanel

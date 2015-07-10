@@ -567,13 +567,13 @@
 								function setEditorCaret(Scratchpad) {
 									try { // It's better to just focus already opened Scratchpad
 										if(lineNumber === undefined && isExternal)
-											lineNumber = 0;
+											lineNumber = 1;
 										if(lineNumber !== undefined) {
 											if("setCursor" in Scratchpad.editor) // CodeMirror
-												Scratchpad.editor.setCursor({ line: lineNumber, ch: 0 });
+												Scratchpad.editor.setCursor({ line: lineNumber - 1, ch: 0 });
 											else {
 												setTimeout(function() { // Wait to correctly update scroll position
-													Scratchpad.editor.setCaretPosition(lineNumber, 0);
+													Scratchpad.editor.setCaretPosition(lineNumber - 1, 0);
 												}, 0);
 											}
 											return;
