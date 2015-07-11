@@ -529,6 +529,8 @@
 					var path = ut.ps.getSourcePath(this.value);
 					var file = path && ut.getLocalFile(path);
 					var isExternal = !!file;
+					if(isExternal && lineNumber === undefined)
+						lineNumber = 1;
 
 					if(!file) {
 						file = this._linkedFile;
@@ -566,9 +568,7 @@
 								e && w.removeEventListener(e.type, setCaret, false);
 								function setEditorCaret(Scratchpad) {
 									try { // It's better to just focus already opened Scratchpad
-										if(lineNumber === undefined && isExternal)
-											lineNumber = 1;
-										if(lineNumber !== undefined) {
+										if(isExternal) {
 											if("setCursor" in Scratchpad.editor) // CodeMirror
 												Scratchpad.editor.setCursor({ line: lineNumber - 1, ch: 0 });
 											else {
@@ -703,7 +703,7 @@
 									eeArgs = eeArgs.replace(/%F/g, file.path);
 								}
 								if(eeArgs.indexOf("%L") != -1)
-									eeArgs = eeArgs.replace(/%L/g, isExternal ? lineNumber || 1 : this.currentLine);
+									eeArgs = eeArgs.replace(/%L/g, isExternal ? lineNumber : this.currentLine);
 								if(eeArgs.indexOf("%C") != -1)
 									eeArgs = eeArgs.replace(/%C/g, isExternal ? 1 : this.currentColumn);
 								args.push.apply(args, eeArgs.split(/[\r\n]+/));
