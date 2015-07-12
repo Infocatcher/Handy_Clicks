@@ -564,6 +564,7 @@
 							var val = this.value;
 							Components.utils["import"]("resource:///modules/devtools/scratchpad-manager.jsm");
 							var _this = this;
+							var w;
 							var setCaret = function(e) {
 								e && w.removeEventListener(e.type, setCaret, false);
 								function setEditorCaret(Scratchpad) {
@@ -622,7 +623,7 @@
 							};
 							var ws = ut.wu.wm.getEnumerator("devtools:scratchpad");
 							while(ws.hasMoreElements()) {
-								var w = ws.getNext();
+								w = ws.getNext();
 								var Scratchpad = "Scratchpad" in w && w.Scratchpad;
 								if(
 									Scratchpad
@@ -642,13 +643,20 @@
 								}
 							}
 
-							var w = ScratchpadManager.openScratchpad({
-								filename: file.path,
-								text: isExternal ? ut.readFromFile(file) : val, //~ todo: use readFromFileAsync()
-								executionContext: 2, // Chrome context
-								saved: true
-							});
-							w && w.addEventListener("load", setCaret, false);
+							var openScratchpad = function(text) {
+								w = ScratchpadManager.openScratchpad({
+									filename: file.path,
+									text: text,
+									executionContext: 2, // Chrome context
+									saved: true
+								});
+								w && w.addEventListener("load", setCaret, false);
+							};
+							if(isExternal)
+								ut.readFromFileAsync(file, openScratchpad);
+							else
+								openScratchpad(val);
+
 							this.fade();
 							return;
 						}
