@@ -39,10 +39,10 @@ var handyClicksPrefSvc = {
 	otherSrc: false,
 	_restoringCounter: 0,
 
-	destroy: function(reloadFlag) {
+	destroy: function(reloadFlag, disable) {
 		if(this.isMainWnd) {
 			var reason;
-			if(reloadFlag)
+			if(reloadFlag || disable)
 				reason = this.DESTROY_REBUILD;
 			else {
 				var lastWinUnload = true;
@@ -63,7 +63,12 @@ var handyClicksPrefSvc = {
 		this.types = {};
 		this.prefs = {};
 		this._loadStatus = this.SETS_LOAD_UNKNOWN;
-		this.oSvc.destroy();
+		if(!disable)
+			this.oSvc.destroy();
+	},
+	disable: function() {
+		this._log("Unload settings");
+		this.destroy(false, true);
 	},
 
 	get profileDir() {
