@@ -529,16 +529,13 @@
 					var path = ut.ps.getSourcePath(this.value);
 					var file = path && ut.getLocalFile(path);
 					var isExternal = !!file;
+					if(!file)
+						file = this._linkedFile;
 					if(isExternal && lineNumber === undefined)
 						lineNumber = 1;
 
-					if(!file) {
-						file = this._linkedFile;
-						var isNew = !file || !file.exists();
-					}
-
 					var ext = ut.pu.get("editor.external.extension") || "js";
-					if(isNew) {
+					if(!isExternal && (!file || !file.exists())) {
 						var fName = this.getDefaultFilename(
 							ext,
 							ut.canRunw && ut.pu.get("editor.external.labelInFileName")
