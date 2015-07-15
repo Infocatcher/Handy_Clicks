@@ -333,16 +333,14 @@
 					var currCol  = this.currentColumn;
 					var num = { value: currLine + ":" + currCol };
 					var ut = "handyClicksUtils" in top && top.handyClicksUtils;
-					var ps = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-						.getService(Components.interfaces.nsIPromptService);
-					var res = ps.prompt(
-						top,
-						ut ? ut.getLocalized("goToLineTitle") : "Go to line\u2026",
-						(ut ? ut.getLocalized("goToLineMessage") : "Line number (1 \u2026 %max):")
-							.replace("%max", this.linesCount),
-						num,
-						null, {}
-					);
+					var pTitle = ut ? ut.getLocalized("goToLineTitle") : "Go to line\u2026";
+					var pText = (ut ? ut.getLocalized("goToLineMessage") : "Line number (1 \u2026 %max):")
+						.replace("%max", this.linesCount);
+					var ps = ut
+						? ut.promptsSvc
+						: Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+							.getService(Components.interfaces.nsIPromptService);
+					var res = ps.prompt(top, pTitle, pText, num, null, {});
 					if(!res)
 						return;
 					if(!/^(\+|-)?(\d+)(?:\s*[^\d+-]+\s*(\+|-)?(\d+))?$/.test(num.value))
