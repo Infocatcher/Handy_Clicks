@@ -22,14 +22,17 @@
 				var pu = "handyClicksPrefUtils" in top && top.handyClicksPrefUtils;
 				if(pu) {
 					this.autocomplete = pu.get("editor.autocomplete");
-					this.autocompleteMinSymbols = Math.max(1, Math.min(30, pu.get("editor.autocompleteMinSymbols")));
+					var mm = function(n) {
+						return Math.max(1, Math.min(30, n));
+					};
+					this.autocompleteMinSymbols = mm(pu.get("editor.autocompleteMinSymbols"));
 					pu.oSvc.addObserver(function(pName, pVal) {
 						if(pName == "editor.tabSize")
 							this.setTabSize();
 						else if(pName == "editor.autocomplete")
 							this.autocomplete = pVal;
 						else if(pName == "editor.autocompleteMinSymbols")
-							this.autocompleteMinSymbols = Math.max(1, Math.min(30, pVal));
+							this.autocompleteMinSymbols = mm(pVal);
 					}, this);
 				}
 			]]>
