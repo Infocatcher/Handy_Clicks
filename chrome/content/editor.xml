@@ -142,8 +142,8 @@
 					}
 
 					var sel = val.substring(ss, se);
-					var lineStart = val.substring(0, ss).match(/[^\r\n]*$/)[0];
-					var lineEnd = val.substring(se).match(/^[^\r\n]*/)[0];
+					var lineStart = val.substr(0, ss).match(/[^\r\n]*$/)[0];
+					var lineEnd = val.substr(se).match(/^[^\r\n]*/)[0];
 
 					if(!/\n|\r/.test(sel)) {
 						if(this._isSpaces(indentChar)) {
@@ -193,7 +193,7 @@
 						return;
 					var value = this.value;
 					if(event.keyCode == event.DOM_VK_BACK_SPACE) {
-						var line = value.substring(0, ss).match(/[^\r\n]*$/)[0];
+						var line = value.substr(0, ss).match(/[^\r\n]*$/)[0];
 						var availSpaces = line.match(/ *$/)[0].length;
 						if(availSpaces <= 1)
 							return;
@@ -203,7 +203,7 @@
 						var availSpaces = value.substr(ss).match(/^ */)[0].length;
 						if(availSpaces <= 1)
 							return;
-						var line = value.substring(0, ss).match(/[^\r\n]*$/)[0];
+						var line = value.substr(0, ss).match(/[^\r\n]*$/)[0];
 						var maxSpaces = (tab.length - line.length % tab.length) || tab.length;
 					}
 					var removeSpaces = Math.min(availSpaces, maxSpaces);
@@ -234,8 +234,8 @@
 
 					var sel = val.substring(ss, se);
 
-					var lineStart = val.substring(0, ss).match(/[^\r\n]*$/)[0];
-					var lineEnd = val.substring(se).match(/^[^\r\n]*/)[0];
+					var lineStart = val.substr(0, ss).match(/[^\r\n]*$/)[0];
+					var lineEnd = val.substr(se).match(/^[^\r\n]*/)[0];
 					var block = lineStart + sel + lineEnd;
 
 					if(onlyInLineStart) {
@@ -320,7 +320,7 @@
 			<method name="formatNewLine">
 				<body>
 				<![CDATA[
-					var line = this.value.substring(0, this.inputField.selectionStart).match(/[^\r\n]*$/)[0];
+					var line = this.value.substr(0, this.inputField.selectionStart).match(/[^\r\n]*$/)[0];
 					var indent = /^[ \t]+/.test(line) ? RegExp.lastMatch : "";
 					this.insertText("\n" + indent);
 				]]>
@@ -359,7 +359,7 @@
 			</method>
 			<property name="currentLine" readonly="true">
 				<getter>
-					return this.value.substring(0, this.inputField.selectionStart).split("\n").length;
+					return this.value.substr(0, this.inputField.selectionStart).split("\n").length;
 				</getter>
 			</property>
 			<property name="linesCount" readonly="true">
@@ -369,7 +369,7 @@
 			</property>
 			<property name="currentColumn" readonly="true">
 				<getter>
-					return this.value.substring(0, this.inputField.selectionStart).match(/[^\n\r]*$/)[0].length + 1;
+					return this.value.substr(0, this.inputField.selectionStart).match(/[^\n\r]*$/)[0].length + 1;
 				</getter>
 			</property>
 			<property name="columnsCount" readonly="true">
@@ -378,8 +378,8 @@
 					// For current line
 					var ss = this.inputField.selectionStart;
 					var val = this.value;
-					return val.substring(0, ss).match(/[^\n\r]*$/)[0].length
-						+ val.substring(ss).match(/^[^\n\r]*/)[0].length
+					return val.substr(0, ss).match(/[^\n\r]*$/)[0].length
+						+ val.substr(ss).match(/^[^\n\r]*/)[0].length
 						+ 1;
 				]]>
 				</getter>
@@ -1035,7 +1035,7 @@
 					var selText = val.substring(ss, se);
 					if(selText && !/^[\w$]+['"]?$/.test(selText))
 						return;
-					var startText = val.substring(0, ss);
+					var startText = val.substr(0, ss);
 
 					if(!/(?:(\.)\s*|('|"))?([\w$]+)$/.test(startText))
 						return;
@@ -1116,9 +1116,9 @@
 					var ifi = this.inputField;
 					var ss = ifi.selectionStart;
 					var se = ifi.selectionEnd;
-					var newVal = val.substring(0, ss)
+					var newVal = val.substr(0, ss)
 						+ selMarker + val.substring(ss, se) + selMarker
-						+ val.substring(se);
+						+ val.substr(se);
 					newVal = newVal.replace(new RegExp("[ \t]*(" + selMarker + ")?[ \t]*(" + selMarker + ")?[ \t]*$", "mg"), "$1$2");
 					ss = newVal.indexOf(selMarker);
 					se = newVal.lastIndexOf(selMarker) - selMarker.length;
