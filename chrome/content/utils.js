@@ -839,6 +839,14 @@ var handyClicksUtils = {
 			? '"' + file.path + '"'
 			: "<not a file> " + file;
 	},
+	get eal() {
+		delete this.eal;
+		return this.eal = Components.classes["@mozilla.org/uriloader/external-helper-app-service;1"]
+			.getService(Components.interfaces.nsPIExternalAppLauncher);
+	},
+	deleteTemporaryFileOnExit: function(file) {
+		this.eal.deleteTemporaryFileOnExit(file);
+	},
 
 	// Clipboard utils:
 	get cb() {

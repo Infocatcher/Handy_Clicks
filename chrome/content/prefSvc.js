@@ -744,19 +744,17 @@ var handyClicksPrefSvc = {
 			return;
 		var fName = this.prefsFileName + this.names.testBackup;
 		var file, bakFile;
-		var eal = Components.classes["@mozilla.org/uriloader/external-helper-app-service;1"]
-			.getService(Components.interfaces.nsPIExternalAppLauncher);
 		while(--num >= 0) {
 			file = this.getBackupFile(fName + num + ".js");
 			if(num == 0)
 				bakFile = file.clone();
 			if(file.exists()) {
 				this.ut.moveFileTo(file, this.backupsDir, fName + (num + 1) + ".js");
-				eal.deleteTemporaryFileOnExit(file);
+				this.ut.deleteTemporaryFileOnExit(file);
 			}
 		}
 		this.ut.writeToFile(pStr, bakFile);
-		eal.deleteTemporaryFileOnExit(bakFile);
+		this.ut.deleteTemporaryFileOnExit(bakFile);
 
 		this.ut.storage("testBackupCreated", true);
 	},

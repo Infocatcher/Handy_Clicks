@@ -548,9 +548,7 @@
 						this._lineBreak = null; // Will use platform's line breaks
 						this.watchFile(file, true);
 
-						Components.classes["@mozilla.org/uriloader/external-helper-app-service;1"]
-							.getService(Components.interfaces.nsPIExternalAppLauncher)
-							.deleteTemporaryFileOnExit(file);
+						ut.deleteTemporaryFileOnExit(file);
 					}
 
 					var openInEditor = ut.bind(function() {
