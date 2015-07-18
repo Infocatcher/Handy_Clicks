@@ -426,7 +426,7 @@ var handyClicksUtils = {
 		return str.replace(
 			/^%([^%]+)%/, //~ todo: may conflict with environment variables => [ProfD]/dir like Thunderbird or some other
 			this.bind(function(s, alias) {
-				if(alias.toLowerCase() == "profile" || alias == "ProfD")
+				if(alias == "profile" || alias == "ProfD")
 					return this.ps.profileDir.path;
 				var aliasFile = this.getFileByAlias(alias, true);
 				return aliasFile ? aliasFile.path : s;
