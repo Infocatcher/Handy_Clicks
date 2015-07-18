@@ -904,8 +904,8 @@ var handyClicksUtils = {
 				.substr(0, len.value/2);
 		}
 		catch(e) {
-			return "";
 		}
+		return "";
 	},
 	copyStr: function(str, sourceDocument, clipId) {
 		this.cbHelper.copyStringToClipboard(
