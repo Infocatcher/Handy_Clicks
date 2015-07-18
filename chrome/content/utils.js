@@ -374,8 +374,7 @@ var handyClicksUtils = {
 		return null;
 	},
 	getFileRoot: function(file) {
-		var tmp = file;
-		for(; tmp = this.getFileParent(tmp);)
+		for(var tmp = file; tmp = this.getFileParent(tmp);)
 			file = tmp;
 		return file;
 	},
