@@ -6,10 +6,6 @@ var document = inWindow ? window.document : {
 };
 var g = window.handyClicksGlobals = {
 	errPrefix: "[Handy Clicks] ",
-	get g() {
-		delete g.g;
-		return g.g = g;
-	},
 
 	now: now,
 	_startTime: now(),
@@ -165,6 +161,7 @@ var g = window.handyClicksGlobals = {
 		g._elts = null;
 	}
 };
+g.g = g;
 
 function lazy(s, p, file) {
 	var has = p in window;
