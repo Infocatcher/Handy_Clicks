@@ -966,7 +966,7 @@ var handyClicksUtils = {
 		return str.replace(/\r\n?|\n\r?/g, "\n");
 	},
 
-	isArray: function(str) {
+	isArray: function(arr) {
 		var f = this.isArray = this.hasNativeMethod(Array, "isArray")
 			? Array.isArray
 			: function(arr) {
@@ -975,8 +975,8 @@ var handyClicksUtils = {
 			};
 		return f.apply(this, arguments);
 	},
-	isObject: function(obj) {
-		return typeof obj == "object" && obj !== null;
+	isObject: function(o) {
+		return typeof o == "object" && o !== null;
 	},
 	isEmptyObj: function(o) {
 		// obj.__count__ is deprecated and removed in Firefox 4.0
