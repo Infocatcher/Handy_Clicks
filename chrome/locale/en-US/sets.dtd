@@ -33,8 +33,8 @@ Placeholders:
 &#37;custom&#37; – custom code
 &#37;type&#37; – custom type
 &#37;dis&#37; – disabled
-&#37;ovr&#37; – overrided (import)
-&#37;new&#37; – new (import)">
+&#37;ovr&#37; – changed (import)
+&#37;new&#37; – added (import)">
 <!ENTITY hc.sets.filterTip "Filter">
 
 <!ENTITY hc.sets.editMenu "Edit">
@@ -110,9 +110,9 @@ Placeholders:
 <!ENTITY hc.sets.importReplace "Replace">
 <!ENTITY hc.sets.importReplaceAccesskey "R">
 
-<!ENTITY hc.sets.importNew "New:">
-<!ENTITY hc.sets.importOverrides "Overrides:">
-<!ENTITY hc.sets.importDeletable "Deletable:">
+<!ENTITY hc.sets.importAdded "Added:">
+<!ENTITY hc.sets.importChanged "Changed:">
+<!ENTITY hc.sets.importRemoved "Removed:">
 <!ENTITY hc.sets.importTip "Normal settings / Delayed actions settings + Custom types">
 
 

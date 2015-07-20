@@ -33,7 +33,7 @@
 &#37;custom&#37; – свой код
 &#37;type&#37; – добавленный тип
 &#37;dis&#37; – отключено
-&#37;ovr&#37; – заменяемые (при импорте)
+&#37;ovr&#37; – изменяемые (при импорте)
 &#37;new&#37; – добавляемые (при импорте)">
 <!ENTITY hc.sets.filterTip "Фильтр">
 
@@ -110,9 +110,9 @@
 <!ENTITY hc.sets.importReplace "Заменить">
 <!ENTITY hc.sets.importReplaceAccesskey "З">
 
-<!ENTITY hc.sets.importNew "Новых:">
-<!ENTITY hc.sets.importOverrides "Перезаписываемых:">
-<!ENTITY hc.sets.importDeletable "Удаляемых:">
+<!ENTITY hc.sets.importAdded "Добавленные:">
+<!ENTITY hc.sets.importChanged "Изменённые:">
+<!ENTITY hc.sets.importRemoved "Удалённые:">
 <!ENTITY hc.sets.importTip "Обычные настройки / Настройки отложенных действий + Пользовательские типы">
 
 

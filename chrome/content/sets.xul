@@ -147,16 +147,16 @@ preferences {
 					</columns>
 					<rows>
 						<row onclick="if(event.button == 0) handyClicksSets.doSearch('%new%');">
-							<label id="hc-sets-tree-importNew" value="&hc.sets.importNew;" />
-							<label id="hc-sets-tree-importNewValue" value="?/? + ?" />
+							<label id="hc-sets-tree-importAdded" value="&hc.sets.importAdded;" />
+							<label id="hc-sets-tree-importAddedValue" value="?/? + ?" />
 						</row>
 						<row onclick="if(event.button == 0) handyClicksSets.doSearch('%ovr%');">
-							<label id="hc-sets-tree-importOverrides" value="&hc.sets.importOverrides;" />
-							<label id="hc-sets-tree-importOverridesValue" value="?/? + ?" />
+							<label id="hc-sets-tree-importChanged" value="&hc.sets.importChanged;" />
+							<label id="hc-sets-tree-importChangedValue" value="?/? + ?" />
 						</row>
-						<row id="hc-sets-tree-importRowDeletable">
-							<label id="hc-sets-tree-importDeletable" value="&hc.sets.importDeletable;" />
-							<label id="hc-sets-tree-importDeletableValue" value="?/? + ?" />
+						<row id="hc-sets-tree-importRowRemoved">
+							<label id="hc-sets-tree-importRemoved" value="&hc.sets.importRemoved;" />
+							<label id="hc-sets-tree-importRemovedValue" value="?/? + ?" />
 						</row>
 					</rows>
 				</grid>

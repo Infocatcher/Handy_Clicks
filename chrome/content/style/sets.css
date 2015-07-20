@@ -170,10 +170,10 @@ tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_copied),
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_copied, selected) {
 	color: #bfc1ca !important;
 }
-treechildren::-moz-tree-cell-text(hc_override), #hc-sets-tree-importOverrides {
+treechildren::-moz-tree-cell-text(hc_override), #hc-sets-tree-importChanged {
 	font-style: italic;
 }
-treechildren::-moz-tree-cell-text(hc_new), #hc-sets-tree-importNew {
+treechildren::-moz-tree-cell-text(hc_new), #hc-sets-tree-importAdded {
 	text-decoration: underline;
 }
 treechildren::-moz-tree-checkbox(hc_checkbox),

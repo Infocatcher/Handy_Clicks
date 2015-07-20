@@ -394,9 +394,9 @@ var handyClicksSets = {
 				++deletableTypes;
 
 		const id = "hc-sets-tree-import";
-		this.$(id + "OverridesValue").value = this._overrides + "/" + this._overrideDa + " + " + overrideTypes;
-		this.$(id + "NewValue")      .value = this._new       + "/" + this._newDa      + " + " + newTypes;
-		this.$(id + "DeletableValue").value = deletable       + "/" + deletableDa      + " + " + deletableTypes;
+		this.$(id + "ChangedValue").value = this._overrides + "/" + this._overrideDa + " + " + overrideTypes;
+		this.$(id + "AddedValue")  .value = this._new       + "/" + this._newDa      + " + " + newTypes;
+		this.$(id + "RemovedValue").value = deletable       + "/" + deletableDa      + " + " + deletableTypes;
 	},
 	redrawTree: function() {
 		return this.treeBatch(this._redrawTree, this, arguments);
@@ -2820,7 +2820,7 @@ var handyClicksSets = {
 		}
 
 		this.$("hc-sets-tree-importType").value =
-			this.$("hc-sets-tree-importRowDeletable").hidden = isPartial;
+			this.$("hc-sets-tree-importRowRemoved").hidden = isPartial;
 		if(
 			Array.indexOf(
 				this.$("hc-sets-tree-importPanel").getElementsByTagName("*"),
