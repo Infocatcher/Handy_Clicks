@@ -229,6 +229,9 @@ menuitem[command="hc-sets-cmd-enable"] {
 #hc-sets-tree-importStatistics row[onclick]:hover {
 	opacity: 0.7;
 }
+#hc-sets-tree-importStatistics row[onclick]:hover:active {
+	opacity: 0.55;
+}
 
 #hc-sets-tree-buttons button {
 	margin-left: 3px;
