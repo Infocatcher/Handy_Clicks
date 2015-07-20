@@ -223,7 +223,7 @@ menuitem[command="hc-sets-cmd-enable"] {
 	-moz-padding-end: 0.6em !important;
 }
 #hc-sets-tree-importStatistics row[onclick],
-#hc-sets-tree-importStatistics row[onclick] * {
+#hc-sets-tree-importStatistics row[onclick] > label {
 	cursor: pointer;
 }
 #hc-sets-tree-importStatistics row[onclick]:hover {
