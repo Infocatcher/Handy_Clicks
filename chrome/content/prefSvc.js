@@ -61,6 +61,7 @@ var handyClicksPrefSvc = {
 		// Force unload prefs to avoid memory leaks
 		this.types = {};
 		this.prefs = {};
+		this._typesCache = { __proto__: null };
 		this._loadStatus = this.SETS_LOAD_UNKNOWN;
 		if(!disable)
 			this.oSvc.destroy();
