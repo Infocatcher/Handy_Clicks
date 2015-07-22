@@ -85,8 +85,12 @@ var handyClicksUI = {
 			this.hc.editMode = em;
 	},
 	initListeners: function(enable) {
-		if(enable || this.coreLoaded)
-			this.hc.initListeners(enable);
+		if(enable || this.coreLoaded) {
+			if(enable)
+				this.hc.initListeners(enable);
+			else
+				this.hc.destroy(); // Also perform all cleanups
+		}
 	},
 
 	_blinkNodeTimeout: 0,

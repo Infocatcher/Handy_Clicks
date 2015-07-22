@@ -96,8 +96,6 @@ var handyClicks = {
 			return;
 		this._hasListeners = enable;
 		this.setListeners(["mousedown", "click", "command", "mouseup", "dblclick", "contextmenu", "popupshowing"], enable);
-		if(!enable)
-			this.cleanup();
 		this._log("initListeners(" + enable + ")");
 	},
 	setListeners: function(evtTypes, add) {
