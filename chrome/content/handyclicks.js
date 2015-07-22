@@ -325,8 +325,15 @@ var handyClicks = {
 
 	isMenu: function(node) {
 		return node.namespaceURI == this.ut.XULNS
-			&& node.boxObject
-			&& node.boxObject instanceof Components.interfaces.nsIMenuBoxObject;
+			// See https://github.com/Infocatcher/Handy_Clicks/issues/31
+			//&& node.boxObject
+			//&& node.boxObject instanceof Components.interfaces.nsIMenuBoxObject;
+			&& Array.some(
+				node.getElementsByTagNameNS(this.ut.XULNS, "menupopup"),
+				function(mp) {
+					return mp.parentNode == node;
+				}
+			);
 	},
 
 	// Special handlers:
