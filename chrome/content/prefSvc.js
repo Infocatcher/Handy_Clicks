@@ -45,17 +45,16 @@ var handyClicksPrefSvc = {
 			if(reloadFlag || disable)
 				reason = this.DESTROY_REBUILD;
 			else {
-				var lastWinUnload = true;
+				reason = this.DESTROY_LAST_WINDOW_UNLOAD;
 				// Note: private windows doesn't have "windowtype" in SeaMonkey
 				var ws = this.wu.wm.getEnumerator(this.ut.isSeaMonkey ? null : "navigator:browser");
 				while(ws.hasMoreElements()) {
 					var w = ws.getNext();
 					if("handyClicksUI" in w && "_handyClicksInitialized" in w) {
-						lastWinUnload = false;
+						reason = this.DESTROY_WINDOW_UNLOAD;
 						break;
 					}
 				}
-				reason = lastWinUnload ? this.DESTROY_LAST_WINDOW_UNLOAD : this.DESTROY_WINDOW_UNLOAD;
 			}
 			this.destroyCustomFuncs(reason);
 		}
