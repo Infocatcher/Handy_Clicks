@@ -125,6 +125,7 @@ var g = window.handyClicksGlobals = {
 	get ps() { return lazy("ps", "handyClicksPrefSvc",    "prefSvc.js");     },
 	get ut() { return lazy("ut", "handyClicksUtils",      "utils.js");       },
 	get wu() { return lazy("wu", "handyClicksWinUtils",   "winUtils.js");    },
+	get dt() { return lazy("dt", "handyClicksData",       "res/data.js");    },
 
 	objects: {
 		handyClicksConsole:    "cn",

@@ -1,6 +1,5 @@
 content handyclicks jar:chrome/handyclicks.jar!/content/
 content handyclicks-locale jar:chrome/handyclicks.jar!/locale/en-US/
-resource handyclicks-content jar:chrome/handyclicks.jar!/content/res/
 
 overlay chrome://browser/content/browser.xul   chrome://handyclicks/content/handyclicks.xul
 overlay chrome://global/content/console.xul    chrome://handyclicks/content/console.xul

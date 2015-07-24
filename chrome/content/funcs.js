@@ -1266,7 +1266,7 @@ var handyClicksFuncs = {
 		stl.setProperty("width", w, "important");
 		stl.setProperty("height", h, "important");
 		if(parseInt(w) > 24 || parseInt(h) > 24)
-			stl.setProperty("background", "url(\"" + this.resPath + "loading.gif\") center no-repeat", "important");
+			stl.setProperty("background", "url(\"" + this.dt.loading + "\") center no-repeat", "important");
 
 		// See https://github.com/Infocatcher/Custom_Buttons/tree/master/Reload_Broken_Images
 		if(img instanceof Components.interfaces.nsIImageLoadingContent && img.currentURI) try {
@@ -1297,7 +1297,7 @@ var handyClicksFuncs = {
 			img.addEventListener("error", done, false);
 			img.src = src;
 		}, false);
-		img.src = this.resPath + "spacer.gif"; // transparent gif 1x1
+		img.src = this.dt.spacer; // transparent gif 1x1
 	},
 	copyImg: function(e, img) {
 		img = img || this.hc.item;
@@ -1305,12 +1305,6 @@ var handyClicksFuncs = {
 		document.popupNode = img;
 		goDoCommand("cmd_copyImageContents");
 		this.ui.blinkNode(undefined /*default duration*/, img);
-	},
-	get resPath() {
-		delete this.resPath;
-		return this.resPath = this.ut.fxVersion < 3
-			? "chrome://handyclicks/content/res/"
-			: "resource://handyclicks-content/";
 	},
 	getStyle: function(item, propName) {
 		item = item || this.hc.item;

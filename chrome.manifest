@@ -1,6 +1,5 @@
 content handyclicks chrome/content/
 content handyclicks-locale chrome/locale/en-US/
-resource handyclicks-content chrome/content/res/
 
 overlay chrome://browser/content/browser.xul   chrome://handyclicks/content/handyclicks.xul
 overlay chrome://global/content/console.xul    chrome://handyclicks/content/console.xul
