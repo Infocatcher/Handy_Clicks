@@ -44,17 +44,17 @@ var handyClicksWinUtils = {
 	},
 	maximizeWindow: function(win) {
 		win = win || top;
-		if("fullScreen" in win)
+		if("fullScreen" in win && win.fullScreen)
 			win.fullScreen = false;
-		switch(win.windowState) {
-			case win.STATE_MAXIMIZED: win.restore();  break;
-			case win.STATE_NORMAL:    win.maximize();
-		}
+		else if(win.windowState == win.STATE_MAXIMIZED)
+			win.restore();
+		else
+			win.maximize();
 	},
 	toggleFullscreen: function(win) {
 		win = win || top;
-		if("fullScreen" in win)
-			win.fullScreen = !win.fullScreen; // Firefox 3.0+
+		if("fullScreen" in win) // Firefox 3.0+
+			win.fullScreen = !win.fullScreen;
 	},
 
 	onTopAttr: "hc_onTop",
