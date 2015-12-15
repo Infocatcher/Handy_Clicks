@@ -511,14 +511,14 @@ var handyClicks = {
 				: null;
 	},
 
-	_ignoreOtherTypes: true,
+	checkOtherTypes: false,
 	get ignoreOtherTypes() { //= Added: 2010-06-21
-		return this._ignoreOtherTypes;
+		return !this.checkOtherTypes;
 	},
 	set ignoreOtherTypes(val) {
 		var caller = Components.stack.caller;
 		this.ut._deprecated('Flag "ignoreOtherTypes" is deprecated. Use "checkOtherTypes" instead.');
-		this._ignoreOtherTypes = val;
+		this.checkOtherTypes = !val;
 	},
 	defineItem: function(e, sets, forcedAll) {
 		this._all = this.itemTypeInSets(sets, "$all");
@@ -540,7 +540,6 @@ var handyClicks = {
 				&& this.ps.initCustomType(type)
 			) {
 				var ct = cts[type];
-				this._ignoreOtherTypes = true; // Deprecated, see "ignoreOtherTypes" setter and getter
 				this.checkOtherTypes = false;
 				try {
 					_it = ct._define.call(this, e, it);
@@ -564,7 +563,7 @@ var handyClicks = {
 					continue;
 				this.itemType = type;
 				this.item = _it;
-				if(!this.checkOtherTypes || this._ignoreOtherTypes)
+				if(!this.checkOtherTypes)
 					return;
 			}
 		}
