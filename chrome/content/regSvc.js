@@ -14,7 +14,7 @@ var handyClicksRegSvc = {
 		window._handyClicksInitialized = true;
 		setTimeout(function(_this) {
 			_this.delayedInit(reloadFlag);
-		}, 0, this);
+		}, reloadFlag ? 0 : 250, this);
 	},
 	delayedInit: function(reloadFlag) {
 		var noCache = reloadFlag ? "?" + Date.now() : "";
