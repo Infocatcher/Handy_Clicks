@@ -112,15 +112,10 @@ var handyClicksUI = {
 				node.style.setProperty("opacity", this.blinkOpacity, "important");
 			}
 			node.scrollHeight || node.offsetHeight; // Force redraw
-			this._blinkNodeTimeout = this.delay(
-				function(node, attr, oldFx, origStyle) {
-					node.removeAttributeNS(this.attrNS, attr);
-					oldFx && this.attribute(node, "style", origStyle, true);
-				},
-				this,
-				time,
-				[node, attr, oldFx, origStyle]
-			);
+			this._blinkNodeTimeout = this.delay(function() {
+				node.removeAttributeNS(this.attrNS, attr);
+				oldFx && this.attribute(node, "style", origStyle, true);
+			}, this, time);
 		}, this);
 	},
 

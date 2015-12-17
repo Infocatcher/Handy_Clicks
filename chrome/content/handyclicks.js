@@ -1233,9 +1233,7 @@ var handyClicks = {
 			this.closeMenus(e.originalTarget);
 			//this.wu.openEditor(null, this.ct.EDITOR_MODE_SHORTCUT, this.ps.getEvtStr(e), this._all ? "$all" : this.itemType);
 			this.delay( // Wait for blinkNode redraw
-				this.wu.openEditor,
-				this.wu,
-				0,
+				this.wu.openEditor, this.wu, 0,
 				[null, this.ct.EDITOR_MODE_SHORTCUT, this.ps.getEvtStr(e), this._all ? "$all" : this.itemType]
 			);
 			return;
