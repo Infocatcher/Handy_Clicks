@@ -172,7 +172,7 @@ var handyClicksSets = {
 	handleEvent: function(e) {
 		if(e.type == "mouseup") {
 			this.smartSelect(e);
-			this.timeout(this.smartSelectStop, this, [], 10);
+			this.delay(this.smartSelectStop, this, 10);
 		}
 		else if(e.type == "mouseover")
 			this.openMenu(e);
@@ -1567,7 +1567,7 @@ var handyClicksSets = {
 	},
 	searchInSetsTreeDelay: function(dontSelect, dontResetPosition) {
 		// Needs for undo/redo
-		this.timeout(this.searchInSetsTree, this, arguments, 0);
+		this.delay(this.searchInSetsTree, this, 0, arguments);
 	},
 	_searchInSetsTree: function(dontSelect, dontResetPosition) {
 		var sf = this.searchField;
@@ -1758,7 +1758,7 @@ var handyClicksSets = {
 		this.loadUIAction();
 		this.updateAllDependencies();
 		// This is relatively slow, will execute after small delay
-		this.timeout(this.initExternalEditor, this);
+		this.delay(this.initExternalEditor, this);
 	},
 	setDisallowMousemove: function() {
 		var buttons = this.pu.get("disallowMousemoveButtons") || "";
@@ -1856,7 +1856,7 @@ var handyClicksSets = {
 		this.pu.set("disallowMousemoveButtons", this.disallowMousemoveButtons);
 		if(!this.instantApply) {
 			if(applyFlag) {
-				this.timeout(function() {
+				this.delay(function() {
 					this.savePrefpanes();
 					this.setDialogButtons();
 				}, this);
@@ -2071,7 +2071,7 @@ var handyClicksSets = {
 	},
 	externalEditorChanged: function eec(delayed) {
 		if(delayed) {
-			this.timeout(eec, this, [], 5);
+			this.delay(eec, this, 5);
 			return;
 		}
 		this.initExternalEditor(true);
@@ -2251,7 +2251,7 @@ var handyClicksSets = {
 
 	dataChanged: function(e, delayed) {
 		if(delayed) {
-			this.timeout(this.dataChanged, this, [e], 5);
+			this.delay(this.dataChanged, this, 5, [e]);
 			return;
 		}
 		var tar = e.target;
@@ -2278,7 +2278,7 @@ var handyClicksSets = {
 		if(this.instantApply)
 			this.saveSettings(true);
 		else
-			//this.timeout(this.setDialogButtons, this);
+			//this.delay(this.setDialogButtons, this);
 			this.setDialogButtons();
 	},
 	updateAllDependencies: function(depId) {
@@ -2647,7 +2647,7 @@ var handyClicksSets = {
 	},
 	initImportPopup: function() {
 		this.checkClipboard();
-		this.timeout(this.buildRestorePopup, this);
+		this.delay(this.buildRestorePopup, this);
 	},
 	destroyImportPopup: function() {
 		this.destroyRestorePopup();
@@ -2748,7 +2748,7 @@ var handyClicksSets = {
 		this.updRestorePopup(ubCount, isEmpty, true);
 	},
 	fixMenuitemsWidth: function(popup) {
-		this.timeout(function() { // Timeout for Firefox 3.x
+		this.delay(function() { // Delay for Firefox 3.x
 			Array.forEach(popup.childNodes, this.removeMenuitemCrop);
 		}, this);
 	},
@@ -2769,7 +2769,7 @@ var handyClicksSets = {
 		menu.setAttribute("disabled", isEmpty);
 		if(isEmpty)
 			popup.hidePopup();
-		if("__userBackups" in popup && !dontCleanup) this.timeout(function() {
+		if("__userBackups" in popup && !dontCleanup) this.delay(function() {
 			popup.__userBackups = popup.__userBackups.filter(function(file) {
 				return file.exists();
 			});

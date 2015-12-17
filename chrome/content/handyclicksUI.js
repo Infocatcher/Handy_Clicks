@@ -23,12 +23,12 @@ var handyClicksUI = {
 			this.registerHotkeys();
 		this.pu.oSvc.addObserver(this.updUI, this);
 
-		this.timeout(function() {
+		this.delay(function() {
 			this.setupUIActions();
 			this.setupProgress();
 			//this.loadBlinkStyle();
 		}, this);
-		this.timeout(function() {
+		this.delay(function() {
 			// Fix position of item in App menu from Classic Theme Restorer
 			var mi = this.$("handyClicks-appMenuitem");
 			if(mi) {
@@ -45,7 +45,7 @@ var handyClicksUI = {
 					}
 				}
 			}
-		}, this, [], 50);
+		}, this, 50);
 	},
 	destroy: function(reloadFlag) {
 		clearTimeout(this._restoreIconTimeout);
@@ -112,13 +112,14 @@ var handyClicksUI = {
 				node.style.setProperty("opacity", this.blinkOpacity, "important");
 			}
 			node.scrollHeight || node.offsetHeight; // Force redraw
-			this._blinkNodeTimeout = this.timeout(
+			this._blinkNodeTimeout = this.delay(
 				function(node, attr, oldFx, origStyle) {
 					node.removeAttributeNS(this.attrNS, attr);
 					oldFx && this.attribute(node, "style", origStyle, true);
 				},
-				this, [node, attr, oldFx, origStyle],
-				time
+				this,
+				time,
+				[node, attr, oldFx, origStyle]
 			);
 		}, this);
 	},
@@ -348,7 +349,7 @@ var handyClicksUI = {
 			case this.ACTION_SETTINGS_TOGGLE: this.wu.openSettings(true);
 		}
 		if(!leftClick && actionId != this.ACTION_POPUP)
-			this.timeout(this.ut.closeMenus, this.ut, [e.target], 0);
+			this.delay(this.ut.closeMenus, this.ut, 0, [e.target]);
 	},
 	showSettingsPopup: function(e) {
 		// It's better to use "popup" or "context" attribute
@@ -389,7 +390,7 @@ var handyClicksUI = {
 	_temFromKey: false,
 	toggleEditMode: function(fromKey) {
 		this._temFromKey = fromKey;
-		this.timeout(function() {
+		this.delay(function() {
 			this.editMode = !this.editMode;
 			this._temFromKey = false;
 		}, this);
@@ -531,7 +532,7 @@ var handyClicksUI = {
 			return;
 		var delay = this.pu.get("ui.showMouseButton.restoreDelay");
 		clearTimeout(this._restoreIconTimeout);
-		this._restoreIconTimeout = this.timeout(this.setIcon, this, [], delay);
+		this._restoreIconTimeout = this.delay(this.setIcon, this, delay);
 	},
 	showHideControls: function() {
 		this.$("handyClicks-toolsMenuitem").hidden = !this.pu.get("ui.showInToolsMenu");

@@ -418,7 +418,7 @@ var handyClicksEditor = {
 			return;
 		//this.applyDisabled = false;
 		//this.setDialogButtons();
-		this.timeout(this.setDialogButtons, this, [], 5);
+		this.delay(this.setDialogButtons, this, 5);
 	},
 	setWinId: function() {
 		var winId;
@@ -456,7 +456,7 @@ var handyClicksEditor = {
 		this.currentShortcut = this.shortcut;
 
 		// Note: may fail here, see notes in getFuncObj() ("so.arguments = {}" and following)
-		this.timeout(function() {
+		this.delay(function() {
 			this.shortcutSaved();
 			this.setDialogButtons();
 		}, this);
@@ -577,10 +577,10 @@ var handyClicksEditor = {
 			this.initCustomTypesEditor();
 	},
 	customTypeLabelChangedDelay: function(it) {
-		this.timeout(this.customTypeLabelChanged, this, arguments, 0);
+		this.delay(this.customTypeLabelChanged, this, 0, arguments);
 	},
 	customTypeIdFilter: function(e) {
-		this.timeout(this._customTypeIdFilter, this, [e.target], 0);
+		this.delay(this._customTypeIdFilter, this, 0, [e.target]);
 		if(e.type != "keypress")
 			return false;
 		var key = e.charCode;
@@ -711,7 +711,7 @@ var handyClicksEditor = {
 	},
 	highlightEmpty: function _he(tb, wait) {
 		if(wait) {
-			this.timeout(_he, this, [tb]);
+			this.delay(_he, this, 0, [tb]);
 			return;
 		}
 		var empty = !tb.textLength;
@@ -825,7 +825,7 @@ var handyClicksEditor = {
 	},
 
 	itemTypeChanged: function(iType) {
-		this.timeout(this.loadCustomType, this, [iType]);
+		this.delay(this.loadCustomType, this, 0, [iType]);
 		//this.addFuncArgs();
 		//this.initAdditionalOptions(iType);
 	},
@@ -1558,7 +1558,7 @@ var handyClicksEditor = {
 
 	highlightRequiredFields: function _hl(fields, addFlag, noDelay) {
 		if(!addFlag && !noDelay) {
-			this.timeout(_hl, this, [fields, false, true], 2500);
+			this.delay(_hl, this, 2500, [fields, false, true]);
 			return;
 		}
 		fields.forEach(function(field) {

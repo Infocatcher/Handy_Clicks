@@ -29,13 +29,15 @@ var g = window.handyClicksGlobals = {
 		return g.jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 			.getService(Components.interfaces.mozIJSSubScriptLoader);
 	},
-	timeout: function(func, context, args, delay) {
-		return setTimeout(
-			function(func, context, args) {
-				func.apply(context, args);
-			},
-			delay || 0, func, context, args || []
-		);
+	timeout: function(func, context, args, delay) { // Deprecated since 2015-12-17
+		return setTimeout(function() {
+			func.apply(context, args);
+		}, delay || 0);
+	},
+	delay: function(func, context, delay, args) {
+		return setTimeout(function() {
+			func.apply(context, args);
+		}, delay || 0);
 	},
 
 	_strings: { __proto__: null }, // cache of strings from stringbundle

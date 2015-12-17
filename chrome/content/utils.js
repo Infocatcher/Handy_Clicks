@@ -1350,7 +1350,7 @@ var handyClicksCleanupSvc = {
 						if(e.target.ownerDocument != this.doc)
 							break;
 						clearTimeout(this._destroyTimeout);
-						this._destroyTimeout = this.parent.timeout(this.checkNode, this, [], 50);
+						this._destroyTimeout = this.parent.delay(this.checkNode, this, 50);
 					break;
 					case "unload":
 						if(e.target.defaultView === this.win)
