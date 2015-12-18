@@ -29,7 +29,8 @@ var g = window.handyClicksGlobals = {
 		return g.jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 			.getService(Components.interfaces.mozIJSSubScriptLoader);
 	},
-	timeout: function(func, context, args, delay) { // Deprecated since 2015-12-17
+	timeout: function(func, context, args, delay) { //= Added: 2015-12-17
+		g.ut._deprecated("handyClicksGlobals.timeout() is deprecated. Use handyClicksGlobals.delay() instead.");
 		return setTimeout(function() {
 			func.apply(context, args);
 		}, delay || 0);
