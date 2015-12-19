@@ -659,11 +659,14 @@ var handyClicksSets = {
 		return this.getLocalized(act);
 	},
 	getActionCode: function(action, isCustom) {
-		return isCustom
-			? this.getLocalized("customFunction")
-				+ (this.oldTree ? " " : "\n")
-				+ this.cropCode(action || "")
-			: action;
+		if(!isCustom)
+			return action;
+		var path = this.ps.getSourcePath(action);
+		if(path)
+			return this.getLocalized("customFile") + " " + path;
+		return this.getLocalized("customFunction")
+			+ (this.oldTree ? " " : "\n")
+			+ this.cropCode(action || "");
 	},
 	getInitCode: function(fo) {
 		var init = this.ut.getOwnProperty(fo, "init");
