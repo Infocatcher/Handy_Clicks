@@ -57,7 +57,7 @@
 <!ENTITY hc.sets.drawModeInverseCompact "Инвертированный (компактный)">
 <!ENTITY hc.sets.drawModeInverseInline "Инвертированный (линейный)">
 <!ENTITY hc.sets.expandDa "Разворачивать отложенные действия">
-<!ENTITY hc.sets.highlightTree "Раскраска дерева">
+<!ENTITY hc.sets.colorizeTree "Раскрашивать дерево">
 <!ENTITY hc.sets.showTreeGrid "Показывать сетку">
 <!ENTITY hc.sets.localizeArgs "Переводить аргументы">
 <!ENTITY hc.sets.rememberSearchQuery "Запоминать поисковый запрос">

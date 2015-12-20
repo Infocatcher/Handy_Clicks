@@ -94,7 +94,7 @@ preferences {
 					<menuitem value="5" type="radio" label="&hc.sets.drawModeInverseInline;" />
 					<menuseparator />
 					<menuitem type="checkbox" hc_pref="sets.treeExpandDelayedAction" label="&hc.sets.expandDa;" />
-					<menuitem type="checkbox" hc_treeAttr="hc_colored" label="&hc.sets.highlightTree;" />
+					<menuitem type="checkbox" hc_treeAttr="hc_colored" label="&hc.sets.colorizeTree;" />
 					<menuitem type="checkbox" hc_treeAttr="hc_grid" label="&hc.sets.showTreeGrid;" />
 					<menuitem type="checkbox" hc_pref="sets.localizeArguments" label="&hc.sets.localizeArgs;" />
 					<menuseparator />
