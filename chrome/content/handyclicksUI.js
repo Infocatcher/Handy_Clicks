@@ -530,10 +530,13 @@ var handyClicksUI = {
 		this._restoreIconTimeout = this.delay(this.setIcon, this, delay);
 	},
 	showHideControls: function() {
-		this.$("handyClicks-toolsMenuitem").hidden = !this.pu.get("ui.showInToolsMenu");
 		var statusBtn = this.$("handyClicks-statusbarButton");
 		if(statusBtn)
 			statusBtn.hidden = !this.pu.get("ui.showInStatusbar");
+		this.delay(this.showHideNotVisibleControls, this);
+	},
+	showHideNotVisibleControls: function() {
+		this.$("handyClicks-toolsMenuitem").hidden = !this.pu.get("ui.showInToolsMenu");
 		var appMi = this.$("handyClicks-appMenuitem");
 		if(appMi) {
 			var appSep = this.$("handyClicks-appMenuitemSeparator");
