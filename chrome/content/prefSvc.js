@@ -943,6 +943,9 @@ var handyClicksPrefSvc = {
 	removeCustomPrefix: function(type) {
 		return this.ut.removePrefix(type, this.customPrefix);
 	},
+	isExtType: function(type) {
+		return type && this.ut.hasPrefix(type, this.extPrefix);
+	},
 
 	getTypeLabel: function(type, isCustomType) {
 		return (isCustomType === undefined ? this.isCustomType(type) : isCustomType)

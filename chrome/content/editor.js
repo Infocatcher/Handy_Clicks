@@ -49,9 +49,13 @@ var handyClicksEditor = {
 		this.initShortcuts();
 		if(!reloadFlag) {
 			document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css
-			if(this.type)
-				this.currentType = this.type;
-			this.initExtTypes();
+			var type = this.type;
+			if(type)
+				this.currentType = type;
+			if(this.ps.isExtType(type))
+				this.initExtTypes();
+			else
+				this.delay(this.initExtTypes, this, 100);
 			this.loadLabels();
 			this.createDelayedFuncTab();
 			this.addTestButtons();
