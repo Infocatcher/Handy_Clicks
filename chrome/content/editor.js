@@ -48,6 +48,7 @@ var handyClicksEditor = {
 			this.types.menulists.moveTabTo.pop();
 		this.initShortcuts();
 		if(!reloadFlag) {
+			document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css
 			if(this.type)
 				this.currentType = this.type;
 			this.initExtTypes();
@@ -55,16 +56,17 @@ var handyClicksEditor = {
 			this.createDelayedFuncTab();
 			this.addTestButtons();
 
-			Array.forEach( // Add spellcheck feature for <menulist editable="true" />
-				document.getElementsByTagName("menulist"),
-				function(ml) {
-					if(ml.getAttribute("spellcheck") != "true")
-						return;
-					var inp = ml.ownerDocument.getAnonymousElementByAttribute(ml, "anonid", "input");
-					inp && inp.setAttribute("spellcheck", "true");
-				}
-			);
-			document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css
+			this.delay(function() {
+				Array.forEach( // Add spellcheck feature for <menulist editable="true" />
+					document.getElementsByTagName("menulist"),
+					function(ml) {
+						if(ml.getAttribute("spellcheck") != "true")
+							return;
+						var inp = ml.ownerDocument.getAnonymousElementByAttribute(ml, "anonid", "input");
+						inp && inp.setAttribute("spellcheck", "true");
+					}
+				);
+			}, this);
 
 			var mouseEvt = typeof MouseEvent == "function" // Firefox 11+
 				&& ("" + MouseEvent).charAt(0) != "[" // Trick for Firefox <= 2.0
