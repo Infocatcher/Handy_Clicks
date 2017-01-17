@@ -1221,12 +1221,21 @@ var handyClicksFuncs = {
 		else if("gSessionManager" in window) // Old Session Manager
 			gSessionManager.undoCloseTab();
 	},
+	get ss() {
+		delete this.ss;
+		return this.ss = (
+			Components.classes["@mozilla.org/browser/sessionstore;1"]
+			|| Components.classes["@mozilla.org/suite/sessionstore;1"]
+		).getService(Components.interfaces.nsISessionStore);
+	},
 	cloneTab: function(e, tab) {
 		tab = this.fixTab(tab);
 		var tbr = this.hc.getTabBrowser();
 		var ind = this.getTabPos(tab) + 1;
-		if("duplicateTab" in tbr) // fx 3.0+
+		if("duplicateTab" in tbr) // Firefox 3.0+
 			var newTab = tbr.duplicateTab(tab);
+		else if("duplicateTab" in this.ss) // SeaMonkey
+			var newTab = this.ss.duplicateTab(window, tab);
 		else // Not a real "clone"... Just URI's copy
 			var newTab = tbr.addTab(this.getTabURI(tab));
 		if("TreeStyleTabService" in window && ind == tbr.browsers.length - 1)
