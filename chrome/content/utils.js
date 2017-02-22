@@ -151,8 +151,8 @@ var handyClicksUtils = {
 	},
 
 	hasPrefix: function(str, prefix) {
-		var f = this.hasPrefix = this.hasNativeMethod(String, "startsWith")
-			? String.startsWith
+		var f = this.hasPrefix = "startsWith" in String.prototype
+			? String.prototype.startsWith.call.bind(String.prototype.startsWith)
 			: function(str, prefix) {
 				return str.substr(0, prefix.length) == prefix;
 			};
@@ -164,8 +164,8 @@ var handyClicksUtils = {
 		return str;
 	},
 	hasPostfix: function(str, postfix) {
-		var f = this.hasPostfix = this.hasNativeMethod(String, "endsWith")
-			? String.endsWith
+		var f = this.hasPostfix = "endsWith" in String.prototype
+			? String.prototype.endsWith.call.bind(String.prototype.endsWith)
 			: function(str, postfix) {
 				return str.substr(-postfix.length) == postfix;
 			};
@@ -1165,8 +1165,8 @@ var handyClicksUtils = {
 	},
 
 	trim: function(str) {
-		var f = this.trim = this.hasNativeMethod(String, "trim")
-			? String.trim
+		var f = this.trim = "trim" in String.prototype && "bind" in String
+			? String.prototype.trim.call.bind(String.prototype.trim)
 			: function(str) {
 				return String(str).replace(/^\s+|\s+$/g, "");
 			};

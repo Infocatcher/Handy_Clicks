@@ -261,8 +261,8 @@ var handyClicksWinUtils = {
 	// Used from components/hcComponent.js and from console.js
 	//~ todo: use global utils
 	hasPrefix: function(str, prefix) {
-		var f = this.hasPrefix = "startsWith" in String
-			? String.startsWith
+		var f = this.hasPrefix = "startsWith" in String.prototype
+			? String.prototype.startsWith.call.bind(String.prototype.startsWith)
 			: function(str, prefix) {
 				return str.substr(0, prefix.length) == prefix;
 			};

@@ -48,8 +48,8 @@ function disable() {
 		.setBoolPref("extensions.handyclicks.enabled", false);
 }
 function hasPrefix(str, prefix) {
-	var f = hasPrefix = "startsWith" in String
-		? String.startsWith
+	var f = hasPrefix = "startsWith" in String.prototype
+		? String.prototype.startsWith.call.bind(String.prototype.startsWith)
 		: function(str, prefix) {
 			return str.substr(0, prefix.length) == prefix;
 		};
