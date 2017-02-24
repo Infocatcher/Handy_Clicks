@@ -122,7 +122,7 @@ var handyClicksPrefUtils = {
 			brWin = ws.getNext();
 			tbr = brWin.gBrowser || brWin.getBrowser();
 			if(
-				Array.some(
+				Array.prototype.some.call(
 					tbr.tabs || tbr.tabContainer.childNodes,
 					function(tab) {
 						// For Firefox 4 see "visibleTabs" property in chrome://browser/content/tabbrowser.xml

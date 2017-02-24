@@ -61,7 +61,7 @@ var handyClicksEditor = {
 			this.addTestButtons();
 
 			this.delay(function() {
-				Array.forEach( // Add spellcheck feature for <menulist editable="true" />
+				Array.prototype.forEach.call( // Add spellcheck feature for <menulist editable="true" />
 					document.getElementsByTagName("menulist"),
 					function(ml) {
 						if(ml.getAttribute("spellcheck") != "true")
@@ -238,7 +238,7 @@ var handyClicksEditor = {
 	getEditorFromPanel: function (panel) {
 		var cre = /(?:^|\s)hcEditor(?:\s|$)/;
 		var editor;
-		Array.some(
+		Array.prototype.some.call(
 			panel.getElementsByTagName("textbox"),
 			function(tb) {
 				if(cre.test(tb.className))
@@ -266,7 +266,7 @@ var handyClicksEditor = {
 	},
 	localizeLabels: function(parentId) {
 		var ml = this.$(parentId);
-		Array.forEach(
+		Array.prototype.forEach.call(
 			ml.getElementsByTagName("menuitem"),
 			function(mi) {
 				if(!mi.hasAttribute("hc_extLabel"))
@@ -286,7 +286,7 @@ var handyClicksEditor = {
 	createDelayedFuncTab: function() {
 		var dTab = this.$("hc-editor-funcTab").cloneNode(true);
 		this.makeDelayedNode(dTab);
-		Array.forEach(
+		Array.prototype.forEach.call(
 			dTab.getElementsByTagName("*"),
 			this.makeDelayedNode,
 			this
@@ -330,7 +330,7 @@ var handyClicksEditor = {
 		}
 	},
 	initExtTypes: function() {
-		Array.forEach(
+		Array.prototype.forEach.call(
 			this.$("hc-editor-itemTypes").getElementsByAttribute("hc_required", "*"),
 			function(mi) {
 				var ext = mi.getAttribute("hc_required");
@@ -338,7 +338,7 @@ var handyClicksEditor = {
 					mi.hidden = true;
 					return;
 				}
-				Array.forEach(
+				Array.prototype.forEach.call(
 					this.$("hc-editor-funcPopup").getElementsByAttribute("hc_extLabel", ext),
 					function(mi) {
 						mi.setAttribute("label", this.su.getExtLabel(mi.getAttribute("label")));
@@ -699,7 +699,7 @@ var handyClicksEditor = {
 	highlightUsedTypes: function() {
 		var so = this.ut.getOwnProperty(this.ps.prefs, this.currentShortcut);
 		var ml = this.$("hc-editor-itemTypes");
-		Array.forEach(
+		Array.prototype.forEach.call(
 			ml.getElementsByTagName("menuitem"),
 			function(mi) {
 				var to = this.ut.getOwnProperty(so, mi.value);
@@ -748,7 +748,7 @@ var handyClicksEditor = {
 			!noWarnings && this.ut._warn("getTabForNode: <tabpanels> or <tabs> not found!");
 			return null;
 		}
-		var tabPanelIndx = Array.indexOf(tabPanels.childNodes, tabPanel);
+		var tabPanelIndx = Array.prototype.indexOf.call(tabPanels.childNodes, tabPanel);
 		if(tabPanelIndx == -1) {
 			!noWarnings && this.ut._warn("getTabForNode: index of <tabpanel> not found!");
 			return null;
@@ -768,7 +768,7 @@ var handyClicksEditor = {
 			fList.selectedIndex = -1;
 		const type = this.type;
 		var hideSep = true;
-		Array.forEach(
+		Array.prototype.forEach.call(
 			this.$("hc-editor-funcPopup" + delayed).childNodes,
 			function(it) {
 				if(it.localName == "menuseparator") {
@@ -1119,7 +1119,7 @@ var handyClicksEditor = {
 		if(!this.ut.isElementVisible(editor))
 			return;
 		editor.focus();
-		var args = Array.slice(arguments, 2);
+		var args = Array.prototype.slice.call(arguments, 2);
 		editor[cmd].apply(editor, args);
 
 		btn && setTimeout(function() {
@@ -1375,7 +1375,7 @@ var handyClicksEditor = {
 		else {
 			so.action = fnc;
 			var args = so.arguments = {};
-			Array.forEach(
+			Array.prototype.forEach.call(
 				this.$("hc-editor-funcArgs" + delayed).getElementsByAttribute("hc_argName", "*"),
 				function(argElt) {
 					// Note: we can't use argElt.checked here, this doesn't work for just added

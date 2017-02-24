@@ -605,7 +605,7 @@ var handyClicksPrefSvc = {
 		return this.ut.sortObj(o, true, ["arguments"]);
 	},
 	settingsEquals: function() {
-		Array.forEach(arguments, this.sortSettings, this);
+		Array.prototype.forEach.call(arguments, this.sortSettings, this);
 		return this.ut.objEqualsRaw.apply(this.ut, arguments);
 	},
 	getSettingsStr: function(types, prefs) {
@@ -661,7 +661,7 @@ var handyClicksPrefSvc = {
 		ch.init(ch[hashFunc]);
 		ch.update(data, data.length);
 		var hash = ch.finish(false);
-		return Array.map(
+		return Array.prototype.map.call(
 			hash,
 			function(chr) {
 				return ("0" + chr.charCodeAt(0).toString(16)).slice(-2);

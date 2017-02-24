@@ -16,7 +16,7 @@ var handyClicksSetsUtils = {
 		if(!reloadFlag) {
 			this.tweakDialogButtons();
 			this.createFloatToolbar();
-			Array.slice(document.getElementsByAttribute("hc_ondrop", "*")).forEach(
+			Array.prototype.slice.call(document.getElementsByAttribute("hc_ondrop", "*")).forEach(
 				function(elt) {
 					elt.setAttribute("on" + this.dropEvent, elt.getAttribute("hc_ondrop"));
 					elt.removeAttribute("hc_ondrop");
@@ -109,7 +109,7 @@ var handyClicksSetsUtils = {
 		this.wu.checkWindowStatus(true);
 	},
 	initOnTopContext: function(popup) {
-		Array.forEach(
+		Array.prototype.forEach.call(
 			popup.getElementsByTagName("menuitem"),
 			function(mi) {
 				mi.setAttribute("checked", this.pu.get(mi.getAttribute("hc_pref")));
@@ -266,7 +266,7 @@ var handyClicksSetsUtils = {
 		if(ml.open) {
 			var popupHeight = (mp.boxObject.firstChild || mp).boxObject.height;
 			var childsHeight = 0;
-			Array.forEach(
+			Array.prototype.forEach.call(
 				mp.childNodes,
 				function(ch) {
 					childsHeight += ch.boxObject.height;
@@ -345,7 +345,7 @@ var handyClicksSetsUtils = {
 				return null;
 		}
 		this._showTooltip = isClosedMenu;
-		return Array.filter(
+		return Array.prototype.filter.call(
 			elt.parentNode.childNodes,
 			function(elt) {
 				return "getAttribute" in elt
@@ -540,10 +540,10 @@ var handyClicksSetsUtils = {
 		this.delay(this.setKeysDesc, this, 0, arguments);
 	},
 	setKeysDesc: function(/* node0, node1, ... */) {
-		var nodes = Array.concat(
-			Array.slice(document.getElementsByAttribute("hc_key", "*")),
-			Array.slice(document.documentElement.getButton("cancel").parentNode.childNodes),
-			Array.slice(arguments)
+		var nodes = Array.prototype.concat.call(
+			Array.prototype.slice.call(document.getElementsByAttribute("hc_key", "*")),
+			Array.prototype.slice.call(document.documentElement.getButton("cancel").parentNode.childNodes),
+			Array.prototype.slice.call(arguments)
 		);
 		//~ hack: show fake hidden popup with <menuitem key="keyId" /> to get descriptions
 		var mp = document.documentElement.appendChild(document.createElement("menupopup"));
@@ -558,7 +558,7 @@ var handyClicksSetsUtils = {
 			mp.appendChild(mi);
 		});
 		mp._onpopupshown = function() {
-			Array.forEach(
+			Array.prototype.forEach.call(
 				this.childNodes,
 				function(mi) {
 					var keyDesk = mi.getAttribute("acceltext");

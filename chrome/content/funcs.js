@@ -32,7 +32,7 @@ var handyClicksFuncs = {
 	copyItemText: function(e, closePopups) {
 		var text = this.getItemText();
 		if(text) {
-			text = Array.concat(text);
+			text = Array.prototype.concat.call(text);
 			this.ut.copyStr(text.join(this.ut.lineBreak), this.getSourceDocument());
 			this.ui.blinkNode();
 		}
@@ -42,7 +42,7 @@ var handyClicksFuncs = {
 	copyItemLink: function(e, closePopups) {
 		var link = this.getItemURI() || "";
 		if(link) {
-			link = Array.concat(link);
+			link = Array.prototype.concat.call(link);
 			if(this.pu.get("funcs.decodeURIs"))
 				link = link.map(this.decodeURI, this);
 			this.ut.copyStr(link.join(this.ut.lineBreak), this.getSourceDocument());
@@ -54,7 +54,7 @@ var handyClicksFuncs = {
 	getSourceDocument: function(node) {
 		var items = node || this.hc.item;
 		var privateDoc;
-		items && Array.some(items, function(node) {
+		items && Array.prototype.some.call(items, function(node) {
 			if(
 				node.localName == "tab"
 				&& "linkedBrowser" in node
@@ -83,7 +83,7 @@ var handyClicksFuncs = {
 		var text = itemType == "tabbar"
 			? this.forEachTab(this.getTabText)
 			: itemType == "ext_mulipletabs"
-				? Array.map(it, this.getTabText, this)
+				? Array.prototype.map.call(it, this.getTabText, this)
 				: it.textContent || it.label || it.alt || it.value || it.title
 					|| (
 						it.getAttribute
@@ -119,7 +119,7 @@ var handyClicksFuncs = {
 				uri = this.getTabURI(it);
 			break;
 			case "ext_mulipletabs":
-				uri = Array.map(it, this.getTabURI, this); //.join("\n");
+				uri = Array.prototype.map.call(it, this.getTabURI, this); //.join("\n");
 			break;
 			case "tabbar":
 				uri = this.forEachTab(this.getTabURI); //.join("\n");
@@ -134,7 +134,7 @@ var handyClicksFuncs = {
 		}
 
 		var isArr = this.ut.isArray(uri);
-		uri = Array.concat(uri).map(
+		uri = Array.prototype.concat.call(uri).map(
 			function(s) {
 				if(this.isJSURI(s))
 					try { return decodeURI(s); }
@@ -151,7 +151,7 @@ var handyClicksFuncs = {
 		if(!this.pu.get("funcs.trimStrings"))
 			return s;
 		var isArr = this.ut.isArray(s);
-		s = Array.concat(s)
+		s = Array.prototype.concat.call(s)
 			.map(this.safeToString, this)
 			.map(this.ut.trim, this.ut);
 		return isArr ? s : s.toString();
@@ -693,7 +693,7 @@ var handyClicksFuncs = {
 			this.ut._err("Can't get URI of item (" + this.hc.itemType + ")");
 			return null;
 		}
-		var uris = Array.concat(uri).map(this.losslessDecodeURI, this);
+		var uris = Array.prototype.concat.call(uri).map(this.losslessDecodeURI, this);
 		this.addAppsProps(items, uris, checkFiles);
 		this.addEditItem(items);
 		var popup = this.showGeneratedPopup(items);
@@ -849,8 +849,8 @@ var handyClicksFuncs = {
 			return;
 		var args = tar.hc_args || [];
 		//args.push(popup.hc_uri);
-		var uris = Array.concat(popup.hc_uri).map(this.convertStrFromUnicode, this);
-		this.ut.startProcess(tar.hc_path, Array.concat(args, uris), this.pu.get("funcs.preferRunw"));
+		var uris = Array.prototype.concat.call(popup.hc_uri).map(this.convertStrFromUnicode, this);
+		this.ut.startProcess(tar.hc_path, Array.prototype.concat.call(args, uris), this.pu.get("funcs.preferRunw"));
 	},
 	decodeURI: function(uri) {
 		if(!uri)
@@ -1004,20 +1004,20 @@ var handyClicksFuncs = {
 				tab = tbr.selectedTab;
 			}
 			if(!tab)
-				return Array.slice(this.visibleTabs);
+				return Array.prototype.slice.call(this.visibleTabs);
 		}
 		var pinned = tab.pinned;
-		return Array.slice(this.visibleTabs).filter(function(tab) {
+		return Array.prototype.slice.call(this.visibleTabs).filter(function(tab) {
 			return tab.pinned == pinned;
 		});
 	},
 	getTabPos: function(tab) {
 		if("_tPos" in tab) // Firefox
 			return tab._tPos;
-		return Array.indexOf(this.tabs, tab); // SeaMonkey
+		return Array.prototype.indexOf.call(this.tabs, tab); // SeaMonkey
 	},
 	forEachTab: function(func, context) {
-		return Array.map(this.visibleTabs, func, context || this);
+		return Array.prototype.map.call(this.visibleTabs, func, context || this);
 	},
 	fixTab: function(tab) {
 		tab = tab || this.hc.item;
@@ -1364,7 +1364,7 @@ var handyClicksFuncs = {
 		// Based on code by Yan ( http://forum.mozilla-russia.org/viewtopic.php?pid=144109#p144109 )
 		var hrefs = { __proto__: null };
 		var onlyVisible = this.pu.get("funcs.openOnlyVisibleLinks");
-		Array.forEach(
+		Array.prototype.forEach.call(
 			a.ownerDocument.getElementsByTagName(a.localName),
 			function(a) {
 				var t = this.ut.innerXML(a);

@@ -323,7 +323,7 @@ var handyClicksUtils = {
 		// getEntity("statusbar.enabled", "chrome://greasemonkey/locale/greasemonkey.dtd");
 		dtds = dtds
 			? "<!DOCTYPE page [\n"
-				+ Array.concat(dtds).map(
+				+ Array.prototype.concat.call(dtds).map(
 					function(dtd, indx) {
 						return '<!ENTITY % dtd' + indx + ' SYSTEM "' + dtd + '">\n%dtd' + indx + ';';
 					}
@@ -1069,14 +1069,14 @@ var handyClicksUtils = {
 	},
 
 	objEquals: function() {
-		Array.forEach(arguments, function(o) {
+		Array.prototype.forEach.call(arguments, function(o) {
 			this.sortObj(o, true);
 		}, this);
 		return this.objEqualsRaw.apply(this, arguments);
 	},
 	objEqualsRaw: function(o1) {
 		var s = this.getSource(o1);
-		return Array.slice(arguments, 1).every(function(o) {
+		return Array.prototype.slice.call(arguments, 1).every(function(o) {
 			return this.getSource(o) === s;
 		}, this);
 	},
@@ -1201,7 +1201,7 @@ var handyClicksUtils = {
 		return new XMLSerializer().serializeToString(elt);
 	},
 	innerXML: function(elt) {
-		return elt.innerHTML || Array.map(
+		return elt.innerHTML || Array.prototype.map.call(
 			elt.childNodes,
 			function(ch) {
 				return ch.innerHTML || this.serializeToString(ch);

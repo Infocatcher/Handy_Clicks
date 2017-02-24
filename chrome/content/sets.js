@@ -124,7 +124,7 @@ var handyClicksSets = {
 	},
 	startupUI: function() {
 		this.treeScrollPos(false);
-		Array.forEach(
+		Array.prototype.forEach.call(
 			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
 			function(col) {
 				if(!col.tooltipText)
@@ -156,7 +156,7 @@ var handyClicksSets = {
 			var df = document.createDocumentFragment();
 			CharsetMenu.build(df, true, false); // Works only with empty nodes!
 			popup.appendChild(df);
-			Array.forEach(
+			Array.prototype.forEach.call(
 				popup.getElementsByTagName("menuitem"),
 				function(mi) {
 					if(!mi.hasAttribute("value"))
@@ -418,7 +418,7 @@ var handyClicksSets = {
 
 		if(saveClosed) {
 			var collapsedRows = { __proto__: null };
-			Array.forEach(
+			Array.prototype.forEach.call(
 				this.treeContainers,
 				function(ti) {
 					if(ti.getAttribute("open") != "true")
@@ -433,7 +433,7 @@ var handyClicksSets = {
 		if(!this.tView.rowCount)
 			return;
 
-		saveClosed && Array.forEach(
+		saveClosed && Array.prototype.forEach.call(
 			this.treeContainers,
 			function(ti) {
 				if(ti.__hash in collapsedRows)
@@ -457,7 +457,7 @@ var handyClicksSets = {
 		return selectedRows;
 	},
 	restoreSelection: function(selectedRows) {
-		Array.forEach(
+		Array.prototype.forEach.call(
 			this.tBody.getElementsByTagName("treeitem"),
 			function(ti) {
 				if(ti.__hash in selectedRows) {
@@ -710,7 +710,7 @@ var handyClicksSets = {
 	setChildNodesProperties: function(parent, propsObj, addToParent) {
 		if(addToParent)
 			this.setNodeProperties(parent, propsObj);
-		Array.forEach(
+		Array.prototype.forEach.call(
 			parent.getElementsByTagName("*"),
 			function(elt) {
 				this.setNodeProperties(elt, propsObj);
@@ -719,7 +719,7 @@ var handyClicksSets = {
 		);
 	},
 	setNodesProperties: function(parents, propsObj, addToParent) {
-		Array.forEach(
+		Array.prototype.forEach.call(
 			parents,
 			function(parent) {
 				this.setChildNodesProperties(parent, propsObj, addToParent);
@@ -852,7 +852,7 @@ var handyClicksSets = {
 		var prefWin = document.documentElement;
 		var panes = prefWin.preferencePanes;
 		var pCount = panes.length;
-		var n = Array.indexOf(panes, prefWin.currentPane) + (nextFlag ? 1 : -1);
+		var n = Array.prototype.indexOf.call(panes, prefWin.currentPane) + (nextFlag ? 1 : -1);
 		if(n >= pCount) n = 0;
 		else if(n < 0)  n = pCount - 1;
 		prefWin.showPane(panes[n]);
@@ -1320,7 +1320,7 @@ var handyClicksSets = {
 		var checkbox = mp.getElementsByAttribute("value", tdm);
 		checkbox.length && checkbox[0].setAttribute("checked", "true");
 		var closeMenu = this.pu.get("sets.closeTreeViewMenu") ? "auto" : "none";
-		Array.forEach(
+		Array.prototype.forEach.call(
 			mp.getElementsByTagName("menuitem"),
 			function(mi) {
 				mi.setAttribute("closemenu", closeMenu);
@@ -1374,7 +1374,7 @@ var handyClicksSets = {
 	},
 	_toggleTreeContainers: function(expand) {
 		expand = String(expand);
-		Array.forEach(
+		Array.prototype.forEach.call(
 			this.treeContainers,
 			function(ti) {
 				ti.setAttribute("open", expand);
@@ -1386,7 +1386,7 @@ var handyClicksSets = {
 	},
 	get maxExpandedLevel() {
 		var expandedLevel = -1;
-		Array.forEach(
+		Array.prototype.forEach.call(
 			this.treeContainers,
 			function(ti) {
 				if(ti.getAttribute("open") != "true")
@@ -1407,7 +1407,7 @@ var handyClicksSets = {
 	},
 	_expandTreeLevel: function(level) {
 		this.expandTree();
-		Array.filter(
+		Array.prototype.filter.call(
 			this.treeContainers,
 			function(ti) {
 				var curLevel = this.tView.getLevel(this.tView.getIndexOfItem(ti));
@@ -1438,9 +1438,9 @@ var handyClicksSets = {
 		var menu = e.originalTarget;
 		if(!this.isMenuButton(menu))
 			return;
-		Array.concat(
-			Array.slice(document.getElementsByTagName("*")),
-			Array.slice(this.applyButton.parentNode.childNodes)
+		Array.prototype.concat.call(
+			Array.prototype.slice.call(document.getElementsByTagName("*")),
+			Array.prototype.slice.call(this.applyButton.parentNode.childNodes)
 		).some(function(node) {
 			if(this.isMenuButton(node) && node.open && node != menu) {
 				node.open = false;
@@ -1699,7 +1699,7 @@ var handyClicksSets = {
 				continue;
 			}
 			var row = this.getRowForItem(tItem);
-			Array.forEach(
+			Array.prototype.forEach.call(
 				row.getElementsByAttribute("label", "*"),
 				function(elt) {
 					var label = elt.getAttribute("label");
@@ -1900,7 +1900,7 @@ var handyClicksSets = {
 		return true;
 	},
 	savePrefpanes: function() {
-		Array.forEach(
+		Array.prototype.forEach.call(
 			document.getElementsByTagName("prefpane"),
 			function(pp) {
 				pp.writePreferences(false /* aFlushToDisk */);
@@ -1911,7 +1911,7 @@ var handyClicksSets = {
 		//this.setDialogButtons();
 	},
 	reloadPrefpanes: function() {
-		Array.forEach(
+		Array.prototype.forEach.call(
 			document.getElementsByTagName("preference"),
 			function(ps) {
 				ps.value = ps.valueFromPreferences;
@@ -2232,7 +2232,7 @@ var handyClicksSets = {
 			: this.ps.getSettingsStr() != this.ps._savedStr;
 	},
 	get prefsUnsaved() { //~ todo: this is buggy
-		return Array.some(
+		return Array.prototype.some.call(
 			document.getElementsByTagName("preference"),
 			function(ps) {
 				// Sometimes value isn't updated after actions like Ctrl+Z
@@ -2285,7 +2285,7 @@ var handyClicksSets = {
 			this.setDialogButtons();
 	},
 	updateAllDependencies: function(depId) {
-		Array.forEach(
+		Array.prototype.forEach.call(
 			document.getElementsByAttribute("hc_requiredFor", depId || "*"),
 			this.updateDependencies,
 			this
@@ -2304,7 +2304,7 @@ var handyClicksSets = {
 		else if(it.hasAttribute("checked") && !checkParent)
 			dis = it.getAttribute("checked") != "true";
 		else {
-			dis = Array.every(
+			dis = Array.prototype.every.call(
 				(checkParent ? it.parentNode : it).getElementsByTagName("checkbox"),
 				function(ch) {
 					return ch.getAttribute("checked") != "true";
@@ -2313,7 +2313,7 @@ var handyClicksSets = {
 		}
 		it.getAttribute("hc_requiredFor").split(/\s+/).forEach(
 			function(req) {
-				Array.forEach(
+				Array.prototype.forEach.call(
 					document.getElementsByAttribute("hc_depends", req),
 					function(dep) {
 						this.disableChilds(dep, dis);
@@ -2326,7 +2326,7 @@ var handyClicksSets = {
 	},
 	disableChilds: function(parent, dis) {
 		parent.disabled = dis;
-		Array.forEach(
+		Array.prototype.forEach.call(
 			parent.getElementsByTagName("*"),
 			function(elt) {
 				elt.disabled = dis;
@@ -2752,7 +2752,7 @@ var handyClicksSets = {
 	},
 	fixMenuitemsWidth: function(popup) {
 		this.delay(function() { // Delay for Firefox 3.x
-			Array.forEach(popup.childNodes, this.removeMenuitemCrop);
+			Array.prototype.forEach.call(popup.childNodes, this.removeMenuitemCrop);
 		}, this);
 	},
 	removeMenuitemCrop: function(mi) {
@@ -2787,7 +2787,7 @@ var handyClicksSets = {
 			function(file) {
 				var fName = /[^\\\/]+$/.test(file.leafName) && RegExp.lastMatch;
 				file.exists() && file.remove(false);
-				Array.forEach(
+				Array.prototype.forEach.call(
 					popup.getElementsByAttribute("hc_fileName", fName),
 					function(mi) {
 						mi.parentNode.removeChild(mi);
@@ -2825,7 +2825,7 @@ var handyClicksSets = {
 		this.$("hc-sets-tree-importType").value =
 			this.$("hc-sets-tree-importRowRemoved").hidden = isPartial;
 		if(
-			Array.indexOf(
+			Array.prototype.indexOf.call(
 				this.$("hc-sets-tree-importPanel").getElementsByTagName("*"),
 				document.commandDispatcher.focusedElement
 			) == -1

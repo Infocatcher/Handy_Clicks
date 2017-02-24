@@ -44,7 +44,7 @@ var handyClicksReloader = {
 	reloadStyles: function() {
 		const ns = "chrome://handyclicks/";
 
-		Array.forEach( // Save text in textboxes with custom bindings
+		Array.prototype.forEach.call( // Save text in textboxes with custom bindings
 			document.getElementsByTagName("textbox"),
 			function(tb) {
 				var binding = window.getComputedStyle(tb, null).MozBinding || "";

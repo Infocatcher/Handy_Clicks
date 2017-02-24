@@ -83,7 +83,7 @@ var handyClicksUI = {
 		this.loadBlinkStyle();
 		time = time || this.blinkDuration;
 		var oldFx = this.ut.fxVersion <= 2;
-		var nodes = Array.slice(node);
+		var nodes = Array.prototype.slice.call(node);
 		if(!nodes.length)
 			nodes = [node];
 		nodes.forEach(function(node) {
@@ -182,7 +182,7 @@ var handyClicksUI = {
 			}
 			var vtSep = this.$("handyClicks-viewToolbarsSeparator");
 			var vtCmd = "onViewToolbarCommand" in window && "onViewToolbarCommand(event);";
-			Array.slice(popup.childNodes).forEach(function(ch) {
+			Array.prototype.slice.call(popup.childNodes).forEach(function(ch) {
 				if(!this.isToolbarItem(ch))
 					return;
 				vtCmd && ch.setAttribute("oncommand", vtCmd); // For SeaMonkey
@@ -192,7 +192,7 @@ var handyClicksUI = {
 		}
 	},
 	inheritStaticToolbarContext: function(popup) {
-		Array.forEach(
+		Array.prototype.forEach.call(
 			this.$("toolbar-context-menu").childNodes,
 			function(ch) {
 				if(this.isToolbarItem(ch))
@@ -233,7 +233,7 @@ var handyClicksUI = {
 	safeClone: function(node) {
 		var clone = node.cloneNode(true);
 		clone.id && this.setClonedId(clone);
-		Array.forEach(
+		Array.prototype.forEach.call(
 			clone.getElementsByAttribute("id", "*"),
 			this.setClonedId,
 			this
