@@ -1,6 +1,7 @@
 @echo off
 set _out=handy_clicks-latest-packed.xpi
 set _tmpDir=%~d0\~%_out%.tmp
+set _jar=handyclicks.jar
 
 set _7zip="%COMMANDER_PATH%\arch\7-Zip-4.65\7z.exe"
 set _winRar="%COMMANDER_PATH%\arch\WinRAR\WinRAR.exe"
@@ -32,7 +33,7 @@ xcopy /e * %_tmpDir%
 
 del /q %_tmpDir%\*.xpi
 del /q %_tmpDir%\*.bat
-del /q %_tmpDir%\chrome\handyclicks.jar
+del /q %_tmpDir%\chrome\%_jar%
 move /y %_tmpDir%\chrome_.manifest %_tmpDir%\chrome.manifest
 
 :: Copy last modified time of directories
@@ -40,13 +41,14 @@ xcopy /e /t /y * %_tmpDir%
 
 if exist %_7zip% (
 	echo =^> %_7zip%
-	%_7zip% a -tzip -mx0 -- %_tmpDir%\chrome\handyclicks.jar %_tmpDir%\chrome\content %_tmpDir%\chrome\locale
+	%_7zip% a -tzip -mx0 -- %_tmpDir%\chrome\%_jar% %_tmpDir%\chrome\content %_tmpDir%\chrome\skin %_tmpDir%\chrome\locale
 ) else (
 	echo =^> %_winRar%
-	%_winRar% a -afzip -m0 -r -- %_tmpDir%\chrome\handyclicks.jar %_tmpDir%\chrome\content %_tmpDir%\chrome\locale
+	%_winRar% a -afzip -m0 -r -- %_tmpDir%\chrome\%_jar% %_tmpDir%\chrome\content %_tmpDir%\chrome\skin %_tmpDir%\chrome\locale
 )
 
 rd /s /q %_tmpDir%\chrome\locale
+rd /s /q %_tmpDir%\chrome\skin
 rd /s /q %_tmpDir%\chrome\content
 
 pushd %_tmpDir%
