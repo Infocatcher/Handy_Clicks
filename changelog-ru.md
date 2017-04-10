@@ -10,8 +10,17 @@
 `*` Улучшена функция «обновить изображение»: подкорректировано и добавлено удаление изображения из кэша перед обновлением.<br>
 `+` Добавлена возможность настройки или отключения функции переключения с помощью прокрутки (настройки <em>extensions.handyclicks.sets.scrollLists</em> и <em>extensions.handyclicks.sets.scrollLists.onlyInActiveWindow</em>).<br>
 `+` Добавлена возможность игнорировать <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas">canvas</a> изображения (настройка <em>extensions.handyclicks.types.images.canvas</em>, например, для отключения в случае проблем с производительностью).<br>
-`x` Исправлена совместимость с будущими версиями Firefox (баг <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1090880">1090880</a>, <a href="https://github.com/Infocatcher/Handy_Clicks/issues/28">#28</a>).<br>
+`x` Исправлена совместимость с будущими версиями Firefox: прекращено использование Application.* API (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1090880">bug 1090880</a>, <a href="https://github.com/Infocatcher/Handy_Clicks/issues/28">#28</a>).<br>
+`+` Добавлен `handyClicks.handledItem` API для других расширений.<br>
 `x` Исправлено декодирование ссылок в Firefox 40+.<br>
+`+` Добавлена возможность хранить код в отдельных *.js файлах (с помощью специального комментария вида `//> %hc_PrefsDir%/scripts/example.js`) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/29">#29</a>).<br>
+`x` Исправлено отключение: добавлен вызов деструкторов и очищение внутренних кэшей (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/30">#30</a>).<br>
+`x` Режим редактирования: исправлено открытие меню в Firefox 36+ (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/31">#31</a>).<br>
+`*` Теперь используются data:… ссылки вместо resource://handyclicks-content/…, чтобы сделать расширение невидимым для скриптов со страниц.<br>
+`+` Добавлена возможность дублирования/клонирования вкладки в SeaMonkey (`handyClicksFuncs.cloneTab()`).<br>
+`x` Исправлена совместимость с будущими версиями Firefox: прекращено использование Array generics вида `Array.forEach()` и String generics вида `String.startsWith()` (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1222547">bug 1222547</a>, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1222552">bug 1222552</a>).<br>
+`x` Исправлено определение ссылок в CSS инспекторе в Firefox 48+.<br>
+`*` Небольшие улучшения производительности и различные улучшения.<br>
 
 ##### 0.1.3pre5 (2014-09-09)
 `*` Добавлено скрытие настроек строки состояния в Firefox 29+ (только если строка состояния не восстановлена другим расширением).<br>

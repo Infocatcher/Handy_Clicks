@@ -10,8 +10,17 @@
 `*` Improve “reload image” function: correct and remove image from cache before reloading.<br>
 `+` Added ability to configure or disable “scroll to switch” feature (<em>extensions.handyclicks.sets.scrollLists</em> and <em>extensions.handyclicks.sets.scrollLists.onlyInActiveWindow</em> preferences).<br>
 `+` Added ability to ignore image-like <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas">canvas</a> nodes (<em>extensions.handyclicks.types.images.canvas</em> preference, e.g. to disable in case of performance problems).<br>
-`x` Fixed compatibility with future Firefox versions (bug <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1090880">1090880</a>, <a href="https://github.com/Infocatcher/Handy_Clicks/issues/28">#28</a>).<br>
+`x` Fixed compatibility with future Firefox versions: don't use Application.* API (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1090880">bug 1090880</a>, <a href="https://github.com/Infocatcher/Handy_Clicks/issues/28">#28</a>).<br>
+`+` Added `handyClicks.handledItem` API for another extensions.<br>
 `x` Correctly decode URIs in Firefox 40+.<br>
+`+` Added ability to store code in separate *.js files (using special comment like `//> %hc_PrefsDir%/scripts/example.js`) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/29">#29</a>).<br>
+`x` Correctly disable: call destructors and clear all caches (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/30">#30</a>).<br>
+`x` Edit mode: correctly open menus is Firefox 36+ (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/31">#31</a>).<br>
+`*` Now used data:… URIs instead of resource://handyclicks-content/… to make extension invisible for pages scripts.<br>
+`+` Added ability to duplicate tab in SeaMonkey (`handyClicksFuncs.cloneTab()`).<br>
+`x` Fixed compatibility with future Firefox versions: don't use Array generics like `Array.forEach()` and String generics like `String.startsWith()` (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1222547">bug 1222547</a>, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1222552">bug 1222552</a>).<br>
+`x` Fixed detection of links from CSS Inspector in Firefox 48+.<br>
+`*` Small performance enhancements and various tweaks.<br>
 
 ##### 0.1.3pre5 (2014-09-09)
 `*` Hide options about status bar in Firefox 29+ (only if status bar not restored by another extension).<br>
