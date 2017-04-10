@@ -186,6 +186,13 @@ menuitem[command="hc-sets-cmd-enable"] {
 	-moz-image-region: rect(0 13px 13px 0);
 }
 
+#hc-sets-pane-actions {
+	padding-bottom: 3px;
+}
+#hc-sets-tree-editPanel {
+	padding-top: 3px;
+}
+
 #hc-sets-tree-importPanel {
 	padding-top: 1px;
 	padding-bottom: 1px;
