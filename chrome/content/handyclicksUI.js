@@ -423,15 +423,21 @@ var handyClicksUI = {
 		delete this.emtt;
 		return this.emtt = this.e("handyClicks-editModeTip");
 	},
-	get emttValue() {
-		delete this.emttValue;
-		return this.emttValue = this.e("handyClicks-editModeTip-value");
+	get emttType() {
+		delete this.emttType;
+		return this.emttType = this.e("handyClicks-editModeTip-type");
+	},
+	get emttURI() {
+		delete this.emttURI;
+		return this.emttURI = this.e("handyClicks-editModeTip-uri");
 	},
 	mouseoverHandler: function(e) {
 		this.hc.defineItem(e, {});
 		var type = this.hc.itemType;
-		if(type)
-			this.emttValue.setAttribute("value", this.ps.getTypeLabel(type));
+		if(type) {
+			this.emttType.value = this.ps.getTypeLabel(type);
+			this.emttURI.value = this.fn.getItemURI();
+		}
 		this.mousemoveHandler(e);
 	},
 	mousemoveHandler: function(e) {

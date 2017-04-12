@@ -121,7 +121,8 @@
 			<image id="handyClicks-editModeTip-icon" />
 			<vbox id="handyClicks-editModeTip-content">
 				<label id="handyClicks-editModeTip-header" value="&handyClicks.editModeTipHeader;" />
-				<label id="handyClicks-editModeTip-value" />
+				<label id="handyClicks-editModeTip-type" />
+				<label id="handyClicks-editModeTip-uri" crop="center" />
 			</vbox>
 		</tooltip>
 	</popupset>

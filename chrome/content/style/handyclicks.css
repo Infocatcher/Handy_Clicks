@@ -157,6 +157,10 @@ toolbarpaletteitem #handyClicks-toolbarProgressContainer {
 	font-weight: bold;
 	margin: 1px;
 }
-#handyClicks-editModeTip-value {
+#handyClicks-editModeTip-type {
 	margin: 1px;
+}
+#handyClicks-editModeTip-uri {
+	margin: 1px;
+	max-width: 30em;
 }
