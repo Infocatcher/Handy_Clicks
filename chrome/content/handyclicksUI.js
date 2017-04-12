@@ -436,7 +436,9 @@ var handyClicksUI = {
 		var type = this.hc.itemType;
 		if(type) {
 			this.emttType.value = this.ps.getTypeLabel(type);
-			this.emttURI.value = this.fn.getItemURI();
+			var uris = Array.prototype.concat.call(this.fn.getItemURI())
+				.map(this.fn.losslessDecodeURI, this.fn);
+			this.emttURI.value = uris.join(", ");
 		}
 		this.mousemoveHandler(e);
 	},
