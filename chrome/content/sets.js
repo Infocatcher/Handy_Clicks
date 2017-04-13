@@ -2928,8 +2928,22 @@ var handyClicksSets = {
 		this.pu.set("sets.backupsDir", path);
 	},
 	getFormattedDate: function(date) {
-		var df = this.pu.get("sets.dateFormat") || "";
-		return df && (date ? new Date(date) : new Date()).toLocaleFormat(df);
+		var d = date ? new Date(date) : new Date();
+		if(
+			"toISOString" in d // Firefox 3.5+
+			// Prefer toLocaleFormat(), if available and not raise deprecation warning
+			// https://bugzilla.mozilla.org/show_bug.cgi?id=1299900
+			&& this.ut.fxVersion >= 55
+		) {
+			// toISOString() uses zero UTC offset, trick to use locale offset
+			d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+			return "_" + d.toISOString() // Example: 2017-01-02T03:04:05.006Z
+				.replace(/:\d+\.\d+Z$/, "")
+				.replace("T", "_")
+				.replace(":", "-"); // 2017-01-02_03-04
+		}
+		var df = this.pu.get("sets.dateFormat");
+		return df && d.toLocaleFormat(df);
 	},
 
 	checkClipboard: function() {

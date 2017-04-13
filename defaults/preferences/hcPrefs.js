@@ -88,7 +88,7 @@ pref("extensions.handyclicks.sets.removeBackupConfirm", true);
 pref("extensions.handyclicks.sets.importJSWarning", true);
 pref("extensions.handyclicks.sets.incompleteImportWarning", true);
 pref("extensions.handyclicks.sets.openEditorsLimit", 5);
-pref("extensions.handyclicks.sets.dateFormat", "_%Y-%m-%d_%H-%M"); // String for new Date().toLocaleFormat()
+pref("extensions.handyclicks.sets.dateFormat", "_%Y-%m-%d_%H-%M"); // String for new Date().toLocaleFormat(), Firefox 54 and older
 pref("extensions.handyclicks.sets.treeDrawMode", 0);
 pref("extensions.handyclicks.sets.treeExpandDelayedAction", true);
 pref("extensions.handyclicks.sets.localizeArguments", true);
