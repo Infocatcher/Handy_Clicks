@@ -100,7 +100,7 @@ var g = window.handyClicksGlobals = {
 	ts: function() {
 		var d = new Date();
 		var ms = d.getMilliseconds();
-		return d.toLocaleFormat("%M:%S:") + "000".substr(String(ms).length) + ms;
+		return d.toTimeString().replace(/^.*\d+:(\d+:\d+).*$/, "$1") + ":" + "000".substr(("" + ms).length) + ms + " ";
 	},
 	_info: function(s) {
 		g.consoleSvc.logStringMessage(g.errPrefix + g.ts() + " " + g.safeToString(s));

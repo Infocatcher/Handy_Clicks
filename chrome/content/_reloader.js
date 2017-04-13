@@ -143,7 +143,7 @@ var handyClicksReloader = {
 	ts: function() {
 		var d = new Date();
 		var ms = d.getMilliseconds();
-		return d.toLocaleFormat("%M:%S:") + "000".substr(String(ms).length) + ms;
+		return d.toTimeString().replace(/^.*\d+:(\d+:\d+).*$/, "$1") + ":" + "000".substr(("" + ms).length) + ms + " ";
 	},
 	_log: function(msg) {
 		Components.classes["@mozilla.org/consoleservice;1"]
