@@ -2603,7 +2603,7 @@ var handyClicksSets = {
 			this.backupsDir = pSrc.parent;
 	},
 	createBackup: function() {
-		var bName = this.ps.prefsFileName + this.ps.names.userBackup + new Date().toLocaleFormat("%Y%m%d%H%M%S");
+		var bName = this.ps.prefsFileName + this.ps.names.userBackup + this.ps.getTimeString();
 		var bFile, i = -1; //~ todo: use nsIFile.createUnique() instead ?
 		do bFile = this.ps.getBackupFile(bName + (++i ? "-" + i : "") + ".js");
 		while(bFile.exists());

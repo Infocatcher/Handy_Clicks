@@ -829,11 +829,10 @@ var handyClicksPrefSvc = {
 
 		var max = this.pu.get("sets.backupAutoDepth");
 
-		var newTime = new Date();
-		var now = newTime.getTime();
+		var now = Date.now();
 		if(max > 0 && (!_fTimes.length || now >= _fTimes[_fTimes.length - 1] + this.minBackupInterval)) {
 			_fTimes.push(now);
-			fName = namePrefix + newTime.toLocaleFormat("%Y%m%d%H%M%S") + ".js";
+			fName = namePrefix + this.getTimeString(now) + ".js";
 			this.ut.copyFileTo(this.prefsFile, backupsDir, fName);
 			_files[now] = this.getBackupFile(fName);
 			this._log("Backup: " + _files[now].leafName);
@@ -843,6 +842,16 @@ var handyClicksPrefSvc = {
 
 		while(_fTimes.length > max)
 			this.ut.removeFile(_files[_fTimes.shift()], false);
+	},
+	getTimeString: function(date) {
+		var d = date ? new Date(date) : new Date();
+		if("toISOString" in d) { // Firefox 3.5+
+			// toISOString() uses zero UTC offset, trick to use locale offset
+			d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+			return d.toISOString() // Example: 2017-01-02T03:04:05.006Z
+				.replace(/[-T:]|\..*$/g, "");
+		}
+		return d.toLocaleFormat("%Y%m%d%H%M%S");
 	},
 	__savedStr: null,
 	get _savedStr() {
