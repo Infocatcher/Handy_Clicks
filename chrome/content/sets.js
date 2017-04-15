@@ -2929,6 +2929,9 @@ var handyClicksSets = {
 	},
 	getFormattedDate: function(date) {
 		var d = date ? new Date(date) : new Date();
+		var df = this.pu.get("sets.dateFormat");
+		if(!df)
+			return "";
 		if(
 			"toISOString" in d // Firefox 3.5+
 			// Prefer toLocaleFormat(), if available and not raise deprecation warning
@@ -2942,8 +2945,7 @@ var handyClicksSets = {
 				.replace("T", "_")
 				.replace(":", "-"); // 2017-01-02_03-04
 		}
-		var df = this.pu.get("sets.dateFormat");
-		return df && d.toLocaleFormat(df);
+		return d.toLocaleFormat(df);
 	},
 
 	checkClipboard: function() {
