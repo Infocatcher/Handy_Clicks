@@ -20,6 +20,8 @@
 `+` Добавлена возможность дублирования/клонирования вкладки в SeaMonkey (`handyClicksFuncs.cloneTab()`).<br>
 `x` Исправлена совместимость с будущими версиями Firefox: прекращено использование Array generics вида `Array.forEach()` и String generics вида `String.startsWith()` (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1222547">bug 1222547</a>, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1222552">bug 1222552</a>).<br>
 `x` Исправлено определение ссылок в CSS инспекторе в Firefox 48+.<br>
+`x` Исправлена совместимость с будущими версиями Firefox: прекращено использование `Date.prototype.toLocaleFormat()` (настройка <em>extensions.handyclicks.sets.dateFormat</em> не будет работать в Firefox 55+) (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=818634">bug 818634</a>).<br>
+`+` Режим редактирования: добавлено отображение ссылки во всплывающей подсказке.<br>
 `*` Небольшие улучшения производительности и различные улучшения.<br>
 
 ##### 0.1.3pre5 (2014-09-09)
