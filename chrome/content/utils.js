@@ -799,6 +799,23 @@ var handyClicksUtils = {
 		}
 		return true;
 	},
+	fileExistsAsync: function(file, callback, context) {
+		if(this.fxVersion < 19) {
+			callback.call(context, file.exists(), Components.results.NS_OK);
+			return;
+		}
+		var onFailure = function(err) {
+			err && this._err(err);
+			this._err("Can't check for file exists " + this._fileInfo(file));
+			callback.call(context, undefined, Components.results.NS_ERROR_FAILURE);
+		}.bind(this);
+		OS.File.exists(file.path).then(
+			function onSuccess(exists) {
+				callback.call(context, exists, Components.results.NS_OK);
+			},
+			onFailure
+		).then(null, onFailure);
+	},
 	convertToUnicode: function(str) {
 		var uc = this.unicodeConverter("UTF-8");
 		try {
