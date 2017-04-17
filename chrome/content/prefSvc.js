@@ -157,21 +157,15 @@ var handyClicksPrefSvc = {
 	_loadStatus: -1, // SETS_LOAD_UNKNOWN
 	loadSettingsAsync: function(callback, context) {
 		var pFile = this.prefsFile;
-		this.ut.fileExistsAsync(pFile, function(exists, status) {
-			if(!Components.isSuccessCode(status)) {
-				this.ut._err("loadSettingsAsync() -> fileExistsAsync() failed, please check\n" + pFile.path);
-				return;
-			}
-			if(!exists) {
+		this.ut.readFromFileAsync(pFile, function(data, status) {
+			if(Components.isSuccessCode(status))
+				this.loadSettings(data, true);
+			else if(status == Components.results.NS_ERROR_FILE_NOT_FOUND) {
 				this._log("loadSettingsAsync() -> save default settings");
 				this.loadSettings(this.defaultSettings(), true);
-				callback && callback.call(context, Components.results.NS_OK);
-				return;
+				status = Components.results.NS_OK;
 			}
-			this.ut.readFromFileAsync(pFile, function(data, status) {
-				Components.isSuccessCode(status) && this.loadSettings(data, true);
-				callback && callback.call(context, status);
-			}, this);
+			callback && callback.call(context, status);
 		}, this);
 	},
 	loadSettings: function(pSrc, fromProfile) {

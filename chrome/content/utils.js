@@ -704,8 +704,12 @@ var handyClicksUtils = {
 			fis.init(file, 0x01, this.PERMS_FILE_READ, 0);
 		}
 		catch(e) {
-			this._err("Can't read string from file " + this._fileInfo(file));
-			this._err(e);
+			if(outErr && ("" + e).indexOf("NS_ERROR_FILE_NOT_FOUND") != -1)
+				this._log("readFromFile(): file not found:\n" + this._fileInfo(file));
+			else {
+				this._err("Can't read string from file " + this._fileInfo(file));
+				this._err(e);
+			}
 			fis.close();
 			if(outErr)
 				outErr.value = e;
@@ -734,9 +738,15 @@ var handyClicksUtils = {
 			this._log("readFromFileAsync(): will use OS.File.read()");
 			Components.utils["import"]("resource://gre/modules/osfile.jsm");
 			var onFailure = function(err) {
-				err && this._err(err);
-				this._err("Can't read string from file " + this._fileInfo(file));
-				callback.call(context || this, "", Components.results.NS_ERROR_FAILURE);
+				var noSuchFile = err && err instanceof OS.File.Error && err.becauseNoSuchFile;
+				if(!noSuchFile) {
+					err && this._err(err);
+					this._err("Can't read string from file " + this._fileInfo(file));
+				}
+				var status = noSuchFile
+					? Components.results.NS_ERROR_FILE_NOT_FOUND
+					: Components.results.NS_ERROR_FAILURE;
+				callback.call(context || this, "", status);
 			}.bind(this);
 			OS.File.read(file.path).then(
 				function onSuccess(arr) {
@@ -786,7 +796,10 @@ var handyClicksUtils = {
 					}
 				}
 				else {
-					this._err("NetUtil.asyncFetch() failed: " + this.getErrorName(status));
+					if(status == Components.results.NS_ERROR_FILE_NOT_FOUND)
+						this._log("NetUtil.asyncFetch(): file not found:\n" + this._fileInfo(file));
+					else
+						this._err("NetUtil.asyncFetch() failed: " + this.getErrorName(status));
 				}
 				callback.call(context || this, data, status);
 			}, this));
@@ -798,23 +811,6 @@ var handyClicksUtils = {
 			return false;
 		}
 		return true;
-	},
-	fileExistsAsync: function(file, callback, context) {
-		if(this.fxVersion < 19) {
-			callback.call(context, file.exists(), Components.results.NS_OK);
-			return;
-		}
-		var onFailure = function(err) {
-			err && this._err(err);
-			this._err("Can't check for file exists " + this._fileInfo(file));
-			callback.call(context, undefined, Components.results.NS_ERROR_FAILURE);
-		}.bind(this);
-		OS.File.exists(file.path).then(
-			function onSuccess(exists) {
-				callback.call(context, exists, Components.results.NS_OK);
-			},
-			onFailure
-		).then(null, onFailure);
 	},
 	convertToUnicode: function(str) {
 		var uc = this.unicodeConverter("UTF-8");
