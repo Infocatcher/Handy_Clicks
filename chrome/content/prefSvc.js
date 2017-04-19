@@ -633,6 +633,11 @@ var handyClicksPrefSvc = {
 			+ "// " + hashFunc + ": " + this.getHash(json, hashFunc) + "\n"
 			+ json;
 	},
+	getSettingsStrAsync: function(callback, context) {
+		setTimeout(function(_this) {
+			callback.call(context, _this.getSettingsStr());
+		}, 0, this);
+	},
 	get JSON() { // For Firefox < 3.5
 		delete this.JSON;
 		if("JSON" in window)
@@ -646,10 +651,12 @@ var handyClicksPrefSvc = {
 		this.reloadSettings(reloadAll);
 	},
 	saveSettingsObjectsAsync: function(reloadAll, callback, context) {
-		this.saveSettingsAsync(this.getSettingsStr(), function(status) {
-			if(Components.isSuccessCode(status))
-				this.reloadSettings(reloadAll);
-			callback && callback.call(context || this, status);
+		this.getSettingsStrAsync(function(data) {
+			this.saveSettingsAsync(data, function(status) {
+				if(Components.isSuccessCode(status))
+					this.reloadSettings(reloadAll);
+				callback && callback.call(context || this, status);
+			}, this);
 		}, this);
 	},
 	getHash: function(str, hashFunc) {
