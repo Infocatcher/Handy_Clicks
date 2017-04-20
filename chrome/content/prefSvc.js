@@ -231,9 +231,8 @@ var handyClicksPrefSvc = {
 		this._restoringCounter = 0;
 		if(this.isMainWnd) {
 			this._typesCache = { __proto__: null };
-			if(this.pu.get("precompileCustomTypes")) setTimeout(function(_this) {
-				_this.compileCustomTypes();
-			}, 0, this);
+			if(this.pu.get("precompileCustomTypes"))
+				this.delay(this.compileCustomTypes, this);
 			this.initCustomFuncs();
 		}
 		this._loadStatus = this.SETS_LOAD_OK;
@@ -303,9 +302,9 @@ var handyClicksPrefSvc = {
 		var errTitle = this.getLocalized("errorTitle");
 		var errMsg = this.getLocalized("badJSFile").replace("%f", corruptedPath)
 			+ (bakPath ? this.getLocalized("restoredFromBackup").replace("%f", bakPath) : "")
-		setTimeout(function(_this, t, m) {
-			_this.ut.alert(t, m);
-		}, 0, this, errTitle, errMsg);
+		this.delay(function() {
+			this.ut.alert(errTitle, errMsg);
+		}, this);
 		this.loadSettings();
 	},
 	get setsMigration() { // function(allowSave, vers)
@@ -360,11 +359,8 @@ var handyClicksPrefSvc = {
 	},
 	compileCustomTypes: function() {
 		var types = this.types;
-		for(var type in types) if(types.hasOwnProperty(type)) {
-			setTimeout(function(_this, type) {
-				_this.initCustomType(type);
-			}, 0, this, type);
-		}
+		for(var type in types) if(types.hasOwnProperty(type))
+			this.delay(this.initCustomType, this, 0, [type]);
 	},
 	initCustomFuncs: function() {
 		this.destroyCustomFuncs(this.DESTROY_REBUILD);
@@ -634,9 +630,9 @@ var handyClicksPrefSvc = {
 			+ json;
 	},
 	getSettingsStrAsync: function(callback, context) {
-		setTimeout(function(_this) {
-			callback.call(context, _this.getSettingsStr());
-		}, 0, this);
+		this.delay(function() {
+			callback.call(context, this.getSettingsStr());
+		}, this);
 	},
 	get JSON() { // For Firefox < 3.5
 		delete this.JSON;

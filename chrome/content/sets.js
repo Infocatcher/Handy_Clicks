@@ -1286,10 +1286,11 @@ var handyClicksSets = {
 				this.tSel.clearRange(row0, row1);
 			if(row0 != row) {
 				this.tSel.rangedSelect(row0, row, true);
-				if(et == "mouseup")
-					setTimeout(function(_this, row0, row) {
-						_this.tSel.rangedSelect(row0, row, true);
-					}, 0, this, row0, row);
+				if(et == "mouseup") {
+					this.delay(function() {
+						this.tSel.rangedSelect(row0, row, true);
+					}, this);
+				}
 			}
 		}
 
@@ -1484,9 +1485,9 @@ var handyClicksSets = {
 			this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_SLOW, offset);
 			return;
 		}
-		setTimeout(function(_this) { // Pseudo async
-			_this.$("hc-sets-search-tooltip").hidePopup();
-		}, 0, this);
+		this.delay(function() {
+			this.$("hc-sets-search-tooltip").hidePopup();
+		}, this);
 		var enter = code == e.DOM_VK_RETURN;
 		var up    = code == e.DOM_VK_UP;
 		var down  = code == e.DOM_VK_DOWN;
@@ -1555,14 +1556,10 @@ var handyClicksSets = {
 
 		var remTime = this._lastSearch + this._searchDelay - Date.now();
 		if(remTime > 0) {
-			this._searchTimeout = setTimeout(
-				function(_this, args) {
-					_this._searchTimeout = 0;
-					_this.searchInSetsTree.apply(_this, args);
-				},
-				remTime,
-				this, arguments
-			);
+			this._searchTimeout = this.delay(function() {
+				this._searchTimeout = 0;
+				this.searchInSetsTree.apply(this, arguments);
+			}, this, remTime, arguments);
 			return;
 		}
 
@@ -1750,9 +1747,7 @@ var handyClicksSets = {
 		else {
 			this.updateAllDependencies();
 			clearTimeout(this._updPrefsUITimeout);
-			this._updPrefsUITimeout = setTimeout(function(_this) {
-				_this.setDialogButtons();
-			}, 10, this);
+			this._updPrefsUITimeout = this.delay(this.setDialogButtons, this, 10);
 		}
 	},
 	initPrefs: function() {
@@ -2504,9 +2499,9 @@ var handyClicksSets = {
 		);
 
 		this.setNodesProperties(its, { hc_copied: true });
-		setTimeout(function(_this, its) {
-			_this.setNodesProperties(its, { hc_copied: false });
-		}, 200, this, its);
+		this.delay(function() {
+			this.setNodesProperties(its, { hc_copied: false });
+		}, this, 200);
 
 		return this.ps.getSettingsStr(newTypes, newPrefs);
 	},
@@ -3039,8 +3034,8 @@ var handyClicksSetsSearcher = {
 		this.searchField.setAttribute("hc_wrapped", val);
 		if(!val)
 			return;
-		this._unwrapTimeout = setTimeout(function(_this) {
-			_this.searchField.setAttribute("hc_wrapped", "false");
-		}, this._unwrapDelay, this);
+		this._unwrapTimeout = this.delay(function() {
+			this.searchField.setAttribute("hc_wrapped", "false");
+		}, this, this._unwrapDelay);
 	}
 };

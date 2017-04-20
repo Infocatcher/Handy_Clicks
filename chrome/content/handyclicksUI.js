@@ -656,9 +656,9 @@ var handyClicksUI = {
 	},
 	_progressHideTimeout: 0,
 	progressDelayedHide: function() {
-		this._progressHideTimeout = setTimeout(function(_this) {
-			_this.showProgress = false;
-		}, 300, this);
+		this._progressHideTimeout = this.delay(function() {
+			this.showProgress = false;
+		}, this, 300);
 	},
 
 	// Multiline tooltip:

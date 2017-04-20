@@ -12,9 +12,9 @@ var handyClicksRegSvc = {
 		window.addEventListener("unload", this, false);
 		this.callMethods("init", reloadFlag);
 		window._handyClicksInitialized = true;
-		setTimeout(function(_this) {
-			_this.delayedInit(reloadFlag);
-		}, reloadFlag ? 0 : 250, this);
+		this.delay(function() {
+			this.delayedInit(reloadFlag);
+		}, this, reloadFlag ? 0 : 250);
 	},
 	delayedInit: function(reloadFlag) {
 		var noCache = reloadFlag ? "?" + Date.now() : "";

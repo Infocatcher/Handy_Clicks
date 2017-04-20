@@ -292,12 +292,10 @@ var handyClicks = {
 
 		this.ui.restoreIcon();
 
-		setTimeout(function(_this) {
-			_this.flags.stopContextMenu = false;
-		}, 0, this);
-		this._forceCleanupTimer = setTimeout(function(_this) {
-			_this.forceCleanup();
-		}, 500, this);
+		this.delay(function() {
+			this.flags.stopContextMenu = false;
+		}, this);
+		this._forceCleanupTimer = this.delay(this.forceCleanup, this, 500);
 	},
 	commandHandler: function(e) {
 		if(!this.enabled)
@@ -901,12 +899,9 @@ var handyClicks = {
 			if(tabscope) {
 				var _openPopup = tabscope.openPopup;
 				tabscope.openPopup = function() {};
-				setTimeout(
-					function() {
-						tabscope.openPopup = _openPopup;
-					},
-					this.pu.getPref("extensions.tabscope.popup_delay") || 250
-				);
+				setTimeout(function() {
+					tabscope.openPopup = _openPopup;
+				}, this.pu.getPref("extensions.tabscope.popup_delay") || 250);
 				tabscope.hidePopup();
 			}
 		}
