@@ -1,9 +1,9 @@
 var handyClicksAutocompleteData = {
 	minLength: 3,
 	get jsStatements() {
-		var ret = this._jsStatements.filter(this.lengthFilter, this).concat(this.jsProps).sort();
-		delete this.jsStatements;
+		var ret = this.sortAndCleanup(this._jsStatements.concat(this.jsProps));
 		delete this._jsStatements;
+		delete this.jsStatements;
 		return this.jsStatements = ret;
 	},
 	get jsProps() {
@@ -17,7 +17,7 @@ var handyClicksAutocompleteData = {
 			dummy.parentNode.removeChild(dummy);
 		}, 0);
 
-		var objs = [
+		[
 			Object,
 			Function.prototype,
 			Array,  Array.prototype,
@@ -45,14 +45,14 @@ var handyClicksAutocompleteData = {
 		].forEach(function(o) {
 			o && this.appendProperties(ret, o);
 		}, this);
-		delete this.jsProps;
 		delete this._jsProps;
-		return this.jsProps = this.uniqueSort(ret.filter(this.lengthFilter, this));
+		delete this.jsProps;
+		return this.jsProps = this.sortAndCleanup(ret);
 	},
 	get jsStrings() {
 		var ret = this._jsStrings.filter(this.lengthFilter, this).sort();
-		delete this.jsStrings;
 		delete this._jsStrings;
+		delete this.jsStrings;
 		return this.jsStrings = ret;
 	},
 	appendProperties: function(arr, obj) {
@@ -68,10 +68,11 @@ var handyClicksAutocompleteData = {
 	lengthFilter: function(s) {
 		return s.length >= this.minLength;
 	},
-	uniqueSort: function(arr) {
+	sortAndCleanup: function(arr) {
 		return arr.sort().filter(function(it, i, arr) {
-			return it !== arr[i - 1];
-		});
+			return it.length >= this.minLength
+				&& it !== arr[i - 1];
+		}, this);
 	},
 	// Keywords database:
 	_jsStatements: [
