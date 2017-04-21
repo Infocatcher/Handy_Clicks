@@ -8,37 +8,42 @@ var handyClicksAutocompleteData = {
 	},
 	get jsProps() {
 		var ret = this._jsProps;
+
+		var dummy = document.createElement("iframe");
+		dummy.setAttribute("collapsed", "true");
+		document.documentElement.appendChild(dummy);
+		var win = dummy.contentWindow;
+		setTimeout(function() {
+			dummy.parentNode.removeChild(dummy);
+		}, 0);
+
 		var objs = [
 			Object,
-			Function,
-			Array,
-			Date,
-			String,
-			Number,
+			Function.prototype,
+			Array,  Array.prototype,
+			Date,   Date.prototype,
+			String, String.prototype,
+			Number, Number.prototype,
+			RegExp, RegExp.prototype,
 			Math,
-			RegExp,
 			Error,
-			Node,
-			Event,
+			Node.prototype,
+			Event.prototype,
 			KeyEvent,
-			Components.__proto__,
+			Components,
 			Components.interfaces,
-			new Components.utils.Sandbox("about:blank"),
-			window.__proto__,
-			document.__proto__,
-			document.documentElement.style.__proto__,
-			new XMLHttpRequest().__proto__,
-			navigator.__proto__,
-			screen.__proto__,
-			window.getSelection().__proto__,
-			document.createRange().__proto__,
-			document.styleSheets.length && document.styleSheets[0].__proto__,
-			document.createEvent("MouseEvents").__proto__,
-			document.createEvent("KeyEvents").__proto__,
-			document.createEvent("MutationEvents").__proto__,
-			document.createEvent("TextEvents").__proto__
+			win,
+			win.document,
+			document.documentElement.style,
+			new XMLHttpRequest(),
+			navigator,
+			screen,
+			window.getSelection(),
+			document.createRange(),
+			document.styleSheets.length && document.styleSheets[0],
+			document.createEvent("MouseEvents")
 		].forEach(function(o) {
-			o && this.appendOwnProperties(ret, o);
+			o && this.appendProperties(ret, o);
 		}, this);
 		delete this.jsProps;
 		delete this._jsProps;
@@ -50,11 +55,13 @@ var handyClicksAutocompleteData = {
 		delete this._jsStrings;
 		return this.jsStrings = ret;
 	},
-	appendOwnProperties: function(arr, obj) {
-		if("getOwnPropertyNames" in Object) // JavaScript 1.8.5
-			arr.push.apply(arr, Object.getOwnPropertyNames(obj));
+	appendProperties: function(arr, obj) {
+		if("getOwnPropertyNames" in Object) { // JavaScript 1.8.5
+			for(var o = obj; o; o = Object.getPrototypeOf(o))
+				arr.push.apply(arr, Object.getOwnPropertyNames(o));
+		}
 		else {
-			for(var p in obj) if(obj.hasOwnProperty(p))
+			for(var p in obj)
 				arr.push(p);
 		}
 	},
