@@ -656,7 +656,7 @@ var handyClicksPrefSvc = {
 		}, this);
 	},
 	getHash: function(str, hashFunc) {
-		var uc = this.ut.unicodeConverter("UTF-8");
+		var uc = this.ut.utf8Converter;
 		var result = {};
 		var data = uc.convertToByteArray(str, result);
 		var ch = Components.classes["@mozilla.org/security/hash;1"]

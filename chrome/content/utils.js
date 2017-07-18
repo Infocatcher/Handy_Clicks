@@ -676,7 +676,7 @@ var handyClicksUtils = {
 		try {
 			this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_WRITE);
 			var ostream = FileUtils.openSafeFileOutputStream(file);
-			var uc = this.unicodeConverter("UTF-8");
+			var uc = this.utf8Converter;
 			var istream = uc.convertToInputStream(str);
 			NetUtil.asyncCopy(istream, ostream, this.bind(function(status) {
 				var err = !Components.isSuccessCode(status);
@@ -813,7 +813,7 @@ var handyClicksUtils = {
 		return true;
 	},
 	convertToUnicode: function(str) {
-		var uc = this.unicodeConverter("UTF-8");
+		var uc = this.utf8Converter;
 		try {
 			return uc.ConvertToUnicode(str);
 		}
@@ -828,6 +828,10 @@ var handyClicksUtils = {
 			.createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
 		suc.charset = charset;
 		return suc;
+	},
+	get utf8Converter() {
+		delete this.utf8Converter;
+		return this.utf8Converter = this.unicodeConverter("UTF-8");
 	},
 	getErrorCode: function(err, defaultCode) {
 		return Components.results[this.getErrorCodeString(err, defaultCode)];

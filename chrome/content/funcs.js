@@ -833,7 +833,9 @@ var handyClicksFuncs = {
 		if(!charset)
 			return str;
 		this._log("convertStrFromUnicode -> charset -> " + charset);
-		var uc = this.ut.unicodeConverter(charset);
+		var uc = charset == "UTF-8"
+			? this.ut.utf8Converter
+			: this.ut.unicodeConverter(charset);
 		try {
 			str = decodeURIComponent(str); // to UTF-8
 		}
