@@ -27,10 +27,10 @@ var handyClicksConsole = {
 				|| /:(\d+)$/.test(link.getAttribute("value")) && RegExp.$1;
 		}
 		else if(ns == "http://www.w3.org/1999/xhtml") { // Browser Console in Firefox 27+
-			var maxDeep = 2;
+			var maxDeep = 3;
 			for(var a = trg; a; a = a.parentNode) {
 				if(a.localName == "a") {
-					if(/(?:^|\s)(?:message-)?location(?:\s|$)/.test(a.className)) {
+					if(/(?:^|\s)(?:(?:message-)?location|frame-link-source)(?:\s|$)/.test(a.className)) {
 						var href = a.href;
 						var line = a.sourceLine
 							|| /:(\d+)$/.test(a.textContent) && RegExp.$1;
