@@ -23,6 +23,7 @@
 `x` Fixed compatibility with future Firefox versions: don't use deprecated `Date.prototype.toLocaleFormat()` (<em>extensions.handyclicks.sets.dateFormat</em> preference will not work in Firefox 55+) (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=818634">bug 818634</a>).<br>
 `+` Edit mode: also show URI in tooltip.<br>
 `x` Editor: fixed autocomplete feature for properties of `window` object.<br>
+`x` Fixed support for <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">Browser Console</a> in Firefox 48+.<br>
 `*` Small performance enhancements and various tweaks.<br>
 
 ##### 0.1.3pre5 (2014-09-09)

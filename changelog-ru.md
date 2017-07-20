@@ -23,6 +23,7 @@
 `x` Исправлена совместимость с будущими версиями Firefox: прекращено использование `Date.prototype.toLocaleFormat()` (настройка <em>extensions.handyclicks.sets.dateFormat</em> не будет работать в Firefox 55+) (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=818634">bug 818634</a>).<br>
 `+` Режим редактирования: добавлено отображение ссылки во всплывающей подсказке.<br>
 `x` Редактор: исправлено автодополнение для свойств объекта `window`.<br>
+`x` Исправлена поддержка <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">консоли браузера</a> в Firefox 48+.<br>
 `*` Небольшие улучшения производительности и различные улучшения.<br>
 
 ##### 0.1.3pre5 (2014-09-09)
