@@ -28,7 +28,7 @@ var handyClicksConsole = {
 		}
 		else if(ns == "http://www.w3.org/1999/xhtml") { // Browser Console in Firefox 27+
 			var maxDeep = 3;
-			for(var a = trg; a; a = a.parentNode) {
+			for(var a = trg; a && --maxDeep >= 0; a = a.parentNode) {
 				if(a.localName == "a") {
 					if(/(?:^|\s)(?:(?:message-)?location|frame-link-source)(?:\s|$)/.test(a.className)) {
 						var href = a.href;
@@ -37,8 +37,6 @@ var handyClicksConsole = {
 					}
 					break;
 				}
-				if(--maxDeep <= 0)
-					break;
 			}
 		}
 		if(href && line && this.wu.openEditorLink(href, +line)) {
