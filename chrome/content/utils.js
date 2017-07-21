@@ -321,7 +321,7 @@ var handyClicksUtils = {
 	getEntity: function(eName, dtds, contentType) {
 		// Strange bug with Greasemonkey 0.8.20100408.6:
 		// getEntity("statusbar.enabled", "chrome://greasemonkey/locale/greasemonkey.dtd");
-		dtds = dtds
+		var dtd = dtds
 			? "<!DOCTYPE page [\n"
 				+ Array.prototype.concat.call(dtds).map(
 					function(dtd, indx) {
@@ -331,12 +331,13 @@ var handyClicksUtils = {
 				+ "\n]>\n"
 			: "";
 		var node = this.parseFromString(
-			dtds + '<page xmlns="' + this.XULNS + '">&' + eName + ';</page>',
+			dtd + '<page xmlns="' + this.XULNS + '">&' + eName + ';</page>',
 			contentType
 		);
 		//if(node.namespaceURI == "http://www.mozilla.org/newlayout/xml/parsererror.xml") {
 		if(node.localName != "page") {
-			this._warn('Invalid XML entity: "' + eName + '"');
+			dtd = dtds && Array.prototype.concat.call(dtds).join("\n");
+			this._warn('Invalid XML entity: "' + eName + '"' + (dtd ? ", DTD:\n" + dtd : ""));
 			return "";
 		}
 		return node.textContent;
