@@ -383,12 +383,21 @@ var handyClicksEditor = {
 			case this.INDEX_SHORTCUT: this.applyDisabled = !shModified;   break;
 			case this.INDEX_TYPE:     this.applyDisabled = !typeModified;
 		}
+		this.deleteButton.disabled = !this.canDelete;
 		document.title = this.su.createTitle(document.title, shModified || typeModified, this.ps.otherSrc);
 		this.setModifiedTab(this.$("hc-editor-shortcutTab"), shModified);
 		this.setModifiedTab(this.$("hc-editor-itemTypeTab"), typeModified);
 	},
 	setModifiedTab: function(tab, isModified) {
 		tab.setAttribute("label", this.su.createTitle(tab.getAttribute("label"), isModified));
+	},
+	get canDelete() {
+		switch(this.mainTabbox.selectedIndex) {
+			case this.INDEX_SHORTCUT:
+				return !!this.ut.getOwnProperty(this.ps.prefs, this.currentShortcut, this.currentType);
+			case this.INDEX_TYPE:
+				return this.ps.types.hasOwnProperty(this.currentCustomType);
+		}
 	},
 
 	_savedShortcutObj: null,
@@ -1426,7 +1435,7 @@ var handyClicksEditor = {
 		//this.applyDisabled = false;
 		//this.applyButton.disabled = false;
 		this.shortcutSaved();
-		this.setDialogButtons(); //~ todo: disable delete button, if nothing to delete ?
+		this.setDialogButtons();
 	},
 	copyShortcut: function(isDelayed, dontCopy) {
 		if(isDelayed === undefined)
