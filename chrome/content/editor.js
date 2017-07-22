@@ -1414,6 +1414,9 @@ var handyClicksEditor = {
 			if(this.ut.isEmptyObj(p[sh]))
 				delete p[sh];
 		}
+		else { // Nothing to delete
+			return;
+		}
 		if(this.ps.otherSrc)
 			this.ps.reloadSettings();
 		else
@@ -1539,7 +1542,11 @@ var handyClicksEditor = {
 		return ct;
 	},
 	deleteCustomType: function() {
-		delete this.ps.types[this.currentCustomType];
+		var cts = this.ps.types;
+		var cct = this.currentCustomType;
+		if(!cts.hasOwnProperty(cct)) // Nothing to delete
+			return;
+		delete cts[cct];
 		if(this.ps.otherSrc)
 			this.ps.reloadSettings();
 		else
