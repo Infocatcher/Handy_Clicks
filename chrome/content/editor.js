@@ -179,6 +179,12 @@ var handyClicksEditor = {
 		this.customTypeLabel = "";
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
+	get editorTabIndex() {
+		return this.mainTabbox.selectedIndex;
+	},
+	set editorTabIndex(indx) {
+		this.mainTabbox.selectedIndex = indx;
+	},
 	setsReloading: function(notifyReason) {
 		if(notifyReason & this.ps.SETS_RELOADED) {
 			this.appendTypesList();
@@ -193,7 +199,7 @@ var handyClicksEditor = {
 			this.$("hc-editor-cmd-undo").setAttribute("disabled", !this.ps.hasTestSettings);
 	},
 	selectTargetTab: function hce_selectTargetTab(isDelayed, src, line) {
-		this.mainTabbox.selectedIndex = this.editorMode == this.ct.EDITOR_MODE_TYPE
+		this.editorTabIndex = this.editorMode == this.ct.EDITOR_MODE_TYPE
 			? this.INDEX_TYPE
 			: this.INDEX_SHORTCUT;
 
@@ -379,7 +385,7 @@ var handyClicksEditor = {
 	setDialogButtons: function() {
 		var shModified = this.shortcutUnsaved;
 		var typeModified = this.typeUnsaved;
-		switch(this.mainTabbox.selectedIndex) {
+		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT: this.applyDisabled = !shModified;   break;
 			case this.INDEX_TYPE:     this.applyDisabled = !typeModified;
 		}
@@ -392,7 +398,7 @@ var handyClicksEditor = {
 		tab.setAttribute("label", this.su.createTitle(tab.getAttribute("label"), isModified));
 	},
 	get canDelete() {
-		switch(this.mainTabbox.selectedIndex) {
+		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT:
 				return !!this.ut.getOwnProperty(this.ps.prefs, this.currentShortcut, this.currentType);
 			case this.INDEX_TYPE:
@@ -438,7 +444,7 @@ var handyClicksEditor = {
 	setWinId: function() {
 		var winId;
 		var cType = this.currentType || this.type; // For deleted custom types
-		switch(this.mainTabbox.selectedIndex) {
+		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT: winId = this.currentShortcut + "-" + cType; break;
 			case this.INDEX_TYPE:     winId = cType;                              break;
 			default: return;
@@ -451,7 +457,7 @@ var handyClicksEditor = {
 		var shStr = this.ps.getModifiersStr(sh) + " + " + this.ps.getButtonStr(sh, true);
 		var type = this.$("hc-editor-itemTypes").getAttribute("label");
 		var typeStr = this.$("hc-editor-customType").value || this.$("hc-editor-customTypeExtId").value;
-		var title = this.mainTabbox.selectedIndex == this.INDEX_TYPE
+		var title = this.editorTabIndex == this.INDEX_TYPE
 			? typeStr + (typeStr ? " | " : "") + shStr + (type ? " + " + type : "")
 			: shStr + (type ? " + " + type : "") + (typeStr ? " | " + typeStr : "");
 		var baseTitle = this.su.removeTitleFlags(document.title)
@@ -518,7 +524,7 @@ var handyClicksEditor = {
 
 		var cType = tar.value;
 		this.loadCustomType(cType);
-		this.mainTabbox.selectedIndex = this.INDEX_TYPE;
+		this.editorTabIndex = this.INDEX_TYPE;
 	},
 	initCustomTypesEditor: function(cType, to) {
 		var cList = this.$("hc-editor-customType");
@@ -1182,7 +1188,7 @@ var handyClicksEditor = {
 	},
 
 	saveSettings: function(applyFlag) {
-		switch(this.mainTabbox.selectedIndex) {
+		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT: return this.saveShortcut(applyFlag);
 			case this.INDEX_TYPE:     return this.saveCustomType(applyFlag);
 			default:                  return false;
@@ -1195,7 +1201,7 @@ var handyClicksEditor = {
 
 		this.$("hc-editor-cmd-test").setAttribute("disabled", "true");
 		var ok = false;
-		switch(this.mainTabbox.selectedIndex) {
+		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT: ok = this.testShortcut();   break;
 			case this.INDEX_TYPE:     ok = this.testCustomType(); break;
 			default:                  return false;
@@ -1237,21 +1243,21 @@ var handyClicksEditor = {
 		}
 	},
 	deleteSettings: function() {
-		switch(this.mainTabbox.selectedIndex) {
+		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT: return this.deleteShortcut();
 			case this.INDEX_TYPE:     return this.deleteCustomType();
 			default:                  return false;
 		}
 	},
 	copySettings: function() {
-		switch(this.mainTabbox.selectedIndex) {
+		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT: return this.copyShortcut();
 			case this.INDEX_TYPE:     return this.copyCustomType();
 			default:                  return false;
 		}
 	},
 	pasteSettings: function() {
-		switch(this.mainTabbox.selectedIndex) {
+		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT: return this.pasteShortcut();
 			case this.INDEX_TYPE:     return this.pasteCustomType();
 			default:                  return false;
