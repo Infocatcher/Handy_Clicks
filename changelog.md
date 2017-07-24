@@ -24,6 +24,7 @@
 `+` Edit mode: also show URI in tooltip.<br>
 `x` Editor: fixed autocomplete feature for properties of `window` object.<br>
 `x` Fixed support for <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">Browser Console</a> in Firefox 48+.<br>
+`*` Editor: disable “Delete” button, if there is nothing to delete.<br>
 `*` Small performance enhancements and various tweaks.<br>
 
 ##### 0.1.3pre5 (2014-09-09)
