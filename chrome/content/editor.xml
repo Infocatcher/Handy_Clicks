@@ -558,7 +558,12 @@
 						if(ee == "Scratchpad") try {
 							//var val = ut.internalLineBreaks(value);
 							var val = this.value;
-							Components.utils["import"]("resource:///modules/devtools/scratchpad-manager.jsm");
+							try { // Firefox 56+
+								Components.utils["import"]("resource://devtools/client/scratchpad/scratchpad-manager.jsm");
+							}
+							catch(e2) {
+								Components.utils["import"]("resource:///modules/devtools/scratchpad-manager.jsm");
+							}
 							var _this = this;
 							var w;
 							var setCaret = function(e) {
