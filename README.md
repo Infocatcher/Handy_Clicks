@@ -50,7 +50,7 @@ Note: some hotkeys are described in the interface and not listed here.
 <tr><td>Ctrl+Shift+O*         </td><td>Load code from file and sync changes</td></tr>
 <tr><td>Ctrl+Shift+S*         </td><td>Save code to file                   </td></tr>
 </table>
-\* – “global” hotkey, works even if editor field isn't focused.
+* – “global” hotkey, works even if editor field isn't focused.
 
 #### Troubleshooting
 Turn off from command line: `firefox -handyclicks-disable`.
@@ -136,7 +136,7 @@ Turn off from command line: `firefox -handyclicks-disable`.
 </tr>
 </tbody>
 </table>
-\* Note: you should always use shortcut because script may use lazy loading.
+* Note: you should always use shortcut because script may use lazy loading.
 
 ##### API functions:
 DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGeneratedPopup</a>(in array/string/DOMNode items)
