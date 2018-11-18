@@ -164,3 +164,6 @@ toolbarpaletteitem #handyClicks-toolbarProgressContainer {
 	margin: 1px;
 	max-width: 30em;
 }
+#handyClicks-editModeTip-uri[value=""] {
+	display: none;
+}
