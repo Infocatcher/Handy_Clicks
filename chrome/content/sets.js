@@ -2473,8 +2473,12 @@ var handyClicksSets = {
 			else
 				this.ut.writeToFile(pStr, file);
 		}
-		else // Do not start full export to clipboard!
+		else if(targetId == ct.EXPORT_FILEPICKER) {
 			this.ut.copyFileTo(this.ps.prefsFile, file.parent, file.leafName);
+		}
+		else {
+			throw new Error(this.errPrefix + "Full export to clipboard not supported");
+		}
 	},
 	extractPrefs: function(extractShortcuts) {
 		//~ todo: with "extractShortcuts == false" iser see empty tree on import
