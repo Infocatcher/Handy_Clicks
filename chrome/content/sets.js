@@ -2474,7 +2474,10 @@ var handyClicksSets = {
 				this.ut.writeToFile(pStr, file);
 		}
 		else if(targetId == ct.EXPORT_FILEPICKER) {
-			this.ut.copyFileTo(this.ps.prefsFile, file.parent, file.leafName);
+			//this.ut.copyFileTo(this.ps.prefsFile, file.parent, file.leafName);
+			var pStr = this.ps.getSettingsStr(null, null, true /*exportLinkedFiles*/);
+			this.ut.writeToFile(pStr, file);
+			file.lastModifiedTime = this.ps.prefsFile.lastModifiedTime;
 		}
 		else {
 			throw new Error(this.errPrefix + "Full export to clipboard not supported");
@@ -2507,7 +2510,7 @@ var handyClicksSets = {
 			this.setNodesProperties(its, { hc_copied: false });
 		}, this, 200);
 
-		return this.ps.getSettingsStr(newTypes, newPrefs);
+		return this.ps.getSettingsStr(newTypes, newPrefs, true);
 	},
 	extractLabels: function(extractShortcuts) {
 		var its = extractShortcuts ? this.selectedItems : this.selectedItemsWithCustomTypes;

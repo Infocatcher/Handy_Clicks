@@ -461,6 +461,24 @@ var handyClicksPrefSvc = {
 			throw this.ut.getLocalized("fileNotFound").replace("%f", file ? file.path : path);
 		return data;
 	},
+	exportFileData: function(files, code) {
+		var path = this.getSourcePath(code);
+		if(!path || (path in files))
+			return;
+		var file = this.ut.getLocalFile(path);
+		if(!file)
+			return;
+		//~ todo: add pref + warning?
+		if(!this.prefsDir.contains(file, false /* aRecurse, for Firefox 31 and older */))
+			return;
+		var data = this.ut.readFromFile(file);
+		if(!data) //~ todo: show warning?
+			return;
+		files[path] = {
+			lastModified: file.lastModifiedTime,
+			data: data
+		};
+	},
 
 	saveDestructorContext: function(baseLine, fObj, sh, type, isDelayed) {
 		this._destructorContext = {
@@ -604,7 +622,7 @@ var handyClicksPrefSvc = {
 		Array.prototype.forEach.call(arguments, this.sortSettings, this);
 		return this.ut.objEqualsRaw.apply(this.ut, arguments);
 	},
-	getSettingsStr: function(types, prefs) {
+	getSettingsStr: function(types, prefs, exportLinkedFiles) {
 		types = types || this.types;
 		prefs = prefs || this.prefs;
 
@@ -617,10 +635,15 @@ var handyClicksPrefSvc = {
 			types:   types,
 			prefs:   prefs
 		};
+		if(exportLinkedFiles)
+			o.files = {};
 
+		var _this = this;
 		var json = this.JSON.stringify(o, function censor(key, val) {
 			if(key.charAt(0) == "_")
 				return undefined;
+			if(exportLinkedFiles && key != "label" && typeof val == "string")
+				_this.exportFileData(o.files, val);
 			return val;
 		}, "\t");
 
