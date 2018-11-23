@@ -2902,6 +2902,15 @@ var handyClicksSets = {
 			var file = this.ut.getLocalFile(path);
 			if(!this.ps.importAllowed(file))
 				continue;
+			if(!file.exists()) {
+				try {
+					file.create(file.NORMAL_FILE_TYPE, this.ut.PERMS_FILE_WRITE); // Also create directories
+				}
+				catch(e) {
+					Components.utils.reportError(e);
+					continue;
+				}
+			}
 			this.ut.writeToFile(fo.data, file);
 			file.lastModifiedTime = fo.lastModified;
 		}
