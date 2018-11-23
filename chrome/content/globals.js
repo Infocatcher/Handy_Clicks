@@ -151,7 +151,7 @@ var g = window.handyClicksGlobals = {
 		var callable = [];
 		var objects = g.objects;
 		for(var p in objects)
-			if(p in window)
+			if(p in window && !window.__lookupGetter__(p))
 				callable.push(window[p]);
 		return callable;
 	},
@@ -168,9 +168,10 @@ var g = window.handyClicksGlobals = {
 g.g = g;
 
 function lazy(s, p, file) {
-	var has = p in window;
+	var has = p in window && !window.__lookupGetter__(p);
 	if(!has && file) {
 		var t = now();
+		delete window[p];
 		g.jsLoader.loadSubScript("chrome://handyclicks/content/" + file, window, "UTF-8");
 		g._log(
 			"Load " + file + " into " + document.documentURI

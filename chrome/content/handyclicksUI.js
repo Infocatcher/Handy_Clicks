@@ -1,3 +1,9 @@
+window.__defineGetter__("handyClicks", function() {
+	handyClicksUI._log("Used window.handyClicks lazy getter");
+	delete this.handyClicks;
+	return handyClicksUI.hc;
+});
+
 var handyClicksUI = {
 	__proto__: handyClicksGlobals,
 
@@ -7,11 +13,10 @@ var handyClicksUI = {
 	attrNS: "urn:handyclicks:namespace",
 
 	get coreLoaded() {
-		if("handyClicks" in window) {
-			delete this.coreLoaded;
-			return this.coreLoaded = true;
-		}
-		return false;
+		if(window.__lookupGetter__("handyClicks"))
+			return false;
+		delete this.coreLoaded;
+		return this.coreLoaded = true;
 	},
 
 	init: function(reloadFlag) {
