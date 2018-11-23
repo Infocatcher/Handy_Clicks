@@ -2852,6 +2852,7 @@ var handyClicksSets = {
 			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, true);
 
 			this.ps.otherSrc = false;
+			this.importFilesData();
 			isPartial && this.mergePrefs();
 			this.ps.saveSettingsObjects(true);
 		}
@@ -2891,6 +2892,18 @@ var handyClicksSets = {
 					continue;
 				this.ut.setOwnProperty(this.ps.prefs, sh, type, to);
 			}
+		}
+	},
+	importFilesData: function() {
+		//~ todo: confirmations & Co
+		var files = this.ps.files;
+		for(var path in files) if(files.hasOwnProperty(path)) {
+			var fo = files[path];
+			var file = this.ut.getLocalFile(path);
+			if(!this.ps.importAllowed(file))
+				continue;
+			this.ut.writeToFile(fo.data, file);
+			file.lastModifiedTime = fo.lastModified;
 		}
 	},
 

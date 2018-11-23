@@ -59,8 +59,7 @@ var handyClicksPrefSvc = {
 			this.destroyCustomFuncs(reason);
 		}
 		// Force unload prefs to avoid memory leaks
-		this.types = {};
-		this.prefs = {};
+		this.types = this.prefs = this.files = {};
 		this._typesCache = { __proto__: null };
 		this._loadStatus = this.SETS_LOAD_UNKNOWN;
 		if(!disable)
@@ -137,6 +136,7 @@ var handyClicksPrefSvc = {
 	loadedVersion: -1,
 	types: {},
 	prefs: {},
+	files: {}, // Imported files data
 	get currentSrc() {
 		return {
 			version: this.loadedVersion,
@@ -224,6 +224,7 @@ var handyClicksPrefSvc = {
 
 		this.prefs = scope.prefs;
 		this.types = scope.types;
+		this.files = scope.files || {};
 		var vers = this.loadedVersion = scope.version || 0;
 
 		if(vers < this.setsVersion)
@@ -468,8 +469,7 @@ var handyClicksPrefSvc = {
 		var file = this.ut.getLocalFile(path);
 		if(!file)
 			return;
-		//~ todo: add pref + warning?
-		if(!this.prefsDir.contains(file, false /* aRecurse, for Firefox 31 and older */))
+		if(!this.importAllowed(file)) //~ todo: add pref + warning?
 			return;
 		var data = this.ut.readFromFile(file);
 		if(!data) //~ todo: show warning?
@@ -478,6 +478,9 @@ var handyClicksPrefSvc = {
 			lastModified: file.lastModifiedTime,
 			data: data
 		};
+	},
+	importAllowed: function(file) {
+		return this.prefsDir.contains(file, false /* aRecurse, for Firefox 31 and older */);
 	},
 
 	saveDestructorContext: function(baseLine, fObj, sh, type, isDelayed) {
