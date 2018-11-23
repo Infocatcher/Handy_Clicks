@@ -490,8 +490,10 @@ var handyClicksUI = {
 	},
 	setStatus: function() {
 		var enabled = this.pu.get("enabled");
-		enabled && this.hc.preloadSettings();
-		this.initListeners(enabled);
+		this.delay(function() {
+			enabled && this.hc.preloadSettings();
+			this.initListeners(enabled);
+		}, this);
 		if(!enabled && this.coreLoaded && this.hc._settingsLoaded) {
 			this.hc._settingsLoaded = false;
 			this.ps.disable();

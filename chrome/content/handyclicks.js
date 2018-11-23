@@ -88,7 +88,7 @@ var handyClicks = {
 			this._settingsLoaded = true;
 			this._log("Preload settings => loadSettingsAsync()");
 			this.ps.loadSettingsAsync();
-		}, this, 50);
+		}, this, 150);
 	},
 	_hasListeners: false,
 	initListeners: function(enable) {
