@@ -6,6 +6,11 @@
 `*` – improved<br>
 
 ##### master/HEAD
+`x` Editor: fixed autocomplete feature for properties of `window` object.<br>
+`x` Fixed support for <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">Browser Console</a> in Firefox 48+.<br>
+`*` Editor: disable “Delete” button, if there is nothing to delete.<br>
+
+##### 0.1.3pre6 (2017-04-16)
 `x` Fixed hiding of special window that open options in non-modal window.<br>
 `*` Improve “reload image” function: correct and remove image from cache before reloading.<br>
 `+` Added ability to configure or disable “scroll to switch” feature (<em>extensions.handyclicks.sets.scrollLists</em> and <em>extensions.handyclicks.sets.scrollLists.onlyInActiveWindow</em> preferences).<br>
@@ -22,9 +27,6 @@
 `x` Fixed detection of links from CSS Inspector in Firefox 48+.<br>
 `x` Fixed compatibility with future Firefox versions: don't use deprecated `Date.prototype.toLocaleFormat()` (<em>extensions.handyclicks.sets.dateFormat</em> preference will not work in Firefox 55+) (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=818634">bug 818634</a>).<br>
 `+` Edit mode: also show URI in tooltip.<br>
-`x` Editor: fixed autocomplete feature for properties of `window` object.<br>
-`x` Fixed support for <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">Browser Console</a> in Firefox 48+.<br>
-`*` Editor: disable “Delete” button, if there is nothing to delete.<br>
 `*` Small performance enhancements and various tweaks.<br>
 
 ##### 0.1.3pre5 (2014-09-09)
