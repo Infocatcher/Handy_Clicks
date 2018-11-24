@@ -467,13 +467,19 @@ var handyClicksPrefSvc = {
 		if(!path || (path in files))
 			return;
 		var file = this.ut.getLocalFile(path);
-		if(!file)
+		if(!file) {
+			this.ut._warn("Export skipped, invalid path: " + path);
 			return;
-		if(!this.importAllowed(file)) //~ todo: add pref + warning?
+		}
+		if(!this.importAllowed(file)) { //~ todo: add pref + warning?
+			this.ut._warn("Export not allowed for " + path + " -> " + file.path);
 			return;
+		}
 		var data = this.ut.readFromFile(file);
-		if(!data) //~ todo: show warning?
+		if(!data) {
+			this.ut._warn("Export skipped, file is empty or missing: " + path + " -> " + file.path);
 			return;
+		}
 		files[path] = {
 			lastModified: file.lastModifiedTime,
 			data: data

@@ -2899,9 +2899,19 @@ var handyClicksSets = {
 		var files = this.ps.files;
 		for(var path in files) if(files.hasOwnProperty(path)) {
 			var fo = files[path];
-			var file = this.ut.getLocalFile(path);
-			if(!this.ps.importAllowed(file))
+			if(!this.ut.isObject(fo) || !fo.data) {
+				this.ut._warn("Import skipped, invalid data for " + path);
 				continue;
+			}
+			var file = this.ut.getLocalFile(path);
+			if(!file) {
+				this.ut._warn("Import skipped, invalid path: " + path);
+				continue;
+			}
+			if(!this.ps.importAllowed(file)) {
+				this.ut._warn("Import not allowed for " + path + " -> " + file.path);
+				continue;
+			}
 			if(!file.exists()) {
 				try {
 					file.create(file.NORMAL_FILE_TYPE, this.ut.PERMS_FILE_WRITE); // Also create directories
@@ -2912,7 +2922,7 @@ var handyClicksSets = {
 				}
 			}
 			this.ut.writeToFile(fo.data, file);
-			file.lastModifiedTime = fo.lastModified;
+			file.lastModifiedTime = fo.lastModified || Date.now();
 		}
 	},
 
