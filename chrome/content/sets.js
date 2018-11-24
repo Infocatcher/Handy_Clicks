@@ -2609,7 +2609,9 @@ var handyClicksSets = {
 		var bFile, i = -1; //~ todo: use nsIFile.createUnique() instead ?
 		do bFile = this.ps.getBackupFile(bName + (++i ? "-" + i : "") + ".js");
 		while(bFile.exists());
-		this.ut.copyFileTo(this.ps.prefsFile, this.ps.backupsDir, bFile.leafName);
+		//this.ut.copyFileTo(this.ps.prefsFile, this.ps.backupsDir, bFile.leafName);
+		var pStr = this.ps.getSettingsStr(null, null, true /*exportLinkedFiles*/);
+		this.ut.writeToFile(pStr, bFile);
 		this.ut.notifyInWindowCorner(
 			this.getLocalized("backupCreated").replace("%f", bFile.path),
 			null,
