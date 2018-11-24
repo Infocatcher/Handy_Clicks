@@ -9,6 +9,11 @@
 `x` Editor: fixed autocomplete feature for properties of `window` object.<br>
 `x` Fixed support for <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">Browser Console</a> in Firefox 48+.<br>
 `*` Editor: disable “Delete” button, if there is nothing to delete.<br>
+`x` Fixed Scratchpad support in Firefox 56+.<br>
+`*` Edit mode tooltip: hide empty URI field.<br>
+`+` Added basic export/import for separate *.js files (`//> %hc_PrefsDir%/scripts/example.js` in code) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/32">#32</a>).<br>
+`*` Restored window.handyClicks (as lazy getter) to detect Handy Clicks presence even in disabled mode.<br>
+`*` Improved startup performance: load handyclicks.js after small delay, increased delay to preload settings.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
 `x` Fixed hiding of special window that open options in non-modal window.<br>
