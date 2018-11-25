@@ -396,6 +396,8 @@ var handyClicksUtils = {
 			return this.getLocalFileRoot(this.getFileByAlias("SysD"));
 		if(alias == "hc_PrefsDir")
 			return this.ps.prefsDir.clone().QueryInterface(Components.interfaces.nsILocalFile || Components.interfaces.nsIFile);
+		if(alias == "hc_ScriptsDir")
+			return this.ps.scriptsDir.clone().QueryInterface(Components.interfaces.nsILocalFile || Components.interfaces.nsIFile);
 		try {
 			return Components.classes["@mozilla.org/file/directory_service;1"]
 				.getService(Components.interfaces.nsIProperties)
