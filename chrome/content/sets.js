@@ -2918,11 +2918,11 @@ var handyClicksSets = {
 			if(exists && overwrite == undefined) { // Confirm only once
 				var overwriteOnlyOlder = { value: true };
 				var overwrite = this.ut.confirmEx(
-					this.getLocalized("title"),
-					"Overwrite *.js files?",
-					"Overwrite",
+					this.getLocalized("importJsFiles"),
+					this.getLocalized("overwriteJsFiles"),
+					this.getLocalized("overwrite"),
 					false,
-					"Overwrite only older files",
+					this.getLocalized("overwriteOnlyOlder"),
 					overwriteOnlyOlder
 				);
 				overwriteOnlyOlder = overwrite && overwriteOnlyOlder.value;
