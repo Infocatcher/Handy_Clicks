@@ -2914,7 +2914,26 @@ var handyClicksSets = {
 				this.ut._warn("Import not allowed for " + path + " -> " + file.path);
 				continue;
 			}
-			if(!file.exists()) {
+			var exists = file.exists();
+			if(exists && overwrite == undefined) { // Confirm only once
+				var overwriteOnlyOlder = { value: true };
+				var overwrite = this.ut.confirmEx(
+					this.getLocalized("title"),
+					"Overwrite *.js files?",
+					"Overwrite",
+					false,
+					"Overwrite only older files",
+					overwriteOnlyOlder
+				);
+				overwriteOnlyOlder = overwrite && overwriteOnlyOlder.value;
+			}
+			if(exists) {
+				if(!overwrite)
+					continue;
+				if(overwriteOnlyOlder && file.lastModifiedTime > fo.lastModified)
+					continue;
+			}
+			else {
 				try {
 					file.create(file.NORMAL_FILE_TYPE, this.ut.PERMS_FILE_WRITE); // Also create directories
 				}
