@@ -553,8 +553,7 @@
 						if(hasFileData)
 							ut.writeToFile(fileData, file);
 						this._lineBreak = null; // Will use platform's line breaks
-						if(!hasFileData)
-							this.watchFile(file, true);
+						this.watchFile(file, true, hasFileData && path);
 
 						ut.deleteTemporaryFileOnExit(file);
 					}
@@ -836,6 +835,7 @@
 			<method name="watchFile">
 				<parameter name="file" />
 				<parameter name="isTemp" />
+				<parameter name="virtualPath" />
 				<body>
 				<![CDATA[
 					if(this._linkedFile)
@@ -844,6 +844,7 @@
 					this._isTempFile = isTemp;
 					this._lastModifiedTime = file.lastModifiedTime;
 					this._fileSize = file.fileSize;
+					this._virtualPath = virtualPath;
 					if(!this._hasWatchHandlers) {
 						this._hasWatchHandlers = true;
 						top.addEventListener("focus",  this, false);
@@ -871,6 +872,7 @@
 					}
 					var file = this._linkedFile;
 					this._linkedFile = null;
+					this._virtualPath = "";
 					if(file && this._isTempFile && file.exists()) {
 						file.remove(false);
 						if("handyClicksUtils" in top) {
@@ -929,6 +931,13 @@
 								+ "\nError: " + ut.getErrorName(status);
 							ut._err(err);
 							ut.alert(ut.getLocalized("errorTitle"), err);
+							return;
+						}
+						if(this._virtualPath) {
+							var fo = ut.ps.files[this._virtualPath];
+							fo.data = fVal;
+							fo.lastModified = fTime;
+							this.fade();
 							return;
 						}
 						if(detectLineBreak)
