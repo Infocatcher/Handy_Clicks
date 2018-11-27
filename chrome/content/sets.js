@@ -2916,6 +2916,13 @@ var handyClicksSets = {
 				continue;
 			}
 			var exists = file.exists();
+			if(exists) try {
+				if(this.ut.readFromFile(file) == fo.data)
+					continue;
+			}
+			catch(e) {
+				Components.utils.reportError(e);
+			}
 			if(exists && overwriteAsk) {
 				// See this.ut.confirmEx()
 				this.ut.ensureNotMinimized(window);
