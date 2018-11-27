@@ -2898,6 +2898,7 @@ var handyClicksSets = {
 	},
 	importFilesData: function() {
 		//~ todo: confirmations & Co
+		var overwriteAsk = true, overwrite;
 		var files = this.ps.files;
 		for(var path in files) if(files.hasOwnProperty(path)) {
 			var fo = files[path];
@@ -2915,22 +2916,42 @@ var handyClicksSets = {
 				continue;
 			}
 			var exists = file.exists();
-			if(exists && overwrite == undefined) { // Confirm only once
-				var overwriteOnlyOlder = { value: true };
-				var overwrite = this.ut.confirmEx(
+			if(exists && overwriteAsk) {
+				// See this.ut.confirmEx()
+				this.ut.ensureNotMinimized(window);
+				var ps = this.ut.promptsSvc;
+				var applyToAll = { value: false };
+				var dateKey = fo.lastModified == file.lastModifiedTime
+					? "replaceBySameDate"
+					: fo.lastModified > file.lastModifiedTime
+						? "replaceByNewer"
+						: "replaceByOlder";
+				var btn = ps.confirmEx(
+					window,
 					this.getLocalized("importJsFiles"),
-					this.getLocalized("overwriteJsFiles"),
-					this.getLocalized("overwrite"),
-					false,
-					this.getLocalized("overwriteOnlyOlder"),
-					overwriteOnlyOlder
+					this.getLocalized("overwriteJsFile")
+						+ "\n" + path
+						+ "\n" + this.getLocalized(dateKey),
+					  ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING
+					+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_IS_STRING + ps.BUTTON_POS_1_DEFAULT // "Cancel"
+					+ ps.BUTTON_POS_2 * ps.BUTTON_TITLE_IS_STRING,
+					this.getLocalized("overwrite"), // pos 0
+					this.getLocalized("overwriteSkipAll"), // pos 1
+					this.getLocalized("overwriteSkip"), // pos 2
+					this.getLocalized("applyToAll"),
+					applyToAll
 				);
-				overwriteOnlyOlder = overwrite && overwriteOnlyOlder.value;
+				if(btn == 0)
+					overwrite = true;
+				else if(btn == 1) // Canceled
+					return;
+				else if(btn == 2)
+					overwrite = false;
+				if(applyToAll.value)
+					overwriteAsk = false;
 			}
 			if(exists) {
 				if(!overwrite)
-					continue;
-				if(overwriteOnlyOlder && file.lastModifiedTime > fo.lastModified)
 					continue;
 			}
 			else {
