@@ -528,25 +528,33 @@
 					var ut = top.handyClicksUtils;
 
 					var path = ut.ps.getSourcePath(this.value);
-					var file = path && ut.getLocalFile(path);
-					var isExternal = !!file;
+					var file, fileData;
+					if(ut.ps.otherSrc && path in ut.ps.files)
+						fileData = ut.ps.files[path].data || "";
+					else if(path)
+						file = ut.getLocalFile(path);
+					var hasFileData = fileData !== undefined;
+
+					var isExternal = !!file || hasFileData;
 					if(!file)
 						file = this._linkedFile;
 					if(isExternal && lineNumber === undefined)
 						lineNumber = 1;
 
 					var ext = ut.pu.get("editor.external.extension") || "js";
-					if(!isExternal && (!file || !file.exists())) {
-						var fName = this.getDefaultFilename(
-							ext,
-							ut.canRunw && ut.pu.get("editor.external.labelInFileName")
-						);
+					if((!isExternal || hasFileData) && (!file || !file.exists())) {
+						var fName = hasFileData
+							? path.match(/[^\/\\]*$/)
+							: this.getDefaultFilename(ext, ut.canRunw && ut.pu.get("editor.external.labelInFileName"));
 						//file = ut.getFileByAlias("TmpD");
 						file = ut.ps.tempDir.clone();
 						file.append(fName);
 						file.createUnique(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
+						if(hasFileData)
+							ut.writeToFile(fileData, file);
 						this._lineBreak = null; // Will use platform's line breaks
-						this.watchFile(file, true);
+						if(!hasFileData)
+							this.watchFile(file, true);
 
 						ut.deleteTemporaryFileOnExit(file);
 					}

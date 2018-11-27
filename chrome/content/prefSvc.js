@@ -148,7 +148,8 @@ var handyClicksPrefSvc = {
 		return {
 			version: this.loadedVersion,
 			types:   this.types,
-			prefs:   this.prefs
+			prefs:   this.prefs,
+			files:   this.files
 		};
 	},
 	get currentOtherSrc() {
