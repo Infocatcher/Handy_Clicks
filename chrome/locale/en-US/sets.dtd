@@ -31,6 +31,7 @@ Special:
 
 Placeholders:
 &#37;custom&#37; – custom code
+&#37;file&#37; – custom file
 &#37;type&#37; – custom type
 &#37;dis&#37; – disabled
 &#37;ovr&#37; – changed (import)
