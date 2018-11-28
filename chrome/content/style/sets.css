@@ -127,6 +127,9 @@ tree[hc_colored="true"] treechildren::-moz-tree-row(hc_custom) {
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_customType) {
 	background-color: #dff9ff;
 }
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_customFile) {
+	background-color: #dfefff;
+}
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_custom, hc_customType) {
 	background-color: #dffff7;
 }

@@ -558,6 +558,7 @@ var handyClicksSets = {
 				hc_disabled: this._forcedDisDa || !fo.enabled || !da.enabled,
 				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel) && ++this._buggy,
 				hc_custom: daCustom,
+				hc_customFile: daCustom && !!this.ps.getSourcePath(da.action),
 				hc_customType: isCustomType
 			}, true);
 
@@ -604,6 +605,7 @@ var handyClicksSets = {
 			hc_disabled: !fo.enabled,
 			hc_buggy: isBuggy && ++this._buggy,
 			hc_custom: isCustom,
+			hc_customFile: isCustom && !!this.ps.getSourcePath(fo.action),
 			hc_customType: isCustomType
 		}, true);
 		if(this._import) { //~ todo: test!
@@ -1529,6 +1531,7 @@ var handyClicksSets = {
 		hc_override:   "%ovr%",
 		hc_new:        "%new%",
 		hc_custom:     "%custom%",
+		hc_customFile: "%file%",
 		hc_customType: "%type%",
 		hc_disabled:   "%dis%",
 		hc_buggy:      "%bug%",
