@@ -659,7 +659,7 @@ var handyClicksPrefSvc = {
 		var json = this.JSON.stringify(o, function censor(key, val) {
 			if(key.charAt(0) == "_")
 				return undefined;
-			if(exportLinkedFiles && key != "label" && typeof val == "string")
+			if(exportLinkedFiles && key in _this.codeKeys)
 				_this.exportFileData(o.files, val);
 			return val;
 		}, "\t");
@@ -668,6 +668,13 @@ var handyClicksPrefSvc = {
 		return this.setsHeader
 			+ "// " + hashFunc + ": " + this.getHash(json, hashFunc) + "\n"
 			+ json;
+	},
+	codeKeys: {
+		contextMenu: true,
+		define: true,
+		init: true,
+		action: true,
+		__proto__: null
 	},
 	get JSON() { // For Firefox < 3.5
 		delete this.JSON;
