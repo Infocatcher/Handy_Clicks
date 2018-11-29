@@ -667,7 +667,7 @@ var handyClicksSets = {
 		if(path)
 			return this.getLocalized("customFile") + " " + path;
 		return this.getLocalized("customFunction")
-			+ (this.oldTree ? " " : "\n")
+			+ (this.oldTree ? " " : " \n")
 			+ this.cropCode(action || "");
 	},
 	getInitCode: function(fo) {
