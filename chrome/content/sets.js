@@ -359,7 +359,7 @@ var handyClicksSets = {
 			var oldTo = this.ut.getOwnProperty(savedTypes, type);
 			if(!oldTo)
 				++newTypes;
-			else if(!this.ps.settingsEquals(to, oldTo))
+			else if(!this.settingsEquals(to, oldTo))
 				++overrideTypes;
 		}
 
@@ -570,7 +570,7 @@ var handyClicksSets = {
 			if(this._import) { //~ todo: test!
 				var savedDa = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType, "delayedAction");
 				var overrideDa = savedDa;
-				var equalsDa = this.ps.settingsEquals(da, savedDa);
+				var equalsDa = this.settingsEquals(da, savedDa);
 				this.setChildNodesProperties(daRow, {
 					hc_override: overrideDa && !equalsDa && ++this._overrideDa,
 					hc_equals:   overrideDa &&  equalsDa,
@@ -618,11 +618,11 @@ var handyClicksSets = {
 				fo.delayedAction = null;
 
 			var override = saved;
-			var equals = this.ps.settingsEquals(fo, saved);
+			var equals = this.settingsEquals(fo, saved);
 			if(isCustomType) {
 				var newType = this.ut.getOwnProperty(this.ps.types, itemType);
 				var savedType = this.ut.getOwnProperty(this._savedTypes, itemType);
-				var eqType = this.ps.settingsEquals(newType, savedType);
+				var eqType = this.settingsEquals(newType, savedType);
 				if(!eqType && (saved || savedType))
 					override = true;
 				equals = equals && eqType;
@@ -688,6 +688,26 @@ var handyClicksSets = {
 	},
 	isBuggyFuncObj: function(fo, isCustom, label) {
 		return !this.ps.isOkFuncObj(fo) || !isCustom && this.ut.isBuggyStr(label);
+	},
+	settingsEquals: function(savedObj, newObj) {
+		if(!this.ps.settingsEquals(savedObj, newObj))
+			return false;
+		for(var key in savedObj) if(savedObj.hasOwnProperty(key)) if(key in this.ps.codeKeys) {
+			if( // Will ignore saved files, that will be unchanged
+				newObj.hasOwnProperty(key)
+				&& savedObj[key] == newObj[key]
+				&& !this.fileDataEquals(savedObj[key])
+			)
+				return false;
+		}
+		for(var key in newObj) if(newObj.hasOwnProperty(key)) if(key in this.ps.codeKeys) {
+			if(
+				!savedObj.hasOwnProperty(key)
+				&& this.getFileData(newObj[key])
+			) // Will be imported new file
+				return false;
+		}
+		return true;
 	},
 	setNodeProperties: function(tar, propsObj) {
 		var propsVal = tar.getAttribute("properties");
@@ -2976,6 +2996,28 @@ var handyClicksSets = {
 			this.ut.writeToFile(fo.data, file);
 			file.lastModifiedTime = fo.lastModified || Date.now();
 		}
+	},
+	getFileData: function(code) {
+		var path = this.ps.getSourcePath(code);
+		return path && this.ut.getOwnProperty(this.ps.files, path, "data");
+	},
+	fileDataEquals: function(code) {
+		var path = this.ps.getSourcePath(code);
+		if(!path)
+			return true;
+		var fileData = this.ut.getOwnProperty(this.ps.files, path, "data");
+		if(!fileData) // File will be unchanged
+			return true;
+		var file = this.ut.getLocalFile(path);
+		if(!file.exists())
+			return false;
+		try {
+			return this.ut.readFromFile(file) == fileData;
+		}
+		catch(e) {
+			Components.utils.reportError(e);
+		}
+		return undefined;
 	},
 
 	// Export/import utils:
