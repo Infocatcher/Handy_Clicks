@@ -1501,11 +1501,33 @@ var handyClicksSets = {
 			return;
 		var ph = RegExp.lastMatch;
 		var ifi = this.searchField.inputField;
+		var val = ifi.value;
+		var pos = val.indexOf(ph);
 		var editor = ifi
 			.QueryInterface(Components.interfaces.nsIDOMNSEditableElement)
 			.editor
 			.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-		editor.insertText(ph);
+		if(pos != -1) {
+			var posEnd = pos + ph.length;
+			var before = val.substr(0, pos);
+			if(/^\s+$/.test(before))
+				pos = 0;
+			if(
+				(!before || /\s$/.test(before))
+				&& /^\s+/.test(val.substr(posEnd))
+			)
+				posEnd += RegExp.lastMatch.length;
+			ifi.selectionStart = pos;
+			ifi.selectionEnd = posEnd;
+			editor.deleteSelection(0, 0);
+		}
+		else {
+			if(/\S$/.test(val.substr(0, ifi.selectionStart)))
+				ph = " " + ph;
+			if(/^\S/.test(val.substr(ifi.selectionEnd)))
+				ph += " ";
+			editor.insertText(ph);
+		}
 		ifi.focus();
 	},
 	navigateSearchResults: function(e) {
