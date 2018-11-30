@@ -1506,6 +1506,8 @@ var handyClicksSets = {
 			if(!ph)
 				return;
 			mi.setAttribute("checked", val.indexOf(ph) != -1);
+			if(ph == "%ovr%" || ph == "%new%")
+				mi.setAttribute("disabled", !this._import);
 		}, this);
 	},
 	insertSearchPlaceholder: function(mi) {
