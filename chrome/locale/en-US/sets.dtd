@@ -23,12 +23,12 @@
 
 <!ENTITY hc.sets.search "Search:">
 <!ENTITY hc.sets.searchAccesskey "a">
-<!ENTITY hc.sets.searchCustom "Custom code: &#37;custom&#37;">
-<!ENTITY hc.sets.searchCustomFile "Custom file: &#37;file&#37;">
-<!ENTITY hc.sets.searchCustomType "Custom type: &#37;type&#37;">
-<!ENTITY hc.sets.searchDisable "Disabled: &#37;dis&#37;">
-<!ENTITY hc.sets.searchChanged "Changed: &#37;ovr&#37; (import)">
-<!ENTITY hc.sets.searchAdded "Added: &#37;new&#37; (import)">
+<!ENTITY hc.sets.searchCustom "Custom code">
+<!ENTITY hc.sets.searchCustomFile "Custom file">
+<!ENTITY hc.sets.searchCustomType "Custom type">
+<!ENTITY hc.sets.searchDisable "Disabled">
+<!ENTITY hc.sets.searchChanged "Changed (import)">
+<!ENTITY hc.sets.searchAdded "Added (import)">
 <!ENTITY hc.sets.searchTip "Space = and
 'whole string'
 &quot;Whole string and Match Case&quot;

@@ -23,12 +23,12 @@
 
 <!ENTITY hc.sets.search "Найти:">
 <!ENTITY hc.sets.searchAccesskey "а">
-<!ENTITY hc.sets.searchCustom "Свой код: &#37;custom&#37;">
-<!ENTITY hc.sets.searchCustomFile "Свой файл: &#37;file&#37;">
-<!ENTITY hc.sets.searchCustomType "Добавленный тип: &#37;type&#37;">
-<!ENTITY hc.sets.searchDisable "Отключённые: &#37;dis&#37;">
-<!ENTITY hc.sets.searchChanged "Изменяемые: &#37;ovr&#37; (импорт)">
-<!ENTITY hc.sets.searchAdded "Добавляемые: &#37;new&#37; (импорт)">
+<!ENTITY hc.sets.searchCustom "Свой код">
+<!ENTITY hc.sets.searchCustomFile "Свой файл">
+<!ENTITY hc.sets.searchCustomType "Добавленный тип">
+<!ENTITY hc.sets.searchDisable "Отключённые">
+<!ENTITY hc.sets.searchChanged "Изменяемые (импорт)">
+<!ENTITY hc.sets.searchAdded "Добавляемые (импорт)">
 <!ENTITY hc.sets.searchTip "Пробел = и
 'строка целиком'
 &quot;Строка целиком с Учётом Регистра&quot;

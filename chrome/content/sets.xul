@@ -48,12 +48,12 @@ preferences {
 			<button id="hc-sets-tree-searchMenu" type="menu" label="&hc.sets.search;" accesskey="&hc.sets.searchAccesskey;">
 				<menupopup onpopupshowing="handyClicksSets.initSearchMenu(this);"
 					oncommand="handyClicksSets.insertSearchPlaceholder(event.target);">
-					<menuitem type="checkbox" label="&hc.sets.searchCustom;" />
-					<menuitem type="checkbox" label="&hc.sets.searchCustomFile;" />
-					<menuitem type="checkbox" label="&hc.sets.searchCustomType;" />
-					<menuitem type="checkbox" label="&hc.sets.searchDisable;" />
-					<menuitem type="checkbox" label="&hc.sets.searchChanged;" />
-					<menuitem type="checkbox" label="&hc.sets.searchAdded;" />
+					<menuitem type="checkbox" acceltext="%custom%" label="&hc.sets.searchCustom;" />
+					<menuitem type="checkbox" acceltext="%file%" label="&hc.sets.searchCustomFile;" />
+					<menuitem type="checkbox" acceltext="%type%" label="&hc.sets.searchCustomType;" />
+					<menuitem type="checkbox" acceltext="%dis%" label="&hc.sets.searchDisable;" />
+					<menuitem type="checkbox" acceltext="%ovr%" label="&hc.sets.searchChanged;" />
+					<menuitem type="checkbox" acceltext="%new%" label="&hc.sets.searchAdded;" />
 				</menupopup>
 			</button>
 			<hbox id="hc-sets-tree-searchContainer" flex="100">

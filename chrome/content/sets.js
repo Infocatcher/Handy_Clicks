@@ -1496,13 +1496,10 @@ var handyClicksSets = {
 		delete this.searcher;
 		return this.searcher = handyClicksSetsSearcher;
 	},
-	getPlaceholder: function(mi) {
-		return /%[^%]+%/.test(mi.getAttribute("label")) && RegExp.lastMatch;
-	},
 	initSearchMenu: function(mp) {
 		var val = this.searchField.value;
 		Array.prototype.forEach.call(mp.getElementsByTagName("menuitem"), function(mi) {
-			var ph = this.getPlaceholder(mi);
+			var ph = mi.getAttribute("acceltext");
 			if(!ph)
 				return;
 			mi.setAttribute("checked", val.indexOf(ph) != -1);
@@ -1511,7 +1508,7 @@ var handyClicksSets = {
 		}, this);
 	},
 	insertSearchPlaceholder: function(mi) {
-		var ph = this.getPlaceholder(mi);
+		var ph = mi.getAttribute("acceltext");
 		if(!ph)
 			return;
 		var ifi = this.searchField.inputField;
