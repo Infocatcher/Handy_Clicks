@@ -22,20 +22,17 @@
 <!ENTITY hc.sets.columnEnabled "Включено">
 
 <!ENTITY hc.sets.search "Найти:">
+<!ENTITY hc.sets.searchAccesskey "а">
+<!ENTITY hc.sets.searchCustom "Свой код: &#37;custom&#37;">
+<!ENTITY hc.sets.searchCustomFile "Свой файл: &#37;file&#37;">
+<!ENTITY hc.sets.searchCustomType "Добавленный тип: &#37;type&#37;">
+<!ENTITY hc.sets.searchDisable "Отключённые: &#37;dis&#37;">
+<!ENTITY hc.sets.searchChanged "Изменяемые: &#37;ovr&#37; (импорт)">
+<!ENTITY hc.sets.searchAdded "Добавляемые: &#37;new&#37; (импорт)">
 <!ENTITY hc.sets.searchTip "Пробел = и
-
-Специальные варианты:
 'строка целиком'
 &quot;Строка целиком с Учётом Регистра&quot;
-/регулярное выражение/i
-
-Заменители:
-&#37;custom&#37; – свой код
-&#37;file&#37; – свой файл
-&#37;type&#37; – добавленный тип
-&#37;dis&#37; – отключено
-&#37;ovr&#37; – изменяемые (при импорте)
-&#37;new&#37; – добавляемые (при импорте)">
+/регулярное выражение/i">
 <!ENTITY hc.sets.filterTip "Фильтр">
 
 <!ENTITY hc.sets.editMenu "Правка">

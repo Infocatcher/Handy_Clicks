@@ -1496,6 +1496,18 @@ var handyClicksSets = {
 		delete this.searcher;
 		return this.searcher = handyClicksSetsSearcher;
 	},
+	insertSearchPlaceholder: function(mi) {
+		if(!/%[^%]+%/.test(mi.getAttribute("label")))
+			return;
+		var ph = RegExp.lastMatch;
+		var ifi = this.searchField.inputField;
+		var editor = ifi
+			.QueryInterface(Components.interfaces.nsIDOMNSEditableElement)
+			.editor
+			.QueryInterface(Components.interfaces.nsIPlaintextEditor);
+		editor.insertText(ph);
+		ifi.focus();
+	},
 	navigateSearchResults: function(e) {
 		var code = e.keyCode;
 		if(code == e.DOM_VK_F1) {

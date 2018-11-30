@@ -22,20 +22,17 @@
 <!ENTITY hc.sets.columnEnabled "Enabled">
 
 <!ENTITY hc.sets.search "Search:">
+<!ENTITY hc.sets.searchAccesskey "a">
+<!ENTITY hc.sets.searchCustom "Custom code: &#37;custom&#37;">
+<!ENTITY hc.sets.searchCustomFile "Custom file: &#37;file&#37;">
+<!ENTITY hc.sets.searchCustomType "Custom type: &#37;type&#37;">
+<!ENTITY hc.sets.searchDisable "Disabled: &#37;dis&#37;">
+<!ENTITY hc.sets.searchChanged "Changed: &#37;ovr&#37; (import)">
+<!ENTITY hc.sets.searchAdded "Added: &#37;new&#37; (import)">
 <!ENTITY hc.sets.searchTip "Space = and
-
-Special:
 'whole string'
 &quot;Whole string and Match Case&quot;
-/regular expression/i
-
-Placeholders:
-&#37;custom&#37; – custom code
-&#37;file&#37; – custom file
-&#37;type&#37; – custom type
-&#37;dis&#37; – disabled
-&#37;ovr&#37; – changed (import)
-&#37;new&#37; – added (import)">
+/regular expression/i">
 <!ENTITY hc.sets.filterTip "Filter">
 
 <!ENTITY hc.sets.editMenu "Edit">
