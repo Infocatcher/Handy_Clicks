@@ -46,13 +46,14 @@ preferences {
 	<prefpane id="hc-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1">
 		<hbox align="center">
 			<button id="hc-sets-tree-searchMenu" type="menu" label="&hc.sets.search;" accesskey="&hc.sets.searchAccesskey;">
-				<menupopup oncommand="handyClicksSets.insertSearchPlaceholder(event.target);">
-					<menuitem label="&hc.sets.searchCustom;" />
-					<menuitem label="&hc.sets.searchCustomFile;" />
-					<menuitem label="&hc.sets.searchCustomType;" />
-					<menuitem label="&hc.sets.searchDisable;" />
-					<menuitem label="&hc.sets.searchChanged;" />
-					<menuitem label="&hc.sets.searchAdded;" />
+				<menupopup onpopupshowing="handyClicksSets.initSearchMenu(this);"
+					oncommand="handyClicksSets.insertSearchPlaceholder(event.target);">
+					<menuitem type="checkbox" label="&hc.sets.searchCustom;" />
+					<menuitem type="checkbox" label="&hc.sets.searchCustomFile;" />
+					<menuitem type="checkbox" label="&hc.sets.searchCustomType;" />
+					<menuitem type="checkbox" label="&hc.sets.searchDisable;" />
+					<menuitem type="checkbox" label="&hc.sets.searchChanged;" />
+					<menuitem type="checkbox" label="&hc.sets.searchAdded;" />
 				</menupopup>
 			</button>
 			<hbox id="hc-sets-tree-searchContainer" flex="100">
