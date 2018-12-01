@@ -507,11 +507,15 @@ var handyClicksSets = {
 				<treechildren />\
 			</treeitem>'
 		);
-
-		var sortItem = {
+		var insPos = this.getSortedInsPos(parent, {
 			label: label,
 			tItem: tItem
-		};
+		});
+		parent.insertBefore(tItem, insPos);
+		tItem.__hash = hash;
+		return this.eltsCache[hash] = tItem.getElementsByTagName("treechildren")[0];
+	},
+	getSortedInsPos: function(parent, sortItem) {
 		var sortedItems = Array.prototype.map.call(parent.childNodes, function(ti) {
 			var tCell = ti.getElementsByTagName("treecell")[0];
 			return {
@@ -524,10 +528,7 @@ var handyClicksSets = {
 			return a.label > b.label;
 		});
 		var i = sortedItems.indexOf(sortItem);
-		parent.insertBefore(tItem, i == sortedItems.length - 1 ? null : sortedItems[i + 1].tItem);
-
-		tItem.__hash = hash;
-		return this.eltsCache[hash] = tItem.getElementsByTagName("treechildren")[0];
+		return i == sortedItems.length - 1 ? null : sortedItems[i + 1].tItem;
 	},
 	appendItems: function(parent, items, shortcut) {
 		for(var itemType in items) if(items.hasOwnProperty(itemType))
