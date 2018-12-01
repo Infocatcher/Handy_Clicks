@@ -502,7 +502,7 @@ var handyClicksSets = {
 		var tItem = this.ut.parseXULFromString('\
 			<treeitem xmlns="' + this.ut.XULNS + '" container="true" open="true">\
 				<treerow>\
-					<treecell label="' + label + '" />\
+					<treecell label="' + this.ut.encodeHTML(label) + '" />\
 				</treerow>\
 				<treechildren />\
 			</treeitem>'
