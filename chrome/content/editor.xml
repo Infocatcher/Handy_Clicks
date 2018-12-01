@@ -531,8 +531,14 @@
 					var file, fileData;
 					if(ut.ps.otherSrc && path in ut.ps.files)
 						fileData = ut.ps.files[path].data || "";
-					else if(path)
+					else if(path) {
 						file = ut.getLocalFile(path);
+						ut.ps.otherSrc && ut.notifyInWindowCorner(
+							ut.getLocalized("cantEditImportedFile"),
+							ut.getLocalized("warningTitle"),
+							null, null, ut.NOTIFY_ICON_WARNING
+						);
+					}
 					var hasFileData = fileData !== undefined;
 
 					var isExternal = !!file || hasFileData;
