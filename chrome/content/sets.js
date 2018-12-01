@@ -542,8 +542,9 @@ var handyClicksSets = {
 		var isCustom = !!fo.custom;
 		var isCustomType = this.ps.isCustomType(itemType);
 		var typeLabel = this.ps.getTypeLabel(itemType, isCustomType);
+		var label = forcedLabel || typeLabel;
 
-		this.appendTreeCell(tRow, "label", forcedLabel || typeLabel);
+		this.appendTreeCell(tRow, "label", label);
 		this.appendTreeCell(tRow, "label", fo.eventType);
 		var actLabel = this.getActionLabel(fo);
 		this.appendTreeCell(tRow, "label", actLabel);
@@ -666,8 +667,13 @@ var handyClicksSets = {
 		tItem.__delayed = da && daItem;
 
 		tItem.appendChild(tRow);
-		//parent.appendChild(tItem);
-		parent.insertBefore(tItem, insAfter && insAfter.nextSibling);
+		//parent.insertBefore(tItem, insAfter && insAfter.nextSibling);
+		var insPos = this.getSortedInsPos(parent, {
+			label: label,
+			tItem: tItem
+		});
+		parent.insertBefore(tItem, insPos);
+
 		this.rowsCache[tItem.__hash = shortcut + "-" + itemType] = tRow;
 		return tItem;
 	},
