@@ -449,9 +449,9 @@ var handyClicksSets = {
 		for(var i = 0; i < rngCount; ++i) {
 			this.tSel.getRangeAt(i, start, end);
 			for(var j = start.value, l = end.value; j <= l; ++j) {
-				//var tItem = this.getItemAtIndex(j);
-				var tItem = this.tView.getItemAtIndex(j);
-				selectedRows[tItem.__hash] = true;
+				var tItem = this.getItemAtIndex(j);
+				if(tItem) // May be out of range in case of filters
+					selectedRows[tItem.__hash] = true;
 			}
 		}
 		return selectedRows;
