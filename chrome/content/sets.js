@@ -507,7 +507,25 @@ var handyClicksSets = {
 				<treechildren />\
 			</treeitem>'
 		);
-		parent.appendChild(tItem);
+
+		var sortItem = {
+			label: label,
+			tItem: tItem
+		};
+		var sortedItems = Array.prototype.map.call(parent.childNodes, function(ti) {
+			var tCell = ti.getElementsByTagName("treecell")[0];
+			return {
+				label: tCell.getAttribute("label"),
+				tItem: ti
+			};
+		});
+		sortedItems.push(sortItem);
+		sortedItems.sort(function(a, b) {
+			return a.label > b.label;
+		});
+		var i = sortedItems.indexOf(sortItem);
+		parent.insertBefore(tItem, i == sortedItems.length - 1 ? null : sortedItems[i + 1].tItem);
+
 		tItem.__hash = hash;
 		return this.eltsCache[hash] = tItem.getElementsByTagName("treechildren")[0];
 	},
