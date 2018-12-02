@@ -505,28 +505,19 @@ var handyClicksSets = {
 				<treechildren />\
 			</treeitem>'
 		);
-		var insPos = this.getSortedInsPos(parent, {
-			label: label,
-			tItem: tItem
-		});
-		parent.insertBefore(tItem, insPos);
 		tItem.__hash = hash;
+		tItem.__sortLabel = label;
+		var insPos = this.getSortedInsPos(parent, tItem);
+		parent.insertBefore(tItem, insPos);
 		return this.eltsCache[hash] = tItem.getElementsByTagName("treechildren")[0];
 	},
 	getSortedInsPos: function(parent, sortItem) {
-		var sortedItems = Array.prototype.map.call(parent.childNodes, function(ti) {
-			var tCell = ti.getElementsByTagName("treecell")[0];
-			return {
-				label: tCell.getAttribute("label"),
-				tItem: ti
-			};
-		});
+		var sortedItems = Array.prototype.slice.call(parent.childNodes);
 		sortedItems.push(sortItem);
 		sortedItems.sort(function(a, b) {
-			return a.label > b.label;
+			return a.__sortLabel > b.__sortLabel;
 		});
-		var i = sortedItems.indexOf(sortItem);
-		return i == sortedItems.length - 1 ? null : sortedItems[i + 1].tItem;
+		return sortedItems[sortedItems.indexOf(sortItem) + 1] || null;
 	},
 	appendItems: function(parent, items, shortcut) {
 		for(var itemType in items) if(items.hasOwnProperty(itemType))
@@ -663,12 +654,10 @@ var handyClicksSets = {
 		tItem.__isCustomType = isCustomType;
 		tItem.__isDelayed = false;
 		tItem.__delayed = da && daItem;
+		tItem.__sortLabel = label;
 
 		tItem.appendChild(tRow);
-		var insPos = this.getSortedInsPos(parent, {
-			label: label,
-			tItem: tItem
-		});
+		var insPos = this.getSortedInsPos(parent, tItem);
 		parent.insertBefore(tItem, insPos);
 
 		this.rowsCache[tItem.__hash = shortcut + "-" + itemType] = tRow;
