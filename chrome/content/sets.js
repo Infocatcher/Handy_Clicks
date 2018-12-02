@@ -331,9 +331,7 @@ var handyClicksSets = {
 					var sep = " " + this.ps.keys.sep + " ";
 					var label = sep + button + (modifiers ? sep + modifiers : "");
 					for(var type in so) if(so.hasOwnProperty(type))
-						this.eltsCache[type] = this.appendRow(
-							df, sh, type, so[type], this.ps.getTypeLabel(type) + label, this.eltsCache[type] || null
-						);
+						this.appendRow(df, sh, type, so[type], this.ps.getTypeLabel(type) + label);
 				break;
 			}
 		}
@@ -534,7 +532,7 @@ var handyClicksSets = {
 		for(var itemType in items) if(items.hasOwnProperty(itemType))
 			this.appendRow(parent, shortcut, itemType, items[itemType]);
 	},
-	appendRow: function(parent, shortcut, itemType, fo, forcedLabel, insAfter) {
+	appendRow: function(parent, shortcut, itemType, fo, forcedLabel) {
 		var tItem = document.createElement("treeitem");
 		var tRow = document.createElement("treerow");
 		if(!this.ut.isObject(fo))
@@ -667,7 +665,6 @@ var handyClicksSets = {
 		tItem.__delayed = da && daItem;
 
 		tItem.appendChild(tRow);
-		//parent.insertBefore(tItem, insAfter && insAfter.nextSibling);
 		var insPos = this.getSortedInsPos(parent, {
 			label: label,
 			tItem: tItem
