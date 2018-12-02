@@ -25,6 +25,7 @@
 <!ENTITY hc.sets.searchAccesskey "а">
 <!ENTITY hc.sets.searchCustom "Свой код">
 <!ENTITY hc.sets.searchCustomFile "Свой файл">
+<!ENTITY hc.sets.searchCustomInit "Своя инициализация">
 <!ENTITY hc.sets.searchCustomType "Добавленный тип">
 <!ENTITY hc.sets.searchDisable "Отключённые">
 <!ENTITY hc.sets.searchChanged "Изменяемые (импорт)">

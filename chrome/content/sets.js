@@ -532,6 +532,7 @@ var handyClicksSets = {
 		var isCustomType = this.ps.isCustomType(itemType);
 		var typeLabel = this.ps.getTypeLabel(itemType, isCustomType);
 		var label = forcedLabel || typeLabel;
+		var initCode, daInitCode;
 
 		this.appendTreeCell(tRow, "label", label);
 		this.appendTreeCell(tRow, "label", fo.eventType);
@@ -539,7 +540,7 @@ var handyClicksSets = {
 		this.appendTreeCell(tRow, "label", actLabel);
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom));
 		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}, this._localizeArgs));
-		this.appendTreeCell(tRow, "label", this.getInitCode(fo, true));
+		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)));
 
 		var da = this.ut.getOwnProperty(fo, "delayedAction");
 		if(da) {
@@ -561,13 +562,14 @@ var handyClicksSets = {
 			this.appendTreeCell(daRow, "label", daLabel);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom));
 			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}, this._localizeArgs));
-			this.appendTreeCell(daRow, "label", this.getInitCode(da, true));
+			this.appendTreeCell(daRow, "label", (daInitCode = this.getInitCode(da, true)));
 
 			this.setChildNodesProperties(daRow, {
 				hc_disabled: this._forcedDisDa || !fo.enabled || !da.enabled,
 				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel) && ++this._buggy,
 				hc_custom: daCustom,
 				hc_customFile: daCustom && !!this.ps.getSourcePath(da.action),
+				hc_customInit: !!daInitCode,
 				hc_customType: isCustomType
 			}, true);
 
@@ -615,6 +617,7 @@ var handyClicksSets = {
 			hc_buggy: isBuggy && ++this._buggy,
 			hc_custom: isCustom,
 			hc_customFile: isCustom && !!this.ps.getSourcePath(fo.action),
+			hc_customInit: !!initCode,
 			hc_customType: isCustomType
 		}, true);
 		if(this._import) { //~ todo: test!
@@ -1608,6 +1611,7 @@ var handyClicksSets = {
 		hc_new:        "%new%",
 		hc_custom:     "%custom%",
 		hc_customFile: "%file%",
+		hc_customInit: "%init%",
 		hc_customType: "%type%",
 		hc_disabled:   "%dis%",
 		hc_buggy:      "%bug%",

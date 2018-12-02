@@ -50,6 +50,7 @@ preferences {
 					oncommand="handyClicksSets.insertSearchPlaceholder(event.target);">
 					<menuitem type="checkbox" acceltext="%custom%" label="&hc.sets.searchCustom;" />
 					<menuitem type="checkbox" acceltext="%file%" label="&hc.sets.searchCustomFile;" />
+					<menuitem type="checkbox" acceltext="%init%" label="&hc.sets.searchCustomInit;" />
 					<menuitem type="checkbox" acceltext="%type%" label="&hc.sets.searchCustomType;" />
 					<menuitem type="checkbox" acceltext="%dis%" label="&hc.sets.searchDisable;" />
 					<menuitem type="checkbox" acceltext="%ovr%" label="&hc.sets.searchChanged;" />
