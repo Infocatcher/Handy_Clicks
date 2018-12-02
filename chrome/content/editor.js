@@ -524,7 +524,9 @@ var handyClicksEditor = {
 
 		var cType = tar.value;
 		this.loadCustomType(cType);
-		this.editorTabIndex = this.INDEX_TYPE;
+		this.delay(function() { // Trick to prevent context menu for items inside type tab
+			this.editorTabIndex = this.INDEX_TYPE;
+		}, this);
 	},
 	initCustomTypesEditor: function(cType, to) {
 		var cList = this.$("hc-editor-customType");
