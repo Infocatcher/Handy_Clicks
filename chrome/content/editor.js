@@ -1155,12 +1155,10 @@ var handyClicksEditor = {
 		this.attribute(document.documentElement, "hc_hasCrashBackup", bakPath);
 		this.hasCrashBackup = !!bakPath;
 		if(bakPath && !silent) {
-			this.ut.notifyInWindowCorner(
+			this.ut.notify(
 				this.getLocalized("hasCrashBackup").replace("%f", bakPath),
 				this.getLocalized("warningTitle"),
-				null,
-				null,
-				this.ut.NOTIFY_ICON_WARNING
+				null, null, this.ut.NOTIFY_ICON_WARNING
 			);
 		}
 	},

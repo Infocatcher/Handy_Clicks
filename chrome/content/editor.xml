@@ -533,7 +533,7 @@
 						fileData = ut.ps.files[path].data || "";
 					else if(path) {
 						file = ut.getLocalFile(path);
-						ut.ps.otherSrc && ut.notifyInWindowCorner(
+						ut.ps.otherSrc && ut.notify(
 							ut.getLocalized("cantEditImportedFile"),
 							ut.getLocalized("warningTitle"),
 							null, null, ut.NOTIFY_ICON_WARNING
@@ -740,7 +740,7 @@
 								this.fade();
 							}
 							catch(e) { // See https://developer.mozilla.org/en/nsILocalFile#Remarks
-								ut.notifyInWindowCorner(
+								ut.notify(
 									ut.getLocalized("launchError"),
 									ut.getLocalized("errorTitle"),
 									ut.bind(ut.wu.openSettingsPane, ut.wu, ["editor"])

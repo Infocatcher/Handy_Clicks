@@ -2517,7 +2517,7 @@ var handyClicksSets = {
 		}, this);
 		this.pu.savePrefFile();
 		this.reloadPrefpanes(); // Changed prefs don't reloaded by default
-		this.ut.notifyInWindowCorner(this.getLocalized("configSuccessfullyImported"));
+		this.ut.notify(this.getLocalized("configSuccessfullyImported"));
 	},
 
 	// Clicking options management
@@ -2695,7 +2695,7 @@ var handyClicksSets = {
 		//this.ut.copyFileTo(this.ps.prefsFile, this.ps.backupsDir, bFile.leafName);
 		var pStr = this.ps.getSettingsStr(null, null, true /*exportLinkedFiles*/);
 		this.ut.writeToFile(pStr, bFile);
-		this.ut.notifyInWindowCorner(
+		this.ut.notify(
 			this.getLocalized("backupCreated").replace("%f", bFile.path),
 			null,
 			this.ut.bind(this.reveal, this, [bFile])

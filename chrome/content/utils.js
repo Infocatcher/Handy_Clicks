@@ -186,22 +186,22 @@ var handyClicksUtils = {
 		if(dur <= 0)
 			 return null;
 		return window.openDialog(
-			 "chrome://handyclicks/content/notify.xul",
-			 "_blank",
-			 "chrome,popup,titlebar=0",
-			 {
-			 	dur: dur,
-			 	header: header || this.getLocalized("title"),
-			 	msg: msg || "",
-			 	funcLeftClick: funcLeftClick,
-			 	funcMiddleClick: funcMiddleClick,
-			 	icon: icon === undefined ? this.NOTIFY_ICON_NORMAL : icon,
-			 	inWindowCorner: inWindowCorner === undefined ? this.pu.get("notifyInWindowCorner") : inWindowCorner,
-			 	dontCloseUnderCursor: this.pu.get("notifyDontCloseUnderCursor"),
-			 	rearrangeWindows: this.pu.get("notifyRearrangeWindows"),
-			 	parentWindow: parentWindow || window,
-			 	__proto__: null
-			 }
+			"chrome://handyclicks/content/notify.xul",
+			"_blank",
+			"chrome,popup,titlebar=0",
+			{
+				dur: dur,
+				header: header || this.getLocalized("title"),
+				msg: msg || "",
+				funcLeftClick: funcLeftClick,
+				funcMiddleClick: funcMiddleClick,
+				icon: icon === undefined ? this.NOTIFY_ICON_NORMAL : icon,
+				inWindowCorner: inWindowCorner === undefined ? this.pu.get("notifyInWindowCorner") : inWindowCorner,
+				dontCloseUnderCursor: this.pu.get("notifyDontCloseUnderCursor"),
+				rearrangeWindows: this.pu.get("notifyRearrangeWindows"),
+				parentWindow: parentWindow || window,
+				__proto__: null
+			}
 		);
 	},
 	notifyInWindowCorner: function(msg, header, funcLeftClick, funcMiddleClick, icon, parentWindow) {
