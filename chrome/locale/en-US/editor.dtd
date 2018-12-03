@@ -15,7 +15,7 @@
 <!ENTITY hc.editor.mainTabActions "Actions">
 <!ENTITY hc.editor.mainTabActionsAccesskey "o">
 <!ENTITY hc.editor.clickHere "Click here">
-<!ENTITY hc.editor.clickHereTip "Click to select mouse button and modifiers">
+<!ENTITY hc.editor.clickHereTip "Click to set mouse button and modifiers">
 <!ENTITY hc.editor.osKeyNote "Works only in Firefox 15+ and SeaMonkey 2.12+">
 
 <!ENTITY hc.editor.event "Event:">
@@ -33,13 +33,13 @@
 
 <!ENTITY hc.editor.tabAction "Action">
 <!ENTITY hc.editor.tabActionAccesskey "n">
-<!ENTITY hc.editor.tabActionTip "Executes on selected event">
+<!ENTITY hc.editor.tabActionTip "Executes when selected event occurs">
 <!ENTITY hc.editor.tabActionDelay "Delayed Action">
 <!ENTITY hc.editor.tabActionDelayAccesskey "y">
-<!ENTITY hc.editor.tabActionDelayTip "Performed after &#37;n ms">
+<!ENTITY hc.editor.tabActionDelayTip "Executes after &#37;n ms delay">
 <!ENTITY hc.editor.fixActionOpts "Fix">
 <!ENTITY hc.editor.fixActionOptsAccesskey "x">
-<!ENTITY hc.editor.fixActionOptsTip "Fix action options (for options copying)">
+<!ENTITY hc.editor.fixActionOptsTip "Fix action options (to copy options)">
 
 <!ENTITY hc.editor.func "Function:">
 <!ENTITY hc.editor.funcAccesskey "F">
@@ -51,7 +51,7 @@
 <!ENTITY hc.editor.argsNote "Arguments:">
 <!ENTITY hc.editor.funcInit "Initialization">
 <!ENTITY hc.editor.funcInitAccesskey "I">
-<!ENTITY hc.editor.funcInitTip "Executes on settings (re)loading">
+<!ENTITY hc.editor.funcInitTip "Executes when settings (re)loading">
 
 <!ENTITY hc.editor.editCode "Edit…">
 <!ENTITY hc.editor.editCodeTip "Edit in external editor…">
@@ -65,7 +65,7 @@
 <!ENTITY hc.editor.defineItem "Item detection">
 <!ENTITY hc.editor.defineItemAccesskey "I">
 <!ENTITY hc.editor.defineReturnNote "Return: node or null"> <!-- Do not translate "null"! -->
-<!ENTITY hc.editor.defineContext "Context menu of item">
+<!ENTITY hc.editor.defineContext "Item context menu">
 <!ENTITY hc.editor.defineContextAccesskey "C">
 <!ENTITY hc.editor.defineContextTip "Leave this field empty for autodetection">
 
