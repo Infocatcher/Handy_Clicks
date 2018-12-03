@@ -52,10 +52,7 @@ var handyClicksEditor = {
 			var type = this.type;
 			if(type)
 				this.currentType = type;
-			if(this.ps.isExtType(type))
-				this.initExtTypes();
-			else
-				this.delay(this.initExtTypes, this, 100);
+			this.initExtTypes();
 			this.loadLabels();
 			this.createDelayedFuncTab();
 			this.addTestButtons();
