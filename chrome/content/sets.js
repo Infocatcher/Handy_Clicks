@@ -2866,6 +2866,16 @@ var handyClicksSets = {
 		}, this);
 		this.$("hc-sets-tree-removeUserBackupsExc10").setAttribute("disabled", ubCount <= 10);
 		this.$("hc-sets-tree-removeAllUserBackups")  .setAttribute("disabled", ubCount == 0);
+
+		var mi = this.$("hc-sets-tree-openBackupsDir");
+		var isDarkFont = true;
+		var fc = window.getComputedStyle(mi, null).color;
+		if(/^rgb\((\d+), *(\d+), *(\d+)\)$/.test(fc)) {
+			var r = +RegExp.$1, g = +RegExp.$2, b = +RegExp.$3;
+			var brightness = Math.max(r/255, g/255, b/255); // HSV, 0..1
+			isDarkFont = brightness < 0.4;
+		}
+		popup.setAttribute("hc_isDarkMenuFont", isDarkFont);
 	},
 	removeOldUserBackups: function(store) {
 		var popup = this.ubPopup;

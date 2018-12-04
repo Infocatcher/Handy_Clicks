@@ -316,12 +316,14 @@ checkbox[id^="hc-sets-disallowMousemove-"] .checkbox-label-box {
 	min-width: 26px !important;
 }
 
-menuitem[hc_oldBackup="true"] image, menuitem[hc_oldBackup="true"] label {
+menuitem[hc_oldBackup="true"] image, menuitem[hc_oldBackup="true"] > label {
 	opacity: 0.45;
 }
 menuitem[hc_userBackup="true"] > label {
-	border-bottom: 1px dashed currentColor;
-	/*text-decoration: underline;*/
+	color: #00e;
+}
+#hc-sets-tree-restoreFromBackupPopup[hc_isDarkMenuFont="false"] > menuitem[hc_userBackup="true"] > label {
+	color: #aaf;
 }
 menuitem[hc_testBackup="thisSession"] > label {
 	opacity: 0.45;
