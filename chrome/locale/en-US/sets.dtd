@@ -35,6 +35,7 @@
 &quot;Whole string and Match Case&quot;
 /regular expression/i">
 <!ENTITY hc.sets.filterTip "Filter">
+<!ENTITY hc.sets.searchResultsTip "Count of found items">
 
 <!ENTITY hc.sets.editMenu "Edit">
 <!ENTITY hc.sets.editMenuAccesskey "E">

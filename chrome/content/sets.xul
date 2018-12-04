@@ -45,7 +45,8 @@ preferences {
 
 	<prefpane id="hc-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1">
 		<hbox align="center">
-			<button id="hc-sets-tree-searchMenu" type="menu" label="&hc.sets.search;" accesskey="&hc.sets.searchAccesskey;">
+			<button id="hc-sets-tree-searchMenu" type="menu" label="&hc.sets.search;"
+				hc_key="hc-sets-key-focusSearch" accesskey="&hc.sets.searchAccesskey;">
 				<menupopup onpopupshowing="handyClicksSets.initSearchMenu(this);"
 					oncommand="handyClicksSets.insertSearchPlaceholder(event.target);">
 					<menuitem type="checkbox" acceltext="%custom%" label="&hc.sets.searchCustom;" />
@@ -69,7 +70,7 @@ preferences {
 				oncommand="handyClicksSets.searchInSetsTreeDelay(true);"
 				hc_key="hc-sets-key-toggleFilterMode"
 				tooltiptext="&hc.sets.filterTip;" />
-			<label id="hc-sets-tree-searchResults" />
+			<label id="hc-sets-tree-searchResults" tooltiptext="&hc.sets.searchResultsTip;" />
 			<spacer flex="1" />
 			<button id="hc-sets-tree-editMenu" type="menu" label="&hc.sets.editMenu;" accesskey="&hc.sets.editMenuAccesskey;">
 				<menupopup onpopupshowing="handyClicksSets.initEditMenu(this);">

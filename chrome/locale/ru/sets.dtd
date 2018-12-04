@@ -35,6 +35,7 @@
 &quot;Строка целиком с Учётом Регистра&quot;
 /регулярное выражение/i">
 <!ENTITY hc.sets.filterTip "Фильтр">
+<!ENTITY hc.sets.searchResultsTip "Количество найденных настроек">
 
 <!ENTITY hc.sets.editMenu "Правка">
 <!ENTITY hc.sets.editMenuAccesskey "П">
