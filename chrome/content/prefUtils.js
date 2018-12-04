@@ -134,7 +134,13 @@ var handyClicksPrefUtils = {
 						var br = tab.linkedBrowser;
 						if(!/^about:config\??/.test(br.currentURI.spec))
 							return false;
-						var tb = br.contentDocument.getElementById("textbox");
+						// Tab may be unloaded...
+						if(br.currentURI.spec == "about:config?filter=" + encodeURIComponent(filter)) {
+							tbr.selectedTab = tab;
+							//br.contentWindow.focus();
+							return true;
+						}
+						var tb = br.contentDocument && br.contentDocument.getElementById("textbox");
 						if(!tb || (tb.wrappedJSObject || tb).value != filter)
 							return false;
 						//brWin.focus();
