@@ -2683,7 +2683,7 @@ var handyClicksSets = {
 			this.updTree();
 		if(
 			pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)
-			&& !this.ut.hasPrefix(pSrc.path, this.ps.prefsDir.path)
+			&& !this.ps.prefsDir.contains(pSrc, false /* aRecurse, for Firefox 31 and older */)
 		)
 			this.backupsDir = pSrc.parent;
 	},
@@ -3120,9 +3120,9 @@ var handyClicksSets = {
 		if(savedDir && dir.equals(savedDir))
 			return; // May be manually changed to use some custom alias, don't override!
 		var path = dir.path;
-		var curDrv = this.ut.getFileRoot(this.ps.profileDir).path;
-		if(path.substr(0, curDrv.length) == curDrv)
-			path = "%hc_ProfDrv%" + path.substr(curDrv.length);
+		var curDrv = this.ut.getFileRoot(this.ps.profileDir);
+		if(curDrv.contains(dir, false /* aRecurse, for Firefox 31 and older */))
+			path = "%hc_ProfDrv%" + path.substr(curDrv.path.length)
 		this.pu.set("sets.backupsDir", path);
 	},
 	getFormattedDate: function(date) {
