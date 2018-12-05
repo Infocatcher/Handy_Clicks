@@ -60,17 +60,6 @@ tab[hc_disabled="true"][hc_canDragSwitch="true"] {
 label[tooltiptext]:not([tooltiptext=""]):not(#hc-sets-tree-searchResults),
 label[tooltip] {
 	border-bottom: 1px dotted;
-	cursor: help;
-}
-button[tooltip]:not([disabled="true"]) {
-	cursor: help;
-}
-button[tooltip]:not([disabled="true"]) label {
-	border-bottom: 1px dotted;
-}
-caption[tooltiptext] > .caption-text,
-menuitem[tooltiptext] {
-	cursor: help;
 }
 
 button.hc-iconic .button-icon {

@@ -128,8 +128,8 @@
 <!ENTITY hc.sets.notifyInWindowCorner "Показывать в углу окна">
 <!ENTITY hc.sets.notifyDontClose "Не закрывать под курсором">
 
-<!ENTITY hc.sets.disallowMousemove "Прекращать обработку кликов при перемещении мыши с зажатыми кнопками">
-<!ENTITY hc.sets.disallowMousemoveTip "Жесты мышью, перетаскивание">
+<!ENTITY hc.sets.disallowMousemoveCaption "Жесты мышью, перетаскивание">
+<!ENTITY hc.sets.disallowMousemove "Прекращать обработку кликов при перемещении мыши с зажатыми кнопками:">
 <!ENTITY hc.sets.left "Левая">
 <!ENTITY hc.sets.middle "Средняя">
 <!ENTITY hc.sets.right "Правая">
@@ -172,7 +172,6 @@
 <!ENTITY hc.sets.onTopButton "Показывать кнопку «Закрепить» в углу окна">
 <!-- Used "button-accept" string from chrome://global/locale/dialog.properties -->
 <!ENTITY hc.sets.overrideInstantApply "Кнопки «OK» и «&hc.sets.apply;»:">
-<!ENTITY hc.sets.overrideInstantApplyTip "Изменения вступают в силу только после переоткрытия окна">
 <!ENTITY hc.sets.overrideInstantApply.useBrowserSettings "использовать настройки браузера">
 <!ENTITY hc.sets.overrideInstantApply.useBrowserSettingsTip "настройка browser.preferences.instantApply">
 <!ENTITY hc.sets.overrideInstantApply.forceOff "принудительно показывать">

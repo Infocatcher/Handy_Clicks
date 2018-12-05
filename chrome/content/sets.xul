@@ -263,7 +263,8 @@ preferences {
 			<checkbox preference="notifyDontCloseUnderCursor" hc_depends="notify" label="&hc.sets.notifyDontClose;" />
 		</groupbox>
 		<groupbox>
-			<caption label="&hc.sets.disallowMousemove;" tooltiptext="&hc.sets.disallowMousemoveTip;" />
+			<caption label="&hc.sets.disallowMousemoveCaption;" />
+			<label value="&hc.sets.disallowMousemove;" />
 			<hbox hc_requiredFor="disallowMousemove">
 				<checkbox id="hc-sets-disallowMousemove-0" label="&hc.sets.left;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
 				<checkbox id="hc-sets-disallowMousemove-1" label="&hc.sets.middle;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
@@ -370,7 +371,7 @@ preferences {
 			<caption label="&hc.sets.settingsInterface;" />
 			<checkbox preference="onTopButton" label="&hc.sets.onTopButton;" />
 			<hbox id="hc-sets-overrideInstantApply-box" align="center">
-				<label value="&hc.sets.overrideInstantApply;" tooltiptext="&hc.sets.overrideInstantApplyTip;" />
+				<label value="&hc.sets.overrideInstantApply;" />
 				<menulist preference="overrideInstantApply">
 					<menupopup>
 						<menuitem value="-1" label="&hc.sets.overrideInstantApply.useBrowserSettings;"

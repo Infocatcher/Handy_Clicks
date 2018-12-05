@@ -128,8 +128,8 @@
 <!ENTITY hc.sets.notifyInWindowCorner "Show in window corner">
 <!ENTITY hc.sets.notifyDontClose "Don't close under cursor">
 
-<!ENTITY hc.sets.disallowMousemove "Stop clicks handling if mouse was moved with pressed button">
-<!ENTITY hc.sets.disallowMousemoveTip "Mouse gestures, drag-and-drop">
+<!ENTITY hc.sets.disallowMousemoveCaption "Mouse gestures, drag-and-drop">
+<!ENTITY hc.sets.disallowMousemove "Stop clicks handling, if mouse was moved with pressed button:">
 <!ENTITY hc.sets.left "Left">
 <!ENTITY hc.sets.middle "Middle">
 <!ENTITY hc.sets.right "Right">
@@ -172,7 +172,6 @@
 <!ENTITY hc.sets.onTopButton "Show “On top” button in the corner">
 <!-- Used "button-accept" string from chrome://global/locale/dialog.properties -->
 <!ENTITY hc.sets.overrideInstantApply "“OK” and “&hc.sets.apply;” buttons:">
-<!ENTITY hc.sets.overrideInstantApplyTip "Changes take effect only after window reopening">
 <!ENTITY hc.sets.overrideInstantApply.useBrowserSettings "use browser settings">
 <!ENTITY hc.sets.overrideInstantApply.useBrowserSettingsTip "browser.preferences.instantApply preference">
 <!ENTITY hc.sets.overrideInstantApply.forceOff "force show">

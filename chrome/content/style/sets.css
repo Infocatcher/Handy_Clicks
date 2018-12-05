@@ -360,6 +360,12 @@ button[type="menu"] dropmarker {
 	-moz-padding-start: 22px;
 }
 
+#hc-sets-resetWarnMsgs label {
+	border-bottom: 1px dotted;
+}
+#hc-sets-resetWarnMsgs[disabled="true"] label {
+	border-color: transparent;
+}
 
 #charsetMenu {
 	/*-moz-appearance: menulist-button !important;*/
