@@ -113,54 +113,13 @@ var handyClicksPrefUtils = {
 
 	openAboutConfig: function(filter) {
 		filter = filter || this.prefNS;
-		const wm = this.wu.wm;
-
-		// Search already opened tab:
-		var ws = wm.getEnumerator("navigator:browser");
-		var brWin, tbr;
-		while(ws.hasMoreElements()) {
-			brWin = ws.getNext();
-			tbr = brWin.gBrowser || brWin.getBrowser();
-			if(
-				Array.prototype.some.call(
-					tbr.tabs || tbr.tabContainer.childNodes,
-					function(tab) {
-						// For Firefox 4 see "visibleTabs" property in chrome://browser/content/tabbrowser.xml
-						if("_removingTabs" in tbr && tbr._removingTabs.indexOf(tab) != -1)
-							return false;
-						//~ todo: add pref?
-						//if(tab.hidden)
-						//	return;
-						var br = tab.linkedBrowser;
-						if(!/^about:config\??/.test(br.currentURI.spec))
-							return false;
-						// Tab may be unloaded...
-						if(br.currentURI.spec == "about:config?filter=" + encodeURIComponent(filter)) {
-							tbr.selectedTab = tab;
-							//br.contentWindow.focus();
-							return true;
-						}
-						var tb = br.contentDocument && br.contentDocument.getElementById("textbox");
-						if(!tb || (tb.wrappedJSObject || tb).value != filter)
-							return false;
-						//brWin.focus();
-						tbr.selectedTab = tab;
-						br.contentWindow.focus();
-						return true;
-					}
-				)
-			)
-				return;
-		}
-
-		// Search already opened browser window:
-		var brWin = wm.getMostRecentWindow("navigator:browser");
+		if(this.switchToAboutConfigTab(filter))
+			return;
+		var brWin = this.wu.wm.getMostRecentWindow("navigator:browser");
 		if(brWin) {
 			this.openAboutConfigFilter(brWin, filter);
 			return;
 		}
-
-		// Open new browser window:
 		brWin = window.openDialog(
 			this.pu.getPref("browser.chromeURL") || "chrome://browser/content/",
 			"_blank", "chrome,all,dialog=0",
@@ -168,14 +127,41 @@ var handyClicksPrefUtils = {
 			null, null, null, false
 		);
 		var _this = this;
-		brWin.addEventListener(
-			"load",
-			function _l(e) {
-				brWin.removeEventListener("load", _l, true);
-				_this.openAboutConfigFilter(brWin, filter);
-			},
-			true
-		);
+		brWin.addEventListener("load", function _l(e) {
+			brWin.removeEventListener("load", _l, true);
+			_this.openAboutConfigFilter(brWin, filter);
+		}, true);
+	},
+	switchToAboutConfigTab: function(filter) {
+		var ws = this.wu.wm.getEnumerator("navigator:browser");
+		function findTab(gBrowser) {
+			var tabs = gBrowser.tabs || gBrowser.tabContainer.childNodes;
+			for(var i = 0, l = tabs.length; i < l; ++i) {
+				var tab = tabs[i];
+				var br = tab.linkedBrowser;
+				var uri = br && br.currentURI.spec;
+				if(tab.closing || !br || !/^about:config(?:[?#]|$)/.test(uri))
+					continue;
+				// Also detect unloaded tab
+				if(uri == "about:config?filter=" + encodeURIComponent(filter))
+					return tab;
+				var tb = br.contentDocument && br.contentDocument.getElementById("textbox");
+				if(tb && (tb.wrappedJSObject || tb).value == filter)
+					return tab;
+			}
+			return null;
+		}
+		while(ws.hasMoreElements()) {
+			var win = ws.getNext();
+			var gBrowser = win.gBrowser || win.getBrowser();
+			var tab = findTab(gBrowser);
+			if(!tab)
+				continue;
+			win.focus();
+			gBrowser.selectedTab = tab;
+			return tab;
+		}
+		return null;
 	},
 	openAboutConfigFilter: function(brWin, filter) {
 		brWin.focus();
