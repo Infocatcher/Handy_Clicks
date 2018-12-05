@@ -3009,7 +3009,7 @@ var handyClicksSets = {
 				continue;
 			}
 			var exists = file.exists();
-			if(exists) try {
+			if(exists && file.fileSize == fo.size) try { // Compare only with different file size
 				if(this.ut.readFromFile(file) == fo.data)
 					continue;
 			}

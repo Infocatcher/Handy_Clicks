@@ -490,6 +490,7 @@ var handyClicksPrefSvc = {
 		}
 		files[path] = {
 			lastModified: file.lastModifiedTime,
+			size: file.fileSize,
 			data: data
 		};
 	},
