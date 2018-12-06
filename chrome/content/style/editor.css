@@ -92,6 +92,10 @@ hbox[hc_fixedFields="true"] {
 .hcTabsToolbar {
 	position: relative;
 }
+.hcFloatButton > .button-box {
+	margin-top: -1px !important;
+	margin-bottom: 0 !important;
+}
 .hcEditCodeButton {
 	-moz-image-region: rect(32px 112px 48px 96px);
 }
@@ -211,6 +215,10 @@ menulist[hc_aboutConfigEntry] .menulist-label,
 	margin-bottom: 0;
 	padding-top: 0;
 	padding-bottom: 0;
+}
+:root[hc_compactUI="true"] .hcFloatButton > .button-box {
+	margin-top: -2px !important;
+	margin-bottom: -1px !important;
 }
 :root[hc_compactUI="true"] checkbox {
 	margin-right: 2px;
