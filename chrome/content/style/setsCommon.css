@@ -38,7 +38,6 @@
 }
 #hc-sets-onTop[checked="true"] {
 	-moz-image-region: rect(16px 16px 32px 0);
-	text-decoration: underline;
 }
 #hc-sets-onTop label {
 	-moz-margin-start: 2px !important;
