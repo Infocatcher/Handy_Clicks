@@ -2389,8 +2389,9 @@ var handyClicksSets = {
 		var file = this.pickFile(this.getLocalized("importPrefs"), false, "ini");
 		if(!file)
 			return;
-		var str = this.ut.readFromFile(file);
-		if(!this.ut.hasPrefix(str, this.exportPrefsHeader)) {
+		var lines = this.ut.readFromFile(file)
+			.split(/[\r\n]+/);
+		if(lines[0] != this.exportPrefsHeader) {
 			this.ut.alert(
 				this.getLocalized("importErrorTitle"),
 				this.getLocalized("invalidConfigFormat")
@@ -2400,39 +2401,37 @@ var handyClicksSets = {
 		this.backupsDir = file.parent;
 		var _oldPrefs = [];
 		this.pu.set("prefsVersion", 0);
-		str.replace(/[\r\n]{1,100}/g, "\n").split(/[\r\n]+/)
-			.splice(1) // Remove header
-			.forEach(function(line, i) {
-				var first = line.charAt(0);
-				if(
-					first == ";" || first == "#"
-					|| first == "[" && line.charAt(line.length - 1) == "]"
-				)
-					return; // Just for fun right now :)
-				var indx = line.indexOf("=");
-				if(indx == -1) {
-					this.ut._warn("[Import INI] Skipped invalid line #" + (i + 2) + ': "' + line + '"');
-					return;
-				}
-				var pName = line.substr(0, indx);
-				if(!this.ut.hasPrefix(pName, this.pu.prefNS)) {
-					this.ut._warn('[Import INI] Skipped pref with invalid name: "' + pName + '"');
-					return;
-				}
-				var ps = this.pu.prefSvc;
-				var pType = ps.getPrefType(pName);
-				var isOld = pType == ps.PREF_INVALID; // Old format?
-				if(isOld) {
-					_oldPrefs.push(pName);
-					this.ut._warn('[Import INI] Old pref: "' + pName + '"');
-				}
-				var pVal = line.substr(indx + 1);
-				if(pType == ps.PREF_INT || isOld && /^-?\d+$/.test(pVal)) // Convert string to number
-					pVal = +pVal;
-				else if(pType == ps.PREF_BOOL || isOld && (pVal == "true" || pVal == "false")) // ...or boolean
-					pVal = pVal == "true";
-				this.pu.setPref(pName, pVal);
-			}, this);
+		var ps = this.pu.prefSvc;
+		lines.forEach(function(line, i) {
+			var first = line.charAt(0);
+			if(
+				first == ";" || first == "#"
+				|| first == "[" && line.charAt(line.length - 1) == "]"
+			)
+				return;
+			var indx = line.indexOf("=");
+			if(indx == -1) {
+				this.ut._warn("[Import INI] Skipped invalid line #" + (i + 1) + ': "' + line + '"');
+				return;
+			}
+			var pName = line.substr(0, indx);
+			if(!this.ut.hasPrefix(pName, this.pu.prefNS)) {
+				this.ut._warn('[Import INI] Skipped pref with invalid name: "' + pName + '"');
+				return;
+			}
+			var pType = ps.getPrefType(pName);
+			var isOld = pType == ps.PREF_INVALID; // Old format?
+			if(isOld) {
+				_oldPrefs.push(pName);
+				this.ut._warn('[Import INI] Old pref: "' + pName + '"');
+			}
+			var pVal = line.substr(indx + 1);
+			if(pType == ps.PREF_INT || isOld && /^-?\d+$/.test(pVal)) // Convert string to number
+				pVal = +pVal;
+			else if(pType == ps.PREF_BOOL || isOld && (pVal == "true" || pVal == "false")) // ...or boolean
+				pVal = pVal == "true";
+			this.pu.setPref(pName, pVal);
+		}, this);
 		this.pu.prefsMigration();
 		_oldPrefs.forEach(function(pName) {
 			this.pu.prefSvc.deleteBranch(pName);
