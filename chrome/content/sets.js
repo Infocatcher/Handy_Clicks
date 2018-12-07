@@ -2431,15 +2431,20 @@ var handyClicksSets = {
 
 	// about:config entries
 	// Reset prefs:
-	get resetPrefsConfirmed() {
-		return this.ut.confirm(
-			this.getLocalized("warningTitle"),
-			this.getLocalized("resetPrefsWarning")
-		);
-	},
 	resetPrefs: function() {
-		if(!this.resetPrefsConfirmed)
+		var exportPrefs = { value: true };
+		var confirmed = this.ut.confirmEx(
+			this.getLocalized("warningTitle"),
+			this.getLocalized("resetPrefsConfirm"),
+			this.getLocalized("resetPrefs"),
+			true,
+			this.getLocalized("exportPrefsFirst"),
+			exportPrefs
+		);
+		if(!confirmed)
 			return;
+		if(exportPrefs.value && !this.exportPrefs())
+			return; // Don't reset w/o backup
 		this.pu.prefSvc.getBranch(this.pu.prefNS)
 			.getChildList("", {})
 			.forEach(this.pu.resetPref, this.pu);
@@ -2450,7 +2455,7 @@ var handyClicksSets = {
 	exportPrefs: function() {
 		var file = this.pickFile(this.getLocalized("exportPrefs"), true, "ini");
 		if(!file)
-			return;
+			return false;
 		var data = this.exportPrefsHeader + "\n"
 			+ this.pu.prefSvc.getBranch(this.pu.prefNS)
 				.getChildList("", {})
@@ -2462,6 +2467,7 @@ var handyClicksSets = {
 				).sort().join("\n");
 		this.ut.writeToFile(data, file);
 		this.backupsDir = file.parent;
+		return true;
 	},
 	importPrefs: function() {
 		var file = this.pickFile(this.getLocalized("importPrefs"), false, "ini");
