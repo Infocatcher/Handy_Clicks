@@ -2510,7 +2510,7 @@ var handyClicksSets = {
 				this.ut._warn('[Import INI] Old pref: "' + pName + '"');
 			}
 			var pVal = line.substr(indx + 1);
-			if(pType == ps.PREF_INT || isOld && /^-?\d+$/.test(pVal)) // Convert string to number
+			if(pType == ps.PREF_INT || isOld && /^(?:0|-?[1-9]\d*)$/.test(pVal)) // Convert string to number
 				pVal = +pVal;
 			else if(pType == ps.PREF_BOOL || isOld && (pVal == "true" || pVal == "false")) // ...or boolean
 				pVal = pVal == "true";
