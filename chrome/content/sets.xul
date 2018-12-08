@@ -364,6 +364,7 @@ preferences {
 			<preference id="autocompleteMinSymbols" type="int" name="extensions.handyclicks.editor.autocompleteMinSymbols" />
 			<preference id="externalEditorPath" type="string" name="extensions.handyclicks.editor.external.path" />
 			<preference id="externalEditorArgs" type="string" name="extensions.handyclicks.editor.external.args" />
+			<preference id="labelInFileName" type="bool" name="extensions.handyclicks.editor.external.labelInFileName" />
 			<preference id="externalEditorExt" type="string" name="extensions.handyclicks.editor.external.extension" />
 		</preferences>
 
@@ -442,12 +443,16 @@ preferences {
 					<tooltip id="hc-sets-externalEditorArgs-tooltip">
 						<description>&hc.sets.externalEditorArgsTip;</description>
 					</tooltip>
-					<textbox id="hc-sets-externalEditorArgs" preference="externalEditorArgs" multiline="true" rows="2" wrap="off" flex="1" />
+					<textbox id="hc-sets-externalEditorArgs" preference="externalEditorArgs" multiline="true" rows="3" wrap="off" flex="1" />
 				</hbox>
-				<vbox id="hc-sets-externalEditorExt-box" align="top">
-					<label value="&hc.sets.externalEditorExt;" control="hc-sets-externalEditorExt" />
-					<textbox id="hc-sets-externalEditorExt" preference="externalEditorExt" size="8" />
-				</vbox>
+				<groupbox id="hc-sets-externalEditorTempFile-box">
+					<caption label="&hc.sets.externalEditorTempFile;" />
+					<checkbox preference="labelInFileName" label="&hc.sets.externalEditorTempFileName;" />
+					<hbox id="hc-sets-externalEditorTempFileExt-box" align="center">
+						<label value="&hc.sets.externalEditorTempFileExt;" control="hc-sets-externalEditorExt" />
+						<textbox preference="externalEditorExt" size="8" />
+					</hbox>
+				</groupbox>
 			</hbox>
 		</groupbox>
 		<hbox pack="center">

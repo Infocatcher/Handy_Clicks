@@ -68,8 +68,6 @@ var handyClicksSets = {
 			}
 		}
 
-		this.e("hc-sets-externalEditorArgs-box").height = this.e("hc-sets-externalEditorExt-box").boxObject.height;
-
 		if(
 			fxVersion >= 25
 			&& this.ut.appInfo.OS == "WINNT"

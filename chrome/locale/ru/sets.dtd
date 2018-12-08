@@ -199,7 +199,9 @@
 &#37;F – путь к файлу (будет добавлен автоматически, если отсутствует)
 &#37;L – номер строки
 &#37;C – номер столбца">
-<!ENTITY hc.sets.externalEditorExt "Расширение временного файла:">
+<!ENTITY hc.sets.externalEditorTempFile "Временный файл">
+<!ENTITY hc.sets.externalEditorTempFileName "Использовать название функции для имени файла">
+<!ENTITY hc.sets.externalEditorTempFileExt "Расширение файла:">
 
 <!ENTITY hc.sets.resetWarnMsgs "Сбросить отключённые предупреждения">
 <!ENTITY hc.sets.resetWarnMsgsTip "Отключённые предупреждения:">
