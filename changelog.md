@@ -11,9 +11,21 @@
 `*` Editor: disable “Delete” button, if there is nothing to delete.<br>
 `x` Fixed Scratchpad support in Firefox 56+.<br>
 `*` Edit mode tooltip: hide empty URI field.<br>
-`+` Added basic export/import for separate *.js files (`//> %hc_PrefsDir%/scripts/example.js` in code) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/32">#32</a>).<br>
+`+` Added export/import for separate *.js files (`//> %hc_ScriptsDir%/example.js` in code, also added %hc_ScriptsDir% alias for %profile%/handyclicks/scripts/) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/32">#32</a>).<br>
 `*` Restored window.handyClicks (as lazy getter) to detect Handy Clicks presence even in disabled mode.<br>
 `*` Improved startup performance: load handyclicks.js after small delay, increased delay to preload settings.<br>
+`*` Added special highlighting for custom files (`//> %hc_ScriptsDir%/example.js` in code).<br>
+`*` UI tweaks and improved localization strings (like %custom%).<br>
+`+` Added menu to insert search placeholders.<br>
+`x` Correctly reset filter: fix possible rows disappearance.<br>
+`*` Sort rows in invert mode.<br>
+`x` Fixed XSS in labels for custom types.<br>
+`+` Added %init% placeholder to search custom initialization.<br>
+`x` Fixed user backups highlighting in “Restore from backup” menu.<br>
+`x` Correctly open all preferences in case of unloaded about:config tab presence.<br>
+`+` Reset prefs: added checkbox to take export first.<br>
+`x` Correctly import multiline <em>extensions.handyclicks.editor.external.args</em> preference.<br>
+`*` Small internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
 `x` Fixed hiding of special window that open options in non-modal window.<br>
