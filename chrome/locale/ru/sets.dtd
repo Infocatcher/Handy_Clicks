@@ -1,7 +1,7 @@
 <!-- Options dialog -->
 <!ENTITY hc.sets.title "Handy Clicks: Настройки">
-<!ENTITY hc.sets.defaultWindowWidth "630">
-<!ENTITY hc.sets.defaultWindowHeight "510">
+<!ENTITY hc.sets.defaultWindowWidth "610">
+<!ENTITY hc.sets.defaultWindowHeight "530">
 <!ENTITY hc.sets.apply "Применить">
 <!ENTITY hc.sets.settings "Настройки">
 <!ENTITY hc.sets.settingsAccesskey "Н">
