@@ -2486,22 +2486,23 @@ var handyClicksSets = {
 		var _oldPrefs = [];
 		this.pu.set("prefsVersion", 0);
 		var ps = this.pu.prefSvc;
-		lines.forEach(function(line, i) {
+		for(var i = 1, l = lines.length; i < l; ++i) {
+			var line = lines[i];
 			var first = line.charAt(0);
 			if(
 				first == ";" || first == "#"
 				|| first == "[" && line.charAt(line.length - 1) == "]"
 			)
-				return;
+				continue;
 			var indx = line.indexOf("=");
 			if(indx == -1) {
 				this.ut._warn("[Import INI] Skipped invalid line #" + (i + 1) + ': "' + line + '"');
-				return;
+				continue;
 			}
 			var pName = line.substr(0, indx);
 			if(!this.ut.hasPrefix(pName, this.pu.prefNS)) {
 				this.ut._warn('[Import INI] Skipped pref with invalid name: "' + pName + '"');
-				return;
+				continue;
 			}
 			var pType = ps.getPrefType(pName);
 			var isOld = pType == ps.PREF_INVALID; // Old format?
@@ -2514,8 +2515,18 @@ var handyClicksSets = {
 				pVal = +pVal;
 			else if(pType == ps.PREF_BOOL || isOld && (pVal == "true" || pVal == "false")) // ...or boolean
 				pVal = pVal == "true";
+			else if(pName == this.pu.prefNS + "editor.external.args") { // String
+				// Backward compatible fix for multiline string pref
+				for(; i < l; ) {
+					var nextLine = lines[i + 1];
+					if(this.ut.hasPrefix(nextLine, this.pu.prefNS))
+						break;
+					pVal += "\n" + nextLine;
+					++i;
+				}
+			}
 			this.pu.setPref(pName, pVal);
-		}, this);
+		}
 		this.pu.prefsMigration();
 		_oldPrefs.forEach(function(pName) {
 			this.pu.prefSvc.deleteBranch(pName);
