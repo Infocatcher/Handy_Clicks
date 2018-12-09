@@ -182,7 +182,7 @@
 <!ENTITY hc.sets.tabSize "Size:">
 <!ENTITY hc.sets.tabSpaces "Spaces">
 
-<!ENTITY hc.sets.autocomplete "Autocomplete">
+<!ENTITY hc.sets.autocomplete "Autocompletion">
 <!ENTITY hc.sets.autocompleteShowAfter "Show after">
 <!ENTITY hc.sets.autocompleteMinSymbol "symbol">
 <!ENTITY hc.sets.autocompleteMinSymbols "symbols">
