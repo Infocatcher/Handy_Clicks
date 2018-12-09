@@ -65,6 +65,9 @@ preferences {
 					oninput="handyClicksSets.searchInSetsTreeDelay();"
 					hc_ondrop="handyClicksSets.searchInSetsTree();"
 					oncut="handyClicksSets.searchInSetsTree();" />
+				<tooltip id="hc-sets-search-tooltip">
+					<description>&hc.sets.searchTip;</description>
+				</tooltip>
 			</hbox>
 			<toolbarbutton id="hc-sets-tree-searchFilterMode" type="checkbox" persist="checked"
 				oncommand="handyClicksSets.searchInSetsTreeDelay(true);"
@@ -462,6 +465,11 @@ preferences {
 				oncommand="handyClicksSets.resetWarnMsgs();"
 				onclick="if(event.button == 2) handyClicksSets.showWarnMsgsPrefs();"
 				label="&hc.sets.resetWarnMsgs;" tooltip="hc-sets-warnMsgsPrefs-tooltip" />
+			<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical" noautohide="true"
+				onpopupshowing="return !document.tooltipNode.disabled;">
+				<description class="header">&hc.sets.resetWarnMsgsTip;</description>
+				<separator id="hc-sets-warnMsgsPrefs-tooltipSep" class="groove" />
+			</tooltip>
 		</hbox>
 	</prefpane>
 
@@ -695,14 +703,6 @@ preferences {
 				oncommand="handyClicksSets.removeBackup((this.parentNode.triggerNode || document.popupNode), event);"
 				onclick="if(event.button == 1) { handyClicksSets.removeBackup((this.parentNode.triggerNode || document.popupNode), event); this.parentNode.hidePopup(); }" />
 		</menupopup>
-		<tooltip id="hc-sets-search-tooltip">
-			<description>&hc.sets.searchTip;</description>
-		</tooltip>
-		<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical" noautohide="true"
-			onpopupshowing="return !document.tooltipNode.disabled;">
-			<description class="header">&hc.sets.resetWarnMsgsTip;</description>
-			<separator id="hc-sets-warnMsgsPrefs-tooltipSep" class="groove" />
-		</tooltip>
 	</popupset>
 
 </prefwindow>
