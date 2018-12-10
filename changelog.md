@@ -25,6 +25,7 @@
 `x` Correctly open all preferences in case of unloaded about:config tab presence.<br>
 `+` Reset prefs: added checkbox to take export first.<br>
 `x` Correctly import multiline <em>extensions.handyclicks.editor.external.args</em> preference.<br>
+`+` Added UI for <em>extensions.handyclicks.editor.external.labelInFileName</em> preference.<br>
 `*` Small internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
