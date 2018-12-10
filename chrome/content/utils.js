@@ -456,7 +456,7 @@ var handyClicksUtils = {
 			return null;
 		}
 		try {
-			if(file.isDirectory()) //~ Hack: correctly handle install drive
+			if(file.exists() && file.isDirectory()) //~ Hack: correctly handle install drive
 				file.append(".");
 			file.normalize(); // dir1/dir2/../file -> dir1/file
 		}
