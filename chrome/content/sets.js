@@ -2098,9 +2098,14 @@ var handyClicksSets = {
 		ee.value = fp.file.path;
 		this.fireChange(ee);
 	},
-	makeRelativePath: function() {
-		var ee = this.ee;
-		var path = ee.value.replace(/^[a-z]:\\/, function(s) { return s.toUpperCase(); });
+	getRelativePath: function(path) {
+		path = path.replace(/^[a-z]:\\/, function(s) {
+			return s.toUpperCase();
+		});
+		var file = this.ut.getLocalFileFromPath(path); // Normalize ..\..\ things
+		if(!file)
+			return undefined;
+		path = file.path;
 
 		var resPath, resLevel, resLength;
 		[
@@ -2130,11 +2135,18 @@ var handyClicksSets = {
 		}, this);
 
 		if(!resPath || resPath == path)
+			return undefined;
+		return resPath;
+	},
+	setRelativePath: function() {
+		var ee = this.ee;
+		var path = this.getRelativePath(ee.value);
+		if(!path)
 			return;
-		ee.value = resPath;
+		ee.value = path;
 		this.fireChange(ee);
 	},
-	makeNormalPath: function() {
+	setNormalPath: function() {
 		var file = this.eeFile;
 		if(!file)
 			return;
@@ -2144,9 +2156,9 @@ var handyClicksSets = {
 	},
 	convertPath: function() {
 		if(/^%[^%]+%/.test(this.ee.value))
-			this.makeNormalPath();
+			this.setNormalPath();
 		else
-			this.makeRelativePath();
+			this.setRelativePath();
 	},
 	externalEditorChanged: function eec(delayed) {
 		if(delayed) {
