@@ -581,9 +581,12 @@
 											return;
 										}
 										var ifi = _this.inputField;
-										if("Editor" in w) { // Looks like CodeMirror
+										var Editor = "Editor" in w
+											? w.Editor
+											: new w.Function("try { return Editor; } catch(e) {} return undefined;")();
+										if(Editor) { // Looks like CodeMirror
 											var startAnchor, endAnchor;
-											var global = Components.utils.getGlobalForObject(w.Editor.prototype);
+											var global = Components.utils.getGlobalForObject(Editor.prototype);
 											if(global && "editors" in global) {
 												var cm = global.editors.get(Scratchpad.editor); // CodeMirror instance
 												startAnchor = cm.posFromIndex(ifi.selectionStart);
