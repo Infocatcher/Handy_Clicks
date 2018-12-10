@@ -2107,36 +2107,38 @@ var handyClicksSets = {
 			return undefined;
 		path = file.path;
 
-		var resPath, resLevel, resLength;
-		[
-			"ProgF", "LocalAppData", "ProfD", "Home", "SysD", "WinD", /*"CurProcD",*/
-			"UsrApp", "LocApp",
-			"Locl", "LibD",
-			"hc_SysDrv", /*"hc_ProfDrv"*/
-		].forEach(function(alias) {
-			var aliasFile = this.ut.getFileByAlias(alias, true), aliasPath, aliasLength;
-			for(var level = 0; aliasFile; aliasFile = this.ut.getFileParent(aliasFile), ++level) {
-				aliasPath = aliasFile.path;
-				aliasLength = aliasPath.length;
-				if(
-					!this.ut.hasPrefix(path, aliasPath)
-					|| !/\/|\\/.test(path.substr(aliasLength - 1, 2))
-					|| resPath && (level > resLevel || level == resLevel && aliasLength < resLength)
-				)
-					continue;
-				var sep = RegExp.lastMatch; // \ or /
-				resPath = path.substr(aliasLength);
-				resPath = "%" + alias + "%"
-					+ new Array(level + 1).join(sep + "..")
-					+ (resPath.charAt(0) == sep ? "" : sep) + resPath;
-				resLevel = level;
-				resLength = aliasLength;
+		var dirSep = this.ut.appInfo.OS == "WINNT" ? "\\" : "/";
+		var aliases = {
+			ProgF:        0,
+			AppData:      0,
+			LocalAppData: 0,
+			ProfD:        3,
+			CurProcD:     3,
+			Home:         0,
+			SysD:         0,
+			WinD:         0,
+			UsrApp:       0,
+			LocApp:       0,
+			Locl:         0,
+			LibD:         0,
+			hc_SysDrv:    0,
+			hc_ProfDrv:   0,
+			__proto__: null
+		};
+		for(var alias in aliases) {
+			var maxLevel = aliases[alias];
+			var aliasFile = this.ut.getFileByAlias(alias, true);
+			for(var level = 0; aliasFile && level <= maxLevel; ++level) {
+				var aliasPath = aliasFile.path;
+				if(this.ut.hasPrefix(path, aliasPath + dirSep)) {
+					return "%" + alias + "%"
+						+ new Array(level + 1).join(dirSep + "..")
+						+ path.substr(aliasPath.length);
+				}
+				aliasFile = this.ut.getFileParent(aliasFile);
 			}
-		}, this);
-
-		if(!resPath || resPath == path)
-			return undefined;
-		return resPath;
+		}
+		return undefined;
 	},
 	setRelativePath: function() {
 		var ee = this.ee;
