@@ -360,6 +360,13 @@ button[type="menu"] dropmarker {
 	-moz-padding-start: 22px;
 }
 
+tooltip > description {
+	margin: 0;
+}
+#hc-sets-warnMsgsPrefs-tooltip > description {
+	margin: 1px 2px;
+}
+
 #hc-sets-resetWarnMsgs label {
 	border-bottom: 1px dotted;
 }
