@@ -232,7 +232,9 @@ var handyClicksPrefSvc = {
 
 		this.prefs = scope.prefs;
 		this.types = scope.types;
-		this.files = scope.files || {};
+		this.files = !fromProfile && "files" in scope
+			&& scope.files
+			|| {};
 		var vers = this.loadedVersion = scope.version || 0;
 
 		if(vers < this.setsVersion)
