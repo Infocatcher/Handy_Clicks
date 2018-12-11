@@ -176,21 +176,21 @@ var handyClicksPrefSvc = {
 			callback && callback.call(context, status);
 		}, this);
 	},
-	loadSettings: function(pSrc, fromProfile) {
+	loadSettings: function(pSrc, fromPrefs) {
 		this._loadStatus = this.SETS_LOAD_UNKNOWN;
 		if(this.isMainWnd)
-			this._log(fromProfile ? "loadSettingsAsync()" : "loadSettings()");
+			this._log(fromPrefs ? "loadSettingsAsync()" : "loadSettings()");
 		//this.otherSrc = !!pSrc;
 		pSrc = pSrc || this.prefsFile;
 		if(pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)) {
-			fromProfile = pSrc.equals(this.prefsFile);
-			pSrc = fromProfile && !pSrc.exists()
+			fromPrefs = pSrc.equals(this.prefsFile);
+			pSrc = fromPrefs && !pSrc.exists()
 				? this.defaultSettings()
 				: this.ut.readFromFile(pSrc);
-			if(fromProfile && !this.isMainWnd)
+			if(fromPrefs && !this.isMainWnd)
 				this._savedStr = pSrc;
 		}
-		this.otherSrc = !fromProfile;
+		this.otherSrc = !fromPrefs;
 
 		var scope;
 		if(typeof pSrc != "string")
@@ -232,13 +232,13 @@ var handyClicksPrefSvc = {
 
 		this.prefs = scope.prefs;
 		this.types = scope.types;
-		this.files = !fromProfile && "files" in scope
+		this.files = !fromPrefs && "files" in scope
 			&& scope.files
 			|| {};
 		var vers = this.loadedVersion = scope.version || 0;
 
 		if(vers < this.setsVersion)
-			this.setsMigration(fromProfile, vers);
+			this.setsMigration(fromPrefs, vers);
 		this._restoringCounter = 0;
 		if(this.isMainWnd) {
 			this._typesCache = { __proto__: null };
