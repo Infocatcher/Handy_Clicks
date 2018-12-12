@@ -478,13 +478,7 @@ var handyClicksPrefSvc = {
 	correctSettings: function(types, prefs/*, force*/) {
 		types = types || this.types;
 		prefs = prefs || this.prefs;
-		//~ todo: test
 
-		//var corrected = false;
-		//function del(o, p) {
-		//	delete o[p];
-		//	corrected = true;
-		//}
 		var forcedDisByType = { __proto__: null };
 
 		for(type in types) if(types.hasOwnProperty(type)) {
@@ -495,9 +489,6 @@ var handyClicksPrefSvc = {
 			}
 			if(to.hasOwnProperty("enabled") && !to.enabled)
 				forcedDisByType[type] = true;
-			//if(force) for(var pName in to) if(to.hasOwnProperty(pName))
-			//	if(pName.charAt(0) == "_")
-			//		delete to[pName];
 		}
 
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
