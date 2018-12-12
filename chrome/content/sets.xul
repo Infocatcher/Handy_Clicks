@@ -696,7 +696,7 @@ preferences {
 			<menuitem default="true" label="&hc.sets.restoreBackup;"
 				oncommand="(this.parentNode.triggerNode || document.popupNode).doCommand();" />
 			<menuitem label="&hc.sets.showBackupFile;"
-				oncommand="handyClicksSets.reveal(handyClicksPrefSvc.getBackupFile((this.parentNode.triggerNode || document.popupNode).getAttribute('hc_fileName')));" />
+				oncommand="handyClicksSets.reveal(handyClicksSets.pe.getBackupFile((this.parentNode.triggerNode || document.popupNode).getAttribute('hc_fileName')));" />
 			<menuseparator />
 			<menuitem id="hc-sets-removeBackup" class="menuitem-iconic handyClicks-iconic"
 				closemenu="single" label="&hc.sets.removeBackup;"

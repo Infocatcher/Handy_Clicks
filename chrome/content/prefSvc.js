@@ -38,7 +38,6 @@ var handyClicksPrefSvc = {
 	okShortcut: /^button=[0-2](?:,(?:ctrl|shift|alt|meta|os)=(?:true|false))*$/,
 
 	otherSrc: false,
-	_restoringCounter: 0,
 
 	destroy: function(reloadFlag, disable) {
 		if(this.isMainWnd) {
@@ -132,13 +131,6 @@ var handyClicksPrefSvc = {
 		}
 		return dir;
 	},
-	getBackupFile: function(fName, parentDir) {
-		if(!parentDir)
-			parentDir = this.backupsDir;
-		var file = parentDir.clone();
-		file.append(fName);
-		return file;
-	},
 
 	loadedVersion: -1,
 	types: {},
@@ -163,6 +155,7 @@ var handyClicksPrefSvc = {
 	SETS_LOAD_DECODE_ERROR: 1,
 	SETS_LOAD_INVALID_DATA: 2,
 	_loadStatus: -1, // SETS_LOAD_UNKNOWN
+	_restoringCounter: 0,
 	loadSettingsAsync: function(callback, context) {
 		var pFile = this.prefsFile;
 		this.ut.readFromFileAsync(pFile, function(data, status) {
@@ -196,7 +189,9 @@ var handyClicksPrefSvc = {
 		if(typeof pSrc != "string")
 			scope = pSrc;
 		else {
-			pSrc = this.convertToJSON(this.removePrefsDesription(pSrc));
+			pSrc = this.removePrefsDesription(pSrc);
+			if(this.isLegacyJs(pSrc))
+				pSrc = this.pe.convertToJSON(pSrc);
 			try {
 				scope = this.JSON.parse(pSrc);
 			}
@@ -211,7 +206,7 @@ var handyClicksPrefSvc = {
 					);
 					return;
 				}
-				this.loadSettingsBackup();
+				this.pe.loadSettingsBackup();
 				return;
 			}
 		}
@@ -226,7 +221,7 @@ var handyClicksPrefSvc = {
 				);
 				return;
 			}
-			this.loadSettingsBackup();
+			this.pe.loadSettingsBackup();
 			return;
 		}
 
@@ -248,75 +243,8 @@ var handyClicksPrefSvc = {
 		}
 		this._loadStatus = this.SETS_LOAD_OK;
 	},
-	convertToJSON: function(s, silent) {
-		if(s.substr(0, 4) != "var ") //= Added: 2012-01-13
-			return s;
-		if(!silent)
-			this._log("Prefs in old format, try convert to JSON");
-
-		// Note: supported only features used in old settings format
-		return "{\n"
-			+ s
-				// Reencode strings
-				.replace(/"(?:\\"|[^"\n\r])*"/g, function(s) {
-					return s
-						.replace(/(\\+)'/g, function(s, bs) {
-							return bs.length & 1
-								? s.substr(1)
-								: s;
-						})
-						.replace(/\t/g, "\\t");
-				})
-				// Convert vars to properties
-				.replace(/^var (\w+) = /, '"$1": ')
-				.replace(/;([\n\r]+)var (\w+) = /g, ',$1"$2": ')
-				// Recode arguments object
-				.replace(/^\s*arguments: .*$/mg, function(s) {
-					return s.replace(/(\w+):/g, '"$1":');
-				})
-				// Add commas to each property name
-				.replace(/^(\s*)(\w+): /mg, '$1"$2": ')
-				.replace(/;\s*$/, "")
-				//.replace(/^\s+/mg, "")
-				//.replace(/[\n\r]+/g, "")
-
-				// Rename properties:
-				.replace(/^(\s*)"handyClicksPrefsVersion":/m, '$1"version":')
-				.replace(/^(\s*)"handyClicksCustomTypes":/m,  '$1"types":')
-				.replace(/^(\s*)"handyClicksPrefs":/m,        '$1"prefs":')
-			+ "\n}";
-	},
-	loadSettingsBackup: function() {
-		var pFile = this.prefsFile;
-		var corruptedPath = this.moveFiles(
-			pFile,
-			this.names.corrupted,
-			false,
-			false,
-			this.pu.get("sets.backupCorruptedDepth")
-		);
-		if(pFile.exists()) { // Backups disabled
-			var tmp = pFile.clone();
-			// But save backup anyway :)
-			this.ut.moveFileTo(tmp, this.backupsDir, this.prefsFileName + this.names.corrupted.replace(/-$/, "") + ".js");
-			corruptedPath = tmp.path;
-		}
-		while(++this._restoringCounter <= this.pu.get("sets.backupDepth")) {
-			var bName = this.prefsFileName + this.names.backup + (this._restoringCounter - 1) + ".js";
-			var bFile = this.getBackupFile(bName);
-			if(bFile.exists()) {
-				var bakPath = this.moveFiles(bFile, this.names.restored, true);
-				this.ut.moveFileTo(bFile, pFile.parent, pFile.leafName);
-				break;
-			}
-		}
-		var errTitle = this.getLocalized("errorTitle");
-		var errMsg = this.getLocalized("badJSFile").replace("%f", corruptedPath)
-			+ (bakPath ? this.getLocalized("restoredFromBackup").replace("%f", bakPath) : "")
-		this.delay(function() {
-			this.ut.alert(errTitle, errMsg);
-		}, this);
-		this.loadSettings();
+	isLegacyJs: function(s) {
+		return s.substr(0, 4) == "var ";
 	},
 	get setsMigration() { // function(allowSave, vers)
 		var temp = {};
@@ -831,7 +759,7 @@ var handyClicksPrefSvc = {
 		var fName = this.prefsFileName + this.names.testBackup;
 		var file, bakFile;
 		while(--num >= 0) {
-			file = this.getBackupFile(fName + num + ".js");
+			file = this.pe.getBackupFile(fName + num + ".js");
 			if(num == 0)
 				bakFile = file.clone();
 			if(file.exists()) {
@@ -845,100 +773,6 @@ var handyClicksPrefSvc = {
 		this.ut.storage("testBackupCreated", true);
 	},
 
-	moveFiles: function(firstFile, nameAdd, leaveOriginal, noFirstNum, depth) {
-		if(!firstFile.exists())
-			return null;
-		if(depth === undefined)
-			depth = this.pu.get("sets.backupDepth");
-		var pDir = nameAdd == this.names.corrupted
-			? this.corruptedDir
-			: this.backupsDir;
-		var maxNum = depth - 1;
-		var fName = this.prefsFileName + nameAdd;
-		function getName(n) {
-			if(noFirstNum && n == 0)
-				return fName.replace(/-$/, "") + ".js";
-			return fName + n + ".js";
-		}
-		var num, file;
-		num = maxNum;
-		for(;;) {
-			file = this.getBackupFile(getName(++num), pDir);
-			if(!file.exists())
-				break;
-			this.ut.removeFile(file, true);
-		}
-		if(depth <= 0)
-			return null;
-		num = maxNum;
-		while(--num >= 0) {
-			file = this.getBackupFile(getName(num), pDir);
-			if(file.exists())
-				this.ut.moveFileTo(file, pDir, getName(num + 1));
-		}
-		var tmp = firstFile.clone();
-		var name = getName(0);
-		if(!leaveOriginal)
-			this.ut.moveFileTo(tmp, pDir, name);
-		else {
-			this.ut.copyFileTo(firstFile, pDir, name);
-			tmp.leafName = name;
-		}
-		return tmp.path;
-	},
-	get minBackupInterval() {
-		return (this.pu.get("sets.backupAutoInterval") || 24*60*60)*1000;
-	},
-	checkForBackup: function() {
-		if(!this.prefsFile.exists())
-			return;
-		var backupsDir = this.backupsDir;
-		var entries = backupsDir.directoryEntries;
-		var entry, fName, fTime;
-		var _fTimes = [], _files = {};
-		const namePrefix = this.ps.prefsFileName + this.names.autoBackup;
-		while(entries.hasMoreElements()) {
-			entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
-			fName = entry.leafName;
-			if(
-				!entry.isFile()
-				|| !/\.js$/i.test(fName)
-				|| !this.ut.hasPrefix(fName, namePrefix)
-				|| !/-(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\.js$/.test(fName)
-			)
-				continue;
-			fTime = new Date(RegExp.$1, RegExp.$2 - 1, RegExp.$3, RegExp.$4, RegExp.$5, RegExp.$6).getTime();
-			_fTimes.push(fTime);
-			_files[fTime] = entry; // fTime must be unique
-		}
-		this.ut.sortAsNumbers(_fTimes);
-
-		var max = this.pu.get("sets.backupAutoDepth");
-
-		var now = Date.now();
-		if(max > 0 && (!_fTimes.length || now >= _fTimes[_fTimes.length - 1] + this.minBackupInterval)) {
-			_fTimes.push(now);
-			fName = namePrefix + this.getTimeString(now) + ".js";
-			this.ut.copyFileTo(this.prefsFile, backupsDir, fName);
-			_files[now] = this.getBackupFile(fName);
-			this._log("Backup: " + _files[now].leafName);
-		}
-		else
-			this._log("checkForBackup: No backup");
-
-		while(_fTimes.length > max)
-			this.ut.removeFile(_files[_fTimes.shift()], false);
-	},
-	getTimeString: function(date) {
-		var d = date ? new Date(date) : new Date();
-		if("toISOString" in d) { // Firefox 3.5+
-			// toISOString() uses zero UTC offset, trick to use locale offset
-			d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-			return d.toISOString() // Example: 2017-01-02T03:04:05.006Z
-				.replace(/[-T:]|\..*$/g, "");
-		}
-		return d.toLocaleFormat("%Y%m%d%H%M%S");
-	},
 	__savedStr: null,
 	get _savedStr() {
 		return this.__savedStr;
@@ -958,9 +792,9 @@ var handyClicksPrefSvc = {
 			callback && callback.call(context || this, Components.results.NS_OK);
 			return;
 		}
-		this.checkForBackup();
+		this.pe.checkForBackup();
 		var pFile = this.prefsFile;
-		this.moveFiles(pFile, this.names.backup);
+		this.pe.moveFiles(pFile, this.names.backup);
 		if(async) {
 			this.ut.writeToFileAsync(str, pFile, this.ut.bind(function(status) {
 				if(Components.isSuccessCode(status))
@@ -1158,7 +992,8 @@ var handyClicksPrefSvc = {
 			str = this.removePrefsDesription(str);
 		}
 
-		str = this.convertToJSON(str, silent);
+		if(this.isLegacyJs(str))
+			str = this.pe.convertToJSON(str, silent);
 		try {
 			var prefsObj = this.JSON.parse(str);
 		}

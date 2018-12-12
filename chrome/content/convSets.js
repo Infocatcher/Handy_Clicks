@@ -170,7 +170,7 @@ function setsMigration(allowSave, vers) {
 		}
 	}
 	if(vers < 0.3) { //= Added: 2012-01-13
-		// See converter in handyClicksPrefSvc.loadSettings() and handyClicksPrefSvc.convertToJSON().
+		// See converter in handyClicksPrefSvc.loadSettings() and handyClicksPrefSvcExt.convertToJSON().
 		// So just resave settings.
 
 		// Store backups in separate directory
@@ -190,7 +190,7 @@ function setsMigration(allowSave, vers) {
 				)
 					continue;
 				//entry.moveTo(backupsDir, fName);
-				var newFile = this.getBackupFile(fName);
+				var newFile = this.pe.getBackupFile(fName);
 				// Simple way to get unique file name
 				newFile.createUnique(newFile.NORMAL_FILE_TYPE, this.ut.PERMS_FILE_WRITE);
 				entry.moveTo(backupsDir, newFile.leafName);
@@ -201,7 +201,7 @@ function setsMigration(allowSave, vers) {
 	if(!allowSave)
 		this.loadedVersion = this.setsVersion;
 	else {
-		this.moveFiles(this.prefsFile, this.names.version + vers + "-", true, true);
+		this.pe.moveFiles(this.prefsFile, this.names.version + vers + "-", true, true);
 		this.saveSettingsObjectsAsync();
 	}
 	this._info("Format of prefs file updated: " + vers + " => " + this.setsVersion);

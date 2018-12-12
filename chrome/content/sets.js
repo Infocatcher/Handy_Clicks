@@ -2655,7 +2655,7 @@ var handyClicksSets = {
 				pSrc = this.ps.getPrefsStr(data);
 			break;
 			case ct.IMPORT_BACKUP:
-				pSrc = this.ps.getBackupFile(data);
+				pSrc = this.pe.getBackupFile(data);
 		}
 		if(
 			fromClip
@@ -2716,9 +2716,9 @@ var handyClicksSets = {
 			this.backupsDir = pSrc.parent;
 	},
 	createBackup: function() {
-		var bName = this.ps.prefsFileName + this.ps.names.userBackup + this.ps.getTimeString();
+		var bName = this.ps.prefsFileName + this.ps.names.userBackup + this.pe.getTimeString();
 		var bFile, i = -1; //~ todo: use nsIFile.createUnique() instead ?
-		do bFile = this.ps.getBackupFile(bName + (++i ? "-" + i : "") + ".js");
+		do bFile = this.pe.getBackupFile(bName + (++i ? "-" + i : "") + ".js");
 		while(bFile.exists());
 		//this.ut.copyFileTo(this.ps.prefsFile, this.ps.backupsDir, bFile.leafName);
 		var pStr = this.ps.getSettingsStr(null, null, true /*exportLinkedFiles*/);
@@ -2733,7 +2733,7 @@ var handyClicksSets = {
 		var fName = mi.getAttribute("hc_fileName");
 		if(!fName)
 			return false;
-		var file = this.ps.getBackupFile(fName);
+		var file = this.pe.getBackupFile(fName);
 		if(!file.exists()) {
 			mi.parentNode.removeChild(mi);
 			this.updRestorePopup();
@@ -2970,9 +2970,8 @@ var handyClicksSets = {
 		//var fromClip = this._importFromClipboard;
 		this.setImportStatus(false);
 		if(ok) {
-			this.ps.checkForBackup();
 			// Keep prefs file because content of new file may be equals!
-			this.ps.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, true);
+			this.pe.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, true);
 
 			this.ps.otherSrc = false;
 			this.importFilesData();
