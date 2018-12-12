@@ -133,6 +133,72 @@ var handyClicksPrefSvcExt = {
 		this.ps.loadSettings();
 	},
 
+	exportFileData: function(files, code) {
+		var path = this.ps.getSourcePath(code);
+		if(!path || (path in files))
+			return;
+		var file = this.ut.getLocalFile(path);
+		if(!file) {
+			this.ut._warn("Export skipped, invalid path: " + path);
+			return;
+		}
+		if(!this.importAllowed(file)) {
+			this.ut._warn("Export not allowed for " + path + " -> " + file.path);
+			return;
+		}
+		var data = this.ut.readFromFile(file);
+		if(!data) {
+			this.ut._warn("Export skipped, file is empty or missing: " + path + " -> " + file.path);
+			return;
+		}
+		files[path] = {
+			lastModified: file.lastModifiedTime,
+			size: file.fileSize,
+			data: data
+		};
+	},
+	importAllowed: function(file) { //~ todo: add pref?
+		return this.ps.scriptsDir.contains(file, false /* aRecurse, for Firefox 31 and older */);
+	},
+	filterFilesData: function(files, prefs, types) {
+		if(!files)
+			return null;
+		var linkedPaths = { __proto__: null };
+		var addPath = this.ut.bind(function() {
+			var code = this.ut.getOwnProperty.apply(this.ut, arguments);
+			var path = code && this.ps.getSourcePath(code);
+			if(path)
+				linkedPaths[path] = true;
+		}, this);
+		for(var type in types) if(types.hasOwnProperty(type)) {
+			var to = types[type];
+			addPath(to, "define");
+			addPath(to, "contextMenu");
+		}
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
+			var so = prefs[sh];
+			if(!this.ut.isObject(so))
+				continue;
+			for(var type in so) if(so.hasOwnProperty(type)) {
+				var to = so[type];
+				addPath(to, "init");
+				addPath(to, "action");
+				var da = this.ut.getOwnProperty(to, "delayedAction");
+				if(da) {
+					addPath(da, "init");
+					addPath(da, "action");
+				}
+			}
+		}
+		for(var path in files) if(files.hasOwnProperty(path)) {
+			if(!(path in linkedPaths)) {
+				this.ut._warn("[Import] Ignore not linked path in files object: " + path);
+				delete files[path];
+			}
+		}
+		return files;
+	},
+
 	convertToJSON: function(s, silent) { //= Added: 2012-01-13
 		if(s.substr(0, 4) != "var ")
 			return s;

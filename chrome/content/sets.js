@@ -3031,7 +3031,7 @@ var handyClicksSets = {
 				this.ut._warn("Import skipped, invalid path: " + path);
 				continue;
 			}
-			if(!this.ps.importAllowed(file)) {
+			if(!this.pe.importAllowed(file)) {
 				this.ut._warn("Import not allowed for " + path + " -> " + file.path);
 				continue;
 			}
