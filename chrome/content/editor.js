@@ -1229,7 +1229,7 @@ var handyClicksEditor = {
 	},
 	undoTestSettings: function(reloadAll) {
 		try {
-			this.ps.testSettings(false);
+			this.pe.testSettings(false);
 			if(reloadAll) {
 				this.ps.loadSettings();
 				this.initUI(true);
@@ -1327,7 +1327,7 @@ var handyClicksEditor = {
 		var loadCorrectedSettings = this.ut.bind(callback, this);
 		this.testMode = testFlag; //~ todo: test!
 		if(testFlag)
-			this.ps.testSettings(true);
+			this.pe.testSettings(true);
 		else {
 			if(this.ps.otherSrc)
 				this.ps.reloadSettings(applyFlag);

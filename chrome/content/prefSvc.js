@@ -650,33 +650,6 @@ var handyClicksPrefSvc = {
 		);
 	},
 
-	testSettings: function(isTest) {
-		var src = null;
-		var notifyFlags = this.SETS_TEST;
-		if(isTest) {
-			src = this.getSettingsStr();
-			this.createTestBackup(src);
-		}
-		else {
-			notifyFlags |= this.SETS_TEST_UNDO;
-		}
-		const pSvc = "handyClicksPrefSvc";
-		this.wu.forEachWindow(
-			this.ut.isSeaMonkey ? null : "navigator:browser",
-			function(w) {
-				if(
-					!(pSvc in w)
-					|| !("handyClicksUI" in w) // Make sure it's a browser window, for SeaMonkey
-				)
-					return;
-				var p = w[pSvc];
-				p.oSvc.notifyObservers(notifyFlags | this.SETS_BEFORE_RELOAD);
-				p.loadSettings(src);
-				p.oSvc.notifyObservers(notifyFlags | this.SETS_RELOADED);
-			},
-			this
-		);
-	},
 	get hasTestSettings() {
 		const pSvc = "handyClicksPrefSvc";
 		var ws = this.wu.wm.getEnumerator(this.ut.isSeaMonkey ? null : "navigator:browser");
@@ -686,26 +659,6 @@ var handyClicksPrefSvc = {
 				return true;
 		}
 		return false;
-	},
-	createTestBackup: function(pStr) {
-		var num = this.pu.get("sets.backupTestDepth") - 1;
-		if(num < 0)
-			return;
-		var fName = this.prefsFileName + this.names.testBackup;
-		var file, bakFile;
-		while(--num >= 0) {
-			file = this.pe.getBackupFile(fName + num + ".js");
-			if(num == 0)
-				bakFile = file.clone();
-			if(file.exists()) {
-				this.ut.moveFileTo(file, this.backupsDir, fName + (num + 1) + ".js");
-				this.ut.deleteTemporaryFileOnExit(file);
-			}
-		}
-		this.ut.writeToFile(pStr, bakFile);
-		this.ut.deleteTemporaryFileOnExit(bakFile);
-
-		this.ut.storage("testBackupCreated", true);
 	},
 
 	__savedStr: null,

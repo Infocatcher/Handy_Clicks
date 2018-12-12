@@ -133,6 +133,54 @@ var handyClicksPrefSvcExt = {
 		this.ps.loadSettings();
 	},
 
+	testSettings: function(isTest) {
+		var src = null;
+		var notifyFlags = this.ps.SETS_TEST;
+		if(isTest) {
+			src = this.ps.getSettingsStr();
+			this.createTestBackup(src);
+		}
+		else {
+			notifyFlags |= this.ps.SETS_TEST_UNDO;
+		}
+		const pSvc = "handyClicksPrefSvc";
+		this.wu.forEachWindow(
+			this.ut.isSeaMonkey ? null : "navigator:browser",
+			function(w) {
+				if(
+					!(pSvc in w)
+					|| !("handyClicksUI" in w) // Make sure it's a browser window, for SeaMonkey
+				)
+					return;
+				var p = w[pSvc];
+				p.oSvc.notifyObservers(notifyFlags | this.ps.SETS_BEFORE_RELOAD);
+				p.loadSettings(src);
+				p.oSvc.notifyObservers(notifyFlags | this.ps.SETS_RELOADED);
+			},
+			this
+		);
+	},
+	createTestBackup: function(pStr) {
+		var num = this.pu.get("sets.backupTestDepth") - 1;
+		if(num < 0)
+			return;
+		var fName = this.ps.prefsFileName + this.ps.names.testBackup;
+		var file, bakFile;
+		while(--num >= 0) {
+			file = this.getBackupFile(fName + num + ".js");
+			if(num == 0)
+				bakFile = file.clone();
+			if(file.exists()) {
+				this.ut.moveFileTo(file, this.ps.backupsDir, fName + (num + 1) + ".js");
+				this.ut.deleteTemporaryFileOnExit(file);
+			}
+		}
+		this.ut.writeToFile(pStr, bakFile);
+		this.ut.deleteTemporaryFileOnExit(bakFile);
+
+		this.ut.storage("testBackupCreated", true);
+	},
+
 	exportFileData: function(files, code) {
 		var path = this.ps.getSourcePath(code);
 		if(!path || (path in files))
