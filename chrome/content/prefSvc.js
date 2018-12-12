@@ -233,7 +233,7 @@ var handyClicksPrefSvc = {
 		this.prefs = scope.prefs;
 		this.types = scope.types;
 		this.files = !fromPrefs && "files" in scope
-			&& scope.files
+			&& this.filterFilesData(scope.files, scope.prefs, scope.types)
 			|| {};
 		var vers = this.loadedVersion = scope.version || 0;
 
@@ -671,6 +671,44 @@ var handyClicksPrefSvc = {
 		return this.setsHeader
 			+ "// " + hashFunc + ": " + this.getHash(json, hashFunc) + "\n"
 			+ json;
+	},
+	filterFilesData: function(files, prefs, types) {
+		if(!files)
+			return null;
+		var linkedPaths = { __proto__: null };
+		var addPath = this.ut.bind(function() {
+			var code = this.ut.getOwnProperty.apply(this.ut, arguments);
+			var path = code && this.getSourcePath(code);
+			if(path)
+				linkedPaths[path] = true;
+		}, this);
+		for(var type in types) if(types.hasOwnProperty(type)) {
+			var to = types[type];
+			addPath(to, "define");
+			addPath(to, "contextMenu");
+		}
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
+			var so = prefs[sh];
+			if(!this.ut.isObject(so))
+				continue;
+			for(var type in so) if(so.hasOwnProperty(type)) {
+				var to = so[type];
+				addPath(to, "init");
+				addPath(to, "action");
+				var da = this.ut.getOwnProperty(to, "delayedAction");
+				if(da) {
+					addPath(da, "init");
+					addPath(da, "action");
+				}
+			}
+		}
+		for(var path in files) if(files.hasOwnProperty(path)) {
+			if(!(path in linkedPaths)) {
+				this.ut._warn("[Import] Ignore not linked path in files object: " + path);
+				delete files[path];
+			}
+		}
+		return files;
 	},
 	codeKeys: {
 		contextMenu: true,
