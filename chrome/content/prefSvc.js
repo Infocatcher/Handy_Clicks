@@ -534,7 +534,7 @@ var handyClicksPrefSvc = {
 		Array.prototype.forEach.call(arguments, this.sortSettings, this);
 		return this.ut.objEqualsRaw.apply(this.ut, arguments);
 	},
-	getSettingsStr: function(types, prefs, exportLinkedFiles) {
+	getSettingsStr: function(types, prefs, exportLinkedFiles, noHash) {
 		types = types || this.types;
 		prefs = prefs || this.prefs;
 
@@ -560,9 +560,8 @@ var handyClicksPrefSvc = {
 		}, "\t");
 
 		const hashFunc = "SHA256";
-		return this.setsHeader
-			+ "// " + hashFunc + ": " + this.getHash(json, hashFunc) + "\n"
-			+ json;
+		var hashData = noHash ? "" : "// " + hashFunc + ": " + this.getHash(json, hashFunc) + "\n";
+		return this.setsHeader + hashData + json;
 	},
 	codeKeys: {
 		contextMenu: true,
@@ -607,7 +606,11 @@ var handyClicksPrefSvc = {
 		return false;
 	},
 
-	__savedStr: null,
+	get hasUnsaved() {
+		return this.ps.getSettingsStr(null, null, false, true)
+			!= this.ps.__savedStr.replace(this.hashRe, "");
+	},
+	__savedStr: "",
 	get _savedStr() {
 		return this.__savedStr;
 	},
