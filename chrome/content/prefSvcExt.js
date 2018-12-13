@@ -1,6 +1,90 @@
 var handyClicksPrefSvcExt = {
 	__proto__: handyClicksPrefSvc,
 
+	saveSettingsObjects: function(reloadAll) {
+		this.saveSettings(this.getSettingsStr());
+		this.reloadSettings(reloadAll);
+	},
+	saveSettingsObjectsAsync: function(reloadAll, callback, context) {
+		this.delay(function() {
+			this.saveSettingsAsync(this.getSettingsStr(), function(status) {
+				if(Components.isSuccessCode(status))
+					this.reloadSettings(reloadAll);
+				callback && callback.call(context || this, status);
+			}, this);
+		}, this);
+	},
+	saveSettings: function(str, async, callback, context) {
+		if(str == this.ps._savedStr) {
+			callback && callback.call(context || this, Components.results.NS_OK);
+			return;
+		}
+		this.checkForBackup();
+		var pFile = this.ps.prefsFile;
+		this.moveFiles(pFile, this.names.backup);
+		if(async) {
+			this.ut.writeToFileAsync(str, pFile, this.ut.bind(function(status) {
+				if(Components.isSuccessCode(status))
+					this.ps._savedStr = str;
+				else
+					this.saveError(status);
+				callback && callback.call(context || this, status);
+			}, this));
+		}
+		else {
+			var err = {};
+			if(this.ut.writeToFile(str, pFile, err))
+				this.ps._savedStr = str;
+			else
+				this.saveError(this.ut.getErrorCode(err.value));
+		}
+	},
+	saveSettingsAsync: function(str, callback, context) {
+		this.saveSettings(str, true, callback, context);
+	},
+	saveError: function(status) {
+		this.ut.alert(
+			this.getLocalized("errorTitle"),
+			this.getLocalized("saveError")
+				.replace("%f", this.prefsFile.path)
+				.replace("%e", this.ut.getErrorName(status))
+		);
+		this.ut.reveal(this.prefsFile);
+	},
+
+	reloadSettings: function(reloadAll) {
+		const pSvc = "handyClicksPrefSvc";
+		var curOtherSrc = this.currentOtherSrc;
+		var types = ["handyclicks:settings", "handyclicks:editor"];
+		if(!curOtherSrc) {
+			if(this.ut.isSeaMonkey)
+				types = null;
+			else
+				types.push("navigator:browser");
+		}
+		this.wu.forEachWindow(
+			types,
+			function(w) {
+				if(!(pSvc in w) || (!reloadAll && w === window))
+					return;
+				// Note: we don't need special checks for SeaMonkey, "pSvc in w" should be enough
+				var p = w[pSvc];
+				if(!curOtherSrc && p.otherSrc && "handyClicksSets" in w) {
+					var s = w.handyClicksSets;
+					//~ todo: may be deleted via garbage collector in old Firefox versions?
+					s._savedPrefs = this.prefs;
+					s._savedTypes = this.types;
+					s.updTree();
+					return;
+				}
+				p.oSvc.notifyObservers(this.SETS_BEFORE_RELOAD);
+				p.loadSettings(curOtherSrc && p.otherSrc ? curOtherSrc : p.currentOtherSrc);
+				p.oSvc.notifyObservers(this.SETS_RELOADED);
+			},
+			this
+		);
+	},
+
 	getBackupFile: function(fName, parentDir) {
 		if(!parentDir)
 			parentDir = this.backupsDir;

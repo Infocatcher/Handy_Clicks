@@ -1053,7 +1053,7 @@ var handyClicksSets = {
 		if(this.instantApply)
 			this.saveSettingsObjectsCheck(true);
 		else {
-			this.ps.otherSrc && this.ps.reloadSettings(true /* reloadAll */);
+			this.ps.otherSrc && this.pe.reloadSettings(true /* reloadAll */);
 			this.setDialogButtons();
 		}
 		this.searchInSetsTree(true);
@@ -1176,7 +1176,7 @@ var handyClicksSets = {
 			this.setDialogButtons();
 			this.updTreeButtons();
 		}
-		this.ps.otherSrc && this.ps.reloadSettings(true /* applyFlag */);
+		this.ps.otherSrc && this.pe.reloadSettings(true /* applyFlag */);
 		if(this.instantApply && !this.ps.otherSrc)
 			this.saveSettingsObjectsCheck(true, callback, this);
 		else
@@ -1945,7 +1945,7 @@ var handyClicksSets = {
 		}
 		var saved = true;
 		if(this.ps.otherSrc)
-			this.ps.reloadSettings(applyFlag);
+			this.pe.reloadSettings(applyFlag);
 		else {
 			saved = this.saveSettingsObjectsCheck(applyFlag, this.setDialogButtons, this);
 			if(applyFlag) {
@@ -1969,9 +1969,9 @@ var handyClicksSets = {
 		if(!this.buggyPrefsConfirm())
 			return false;
 		if(applyFlag)
-			this.ps.saveSettingsObjectsAsync(applyFlag, callback, context);
+			this.pe.saveSettingsObjectsAsync(applyFlag, callback, context);
 		else
-			this.ps.saveSettingsObjects(applyFlag);
+			this.pe.saveSettingsObjects(applyFlag);
 		//this.setDialogButtons();
 		return true;
 	},
@@ -2701,7 +2701,7 @@ var handyClicksSets = {
 		}
 		this.ps.loadSettings(pSrc);
 		//this.setDialogButtons();
-		//this.ps.reloadSettings(false);
+		//this.pe.reloadSettings(false);
 		if(this.ps._loadStatus)
 			return;
 		this.setImportStatus(true, partialImport, srcId == 1 /* from clipboard */);
@@ -2976,7 +2976,7 @@ var handyClicksSets = {
 			this.ps.otherSrc = false;
 			this.importFilesData();
 			isPartial && this.mergePrefs();
-			this.ps.saveSettingsObjects(true);
+			this.pe.saveSettingsObjects(true);
 		}
 		else { // Cancel import
 			this.ps.loadSettings();

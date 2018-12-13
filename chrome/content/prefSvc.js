@@ -472,7 +472,7 @@ var handyClicksPrefSvc = {
 
 	defaultSettings: function() {
 		var data = this.getSettingsStr({}, {});
-		this.saveSettingsAsync(data);
+		this.pe.saveSettingsAsync(data);
 		return data;
 	},
 	correctSettings: function(types, prefs/*, force*/) {
@@ -579,19 +579,6 @@ var handyClicksPrefSvc = {
 			this.jsLoader.loadSubScript("chrome://handyclicks/content/json.js", this);
 		return this.JSON;
 	},
-	saveSettingsObjects: function(reloadAll) {
-		this.saveSettings(this.getSettingsStr());
-		this.reloadSettings(reloadAll);
-	},
-	saveSettingsObjectsAsync: function(reloadAll, callback, context) {
-		this.delay(function() {
-			this.saveSettingsAsync(this.getSettingsStr(), function(status) {
-				if(Components.isSuccessCode(status))
-					this.reloadSettings(reloadAll);
-				callback && callback.call(context || this, status);
-			}, this);
-		}, this);
-	},
 	getHash: function(str, hashFunc) {
 		var uc = this.ut.utf8Converter;
 		var result = {};
@@ -607,38 +594,6 @@ var handyClicksPrefSvc = {
 				return ("0" + chr.charCodeAt(0).toString(16)).slice(-2);
 			}
 		).join("");
-	},
-	reloadSettings: function(reloadAll) {
-		const pSvc = "handyClicksPrefSvc";
-		var curOtherSrc = this.currentOtherSrc;
-		var types = ["handyclicks:settings", "handyclicks:editor"];
-		if(!curOtherSrc) {
-			if(this.ut.isSeaMonkey)
-				types = null;
-			else
-				types.push("navigator:browser");
-		}
-		this.wu.forEachWindow(
-			types,
-			function(w) {
-				if(!(pSvc in w) || (!reloadAll && w === window))
-					return;
-				// Note: we don't need special checks for SeaMonkey, "pSvc in w" should be enough
-				var p = w[pSvc];
-				if(!curOtherSrc && p.otherSrc && "handyClicksSets" in w) {
-					var s = w.handyClicksSets;
-					//~ todo: may be deleted via garbage collector in old Firefox versions?
-					s._savedPrefs = this.prefs;
-					s._savedTypes = this.types;
-					s.updTree();
-					return;
-				}
-				p.oSvc.notifyObservers(this.SETS_BEFORE_RELOAD);
-				p.loadSettings(curOtherSrc && p.otherSrc ? curOtherSrc : p.currentOtherSrc);
-				p.oSvc.notifyObservers(this.SETS_RELOADED);
-			},
-			this
-		);
 	},
 
 	get hasTestSettings() {
@@ -665,43 +620,6 @@ var handyClicksPrefSvc = {
 					w[pSvc].__savedStr = str;
 			}
 		);
-	},
-	saveSettings: function(str, async, callback, context) {
-		if(str == this._savedStr) {
-			callback && callback.call(context || this, Components.results.NS_OK);
-			return;
-		}
-		this.pe.checkForBackup();
-		var pFile = this.prefsFile;
-		this.pe.moveFiles(pFile, this.names.backup);
-		if(async) {
-			this.ut.writeToFileAsync(str, pFile, this.ut.bind(function(status) {
-				if(Components.isSuccessCode(status))
-					this._savedStr = str;
-				else
-					this.saveError(status);
-				callback && callback.call(context || this, status);
-			}, this));
-		}
-		else {
-			var err = {};
-			if(this.ut.writeToFile(str, pFile, err))
-				this._savedStr = str;
-			else
-				this.saveError(this.ut.getErrorCode(err.value));
-		}
-	},
-	saveSettingsAsync: function(str, callback, context) {
-		this.saveSettings(str, true, callback, context);
-	},
-	saveError: function(status) {
-		this.ut.alert(
-			this.getLocalized("errorTitle"),
-			this.getLocalized("saveError")
-				.replace("%f", this.prefsFile.path)
-				.replace("%e", this.ut.getErrorName(status))
-		);
-		this.ut.reveal(this.prefsFile);
 	},
 
 	get isMainWnd() {

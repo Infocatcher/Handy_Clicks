@@ -1330,13 +1330,13 @@ var handyClicksEditor = {
 			this.pe.testSettings(true);
 		else {
 			if(this.ps.otherSrc)
-				this.ps.reloadSettings(applyFlag);
+				this.pe.reloadSettings(applyFlag);
 			else {
 				if(!applyFlag) // ondialogaccept
-					this.ps.saveSettingsObjects(applyFlag);
+					this.pe.saveSettingsObjects(applyFlag);
 				else {
 					this.applyDisabled = true; // Don't wait for callback
-					this.ps.saveSettingsObjectsAsync(applyFlag, loadCorrectedSettings);
+					this.pe.saveSettingsObjectsAsync(applyFlag, loadCorrectedSettings);
 				}
 				return;
 			}
@@ -1431,9 +1431,9 @@ var handyClicksEditor = {
 			return;
 		}
 		if(this.ps.otherSrc)
-			this.ps.reloadSettings();
+			this.pe.reloadSettings();
 		else
-			this.ps.saveSettingsObjects();
+			this.pe.saveSettingsObjects();
 		this.highlightUsedTypes();
 
 		//this.applyDisabled = false;
@@ -1561,9 +1561,9 @@ var handyClicksEditor = {
 			return;
 		delete cts[cct];
 		if(this.ps.otherSrc)
-			this.ps.reloadSettings();
+			this.pe.reloadSettings();
 		else
-			this.ps.saveSettingsObjects();
+			this.pe.saveSettingsObjects();
 		this.appendTypesList();
 
 		//this.applyDisabled = false;
