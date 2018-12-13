@@ -760,6 +760,7 @@ var handyClicksPrefSvc = {
 				|| typeof obj.version == "number" && isFinite(obj.version)
 			);
 	},
+	hashRe: /(?:\r\n|\n|\r)\/\/[ \t]?(MD2|MD5|SHA1|SHA512|SHA256|SHA384):[ \t]?([a-f0-9]+)(?=[\n\r]|$)/,
 	checkPrefsStr: function _cps(str, silent) {
 		var checkCustom = _cps.hasOwnProperty("checkCustomCode");
 		delete _cps.checkCustomCode;
@@ -772,21 +773,18 @@ var handyClicksPrefSvc = {
 			return false;
 		}
 
-		const hashRe = /(?:\r\n|\n|\r)\/\/[ \t]?(MD2|MD5|SHA1|SHA512|SHA256|SHA384):[ \t]?([a-f0-9]+)(?=[\n\r]|$)/;
-		if(hashRe.test(str)) { //= Added: 2009-12-18
+		str = this.removePrefsDesription(str);
+		var header = RegExp.lastMatch;
+
+		if(this.hashRe.test(header)) { //= Added: 2009-12-18
 			this._hashMissing = false;
 			var hashFunc = RegExp.$1;
 			var hash = RegExp.$2;
-			str = RegExp.leftContext + RegExp.rightContext; // str = str.replace(hashRe, "");
-			str = this.removePrefsDesription(str);
 			if(hash != this.getHash(str, hashFunc)) {
 				this._hashError = true;
 				!silent && this.ut._warn("Invalid prefs: wrong checksum");
 				return false;
 			}
-		}
-		else {
-			str = this.removePrefsDesription(str);
 		}
 
 		if(this.isLegacyJs(str))
