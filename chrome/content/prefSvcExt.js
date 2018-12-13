@@ -46,10 +46,10 @@ var handyClicksPrefSvcExt = {
 		this.ut.alert(
 			this.getLocalized("errorTitle"),
 			this.getLocalized("saveError")
-				.replace("%f", this.prefsFile.path)
+				.replace("%f", this.ps.prefsFile.path)
 				.replace("%e", this.ut.getErrorName(status))
 		);
-		this.ut.reveal(this.prefsFile);
+		this.ut.reveal(this.ps.prefsFile);
 	},
 
 	reloadSettings: function(reloadAll) {
@@ -87,7 +87,7 @@ var handyClicksPrefSvcExt = {
 
 	getBackupFile: function(fName, parentDir) {
 		if(!parentDir)
-			parentDir = this.backupsDir;
+			parentDir = this.ps.backupsDir;
 		var file = parentDir.clone();
 		file.append(fName);
 		return file;
@@ -98,8 +98,8 @@ var handyClicksPrefSvcExt = {
 		if(depth === undefined)
 			depth = this.pu.get("sets.backupDepth");
 		var pDir = nameAdd == this.names.corrupted
-			? this.corruptedDir
-			: this.backupsDir;
+			? this.ps.corruptedDir
+			: this.ps.backupsDir;
 		var maxNum = depth - 1;
 		var fName = this.prefsFileName + nameAdd;
 		function getName(n) {
@@ -134,10 +134,10 @@ var handyClicksPrefSvcExt = {
 		return tmp.path;
 	},
 	checkForBackup: function() {
-		if(!this.prefsFile.exists())
+		if(!this.ps.prefsFile.exists())
 			return;
 		var minBackupInterval = (this.pu.get("sets.backupAutoInterval") || 24*60*60)*1000;
-		var backupsDir = this.backupsDir;
+		var backupsDir = this.ps.backupsDir;
 		var entries = backupsDir.directoryEntries;
 		var entry, fName, fTime;
 		var _fTimes = [], _files = {};
@@ -164,7 +164,7 @@ var handyClicksPrefSvcExt = {
 		if(max > 0 && (!_fTimes.length || now >= _fTimes[_fTimes.length - 1] + minBackupInterval)) {
 			_fTimes.push(now);
 			fName = namePrefix + this.getTimeString(now) + ".js";
-			this.ut.copyFileTo(this.prefsFile, backupsDir, fName);
+			this.ut.copyFileTo(this.ps.prefsFile, backupsDir, fName);
 			_files[now] = this.getBackupFile(fName);
 			this._log("Backup: " + _files[now].leafName);
 		}
@@ -185,7 +185,7 @@ var handyClicksPrefSvcExt = {
 		return d.toLocaleFormat("%Y%m%d%H%M%S");
 	},
 	loadSettingsBackup: function() {
-		var pFile = this.prefsFile;
+		var pFile = this.ps.prefsFile;
 		var corruptedPath = this.moveFiles(
 			pFile,
 			this.names.corrupted,
@@ -196,7 +196,7 @@ var handyClicksPrefSvcExt = {
 		if(pFile.exists()) { // Backups disabled
 			var tmp = pFile.clone();
 			// But save backup anyway :)
-			this.ut.moveFileTo(tmp, this.backupsDir, this.prefsFileName + this.names.corrupted.replace(/-$/, "") + ".js");
+			this.ut.moveFileTo(tmp, this.ps.backupsDir, this.prefsFileName + this.names.corrupted.replace(/-$/, "") + ".js");
 			corruptedPath = tmp.path;
 		}
 		while(++this.ps._restoringCounter <= this.pu.get("sets.backupDepth")) {
@@ -255,7 +255,7 @@ var handyClicksPrefSvcExt = {
 			if(num == 0)
 				bakFile = file.clone();
 			if(file.exists()) {
-				this.ut.moveFileTo(file, this.backupsDir, fName + (num + 1) + ".js");
+				this.ut.moveFileTo(file, this.ps.backupsDir, fName + (num + 1) + ".js");
 				this.ut.deleteTemporaryFileOnExit(file);
 			}
 		}
@@ -290,7 +290,7 @@ var handyClicksPrefSvcExt = {
 		};
 	},
 	importAllowed: function(file) { //~ todo: add pref?
-		return this.scriptsDir.contains(file, false /* aRecurse, for Firefox 31 and older */);
+		return this.ps.scriptsDir.contains(file, false /* aRecurse, for Firefox 31 and older */);
 	},
 	filterFilesData: function(files, prefs, types) {
 		if(!files)
