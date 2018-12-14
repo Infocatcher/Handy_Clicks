@@ -388,7 +388,7 @@ var handyClicksPrefSvc = {
 	},
 	getSourcePath: function(code) {
 		// Usage: "//> path/to/file.js"
-		return /^\/\/>\s*([^\n\r]+\.js)$/.test(code) && RegExp.$1;
+		return /^\/\/>\s*([^\n\r]+\.\w+)$/.test(code) && RegExp.$1;
 	},
 	expandCode: function(code) {
 		var path = this.getSourcePath(code);
