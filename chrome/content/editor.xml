@@ -507,7 +507,7 @@
 					if(allowUnicode) {
 						var tb = document.getElementById(
 							type.substr(0, 4) == "func"
-								? "hc-editor-funcLabel"
+								? "hc-editor-funcLabel" + type.match(/(?:-delay)?$/)[0]
 								: "hc-editor-customType"
 						);
 						var label = (tb && tb.value || "")
