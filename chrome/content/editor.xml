@@ -1151,7 +1151,7 @@
 					newVal = newVal.replace(new RegExp("[ \t]*(" + selMarker + ")?[ \t]*(" + selMarker + ")?[ \t]*$", "mg"), "$1$2");
 					ss = newVal.indexOf(selMarker);
 					se = newVal.lastIndexOf(selMarker) - selMarker.length;
-					newVal = newVal.replace(selMarker, "", "g");
+					newVal = newVal.replace(new RegExp(selMarker, "g"), "");
 					if(newVal == val)
 						return;
 
