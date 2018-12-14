@@ -50,6 +50,10 @@
 			disabled="true" label="&hc.editor.test;" accesskey="&hc.editor.testAccesskey;" />
 		<command id="hc-editor-cmd-undo" oncommand="event.stopPropagation(); handyClicksEditor.undoTestSettings(true);"
 			disabled="true" label="&hc.editor.undo;" accesskey="&hc.editor.undoAccesskey;" />
+		<command id="hc-editor-cmd-editCode" oncommand="handyClicksEditor.editCode();"
+			label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;" />
+		<command id="hc-editor-cmd-openCode" oncommand="handyClicksEditor.openCode();"
+			label="&hc.editor.openCode;" tooltiptext="&hc.editor.openCodeTip;" />
 	</commandset>
 
 	<keyset id="hc-editor-keys">
@@ -61,9 +65,9 @@
 		<key id="hc-editor-key-reload" keycode="VK_F5" oncommand="handyClicksEditor.initUI(true);" />
 		<key id="hc-editor-key-reload2" key="r" modifiers="control" oncommand="handyClicksEditor.initUI(true);" />
 
-		<key id="hc-editor-key-editCode" key="E" modifiers="control,shift" oncommand="handyClicksEditor.editCode();" />
-		<key id="hc-editor-key-editCode2" keycode="VK_F4" oncommand="handyClicksEditor.editCode();" />
-		<key id="hc-editor-key-openCode" key="O" modifiers="control,shift" oncommand="handyClicksEditor.openCode();" />
+		<key id="hc-editor-key-editCode" key="E" modifiers="control,shift" command="hc-editor-cmd-editCode" />
+		<key id="hc-editor-key-editCode2" keycode="VK_F4" command="hc-editor-cmd-editCode" />
+		<key id="hc-editor-key-openCode" key="O" modifiers="control,shift" command="hc-editor-cmd-openCode" />
 		<key id="hc-editor-key-openCodeNoWatch" key="O" modifiers="control"
 			oncommand="handyClicksEditor.doEditorCommand(null, 'loadFromFile', false);" />
 		<key id="hc-editor-key-saveCode" key="S" modifiers="control,shift"
@@ -212,13 +216,11 @@
 										<hbox id="hc-editor-funcCustomTabboxToolbar" class="hcTabsToolbar"
 											oncommand="event.stopPropagation();">
 											<button class="hcEditCodeButton hcFloatButton hc-iconic"
-												label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"
-												hc_key="hc-editor-key-editCode"
-												oncommand="handyClicksEditor.editCode();" />
+												command="hc-editor-cmd-editCode"
+												hc_key="hc-editor-key-editCode" />
 											<button class="hcOpenCodeButton hcFloatButton hc-iconic"
-												label="&hc.editor.openCode;" tooltiptext="&hc.editor.openCodeTip;"
-												hc_key="hc-editor-key-openCode"
-												oncommand="handyClicksEditor.openCode();" />
+												command="hc-editor-cmd-openCode"
+												hc_key="hc-editor-key-openCode" />
 										</hbox>
 									</hbox>
 									<tabs>
@@ -281,13 +283,11 @@
 						<hbox id="hc-editor-customTypeTabboxToolbar" class="hcTabsToolbar"
 							oncommand="event.stopPropagation();">
 							<button class="hcEditCodeButton hcFloatButton hc-iconic"
-								label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;"
-								hc_key="hc-editor-key-editCode"
-								oncommand="handyClicksEditor.editCode();" />
+								command="hc-editor-cmd-editCode"
+								hc_key="hc-editor-key-editCode" />
 							<button class="hcOpenCodeButton hcFloatButton hc-iconic"
-								label="&hc.editor.openCode;" tooltiptext="&hc.editor.openCodeTip;"
-								hc_key="hc-editor-key-openCode"
-								oncommand="handyClicksEditor.openCode();" />
+								command="hc-editor-cmd-openCode"
+								hc_key="hc-editor-key-openCode" />
 						</hbox>
 					</hbox>
 					<tabs>
