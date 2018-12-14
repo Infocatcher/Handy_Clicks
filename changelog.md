@@ -23,12 +23,13 @@
 `+` Added %init% placeholder to search custom initialization.<br>
 `x` Fixed user backups highlighting in “Restore from backup” menu.<br>
 `x` Correctly open all preferences in case of unloaded about:config tab presence.<br>
-`+` Reset prefs: added checkbox to take export first.<br>
+`+` Reset preferences: added checkbox to take export first.<br>
 `x` Correctly import multiline <em>extensions.handyclicks.editor.external.args</em> preference.<br>
 `+` Added UI for <em>extensions.handyclicks.editor.external.labelInFileName</em> preference.<br>
 `*` Rewritten code to make relative path to external editor: also use %CurProcD% and %hc_ProfDrv%, use ../ only for %ProfD% and %CurProcD% (and limit ../ levels).<br>
 `x` Correctly set selection in Scratchpad in Firefox 44+.<br>
 `*` Improved startup performance: moved not used on startup code from prefSvc.js to prefSvcExt.js with lazy loading (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/33">#33</a>).<br>
+`*` Improved settings performance: used faster way to detect unsaved state (compare only settings data without hash calculations).<br>
 `*` Small internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
