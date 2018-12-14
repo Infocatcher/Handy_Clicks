@@ -94,9 +94,18 @@
 						.QueryInterface(Components.interfaces.nsIPlaintextEditor);
 				</getter>
 			</property>
+			<property name="value">
+				<getter>
+					return this.inputField.value;
+				</getter>
+				<setter>
+					this.select();
+					this.insertText(val);
+				</setter>
+			</property>
 			<property name="newValue">
 				<setter>
-					this.value = val;
+					this.inputField.value = val;
 					this.editor.transactionManager.clear();
 				</setter>
 			</property>
@@ -962,7 +971,6 @@
 						this.value = fVal;
 						this.restoreScrollPos();
 						this.fade();
-						this.fireChange();
 					}, this);
 				]]>
 				</body>
@@ -1162,21 +1170,10 @@
 					ifi.selectionStart = ss;
 					ifi.selectionEnd = se;
 					this.restoreScrollPos();
-
-					this.fireChange();
 				]]>
 				</body>
 			</method>
 
-			<method name="fireChange">
-				<body>
-				<![CDATA[
-					var evt = this.ownerDocument.createEvent("Events");
-					evt.initEvent("change", true, true);
-					this.dispatchEvent(evt);
-				]]>
-				</body>
-			</method>
 			<method name="moveCaret">
 				<parameter name="moveLeft" />
 				<parameter name="event" />
