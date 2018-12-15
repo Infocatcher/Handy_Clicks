@@ -90,15 +90,19 @@ var handyClicksPrefSvc = {
 		delete this.backupsDir;
 		return this.backupsDir = this.getSubDir(this.prefsDir, this.backupsDirName);
 	},
+	get scriptsDir() {
+		delete this.scriptsDir;
+		return this.scriptsDir = this.getSubDir(this.prefsDir, this.scriptsDirName);
+	},
 	get tempDir() {
 		delete this.tempDir;
 		return this.tempDir = this.getSubDir(this.prefsDir, this.tempDirName);
 	},
-	get scriptsDir() {
+	get _scriptsDir() { // Don't create directory automatically
 		var dir = this.prefsDir.clone();
 		dir.append(this.scriptsDirName);
-		delete this.scriptsDir;
-		return this.scriptsDir = dir;
+		delete this._scriptsDir;
+		return this._scriptsDir = dir;
 	},
 	get _tempDir() { // Don't create directory automatically
 		var tempDir = this.prefsDir.clone();

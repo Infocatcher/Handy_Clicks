@@ -290,7 +290,7 @@ var handyClicksPrefSvcExt = {
 		};
 	},
 	importAllowed: function(file) { //~ todo: add pref?
-		return this.ps.scriptsDir.contains(file, false /* aRecurse, for Firefox 31 and older */);
+		return this.ps._scriptsDir.contains(file, false /* aRecurse, for Firefox 31 and older */);
 	},
 	filterFilesData: function(files, prefs, types) {
 		if(!files)
