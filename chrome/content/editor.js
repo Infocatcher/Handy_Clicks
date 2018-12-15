@@ -443,14 +443,24 @@ var handyClicksEditor = {
 	},
 
 	dataChanged: function(e) {
-		var tar = e.target;
-		var ln = tar.localName;
+		var trg = e.target;
+		var ln = trg.localName;
 		if(ln == "tab" || ln == "dialog" || ln == "key")
 			return;
 		//this.applyDisabled = false;
 		//this.setDialogButtons();
 		this.delay(this.setDialogButtons, this, 5);
-		this.delay(this.setEditorButtons, this, 10);
+		if(ln == "textbox" && /(?:^|\s)hcEditor(?:\s|$)/.test(trg.className))
+			this.editorChanged(trg);
+	},
+	_editorTimer: 0,
+	editorChanged: function(editor) {
+		if(this._editorTimer)
+			return;
+		this._editorTimer = this.delay(function() {
+			this._editorTimer = 0;
+			this.setEditorButtons(false, editor);
+		}, this, 25);
 	},
 	setWinId: function() {
 		var winId;
@@ -1163,10 +1173,10 @@ var handyClicksEditor = {
 			btn.disabled = false;
 		}, 400);
 	},
-	setEditorButtons: function(force) {
+	setEditorButtons: function(force, editor) {
 		if(!force && !("_handyClicksInitialized" in window))
 			return;
-		var editor = this.getEditorFromTabbox(this.selectedTabbox);
+		editor = editor || this.getEditorFromTabbox(this.selectedTabbox);
 		var codeToFile = this.$("hc-editor-cmd-codeToFile");
 		var dis = !!this.ps.getSourcePath(editor.value);
 		if((codeToFile.getAttribute("disabled") == "true") != dis)
