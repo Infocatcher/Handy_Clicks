@@ -1117,6 +1117,14 @@ var handyClicksEditor = {
 	codeToFile: function() {
 		this.doEditorCommand("hcCodeToFileButton", "codeToFile");
 	},
+	openScriptsDir: function() {
+		var editor = this.getEditorFromTabbox(this.selectedTabbox);
+		var path = this.ps.getSourcePath(editor.value);
+		var file = path && this.ut.getLocalFile(path);
+		if(!file || !file.exists())
+			file = this.ps.scriptsDir;
+		this.ut.reveal(file);
+	},
 	openCode: function() {
 		this.doEditorCommand("hcOpenCodeButton", "loadFromFile", true);
 		this.checkForCrashBackups(100, true);
