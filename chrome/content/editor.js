@@ -233,6 +233,17 @@ var handyClicksEditor = {
 		else
 			editor.selectLine(line);
 	},
+	get selectedTabbox() {
+		var tabbox = this.mainTabbox;
+		for(;;) {
+			var panel = this.getSelectedPanel(tabbox);
+			var tabboxes = panel.getElementsByTagName("tabbox");
+			if(!tabboxes.length)
+				break;
+			tabbox = tabboxes[0];
+		}
+		return tabbox;
+	},
 	getSelectedPanel: function(tabbox) {
 		return tabbox.selectedPanel
 			|| tabbox.getElementsByTagName("tabpanels")[0] //~ todo: test
@@ -1111,14 +1122,7 @@ var handyClicksEditor = {
 		this.checkForCrashBackups(100, true);
 	},
 	doEditorCommand: function(btnClass, cmd/*, arg1, ...*/) {
-		var tabbox = this.mainTabbox;
-		for(;;) {
-			var panel = this.getSelectedPanel(tabbox);
-			var tabboxes = panel.getElementsByTagName("tabbox");
-			if(!tabboxes.length)
-				break;
-			tabbox = tabboxes[0];
-		}
+		var tabbox = this.selectedTabbox;
 
 		if(btnClass) {
 			var btnClassRe = new RegExp("(?:^|\\s)" + btnClass + "(?:\\s|$)");
