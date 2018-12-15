@@ -53,9 +53,9 @@
 		<command id="hc-editor-cmd-editCode" oncommand="handyClicksEditor.editCode();"
 			label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;" />
 		<command id="hc-editor-cmd-codeToFile" oncommand="handyClicksEditor.codeToFile();"
-			label="To file" tooltiptext="Use linked file to store code" />
+			label="&hc.editor.codeToFile;" tooltiptext="&hc.editor.codeToFileTip;" />
 		<command id="hc-editor-cmd-openScriptsDir" oncommand="handyClicksEditor.openScriptsDir();"
-			label="Scripts…" tooltiptext="Open scripts directory" />
+			label="&hc.editor.openScriptsDir;" tooltiptext="&hc.editor.openScriptsDirTip;" />
 		<command id="hc-editor-cmd-openCode" oncommand="handyClicksEditor.openCode();"
 			label="&hc.editor.openCode;" tooltiptext="&hc.editor.openCodeTip;" />
 	</commandset>

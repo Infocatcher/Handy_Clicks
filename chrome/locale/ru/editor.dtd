@@ -54,8 +54,12 @@
 <!ENTITY hc.editor.funcInitTip "Выполняется при (пере)загрузке настроек">
 
 <!ENTITY hc.editor.editCode "Редактировать…">
-<!ENTITY hc.editor.editCodeTip "Редактировать во внешнем редакторе…">
-<!ENTITY hc.editor.openCode "Открыть…">
+<!ENTITY hc.editor.editCodeTip "Редактировать код во внешнем редакторе…">
+<!ENTITY hc.editor.codeToFile "В файл">
+<!ENTITY hc.editor.codeToFileTip "Использовать ссылку на файл с кодом">
+<!ENTITY hc.editor.openScriptsDir "Скрипты…">
+<!ENTITY hc.editor.openScriptsDirTip "Открыть каталог со скриптами…">
+<!ENTITY hc.editor.openCode "Из файла…">
 <!ENTITY hc.editor.openCodeTip "Загрузить код из файла…">
 
 <!ENTITY hc.editor.mainTabCustomTypes "Добавленные типы">
