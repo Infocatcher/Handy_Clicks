@@ -1103,6 +1103,9 @@ var handyClicksEditor = {
 	editCode: function() {
 		this.doEditorCommand("hcEditCodeButton", "openExternalEditor");
 	},
+	codeToFile: function() {
+		this.doEditorCommand("hcCodeToFileButton", "codeToFile");
+	},
 	openCode: function() {
 		this.doEditorCommand("hcOpenCodeButton", "loadFromFile", true);
 		this.checkForCrashBackups(100, true);

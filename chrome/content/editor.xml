@@ -780,6 +780,37 @@
 				]]>
 				</body>
 			</method>
+			<method name="codeToFile">
+				<body>
+				<![CDATA[
+					if(!("handyClicksUtils" in top))
+						return;
+					var ut = top.handyClicksUtils;
+
+					var val = this.value;
+					var path = ut.ps.getSourcePath(val);
+					if(path) // Already moved
+						return;
+
+					var val = ut.platformLineBreaks(val);
+					if(ut.pu.get("editor.external.saveWithBOM"))
+						val = "\ufeff" + val;
+
+					var ext = ut.pu.get("editor.external.extension") || "js";
+					var fName = this.getDefaultFilename(ext, ut.canRunw && ut.pu.get("editor.external.labelInFileName"));
+					var file = ut.ps.scriptsDir.clone();
+					file.append(fName);
+					file.createUnique(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
+
+					ut.writeToFileAsync(val, file, function(status) {
+						if(!Components.isSuccessCode(status))
+							return;
+						this.value = "//> %hc_ScriptsDir%/" + file.leafName;
+						this.openExternalEditor();
+					}, this);
+				]]>
+				</body>
+			</method>
 			<method name="loadFromFile">
 				<parameter name="watch" />
 				<parameter name="file" />

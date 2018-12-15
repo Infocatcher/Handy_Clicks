@@ -52,6 +52,8 @@
 			disabled="true" label="&hc.editor.undo;" accesskey="&hc.editor.undoAccesskey;" />
 		<command id="hc-editor-cmd-editCode" oncommand="handyClicksEditor.editCode();"
 			label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;" />
+		<command id="hc-editor-cmd-codeToFile" oncommand="handyClicksEditor.codeToFile();"
+			label="To file" tooltiptext="Use linked file to store code" />
 		<command id="hc-editor-cmd-openCode" oncommand="handyClicksEditor.openCode();"
 			label="&hc.editor.openCode;" tooltiptext="&hc.editor.openCodeTip;" />
 	</commandset>
@@ -218,6 +220,8 @@
 											<button class="hcEditCodeButton hcFloatButton hc-iconic"
 												command="hc-editor-cmd-editCode"
 												hc_key="hc-editor-key-editCode" />
+											<button class="hcCodeToFileButton hcFloatButton hc-iconic" image=" "
+												command="hc-editor-cmd-codeToFile" />
 											<button class="hcOpenCodeButton hcFloatButton hc-iconic"
 												command="hc-editor-cmd-openCode"
 												hc_key="hc-editor-key-openCode" />
@@ -285,6 +289,8 @@
 							<button class="hcEditCodeButton hcFloatButton hc-iconic"
 								command="hc-editor-cmd-editCode"
 								hc_key="hc-editor-key-editCode" />
+							<button class="hcCodeToFileButton hcFloatButton hc-iconic" image=" "
+								command="hc-editor-cmd-codeToFile" />
 							<button class="hcOpenCodeButton hcFloatButton hc-iconic"
 								command="hc-editor-cmd-openCode"
 								hc_key="hc-editor-key-openCode" />
