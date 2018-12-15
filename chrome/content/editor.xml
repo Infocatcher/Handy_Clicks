@@ -19,30 +19,34 @@
 					this.style.fontSize = this.getAttribute("hc_fontSize");
 				this.setTabSize();
 				var top = window.top;
-				var pu = "handyClicksPrefUtils" in top && top.handyClicksPrefUtils;
-				if(pu) {
-					this.autocomplete = pu.get("editor.autocomplete");
-					var mm = function(n) {
-						return Math.max(1, Math.min(30, n));
-					};
-					this.autocompleteMinSymbols = mm(pu.get("editor.autocompleteMinSymbols"));
-					pu.oSvc.addObserver(function(pName, pVal) {
-						if(pName == "editor.tabSize")
-							this.setTabSize();
-						else if(pName == "editor.autocomplete")
-							this.autocomplete = pVal;
-						else if(pName == "editor.autocompleteMinSymbols")
-							this.autocompleteMinSymbols = mm(pVal);
-					}, this);
-				}
+				var ut = this.hcUtils = "handyClicksUtils" in top && top.handyClicksUtils;
+				if(!ut)
+					return;
+				this.autocomplete = ut.pu.get("editor.autocomplete");
+				var mm = function(n) {
+					return Math.max(1, Math.min(30, n));
+				};
+				this.autocompleteMinSymbols = mm(ut.pu.get("editor.autocompleteMinSymbols"));
+				ut.pu.oSvc.addObserver(function(pName, pVal) {
+					if(pName == "editor.tabSize")
+						this.setTabSize();
+					else if(pName == "editor.autocomplete")
+						this.autocomplete = pVal;
+					else if(pName == "editor.autocompleteMinSymbols")
+						this.autocompleteMinSymbols = mm(pVal);
+				}, this);
 			]]>
 			</constructor>
+			<destructor>
+				this.hcUtils = null;
+			</destructor>
+			<field name="hcUtils">null</field>
 			<property name="tabSize">
 				<getter>
 				<![CDATA[
 					return Math.max(1, Math.min(100,
 						+this.getAttribute("hc_tabSize")
-						|| "handyClicksPrefUtils" in top && top.handyClicksPrefUtils.get("editor.tabSize")
+						|| this.hcUtils && this.hcUtils.pu.get("editor.tabSize")
 						|| 4
 					));
 				]]>
@@ -70,7 +74,7 @@
 				<![CDATA[
 					return this.hasAttribute("hc_tabSpaces")
 						? this.getAttribute("hc_tabSpaces") == "true"
-						: "handyClicksPrefUtils" in top && top.handyClicksPrefUtils.get("editor.tabSpaces");
+						: this.hcUtils && this.hcUtils.pu.get("editor.tabSpaces");
 				]]>
 				</getter>
 				<setter>
@@ -341,7 +345,7 @@
 					var currLine = this.currentLine;
 					var currCol  = this.currentColumn;
 					var num = { value: currLine + ":" + currCol };
-					var ut = "handyClicksUtils" in top && top.handyClicksUtils;
+					var ut = this.hcUtils;
 					var pTitle = ut ? ut.getLocalized("goToLineTitle") : "Go to line\u2026";
 					var pText = (ut ? ut.getLocalized("goToLineMessage") : "Line number (1 \u2026 %max):")
 						.replace("%max", this.linesCount);
@@ -532,9 +536,9 @@
 				<parameter name="lineNumber" />
 				<body>
 				<![CDATA[
-					if(!("handyClicksUtils" in top))
+					var ut = this.hcUtils;
+					if(!ut)
 						return;
-					var ut = top.handyClicksUtils;
 
 					var path = ut.ps.getSourcePath(this.value);
 					var file, fileData;
@@ -783,9 +787,9 @@
 			<method name="codeToFile">
 				<body>
 				<![CDATA[
-					if(!("handyClicksUtils" in top))
+					var ut = this.hcUtils;
+					if(!ut)
 						return;
-					var ut = top.handyClicksUtils;
 
 					var val = this.value;
 					var path = ut.ps.getSourcePath(val);
@@ -821,11 +825,9 @@
 						file = this.pickFile(watch ? "linkWithFile" : "loadCodeFromFile");
 						if(!file)
 							return null;
-						if("handyClicksUtils" in top) {
-							var ut = top.handyClicksUtils;
-							if(file.parent && ut.ps.tempDir.equals(file.parent))
-								isTemp = true;
-						}
+						var ut = this.hcUtils;
+						if(ut && file.parent && ut.ps._tempDir.equals(file.parent))
+							isTemp = true;
 					}
 					this.updateFromFile(file, true /*detectLineBreak*/);
 					if(watch)
@@ -861,9 +863,9 @@
 				<parameter name="defaultString" />
 				<body>
 				<![CDATA[
-					if(!("handyClicksUtils" in top))
+					var ut = this.hcUtils;
+					if(!ut)
 						return null;
-					var ut = top.handyClicksUtils;
 					var fp = ut.fp;
 					if(defaultString)
 						fp.defaultString = defaultString;
@@ -900,8 +902,8 @@
 						top.addEventListener("unload", this, false);
 						top.addEventListener("HandyClicks:editor:change", this, false);
 					}
-					if(isTemp && "handyClicksUtils" in top) {
-						var ut = top.handyClicksUtils;
+					var ut = this.hcUtils;
+					if(isTemp && ut) {
 						var activeTempFiles = ut.storage("activeTempFiles");
 						if(!activeTempFiles)
 							ut.storage("activeTempFiles", (activeTempFiles = { __proto__: null }));
@@ -924,8 +926,9 @@
 					this._virtualPath = "";
 					if(file && this._isTempFile && file.exists()) {
 						file.remove(false);
-						if("handyClicksUtils" in top) {
-							var activeTempFiles = top.handyClicksUtils.storage("activeTempFiles");
+						var ut = this.hcUtils;
+						if(ut) {
+							var activeTempFiles = ut.storage("activeTempFiles");
 							if(activeTempFiles)
 								delete activeTempFiles[file.path];
 						}
@@ -961,9 +964,9 @@
 				<parameter name="detectLineBreak" />
 				<body>
 				<![CDATA[
-					if(!("handyClicksUtils" in top))
+					var ut = this.hcUtils;
+					if(!ut)
 						return;
-					var ut = top.handyClicksUtils;
 					var fromLinkedFile = !file;
 					file = file || this._linkedFile;
 					if(!file || !file.exists())
@@ -1013,9 +1016,9 @@
 				<parameter name="file" />
 				<body>
 				<![CDATA[
-					if(!("handyClicksUtils" in top))
+					var ut = this.hcUtils;
+					if(!ut)
 						return;
-					var ut = top.handyClicksUtils;
 					file = file || this._linkedFile;
 					function _callback(status, value) {
 						callback && callback.call(context || window, status, value);
