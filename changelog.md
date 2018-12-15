@@ -30,6 +30,10 @@
 `x` Correctly set selection in Scratchpad in Firefox 44+.<br>
 `*` Improved startup performance: moved not used on startup code from prefSvc.js to prefSvcExt.js with lazy loading (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/33">#33</a>).<br>
 `*` Improved settings performance: used faster way to detect unsaved state (compare only settings data without hash calculations).<br>
+`x` Fixed trim trailing spaces (Alt+Backspace) in Firefox 49+ (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1108382">bug 1108382</a>).<br>
+`x` Editor: fixed temp file name for delayed actions.<br>
+`x` Editor: restored undo ability after entire text modification in Firefox 56.<br>
+`*` Editor: updated icons for code toolbars (now used <a href="https://www.fatcow.com/free-icons">Farm-Fresh Web Icons by FatCow Web Hosting</a>).<br>
 `*` Small internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
