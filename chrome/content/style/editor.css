@@ -97,10 +97,10 @@ hbox[hc_fixedFields="true"] {
 	margin-bottom: 0 !important;
 }
 .hcEditCodeButton {
-	-moz-image-region: rect(32px 112px 48px 96px);
+	-moz-image-region: rect(64px 16px 80px 0);
 }
 .hcOpenCodeButton {
-	-moz-image-region: rect(32px 128px 48px 112px);
+	-moz-image-region: rect(64px 32px 80px 16px);
 }
 :root[hc_hasCrashBackup] .hcOpenCodeButton {
 	outline: 1px solid red;
