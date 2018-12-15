@@ -99,8 +99,14 @@ hbox[hc_fixedFields="true"] {
 .hcEditCodeButton {
 	-moz-image-region: rect(64px 16px 80px 0);
 }
-.hcOpenCodeButton {
+.hcCodeToFileButton {
 	-moz-image-region: rect(64px 32px 80px 16px);
+}
+.hcOpenScriptsDirButton {
+	-moz-image-region: rect(64px 48px 80px 32px);
+}
+.hcOpenCodeButton {
+	-moz-image-region: rect(64px 64px 80px 48px);
 }
 :root[hc_hasCrashBackup] .hcOpenCodeButton {
 	outline: 1px solid red;

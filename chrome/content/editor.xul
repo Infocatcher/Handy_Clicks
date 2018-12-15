@@ -222,9 +222,9 @@
 											<button class="hcEditCodeButton hcFloatButton hc-iconic"
 												command="hc-editor-cmd-editCode"
 												hc_key="hc-editor-key-editCode" />
-											<button class="hcCodeToFileButton hcFloatButton hc-iconic" image=" "
+											<button class="hcCodeToFileButton hcFloatButton hc-iconic"
 												command="hc-editor-cmd-codeToFile" />
-											<button class="hcOpenScriptsDirButton hcFloatButton hc-iconic" image=" "
+											<button class="hcOpenScriptsDirButton hcFloatButton hc-iconic"
 												command="hc-editor-cmd-openScriptsDir" />
 											<button class="hcOpenCodeButton hcFloatButton hc-iconic"
 												command="hc-editor-cmd-openCode"
@@ -293,9 +293,9 @@
 							<button class="hcEditCodeButton hcFloatButton hc-iconic"
 								command="hc-editor-cmd-editCode"
 								hc_key="hc-editor-key-editCode" />
-							<button class="hcCodeToFileButton hcFloatButton hc-iconic" image=" "
+							<button class="hcCodeToFileButton hcFloatButton hc-iconic"
 								command="hc-editor-cmd-codeToFile" />
-							<button class="hcOpenScriptsDirButton hcFloatButton hc-iconic" image=" "
+							<button class="hcOpenScriptsDirButton hcFloatButton hc-iconic"
 								command="hc-editor-cmd-openScriptsDir" />
 							<button class="hcOpenCodeButton hcFloatButton hc-iconic"
 								command="hc-editor-cmd-openCode"
