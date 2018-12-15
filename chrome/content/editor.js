@@ -1121,7 +1121,10 @@ var handyClicksEditor = {
 		this.doEditorCommand("hcCodeToFileButton", "codeToFile");
 	},
 	openScriptsDir: function() {
-		var editor = this.getEditorFromTabbox(this.selectedTabbox);
+		var tabbox = this.selectedTabbox;
+		if(tabbox.collapsed)
+			return;
+		var editor = this.getEditorFromTabbox(tabbox);
 		var path = this.ps.getSourcePath(editor.value);
 		var file = path && this.ut.getLocalFile(path);
 		if(!file || !file.exists())
@@ -1134,6 +1137,8 @@ var handyClicksEditor = {
 	},
 	doEditorCommand: function(btnClass, cmd/*, arg1, ...*/) {
 		var tabbox = this.selectedTabbox;
+		if(tabbox.collapsed)
+			return;
 
 		if(btnClass) {
 			var btnClassRe = new RegExp("(?:^|\\s)" + btnClass + "(?:\\s|$)");
@@ -1149,8 +1154,6 @@ var handyClicksEditor = {
 		}
 
 		var editor = this.getEditorFromTabbox(tabbox);
-		if(!this.ut.isElementVisible(editor))
-			return;
 		editor.focus();
 		var args = Array.prototype.slice.call(arguments, 2);
 		editor[cmd].apply(editor, args);
