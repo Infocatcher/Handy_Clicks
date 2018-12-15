@@ -150,7 +150,7 @@
 								tooltiptext="&hc.editor.fixActionOptsTip;" />
 						</hbox>
 					</hbox>
-					<tabs>
+					<tabs onselect="handyClicksEditor.setEditorButtons();">
 						<tab label="&hc.editor.tabAction;" accesskey="&hc.editor.tabActionAccesskey;"
 							tooltiptext="&hc.editor.tabActionTip;" />
 						<tab id="hc-editor-funcTab-delay"
@@ -231,7 +231,7 @@
 												hc_key="hc-editor-key-openCode" />
 										</hbox>
 									</hbox>
-									<tabs>
+									<tabs onselect="handyClicksEditor.setEditorButtons();">
 										<tab label="&hc.editor.funcCode;" accesskey="&hc.editor.funcCodeAccesskey;"
 											selected="true" />
 										<tab label="&hc.editor.funcInit;" accesskey="&hc.editor.funcInitAccesskey;"
@@ -302,7 +302,7 @@
 								hc_key="hc-editor-key-openCode" />
 						</hbox>
 					</hbox>
-					<tabs>
+					<tabs onselect="handyClicksEditor.setEditorButtons();">
 						<tab label="&hc.editor.defineItem;" accesskey="&hc.editor.defineItemAccesskey;" />
 						<tab hc_empty="true" label="&hc.editor.defineContext;" accesskey="&hc.editor.defineContextAccesskey;"
 							tooltiptext="&hc.editor.defineContextTip;" />

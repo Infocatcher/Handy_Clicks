@@ -376,6 +376,7 @@ var handyClicksEditor = {
 
 		this.setWinTitle();
 		//this.setDialogButtons(); // Called in initShortcutEditor()
+		this.setEditorButtons(true);
 	},
 	editorModeChanged: function() {
 		if(!("_handyClicksInitialized" in window))
@@ -383,6 +384,7 @@ var handyClicksEditor = {
 		this.setWinId();
 		this.setWinTitle();
 		this.setDialogButtons();
+		this.setEditorButtons();
 	},
 	fireEditorChange: function(node) {
 		var evt = document.createEvent("Events");
@@ -448,6 +450,7 @@ var handyClicksEditor = {
 		//this.applyDisabled = false;
 		//this.setDialogButtons();
 		this.delay(this.setDialogButtons, this, 5);
+		this.delay(this.setEditorButtons, this, 10);
 	},
 	setWinId: function() {
 		var winId;
@@ -1155,6 +1158,15 @@ var handyClicksEditor = {
 		btn && setTimeout(function() {
 			btn.disabled = false;
 		}, 400);
+	},
+	setEditorButtons: function(force) {
+		if(!force && !("_handyClicksInitialized" in window))
+			return;
+		var editor = this.getEditorFromTabbox(this.selectedTabbox);
+		var codeToFile = this.$("hc-editor-cmd-codeToFile");
+		var dis = !!this.ps.getSourcePath(editor.value);
+		if((codeToFile.getAttribute("disabled") == "true") != dis)
+			codeToFile.setAttribute("disabled", dis);
 	},
 
 	hasCrashBackup: false,
