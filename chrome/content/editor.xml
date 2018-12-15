@@ -103,7 +103,7 @@
 					return this.inputField.value;
 				</getter>
 				<setter>
-					this.select();
+					this.editor.selectAll();
 					this.insertText(val);
 				</setter>
 			</property>
