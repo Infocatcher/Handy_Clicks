@@ -33,7 +33,7 @@ Note: some hotkeys are described in the interface and not listed here.
 <tr><td>Tab                   </td><td>indent selected lines using tabs    </td></tr>
 <tr><td>Shift+Tab             </td><td>unindent selected lines using tabs  </td></tr>
 <tr><td>Space                 </td><td>indent selected lines using spaces  </td></tr>
-<tr><td>Shift+Tab             </td><td>unindent selected lines using spaces</td></tr>
+<tr><td>Shift+Space           </td><td>unindent selected lines using spaces</td></tr>
 <tr><td>Ctrl+Shift+Q          </td><td>Comment/uncomment                   </td></tr>
 <tr><td>Ctrl+Shift+A          </td><td>Comment/uncomment at line start     </td></tr>
 <tr><td>Alt+Backspace         </td><td>Trim trailing spaces                </td></tr>
@@ -46,6 +46,8 @@ Note: some hotkeys are described in the interface and not listed here.
 <tr><td>Ctrl+Space            </td><td>Autocomplete                        </td></tr>
 <tr><td>Ctrl+Shift+Space      </td><td>Autocomplete in reversed order      </td></tr>
 <tr><td>Ctrl+Shift+E, F4*     </td><td>Open in external editor             </td></tr>
+<tr><td>Ctrl+Shift+X*         </td><td>Move code into linked file          </td></tr>
+<tr><td>Ctrl+Shift+D*         </td><td>Open scripts directory              </td></tr>
 <tr><td>Ctrl+O*               </td><td>Load code from file                 </td></tr>
 <tr><td>Ctrl+Shift+O*         </td><td>Load code from file and sync changes</td></tr>
 <tr><td>Ctrl+Shift+S*         </td><td>Save code to file                   </td></tr>
