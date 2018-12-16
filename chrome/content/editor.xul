@@ -71,6 +71,8 @@
 
 		<key id="hc-editor-key-editCode" key="E" modifiers="control,shift" command="hc-editor-cmd-editCode" />
 		<key id="hc-editor-key-editCode2" keycode="VK_F4" command="hc-editor-cmd-editCode" />
+		<key id="hc-editor-key-codeToFile" key="X" modifiers="control,shift" command="hc-editor-cmd-codeToFile" />
+		<key id="hc-editor-key-openScriptsDir" key="D" modifiers="control,shift" command="hc-editor-cmd-openScriptsDir" />
 		<key id="hc-editor-key-openCode" key="O" modifiers="control,shift" command="hc-editor-cmd-openCode" />
 		<key id="hc-editor-key-openCodeNoWatch" key="O" modifiers="control"
 			oncommand="handyClicksEditor.doEditorCommand(null, 'loadFromFile', false);" />
@@ -223,9 +225,11 @@
 												command="hc-editor-cmd-editCode"
 												hc_key="hc-editor-key-editCode" />
 											<button class="hcCodeToFileButton hcFloatButton hc-iconic"
-												command="hc-editor-cmd-codeToFile" />
+												command="hc-editor-cmd-codeToFile"
+												hc_key="hc-editor-key-codeToFile" />
 											<button class="hcOpenScriptsDirButton hcFloatButton hc-iconic"
-												command="hc-editor-cmd-openScriptsDir" />
+												command="hc-editor-cmd-openScriptsDir"
+												hc_key="hc-editor-key-openScriptsDir" />
 											<button class="hcOpenCodeButton hcFloatButton hc-iconic"
 												command="hc-editor-cmd-openCode"
 												hc_key="hc-editor-key-openCode" />
@@ -292,9 +296,11 @@
 								command="hc-editor-cmd-editCode"
 								hc_key="hc-editor-key-editCode" />
 							<button class="hcCodeToFileButton hcFloatButton hc-iconic"
-								command="hc-editor-cmd-codeToFile" />
+								command="hc-editor-cmd-codeToFile"
+								hc_key="hc-editor-key-codeToFile" />
 							<button class="hcOpenScriptsDirButton hcFloatButton hc-iconic"
-								command="hc-editor-cmd-openScriptsDir" />
+								command="hc-editor-cmd-openScriptsDir"
+								hc_key="hc-editor-key-openScriptsDir" />
 							<button class="hcOpenCodeButton hcFloatButton hc-iconic"
 								command="hc-editor-cmd-openCode"
 								hc_key="hc-editor-key-openCode" />
