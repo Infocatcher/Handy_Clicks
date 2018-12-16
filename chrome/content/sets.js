@@ -1551,6 +1551,9 @@ var handyClicksSets = {
 				ph += " ";
 			editor.insertText(ph);
 		}
+		// Force call for old Firefox versions
+		this.fireChange(this.searchField, "input");
+		this.searchInSetsTree();
 		ifi.focus();
 	},
 	navigateSearchResults: function(e) {
@@ -2267,9 +2270,9 @@ var handyClicksSets = {
 					this.showExternalEditorFile();
 		}
 	},
-	fireChange: function(node) {
+	fireChange: function(node, eventType) {
 		var evt = document.createEvent("Events");
-		evt.initEvent("change", true, true);
+		evt.initEvent(eventType || "change", true, true);
 		node.dispatchEvent(evt);
 	},
 
