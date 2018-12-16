@@ -130,6 +130,10 @@
 						this.inputField.selectionStart -= text.length;
 
 					noScroll && this.restoreScrollPos();
+
+					var evt = document.createEvent("Events");
+					evt.initEvent("input", true, true);
+					this.dispatchEvent(evt);
 				]]>
 				</body>
 			</method>
