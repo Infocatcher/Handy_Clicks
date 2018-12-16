@@ -460,6 +460,8 @@ var handyClicksEditor = {
 		this._editorTimer = this.delay(function() {
 			this._editorTimer = 0;
 			this.setEditorButtons(false, editor);
+			if(editor.getAttribute("hc_highlightEmpty") == "true")
+				this.highlightEmpty(editor);
 		}, this, 25);
 	},
 	setWinId: function() {
@@ -755,11 +757,7 @@ var handyClicksEditor = {
 		var si = ml.selectedItem;
 		si && ml.setAttribute("hc_sets", si.getAttribute("hc_sets"));
 	},
-	highlightEmpty: function _he(tb, wait) {
-		if(wait) {
-			this.delay(_he, this, 0, [tb]);
-			return;
-		}
+	highlightEmpty: function _he(tb) {
 		var empty = !tb.textLength;
 		if(tb.hasOwnProperty("__highlightedEmpty") && tb.__highlightedEmpty == empty)
 			return;

@@ -248,10 +248,8 @@
 										</tabpanel>
 										<tabpanel flex="1" orient="vertical">
 											<textbox class="hcEditor" id="hc-editor-funcInitField" flex="1"
-												accesskey="&hc.editor.editAccesskey;"
-												oninput="handyClicksEditor.highlightEmpty(this, true);"
-												hc_ondrop="handyClicksEditor.highlightEmpty(this, true);"
-												oncut="handyClicksEditor.highlightEmpty(this, true);" />
+												hc_highlightEmpty="true"
+												accesskey="&hc.editor.editAccesskey;" />
 										</tabpanel>
 									</tabpanels>
 								</tabbox>
@@ -323,10 +321,8 @@
 								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturnNote;" />
 							</hbox>
 							<textbox class="hcEditor" id="hc-editor-customTypeContext" flex="1"
-								accesskey="&hc.editor.editAccesskey;"
-								oninput="handyClicksEditor.highlightEmpty(this, true);"
-								hc_ondrop="handyClicksEditor.highlightEmpty(this, true);"
-								oncut="handyClicksEditor.highlightEmpty(this, true);" />
+								hc_highlightEmpty="true"
+								accesskey="&hc.editor.editAccesskey;" />
 						</tabpanel>
 					</tabpanels>
 				</tabbox>
