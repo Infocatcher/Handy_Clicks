@@ -830,7 +830,8 @@
 						if(!file)
 							return null;
 						var ut = this.hcUtils;
-						if(ut && file.parent && ut.ps._tempDir.equals(file.parent))
+						var tempDir = ut && ut.ps._tempDir;
+						if(tempDir && file.parent && tempDir.equals(file.parent))
 							isTemp = true;
 					}
 					this.updateFromFile(file, true /*detectLineBreak*/);
