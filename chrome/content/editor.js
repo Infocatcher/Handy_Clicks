@@ -265,6 +265,19 @@ var handyClicksEditor = {
 	getEditorFromTabbox: function(tabbox) {
 		return this.getEditorFromPanel(this.getSelectedPanel(tabbox));
 	},
+	getTabboxFromChild: function(node) {
+		for(node = node.parentNode; node; node = node.parentNode)
+			if(node.localName == "tabbox")
+				return node;
+		return null;
+	},
+	getFloatButton: function(cmd, sourceNode) {
+		var tabbox = sourceNode.localName == "tabbox"
+			? sourceNode
+			: this.getTabboxFromChild(sourceNode);
+		var toolbar = tabbox.firstChild;
+		return toolbar.getElementsByAttribute("command", cmd)[0];
+	},
 	loadLabels: function() {
 		["hc-editor-button", "hc-editor-itemTypes", "hc-editor-func"].forEach(
 			this.localizeLabels,
@@ -1124,10 +1137,10 @@ var handyClicksEditor = {
 	},
 
 	editCode: function() {
-		this.doEditorCommand("hcEditCodeButton", "openExternalEditor");
+		this.doEditorCommand("hc-editor-cmd-editCode", "openExternalEditor");
 	},
 	codeToFile: function() {
-		this.doEditorCommand("hcCodeToFileButton", "codeToFile");
+		this.doEditorCommand("hc-editor-cmd-codeToFile", "codeToFile");
 	},
 	openScriptsDir: function() {
 		var tabbox = this.selectedTabbox;
@@ -1141,35 +1154,26 @@ var handyClicksEditor = {
 		this.ut.reveal(file);
 	},
 	openCode: function() {
-		this.doEditorCommand("hcOpenCodeButton", "loadFromFile", true);
+		this.doEditorCommand("hc-editor-cmd-openCode", "loadFromFile", true);
 		this.checkForCrashBackups(100, true);
 	},
-	doEditorCommand: function(btnClass, cmd/*, arg1, ...*/) {
+	doEditorCommand: function(btnCmd, cmd/*, arg1, ...*/) {
 		var tabbox = this.selectedTabbox;
 		if(tabbox.collapsed)
 			return;
 
-		if(btnClass) {
-			var btnClassRe = new RegExp("(?:^|\\s)" + btnClass + "(?:\\s|$)");
-			var toolbar = tabbox.firstChild;
-			var btns = toolbar.getElementsByTagName("button");
-			for(var i = 0, l = btns.length; i < l; ++i) {
-				var btn = btns[i];
-				if(btnClassRe.test(btn.className)) {
-					btn.disabled = true;
-					break;
-				}
-			}
-		}
+		var btn = btnCmd && this.getFloatButton(btnCmd, tabbox);
+		if(btn)
+			btn.disabled = true;
 
 		var editor = this.getEditorFromTabbox(tabbox);
 		editor.focus();
 		var args = Array.prototype.slice.call(arguments, 2);
 		editor[cmd].apply(editor, args);
 
-		btn && setTimeout(function() {
+		if(btn && btn.getAttribute("command") != "hc-editor-cmd-codeToFile") setTimeout(function() {
 			btn.disabled = false;
-		}, 400);
+		}, 300);
 	},
 	setEditorButtons: function(force, editor) {
 		if(!force && !("_handyClicksInitialized" in window))
