@@ -1176,7 +1176,8 @@ var handyClicksEditor = {
 			return;
 		editor = editor || this.getEditorFromTabbox(this.selectedTabbox);
 		var codeToFile = this.$("hc-editor-cmd-codeToFile");
-		var dis = !!this.ps.getSourcePath(editor.value);
+		var dis = editor.textLength <= 1000 // Too long for path?
+			&& !!this.ps.getSourcePath(editor.value);
 		if((codeToFile.getAttribute("disabled") == "true") != dis)
 			codeToFile.setAttribute("disabled", dis);
 	},
