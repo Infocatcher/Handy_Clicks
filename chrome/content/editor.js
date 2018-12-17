@@ -1146,12 +1146,21 @@ var handyClicksEditor = {
 		var tabbox = this.selectedTabbox;
 		if(tabbox.collapsed)
 			return;
+
+		var btn = this.getFloatButton("hc-editor-cmd-openScriptsDir", tabbox);
+		if(btn)
+			btn.disabled = true;
+
 		var editor = this.getEditorFromTabbox(tabbox);
 		var path = this.ps.getSourcePath(editor.value);
 		var file = path && this.ut.getLocalFile(path);
 		if(!file || !file.exists())
 			file = this.ps.scriptsDir;
 		this.ut.reveal(file);
+
+		if(btn) setTimeout(function() {
+			btn.disabled = false;
+		}, 300);
 	},
 	openCode: function() {
 		this.doEditorCommand("hc-editor-cmd-openCode", "loadFromFile", true);
