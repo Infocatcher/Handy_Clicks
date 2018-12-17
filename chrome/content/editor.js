@@ -1151,7 +1151,7 @@ var handyClicksEditor = {
 
 		if(btnClass) {
 			var btnClassRe = new RegExp("(?:^|\\s)" + btnClass + "(?:\\s|$)");
-			var toolbar = tabbox.previousSibling;
+			var toolbar = tabbox.firstChild;
 			var btns = toolbar.getElementsByTagName("button");
 			for(var i = 0, l = btns.length; i < l; ++i) {
 				var btn = btns[i];
