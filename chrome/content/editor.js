@@ -1179,11 +1179,13 @@ var handyClicksEditor = {
 		if(!force && !("_handyClicksInitialized" in window))
 			return;
 		editor = editor || this.getEditorFromTabbox(this.selectedTabbox);
-		var codeToFile = this.$("hc-editor-cmd-codeToFile");
 		var dis = editor.textLength <= 1000 // Too long for path?
 			&& !!this.ps.getSourcePath(editor.value);
-		if((codeToFile.getAttribute("disabled") == "true") != dis)
-			codeToFile.setAttribute("disabled", dis);
+		var codeToFileBtn = editor.__codeToFileBtn || (
+			editor.__codeToFileBtn = this.getFloatButton("hc-editor-cmd-codeToFile", editor)
+		);
+		if(codeToFileBtn.disabled != dis)
+			codeToFileBtn.disabled = dis;
 	},
 
 	hasCrashBackup: false,
