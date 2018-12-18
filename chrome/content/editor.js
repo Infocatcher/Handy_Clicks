@@ -560,6 +560,7 @@ var handyClicksEditor = {
 	},
 	initCustomTypesEditor: function(cType, to) {
 		var cList = this.$("hc-editor-customType");
+		var updateUI;
 		if(
 			this.customType
 			&& !this.testMode
@@ -588,6 +589,7 @@ var handyClicksEditor = {
 				this.currentCustomType = customType;
 				cList.value = customTypeLabel;
 			}
+			updateUI = true;
 		}
 
 		if(!to) {
@@ -619,6 +621,7 @@ var handyClicksEditor = {
 		this.fireEditorChange(this.$("hc-editor-itemTypePanel"));
 		this.setWinId();
 		this.setWinTitle();
+		updateUI && this.delay(this.setDialogButtons, this);
 	},
 	customTypeLabelChanged: function(it) {
 		var val = it.value;
