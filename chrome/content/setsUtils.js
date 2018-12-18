@@ -5,12 +5,6 @@ var handyClicksSetsUtils = {
 		window.addEventListener(this.ut.wheelEvent, this, true);
 		window.addEventListener("dragenter", this, true);
 		window.addEventListener("dragexit", this, true);
-		if(this.hasSizeModeChangeEvent)
-			window.addEventListener("sizemodechange", this, false);
-		else {
-			window.addEventListener("resize", this, false); // Can detect only maximize/restore
-			this.legacySizeModeChange();
-		}
 		this.setEnabledStatus();
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 		if(!reloadFlag) {
@@ -24,6 +18,12 @@ var handyClicksSetsUtils = {
 				this
 			);
 			this.su.setKeysDescDelay();
+		}
+		if(this.hasSizeModeChangeEvent)
+			window.addEventListener("sizemodechange", this, false);
+		else {
+			window.addEventListener("resize", this, false); // Can detect only maximize/restore
+			this.legacySizeModeChange();
 		}
 	},
 	destroy: function(reloadFlag) {
