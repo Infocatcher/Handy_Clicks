@@ -81,10 +81,8 @@ var handyClicksEditor = {
 		}
 		this.ps.loadSettings(this.src || null);
 		this.selectTargetTab(this.isDelayed);
+		this.delay(this.dataSaved, this); // Wait for XBL bindings setup
 		this.initUI();
-
-		this.dataSaved();
-		//this.applyDisabled = true;
 
 		this.ps.oSvc.addObserver(this.setsReloading, this);
 
@@ -175,6 +173,8 @@ var handyClicksEditor = {
 		this.customType = null;
 		this.customTypeLabel = "";
 		this.applyButton = document.documentElement.getButton("extra1");
+		// Will be enabled only in case of changed settings format
+		this.applyButton.disabled = true;
 	},
 	get editorTabIndex() {
 		return this.mainTabbox.selectedIndex;
@@ -387,9 +387,10 @@ var handyClicksEditor = {
 		this.disableUnsupported();
 		this._allowUndo = false;
 
+		this.setWinId();
 		this.setWinTitle();
-		//this.setDialogButtons(); // Called in initShortcutEditor()
 		this.setEditorButtons(true);
+		this.delay(this.setDialogButtons, this);
 	},
 	editorModeChanged: function() {
 		if(!("_handyClicksInitialized" in window))
@@ -514,11 +515,7 @@ var handyClicksEditor = {
 		this.initFuncEditor(so, this.delayId);
 		this.currentShortcut = this.shortcut;
 
-		// Note: may fail here, see notes in getFuncObj() ("so.arguments = {}" and following)
-		this.delay(function() {
-			this.shortcutSaved();
-			this.setDialogButtons();
-		}, this);
+		this.delay(this.shortcutSaved, this); // Wait for XBL bindings setup
 	},
 	initFuncEditor: function(setsObj, delayed, allowUndo) {
 		var isCustom = this.ut.getOwnProperty(setsObj, "custom");
@@ -622,13 +619,8 @@ var handyClicksEditor = {
 		if(!to) {
 			cList.value = this.customTypeLabel = ct.label || "";
 			this.customType = this.currentCustomType = cType;
-			this.setWinId();
-			this.setWinTitle();
-			//this.applyDisabled = true;
-			this.typeSaved();
-			this.setDialogButtons();
 		}
-
+		this.delay(this.typeSaved, this); // Wait for XBL bindings setup
 		this.fireEditorChange(this.$("hc-editor-itemTypePanel"));
 	},
 	customTypeLabelChanged: function(it) {
@@ -1107,7 +1099,6 @@ var handyClicksEditor = {
 		this.disableUnsupported();
 		this.setWinId();
 		this.setWinTitle();
-		//this.setDialogButtons(); // Called in initShortcutEditor()
 
 		this.fireEditorChange(this.$("hc-editor-shortcutPanel"));
 	},
@@ -1491,8 +1482,6 @@ var handyClicksEditor = {
 			this.pe.saveSettingsObjects();
 		this.highlightUsedTypes();
 
-		//this.applyDisabled = false;
-		//this.applyButton.disabled = false;
 		this.shortcutSaved();
 		this.setDialogButtons();
 	},
