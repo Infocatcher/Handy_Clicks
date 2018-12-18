@@ -212,8 +212,7 @@ preferences {
 							<menupopup id="hc-sets-tree-restoreFromBackupPopup"
 								context="hc-sets-tree-restoreFromBackupContext"
 								oncommand="handyClicksSets.handleRestoreCommand(event);"
-								onclick="if(event.button == 1) { handyClicksSets.handleRestoreCommand(event); handyClicksUtils.closeMenus(this); }"
-								onpopupshowing="handyClicksSets.fixMenuitemsWidth(this);">
+								onclick="if(event.button == 1) { handyClicksSets.handleRestoreCommand(event); handyClicksUtils.closeMenus(this); }">
 								<menuseparator />
 								<menuitem id="hc-sets-tree-openBackupsDir"
 									oncommand="handyClicksSets.reveal(handyClicksPrefSvc.backupsDir);"

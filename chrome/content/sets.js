@@ -2867,15 +2867,6 @@ var handyClicksSets = {
 
 		this.updRestorePopup(ubCount, isEmpty, true);
 	},
-	fixMenuitemsWidth: function(popup) {
-		this.delay(function() { // Delay for Firefox 3.x
-			Array.prototype.forEach.call(popup.childNodes, this.removeMenuitemCrop);
-		}, this);
-	},
-	removeMenuitemCrop: function(mi) {
-		var label = mi.ownerDocument.getAnonymousElementByAttribute(mi, "class", "menu-iconic-text");
-		label && label.removeAttribute("crop");
-	},
 	destroyRestorePopup: function() {
 		delete this.ubPopup.__userBackups;
 	},
