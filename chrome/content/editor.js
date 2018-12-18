@@ -383,7 +383,6 @@ var handyClicksEditor = {
 		this.appendTypesList();
 		this.initAdditionalOptions();
 		this.initCustomTypesEditor(allowUndo ? this.currentCustomType : this.type);
-		//this.loadCustomType(this.type);
 		this.disableUnsupported();
 		this._allowUndo = false;
 
@@ -544,10 +543,6 @@ var handyClicksEditor = {
 		this.$("hc-editor-funcCustomTabbox"        + delayed).collapsed = !isCustom;
 		this.$("hc-editor-funcCustomTabboxToolbar" + delayed).hidden = !isCustom;
 	},
-	loadCustomType: function(type) {
-		if(this.ps.isCustomType(type))
-			this.initCustomTypesEditor(type);
-	},
 	editCustomType: function(e) {
 		if(e.button != 2)
 			return;
@@ -559,7 +554,7 @@ var handyClicksEditor = {
 		var mp = trg.parentNode;
 		if("hidePopup" in mp)
 			mp.hidePopup();
-		this.loadCustomType(cType);
+		this.initCustomTypesEditor(cType);
 		this.delay(function() { // Trick to prevent context menu for items inside type tab
 			this.editorTabIndex = this.INDEX_TYPE;
 		}, this);
@@ -874,10 +869,10 @@ var handyClicksEditor = {
 		return this.ut.packageAvailable(this.extPackages[eName]);
 	},
 
-	itemTypeChanged: function(iType) {
-		this.delay(this.loadCustomType, this, 0, [iType]);
-		//this.addFuncArgs();
-		//this.initAdditionalOptions(iType);
+	itemTypeChanged: function(type) {
+		if(this.ps.isCustomType(type)) this.delay(function() {
+			this.initCustomTypesEditor(type);
+		}, this);
 	},
 	initAdditionalOptions: function(iType, setsObj) {
 		iType = iType || this.currentType;
