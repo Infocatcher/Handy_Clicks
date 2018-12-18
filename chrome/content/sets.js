@@ -2720,9 +2720,8 @@ var handyClicksSets = {
 	},
 	createBackup: function() {
 		var bName = this.ps.prefsFileName + this.ps.names.userBackup + this.pe.getTimeString();
-		var bFile, i = -1; //~ todo: use nsIFile.createUnique() instead ?
-		do bFile = this.pe.getBackupFile(bName + (++i ? "-" + i : "") + ".js");
-		while(bFile.exists());
+		var bFile = this.pe.getBackupFile(bName + ".js");
+		bFile.createUnique(bFile.NORMAL_FILE_TYPE, this.ut.PERMS_FILE_WRITE);
 		//this.ut.copyFileTo(this.ps.prefsFile, this.ps.backupsDir, bFile.leafName);
 		var pStr = this.ps.getSettingsStr(null, null, true /*exportLinkedFiles*/);
 		this.ut.writeToFile(pStr, bFile);
