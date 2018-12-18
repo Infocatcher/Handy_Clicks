@@ -551,13 +551,14 @@ var handyClicksEditor = {
 	editCustomType: function(e) {
 		if(e.button != 2)
 			return;
-		e.preventDefault();
-		var tar = e.target;
-		var mp = tar.parentNode;
+		var trg = e.target;
+		var cType = trg.value;
+		if(!this.ps.isCustomType(cType))
+			return;
+
+		var mp = trg.parentNode;
 		if("hidePopup" in mp)
 			mp.hidePopup();
-
-		var cType = tar.value;
 		this.loadCustomType(cType);
 		this.delay(function() { // Trick to prevent context menu for items inside type tab
 			this.editorTabIndex = this.INDEX_TYPE;
