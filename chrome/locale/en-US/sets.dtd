@@ -28,6 +28,8 @@
 <!ENTITY hc.sets.searchCustomInit "Custom initialization">
 <!ENTITY hc.sets.searchCustomType "Custom type">
 <!ENTITY hc.sets.searchDisable "Disabled">
+<!ENTITY hc.sets.searchNA "Not available">
+<!ENTITY hc.sets.searchBuggy "Buggy">
 <!ENTITY hc.sets.searchChanged "Changed (import)">
 <!ENTITY hc.sets.searchAdded "Added (import)">
 <!ENTITY hc.sets.searchTip "Space = and
