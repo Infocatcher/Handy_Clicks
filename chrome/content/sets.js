@@ -1619,14 +1619,15 @@ var handyClicksSets = {
 	_searchTimeout: 0,
 	_lastSearch: 0,
 	searchPlaceholders: {
-		hc_override:   "%ovr%",
-		hc_new:        "%new%",
-		hc_custom:     "%custom%",
-		hc_customFile: "%file%",
-		hc_customInit: "%init%",
-		hc_customType: "%type%",
-		hc_disabled:   "%dis%",
-		hc_buggy:      "%bug%",
+		hc_override:     "%ovr%",
+		hc_new:          "%new%",
+		hc_custom:       "%custom%",
+		hc_customFile:   "%file%",
+		hc_customInit:   "%init%",
+		hc_customType:   "%type%",
+		hc_disabled:     "%dis%",
+		hc_notAvailable: "%na%",
+		hc_buggy:        "%bug%",
 		__proto__: null
 	},
 	get searchReplacements() {
