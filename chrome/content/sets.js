@@ -531,6 +531,7 @@ var handyClicksSets = {
 		var typeLabel = this.ps.getTypeLabel(itemType, isCustomType);
 		var label = forcedLabel || typeLabel;
 		var initCode, daInitCode;
+		var extNA = this.extTypeNotAvailable(itemType);
 
 		this.appendTreeCell(tRow, "label", label);
 		this.appendTreeCell(tRow, "label", fo.eventType);
@@ -565,6 +566,7 @@ var handyClicksSets = {
 			this.setChildNodesProperties(daRow, {
 				hc_disabled: this._forcedDisDa || !fo.enabled || !da.enabled,
 				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel) && ++this._buggy,
+				hc_notAvailable: extNA,
 				hc_custom: daCustom,
 				hc_customFile: daCustom && !!this.ps.getSourcePath(da.action),
 				hc_customInit: !!daInitCode,
@@ -613,6 +615,7 @@ var handyClicksSets = {
 		this.setChildNodesProperties(tRow, {
 			hc_disabled: !fo.enabled,
 			hc_buggy: isBuggy && ++this._buggy,
+			hc_notAvailable: extNA,
 			hc_custom: isCustom,
 			hc_customFile: isCustom && !!this.ps.getSourcePath(fo.action),
 			hc_customInit: !!initCode,
@@ -700,6 +703,14 @@ var handyClicksSets = {
 	},
 	isBuggyFuncObj: function(fo, isCustom, label) {
 		return !this.ps.isOkFuncObj(fo) || !isCustom && this.ut.isBuggyStr(label);
+	},
+	extPackages: {
+		ext_mulipletabs: "multipletab",
+		__proto__: null
+	},
+	extTypeNotAvailable: function(type) {
+		return this.ps.isExtType(type)
+			&& !this.ut.packageAvailable(this.extPackages[type]);
 	},
 	settingsEquals: function(savedObj, newObj) {
 		if(!this.ps.settingsEquals(savedObj, newObj))

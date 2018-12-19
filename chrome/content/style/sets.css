@@ -141,6 +141,10 @@ tree[hc_colored="true"] treechildren::-moz-tree-row(hc_unsavedDisabled),
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_unsavedDisabled, hc_customType) {
 	background-color: #f7f5ee;
 }
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_notAvailable),
+tree[hc_colored="true"] treechildren::-moz-tree-row(hc_notAvailable, hc_customType) {
+	background-color: #ffa;
+}
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy),
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy, hc_customType) {
 	background-color: #faa;

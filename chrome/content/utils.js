@@ -1314,7 +1314,7 @@ var handyClicksUtils = {
 			.getService(Components.interfaces.nsIXULChromeRegistry);
 	},
 	packageAvailable: function(packageName) {
-		try {
+		if(packageName) try {
 			return /^[a-z]/.test(this.xcr.getSelectedLocale(packageName));
 		}
 		catch(e) {
