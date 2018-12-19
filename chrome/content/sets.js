@@ -1974,7 +1974,12 @@ var handyClicksSets = {
 		return saved;
 	},
 	buggyPrefsConfirm: function() {
-		return !this._buggy || this.ut.confirmEx(
+		if(!this._buggy)
+			return true;
+		if(!this.isTreePaneSelected)
+			this.selectTreePane();
+		this.doSearch("%bug%");
+		return this.ut.confirmEx(
 			this.getLocalized("warningTitle"),
 			this.getLocalized("saveBuggyConfirm").replace("%n", this._buggy),
 			this.getLocalized("save")
