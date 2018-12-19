@@ -48,7 +48,10 @@ var handyClicksSets = {
 			this.setDialogButtons();
 		else {
 			this.startupUI();
-			this._buggy && this.setDialogButtons();
+			if(this._buggy) {
+				this.setDialogButtons();
+				this.notifyBuggyPrefs();
+			}
 		}
 
 		if(fxVersion >= 3.6) { // Fix wrong resizing after sizeToContent() call
@@ -1978,14 +1981,28 @@ var handyClicksSets = {
 	buggyPrefsConfirm: function() {
 		if(!this._buggy)
 			return true;
+		this.showBuggyPrefs();
+		return this.ut.confirmEx(
+			this.getLocalized("warningTitle"),
+			this.getLocalized("buggyDetected").replace("%n", this._buggy)
+				+ "\n" + this.getLocalized("saveBuggyConfirm"),
+			this.getLocalized("save")
+		);
+	},
+	notifyBuggyPrefs: function() {
+		this.notifyBuggyPrefs = function() {}; // Only once
+		this.ut.notify(
+			this.getLocalized("buggyDetected").replace("%n", this._buggy),
+			this.getLocalized("warningTitle"),
+			this.ut.bind(this.showBuggyPrefs, this),
+			null,
+			this.ut.NOTIFY_ICON_WARNING
+		);
+	},
+	showBuggyPrefs: function() {
 		if(!this.isTreePaneSelected)
 			this.selectTreePane();
 		this.doSearch("%bug%");
-		return this.ut.confirmEx(
-			this.getLocalized("warningTitle"),
-			this.getLocalized("saveBuggyConfirm").replace("%n", this._buggy),
-			this.getLocalized("save")
-		);
 	},
 	saveSettingsObjectsCheck: function(applyFlag, callback, context) {
 		if(!this.buggyPrefsConfirm())
