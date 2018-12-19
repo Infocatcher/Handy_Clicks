@@ -46,8 +46,10 @@ var handyClicksSets = {
 
 		if(reloadFlag)
 			this.setDialogButtons();
-		else
+		else {
 			this.startupUI();
+			this._buggy && this.setDialogButtons();
+		}
 
 		if(fxVersion >= 3.6) { // Fix wrong resizing after sizeToContent() call
 			var de = document.documentElement;
