@@ -394,13 +394,13 @@ var handyClicksFuncs = {
 		}, this);
 
 		var load = this.pu.get("funcs.loadVoidLinksWithHandlers");
-		if(this.pu.get("funcs.notifyVoidLinksWithHandlers"))
-			this.ut.notify(
-				this.getLocalized("voidLinkWithHandler").replace(/\s*%h/, this.getItemHandlers(item))
-					+ (load ? "" : this.getLocalized("clickForOpen")),
-				this.getLocalized("title"),
-				!load && loadLink
-			);
+		if(this.pu.get("funcs.notifyVoidLinksWithHandlers")) {
+			var msg = this.getLocalized("voidLinkWithHandler").replace(/\s*%h/, this.getItemHandlers(item))
+				+ (load ? "" : this.getLocalized("clickForOpen"));
+			this.ut.notify(msg, {
+				onLeftClick: !load && loadLink
+			});
+		}
 		if(load)
 			loadLink();
 	},
@@ -439,13 +439,13 @@ var handyClicksFuncs = {
 		}, this);
 
 		var load = this.pu.get("funcs.loadJavaScriptLinks");
-		if(this.pu.get("funcs.notifyJavaScriptLinks"))
-			this.ut.notify(
-				this.getLocalized("javaScriptLink")
-					+ (load ? "" : this.getLocalized("clickForOpen")),
-				this.getLocalized("title"),
-				!load && loadLink
-			);
+		if(this.pu.get("funcs.notifyJavaScriptLinks")) {
+			var msg = this.getLocalized("javaScriptLink")
+				+ (load ? "" : this.getLocalized("clickForOpen"));
+			this.ut.notify(msg, {
+				onLeftClick: !load && loadLink
+			});
+		}
 		if(load)
 			loadLink();
 	},
@@ -463,16 +463,17 @@ var handyClicksFuncs = {
 		}
 		catch(e) {
 			this.ut._err(e);
-			this.ut.notify(
-				this.getLocalized("RegExpError")
-					.replace("%r", regexpStr)
-					.replace("%p", this.pu.prefNS + regexpPref)
-					.replace("%err", e),
-				this.getLocalized("errorTitle"),
-				this.ut.toErrorConsole,
-				this.ut.bind(this.pu.openAboutConfig, this.pu, [this.pu.prefNS + regexpPref]),
-				this.ut.NOTIFY_ICON_ERROR
-			);
+			var err = this.getLocalized("RegExpError")
+				.replace("%r", regexpStr)
+				.replace("%p", this.pu.prefNS + regexpPref)
+				.replace("%err", e);
+			this.ut.notifyError(err, {
+				onLeftClick: this.ut.toErrorConsole,
+				onMiddleClick: function() {
+					this.pu.openAboutConfig(this.pu.prefNS + regexpPref);
+				},
+				context: this
+			});
 			return false;
 		}
 		if(!regexp.test(uri))

@@ -288,12 +288,12 @@ var handyClicksPrefSvc = {
 				+ ("_contextMenuLine" in ct ? this.ct.EDITOR_TYPE_CONTEXT : this.ct.EDITOR_TYPE_DEFINE)
 				+ "?line=" + eLine;
 			var eMsg = this.ut.errInfo("customTypeCompileError", ct.label, type, e);
-			this.ut.notifyInWindowCorner(
-				eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
-				this.getLocalized("errorTitle"),
-				this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
-				this.ut.NOTIFY_ICON_ERROR
-			);
+			var eMsgFull = eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor");
+			this.ut.notifyError(eMsgFull, {
+				onLeftClick: this.ut.toErrorConsole,
+				onMiddleClick: this.wu.getOpenEditorLink(href, eLine),
+				inWindowCorner: true
+			});
 			this.ut._err(eMsg, href, eLine);
 			this.ut._err(e);
 		}
@@ -377,12 +377,11 @@ var handyClicksPrefSvc = {
 			var eLine = fObj._errorLine = this.ut.getRealLineNumber(err, line);
 			var href = fObj._editorLink = this.hc.getEditorLink() + "?line=" + eLine;
 			var eMsg = this.ut.errInfo("customFunctionCompileError", fObj.label, this.hc.itemType, err);
-			this.ut.notify(
-				eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
-				this.getLocalized("errorTitle"),
-				this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
-				this.ut.NOTIFY_ICON_ERROR
-			);
+			var eMsgFull = eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor");
+			this.ut.notifyError(eMsgFull, {
+				onLeftClick: this.ut.toErrorConsole,
+				onMiddleClick: this.wu.getOpenEditorLink(href, eLine)
+			});
 			this.ut._err(eMsg, href, eLine);
 			this.ut._err(err);
 		}
@@ -464,12 +463,12 @@ var handyClicksPrefSvc = {
 			this.ut.getOwnProperty(fObj, "label"),
 			type, e
 		);
-		this.ut.notifyInWindowCorner(
-			eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
-			this.getLocalized("errorTitle"),
-			this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
-			this.ut.NOTIFY_ICON_ERROR
-		);
+		var eMsgFull = eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor");
+		this.ut.notifyError(eMsgFull, {
+			onLeftClick: this.ut.toErrorConsole,
+			onMiddleClick: this.wu.getOpenEditorLink(href, eLine),
+			inWindowCorner: true
+		});
 		this.ut._err(eMsg, href, eLine);
 		this.ut._err(e);
 	},

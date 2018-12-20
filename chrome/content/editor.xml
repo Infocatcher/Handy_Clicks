@@ -550,11 +550,7 @@
 						fileData = ut.ps.files[path].data || "";
 					else if(path) {
 						file = ut.getLocalFile(path);
-						ut.ps.otherSrc && ut.notify(
-							ut.getLocalized("cantEditImportedFile"),
-							ut.getLocalized("warningTitle"),
-							null, null, ut.NOTIFY_ICON_WARNING
-						);
+						ut.ps.otherSrc && ut.notifyWarning(ut.getLocalized("cantEditImportedFile"));
 					}
 					var hasFileData = fileData !== undefined;
 
@@ -760,11 +756,11 @@
 								this.fade();
 							}
 							catch(e) { // See https://developer.mozilla.org/en/nsILocalFile#Remarks
-								ut.notify(
-									ut.getLocalized("launchError"),
-									ut.getLocalized("errorTitle"),
-									ut.bind(ut.wu.openSettingsPane, ut.wu, ["editor"])
-								);
+								ut.notifyError(ut.getLocalized("launchError"), {
+									onleftClick: function() {
+										ut.wu.openSettingsPane("editor")
+									}
+								});
 								ut._err("openExternalEditor: file.launch() failed");
 								ut._err(e);
 							}

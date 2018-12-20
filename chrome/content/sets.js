@@ -1991,13 +1991,10 @@ var handyClicksSets = {
 	},
 	notifyBuggyPrefs: function() {
 		this.notifyBuggyPrefs = function() {}; // Only once
-		this.ut.notify(
-			this.getLocalized("buggyDetected").replace("%n", this._buggy),
-			this.getLocalized("warningTitle"),
-			this.ut.bind(this.showBuggyPrefs, this),
-			null,
-			this.ut.NOTIFY_ICON_WARNING
-		);
+		this.ut.notifyWarning(this.getLocalized("buggyDetected").replace("%n", this._buggy), {
+			onLeftClick: this.showBuggyPrefs,
+			context: this
+		});
 	},
 	showBuggyPrefs: function() {
 		if(!this.isTreePaneSelected)
@@ -2761,11 +2758,12 @@ var handyClicksSets = {
 		//this.ut.copyFileTo(this.ps.prefsFile, this.ps.backupsDir, bFile.leafName);
 		var pStr = this.ps.getSettingsStr(null, null, true /*exportLinkedFiles*/);
 		this.ut.writeToFile(pStr, bFile);
-		this.ut.notify(
-			this.getLocalized("backupCreated").replace("%f", bFile.path),
-			null,
-			this.ut.bind(this.reveal, this, [bFile])
-		);
+		this.ut.notify(this.getLocalized("backupCreated").replace("%f", bFile.path), {
+			onLeftClick: function() {
+				this.reveal(bFile)
+			},
+			context: this
+		});
 	},
 	removeBackup: function(mi, e) {
 		var fName = mi.getAttribute("hc_fileName");

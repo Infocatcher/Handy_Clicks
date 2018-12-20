@@ -1198,13 +1198,8 @@ var handyClicksEditor = {
 		var bakPath = this._hasCrashBackup();
 		this.attribute(document.documentElement, "hc_hasCrashBackup", bakPath);
 		this.hasCrashBackup = !!bakPath;
-		if(bakPath && !silent) {
-			this.ut.notify(
-				this.getLocalized("hasCrashBackup").replace("%f", bakPath),
-				this.getLocalized("warningTitle"),
-				null, null, this.ut.NOTIFY_ICON_WARNING
-			);
-		}
+		if(bakPath && !silent)
+			this.ut.notifyWarning(this.getLocalized("hasCrashBackup").replace("%f", bakPath));
 	},
 	_hasCrashBackup: function() {
 		var tempDir = this.ps._tempDir;

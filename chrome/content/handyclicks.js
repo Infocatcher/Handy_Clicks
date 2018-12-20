@@ -544,12 +544,11 @@ var handyClicks = {
 						+ this.ct.EDITOR_TYPE_DEFINE
 						+ "?line=" + eLine;
 					var eMsg = this.ut.errInfo("customTypeDefineError", ct.label, type, e);
-					this.ut.notify(
-						eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
-						this.getLocalized("errorTitle"),
-						this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
-						this.ut.NOTIFY_ICON_ERROR
-					);
+					var eMsgFull = eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor");
+					this.ut.notifyError(eMsgFull, {
+						onLeftClick: this.ut.toErrorConsole,
+						onMiddleClick: this.wu.getOpenEditorLink(href, eLine)
+					});
 					this.ut._err(eMsg, href, eLine);
 					this.ut._err(e);
 				}
@@ -864,12 +863,11 @@ var handyClicks = {
 					+ this.ct.EDITOR_TYPE_CONTEXT
 					+ "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customTypeContextMenuError", ct.label, this.itemType, e);
-				this.ut.notify(
-					eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
-					this.getLocalized("errorTitle"),
-					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
-					this.ut.NOTIFY_ICON_ERROR
-				);
+				var eMsgFull = eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor");
+				this.ut.notifyError(eMsgFull, {
+					onLeftClick: this.ut.toErrorConsole,
+					onMiddleClick: this.wu.getOpenEditorLink(href, eLine)
+				});
 				this.ut._err(eMsg, href, eLine);
 				this.ut._err(e);
 			}
@@ -1275,12 +1273,11 @@ var handyClicks = {
 				var eLine = this.ut.getRealLineNumber(err, funcObj._line);
 				var href = this.getEditorLink(e) + "?line=" + eLine;
 				var eMsg = this.ut.errInfo("customFunctionError", funcObj.label, this.itemType, err);
-				this.ut.notify(
-					eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
-					this.getLocalized("errorTitle"),
-					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href, eLine),
-					this.ut.NOTIFY_ICON_ERROR
-				);
+				var eMsgFull = eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor");
+				this.ut.notifyError(eMsgFull, {
+					onLeftClick: this.ut.toErrorConsole,
+					onMiddleClick: this.wu.getOpenEditorLink(href, eLine)
+				});
 				this.ut._err(eMsg, href, eLine);
 				this.ut._err(err);
 			}
@@ -1308,12 +1305,12 @@ var handyClicks = {
 							.replace("%u", this.fn.getItemURI())
 							.replace("%s", this.item.ownerDocument.documentURI)
 						: this.getLocalized("errorInBuiltInFunction").replace("%f", action);
-					this.ut.notify(
-						eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
-						this.getLocalized(securityError ? "warningTitle" : "errorTitle"),
-						this.ut.toErrorConsole, this.wu.getOpenEditorLink(href),
-						securityError ? this.ut.NOTIFY_ICON_WARNING : this.ut.NOTIFY_ICON_ERROR
-					);
+					var eMsgFull = eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor");
+					this.ut.notify(eMsgFull, {
+						icon: securityError ? this.ut.NOTIFY_ICON_WARNING : this.ut.NOTIFY_ICON_ERROR,
+						onLeftClick: this.ut.toErrorConsole,
+						onMiddleClick: this.wu.getOpenEditorLink(href)
+					});
 					this.ut._err(eMsg);
 					this.ut._err(err);
 				}
@@ -1321,12 +1318,11 @@ var handyClicks = {
 			else {
 				var href = this.getEditorLink(e);
 				var eMsg = this.getLocalized("functionNotFound").replace("%f", action);
-				this.ut.notify(
-					eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor"),
-					this.getLocalized("warningTitle"),
-					this.ut.toErrorConsole, this.wu.getOpenEditorLink(href),
-					this.ut.NOTIFY_ICON_WARNING
-				);
+				var eMsgFull = eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor");
+				this.ut.notifyWarning(eMsgFull, {
+					onLeftClick: this.ut.toErrorConsole,
+					onMiddleClick: this.wu.getOpenEditorLink(href)
+				});
 				this.ut._err(eMsg, href);
 				this.ut._warn('Function "' + action + '" not found (' + typeof this.fn[action] + ")");
 			}

@@ -137,11 +137,13 @@ var handyClicksUI = {
 		this.hc.enabled = en;
 		if(!fromKey || this.controlsVisible)
 			return;
-		this.ut.notifyInWindowCorner(
-			this.getLocalized(en ? "enabled" : "disabled"), null,
-			this.ut.bind(this.wu.openSettings, this.wu), null,
-			en ? this.ut.NOTIFY_ICON_NORMAL : this.ut.NOTIFY_ICON_DISABLED
-		);
+		this.ut.notifyInWindowCorner(this.getLocalized(en ? "enabled" : "disabled"), {
+			icon: en ? this.ut.NOTIFY_ICON_NORMAL : this.ut.NOTIFY_ICON_DISABLED,
+			onLeftClick: function() {
+				this.wu.openSettings();
+			},
+			context: this
+		});
 	},
 
 	_toolbarContextItems: [],
@@ -410,11 +412,13 @@ var handyClicksUI = {
 			|| nem == 2
 		) {
 			var exitKey = this.ut.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE") || "Esc";
-			this.ut.notifyInWindowCorner(
-				this.getLocalized("editModeNote").replace("%key", exitKey),
-				this.getLocalized("editModeTitle"),
-				this.ut.bind(function() { this.editMode = false; }, this)
-			);
+			this.ut.notifyInWindowCorner(this.getLocalized("editModeNote").replace("%key", exitKey), {
+				title: this.getLocalized("editModeTitle"),
+				onLeftClick: function() {
+					this.editMode = false;
+				},
+				context: this
+			});
 		}
 	},
 	handleEvent: function(e) {
