@@ -865,7 +865,7 @@ var handyClicksFuncs = {
 		return decoded;
 	},
 	losslessDecodeURI: function(uri) {
-		if(!uri)
+		if(uri == "")
 			return "";
 
 		var win = window;
