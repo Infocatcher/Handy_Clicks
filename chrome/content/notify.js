@@ -18,15 +18,14 @@ var hcNotify = {
 		document.getElementById("hcNotifyHeader").textContent = opts.title + "\n\n";
 		var descElt = document.getElementById("hcNotifyDesc");
 		descElt.textContent = opts.message;
-		with(descElt.style) {
-			maxWidth  = Math.round(screen.availWidth *0.6) + "px";
-			maxHeight = Math.round(screen.availHeight*0.6) + "px";
-			var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
-				.getService(Components.interfaces.nsIXULAppInfo);
-			whiteSpace = appInfo.name == "Firefox" && parseFloat(appInfo.version) < 3
-				? "-moz-pre-wrap"
-				: "pre-wrap";
-		}
+		var s = descElt.style;
+		s.maxWidth  = Math.round(screen.availWidth *0.6) + "px";
+		s.maxHeight = Math.round(screen.availHeight*0.6) + "px";
+		var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
+			.getService(Components.interfaces.nsIXULAppInfo);
+		s.whiteSpace = appInfo.name == "Firefox" && parseFloat(appInfo.version) < 3
+			? "-moz-pre-wrap"
+			: "pre-wrap";
 		document.getElementById("hcNotifyImg").setAttribute("hc_icon", opts.icon);
 		window.sizeToContent();
 		var winW = window.outerWidth, winH = window.outerHeight;
