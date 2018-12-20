@@ -40,6 +40,10 @@ var handyClicksUtils = {
 		var caller = Components.stack.caller.caller;
 		this._warn(msg, caller.filename, caller.lineNumber);
 	},
+	_deprecatedCaller: function(msg) {
+		var caller = Components.stack.caller.caller.caller;
+		this._warn(msg, caller.filename, caller.lineNumber);
+	},
 	_stack: function _stack(desc, isWarning) {
 		if(desc)
 			desc += " ";
@@ -181,31 +185,67 @@ var handyClicksUtils = {
 	NOTIFY_ICON_DISABLED: "disabled",
 	NOTIFY_ICON_WARNING: "warning",
 	NOTIFY_ICON_ERROR: "error",
-	notify: function(msg, header, funcLeftClick, funcMiddleClick, icon, parentWindow, inWindowCorner) {
+	notify: function(msg, opts) {
+		if(arguments.length > 1 && !this.isObject(opts))
+			opts = this._convertNotifyArgs.apply(this, arguments);
+		if(!opts)
+			opts = {};
 		var dur = this.pu.get("notifyOpenTime");
 		if(dur <= 0)
 			 return null;
+		var icon = opts.icon || this.NOTIFY_ICON_NORMAL;
+		if(icon == this.NOTIFY_ICON_WARNING)
+			opts.header = opts.header || this.getLocalized("warningTitle");
+		else if(icon == this.NOTIFY_ICON_ERROR)
+			opts.header = opts.header || this.getLocalized("errorTitle");
 		return window.openDialog(
 			"chrome://handyclicks/content/notify.xul",
 			"_blank",
 			"chrome,popup,titlebar=0",
 			{
+				msg:             msg                  || "",
+				header:          opts.header          || this.getLocalized("title"),
+				funcLeftClick:   opts.funcLeftClick   || null,
+				funcMiddleClick: opts.funcMiddleClick || null,
+				parentWindow:    opts.parentWindow    || window,
+				icon: icon,
 				dur: dur,
-				header: header || this.getLocalized("title"),
-				msg: msg || "",
-				funcLeftClick: funcLeftClick,
-				funcMiddleClick: funcMiddleClick,
-				icon: icon === undefined ? this.NOTIFY_ICON_NORMAL : icon,
-				inWindowCorner: inWindowCorner === undefined ? this.pu.get("notifyInWindowCorner") : inWindowCorner,
+				inWindowCorner: "inWindowCorner" in opts && opts.inWindowCorner !== undefined
+					? opts.inWindowCorner
+					: this.pu.get("notifyInWindowCorner"),
 				dontCloseUnderCursor: this.pu.get("notifyDontCloseUnderCursor"),
-				rearrangeWindows: this.pu.get("notifyRearrangeWindows"),
-				parentWindow: parentWindow || window,
+				rearrangeWindows:     this.pu.get("notifyRearrangeWindows"),
 				__proto__: null
 			}
 		);
 	},
-	notifyInWindowCorner: function(msg, header, funcLeftClick, funcMiddleClick, icon, parentWindow) {
-		return this.notify(msg, header, funcLeftClick, funcMiddleClick, icon, parentWindow, true);
+	notifyWarning: function(msg, opts) {
+		(opts = opts || {}).icon = this.NOTIFY_ICON_WARNING;
+		return this.notify(msg, opts);
+	},
+	notifyError: function(msg, opts) {
+		(opts = opts || {}).icon = this.NOTIFY_ICON_ERROR;
+		return this.notify(msg, opts);
+	},
+	notifyInWindowCorner: function(msg, opts) {
+		if(arguments.length > 1 && !this.isObject(opts))
+			opts = this._convertNotifyArgs.apply(this, arguments);
+		(opts = opts || {}).inWindowCorner = true;
+		return this.notify(msg, opts);
+	},
+	_convertNotifyArgs: function(msg, header, funcLeftClick, funcMiddleClick, icon, parentWindow, inWindowCorner) {
+		this._deprecatedCaller( //= Added: 2018-12-18
+			'handyClicksUtils.notify(msg, header, ...) is deprecated. '
+			+ 'Use handyClicksUtils.notify(msg, { header: "", ...}) instead.'
+		);
+		return {
+			header: header,
+			funcLeftClick: funcLeftClick,
+			funcMiddleClick: funcMiddleClick,
+			icon: icon,
+			parentWindow: parentWindow,
+			inWindowCorner: inWindowCorner
+		};
 	},
 
 	get toErrorConsole() {
