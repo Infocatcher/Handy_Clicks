@@ -208,6 +208,7 @@ var handyClicksUtils = {
 				onLeftClick:   opts.onLeftClick   || null,
 				onMiddleClick: opts.onMiddleClick || null,
 				parentWindow:  opts.parentWindow  || window,
+				context:       opts.context       || window,
 				icon: icon,
 				closeDelay: closeDelay,
 				inWindowCorner: "inWindowCorner" in opts && opts.inWindowCorner !== undefined

@@ -183,11 +183,11 @@ var hcNotify = {
 			e.button == 0 && !hasModifier
 			&& typeof opts.onLeftClick == "function"
 		)
-			opts.onLeftClick();
+			opts.onLeftClick.call(opts.context || window.opener);
 		else if(
 			(e.button == 1 || e.button == 0 && hasModifier)
 			&& typeof opts.onMiddleClick == "function"
 		)
-			opts.onMiddleClick();
+			opts.onMiddleClick.call(opts.context || window.opener);
 	}
 };
