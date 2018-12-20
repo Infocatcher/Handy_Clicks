@@ -195,19 +195,19 @@ var handyClicksUtils = {
 			 return null;
 		var icon = opts.icon || this.NOTIFY_ICON_NORMAL;
 		if(icon == this.NOTIFY_ICON_WARNING)
-			opts.header = opts.header || this.getLocalized("warningTitle");
+			opts.title = opts.title || this.getLocalized("warningTitle");
 		else if(icon == this.NOTIFY_ICON_ERROR)
-			opts.header = opts.header || this.getLocalized("errorTitle");
+			opts.title = opts.title || this.getLocalized("errorTitle");
 		return window.openDialog(
 			"chrome://handyclicks/content/notify.xul",
 			"_blank",
 			"chrome,popup,titlebar=0",
 			{
-				msg:             msg                  || "",
-				header:          opts.header          || this.getLocalized("title"),
-				funcLeftClick:   opts.funcLeftClick   || null,
-				funcMiddleClick: opts.funcMiddleClick || null,
-				parentWindow:    opts.parentWindow    || window,
+				msg:             msg                || "",
+				header:          opts.title         || this.getLocalized("title"),
+				funcLeftClick:   opts.onLeftClick   || null,
+				funcMiddleClick: opts.onMiddleClick || null,
+				parentWindow:    opts.parentWindow  || window,
 				icon: icon,
 				dur: dur,
 				inWindowCorner: "inWindowCorner" in opts && opts.inWindowCorner !== undefined
@@ -236,12 +236,12 @@ var handyClicksUtils = {
 	_convertNotifyArgs: function(msg, header, funcLeftClick, funcMiddleClick, icon, parentWindow, inWindowCorner) {
 		this._deprecatedCaller( //= Added: 2018-12-18
 			'handyClicksUtils.notify(msg, header, ...) is deprecated. '
-			+ 'Use handyClicksUtils.notify(msg, { header: "", ...}) instead.'
+			+ 'Use handyClicksUtils.notify(msg, { title: "", ...}) instead.'
 		);
 		return {
-			header: header,
-			funcLeftClick: funcLeftClick,
-			funcMiddleClick: funcMiddleClick,
+			title: header,
+			onLeftClick: funcLeftClick,
+			onMiddleClick: funcMiddleClick,
 			icon: icon,
 			parentWindow: parentWindow,
 			inWindowCorner: inWindowCorner
