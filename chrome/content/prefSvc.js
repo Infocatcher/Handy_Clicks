@@ -288,8 +288,7 @@ var handyClicksPrefSvc = {
 				+ ("_contextMenuLine" in ct ? this.ct.EDITOR_TYPE_CONTEXT : this.ct.EDITOR_TYPE_DEFINE)
 				+ "?line=" + eLine;
 			var eMsg = this.ut.errInfo("customTypeCompileError", ct.label, type, e);
-			var eMsgFull = eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor");
-			this.ut.notifyError(eMsgFull, {
+			this.ut.notifyError(eMsg + this.showErrorNotes, {
 				onLeftClick: this.ut.toErrorConsole,
 				onMiddleClick: this.wu.getOpenEditorLink(href, eLine),
 				inWindowCorner: true
@@ -377,8 +376,7 @@ var handyClicksPrefSvc = {
 			var eLine = fObj._errorLine = this.ut.getRealLineNumber(err, line);
 			var href = fObj._editorLink = this.hc.getEditorLink() + "?line=" + eLine;
 			var eMsg = this.ut.errInfo("customFunctionCompileError", fObj.label, this.hc.itemType, err);
-			var eMsgFull = eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor");
-			this.ut.notifyError(eMsgFull, {
+			this.ut.notifyError(eMsg + this.showErrorNotes, {
 				onLeftClick: this.ut.toErrorConsole,
 				onMiddleClick: this.wu.getOpenEditorLink(href, eLine)
 			});
@@ -388,6 +386,10 @@ var handyClicksPrefSvc = {
 		if(useCache)
 			fObj._function = fn;
 		return fn;
+	},
+	get showErrorNotes() {
+		delete this.showErrorNotes;
+		return this.showErrorNotes = this.getLocalized("openConsole") + this.getLocalized("openEditor");
 	},
 	getSourcePath: function(code) {
 		// Usage: "//> path/to/file.js"
@@ -463,8 +465,7 @@ var handyClicksPrefSvc = {
 			this.ut.getOwnProperty(fObj, "label"),
 			type, e
 		);
-		var eMsgFull = eMsg + this.getLocalized("openConsole") + this.getLocalized("openEditor");
-		this.ut.notifyError(eMsgFull, {
+		this.ut.notifyError(eMsg + this.showErrorNotes, {
 			onLeftClick: this.ut.toErrorConsole,
 			onMiddleClick: this.wu.getOpenEditorLink(href, eLine),
 			inWindowCorner: true
