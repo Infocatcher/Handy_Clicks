@@ -190,8 +190,8 @@ var handyClicksUtils = {
 			opts = this._convertNotifyArgs.apply(this, arguments);
 		if(!opts)
 			opts = {};
-		var dur = this.pu.get("notifyOpenTime");
-		if(dur <= 0)
+		var closeDelay = this.pu.get("notifyOpenTime");
+		if(closeDelay <= 0)
 			 return null;
 		var icon = opts.icon || this.NOTIFY_ICON_NORMAL;
 		if(icon == this.NOTIFY_ICON_WARNING)
@@ -203,13 +203,13 @@ var handyClicksUtils = {
 			"_blank",
 			"chrome,popup,titlebar=0",
 			{
-				msg:             msg                || "",
-				header:          opts.title         || this.getLocalized("title"),
-				funcLeftClick:   opts.onLeftClick   || null,
-				funcMiddleClick: opts.onMiddleClick || null,
-				parentWindow:    opts.parentWindow  || window,
+				title:         opts.title         || this.getLocalized("title"),
+				message:       msg                || "",
+				onLeftClick:   opts.onLeftClick   || null,
+				onMiddleClick: opts.onMiddleClick || null,
+				parentWindow:  opts.parentWindow  || window,
 				icon: icon,
-				dur: dur,
+				closeDelay: closeDelay,
 				inWindowCorner: "inWindowCorner" in opts && opts.inWindowCorner !== undefined
 					? opts.inWindowCorner
 					: this.pu.get("notifyInWindowCorner"),

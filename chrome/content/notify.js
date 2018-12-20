@@ -11,13 +11,13 @@ var hcNotify = {
 	_highlightInterval: 0,
 
 	init: function() {
-		var wa = window.arguments[0];
+		var opts = window.arguments[0];
 		// Properties:
-		// dur, header, msg, funcLeftClick, funcMiddleClick, icon,
+		// closeDelay, title, message, onLeftClick, onMiddleClick, icon,
 		// inWindowCorner, dontCloseUnderCursor, rearrangeWindows
-		document.getElementById("hcNotifyHeader").textContent = wa.header + "\n\n";
+		document.getElementById("hcNotifyHeader").textContent = opts.title + "\n\n";
 		var descElt = document.getElementById("hcNotifyDesc");
-		descElt.textContent = wa.msg;
+		descElt.textContent = opts.message;
 		with(descElt.style) {
 			maxWidth  = Math.round(screen.availWidth *0.6) + "px";
 			maxHeight = Math.round(screen.availHeight*0.6) + "px";
@@ -27,7 +27,7 @@ var hcNotify = {
 				? "-moz-pre-wrap"
 				: "pre-wrap";
 		}
-		document.getElementById("hcNotifyImg").setAttribute("hc_icon", wa.icon);
+		document.getElementById("hcNotifyImg").setAttribute("hc_icon", opts.icon);
 		window.sizeToContent();
 		var winW = window.outerWidth, winH = window.outerHeight;
 		var maxW = Math.round(screen.availWidth*0.65) + 100;
@@ -35,13 +35,13 @@ var hcNotify = {
 			winW = maxW;
 			window.resizeTo(winW, winH);
 		}
-		var wo = wa.parentWindow || window.opener;
+		var wo = opts.parentWindow || window.opener;
 		var x, y;
 		if(wo.closed) {
 			x = screen.availLeft + screen.availWidth - winW;
 			y = screen.availTop + screen.availHeight - winH;
 		}
-		else if(wa.inWindowCorner || !("handyClicks" in wo) || !wo.handyClicks._xy) { // Show in window corner
+		else if(opts.inWindowCorner || !("handyClicks" in wo) || !wo.handyClicks._xy) { // Show in window corner
 			this.inWindowCorner = true;
 			x = wo.screenX + wo.outerWidth - winW;
 			var sBar = wo.document.getElementById("browser-bottombox") || wo.document.getElementById("status-bar");
@@ -63,7 +63,7 @@ var hcNotify = {
 		}
 		window.moveTo(x, y);
 
-		if(wa.inWindowCorner && wa.rearrangeWindows) {
+		if(opts.inWindowCorner && opts.rearrangeWindows) {
 			var ws = this.ws;
 			while(ws.hasMoreElements()) {
 				var w = ws.getNext();
@@ -76,15 +76,15 @@ var hcNotify = {
 		}
 
 		var notifyBox = this._notifyBox = document.getElementById("hcNotifyBox");
-		if(typeof wa.funcLeftClick == "function")
+		if(typeof opts.onLeftClick == "function")
 			notifyBox.className += " hc-clickable";
 
-		this._dur = wa.dur;
+		this._closeDelay = opts.closeDelay;
 		var s = notifyBox.style;
 		var transition = this._transition = "transition" in s && "transition"
 			|| "MozTransition" in s && "MozTransition";
 		if(transition) {
-			this._dur = Math.max(0, this._dur - this.showHideDiration);
+			this._closeDelay = Math.max(0, this._closeDelay - this.showHideDiration);
 			s.opacity = 0;
 			setTimeout(function(_this) {
 				s[transition] = "opacity " + _this.showHideDiration + "ms ease-in-out";
@@ -95,7 +95,7 @@ var hcNotify = {
 		//~ todo: rewrite using CSS transitions
 		this._colorDelta = this.endColor - this.startColor;
 		this.delayedClose();
-		if(wa.dontCloseUnderCursor)
+		if(opts.dontCloseUnderCursor)
 			this.initDontClose();
 	},
 	initDontClose: function() {
@@ -130,7 +130,7 @@ var hcNotify = {
 		return "#" + h + h + h;
 	},
 	setColor: function() {
-		var persent = (Date.now() - this._startTime)/this._dur;
+		var persent = (Date.now() - this._startTime)/this._closeDelay;
 		if(persent >= 1) {
 			clearInterval(this._highlightInterval);
 			return;
@@ -139,12 +139,12 @@ var hcNotify = {
 	},
 	delayedClose: function() {
 		if(!this._transition)
-			this._closeTimeout = setTimeout(window.close, this._dur);
+			this._closeTimeout = setTimeout(window.close, this._closeDelay);
 		else {
 			this._closeTimeout = setTimeout(function(_this) {
 				_this._notifyBox.style.opacity = 0;
 				_this._closeTimeout = setTimeout(window.close, _this.showHideDiration);
-			}, this._dur, this);
+			}, this._closeDelay, this);
 		}
 		this._startTime = Date.now();
 		var _this = this;
@@ -152,7 +152,7 @@ var hcNotify = {
 			function() {
 				_this.setColor();
 			},
-			Math.round(this._dur/this._colorDelta) + 4
+			Math.round(this._closeDelay/this._colorDelta) + 4
 		);
 		this.borderColor = this.numToColor(this.startColor);
 	},
@@ -169,7 +169,7 @@ var hcNotify = {
 	},
 	clickHandler: function(e) {
 		this.cancelDelayedClose();
-		var wa = window.arguments[0];
+		var opts = window.arguments[0];
 		var hasModifier = e.ctrlKey || e.shiftKey || e.altKey || e.metaKey;
 
 		if(e.button == 2 && hasModifier) {
@@ -182,13 +182,13 @@ var hcNotify = {
 
 		if(
 			e.button == 0 && !hasModifier
-			&& typeof wa.funcLeftClick == "function"
+			&& typeof opts.onLeftClick == "function"
 		)
-			wa.funcLeftClick();
+			opts.onLeftClick();
 		else if(
 			(e.button == 1 || e.button == 0 && hasModifier)
-			&& typeof wa.funcMiddleClick == "function"
+			&& typeof opts.onMiddleClick == "function"
 		)
-			wa.funcMiddleClick();
+			opts.onMiddleClick();
 	}
 };
