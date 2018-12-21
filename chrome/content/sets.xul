@@ -261,28 +261,28 @@ preferences {
 				<label value="&hc.sets.notifyCloseAfter;" control="hc-sets-notifyOpenTime" />
 				<textbox id="hc-sets-notifyOpenTime" preference="notifyOpenTime"
 					type="number" min="0" max="1200000" increment="50" size="7"
-					hc_requiredFor="notify" hc_disabledValues="0" />
+					hc_requiredFor="notify notifyMessages" hc_disablePattern="0" />
 				<label value="&hc.sets.zeroForDisable;" />
 			</hbox>
 			<hbox align="center">
 				<label value="&hc.sets.notifyCloseWarningsAfter;" control="hc-sets-notifyOpenTimeWarnings" />
 				<textbox id="hc-sets-notifyOpenTimeWarnings" preference="notifyOpenTimeWarnings"
 					type="number" min="0" max="1200000" increment="50" size="7"
-					hc_requiredFor="notify" hc_disabledValues="0" />
+					hc_requiredFor="notify" hc_disablePattern="0" />
 				<label value="&hc.sets.zeroForDisable;" />
 			</hbox>
-			<checkbox preference="notifyInWindowCorner" hc_depends="notify" label="&hc.sets.notifyInWindowCorner;" />
-			<checkbox preference="notifyDontCloseUnderCursor" hc_depends="notify" label="&hc.sets.notifyDontClose;" />
+			<checkbox preference="notifyInWindowCorner" hc_dependsOn="notify" label="&hc.sets.notifyInWindowCorner;" />
+			<checkbox preference="notifyDontCloseUnderCursor" hc_dependsOn="notify" label="&hc.sets.notifyDontClose;" />
 		</groupbox>
 		<groupbox>
 			<caption label="&hc.sets.disallowMousemoveCaption;" />
 			<label value="&hc.sets.disallowMousemove;" />
-			<hbox hc_requiredFor="disallowMousemove">
-				<checkbox id="hc-sets-disallowMousemove-0" label="&hc.sets.left;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
-				<checkbox id="hc-sets-disallowMousemove-1" label="&hc.sets.middle;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
-				<checkbox id="hc-sets-disallowMousemove-2" label="&hc.sets.right;" hc_requiredFor="disallowMousemove" hc_checkParent="true" />
+			<hbox>
+				<checkbox id="hc-sets-disallowMousemove-0" label="&hc.sets.left;" hc_requiredFor="disallowMousemove" />
+				<checkbox id="hc-sets-disallowMousemove-1" label="&hc.sets.middle;" hc_requiredFor="disallowMousemove" />
+				<checkbox id="hc-sets-disallowMousemove-2" label="&hc.sets.right;" hc_requiredFor="disallowMousemove" />
 			</hbox>
-			<hbox align="center" hc_depends="disallowMousemove">
+			<hbox align="center" hc_dependsOn="disallowMousemove">
 				<label value="&hc.sets.maxDistance;" control="hc-sets-disallowMousemoveDist" />
 				<textbox id="hc-sets-disallowMousemoveDist" preference="disallowMousemoveDist"
 					type="number" min="0" max="200" increment="2" size="3" />
@@ -418,11 +418,11 @@ preferences {
 			<groupbox orient="horizontal" align="center">
 				<caption label="&hc.sets.autocomplete;" />
 				<checkbox preference="autocomplete" hc_requiredFor="autocomplete" label="&hc.sets.autocompleteShowAfter;" />
-				<textbox id="hc-sets-tabSize" hc_depends="autocomplete"
+				<textbox id="hc-sets-tabSize" hc_dependsOn="autocomplete"
 					preference="autocompleteMinSymbols" type="number" min="1" max="30" increment="1" size="2"
 					onchange="handyClicksSets.setAutocompletePlural(this);"
 					onsyncfrompreference="handyClicksSets.setAutocompletePlural(this);" />
-				<label hc_depends="autocomplete" value="&hc.sets.autocompleteMinSymbols;"
+				<label hc_dependsOn="autocomplete" value="&hc.sets.autocompleteMinSymbols;"
 					hc_labelSingle="&hc.sets.autocompleteMinSymbol;" hc_labelMultiple="&hc.sets.autocompleteMinSymbols;" />
 			</groupbox>
 		</hbox>
@@ -440,19 +440,19 @@ preferences {
 					onchange="handyClicksSets.externalEditorChanged();"
 					hc_ondrop="handyClicksSets.externalEditorChanged();"
 					oncut="handyClicksSets.externalEditorChanged(true);"
-					hc_requiredFor="externalEditor" hc_enabledRegExp="[/\\]\S|^%[^%]+%." />
+					hc_requiredFor="externalEditor" hc_enablePattern="[/\\]\S|^%[^%]+%." />
 				<button icon="open" oncommand="handyClicksSets.selectExternalEditor();" label="&hc.sets.externalEditorBrowse;" />
 				<deck id="hc-sets-externalEditorButtonDeck" oncommand="handyClicksSets.convertPath();">
 					<button id="hc-sets-externalEditorButtonRelative"
 						label="&hc.sets.externalEditorMakeRelative;"
-						hc_depends="externalEditor" />
+						hc_dependsOn="externalEditor" />
 					<button id="hc-sets-externalEditorButtonAbsolute"
 						label="&hc.sets.externalEditorMakeAbsolute;"
-						hc_depends="externalEditor" />
+						hc_dependsOn="externalEditor" />
 				</deck>
 			</hbox>
 			<hbox align="top">
-				<hbox id="hc-sets-externalEditorArgs-box" align="top" flex="1" hc_depends="externalEditor">
+				<hbox id="hc-sets-externalEditorArgs-box" align="top" flex="1" hc_dependsOn="externalEditor">
 					<label value="&hc.sets.externalEditorArgs;" tooltip="hc-sets-externalEditorArgs-tooltip" control="hc-sets-externalEditorArgs" />
 					<tooltip id="hc-sets-externalEditorArgs-tooltip">
 						<description>&hc.sets.externalEditorArgsTip;</description>
@@ -499,17 +499,17 @@ preferences {
 		<groupbox orient="horizontal">
 			<caption label="&hc.sets.jsLinks;" />
 			<checkbox preference="loadJavaScriptLinks" label="&hc.sets.linkLoad;" />
-			<checkbox preference="notifyJavaScriptLinks" hc_depends="notify" label="&hc.sets.linkNotify;" />
+			<checkbox preference="notifyJavaScriptLinks" hc_dependsOn="notifyMessages" label="&hc.sets.linkNotify;" />
 		</groupbox>
 		<groupbox orient="horizontal">
 			<caption label="&hc.sets.voidLinks;" />
 			<checkbox preference="loadVoidLinksWithHandlers" label="&hc.sets.linkLoad;" />
-			<checkbox preference="notifyVoidLinksWithHandlers" hc_depends="notify" label="&hc.sets.linkNotify;" />
+			<checkbox preference="notifyVoidLinksWithHandlers" hc_dependsOn="notifyMessages" label="&hc.sets.linkNotify;" />
 		</groupbox>
 		<groupbox>
 			<caption label="&hc.sets.fileLinks;" />
 			<hbox align="center">
-				<menulist preference="filesLinksPolicy" hc_requiredFor="regexp" hc_disabledValues="-1">
+				<menulist preference="filesLinksPolicy" hc_requiredFor="regexp" hc_disablePattern="-1">
 					<menupopup>
 						<menuitem value="-1" label="&hc.sets.fileLinksNotCheck;" />
 						<menuitem value="0" label="&hc.sets.fileLinksShowContext;" />
@@ -517,7 +517,7 @@ preferences {
 					</menupopup>
 				</menulist>
 			</hbox>
-			<hbox align="center" hc_depends="regexp">
+			<hbox align="center" hc_dependsOn="regexp">
 				<label value="&hc.sets.fileLinksFilter;" control="hc-sets-filesLinksMask" />
 				<textbox id="hc-sets-filesLinksMask" preference="filesLinksMask" flex="1" />
 			</hbox>
@@ -525,7 +525,7 @@ preferences {
 		<groupbox orient="horizontal">
 			<caption label="&hc.sets.openURIsInApps;" />
 			<checkbox preference="convertURIs" hc_requiredFor="convert" label="&hc.sets.convertURIs;" />
-			<menulist id="hc-sets-convertURIsCharset" hc_depends="convert"
+			<menulist id="hc-sets-convertURIsCharset" hc_dependsOn="convert"
 				ref="NC:DecodersRoot" datasources="rdf:charset-menu"
 				preference="convertURIsCharset"
 				onsyncfrompreference='

@@ -1833,13 +1833,13 @@ var handyClicksSets = {
 		}
 		else if(this.ut.hasPrefix(pName, "editor.externalEditor")) {
 			this.initExternalEditor();
-			this.updateAllDependencies("externalEditor");
+			this.updateDependencies("externalEditor");
 		}
 		else if(this.warnMsgsPrefs.indexOf(pName) != -1)
 			this.initResetWarnMsgs();
 		else if(pName == "disallowMousemoveButtons") {
 			this.setDisallowMousemove();
-			this.updateAllDependencies("disallowMousemove");
+			this.updateDependencies("disallowMousemove");
 		}
 		else if(pName == "sets.lastSearchQuery") //~ obsolete
 			this.restoreSearchQuery() && this.updTree();
@@ -2394,7 +2394,7 @@ var handyClicksSets = {
 		if(tar.localName == "menuitem")
 			tar = tar.parentNode.parentNode;
 		if(tar.hasAttribute("hc_requiredFor"))
-			this.updateDependencies(tar, true);
+			this.getDependentIds(tar).forEach(this.updateDependencies, this);
 		if(tar.hasAttribute("preference")) {
 			var p = this.$(tar.getAttribute("preference"));
 			if(p.getAttribute("instantApply") == "true" || p.getAttribute("hc_instantApply") == "true")
@@ -2410,45 +2410,51 @@ var handyClicksSets = {
 			//this.delay(this.setDialogButtons, this);
 			this.setDialogButtons();
 	},
-	updateAllDependencies: function(depId) {
+	updateAllDependencies: function() {
+		var reqs = { __proto__: null };
 		Array.prototype.forEach.call(
-			document.getElementsByAttribute("hc_requiredFor", depId || "*"),
-			this.updateDependencies,
-			this
-		);
-	},
-	updateDependencies: function(it, checkAll) {
-		var checkParent = it.getAttribute("hc_checkParent") == "true";
-		if(checkParent && checkAll !== true)
-			return;
-		var dis = false;
-		if(it.hasAttribute("hc_disabledValues"))
-			dis = new RegExp("(?:^|\\s)" + it.value.replace(/[\\^$+*?()\[\]{}]/g, "\\$&") + "(?:\\s|$)")
-				.test(it.getAttribute("hc_disabledValues"));
-		else if(it.hasAttribute("hc_enabledRegExp"))
-			dis = !new RegExp(it.getAttribute("hc_enabledRegExp")).test(it.value);
-		else if(it.hasAttribute("checked") && !checkParent)
-			dis = it.getAttribute("checked") != "true";
-		else {
-			dis = Array.prototype.every.call(
-				(checkParent ? it.parentNode : it).getElementsByTagName("checkbox"),
-				function(ch) {
-					return ch.getAttribute("checked") != "true";
-				}
-			);
-		}
-		it.getAttribute("hc_requiredFor").split(/\s+/).forEach(
-			function(req) {
-				Array.prototype.forEach.call(
-					document.getElementsByAttribute("hc_depends", req),
-					function(dep) {
-						this.disableChilds(dep, dis);
-					},
-					this
-				);
+			document.getElementsByAttribute("hc_dependsOn", "*"),
+			function(it) {
+				var dependsOn = it.getAttribute("hc_dependsOn");
+				if(dependsOn in reqs)
+					return;
+				reqs[dependsOn] = true;
+				this.updateDependencies(dependsOn);
 			},
 			this
 		);
+	},
+	getDependentIds: function(it) {
+		return it.getAttribute("hc_requiredFor").split(/\s+/);
+	},
+	getRequiredItems: function(requiredFor) {
+		return Array.prototype.filter.call(
+			document.getElementsByAttribute("hc_requiredFor", "*"),
+			function(it) {
+				return this.getDependentIds(it).indexOf(requiredFor) != -1;
+			},
+			this
+		);
+	},
+	updateDependencies: function(requiredFor) {
+		var dis = this.getRequiredItems(requiredFor).every(this.getDisabledFromItem, this);
+		Array.prototype.forEach.call(
+			document.getElementsByAttribute("hc_dependsOn", requiredFor),
+			function(dep) {
+				this.disableChilds(dep, dis);
+			},
+			this
+		);
+	},
+	getDisabledFromItem: function(it) {
+		var dis = false;
+		if(it.hasAttribute("hc_disablePattern")) // 0|1|2 -> ^(0|1|2)$
+			dis = new RegExp("^(?:" + it.getAttribute("hc_disablePattern") + ")$").test(it.value);
+		else if(it.hasAttribute("hc_enablePattern"))
+			dis = !new RegExp(it.getAttribute("hc_enablePattern")).test(it.value);
+		else if(it.localName == "checkbox")
+			dis = it.getAttribute("checked") != "true";
+		return dis;
 	},
 	disableChilds: function(parent, dis) {
 		parent.disabled = dis;
