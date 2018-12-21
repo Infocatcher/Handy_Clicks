@@ -257,20 +257,29 @@ preferences {
 		</hbox>
 		<groupbox>
 			<caption label="&hc.sets.notify;" />
-			<hbox align="center">
-				<label value="&hc.sets.notifyCloseAfter;" control="hc-sets-notifyOpenTime" />
-				<textbox id="hc-sets-notifyOpenTime" preference="notifyOpenTime"
-					type="number" min="0" max="1200000" increment="50" size="7"
-					hc_requiredFor="notify notifyMessages" hc_disablePattern="0" />
-				<label value="&hc.sets.zeroForDisable;" />
-			</hbox>
-			<hbox align="center">
-				<label value="&hc.sets.notifyCloseWarningsAfter;" control="hc-sets-notifyOpenTimeWarnings" />
-				<textbox id="hc-sets-notifyOpenTimeWarnings" preference="notifyOpenTimeWarnings"
-					type="number" min="0" max="1200000" increment="50" size="7"
-					hc_requiredFor="notify" hc_disablePattern="0" />
-				<label value="&hc.sets.zeroForDisable;" />
-			</hbox>
+			<grid>
+				<columns>
+					<column />
+					<column />
+					<column />
+				</columns>
+				<rows>
+					<row align="center">
+						<label value="&hc.sets.notifyCloseAfter;" control="hc-sets-notifyOpenTime" />
+						<textbox id="hc-sets-notifyOpenTime" preference="notifyOpenTime"
+							type="number" min="0" max="1200000" increment="50" size="7"
+							hc_requiredFor="notify notifyMessages" hc_disablePattern="0" />
+						<label value="&hc.sets.zeroForDisable;" />
+					</row>
+					<row align="center">
+						<label value="&hc.sets.notifyCloseWarningsAfter;" control="hc-sets-notifyOpenTimeWarnings" />
+						<textbox id="hc-sets-notifyOpenTimeWarnings" preference="notifyOpenTimeWarnings"
+							type="number" min="0" max="1200000" increment="50" size="7"
+							hc_requiredFor="notify" hc_disablePattern="0" />
+						<label value="&hc.sets.zeroForDisable;" />
+					</row>
+				</rows>
+			</grid>
 			<checkbox preference="notifyInWindowCorner" hc_dependsOn="notify" label="&hc.sets.notifyInWindowCorner;" />
 			<checkbox preference="notifyDontCloseUnderCursor" hc_dependsOn="notify" label="&hc.sets.notifyDontClose;" />
 		</groupbox>
