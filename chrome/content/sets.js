@@ -685,8 +685,10 @@ var handyClicksSets = {
 			return action;
 		var path = this.ps.getSourcePath(action);
 		if(path) {
-			var fileData = this._import && path in this.ps.files ? "WithData" : "";
-			return this.getLocalized("customFile" + fileData) + " " + path;
+			var hasData = this._import
+				&& path in this.ps.files
+				&& this.isValidFileData(this.ps.files[path]);
+			return this.getLocalized("customFile" + (hasData ? "WithData" : "")) + " " + path;
 		}
 		return this.getLocalized("customFunction")
 			+ (this.oldTree ? " " : " \n")
@@ -3051,13 +3053,16 @@ var handyClicksSets = {
 			}
 		}
 	},
+	isValidFileData: function(fo) {
+		return this.ut.isObject(fo) && !!fo.data;
+	},
 	importFilesData: function() {
 		//~ todo: confirmations & Co
 		var overwriteAsk = true, overwrite;
 		var files = this.ps.files;
 		for(var path in files) if(files.hasOwnProperty(path)) {
 			var fo = files[path];
-			if(!this.ut.isObject(fo) || !fo.data) {
+			if(!this.isValidFileData(fo)) {
 				this.ut._warn("Import skipped, invalid data for " + path);
 				continue;
 			}
