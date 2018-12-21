@@ -125,8 +125,9 @@
 <!ENTITY hc.sets.delayedActionTimeout "Задержка отложенного действия:">
 <!ENTITY hc.sets.zeroForDisable "мс (0 для отключения)">
 
-<!ENTITY hc.sets.notify "Всплывающие сообщения">
-<!ENTITY hc.sets.notifyCloseAfter "Закрывать через">
+<!ENTITY hc.sets.notify "Всплывающие уведомления">
+<!ENTITY hc.sets.notifyCloseAfter "Закрывать сообщения через">
+<!ENTITY hc.sets.notifyCloseWarningsAfter "Закрывать предупреждения через">
 <!ENTITY hc.sets.notifyInWindowCorner "Показывать в углу окна">
 <!ENTITY hc.sets.notifyDontClose "Не закрывать под курсором">
 
