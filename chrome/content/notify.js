@@ -1,6 +1,6 @@
 var hcNotify = {
 	_transition: null,
-	showHideDiration: 200,
+	showHideDuration: 200,
 
 	startColor: 0, // >= 0 (black)
 	endColor: 255, // <= 255 (white)
@@ -83,10 +83,10 @@ var hcNotify = {
 		var transition = this._transition = "transition" in s && "transition"
 			|| "MozTransition" in s && "MozTransition";
 		if(transition) {
-			this._closeDelay = Math.max(0, this._closeDelay - this.showHideDiration);
+			this._closeDelay = Math.max(0, this._closeDelay - this.showHideDuration);
 			s.opacity = 0;
 			setTimeout(function(_this) {
-				s[transition] = "opacity " + _this.showHideDiration + "ms ease-in-out";
+				s[transition] = "opacity " + _this.showHideDuration + "ms ease-in-out";
 				s.opacity = 1;
 			}, 0, this);
 		}
@@ -142,7 +142,7 @@ var hcNotify = {
 		else {
 			this._closeTimeout = setTimeout(function(_this) {
 				_this._notifyBox.style.opacity = 0;
-				_this._closeTimeout = setTimeout(window.close, _this.showHideDiration);
+				_this._closeTimeout = setTimeout(window.close, _this.showHideDuration);
 			}, this._closeDelay, this);
 		}
 		this._startTime = Date.now();
