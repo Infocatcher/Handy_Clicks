@@ -684,8 +684,10 @@ var handyClicksSets = {
 		if(!isCustom)
 			return action;
 		var path = this.ps.getSourcePath(action);
-		if(path)
-			return this.getLocalized("customFile") + " " + path;
+		if(path) {
+			var fileData = this._import && path in this.ps.files ? "WithData" : "";
+			return this.getLocalized("customFile" + fileData) + " " + path;
+		}
 		return this.getLocalized("customFunction")
 			+ (this.oldTree ? " " : " \n")
 			+ this.cropCode(action || "");
