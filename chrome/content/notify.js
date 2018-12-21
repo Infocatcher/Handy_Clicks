@@ -43,7 +43,11 @@ var hcNotify = {
 		else if(opts.inWindowCorner || !("handyClicks" in wo) || !wo.handyClicks._xy) { // Show in window corner
 			this.inWindowCorner = true;
 			x = wo.screenX + wo.outerWidth - winW;
-			var sBar = wo.document.getElementById("browser-bottombox") || wo.document.getElementById("status-bar");
+			var wod = wo.document;
+			var sBar = wod.getElementById("browser-bottombox")
+				|| wod.getElementById("status-bar")
+				|| wod.getAnonymousElementByAttribute(wod.documentElement, "anonid", "buttons")
+				|| wod.getAnonymousElementByAttribute(wod.documentElement, "anonid", "dlg-buttons");
 			y = (sBar ? sBar.boxObject.screenY : wo.screenY + wo.outerHeight) - winH;
 		}
 		else { // Show under cursor
