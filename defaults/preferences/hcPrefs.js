@@ -15,7 +15,8 @@ pref("extensions.handyclicks.types.links.CSSEditor", true);
 pref("extensions.handyclicks.types.images.canvas", true);
 pref("extensions.handyclicks.types.images.SpeedDial", false);
 
-pref("extensions.handyclicks.notifyOpenTime", 3000);
+pref("extensions.handyclicks.notifyOpenTime", 4000);
+pref("extensions.handyclicks.notifyOpenTimeWarnings", 10000);
 pref("extensions.handyclicks.notifyInWindowCorner", false);
 pref("extensions.handyclicks.notifyDontCloseUnderCursor", true);
 pref("extensions.handyclicks.notifyRearrangeWindows", true);

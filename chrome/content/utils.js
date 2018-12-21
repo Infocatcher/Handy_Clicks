@@ -190,14 +190,19 @@ var handyClicksUtils = {
 			opts = this._convertNotifyArgs.apply(this, arguments);
 		if(!opts)
 			opts = {};
-		var closeDelay = this.pu.get("notifyOpenTime");
+		var delayPref = "notifyOpenTime";
+		var icon = opts.icon || this.NOTIFY_ICON_NORMAL;
+		if(icon == this.NOTIFY_ICON_WARNING) {
+			opts.title = opts.title || this.getLocalized("warningTitle");
+			delayPref += "Warnings";
+		}
+		else if(icon == this.NOTIFY_ICON_ERROR) {
+			opts.title = opts.title || this.getLocalized("errorTitle");
+			delayPref += "Warnings";
+		}
+		var closeDelay = this.pu.get(delayPref);
 		if(closeDelay <= 0)
 			 return null;
-		var icon = opts.icon || this.NOTIFY_ICON_NORMAL;
-		if(icon == this.NOTIFY_ICON_WARNING)
-			opts.title = opts.title || this.getLocalized("warningTitle");
-		else if(icon == this.NOTIFY_ICON_ERROR)
-			opts.title = opts.title || this.getLocalized("errorTitle");
 		return window.openDialog(
 			"chrome://handyclicks/content/notify.xul",
 			"_blank",
