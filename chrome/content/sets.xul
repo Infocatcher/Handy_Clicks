@@ -49,13 +49,16 @@ preferences {
 				hc_key="hc-sets-key-focusSearch" accesskey="&hc.sets.searchAccesskey;">
 				<menupopup onpopupshowing="handyClicksSets.initSearchMenu(this);"
 					oncommand="handyClicksSets.insertSearchPlaceholder(event.target);">
+					<menuitem type="checkbox" acceltext="%dis%" label="&hc.sets.searchDisable;" />
+					<menuseparator />
 					<menuitem type="checkbox" acceltext="%custom%" label="&hc.sets.searchCustom;" />
 					<menuitem type="checkbox" acceltext="%file%" label="&hc.sets.searchCustomFile;" />
 					<menuitem type="checkbox" acceltext="%init%" label="&hc.sets.searchCustomInit;" />
 					<menuitem type="checkbox" acceltext="%type%" label="&hc.sets.searchCustomType;" />
-					<menuitem type="checkbox" acceltext="%dis%" label="&hc.sets.searchDisable;" />
+					<menuseparator />
 					<menuitem type="checkbox" acceltext="%na%" label="&hc.sets.searchNA;" />
 					<menuitem type="checkbox" acceltext="%bug%" label="&hc.sets.searchBuggy;" />
+					<menuseparator />
 					<menuitem type="checkbox" acceltext="%ovr%" label="&hc.sets.searchChanged;" />
 					<menuitem type="checkbox" acceltext="%new%" label="&hc.sets.searchAdded;" />
 					<menuitem type="checkbox" acceltext="%data%" label="&hc.sets.searchFileData;" />
