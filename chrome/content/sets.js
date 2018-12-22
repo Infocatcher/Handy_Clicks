@@ -566,6 +566,7 @@ var handyClicksSets = {
 
 			var daCustom = !!da.custom;
 			var daLabel = this.getActionLabel(da);
+			var daDis = this._forcedDisDa || !fo.enabled || !da.enabled;
 			this.appendTreeCell(daRow, "label", daLabel);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom));
 			var daFileData = this.getActionCode._hasFileData;
@@ -575,7 +576,8 @@ var handyClicksSets = {
 				daFileData = true;
 
 			this.setChildNodesProperties(daRow, {
-				hc_disabled: this._forcedDisDa || !fo.enabled || !da.enabled,
+				hc_enabled: !daDis,
+				hc_disabled: daDis,
 				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel) && ++this._buggy,
 				hc_notAvailable: extNA,
 				hc_custom: daCustom,
@@ -625,6 +627,7 @@ var handyClicksSets = {
 			);
 
 		this.setChildNodesProperties(tRow, {
+			hc_enabled: fo.enabled,
 			hc_disabled: !fo.enabled,
 			hc_buggy: isBuggy && ++this._buggy,
 			hc_notAvailable: extNA,
@@ -1644,6 +1647,7 @@ var handyClicksSets = {
 		hc_customFile:   "%file%",
 		hc_customInit:   "%init%",
 		hc_customType:   "%type%",
+		hc_enabled:      "%on%",
 		hc_disabled:     "%dis%",
 		hc_notAvailable: "%na%",
 		hc_buggy:        "%bug%",

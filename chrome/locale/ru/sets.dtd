@@ -27,7 +27,8 @@
 <!ENTITY hc.sets.searchCustomFile "Свой файл">
 <!ENTITY hc.sets.searchCustomInit "Своя инициализация">
 <!ENTITY hc.sets.searchCustomType "Добавленный тип">
-<!ENTITY hc.sets.searchDisable "Отключённые">
+<!ENTITY hc.sets.searchEnabled "Включённые">
+<!ENTITY hc.sets.searchDisabled "Отключённые">
 <!ENTITY hc.sets.searchNA "Недоступные">
 <!ENTITY hc.sets.searchBuggy "Дефектные">
 <!ENTITY hc.sets.searchChanged "Изменяемые (импорт)">

@@ -49,7 +49,8 @@ preferences {
 				hc_key="hc-sets-key-focusSearch" accesskey="&hc.sets.searchAccesskey;">
 				<menupopup onpopupshowing="handyClicksSets.initSearchMenu(this);"
 					oncommand="handyClicksSets.insertSearchPlaceholder(event.target);">
-					<menuitem type="checkbox" acceltext="%dis%" label="&hc.sets.searchDisable;" />
+					<menuitem type="checkbox" acceltext="%on%" label="&hc.sets.searchEnabled;" />
+					<menuitem type="checkbox" acceltext="%dis%" label="&hc.sets.searchDisabled;" />
 					<menuseparator />
 					<menuitem type="checkbox" acceltext="%custom%" label="&hc.sets.searchCustom;" />
 					<menuitem type="checkbox" acceltext="%file%" label="&hc.sets.searchCustomFile;" />
