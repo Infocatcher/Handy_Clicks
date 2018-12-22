@@ -646,8 +646,16 @@ var handyClicksEditor = {
 		var val = node.value;
 		var re = /[^\w$]/g;
 		if(re.test(val)) {
-			val = val.replace(re, "");
-			node.value = val;
+			var editor = node.inputField
+				.QueryInterface(Components.interfaces.nsIDOMNSEditableElement)
+				.editor
+				.QueryInterface(Components.interfaces.nsIPlaintextEditor);
+			editor.undo(1);
+			val = node.value;
+
+			if(re.test(val)) // Ensure cleaned
+				val = node.value = val.replace(re, "");
+
 			this.customTypeIdInfo(node);
 		}
 		val = this.ps.customPrefix + val;
