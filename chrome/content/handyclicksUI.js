@@ -68,8 +68,13 @@ var handyClicksUI = {
 		return this.coreLoaded && this.hc.editMode;
 	},
 	set editMode(em) {
-		if(em || this.coreLoaded)
-			this.hc.editMode = em;
+		if(!em && !this.coreLoaded)
+			return;
+		if(em && !this.pu.get("enabled")) {
+			this.hc.enabledForEditMode = true;
+			this.pu.set("enabled", true);
+		}
+		this.hc.editMode = em;
 	},
 	initListeners: function(enable) {
 		if(enable || this.coreLoaded) {
@@ -509,7 +514,6 @@ var handyClicksUI = {
 			elt.setAttribute(ttAttr, tt);
 		});
 		this.$("handyClicks-enabled").setAttribute("checked", enabled);
-		this.$("handyClicks-cmd-editMode").setAttribute("disabled", !enabled);
 	},
 	_restoreIconTimeout: 0,
 	_hasIcon: false,

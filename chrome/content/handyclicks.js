@@ -114,6 +114,7 @@ var handyClicks = {
 	},
 
 	_editMode: false,
+	enabledForEditMode: false,
 	get editMode() {
 		return this._editMode;
 	},
@@ -121,6 +122,8 @@ var handyClicks = {
 		this._editMode = em;
 		this.setListeners(["keypress"], em);
 		this.ui.setEditModeStatus(em);
+		if(!em && this.enabledForEditMode)
+			this.enabled = this.enabledForEditMode = false;
 	},
 
 	// Handlers:
