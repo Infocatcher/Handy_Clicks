@@ -1558,13 +1558,28 @@ var handyClicksSets = {
 		if(pos != -1) {
 			var posEnd = pos + ph.length;
 			var before = val.substr(0, pos);
-			if(/^\s+$/.test(before))
+			var after = val.substr(posEnd);
+			if(/^\s*$/.test(before)) { // "  %ph%  after"
 				pos = 0;
-			if(
-				(!before || /\s$/.test(before))
-				&& /^\s+/.test(val.substr(posEnd))
-			)
-				posEnd += RegExp.lastMatch.length;
+				if(/^\s+/.test(after))
+					posEnd += RegExp.lastMatch.length;
+			}
+			else if(/^\s*$/.test(after)) { // "before  %ph%  "
+				posEnd = val.length;
+				if(/\s+$/.test(before))
+					pos -= RegExp.lastMatch.length;
+			}
+			else { // "before  %ph%  after"
+				var beforeSp = /\s*$/.test(before) && RegExp.lastMatch.length;
+				var afterSp = /^\s*/.test(after) && RegExp.lastMatch.length;
+				if(beforeSp) {
+					pos -= beforeSp - 1;
+					posEnd += afterSp;
+				}
+				else if(afterSp) {
+					posEnd += afterSp - 1;
+				}
+			}
 			ifi.selectionStart = pos;
 			ifi.selectionEnd = posEnd;
 			editor.deleteSelection(0, 0);
