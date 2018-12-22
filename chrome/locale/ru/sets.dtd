@@ -32,6 +32,7 @@
 <!ENTITY hc.sets.searchBuggy "Дефектные">
 <!ENTITY hc.sets.searchChanged "Изменяемые (импорт)">
 <!ENTITY hc.sets.searchAdded "Добавляемые (импорт)">
+<!ENTITY hc.sets.searchFileData "Содержимое файла (импорт)">
 <!ENTITY hc.sets.searchTip "Пробел = и
 'строка целиком'
 &quot;Строка целиком с Учётом Регистра&quot;

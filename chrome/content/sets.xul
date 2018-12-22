@@ -58,6 +58,7 @@ preferences {
 					<menuitem type="checkbox" acceltext="%bug%" label="&hc.sets.searchBuggy;" />
 					<menuitem type="checkbox" acceltext="%ovr%" label="&hc.sets.searchChanged;" />
 					<menuitem type="checkbox" acceltext="%new%" label="&hc.sets.searchAdded;" />
+					<menuitem type="checkbox" acceltext="%data%" label="&hc.sets.searchFileData;" />
 				</menupopup>
 			</button>
 			<hbox id="hc-sets-tree-searchContainer" flex="100">

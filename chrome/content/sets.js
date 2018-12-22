@@ -1544,7 +1544,7 @@ var handyClicksSets = {
 			if(!ph)
 				return;
 			mi.setAttribute("checked", val.indexOf(ph) != -1);
-			if(ph == "%ovr%" || ph == "%new%")
+			if(ph == "%ovr%" || ph == "%new%" || ph == "%data%")
 				mi.setAttribute("disabled", !this._import);
 		}, this);
 	},
