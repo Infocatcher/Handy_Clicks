@@ -543,8 +543,11 @@ var handyClicksSets = {
 		var actLabel = this.getActionLabel(fo);
 		this.appendTreeCell(tRow, "label", actLabel);
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom));
+		var fileData = this.getActionCode._hasFileData;
 		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}, this._localizeArgs));
 		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)));
+		if(this.getActionCode._hasFileData)
+			fileData = true;
 
 		var da = this.ut.getOwnProperty(fo, "delayedAction");
 		if(da) {
@@ -565,8 +568,11 @@ var handyClicksSets = {
 			var daLabel = this.getActionLabel(da);
 			this.appendTreeCell(daRow, "label", daLabel);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom));
+			var daFileData = this.getActionCode._hasFileData;
 			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}, this._localizeArgs));
 			this.appendTreeCell(daRow, "label", (daInitCode = this.getInitCode(da, true)));
+			if(this.getActionCode._hasFileData)
+				daFileData = true;
 
 			this.setChildNodesProperties(daRow, {
 				hc_disabled: this._forcedDisDa || !fo.enabled || !da.enabled,
@@ -590,7 +596,8 @@ var handyClicksSets = {
 				this.setChildNodesProperties(daRow, {
 					hc_override: overrideDa && !equalsDa && ++this._overrideDa,
 					hc_equals:   overrideDa &&  equalsDa,
-					hc_new:     !overrideDa &&              ++this._newDa
+					hc_new:     !overrideDa &&              ++this._newDa,
+					hc_fileData: daFileData,
 				}, true);
 			}
 
@@ -648,7 +655,8 @@ var handyClicksSets = {
 			this.setChildNodesProperties(tRow, {
 				hc_override: override && !equals && ++this._overrides,
 				hc_equals:   override &&  equals,
-				hc_new:     !override            && ++this._new
+				hc_new:     !override            && ++this._new,
+				hc_fileData: fileData
 			}, true);
 
 			// Restore...
@@ -680,12 +688,13 @@ var handyClicksSets = {
 			return this.su.getExtLabel(act);
 		return this.getLocalized(act);
 	},
-	getActionCode: function(action, isCustom) {
+	getActionCode: function getActionCode(action, isCustom) {
+		getActionCode._hasFileData = false;
 		if(!isCustom)
 			return action;
 		var path = this.ps.getSourcePath(action);
 		if(path) {
-			var hasData = this._import
+			var hasData = getActionCode._hasFileData = this._import
 				&& path in this.ps.files
 				&& this.isValidFileData(this.ps.files[path]);
 			return this.getLocalized("customFile" + (hasData ? "WithData" : "")) + " " + path;
@@ -1630,6 +1639,7 @@ var handyClicksSets = {
 	searchPlaceholders: {
 		hc_override:     "%ovr%",
 		hc_new:          "%new%",
+		hc_fileData:     "%data%",
 		hc_custom:       "%custom%",
 		hc_customFile:   "%file%",
 		hc_customInit:   "%init%",
