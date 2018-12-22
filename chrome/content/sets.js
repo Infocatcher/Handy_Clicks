@@ -15,8 +15,6 @@ var handyClicksSets = {
 		this[reloadFlag ? "updTree" : "drawTree"]();
 
 		!reloadFlag && this.focusSearch(true);
-		//if(!reloadFlag)
-		//	this.searchInSetsTree(true);
 
 		this.updTreeButtons();
 		this.checkTreeSaved();
@@ -275,7 +273,6 @@ var handyClicksSets = {
 			var so = p[sh];
 			if(this.ut.isEmptyObj(so)) {
 				this.ut._warn('Empty settings object in prefs: "' + sh + '"');
-				//delete p[sh];
 				continue;
 			}
 			switch(drawMode) {
@@ -405,7 +402,6 @@ var handyClicksSets = {
 	_redrawTree: function(dontSearch) {
 		this.tBody.textContent = "";
 		this._drawTree(dontSearch);
-		//!dontSearch && this.searchInSetsTree(true);
 		this.setDialogButtons();
 	},
 	updTree: function() {
@@ -587,11 +583,11 @@ var handyClicksSets = {
 			}, true);
 
 			this.setNodeProperties(
-				this.appendTreeCell(daRow, "value", da.enabled), // checkbox
+				this.appendTreeCell(daRow, "value", da.enabled),
 				{ hc_checkbox: true }
 			);
 
-			if(this._import) { //~ todo: test!
+			if(this._import) {
 				var savedDa = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType, "delayedAction");
 				var overrideDa = savedDa;
 				var equalsDa = this.settingsEquals(da, savedDa);
@@ -616,7 +612,7 @@ var handyClicksSets = {
 		}
 
 		this.setNodeProperties(
-			this.appendTreeCell(tRow, "value", fo.enabled), // checkbox
+			this.appendTreeCell(tRow, "value", fo.enabled),
 			{ hc_checkbox: true }
 		);
 
@@ -636,7 +632,7 @@ var handyClicksSets = {
 			hc_customInit: !!initCode,
 			hc_customType: isCustomType
 		}, true);
-		if(this._import) { //~ todo: test!
+		if(this._import) {
 			var saved = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType);
 
 			// Ignore delayed actions:
@@ -757,9 +753,6 @@ var handyClicksSets = {
 		var propsVal = tar.getAttribute("properties");
 		var changed = false;
 		for(var p in propsObj) if(propsObj.hasOwnProperty(p)) {
-			//propsVal = propsVal.replace(new RegExp("(?:^|\\s)" + p + "(?:\\s|$)"), " ");
-			//if(propsObj[p])
-			//	propsVal += " " + p;
 			if(new RegExp("(?:^|\\s)" + p + "(?:\\s|$)").test(propsVal)) {
 				if(!propsObj[p]) { // Remove
 					propsVal = RegExp.leftContext + " " + RegExp.rightContext;
