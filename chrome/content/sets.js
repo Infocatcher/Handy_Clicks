@@ -1648,7 +1648,7 @@ var handyClicksSets = {
 		hc_customInit:   "%init%",
 		hc_customType:   "%type%",
 		hc_enabled:      "%on%",
-		hc_disabled:     "%dis%",
+		hc_disabled:     "%off%",
 		hc_notAvailable: "%na%",
 		hc_buggy:        "%bug%",
 		__proto__: null
@@ -1702,6 +1702,7 @@ var handyClicksSets = {
 			var sr = this.searchReplacements;
 			for(var p in sp)
 				sTerm = sTerm.replace(sp[p], sr[p]);
+			sTerm = sTerm.replace("%dis%", sr.hc_disabled); //= Added: 2018-12-20
 		}
 
 		if(/^\/(.+)\/([im]{0,2})$/.test(sTerm)) { // /RegExp/flags

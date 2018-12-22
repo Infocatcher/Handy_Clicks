@@ -50,7 +50,7 @@ preferences {
 				<menupopup onpopupshowing="handyClicksSets.initSearchMenu(this);"
 					oncommand="handyClicksSets.insertSearchPlaceholder(event.target);">
 					<menuitem type="checkbox" acceltext="%on%" label="&hc.sets.searchEnabled;" />
-					<menuitem type="checkbox" acceltext="%dis%" label="&hc.sets.searchDisabled;" />
+					<menuitem type="checkbox" acceltext="%off%" label="&hc.sets.searchDisabled;" />
 					<menuseparator />
 					<menuitem type="checkbox" acceltext="%custom%" label="&hc.sets.searchCustom;" />
 					<menuitem type="checkbox" acceltext="%file%" label="&hc.sets.searchCustomFile;" />
