@@ -252,9 +252,11 @@ var handyClicksSets = {
 		this.rowsCache = { __proto__: null };
 
 		var daTime = this.pu.get("delayedActionTimeout");
-		this._daAfter = this.getLocalized("after").replace("%t", daTime);
-		this._forcedDisDa = daTime <= 0;
-		this._expandDa = this.pu.get("sets.treeExpandDelayedAction");
+		var daForceDis = this._daForceDisable = daTime <= 0;
+		this._daAfter = daForceDis
+			? this.getLocalized("disabled")
+			: this.getLocalized("after").replace("%t", daTime);
+		this._daExpand = this.pu.get("sets.treeExpandDelayedAction");
 		this._localizeArgs = this.pu.get("sets.localizeArguments");
 
 		this._overrides = this._overrideDa = this._new = this._newDa = 0;
@@ -548,7 +550,7 @@ var handyClicksSets = {
 		var da = this.ut.getOwnProperty(fo, "delayedAction");
 		if(da) {
 			tItem.setAttribute("container", "true");
-			if(this._expandDa)
+			if(this._daExpand)
 				tItem.setAttribute("open", "true");
 			var daChild = document.createElement("treechildren");
 			var daItem = document.createElement("treeitem");
@@ -562,7 +564,7 @@ var handyClicksSets = {
 
 			var daCustom = !!da.custom;
 			var daLabel = this.getActionLabel(da);
-			var daDis = this._forcedDisDa || !fo.enabled || !da.enabled;
+			var daDis = this._daForceDisable || !fo.enabled || !da.enabled;
 			this.appendTreeCell(daRow, "label", daLabel);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom));
 			var daFileData = this.getActionCode._hasFileData;
