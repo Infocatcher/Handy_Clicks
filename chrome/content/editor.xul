@@ -149,7 +149,10 @@
 							<checkbox id="hc-editor-funcOptsFixed" class="hcFloatControl"
 								oncommand="handyClicksEditor.fixFuncOpts(this.checked);"
 								label="&hc.editor.fixActionOpts;" accesskey="&hc.editor.fixActionOptsAccesskey;"
-								tooltiptext="&hc.editor.fixActionOptsTip;" />
+								tooltip="hc-editor-funcOptsFixed-tooltip" />
+							<tooltip id="hc-editor-funcOptsFixed-tooltip">
+								<description>&hc.editor.fixActionOptsTip;</description>
+							</tooltip>
 						</hbox>
 					</hbox>
 					<tabs onselect="handyClicksEditor.setEditorButtons();">

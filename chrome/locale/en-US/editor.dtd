@@ -39,7 +39,10 @@
 <!ENTITY hc.editor.tabActionDelayTip "Executes after &#37;n ms delay">
 <!ENTITY hc.editor.fixActionOpts "Fix">
 <!ENTITY hc.editor.fixActionOptsAccesskey "x">
-<!ENTITY hc.editor.fixActionOptsTip "Fix action options (to copy options)">
+<!ENTITY hc.editor.fixActionOptsTip "Fix action options
+Or use internal buffer:
+Ctrl+Shift+C – copy
+Ctrl+Shift+V – paste">
 
 <!ENTITY hc.editor.func "Function:">
 <!ENTITY hc.editor.funcAccesskey "F">
