@@ -1241,7 +1241,7 @@ var handyClicksUtils = {
 
 	storage: function(key, val) {
 		const ns = "_handyClicksStorage";
-		if("Services" in window) { // Firefox 4.0+
+		if("create" in Object) { // Firefox 4.0+
 			// Simple replacement for Application.storage
 			// See https://bugzilla.mozilla.org/show_bug.cgi?id=1090880
 			//var global = Components.utils.getGlobalForObject(Services);
