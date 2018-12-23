@@ -426,6 +426,8 @@ var handyClicksEditor = {
 				return !!this.ut.getOwnProperty(this.ps.prefs, this.currentShortcut, this.currentType);
 			case this.INDEX_TYPE:
 				return this.ps.types.hasOwnProperty(this.currentCustomType);
+			default:
+				return false;
 		}
 	},
 
