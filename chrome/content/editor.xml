@@ -986,6 +986,8 @@
 							ut.alert(ut.getLocalized("errorTitle"), err);
 							return;
 						}
+						if(fVal.charAt(0) == "\ufeff") // Older Firefox versions doesn't support BOM mark
+							fVal = fVal.substr(1);
 						if(this._virtualPath) {
 							var fo = ut.ps.files[this._virtualPath];
 							fo.data = fVal;
