@@ -25,6 +25,10 @@ var handyClicksSetsUtils = {
 			window.addEventListener("resize", this, false); // Can detect only maximize/restore
 			this.legacySizeModeChange();
 		}
+		if(this.ut.fxVersion <= 2) this.delay(function() {
+			var sheet = document.styleSheets[0];
+			sheet.insertRule("tooltip > description { white-space: -moz-pre-wrap; }", sheet.cssRules.length);
+		}, this, 350); // Early call may break all tooltips
 	},
 	destroy: function(reloadFlag) {
 		window.removeEventListener(this.ut.wheelEvent, this, true);
