@@ -595,7 +595,7 @@ var handyClicksSets = {
 					hc_override: overrideDa && !equalsDa && ++this._overrideDa,
 					hc_equals:   overrideDa &&  equalsDa,
 					hc_new:     !overrideDa &&              ++this._newDa,
-					hc_fileData: daFileData,
+					hc_fileData: daFileData
 				}, true);
 			}
 
