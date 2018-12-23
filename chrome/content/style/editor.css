@@ -74,7 +74,8 @@ menulist[hc_sets="disabled"] .menulist-label {
 	text-decoration: line-through;
 }
 
-hbox[hc_fixedFields="true"] {
+hbox[hc_fixedFields="true"],
+tabbox[hc_copied="true"] {
 	outline: 1px solid ThreeDShadow;
 	outline-offset: -1px;
 	background-color: ThreeDFace;

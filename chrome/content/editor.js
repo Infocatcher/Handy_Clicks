@@ -1310,6 +1310,12 @@ var handyClicksEditor = {
 			default:                  return false;
 		}
 	},
+	markAsCopied: function(node) {
+		node.setAttribute("hc_copied", "true");
+		setTimeout(function() {
+			node.removeAttribute("hc_copied");
+		}, 200);
+	},
 	checkSaved: function() {
 		if(!this.hasUnsaved)
 			return true;
@@ -1504,6 +1510,7 @@ var handyClicksEditor = {
 		};
 		if(dontCopy)
 			return o;
+		this.markAsCopied(this.$("hc-editor-funcTabbox"));
 		return this.ut.storage("shortcut", o);
 	},
 	pasteShortcut: function(isDelayed, stored) {
@@ -1620,6 +1627,7 @@ var handyClicksEditor = {
 	},
 	copyCustomType: function() {
 		this.ut.storage("type", this.getTypeObj());
+		this.markAsCopied(this.$("hc-editor-customTypeTabbox"));
 	},
 	pasteCustomType: function() {
 		var stored = this.ut.storage("type");
