@@ -12,6 +12,12 @@ var handyClicksUI = {
 	blinkDuration: 170,
 	attrNS: "urn:handyclicks:namespace",
 
+	get enabled() {
+		return this.pu.get("enabled");
+	},
+	set enabled(on) {
+		this.pu.set("enabled", on);
+	},
 	get coreLoaded() {
 		if(window.__lookupGetter__("handyClicks"))
 			return false;
@@ -26,7 +32,7 @@ var handyClicksUI = {
 			this.setEditModeStatus();
 		else
 			this.registerHotkeys();
-		this.pu.oSvc.addObserver(this.updUI, this);
+		this.pu.oSvc.addObserver(this.prefChanged, this);
 
 		this.delay(function() {
 			this.setupUIActions();
@@ -70,9 +76,9 @@ var handyClicksUI = {
 	set editMode(em) {
 		if(!em && !this.coreLoaded)
 			return;
-		if(em && !this.pu.get("enabled")) {
+		if(em && !this.enabled) {
 			this.hc.enabledForEditMode = true;
-			this.pu.set("enabled", true);
+			this.enabled = true;
 		}
 		this.hc.editMode = em;
 	},
@@ -138,8 +144,8 @@ var handyClicksUI = {
 			|| this.ut.isElementVisible(this.$(this.toolbarButtonId));
 	},
 	toggleStatus: function(fromKey) {
-		var en = !this.hc.enabled;
-		this.hc.enabled = en;
+		var en = !this.enabled;
+		this.enabled = en;
 		if(!fromKey || this.controlsVisible)
 			return;
 		this.ut.notifyInWindowCorner(this.getLocalized(en ? "enabled" : "disabled"), {
@@ -487,7 +493,7 @@ var handyClicksUI = {
 			this.emtt.hidePopup();
 	},
 
-	updUI: function(pName) {
+	prefChanged: function(pName) {
 		if(pName == "enabled")
 			this.setStatus();
 		else if(this.ut.hasPrefix(pName, "ui.showIn") || pName == "ui.showAppMenuSeparator")
@@ -498,7 +504,7 @@ var handyClicksUI = {
 			this.setupProgress();
 	},
 	setStatus: function() {
-		var enabled = this.pu.get("enabled");
+		var enabled = this.enabled;
 		this.delay(function() {
 			enabled && this.hc.preloadSettings();
 			this.initListeners(enabled);
