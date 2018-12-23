@@ -1310,10 +1310,10 @@ var handyClicksEditor = {
 			default:                  return false;
 		}
 	},
-	markAsCopied: function(node) {
-		node.setAttribute("hc_copied", "true");
+	markAs: function(node, attr, val) {
+		node.setAttribute(attr, val || "true");
 		setTimeout(function() {
-			node.removeAttribute("hc_copied");
+			node.removeAttribute(attr);
 		}, 200);
 	},
 	checkSaved: function() {
@@ -1510,7 +1510,7 @@ var handyClicksEditor = {
 		};
 		if(dontCopy)
 			return o;
-		this.markAsCopied(this.$("hc-editor-funcTabbox"));
+		this.markAs(this.$("hc-editor-funcTabbox"), "hc_copied");
 		return this.ut.storage("shortcut", o);
 	},
 	pasteShortcut: function(isDelayed, stored) {
@@ -1518,8 +1518,10 @@ var handyClicksEditor = {
 		if(!stored)
 			return false;
 		var type = this.currentType;
-		if(!type || this.notSupported(type, null, stored.supports, stored.app, stored.required))
+		if(!type || this.notSupported(type, null, stored.supports, stored.app, stored.required)) {
+			this.markAs(this.$("hc-editor-funcTabbox"), "hc_pasted", "false");
 			return false;
+		}
 
 		if(isDelayed === undefined)
 			isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == 1;
@@ -1534,6 +1536,7 @@ var handyClicksEditor = {
 
 		this.disableUnsupported();
 		this.applyDisabled = false;
+		this.markAs(this.$("hc-editor-funcTabbox"), "hc_pasted");
 		return true;
 	},
 	saveCustomType: function(applyFlag, testFlag) {
@@ -1627,7 +1630,7 @@ var handyClicksEditor = {
 	},
 	copyCustomType: function() {
 		this.ut.storage("type", this.getTypeObj());
-		this.markAsCopied(this.$("hc-editor-customTypeTabbox"));
+		this.markAs(this.$("hc-editor-customTypeTabbox"), "hc_copied");
 	},
 	pasteCustomType: function() {
 		var stored = this.ut.storage("type");
