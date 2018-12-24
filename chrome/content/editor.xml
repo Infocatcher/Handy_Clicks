@@ -713,16 +713,12 @@
 								return val;
 							};
 							var cmdId = readKey("." + ext);
-							if(cmdId) {
-								var cmd = readKey(cmdId + "\\shell\\open\\command");
-								if(cmd) {
-									// %SystemRoot%\System32\WScript.exe "%1" %*
-									if(/\\WScript\.exe(?:"|\s|$)/i.test(cmd)) {
-										ee = "%SystemRoot%\\notepad.exe";
-										eeArgs = "";
-										ut._log('openExternalEditor: "invalid" association: ' + cmd + '\nWill use "' + ee + '"');
-									}
-								}
+							var cmd = cmdId && readKey(cmdId + "\\shell\\open\\command");
+							// %SystemRoot%\System32\WScript.exe "%1" %*
+							if(cmd && /\\WScript\.exe(?:"|\s|$)/i.test(cmd)) {
+								ee = "%SystemRoot%\\notepad.exe";
+								eeArgs = "";
+								ut._log('openExternalEditor: "invalid" association: ' + cmd + '\nWill use "' + ee + '"');
 							}
 						}
 						catch(e) {
