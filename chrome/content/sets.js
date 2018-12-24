@@ -976,6 +976,29 @@ var handyClicksSets = {
 			this.openEditorWindow(it, this.ct.EDITOR_MODE_TYPE, false, src);
 		}, this);
 	},
+	closeItemEditors: function() {
+		return this.closeEditors(this.ct.EDITOR_MODE_SHORTCUT);
+	},
+	closeItemTypeEditors: function() {
+		return this.closeEditors(this.ct.EDITOR_MODE_TYPE);
+	},
+	closeEditors: function(mode) {
+		var winIds = { __proto__: null };
+		var src = this.ps.currentOtherSrc;
+		var selectedItems = mode == this.ct.EDITOR_MODE_SHORTCUT
+			? this.selectedItems
+			: this.selectedItemsWithCustomTypes;
+		selectedItems.forEach(function(it) {
+			var winId = mode == this.ct.EDITOR_MODE_SHORTCUT
+				? this.wu.getWinId(src, this.ct.EDITOR_MODE_SHORTCUT, it.__shortcut, it.__itemType, it.__isDelayed)
+				: this.wu.getWinId(src, this.ct.EDITOR_MODE_TYPE,     undefined,     it.__itemType, undefined);
+			winIds[winId] = true;
+		}, this);
+		var wins = this.wu.getEditorsById(winIds);
+		wins.forEach(function(win) {
+			win.document.documentElement.cancelDialog();
+		});
+	},
 	editorsLimit: function(count) {
 		const limPref = "sets.openEditorsLimit";
 		var lim = this.pu.get(limPref);

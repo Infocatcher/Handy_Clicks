@@ -147,6 +147,17 @@ var handyClicksWinUtils = {
 		}
 		return null;
 	},
+	getEditorsById: function(winIds) {
+		var wProp = this.winIdProp;
+		var ws = this.wm.getEnumerator("handyclicks:editor");
+		var wins = [];
+		while(ws.hasMoreElements()) {
+			var w = ws.getNext();
+			if(wProp in w && w[wProp] in winIds)
+				wins.push(w);
+		}
+		return wins;
+	},
 	openEditor: function _oe(pSrc, mode, shortcut, itemType, isDelayed) {
 		var winId = this.getWinId.apply(this, arguments);
 		var w = this.getEditorById(winId);

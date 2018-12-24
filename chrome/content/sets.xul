@@ -698,6 +698,9 @@ preferences {
 			<menuitem command="hc-sets-cmd-disable" key="hc-sets-key-disable" class="menuitem-iconic handyClicks-iconic" />
 			<menuitem command="hc-sets-cmd-toggle" key="hc-sets-key-toggle" />
 			<menuseparator />
+			<menuitem oncommand="handyClicksSets.closeItemEditors();" label="Close editors" />
+			<menuitem oncommand="handyClicksSets.closeItemTypeEditors();" label="Close custom type editors" />
+			<menuseparator />
 			<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
 			<menuitem command="hc-sets-cmd-exportToHTML" key="hc-sets-key-exportToHTML" />
 			<menuitem command="hc-sets-cmd-partialExportToClipboard" key="hc-sets-key-partialExportToClipboard" />
