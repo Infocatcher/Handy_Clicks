@@ -1156,6 +1156,10 @@ var handyClicksSets = {
 			{ hc_edited: editStat }
 		);
 	},
+	ensureStatusSearchUpdated: function() {
+		if(this.searchField.value.indexOf(this.searchPlaceholders.hc_edited) != -1)
+			this.searchInSetsTree(true);
+	},
 	treeClick: function _tc(e) {
 		var row = {}, col = {}, cell = {};
 		this.tbo.getCellAt(e.clientX, e.clientY, row, col, cell);
@@ -1659,6 +1663,7 @@ var handyClicksSets = {
 		hc_customType:   "%type%",
 		hc_enabled:      "%on%",
 		hc_disabled:     "%off%",
+		hc_edited:       "%open%",
 		hc_notAvailable: "%na%",
 		hc_buggy:        "%bug%",
 		__proto__: null

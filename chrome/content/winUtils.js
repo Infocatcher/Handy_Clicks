@@ -208,6 +208,7 @@ var handyClicksWinUtils = {
 			st.markOpenedEditors();
 		else if(st.ps.otherSrc == otherSrc)
 			st.setItemStatus(winId, editStat);
+		st.ensureStatusSearchUpdated();
 	},
 
 	openSettings: function(closeOpened) {
