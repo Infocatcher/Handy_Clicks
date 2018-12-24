@@ -716,9 +716,14 @@
 							var cmd = cmdId && readKey(cmdId + "\\shell\\open\\command");
 							// %SystemRoot%\System32\WScript.exe "%1" %*
 							if(cmd && /\\WScript\.exe(?:"|\s|$)/i.test(cmd)) {
-								ee = "%SystemRoot%\\notepad.exe";
+								var origCmd = cmd;
+								cmdId = ext != "txt" && readKey(".txt");
+								cmd = cmdId && readKey(cmdId + "\\shell\\open\\command");
+								ee = cmd && /^"([^"]+)"/.test(cmd)
+									? RegExp.$1
+									: "%SystemRoot%\\notepad.exe";
 								eeArgs = "";
-								ut._log('openExternalEditor: "invalid" association: ' + cmd + '\nWill use "' + ee + '"');
+								ut._log('openExternalEditor: "invalid" association: ' + origCmd + '\nWill use "' + ee + '"');
 							}
 						}
 						catch(e) {
