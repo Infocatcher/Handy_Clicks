@@ -25,6 +25,7 @@
 <!ENTITY hc.sets.searchAccesskey "a">
 <!ENTITY hc.sets.searchEnabled "Enabled">
 <!ENTITY hc.sets.searchDisabled "Disabled">
+<!ENTITY hc.sets.searchOpened "Opened in editor">
 <!ENTITY hc.sets.searchCustom "Custom code">
 <!ENTITY hc.sets.searchCustomFile "Custom file">
 <!ENTITY hc.sets.searchCustomInit "Custom initialization">
