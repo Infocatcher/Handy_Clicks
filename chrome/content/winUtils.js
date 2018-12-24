@@ -203,13 +203,11 @@ var handyClicksWinUtils = {
 		var wSet = this.wm.getMostRecentWindow("handyclicks:settings");
 		if(!wSet || !("_handyClicksInitialized" in wSet))
 			return;
+		var st = wSet.handyClicksSets;
 		if(!arguments.length)
-			wSet.handyClicksSets.markOpenedEditors();
-		else if(
-			"handyClicksPrefSvc" in wSet
-			&& wSet.handyClicksPrefSvc.otherSrc == otherSrc
-		)
-			wSet.handyClicksSets.setItemStatus(winId, editStat);
+			st.markOpenedEditors();
+		else if(st.ps.otherSrc == otherSrc)
+			st.setItemStatus(winId, editStat);
 	},
 
 	openSettings: function(closeOpened) {
