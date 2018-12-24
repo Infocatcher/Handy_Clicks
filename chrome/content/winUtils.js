@@ -133,28 +133,34 @@ var handyClicksWinUtils = {
 	},
 
 	winIdProp: "__handyClicks__winId",
-	openEditor: function _oe(pSrc, mode, shortcut, itemType, isDelayed) {
-		var winId = (mode == this.ct.EDITOR_MODE_TYPE ? itemType : shortcut + "-" + itemType)
+	getWinId: function(pSrc, mode, shortcut, itemType, isDelayed) {
+		return (mode == this.ct.EDITOR_MODE_TYPE ? itemType : shortcut + "-" + itemType)
 			+ (pSrc ? this.ct.OTHER_SRC_POSTFIX : "");
+	},
+	getEditorById: function(winId) {
 		var wProp = this.winIdProp;
 		var ws = this.wm.getEnumerator("handyclicks:editor");
-		var w;
 		while(ws.hasMoreElements()) {
-			w = ws.getNext();
-			if(wProp in w && w[wProp] == winId) {
-				_oe.alreadyOpened = true;
-				w.focus();
+			var w = ws.getNext();
+			if(wProp in w && w[wProp] == winId)
 				return w;
-			}
 		}
-
-		_oe.alreadyOpened = false;
+		return null;
+	},
+	openEditor: function _oe(pSrc, mode, shortcut, itemType, isDelayed) {
+		var winId = this.getWinId.apply(this, arguments);
+		var w = this.getEditorById(winId);
+		_oe.alreadyOpened = !!w;
+		if(w) {
+			w.focus();
+			return w;
+		}
 		w = this.ww.openWindow(
 			this.opener, "chrome://handyclicks/content/editor.xul", "_blank",
 			"chrome,all,toolbar,centerscreen,resizable,dialog=0", null
 		);
 		w.arguments = [pSrc, mode || "shortcut", shortcut, itemType, isDelayed];
-		w[wProp] = winId;
+		w[this.winIdProp] = winId;
 		this.markOpenedEditors(winId, true, !!pSrc);
 		return w;
 	},
