@@ -717,10 +717,7 @@
 								var cmd = readKey(cmdId + "\\shell\\open\\command");
 								if(cmd) {
 									// %SystemRoot%\System32\WScript.exe "%1" %*
-									//~ todo: other path in x64?
-									var wscript = ut.expandEnvironmentVariables("%SystemRoot%\\system32\\wscript.exe").toLowerCase();
-									var indx = ut.expandEnvironmentVariables(cmd).toLowerCase().indexOf(wscript);
-									if(indx == 0 || indx == 1) {
+									if(/\\WScript\.exe(?:"|\s|$)/i.test(cmd)) {
 										ee = "%SystemRoot%\\notepad.exe";
 										eeArgs = "";
 										ut._log('openExternalEditor: "invalid" association: ' + cmd + '\nWill use "' + ee + '"');
