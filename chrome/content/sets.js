@@ -961,6 +961,8 @@ var handyClicksSets = {
 		return this.closeEditors(this.ct.EDITOR_MODE_TYPE, otherSrc, getCanClose);
 	},
 	closeEditors: function(mode, otherSrc, getCanClose) {
+		if(!this.isTreePaneSelected)
+			return 0;
 		var winIds = { __proto__: null };
 		if(otherSrc === undefined)
 			otherSrc = this.ps.otherSrc;
