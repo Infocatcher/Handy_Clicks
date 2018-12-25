@@ -691,14 +691,6 @@ var handyClicksPrefSvc = {
 		return label + "[" + this.removeCustomPrefix(type) + "]";
 	},
 
-	enc: function(s) { //~todo: Not needed, but still used in editor
-		this.ut._deprecated("handyClicksPrefSvc.enc() is deprecated and not needed anymore");
-		return s;
-	},
-	dec: function(s) { //~todo: Not needed, but still used in sets and editor
-		this.ut._deprecated("handyClicksPrefSvc.dec() is deprecated and not needed anymore");
-		return s || "";
-	},
 	encURI: function(s) {
 		return encodeURIComponent(s || "");
 	},
