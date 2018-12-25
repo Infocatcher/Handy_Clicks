@@ -681,7 +681,7 @@ preferences {
 	</keyset>
 	<popupset id="hc-sets-popupset">
 		<menupopup id="hc-sets-tree-context"
-			onpopupshowing="if(event.target == this) handyClicksSets.checkClipboard(); return handyClicksSets.checkTreeContext();">
+			onpopupshowing="return handyClicksSets.initTreeMenu();">
 			<menuitem id="hc-sets-edit" command="hc-sets-cmd-edit" key="hc-sets-key-edit"
 				class="menuitem-iconic handyClicks-iconic" handyclicks_main="true" />
 			<menuitem id="hc-sets-editSaved" command="hc-sets-cmd-editSaved" key="hc-sets-key-editSaved"

@@ -2522,9 +2522,12 @@ var handyClicksSets = {
 			}
 		);
 	},
-	checkTreeContext: function() {
+	initTreeMenu: function() {
 		var ln = document.popupNode.localName;
-		return ln == "treechildren" || ln == "tree";
+		if(ln != "treechildren" && ln != "tree")
+			return false;
+		this.checkClipboard();
+		return true;
 	},
 
 	reloadSettings: function() {
