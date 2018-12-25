@@ -950,7 +950,12 @@ var handyClicksSets = {
 		if(this.editorsLimit(cIts.length))
 			return;
 		var src = forceEditSaved ? null : undefined;
+		var types = { __proto__: null };
 		cIts.forEach(function(it) {
+			var type = it.__itemType;
+			if(type in types)
+				return;
+			types[type] = true;
 			this.openEditorWindow(it, this.ct.EDITOR_MODE_TYPE, false, src);
 		}, this);
 	},
