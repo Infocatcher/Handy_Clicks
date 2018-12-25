@@ -690,6 +690,14 @@ preferences {
 				class="menuitem-iconic handyClicks-iconic" />
 			<menuitem id="hc-sets-editSavedType" command="hc-sets-cmd-editSavedType" key="hc-sets-key-editSavedType"
 				class="menuitem-iconic handyClicks-iconic" />
+
+			<menuseparator id="hc-sets-closeEditors-separator" />
+			<menuitem id="hc-sets-closeEditors" oncommand="handyClicksSets.closeItemEditors();" label="Close editors" />
+			<menuitem id="hc-sets-closeSavedEditors" oncommand="handyClicksSets.closeItemEditors(false);" label="Close editors (for saved)" />
+			<menuitem id="hc-sets-closeTypeEditors" oncommand="handyClicksSets.closeItemTypeEditors();" label="Close custom type editors" />
+			<menuitem id="hc-sets-closeSavedTypeEditors" oncommand="handyClicksSets.closeItemTypeEditors(false);" label="Close custom type editors (for saved)" />
+
+			<menuseparator />
 			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" class="menuitem-iconic handyClicks-iconic" />
 			<menuseparator />
 			<menuitem command="hc-sets-cmd-add" key="hc-sets-key-add" class="menuitem-iconic handyClicks-iconic" />
@@ -697,9 +705,6 @@ preferences {
 			<menuitem command="hc-sets-cmd-enable" key="hc-sets-key-enable" class="menuitem-iconic handyClicks-iconic" />
 			<menuitem command="hc-sets-cmd-disable" key="hc-sets-key-disable" class="menuitem-iconic handyClicks-iconic" />
 			<menuitem command="hc-sets-cmd-toggle" key="hc-sets-key-toggle" />
-			<menuseparator />
-			<menuitem oncommand="handyClicksSets.closeItemEditors();" label="Close editors" />
-			<menuitem oncommand="handyClicksSets.closeItemTypeEditors();" label="Close custom type editors" />
 			<menuseparator />
 			<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
 			<menuitem command="hc-sets-cmd-exportToHTML" key="hc-sets-key-exportToHTML" />

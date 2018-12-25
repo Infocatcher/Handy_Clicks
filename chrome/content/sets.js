@@ -954,28 +954,32 @@ var handyClicksSets = {
 			this.openEditorWindow(it, this.ct.EDITOR_MODE_TYPE, false, src);
 		}, this);
 	},
-	closeItemEditors: function() {
-		return this.closeEditors(this.ct.EDITOR_MODE_SHORTCUT);
+	closeItemEditors: function(otherSrc, getCanClose) {
+		return this.closeEditors(this.ct.EDITOR_MODE_SHORTCUT, otherSrc, getCanClose);
 	},
-	closeItemTypeEditors: function() {
-		return this.closeEditors(this.ct.EDITOR_MODE_TYPE);
+	closeItemTypeEditors: function(otherSrc, getCanClose) {
+		return this.closeEditors(this.ct.EDITOR_MODE_TYPE, otherSrc, getCanClose);
 	},
-	closeEditors: function(mode) {
+	closeEditors: function(mode, otherSrc, getCanClose) {
 		var winIds = { __proto__: null };
-		var src = this.ps.currentOtherSrc;
+		if(otherSrc === undefined)
+			otherSrc = this.ps.otherSrc;
 		var selectedItems = mode == this.ct.EDITOR_MODE_SHORTCUT
 			? this.selectedItems
 			: this.selectedItemsWithCustomTypes;
 		selectedItems.forEach(function(it) {
 			var winId = mode == this.ct.EDITOR_MODE_SHORTCUT
-				? this.wu.getWinId(src, this.ct.EDITOR_MODE_SHORTCUT, it.__shortcut, it.__itemType, it.__isDelayed)
-				: this.wu.getWinId(src, this.ct.EDITOR_MODE_TYPE,     undefined,     it.__itemType, undefined);
+				? this.wu.getWinId(otherSrc, this.ct.EDITOR_MODE_SHORTCUT, it.__shortcut, it.__itemType, it.__isDelayed)
+				: this.wu.getWinId(otherSrc, this.ct.EDITOR_MODE_TYPE,     undefined,     it.__itemType, undefined);
 			winIds[winId] = true;
 		}, this);
 		var wins = this.wu.getEditorsById(winIds);
+		if(getCanClose)
+			return wins.length;
 		wins.forEach(function(win) {
 			win.document.documentElement.cancelDialog();
 		});
+		return wins.length;
 	},
 	editorsLimit: function(count) {
 		const limPref = "sets.openEditorsLimit";
@@ -2531,6 +2535,13 @@ var handyClicksSets = {
 		this.$("hc-sets-editSaved").hidden = noImport;
 		this.$("hc-sets-cmd-editSavedType").setAttribute("disabled", noTypes || noImport);
 		this.$("hc-sets-editSavedType").hidden = noTypes || noImport;
+
+		this.$("hc-sets-closeEditors-separator").hidden = (
+			(this.$("hc-sets-closeEditors").hidden = !this.closeItemEditors(undefined, true))
+			+ (this.$("hc-sets-closeSavedEditors").hidden = noImport || !this.closeItemEditors(false, true))
+			+ (this.$("hc-sets-closeTypeEditors").hidden = noTypes || !this.closeItemTypeEditors(undefined, true))
+			+ (this.$("hc-sets-closeSavedTypeEditors").hidden = noImport || noTypes || !this.closeItemTypeEditors(false, true))
+		) == 4;
 
 		return true;
 	},
