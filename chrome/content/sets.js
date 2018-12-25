@@ -3136,7 +3136,6 @@ var handyClicksSets = {
 		return this.ut.isObject(fo) && !!fo.data;
 	},
 	importFilesData: function() {
-		//~ todo: confirmations & Co
 		var overwriteAsk = true, overwrite;
 		var files = this.ps.files;
 		for(var path in files) if(files.hasOwnProperty(path)) {
@@ -3209,9 +3208,14 @@ var handyClicksSets = {
 					continue;
 				}
 			}
-			this.ut.writeToFile(fo.data, file);
-			file.lastModifiedTime = fo.lastModified || Date.now();
+			this.writeFileData(file, fo.data, fo.lastModified || Date.now());
 		}
+	},
+	writeFileData: function(file, data, time) {
+		this.ut.writeToFileAsync(data, file, function(status) {
+			if(Components.isSuccessCode(status))
+				file.lastModifiedTime = time;
+		}, this);
 	},
 	getFileData: function(code) {
 		var path = this.ps.getSourcePath(code);
