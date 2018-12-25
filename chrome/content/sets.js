@@ -1108,7 +1108,7 @@ var handyClicksSets = {
 			var to = so[type];
 			delete to.delayedAction;
 
-			delete this.rowsCache[tItem.__hash];
+			this.deleteCachedRow(tItem.__hash);
 
 			var tChld = tItem.parentNode;
 			tItem = tChld.parentNode;
@@ -1131,9 +1131,9 @@ var handyClicksSets = {
 		while(true) {
 			tChld.removeChild(tItem);
 
-			delete this.rowsCache[tItem.__hash];
+			this.deleteCachedRow(tItem.__hash);
 			if(tItem.__delayed)
-				delete this.rowsCache[tItem.__delayed.__hash];
+				this.deleteCachedRow(tItem.__delayed.__hash);
 
 			if(tChld.hasChildNodes() || tChld == tBody)
 				break;
@@ -1141,6 +1141,12 @@ var handyClicksSets = {
 			tItem = tChld.parentNode;
 			tChld = tItem.parentNode;
 		}
+	},
+	deleteCachedRow: function(hash) {
+		var tRow = this.rowsCache[hash];
+		if(tRow && /(?:^|\s)hc_buggy(?:\s|$)/.test(tRow.getAttribute("properties")))
+			--this._buggy;
+		delete this.rowsCache[hash];
 	},
 	openEditorWindow: function(tItem, mode, add, src) { // mode: this.ct.EDITOR_MODE_*
 		var shortcut = tItem
