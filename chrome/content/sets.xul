@@ -606,10 +606,10 @@ preferences {
 		<command id="hc-sets-cmd-editSavedType" oncommand="handyClicksSets.editItemsTypes(true);" label="&hc.sets.cmdEditTypeSaved;" />
 		<command id="hc-sets-cmd-delete" oncommand="handyClicksSets.deleteItems();" label="&hc.sets.cmdDel;" />
 
-		<command id="hc-sets-cmd-closeEditors" oncommand="handyClicksSets.closeItemEditors();" label="Close editors" />
-		<command id="hc-sets-cmd-closeSavedEditors" oncommand="handyClicksSets.closeItemEditors(false);" label="Close editors (for saved)" />
-		<command id="hc-sets-cmd-closeTypeEditors" oncommand="handyClicksSets.closeItemTypeEditors();" label="Close custom type editors" />
-		<command id="hc-sets-cmd-closeSavedTypeEditors" oncommand="handyClicksSets.closeItemTypeEditors(false);" label="Close custom type editors (for saved)" />
+		<command id="hc-sets-cmd-closeEditors" oncommand="handyClicksSets.closeItemEditors();" label="&hc.sets.cmdClose;" />
+		<command id="hc-sets-cmd-closeSavedEditors" oncommand="handyClicksSets.closeItemEditors(false);" label="&hc.sets.cmdCloseSaved;" />
+		<command id="hc-sets-cmd-closeTypeEditors" oncommand="handyClicksSets.closeItemTypeEditors();" label="&hc.sets.cmdCloseType;" />
+		<command id="hc-sets-cmd-closeSavedTypeEditors" oncommand="handyClicksSets.closeItemTypeEditors(false);" label="&hc.sets.cmdCloseTypeSaved;" />
 
 		<command id="hc-sets-cmd-enable" oncommand="handyClicksSets.toggleEnabled(null, true);" label="&hc.sets.cmdEnable;" />
 		<command id="hc-sets-cmd-disable" oncommand="handyClicksSets.toggleEnabled(null, false);" label="&hc.sets.cmdDisable;" />

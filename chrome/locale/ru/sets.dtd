@@ -71,9 +71,13 @@
 
 <!ENTITY hc.sets.cmdAdd "Добавить…">
 <!ENTITY hc.sets.cmdEdit "Редактировать…">
-<!ENTITY hc.sets.cmdEditSaved "Редактировать сохраненную версию…">
+<!ENTITY hc.sets.cmdEditSaved "Редактировать сохранённую версию…">
 <!ENTITY hc.sets.cmdEditType "Редактировать добавленный тип…">
-<!ENTITY hc.sets.cmdEditTypeSaved "Редактировать сохраненный добавленный тип…">
+<!ENTITY hc.sets.cmdEditTypeSaved "Редактировать сохранённый добавленный тип…">
+<!ENTITY hc.sets.cmdClose "Закрыть редакторы">
+<!ENTITY hc.sets.cmdCloseSaved "Закрыть редакторы (для сохранённого)">
+<!ENTITY hc.sets.cmdCloseType "Закрыть редакторы добавленных типов">
+<!ENTITY hc.sets.cmdCloseTypeSaved "Закрыть редакторы добавленных типов (для сохранённого)">
 <!ENTITY hc.sets.cmdDel "Удалить">
 
 <!ENTITY hc.sets.cmdEnable "Включить">
