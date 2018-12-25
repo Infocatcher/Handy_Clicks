@@ -606,6 +606,11 @@ preferences {
 		<command id="hc-sets-cmd-editSavedType" oncommand="handyClicksSets.editItemsTypes(true);" label="&hc.sets.cmdEditTypeSaved;" />
 		<command id="hc-sets-cmd-delete" oncommand="handyClicksSets.deleteItems();" label="&hc.sets.cmdDel;" />
 
+		<command id="hc-sets-cmd-closeEditors" oncommand="handyClicksSets.closeItemEditors();" label="Close editors" />
+		<command id="hc-sets-cmd-closeSavedEditors" oncommand="handyClicksSets.closeItemEditors(false);" label="Close editors (for saved)" />
+		<command id="hc-sets-cmd-closeTypeEditors" oncommand="handyClicksSets.closeItemTypeEditors();" label="Close custom type editors" />
+		<command id="hc-sets-cmd-closeSavedTypeEditors" oncommand="handyClicksSets.closeItemTypeEditors(false);" label="Close custom type editors (for saved)" />
+
 		<command id="hc-sets-cmd-enable" oncommand="handyClicksSets.toggleEnabled(null, true);" label="&hc.sets.cmdEnable;" />
 		<command id="hc-sets-cmd-disable" oncommand="handyClicksSets.toggleEnabled(null, false);" label="&hc.sets.cmdDisable;" />
 		<command id="hc-sets-cmd-toggle" oncommand="handyClicksSets.toggleEnabled();" label="&hc.sets.cmdToggle;" />
@@ -634,6 +639,11 @@ preferences {
 		<key id="hc-sets-key-editType" keycode="VK_F4" modifiers="shift" command="hc-sets-cmd-editType" />
 		<key id="hc-sets-key-editSavedType" keycode="VK_F4" modifiers="control,shift" command="hc-sets-cmd-editSavedType" />
 		<key id="hc-sets-key-delete" keycode="VK_DELETE" command="hc-sets-cmd-delete" />
+
+		<key id="hc-sets-key-closeEditors" keycode="VK_F8" command="hc-sets-cmd-closeEditors" />
+		<key id="hc-sets-key-closeSavedEditors" keycode="VK_F8" modifiers="control" command="hc-sets-cmd-closeSavedEditors" />
+		<key id="hc-sets-key-closeTypeEditors" keycode="VK_F8" modifiers="shift" command="hc-sets-cmd-closeTypeEditors" />
+		<key id="hc-sets-key-closeSavedTypeEditors" keycode="VK_F8" modifiers="control,shift" command="hc-sets-cmd-closeSavedTypeEditors" />
 
 		<key id="hc-sets-key-enable" key="+" modifiers="control" command="hc-sets-cmd-enable" />
 		<key id="hc-sets-key-enable2" key="=" modifiers="control" command="hc-sets-cmd-enable" />
@@ -692,10 +702,10 @@ preferences {
 				class="menuitem-iconic handyClicks-iconic" />
 
 			<menuseparator id="hc-sets-closeEditors-separator" />
-			<menuitem id="hc-sets-closeEditors" oncommand="handyClicksSets.closeItemEditors();" label="Close editors" />
-			<menuitem id="hc-sets-closeSavedEditors" oncommand="handyClicksSets.closeItemEditors(false);" label="Close editors (for saved)" />
-			<menuitem id="hc-sets-closeTypeEditors" oncommand="handyClicksSets.closeItemTypeEditors();" label="Close custom type editors" />
-			<menuitem id="hc-sets-closeSavedTypeEditors" oncommand="handyClicksSets.closeItemTypeEditors(false);" label="Close custom type editors (for saved)" />
+			<menuitem id="hc-sets-closeEditors" command="hc-sets-cmd-closeEditors" key="hc-sets-key-closeEditors" />
+			<menuitem id="hc-sets-closeSavedEditors" command="hc-sets-cmd-closeSavedEditors" key="hc-sets-key-closeSavedEditors" />
+			<menuitem id="hc-sets-closeTypeEditors" command="hc-sets-cmd-closeTypeEditors" key="hc-sets-key-closeTypeEditors" />
+			<menuitem id="hc-sets-closeSavedTypeEditors" command="hc-sets-cmd-closeSavedTypeEditors" key="hc-sets-key-closeSavedTypeEditors" />
 
 			<menuseparator />
 			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" class="menuitem-iconic handyClicks-iconic" />
