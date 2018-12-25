@@ -208,9 +208,7 @@ var handyClicksEditor = {
 		switch(this.editorMode) {
 			default:
 			case this.ct.EDITOR_MODE_SHORTCUT:
-				this.$("hc-editor-funcTabbox").selectedIndex = isDelayed
-					? this.INDEX_SHORTCUT_DELAYED
-					: this.INDEX_SHORTCUT_NORMAL;
+				this.selectFuncTab(isDelayed);
 				tabbox = this.$("hc-editor-funcCustomTabbox" + (isDelayed ? this.delayId : ""));
 				si = src == this.ct.EDITOR_SHORTCUT_INIT
 						? this.INDEX_SHORTCUT_INIT
@@ -232,6 +230,11 @@ var handyClicksEditor = {
 			editor.openExternalEditor(line);
 		else
 			editor.selectLine(line);
+	},
+	selectFuncTab: function(isDelayed) {
+		this.$("hc-editor-funcTabbox").selectedIndex = isDelayed
+			? this.INDEX_SHORTCUT_DELAYED
+			: this.INDEX_SHORTCUT_NORMAL;
 	},
 	get selectedTabbox() {
 		var tabbox = this.mainTabbox;

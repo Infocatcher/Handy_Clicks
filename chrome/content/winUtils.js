@@ -164,6 +164,7 @@ var handyClicksWinUtils = {
 		_oe.alreadyOpened = !!w;
 		if(w) {
 			w.focus();
+			w.handyClicksEditor.selectFuncTab(isDelayed);
 			return w;
 		}
 		w = this.ww.openWindow(
