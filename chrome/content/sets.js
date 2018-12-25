@@ -827,28 +827,6 @@ var handyClicksSets = {
 		].forEach(function(id) {
 			this.$("hc-sets-cmd-" + id).setAttribute("disabled", noSel);
 		}, this);
-		var hasEnabled = false;
-		var hasDisabled = false;
-		selIts.some(function(it) {
-			if(this.checkedState(it))
-				hasEnabled = true;
-			else
-				hasDisabled = true;
-			return hasEnabled && hasDisabled;
-		}, this);
-		this.$("hc-sets-cmd-enable").setAttribute("disabled", noSel || !hasDisabled);
-		this.$("hc-sets-cmd-disable").setAttribute("disabled", noSel || !hasEnabled);
-		var noTypes = noSel || !selIts.some(function(it) {
-			return it.__isCustomType;
-		});
-		this.$("hc-sets-cmd-editType").setAttribute("disabled", noTypes);
-		this.$("hc-sets-editType").hidden = noTypes;
-
-		var noImport = !this._import;
-		this.$("hc-sets-cmd-editSaved").setAttribute("disabled", noSel || noImport);
-		this.$("hc-sets-editSaved").hidden = noImport;
-		this.$("hc-sets-cmd-editSavedType").setAttribute("disabled", noTypes || noImport);
-		this.$("hc-sets-editSavedType").hidden = noTypes || noImport;
 	},
 	get selectedItems() {
 		var rngCount = this.tSel.getRangeCount();
@@ -2526,7 +2504,34 @@ var handyClicksSets = {
 		var ln = document.popupNode.localName;
 		if(ln != "treechildren" && ln != "tree")
 			return false;
+
 		this.checkClipboard();
+
+		var selIts = this.selectedItems;
+		var noSel = !selIts.length;
+		var hasEnabled = false;
+		var hasDisabled = false;
+		selIts.some(function(it) {
+			if(this.checkedState(it))
+				hasEnabled = true;
+			else
+				hasDisabled = true;
+			return hasEnabled && hasDisabled;
+		}, this);
+		this.$("hc-sets-cmd-enable").setAttribute("disabled", noSel || !hasDisabled);
+		this.$("hc-sets-cmd-disable").setAttribute("disabled", noSel || !hasEnabled);
+		var noTypes = noSel || !selIts.some(function(it) {
+			return it.__isCustomType;
+		});
+		this.$("hc-sets-cmd-editType").setAttribute("disabled", noTypes);
+		this.$("hc-sets-editType").hidden = noTypes;
+
+		var noImport = !this._import;
+		this.$("hc-sets-cmd-editSaved").setAttribute("disabled", noSel || noImport);
+		this.$("hc-sets-editSaved").hidden = noImport;
+		this.$("hc-sets-cmd-editSavedType").setAttribute("disabled", noTypes || noImport);
+		this.$("hc-sets-editSavedType").hidden = noTypes || noImport;
+
 		return true;
 	},
 
