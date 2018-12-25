@@ -486,7 +486,11 @@ var handyClicksEditor = {
 			case this.INDEX_TYPE:     winId = this.currentCustomType;                        break;
 			default: return;
 		}
-		window[this.wu.winIdProp] = winId + (this.ps.otherSrc ? this.ct.OTHER_SRC_POSTFIX : "");
+		winId += this.ps.otherSrc ? this.ct.OTHER_SRC_POSTFIX : "";
+		var winIdProp = this.wu.winIdProp;
+		if(window[winIdProp] == winId)
+			return;
+		window[winIdProp] = winId;
 		this.wu.markOpenedEditors();
 	},
 	setWinTitle: function() {
