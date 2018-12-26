@@ -17,6 +17,15 @@
 	left: 0 !important;
 }
 
+checkbox[hc_important="enabled"] label {
+	font-weight: bold;
+	padding-top: 1px;
+	padding-bottom: 0;
+}
+checkbox[hc_important="enabled"]:not([checked="true"]) {
+	color: red;
+}
+
 .hcFloatControl, .hcFloatButton {
 	position: relative;
 	z-index: 10000;

@@ -255,7 +255,7 @@ preferences {
 			<preference id="disallowMousemoveDist" type="int" name="extensions.handyclicks.disallowMousemoveDist" />
 		</preferences>
 
-		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" handyclicks_important="enabled" />
+		<checkbox preference="enabled" id="hc-sets-enabled" label="&hc.sets.enabled;" hc_important="enabled" />
 		<hbox align="center">
 			<label value="&hc.sets.delayedActionTimeout;" control="hc-sets-delayedActionTimeout" />
 			<textbox id="hc-sets-delayedActionTimeout" preference="delayedActionTimeout"

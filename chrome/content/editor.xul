@@ -190,7 +190,7 @@
 										</menupopup>
 									</menulist>
 
-									<checkbox id="hc-editor-enabled" handyclicks_important="enabled"
+									<checkbox id="hc-editor-enabled" hc_important="enabled"
 										label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
 								</hbox>
 								<hbox id="hc-editor-funcOptsAdd" align="center" hc_notDelay="true">
@@ -287,7 +287,7 @@
 						oninput="handyClicksEditor.customTypeIdFilter(event);"
 						hc_ondrop="handyClicksEditor.customTypeIdFilter(event);"
 						oncut="handyClicksEditor.customTypeIdFilter(event);" />
-					<checkbox id="hc-editor-customTypeEnabled" handyclicks_important="enabled"
+					<checkbox id="hc-editor-customTypeEnabled" hc_important="enabled"
 						label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
 				</hbox>
 

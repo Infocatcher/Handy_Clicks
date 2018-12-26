@@ -14,12 +14,3 @@
 .handyClicks-iconic[disabled="true"] .menu-iconic-icon {
 	opacity: 0.32;
 }
-
-checkbox[handyclicks_important="enabled"] label {
-	font-weight: bold;
-	padding-top: 1px;
-	padding-bottom: 0;
-}
-checkbox[handyclicks_important="enabled"]:not([checked="true"]) {
-	color: red;
-}
