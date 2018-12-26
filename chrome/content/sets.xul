@@ -693,7 +693,7 @@ preferences {
 		<menupopup id="hc-sets-tree-context"
 			onpopupshowing="return handyClicksSets.initTreeMenu();">
 			<menuitem id="hc-sets-edit" command="hc-sets-cmd-edit" key="hc-sets-key-edit"
-				class="menuitem-iconic handyClicks-iconic" handyclicks_main="true" />
+				class="menuitem-iconic handyClicks-iconic" default="true" />
 			<menuitem id="hc-sets-editSaved" command="hc-sets-cmd-editSaved" key="hc-sets-key-editSaved"
 				class="menuitem-iconic handyClicks-iconic" />
 			<menuitem id="hc-sets-editType" command="hc-sets-cmd-editType" key="hc-sets-key-editType"

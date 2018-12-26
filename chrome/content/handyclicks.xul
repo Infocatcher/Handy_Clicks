@@ -97,7 +97,7 @@
 			onpopuphiding="if(event.target == this) handyClicksUI.fixPopup(this);">
 			<menuitem id="handyClicks-settingsMenuitem" class="menuitem-iconic handyClicks-iconic"
 				command="handyClicks-cmd-openSettings" key="handyClicks-key-openSettings"
-				handyclicks_main="true" />
+				default="true" />
 			<menuitem id="handyClicks-allSettingsMenuitem" class="menuitem-iconic handyClicks-iconic"
 				command="handyClicks-cmd-openAboutConfig" key="handyClicks-key-openAboutConfig" />
 			<menuitem id="handyClicks-enabled" type="checkbox"

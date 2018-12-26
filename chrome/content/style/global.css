@@ -15,10 +15,6 @@
 	opacity: 0.32;
 }
 
-menuitem[handyclicks_main="true"] {
-	font-weight: bold;
-}
-
 checkbox[handyclicks_important="enabled"] label {
 	font-weight: bold;
 	padding-top: 1px;
