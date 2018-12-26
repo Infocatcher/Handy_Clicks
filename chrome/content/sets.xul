@@ -170,11 +170,11 @@ preferences {
 						<column />
 					</columns>
 					<rows>
-						<row onclick="if(event.button == 0) handyClicksSets.doSearch('%new%');">
+						<row onclick="if(event.button == 0) handyClicksSets.toggleSearch('%new%');">
 							<label id="hc-sets-tree-importAdded" value="&hc.sets.importAdded;" />
 							<label id="hc-sets-tree-importAddedValue" value="?/? + ?" />
 						</row>
-						<row onclick="if(event.button == 0) handyClicksSets.doSearch('%ovr%');">
+						<row onclick="if(event.button == 0) handyClicksSets.toggleSearch('%ovr%');">
 							<label id="hc-sets-tree-importChanged" value="&hc.sets.importChanged;" />
 							<label id="hc-sets-tree-importChangedValue" value="?/? + ?" />
 						</row>

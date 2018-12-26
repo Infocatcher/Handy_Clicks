@@ -1697,9 +1697,11 @@ var handyClicksSets = {
 		}
 		return sr;
 	},
+	toggleSearch: function(str, dontSelect) {
+		this.doSearch(this.searchField.value == str ? "" : str, dontSelect);
+	},
 	doSearch: function(str, dontSelect) {
-		var sf = this.searchField;
-		sf.value = str;
+		this.searchField.value = str;
 		this.searchInSetsTree(dontSelect);
 	},
 	searchInSetsTree: function(dontSelect, dontResetPosition) {
