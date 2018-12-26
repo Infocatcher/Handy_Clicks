@@ -87,8 +87,8 @@
 
 		<key id="hc-editor-key-openErrorConsole" key="j" modifiers="control,shift" oncommand="handyClicksUtils.openErrorConsole();" />
 
-		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksEditor.wu.maximizeWindow();" />
-		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksEditor.wu.toggleFullscreen();" />
+		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksSetsUtils.maximizeWindow();" />
+		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksSetsUtils.toggleFullscreen();" />
 		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksSetsUtils.toggleOnTop();" />
 	</keyset>
 

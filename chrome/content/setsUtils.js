@@ -191,6 +191,21 @@ var handyClicksSetsUtils = {
 		this.pu.set(p, !this.pu.get(p));
 	},
 
+	maximizeWindow: function(win) {
+		win = win || top;
+		if("fullScreen" in win && win.fullScreen)
+			win.fullScreen = false;
+		else if(win.windowState == win.STATE_MAXIMIZED)
+			win.restore();
+		else
+			win.maximize();
+	},
+	toggleFullscreen: function(win) {
+		win = win || top;
+		if("fullScreen" in win) // Firefox 3.0+
+			win.fullScreen = !win.fullScreen;
+	},
+
 	setEnabledStatus: function(enabled) {
 		if(enabled === undefined)
 			enabled = this.pu.get("enabled");
