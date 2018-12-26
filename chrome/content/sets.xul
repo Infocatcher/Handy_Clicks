@@ -687,7 +687,7 @@ preferences {
 
 		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksSets.wu.maximizeWindow();" />
 		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksSets.wu.toggleFullscreen();" />
-		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksSets.wu.toggleOnTop();" />
+		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksSetsUtils.toggleOnTop();" />
 	</keyset>
 	<popupset id="hc-sets-popupset">
 		<menupopup id="hc-sets-tree-context"

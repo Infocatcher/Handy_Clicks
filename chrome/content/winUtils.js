@@ -56,13 +56,6 @@ var handyClicksWinUtils = {
 		if("fullScreen" in win) // Firefox 3.0+
 			win.fullScreen = !win.fullScreen;
 	},
-
-	onTopAttr: "hc_onTop",
-	onTopNAAttr: "hc_onTopNA",
-	get onTopBtn() {
-		delete this.onTopBtn;
-		return this.onTopBtn = this.$("hc-sets-onTop");
-	},
 	getXulWin: function(win) {
 		var ci = Components.interfaces;
 		return win.QueryInterface(ci.nsIInterfaceRequestor)
@@ -71,65 +64,6 @@ var handyClicksWinUtils = {
 			.treeOwner
 			.QueryInterface(ci.nsIInterfaceRequestor)
 			.getInterface(ci.nsIXULWindow);
-	},
-	checkWindowStatus: function(checkOpener) {
-		var onTopBtn = this.onTopBtn;
-		var na = String(top.windowState != top.STATE_NORMAL);
-		if(onTopBtn.getAttribute(this.onTopNAAttr) == na)
-			return;
-		onTopBtn.setAttribute(this.onTopNAAttr, na);
-		this.setOnTop(false, checkOpener);
-	},
-	setOnTop: function(toggle, checkOpener) {
-		var document = top.document;
-		var root = document.documentElement;
-		var onTop = root.getAttribute(this.onTopAttr) == "true";
-		var forceOnTop = checkOpener && top.opener && !onTop && !toggle
-			&& top.opener.document.documentElement.getAttribute(this.onTopAttr) == "true";
-		if(toggle || forceOnTop) {
-			onTop = !onTop;
-			root.setAttribute(this.onTopAttr, onTop);
-			root.id && document.persist(root.id, this.onTopAttr);
-		}
-		var state = top.windowState;
-		// Strange glitches with minimized "raisedZ" window...
-		var restore = onTop && state == top.STATE_MINIMIZED;
-		if((restore || state == top.STATE_NORMAL) && (!checkOpener || onTop)) {
-			if(restore)
-				onTop = false;
-			var xulWin = this.getXulWin(top);
-			var z = onTop ? xulWin.raisedZ : xulWin.normalZ;
-			if(xulWin.zLevel != z)
-				xulWin.zLevel = z;
-		}
-		this.showOnTopStatus(onTop);
-	},
-	toggleOnTop: function() {
-		this.setOnTop(true);
-	},
-	showOnTopStatus: function(onTop) {
-		var root = top.document.documentElement;
-		if(onTop === undefined)
-			onTop = root.getAttribute(this.onTopAttr) == "true";
-		var btnVisible = this.pu.get("ui.onTopButton");
-		var btn = this.onTopBtn;;
-		btn.hidden = !btnVisible;
-		if(btnVisible) {
-			btn.setAttribute("checked", onTop); // + autoCheck="false"
-			btn.setAttribute("hc_hideLabel", !this.pu.get("ui.onTopButtonLabel"));
-		}
-		var s = root.style;
-		if(onTop && !btnVisible) {
-			s.outline = "2px groove " + (this.pu.get("ui.onTopBorderColor") || "orange");
-			s.outlineOffset = "-2px";
-		}
-		else {
-			s.outline = s.outlineOffset = "";
-		}
-	},
-	toggleOnTopButton: function() {
-		const p = "ui.onTopButton";
-		this.pu.set(p, !this.pu.get(p));
 	},
 
 	winIdProp: "__handyClicks__winId",

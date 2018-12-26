@@ -48,7 +48,7 @@ var handyClicksSetsUtils = {
 			case "dragenter":      this.dragenterHandler(e); break;
 			case "dragexit":       this.dragexitHandler(e);  break;
 			case "resize": // Legacy
-			case "sizemodechange": this.wu.checkWindowStatus();
+			case "sizemodechange": this.checkWindowStatus();
 		}
 	},
 	get dropEvent() {
@@ -93,7 +93,7 @@ var handyClicksSetsUtils = {
 					autoCheck="false"\
 					context="hc-sets-onTopContext"\
 					hidden="' + !this.pu.get("ui.onTopButton") + '"\
-					oncommand="handyClicksSetsUtils.wu.toggleOnTop();"\
+					oncommand="handyClicksSetsUtils.toggleOnTop();"\
 					hc_key="hc-sets-key-toggleOnTop"\
 					label="' + this.getLocalized("onTop") + '"\
 					tooltiptext="' + this.getLocalized("onTopTip") + '"\
@@ -110,7 +110,7 @@ var handyClicksSetsUtils = {
 		);
 		de.appendChild(onTop);
 
-		this.wu.checkWindowStatus(true);
+		this.checkWindowStatus(true);
 	},
 	initOnTopContext: function(popup) {
 		Array.prototype.forEach.call(
@@ -123,6 +123,72 @@ var handyClicksSetsUtils = {
 	},
 	handleOnTopContextCommand: function(mi) {
 		this.pu.set(mi.getAttribute("hc_pref"), mi.getAttribute("checked") == "true");
+	},
+
+	onTopAttr: "hc_onTop",
+	onTopNAAttr: "hc_onTopNA",
+	get onTopBtn() {
+		delete this.onTopBtn;
+		return this.onTopBtn = this.$("hc-sets-onTop");
+	},
+	checkWindowStatus: function(checkOpener) {
+		var onTopBtn = this.onTopBtn;
+		var na = String(top.windowState != top.STATE_NORMAL);
+		if(onTopBtn.getAttribute(this.onTopNAAttr) == na)
+			return;
+		onTopBtn.setAttribute(this.onTopNAAttr, na);
+		this.setOnTop(false, checkOpener);
+	},
+	setOnTop: function(toggle, checkOpener) {
+		var document = top.document;
+		var root = document.documentElement;
+		var onTop = root.getAttribute(this.onTopAttr) == "true";
+		var forceOnTop = checkOpener && top.opener && !onTop && !toggle
+			&& top.opener.document.documentElement.getAttribute(this.onTopAttr) == "true";
+		if(toggle || forceOnTop) {
+			onTop = !onTop;
+			root.setAttribute(this.onTopAttr, onTop);
+			root.id && document.persist(root.id, this.onTopAttr);
+		}
+		var state = top.windowState;
+		// Strange glitches with minimized "raisedZ" window...
+		var restore = onTop && state == top.STATE_MINIMIZED;
+		if((restore || state == top.STATE_NORMAL) && (!checkOpener || onTop)) {
+			if(restore)
+				onTop = false;
+			var xulWin = this.wu.getXulWin(top);
+			var z = onTop ? xulWin.raisedZ : xulWin.normalZ;
+			if(xulWin.zLevel != z)
+				xulWin.zLevel = z;
+		}
+		this.showOnTopStatus(onTop);
+	},
+	toggleOnTop: function() {
+		this.setOnTop(true);
+	},
+	showOnTopStatus: function(onTop) {
+		var root = top.document.documentElement;
+		if(onTop === undefined)
+			onTop = root.getAttribute(this.onTopAttr) == "true";
+		var btnVisible = this.pu.get("ui.onTopButton");
+		var btn = this.onTopBtn;;
+		btn.hidden = !btnVisible;
+		if(btnVisible) {
+			btn.setAttribute("checked", onTop); // + autoCheck="false"
+			btn.setAttribute("hc_hideLabel", !this.pu.get("ui.onTopButtonLabel"));
+		}
+		var s = root.style;
+		if(onTop && !btnVisible) {
+			s.outline = "2px groove " + (this.pu.get("ui.onTopBorderColor") || "orange");
+			s.outlineOffset = "-2px";
+		}
+		else {
+			s.outline = s.outlineOffset = "";
+		}
+	},
+	toggleOnTopButton: function() {
+		const p = "ui.onTopButton";
+		this.pu.set(p, !this.pu.get(p));
 	},
 
 	setEnabledStatus: function(enabled) {
@@ -141,7 +207,7 @@ var handyClicksSetsUtils = {
 		this._sizeModeChangeTimer = setInterval(function(_this) {
 			var state = window.windowState;
 			if(state != lastState)
-				_this.wu.checkWindowStatus();
+				_this.checkWindowStatus();
 			lastState = state;
 		}, 350, this);
 	},
@@ -153,7 +219,7 @@ var handyClicksSetsUtils = {
 			case "ui.onTopButton":
 			case "ui.onTopButtonLabel":
 			case "ui.onTopBorderColor":
-				this.wu.showOnTopStatus();
+				this.showOnTopStatus();
 		}
 	},
 
