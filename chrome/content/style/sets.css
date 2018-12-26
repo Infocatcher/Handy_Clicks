@@ -246,6 +246,12 @@ menuitem[command="hc-sets-cmd-enable"] {
 #hc-sets-tree-importStatistics row[onclick]:hover:active {
 	opacity: 0.55;
 }
+#hc-sets-tree-importRowRemoved[hc_collapse="true"] {
+	visibility: hidden;
+	height: 0;
+	max-height: 0;
+	overflow: hidden;
+}
 
 #hc-sets-tree-buttons button {
 	margin-left: 3px;

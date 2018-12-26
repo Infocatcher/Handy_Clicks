@@ -3071,8 +3071,8 @@ var handyClicksSets = {
 			return;
 		}
 
-		this.$("hc-sets-tree-importType").value =
-			this.$("hc-sets-tree-importRowRemoved").hidden = isPartial;
+		this.$("hc-sets-tree-importType").value = isPartial;
+		this.$("hc-sets-tree-importRowRemoved").setAttribute("hc_collapse", isPartial);
 		if(
 			Array.prototype.indexOf.call(
 				this.$("hc-sets-tree-importPanel").getElementsByTagName("*"),
