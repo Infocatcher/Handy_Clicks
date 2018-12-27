@@ -2394,6 +2394,7 @@ var handyClicksSets = {
 			return false;
 		if(dontAsk.value)
 			this.pu.set(askPref, false);
+		!isImport && this.cleanImportSearch();
 		return true;
 	},
 
@@ -3062,12 +3063,7 @@ var handyClicksSets = {
 		}
 		this.$("hc-sets-tree-importPanel").hidden = !isImport;
 		if(!isImport) {
-			var search = this.searchField.value;
-			var newSearch = search
-				.replace(this.searchPlaceholders.hc_override, "")
-				.replace(this.searchPlaceholders.hc_new, "");
-			if(newSearch != search) // Don't confuse user with empty tree
-				this.doSearch(this.ut.trim(newSearch), true);
+			this.cleanImportSearch() && this.searchInSetsTree(true);
 			return;
 		}
 
@@ -3080,6 +3076,16 @@ var handyClicksSets = {
 			) == -1
 		)
 			this.$("hc-sets-tree-buttonImportOk").focus();
+	},
+	cleanImportSearch: function() {
+		var search = this.searchField.value;
+		var newSearch = search
+			.replace(this.searchPlaceholders.hc_override, "")
+			.replace(this.searchPlaceholders.hc_new, "");
+		if(newSearch == search)
+			return false;
+		this.searchField.value = this.ut.trim(newSearch);
+		return true;
 	},
 	toggleImportType: function(isPartial) {
 		if(isPartial === undefined)
