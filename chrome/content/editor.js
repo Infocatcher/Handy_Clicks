@@ -465,7 +465,6 @@ var handyClicksEditor = {
 		var ln = trg.localName;
 		if(ln == "tab" || ln == "dialog" || ln == "key")
 			return;
-		//this.applyDisabled = false;
 		//this.setDialogButtons();
 		this.delay(this.setDialogButtons, this, 5);
 		if(ln == "textbox" && /(?:^|\s)hcEditor(?:\s|$)/.test(trg.className))
@@ -1544,7 +1543,7 @@ var handyClicksEditor = {
 		}
 
 		this.disableUnsupported();
-		this.applyDisabled = false;
+		this.setDialogButtons();
 		this.markAs(this.$("hc-editor-funcTabbox"), "hc_pasted");
 		return true;
 	},
@@ -1632,8 +1631,6 @@ var handyClicksEditor = {
 			this.pe.saveSettingsObjects();
 		this.appendTypesList();
 
-		//this.applyDisabled = false;
-		//this.applyButton.disabled = false;
 		this.typeSaved();
 		this.setDialogButtons();
 	},
@@ -1646,7 +1643,7 @@ var handyClicksEditor = {
 		if(!stored)
 			return;
 		this.initCustomTypesEditor(null, stored);
-		this.applyDisabled = false;
+		this.setDialogButtons();
 	},
 
 	highlightRequiredFields: function _hl(fields, addFlag, noDelay) {
