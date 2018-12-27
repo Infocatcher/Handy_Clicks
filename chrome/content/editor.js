@@ -83,6 +83,8 @@ var handyClicksEditor = {
 		this.selectTargetTab(this.isDelayed);
 		this.delay(this.dataSaved, this); // Wait for XBL bindings setup
 		this.initUI();
+		if(!this.type)
+			this.$("hc-editor-itemTypes").setAttribute("label", " "); // Fix height
 
 		this.ps.oSvc.addObserver(this.setsReloading, this);
 
@@ -823,8 +825,10 @@ var handyClicksEditor = {
 			: delayed && !action
 				? "$auto"
 				: action;
-		if(!fList.value) // fix for Firefox 2.0
-			fList.selectedIndex = -1;
+		if(!fList.value) {
+			fList.selectedIndex = -1; // Fix for Firefox 2.0
+			fList.setAttribute("label", " "); // Fix height
+		}
 		const type = this.type;
 		var hideSep = true;
 		Array.prototype.forEach.call(
@@ -1054,7 +1058,7 @@ var handyClicksEditor = {
 		return this.$("hc-editor-itemTypes").value || undefined;
 	},
 	set currentType(type) {
-		return this.$("hc-editor-itemTypes").value = type;
+		this.$("hc-editor-itemTypes").value = type;
 	},
 	get currentCustomType() {
 		return this.ps.customPrefix + this.$("hc-editor-customTypeExtId").value;
