@@ -94,7 +94,7 @@ var handyClicksSets = {
 		this.applyButton = document.documentElement.getButton("extra1");
 	},
 	destroy: function(reloadFlag) {
-		this.closeEditors();
+		this.closeImportEditors();
 		this.treeScrollPos(true);
 		this.saveSearchQuery();
 		reloadFlag && this.setImportStatus(false);
@@ -184,7 +184,7 @@ var handyClicksSets = {
 		var label = tb.nextSibling;
 		label.value = label.getAttribute(tb.value == 1 ? "hc_labelSingle" : "hc_labelMultiple");
 	},
-	closeEditors: function() {
+	closeImportEditors: function() {
 		this.wu.forEachWindow(
 			"handyclicks:editor",
 			function(w) {
@@ -3057,7 +3057,7 @@ var handyClicksSets = {
 		this._importPartial       = isImport && isPartial;
 		this._importFromClipboard = isImport && fromClipboard;
 		if(!updMode) {
-			this.closeEditors();
+			this.closeImportEditors();
 			this.checkTreeSaved();
 		}
 		this.$("hc-sets-tree-importPanel").hidden = !isImport;
