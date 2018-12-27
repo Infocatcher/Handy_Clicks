@@ -1508,7 +1508,7 @@ var handyClicksEditor = {
 	},
 	copyShortcut: function(isDelayed, dontCopy) {
 		if(isDelayed === undefined)
-			isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == 1;
+			isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == this.INDEX_SHORTCUT_DELAYED;
 		var delayed = isDelayed ? this.delayId : "";
 		var funcs = this.$("hc-editor-func" + delayed);
 		var si = funcs.selectedItem;
@@ -1536,7 +1536,7 @@ var handyClicksEditor = {
 		}
 
 		if(isDelayed === undefined)
-			isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == 1;
+			isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == this.INDEX_SHORTCUT_DELAYED;
 		var delayed = isDelayed ? this.delayId : "";
 		var so = stored.so;
 
