@@ -89,6 +89,9 @@ tabbox[hc_pasted="false"] {
 #hc-editor-funcOptsFixed[hc_cantFixFields="true"] {
 	opacity: 0.5;
 }
+#hc-editor-targetBox {
+	margin-bottom: 1px; /* For better outline from [hc_fixedFields] styles */
+}
 
 .hcTabsToolbarWrapper {
 	height: 4em !important;
