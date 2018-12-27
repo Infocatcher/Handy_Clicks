@@ -1321,6 +1321,8 @@ var handyClicksEditor = {
 		}
 	},
 	markAs: function(node, attr, val) {
+		if(node.hasAttribute(attr) && node.getAttribute(attr) != "true")
+			return; // Leave error indication
 		node.setAttribute(attr, val || "true");
 		setTimeout(function() {
 			node.removeAttribute(attr);
