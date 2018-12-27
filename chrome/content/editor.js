@@ -1093,7 +1093,7 @@ var handyClicksEditor = {
 				var shortcut = this.currentShortcut;
 				this.currentType = this.type;
 				this.currentShortcut = this.shortcut;
-				if(!this.saveShortcut(true))
+				if(!this.saveShortcut(false, false, true))
 					return;
 				this.currentType = type;
 				this.currentShortcut = shortcut;
@@ -1337,7 +1337,7 @@ var handyClicksEditor = {
 		return true;
 	},
 
-	saveShortcut: function(applyFlag, testFlag) {
+	saveShortcut: function(applyFlag, testFlag, dontUpdate) {
 		var sh = this.currentShortcut;
 		var type = this.currentType;
 		var so = this.currentShortcutObj;
@@ -1368,7 +1368,7 @@ var handyClicksEditor = {
 
 		this.ut.setOwnProperty(this.ps.prefs, sh, type, so);
 
-		this.applySettings(testFlag, applyFlag, function(status) {
+		var loadCorrectedSettings = !dontUpdate  && this.ut.bind(function(status) {
 			if(status !== undefined && !Components.isSuccessCode(status))
 				return;
 			var prefs = this.ps.prefs;
@@ -1385,11 +1385,11 @@ var handyClicksEditor = {
 			enabledItem.checked = enabled;
 			daEnabledItem.checked = daEnabled;
 			this.setDialogButtons();
-		});
+		}, this);
+		this.applySettings(testFlag, applyFlag, loadCorrectedSettings);
 		return true;
 	},
 	applySettings: function(testFlag, applyFlag, callback) {
-		var loadCorrectedSettings = this.ut.bind(callback, this);
 		this.testMode = testFlag; //~ todo: test!
 		if(testFlag)
 			this.pe.testSettings(true);
@@ -1401,12 +1401,12 @@ var handyClicksEditor = {
 					this.pe.saveSettingsObjects(applyFlag);
 				else {
 					this.applyDisabled = true; // Don't wait for callback
-					this.pe.saveSettingsObjectsAsync(applyFlag, loadCorrectedSettings);
+					this.pe.saveSettingsObjectsAsync(applyFlag, callback);
 				}
 				return;
 			}
 		}
-		loadCorrectedSettings();
+		callback && callback();
 	},
 	testShortcut: function() {
 		return this.saveShortcut(true, true);
