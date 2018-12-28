@@ -250,12 +250,16 @@
 										<tabpanel flex="1" orient="vertical">
 											<hbox class="hcNotesBox">
 												<textbox class="hcText" readonly="true" tabindex="1"
-													value="&hc.editor.argsNote; event, item, origItem" />
+													value="&hc.editor.argsNote; event, item, origItem, itemType" />
 											</hbox>
 											<textbox class="hcEditor" id="hc-editor-funcField" flex="1"
 												accesskey="&hc.editor.editAccesskey;" />
 										</tabpanel>
 										<tabpanel flex="1" orient="vertical">
+											<hbox class="hcNotesBox">
+												<textbox class="hcText" readonly="true" tabindex="1"
+													value="&hc.editor.argsNote; itemType" />
+											</hbox>
 											<textbox class="hcEditor" id="hc-editor-funcInitField" flex="1"
 												hc_highlightEmpty="true"
 												accesskey="&hc.editor.editAccesskey;" />
@@ -319,7 +323,7 @@
 					<tabpanels flex="1">
 						<tabpanel id="hc-editor-customTypeDefinePanel" flex="1" orient="vertical">
 							<hbox class="hcNotesBox">
-								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.argsNote; event, item" />
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.argsNote; event, item, itemType" />
 								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturnNote;" />
 							</hbox>
 							<textbox class="hcEditor" id="hc-editor-customTypeDefine" flex="1"
@@ -328,7 +332,7 @@
 						<tabpanel id="hc-editor-customTypeContextPanel" flex="1" orient="vertical">
 							<hbox class="hcNotesBox">
 								<textbox class="hcText" readonly="true" tabindex="1"
-									value="&hc.editor.argsNote; event, item, origItem" />
+									value="&hc.editor.argsNote; event, item, origItem, itemType" />
 								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturnNote;" />
 							</hbox>
 							<textbox class="hcEditor" id="hc-editor-customTypeContext" flex="1"
