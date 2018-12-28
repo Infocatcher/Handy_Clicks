@@ -84,7 +84,7 @@ var handyClicksFuncs = {
 			? this.forEachTab(this.getTabText)
 			: itemType == "ext_mulipletabs"
 				? Array.prototype.map.call(it, this.getTabText, this)
-				: it.textContent || it.label || it.alt || it.value || it.title
+				: it.textContent || it.value || it.label || it.alt || it.title
 					|| (
 						it.getAttribute
 						&& (it.getAttribute("label") || it.getAttribute("value"))
