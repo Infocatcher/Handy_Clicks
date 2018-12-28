@@ -539,7 +539,7 @@ var handyClicks = {
 				var ct = cts[type];
 				this.checkOtherTypes = false;
 				try {
-					_it = ct._define.call(this, e, it);
+					_it = ct._define.call(this, e, it, type);
 				}
 				catch(e) {
 					var eLine = this.ut.getRealLineNumber(e, ct._defineLine);
@@ -857,7 +857,7 @@ var handyClicks = {
 		var _cm = ct._contextMenu;
 		if(_cm) {
 			try {
-				cm = _cm.call(this.fn, e, this.item, this.origItem);
+				cm = _cm.call(this.fn, e, this.item, this.origItem, type);
 			}
 			catch(e) {
 				var eLine = this.ut.getRealLineNumber(e, ct._contextMenuLine);
@@ -1268,7 +1268,7 @@ var handyClicks = {
 		if(funcObj.custom) {
 			var fnc = this.ps.getCustomFunc(funcObj);
 			if(fnc) try {
-				fnc.call(this.fn, e || this.event, this.item, this.origItem);
+				fnc.call(this.fn, e || this.event, this.item, this.origItem, this.itemType);
 			}
 			catch(err) {
 				var eLine = this.ut.getRealLineNumber(err, funcObj._line);
