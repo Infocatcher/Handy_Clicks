@@ -80,18 +80,18 @@ var handyClicksFuncs = {
 			noTrim = e;
 			e = itemType || this.hc.event;
 		}
-		var text = itemType == "tabbar"
-			? this.forEachTab(this.getTabText)
-			: itemType == "ext_mulipletabs"
-				? Array.prototype.map.call(it, this.getTabText, this)
-				: it.textContent || it.value || it.label || it.alt || it.title
-					|| (
-						it.getAttribute
-						&& (it.getAttribute("label") || it.getAttribute("value"))
-					)
-					|| this.getTreeText(it, e)
-					|| "";
+		var text = this.getNodeText(it, itemType, e);
 		return noTrim ? text : this.trimStr(text);
+	},
+	getNodeText: function(it, itemType, e) {
+		if(itemType == "tabbar")
+			return this.forEachTab(this.getTabText);
+		if(itemType == "ext_mulipletabs")
+			return Array.prototype.map.call(it, this.getTabText, this);
+		return it.textContent || it.value || it.label || it.alt || it.title
+			|| (it.getAttribute && (it.getAttribute("label") || it.getAttribute("value")))
+			|| this.getTreeText(it, e)
+			|| "";
 	},
 	getTreeText: function(it, e) {
 		var ln = it.localName;
@@ -125,12 +125,7 @@ var handyClicksFuncs = {
 				uri = this.forEachTab(this.getTabURI); //.join("\n");
 			break;
 			default: // Support for custom types
-				uri = this.getLinkURI(it)
-					|| it.src || it.getAttribute("src")
-					|| it instanceof HTMLCanvasElement && it.toDataURL()
-					|| it.getAttribute("targetURI")
-					|| this.hc.getBookmarkURI(it)
-					|| this.getTabURI(it);
+				uri = this.getNodeURI(it);
 		}
 
 		var isArr = this.ut.isArray(uri);
@@ -146,6 +141,14 @@ var handyClicksFuncs = {
 		if(!isArr)
 			uri = uri.toString();
 		return noTrim ? uri : this.trimStr(uri);
+	},
+	getNodeURI: function(it) {
+		return this.getLinkURI(it)
+			|| it.src || it.getAttribute("src")
+			|| it instanceof HTMLCanvasElement && it.toDataURL()
+			|| it.getAttribute("targetURI")
+			|| this.hc.getBookmarkURI(it)
+			|| this.getTabURI(it);
 	},
 	trimStr: function(s) {
 		if(!this.pu.get("funcs.trimStrings"))
