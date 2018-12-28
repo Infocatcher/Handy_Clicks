@@ -88,6 +88,8 @@ var handyClicksFuncs = {
 			return this.forEachTab(this.getTabText);
 		if(itemType == "ext_mulipletabs")
 			return Array.prototype.map.call(it, this.getTabText, this);
+		if(itemType in this.hc.getText && this.ps.isCustomType(itemType))
+			return this.hc.getText[itemType].call(this, it, e);
 		return it.textContent || it.value || it.label || it.alt || it.title
 			|| (it.getAttribute && (it.getAttribute("label") || it.getAttribute("value")))
 			|| this.getTreeText(it, e)
@@ -101,8 +103,9 @@ var handyClicksFuncs = {
 	},
 	getItemURI: function(it, itemType, noTrim) {
 		it = it || this.hc.item;
+		itemType = itemType || this.hc.itemType;
 		var uri = "";
-		switch(itemType || this.hc.itemType) {
+		switch(itemType) {
 			case "link":
 				uri = this.getLinkURI(it);
 			break;
@@ -125,7 +128,7 @@ var handyClicksFuncs = {
 				uri = this.forEachTab(this.getTabURI); //.join("\n");
 			break;
 			default: // Support for custom types
-				uri = this.getNodeURI(it);
+				uri = this.getNodeURI(it, itemType);
 		}
 
 		var isArr = this.ut.isArray(uri);
@@ -142,7 +145,9 @@ var handyClicksFuncs = {
 			uri = uri.toString();
 		return noTrim ? uri : this.trimStr(uri);
 	},
-	getNodeURI: function(it) {
+	getNodeURI: function(it, itemType) {
+		if(itemType in this.hc.getURI && this.ps.isCustomType(itemType))
+			return this.hc.getURI[itemType].call(this, it);
 		return this.getLinkURI(it)
 			|| it.src || it.getAttribute("src")
 			|| it instanceof HTMLCanvasElement && it.toDataURL()

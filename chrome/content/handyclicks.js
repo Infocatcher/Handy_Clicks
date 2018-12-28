@@ -538,6 +538,7 @@ var handyClicks = {
 			) {
 				var ct = cts[type];
 				this.checkOtherTypes = false;
+				this._currentType = type;
 				try {
 					_it = ct._define.call(this, e, it, type);
 				}
@@ -554,6 +555,7 @@ var handyClicks = {
 					this.ut._err(eMsg, href, eLine);
 					this.ut._err(e);
 				}
+				this._currentType = undefined;
 				if(!_it)
 					continue;
 				this.itemType = type;
@@ -626,6 +628,28 @@ var handyClicks = {
 
 		if(!forcedAll && !this.itemType && this.editMode) // Nothing found?
 			this.defineItem(e, sets, true); // Try again with disabled types.
+	},
+
+	// For fn.getItemText()/getItemURI()
+	_currentType: undefined,
+	getText: { __proto__: null },
+	getURI: { __proto__: null },
+	_initializedTypes: { __proto__: null },
+	initCustomType: function(opts) {
+		var type = this._currentType;
+		if(type in this._initializedTypes)
+			return true; // For usage like return initCustomType() && detectedItem;
+		this._initializedTypes[type] = true;
+		if("getText" in opts)
+			this.getText[type] = opts.getText;
+		if("getURI" in opts)
+			this.getURI[type] = opts.getURI;
+		return true;
+	},
+	destroyCustomTypes: function() {
+		this.getText = { __proto__: null };
+		this.getURI = { __proto__: null };
+		this._initializedTypes = { __proto__: null };
 	},
 
 	getImg: function(it) {
