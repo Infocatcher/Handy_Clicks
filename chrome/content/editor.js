@@ -1596,15 +1596,9 @@ var handyClicksEditor = {
 				return;
 			this.appendTypesList();
 			this.setWinTitle(); // Label changed?
+			this.setDialogButtons();
 		}, this);
-
-		this.applySettings(testFlag, applyFlag, function(status) {
-			if(status !== undefined && !Components.isSuccessCode(status))
-				return;
-			this.appendTypesList();
-			this.setWinTitle(); // Label changed?
-			this.setDialogButtons(); // ?
-		});
+		this.applySettings(testFlag, applyFlag, loadCorrectedSettings);
 		return true;
 	},
 	testCustomType: function() {
