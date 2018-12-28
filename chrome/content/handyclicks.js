@@ -543,17 +543,7 @@ var handyClicks = {
 					_it = ct._define.call(this, e, it, type);
 				}
 				catch(e) {
-					var eLine = this.ut.getRealLineNumber(e, ct._defineLine);
-					var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
-						+ this.ct.EDITOR_TYPE_DEFINE
-						+ "?line=" + eLine;
-					var eMsg = this.ut.errInfo("customTypeDefineError", ct.label, type, e);
-					this.ut.notifyError(eMsg + this.ps.showErrorNotes, {
-						onLeftClick: this.ut.toErrorConsole,
-						onMiddleClick: this.wu.getOpenEditorLink(href, eLine)
-					});
-					this.ut._err(eMsg, href, eLine);
-					this.ut._err(e);
+					this.customTypeError(e, type);
 				}
 				this._currentType = undefined;
 				if(!_it)
@@ -628,6 +618,20 @@ var handyClicks = {
 
 		if(!forcedAll && !this.itemType && this.editMode) // Nothing found?
 			this.defineItem(e, sets, true); // Try again with disabled types.
+	},
+	customTypeError: function(e, type) {
+		var ct = this.ps.types[type];
+		var eLine = this.ut.getRealLineNumber(e, ct._defineLine);
+		var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
+			+ this.ct.EDITOR_TYPE_DEFINE
+			+ "?line=" + eLine;
+		var eMsg = this.ut.errInfo("customTypeDefineError", ct.label, type, e);
+		this.ut.notifyError(eMsg + this.ps.showErrorNotes, {
+			onLeftClick: this.ut.toErrorConsole,
+			onMiddleClick: this.wu.getOpenEditorLink(href, eLine)
+		});
+		this.ut._err(eMsg, href, eLine);
+		this.ut._err(e);
 	},
 
 	// For fn.getItemText()/getItemURI()

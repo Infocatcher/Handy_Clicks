@@ -88,8 +88,12 @@ var handyClicksFuncs = {
 			return this.forEachTab(this.getTabText);
 		if(itemType == "ext_mulipletabs")
 			return Array.prototype.map.call(it, this.getTabText, this);
-		if(itemType in this.hc.getText && this.ps.isCustomType(itemType))
+		if(itemType in this.hc.getText && this.ps.isCustomType(itemType)) try {
 			return this.hc.getText[itemType].call(this, it, e);
+		}
+		catch(e) {
+			this.hc.customTypeError(e, itemType);
+		}
 		return it.textContent || it.value || it.label || it.alt || it.title
 			|| (it.getAttribute && (it.getAttribute("label") || it.getAttribute("value")))
 			|| this.getTreeText(it, e)
@@ -146,8 +150,12 @@ var handyClicksFuncs = {
 		return noTrim ? uri : this.trimStr(uri);
 	},
 	getNodeURI: function(it, itemType) {
-		if(itemType in this.hc.getURI && this.ps.isCustomType(itemType))
+		if(itemType in this.hc.getURI && this.ps.isCustomType(itemType)) try {
 			return this.hc.getURI[itemType].call(this, it);
+		}
+		catch(e) {
+			this.hc.customTypeError(e, itemType);
+		}
 		return this.getLinkURI(it)
 			|| it.src || it.getAttribute("src")
 			|| it instanceof HTMLCanvasElement && it.toDataURL()
