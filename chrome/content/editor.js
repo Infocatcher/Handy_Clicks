@@ -1332,6 +1332,8 @@ var handyClicksEditor = {
 	},
 	get currentShortcutObj() {
 		var so = this.getFuncObj();
+		if(!so)
+			return null;
 		var dso = this.getFuncObj(this.delayId);
 		if(dso)
 			so.delayedAction = dso;
