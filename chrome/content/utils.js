@@ -703,7 +703,7 @@ var handyClicksUtils = {
 					callback.call(context || this, Components.results.NS_OK, str);
 				}.bind(this),
 				onFailure
-			).then(null, onFailure);
+			).then(null, Components.utils.reportError);
 			return true
 		}
 
@@ -804,7 +804,7 @@ var handyClicksUtils = {
 					callback.call(context || this, data, Components.results.NS_OK);
 				}.bind(this),
 				onFailure
-			).then(null, onFailure);
+			).then(null, Components.utils.reportError);
 			return true;
 		}
 
