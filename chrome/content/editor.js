@@ -1249,6 +1249,22 @@ var handyClicksEditor = {
 	},
 
 	saveSettings: function(applyFlag) {
+		if(!applyFlag) { // ondialogaccept
+			var okSh = this.saveShortcut(applyFlag, false, false, true);
+			var okType = this.saveCustomType(applyFlag, false, false, true);
+			var ok = okSh && okType;
+			this.applySettings(false, false, this.ut.bind(function() {
+				if(ok)
+					return;
+				if(typeof okSh == "function")
+					okSh();
+				if(typeof okType == "function")
+					okType();
+				this.dataSaved();
+				this.setDialogButtons();
+			}, this));
+			return ok;
+		}
 		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT: return this.saveShortcut(applyFlag);
 			case this.INDEX_TYPE:     return this.saveCustomType(applyFlag);
@@ -1343,7 +1359,7 @@ var handyClicksEditor = {
 		return true;
 	},
 
-	saveShortcut: function(applyFlag, testFlag, dontUpdate) {
+	saveShortcut: function(applyFlag, testFlag, dontUpdate, saveAll) {
 		var sh = this.currentShortcut;
 		var type = this.currentType;
 		var so = this.currentShortcutObj;
@@ -1358,6 +1374,8 @@ var handyClicksEditor = {
 			|| !this.checkMenulist(eventsList)
 			|| !this.checkMenulist(funcList)
 		) {
+			if(saveAll && this.editorTabIndex != this.INDEX_SHORTCUT)
+				return true;
 			var req = [typesList, eventsList, funcList];
 			if(this.$("hc-editor-func").value == "$custom")
 				req.push(this.$("hc-editor-funcField"));
@@ -1392,6 +1410,8 @@ var handyClicksEditor = {
 			daEnabledItem.checked = daEnabled;
 			this.setDialogButtons();
 		}, this);
+		if(saveAll)
+			return loadCorrectedSettings;
 		this.applySettings(testFlag, applyFlag, loadCorrectedSettings);
 		return true;
 	},
@@ -1408,8 +1428,8 @@ var handyClicksEditor = {
 				else {
 					this.applyDisabled = true; // Don't wait for callback
 					this.pe.saveSettingsObjectsAsync(applyFlag, callback);
+					return;
 				}
-				return;
 			}
 		}
 		callback && callback();
@@ -1557,11 +1577,13 @@ var handyClicksEditor = {
 		this.markAs(this.$("hc-editor-funcTabbox"), "hc_pasted");
 		return true;
 	},
-	saveCustomType: function(applyFlag, testFlag) {
+	saveCustomType: function(applyFlag, testFlag, dontUpdate, saveAll) {
 		var label = this.$("hc-editor-customType").value;
 		var cType = this.$("hc-editor-customTypeExtId").value;
 		var def = this.$("hc-editor-customTypeDefine").value;
 		if(!label || !cType || !def) {
+			if(saveAll && this.editorTabIndex != this.INDEX_TYPE)
+				return true;
 			var req = [
 				this.$("hc-editor-customType"),
 				this.$("hc-editor-customTypeExtId"),
@@ -1591,13 +1613,15 @@ var handyClicksEditor = {
 			return false;
 		cts[cType] = this.getTypeObj(label, def, newEnabl);
 
-		var loadCorrectedSettings = this.ut.bind(function(status) {
+		var loadCorrectedSettings = !dontUpdate && this.ut.bind(function(status) {
 			if(status !== undefined && !Components.isSuccessCode(status))
 				return;
 			this.appendTypesList();
 			this.setWinTitle(); // Label changed?
 			this.setDialogButtons();
 		}, this);
+		if(saveAll)
+			return loadCorrectedSettings;
 		this.applySettings(testFlag, applyFlag, loadCorrectedSettings);
 		return true;
 	},
