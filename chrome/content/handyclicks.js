@@ -901,8 +901,6 @@ var handyClicks = {
 				this.ut._err(eMsg, href, eLine);
 				this.ut._err(e);
 			}
-			if(cm === "auto")
-				cm = this.getContextMenu();
 		}
 
 		if(this.ut.isObject(cm) && typeof cm.hidePopup != "function") {
@@ -1173,74 +1171,6 @@ var handyClicks = {
 		catch(e) {
 			Components.utils.reportError(e);
 		}
-	},
-
-	// Custom types:
-	//~ todo: move to separate file?
-	getContextMenu: function(node) {
-		node = node || this.item;
-		if(!node)
-			return null;
-		var id = null;
-		var doc = document;
-		if(this.ut.isChromeDoc(node.ownerDocument) || node.namespaceURI == this.ut.XULNS) {
-			var docNode = Node.DOCUMENT_NODE; // 9
-			for(; node && node.nodeType != docNode; node = node.parentNode) {
-				if(node.hasAttribute("context")) {
-					id = node.getAttribute("context");
-					doc = node.ownerDocument;
-					break;
-				}
-			}
-		}
-		if(!id) {
-			//id = "contentAreaContextMenu";
-			var brObj = this.getBrowserForNode(node);
-			if(brObj) {
-				id = this.getContextAttr(brObj.browser);
-				doc = brObj.document;
-			}
-		}
-		this._log("getContextMenu() -> " + id + " -> " + (doc && id && doc.getElementById(id)));
-		return id ? doc.getElementById(id) : null;
-	},
-	getBrowserForNode: function(node) {
-		return this.getBrowserForWindow(node.ownerDocument.defaultView.top); // Frames!
-	},
-	getBrowserForWindow: function(targetWin, doc) {
-		doc = doc || document;
-		var br;
-		["tabbrowser", "browser", "iframe"].some(
-			function(tag) {
-				var browsers = doc.getElementsByTagNameNS(this.ut.XULNS, tag);
-				var win, brObj;
-				for(var i = 0, len = browsers.length; i < len; ++i) {
-					win = browsers[i].contentWindow;
-					if(win === targetWin) {
-						br = browsers[i];
-						return true;
-					}
-					if(this.ut.isChromeWin(win)) {
-						brObj = this.getBrowserForWindow(targetWin, win.document);
-						if(brObj) {
-							br = brObj.browser
-							doc = brObj.document;
-							return true;
-						}
-					}
-				}
-				return false;
-			},
-			this
-		);
-		return br && doc
-			? { browser: br, document: doc }
-			: null;
-	},
-	getContextAttr: function(node) {
-		return node.getAttribute("contentcontextmenu")
-			|| node.getAttribute("contextmenu")
-			|| node.getAttribute("context");
 	},
 
 	// Execute function:
