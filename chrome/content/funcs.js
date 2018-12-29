@@ -105,9 +105,18 @@ var handyClicksFuncs = {
 			? this.hc.getTreeInfo(it, e, "title")
 			: "";
 	},
-	getItemURI: function(it, itemType, noTrim) {
+	getItemURI: function(it, itemType, e, noTrim) {
 		it = it || this.hc.item;
 		itemType = itemType || this.hc.itemType;
+		if(e !== undefined && typeof e != "object") { //= Added: 2018-12-27
+			this.ut._deprecated(
+				"handyClicksFuncs.getItemURI(item, event, noTrim) arguments is deprecated. "
+				+ "Use handyClicksFuncs.getItemURI(item, itemType, event, noTrim) instead"
+			);
+			noTrim = e;
+			e = this.hc.event;
+		}
+		e = e || this.hc.event;
 		var uri = "";
 		switch(itemType) {
 			case "link":
@@ -132,7 +141,7 @@ var handyClicksFuncs = {
 				uri = this.forEachTab(this.getTabURI); //.join("\n");
 			break;
 			default: // Support for custom types
-				uri = this.getNodeURI(it, itemType);
+				uri = this.getNodeURI(it, itemType, e);
 		}
 
 		var isArr = this.ut.isArray(uri);
@@ -149,9 +158,9 @@ var handyClicksFuncs = {
 			uri = uri.toString();
 		return noTrim ? uri : this.trimStr(uri);
 	},
-	getNodeURI: function(it, itemType) {
+	getNodeURI: function(it, itemType, e) {
 		if(itemType in this.hc.getURI && this.ps.isCustomType(itemType)) try {
-			return this.hc.getURI[itemType].call(this, it);
+			return this.hc.getURI[itemType].call(this, it, e);
 		}
 		catch(e) {
 			this.hc.customTypeError(e, itemType);
