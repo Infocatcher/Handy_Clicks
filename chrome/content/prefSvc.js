@@ -326,7 +326,7 @@ var handyClicksPrefSvc = {
 				this.initCustomFunc(da, sh, type, true);
 			}
 		}
-		this.cleanupDestructors();
+		this._destructorContext = null;
 	},
 	initCustomFunc: function(fObj, sh, type, isDelayed) {
 		var rawCode = this.ut.getOwnProperty(fObj, "init");
@@ -334,7 +334,7 @@ var handyClicksPrefSvc = {
 			return;
 		try {
 			var line = new Error().lineNumber + 2;
-			this.saveDestructorContext(line, fObj, sh, type, isDelayed);
+			this._destructorContext = [line, fObj, sh, type, isDelayed];
 			var legacyDestructor = new Function("itemType", this.expandCode(rawCode)).call(this.ut, type);
 		}
 		catch(e) {
@@ -407,31 +407,10 @@ var handyClicksPrefSvc = {
 		return data;
 	},
 
-	saveDestructorContext: function(baseLine, fObj, sh, type, isDelayed) {
-		this._destructorContext = {
-			baseLine: baseLine,
-			funcObj: fObj,
-			shortcut: sh,
-			type: type,
-			isDelayed: isDelayed
-		};
-	},
-	cleanupDestructors: function() {
-		delete this._destructorContext;
-	},
 	_destructors: [],
+	_destructorContext: null,
 	registerDestructor: function(destructor, context, notifyFlags) {
-		var dc = this._destructorContext;
-		var ds = [
-			destructor,
-			context,
-			notifyFlags,
-			dc.baseLine,
-			dc.funcObj,
-			dc.shortcut,
-			dc.type,
-			dc.isDelayed
-		];
+		var ds = [destructor, context, notifyFlags].concat(this._destructorContext);
 		return this._destructors.push(ds) - 1;
 	},
 	unregisterDestructor: function(uid) {
@@ -444,7 +423,7 @@ var handyClicksPrefSvc = {
 		this._destructors.forEach(function(destructorArr) {
 			this.destroyCustomFunc.apply(this, destructorArr.concat(reason));
 		}, this);
-		this._destructors = [];
+		this._destructors.length = 0;
 	},
 	destroyCustomFunc: function(destructor, context, notifyFlags, baseLine, fObj, sh, type, isDelayed, reason) {
 		if(notifyFlags && !(notifyFlags & reason))
