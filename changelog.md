@@ -11,7 +11,7 @@
 `*` Editor: disable “Delete” button, if there is nothing to delete.<br>
 `x` Fixed Scratchpad support in Firefox 56+.<br>
 `*` Edit mode tooltip: hide empty URI field.<br>
-`+` Added export/import for separate *.js files (`//> %hc_ScriptsDir%/example.js` in code, also added %hc_ScriptsDir% alias for %profile%/handyclicks/scripts/) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/32">#32</a>).<br>
+`+` Added export/import for separate *.js files (`//> %hc_ScriptsDir%/example.js` in code, also added %hc_ScriptsDir% alias for %profile%/handyclicks/scripts/ and %data% search placeholder) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/32">#32</a>).<br>
 `*` Restored window.handyClicks (as lazy getter) to detect Handy Clicks presence even in disabled mode.<br>
 `*` Improved startup performance: load handyclicks.js after small delay, increased delay to preload settings.<br>
 `*` Added special highlighting for custom files (`//> %hc_ScriptsDir%/example.js` in code).<br>
@@ -33,8 +33,35 @@
 `x` Fixed trim trailing spaces (Alt+Backspace) in Firefox 49+ (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1108382">bug 1108382</a>).<br>
 `x` Editor: fixed temp file name for delayed actions.<br>
 `x` Editor: restored undo ability after entire text modification in Firefox 56.<br>
+`+` Editor: added “To file” and “Scripts…” buttons.<br>
 `*` Editor: updated icons for code toolbars (now used <a href="https://www.fatcow.com/free-icons">Farm-Fresh Web Icons by FatCow Web Hosting</a>).<br>
-`*` Small internal code enhancements.<br>
+`x` Editor: fixed loading from file in case of missed temp directory.<br>
+`x` Editor: fixed internal window ID for custom types (to focus already opened editor with edited type).<br>
+`x` Editor: correctly mark as (un)saved in various cases.<br>
+`*` Highlight not available types (for disabled/missed extensions).<br>
+`+` Added %na% placeholder for not available types.<br>
+`*` Save settings: search for %bug% in case of buggy settings presence.<br>
+`*` Show warning, if detected buggy settings.<br>
+`*` Updated <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">notify() API</a> for better readability.<br>
+`*` Increased delay to close notifications + spacial delay for warnings (<em>extensions.handyclicks.notifyOpenTimeWarnings</em> preference).<br>
+`*` Rewrited code to update dependencies (and disable unsupported) in settings window.<br>
+`*` Notification window: don't overlap dialog buttons (like for status bar).<br>
+`+` Added %on% placeholder for enabled items, placeholder for disabled items renamed from %dis% to %off% (legacy variant is still supported).<br>
+`*` Allow edit mode in disabled state (just temporarily enable).<br>
+`x` Fixed internal storage in settings and editor windows in Firefox 47+ (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/28">#28</a>).<br>
+`*` Added indication for copy/paste using internal buffer.<br>
+`*` Delayed action: show “Disabled” instead of “After 0 ms”.<br>
+`*` External editor: fallback to Windows association for .txt, if .js associated with WScript.exe.<br>
+`+` Added %open% placeholder to search for settings, that opened in editors.<br>
+`+` Added context menu items to close editors.<br>
+`x` Edit custom type: open only one editor for each type (if selected many items with the same custom type).<br>
+`*` Switch to already opened editor: also select action/delayed action tab.<br>
+`*` Slightly improved performance: code for “On top” button and for maximize/fullscreen hotkeys moved into setsUtils.js (not used in browser window).<br>
+`*` Changed `handyClicksFuncs.getItemText()` function for unknown items: prefer .value (for XUL textbox).<br>
+`+` API: added itemType argument to all custom functions and firstCall argument to custom type definition.<br>
+`+` API: added <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">handyClicks.initCustomType()</a> function to override behavior of built-in functions to get item text and URI.<br>
+`*` API: changed <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">handyClicksFuncs.getItemURI()</a>, added event argument.<br>
+`*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
 `x` Fixed hiding of special window that open options in non-modal window.<br>
