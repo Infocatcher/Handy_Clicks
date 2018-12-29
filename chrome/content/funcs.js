@@ -85,7 +85,7 @@ var handyClicksFuncs = {
 	},
 	getNodeText: function(it, itemType, e) {
 		if(itemType == "tabbar")
-			return this.forEachTab(this.getTabText);
+			return this.mapTabs(this.getTabText);
 		if(itemType == "ext_mulipletabs")
 			return Array.prototype.map.call(it, this.getTabText, this);
 		if(itemType in this.hc.getText && this.ps.isCustomType(itemType)) try {
@@ -138,7 +138,7 @@ var handyClicksFuncs = {
 				uri = Array.prototype.map.call(it, this.getTabURI, this); //.join("\n");
 			break;
 			case "tabbar":
-				uri = this.forEachTab(this.getTabURI); //.join("\n");
+				uri = this.mapTabs(this.getTabURI); //.join("\n");
 			break;
 			default: // Support for custom types
 				uri = this.getNodeURI(it, itemType, e);
@@ -1045,6 +1045,9 @@ var handyClicksFuncs = {
 		return Array.prototype.indexOf.call(this.tabs, tab); // SeaMonkey
 	},
 	forEachTab: function(func, context) {
+		return Array.prototype.forEach.call(this.visibleTabs, func, context || this);
+	},
+	mapTabs: function(func, context) {
 		return Array.prototype.map.call(this.visibleTabs, func, context || this);
 	},
 	fixTab: function(tab) {
