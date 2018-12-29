@@ -131,6 +131,12 @@ Turn off from command line: `firefox -handyclicks-disable`.
 	<td>Settings service</td>
 </tr>
 <tr>
+	<td>this.pe</td>
+	<td>handyClicksPrefSvcExt</td>
+	<td><a href="chrome/content/prefSvcExt.js">chrome://handyclicks/content/prefSvcExt.js</a></td>
+	<td>Settings service, additional code with lazy loading</td>
+</tr>
+<tr>
 	<td>this.rs</td>
 	<td>handyClicksRegSvc</td>
 	<td><a href="chrome/content/regSvc.js">chrome://handyclicks/content/regSvc.js</a></td>
