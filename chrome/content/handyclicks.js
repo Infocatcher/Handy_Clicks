@@ -198,15 +198,11 @@ var handyClicks = {
 			// Prevent page handlers, but don't stop Mouse Gestures
 			var root = e.view.top === content ? gBrowser.selectedBrowser : e.view.top;
 			var _this = this;
-			root.addEventListener(
-				"mousedown",
-				function stopMousedown(e) {
-					root.removeEventListener("mousedown", stopMousedown, true);
-					if(_this._enabled)
-						_this.ut.stopEvent(e);
-				},
-				true
-			);
+			root.addEventListener("mousedown", function stopMousedown(e) {
+				root.removeEventListener("mousedown", stopMousedown, true);
+				if(_this._enabled)
+					_this.ut.stopEvent(e);
+			}, true);
 		}
 
 		var delay = this.pu.get("delayedActionTimeout");
@@ -436,17 +432,13 @@ var handyClicks = {
 				: stop
 		) {
 			if(isMouseup && e.view.top === content) { // Prevent page handlers, but don't stop FireGestures extension
-				var cWin = gBrowser.selectedBrowser;
+				var br = gBrowser.selectedBrowser;
 				var _this = this;
-				cWin.addEventListener(
-					"mouseup",
-					function _mu(e) {
-						cWin.removeEventListener("mouseup", _mu, true);
-						if(_this._enabled)
-							_this.ut.stopEvent(e);
-					},
-					true
-				);
+				br.addEventListener("mouseup", function _mu(e) {
+					br.removeEventListener("mouseup", _mu, true);
+					if(_this._enabled)
+						_this.ut.stopEvent(e);
+				}, true);
 				return;
 			}
 			this.ut.stopEvent(e);
@@ -513,7 +505,6 @@ var handyClicks = {
 		return !this.checkOtherTypes;
 	},
 	set ignoreOtherTypes(val) {
-		var caller = Components.stack.caller;
 		this.ut._deprecated('Flag "ignoreOtherTypes" is deprecated. Use "checkOtherTypes" instead.');
 		this.checkOtherTypes = !val;
 	},
@@ -557,15 +548,13 @@ var handyClicks = {
 		}
 
 		var checkSimpleType = this.ut.bind(function(type, getter) {
-			if(all || this.itemTypeInSets(sets, type)) {
-				var _it = getter.call(this, it, e);
-				if(_it) {
-					this.itemType = type;
-					this.item = _it;
-					return true;
-				}
-			}
-			return false;
+			var _it = (all || this.itemTypeInSets(sets, type))
+				&& getter.call(this, it, e);
+			if(!_it)
+				return false;
+			this.itemType = type;
+			this.item = _it;
+			return true;
 		}, this);
 
 		// Image or link:
@@ -1193,11 +1182,9 @@ var handyClicks = {
 			this.editMode = false;
 			this.ui.blinkNode();
 			this.closeMenus(e.originalTarget);
-			//this.wu.openEditor(null, this.ct.EDITOR_MODE_SHORTCUT, this.ps.getEvtStr(e), this._all ? "$all" : this.itemType);
-			this.delay( // Wait for blinkNode redraw
-				this.wu.openEditor, this.wu, 0,
-				[null, this.ct.EDITOR_MODE_SHORTCUT, this.ps.getEvtStr(e), this._all ? "$all" : this.itemType]
-			);
+			this.delay(function() { // Wait for blinkNode() redraw
+				this.wu.openEditor(null, this.ct.EDITOR_MODE_SHORTCUT, this.ps.getEvtStr(e), this._all ? "$all" : this.itemType);
+			}, this);
 			return;
 		}
 		this.executeFunction(funcObj, e);
