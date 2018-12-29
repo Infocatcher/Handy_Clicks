@@ -323,7 +323,7 @@
 					<tabpanels flex="1">
 						<tabpanel id="hc-editor-customTypeDefinePanel" flex="1" orient="vertical">
 							<hbox class="hcNotesBox">
-								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.argsNote; event, item, itemType" />
+								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.argsNote; event, item, itemType, firstCall" />
 								<textbox class="hcText" readonly="true" tabindex="1" value="&hc.editor.defineReturnNote;" />
 							</hbox>
 							<textbox class="hcEditor" id="hc-editor-customTypeDefine" flex="1"

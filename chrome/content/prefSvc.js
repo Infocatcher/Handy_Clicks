@@ -275,9 +275,10 @@ var handyClicksPrefSvc = {
 			var df = ct.define;
 			var cm = ct.contextMenu;
 			ct._defineLine = new Error().lineNumber + 1;
-			ct._define = new Function("event,item,itemType", this.expandCode(df));
+			ct._define = new Function("event,item,itemType,firstCall", this.expandCode(df));
 			ct._contextMenuLine = new Error().lineNumber + 1;
 			ct._contextMenu = cm ? new Function("event,item,origItem,itemType", this.expandCode(cm)) : null;
+			ct._firstCall = true;
 			this._log('Type "' + type + '" => initialized');
 			return cache[type] = true;
 		}

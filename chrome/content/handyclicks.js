@@ -540,12 +540,13 @@ var handyClicks = {
 				this.checkOtherTypes = false;
 				this._currentType = type;
 				try {
-					_it = ct._define.call(this, e, it, type);
+					_it = ct._define.call(this, e, it, type, ct._firstCall);
 				}
 				catch(e) {
 					this.customTypeError(e, type);
 				}
 				this._currentType = undefined;
+				ct._firstCall = false;
 				if(!_it)
 					continue;
 				this.itemType = type;
