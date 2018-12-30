@@ -741,12 +741,13 @@ var handyClicksEditor = {
 				return true;
 		return false;
 	},
-	typeActive: function(type, prefs) {
+	getActiveSettingsForType: function(type, prefs) {
 		prefs = prefs || this.ps.prefs;
+		var cnt = 0;
 		for(var sh in prefs)
 			if(this.ut.getOwnProperty(prefs, sh, type, "enabled"))
-				return true;
-		return false;
+				++cnt;
+		return cnt;
 	},
 	delCustomTypes: function() {
 		["hc-editor-itemTypes", "hc-editor-customTypePopup"].forEach(
@@ -1613,11 +1614,14 @@ var handyClicksEditor = {
 		var ct = cts[cType] || {};
 		var curEnabl = ct.enabled || false;
 		var newEnabl = this.$("hc-editor-customTypeEnabled").checked;
+		var willDis = !newEnabl && curEnabl;
+		var activeTypes = willDis && this.getActiveSettingsForType(cType);
 		if(
-			!newEnabl && curEnabl && this.typeActive(cType)
+			!newEnabl && curEnabl && activeTypes
 			&& !this.ut.confirm(
 				this.getLocalized("warningTitle"),
 				this.getLocalized("typeDisablingWarning")
+					.replace("%n", activeTypes)
 			)
 		)
 			return false;
