@@ -554,11 +554,14 @@ var handyClicksSets = {
 		var actLabel = this.getActionLabel(fo);
 		this.appendTreeCell(tRow, "label", actLabel);
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom));
+		var linkedFile = this.getActionCode._hasLinkedFile;
 		var fileData = this.getActionCode._hasFileData;
 		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}, this._localizeArgs));
 		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)));
 		if(this.getActionCode._hasFileData)
 			fileData = true;
+		if(this.getActionCode._hasLinkedFile)
+			linkedFile = true;
 
 		var da = this.ut.getOwnProperty(fo, "delayedAction");
 		if(da) {
@@ -580,9 +583,12 @@ var handyClicksSets = {
 			var daDis = this._daForceDisable || !fo.enabled || !da.enabled;
 			this.appendTreeCell(daRow, "label", daLabel);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom));
+			var daLinkedFile = this.getActionCode._hasLinkedFile;
 			var daFileData = this.getActionCode._hasFileData;
 			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}, this._localizeArgs));
 			this.appendTreeCell(daRow, "label", (daInitCode = this.getInitCode(da, true)));
+			if(this.getActionCode._hasLinkedFile)
+				daLinkedFile = true;
 			if(this.getActionCode._hasFileData)
 				daFileData = true;
 
@@ -592,7 +598,7 @@ var handyClicksSets = {
 				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel) && ++this.counters.buggy,
 				hc_notAvailable: extNA,
 				hc_custom: daCustom,
-				hc_customFile: daCustom && !!this.ps.getSourcePath(da.action),
+				hc_customFile: daLinkedFile,
 				hc_customInit: !!daInitCode,
 				hc_customType: isCustomType
 			}, true);
@@ -643,7 +649,7 @@ var handyClicksSets = {
 			hc_buggy: isBuggy && ++this.counters.buggy,
 			hc_notAvailable: extNA,
 			hc_custom: isCustom,
-			hc_customFile: isCustom && !!this.ps.getSourcePath(fo.action),
+			hc_customFile: linkedFile,
 			hc_customInit: !!initCode,
 			hc_customType: isCustomType
 		}, true);
@@ -703,11 +709,12 @@ var handyClicksSets = {
 		return this.getLocalized(act);
 	},
 	getActionCode: function getActionCode(action, isCustom) {
-		getActionCode._hasFileData = false;
+		getActionCode._hasLinkedFile = getActionCode._hasFileData = false;
 		if(!isCustom)
 			return action;
 		var path = this.ps.getSourcePath(action);
 		if(path) {
+			getActionCode._hasLinkedFile = true;
 			var hasData = getActionCode._hasFileData = this._import
 				&& path in this.ps.files
 				&& this.isValidFileData(this.ps.files[path]);
