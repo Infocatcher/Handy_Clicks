@@ -12,7 +12,7 @@ var handyClicksPrefSvc = {
 	DESTROY_WINDOW_UNLOAD:      2,
 	DESTROY_LAST_WINDOW_UNLOAD: 4,
 
-	setsVersion: 0.3,
+	setsVersion: 0.4,
 	setsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
 	get requiredHeader() {
 		delete this.requiredHeader;

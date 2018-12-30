@@ -197,6 +197,30 @@ function setsMigration(allowSave, vers) {
 			}
 		}
 	}
+	if(vers < 0.4) { //= Added: 2018-12-28
+		var prefs = this.prefs;
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
+			var so = prefs[sh];
+			if(!this.ut.isObject(so))
+				continue;
+			if(so.hasOwnProperty("img") && this.ut.isObject(so.img)) {
+				so.img.ignoreLinks = so.img.ignoreLinks || false;
+				so.img.ignoreSingle = so.img.ignoreSingle || false;
+			}
+			if(
+				so.hasOwnProperty("tab")
+				&& this.ut.isObject(so.tab)
+				&& !so.tab.hasOwnProperty("excludeCloseButton")
+			)
+				so.tab.excludeCloseButton = true;
+			if(
+				so.hasOwnProperty("ext_mulipletabs")
+				&& this.ut.isObject(so.ext_mulipletabs)
+				&& !so.ext_mulipletabs.hasOwnProperty("excludeCloseButton")
+			)
+				so.ext_mulipletabs.excludeCloseButton = true;
+		}
+	}
 
 	if(!allowSave)
 		this.loadedVersion = this.setsVersion;
