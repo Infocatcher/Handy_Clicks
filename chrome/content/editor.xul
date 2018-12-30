@@ -195,11 +195,16 @@
 									<checkbox id="hc-editor-enabled" hc_important="enabled"
 										label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
 								</hbox>
-								<hbox id="hc-editor-funcOptsAdd" align="center" hc_notDelay="true">
+								<hbox id="hc-editor-funcOpts-img" align="center" hc_notDelay="true">
 									<label value="&hc.editor.funcOptsAdd;" accesskey="&hc.editor.funcOptsAddAccesskey;"
 										control="hc-editor-imgIgnoreLinks" />
 									<checkbox id="hc-editor-imgIgnoreLinks" label="&hc.editor.ignoreLinks;" />
 									<checkbox id="hc-editor-imgIgnoreSingle" label="&hc.editor.ignoreSingle;" />
+								</hbox>
+								<hbox id="hc-editor-funcOpts-tab" align="center" hc_notDelay="true">
+									<label value="&hc.editor.funcOptsAdd;" accesskey="&hc.editor.funcOptsAddAccesskey;"
+										control="hc-editor-tabExcludeCloseButton" />
+									<checkbox id="hc-editor-tabExcludeCloseButton" label="&hc.editor.excludeCloseButton;" />
 								</hbox>
 							</vbox>
 

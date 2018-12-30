@@ -30,6 +30,7 @@
 <!ENTITY hc.editor.funcOptsAddAccesskey "и">
 <!ENTITY hc.editor.ignoreLinks "Игнорировать ссылки">
 <!ENTITY hc.editor.ignoreSingle "Игнорировать отдельно открытые изображения">
+<!ENTITY hc.editor.excludeCloseButton "Исключить кнопку закрытия">
 
 <!ENTITY hc.editor.tabAction "Действие">
 <!ENTITY hc.editor.tabActionAccesskey "й">

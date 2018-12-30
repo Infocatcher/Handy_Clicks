@@ -900,14 +900,22 @@ var handyClicksEditor = {
 	},
 	initAdditionalOptions: function(iType, setsObj) {
 		iType = iType || this.currentType;
-		var isImg = iType == "img";
-		this.$("hc-editor-funcOptsAdd").hidden = !isImg;
-		if(isImg) {
-			setsObj = setsObj || this.ut.getOwnProperty(this.ps.prefs, this.shortcut, iType);
+		var showImg = iType == "img";
+		var showTab = iType == "tab" || iType == "ext_mulipletabs";
+		this.$("hc-editor-funcOpts-img").hidden = !showImg;
+		this.$("hc-editor-funcOpts-tab").hidden = !showTab;
+		if(!showImg && !showTab)
+			return;
+		setsObj = setsObj || this.ut.getOwnProperty(this.ps.prefs, this.shortcut, iType);
+		if(showImg) {
 			var ignoreLinks = this.ut.getOwnProperty(setsObj, "ignoreLinks") || false;
 			this.$("hc-editor-imgIgnoreLinks").checked = ignoreLinks;
 			var ignoreSingle = this.ut.getOwnProperty(setsObj, "ignoreSingle") || false;
 			this.$("hc-editor-imgIgnoreSingle").checked = ignoreSingle;
+		}
+		else if(showTab) {
+			var excludeBtn = this.ut.getOwnProperty(setsObj, "excludeCloseButton");
+			this.$("hc-editor-tabExcludeCloseButton").checked = excludeBtn === undefined ? true : excludeBtn;
 		}
 	},
 	addFuncArgs: function(delayed, setsObj) {
@@ -1507,6 +1515,9 @@ var handyClicksEditor = {
 			if(type == "img") { //~ todo: don't save false values?
 				so.ignoreLinks  = this.$("hc-editor-imgIgnoreLinks") .checked;
 				so.ignoreSingle = this.$("hc-editor-imgIgnoreSingle").checked;
+			}
+			else if(type == "tab" || type == "ext_mulipletabs") {
+				so.excludeCloseButton = this.$("hc-editor-tabExcludeCloseButton").checked;
 			}
 		}
 		return so;
