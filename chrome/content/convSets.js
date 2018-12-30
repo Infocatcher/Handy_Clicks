@@ -12,16 +12,15 @@ function setsMigration(allowSave, vers) {
 			return s.replace(/^(handyclicks_prefs)-(\w+-\d+(?:\.\d+)?\.js)$/, "$1_$2");
 		};
 		var entries = this.prefsDir.directoryEntries;
-		var entry, newName, newFile;
 		while(entries.hasMoreElements()) {
-			entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
+			var entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
 			if(!entry.isFile())
 				continue;
-			newName = convertName(entry.leafName);
+			var newName = convertName(entry.leafName);
 			if(newName == entry.leafName)
 				continue;
 			//entry.moveTo(null, newName);
-			newFile = entry.parent.clone();
+			var newFile = entry.parent.clone();
 			newFile.append(newName);
 			// Simple way to get unique file name
 			newFile.createUnique(newFile.NORMAL_FILE_TYPE, this.ut.PERMS_FILE_WRITE);
@@ -39,9 +38,9 @@ function setsMigration(allowSave, vers) {
 			// { p0: 0, curName: 1, p2: 2 } => { p0: 0, newName: 1, p2: 2 }
 			if(!obj.hasOwnProperty(curName))
 				return;
-			var a = { __proto__: null }, aName, aVal;
-			for(aName in obj) if(obj.hasOwnProperty(aName)) {
-				aVal = obj[aName];
+			var a = { __proto__: null };
+			for(var aName in obj) if(obj.hasOwnProperty(aName)) {
+				var aVal = obj[aName];
 				a[aName == curName ? newName : aName] = valConv ? valConv(aVal) : aVal;
 				delete obj[aName];
 			}
@@ -65,19 +64,18 @@ function setsMigration(allowSave, vers) {
 			changeArg(args, "toNewWin", "target", function(v) { return v ? "win" : "tab"; });
 		}, this);
 		var prefs = this.prefs;
-		var sh, so, type, to, da;
-		for(sh in prefs) if(prefs.hasOwnProperty(sh)) {
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			if(!this.isOkShortcut(sh))
 				continue;
-			so = prefs[sh];
+			var so = prefs[sh];
 			if(!this.ut.isObject(so))
 				continue;
-			for(type in so) if(so.hasOwnProperty(type)) {
-				to = so[type];
+			for(var type in so) if(so.hasOwnProperty(type)) {
+				var to = so[type];
 				if(!this.ut.isObject(to))
 					continue;
 				changeTypeObj(to);
-				da = this.ut.getOwnProperty(to, "delayedAction");
+				var da = this.ut.getOwnProperty(to, "delayedAction");
 				if(this.ut.isObject(da))
 					changeTypeObj(da);
 			}
@@ -95,20 +93,19 @@ function setsMigration(allowSave, vers) {
 				to.action = act.replace(/^(_?)open(?:Uri)?In/, "$1openURIIn");
 		}, this);
 		var prefs = this.prefs;
-		var sh, so, type, to, da;
 		var act, dAct;
-		for(sh in prefs) if(prefs.hasOwnProperty(sh)) {
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			if(!this.isOkShortcut(sh))
 				continue;
-			so = prefs[sh];
+			var so = prefs[sh];
 			if(!this.ut.isObject(so))
 				continue;
-			for(type in so) if(so.hasOwnProperty(type)) {
-				to = so[type];
+			for(var type in so) if(so.hasOwnProperty(type)) {
+				var to = so[type];
 				if(!this.ut.isObject(to))
 					continue;
 				convAct(to);
-				da = this.ut.getOwnProperty(to, "delayedAction");
+				var da = this.ut.getOwnProperty(to, "delayedAction");
 				if(this.ut.isObject(da))
 					convAct(da);
 			}
@@ -139,19 +136,18 @@ function setsMigration(allowSave, vers) {
 		}, this);
 
 		var prefs = this.prefs;
-		var sh, so, type, to, da;
-		for(sh in prefs) if(prefs.hasOwnProperty(sh)) {
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			if(!this.isOkShortcut(sh))
 				continue;
-			so = prefs[sh];
+			var so = prefs[sh];
 			if(!this.ut.isObject(so))
 				continue;
-			for(type in so) if(so.hasOwnProperty(type)) {
-				to = so[type];
+			for(var type in so) if(so.hasOwnProperty(type)) {
+				var to = so[type];
 				if(!this.ut.isObject(to))
 					continue;
 				recodeTypeObj(to);
-				da = this.ut.getOwnProperty(to, "delayedAction");
+				var da = this.ut.getOwnProperty(to, "delayedAction");
 				if(!this.ut.isObject(da))
 					continue;
 				recodeTypeObj(da);
@@ -159,9 +155,8 @@ function setsMigration(allowSave, vers) {
 		}
 
 		var types = this.types;
-		var type, to;
 		for(var type in types) if(types.hasOwnProperty(type)) {
-			to = types[type];
+			var to = types[type];
 			if(!this.ut.isObject(to))
 				continue;
 			recode(to, "label");
