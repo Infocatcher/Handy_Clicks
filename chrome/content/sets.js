@@ -1594,6 +1594,7 @@ var handyClicksSets = {
 		);
 
 		var val = this.searchField.value;
+		var labelTemplate = mp.getAttribute("hc_labelTemplate");
 		Array.prototype.forEach.call(mp.getElementsByTagName("menuitem"), function(mi) {
 			var ph = mi.getAttribute("acceltext");
 			if(!ph)
@@ -1602,9 +1603,14 @@ var handyClicksSets = {
 			if(ph == "%ovr%" || ph == "%new%" || ph == "%data%")
 				mi.setAttribute("disabled", !this._import);
 			var count = counters[ph];
-			var label = mi.getAttribute("label").replace(/\s*:\s*\d+$/, "")
-				+ (count ? ": " + count : "");
-			mi.setAttribute("label", label);
+			var origLabel = mi.__origLabel || (mi.__origLabel = mi.getAttribute("label"));
+			var label = count
+				? labelTemplate
+					.replace("$label", origLabel)
+					.replace("$count", count)
+				: origLabel;
+			if(label != mi.getAttribute("label"))
+				mi.setAttribute("label", label);
 		}, this);
 	},
 	insertSearchPlaceholder: function(mi) {

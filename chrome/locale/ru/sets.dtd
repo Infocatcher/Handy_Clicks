@@ -23,6 +23,7 @@
 
 <!ENTITY hc.sets.search "Найти:">
 <!ENTITY hc.sets.searchAccesskey "а">
+<!ENTITY hc.sets.searchCounterTemplate "$label: $count">
 <!ENTITY hc.sets.searchEnabled "Включённые">
 <!ENTITY hc.sets.searchDisabled "Отключённые">
 <!ENTITY hc.sets.searchOpened "Открытые в редакторе">

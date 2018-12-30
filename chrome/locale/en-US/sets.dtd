@@ -23,6 +23,7 @@
 
 <!ENTITY hc.sets.search "Search:">
 <!ENTITY hc.sets.searchAccesskey "a">
+<!ENTITY hc.sets.searchCounterTemplate "$label: $count">
 <!ENTITY hc.sets.searchEnabled "Enabled">
 <!ENTITY hc.sets.searchDisabled "Disabled">
 <!ENTITY hc.sets.searchOpened "Opened in editor">
