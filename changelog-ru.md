@@ -61,6 +61,7 @@
 `+` API: ко врем пользовательским функциям добавлен аргумент itemType и добавлен аргумент firstCall для функции определения добавленного типа.<br>
 `+` API: добавлена функция <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">handyClicks.initCustomType()</a> для переопределения поведения встроенных функция для получения текста и URI.<br>
 `*` API: изменена функция <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">handyClicksFuncs.getItemURI()</a>, добавлен аргумент event.<br>
+`+` Добавлена возможность не игнорировать клики по кнопкам закрытия вкладок(галочка «Исключить кнопку закрытия» в редакторе).<br>
 `*` Многочисленные внутренние улучшения кода.<br>
 
 ##### 0.1.3pre6 (2017-04-16)

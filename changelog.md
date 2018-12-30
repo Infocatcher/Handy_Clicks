@@ -61,6 +61,7 @@
 `+` API: added itemType argument to all custom functions and firstCall argument to custom type definition.<br>
 `+` API: added <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">handyClicks.initCustomType()</a> function to override behavior of built-in functions to get item text and URI.<br>
 `*` API: changed <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">handyClicksFuncs.getItemURI()</a>, added event argument.<br>
+`+` Added ability to not ignore clicks on tab close buttons (“Exclude close button” checkbox in editor).<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
