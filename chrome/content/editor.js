@@ -1110,7 +1110,6 @@ var handyClicksEditor = {
 				this.currentType = type;
 				this.currentShortcut = shortcut;
 			}
-			var updateUI = true;
 		}
 
 		this.shortcut = this.currentShortcut;
@@ -1128,7 +1127,7 @@ var handyClicksEditor = {
 		this.disableUnsupported();
 		this.setWinId();
 		this.setWinTitle();
-		updateUI && this.delay(this.setDialogButtons, this);
+		this.delay(this.setDialogButtons, this);
 
 		this.fireEditorChange(this.$("hc-editor-shortcutPanel"));
 	},
