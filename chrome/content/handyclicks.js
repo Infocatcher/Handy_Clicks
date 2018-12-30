@@ -581,7 +581,8 @@ var handyClicks = {
 		var mth = all || this.itemTypeInSets(sets, "ext_mulipletabs");
 		var tab = all || this.itemTypeInSets(sets, "tab");
 		if(mth || tab) {
-			_it = this.getTab(it, true);
+			var excludeBtn = this.ut.getOwnProperty(sets, mth ? "ext_mulipletabs" : "tab", "excludeCloseButton");
+			_it = this.getTab(it, excludeBtn === undefined ? true : excludeBtn);
 			if(_it && mth && "MultipleTabService" in window && MultipleTabService.isSelected(_it)) {
 				this.itemType = "ext_mulipletabs";
 				this.item = MultipleTabService.getSelectedTabs(MultipleTabService.getTabBrowserFromChild(_it));
