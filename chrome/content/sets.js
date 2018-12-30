@@ -1578,6 +1578,21 @@ var handyClicksSets = {
 		return this.searcher = handyClicksSetsSearcher;
 	},
 	initSearchMenu: function(mp) {
+		var counters = { __proto__: null };
+		var sp = this.searchPlaceholders;
+		Array.prototype.forEach.call(
+			this.tree.getElementsByTagName("treerow"),
+			function(tRow) {
+				var props = tRow.getAttribute("properties") || "";
+				props.split(/\s+/).forEach(function(prop) {
+					if(!(prop in sp))
+						return;
+					var ph = sp[prop];
+					counters[ph] = (counters[ph] || 0) + 1;
+				});
+			}
+		);
+
 		var val = this.searchField.value;
 		Array.prototype.forEach.call(mp.getElementsByTagName("menuitem"), function(mi) {
 			var ph = mi.getAttribute("acceltext");
@@ -1586,6 +1601,10 @@ var handyClicksSets = {
 			mi.setAttribute("checked", val.indexOf(ph) != -1);
 			if(ph == "%ovr%" || ph == "%new%" || ph == "%data%")
 				mi.setAttribute("disabled", !this._import);
+			var count = counters[ph];
+			var label = mi.getAttribute("label").replace(/\s*:\s*\d+$/, "")
+				+ (count ? ": " + count : "");
+			mi.setAttribute("label", label);
 		}, this);
 	},
 	insertSearchPlaceholder: function(mi) {
