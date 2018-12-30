@@ -579,15 +579,16 @@ var handyClicks = {
 
 		// Tab or selected tabs (Multiple Tab Handler extension):
 		var mth = all || this.itemTypeInSets(sets, "ext_mulipletabs");
-		if(mth || this.itemTypeInSets(sets, "tab")) {
+		var tab = all || this.itemTypeInSets(sets, "tab");
+		if(mth || tab) {
 			_it = this.getTab(it, true);
-			if(_it) {
-				if(mth && "MultipleTabService" in window && MultipleTabService.isSelected(_it)) {
-					this.itemType = "ext_mulipletabs";
-					this.item = MultipleTabService.getSelectedTabs(MultipleTabService.getTabBrowserFromChild(_it));
-					this.mainItem = _it;
-					return;
-				}
+			if(_it && mth && "MultipleTabService" in window && MultipleTabService.isSelected(_it)) {
+				this.itemType = "ext_mulipletabs";
+				this.item = MultipleTabService.getSelectedTabs(MultipleTabService.getTabBrowserFromChild(_it));
+				this.mainItem = _it;
+				return;
+			}
+			if(_it && tab) {
 				this.itemType = "tab";
 				this.item = _it;
 				return;
