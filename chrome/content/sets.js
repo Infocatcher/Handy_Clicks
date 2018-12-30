@@ -46,7 +46,7 @@ var handyClicksSets = {
 			this.setDialogButtons();
 		else {
 			this.startupUI();
-			if(this._buggy) {
+			if(this.counters.buggy) {
 				this.setDialogButtons();
 				this.notifyBuggyPrefs();
 			}
@@ -244,6 +244,19 @@ var handyClicksSets = {
 		}
 		return ret;
 	},
+	counters: {
+		override: 0,
+		overrideDa: 0,
+		added: 0,
+		addedDa: 0,
+		buggy: 0,
+		__proto__: null
+	},
+	resetCounters: function() {
+		var c = this.counters;
+		for(var p in c)
+			c[p] = 0;
+	},
 	drawTree: function() {
 		return this.treeBatch(this._drawTree, this, arguments);
 	},
@@ -259,8 +272,7 @@ var handyClicksSets = {
 		this._daExpand = this.pu.get("sets.treeExpandDelayedAction");
 		this._localizeArgs = this.pu.get("sets.localizeArguments");
 
-		this._overrides = this._overrideDa = this._new = this._newDa = 0;
-		this._buggy = 0;
+		this.resetCounters();
 
 		var df = this.ut.fxVersion >= 2
 			? document.createDocumentFragment()
@@ -394,9 +406,10 @@ var handyClicksSets = {
 				++deletableTypes;
 
 		const id = "hc-sets-tree-import";
-		this.$(id + "ChangedValue").value = this._overrides + "/" + this._overrideDa + " + " + overrideTypes;
-		this.$(id + "AddedValue")  .value = this._new       + "/" + this._newDa      + " + " + newTypes;
-		this.$(id + "RemovedValue").value = deletable       + "/" + deletableDa      + " + " + deletableTypes;
+		var c = this.counters;
+		this.$(id + "ChangedValue").value = c.override + "/" + c.overrideDa + " + " + overrideTypes;
+		this.$(id + "AddedValue")  .value = c.added    + "/" + c.addedDa    + " + " + newTypes;
+		this.$(id + "RemovedValue").value = deletable  + "/" + deletableDa  + " + " + deletableTypes;
 	},
 	redrawTree: function() {
 		return this.treeBatch(this._redrawTree, this, arguments);
@@ -576,7 +589,7 @@ var handyClicksSets = {
 			this.setChildNodesProperties(daRow, {
 				hc_enabled: !daDis,
 				hc_disabled: daDis,
-				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel) && ++this._buggy,
+				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel) && ++this.counters.buggy,
 				hc_notAvailable: extNA,
 				hc_custom: daCustom,
 				hc_customFile: daCustom && !!this.ps.getSourcePath(da.action),
@@ -594,9 +607,9 @@ var handyClicksSets = {
 				var overrideDa = savedDa;
 				var equalsDa = this.settingsEquals(da, savedDa);
 				this.setChildNodesProperties(daRow, {
-					hc_override: overrideDa && !equalsDa && ++this._overrideDa,
+					hc_override: overrideDa && !equalsDa && ++this.counters.overrideDa,
 					hc_equals:   overrideDa &&  equalsDa,
-					hc_new:     !overrideDa &&              ++this._newDa,
+					hc_new:     !overrideDa &&              ++this.counters.addedDa,
 					hc_fileData: daFileData
 				}, true);
 			}
@@ -627,7 +640,7 @@ var handyClicksSets = {
 		this.setChildNodesProperties(tRow, {
 			hc_enabled: fo.enabled,
 			hc_disabled: !fo.enabled,
-			hc_buggy: isBuggy && ++this._buggy,
+			hc_buggy: isBuggy && ++this.counters.buggy,
 			hc_notAvailable: extNA,
 			hc_custom: isCustom,
 			hc_customFile: isCustom && !!this.ps.getSourcePath(fo.action),
@@ -654,9 +667,9 @@ var handyClicksSets = {
 				equals = equals && eqType;
 			}
 			this.setChildNodesProperties(tRow, {
-				hc_override: override && !equals && ++this._overrides,
+				hc_override: override && !equals && ++this.counters.override,
 				hc_equals:   override &&  equals,
-				hc_new:     !override            && ++this._new,
+				hc_new:     !override            && ++this.counters.added,
 				hc_fileData: fileData
 			}, true);
 
@@ -1145,7 +1158,7 @@ var handyClicksSets = {
 	deleteCachedRow: function(hash) {
 		var tRow = this.rowsCache[hash];
 		if(tRow && /(?:^|\s)hc_buggy(?:\s|$)/.test(tRow.getAttribute("properties")))
-			--this._buggy;
+			--this.counters.buggy;
 		delete this.rowsCache[hash];
 	},
 	openEditorWindow: function(tItem, mode, add, src) { // mode: this.ct.EDITOR_MODE_*
@@ -2033,19 +2046,19 @@ var handyClicksSets = {
 		return saved;
 	},
 	buggyPrefsConfirm: function() {
-		if(!this._buggy)
+		if(!this.counters.buggy)
 			return true;
 		this.showBuggyPrefs();
 		return this.ut.confirmEx(
 			this.getLocalized("warningTitle"),
-			this.getLocalized("buggyDetected").replace("%n", this._buggy)
+			this.getLocalized("buggyDetected").replace("%n", this.counters.buggy)
 				+ "\n" + this.getLocalized("saveBuggyConfirm"),
 			this.getLocalized("save")
 		);
 	},
 	notifyBuggyPrefs: function() {
 		this.notifyBuggyPrefs = function() {}; // Only once
-		this.ut.notifyWarning(this.getLocalized("buggyDetected").replace("%n", this._buggy), {
+		this.ut.notifyWarning(this.getLocalized("buggyDetected").replace("%n", this.counters.buggy), {
 			onLeftClick: this.showBuggyPrefs,
 			context: this
 		});
