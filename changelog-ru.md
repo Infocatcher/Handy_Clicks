@@ -62,6 +62,9 @@
 `+` API: добавлена функция <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">handyClicks.initCustomType()</a> для переопределения поведения встроенных функция для получения текста и URI.<br>
 `*` API: изменена функция <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">handyClicksFuncs.getItemURI()</a>, добавлен аргумент event.<br>
 `+` Добавлена возможность не игнорировать клики по кнопкам закрытия вкладок(галочка «Исключить кнопку закрытия» в редакторе).<br>
+`*` Улучшено предупреждение при отключении добавленного типа: теперь выводится количество включенных связанных настроек, которые также будут отключены.<br>
+`+` Добавлено запоминание состояния дерева (Вид – Запоминать состояние дерева, настройка <em>extensions.handyclicks.sets.rememberState</em>).<br>
+`*` Пункты меню для удаления пользовательских резервных копий теперь настраиваемые (настройки <em>extensions.handyclicks.sets.backupUserRemoveDepth</em> и <em>extensions.handyclicks.sets.backupUserRemoveDepth2</em>).<br>
 `*` Многочисленные внутренние улучшения кода.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
