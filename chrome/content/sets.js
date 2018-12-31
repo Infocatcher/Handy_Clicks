@@ -428,31 +428,35 @@ var handyClicksSets = {
 		if(saveSel === undefined)
 			saveSel = true;
 
-		if(saveClosed) {
-			var collapsedRows = { __proto__: null };
-			Array.prototype.forEach.call(
-				this.treeContainers,
-				function(ti) {
-					if(ti.getAttribute("open") != "true")
-						collapsedRows[ti.__hash] = true;
-				}
-			);
-		}
-		if(saveSel)
-			var selectedRows = this.saveSelection();
+		var collapsedRows = saveClosed && this.saveCollapsed();
+		var selectedRows = saveSel && this.saveSelection();
 
 		this._redrawTree();
 		if(!this.tView.rowCount)
 			return;
 
-		saveClosed && Array.prototype.forEach.call(
+		saveClosed && this.restoreCollapsed(collapsedRows);
+		saveSel && this.restoreSelection(selectedRows);
+	},
+	saveCollapsed: function() {
+		var collapsedRows = { __proto__: null };
+		Array.prototype.forEach.call(
+			this.treeContainers,
+			function(ti) {
+				if(ti.getAttribute("open") != "true")
+					collapsedRows[ti.__hash] = true;
+			}
+		);
+		return collapsedRows;
+	},
+	restoreCollapsed: function(collapsedRows) {
+		Array.prototype.forEach.call(
 			this.treeContainers,
 			function(ti) {
 				if(ti.__hash in collapsedRows)
 					ti.setAttribute("open", "false");
 			}
 		);
-		saveSel && this.restoreSelection(selectedRows);
 	},
 	saveSelection: function() {
 		var selectedRows = { __proto__: null };
