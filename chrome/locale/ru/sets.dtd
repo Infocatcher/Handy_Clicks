@@ -101,10 +101,10 @@
 <!ENTITY hc.sets.restoreFromBackup "Восстановить из резервной копии">
 <!ENTITY hc.sets.openBackupDir "Открыть папку с резервными копиями">
 <!ENTITY hc.sets.openBackupDirAccesskey "О">
-<!ENTITY hc.sets.removeUserBackupsExc10 "Удалить пользовательские резервные копии кроме 10 самых новых">
+<!ENTITY hc.sets.removeUserBackupsExc10 "Удалить пользовательские резервные копии, оставить 10">
 <!ENTITY hc.sets.removeUserBackupsExc10Accesskey "к">
-<!ENTITY hc.sets.removeAllUserBackups "Удалить все пользовательские резервные копии">
-<!ENTITY hc.sets.removeAllUserBackupsAccesskey "У">
+<!ENTITY hc.sets.removeUserBackupsExc1 "Удалить пользовательские резервные копии, оставить 1">
+<!ENTITY hc.sets.removeUserBackupsExc1Accesskey "У">
 <!ENTITY hc.sets.restoreBackup "Восстановить…">
 <!ENTITY hc.sets.removeBackup "Удалить">
 <!ENTITY hc.sets.showBackupFile "Показать файл">

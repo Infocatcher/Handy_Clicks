@@ -3093,7 +3093,7 @@ var handyClicksSets = {
 			});
 		}, this);
 		this.$("hc-sets-tree-removeUserBackupsExc10").setAttribute("disabled", ubCount <= 10);
-		this.$("hc-sets-tree-removeAllUserBackups")  .setAttribute("disabled", ubCount == 0);
+		this.$("hc-sets-tree-removeUserBackupsExc1") .setAttribute("disabled", ubCount <= 1);
 
 		var mi = this.$("hc-sets-tree-openBackupsDir");
 		var isDarkFont = true;

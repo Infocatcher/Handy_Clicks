@@ -232,9 +232,9 @@ preferences {
 								<menuitem id="hc-sets-tree-removeUserBackupsExc10"
 									oncommand="handyClicksSets.removeOldUserBackups(10);" closemenu="none"
 									label="&hc.sets.removeUserBackupsExc10;" accesskey="&hc.sets.removeUserBackupsExc10Accesskey;" />
-								<menuitem id="hc-sets-tree-removeAllUserBackups"
-									oncommand="handyClicksSets.removeOldUserBackups(0);" closemenu="none"
-									label="&hc.sets.removeAllUserBackups;" accesskey="&hc.sets.removeAllUserBackupsAccesskey;" />
+								<menuitem id="hc-sets-tree-removeUserBackupsExc1"
+									oncommand="handyClicksSets.removeOldUserBackups(1);" closemenu="none"
+									label="&hc.sets.removeUserBackupsExc1;" accesskey="&hc.sets.removeUserBackupsExc1Accesskey;" />
 							</menupopup>
 						</menu>
 						<menuseparator />
