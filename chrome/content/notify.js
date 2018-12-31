@@ -66,7 +66,7 @@ var hcNotify = {
 		}
 		window.moveTo(x, y);
 
-		if(opts.inWindowCorner && opts.rearrangeWindows) {
+		if(this.inWindowCorner && opts.rearrangeWindows) {
 			var ws = this.ws;
 			while(ws.hasMoreElements()) {
 				var w = ws.getNext();
