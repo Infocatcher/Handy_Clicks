@@ -801,22 +801,26 @@ var handyClicksSets = {
 		}
 		return true;
 	},
-	setNodeProperties: function(tar, propsObj) {
-		var propsVal = tar.getAttribute("properties");
+	setNodeProperties: function(node, propsObj) {
+		// Optimize: use prefixes and add space after each property
+		var propsVal = node.getAttribute("properties") || "";
 		var changed = false;
 		for(var p in propsObj) if(propsObj.hasOwnProperty(p)) {
-			if(new RegExp("(?:^|\\s)" + p + "(?:\\s|$)").test(propsVal)) {
-				if(!propsObj[p]) { // Remove
-					propsVal = RegExp.leftContext + " " + RegExp.rightContext;
+			var add = !!propsObj[p];
+			p += " ";
+			var indx = propsVal.indexOf(p);
+			if(add) {
+				if(indx == -1) {
+					propsVal += p;
 					changed = true;
 				}
 			}
-			else if(propsObj[p]) { // Add
-				propsVal = propsVal + " " + p;
+			else if(indx != -1) {
+				propsVal = propsVal.substr(0, indx) + propsVal.substr(indx + p.length);
 				changed = true;
 			}
 		}
-		changed && tar.setAttribute("properties", propsVal.replace(/^\s+|\s+$/g, "").replace(/\s+/g, " "));
+		changed && node.setAttribute("properties", propsVal);
 	},
 	setChildNodesProperties: function(parent, propsObj, addToParent) {
 		if(addToParent)
@@ -1613,8 +1617,8 @@ var handyClicksSets = {
 		Array.prototype.forEach.call(
 			this.tree.getElementsByTagName("treerow"),
 			function(tRow) {
-				var props = tRow.getAttribute("properties") || "";
-				props.split(/\s+/).forEach(function(prop) {
+				var props = tRow.getAttribute("properties");
+				props && props.split(/\s+/).forEach(function(prop) {
 					if(!(prop in sp))
 						return;
 					var ph = sp[prop];
@@ -1934,8 +1938,8 @@ var handyClicksSets = {
 				},
 				this
 			);
-			var props = row.getAttribute("properties");
 			var sr = this.searchReplacements;
+			var props = row.getAttribute("properties");
 			props && props.split(/\s+/).forEach(function(prop) {
 				if(prop in sr)
 					rowText.push(sr[prop]);
