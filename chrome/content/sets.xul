@@ -125,6 +125,7 @@ preferences {
 					<menuseparator />
 					<menuitem type="checkbox" hc_pref="sets.rememberSearchQuery" label="&hc.sets.rememberSearchQuery;" />
 					<menuitem type="checkbox" hc_pref="sets.rememberScrollPosition" label="&hc.sets.rememberScrollPosition;" />
+					<menuitem type="checkbox" hc_pref="sets.rememberState" label="&hc.sets.rememberState;" />
 					<menuseparator />
 					<menuitem type="checkbox" hc_pref="sets.closeTreeViewMenu" label="&hc.sets.closeThisMenu;" />
 				</menupopup>

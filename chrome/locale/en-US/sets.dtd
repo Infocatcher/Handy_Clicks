@@ -68,6 +68,7 @@
 <!ENTITY hc.sets.localizeArgs "Localize arguments">
 <!ENTITY hc.sets.rememberSearchQuery "Remember search query">
 <!ENTITY hc.sets.rememberScrollPosition "Remember scroll position">
+<!ENTITY hc.sets.rememberState "Remember tree state">
 <!ENTITY hc.sets.closeThisMenu "Close this menu after click">
 
 <!ENTITY hc.sets.cmdAdd "Add…">

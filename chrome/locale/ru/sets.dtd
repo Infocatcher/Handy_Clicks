@@ -68,6 +68,7 @@
 <!ENTITY hc.sets.localizeArgs "Переводить аргументы">
 <!ENTITY hc.sets.rememberSearchQuery "Запоминать поисковый запрос">
 <!ENTITY hc.sets.rememberScrollPosition "Запоминать положение прокрутки">
+<!ENTITY hc.sets.rememberState "Запоминать состояние дерева">
 <!ENTITY hc.sets.closeThisMenu "Закрывать это меню после клика">
 
 <!ENTITY hc.sets.cmdAdd "Добавить…">
