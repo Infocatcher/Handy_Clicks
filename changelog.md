@@ -15,8 +15,8 @@
 `*` Restored window.handyClicks (as lazy getter) to detect Handy Clicks presence even in disabled mode.<br>
 `*` Improved startup performance: load handyclicks.js after small delay, increased delay to preload settings.<br>
 `*` Added special highlighting for custom files (`//> %hc_ScriptsDir%/example.js` in code).<br>
-`*` UI tweaks and improved localization strings (like %custom%).<br>
-`+` Added menu to insert search placeholders.<br>
+`*` UI tweaks and improved localization strings.<br>
+`+` Added menu to insert search placeholders (like %custom%).<br>
 `x` Correctly reset filter: fix possible rows disappearance.<br>
 `*` Sort rows in invert mode.<br>
 `x` Fixed XSS in labels for custom types.<br>
@@ -24,12 +24,12 @@
 `x` Fixed user backups highlighting in “Restore from backup” menu.<br>
 `x` Correctly open all preferences in case of unloaded about:config tab presence.<br>
 `+` Reset preferences: added checkbox to take export first.<br>
-`x` Correctly import multiline <em>extensions.handyclicks.editor.external.args</em> preference.<br>
+`x` Workaround to correctly import multiline <em>extensions.handyclicks.editor.external.args</em> preference.<br>
 `+` Added UI for <em>extensions.handyclicks.editor.external.labelInFileName</em> preference.<br>
 `*` Rewritten code to make relative path to external editor: also use %CurProcD% and %hc_ProfDrv%, use ../ only for %ProfD% and %CurProcD% (and limit ../ levels).<br>
 `x` Correctly set selection in Scratchpad in Firefox 44+.<br>
 `*` Improved startup performance: moved not used on startup code from prefSvc.js to prefSvcExt.js with lazy loading (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/33">#33</a>).<br>
-`*` Improved settings performance: used faster way to detect unsaved state (compare only settings data without hash calculations).<br>
+`*` Improved settings performance: used faster way to detect unsaved state (compare only settings data without hash calculations, ≈4x faster).<br>
 `x` Fixed trim trailing spaces (Alt+Backspace) in Firefox 49+ (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1108382">bug 1108382</a>).<br>
 `x` Editor: fixed temp file name for delayed actions.<br>
 `x` Editor: restored undo ability after entire text modification in Firefox 56.<br>
@@ -44,7 +44,7 @@
 `*` Show warning, if detected buggy settings.<br>
 `*` Updated <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">notify() API</a> for better readability.<br>
 `*` Increased delay to close notifications + spacial delay for warnings (<em>extensions.handyclicks.notifyOpenTimeWarnings</em> preference).<br>
-`*` Rewrited code to update dependencies (and disable unsupported) in settings window.<br>
+`*` Rewritten code to update dependencies (and disable unsupported) in settings window.<br>
 `*` Notification window: don't overlap dialog buttons (like for status bar).<br>
 `+` Added %on% placeholder for enabled items, placeholder for disabled items renamed from %dis% to %off% (legacy variant is still supported).<br>
 `*` Allow edit mode in disabled state (just temporarily enable).<br>
@@ -60,7 +60,7 @@
 `*` Changed `handyClicksFuncs.getItemText()` function for unknown items: prefer .value (for XUL textbox).<br>
 `+` API: added itemType argument to all custom functions and firstCall argument to custom type definition.<br>
 `+` API: added <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">handyClicks.initCustomType()</a> function to override behavior of built-in functions to get item text and URI.<br>
-`*` API: changed <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">handyClicksFuncs.getItemURI()</a>, added event argument.<br>
+`*` API: changed <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">handyClicksFuncs.getItemURI()</a>, added `event` argument.<br>
 `+` Added ability to not ignore clicks on tab close buttons (“Exclude close button” checkbox in editor).<br>
 `*` Improved warning for custom type disabling: show count of enabled related settings, which will be also disabled.<br>
 `+` Added remembering of tree state (View – Remember tree state, <em>extensions.handyclicks.sets.rememberState</em> preference).<br>
