@@ -200,8 +200,8 @@ var handyClicksSets = {
 		var tr = this.tree;
 		if(saveFlag) {
 			if(rememberState) {
-				tr.setAttribute("hc_stateCollapsed", this.ps.JSON.stringify(this.saveCollapsed()));
-				tr.setAttribute("hc_stateSelected", this.ps.JSON.stringify(this.saveSelection()));
+				tr.setAttribute("hc_stateCollapsed", this.ps.JSON.stringify(this.getCollapsed()));
+				tr.setAttribute("hc_stateSelected", this.ps.JSON.stringify(this.getSelected()));
 			}
 			else {
 				tr.removeAttribute("hc_stateCollapsed");
@@ -454,8 +454,8 @@ var handyClicksSets = {
 		if(saveSel === undefined)
 			saveSel = true;
 
-		var collapsedRows = saveClosed && this.saveCollapsed();
-		var selectedRows = saveSel && this.saveSelection();
+		var collapsedRows = saveClosed && this.getCollapsed();
+		var selectedRows = saveSel && this.getSelected();
 
 		this._redrawTree();
 		if(!this.tView.rowCount)
@@ -464,7 +464,7 @@ var handyClicksSets = {
 		saveClosed && this.restoreCollapsed(collapsedRows);
 		saveSel && this.restoreSelection(selectedRows);
 	},
-	saveCollapsed: function() {
+	getCollapsed: function() {
 		var collapsedRows = { __proto__: null };
 		Array.prototype.forEach.call(
 			this.treeContainers,
@@ -484,7 +484,7 @@ var handyClicksSets = {
 			}
 		);
 	},
-	saveSelection: function() {
+	getSelected: function() {
 		var selectedRows = { __proto__: null };
 		var rngCount = this.tSel.getRangeCount();
 		var start = {}, end = {};
@@ -1859,7 +1859,7 @@ var handyClicksSets = {
 		if(!hasTerm)
 			dontSelect = true;
 		if(dontSelect)
-			var selectedRows = this.saveSelection();
+			var selectedRows = this.getSelected();
 
 		this._hasFilter && this._redrawTree(true);
 		var tRow, rowText, okRow;
