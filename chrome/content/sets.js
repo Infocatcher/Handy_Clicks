@@ -95,6 +95,7 @@ var handyClicksSets = {
 	},
 	destroy: function(reloadFlag) {
 		this.closeImportEditors();
+		this.treeState(true);
 		this.treeScrollPos(true);
 		this.saveSearchQuery();
 		reloadFlag && this.setImportStatus(false);
@@ -124,6 +125,7 @@ var handyClicksSets = {
 			sf.removeAttribute("hc_value");
 	},
 	startupUI: function() {
+		this.treeState(false);
 		this.treeScrollPos(false);
 		Array.prototype.forEach.call(
 			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
@@ -192,6 +194,30 @@ var handyClicksSets = {
 					w.close();
 			}
 		);
+	},
+	treeState: function(saveFlag) {
+		var rememberState = this.pu.get("sets.rememberState");
+		var tr = this.tree;
+		if(saveFlag) {
+			if(rememberState) {
+				tr.setAttribute("hc_stateCollapsed", this.ps.JSON.stringify(this.saveCollapsed()));
+				tr.setAttribute("hc_stateSelected", this.ps.JSON.stringify(this.saveSelection()));
+			}
+			else {
+				tr.removeAttribute("hc_stateCollapsed");
+				tr.removeAttribute("hc_stateSelected");
+			}
+			document.persist(tr.id, "hc_stateCollapsed");
+			document.persist(tr.id, "hc_stateSelected");
+			return;
+		}
+		if(!rememberState)
+			return;
+
+		var collapsedRows = tr.getAttribute("hc_stateCollapsed");
+		var selectedRows = tr.getAttribute("hc_stateSelected");
+		collapsedRows && this.restoreCollapsed(this.ps.JSON.parse(collapsedRows));
+		selectedRows && this.restoreSelection(this.ps.JSON.parse(selectedRows));
 	},
 	treeScrollPos: function(saveFlag) {
 		var rememberScrollPos = this.pu.get("sets.rememberScrollPosition");
