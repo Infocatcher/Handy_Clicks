@@ -3092,8 +3092,15 @@ var handyClicksSets = {
 				return file.exists();
 			});
 		}, this);
-		this.$("hc-sets-tree-removeUserBackupsExc10").setAttribute("disabled", ubCount <= 10);
-		this.$("hc-sets-tree-removeUserBackupsExc1") .setAttribute("disabled", ubCount <= 1);
+
+		var removeDepth = this.pu.get("sets.backupUserRemoveDepth");
+		var removeDepth2 = this.pu.get("sets.backupUserRemoveDepth2");
+		var miRemove = this.$("hc-sets-tree-removeUserBackups");
+		var miRemove2 = this.$("hc-sets-tree-removeUserBackups2");
+		miRemove.setAttribute("label", miRemove.getAttribute("label").replace(/\d+(?!.*\d)/, removeDepth));
+		miRemove2.setAttribute("label", miRemove2.getAttribute("label").replace(/\d+(?!.*\d)/, removeDepth2));
+		miRemove.setAttribute("disabled", ubCount <= removeDepth);
+		miRemove2.setAttribute("disabled", ubCount <= removeDepth2);
 
 		var mi = this.$("hc-sets-tree-openBackupsDir");
 		var isDarkFont = true;
@@ -3106,6 +3113,8 @@ var handyClicksSets = {
 		popup.setAttribute("hc_isDarkMenuFont", isDarkFont);
 	},
 	removeOldUserBackups: function(store) {
+		if(store < 0)
+			store = 0;
 		var popup = this.ubPopup;
 		var ub = popup.__userBackups;
 		ub.slice(store, ub.length).forEach(
@@ -3121,7 +3130,6 @@ var handyClicksSets = {
 			}
 		);
 		popup.__userBackups = ub.slice(0, store);
-		//this.buildRestorePopup();
 		this.updRestorePopup(store);
 	},
 	reveal: function(file) {
