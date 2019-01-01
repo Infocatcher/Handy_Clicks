@@ -2356,17 +2356,28 @@ var handyClicksSets = {
 		this.$("hc-sets-externalEditorButtonDeck").selectedIndex = isRelative ? 1 : 0;
 		img.removeAttribute("tooltiptext");
 		var tt = "";
-		if(eeFile instanceof Components.interfaces.nsILocalFileWin) {
+		if(
+			eeFile
+			&& "nsILocalFileWin" in Components.interfaces
+			&& eeFile instanceof Components.interfaces.nsILocalFileWin
+		) {
 			var getVI = function(f) {
 				try { return eeFile.getVersionInfoField(f) || ""; }
 				catch(e) { return ""; }
 			};
-			var name = getVI("ProductName");
-			var vers = getVI("ProductVersion");
-			if(name)
-				tt = name + (vers && vers != "0, 0, 0, 0" ? " " + vers : "");
-			if(changed)
-				this.setDefaultArgs(name);
+			tt = getVI("FileDescription") || eeFile.leafName || "";
+			changed && this.setDefaultArgs(getVI("ProductName"));
+		}
+		else if(
+			eeFile
+			&& "nsILocalFileMac" in Components.interfaces
+			&& eeFile instanceof Components.interfaces.nsILocalFileMac
+		) {
+			try { tt = eeFile.bundleDisplayName; }
+			catch(e) {}
+		}
+		else if(eeFile) {
+			tt = eeFile.leafName;
 		}
 		if(isRelative && eeFile)
 			tt += (tt ? "\n" : "") + eeFile.path;
