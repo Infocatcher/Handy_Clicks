@@ -2180,9 +2180,6 @@ var handyClicksSets = {
 		if(notChanged)
 			return;
 
-		//~ todo:
-		//   #hc-sets-warnMsgsPrefs-tooltip description { white-space: -moz-pre-wrap; }
-		// for old Firefox versions (it's buggy in Firefox 1.5)?
 		var tt = this.$("hc-sets-warnMsgsPrefs-tooltip");
 		var ttSep = this.$("hc-sets-warnMsgsPrefs-tooltipSep");
 		while(ttSep.nextSibling)
