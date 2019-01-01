@@ -1771,9 +1771,15 @@ var handyClicksSets = {
 		delete this.searchReplacements;
 		var sr = this.searchReplacements = { __proto__: null };
 		var sp = this.searchPlaceholders;
-		var s = "";
+		var i = 0;
 		for(var p in sp) {
-			s += "\0";
+			// Will replace %foo% with not used in text symbols (to not find %foo% in code)
+			var s = Array.prototype.map.call(
+				(i++).toString(8),
+				function(c) {
+					return String.fromCharCode(c);
+				}
+			).join("");
 			sr[p] = "\uffff" + s + "\uffff";
 		}
 		return sr;
