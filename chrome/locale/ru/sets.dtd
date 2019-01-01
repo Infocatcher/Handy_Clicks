@@ -27,6 +27,7 @@
 <!ENTITY hc.sets.searchEnabled "Включённые">
 <!ENTITY hc.sets.searchDisabled "Отключённые">
 <!ENTITY hc.sets.searchOpened "Открытые в редакторе">
+<!ENTITY hc.sets.searchDelayed "Отложенные действия">
 <!ENTITY hc.sets.searchCustom "Свой код">
 <!ENTITY hc.sets.searchCustomFile "Свой файл">
 <!ENTITY hc.sets.searchCustomInit "Своя инициализация">

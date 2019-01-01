@@ -55,6 +55,7 @@ preferences {
 					<menuseparator />
 					<menuitem type="checkbox" acceltext="%open%" label="&hc.sets.searchOpened;" />
 					<menuseparator />
+					<menuitem type="checkbox" acceltext="%delay%" label="&hc.sets.searchDelayed;" />
 					<menuitem type="checkbox" acceltext="%custom%" label="&hc.sets.searchCustom;" />
 					<menuitem type="checkbox" acceltext="%file%" label="&hc.sets.searchCustomFile;" />
 					<menuitem type="checkbox" acceltext="%init%" label="&hc.sets.searchCustomInit;" />
