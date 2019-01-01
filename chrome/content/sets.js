@@ -1512,7 +1512,6 @@ var handyClicksSets = {
 		return this.treeBatch(this._toggleTreeContainers, this, arguments);
 	},
 	_toggleTreeContainers: function(expand) {
-		expand = String(expand);
 		Array.prototype.forEach.call(
 			this.treeContainers,
 			function(ti) {
@@ -1827,7 +1826,7 @@ var handyClicksSets = {
 			sTerm = sTerm.replace("%dis%", sr.hc_disabled); //= Added: 2018-12-20
 		}
 
-		if(/^\/(.+)\/([im]{0,2})$/.test(sTerm)) { // /RegExp/flags
+		if(/^\/(.+)\/(im?|mi?)$/.test(sTerm)) { // /RegExp/flags
 			try {
 				sTerm = new RegExp(RegExp.$1, RegExp.$2);
 				checkFunc = function(rowText) {
