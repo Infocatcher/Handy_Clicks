@@ -65,6 +65,7 @@
 `*` Improved warning for custom type disabling: show count of enabled related settings, which will be also disabled.<br>
 `+` Added remembering of tree state (View – Remember tree state, <em>extensions.handyclicks.sets.rememberState</em> preference).<br>
 `*` Make menu items to remove user backups configurable (<em>extensions.handyclicks.sets.backupUserRemoveDepth</em> and <em>extensions.handyclicks.sets.backupUserRemoveDepth2</em> preferences).<br>
+`*` Optimized usage of “properties” attribute in XUL tree (≈1.5x faster tree drawing).<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
