@@ -1873,15 +1873,10 @@ var handyClicksSets = {
 			var selectedRows = this.getSelected();
 
 		this._hasFilter && this._redrawTree(true);
-		var tRow, rowText, okRow;
 		var matchedRows = [];
 		for(var h in this.rowsCache) {
-			tRow = this.rowsCache[h];
-			okRow = true;
-			if(hasTerm) {
-				rowText = this.getRowText(tRow, caseSensitive); //~ todo: cache?
-				okRow = checkFunc(rowText);
-			}
+			var tRow = this.rowsCache[h];
+			var okRow = !hasTerm || checkFunc(this.getRowText(tRow, caseSensitive));
 			var hl = hasTerm && okRow;
 			this.setChildNodesProperties(tRow, { hc_search: hl }, true);
 			tRow.parentNode.__matched = okRow;
