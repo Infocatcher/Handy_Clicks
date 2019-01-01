@@ -2246,7 +2246,14 @@ var handyClicksSets = {
 		var path = this.ee.value;
 		if(!path || /^\w+$/.test(path))
 			return null;
-		return this.ut.getLocalFile(this.ee.value);
+		return this.ut.getLocalFile(path);
+	},
+	get eeArgs() {
+		var tb = this.e("hc-sets-externalEditorArgs");
+		if("editor" in tb)
+			tb.editor; // Ensure initialized
+		delete this.eeArgs;
+		return this.eeArgs = tb;
 	},
 	selectExternalEditor: function() {
 		var ee = this.ee;
@@ -2399,9 +2406,9 @@ var handyClicksSets = {
 			args = "%F:%L:%C";
 		else
 			return;
-		var argsField = this.$("hc-sets-externalEditorArgs");
-		argsField.value = args;
-		this.fireChange(argsField);
+		var eeArgs = this.eeArgs;
+		eeArgs.value = args;
+		this.fireChange(eeArgs);
 	},
 	showExternalEditorFile: function() {
 		var eeFile = this.eeFile;
@@ -2431,6 +2438,7 @@ var handyClicksSets = {
 					) {
 						e.preventDefault();
 						ee.value = "Scratchpad";
+						this.eeArgs.value = "";
 						this.fireChange(ee);
 						break;
 					}
