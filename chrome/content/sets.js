@@ -623,6 +623,7 @@ var handyClicksSets = {
 				daFileData = true;
 
 			this.setChildNodesProperties(daRow, {
+				hc_delayed: true,
 				hc_enabled: !daDis,
 				hc_disabled: daDis,
 				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel) && ++this.counters.buggy,
@@ -1760,6 +1761,7 @@ var handyClicksSets = {
 		hc_customType:   "%type%",
 		hc_enabled:      "%on%",
 		hc_disabled:     "%off%",
+		hc_delayed:      "%delay%",
 		hc_edited:       "%open%",
 		hc_notAvailable: "%na%",
 		hc_buggy:        "%bug%",
