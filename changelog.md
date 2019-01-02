@@ -66,6 +66,9 @@
 `+` Added remembering of tree state (View – Remember tree state, <em>extensions.handyclicks.sets.rememberState</em> preference).<br>
 `*` Make menu items to remove user backups configurable (<em>extensions.handyclicks.sets.backupUserRemoveDepth</em> and <em>extensions.handyclicks.sets.backupUserRemoveDepth2</em> preferences).<br>
 `*` Optimized usage of “properties” attribute in XUL tree (≈1.5x faster tree drawing).<br>
+`+` Added %delay% search placeholder to search for delayed actions.<br>
+`*` Show file description (instead of product name and useless version) in tooltip for icon of external editor, also try show description in MacOS (not tested).<br>
+`*` Optimized creation of container items in tree, don't use slow DOMParser (≈1.2x faster tree drawing).<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
