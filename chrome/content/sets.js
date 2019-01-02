@@ -1854,7 +1854,9 @@ var handyClicksSets = {
 		if(sTerm.indexOf("%") != -1) {
 			var sr = this.searchReplacements;
 			var sm = this.searchMap;
-			sTerm = sTerm.replace(/%[^%]+%/g, function(ph) {
+			sTerm = sTerm.replace(/%[^%]+%/g, function(ph, offset, sTerm) {
+				if(sTerm.charAt(offset - 1) == "%" && sTerm.charAt(offset + ph.length) == "%")
+					return ph.slice(1, -1); // %%foo%% -> %foo%
 				if(ph in sm)
 					return sm[ph];
 				if(ph == "%dis%") //= Added: 2018-12-20
