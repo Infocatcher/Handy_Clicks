@@ -212,7 +212,7 @@ Or use “Scratchpad” instead of path to launch built-in browser editor (if av
 &#37;L – line number
 &#37;C – column number">
 <!ENTITY hc.sets.externalEditorTempFile "Temp file">
-<!ENTITY hc.sets.externalEditorTempFileName "Use label for file name">
+<!ENTITY hc.sets.externalEditorTempFileName "Function label in file name">
 <!ENTITY hc.sets.externalEditorTempFileExt "File extension:">
 
 <!ENTITY hc.sets.resetWarnMsgs "Reset warning messages">
