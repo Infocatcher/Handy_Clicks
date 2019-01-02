@@ -1790,7 +1790,7 @@ var handyClicksSets = {
 		hc_buggy:        "%bug%",
 		__proto__: null
 	},
-	get searchReplacements() {
+	get searchReplacements() { // hc_foo: "internal string"
 		delete this.searchReplacements;
 		var sr = this.searchReplacements = { __proto__: null };
 		var sp = this.searchPlaceholders;
@@ -1806,6 +1806,15 @@ var handyClicksSets = {
 			sr[p] = "\uffff" + s + "\uffff";
 		}
 		return sr;
+	},
+	get searchMap() { // "%foo%": "internal string"
+		delete this.searchMap;
+		var sm = this.searchMap = { __proto__: null };
+		var sp = this.searchPlaceholders;
+		var sr = this.searchReplacements;
+		for(var p in sp)
+			sm[sp[p]] = sr[p];
+		return sm;
 	},
 	toggleSearch: function(str, dontSelect) {
 		this.doSearch(this.searchField.value == str ? "" : str, dontSelect);
@@ -1843,11 +1852,15 @@ var handyClicksSets = {
 		var hasTerm = true;
 
 		if(sTerm.indexOf("%") != -1) {
-			var sp = this.searchPlaceholders;
 			var sr = this.searchReplacements;
-			for(var p in sp)
-				sTerm = sTerm.replace(sp[p], sr[p]);
-			sTerm = sTerm.replace("%dis%", sr.hc_disabled); //= Added: 2018-12-20
+			var sm = this.searchMap;
+			sTerm = sTerm.replace(/%[^%]+%/g, function(ph) {
+				if(ph in sm)
+					return sm[ph];
+				if(ph == "%dis%") //= Added: 2018-12-20
+					return sr.hc_disabled;
+				return ph;
+			});
 		}
 
 		if(/^\/(.+)\/(im?|mi?)$/.test(sTerm)) { // /RegExp/flags
