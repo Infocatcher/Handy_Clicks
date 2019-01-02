@@ -40,7 +40,8 @@
 <!ENTITY hc.sets.searchTip "Space = and
 'whole string'
 &quot;Whole string and Match Case&quot;
-/regular expression/i">
+/regular expression/i
+&#37;&#37;on&#37;&#37; = &#37;on&#37; (not treat as search placeholder)">
 <!ENTITY hc.sets.filterTip "Filter">
 <!ENTITY hc.sets.searchResultsTip "Count of found items">
 
