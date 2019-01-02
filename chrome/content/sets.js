@@ -1578,7 +1578,12 @@ var handyClicksSets = {
 		// node.boxObject instanceof Components.interfaces.nsIMenuBoxObject
 		return node.localName == "button" && node.getAttribute("type") == "menu";
 	},
+	_openMenuTimer: 0,
 	openMenu: function(e) {
+		if(this._openMenuTimer) {
+			clearTimeout(this._openMenuTimer);
+			this._openMenuTimer = 0;
+		}
 		var menu = e.originalTarget;
 		if(!this.isMenuButton(menu))
 			return;
@@ -1586,9 +1591,15 @@ var handyClicksSets = {
 			Array.prototype.slice.call(document.getElementsByTagName("*")),
 			Array.prototype.slice.call(this.applyButton.parentNode.childNodes)
 		).some(function(node) {
-			if(this.isMenuButton(node) && node.open && node != menu) {
-				node.open = false;
-				menu.open = true;
+			if(this.isMenuButton(node) && node != menu && node.open) {
+				var openMenu = function() {
+					node.open = false;
+					menu.open = true;
+				};
+				if(node.parentNode == menu.parentNode)
+					openMenu();
+				else
+					this._openMenuTimer = setTimeout(openMenu, this.pu.get("ui.openMenuDelay"));
 				return true;
 			}
 			return false;
