@@ -142,11 +142,17 @@ var handyClicksSets = {
 
 		var de = document.documentElement;
 		var prefsButt = de.getButton("extra2");
+		prefsButt.className += " hc-iconic hc-preferences";
 		prefsButt.setAttribute("type", "menu");
 		//prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
 		// Can't open popup from keyboard
 		prefsButt.appendChild(this.e("hc-sets-prefsManagementPopup"));
-		prefsButt.className += " hc-iconic hc-preferences";
+		Array.prototype.forEach.call( // Fix command handler from dialog binding
+			prefsButt.getElementsByTagName("menuitem"),
+			function(mi) {
+				mi.setAttribute("dlgtype", "extra2");
+			}
+		);
 	},
 	buildCharsetMenu: function(popup) {
 		Components.classes["@mozilla.org/observer-service;1"]
