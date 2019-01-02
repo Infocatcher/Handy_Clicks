@@ -547,19 +547,19 @@ var handyClicksSets = {
 		);
 	},
 	appendContainerItem: function(parent, hash, label) {
-		var tItem = this.ut.parseXULFromString('\
-			<treeitem xmlns="' + this.ut.XULNS + '" container="true" open="true">\
-				<treerow>\
-					<treecell label="' + this.ut.encodeHTML(label) + '" />\
-				</treerow>\
-				<treechildren />\
-			</treeitem>'
-		);
+		var tItem = document.createElement("treeitem");
+		tItem.setAttribute("container", "true");
+		tItem.setAttribute("open", "true");
+		var tRow = tItem.appendChild(document.createElement("treerow"));
+		var tCell = tRow.appendChild(document.createElement("treecell"));
+		tCell.setAttribute("label", label);
+		var tChld = tItem.appendChild(document.createElement("treechildren"));
+
 		tItem.__hash = hash;
 		tItem.__sortLabel = label;
 		var insPos = this.getSortedInsPos(parent, tItem);
 		parent.insertBefore(tItem, insPos);
-		return this.eltsCache[hash] = tItem.getElementsByTagName("treechildren")[0];
+		return this.eltsCache[hash] = tChld;
 	},
 	getSortedInsPos: function(parent, sortItem) {
 		var sortedItems = Array.prototype.slice.call(parent.childNodes);
