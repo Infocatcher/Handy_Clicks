@@ -251,9 +251,8 @@ var handyClicksSets = {
 			return;
 		var fvr = +tr.getAttribute("hc_firstVisibleRow");
 		var lvr = +tr.getAttribute("hc_lastVisibleRow");
-		if(lvr > maxRowsIndx)
-			fvr -= lvr - maxRowsIndx;
-		tbo.scrollToRow(this.ut.mm(fvr, 0, maxRowsIndx));
+		tbo.ensureRowIsVisible(this.ut.mm(lvr, 0, maxRowsIndx));
+		tbo.ensureRowIsVisible(this.ut.mm(fvr, 0, maxRowsIndx));
 	},
 
 	/*** Actions pane ***/
