@@ -1578,6 +1578,14 @@ var handyClicksSets = {
 		// node.boxObject instanceof Components.interfaces.nsIMenuBoxObject
 		return node.localName == "button" && node.getAttribute("type") == "menu";
 	},
+	isSiblingMenus: function(menu, menu2) {
+		var p = menu.parentNode;
+		var p2 = menu2.parentNode;
+		return p == p2 || this.isBottomMenuPanel(p) && this.isBottomMenuPanel(p2);
+	},
+	isBottomMenuPanel: function(p) {
+		return p.id == "hc-sets-tree-editPanel" || p.getAttribute("anonid") == "dlg-buttons";
+	},
 	_openMenuTimer: 0,
 	openMenu: function(e) {
 		if(this._openMenuTimer) {
@@ -1596,7 +1604,7 @@ var handyClicksSets = {
 					node.open = false;
 					menu.open = true;
 				};
-				if(node.parentNode == menu.parentNode)
+				if(this.isSiblingMenus(node, menu))
 					openMenu();
 				else
 					this._openMenuTimer = setTimeout(openMenu, this.pu.get("ui.openMenuDelay"));
