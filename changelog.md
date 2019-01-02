@@ -69,6 +69,7 @@
 `+` Added %delay% search placeholder to search for delayed actions.<br>
 `*` Show file description (instead of product name and useless version) in tooltip for icon of external editor, also try show description in MacOS (not tested).<br>
 `*` Optimized creation of container items in tree, don't use slow DOMParser (≈1.2x faster tree drawing).<br>
+`*` Open not sibling menu (and close currently opened) after “mouseover” + delay (<em>extensions.handyclicks.ui.openMenuDelay</em> preference).<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
