@@ -184,10 +184,10 @@
 <!ENTITY hc.sets.onTopButton "Показывать кнопку «Закрепить» в углу окна">
 <!-- Used "button-accept" string from chrome://global/locale/dialog.properties -->
 <!ENTITY hc.sets.overrideInstantApply "Кнопки «OK» и «&hc.sets.apply;»:">
-<!ENTITY hc.sets.overrideInstantApply.useBrowserSettings "использовать настройки браузера">
-<!ENTITY hc.sets.overrideInstantApply.useBrowserSettingsTip "настройка browser.preferences.instantApply">
-<!ENTITY hc.sets.overrideInstantApply.forceOff "принудительно показывать">
-<!ENTITY hc.sets.overrideInstantApply.forceOn "принудительно скрывать">
+<!ENTITY hc.sets.overrideInstantApply.useBrowserSettings "Использовать настройки браузера">
+<!ENTITY hc.sets.overrideInstantApply.useBrowserSettingsTip "Настройка browser.preferences.instantApply">
+<!ENTITY hc.sets.overrideInstantApply.forceOff "Принудительно показывать">
+<!ENTITY hc.sets.overrideInstantApply.forceOn "Принудительно скрывать">
 <!ENTITY hc.sets.reopenWindow "Переоткрыть окно">
 
 <!ENTITY hc.sets.tabulation "Табуляция">

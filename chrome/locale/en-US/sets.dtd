@@ -184,10 +184,10 @@
 <!ENTITY hc.sets.onTopButton "Show “On top” button in the corner">
 <!-- Used "button-accept" string from chrome://global/locale/dialog.properties -->
 <!ENTITY hc.sets.overrideInstantApply "“OK” and “&hc.sets.apply;” buttons:">
-<!ENTITY hc.sets.overrideInstantApply.useBrowserSettings "use browser settings">
+<!ENTITY hc.sets.overrideInstantApply.useBrowserSettings "Use browser settings">
 <!ENTITY hc.sets.overrideInstantApply.useBrowserSettingsTip "browser.preferences.instantApply preference">
-<!ENTITY hc.sets.overrideInstantApply.forceOff "force show">
-<!ENTITY hc.sets.overrideInstantApply.forceOn "force hide">
+<!ENTITY hc.sets.overrideInstantApply.forceOff "Force show">
+<!ENTITY hc.sets.overrideInstantApply.forceOn "Force hide">
 <!ENTITY hc.sets.reopenWindow "Reopen window">
 
 <!ENTITY hc.sets.tabulation "Tabulation">
