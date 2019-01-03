@@ -1841,7 +1841,7 @@ var handyClicksSets = {
 		this.searchField.value = str;
 		this.searchInSetsTree(dontSelect);
 	},
-	searchInSetsTree: function(dontSelect, dontResetPosition) {
+	searchInSetsTree: function(dontSelect) {
 		if(this._searchTimer)
 			return;
 
@@ -1856,15 +1856,15 @@ var handyClicksSets = {
 
 		this.treeBatch(this._searchInSetsTree, this, arguments);
 	},
-	searchInSetsTreeDelay: function(dontSelect, dontResetPosition) {
+	searchInSetsTreeDelay: function(dontSelect) {
 		if(this._searchTimer)
 			return;
 		this._searchTimer = this.delay(function() {
 			this._searchTimer = 0;
-			this.searchInSetsTree(dontSelect, dontResetPosition);
+			this.searchInSetsTree(dontSelect);
 		}, this);
 	},
-	_searchInSetsTree: function(dontSelect, dontResetPosition) {
+	_searchInSetsTree: function(dontSelect) {
 		var sf = this.searchField;
 		var filterMode = this.$("hc-sets-tree-searchFilterMode").getAttribute("checked") == "true";
 
@@ -1966,7 +1966,7 @@ var handyClicksSets = {
 			}
 		}
 
-		this.searcher.reset(dontResetPosition);
+		this.searcher.reset();
 		matchedRows.forEach(function(tRow) {
 			var indx = this.tView.getIndexOfItem(tRow.parentNode);
 			this.searcher.add(indx);
@@ -3491,10 +3491,9 @@ var handyClicksSetsSearcher = {
 	_res: [], // rows numbers
 	_current: 0,
 	_wrapped: false,
-	reset: function(dontResetPosition) {
+	reset: function() {
 		this._res = [];
-		if(!dontResetPosition)
-			this._current = 0;
+		this._current = 0;
 		this.wrapped = this._wrapped = false;
 	},
 	add: function(r) {
