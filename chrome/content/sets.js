@@ -1650,6 +1650,9 @@ var handyClicksSets = {
 		Array.prototype.forEach.call(
 			this.tree.getElementsByTagName("treerow"),
 			function(tRow) {
+				var tItem = tRow.parentNode;
+				if(tItem.hidden || tItem.parentNode.parentNode.hidden)
+					return;
 				var props = tRow.getAttribute("properties");
 				props && props.split(/\s+/).forEach(function(prop) {
 					if(!(prop in sp))
