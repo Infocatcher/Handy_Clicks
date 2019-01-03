@@ -1188,14 +1188,14 @@ var handyClicksSets = {
 	removeTreeitem: function(tItem) {
 		var tBody = this.tBody;
 		var tChld = tItem.parentNode;
-		while(true) {
+		for(;;) {
 			tChld.removeChild(tItem);
 
 			this.deleteCachedRow(tItem.__hash);
 			if(tItem.__delayed)
 				this.deleteCachedRow(tItem.__delayed.__hash);
 
-			if(tChld.hasChildNodes() || tChld == tBody)
+			if(tChld == tBody || tChld.hasChildNodes())
 				break;
 
 			tItem = tChld.parentNode;
@@ -1207,6 +1207,22 @@ var handyClicksSets = {
 		if(tRow && /(?:^|\s)hc_buggy(?:\s|$)/.test(tRow.getAttribute("properties")))
 			--this.counters.buggy;
 		delete this.rowsCache[hash];
+	},
+	hideTreeitem: function(tItem) {
+		var tBody = this.tBody;
+		var tChld = tItem.parentNode;
+		for(;;) {
+			tItem.hidden = true;
+			if(tChld == tBody || this.hasVisibleChild(tChld))
+				break;
+			tItem = tChld.parentNode;
+			tChld = tItem.parentNode;
+		}
+	},
+	hasVisibleChild: function(node) {
+		return Array.prototype.some.call(node.childNodes, function(ch) {
+			return !ch.hidden;
+		});
 	},
 	openEditorWindow: function(tItem, mode, add, src) { // mode: this.ct.EDITOR_MODE_*
 		var shortcut = tItem
@@ -1911,7 +1927,11 @@ var handyClicksSets = {
 		if(dontSelect)
 			var selectedRows = this.getSelected();
 
-		this._hasFilter && this._redrawTree(true);
+		if(this._hasFilter) {
+			var hidden = this.tBody.getElementsByAttribute("hidden", "true");
+			for(var i = hidden.length - 1; i >= 0; --i)
+				hidden[i].hidden = false;
+		}
 		var matchedRows = [];
 		for(var h in this.rowsCache) {
 			var tRow = this.rowsCache[h];
@@ -1936,7 +1956,7 @@ var handyClicksSets = {
 						: tItem.__delayed && tItem.__delayed.__matched
 				)
 					continue;
-				this.removeTreeitem(tItem);
+				this.hideTreeitem(tItem);
 			}
 		}
 
