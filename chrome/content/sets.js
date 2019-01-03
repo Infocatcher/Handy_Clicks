@@ -1727,9 +1727,9 @@ var handyClicksSets = {
 				ph += " ";
 			editor.insertText(ph);
 		}
-		// Force call for old Firefox versions
 		this.fireChange(this.searchField, "input");
-		this.searchInSetsTree();
+		if(this.ut.fxVersion < 3.5)
+			this.searchInSetsTree();
 		ifi.focus();
 	},
 	navigateSearchResults: function(e) {
@@ -1781,7 +1781,7 @@ var handyClicksSets = {
 	},
 
 	_searchDelay: 50,
-	_searchTimeout: 0,
+	_searchTimer: 0,
 	_lastSearch: 0,
 	searchPlaceholders: {
 		hc_override:     "%ovr%",
@@ -1833,13 +1833,13 @@ var handyClicksSets = {
 		this.searchInSetsTree(dontSelect);
 	},
 	searchInSetsTree: function(dontSelect, dontResetPosition) {
-		if(this._searchTimeout)
+		if(this._searchTimer)
 			return;
 
 		var remTime = this._lastSearch + this._searchDelay - Date.now();
 		if(remTime > 0) {
-			this._searchTimeout = this.delay(function() {
-				this._searchTimeout = 0;
+			this._searchTimer = this.delay(function() {
+				this._searchTimer = 0;
 				this.searchInSetsTree.apply(this, arguments);
 			}, this, remTime, arguments);
 			return;
@@ -1848,8 +1848,12 @@ var handyClicksSets = {
 		this.treeBatch(this._searchInSetsTree, this, arguments);
 	},
 	searchInSetsTreeDelay: function(dontSelect, dontResetPosition) {
-		// Needs for undo/redo
-		this.delay(this.searchInSetsTree, this, 0, arguments);
+		if(this._searchTimer)
+			return;
+		this._searchTimer = this.delay(function() {
+			this._searchTimer = 0;
+			this.searchInSetsTree(dontSelect, dontResetPosition);
+		}, this);
 	},
 	_searchInSetsTree: function(dontSelect, dontResetPosition) {
 		var sf = this.searchField;
