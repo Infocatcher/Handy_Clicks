@@ -1186,20 +1186,16 @@ var handyClicksSets = {
 			this.searchInSetsTree(true);
 	},
 	removeTreeitem: function(tItem) {
-		var tBody = this.tBody;
-		var tChld = tItem.parentNode;
-		for(;;) {
+		for(;; tItem = tChld.parentNode) {
+			var tChld = tItem.parentNode;
 			tChld.removeChild(tItem);
 
 			this.deleteCachedRow(tItem.__hash);
 			if(tItem.__delayed)
 				this.deleteCachedRow(tItem.__delayed.__hash);
 
-			if(tChld == tBody || tChld.hasChildNodes())
+			if(tChld == this.tBody || tChld.hasChildNodes())
 				break;
-
-			tItem = tChld.parentNode;
-			tChld = tItem.parentNode;
 		}
 	},
 	deleteCachedRow: function(hash) {
@@ -1209,14 +1205,11 @@ var handyClicksSets = {
 		delete this.rowsCache[hash];
 	},
 	hideTreeitem: function(tItem) {
-		var tBody = this.tBody;
-		var tChld = tItem.parentNode;
-		for(;;) {
+		for(;; tItem = tChld.parentNode) {
+			var tChld = tItem.parentNode;
 			tItem.hidden = true;
-			if(tChld == tBody || this.hasVisibleChild(tChld))
+			if(tChld == this.tBody || this.hasVisibleChild(tChld))
 				break;
-			tItem = tChld.parentNode;
-			tChld = tItem.parentNode;
 		}
 	},
 	hasVisibleChild: function(node) {
