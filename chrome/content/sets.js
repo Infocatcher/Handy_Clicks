@@ -1887,7 +1887,7 @@ var handyClicksSets = {
 			});
 		}
 
-		if(/^\/(.+)\/(im?|mi?)$/.test(sTerm)) { // /RegExp/flags
+		if(/^\/(.+)\/(im?|mi?)?$/.test(sTerm)) { // /RegExp/flags
 			try {
 				sTerm = new RegExp(RegExp.$1, RegExp.$2);
 				checkFunc = function(rowText) {
