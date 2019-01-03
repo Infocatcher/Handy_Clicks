@@ -1724,6 +1724,12 @@ var handyClicksSets = {
 			editor.deleteSelection(0, 0);
 		}
 		else {
+			// Check for selection inside placeholder
+			var leftPh = /%[^%]*$/.test(val.substr(0, ifi.selectionStart)) && RegExp.lastMatch;
+			var rightPh = /^[^%]*%+/.test(val.substr(ifi.selectionEnd)) && RegExp.lastMatch;
+			if(leftPh && rightPh && /^[^%]*$/.test(val.substring(ifi.selectionStart, ifi.selectionEnd)))
+				ifi.selectionStart = ifi.selectionEnd = ifi.selectionEnd + rightPh.length;
+
 			if(/\S$/.test(val.substr(0, ifi.selectionStart)))
 				ph = " " + ph;
 			if(/^\S/.test(val.substr(ifi.selectionEnd)))
