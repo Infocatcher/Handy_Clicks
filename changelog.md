@@ -47,6 +47,7 @@
 `*` Rewritten code to update dependencies (and disable unsupported) in settings window.<br>
 `*` Notification window: don't overlap dialog buttons (like for status bar).<br>
 `+` Added %on% placeholder for enabled items, placeholder for disabled items renamed from %dis% to %off% (legacy variant is still supported).<br>
+`*` Now used undoable way to prevent non-ASCII characters in field for internal id of custom type with nsIPlaintextEditor.undo() (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/25">#25</a>).<br>
 `*` Allow edit mode in disabled state (just temporarily enable).<br>
 `x` Fixed internal storage in settings and editor windows in Firefox 47+ (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/28">#28</a>).<br>
 `*` Added indication for copy/paste using internal buffer.<br>
