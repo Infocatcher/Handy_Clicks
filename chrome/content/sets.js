@@ -1966,12 +1966,9 @@ var handyClicksSets = {
 			}
 		}
 
-		this.searcher.reset();
-		matchedRows.forEach(function(tRow) {
-			var indx = this.tView.getIndexOfItem(tRow.parentNode);
-			this.searcher.add(indx);
+		this.searcher.results = matchedRows.map(function(tRow) {
+			return this.tView.getIndexOfItem(tRow.parentNode);
 		}, this);
-		this.searcher.finish();
 
 		if(dontSelect)
 			this.restoreSelection(selectedRows);
@@ -3491,19 +3488,16 @@ var handyClicksSetsSearcher = {
 	_res: [], // rows numbers
 	_current: 0,
 	_wrapped: false,
-	reset: function() {
-		this._res = [];
+	set results(res) {
+		this._res = this.ut.sortAsNumbers(res);
 		this._current = 0;
 		this.wrapped = this._wrapped = false;
 	},
-	add: function(r) {
-		this._res.push(r);
-	},
-	finish: function() {
-		this.ut.sortAsNumbers(this._res);
-	},
 	get count() {
 		return this._res.length;
+	},
+	reset: function() {
+		this._current = 0;
 	},
 	next: function() {
 		if(!this.isTreePaneSelected)
