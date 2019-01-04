@@ -316,13 +316,13 @@ var handyClicksPrefSvc = {
 				continue;
 			for(var type in so) if(so.hasOwnProperty(type)) {
 				var to = so[type];
-				if(!this.isOkFuncObj(to) || !to.enabled || !this.ut.getOwnProperty(to, "custom"))
+				if(!this.isOkFuncObj(to) || !to.enabled)
 					continue;
-				this.initCustomFunc(to, sh, type, false);
+				if(this.ut.getOwnProperty(to, "custom"))
+					this.initCustomFunc(to, sh, type, false);
 				var da = this.ut.getOwnProperty(to, "delayedAction");
-				if(!this.isOkFuncObj(da) || !da.enabled || !this.ut.getOwnProperty(da, "custom"))
-					continue;
-				this.initCustomFunc(da, sh, type, true);
+				if(this.isOkFuncObj(da) && da.enabled && this.ut.getOwnProperty(da, "custom"))
+					this.initCustomFunc(da, sh, type, true);
 			}
 		}
 		this._destructorContext = null;
