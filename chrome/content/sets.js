@@ -888,31 +888,24 @@ var handyClicksSets = {
 		if(rngCount == 0)
 			return [];
 		var tItemsArr = [];
-		var start = {}, end = {}, tItem;
 		for(var i = 0; i < rngCount; ++i) {
+			var start = {}, end = {};
 			this.tSel.getRangeAt(i, start, end);
 			for(var j = start.value, l = end.value; j <= l; ++j) {
-				tItem = this.getItemAtIndex(j);
+				var tItem = this.getItemAtIndex(j);
 				if(!tItem || !("__shortcut" in tItem))
 					continue;
-				//if(tItem.__isDelayed)
-				//	tItem = tItem.parentNode.parentNode;
+				if( // Don't add delayed action item, if main item is selected
+					tItem.__isDelayed
+					&& tItemsArr.length
+					&& tItemsArr[tItemsArr.length - 1] == tItem.parentNode.parentNode
+				)
+					continue;
 				tItemsArr.push(tItem);
 				tItem.__index = j;
 			}
 		}
-		tItemsArr.forEach(
-			function(tItem, indx) {
-				var daItem = !tItem.__isDelayed && tItem.__delayed;
-				if(!daItem)
-					return;
-				var i; // Remove "delayed action", if main item is selected
-				while((i = tItemsArr.lastIndexOf(daItem)) != -1)
-					if(i != indx)
-						delete tItemsArr[i];
-			}
-		);
-		return tItemsArr.filter(function() { return true; }) // Remove deleted items
+		return tItemsArr;
 	},
 	get selectedItemsWithCustomTypes() {
 		return this.selectedItems.filter(
