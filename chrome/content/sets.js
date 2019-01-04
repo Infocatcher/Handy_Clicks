@@ -1417,28 +1417,15 @@ var handyClicksSets = {
 		var row0 = this.ut.getOwnProperty(_ss, "row0");
 		if(row0 === undefined)
 			return;
-		var row1 = this.ut.getOwnProperty(_ss, "row1");
-		_ss.row1 = row;
 
-		if(!(row0 == row1 && row0 == row)) {
-			if(row1 !== undefined)
-				this.tSel.clearRange(row0, row1);
-			if(row0 != row) {
-				this.tSel.rangedSelect(row0, row, true);
-				if(et == "mouseup") {
-					this.delay(function() {
-						this.tSel.rangedSelect(row0, row, true);
-					}, this);
-				}
-			}
-		}
+		if(row != row0)
+			this.tSel.rangedSelect(row0, row, false);
 
 		if(et == "mouseup") {
 			this.smartSelectStop();
 			return;
 		}
 		// mousemove:
-		_ss.row1 = row;
 		if(row <= this.tbo.getFirstVisibleRow() + 2)
 			var visRow = row - 2;
 		else if(row >= this.tbo.getLastVisibleRow() - 2)
@@ -1449,7 +1436,7 @@ var handyClicksSets = {
 		this.tbo.ensureRowIsVisible(this.ut.mm(visRow, 0, maxRowsIndx));
 	},
 	smartSelectStop: function() {
-		this.smartSelect.row0 = this.smartSelect.row1 = undefined;
+		this.smartSelect.row0 = undefined;
 		window.removeEventListener("mouseup", this, true);
 	},
 
