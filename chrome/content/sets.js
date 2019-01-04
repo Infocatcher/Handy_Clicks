@@ -3288,25 +3288,23 @@ var handyClicksSets = {
 		var prefs = this.ps.prefs;
 		this.ps.loadSettings();
 
-		var type, to, sh, so;
-
-		for(type in types) if(types.hasOwnProperty(type)) {
+		for(var type in types) if(types.hasOwnProperty(type)) {
 			if(!this.ps.isCustomType(type))
 				continue;
-			to = types[type];
+			var to = types[type];
 			if(!this.ps.isOkCustomObj(to))
 				continue;
 			this.ut.setOwnProperty(this.ps.types, type, to);
 		}
 
-		for(sh in prefs) if(prefs.hasOwnProperty(sh)) {
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			if(!this.ps.isOkShortcut(sh))
 				continue;
-			so = prefs[sh];
+			var so = prefs[sh];
 			if(!this.ut.isObject(so))
 				continue;
 			for(type in so) if(so.hasOwnProperty(type)) {
-				to = so[type];
+				var to = so[type];
 				if(!this.ut.isObject(to))
 					continue;
 				this.ut.setOwnProperty(this.ps.prefs, sh, type, to);

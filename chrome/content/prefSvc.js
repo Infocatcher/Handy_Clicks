@@ -308,19 +308,18 @@ var handyClicksPrefSvc = {
 	initCustomFuncs: function() {
 		this.destroyCustomFuncs(this.DESTROY_REBUILD);
 		var p = this.prefs;
-		var sh, so, type, to, da;
-		for(sh in p) if(p.hasOwnProperty(sh)) {
+		for(var sh in p) if(p.hasOwnProperty(sh)) {
 			if(!this.isOkShortcut(sh))
 				continue;
-			so = p[sh];
+			var so = p[sh];
 			if(!this.ut.isObject(so))
 				continue;
-			for(type in so) if(so.hasOwnProperty(type)) {
-				to = so[type];
+			for(var type in so) if(so.hasOwnProperty(type)) {
+				var to = so[type];
 				if(!this.isOkFuncObj(to) || !to.enabled || !this.ut.getOwnProperty(to, "custom"))
 					continue;
 				this.initCustomFunc(to, sh, type, false);
-				da = this.ut.getOwnProperty(to, "delayedAction");
+				var da = this.ut.getOwnProperty(to, "delayedAction");
 				if(!this.isOkFuncObj(da) || !da.enabled || !this.ut.getOwnProperty(da, "custom"))
 					continue;
 				this.initCustomFunc(da, sh, type, true);
