@@ -574,7 +574,7 @@ var handyClicksSets = {
 	},
 	appendRow: function(parent, shortcut, itemType, fo, forcedLabel) {
 		var tItem = document.createElement("treeitem");
-		var tRow = document.createElement("treerow");
+		var tRow = tItem.appendChild(document.createElement("treerow"));
 		if(!this.ut.isObject(fo))
 			fo = {};
 		var isCustom = !!fo.custom;
@@ -603,9 +603,9 @@ var handyClicksSets = {
 			tItem.setAttribute("container", "true");
 			if(this._daExpand)
 				tItem.setAttribute("open", "true");
-			var daChild = document.createElement("treechildren");
-			var daItem = document.createElement("treeitem");
-			var daRow = document.createElement("treerow");
+			var daChild = tItem.appendChild(document.createElement("treechildren"));
+			var daItem = daChild.appendChild(document.createElement("treeitem"));
+			var daRow = daItem.appendChild(document.createElement("treerow"));
 
 			if(!this.ut.isObject(da))
 				da = {};
@@ -660,10 +660,6 @@ var handyClicksSets = {
 			daItem.__itemType = itemType;
 			daItem.__isCustomType = isCustomType;
 			daItem.__isDelayed = true;
-
-			daItem.appendChild(daRow);
-			daChild.appendChild(daItem);
-			tItem.appendChild(daChild);
 
 			this.rowsCache[daItem.__hash = shortcut + "-" + itemType + "-delayed"] = daRow; // Uses for search
 		}
@@ -729,7 +725,6 @@ var handyClicksSets = {
 		tItem.__delayed = da && daItem;
 		tItem.__sortLabel = label;
 
-		tItem.appendChild(tRow);
 		var insPos = this.getSortedInsPos(parent, tItem);
 		parent.insertBefore(tItem, insPos);
 
@@ -931,11 +926,10 @@ var handyClicksSets = {
 			return null;
 		return this.tView.getItemAtIndex(indx); // <treeitem>
 	},
-	getRowForItem: function(item) {
-		var chs = item.childNodes;
-		for(var i = 0, len = chs.length; i < len; ++i)
-			if(chs[i].localName == "treerow")
-				return chs[i];
+	getRowForItem: function(tItem) {
+		for(var ch = tItem.firstChild; ch; ch = ch.nextSibling)
+			if(ch.localName == "treerow")
+				return ch;
 		return null;
 	},
 
