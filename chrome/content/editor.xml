@@ -1288,6 +1288,9 @@
 
 			<handler event="keypress" keycode="VK_LEFT" action="this.moveCaret(true, event);" />
 			<handler event="keypress" keycode="VK_RIGHT" action="this.moveCaret(false, event);" />
+
+			<handler event="keypress" keycode="VK_UP" modifiers="control" action="document.commandDispatcher.rewindFocus();" />
+			<handler event="keypress" keycode="VK_DOWN" modifiers="control" action="document.commandDispatcher.advanceFocus();" />
 			<handler event="keypress">
 			<![CDATA[
 				this.isAutocompleteSelection = false;
