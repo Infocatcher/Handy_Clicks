@@ -1405,7 +1405,8 @@ var handyClicksSets = {
 
 		var row = this.tbo.getRowAt(e.clientX, e.clientY);
 		var et = e.type;
-		if(row == -1)
+		var lastHandledRow = this.ut.getOwnProperty(_ss, "lastHandledRow");
+		if(row == -1 || row == lastHandledRow)
 			return;
 		if(et == "mousedown") { // Start
 			this.smartSelectStop();
@@ -1418,8 +1419,9 @@ var handyClicksSets = {
 		if(row0 === undefined)
 			return;
 
-		if(row != row0)
+		if(row != row0 || lastHandledRow != undefined)
 			this.tSel.rangedSelect(row0, row, false);
+		_ss.lastHandledRow = row;
 
 		if(et == "mouseup") {
 			this.smartSelectStop();
@@ -1436,7 +1438,8 @@ var handyClicksSets = {
 		this.tbo.ensureRowIsVisible(this.ut.mm(visRow, 0, maxRowsIndx));
 	},
 	smartSelectStop: function() {
-		this.smartSelect.row0 = undefined;
+		var ss = this.smartSelect;
+		ss.row0 = ss.lastHandledRow = undefined;
 		window.removeEventListener("mouseup", this, true);
 	},
 
