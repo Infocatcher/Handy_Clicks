@@ -2865,27 +2865,29 @@ var handyClicksSets = {
 		}
 	},
 	extractPrefs: function(extractShortcuts) {
-		//~ todo: with "extractShortcuts == false" iser see empty tree on import
+		//~ todo: with "extractShortcuts == false" user see empty tree on import
 		var types = this.ps.types, newTypes = {};
 		var prefs = this.ps.prefs, newPrefs = {};
 
 		var its = extractShortcuts ? this.selectedItems : this.selectedItemsWithCustomTypes;
-		its.forEach(
-			function(it) {
-				var type = it.__itemType;
-				if(it.__isCustomType) {
-					var to = this.ut.getOwnProperty(types, type);
-					this.ut.setOwnProperty(newTypes, type, to);
-				}
-				if(extractShortcuts) {
-					var sh = it.__shortcut;
-					var to = this.ut.getOwnProperty(prefs, sh, type);
-					this.ut.setOwnProperty(newPrefs, sh, type, to);
-				}
-			},
-			this
-		);
+		var normalItems = [];
+		its.forEach(function(it, i, its) {
+			var type = it.__itemType;
+			if(it.__isCustomType) {
+				var to = this.ut.getOwnProperty(types, type);
+				this.ut.setOwnProperty(newTypes, type, to);
+			}
+			if(extractShortcuts) {
+				var sh = it.__shortcut;
+				var to = this.ut.getOwnProperty(prefs, sh, type);
+				this.ut.setOwnProperty(newPrefs, sh, type, to);
+			}
+			if(it.__isDelayed && (!i || its[i - 1] != it.parentNode.parentNode))
+				normalItems.push(it.parentNode.parentNode); // Add not selected normal items
+		}, this);
 
+		if(normalItems.length)
+			its = its.concat(normalItems);
 		this.setNodesProperties(its, { hc_copied: true });
 		this.delay(function() {
 			this.setNodesProperties(its, { hc_copied: false });
