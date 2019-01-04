@@ -69,6 +69,15 @@ var handyClicksEditor = {
 				);
 			}, this);
 
+			// Fix Ctrl(+Shift)+Tab and Ctrl+PageUp/Ctrl+PageDown navigation in Firefox 52+
+			var tabboxProto = this.mainTabbox.__proto__;
+			tabboxProto._origHandleEvent = tabboxProto.handleEvent;
+			tabboxProto.handleEvent = function(e) {
+				if("defaultPrevented" in e && e.defaultPrevented)
+					return undefined;
+				return this._origHandleEvent.apply(this, arguments);
+			};
+
 			var mouseEvt = typeof MouseEvent == "function" // Firefox 11+
 				&& ("" + MouseEvent).charAt(0) != "[" // Trick for Firefox <= 2.0
 				? new MouseEvent("click")
