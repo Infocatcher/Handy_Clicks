@@ -125,13 +125,13 @@ tree[hc_colored="true"] treechildren::-moz-tree-row(hc_custom) {
 	background-color: #dfffdf;
 }
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_customType) {
-	background-color: #dff9ff;
+	background-color: #dff3ff;
 }
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_customFile) {
-	background-color: #dfefff;
+	background-color: #e1e1ff;
 }
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_custom, hc_customType) {
-	background-color: #dffff7;
+	background-color: #dffff6;
 }
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_disabled),
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_disabled, hc_customType) {
