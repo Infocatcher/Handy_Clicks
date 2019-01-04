@@ -1391,7 +1391,7 @@ var handyClicksSets = {
 					tSel.rangedSelect(i, i, true);
 		});
 	},
-	smartSelect: function _ss(e) {
+	smartSelect: function ss(e) {
 		if(e.button == 1)
 			return;
 		if(
@@ -1405,23 +1405,23 @@ var handyClicksSets = {
 
 		var row = this.tbo.getRowAt(e.clientX, e.clientY);
 		var et = e.type;
-		var lastHandledRow = this.ut.getOwnProperty(_ss, "lastHandledRow");
+		var lastHandledRow = this.ut.getOwnProperty(ss, "_lastHandledRow");
 		if(row == -1 || row == lastHandledRow)
 			return;
 		if(et == "mousedown") { // Start
 			this.smartSelectStop();
 			window.addEventListener("mouseup", this, true);
-			_ss.row0 = row;
+			ss._initialRow = row;
 			return;
 		}
 		// mouseup or mousemove:
-		var row0 = this.ut.getOwnProperty(_ss, "row0");
-		if(row0 === undefined)
+		var initialRow = this.ut.getOwnProperty(ss, "_initialRow");
+		if(initialRow === undefined)
 			return;
 
-		if(row != row0 || lastHandledRow != undefined)
-			this.tSel.rangedSelect(row0, row, false);
-		_ss.lastHandledRow = row;
+		if(row != initialRow || lastHandledRow != undefined)
+			this.tSel.rangedSelect(initialRow, row, false);
+		ss._lastHandledRow = row;
 
 		if(et == "mouseup") {
 			this.smartSelectStop();
@@ -1439,7 +1439,7 @@ var handyClicksSets = {
 	},
 	smartSelectStop: function() {
 		var ss = this.smartSelect;
-		ss.row0 = ss.lastHandledRow = undefined;
+		ss._initialRow = ss._lastHandledRow = undefined;
 		window.removeEventListener("mouseup", this, true);
 	},
 
