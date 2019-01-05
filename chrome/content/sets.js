@@ -1547,6 +1547,15 @@ var handyClicksSets = {
 			this
 		);
 	},
+	inCollapsedTreeitem: function(tItem) {
+		for(; (tItem = tItem.parentNode.parentNode); ) {
+			if(!tItem || tItem.parentNode == this.tBody)
+				break;
+			if(tItem.getAttribute("open") != "true")
+				return true;
+		}
+		return false;
+	},
 	ensureTreeitemVisible: function(tItem) {
 		for(; (tItem = tItem.parentNode.parentNode); ) {
 			if(!tItem || tItem.parentNode == this.tBody)
@@ -3487,12 +3496,16 @@ var handyClicksSetsSearcher = {
 	next: function() {
 		if(!this.isTreePaneSelected)
 			return;
+		if(this.checkVisibility())
+			return;
 		if(++this._current >= this.count)
 			this._wrapped = true, this._current = 0;
 		this.select();
 	},
 	prev: function() {
 		if(!this.isTreePaneSelected)
+			return;
+		if(this.checkVisibility())
 			return;
 		if(--this._current < 0)
 			this._wrapped = true, this._current = this.count - 1;
@@ -3522,6 +3535,13 @@ var handyClicksSetsSearcher = {
 			this.tSel.select(i);
 			this.scrollToRow(i);
 		});
+	},
+	checkVisibility: function() {
+		var tItem = this._res[this._current];
+		if(!this.inCollapsedTreeitem(tItem))
+			return false;
+		this.select();
+		return true;
 	},
 	scrollToRow: function(i) {
 		var pos = 0.5;
