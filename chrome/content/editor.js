@@ -366,6 +366,20 @@ var handyClicksEditor = {
 			this.editorModeChanged();
 		else
 			this.setEditorButtons();
+
+		// Don't focus <textbox class="hcText" readonly="true">
+		// Based on code from chrome://global/content/bindings/tabbox.xml#tabs
+		// advanceSelectedTab() -> _selectNewTab()
+		var tabbox = tabs.tabbox || tabs.parentNode;
+		var selectedPanel = tabbox.selectedPanel;
+		var cd = document.commandDispatcher;
+		cd.advanceFocusIntoSubtree(selectedPanel);
+		for(;;) {
+			var fe = cd.focusedElement;
+			if(!fe || fe.localName != "input" || !fe.readOnly)
+				break;
+			cd.advanceFocus();
+		}
 	},
 	editorModeChanged: function() {
 		if(!("_handyClicksInitialized" in window))
