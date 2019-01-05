@@ -38,11 +38,6 @@ var handyClicksEditor = {
 	funcOptsFixed: false,
 	testMode: false,
 
-	instantInit: function(reloadFlag) {
-		this._startTime0 = Date.now();
-		window.addEventListener("select", this, true);
-		window.addEventListener("focus",  this, true);
-	},
 	init: function hce_init(reloadFlag) {
 		if(this.ut.fxVersion == 1.5) // "relative" is not supported
 			this.types.menulists.moveTabTo.pop();
@@ -108,47 +103,7 @@ var handyClicksEditor = {
 	destroy: function(reloadFlag) {
 		this.wu.markOpenedEditors();
 		this.testMode && this.undoTestSettings();
-		window.removeEventListener("select",   this, true);
-		window.removeEventListener("focus",    this, true);
 		this._savedShortcutObj = this._savedTypeObj = null;
-	},
-	_lastTabsSelect: 0,
-	get _focusFixTime() {
-		var now = Date.now();
-		if(now - (this._startTime1 || this._startTime0) < 600) // Can be very slow, if opened mere than one editor
-			return 160 + (this._startTime1 || now) - this._startTime0;
-		delete this._startTime0;
-		delete this._startTime1;
-		delete this._focusFixTime;
-		return this._focusFixTime = 60;
-	},
-	handleEvent: function(e) {
-		switch(e.type) {
-			// Select tab -> small delay -> focus on readonly textbox -> move focus to editor textbox
-			case "select":
-				if(e.target.localName == "tabs")
-					this._lastTabsSelect = Date.now();
-			break;
-			case "focus":
-				var node = e.target;
-				if(
-					!("localName" in node)
-					|| node.localName != "textbox"
-					|| !node.hasAttribute("tabindex")
-					|| node.getAttribute("readonly") != "true"
-				)
-					return;
-				//this._log("focus: " + (Date.now() - this._lastTabsSelect) + " | " + this._focusFixTime);
-				if(Date.now() - this._lastTabsSelect > this._focusFixTime)
-					return;
-				for(node = node.parentNode; node; node = node.parentNode) {
-					if(node.localName == "tabpanel") {
-						var editor = this.getEditorFromPanel(node);
-						editor && editor.focus();
-						break;
-					}
-				}
-		}
 	},
 	addTestButtons: function() {
 		var df = document.createDocumentFragment();
@@ -404,6 +359,13 @@ var handyClicksEditor = {
 		this.setWinTitle();
 		this.setEditorButtons(true);
 		this.delay(this.setDialogButtons, this);
+	},
+	handleTabSelect: function(e) {
+		var tabs = e.currentTarget;
+		if(tabs.parentNode == this.mainTabbox)
+			this.editorModeChanged();
+		else
+			this.setEditorButtons();
 	},
 	editorModeChanged: function() {
 		if(!("_handyClicksInitialized" in window))
