@@ -357,10 +357,13 @@ var handyClicksEditor = {
 
 		this.setWinId();
 		this.setWinTitle();
-		this.setEditorButtons(true);
+		this.setEditorButtons();
 		this.delay(this.setDialogButtons, this);
 	},
 	handleTabSelect: function(e) {
+		if(!("_handyClicksInitialized" in window))
+			return;
+
 		var tabs = e.currentTarget;
 		if(tabs.parentNode == this.mainTabbox)
 			this.editorModeChanged();
@@ -382,8 +385,6 @@ var handyClicksEditor = {
 		}
 	},
 	editorModeChanged: function() {
-		if(!("_handyClicksInitialized" in window))
-			return;
 		this.setWinId();
 		this.setWinTitle();
 		this.setDialogButtons();
@@ -463,7 +464,7 @@ var handyClicksEditor = {
 			return;
 		this._editorTimer = this.delay(function() {
 			this._editorTimer = 0;
-			this.setEditorButtons(false, editor);
+			this.setEditorButtons(editor);
 			if(editor.getAttribute("hc_highlightEmpty") == "true")
 				this.highlightEmpty(editor);
 		}, this, 25);
@@ -1190,9 +1191,7 @@ var handyClicksEditor = {
 			btn.disabled = false;
 		}, 300);
 	},
-	setEditorButtons: function(force, editor) {
-		if(!force && !("_handyClicksInitialized" in window))
-			return;
+	setEditorButtons: function(editor) {
 		editor = editor || this.getEditorFromTabbox(this.selectedTabbox);
 		var dis = editor.textLength <= 1000 // Too long for path?
 			&& !!this.ps.getSourcePath(editor.value);
