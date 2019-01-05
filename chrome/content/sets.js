@@ -1535,21 +1535,16 @@ var handyClicksSets = {
 		return this.treeBatch(this._expandTreeLevel, this, arguments);
 	},
 	_expandTreeLevel: function(level) {
-		this.expandTree();
-		Array.prototype.filter.call(
+		Array.prototype.forEach.call(
 			this.treeContainers,
 			function(ti) {
 				var curIndx = this.tView.getIndexOfItem(ti);
 				if(curIndx == -1)
-					return false;
+					return;
 				var curLevel = this.tView.getLevel(curIndx);
-				return curLevel > level;
+				ti.setAttribute("open", curLevel <= level);
 			},
 			this
-		).forEach(
-			function(ti) {
-				ti.setAttribute("open", "false");
-			}
 		);
 	},
 
