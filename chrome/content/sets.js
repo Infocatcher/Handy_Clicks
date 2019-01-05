@@ -1539,7 +1539,10 @@ var handyClicksSets = {
 		Array.prototype.filter.call(
 			this.treeContainers,
 			function(ti) {
-				var curLevel = this.tView.getLevel(this.tView.getIndexOfItem(ti));
+				var curIndx = this.tView.getIndexOfItem(ti);
+				if(curIndx == -1)
+					return false;
+				var curLevel = this.tView.getLevel(curIndx);
 				return curLevel > level;
 			},
 			this
