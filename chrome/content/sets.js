@@ -1547,6 +1547,13 @@ var handyClicksSets = {
 			this
 		);
 	},
+	ensureTreeitemVisible: function(tItem) {
+		for(; (tItem = tItem.parentNode.parentNode); ) {
+			if(!tItem || tItem.parentNode == this.tBody)
+				break;
+			tItem.setAttribute("open", "true");
+		}
+	},
 
 	treeHeaderClick: function(e) {
 		if(e.button == 1)
@@ -1942,7 +1949,7 @@ var handyClicksSets = {
 		}
 
 		this.searcher.results = matchedRows.map(function(tRow) {
-			return this.tView.getIndexOfItem(tRow.parentNode);
+			return tRow.parentNode; // treeitem
 		}, this);
 
 		if(dontSelect)
@@ -3460,11 +3467,14 @@ var handyClicksSets = {
 var handyClicksSetsSearcher = {
 	__proto__: handyClicksSets,
 
-	_res: [], // rows numbers
+	_res: [], // treeitems
 	_current: 0,
 	_wrapped: false,
 	set results(res) {
-		this._res = this.ut.sortAsNumbers(res);
+		var items = Array.prototype.slice.call(this.tBody.getElementsByTagName("treeitem"));
+		this._res = res.sort(function(a, b) {
+			return items.indexOf(a) - items.indexOf(b);
+		});
 		this._current = 0;
 		this.wrapped = this._wrapped = false;
 	},
@@ -3503,11 +3513,12 @@ var handyClicksSetsSearcher = {
 	select: function() {
 		if(!this.count)
 			return;
-		var i = this._res[this._current];
+		var tItem = this._res[this._current];
 		this.wrapped = this._wrapped;
 		this._wrapped = false; // Reset flag
 		this.treeBatch(function() {
-			this.expandTree();
+			this.ensureTreeitemVisible(tItem);
+			var i = this.tView.getIndexOfItem(tItem);
 			this.tSel.select(i);
 			this.scrollToRow(i);
 		});
@@ -3528,9 +3539,11 @@ var handyClicksSetsSearcher = {
 	_selectAll: function() {
 		var tSel = this.tSel;
 		tSel.clearSelection();
-		this._res.forEach(function(i) {
+		this._res.forEach(function(tItem) {
+			this.ensureTreeitemVisible(tItem);
+			var i = this.tView.getIndexOfItem(tItem);
 			tSel.rangedSelect(i, i, true);
-		});
+		}, this);
 	},
 	_unwrapTimeout: 0,
 	_unwrapDelay: 700,
