@@ -101,10 +101,11 @@ var handyClicksUninstaller = {
 		const path = "chrome://handyclicks/content/";
 		const jsLoader = this.jsLoader;
 		var temp = this._temp = { __proto__: null };
-		jsLoader.loadSubScript(path + "sets.js",      temp);
-		jsLoader.loadSubScript(path + "utils.js",     temp);
-		jsLoader.loadSubScript(path + "prefUtils.js", temp);
-		jsLoader.loadSubScript(path + "prefSvc.js",   temp);
+		jsLoader.loadSubScript(path + "sets.js",       temp);
+		jsLoader.loadSubScript(path + "utils.js",      temp);
+		jsLoader.loadSubScript(path + "prefUtils.js",  temp);
+		jsLoader.loadSubScript(path + "prefSvc.js",    temp);
+		jsLoader.loadSubScript(path + "prefSvcExt.js", temp);
 		var g = this.g;
 		var objects = g.objects;
 		for(var name in temp) if(name in objects) {
@@ -143,6 +144,7 @@ var handyClicksUninstaller = {
 		);
 		if(confirmed && exportAllSets.value) {
 			this.st.exportPrefs();
+			this.ps.loadSettings(); // Not just file copy... also export linked files
 			this.st.exportSets(false, this.ct.EXPORT_FILEPICKER);
 		}
 	},

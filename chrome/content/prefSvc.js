@@ -556,7 +556,7 @@ var handyClicksPrefSvc = {
 	},
 	get JSON() { // For Firefox < 3.5
 		delete this.JSON;
-		if("JSON" in window)
+		if(typeof JSON != "undefined")
 			this.JSON = JSON;
 		else
 			this.jsLoader.loadSubScript("chrome://handyclicks/content/json.js", this);
@@ -611,7 +611,7 @@ var handyClicksPrefSvc = {
 
 	get isMainWnd() {
 		delete this.isMainWnd;
-		return this.isMainWnd = "handyClicksUI" in window;
+		return this.isMainWnd = typeof handyClicksUI != "undefined";
 	},
 	getEvtStr: function(e) {
 		return "button=" + (e.button || 0)
