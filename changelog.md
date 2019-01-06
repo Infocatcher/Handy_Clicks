@@ -78,6 +78,10 @@
 `x` Fixed Ctrl+Up/Down in editor fields in Firefox 52+ (still doesn't work in another textboxes, but not so needed).<br>
 `x` Fixed Ctrl+Tab/Ctrl+Shift+Tab and Ctrl+PageDown/Ctrl+PageUp tabs navigation in Firefox 52+: force navigate only inside focused tabs.<br>
 `*` Rewritten and simplified trick to not focus read-only textboxes with functions arguments description.<br>
+`*` Search: expand only to matched items (and don't expand all tree).<br>
+`*` Find next down/up: select first search result, if it not visible inside collapsed tree, also start navigation from selection (instead of internal index).<br>
+`*` Select all search results: ensure first item visible.<br>
+`+` Added menu items and hotkeys to collapse/expand tree (now not only not intuitive click on “Shortcut and target” column).<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
