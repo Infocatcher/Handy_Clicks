@@ -3571,10 +3571,13 @@ var handyClicksSetsSearcher = {
 	_selectAll: function() {
 		var tSel = this.tSel;
 		tSel.clearSelection();
-		this._res.forEach(function(tItem) {
+		this._res.forEach(function(tItem, n) {
 			this.ensureTreeitemVisible(tItem);
 			var i = this.tView.getIndexOfItem(tItem);
 			tSel.rangedSelect(i, i, true);
+			!n && this.delay(function() {
+				this.tbo.ensureRowIsVisible(i);
+			}, this);
 		}, this);
 	},
 	_unwrapTimeout: 0,
