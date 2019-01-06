@@ -97,6 +97,10 @@ preferences {
 					<menuseparator />
 					<menuitem id="hc-sets-tree-collapse" oncommand="handyClicksSets.toggleTreeContainers(false);" key="hc-sets-key-collapseTree"
 						label="&hc.sets.collapseTree;" />
+					<menuitem id="hc-sets-tree-collapseLevel" oncommand="handyClicksSets.changeTreeExpandLevel(-1);" key="hc-sets-key-collapseTreeLevel"
+						label="&hc.sets.collapseTreeLevel;" />
+					<menuitem id="hc-sets-tree-expandLevel" oncommand="handyClicksSets.changeTreeExpandLevel(1);" key="hc-sets-key-expandTreeLevel"
+						label="&hc.sets.expandTreeLevel;" />
 					<menuitem id="hc-sets-tree-expand" oncommand="handyClicksSets.toggleTreeContainers(true);" key="hc-sets-key-expandTree"
 						label="&hc.sets.expandTree;" />
 					<menuseparator />
@@ -679,6 +683,8 @@ preferences {
 		<key id="hc-sets-key-clearSelection" key="a" modifiers="control,shift" oncommand="handyClicksSets.clearSelection();" />
 		<key id="hc-sets-key-invertSelection" key="*" modifiers="control" oncommand="handyClicksSets.invertSelection();" />
 		<key id="hc-sets-key-collapseTree" key="," modifiers="control,shift" oncommand="handyClicksSets.toggleTreeContainers(false);" />
+		<key id="hc-sets-key-collapseTreeLevel" key="," modifiers="control" oncommand="handyClicksSets.changeTreeExpandLevel(-1);" />
+		<key id="hc-sets-key-expandTreeLevel" key="." modifiers="control" oncommand="handyClicksSets.changeTreeExpandLevel(1);" />
 		<key id="hc-sets-key-expandTree" key="." modifiers="control,shift" oncommand="handyClicksSets.toggleTreeContainers(true);" />
 
 		<key id="hc-sets-key-focusSearch" key="f" modifiers="control" oncommand="handyClicksSets.focusSearch();" />

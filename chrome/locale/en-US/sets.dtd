@@ -51,6 +51,8 @@
 <!ENTITY hc.sets.clearSelection "Clear selection">
 <!ENTITY hc.sets.invertSelection "Invert selection">
 <!ENTITY hc.sets.collapseTree "Collapse tree">
+<!ENTITY hc.sets.collapseTreeLevel "Collapse tree level">
+<!ENTITY hc.sets.expandTreeLevel "Expand tree level">
 <!ENTITY hc.sets.expandTree "Expand tree">
 <!ENTITY hc.sets.find "Find…">
 <!ENTITY hc.sets.findNext "Find next down">

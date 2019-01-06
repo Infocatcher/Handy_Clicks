@@ -51,6 +51,8 @@
 <!ENTITY hc.sets.clearSelection "Снять всё выделение">
 <!ENTITY hc.sets.invertSelection "Инвертировать выделение">
 <!ENTITY hc.sets.collapseTree "Свернуть дерево">
+<!ENTITY hc.sets.collapseTreeLevel "Свернуть уровень дерево">
+<!ENTITY hc.sets.expandTreeLevel "Развернуть уровень дерева">
 <!ENTITY hc.sets.expandTree "Развернуть дерево">
 <!ENTITY hc.sets.find "Найти…">
 <!ENTITY hc.sets.findNext "Найти далее вниз">
