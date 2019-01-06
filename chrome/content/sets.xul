@@ -95,6 +95,11 @@ preferences {
 					<menuitem id="hc-sets-tree-invertSelection" oncommand="handyClicksSets.invertSelection();" key="hc-sets-key-invertSelection"
 						label="&hc.sets.invertSelection;" />
 					<menuseparator />
+					<menuitem id="hc-sets-tree-collapse" oncommand="handyClicksSets.toggleTreeContainers(false);"
+						label="&hc.sets.collapseTree;" />
+					<menuitem id="hc-sets-tree-expand" oncommand="handyClicksSets.toggleTreeContainers(true);"
+						label="&hc.sets.expandTree;" />
+					<menuseparator />
 					<menuitem id="hc-sets-tree-find" oncommand="handyClicksSets.focusSearch();" key="hc-sets-key-focusSearch"
 						label="&hc.sets.find;" />
 					<menuitem id="hc-sets-tree-findNext" oncommand="handyClicksSets.searcher.next();" key="hc-sets-key-findNext"

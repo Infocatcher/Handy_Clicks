@@ -1510,9 +1510,6 @@ var handyClicksSets = {
 			}
 		);
 	},
-	expandTree: function() {
-		this.toggleTreeContainers(true);
-	},
 	get maxExpandedLevel() {
 		var expandedLevel = -1;
 		Array.prototype.forEach.call(
