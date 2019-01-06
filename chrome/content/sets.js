@@ -1552,8 +1552,12 @@ var handyClicksSets = {
 			this
 		);
 	},
-	expandTreeLevel: function() {
-		return this.treeBatch(this._expandTreeLevel, this, arguments);
+	changeTreeExpandLevel: function(levelDiff) {
+		if(this.isTreePaneSelected)
+			this.expandTreeLevel(this.maxExpandedLevel + levelDiff);
+	},
+	expandTreeLevel: function(level) {
+		this.treeBatch(this._expandTreeLevel, this, arguments);
 	},
 	_expandTreeLevel: function(level) {
 		Array.prototype.forEach.call(
@@ -1599,8 +1603,7 @@ var handyClicksSets = {
 			return this.toggleTreeContainers(this.treeCollapsed);
 		if(this.ut.hasModifier(e))
 			return this.toggleTreeContainers(e.button == 2);
-		var level = this.maxExpandedLevel + (e.button == 2 ? 1 : -1);
-		return this.expandTreeLevel(level);
+		return this.changeTreeExpandLevel(e.button == 2 ? 1 : -1);
 	},
 
 	isMenuButton: function(node) {
