@@ -1576,28 +1576,29 @@ var handyClicksSets = {
 		);
 	},
 	isTreeitemHidden: function(tItem) {
-		for(; ; tItem = tItem.parentNode.parentNode) {
-			if(!tItem || tItem.parentNode == this.tBody)
-				break;
+		for(; tItem; tItem = tItem.parentNode.parentNode) {
 			if(tItem.hidden)
 				return true;
+			if(tItem.parentNode == this.tBody)
+				break;
 		}
 		return false;
 	},
 	inCollapsedTreeitem: function(tItem) {
 		for(; (tItem = tItem.parentNode.parentNode); ) {
-			if(!tItem || tItem.parentNode == this.tBody)
-				break;
-			if(tItem.getAttribute("open") != "true")
+			if(tItem.getAttribute("container") == "true" && tItem.getAttribute("open") != "true")
 				return true;
+			if(tItem.parentNode == this.tBody)
+				break;
 		}
 		return false;
 	},
 	ensureTreeitemVisible: function(tItem) {
 		for(; (tItem = tItem.parentNode.parentNode); ) {
-			if(!tItem || tItem.parentNode == this.tBody)
+			if(tItem.getAttribute("container") == "true")
+				tItem.setAttribute("open", "true");
+			if(tItem.parentNode == this.tBody)
 				break;
-			tItem.setAttribute("open", "true");
 		}
 	},
 
