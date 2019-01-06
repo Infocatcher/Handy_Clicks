@@ -1326,8 +1326,11 @@ var handyClicksSets = {
 
 	initEditMenu: function(mp) {
 		var rowCount = this.tView.rowCount;
-		var selected = 0;
+		var cantCollapse = !rowCount || this.treeCollapsed;
+		var cantExpand = !rowCount || this.treeExpanded;
+		var found = this.searcher.count > 0;
 
+		var selected = 0;
 		var tSel = this.tSel;
 		var rngCount = tSel.getRangeCount();
 		var start = {}, end = {};
@@ -1341,12 +1344,12 @@ var handyClicksSets = {
 		this.$("hc-sets-tree-clearSelection") .setAttribute("disabled", !rowCount || selected == 0);
 		this.$("hc-sets-tree-invertSelection").setAttribute("disabled", !rowCount);
 
-		this.$("hc-sets-tree-collapse")       .setAttribute("disabled", !rowCount || this.treeCollapsed);
-		this.$("hc-sets-tree-expand")         .setAttribute("disabled", !rowCount || this.treeExpanded);
+		this.$("hc-sets-tree-collapse")       .setAttribute("disabled", cantCollapse);
+		this.$("hc-sets-tree-collapseLevel")  .setAttribute("disabled", cantCollapse);
+		this.$("hc-sets-tree-expandLevel")    .setAttribute("disabled", cantExpand);
+		this.$("hc-sets-tree-expand")         .setAttribute("disabled", cantExpand);
 
 		this.$("hc-sets-tree-find")           .setAttribute("disabled", !rowCount);
-
-		var found = this.searcher.count > 0;
 		this.$("hc-sets-tree-findNext")       .setAttribute("disabled", !found);
 		this.$("hc-sets-tree-findPrev")       .setAttribute("disabled", !found);
 		this.$("hc-sets-tree-findSelectAll")  .setAttribute("disabled", !found);
