@@ -3654,13 +3654,19 @@ var handyClicksSetsSearcher = {
 	_selectAll: function() {
 		var tSel = this.tSel;
 		tSel.clearSelection();
+		var firstIndx, lastIndx;
 		this._res.forEach(function(tItem, n) {
 			this.ensureTreeitemVisible(tItem);
 			var i = this.tView.getIndexOfItem(tItem);
 			tSel.rangedSelect(i, i, true);
-			!n && this.delay(function() {
-				this.tbo.ensureRowIsVisible(i);
-			}, this);
+			if(!n)
+				firstIndx = i;
+			else
+				lastIndx = i;
+		}, this);
+		this.delay(function() {
+			lastIndx  != undefined && this.tbo.ensureRowIsVisible(lastIndx);
+			firstIndx != undefined && this.tbo.ensureRowIsVisible(firstIndx);
 		}, this);
 	},
 	_unwrapTimeout: 0,
