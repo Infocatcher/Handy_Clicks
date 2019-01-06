@@ -1341,6 +1341,9 @@ var handyClicksSets = {
 		this.$("hc-sets-tree-clearSelection") .setAttribute("disabled", !rowCount || selected == 0);
 		this.$("hc-sets-tree-invertSelection").setAttribute("disabled", !rowCount);
 
+		this.$("hc-sets-tree-collapse")       .setAttribute("disabled", !rowCount || this.treeCollapsed);
+		this.$("hc-sets-tree-expand")         .setAttribute("disabled", !rowCount || this.treeExpanded);
+
 		this.$("hc-sets-tree-find")           .setAttribute("disabled", !rowCount);
 
 		var found = this.searcher.count > 0;
@@ -1538,6 +1541,16 @@ var handyClicksSets = {
 			}
 		);
 	},
+	get treeExpanded() {
+		return Array.prototype.every.call(
+			this.treeContainers,
+			function(tItem) {
+				return this.isTreeitemHidden(tItem)
+					|| tItem.getAttribute("open") == "true";
+			},
+			this
+		);
+	},
 	expandTreeLevel: function() {
 		return this.treeBatch(this._expandTreeLevel, this, arguments);
 	},
@@ -1553,6 +1566,15 @@ var handyClicksSets = {
 			},
 			this
 		);
+	},
+	isTreeitemHidden: function(tItem) {
+		for(; ; tItem = tItem.parentNode.parentNode) {
+			if(!tItem || tItem.parentNode == this.tBody)
+				break;
+			if(tItem.hidden)
+				return true;
+		}
+		return false;
 	},
 	inCollapsedTreeitem: function(tItem) {
 		for(; (tItem = tItem.parentNode.parentNode); ) {
