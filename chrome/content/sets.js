@@ -3543,7 +3543,9 @@ var handyClicksSetsSearcher = {
 			this.ensureTreeitemVisible(tItem);
 			var i = this.tView.getIndexOfItem(tItem);
 			this.tSel.select(i);
-			this.scrollToRow(i);
+			this.delay(function() { // Wait for expanding
+				this.scrollToRow(i);
+			}, this);
 		});
 	},
 	checkVisibility: function() {
