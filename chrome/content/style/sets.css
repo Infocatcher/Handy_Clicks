@@ -145,6 +145,9 @@ tree[hc_colored="true"] treechildren::-moz-tree-row(hc_notAvailable),
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_notAvailable, hc_customType) {
 	background-color: #ffa;
 }
+tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_notAvailable) {
+	color: graytext;
+}
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy),
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy, hc_customType) {
 	background-color: #faa;
@@ -157,7 +160,6 @@ tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_search) {
 	color: #00e !important;
 }
 tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_search) {
-	/*color: graytext;*/
 	border-bottom: 1px dotted graytext;
 }
 tree[hc_colored="true"][hc_hasOverlayBackground="false"] treechildren::-moz-tree-row(hover) {
