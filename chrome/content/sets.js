@@ -3533,6 +3533,8 @@ var handyClicksSetsSearcher = {
 	next: function() {
 		if(!this.isTreePaneSelected)
 			return;
+		if(this.startFromSelection(true))
+			return;
 		if(this.checkVisibility())
 			return;
 		if(++this._current >= this.count)
@@ -3541,6 +3543,8 @@ var handyClicksSetsSearcher = {
 	},
 	prev: function() {
 		if(!this.isTreePaneSelected)
+			return;
+		if(this.startFromSelection(false))
 			return;
 		if(this.checkVisibility())
 			return;
@@ -3574,6 +3578,58 @@ var handyClicksSetsSearcher = {
 				this.scrollToRow(i);
 			}, this);
 		});
+	},
+	startFromSelection: function(preferNext) {
+		if(!this.count)
+			return true;
+
+		var tItem = this._res[this._current];
+		var i = this.tView.getIndexOfItem(tItem);
+		if(i != -1 && this.tSel.isSelected(i))
+			return false; // Already selected -> navigate without corrections
+
+		var rngCount = this.tSel.getRangeCount();
+		if(!rngCount)
+			return false;
+
+		var start = {}, end = {};
+		for(var i = 0; i < rngCount; ++i) {
+			this.tSel.getRangeAt(i, start, end);
+			for(var j = start.value, l = end.value; j <= l; ++j) {
+				var tItem = this.tView.getItemAtIndex(j);
+				if(firstSelected == undefined)
+					var firstSelected = j;
+				var indx = this._res.indexOf(tItem);
+				if(indx != -1) { // Found selected matched item -> update current position
+					this._current = indx;
+					return false;
+				}
+			}
+		}
+
+		// Try find nearest matched item
+		var maxIndx = this.tView.rowCount - 1;
+		for(var i = preferNext ? j - 1 : firstSelected; ; preferNext ? ++i : --i) {
+			if(i < 0)
+				i = maxIndx;
+			else if(i > maxIndx)
+				i = 0;
+
+			if(startPos == undefined)
+				var startPos = i;
+			else if(i == startPos)
+				break;
+
+			var tItem = this.tView.getItemAtIndex(i);
+			var indx = this._res.indexOf(tItem);
+			if(indx != -1) { // Found nearest matched item -> select and don't use next()/prev()
+				this._current = indx;
+				this.select();
+				return true;
+			}
+		}
+
+		return false;
 	},
 	checkVisibility: function() {
 		var tItem = this._res[this._current];
