@@ -1503,7 +1503,8 @@ var handyClicksSets = {
 		return this.tBody.getElementsByAttribute("container", "true");
 	},
 	toggleTreeContainers: function() {
-		return this.treeBatch(this._toggleTreeContainers, this, arguments);
+		if(this.isTreePaneSelected)
+			this.treeBatch(this._toggleTreeContainers, this, arguments);
 	},
 	_toggleTreeContainers: function(expand) {
 		Array.prototype.forEach.call(
