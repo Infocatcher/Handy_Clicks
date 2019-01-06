@@ -683,9 +683,11 @@ preferences {
 		<key id="hc-sets-key-clearSelection" key="a" modifiers="control,shift" oncommand="handyClicksSets.clearSelection();" />
 		<key id="hc-sets-key-invertSelection" key="*" modifiers="control" oncommand="handyClicksSets.invertSelection();" />
 		<key id="hc-sets-key-collapseTree" key="," modifiers="control,shift" oncommand="handyClicksSets.toggleTreeContainers(false);" />
+		<key id="hc-sets-key-collapseTree2" key="&lt;" modifiers="control,shift" oncommand="handyClicksSets.toggleTreeContainers(false);" />
 		<key id="hc-sets-key-collapseTreeLevel" key="," modifiers="control" oncommand="handyClicksSets.changeTreeExpandLevel(-1);" />
 		<key id="hc-sets-key-expandTreeLevel" key="." modifiers="control" oncommand="handyClicksSets.changeTreeExpandLevel(1);" />
 		<key id="hc-sets-key-expandTree" key="." modifiers="control,shift" oncommand="handyClicksSets.toggleTreeContainers(true);" />
+		<key id="hc-sets-key-expandTree2" key="&gt;" modifiers="control,shift" oncommand="handyClicksSets.toggleTreeContainers(true);" />
 
 		<key id="hc-sets-key-focusSearch" key="f" modifiers="control" oncommand="handyClicksSets.focusSearch();" />
 		<key id="hc-sets-key-focusSetsTree" key="t" modifiers="control" oncommand="handyClicksSets.focusSetsTree();" />
