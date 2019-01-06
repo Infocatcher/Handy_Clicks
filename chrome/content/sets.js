@@ -1531,6 +1531,16 @@ var handyClicksSets = {
 		);
 		return expandedLevel;
 	},
+	get treeCollapsed() {
+		return Array.prototype.every.call(
+			this.tBody.childNodes,
+			function(tItem) {
+				return tItem.hidden
+					|| tItem.getAttribute("container") != "true"
+					|| tItem.getAttribute("open") != "true";
+			}
+		);
+	},
 	expandTreeLevel: function() {
 		return this.treeBatch(this._expandTreeLevel, this, arguments);
 	},
@@ -1566,7 +1576,7 @@ var handyClicksSets = {
 
 	treeHeaderClick: function(e) {
 		if(e.button == 1)
-			return this.toggleTreeContainers(!this.tBody.getElementsByAttribute("open", "true").length);
+			return this.toggleTreeContainers(this.treeCollapsed);
 		if(this.ut.hasModifier(e))
 			return this.toggleTreeContainers(e.button == 2);
 		var level = this.maxExpandedLevel + (e.button == 2 ? 1 : -1);
