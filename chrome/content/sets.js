@@ -4,6 +4,7 @@ var handyClicksSets = {
 	_import: false,
 	_importPartial: false,
 	_importFromClipboard: false,
+	_importSrc: null,
 	_savedPrefs: null,
 	_savedTypes: null,
 
@@ -256,8 +257,8 @@ var handyClicksSets = {
 	},
 
 	/*** Actions pane ***/
-	forceUpdTree: function() {
-		this.ps.loadSettings();
+	forceUpdTree: function(pSrc) {
+		this.ps.loadSettings(pSrc);
 		this.setDialogButtons();
 		this.updTree();
 	},
@@ -2755,7 +2756,7 @@ var handyClicksSets = {
 		//this.prefsSaved();
 
 		this.updateAllDependencies();
-		this.forceUpdTree();
+		this.forceUpdTree(this._importSrc);
 
 		//this.applyButton.disabled = true;
 		this.checkTreeSaved();
@@ -3027,7 +3028,8 @@ var handyClicksSets = {
 		//this.pe.reloadSettings(false);
 		if(this.ps._loadStatus)
 			return;
-		this.setImportStatus(true, partialImport, srcId == 1 /* from clipboard */);
+		this._importSrc = pSrc;
+		this.setImportStatus(true, partialImport, srcId == ct.IMPORT_CLIPBOARD);
 		if(partialImport)
 			this.redrawTree();
 		else
@@ -3311,7 +3313,7 @@ var handyClicksSets = {
 		}
 		this.tree.focus();
 		this.setDialogButtons();
-		this._savedPrefs = this._savedTypes = null;
+		this._importSrc = this._savedPrefs = this._savedTypes = null;
 	},
 	mergePrefs: function() {
 		var types = this.ps.types;
