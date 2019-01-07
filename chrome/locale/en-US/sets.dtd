@@ -107,9 +107,9 @@
 <!ENTITY hc.sets.restoreFromBackup "Restore from backup">
 <!ENTITY hc.sets.openBackupDir "Open backups directory">
 <!ENTITY hc.sets.openBackupDirAccesskey "O">
-<!ENTITY hc.sets.removeUserBackups "Remove user backups except, leave 1">
-<!ENTITY hc.sets.removeUserBackupsAccesskey "R">
-<!ENTITY hc.sets.removeUserBackups2Accesskey "x">
+<!ENTITY hc.sets.removeUserBackups "Remove user backups, leave 1">
+<!ENTITY hc.sets.removeUserBackupsAccesskey "m">
+<!ENTITY hc.sets.removeUserBackups2Accesskey "R">
 <!ENTITY hc.sets.restoreBackup "Restore…">
 <!ENTITY hc.sets.removeBackup "Remove">
 <!ENTITY hc.sets.showBackupFile "Show file">
