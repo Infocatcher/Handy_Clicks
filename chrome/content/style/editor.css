@@ -118,6 +118,9 @@ tabbox[hc_pasted="false"] {
 .hcOpenCodeButton {
 	-moz-image-region: rect(64px 64px 80px 48px);
 }
+#hc-editor-deleteFileData {
+	-moz-image-region: rect(64px 80px 80px 64px);
+}
 :root[hc_hasCrashBackup] .hcOpenCodeButton {
 	outline: 1px solid red;
 	outline-offset: -1px;
