@@ -82,6 +82,7 @@
 `*` Find next down/up: select first search result, if it not visible inside collapsed tree, also start navigation from selection (instead of internal index).<br>
 `*` Select all search results: ensure first item visible.<br>
 `+` Added menu items and hotkeys to collapse/expand tree (now not only not intuitive click on “Shortcut and target” column).<br>
+`x` Correctly reload settings in import mode (F5): will be stored source of imported data for future reloading.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
