@@ -93,7 +93,8 @@
 	</keyset>
 
 	<popupset id="hc-editor-popups">
-		<menupopup id="hc-editor-editCodeContext">
+		<menupopup id="hc-editor-editCodeContext"
+			onpopupshowing="return handyClicksEditor.initEditCodeContext();">
 			<menuitem id="hc-editor-deleteFileData" oncommand="handyClicksEditor.deleteFileData();" label="&hc.editor.deleteFileData;" />
 		</menupopup>
 	</popupset>

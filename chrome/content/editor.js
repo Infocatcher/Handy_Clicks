@@ -1173,6 +1173,13 @@ var handyClicksEditor = {
 		this.doEditorCommand("hc-editor-cmd-openCode", "loadFromFile", true);
 		this.checkForCrashBackups(100, true);
 	},
+	initEditCodeContext: function() {
+		var path = this.getFileDataPath();
+		if(path == undefined)
+			return false;
+		this.$("hc-editor-deleteFileData").setAttribute("disabled", !path);
+		return true;
+	},
 	getFileDataPath: function() {
 		if(!this.ps.otherSrc)
 			return undefined;
@@ -1181,7 +1188,9 @@ var handyClicksEditor = {
 			return undefined;
 		var editor = this.getEditorFromTabbox(tabbox);
 		var path = this.ps.getSourcePath(editor.value);
-		if(path && path in this.ps.files)
+		if(!path)
+			return undefined;
+		if(path in this.ps.files)
 			return path;
 		return "";
 	},
