@@ -92,6 +92,12 @@
 		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksSetsUtils.toggleOnTop();" />
 	</keyset>
 
+	<popupset id="hc-editor-popups">
+		<menupopup id="hc-editor-editCodeContext">
+			<menuitem id="hc-editor-deleteFileData" oncommand="handyClicksEditor.deleteFileData();" label="&hc.editor.deleteFileData;" />
+		</menupopup>
+	</popupset>
+
 	<tabbox id="hc-editor-mainTabbox" flex="1">
 		<tabs setfocus="false" onselect="handyClicksEditor.handleTabSelect(event);">
 			<tab id="hc-editor-shortcutTab" selected="true"
@@ -233,7 +239,8 @@
 											oncommand="event.stopPropagation();">
 											<button class="hcEditCodeButton hcFloatButton hc-iconic"
 												command="hc-editor-cmd-editCode"
-												hc_key="hc-editor-key-editCode" />
+												hc_key="hc-editor-key-editCode"
+												context="hc-editor-editCodeContext" />
 											<button class="hcCodeToFileButton hcFloatButton hc-iconic"
 												command="hc-editor-cmd-codeToFile"
 												hc_key="hc-editor-key-codeToFile" />
@@ -308,7 +315,8 @@
 							oncommand="event.stopPropagation();">
 							<button class="hcEditCodeButton hcFloatButton hc-iconic"
 								command="hc-editor-cmd-editCode"
-								hc_key="hc-editor-key-editCode" />
+								hc_key="hc-editor-key-editCode"
+								context="hc-editor-editCodeContext" />
 							<button class="hcCodeToFileButton hcFloatButton hc-iconic"
 								command="hc-editor-cmd-codeToFile"
 								hc_key="hc-editor-key-codeToFile" />

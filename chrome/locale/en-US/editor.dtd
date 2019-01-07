@@ -59,6 +59,7 @@ Ctrl+Shift+V – paste">
 
 <!ENTITY hc.editor.editCode "Edit…">
 <!ENTITY hc.editor.editCodeTip "Edit code in external editor…">
+<!ENTITY hc.editor.deleteFileData "Delete saved file data">
 <!ENTITY hc.editor.codeToFile "To file">
 <!ENTITY hc.editor.codeToFileTip "Use linked file to store code">
 <!ENTITY hc.editor.openScriptsDir "Scripts…">
