@@ -274,13 +274,18 @@ menuitem[command="hc-sets-cmd-enable"] {
 #hc-sets-editSavedType {
 	-moz-image-region: rect(32px 128px 48px 112px);
 }
-#hc-sets-tree-buttonDelete, menuitem[command="hc-sets-cmd-delete"], #hc-sets-removeBackup {
+#hc-sets-tree-buttonDelete,
+#hc-sets-delete,
+#hc-sets-removeBackup {
 	-moz-image-region: rect(32px 64px 48px 48px);
 }
-#hc-sets-tree-buttonExport, #hc-sets-prefs-miExport {
+#hc-sets-tree-buttonExport,
+#hc-sets-prefs-miExport {
 	-moz-image-region: rect(32px 80px 48px 64px);
 }
-#hc-sets-tree-buttonImport, #hc-sets-prefs-miImport {
+#hc-sets-tree-buttonImport,
+#hc-sets-prefs-miImport,
+#hc-sets-tree-restoreBackupFile {
 	-moz-image-region: rect(32px 96px 48px 80px);
 }
 #hc-sets-tree-buttonImportOk {
@@ -311,6 +316,11 @@ checkbox[id^="hc-sets-disallowMousemove-"] .checkbox-label-box {
 #hc-sets-disallowMousemove-2,
 #hc-sets-action-button > radio[value="Right"] {
 	-moz-image-region: rect(0 80px 16px 64px);
+}
+
+#hc-sets-tree-openBackupsDir,
+#hc-sets-tree-showBackupFile {
+	-moz-image-region: rect(64px 48px 80px 32px);
 }
 
 #hc-sets-tree-restoreFromBackupPopup scrollbox {

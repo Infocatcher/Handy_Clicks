@@ -235,7 +235,7 @@ preferences {
 								oncommand="handyClicksSets.handleRestoreCommand(event);"
 								onclick="if(event.button == 1) { handyClicksSets.handleRestoreCommand(event); handyClicksUtils.closeMenus(this); }">
 								<menuseparator />
-								<menuitem id="hc-sets-tree-openBackupsDir"
+								<menuitem id="hc-sets-tree-openBackupsDir" class="menuitem-iconic handyClicks-iconic"
 									oncommand="handyClicksSets.reveal(handyClicksPrefSvc.backupsDir);"
 									label="&hc.sets.openBackupDir;" accesskey="&hc.sets.openBackupDirAccesskey;" />
 								<menuseparator />
@@ -729,7 +729,7 @@ preferences {
 			<menuitem id="hc-sets-closeSavedTypeEditors" command="hc-sets-cmd-closeSavedTypeEditors" key="hc-sets-key-closeSavedTypeEditors" />
 
 			<menuseparator />
-			<menuitem command="hc-sets-cmd-delete" key="hc-sets-key-delete" class="menuitem-iconic handyClicks-iconic" />
+			<menuitem id="hc-sets-delete" command="hc-sets-cmd-delete" key="hc-sets-key-delete" class="menuitem-iconic handyClicks-iconic" />
 			<menuseparator />
 			<menuitem command="hc-sets-cmd-add" key="hc-sets-key-add" class="menuitem-iconic handyClicks-iconic" />
 			<menuseparator />
@@ -757,9 +757,9 @@ preferences {
 		</menupopup>
 		<menupopup id="hc-sets-tree-restoreFromBackupContext"
 			onpopupshowing="return (this.triggerNode || document.popupNode).hasAttribute('hc_fileName');">
-			<menuitem default="true" label="&hc.sets.restoreBackup;"
+			<menuitem id="hc-sets-tree-restoreBackupFile" class="menuitem-iconic handyClicks-iconic" default="true" label="&hc.sets.restoreBackup;"
 				oncommand="(this.parentNode.triggerNode || document.popupNode).doCommand();" />
-			<menuitem label="&hc.sets.showBackupFile;"
+			<menuitem id="hc-sets-tree-showBackupFile" class="menuitem-iconic handyClicks-iconic" label="&hc.sets.showBackupFile;"
 				oncommand="handyClicksSets.reveal(handyClicksSets.pe.getBackupFile((this.parentNode.triggerNode || document.popupNode).getAttribute('hc_fileName')));" />
 			<menuseparator />
 			<menuitem id="hc-sets-removeBackup" class="menuitem-iconic handyClicks-iconic"
