@@ -275,8 +275,7 @@ menuitem[command="hc-sets-cmd-enable"] {
 	-moz-image-region: rect(32px 128px 48px 112px);
 }
 #hc-sets-tree-buttonDelete,
-#hc-sets-delete,
-#hc-sets-removeBackup {
+#hc-sets-delete {
 	-moz-image-region: rect(32px 64px 48px 48px);
 }
 #hc-sets-tree-buttonExport,
@@ -321,6 +320,11 @@ checkbox[id^="hc-sets-disallowMousemove-"] .checkbox-label-box {
 #hc-sets-tree-openBackupsDir,
 #hc-sets-tree-showBackupFile {
 	-moz-image-region: rect(64px 48px 80px 32px);
+}
+#hc-sets-tree-removeUserBackups,
+#hc-sets-tree-removeUserBackups2,
+#hc-sets-removeBackup {
+	-moz-image-region: rect(64px 80px 80px 64px);
 }
 
 #hc-sets-tree-restoreFromBackupPopup scrollbox {
