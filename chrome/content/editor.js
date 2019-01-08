@@ -121,7 +121,7 @@ var handyClicksEditor = {
 			hc_key: "hc-editor-key-undo",
 			disabled: "true"
 		}));
-		var delBtn = this.deleteButton = document.documentElement.getButton("extra2");
+		var delBtn = this.deleteButton;
 		delBtn.id = "hc-editor-buttonDelete";
 		delBtn.className += " hc-iconic";
 		delBtn.setAttribute("hc_key", "hc-editor-key-delete");
@@ -139,6 +139,7 @@ var handyClicksEditor = {
 		this.customType = null;
 		this.customTypeLabel = "";
 		this.applyButton = document.documentElement.getButton("extra1");
+		this.deleteButton = document.documentElement.getButton("extra2");
 		// Will be enabled only in case of changed settings format
 		this.applyButton.disabled = true;
 	},
