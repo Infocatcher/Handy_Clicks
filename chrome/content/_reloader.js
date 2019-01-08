@@ -12,6 +12,8 @@ var handyClicksReloader = {
 		const files = {
 			"globals.js":       "handyClicksGlobals", // Should be first
 			"console.js":       "handyClicksConsole",
+			"consts.js":        "handyClicksConst",
+			"data.js":          "handyClicksData",
 			"editor.js":        "handyClicksEditor",
 			"funcs.js":         "handyClicksFuncs",
 			"handyclicks.js":   "handyClicks",
