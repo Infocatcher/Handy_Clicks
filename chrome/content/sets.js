@@ -874,8 +874,7 @@ var handyClicksSets = {
 		return p + " = " + uneval(argsObj[p]);
 	},
 	updTreeButtons: function() {
-		var selIts = this.selectedItems;
-		var noSel = !selIts.length;
+		var noSel = !this.hasSelectedItem;
 		[
 			"delete", "edit", "toggle",
 			"partialExportToFile", "partialExportToClipboard",
@@ -884,7 +883,7 @@ var handyClicksSets = {
 			this.$("hc-sets-cmd-" + id).setAttribute("disabled", noSel);
 		}, this);
 	},
-	getSelectedItems: function(onlyCustomTypes) {
+	getSelectedItems: function(opts) {
 		var rngCount = this.tSel.getRangeCount();
 		var tItems = [];
 		var start = {}, end = {};
@@ -894,10 +893,13 @@ var handyClicksSets = {
 				var tItem = this.getItemAtIndex(j);
 				if(!tItem || !("__shortcut" in tItem))
 					continue;
-				if(onlyCustomTypes && !tItem.__isCustomType)
+				if(opts && opts.checkHasSelected || false)
+					return [tItem];
+				if(opts && opts.onlyCustomTypes && !tItem.__isCustomType)
 					continue;
 				if( // Don't add delayed action item, if main item is selected
-					tItem.__isDelayed
+					opts && opts.noDelayed
+					&& tItem.__isDelayed
 					&& tItems.length
 					&& tItems[tItems.length - 1] == tItem.parentNode.parentNode
 				)
@@ -908,11 +910,14 @@ var handyClicksSets = {
 		}
 		return tItems;
 	},
+	get hasSelectedItem() {
+		return this.getSelectedItems({ checkHasSelected: true }).length > 0;
+	},
 	get selectedItems() {
-		return this.getSelectedItems();
+		return this.getSelectedItems({ noDelayed: true });
 	},
 	get selectedItemsWithCustomTypes() {
-		return this.getSelectedItems(true);
+		return this.getSelectedItems({ onlyCustomTypes: true });
 	},
 	getItemAtIndex: function(indx) {
 		if(indx == -1 || indx >= this.tView.rowCount)
