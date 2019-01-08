@@ -26,7 +26,8 @@ var handyClicksRegSvc = {
 		this.callMethods("destroy", reloadFlag);
 		if("handyClicksReloader" in window)
 			handyClicksReloader.destroy(reloadFlag);
-		this.g.shutdown();
+		if(!reloadFlag)
+			this.g.shutdown();
 		delete window._handyClicksInitialized;
 	},
 	handleEvent: function(e) {
