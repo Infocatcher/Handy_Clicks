@@ -17,6 +17,7 @@ var handyClicksReloader = {
 			"handyclicks.js":   "handyClicks",
 			"handyclicksUI.js": "handyClicksUI",
 			"prefSvc.js":       "handyClicksPrefSvc",
+			"prefSvcExt.js":    "handyClicksPrefSvcExt",
 			"prefUtils.js":     "handyClicksPrefUtils",
 			"sets.js":          "handyClicksSets",
 			"setsUtils.js":     "handyClicksSetsUtils",
