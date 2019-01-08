@@ -884,36 +884,35 @@ var handyClicksSets = {
 			this.$("hc-sets-cmd-" + id).setAttribute("disabled", noSel);
 		}, this);
 	},
-	get selectedItems() {
+	getSelectedItems: function(onlyCustomTypes) {
 		var rngCount = this.tSel.getRangeCount();
-		if(rngCount == 0)
-			return [];
-		var tItemsArr = [];
+		var tItems = [];
+		var start = {}, end = {};
 		for(var i = 0; i < rngCount; ++i) {
-			var start = {}, end = {};
 			this.tSel.getRangeAt(i, start, end);
 			for(var j = start.value, l = end.value; j <= l; ++j) {
 				var tItem = this.getItemAtIndex(j);
 				if(!tItem || !("__shortcut" in tItem))
 					continue;
+				if(onlyCustomTypes && !tItem.__isCustomType)
+					continue;
 				if( // Don't add delayed action item, if main item is selected
 					tItem.__isDelayed
-					&& tItemsArr.length
-					&& tItemsArr[tItemsArr.length - 1] == tItem.parentNode.parentNode
+					&& tItems.length
+					&& tItems[tItems.length - 1] == tItem.parentNode.parentNode
 				)
 					continue;
-				tItemsArr.push(tItem);
 				tItem.__index = j;
+				tItems.push(tItem);
 			}
 		}
-		return tItemsArr;
+		return tItems;
+	},
+	get selectedItems() {
+		return this.getSelectedItems();
 	},
 	get selectedItemsWithCustomTypes() {
-		return this.selectedItems.filter(
-			function(it) {
-				return it.__isCustomType;
-			}
-		);
+		return this.getSelectedItems(true);
 	},
 	getItemAtIndex: function(indx) {
 		if(indx == -1 || indx >= this.tView.rowCount)
