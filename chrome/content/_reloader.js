@@ -1,4 +1,6 @@
 var handyClicksReloader = {
+	__proto__: handyClicksGlobals,
+
 	init: function(reloadFlag) {
 		window.addEventListener("keydown", this, true);
 	},
@@ -6,8 +8,7 @@ var handyClicksReloader = {
 		window.removeEventListener("keydown", this, true);
 	},
 	reloadScripts: function() {
-		const jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-			.getService(Components.interfaces.mozIJSSubScriptLoader);
+		const jsLoader = this.jsLoader;
 		const path = "chrome://handyclicks/content/";
 		const files = {
 			"globals.js":       "handyClicksGlobals", // Should be first
@@ -29,7 +30,7 @@ var handyClicksReloader = {
 			__proto__: null
 		};
 		try {
-			var t = Date.now();
+			var t = this.now();
 			handyClicksRegSvc.destroy(true);
 			for(var f in files) {
 				var p = files[f];
@@ -37,7 +38,7 @@ var handyClicksReloader = {
 					jsLoader.loadSubScript(path + f + "?" + Date.now());
 			}
 			handyClicksRegSvc.init(true);
-			this._log("js reloaded (" + (Date.now() - t) + " ms)");
+			this._log("js reloaded (" + (this.now() - t).toFixed(2) + " ms)");
 		}
 		catch(e) {
 			this._log("Can't reload scripts!");
@@ -116,7 +117,7 @@ var handyClicksReloader = {
 	},
 	_lastAction: 0,
 	keydownHandler: function(e) {
-		if(e.ctrlKey && !e.shiftKey && e.altKey && !e.metaKey && this.debug) {
+		if(e.ctrlKey && !e.shiftKey && e.altKey && !e.metaKey && this._debug) {
 			if(Date.now() - this._lastAction < 300)
 				return;
 			switch(String.fromCharCode(e.keyCode).toLowerCase()) {
@@ -132,26 +133,12 @@ var handyClicksReloader = {
 		e.preventDefault();
 		e.stopPropagation();
 	},
-	get prefSvc() {
-		delete this.prefSvc;
-		return this.prefSvc = Components.classes["@mozilla.org/preferences-service;1"]
-			.getService(Components.interfaces.nsIPrefBranch2 || Components.interfaces.nsIPrefBranch);
-	},
-	get debug() {
-		return this.prefSvc.getBoolPref("extensions.handyclicks.debug");
-	},
 	get path() {
-		return /[^\\\/]+$/.test(location.href) ? RegExp.lastMatch : location.href;
+		delete this.path;
+		return this.path = /[^\\\/]+$/.test(location.href) ? RegExp.lastMatch : location.href;
 	},
-	ts: function() {
-		var d = new Date();
-		var ms = d.getMilliseconds();
-		return d.toTimeString().replace(/^.*\d+:(\d+:\d+).*$/, "$1") + ":" + "000".substr(("" + ms).length) + ms + " ";
-	},
-	_log: function(msg) {
-		Components.classes["@mozilla.org/consoleservice;1"]
-			.getService(Components.interfaces.nsIConsoleService)
-			.logStringMessage("[Handy Clicks] " + this.ts() + " " + this.path + ": " + msg);
+	_log: function(s) {
+		this.g._log(this.path + ": " + s);
 	},
 	handleEvent: function(e) {
 		if(e.type == "keydown")
