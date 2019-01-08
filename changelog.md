@@ -83,6 +83,8 @@
 `*` Select all search results: ensure first item visible.<br>
 `+` Added menu items and hotkeys to collapse/expand tree (now not only not intuitive click on “Shortcut and target” column).<br>
 `x` Correctly reload settings in import mode (F5): will be stored source of imported data for future reloading.<br>
+`*` Added icons to “Open backups directory”, “Restore…”, “Show file” and “Remove” menu items (<a href="https://www.fatcow.com/free-icons">Farm-Fresh Web Icons by FatCow Web Hosting</a>).
+`x` Corrected selection handling in tree: fixed enabling/disabling for delayed action in case of selected normal (parent) action.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
