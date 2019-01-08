@@ -914,6 +914,9 @@ var handyClicksSets = {
 		return this.getSelectedItems({ checkHasSelected: true }).length > 0;
 	},
 	get selectedItems() {
+		return this.getSelectedItems();
+	},
+	get selectedItemsNoDelayed() {
 		return this.getSelectedItems({ noDelayed: true });
 	},
 	get selectedItemsWithCustomTypes() {
@@ -973,7 +976,7 @@ var handyClicksSets = {
 			return;
 		if(!this.isTreePaneSelected)
 			return;
-		var its = this.selectedItems;
+		var its = this.selectedItemsNoDelayed;
 		if(this.editorsLimit(its.length))
 			return;
 		var src = forceEditSaved ? null : undefined;
@@ -1071,7 +1074,7 @@ var handyClicksSets = {
 		return row.value > -1 && this.tView.isContainer(row.value);
 	},
 	getItemsInfo: function(tIts) {
-		tIts = tIts ? tIts.slice() : this.selectedItems;
+		tIts = tIts ? tIts.slice() : this.selectedItemsNoDelayed;
 		var itsCount = tIts.length;
 		if(!itsCount)
 			return [];
@@ -1125,7 +1128,7 @@ var handyClicksSets = {
 	deleteItems: function() {
 		if(!this.isTreePaneSelected)
 			return;
-		var tIts = this.selectedItems;
+		var tIts = this.selectedItemsNoDelayed;
 		if(
 			!tIts.length
 			|| !this.ut.confirm(
@@ -2925,7 +2928,7 @@ var handyClicksSets = {
 		var types = this.ps.types, newTypes = {};
 		var prefs = this.ps.prefs, newPrefs = {};
 
-		var its = extractShortcuts ? this.selectedItems : this.selectedItemsWithCustomTypes;
+		var its = extractShortcuts ? this.selectedItemsNoDelayed : this.selectedItemsWithCustomTypes;
 		var normalItems = [];
 		its.forEach(function(it, i, its) {
 			var type = it.__itemType;
@@ -2952,7 +2955,7 @@ var handyClicksSets = {
 		return this.ps.getSettingsStr(newTypes, newPrefs, true);
 	},
 	extractLabels: function(extractShortcuts) {
-		var its = extractShortcuts ? this.selectedItems : this.selectedItemsWithCustomTypes;
+		var its = extractShortcuts ? this.selectedItemsNoDelayed : this.selectedItemsWithCustomTypes;
 		return its.map(
 			function(it) {
 				var fo = this.ut.getOwnProperty(this.ps.prefs, it.__shortcut, it.__itemType);
