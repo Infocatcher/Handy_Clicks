@@ -13,13 +13,10 @@ var handyClicksRegSvc = {
 		this.callMethods("init", reloadFlag);
 		window._handyClicksInitialized = true;
 		this.delay(function() {
-			this.delayedInit(reloadFlag);
-		}, this, reloadFlag ? 0 : 250);
-	},
-	delayedInit: function(reloadFlag) {
-		var noCache = reloadFlag ? "?" + Date.now() : "";
-		this.jsLoader.loadSubScript("chrome://handyclicks/content/_reloader.js" + noCache);
-		handyClicksReloader.init(reloadFlag);
+			var noCache = reloadFlag ? "?" + Date.now() : "";
+			this.jsLoader.loadSubScript("chrome://handyclicks/content/_reloader.js" + noCache);
+			handyClicksReloader.init(reloadFlag);
+		}, this, reloadFlag ? 0 : 500);
 	},
 	destroy: function(reloadFlag) { // window "unlod"
 		window.removeEventListener("unload", this, false);
