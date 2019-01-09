@@ -2897,15 +2897,16 @@ var handyClicksSets = {
 			this.backupsDir = file.parent;
 		}
 		if(partialExport) {
-			var pStr = this.extractPrefs(!onlyCustomTypes);
+			var its = onlyCustomTypes ? this.selectedItemsWithCustomTypes : this.selectedItemsNoDelayed;
+			var pStr = this.extractPrefs(!onlyCustomTypes, its);
 			if(targetId == ct.EXPORT_CLIPBOARD_STRING)
 				this.ut.copyStr(pStr);
 			else if(targetId == ct.EXPORT_CLIPBOARD_URI)
 				this.ut.copyStr(ct.PROTOCOL_SETTINGS_ADD + this.ps.encURI(pStr));
 			else if(targetId == ct.EXPORT_CLIPBOARD_HTML) {
 				var uri = ct.PROTOCOL_SETTINGS_ADD + this.ps.encURI(pStr);
-				var label = this.extractLabels(!onlyCustomTypes).join(", ");
-				var info = this.ut.encodeHTML(this.getItemsInfo().join(" \n"))
+				var label = this.extractLabels(its).join(", ");
+				var info = this.ut.encodeHTML(this.getItemsInfo(its).join(" \n"))
 					.replace(/\n/g, "&#10;")
 					.replace(/\u21d2/g, "&#8658;");
 				this.ut.copyStr(
@@ -2927,12 +2928,12 @@ var handyClicksSets = {
 			throw new Error(this.errPrefix + "Full export to clipboard not supported");
 		}
 	},
-	extractPrefs: function(extractShortcuts) {
+	extractPrefs: function(extractShortcuts, _its) {
 		//~ todo: with "extractShortcuts == false" user see empty tree on import
 		var types = this.ps.types, newTypes = {};
 		var prefs = this.ps.prefs, newPrefs = {};
 
-		var its = extractShortcuts ? this.selectedItemsNoDelayed : this.selectedItemsWithCustomTypes;
+		var its = _its || (extractShortcuts ? this.selectedItemsNoDelayed : this.selectedItemsWithCustomTypes);
 		var normalItems = [];
 		its.forEach(function(it, i, its) {
 			var type = it.__itemType;
@@ -2958,8 +2959,7 @@ var handyClicksSets = {
 
 		return this.ps.getSettingsStr(newTypes, newPrefs, true);
 	},
-	extractLabels: function(extractShortcuts) {
-		var its = extractShortcuts ? this.selectedItemsNoDelayed : this.selectedItemsWithCustomTypes;
+	extractLabels: function(its) {
 		return its.map(
 			function(it) {
 				var fo = this.ut.getOwnProperty(this.ps.prefs, it.__shortcut, it.__itemType);
