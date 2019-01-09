@@ -293,6 +293,7 @@ var handyClicksSets = {
 		return this.treeBatch(this._drawTree, this, arguments);
 	},
 	_drawTree: function(dontSearch) {
+		this.ut.timer("drawTree()");
 		this.eltsCache = { __proto__: null };
 		this.rowsCache = { __proto__: null };
 
@@ -389,6 +390,7 @@ var handyClicksSets = {
 		delete this.eltsCache;
 		this._hasFilter = false;
 
+		this.ut.timer("drawTree()");
 		!dontSearch && this.searchInSetsTree(true);
 	},
 	addImportStatistics: function() {
@@ -1901,6 +1903,7 @@ var handyClicksSets = {
 		}, this);
 	},
 	_searchInSetsTree: function(dontSelect) {
+		this.ut.timer("searchInSetsTree()");
 		var sf = this.searchField;
 		var filterMode = this.$("hc-sets-tree-searchFilterMode").getAttribute("checked") == "true";
 
@@ -2015,6 +2018,7 @@ var handyClicksSets = {
 		sf.setAttribute("hc_notFound", hasTerm && !found);
 
 		this._lastSearch = Date.now();
+		this.ut.timer("searchInSetsTree()");
 	},
 	getRowText: function(tRow, caseSensitive) {
 		var tChld = tRow, tItem;
