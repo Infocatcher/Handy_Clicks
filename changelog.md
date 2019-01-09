@@ -85,6 +85,9 @@
 `x` Correctly reload settings in import mode (F5): will be stored source of imported data for future reloading.<br>
 `*` Added icons to “Open backups directory”, “Restore…”, “Show file” and “Remove” menu items (<a href="https://www.fatcow.com/free-icons">Farm-Fresh Web Icons by FatCow Web Hosting</a>).
 `x` Corrected selection handling in tree: fixed enabling/disabling for delayed action in case of selected normal (parent) action.<br>
+`x` Fixed scripts reloader (Ctrl+Alt+R, <em>extensions.handyclicks.debug</em> = true): don't call g.shutdown(), fixed link to delete button in editor.<br>
+`*` Updated and improved scripts and styles reloader (Ctrl+Alt+R, Ctrl+Alt+C, <em>extensions.handyclicks.debug</em> = true): also reload consts.js and data.js, simplified code.<br>
+`*` Compatibility enhancements for Pale Moon and Basilisk.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
