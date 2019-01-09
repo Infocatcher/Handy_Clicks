@@ -73,7 +73,7 @@ var handyClicksSets = {
 		}
 
 		if(
-			fxVersion >= 25
+			(this.ut.appInfo.name == "Pale Moon" ? this.ut.appVersion >= 27 : fxVersion >= 25)
 			&& this.ut.appInfo.OS == "WINNT"
 			&& this.ut.osVersion >= 6
 			&& document.querySelector(":-moz-system-metric(windows-default-theme)")
