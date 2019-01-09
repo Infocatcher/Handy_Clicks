@@ -31,7 +31,7 @@
 				hc_supports="tab, tabbar" />
 			<menuitem value="toggleTabPinned" label="toggleTabPinned"
 				hc_supports="tab, tabbar"
-				hc_app="Firefox 4.0b2pre, Pale Moon" />
+				hc_app="Firefox 4.0b2pre, Pale Moon, Basilisk" />
 			<menuitem value="reloadTab" label="reloadTab"
 				hc_args="skipCache"
 				hc_supports="tab, tabbar" />
@@ -78,7 +78,7 @@
 			<menuitem value="openURIInSidebar" label="openURIInSidebar"
 				hc_args="closePopups"
 				hc_supports="link, img, tab, bookmark, historyItem"
-				hc_app="Firefox, Pale Moon" />
+				hc_app="Firefox, Pale Moon, Basilisk" />
 			<menuseparator id="hc-editor-funcsSep-links" />
 
 			<menuitem value="showContextMenu" label="showContextMenu" />
