@@ -42,7 +42,7 @@ var handyClicksReloader = {
 		}
 		catch(e) {
 			this._log("Can't reload scripts!");
-			throw e;
+			Components.utils.reportError(e);
 		}
 	},
 	reloadStyles: function() {
@@ -117,7 +117,7 @@ var handyClicksReloader = {
 	},
 	_lastAction: 0,
 	keydownHandler: function(e) {
-		if(e.ctrlKey && !e.shiftKey && e.altKey && !e.metaKey && this._debug) {
+		if(e.ctrlKey && e.altKey && !e.shiftKey && !e.metaKey && this._debug) {
 			if(Date.now() - this._lastAction < 300)
 				return;
 			switch(e.keyCode) {
