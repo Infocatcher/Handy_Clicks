@@ -3,7 +3,7 @@ var handyClicksRegSvc = {
 
 	instantInit: function(reloadFlag) {
 		var dt = (this.now() - this._startTime).toFixed(2);
-		this._log("Scripts loaded into " + document.documentURI + ": " + dt + " ms");
+		this._log("Scripts loaded into " + this.path + ": " + dt + " ms");
 		window.addEventListener("load", this, false);
 		this.callMethods("instantInit", reloadFlag);
 	},
@@ -45,7 +45,7 @@ var handyClicksRegSvc = {
 				o[methName](reloadFlag);
 		}, this);
 		var dt = (this.now() - t).toFixed(2);
-		this._log(methName + "() in " + document.documentURI + ": " + dt + " ms");
+		this._log(methName + "() in " + this.path + ": " + dt + " ms");
 	}
 };
 handyClicksRegSvc.instantInit();

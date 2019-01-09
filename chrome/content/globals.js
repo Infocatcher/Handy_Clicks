@@ -9,6 +9,7 @@ var g = window.handyClicksGlobals = {
 
 	now: now,
 	_startTime: now(),
+	path: /[^\\\/]+$/.test(document.documentURI) && RegExp.lastMatch,
 
 	_elts: { __proto__: null },
 	$: function(id) {
@@ -176,7 +177,7 @@ function lazy(s, p, file) {
 		delete window[p];
 		g.jsLoader.loadSubScript("chrome://handyclicks/content/" + file, window, "UTF-8");
 		g._log(
-			"Load " + file + " into " + document.documentURI
+			"Load " + file + " into " + g.path
 			+ ": " + (now() - t).toFixed(2) + " ms"
 			+ (s == "ut" ? "\n" + new Error().stack : "")
 		);
