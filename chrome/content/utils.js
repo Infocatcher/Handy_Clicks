@@ -696,7 +696,10 @@ var handyClicksUtils = {
 			}
 			// Note: we move file into backups directory first, so "tmpPath" parameter isn't needed
 			var options = {};
-			if(this.fxVersion < 25 || this.appInfo.name == "Pale Moon")
+			if(
+				this.fxVersion < 25
+				|| this.appInfo.name == "Pale Moon" && this.appVersion < 27
+			)
 				options.tmpPath = file.path + ".tmp";
 			OS.File.writeAtomic(file.path, arr, options).then(
 				function onSuccess() {
@@ -1005,10 +1008,16 @@ var handyClicksUtils = {
 		delete this.isSeaMonkey;
 		return this.isSeaMonkey = this.appInfo.name == "SeaMonkey";
 	},
+	get appVersion() {
+		delete this.appVersion;
+		return this.appVersion = parseFloat(this.appInfo.version);
+	},
 	get fxVersion() {
-		var ver = parseFloat(this.appInfo.version); // 3.0 for "3.0.10"
+		var ver = this.appVersion;
+		if(this.appInfo.name == "Pale Moon" || this.appInfo.name == "Basilisk")
+			ver = parseFloat(this.appInfo.platformVersion) >= 4.1 ? 56 : 28;
 		// https://developer.mozilla.org/en-US/docs/Mozilla/Gecko/Versions
-		if(this.isSeaMonkey) switch(ver) {
+		else if(this.isSeaMonkey) switch(ver) {
 			case 2:   ver = 3.5; break;
 			case 2.1: ver = 4;   break;
 			default:  ver = parseFloat(this.appInfo.platformVersion);
