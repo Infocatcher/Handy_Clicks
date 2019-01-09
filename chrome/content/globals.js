@@ -103,7 +103,7 @@ var g = window.handyClicksGlobals = {
 		return d.toTimeString().replace(/^.*\d+:(\d+:\d+).*$/, "$1") + ":" + "000".substr(("" + ms).length) + ms + " ";
 	},
 	_info: function(s) {
-		g.consoleSvc.logStringMessage(g.errPrefix + g.ts() + " " + g.safeToString(s));
+		g.consoleSvc.logStringMessage(g.errPrefix + g.ts() + g.safeToString(s));
 	},
 	_log: function(s) {
 		g._debug && g._info(s);
