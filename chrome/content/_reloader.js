@@ -120,9 +120,9 @@ var handyClicksReloader = {
 		if(e.ctrlKey && !e.shiftKey && e.altKey && !e.metaKey && this._debug) {
 			if(Date.now() - this._lastAction < 300)
 				return;
-			switch(String.fromCharCode(e.keyCode).toLowerCase()) {
-				case "r": this.reloadScripts(); break;
-				case "c": this.reloadStyles();  break;
+			switch(e.keyCode) {
+				case e.DOM_VK_R: this.reloadScripts(); break;
+				case e.DOM_VK_C: this.reloadStyles();  break;
 				default: return;
 			}
 			this._lastAction = Date.now();
