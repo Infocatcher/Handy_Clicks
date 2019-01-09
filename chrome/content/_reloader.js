@@ -73,27 +73,27 @@ var handyClicksReloader = {
 			}
 		}
 
-		if(!sheetsHrefs.length) {
-			// Firefox 1.5 and 2.0
+		if(!sheetsHrefs.length) { // Firefox 1.5 and 2.0
 			var sh = "__handyClicks__sheetsHrefs";
-			if(sh in document)
+			var hasHrefs = sh in document;
+			if(hasHrefs)
 				sheetsHrefs = document[sh];
-			else {
-				var sheets = document.styleSheets;
-				for(var i = sheets.length - 1; i >= 0; --i) {
-					var sheet = sheets[i];
-					var rules = sheet.cssRules;
-					var href = sheet.href;
-					if(href.indexOf(ns) == 0) {
+			else
+				sheetsHrefs = document[sh] = [];
+			var sheets = document.styleSheets;
+			for(var i = sheets.length - 1; i >= 0; --i) {
+				var sheet = sheets[i];
+				var href = sheet.href;
+				if(href.indexOf(ns) == 0) {
+					if(!hasHrefs)
 						sheetsHrefs.push(href);
-						for(var j = rules.length - 1; j >= 0; --j)
-							sheet.deleteRule(rules[j]);
-					}
+					sheet.disabled = true;
+					//var rules = sheet.cssRules;
+					//for(var j = rules.length - 1; j >= 0; --j)
+					//	sheet.deleteRule(rules[j]);
 				}
-				document[sh] = sheetsHrefs;
 			}
-			if(sheetsHrefs.length)
-				this._log("Can't completely remove styles!");
+			this._log("Can't completely remove styles!");
 		}
 
 		if(!sheetsHrefs.length) {
@@ -102,16 +102,13 @@ var handyClicksReloader = {
 		}
 
 		var rnd = "?" + Date.now();
-		document.loadOverlay(
-			"data:application/vnd.mozilla.xul+xml," + encodeURIComponent(
-				'<?xml version="1.0"?>\n'
-				+ sheetsHrefs.map(function(href, indx) {
-					return '<?xml-stylesheet href="' + href.replace(/\?\d+$/, "") + rnd + '" type="text/css"?>';
-				}).join("\n")
-				+ '<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />'
-			),
-			null
-		);
+		document.loadOverlay("data:application/vnd.mozilla.xul+xml," + encodeURIComponent(
+			'<?xml version="1.0"?>\n'
+			+ sheetsHrefs.map(function(href, indx) {
+				return '<?xml-stylesheet href="' + href.replace(/\?\d+$/, "") + rnd + '" type="text/css"?>';
+			}).join("\n")
+			+ '<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />'
+		), null);
 
 		this._log("css [" + sheetsHrefs.length + "] reloaded");
 	},
