@@ -43,7 +43,6 @@ var handyClicksEditor = {
 			this.types.menulists.moveTabTo.pop();
 		this.initShortcuts();
 		if(!reloadFlag) {
-			document.documentElement.setAttribute("hc_fxVersion", this.ut.fxVersion.toFixed(1)); // See style/editor.css
 			var type = this.type;
 			if(type)
 				this.currentType = type;
@@ -81,6 +80,15 @@ var handyClicksEditor = {
 				var os = this.$("hc-editor-os");
 				os.style.opacity = 0.55;
 				os.setAttribute("tooltiptext", os.getAttribute("hc_note"));
+			}
+
+			if(this.ut.fxVersion == 3) { // Trick to show line-through
+				var sheet = document.styleSheets[0];
+				sheet.insertRule(
+					'menuitem[hc_sets="disabled"], menulist[hc_sets="disabled"] > .menulist-label-box\n\
+					{ text-decoration: line-through underline; }',
+					sheet.cssRules.length
+				);
 			}
 		}
 		this.ps.loadSettings(this.src || null);

@@ -138,12 +138,6 @@ tab[hc_empty="true"] label {
 	outline-offset: -1px;
 }
 
-:root[hc_fxVersion="3.0"] menuitem[hc_sets="disabled"],
-:root[hc_fxVersion="3.0"] menulist[hc_sets="disabled"] .menulist-label-box {
-	/* Firefox 3.0 don't show line-through without this */
-	text-decoration: underline;
-}
-
 menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-label-box {
 	/* Empty menulists */
 	min-height: 1em;
