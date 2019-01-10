@@ -523,6 +523,8 @@ var handyClicksSets = {
 
 	setsReloading: function(notifyReason) {
 		if(notifyReason & this.ps.SETS_RELOADED) {
+			if(this.ps.otherSrc) // Disable checkbox, if all files data was deleted
+				this.setImportFilesDataStatus();
 			this.updTree();
 			this.checkTreeSaved();
 		}
@@ -3287,10 +3289,7 @@ var handyClicksSets = {
 			return;
 		}
 
-		var importFD = this.$("hc-sets-tree-importFilesData");
-		var noFD = this.ut.isEmptyObj(this.ps.files);
-		importFD.disabled = noFD;
-		importFD.checked = this._importFilesData = !noFD;
+		this.setImportFilesDataStatus();
 		this.$("hc-sets-tree-importType").value = isPartial;
 		this.$("hc-sets-tree-importRowRemoved").setAttribute("hc_collapse", isPartial);
 		if(
@@ -3300,6 +3299,12 @@ var handyClicksSets = {
 			) == -1
 		)
 			this.$("hc-sets-tree-buttonImportOk").focus();
+	},
+	setImportFilesDataStatus: function() {
+		var importFD = this.$("hc-sets-tree-importFilesData");
+		var noFD = this.ut.isEmptyObj(this.ps.files);
+		importFD.disabled = noFD;
+		importFD.checked = this._importFilesData = !noFD;
 	},
 	cleanImportSearch: function() {
 		var search = this.searchField.value;
