@@ -3284,6 +3284,10 @@ var handyClicksSets = {
 			return;
 		}
 
+		var importFD = this.$("hc-sets-tree-importFilesData");
+		var noFD = this.ut.isEmptyObj(this.ps.files);
+		importFD.disabled = noFD;
+		importFD.checked = !noFD;
 		this.$("hc-sets-tree-importType").value = isPartial;
 		this.$("hc-sets-tree-importRowRemoved").setAttribute("hc_collapse", isPartial);
 		if(
@@ -3321,7 +3325,8 @@ var handyClicksSets = {
 			this.pe.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, true);
 
 			this.ps.otherSrc = false;
-			this.importFilesData();
+			if(this.$("hc-sets-tree-importFilesData").checked)
+				this.importFilesData();
 			isPartial && this.mergePrefs();
 			this.pe.saveSettingsObjects(true);
 		}
