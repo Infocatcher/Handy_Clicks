@@ -2915,14 +2915,18 @@ var handyClicksSets = {
 					+ "</a>"
 				);
 			}
-			else
-				this.ut.writeToFile(pStr, file);
+			else {
+				this.ut.writeToFileAsync(pStr, file);
+			}
 		}
 		else if(targetId == ct.EXPORT_FILEPICKER) {
 			//this.ut.copyFileTo(this.ps.prefsFile, file.parent, file.leafName);
 			var pStr = this.ps.getSettingsStr(null, null, true /*exportLinkedFiles*/);
-			this.ut.writeToFile(pStr, file);
-			file.lastModifiedTime = this.ps.prefsFile.lastModifiedTime;
+			var lastMod = !this.treeUnsaved && this.ps.prefsFile.lastModifiedTime;
+			this.ut.writeToFileAsync(pStr, file, function(status) {
+				if(Components.isSuccessCode(status) && lastMod)
+					file.lastModifiedTime = lastMod;
+			});
 		}
 		else {
 			throw new Error(this.errPrefix + "Full export to clipboard not supported");
