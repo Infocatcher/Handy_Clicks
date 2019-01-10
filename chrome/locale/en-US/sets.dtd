@@ -121,6 +121,10 @@
 <!ENTITY hc.sets.importCancel "Cancel">
 <!ENTITY hc.sets.importCancelAccesskey "C">
 
+<!ENTITY hc.sets.importFilesData "Files">
+<!ENTITY hc.sets.importFilesDataAccesskey "F">
+<!ENTITY hc.sets.importFilesDataTip "Import linked files data">
+
 <!ENTITY hc.sets.importIncrement "Add">
 <!ENTITY hc.sets.importIncrementAccesskey "A">
 <!ENTITY hc.sets.importReplace "Replace">
