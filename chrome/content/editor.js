@@ -1079,6 +1079,11 @@ var handyClicksEditor = {
 	},
 
 	loadFuncs: function() {
+		var curShortcut = this.currentShortcut;
+		var curType = this.currentType;
+		if(curShortcut == this.shortcut && curType == this.type)
+			return; // Not changed
+
 		if(
 			!this.funcOptsFixed // Nothing to lost with fixed options
 			//~ todo: we can't use this.shortcutUnsaved because shortcut already changed!
@@ -1097,19 +1102,17 @@ var handyClicksEditor = {
 				return;
 			}
 			if(res == this.su.PROMPT_SAVE) {
-				var type = this.currentType;
-				var shortcut = this.currentShortcut;
 				this.currentType = this.type;
 				this.currentShortcut = this.shortcut;
 				if(!this.saveShortcut(false, false, true))
 					return;
-				this.currentType = type;
-				this.currentShortcut = shortcut;
+				this.currentShortcut = curShortcut;
+				this.currentType = curType;
 			}
 		}
 
-		this.shortcut = this.currentShortcut;
-		this.type = this.currentType;
+		this.shortcut = curShortcut;
+		this.type = curType;
 		if(this.funcOptsFixed) {
 			this.initShortcutEditor(); //~ ugly, ugly, ugly...
 
