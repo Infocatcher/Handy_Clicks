@@ -3061,13 +3061,16 @@ var handyClicksSets = {
 		bFile.createUnique(bFile.NORMAL_FILE_TYPE, this.ut.PERMS_FILE_WRITE);
 		//this.ut.copyFileTo(this.ps.prefsFile, this.ps.backupsDir, bFile.leafName);
 		var pStr = this.ps.getSettingsStr(null, null, true /*exportLinkedFiles*/);
-		this.ut.writeToFile(pStr, bFile);
-		this.ut.notify(this.getLocalized("backupCreated").replace("%f", bFile.path), {
-			onLeftClick: function() {
-				this.reveal(bFile)
-			},
-			context: this
-		});
+		this.ut.writeToFileAsync(pStr, bFile, function(status) {
+			if(!Components.isSuccessCode(status))
+				return;
+			this.ut.notify(this.getLocalized("backupCreated").replace("%f", bFile.path), {
+				onLeftClick: function() {
+					this.reveal(bFile)
+				},
+				context: this
+			});
+		}, this);
 	},
 	removeBackup: function(mi, e) {
 		var fName = mi.getAttribute("hc_fileName");
