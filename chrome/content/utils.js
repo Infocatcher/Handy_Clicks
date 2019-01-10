@@ -685,7 +685,7 @@ var handyClicksUtils = {
 			var onFailure = function(err) {
 				err && this._err(err);
 				this._err("Can't write string to file " + this._fileInfo(file));
-				callback.call(context || this, Components.results.NS_ERROR_FAILURE);
+				callback && callback.call(context || this, Components.results.NS_ERROR_FAILURE);
 			}.bind(this);
 			try {
 				var arr = encoder.encode(str);
@@ -703,7 +703,7 @@ var handyClicksUtils = {
 				options.tmpPath = file.path + ".tmp";
 			OS.File.writeAtomic(file.path, arr, options).then(
 				function onSuccess() {
-					callback.call(context || this, Components.results.NS_OK, str);
+					callback && callback.call(context || this, Components.results.NS_OK, str);
 				}.bind(this),
 				onFailure
 			).then(null, Components.utils.reportError);
