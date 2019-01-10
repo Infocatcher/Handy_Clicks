@@ -3,6 +3,7 @@ var handyClicksConst = {
 	IMPORT_CLIPBOARD:  1,
 	IMPORT_STRING:     2,
 	IMPORT_BACKUP:     3,
+	IMPORT_FILE:       4,
 
 	EXPORT_FILEPICKER:       0,
 	EXPORT_CLIPBOARD_STRING: 1,

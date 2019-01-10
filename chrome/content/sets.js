@@ -3001,6 +3001,9 @@ var handyClicksSets = {
 			break;
 			case ct.IMPORT_BACKUP:
 				pSrc = this.pe.getBackupFile(data);
+			break;
+			case ct.IMPORT_FILE:
+				pSrc = data;
 		}
 		if(
 			fromClip
@@ -3485,6 +3488,55 @@ var handyClicksSets = {
 			Components.utils.reportError(e);
 		}
 		return undefined;
+	},
+
+	// Import using drag-and-drop
+	handleDragOver: function(e) {
+		if(!this.hasDropData(e))
+			return;
+		var dt = e.dataTransfer;
+		dt.effectAllowed = dt.dropEffect = "copy";
+		e.preventDefault();
+		e.stopPropagation();
+	},
+	handleDragLeave: function(e) {
+	},
+	handleDrop: function(e) {
+		this.dataChanged(e, true);
+
+		this.handleDragLeave(e);
+		var data = this.getDropData(e);
+		if(!data)
+			return;
+		// Prevent legacy "dragdrop" event (Firefox 3.6 and older), if received "drop" event
+		e.preventDefault();
+		e.stopPropagation();
+
+		this.importSets(true, this.ct.IMPORT_FILE, data);
+	},
+	hasDropData: function(e) {
+		return !!this.getDropData(e, true);
+	},
+	getDropData: function(e, _onlyCheck) {
+		var dt = e.dataTransfer;
+		if(!dt)
+			return null;
+		var types = dt.types;
+		if(_onlyCheck && types.contains("application/x-moz-file"))
+			return true;
+		function getDataAt(type, i) {
+			return dt.getDataAt && dt.getDataAt(type, i)
+				|| dt.mozGetDataAt && dt.mozGetDataAt(type, i)
+				|| dt.getData && dt.getData(type) // Fallback
+				|| "";
+		}
+		for(var i = 0, c = dt.mozItemCount || dt.itemCount || 1; i < c; ++i) {
+			if(types.contains("application/x-moz-file")) {
+				var file = getDataAt("application/x-moz-file", i);
+				return file instanceof Components.interfaces.nsIFile && file;
+			}
+		}
+		return null;
 	},
 
 	// Export/import utils:

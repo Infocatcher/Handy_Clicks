@@ -35,8 +35,12 @@ preferences {
 	onchange="handyClicksSets.dataChanged(event);"
 	oninput="handyClicksSets.dataChanged(event);"
 	oncommand="handyClicksSets.dataChanged(event);"
-	hc_ondrop="handyClicksSets.dataChanged(event, true);"
 	oncut="handyClicksSets.dataChanged(event, true);"
+	ondragover="handyClicksSets.handleDragOver(event);"
+	ondragleave="handyClicksSets.handleDragLeave(event);"
+	ondragexit="handyClicksSets.handleDragLeave(event);"
+	ondragdrop="handyClicksSets.handleDrop(event);"
+	ondrop="handyClicksSets.handleDrop(event);"
 	width="&hc.sets.defaultWindowWidth;"
 	height="&hc.sets.defaultWindowHeight;"
 	persist="width height screenX screenY sizemode">
