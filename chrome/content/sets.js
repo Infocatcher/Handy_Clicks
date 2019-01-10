@@ -3512,7 +3512,10 @@ var handyClicksSets = {
 		e.preventDefault();
 		e.stopPropagation();
 
-		this.importSets(true, this.ct.IMPORT_FILE, data);
+		var type = data instanceof Components.interfaces.nsIFile
+			? this.ct.IMPORT_FILE
+			: this.ct.IMPORT_STRING;
+		this.importSets(true, type, data);
 	},
 	hasDropData: function(e) {
 		return !!this.getDropData(e, true);
@@ -3523,7 +3526,7 @@ var handyClicksSets = {
 			return null;
 		var types = dt.types;
 		if(_onlyCheck && types.contains("application/x-moz-file"))
-			return true;
+			return true; // Will validate only strings
 		function getDataAt(type, i) {
 			return dt.getDataAt && dt.getDataAt(type, i)
 				|| dt.mozGetDataAt && dt.mozGetDataAt(type, i)
@@ -3534,6 +3537,10 @@ var handyClicksSets = {
 			if(types.contains("application/x-moz-file")) {
 				var file = getDataAt("application/x-moz-file", i);
 				return file instanceof Components.interfaces.nsIFile && file;
+			}
+			if(types.contains("text/plain")) {
+				var str = getDataAt("text/plain", i);
+				return this.ut.hasPrefix(str, this.ps.requiredHeader) && str;
 			}
 		}
 		return null;
