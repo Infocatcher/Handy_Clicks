@@ -3,6 +3,7 @@ var handyClicksSets = {
 
 	_import: false,
 	_importPartial: false,
+	_importFilesData: false,
 	_importFromClipboard: false,
 	_importSrc: null,
 	_savedPrefs: null,
@@ -788,6 +789,8 @@ var handyClicksSets = {
 	settingsEquals: function(savedObj, newObj) {
 		if(!this.ps.settingsEquals(savedObj, newObj))
 			return false;
+		if(!this._importFilesData)
+			return true;
 		for(var key in savedObj) if(savedObj.hasOwnProperty(key)) if(key in this.ps.codeKeys) {
 			if( // Will ignore saved files, that will be unchanged
 				newObj.hasOwnProperty(key)
@@ -3287,7 +3290,7 @@ var handyClicksSets = {
 		var importFD = this.$("hc-sets-tree-importFilesData");
 		var noFD = this.ut.isEmptyObj(this.ps.files);
 		importFD.disabled = noFD;
-		importFD.checked = !noFD;
+		importFD.checked = this._importFilesData = !noFD;
 		this.$("hc-sets-tree-importType").value = isPartial;
 		this.$("hc-sets-tree-importRowRemoved").setAttribute("hc_collapse", isPartial);
 		if(
@@ -3312,6 +3315,10 @@ var handyClicksSets = {
 		if(isPartial === undefined)
 			isPartial = !this._importPartial;
 		this.setImportStatus(this._import, isPartial, this._importFromClipboard, true);
+	},
+	toggleImportFilesData: function(importFD) {
+		this._importFilesData = importFD;
+		this.updTree();
 	},
 	importDone: function(ok) {
 		if(ok && !this.buggyPrefsConfirm())
