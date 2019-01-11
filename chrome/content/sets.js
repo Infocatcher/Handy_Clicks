@@ -3491,6 +3491,7 @@ var handyClicksSets = {
 	},
 
 	// Import using drag-and-drop
+	_dragOverTimer: 0,
 	handleDragOver: function(e) {
 		if(!this.hasDropData(e))
 			return;
@@ -3498,6 +3499,11 @@ var handyClicksSets = {
 		dt.effectAllowed = dt.dropEffect = "copy";
 		e.preventDefault();
 		e.stopPropagation();
+		this.su._handleDragEvents = false;
+		clearTimeout(this._dragOverTimer);
+		this._dragOverTimer = this.delay(function() {
+			this.su._handleDragEvents = true;
+		}, this, 500);
 	},
 	handleDragLeave: function(e) {
 	},
@@ -3508,6 +3514,7 @@ var handyClicksSets = {
 		var data = this.getDropData(e);
 		if(!data)
 			return;
+		this.su._handleDragEvents = true;
 		// Prevent legacy "dragdrop" event (Firefox 3.6 and older), if received "drop" event
 		e.preventDefault();
 		e.stopPropagation();

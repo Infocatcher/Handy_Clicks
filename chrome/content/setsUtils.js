@@ -525,7 +525,10 @@ var handyClicksSetsUtils = {
 
 	_dragSwitchTimer: 0,
 	_lastDragOverNode: null,
+	_handleDragEvents: true,
 	dragenterHandler: function(e) {
+		if(!this._handleDragEvents)
+			return;
 		var tar = e.originalTarget;
 		var ln = tar.localName;
 		if(!ln || tar.getAttribute("disabled") == "true" || tar.getAttribute("selected") == "true")
