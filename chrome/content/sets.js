@@ -3557,7 +3557,7 @@ var handyClicksSets = {
 					&& file;
 			}
 			if(types.contains("text/x-moz-url")) {
-				var url = getDataAt("text/x-moz-url", i).split("\n")[0];
+				var url = getDataAt("text/x-moz-url", i).match(/^[^\r\n]*/)[0];
 				return this.ut.hasPrefix(url, this.ct.PROTOCOL_SETTINGS_ADD) && url;
 			}
 			if(types.contains("text/plain")) {
