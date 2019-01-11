@@ -88,6 +88,7 @@
 `x` Fixed scripts reloader (Ctrl+Alt+R, <em>extensions.handyclicks.debug</em> = true): don't call g.shutdown(), fixed link to delete button in editor.<br>
 `*` Updated and improved scripts and styles reloader (Ctrl+Alt+R, Ctrl+Alt+C, <em>extensions.handyclicks.debug</em> = true): also reload consts.js and data.js, simplified code.<br>
 `*` Compatibility enhancements for Pale Moon and Basilisk.<br>
+`+` Settings window: added ability to import settings using drag-and-drop (.ini/.js files, settings links or settings in plain text).<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
