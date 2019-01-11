@@ -3533,7 +3533,7 @@ var handyClicksSets = {
 			return null;
 		var types = dt.types;
 		if(_onlyCheck && types.contains("application/x-moz-file"))
-			return true; // Will validate only strings
+			return true; // Will validate only URLs and strings
 		function getDataAt(type, i) {
 			return dt.getDataAt && dt.getDataAt(type, i)
 				|| dt.mozGetDataAt && dt.mozGetDataAt(type, i)
@@ -3544,6 +3544,10 @@ var handyClicksSets = {
 			if(types.contains("application/x-moz-file")) {
 				var file = getDataAt("application/x-moz-file", i);
 				return file instanceof Components.interfaces.nsIFile && file;
+			}
+			if(types.contains("text/x-moz-url")) {
+				var url = getDataAt("text/x-moz-url", i).split("\n")[0];
+				return this.ut.hasPrefix(url, this.ct.PROTOCOL_SETTINGS_ADD) && url;
 			}
 			if(types.contains("text/plain")) {
 				var str = getDataAt("text/plain", i);
