@@ -3526,6 +3526,7 @@ var handyClicksSets = {
 		e.preventDefault();
 		e.stopPropagation();
 
+		window.focus(); // Just moves window on top of other browser windows...
 		var isFile = data instanceof Components.interfaces.nsIFile;
 		if(isFile && /\.ini$/i.test(data.leafName))
 			this.importPrefs(data);
