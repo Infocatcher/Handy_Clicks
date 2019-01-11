@@ -2820,9 +2820,15 @@ var handyClicksSets = {
 		return true;
 	},
 	importPrefs: function(file) {
-		if(!file)
-			file = this.pickFile(this.getLocalized("importPrefs"), false, "ini");
-		if(!file)
+		if(
+			file && !this.ut.confirm(
+				this.getLocalized("title"),
+				this.getLocalized("importPrefsConfirm")
+					.replace("%f", file.path)
+			)
+		)
+			return;
+		if(!file && !(file = this.pickFile(this.getLocalized("importPrefs"), false, "ini")))
 			return;
 		var lines = this.ut.readFromFile(file)
 			.split(/[\r\n]+/);
