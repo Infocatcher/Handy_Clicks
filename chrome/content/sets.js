@@ -3544,30 +3544,34 @@ var handyClicksSets = {
 		var dt = e.dataTransfer;
 		if(!dt)
 			return null;
-		var types = dt.types;
 		function getDataAt(type, i) {
 			return dt.getDataAt && dt.getDataAt(type, i)
 				|| dt.mozGetDataAt && dt.mozGetDataAt(type, i)
 				|| dt.getData && dt.getData(type) // Fallback
 				|| "";
 		}
+		var types = dt.types;
+		var tc = types.length;
 		for(var i = 0, c = dt.mozItemCount || dt.itemCount || 1; i < c; ++i) {
-			if(types.contains("application/x-moz-file")) {
-				var file = getDataAt("application/x-moz-file", i);
-				return file instanceof Components.interfaces.nsIFile
-					&& /\.(?:ini|jsm?|json)$/i.test(file.leafName)
-					&& file;
-			}
-			if(types.contains("text/x-moz-url")) {
-				var url = getDataAt("text/x-moz-url", i).match(/^[^\r\n]*/)[0];
-				return this.ut.hasPrefix(url, this.ct.PROTOCOL_SETTINGS_ADD) && url;
-			}
-			if(types.contains("text/plain")) {
-				var str = this.ut.trim(getDataAt("text/plain", i) || "");
-				return (
-					this.ut.hasPrefix(str, this.ps.requiredHeader)
-					|| this.ut.hasPrefix(str, this.ct.PROTOCOL_SETTINGS_ADD)
-				) && str;
+			for(var j = 0; j < tc; ++j) {
+				var type = types[j];
+				if(type == "application/x-moz-file") {
+					var file = getDataAt(type, i);
+					return file instanceof Components.interfaces.nsIFile
+						&& /\.(?:ini|jsm?|json)$/i.test(file.leafName)
+						&& file;
+				}
+				if(type == "text/x-moz-url") {
+					var url = getDataAt(type, i).match(/^[^\r\n]*/)[0];
+					return this.ut.hasPrefix(url, this.ct.PROTOCOL_SETTINGS_ADD) && url;
+				}
+				if(type == "text/plain") {
+					var str = this.ut.trim(getDataAt(type, i) || "");
+					return (
+						this.ut.hasPrefix(str, this.ps.requiredHeader)
+						|| this.ut.hasPrefix(str, this.ct.PROTOCOL_SETTINGS_ADD)
+					) && str;
+				}
 			}
 		}
 		return null;
