@@ -3574,7 +3574,7 @@ var handyClicksSets = {
 		fp.defaultString = this.ps.prefsFileName + (modeSave ? this.getFormattedDate(date) : "") + "." + ext;
 		fp.defaultExtension = ext;
 		fp.appendFilter(this.getLocalized("hcPrefsFiles"), "handyclicks_prefs*." + ext);
-		fp.appendFilter(this.getLocalized(ext + "Files"), "*." + ext + (ext == "js" ? ";*.jsm" : ""));
+		fp.appendFilter(this.getLocalized(ext + "Files"), "*." + ext + (ext == "js" ? ";*.jsm;*.json" : ""));
 		fp.appendFilters(fp.filterAll);
 		var bDir = this.backupsDir;
 		if(bDir)
