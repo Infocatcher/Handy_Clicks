@@ -85,6 +85,7 @@ var handyClicksSets = {
 			this.e("hc-sets-overrideInstantApply-box").hidden = true;
 
 		window.addEventListener("mouseover", this, true);
+		document.addEventListener(this.su.dropEvent, this, false);
 	},
 	initShortcuts: function() {
 		var tr = this.tree = this.$("hc-sets-tree");
@@ -104,6 +105,7 @@ var handyClicksSets = {
 		this.rowsCache = this._savedPrefs = this._savedTypes = null;
 
 		window.removeEventListener("mouseover", this, true);
+		document.removeEventListener(this.su.dropEvent, this, false);
 	},
 	restoreSearchQuery: function() {
 		if(!this.pu.get("sets.rememberSearchQuery"))
@@ -187,6 +189,8 @@ var handyClicksSets = {
 		}
 		else if(e.type == "mouseover")
 			this.openMenu(e);
+		else if(e.type == this.su.dropEvent)
+			this.dataChanged(e, true);
 	},
 	setAutocompletePlural: function(tb) {
 		if(!tb)
@@ -3515,8 +3519,6 @@ var handyClicksSets = {
 	handleDragLeave: function(e) {
 	},
 	handleDrop: function(e) {
-		this.dataChanged(e, true);
-
 		this.handleDragLeave(e);
 		var data = this.getDropData(e);
 		if(!data)
