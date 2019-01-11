@@ -3561,8 +3561,11 @@ var handyClicksSets = {
 				return this.ut.hasPrefix(url, this.ct.PROTOCOL_SETTINGS_ADD) && url;
 			}
 			if(types.contains("text/plain")) {
-				var str = getDataAt("text/plain", i);
-				return this.ut.hasPrefix(str, this.ps.requiredHeader) && str;
+				var str = this.ut.trim(getDataAt("text/plain", i) || "");
+				return (
+					this.ut.hasPrefix(str, this.ps.requiredHeader)
+					|| this.ut.hasPrefix(str, this.ct.PROTOCOL_SETTINGS_ADD)
+				) && str;
 			}
 		}
 		return null;
