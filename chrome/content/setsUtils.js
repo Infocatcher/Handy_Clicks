@@ -143,7 +143,8 @@ var handyClicksSetsUtils = {
 		var document = top.document;
 		var root = document.documentElement;
 		var onTop = root.getAttribute(this.onTopAttr) == "true";
-		var forceOnTop = checkOpener && top.opener && !onTop && !toggle
+		var forceOnTop = checkOpener && !onTop && !toggle
+			&& top.opener && top.opener.document
 			&& top.opener.document.documentElement.getAttribute(this.onTopAttr) == "true";
 		if(toggle || forceOnTop) {
 			onTop = !onTop;
