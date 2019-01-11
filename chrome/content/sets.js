@@ -2819,8 +2819,9 @@ var handyClicksSets = {
 		this.backupsDir = file.parent;
 		return true;
 	},
-	importPrefs: function() {
-		var file = this.pickFile(this.getLocalized("importPrefs"), false, "ini");
+	importPrefs: function(file) {
+		if(!file)
+			file = this.pickFile(this.getLocalized("importPrefs"), false, "ini");
 		if(!file)
 			return;
 		var lines = this.ut.readFromFile(file)
@@ -3519,10 +3520,13 @@ var handyClicksSets = {
 		e.preventDefault();
 		e.stopPropagation();
 
-		var type = data instanceof Components.interfaces.nsIFile
-			? this.ct.IMPORT_FILE
-			: this.ct.IMPORT_STRING;
-		this.importSets(true, type, data);
+		var isFile = data instanceof Components.interfaces.nsIFile;
+		if(isFile && /\.ini$/i.test(data.leafName))
+			this.importPrefs(data);
+		else {
+			var type = isFile ? this.ct.IMPORT_FILE : this.ct.IMPORT_STRING;
+			this.importSets(true, type, data);
+		}
 	},
 	hasDropData: function(e) {
 		return !!this.getDropData(e, true);
