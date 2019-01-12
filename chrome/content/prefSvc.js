@@ -255,19 +255,18 @@ var handyClicksPrefSvc = {
 	},
 
 	initCustomType: function(type) {
-		var cache = this._typesCache;
-		if(type in cache)
-			return cache[type];
+		var state = this._typesInitState;
+		if(type in state)
+			return state[type];
 
 		if(!this.isOkCustomType(type)) {
 			this.ut._warn('Invalid custom type: "' + type + '"');
-			this._log('! Type "' + type + '" => invalid');
-			return cache[type] = false;
+			return state[type] = false;
 		}
 		var ct = this.types[type];
 		if(!ct.enabled) {
 			this._log('Type "' + type + '" => disabled');
-			return cache[type] = false;
+			return state[type] = false;
 		}
 		try {
 			var df = ct.define;
@@ -278,7 +277,7 @@ var handyClicksPrefSvc = {
 			ct._contextMenu = cm ? new Function("event,item,origItem,itemType", this.expandCode(cm)) : null;
 			ct._firstCall = true;
 			this._log('Type "' + type + '" => initialized');
-			return cache[type] = true;
+			return state[type] = true;
 		}
 		catch(e) {
 			ct._invalid = true;
@@ -295,8 +294,7 @@ var handyClicksPrefSvc = {
 			this.ut._err(eMsg, href, eLine);
 			this.ut._err(e);
 		}
-		this._log('! Type "' + type + '" => initialization error');
-		return cache[type] = false;
+		return state[type] = false;
 	},
 	compileCustomTypes: function() {
 		var types = this.types;
@@ -429,7 +427,7 @@ var handyClicksPrefSvc = {
 
 	destroyCustomFuncs: function(reason) {
 		this.hc.destroyCustomTypes();
-		this._typesCache = { __proto__: null };
+		this._typesInitState = { __proto__: null };
 		this._fnCache = { __proto__: null };
 		this._destructors.forEach(function(destructorArr) {
 			this.destroyCustomFunc.apply(this, destructorArr.concat(reason));
