@@ -417,8 +417,7 @@ var handyClicksPrefSvc = {
 	},
 
 	destroyCustomFuncs: function(reason) {
-		if(this.isMainWnd)
-			this.hc.destroyCustomTypes();
+		this.hc.destroyCustomTypes();
 		this._destructors.forEach(function(destructorArr) {
 			this.destroyCustomFunc.apply(this, destructorArr.concat(reason));
 		}, this);
