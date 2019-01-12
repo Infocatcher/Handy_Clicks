@@ -60,7 +60,6 @@ var handyClicksPrefSvc = {
 		}
 		// Force unload prefs to avoid memory leaks
 		this.types = this.prefs = this.files = {};
-		this._typesCache = { __proto__: null };
 		this._loadStatus = this.SETS_LOAD_UNKNOWN;
 		if(!disable)
 			this.oSvc.destroy();
@@ -240,10 +239,9 @@ var handyClicksPrefSvc = {
 			this.setsMigration(fromPrefs, vers);
 		this._restoringCounter = 0;
 		if(this.isMainWnd) {
-			this._typesCache = { __proto__: null };
+			this.initCustomFuncs();
 			if(this.pu.get("precompileCustomTypes"))
 				this.delay(this.compileCustomTypes, this);
-			this.initCustomFuncs();
 		}
 		this._loadStatus = this.SETS_LOAD_OK;
 	},
@@ -431,6 +429,7 @@ var handyClicksPrefSvc = {
 
 	destroyCustomFuncs: function(reason) {
 		this.hc.destroyCustomTypes();
+		this._typesCache = { __proto__: null };
 		this._fnCache = { __proto__: null };
 		this._destructors.forEach(function(destructorArr) {
 			this.destroyCustomFunc.apply(this, destructorArr.concat(reason));
