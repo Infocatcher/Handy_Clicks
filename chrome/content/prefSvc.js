@@ -369,8 +369,12 @@ var handyClicksPrefSvc = {
 		}
 		this._log("Compile: " + fObj.label);
 		try {
+			var code = this.expandCode(fObj.action);
+			var path = this.expandCode._path;
 			var line = fObj._line = new Error().lineNumber + 1;
-			var fn = new Function("event,item,origItem,itemType", this.expandCode(fObj.action));
+			var fn = typeof code == "function" ? code : new Function("event,item,origItem,itemType", code);
+			if(useCache && path && !(path in this._fnCache))
+				this._fnCache[path] = fn;
 		}
 		catch(err) {
 			var eLine = fObj._errorLine = this.ut.getRealLineNumber(err, line);
@@ -395,14 +399,19 @@ var handyClicksPrefSvc = {
 		// Usage: "//> path/to/file.js"
 		return /^\/\/>\s*([^\n\r]+\.\w+)$/.test(code) && RegExp.$1;
 	},
-	expandCode: function(code) {
+	_fnCache: { __proto__: null },
+	expandCode: function expandCode(code) {
+		expandCode._path = undefined;
 		var path = this.getSourcePath(code);
 		if(!path)
 			return code;
+		if(path in this._fnCache)
+			return this._fnCache[expandCode._path = path];
 		var file = this.ut.getLocalFile(path);
 		var data = file && this.ut.readFromFile(file);
 		if(!data)
 			throw this.ut.getLocalized("fileNotFound").replace("%f", file ? file.path : path);
+		expandCode._path = path;
 		return data;
 	},
 
@@ -418,6 +427,7 @@ var handyClicksPrefSvc = {
 
 	destroyCustomFuncs: function(reason) {
 		this.hc.destroyCustomTypes();
+		this._fnCache = { __proto__: null };
 		this._destructors.forEach(function(destructorArr) {
 			this.destroyCustomFunc.apply(this, destructorArr.concat(reason));
 		}, this);
