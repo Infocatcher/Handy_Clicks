@@ -371,10 +371,14 @@ var handyClicksPrefSvc = {
 		try {
 			var code = this.expandCode(fObj.action);
 			var path = this.expandCode._path;
+			if(typeof code == "function")
+				this._log("Will use already created function for " + path);
 			var line = fObj._line = new Error().lineNumber + 1;
 			var fn = typeof code == "function" ? code : new Function("event,item,origItem,itemType", code);
-			if(useCache && path && !(path in this._fnCache))
+			if(useCache && path && !(path in this._fnCache)) {
+				this._log("Cache function for " + path);
 				this._fnCache[path] = fn;
+			}
 		}
 		catch(err) {
 			var eLine = fObj._errorLine = this.ut.getRealLineNumber(err, line);
