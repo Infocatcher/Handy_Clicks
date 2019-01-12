@@ -573,20 +573,15 @@ var handyClicksPrefSvc = {
 		return this.JSON;
 	},
 	getHash: function(str, hashFunc) {
-		var uc = this.ut.utf8Converter;
-		var result = {};
-		var data = uc.convertToByteArray(str, result);
+		var data = this.ut.utf8Converter.convertToByteArray(str, {});
 		var ch = Components.classes["@mozilla.org/security/hash;1"]
 			.createInstance(Components.interfaces.nsICryptoHash);
 		ch.init(ch[hashFunc]);
 		ch.update(data, data.length);
 		var hash = ch.finish(false);
-		return Array.prototype.map.call(
-			hash,
-			function(chr) {
-				return ("0" + chr.charCodeAt(0).toString(16)).slice(-2);
-			}
-		).join("");
+		return Array.prototype.map.call(hash, function(chr) {
+			return ("0" + chr.charCodeAt(0).toString(16)).slice(-2);
+		}).join("");
 	},
 
 	get hasTestSettings() {
@@ -601,8 +596,8 @@ var handyClicksPrefSvc = {
 	},
 
 	get hasUnsaved() {
-		return this.ps.getSettingsStr(null, null, false, true)
-			!= this.ps.__savedStr.replace(this.hashRe, "");
+		return this.getSettingsStr(null, null, false, true)
+			!= this.__savedStr.replace(this.hashRe, "");
 	},
 	__savedStr: "",
 	get _savedStr() {
