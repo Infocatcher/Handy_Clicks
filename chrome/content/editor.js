@@ -268,6 +268,19 @@ var handyClicksEditor = {
 			},
 			this
 		);
+
+		// Sort built-in types alphabetically
+		var sep = this.$("hc-editor-customTypesSep");
+		var mis = [];
+		for(var mi = sep.nextSibling; mi && mi.localName != "menuseparator"; mi = mi.nextSibling)
+			mis.push(mi);
+		var insPos = mi;
+		var mp = mi.parentNode;
+		mis.sort(function(a, b) {
+			return a.getAttribute("label") > b.getAttribute("label")
+		}).forEach(function(mi) {
+			mp.insertBefore(mi, insPos);
+		});
 	},
 	localizeLabels: function(parentId) {
 		var ml = this.$(parentId);
