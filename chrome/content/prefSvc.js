@@ -708,6 +708,10 @@ var handyClicksPrefSvc = {
 			__proto__: null
 		};
 	},
+	get spacedSep() {
+		delete this.spacedSep;
+		return this.spacedSep = " " + this.keys.sep + " ";
+	},
 	getModifiersStr: function(sh, _short) { // "button=0,ctrl=true,shift=true,alt=false,meta=false"
 		var keys = this.keys;
 		sh = sh
@@ -718,6 +722,11 @@ var handyClicksPrefSvc = {
 			})
 			.replace(/,+/g, keys.sep);
 		return sh || (_short ? "" : this.getLocalized("none"));
+	},
+	getShortcutStr: function(sh, _short) {
+		var button = this.getButtonStr(sh, _short);
+		var modifiers = this.getModifiersStr(sh, _short);
+		return button + (modifiers ? this.spacedSep + modifiers : "");
 	},
 	checkPrefs: function(pSrc) {
 		return this.checkPrefsStr(

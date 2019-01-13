@@ -342,18 +342,13 @@ var handyClicksSets = {
 					this.appendItems(modifiersContainer, so, sh);
 				break;
 				case 1: // Normal (compact)
-					var button = this.ps.getButtonStr(sh, true);
-					var modifiers = this.ps.getModifiersStr(sh, true);
-					var label = button + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
+					var label = this.ps.getShortcutStr(sh, true);
 					var buttonContainer = this.eltsCache[sh]
 						|| this.appendContainerItem(df, sh, label);
 					this.appendItems(buttonContainer, so, sh);
 				break;
 				case 2: // Normal (inline)
-					var button = this.ps.getButtonStr(sh, true);
-					var modifiers = this.ps.getModifiersStr(sh, true);
-					var sep = " " + this.ps.keys.sep + " ";
-					var label = button + (modifiers ? sep + modifiers : "") + sep;
+					var label = this.ps.getShortcutStr(sh, true) + this.ps.spacedSep;
 					for(var type in so) if(so.hasOwnProperty(type))
 						this.appendRow(df, sh, type, so[type], label + this.ps.getTypeLabel(type));
 				break;
@@ -371,9 +366,7 @@ var handyClicksSets = {
 					}
 				break;
 				case 4: // Inverse (compact)
-					var button = this.ps.getButtonStr(sh, true);
-					var modifiers = this.ps.getModifiersStr(sh, true);
-					var label = button + (modifiers ? " " + this.ps.keys.sep + " " + modifiers : "");
+					var label = this.ps.getShortcutStr(sh, true);
 					for(var type in so) if(so.hasOwnProperty(type)) {
 						var typeContainer = this.eltsCache[type]
 							|| this.appendContainerItem(df, type, this.ps.getTypeLabel(type));
@@ -381,10 +374,7 @@ var handyClicksSets = {
 					}
 				break;
 				case 5: // Inverse (inline)
-					var button = this.ps.getButtonStr(sh, true);
-					var modifiers = this.ps.getModifiersStr(sh, true);
-					var sep = " " + this.ps.keys.sep + " ";
-					var label = sep + button + (modifiers ? sep + modifiers : "");
+					var label = this.ps.spacedSep + this.ps.getShortcutStr(sh, true);
 					for(var type in so) if(so.hasOwnProperty(type))
 						this.appendRow(df, sh, type, so[type], this.ps.getTypeLabel(type) + label);
 				break;
@@ -1106,6 +1096,7 @@ var handyClicksSets = {
 				var type = tItem.__itemType, sh = tItem.__shortcut;
 				var mdfs = this.ps.getModifiersStr(sh);
 				var button = this.ps.getButtonStr(sh, true);
+				var sep = this.ps.spacedSep;
 				var typeLabel = this.cropStr(this.ps.getTypeLabel(type), MAX_TYPE_LENGTH);
 				var fObj = this.ut.getOwnProperty(this.ps.prefs, sh, type);
 				var dObj = this.ut.getOwnProperty(fObj, "delayedAction");
@@ -1126,7 +1117,7 @@ var handyClicksSets = {
 				var n = i + 1;
 				if(n == MAX_ROWS)
 					n = itsCount;
-				return n + ". " + mdfs + " + " + button + " + " + typeLabel + " \u21d2 " /* "=>" */
+				return n + ". " + mdfs + sep + button + sep + typeLabel + " \u21d2 " /* "=>" */
 					+ label + addLabel;
 			},
 			this
