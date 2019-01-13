@@ -103,7 +103,7 @@ var handyClicksEditor = {
 		this.setTooltip();
 		this.setFuncsNotes();
 		this.setCompactUI();
-		this.pu.oSvc.addObserver(this.prefsChanged, this);
+		this.pu.oSvc.addObserver(this.prefChanged, this);
 		this.checkForCrashBackups(700);
 
 		this._startTime1 = Date.now();
@@ -268,8 +268,10 @@ var handyClicksEditor = {
 			},
 			this
 		);
-
-		// Sort built-in types alphabetically
+		if(this.pu.get("editor.ui.sortInternalTypes"))
+			this.sortInternalTypes();
+	},
+	sortInternalTypes: function() {
 		var sep = this.$("hc-editor-customTypesSep");
 		var mis = [];
 		for(var mi = sep.nextSibling; mi && mi.localName != "menuseparator"; mi = mi.nextSibling)
@@ -335,9 +337,11 @@ var handyClicksEditor = {
 			compact === undefined ? this.pu.get("editor.ui.compact") : compact
 		);
 	},
-	prefsChanged: function(pName, pVal) {
+	prefChanged: function(pName, pVal) {
 		if(pName == "delayedActionTimeout")
 			this.setTooltip(pVal);
+		else if(pName == "editor.ui.sortInternalTypes")
+			pVal && this.sortInternalTypes(); // Can't undo...
 		else if(pName == "editor.ui.showCustomFuncsNotes")
 			this.setFuncsNotes(pVal);
 		else if(pName == "editor.ui.compact")

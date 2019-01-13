@@ -116,6 +116,7 @@ pref("extensions.handyclicks.editor.autocompleteMinSymbols", 2);
 pref("extensions.handyclicks.editor.testFocusMainWindow", true);
 pref("extensions.handyclicks.editor.unsavedSwitchWarning", true);
 pref("extensions.handyclicks.editor.ui.showCustomFuncsNotes", true);
+pref("extensions.handyclicks.editor.ui.sortInternalTypes", false);
 pref("extensions.handyclicks.editor.ui.compact", false);
 pref("extensions.handyclicks.editor.ui.invertWindowTitle", false);
 pref("extensions.handyclicks.editor.external.path", "Scratchpad");
