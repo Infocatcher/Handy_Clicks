@@ -138,18 +138,17 @@ var handyClicksSets = {
 					col.tooltipText = col.getAttribute("label");
 			}
 		);
-		this.instantApply = document.documentElement.instantApply;
+		var de = document.documentElement;
+		this.instantApply = de.instantApply;
 		if(this.instantApply)
 			this.applyButton.hidden = true;
 		else
 			this.applyButton.disabled = true;
 
-		var de = document.documentElement;
 		var prefsButt = de.getButton("extra2");
 		prefsButt.className += " hc-iconic hc-preferences";
+		// Used menu button (instead of "popup" attributes) to make popup accessible from keyboard
 		prefsButt.setAttribute("type", "menu");
-		//prefsButt.setAttribute("popup", "hc-sets-prefsManagementPopup");
-		// Can't open popup from keyboard
 		prefsButt.appendChild(this.e("hc-sets-prefsManagementPopup"));
 		Array.prototype.forEach.call( // Fix command handler from dialog binding
 			prefsButt.getElementsByTagName("menuitem"),
