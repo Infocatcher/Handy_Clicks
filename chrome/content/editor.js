@@ -896,9 +896,8 @@ var handyClicksEditor = {
 	},
 
 	itemTypeChanged: function(type) {
-		if(this.ps.isCustomType(type)) this.delay(function() {
+		if(this.ps.isCustomType(type))
 			this.initCustomTypesEditor(type);
-		}, this);
 	},
 	initAdditionalOptions: function(iType, setsObj) {
 		iType = iType || this.currentType;
