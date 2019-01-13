@@ -688,8 +688,7 @@ var handyClicksEditor = {
 		var cTypes = this.ps.types;
 		var hideSep = true;
 		var _labels = { __proto__: null };
-		var primaryItems = document.createDocumentFragment();
-		var secondaryItems = document.createDocumentFragment();
+		var sortedTypes = [];
 		for(var cType in cTypes) if(cTypes.hasOwnProperty(cType)) {
 			if(!this.ps.isCustomType(cType)) {
 				this.ut._warn('Invalid custom type id: "' + cType + '"');
@@ -710,19 +709,26 @@ var handyClicksEditor = {
 			var tip = notUsed
 				? this.getLocalized("customTypeNotUsed") + " \n" + cType
 				: cType;
-			var mi = this.ut.createElement("menuitem", {
+			sortedTypes.push({
 				label: label,
 				value: cType,
 				tooltiptext: tip,
-				hc_notUsed: notUsed
+				hc_notUsed: notUsed,
+				hc_disabled: dis
 			});
+		}
+		var primaryItems = document.createDocumentFragment();
+		var secondaryItems = document.createDocumentFragment();
+		sortedTypes.sort(function(a, b) {
+			return a.label > b.label;
+		}).forEach(function(attrs) {
+			var mi = this.ut.createElement("menuitem", attrs);
 			var _mi = mi.cloneNode(true);
-			mi.setAttribute("disabled", dis);
-			_mi.setAttribute("hc_disabled", dis);
+			mi.setAttribute("disabled", attrs.hc_disabled);
 			primaryItems.appendChild(mi);
 			secondaryItems.appendChild(_mi);
 			hideSep = false;
-		}
+		}, this);
 		parent.insertBefore(primaryItems, sep);
 		tList.appendChild(secondaryItems);
 		sep.hidden = hideSep;
