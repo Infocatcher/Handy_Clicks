@@ -256,9 +256,13 @@ var handyClicksSets = {
 		if(maxRowsIndx < 0)
 			return;
 		var fvr = +tr.getAttribute("hc_firstVisibleRow");
-		var lvr = +tr.getAttribute("hc_lastVisibleRow");
-		tbo.ensureRowIsVisible(this.ut.mm(lvr, 0, maxRowsIndx));
-		tbo.ensureRowIsVisible(this.ut.mm(fvr, 0, maxRowsIndx));
+		var lvr = +tr.getAttribute("hc_lastVisibleRow"); // Note: may be larger, than maxRowsIndx
+		tbo.ensureRowIsVisible(lvr);
+		tbo.ensureRowIsVisible(fvr);
+		if(lvr >= maxRowsIndx) this.delay(function() { // Force scroll to last row
+			tbo.ensureRowIsVisible(lvr);
+			tbo.ensureRowIsVisible(fvr);
+		}, this);
 	},
 
 	/*** Actions pane ***/
