@@ -118,18 +118,23 @@
 						onclick="handyClicksEditor.setClickOptions(event);"
 						oncommand="event.stopPropagation();"
 						label="&hc.editor.clickHere;" tooltiptext="&hc.editor.clickHereTip;" />
-					<menulist id="hc-editor-button">
-						<menupopup>
-							<menuitem value="0" label="button0short" tooltiptext="button0" class="menuitem-iconic" />
-							<menuitem value="1" label="button1short" tooltiptext="button1" class="menuitem-iconic" />
-							<menuitem value="2" label="button2short" tooltiptext="button2" class="menuitem-iconic" />
-						</menupopup>
-					</menulist>
-					<checkbox id="hc-editor-ctrl" label="ctrl" />
-					<checkbox id="hc-editor-shift" label="shift" />
-					<checkbox id="hc-editor-alt" label="alt" />
-					<checkbox id="hc-editor-meta" label="meta" />
-					<checkbox id="hc-editor-os" label="os" hc_note="&hc.editor.osKeyNote;" />
+					<hbox align="center" context="hc-editor-shortcutContext">
+						<menulist id="hc-editor-button">
+							<menupopup>
+								<menuitem value="0" label="button0short" tooltiptext="button0" class="menuitem-iconic" />
+								<menuitem value="1" label="button1short" tooltiptext="button1" class="menuitem-iconic" />
+								<menuitem value="2" label="button2short" tooltiptext="button2" class="menuitem-iconic" />
+							</menupopup>
+						</menulist>
+						<checkbox id="hc-editor-ctrl" label="ctrl" />
+						<checkbox id="hc-editor-shift" label="shift" />
+						<checkbox id="hc-editor-alt" label="alt" />
+						<checkbox id="hc-editor-meta" label="meta" />
+						<checkbox id="hc-editor-os" label="os" hc_note="&hc.editor.osKeyNote;" />
+						<menupopup id="hc-editor-shortcutContext"
+							onpopupshowing="handyClicksEditor.loadSavedShortcuts();"
+							oncommand="event.stopPropagation(); handyClicksEditor.loadSavedShortcut(event);" />
+					</hbox>
 					<!-- Dummy label for accesskey -->
 					<label style="margin: 0; padding: 0; border: none;"
 						accesskey="&hc.editor.itemTypesAccesskey;" control="hc-editor-itemTypes" />

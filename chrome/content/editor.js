@@ -1163,6 +1163,40 @@ var handyClicksEditor = {
 		this.$("hc-editor-os").checked = e.getModifierState && e.getModifierState("OS");
 		this.loadFuncs();
 	},
+	loadSavedShortcuts: function() {
+		var shortcuts = [];
+		var curType = this.currentType;
+		var curSh = this.currentShortcut;
+		var prefs = this.ps.prefs;
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
+			var so = prefs[sh];
+			if(this.ut.isObject(so) && so.hasOwnProperty(curType)) {
+				shortcuts.push({
+					hc_shortcut: sh,
+					label: this.ps.getShortcutStr(sh, true),
+					type: "radio",
+					checked: sh == curSh
+				});
+			}
+		}
+
+		var df = document.createDocumentFragment();
+		shortcuts.sort(function(a, b) {
+			return a.label > b.label
+		}).forEach(function(attrs) {
+			df.appendChild(this.ut.createElement("menuitem", attrs));
+		}, this);
+
+		var mp = this.$("hc-editor-shortcutContext");
+		mp.textContent = "";
+		mp.appendChild(df);
+	},
+	loadSavedShortcut: function(e) {
+		var mi = e.target;
+		var sh = mi.getAttribute("hc_shortcut");
+		this.currentShortcut = sh;
+		this.loadFuncs();
+	},
 
 	fixFuncOpts: function(fix) {
 		this.funcOptsFixed = fix;
