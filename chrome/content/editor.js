@@ -1163,7 +1163,7 @@ var handyClicksEditor = {
 		this.$("hc-editor-os").checked = e.getModifierState && e.getModifierState("OS");
 		this.loadFuncs();
 	},
-	loadSavedShortcuts: function() {
+	loadSavedShortcuts: function(mp) {
 		var shortcuts = [];
 		var curType = this.currentType;
 		var curSh = this.currentShortcut;
@@ -1190,7 +1190,6 @@ var handyClicksEditor = {
 			df.appendChild(this.ut.createElement("menuitem", attrs));
 		}, this);
 
-		var mp = this.$("hc-editor-shortcutContext");
 		mp.textContent = "";
 		mp.appendChild(df);
 	},
