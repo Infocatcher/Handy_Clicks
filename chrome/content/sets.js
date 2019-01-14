@@ -1443,9 +1443,9 @@ var handyClicksSets = {
 			return;
 		}
 		// mousemove:
-		if(row <= this.tbo.getFirstVisibleRow() + 2)
+		if(row <= this.tbo.getFirstVisibleRow() + 2 && row < initialRow)
 			var visRow = row - 2;
-		else if(row >= this.tbo.getLastVisibleRow() - 2)
+		else if(row >= this.tbo.getLastVisibleRow() - 2 && row > initialRow)
 			var visRow = row + 2;
 		else
 			return;
