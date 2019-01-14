@@ -1423,12 +1423,16 @@ var handyClicksSets = {
 			this.smartSelectStop();
 			window.addEventListener("mouseup", this, true);
 			ss._initialRow = row;
+			ss._startY = e.screenY;
 			return;
 		}
 		// mouseup or mousemove:
 		var initialRow = this.ut.getOwnProperty(ss, "_initialRow");
 		if(initialRow === undefined)
 			return;
+		if(et == "mousemove" && ss._startY != undefined && Math.abs(ss._startY - e.screenY) <= 4)
+			return; // Just inaccurate click?
+		ss._startY = undefined;
 
 		if(row != initialRow || lastHandledRow != undefined)
 			this.tSel.rangedSelect(initialRow, row, false);
@@ -1450,7 +1454,7 @@ var handyClicksSets = {
 	},
 	smartSelectStop: function() {
 		var ss = this.smartSelect;
-		ss._initialRow = ss._lastHandledRow = undefined;
+		ss._initialRow = ss._lastHandledRow = ss._startY = undefined;
 		window.removeEventListener("mouseup", this, true);
 	},
 
