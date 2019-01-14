@@ -589,7 +589,7 @@ var handyClicksSets = {
 
 		this.appendTreeCell(tRow, "label", label);
 		this.appendTreeCell(tRow, "label", fo.eventType);
-		var actLabel = this.getActionLabel(fo);
+		var actLabel = this.su.getActionLabel(fo);
 		this.appendTreeCell(tRow, "label", actLabel);
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom));
 		var linkedFile = this.getActionCode._hasLinkedFile;
@@ -617,7 +617,7 @@ var handyClicksSets = {
 			this.appendTreeCell(daRow, "label", this._daAfter);
 
 			var daCustom = !!da.custom;
-			var daLabel = this.getActionLabel(da);
+			var daLabel = this.su.getActionLabel(da);
 			var daDis = this._daForceDisable || !fo.enabled || !da.enabled;
 			this.appendTreeCell(daRow, "label", daLabel);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom));
@@ -733,14 +733,6 @@ var handyClicksSets = {
 
 		this.rowsCache[tItem.__hash = shortcut + "-" + itemType] = tRow;
 		return tItem;
-	},
-	getActionLabel: function(fo) {
-		if(fo.custom)
-			return fo.label || "";
-		var act = fo.action;
-		if(act in this.su.extLabels)
-			return this.su.getExtLabel(act);
-		return this.getLocalized(act);
 	},
 	getActionCode: function getActionCode(action, isCustom) {
 		getActionCode._hasLinkedFile = getActionCode._hasFileData = false;
@@ -1106,13 +1098,13 @@ var handyClicksSets = {
 					fObj = dObj;
 				}
 				else {
-					var daLabel = this.ut.isObject(dObj) && this.getActionLabel(fObj);
+					var daLabel = this.ut.isObject(dObj) && this.su.getActionLabel(fObj);
 					if(daLabel)
 						addLabel = "\n\t(" + this.getLocalized("delayed") + ": "
 							+ this.cropStr(daLabel, MAX_LABEL_LENGTH) + ")";
 				}
 				var label = this.ut.isObject(fObj)
-					? this.cropStr(this.getActionLabel(fObj), MAX_LABEL_LENGTH)
+					? this.cropStr(this.su.getActionLabel(fObj), MAX_LABEL_LENGTH)
 					: "?";
 				var n = i + 1;
 				if(n == MAX_ROWS)
@@ -2978,7 +2970,7 @@ var handyClicksSets = {
 		return its.map(
 			function(it) {
 				var fo = this.ut.getOwnProperty(this.ps.prefs, it.__shortcut, it.__itemType);
-				return this.ut.isObject(fo) && this.getActionLabel(fo);
+				return this.ut.isObject(fo) && this.su.getActionLabel(fo);
 			},
 			this
 		).filter(function(label) {

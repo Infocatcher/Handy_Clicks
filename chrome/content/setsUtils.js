@@ -676,5 +676,13 @@ var handyClicksSetsUtils = {
 	},
 	getExtLabel: function(name) {
 		return this.ut.getLocalizedEntity.apply(this.ut, this.extLabels[name]);
+	},
+	getActionLabel: function(fo) {
+		if(fo.custom)
+			return fo.label || "";
+		var act = fo.action;
+		if(act in this.extLabels)
+			return this.getExtLabel(act);
+		return this.getLocalized(act);
 	}
 };
