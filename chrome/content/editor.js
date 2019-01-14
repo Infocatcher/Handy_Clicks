@@ -1177,7 +1177,8 @@ var handyClicksEditor = {
 					label: this.ps.getShortcutStr(sh, true),
 					type: "radio",
 					checked: sh == curSh,
-					acceltext: this.su.getActionLabel(fo)
+					acceltext: this.su.getActionLabel(fo),
+					hc_sets: fo.enabled ? "" : "disabled"
 				});
 			}
 		}
