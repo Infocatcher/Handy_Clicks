@@ -1450,10 +1450,12 @@ var handyClicksSets = {
 			return;
 		}
 		// mousemove:
-		if(row <= this.tbo.getFirstVisibleRow() + 2 && (row < initialRow || atTopEdge))
-			var visRow = row - 2;
-		else if(row >= this.tbo.getLastVisibleRow() - 2 && (row > initialRow || atBottomEdge))
-			var visRow = row + 2;
+		var fvr = this.tbo.getFirstVisibleRow();
+		var lvr = this.tbo.getLastVisibleRow();
+		if(row <= fvr + 2 && (row < initialRow || atTopEdge))
+			var visRow = row - (atTopEdge || row == fvr ? 1 : 2);
+		else if(row >= lvr - 2 && (row > initialRow || atBottomEdge))
+			var visRow = row + (atBottomEdge || row == lvr ? 1 : 2);
 		else
 			return;
 		var maxRowsIndx = this.tView.rowCount - 1;
