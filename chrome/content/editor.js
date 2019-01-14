@@ -1171,11 +1171,13 @@ var handyClicksEditor = {
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			var so = prefs[sh];
 			if(this.ut.isObject(so) && so.hasOwnProperty(curType)) {
-				shortcuts.push({
+				var fo = so[curType];
+				this.ut.isObject(fo) && shortcuts.push({
 					hc_shortcut: sh,
 					label: this.ps.getShortcutStr(sh, true),
 					type: "radio",
-					checked: sh == curSh
+					checked: sh == curSh,
+					acceltext: this.su.getActionLabel(fo)
 				});
 			}
 		}
