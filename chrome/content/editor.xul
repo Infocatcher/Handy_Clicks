@@ -118,9 +118,9 @@
 						onclick="handyClicksEditor.setClickOptions(event);"
 						oncommand="event.stopPropagation();"
 						label="&hc.editor.clickHere;" tooltiptext="&hc.editor.clickHereTip;" />
-					<hbox align="center" context="_child">
+					<hbox id="hc-editor-shortcutBox" align="center" context="_child">
 						<menupopup id="hc-editor-shortcutContext"
-							onpopupshowing="handyClicksEditor.loadSavedShortcuts(this);"
+							onpopupshowing="handyClicksEditor.loadSavedShortcuts(event);"
 							oncommand="event.stopPropagation(); handyClicksEditor.loadSavedShortcut(event);" />
 						<menulist id="hc-editor-button">
 							<menupopup>
