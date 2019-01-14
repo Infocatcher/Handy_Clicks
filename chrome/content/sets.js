@@ -1417,7 +1417,7 @@ var handyClicksSets = {
 		var row = this.tbo.getRowAt(e.clientX, e.clientY);
 		var et = e.type;
 		var lastHandledRow = this.ut.getOwnProperty(ss, "_lastHandledRow");
-		if(row == -1 || row == lastHandledRow)
+		if(row == -1)
 			return;
 		if(et == "mousedown") { // Start
 			this.smartSelectStop();
@@ -1426,6 +1426,13 @@ var handyClicksSets = {
 			ss._startY = e.screenY;
 			return;
 		}
+
+		var bo = this.tBody.boxObject;
+		var atTopEdge = e.screenY - bo.screenY <= 4;
+		var atBottomEdge = bo.screenY + bo.height - e.screenY <= 4;
+		if(row == lastHandledRow && !(atTopEdge || atBottomEdge))
+			return;
+
 		// mouseup or mousemove:
 		var initialRow = this.ut.getOwnProperty(ss, "_initialRow");
 		if(initialRow === undefined)
@@ -1443,9 +1450,9 @@ var handyClicksSets = {
 			return;
 		}
 		// mousemove:
-		if(row <= this.tbo.getFirstVisibleRow() + 2 && row < initialRow)
+		if(row <= this.tbo.getFirstVisibleRow() + 2 && (row < initialRow || atTopEdge))
 			var visRow = row - 2;
-		else if(row >= this.tbo.getLastVisibleRow() - 2 && row > initialRow)
+		else if(row >= this.tbo.getLastVisibleRow() - 2 && (row > initialRow || atBottomEdge))
 			var visRow = row + 2;
 		else
 			return;
