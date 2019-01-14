@@ -1414,6 +1414,8 @@ var handyClicksSets = {
 		)
 			return; // Do nothing, if Mouse Gestures Redox 3.0+ is active ( http://mousegestures.org/ )
 
+		if(ss._ignore || false)
+			return;
 		var row = this.tbo.getRowAt(e.clientX, e.clientY);
 		var et = e.type;
 		var lastHandledRow = this.ut.getOwnProperty(ss, "_lastHandledRow");
@@ -1458,8 +1460,11 @@ var handyClicksSets = {
 			var visRow = row + (atBottomEdge || row == lvr ? 1 : 2);
 		else
 			return;
-		var maxRowsIndx = this.tView.rowCount - 1;
-		this.tbo.ensureRowIsVisible(this.ut.mm(visRow, 0, maxRowsIndx));
+		this.tbo.ensureRowIsVisible(visRow);
+		ss._ignore = true;
+		setTimeout(function() {
+			ss._ignore = false;
+		}, 60);
 	},
 	smartSelectStop: function() {
 		var ss = this.smartSelect;
