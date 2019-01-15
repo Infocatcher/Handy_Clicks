@@ -546,8 +546,8 @@
 
 					var path = ut.ps.getSourcePath(this.value);
 					var file, fileData;
-					if(ut.ps.otherSrc && path in ut.ps.files)
-						fileData = ut.ps.files[path].data || "";
+					if(ut.ps.otherSrc && path in ut.ps.files && ut.ps.isValidFileData(ut.ps.files[path]))
+						fileData = ut.ps.files[path].data;
 					else if(path) {
 						file = ut.getLocalFile(path);
 						ut.ps.otherSrc && ut.notifyWarning(ut.getLocalized("cantEditImportedFile"));

@@ -743,7 +743,7 @@ var handyClicksSets = {
 			getActionCode._hasLinkedFile = true;
 			var hasData = getActionCode._hasFileData = this._import
 				&& path in this.ps.files
-				&& this.isValidFileData(this.ps.files[path]);
+				&& this.ps.isValidFileData(this.ps.files[path]);
 			return this.getLocalized("customFile" + (hasData ? "WithData" : "")) + " " + path;
 		}
 		return this.getLocalized("customFunction")
@@ -3397,15 +3397,12 @@ var handyClicksSets = {
 			}
 		}
 	},
-	isValidFileData: function(fo) {
-		return this.ut.isObject(fo) && !!fo.data;
-	},
 	importFilesData: function() {
 		var overwriteAsk = true, overwrite;
 		var files = this.ps.files;
 		for(var path in files) if(files.hasOwnProperty(path)) {
 			var fo = files[path];
-			if(!this.isValidFileData(fo)) {
+			if(!this.ps.isValidFileData(fo)) {
 				this.ut._warn("Import skipped, invalid data for " + path);
 				continue;
 			}

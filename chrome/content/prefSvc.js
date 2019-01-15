@@ -414,6 +414,9 @@ var handyClicksPrefSvc = {
 		expandCode._path = path;
 		return data;
 	},
+	isValidFileData: function(fo) {
+		return this.ut.isObject(fo) && !!fo.data;
+	},
 
 	_destructors: [],
 	_destructorContext: null,
