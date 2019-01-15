@@ -112,6 +112,37 @@ var handyClicksEditor = {
 		this.wu.markOpenedEditors();
 		this.testMode && this.undoTestSettings();
 		this._savedShortcutObj = this._savedTypeObj = null;
+		if(!reloadFlag && this.ut.storage("activeLinkedFiles")) {
+			var unwatchLinkedFiles = true;
+			var ws = this.wu.wm.getEnumerator("handyclicks:editor");
+			while(ws.hasMoreElements()) {
+				var w = ws.getNext();
+				if(w != window && "_handyClicksInitialized" in w) {
+					unwatchLinkedFiles = false; // Found opened editor
+					break;
+				}
+			}
+		}
+		unwatchLinkedFiles && this.watchLinkedFiles(false); // Will be closed all editors
+	},
+	watchLinkedFile: function(path, file) {
+		this._log("Editor: watchLinkedFile(): " + path);
+		var alf = this.ut.storage("activeLinkedFiles");
+		if(!alf) {
+			this.ut.storage("activeLinkedFiles", (alf = { __proto__: null }));
+			this.watchLinkedFiles(true);
+		}
+		alf[path] = {
+			path: file.path,
+			lastModified: file.lastModifiedTime,
+			size: file.fileSize,
+			__proto__: null
+		};
+	},
+	watchLinkedFiles: function(watch) {
+		this._log("Editor: watchLinkedFiles(" + watch + ")");
+		if(!watch)
+			this.ut.storage("activeLinkedFiles", undefined);
 	},
 	addTestButtons: function() {
 		var df = document.createDocumentFragment();

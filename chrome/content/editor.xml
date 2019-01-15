@@ -550,7 +550,10 @@
 						fileData = ut.ps.files[path].data;
 					else if(path) {
 						file = ut.getLocalFile(path);
-						ut.ps.otherSrc && ut.notifyWarning(ut.getLocalized("cantEditImportedFile"));
+						if(ut.ps.otherSrc)
+							ut.notifyWarning(ut.getLocalized("cantEditImportedFile"));
+						else if(ut.pu.get("enabled") && file.exists())
+							ut.ed.watchLinkedFile(path, file);
 					}
 					var hasFileData = fileData !== undefined;
 
