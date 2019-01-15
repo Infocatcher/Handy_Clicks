@@ -122,7 +122,8 @@
 						<menupopup id="hc-editor-shortcutContext"
 							onpopupshowing="if(!('_hcIgnore' in event)) handyClicksEditor.loadSavedShortcuts(event);"
 							onpopupshown="handyClicksSetsUtils.fixAccelWidth(this);"
-							oncommand="event.stopPropagation(); handyClicksEditor.loadSavedShortcut(event);" />
+							oncommand="event.stopPropagation(); handyClicksEditor.loadSavedShortcut(event);"
+							hc_noData="&hc.editor.noSavedSettings;" />
 						<menulist id="hc-editor-button">
 							<menupopup>
 								<menuitem value="0" label="button0short" tooltiptext="button0" class="menuitem-iconic" />

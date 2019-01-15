@@ -1230,6 +1230,12 @@ var handyClicksEditor = {
 		}, this);
 
 		var mp = e.target;
+		if(!df.hasChildNodes()) {
+			df.appendChild(this.ut.createElement("menuitem", {
+				label: mp.getAttribute("hc_noData"),
+				disabled: true
+			}));
+		}
 		mp.textContent = "";
 		mp.appendChild(df);
 
