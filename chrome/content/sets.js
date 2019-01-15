@@ -2555,6 +2555,7 @@ var handyClicksSets = {
 						ee.value = "Scratchpad";
 						this.eeArgs.value = "";
 						this.fireChange(ee);
+						this.fireChange(this.eeArgs);
 						break;
 					}
 				}
