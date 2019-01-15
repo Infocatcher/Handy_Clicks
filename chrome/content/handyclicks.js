@@ -131,22 +131,34 @@ var handyClicks = {
 		var alf = this.ut.storage("activeLinkedFiles");
 		if(!alf)
 			return;
-		window.addEventListener("blur", this, true);
+		var unchanged = true;
 		for(var path in alf) {
 			var fd = alf[path];
 			var file = fd.file;
 			var file = this.ut.getLocalFileFromPath(fd.path);
+			if(!file.exists()) {
+				this._log("focusHandler() -> file was removed " + path);
+				delete alf[path];
+				continue;
+			}
 			var lastModified = file.lastModifiedTime;
 			var size = file.fileSize;
 			this._log("focusHandler() -> check file " + path);
 			if(lastModified != fd.lastModified || size != fd.size) {
 				fd.lastModified = lastModified;
 				fd.size = size;
+				unchanged = false;
 				this.ps.reinitSettingsInBrowsers();
-				return;
+				break;
 			}
 		}
-		this._log("focusHandler() -> linked files not changed");
+		if(!this.ut.isEmptyObj(alf))
+			window.addEventListener("blur", this, true);
+		else {
+			this._log("focusHandler() -> nothing to watch, remove storage");
+			this.ut.storage("activeLinkedFiles", undefined);
+		}
+		unchanged && this._log("focusHandler() -> linked files not changed");
 	},
 	_blurHandlerTimer: 0,
 	blurHandler: function(e) {
