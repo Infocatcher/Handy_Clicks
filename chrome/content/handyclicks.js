@@ -68,6 +68,7 @@ var handyClicks = {
 			case "DOMMouseScroll": // Legacy
 			case "wheel":        this.wheelHandler(e);        break;
 			case "focus":        this.focusHandler(e);        break;
+			case "blur":         this.blurHandler(e);         break;
 			case "keypress":
 				if(e.keyCode != e.DOM_VK_ESCAPE)
 					break;
@@ -112,6 +113,11 @@ var handyClicks = {
 		this._log("Browser: watchLinkedFiles(" + watch + ")");
 		var act = watch ? addEventListener : removeEventListener;
 		act.call(window, "focus", this, true);
+		window.removeEventListener("blur", this, true);
+		if(this._blurHandlerTimer) {
+			clearTimeout(this._blurHandlerTimer);
+			this._blurHandlerTimer = 0;
+		}
 	},
 	_focusHandlerTimer: 0,
 	focusHandler: function(e) {
@@ -121,9 +127,11 @@ var handyClicks = {
 	},
 	checkLinkedFiles: function() {
 		this._focusHandlerTimer = 0;
+		this.watchLinkedFiles(false);
 		var alf = this.ut.storage("activeLinkedFiles");
 		if(!alf)
 			return;
+		window.addEventListener("blur", this, true);
 		for(var path in alf) {
 			var fd = alf[path];
 			var file = fd.file;
@@ -138,7 +146,20 @@ var handyClicks = {
 				return;
 			}
 		}
-		this._log("focusHandler(): linked files not changed");
+		this._log("focusHandler() -> linked files not changed");
+	},
+	_blurHandlerTimer: 0,
+	blurHandler: function(e) {
+		if(!this._blurHandlerTimer)
+			this._blurHandlerTimer = this.delay(this.checkFocusedWindow, this, 20);
+	},
+	checkFocusedWindow: function() {
+		this._blurHandlerTimer = 0;
+		if(this.wu.ww.activeWindow != window) {
+			window.removeEventListener("blur", this, true);
+			window.addEventListener("focus", this, true);
+			this._log("blurHandler() -> focused another window, will wait for focus");
+		}
 	},
 
 	_enabled: true, // Uses for internal disabling
