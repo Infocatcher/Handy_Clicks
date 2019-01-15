@@ -134,7 +134,7 @@ var handyClicks = {
 			if(lastModified != fd.lastModified || size != fd.size) {
 				fd.lastModified = lastModified;
 				fd.size = size;
-				this.ps.reloadSettingsInBrowsers();
+				this.ps.reinitSettingsInBrowsers();
 				return;
 			}
 		}

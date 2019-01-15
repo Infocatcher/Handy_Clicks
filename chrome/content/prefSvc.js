@@ -11,6 +11,7 @@ var handyClicksPrefSvc = {
 	DESTROY_REBUILD:            1,
 	DESTROY_WINDOW_UNLOAD:      2,
 	DESTROY_LAST_WINDOW_UNLOAD: 4,
+	DESTROY_FORCE_PURGE_CACHES: 8,
 
 	setsVersion: 0.4,
 	setsHeader: "// Preferences of Handy Clicks extension.\n// Do not edit.\n",
@@ -245,23 +246,17 @@ var handyClicksPrefSvc = {
 		}
 		this._loadStatus = this.SETS_LOAD_OK;
 	},
-	reloadSettingsInBrowsers: function() {
-		this._log("reloadSettingsInBrowsers()");
+	reinitSettingsInBrowsers: function() {
+		this._log("reinitSettingsInBrowsers()");
 		const pSvc = "handyClicksPrefSvc";
 		this.wu.forEachWindow(
 			this.ut.isSeaMonkey ? null : "navigator:browser",
 			function(w) {
 				if(!("handyClicksUI" in w))
 					return;
-				this._log("reloadSettingsInBrowsers() -> loadSettingsAsync()");
+				this._log("reinitSettingsInBrowsers() -> clear caches and reinitialize");
 				var ps = w[pSvc];
-				ps.oSvc.notifyObservers(this.SETS_BEFORE_RELOAD);
-				ps.loadSettingsAsync(function(status) { // Also will undo test mode
-					if(!Components.isSuccessCode(status))
-						return;
-					ps.oSvc.notifyObservers(this.SETS_RELOADED);
-					this._log("reloadSettingsInBrowsers() -> loadSettingsAsync() -> done");
-				}, this);
+				ps.initCustomFuncs(this.DESTROY_FORCE_PURGE_CACHES);
 			},
 			this
 		);
@@ -322,8 +317,8 @@ var handyClicksPrefSvc = {
 		for(var type in types) if(types.hasOwnProperty(type))
 			this.delay(this.initCustomType, this, 0, [type]);
 	},
-	initCustomFuncs: function() {
-		this.destroyCustomFuncs(this.DESTROY_REBUILD);
+	initCustomFuncs: function(reason) {
+		this.destroyCustomFuncs(reason | this.DESTROY_REBUILD);
 		var p = this.prefs;
 		for(var sh in p) if(p.hasOwnProperty(sh)) {
 			if(!this.isOkShortcut(sh))
@@ -450,13 +445,32 @@ var handyClicksPrefSvc = {
 	},
 
 	destroyCustomFuncs: function(reason) {
-		this.hc.destroyCustomTypes();
-		this._typesInitState = { __proto__: null };
-		this._fnCache = { __proto__: null };
+		this.clearFnCaches(reason);
 		this._destructors.forEach(function(destructorArr) {
 			this.destroyCustomFunc.apply(this, destructorArr.concat(reason));
 		}, this);
 		this._destructors.length = 0;
+	},
+	clearFnCaches: function(reason) {
+		this.hc.destroyCustomTypes();
+		this._typesInitState = { __proto__: null };
+		this._fnCache = { __proto__: null };
+		if(reason & this.DESTROY_FORCE_PURGE_CACHES) {
+			this._log("clearFnCaches(DESTROY_FORCE_PURGE_CACHES)");
+			this.removeCached(this.types);
+			this.removeCached(this.prefs);
+		}
+	},
+	removeCached: function(o) {
+		for(var p in o) if(o.hasOwnProperty(p)) {
+			if(p.charAt(0) == "_") {
+				delete o[p];
+				continue;
+			}
+			var v = o[p];
+			if(this.ut.isObject(v))
+				this.removeCached(v);
+		}
 	},
 	destroyCustomFunc: function(destructor, context, notifyFlags, baseLine, fObj, sh, type, isDelayed, reason) {
 		if(notifyFlags && !(notifyFlags & reason))
