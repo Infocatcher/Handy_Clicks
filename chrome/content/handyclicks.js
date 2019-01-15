@@ -118,7 +118,21 @@ var handyClicks = {
 		if(!alf)
 			return;
 		// Note: will be also handled any focus inside browser window
-		this._log("focusHandler()");
+		for(var path in alf) {
+			var fd = alf[path];
+			var file = fd.file;
+			var file = this.ut.getLocalFileFromPath(fd.path);
+			var lastModified = file.lastModifiedTime;
+			var size = file.fileSize;
+			this._log("focusHandler() -> check file " + path);
+			if(lastModified != fd.lastModified || size != fd.size) {
+				fd.lastModified = lastModified;
+				fd.size = size;
+				this.ps.reloadSettingsInBrowsers();
+				return;
+			}
+		}
+		this._log("focusHandler(): linked files not changed");
 	},
 
 	_enabled: true, // Uses for internal disabling

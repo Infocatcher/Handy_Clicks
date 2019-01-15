@@ -245,6 +245,27 @@ var handyClicksPrefSvc = {
 		}
 		this._loadStatus = this.SETS_LOAD_OK;
 	},
+	reloadSettingsInBrowsers: function() {
+		this._log("reloadSettingsInBrowsers()");
+		const pSvc = "handyClicksPrefSvc";
+		this.wu.forEachWindow(
+			this.ut.isSeaMonkey ? null : "navigator:browser",
+			function(w) {
+				if(!("handyClicksUI" in w))
+					return;
+				this._log("reloadSettingsInBrowsers() -> loadSettingsAsync()");
+				var ps = w[pSvc];
+				ps.oSvc.notifyObservers(this.SETS_BEFORE_RELOAD);
+				ps.loadSettingsAsync(function(status) { // Also will undo test mode
+					if(!Components.isSuccessCode(status))
+						return;
+					ps.oSvc.notifyObservers(this.SETS_RELOADED);
+					this._log("reloadSettingsInBrowsers() -> loadSettingsAsync() -> done");
+				}, this);
+			},
+			this
+		);
+	},
 	isLegacyJs: function(s) {
 		return s.substr(0, 4) == "var ";
 	},
