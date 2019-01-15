@@ -143,6 +143,14 @@ var handyClicksEditor = {
 		this._log("Editor: watchLinkedFiles(" + watch + ")");
 		if(!watch)
 			this.ut.storage("activeLinkedFiles", undefined);
+		this.wu.forEachWindow(
+			this.ut.isSeaMonkey ? null : "navigator:browser",
+			function(w) {
+				if("handyClicksUI" in w)
+					w.handyClicks.watchLinkedFiles(watch);
+			},
+			this
+		);
 	},
 	addTestButtons: function() {
 		var df = document.createDocumentFragment();

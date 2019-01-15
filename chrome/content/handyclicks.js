@@ -67,6 +67,7 @@ var handyClicks = {
 			case "TabSelect":    this.tabSelectHandler(e);    break;
 			case "DOMMouseScroll": // Legacy
 			case "wheel":        this.wheelHandler(e);        break;
+			case "focus":        this.focusHandler(e);        break;
 			case "keypress":
 				if(e.keyCode != e.DOM_VK_ESCAPE)
 					break;
@@ -96,6 +97,8 @@ var handyClicks = {
 			return;
 		this._hasListeners = enable;
 		this.setListeners(["mousedown", "click", "command", "mouseup", "dblclick", "contextmenu", "popupshowing"], enable);
+		if(!enable || this.ut.storage("activeLinkedFiles"))
+			this.watchLinkedFiles(enable);
 		this._log("initListeners(" + enable + ")");
 	},
 	setListeners: function(evtTypes, add) {
@@ -103,6 +106,19 @@ var handyClicks = {
 		evtTypes.forEach(function(evtType) {
 			act.call(window, evtType, this, true);
 		}, this);
+	},
+
+	watchLinkedFiles: function(watch) {
+		this._log("Browser: watchLinkedFiles(" + watch + ")");
+		var act = watch ? addEventListener : removeEventListener;
+		act.call(window, "focus", this, true);
+	},
+	focusHandler: function(e) {
+		var alf = this.ut.storage("activeLinkedFiles");
+		if(!alf)
+			return;
+		// Note: will be also handled any focus inside browser window
+		this._log("focusHandler()");
 	},
 
 	_enabled: true, // Uses for internal disabling
