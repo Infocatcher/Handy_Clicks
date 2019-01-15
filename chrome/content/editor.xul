@@ -120,7 +120,8 @@
 						label="&hc.editor.clickHere;" tooltiptext="&hc.editor.clickHereTip;" />
 					<hbox id="hc-editor-shortcutBox" align="center" context="_child">
 						<menupopup id="hc-editor-shortcutContext"
-							onpopupshowing="handyClicksEditor.loadSavedShortcuts(event);"
+							onpopupshowing="if(!('_hcIgnore' in event)) handyClicksEditor.loadSavedShortcuts(event);"
+							onpopupshown="handyClicksSetsUtils.fixAccelWidth(this);"
 							oncommand="event.stopPropagation(); handyClicksEditor.loadSavedShortcut(event);" />
 						<menulist id="hc-editor-button">
 							<menupopup>

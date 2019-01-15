@@ -665,6 +665,15 @@ var handyClicksSetsUtils = {
 		mp["openPopup" in mp ? "openPopup" : "showPopup"]();
 	},
 
+	fixAccelWidth: function(mp) {
+		if(this.ut.fxVersion >= 4)
+			return;
+		var evt = document.createEvent("Events");
+		evt.initEvent("popupshowing", false, false);
+		evt._hcIgnore = false;
+		mp.dispatchEvent(evt);
+	},
+
 	extLabels: {
 		mthCloseTabs:           ["popup.selection.removeTabs",    "chrome://multipletab/locale/multipletab.dtd"],
 		mthCloseOtherTabs:      ["popup.selection.removeOther",   "chrome://multipletab/locale/multipletab.dtd"],
