@@ -113,11 +113,17 @@ var handyClicks = {
 		var act = watch ? addEventListener : removeEventListener;
 		act.call(window, "focus", this, true);
 	},
+	_focusHandlerTimer: 0,
 	focusHandler: function(e) {
+		// Note: will be also handled any focus inside browser window
+		if(!this._focusHandlerTimer)
+			this._focusHandlerTimer = this.delay(this.checkLinkedFiles, this, 20);
+	},
+	checkLinkedFiles: function() {
+		this._focusHandlerTimer = 0;
 		var alf = this.ut.storage("activeLinkedFiles");
 		if(!alf)
 			return;
-		// Note: will be also handled any focus inside browser window
 		for(var path in alf) {
 			var fd = alf[path];
 			var file = fd.file;
