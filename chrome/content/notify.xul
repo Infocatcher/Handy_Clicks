@@ -24,14 +24,14 @@
 		</hbox>
 		<vbox id="hcNotifyContainer">
 			<hbox id="hcNotifyTitlebar" align="top">
-				<description id="hcNotifyHeader" class="header">[Header]</description>
+				<description id="hcNotifyHeader" class="header" />
 				<spacer flex="1" />
 				<toolbarbutton id="hcNotifyClose" class="close-icon"
 					oncommand="window.close();"
 					onclick="if(event.button == 0) event.stopPropagation();"
 					tooltiptext="&handyClicks.close;" />
 			</hbox>
-			<description id="hcNotifyDesc">[Message]</description>
+			<description id="hcNotifyDesc" />
 		</vbox>
 	</hbox>
 </window>
