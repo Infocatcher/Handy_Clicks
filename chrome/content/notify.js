@@ -20,8 +20,8 @@ var hcNotify = {
 		descElt.textContent = opts.message;
 		document.getElementById("hcNotifyImg").setAttribute("hc_icon", opts.icon);
 
-		var maxW = 500;
-		var maxH = 300;
+		var maxW = opts.messageMaxWidth  || 480;
+		var maxH = opts.messageMaxHeight || 240;
 		var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
 			.getService(Components.interfaces.nsIXULAppInfo);
 		var ds = descElt.style;
