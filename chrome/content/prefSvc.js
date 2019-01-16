@@ -395,7 +395,8 @@ var handyClicksPrefSvc = {
 		catch(err) {
 			var eLine = fObj._errorLine = this.ut.getRealLineNumber(err, line);
 			var href = fObj._editorLink = this.hc.getEditorLink() + "?line=" + eLine;
-			var eMsg = this.ut.errInfo("customFunctionCompileError", fObj.label, this.hc.itemType, err);
+			var eKey = code ? "customFunctionCompileError" : "customFunctionLinkedFileError";
+			var eMsg = this.ut.errInfo(eKey, fObj.label, this.hc.itemType, err);
 			this.ut.notifyError(eMsg + this.showErrorNotes, {
 				onLeftClick: this.ut.toErrorConsole,
 				onMiddleClick: this.wu.getOpenEditorLink(href, eLine)
