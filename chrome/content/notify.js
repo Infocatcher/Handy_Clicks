@@ -36,9 +36,11 @@ var hcNotify = {
 		}
 		var wo = opts.parentWindow || window.opener;
 		var x, y;
+		var maxX = screen.availLeft + screen.availWidth;
+		var maxY = screen.availTop + screen.availHeight;
 		if(wo.closed) {
-			x = screen.availLeft + screen.availWidth - winW;
-			y = screen.availTop + screen.availHeight - winH;
+			x = maxX - winW;
+			y = maxY - winH;
 		}
 		else if(opts.inWindowCorner || !("handyClicks" in wo) || !wo.handyClicks._xy) { // Show in window corner
 			this.inWindowCorner = true;
@@ -52,18 +54,18 @@ var hcNotify = {
 		}
 		else { // Show under cursor
 			var cursorH = 20, addH = 8;
-			var maxX = screen.availLeft + screen.availWidth;
-			var maxY = screen.availTop + screen.availHeight;
 			var xy = wo.handyClicks._xy;
 			x = xy.screenX - winW/2;
 			y = xy.screenY + cursorH + addH;
-			if(x < screen.availLeft) // left overflow
-				x = screen.availLeft;
-			else if(x + winW > maxX) // right overflow
-				x = maxX - winW;
-			if(y + winH > maxY) // bottom overflow
-				y = xy.screenY - winH - addH;
 		}
+		if(x < screen.availLeft) // left overflow
+			x = screen.availLeft;
+		else if(x + winW > maxX) // right overflow
+			x = maxX - winW;
+		if(y < screen.availTop) // top overflow
+			y = screen.availTop;
+		else if(y + winH > maxY) // bottom overflow
+			y = maxY - winH;
 		window.moveTo(x, y);
 
 		if(this.inWindowCorner && opts.rearrangeWindows) {
