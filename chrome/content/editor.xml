@@ -758,7 +758,7 @@
 							}
 							catch(e) { // See https://developer.mozilla.org/en/nsILocalFile#Remarks
 								ut.notifyError(ut.getLocalized("launchError"), {
-									onleftClick: function() {
+									onLeftClick: function() {
 										ut.wu.openSettingsPane("editor")
 									}
 								});
