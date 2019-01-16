@@ -549,9 +549,13 @@
 					if(ut.ps.otherSrc && path in ut.ps.files && ut.ps.isValidFileData(ut.ps.files[path]))
 						fileData = ut.ps.files[path].data;
 					else if(path) {
-						file = ut.getLocalFile(path);
 						if(ut.ps.otherSrc) {
 							ut.notifyWarning(ut.getLocalized("cantEditImportedFile"));
+							return;
+						}
+						file = ut.getLocalFile(path);
+						if(!file) {
+							ut.notifyError(ut.getLocalized("invalidFilePath").replace("%p", path));
 							return;
 						}
 						if(!file.exists()) {
