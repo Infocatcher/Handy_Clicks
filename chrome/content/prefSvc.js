@@ -373,12 +373,8 @@ var handyClicksPrefSvc = {
 	},
 	getCustomFunc: function(fObj) {
 		var useCache = this.pu.get("cacheCustomFunctions");
-		if(useCache && "_function" in fObj) {
-			var fn = fObj._function;
-			if(!fn)
-				this.ut._err("Syntax error in function: " + fObj.label, fObj._editorLink, fObj._errorLine);
-			return fn;
-		}
+		if(useCache && "_function" in fObj)
+			return fObj._function;
 		this._log("Compile: " + fObj.label);
 		try {
 			var code = this.expandCode(fObj.action);
@@ -404,7 +400,7 @@ var handyClicksPrefSvc = {
 			this.ut._err(eMsg, href, eLine);
 			this.ut._err(err);
 		}
-		if(useCache)
+		if(fn && useCache)
 			fObj._function = fn;
 		return fn;
 	},
