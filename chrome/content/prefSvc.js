@@ -424,9 +424,11 @@ var handyClicksPrefSvc = {
 		if(path in this._fnCache)
 			return this._fnCache[expandCode._path = path];
 		var file = this.ut.getLocalFile(path);
-		var data = file && this.ut.readFromFile(file);
+		if(!file)
+			throw this.getLocalized("invalidFilePath").replace("%p", path);
+		var data = this.ut.readFromFile(file);
 		if(!data)
-			throw this.ut.getLocalized("fileNotFound").replace("%f", file ? file.path : path);
+			throw this.ut.getLocalized("fileNotFound").replace("%f", file.path);
 		expandCode._path = path;
 		return data;
 	},
