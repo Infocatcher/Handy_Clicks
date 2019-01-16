@@ -554,8 +554,25 @@
 							ut.notifyWarning(ut.getLocalized("cantEditImportedFile"));
 							return;
 						}
-						if(ut.pu.get("enabled") && file.exists())
+						if(!file.exists()) {
+							ut.notifyWarning(ut.getLocalized("cantEditFile"), {
+								onLeftClick: function() {
+									try {
+										file.create(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
+									}
+									catch(e) {
+										ut.notifyError(e);
+										throw e;
+									}
+									this.openExternalEditor();
+								},
+								context: this
+							});
+							return;
+						}
+						else if(ut.pu.get("enabled")) {
 							ut.ed.watchLinkedFile(path, file);
+						}
 					}
 					var hasFileData = fileData !== undefined;
 
