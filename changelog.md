@@ -74,7 +74,6 @@
 `+` Added ability to search for placeholder string itself (e.g. “%%on%%” for “%on%”).<br>
 `*` Optimized filter mode: hide items instead of remove them (≈2.5x faster filtration).<br>
 `x` Correctly initialize delayed actions for not custom actions.<br>
-`*` Simplified code to select items in tree using mouse move (press mouse button and then drag to select).<br>
 `x` Fixed Ctrl+Up/Down in editor fields in Firefox 52+ (still doesn't work in another textboxes, but not so needed).<br>
 `x` Fixed Ctrl+Tab/Ctrl+Shift+Tab and Ctrl+PageDown/Ctrl+PageUp tabs navigation in Firefox 52+: force navigate only inside focused tabs.<br>
 `*` Rewritten and simplified trick to not focus read-only textboxes with functions arguments description.<br>
@@ -91,6 +90,10 @@
 `+` Settings window: added ability to import settings using drag-and-drop (.ini/.js files, settings links or settings in plain text).<br>
 `*` Restore scroll position in tree: workaround to force scroll to last row.<br>
 `*` Editor: sort custom types alphabetically (by label), ability to also sort built-in types (<em>extensions.handyclicks.editor.ui.sortInternalTypes</em> preference, disabled by default).<br>
+`+` Editor: added context menu to open saved shortcut.<br>
+`*` Rewritten and corrected code to select items in tree using mouse move (press mouse button and then drag to select): correctly select from topmost and bottommost visible rows (also don't scroll after inaccurate click with small mouse movement), reduced autoscroll speed, optimized performance.<br>
+`x` Fixed notification window: don't show outside of screen.<br>
+`*` Rewritten notification window to better show very long messages (also introduced <em>extensions.handyclicks.notifyMessageMaxWidth</em> and <em>extensions.handyclicks.notifyMessageMaxHeight</em> preferences).<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
