@@ -10,6 +10,7 @@
 ]>
 
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml"
 	id="handyClicks-notify"
 	windowtype="handyclicks:notify"
 	align="start"
@@ -31,7 +32,9 @@
 					onclick="if(event.button == 0) event.stopPropagation();"
 					tooltiptext="&handyClicks.close;" />
 			</hbox>
-			<description id="hcNotifyDesc" />
+			<html:div id="hcNotifyOverflowBox">
+				<html:div id="hcNotifyDesc" />
+			</html:div>
 		</vbox>
 	</hbox>
 </window>

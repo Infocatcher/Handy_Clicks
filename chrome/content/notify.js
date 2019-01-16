@@ -18,22 +18,29 @@ var hcNotify = {
 		document.getElementById("hcNotifyHeader").textContent = opts.title + "\n\n";
 		var descElt = document.getElementById("hcNotifyDesc");
 		descElt.textContent = opts.message;
-		var s = descElt.style;
-		s.maxWidth  = Math.round(screen.availWidth *0.6) + "px";
-		s.maxHeight = Math.round(screen.availHeight*0.6) + "px";
+		document.getElementById("hcNotifyImg").setAttribute("hc_icon", opts.icon);
+
+		var maxW = 500;
+		var maxH = 300;
 		var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
 			.getService(Components.interfaces.nsIXULAppInfo);
-		s.whiteSpace = appInfo.name == "Firefox" && parseFloat(appInfo.version) < 3
+		var ds = descElt.style;
+		ds.whiteSpace = appInfo.name == "Firefox" && parseFloat(appInfo.version) < 3
 			? "-moz-pre-wrap"
 			: "pre-wrap";
-		document.getElementById("hcNotifyImg").setAttribute("hc_icon", opts.icon);
+		ds.wordWrap = "break-word";
+		var obs = document.getElementById("hcNotifyOverflowBox").style;
+		if(descElt.scrollWidth > maxW)
+			obs.width = obs.maxWidth = maxW + "px";
+		if(descElt.scrollWidth > maxW) // Still not fit? Will force apply "break-word"
+			ds.width = maxW + "px";
+		if(descElt.scrollHeight > maxH)
+			obs.height = obs.maxHeight = maxH + "px";
+		else
+			obs.height = descElt.scrollHeight + "px";
+
 		window.sizeToContent();
 		var winW = window.outerWidth, winH = window.outerHeight;
-		var maxW = Math.round(screen.availWidth*0.65) + 100;
-		if(winW > maxW) {
-			winW = maxW;
-			window.resizeTo(winW, winH);
-		}
 		var wo = opts.parentWindow || window.opener;
 		var x, y;
 		var maxX = screen.availLeft + screen.availWidth;
