@@ -393,7 +393,7 @@ var handyClicksPrefSvc = {
 			}
 		}
 		catch(err) {
-			var eLine = fObj._errorLine = this.ut.getRealLineNumber(err, line);
+			var eLine = fObj._errorLine = code ? this.ut.getRealLineNumber(err, line) : 0;
 			var href = fObj._editorLink = this.hc.getEditorLink() + "?line=" + eLine;
 			var eKey = code ? "customFunctionCompileError" : "customFunctionLinkedFileError";
 			var eMsg = this.ut.errInfo(eKey, fObj.label, this.hc.itemType, err);
