@@ -34,9 +34,7 @@
 						onclick="event.stopPropagation(); if(event.button != 0) hcNotify.close(event);"
 						tooltiptext="&handyClicks.close;" />
 				</hbox>
-				<html:div id="hcNotifyOverflowBox">
-					<html:div id="hcNotifyDesc" />
-				</html:div>
+				<html:div id="hcNotifyOverflowBox"><html:div id="hcNotifyDesc" /></html:div>
 			</vbox>
 		</hbox>
 		<hbox id="hcNotifyButtons" align="center" pack="center" onclick="event.stopPropagation();" />
