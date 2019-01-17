@@ -19,6 +19,15 @@ var hcNotify = {
 		var descElt = document.getElementById("hcNotifyDesc");
 		descElt.textContent = opts.message;
 		document.getElementById("hcNotifyImg").setAttribute("hc_icon", opts.icon);
+		var closeBtn = document.getElementById("hcNotifyClose");
+		if(getComputedStyle(closeBtn, null).listStyleImage == "none") {
+			closeBtn.className += " tabs-closebutton";
+			document.loadOverlay("data:application/vnd.mozilla.xul+xml," + encodeURIComponent(
+				'<?xml version="1.0"?>'
+				+ '\n<?xml-stylesheet href="chrome://browser/skin/browser.css" type="text/css"?>'
+				+ '\n<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />'
+			), null);
+		}
 
 		var buttons = opts.buttons || false;
 		if(buttons) {
