@@ -26,6 +26,10 @@ var hcNotify = {
 			for(var label in buttons) if(buttons.hasOwnProperty(label)) {
 				var btn = document.createElement("button");
 				btn._command = buttons[label];
+				if(/(^|[^&])&([^&])/.test(label)) {
+					label = RegExp.leftContext + RegExp.$1 + RegExp.$2 + RegExp.rightContext;
+					btn.setAttribute("accesskey", RegExp.$2);
+				}
 				btn.setAttribute("label", label);
 				btn.setAttribute("oncommand", "hcNotify.commandHandler(this);");
 				btnBox.appendChild(btn);
