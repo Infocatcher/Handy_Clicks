@@ -15,7 +15,8 @@
 	windowtype="handyclicks:notify"
 	align="start"
 	onload="hcNotify.init();"
-	onunload="hcNotify.destroy();">
+	onunload="hcNotify.destroy();"
+	onkeypress="if(event.keyCode == event.DOM_VK_ESCAPE) window.close();">
 
 	<script type="application/javascript" src="chrome://handyclicks/content/notify.js" />
 
