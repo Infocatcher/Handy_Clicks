@@ -5,8 +5,13 @@
 	border: 2px solid black;
 	padding: 10px;
 }
-#hcNotifyBox.hc-clickable, #hcNotifyBox.hc-clickable * {
+#hcNotifyBox.hc-clickable,
+#hcNotifyBox.hc-clickable #hcNotifyHeader {
 	cursor: pointer;
+}
+#hcNotifyBox.hc-clickable #hcNotifyButtons,
+#hcNotifyBox.hc-clickable #hcNotifyClose {
+	cursor: auto;
 }
 #hcNotifyImg {
 	list-style-image: url("icons32.png");

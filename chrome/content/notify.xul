@@ -39,7 +39,6 @@
 				</html:div>
 			</vbox>
 		</hbox>
-		<hbox id="hcNotifyButtons" align="center" pack="center"
-			onclick="if(event.button == 0) event.stopPropagation();" />
+		<hbox id="hcNotifyButtons" align="center" pack="center" onclick="event.stopPropagation();" />
 	</vbox>
 </window>

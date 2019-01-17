@@ -105,7 +105,7 @@ var hcNotify = {
 
 		var notifyBox = this._notifyBox = document.getElementById("hcNotifyBox");
 		if(typeof opts.onLeftClick == "function")
-			notifyBox.className += " hc-clickable";
+			notifyBox.className = "hc-clickable";
 
 		this._closeDelay = opts.closeDelay;
 		var s = notifyBox.style;
