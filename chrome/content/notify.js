@@ -31,7 +31,7 @@ var hcNotify = {
 					btn.setAttribute("accesskey", RegExp.$2);
 				}
 				btn.setAttribute("label", label);
-				btn.setAttribute("oncommand", "hcNotify.commandHandler(this);");
+				btn.setAttribute("oncommand", "hcNotify.doCommand(this._command);");
 				btnBox.appendChild(btn);
 			}
 		}
@@ -206,16 +206,16 @@ var hcNotify = {
 			e.button == 0 && !hasModifier
 			&& typeof opts.onLeftClick == "function"
 		)
-			opts.onLeftClick.call(opts.context || window.opener);
+			this.doCommand(opts.onLeftClick);
 		else if(
 			(e.button == 1 || e.button == 0 && hasModifier)
 			&& typeof opts.onMiddleClick == "function"
 		)
-			opts.onMiddleClick.call(opts.context || window.opener);
+			this.doCommand(opts.onMiddleClick);
 	},
-	commandHandler: function(btn) {
+	doCommand: function(cmd) {
 		window.close();
-		btn._command && btn._command.call(window.arguments[0].context || window.opener);
+		cmd && cmd.call(window.arguments[0].context || window.opener);
 	},
 	close: function(e) {
 		if(e.button > 0 || this.hasModifier(e))
