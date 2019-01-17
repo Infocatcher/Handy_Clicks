@@ -82,8 +82,8 @@ var hcNotify = {
 				if(w == window || w.hcNotify && !w.hcNotify.inWindowCorner)
 					continue;
 				var dh = -(winH + 2);
-				if(w.screenY + dh >= 0)
-					w.moveBy(0, -(winH + 2));
+				if(w.screenY + dh >= screen.availTop)
+					w.moveBy(0, dh);
 			}
 		}
 
