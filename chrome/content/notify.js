@@ -15,7 +15,7 @@ var hcNotify = {
 		// Properties:
 		// closeDelay, title, message, onLeftClick, onMiddleClick, icon,
 		// inWindowCorner, dontCloseUnderCursor, rearrangeWindows
-		document.getElementById("hcNotifyHeader").textContent = opts.title + "\n\n";
+		document.getElementById("hcNotifyHeader").textContent = opts.title + "\n";
 		var descElt = document.getElementById("hcNotifyDesc");
 		descElt.textContent = opts.message;
 		document.getElementById("hcNotifyImg").setAttribute("hc_icon", opts.icon);

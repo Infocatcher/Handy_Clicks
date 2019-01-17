@@ -27,7 +27,7 @@
 			</hbox>
 			<vbox id="hcNotifyContainer">
 				<hbox id="hcNotifyTitlebar" align="top">
-					<description id="hcNotifyHeader" class="header" />
+					<html:div id="hcNotifyHeader" />
 					<spacer flex="1" />
 					<toolbarbutton id="hcNotifyClose" class="close-icon"
 						oncommand="hcNotify.close(event);"
