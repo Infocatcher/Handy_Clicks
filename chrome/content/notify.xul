@@ -30,8 +30,8 @@
 					<description id="hcNotifyHeader" class="header" />
 					<spacer flex="1" />
 					<toolbarbutton id="hcNotifyClose" class="close-icon"
-						oncommand="window.close();"
-						onclick="if(event.button == 0) event.stopPropagation();"
+						oncommand="hcNotify.close(event);"
+						onclick="event.stopPropagation(); if(event.button != 0) hcNotify.close(event);"
 						tooltiptext="&handyClicks.close;" />
 				</hbox>
 				<html:div id="hcNotifyOverflowBox">

@@ -191,6 +191,9 @@ var hcNotify = {
 		if(this._transition)
 			this._notifyBox.style.opacity = 1;
 	},
+	hasModifier: function(e) {
+		return e.ctrlKey || e.shiftKey || e.altKey || e.metaKey;
+	},
 	mouseHandler: function(e) {
 		if(!e.relatedTarget)
 			this[e.type == "mouseover" ? "cancelDelayedClose" : "delayedClose"]();
@@ -198,16 +201,7 @@ var hcNotify = {
 	clickHandler: function(e) {
 		this.cancelDelayedClose();
 		var opts = window.arguments[0];
-		var hasModifier = e.ctrlKey || e.shiftKey || e.altKey || e.metaKey;
-
-		if(e.button == 2 && hasModifier) {
-			var ws = this.ws;
-			while(ws.hasMoreElements())
-				ws.getNext().close();
-		}
-		else
-			window.close();
-
+		var hasModifier = this.hasModifier(e);
 		if(
 			e.button == 0 && !hasModifier
 			&& typeof opts.onLeftClick == "function"
@@ -222,5 +216,16 @@ var hcNotify = {
 	commandHandler: function(btn) {
 		window.close();
 		btn._command && btn._command.call(window.arguments[0].context || window.opener);
+	},
+	close: function(e) {
+		if(e.button > 0 || this.hasModifier(e))
+			this.closeAll();
+		else
+			window.close();
+	},
+	closeAll: function() {
+		var ws = this.ws;
+		while(ws.hasMoreElements())
+			ws.getNext().close();
 	}
 };
