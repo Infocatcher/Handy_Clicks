@@ -20,3 +20,5 @@
 
 <!-- Notify window -->
 <!ENTITY handyClicks.close "Закрыть">
+<!ENTITY handyClicks.copy "Копировать">
+<!ENTITY handyClicks.copyAll "Копировать всё">

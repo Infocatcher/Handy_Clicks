@@ -20,7 +20,12 @@
 
 	<script type="application/javascript" src="chrome://handyclicks/content/notify.js" />
 
-	<vbox id="hcNotifyBox" onclick="hcNotify.clickHandler(event);">
+	<vbox id="hcNotifyBox" onclick="hcNotify.clickHandler(event);" context="_child">
+		<menupopup id="hcNotifyContextMenu" onclick="event.stopPropagation();"
+			onpopupshowing="this.firstChild.setAttribute('disabled', getSelection().isCollapsed);">
+			<menuitem label="&handyClicks.copy;" />
+			<menuitem label="&handyClicks.copyAll;" />
+		</menupopup>
 		<hbox id="hcNotifyContent">
 			<hbox id="hcNotifyImgBox" align="center" valign="top">
 				<image id="hcNotifyImg" autostretch="never" />
