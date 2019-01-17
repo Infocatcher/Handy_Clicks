@@ -48,6 +48,9 @@ html|div#hcNotifyOverflowBox {
 html|div#hcNotifyDesc {
 	padding: 2px 4px;
 }
+#hcNotifyButtons:not(:empty) {
+	margin-top: 4px;
+}
 * {
 	-moz-user-select: text !important;
 }

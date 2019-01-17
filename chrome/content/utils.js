@@ -212,6 +212,7 @@ var handyClicksUtils = {
 				message:       msg                || "",
 				onLeftClick:   opts.onLeftClick   || null,
 				onMiddleClick: opts.onMiddleClick || null,
+				buttons:       opts.buttons       || null,
 				parentWindow:  opts.parentWindow  || window,
 				context:       opts.context       || window,
 				icon: icon,

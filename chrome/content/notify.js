@@ -20,6 +20,18 @@ var hcNotify = {
 		descElt.textContent = opts.message;
 		document.getElementById("hcNotifyImg").setAttribute("hc_icon", opts.icon);
 
+		var buttons = opts.buttons || false;
+		if(buttons) {
+			var btnBox = document.getElementById("hcNotifyButtons");
+			for(var label in buttons) if(buttons.hasOwnProperty(label)) {
+				var btn = document.createElement("button");
+				btn._command = buttons[label];
+				btn.setAttribute("label", label);
+				btn.setAttribute("oncommand", "hcNotify.commandHandler(this);");
+				btnBox.appendChild(btn);
+			}
+		}
+
 		var maxW = opts.messageMaxWidth  || 480;
 		var maxH = opts.messageMaxHeight || 240;
 		var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
@@ -202,5 +214,9 @@ var hcNotify = {
 			&& typeof opts.onMiddleClick == "function"
 		)
 			opts.onMiddleClick.call(opts.context || window.opener);
+	},
+	commandHandler: function(btn) {
+		window.close();
+		btn._command && btn._command.call(window.arguments[0].context || window.opener);
 	}
 };
