@@ -267,8 +267,12 @@ var handyClicksPrefSvcExt = {
 
 	exportFileData: function(files, code) {
 		var path = this.getSourcePath(code);
-		if(!path || (path in files))
+		if(!path)
 			return;
+		var exported = files._exported || (files._exported = { __proto__: null });
+		if(path in exported)
+			return;
+		exported[path] = true;
 		var file = this.ut.getLocalFile(path);
 		if(!file) {
 			this.ut._warn("Export skipped, invalid path: " + path);
