@@ -709,6 +709,8 @@ var handyClicksPrefSvc = {
 	},
 	getCustomTypeLabel: function(type) {
 		var label = this.ut.getOwnProperty(this.types, type, "label");
+		if(label == undefined)
+			this.ut._warn('Custom type not found: "' + type + '"');
 		label = label ? label + " " : "";
 		return label + "[" + this.removeCustomPrefix(type) + "]";
 	},

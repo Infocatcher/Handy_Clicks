@@ -774,8 +774,13 @@ var handyClicksSets = {
 		__proto__: null
 	},
 	extTypeNotAvailable: function(type) {
-		return this.ps.isExtType(type)
-			&& !this.ut.packageAvailable(this.extPackages[type]);
+		if(!this.ps.isExtType(type))
+			return false;
+		if(!(type in this.extPackages)) {
+			this.ut._warn('Unknown extension: "' + type + '"');
+			return true;
+		}
+		return !this.ut.packageAvailable(this.extPackages[type]);
 	},
 	settingsEquals: function(savedObj, newObj) {
 		if(!this.ps.settingsEquals(savedObj, newObj))
