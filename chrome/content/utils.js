@@ -203,6 +203,13 @@ var handyClicksUtils = {
 		var closeDelay = this.pu.get(delayPref);
 		if(closeDelay <= 0)
 			 return null;
+		var buttons = opts.buttons || null;
+		if(buttons) {
+			opts.localized = opts.localized || {};
+			for(var label in buttons) if(buttons.hasOwnProperty(label))
+				if(label.charAt(0) == "$")
+					opts.localized[label] = this.getLocalized(label.substr(1));
+		}
 		return window.openDialog(
 			"chrome://handyclicks/content/notify.xul",
 			"_blank",
@@ -212,7 +219,8 @@ var handyClicksUtils = {
 				message:       msg                || "",
 				onLeftClick:   opts.onLeftClick   || null,
 				onMiddleClick: opts.onMiddleClick || null,
-				buttons:       opts.buttons       || null,
+				buttons:       buttons            || null,
+				localized:     opts.localized     || null,
 				parentWindow:  opts.parentWindow  || window,
 				context:       opts.context       || window,
 				icon: icon,

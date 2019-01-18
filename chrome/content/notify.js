@@ -31,10 +31,12 @@ var hcNotify = {
 
 		var buttons = opts.buttons || false;
 		if(buttons) {
+			var localized = opts.localized || {};
 			var btnBox = document.getElementById("hcNotifyButtons");
 			for(var label in buttons) if(buttons.hasOwnProperty(label)) {
 				var btn = document.createElement("button");
 				btn._command = buttons[label];
+				label = localized[label] || label;
 				if(/(^|[^&])&([^&])/.test(label)) {
 					label = RegExp.leftContext + RegExp.$1 + RegExp.$2 + RegExp.rightContext;
 					btn.setAttribute("accesskey", RegExp.$2);
