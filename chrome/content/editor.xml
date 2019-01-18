@@ -560,15 +560,17 @@
 						}
 						if(!file.exists()) {
 							ut.notifyWarning(ut.getLocalized("cantEditFile"), {
-								onLeftClick: function() {
-									try {
-										file.create(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
+								buttons: {
+									$createNewFile: function() {
+										try {
+											file.create(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
+										}
+										catch(e) {
+											ut.notifyError(e);
+											throw e;
+										}
+										this.openExternalEditor();
 									}
-									catch(e) {
-										ut.notifyError(e);
-										throw e;
-									}
-									this.openExternalEditor();
 								},
 								context: this
 							});
