@@ -2256,7 +2256,10 @@ var handyClicksSets = {
 	notifyBuggyPrefs: function() {
 		this.notifyBuggyPrefs = function() {}; // Only once
 		this.ut.notifyWarning(this.getLocalized("buggyDetected").replace("%n", this.counters.buggy), {
-			onLeftClick: this.showBuggyPrefs,
+			buttons: {
+				$show: this.showBuggyPrefs,
+				$openConsole: this.ut.toErrorConsole
+			},
 			context: this
 		});
 	},
