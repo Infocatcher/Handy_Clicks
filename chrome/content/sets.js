@@ -580,6 +580,7 @@ var handyClicksSets = {
 		var tRow = tItem.appendChild(document.createElement("treerow"));
 		if(!this.ut.isObject(fo))
 			fo = {};
+		var foStr = 'prefs["' + shortcut + '"].' + itemType;
 		var isCustom = !!fo.custom;
 		var isCustomType = this.ps.isCustomType(itemType);
 		var typeLabel = this.ps.getTypeLabel(itemType, isCustomType);
@@ -616,6 +617,7 @@ var handyClicksSets = {
 			this.appendTreeCell(daRow, "label", this.getLocalized("delayed"));
 			this.appendTreeCell(daRow, "label", this._daAfter);
 
+			var daStr = foStr + ".delayedAction";
 			var daCustom = !!da.custom;
 			var daLabel = this.su.getActionLabel(da);
 			var daDis = this._daForceDisable || !fo.enabled || !da.enabled;
@@ -634,7 +636,7 @@ var handyClicksSets = {
 				hc_delayed: true,
 				hc_enabled: !daDis,
 				hc_disabled: daDis,
-				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel) && ++this.counters.buggy,
+				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel, daStr) && ++this.counters.buggy,
 				hc_notAvailable: extNA,
 				hc_custom: daCustom,
 				hc_customFile: daLinkedFile,
@@ -672,7 +674,7 @@ var handyClicksSets = {
 			{ hc_checkbox: true }
 		);
 
-		var isBuggy = this.isBuggyFuncObj(fo, isCustom, actLabel)
+		var isBuggy = this.isBuggyFuncObj(fo, isCustom, actLabel, foStr)
 			|| (
 				isCustomType && !this.ps.isOkCustomType(itemType)
 				|| this.ut.isBuggyStr(typeLabel)
@@ -766,8 +768,15 @@ var handyClicksSets = {
 			return code.substr(0, maxLen) + "\n[\u2026]"; // "[...]"
 		return code;
 	},
-	isBuggyFuncObj: function(fo, isCustom, label) {
-		return !this.ps.isOkFuncObj(fo) || !isCustom && this.ut.isBuggyStr(label);
+	isBuggyFuncObj: function(fo, isCustom, label, foStr) {
+		if(!this.ps.isOkFuncObj(fo)) {
+			this.ut._warn(
+				"Buggy function object for " + foStr + ":\n"
+				+ this.ps.JSON.stringify(fo, null, "\t")
+			);
+			return true;
+		}
+		return !isCustom && this.ut.isBuggyStr(label);
 	},
 	extPackages: {
 		ext_mulipletabs: "multipletab",
