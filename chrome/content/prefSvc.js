@@ -302,9 +302,11 @@ var handyClicksPrefSvc = {
 				+ ("_contextMenuLine" in ct ? this.ct.EDITOR_TYPE_CONTEXT : this.ct.EDITOR_TYPE_DEFINE)
 				+ "?line=" + eLine;
 			var eMsg = this.ut.errInfo("customTypeCompileError", ct.label, type, e);
-			this.ut.notifyError(eMsg + this.showErrorNotes, {
-				onLeftClick: this.ut.toErrorConsole,
-				onMiddleClick: this.wu.getOpenEditorLink(href, eLine),
+			this.ut.notifyError(eMsg, {
+				buttons: {
+					$openEditor: this.wu.getOpenEditorLink(href, eLine),
+					$openConsole: this.ut.toErrorConsole
+				},
 				inWindowCorner: true
 			});
 			this.ut._err(eMsg, href, eLine);
@@ -393,20 +395,16 @@ var handyClicksPrefSvc = {
 			var href = fObj._editorLink = this.hc.getEditorLink() + "?line=" + eLine;
 			var eKey = code ? "customFunctionCompileError" : "customFunctionLinkedFileError";
 			var eMsg = this.ut.errInfo(eKey, fObj.label, this.hc.itemType, err);
-			this.ut.notifyError(eMsg + this.showErrorNotes, {
-				onLeftClick: this.ut.toErrorConsole,
-				onMiddleClick: this.wu.getOpenEditorLink(href, eLine)
-			});
+			this.ut.notifyError(eMsg, { buttons: {
+				$openEditor: this.wu.getOpenEditorLink(href, eLine),
+				$openConsole: this.ut.toErrorConsole
+			}});
 			this.ut._err(eMsg, href, eLine);
 			this.ut._err(err);
 		}
 		if(fn && useCache)
 			fObj._function = fn;
 		return fn;
-	},
-	get showErrorNotes() {
-		delete this.showErrorNotes;
-		return this.showErrorNotes = this.getLocalized("openConsole") + this.getLocalized("openEditor");
 	},
 	getSourcePath: function(code) {
 		// Usage: "//> path/to/file.js"
@@ -492,9 +490,11 @@ var handyClicksPrefSvc = {
 			this.ut.getOwnProperty(fObj, "label"),
 			type, e
 		);
-		this.ut.notifyError(eMsg + this.showErrorNotes, {
-			onLeftClick: this.ut.toErrorConsole,
-			onMiddleClick: this.wu.getOpenEditorLink(href, eLine),
+		this.ut.notifyError(eMsg, {
+			buttons: {
+				$openEditor: this.wu.getOpenEditorLink(href, eLine),
+				$openConsole: this.ut.toErrorConsole
+			},
 			inWindowCorner: true
 		});
 		this.ut._err(eMsg, href, eLine);

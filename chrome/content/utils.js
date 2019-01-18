@@ -576,11 +576,10 @@ var handyClicksUtils = {
 		args = args || [];
 		var file = this.getLocalFile(path);
 		if(!file) {
-			var err = this.getLocalized("invalidFilePath").replace("%p", path)
-				+ this.getLocalized("openConsole");
-			this.notifyError(err, {
-				onLeftClick: this.toErrorConsole
-			});
+			var err = this.getLocalized("invalidFilePath").replace("%p", path);
+			this.notifyError(err, { buttons: {
+				$openConsole: this.toErrorConsole
+			}});
 			return false;
 		}
 		if(!file.exists()) {

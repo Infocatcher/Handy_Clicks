@@ -493,9 +493,11 @@ var handyClicksFuncs = {
 				.replace("%p", this.pu.prefNS + regexpPref)
 				.replace("%err", e);
 			this.ut.notifyError(err, {
-				onLeftClick: this.ut.toErrorConsole,
-				onMiddleClick: function() {
-					this.pu.openAboutConfig(this.pu.prefNS + regexpPref);
+				buttons: {
+					$openAboutConfig: function() {
+						this.pu.openAboutConfig(this.pu.prefNS + regexpPref);
+					},
+					$openConsole: this.ut.toErrorConsole
 				},
 				context: this
 			});
