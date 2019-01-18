@@ -782,11 +782,11 @@
 								this.fade();
 							}
 							catch(e) { // See https://developer.mozilla.org/en/nsILocalFile#Remarks
-								ut.notifyError(ut.getLocalized("launchError"), {
-									onLeftClick: function() {
+								ut.notifyError(ut.getLocalized("launchError"), { buttons: {
+									$openSettings: function() {
 										ut.wu.openSettingsPane("editor")
 									}
-								});
+								}});
 								ut._err("openExternalEditor: file.launch() failed");
 								ut._err(e);
 							}
