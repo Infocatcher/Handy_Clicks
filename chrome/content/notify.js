@@ -236,5 +236,24 @@ var hcNotify = {
 		var ws = this.ws;
 		while(ws.hasMoreElements())
 			ws.getNext().close();
+	},
+	copyAll: function() {
+		var msg = document.getElementById("hcNotifyContent").textContent;
+		var buttons = Array.prototype.map.call(
+			document.getElementById("hcNotifyButtons").childNodes,
+			function(btn) {
+				return btn.getAttribute("label");
+			}
+		).join("   ");
+		this.copy(msg + (buttons ? "\n" + buttons : ""));
+	},
+	copy: function(str) {
+		Components.classes["@mozilla.org/widget/clipboardhelper;1"]
+			.getService(Components.interfaces.nsIClipboardHelper)
+			.copyStringToClipboard(
+				str,
+				Components.interfaces.nsIClipboard.kGlobalClipboard,
+				document
+			);
 	}
 };

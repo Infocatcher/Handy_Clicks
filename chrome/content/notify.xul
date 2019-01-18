@@ -23,8 +23,8 @@
 	<vbox id="hcNotifyBox" onclick="hcNotify.clickHandler(event);" context="_child">
 		<menupopup id="hcNotifyContextMenu" onclick="event.stopPropagation();"
 			onpopupshowing="this.firstChild.setAttribute('disabled', getSelection().isCollapsed);">
-			<menuitem label="&handyClicks.copy;" />
-			<menuitem label="&handyClicks.copyAll;" />
+			<menuitem oncommand="hcNotify.copy(getSelection());" label="&handyClicks.copy;" />
+			<menuitem oncommand="hcNotify.copyAll();" label="&handyClicks.copyAll;" />
 		</menupopup>
 		<hbox id="hcNotifyContent">
 			<hbox id="hcNotifyImgBox" align="center" valign="top">
