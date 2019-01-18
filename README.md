@@ -254,6 +254,7 @@ Shows notification message under cursor (or in window corner, if <em>extensions.
 <br>Example:
 ```js
 this.ut.notify("Simple message with default title");
+this.ut.notify("Simple message + move focus to notification window").focus();
 ```
 With all options:
 ```js
@@ -268,7 +269,18 @@ this.ut.notify("Some message", { // All options are optional
 	onMiddleClick: function() { // Or left-click with any modifier
 		alert("Middle-click");
 	},
-	context: this // Execution context for onLeftClick and onMiddleClick
+	buttons: {
+		"Save All": function() { // Simple button with "Save All" label
+			alert("Button: save all");
+		},
+		"&Save": function() { // Button with "Save" label and "S" accesskey
+			alert("Button: save");
+		},
+		$overwrite: function() { // Will be used this.ut.getLocalized("overwrite") for label
+			alert("Button: overwrite");
+		}
+	},
+	context: this // Execution context for onLeftClick, onMiddleClick and buttons.*
 });
 ```
 Icons:
