@@ -13,6 +13,8 @@
 	cursor: auto;
 }
 #hcNotifyImg {
+	width: 32px;
+	height: 32px;
 	list-style-image: url("icons32.png");
 	-moz-image-region: rect(0 32px 32px 0);
 	margin-top: 2px;
@@ -25,9 +27,6 @@
 }
 #hcNotifyImg[hc_icon="error"] {
 	-moz-image-region: rect(32px 64px 64px 32px);
-}
-#hcNotifyContainer {
-	-moz-margin-start: 5px;
 }
 #hcNotifyClose {
 	/* Based on styles for .tabs-closebutton from chrome://browser/skin/browser.css */
@@ -43,7 +42,13 @@
 html|div#hcNotifyHeader {
 	font-weight: bold;
 	margin: 2px;
+	-moz-margin-start: 4px;
 	padding: 1px 4px 2px;
+}
+#hcNotifyDescWrapper {
+	/* Tricks to show right below #hcNotifyHeader */
+	margin-top: -12px;
+	-moz-margin-start: 34px; /* #hcNotifyImg: 32px, #hcNotifyHeader: +2px from -moz-margin-start */
 }
 html|div#hcNotifyOverflowBox {
 	overflow: auto;

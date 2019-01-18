@@ -26,21 +26,17 @@
 			<menuitem oncommand="hcNotify.copy(getSelection());" label="&handyClicks.copy;" />
 			<menuitem oncommand="hcNotify.copyAll();" label="&handyClicks.copyAll;" />
 		</menupopup>
-		<hbox id="hcNotifyContent">
-			<hbox id="hcNotifyImgBox" align="center" valign="top">
-				<image id="hcNotifyImg" autostretch="never" />
-			</hbox>
-			<vbox id="hcNotifyContainer">
-				<hbox id="hcNotifyTitlebar" align="top">
-					<html:div id="hcNotifyHeader" />
-					<spacer flex="1" />
-					<toolbarbutton id="hcNotifyClose" class="close-icon"
-						oncommand="hcNotify.close(event);"
-						onclick="event.stopPropagation(); if(event.button != 0) hcNotify.close(event);"
-						tooltiptext="&handyClicks.close;" />
-				</hbox>
-				<html:div id="hcNotifyOverflowBox"><html:div id="hcNotifyDesc" /></html:div>
-			</vbox>
+		<hbox id="hcNotifyTitlebar" align="top">
+			<image id="hcNotifyImg" />
+			<html:div id="hcNotifyHeader" />
+			<spacer flex="1" />
+			<toolbarbutton id="hcNotifyClose" class="close-icon"
+				oncommand="hcNotify.close(event);"
+				onclick="event.stopPropagation(); if(event.button != 0) hcNotify.close(event);"
+				tooltiptext="&handyClicks.close;" />
+		</hbox>
+		<hbox id="hcNotifyDescWrapper">
+			<html:div id="hcNotifyOverflowBox"><html:div id="hcNotifyDesc" /></html:div>
 		</hbox>
 		<hbox id="hcNotifyButtons" align="center" pack="center" onclick="event.stopPropagation();" />
 	</vbox>

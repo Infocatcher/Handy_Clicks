@@ -240,7 +240,7 @@ var hcNotify = {
 			ws.getNext().close();
 	},
 	copyAll: function() {
-		var msg = document.getElementById("hcNotifyContent").textContent;
+		var msg = document.getElementById("hcNotifyBox").textContent;
 		var buttons = Array.prototype.map.call(
 			document.getElementById("hcNotifyButtons").childNodes,
 			function(btn) {
