@@ -226,6 +226,7 @@ var hcNotify = {
 		if(
 			e.button == 0 && !hasModifier
 			&& typeof opts.onLeftClick == "function"
+			&& getSelection().isCollapsed
 		)
 			this.doCommand(opts.onLeftClick);
 		else if(
