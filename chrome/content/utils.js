@@ -244,6 +244,7 @@ var handyClicksUtils = {
 				setTimeout(function() {
 					xulWin.zLevel = origZ;
 				}, 0);
+				w.hcNotify.blink();
 				return w;
 			}
 		}

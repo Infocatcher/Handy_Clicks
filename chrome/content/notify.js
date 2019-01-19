@@ -196,6 +196,18 @@ var hcNotify = {
 		);
 		this.borderColor = this.numToColor(this.startColor);
 	},
+	blink: function() {
+		this.resetTimers();
+		var cnt = 3, _this = this;
+		(function blink() {
+			var hl = cnt & 1;
+			_this.borderColor = hl ? _this.hoverColor : _this.numToColor(_this.startColor);
+			if(cnt--)
+				setTimeout(blink, hl ? 120 : 50);
+			else
+				_this.delayedClose();
+		})();
+	},
 	cancelDelayedClose: function() {
 		this.resetTimers();
 		this.borderColor = this.hoverColor;
