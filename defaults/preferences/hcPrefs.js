@@ -18,6 +18,7 @@ pref("extensions.handyclicks.types.images.SpeedDial", false);
 pref("extensions.handyclicks.notifyOpenTime", 4000);
 pref("extensions.handyclicks.notifyOpenTimeWarnings", 10000);
 pref("extensions.handyclicks.notifyInWindowCorner", false);
+pref("extensions.handyclicks.notifyFocusAlreadyOpened", true);
 pref("extensions.handyclicks.notifyDontCloseUnderCursor", true);
 pref("extensions.handyclicks.notifyRearrangeWindows", true);
 pref("extensions.handyclicks.notifyMessageMaxWidth", 480);
