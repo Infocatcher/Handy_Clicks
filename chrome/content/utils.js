@@ -235,8 +235,17 @@ var handyClicksUtils = {
 			var w = ws.getNext();
 			var arg = w.arguments && w.arguments[0];
 			var optsStr = optsStr || this._stringifyOpts(opts);
-			if(arg && this._stringifyOpts(arg) == optsStr)
+			if(arg && this._stringifyOpts(arg) == optsStr) {
+				//w.focus();
+				// Make popup window topmost
+				var xulWin = this.wu.getXulWin(w);
+				var origZ = xulWin.zLevel;
+				xulWin.zLevel = xulWin.raisedZ;
+				setTimeout(function() {
+					xulWin.zLevel = origZ;
+				}, 0);
 				return w;
+			}
 		}
 		return window.openDialog(
 			"chrome://handyclicks/content/notify.xul",
