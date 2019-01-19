@@ -151,8 +151,7 @@ var hcNotify = {
 		};
 	},
 	destroy: function() {
-		clearTimeout(this._closeTimeout);
-		clearInterval(this._highlightInterval);
+		this.resetTimers();
 	},
 	get ws() {
 		return Components.classes["@mozilla.org/appshell/window-mediator;1"]
@@ -172,11 +171,13 @@ var hcNotify = {
 		var persent = (Date.now() - this._startTime)/this._closeDelay;
 		if(persent >= 1) {
 			clearInterval(this._highlightInterval);
+			this._highlightInterval = 0;
 			return;
 		}
 		this.borderColor = this.numToColor(this.startColor + Math.round(this._colorDelta*persent));
 	},
 	delayedClose: function() {
+		this.resetTimers();
 		if(!this._transition)
 			this._closeTimeout = setTimeout(window.close, this._closeDelay);
 		else {
@@ -196,11 +197,20 @@ var hcNotify = {
 		this.borderColor = this.numToColor(this.startColor);
 	},
 	cancelDelayedClose: function() {
-		clearTimeout(this._closeTimeout);
-		clearInterval(this._highlightInterval);
+		this.resetTimers();
 		this.borderColor = this.hoverColor;
 		if(this._transition)
 			this._notifyBox.style.opacity = 1;
+	},
+	resetTimers: function() {
+		if(this._closeTimeout) {
+			clearTimeout(this._closeTimeout);
+			this._closeTimeout = 0;
+		}
+		if(this._highlightInterval) {
+			clearInterval(this._highlightInterval);
+			this._highlightInterval = 0;
+		}
 	},
 	hasModifier: function(e) {
 		return e.ctrlKey || e.shiftKey || e.altKey || e.metaKey;
