@@ -210,30 +210,39 @@ var handyClicksUtils = {
 				if(label.charAt(0) == "$")
 					opts.localized[label] = this.getLocalized(label.substr(1));
 		}
+		opts = {
+			title:         opts.title         || this.getLocalized("title"),
+			message:       msg                || "",
+			onLeftClick:   opts.onLeftClick   || null,
+			onMiddleClick: opts.onMiddleClick || null,
+			buttons:       buttons            || null,
+			localized:     opts.localized     || null,
+			parentWindow:  opts.parentWindow  || window,
+			context:       opts.context       || window,
+			icon: icon,
+			closeDelay: closeDelay,
+			inWindowCorner: "inWindowCorner" in opts && opts.inWindowCorner !== undefined
+				? opts.inWindowCorner
+				: this.pu.get("notifyInWindowCorner"),
+			dontCloseUnderCursor: this.pu.get("notifyDontCloseUnderCursor"),
+			rearrangeWindows:     this.pu.get("notifyRearrangeWindows"),
+			messageMaxWidth:      this.pu.get("notifyMessageMaxWidth"),
+			messageMaxHeight:     this.pu.get("notifyMessageMaxHeight"),
+			__proto__: null
+		};
+		var ws = this.wu.wm.getEnumerator("handyclicks:notify");
+		while(ws.hasMoreElements()) {
+			var w = ws.getNext();
+			var arg = w.arguments && w.arguments[0];
+			var optsStr = optsStr || this._stringifyOpts(opts);
+			if(arg && this._stringifyOpts(arg) == optsStr)
+				return w;
+		}
 		return window.openDialog(
 			"chrome://handyclicks/content/notify.xul",
 			"_blank",
 			"chrome,popup,titlebar=0",
-			{
-				title:         opts.title         || this.getLocalized("title"),
-				message:       msg                || "",
-				onLeftClick:   opts.onLeftClick   || null,
-				onMiddleClick: opts.onMiddleClick || null,
-				buttons:       buttons            || null,
-				localized:     opts.localized     || null,
-				parentWindow:  opts.parentWindow  || window,
-				context:       opts.context       || window,
-				icon: icon,
-				closeDelay: closeDelay,
-				inWindowCorner: "inWindowCorner" in opts && opts.inWindowCorner !== undefined
-					? opts.inWindowCorner
-					: this.pu.get("notifyInWindowCorner"),
-				dontCloseUnderCursor: this.pu.get("notifyDontCloseUnderCursor"),
-				rearrangeWindows:     this.pu.get("notifyRearrangeWindows"),
-				messageMaxWidth:      this.pu.get("notifyMessageMaxWidth"),
-				messageMaxHeight:     this.pu.get("notifyMessageMaxHeight"),
-				__proto__: null
-			}
+			opts
 		);
 	},
 	notifyWarning: function(msg, opts) {
@@ -249,6 +258,15 @@ var handyClicksUtils = {
 			opts = this._convertNotifyArgs.apply(this, arguments);
 		(opts = opts || {}).inWindowCorner = true;
 		return this.notify(msg, opts);
+	},
+	_stringifyOpts: function(o) {
+		return this.ps.JSON.stringify(o, function(key, val) {
+			if(typeof val == "function")
+				return "" + val;
+			if(typeof val == "object" && key && key != "buttons")
+				return "[object]";
+			return val;
+		}, "\t");
 	},
 	_convertNotifyArgs: function(msg, header, funcLeftClick, funcMiddleClick, icon, parentWindow, inWindowCorner) {
 		this._deprecatedCaller( //= Added: 2018-12-18
