@@ -32,7 +32,7 @@
 			<spacer flex="1" />
 			<toolbarbutton id="hcNotifyClose" class="close-icon"
 				oncommand="hcNotify.close(event);"
-				onclick="event.stopPropagation(); if(event.button != 0) hcNotify.close(event);"
+				onclick="event.stopPropagation(); if(event.button == 1) hcNotify.close(event);"
 				tooltiptext="&handyClicks.close;" />
 		</hbox>
 		<hbox id="hcNotifyDescWrapper">

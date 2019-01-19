@@ -95,7 +95,7 @@
 `*` Rewritten notification window to better show very long messages (also introduced <em>extensions.handyclicks.notifyMessageMaxWidth</em> and <em>extensions.handyclicks.notifyMessageMaxHeight</em> preferences).<br>
 `*` Always show error notification for compilation errors (and for linked file errors), not only first time.<br>
 `*` Updated <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">notify() API</a>: used options argument for better readability, added ability to create buttons in notification window.<br>
-`*` Changed behavior of notification windows: don't close after right-click, close (focused) notification window using Esc key, close all notification windows after click with any modifier or middle/right-click on close button, added context menu to copy selected or all text.<br>
+`*` Changed behavior of notification windows: don't close after right-click, close (focused) notification window using Esc key, close all notification windows after click with any modifier or middle-click on close button, added context menu to copy selected or all text.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
