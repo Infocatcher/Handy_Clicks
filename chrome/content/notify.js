@@ -11,7 +11,7 @@ var hcNotify = {
 	_highlightInterval: 0,
 
 	init: function() {
-		var opts = window.arguments[0];
+		var opts = this.opts = window.arguments[0];
 		// Properties:
 		// closeDelay, title, message, onLeftClick, onMiddleClick, icon,
 		// inWindowCorner, dontCloseUnderCursor, rearrangeWindows
@@ -163,13 +163,13 @@ var hcNotify = {
 	},
 	numToColor: function(n) { // 0 <= n <= 255
 		var h = n.toString(16);
-		if(h.length == 1)
+		if(n < 16)
 			h = "0" + h;
 		return "#" + h + h + h;
 	},
 	setColor: function() {
 		var persent = (Date.now() - this._startTime)/this._closeDelay;
-		if(persent >= 1) {
+		if(persent > 1) {
 			clearInterval(this._highlightInterval);
 			this._highlightInterval = 0;
 			return;
@@ -221,7 +221,7 @@ var hcNotify = {
 	},
 	clickHandler: function(e) {
 		this.cancelDelayedClose();
-		var opts = window.arguments[0];
+		var opts = this.opts;
 		var hasModifier = this.hasModifier(e);
 		if(
 			e.button == 0 && !hasModifier
@@ -237,7 +237,7 @@ var hcNotify = {
 	},
 	doCommand: function(cmd) {
 		window.close();
-		cmd && cmd.call(window.arguments[0].context || window.opener);
+		cmd && cmd.call(this.opts.context || window.opener);
 	},
 	close: function(e) {
 		if(e.button > 0 || this.hasModifier(e))
