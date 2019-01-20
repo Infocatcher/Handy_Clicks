@@ -11,10 +11,7 @@ var hcNotify = {
 	_highlightInterval: 0,
 
 	init: function() {
-		var opts = this.opts = window.arguments[0];
-		// Properties:
-		// closeDelay, title, message, onLeftClick, onMiddleClick, icon,
-		// inWindowCorner, dontCloseUnderCursor, rearrangeWindows
+		var opts = this.opts = window.arguments[0]; // See utils.js -> notify: function(...
 		document.getElementById("hcNotifyHeader").textContent = opts.title + "\n";
 		var descElt = document.getElementById("hcNotifyDesc");
 		descElt.textContent = opts.message;
