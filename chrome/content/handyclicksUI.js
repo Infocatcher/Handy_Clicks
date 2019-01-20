@@ -452,17 +452,13 @@ var handyClicksUI = {
 		return this.emttURI = this.e("handyClicks-editModeTip-uri");
 	},
 	mouseoverHandler: function(e) {
-		this.hc.defineItem(e, {});
-		var type = this.hc.itemType;
-		if(type) {
-			this.emttType.value = this.ps.getTypeLabel(type);
-			var uris = Array.prototype.concat.call(this.fn.getItemURI(this.hc.item, type, e))
-				.map(this.fn.losslessDecodeURI, this.fn);
-			this.emttURI.value = uris.join(", ");
-		}
+		this.updateEditModeTip(e);
 		this.mousemoveHandler(e);
 	},
 	mousemoveHandler: function(e) {
+		var trg = e.originalTarget;
+		if(trg.namespaceURI == this.ut.XULNS && trg.localName == "treechildren")
+			this.updateEditModeTip(e);
 		var tt = this.emtt;
 		if(!this.hc.itemType) {
 			tt.hidePopup();
@@ -491,6 +487,16 @@ var handyClicksUI = {
 	mouseoutHandler: function(e) {
 		if(!e.relatedTarget)
 			this.emtt.hidePopup();
+	},
+	updateEditModeTip: function(e) {
+		this.hc.defineItem(e, {});
+		var type = this.hc.itemType;
+		if(!type)
+			return;
+		this.emttType.value = this.ps.getTypeLabel(type);
+		var uris = Array.prototype.concat.call(this.fn.getItemURI(this.hc.item, type, e))
+			.map(this.fn.losslessDecodeURI, this.fn);
+		this.emttURI.value = uris.join(", ");
 	},
 
 	prefChanged: function(pName) {
