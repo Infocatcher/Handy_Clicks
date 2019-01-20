@@ -493,10 +493,14 @@ var handyClicksUI = {
 		var type = this.hc.itemType;
 		if(!type)
 			return;
-		this.emttType.value = this.ps.getTypeLabel(type);
-		var uris = Array.prototype.concat.call(this.fn.getItemURI(this.hc.item, type, e))
-			.map(this.fn.losslessDecodeURI, this.fn);
-		this.emttURI.value = uris.join(", ");
+		var labelType = this.ps.getTypeLabel(type);
+		var labelUri = Array.prototype.concat.call(this.fn.getItemURI(this.hc.item, type, e))
+			.map(this.fn.losslessDecodeURI, this.fn)
+			.join(", ");
+		if(this.emttType.value != labelType)
+			this.emttType.value = labelType;
+		if(this.emttURI.value != labelUri)
+			this.emttURI.value = labelUri;
 	},
 
 	prefChanged: function(pName) {
