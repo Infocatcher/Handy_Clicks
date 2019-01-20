@@ -1264,11 +1264,14 @@ var handyClicks = {
 		if(this.flags.runned || this.flags.cancelled)
 			return;
 		this.flags.runned = true;
-		if(da)
+		if(da) {
+			if(e.button == 2)
+				this.flags.stopContextMenu = true;
 			this.executeFunction(da, e, true);
+		}
 		else {
 			this.showPopupOnItem();
-			this.handledItem = e && e.originalTarget;
+			this.handledItem = e.originalTarget;
 		}
 		this.ui.restoreIcon();
 	},
