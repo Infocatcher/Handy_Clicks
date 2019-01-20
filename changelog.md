@@ -97,7 +97,7 @@
 `*` Updated <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">notify() API</a>: used options argument for better readability, added ability to create buttons in notification window.<br>
 `*` Changed behavior of notification windows: don't close after right-click, close (focused) notification window using Esc key, close all notification windows after click with any modifier or middle-click on close button, added context menu to copy selected or all text (and left-click action will not executed after text selection).<br>
 `x` Fixed notification window: don't close under cursor in case of wrong order of mouse events (e.g. after “mouseup” outside of window).<br>
-`*` Added ability to not open the same notification twice (<em>extensions.handyclicks.notifyFocusAlreadyOpened</em> preference).<br>
+`*` Added ability to not open the same notification twice (<em>extensions.handyclicks.notifyDontOpenTwice</em> preference).<br>
 `x` Fixed handyClicksFuncs.getItemURI() function for bookmarks/history tree (did not work without hc.event property).<br>
 `x` Fixed edit mode tooltip for XUL tree (bookmarks, history items).<br>
 `x` Correctly prevent context menu after delayed action.<br>
