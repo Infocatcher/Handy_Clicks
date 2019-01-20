@@ -129,7 +129,7 @@ var handyClicksFuncs = {
 			break;
 			case "bookmark":
 			case "historyItem":
-				uri = it.getAttribute("targetURI") || this.hc.getBookmarkURI(it);
+				uri = it.getAttribute("targetURI") || this.hc.getBookmarkURI(it, e);
 			break;
 			case "tab":
 				uri = this.getTabURI(it);
@@ -169,7 +169,7 @@ var handyClicksFuncs = {
 			|| it.src || it.getAttribute("src")
 			|| it instanceof HTMLCanvasElement && it.toDataURL()
 			|| it.getAttribute("targetURI")
-			|| this.hc.getBookmarkURI(it)
+			|| this.hc.getBookmarkURI(it, e)
 			|| this.getTabURI(it);
 	},
 	trimStr: function(s) {
