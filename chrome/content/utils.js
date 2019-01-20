@@ -230,7 +230,7 @@ var handyClicksUtils = {
 			messageMaxHeight:     this.pu.get("notifyMessageMaxHeight"),
 			__proto__: null
 		};
-		var ws = this.pu.get("notifyFocusAlreadyOpened")
+		var ws = this.pu.get("notifyDontOpenTwice")
 			&& this.wu.wm.getEnumerator("handyclicks:notify");
 		if(ws) while(ws.hasMoreElements()) {
 			var w = ws.getNext();

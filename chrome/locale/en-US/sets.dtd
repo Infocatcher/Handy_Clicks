@@ -148,6 +148,7 @@
 <!ENTITY hc.sets.notifyCloseWarningsAfter "Close warnings after">
 <!ENTITY hc.sets.notifyInWindowCorner "Show in window corner">
 <!ENTITY hc.sets.notifyDontClose "Don't close under cursor">
+<!ENTITY hc.sets.notifyDontOpenTwice "Don't open the same notification twice">
 
 <!ENTITY hc.sets.disallowMousemoveCaption "Mouse gestures, drag-and-drop">
 <!ENTITY hc.sets.disallowMousemove "Stop clicks handling, if mouse was moved with pressed button:">

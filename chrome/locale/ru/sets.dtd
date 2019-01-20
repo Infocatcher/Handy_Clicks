@@ -148,6 +148,7 @@
 <!ENTITY hc.sets.notifyCloseWarningsAfter "Закрывать предупреждения через">
 <!ENTITY hc.sets.notifyInWindowCorner "Показывать в углу окна">
 <!ENTITY hc.sets.notifyDontClose "Не закрывать под курсором">
+<!ENTITY hc.sets.notifyDontOpenTwice "Не открывать одно и то же уведомление дважды">
 
 <!ENTITY hc.sets.disallowMousemoveCaption "Жесты мышью, перетаскивание">
 <!ENTITY hc.sets.disallowMousemove "Прекращать обработку кликов при перемещении мыши с зажатыми кнопками:">
