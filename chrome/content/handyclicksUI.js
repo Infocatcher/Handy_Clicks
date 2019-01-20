@@ -456,7 +456,7 @@ var handyClicksUI = {
 		var type = this.hc.itemType;
 		if(type) {
 			this.emttType.value = this.ps.getTypeLabel(type);
-			var uris = Array.prototype.concat.call(this.fn.getItemURI())
+			var uris = Array.prototype.concat.call(this.fn.getItemURI(this.hc.item, type, e))
 				.map(this.fn.losslessDecodeURI, this.fn);
 			this.emttURI.value = uris.join(", ");
 		}
