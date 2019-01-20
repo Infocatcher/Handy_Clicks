@@ -34,7 +34,7 @@ var handyClicksReloader = {
 			handyClicksRegSvc.destroy(true);
 			for(var f in files) {
 				var p = files[f];
-				if(p in window)
+				if(p in window && !window.__lookupGetter__(p))
 					jsLoader.loadSubScript(path + f + "?" + Date.now());
 			}
 			handyClicksRegSvc.init(true);

@@ -1,4 +1,4 @@
-window.__defineGetter__("handyClicks", function() {
+if(!("handyClicks" in window)) window.__defineGetter__("handyClicks", function() {
 	handyClicksUI._log("Used window.handyClicks lazy getter");
 	delete this.handyClicks;
 	return handyClicksUI.hc;
