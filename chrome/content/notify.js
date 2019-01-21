@@ -9,6 +9,7 @@ var hcNotify = {
 	inWindowCorner: false,
 	_closeTimeout: 0,
 	_highlightInterval: 0,
+	_blinkTimer: 0,
 
 	init: function() {
 		var opts = this.opts = window.arguments[0]; // See utils.js -> notify: function(...
@@ -200,7 +201,7 @@ var hcNotify = {
 			var hl = cnt & 1;
 			_this.borderColor = hl ? _this.hoverColor : _this.numToColor(_this.startColor);
 			if(cnt--)
-				setTimeout(blink, hl ? 120 : 50);
+				_this._blinkTimer = setTimeout(blink, hl ? 120 : 50);
 			else
 				_this.delayedClose();
 		})();
@@ -219,6 +220,10 @@ var hcNotify = {
 		if(this._highlightInterval) {
 			clearInterval(this._highlightInterval);
 			this._highlightInterval = 0;
+		}
+		if(this._blinkTimer) {
+			clearTimeout(this._blinkTimer);
+			this._blinkTimer = 0;
 		}
 	},
 	hasModifier: function(e) {
