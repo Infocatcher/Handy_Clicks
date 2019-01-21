@@ -7,8 +7,8 @@ var hcNotify = {
 	hoverColor: "blue", // valid color string
 
 	inWindowCorner: false,
-	_closeTimeout: 0,
-	_highlightInterval: 0,
+	_closeTimer: 0,
+	_highlightTimer: 0,
 	_blinkTimer: 0,
 
 	init: function() {
@@ -168,8 +168,8 @@ var hcNotify = {
 	setColor: function() {
 		var persent = (Date.now() - this._startTime)/this._closeDelay;
 		if(persent > 1) {
-			clearInterval(this._highlightInterval);
-			this._highlightInterval = 0;
+			clearInterval(this._highlightTimer);
+			this._highlightTimer = 0;
 			return;
 		}
 		this.borderColor = this.numToColor(this.startColor + Math.round(this._colorDelta*persent));
@@ -177,16 +177,16 @@ var hcNotify = {
 	delayedClose: function() {
 		this.resetTimers();
 		if(!this._transition)
-			this._closeTimeout = setTimeout(window.close, this._closeDelay);
+			this._closeTimer = setTimeout(window.close, this._closeDelay);
 		else {
-			this._closeTimeout = setTimeout(function(_this) {
+			this._closeTimer = setTimeout(function(_this) {
 				_this._notifyBox.style.opacity = 0;
-				_this._closeTimeout = setTimeout(window.close, _this.showHideDuration);
+				_this._closeTimer = setTimeout(window.close, _this.showHideDuration);
 			}, this._closeDelay, this);
 		}
 		this._startTime = Date.now();
 		var _this = this;
-		this._highlightInterval = setInterval(
+		this._highlightTimer = setInterval(
 			function() {
 				_this.setColor();
 			},
@@ -213,13 +213,13 @@ var hcNotify = {
 			this._notifyBox.style.opacity = 1;
 	},
 	resetTimers: function() {
-		if(this._closeTimeout) {
-			clearTimeout(this._closeTimeout);
-			this._closeTimeout = 0;
+		if(this._closeTimer) {
+			clearTimeout(this._closeTimer);
+			this._closeTimer = 0;
 		}
-		if(this._highlightInterval) {
-			clearInterval(this._highlightInterval);
-			this._highlightInterval = 0;
+		if(this._highlightTimer) {
+			clearInterval(this._highlightTimer);
+			this._highlightTimer = 0;
 		}
 		if(this._blinkTimer) {
 			clearTimeout(this._blinkTimer);
