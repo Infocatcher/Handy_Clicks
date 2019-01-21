@@ -114,6 +114,7 @@ var hcNotify = {
 		}
 
 		var notifyBox = this._notifyBox = document.getElementById("hcNotifyBox");
+		this.boxStyle = notifyBox.style;
 		if(typeof opts.onLeftClick == "function")
 			notifyBox.className = "hc-clickable";
 
@@ -159,6 +160,8 @@ var hcNotify = {
 	},
 	set borderColor(clr) {
 		var nb = this._notifyBox;
+		if(this._transition)
+			nb.style[this._transition] = "none";
 		if(clr == this.hoverColor)
 			nb.setAttribute("hc_state", "hover");
 		else if(clr == this.blinkColor)
@@ -186,23 +189,34 @@ var hcNotify = {
 	},
 	delayedClose: function() {
 		this.resetTimers();
-		if(!this._transition)
+
+		if(!this._transition) {
 			this._closeTimer = setTimeout(window.close, this._closeDelay);
-		else {
-			this._closeTimer = setTimeout(function(_this) {
-				_this.rootStyle.opacity = 0;
-				_this._closeTimer = setTimeout(window.close, _this.showHideDuration);
-			}, this._closeDelay, this);
+			this._startTime = Date.now();
+			var _this = this;
+			this._highlightTimer = setInterval(
+				function() {
+					_this.setColor();
+				},
+				Math.round(this._closeDelay/this._colorDelta) + 4
+			);
+			this.borderColor = this.numToColor(this.startColor);
+			return;
 		}
-		this._startTime = Date.now();
-		var _this = this;
-		this._highlightTimer = setInterval(
-			function() {
-				_this.setColor();
-			},
-			Math.round(this._closeDelay/this._colorDelta) + 4
-		);
-		this.borderColor = this.numToColor(this.startColor);
+
+		this._closeTimer = setTimeout(function(_this) {
+			_this.rootStyle.opacity = 0;
+			_this._closeTimer = setTimeout(window.close, _this.showHideDuration);
+		}, this._closeDelay, this);
+
+		this.boxStyle[this._transition] = "none";
+		this._notifyBox.removeAttribute("hc_state");
+		this._notifyBox.scrollHeight; // Force reflow
+
+		setTimeout(function() {
+			this.boxStyle[this._transition] = "border-color " + this.opts.closeDelay + "ms linear";
+			this._notifyBox.setAttribute("hc_state", "end");
+		}.bind(this), 0);
 	},
 	blink: function() {
 		this.resetTimers();
