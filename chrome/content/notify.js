@@ -4,8 +4,8 @@ var hcNotify = {
 
 	startColor: 0, // >= 0 (black)
 	endColor: 255, // <= 255 (white)
-	hoverColor: "blue", // valid color string
-	blinkColor: "#e72",
+	hoverColor: "%hover",
+	blinkColor: "%blink",
 
 	inWindowCorner: false,
 	_closeTimer: 0,
@@ -158,7 +158,16 @@ var hcNotify = {
 			.getEnumerator(document.documentElement.getAttribute("windowtype"));
 	},
 	set borderColor(clr) {
-		this._notifyBox.style.borderColor = clr;
+		var nb = this._notifyBox;
+		if(clr == this.hoverColor)
+			nb.setAttribute("hc_state", "hover");
+		else if(clr == this.blinkColor)
+			nb.setAttribute("hc_state", "blink");
+		else {
+			if(nb.hasAttribute("hc_state"))
+				nb.removeAttribute("hc_state");
+			nb.style.borderColor = clr;
+		}
 	},
 	numToColor: function(n) { // 0 <= n <= 255
 		var h = n.toString(16);

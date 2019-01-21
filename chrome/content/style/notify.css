@@ -12,6 +12,12 @@
 #hcNotifyBox.hc-clickable #hcNotifyClose {
 	cursor: auto;
 }
+#hcNotifyBox[hc_state="hover"] {
+	border-color: #00f !important;
+}
+#hcNotifyBox[hc_state="blink"] {
+	border-color: #e72 !important;
+}
 #hcNotifyImg {
 	width: 32px;
 	height: 32px;
