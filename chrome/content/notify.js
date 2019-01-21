@@ -5,6 +5,7 @@ var hcNotify = {
 	startColor: 0, // >= 0 (black)
 	endColor: 255, // <= 255 (white)
 	hoverColor: "blue", // valid color string
+	blinkColor: "#e72",
 
 	inWindowCorner: false,
 	_closeTimer: 0,
@@ -197,9 +198,10 @@ var hcNotify = {
 	blink: function() {
 		this.resetTimers();
 		var cnt = 3, _this = this;
+		var startColor = this.numToColor(this.startColor);
 		(function blink() {
 			var hl = cnt & 1;
-			_this.borderColor = hl ? _this.hoverColor : _this.numToColor(_this.startColor);
+			_this.borderColor = hl ? _this.blinkColor : startColor;
 			if(cnt--)
 				_this._blinkTimer = setTimeout(blink, hl ? 120 : 50);
 			else
