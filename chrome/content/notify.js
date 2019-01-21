@@ -160,8 +160,6 @@ var hcNotify = {
 	},
 	set borderColor(clr) {
 		var box = this.box;
-		if(this.transition)
-			box.style[this.transition] = "none";
 		if(clr == this.hoverColor)
 			box.setAttribute("hc_state", "hover");
 		else if(clr == this.blinkColor)
@@ -217,10 +215,14 @@ var hcNotify = {
 	blink: function() {
 		this.resetTimers();
 		var cnt = 3, _this = this;
-		var startColor = this.numToColor(this.startColor);
 		(function blink() {
 			var hl = cnt & 1;
-			_this.borderColor = hl ? _this.blinkColor : startColor;
+			if(!_this.transition)
+				_this.borderColor = hl ? _this.blinkColor : _this.numToColor(_this.startColor);
+			else {
+				_this.boxStyle[_this.transition] = "none";
+				_this.box.setAttribute("hc_state", hl ? "blink" : "start");
+			}
 			if(cnt--)
 				_this._blinkTimer = setTimeout(blink, hl ? 120 : 50);
 			else
@@ -229,9 +231,13 @@ var hcNotify = {
 	},
 	cancelDelayedClose: function() {
 		this.resetTimers();
-		this.borderColor = this.hoverColor;
-		if(this.transition)
+		if(!this.transition)
+			this.borderColor = this.hoverColor;
+		else {
 			this.rootStyle.opacity = 1;
+			this.boxStyle[this.transition] = "none";
+			this.box.setAttribute("hc_state", "hover");
+		}
 	},
 	resetTimers: function() {
 		if(this._closeTimer) {
