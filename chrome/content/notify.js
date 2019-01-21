@@ -118,7 +118,7 @@ var hcNotify = {
 			notifyBox.className = "hc-clickable";
 
 		this._closeDelay = opts.closeDelay;
-		var s = notifyBox.style;
+		var s = this.rootStyle = document.documentElement.style;
 		var transition = this._transition = "transition" in s && "transition"
 			|| "MozTransition" in s && "MozTransition";
 		if(transition) {
@@ -190,7 +190,7 @@ var hcNotify = {
 			this._closeTimer = setTimeout(window.close, this._closeDelay);
 		else {
 			this._closeTimer = setTimeout(function(_this) {
-				_this._notifyBox.style.opacity = 0;
+				_this.rootStyle.opacity = 0;
 				_this._closeTimer = setTimeout(window.close, _this.showHideDuration);
 			}, this._closeDelay, this);
 		}
@@ -221,7 +221,7 @@ var hcNotify = {
 		this.resetTimers();
 		this.borderColor = this.hoverColor;
 		if(this._transition)
-			this._notifyBox.style.opacity = 1;
+			this.rootStyle.opacity = 1;
 	},
 	resetTimers: function() {
 		if(this._closeTimer) {
