@@ -271,13 +271,13 @@ var handyClicksUtils = {
 		return this.notify(msg, opts);
 	},
 	_stringifyOpts: function(o) {
-		return this.ps.JSON.stringify(o, function(key, val) {
-			if(typeof val == "function")
-				return "" + val;
-			if(key && val && typeof val == "object" && key != "buttons" && key != "localized")
-				return undefined;
-			return val;
-		}, "\t");
+		var tmp = {};
+		for(var p in o) {
+			var v = o[p];
+			if(!(v && typeof v == "object" && p != "buttons" && p != "localized"))
+				tmp[p] = v;
+		}
+		return uneval(tmp);
 	},
 	_convertNotifyArgs: function(msg, header, funcLeftClick, funcMiddleClick, icon, parentWindow, inWindowCorner) {
 		this._deprecatedCaller( //= Added: 2018-12-18
