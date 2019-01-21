@@ -113,17 +113,19 @@ var hcNotify = {
 			}
 		}
 
-		var notifyBox = this._notifyBox = document.getElementById("hcNotifyBox");
-		this.boxStyle = notifyBox.style;
+		var box = this.box = document.getElementById("hcNotifyBox");
+		this.boxStyle = box.style;
 		if(typeof opts.onLeftClick == "function")
-			notifyBox.className = "hc-clickable";
+			box.className = "hc-clickable";
 
-		this._closeDelay = opts.closeDelay;
+		this.closeDelay = opts.closeDelay;
 		var s = this.rootStyle = document.documentElement.style;
-		var transition = this._transition = "transition" in s && "transition"
+		var transition = this.transition = "transition" in s && "transition"
 			|| "MozTransition" in s && "MozTransition";
-		if(transition) {
-			this._closeDelay = Math.max(0, this._closeDelay - this.showHideDuration);
+		if(!transition)
+			this.colorDelta = this.endColor - this.startColor;
+		else {
+			this.closeDelay = Math.max(0, this.closeDelay - this.showHideDuration);
 			s.opacity = 0;
 			setTimeout(function(_this) {
 				s[transition] = "opacity " + _this.showHideDuration + "ms ease-in-out";
@@ -131,8 +133,6 @@ var hcNotify = {
 			}, 0, this);
 		}
 
-		//~ todo: rewrite using CSS transitions
-		this._colorDelta = this.endColor - this.startColor;
 		this.delayedClose();
 		if(opts.dontCloseUnderCursor)
 			this.initDontClose();
@@ -159,17 +159,17 @@ var hcNotify = {
 			.getEnumerator(document.documentElement.getAttribute("windowtype"));
 	},
 	set borderColor(clr) {
-		var nb = this._notifyBox;
-		if(this._transition)
-			nb.style[this._transition] = "none";
+		var box = this.box;
+		if(this.transition)
+			box.style[this.transition] = "none";
 		if(clr == this.hoverColor)
-			nb.setAttribute("hc_state", "hover");
+			box.setAttribute("hc_state", "hover");
 		else if(clr == this.blinkColor)
-			nb.setAttribute("hc_state", "blink");
+			box.setAttribute("hc_state", "blink");
 		else {
-			if(nb.hasAttribute("hc_state"))
-				nb.removeAttribute("hc_state");
-			nb.style.borderColor = clr;
+			if(box.hasAttribute("hc_state"))
+				box.removeAttribute("hc_state");
+			box.style.borderColor = clr;
 		}
 	},
 	numToColor: function(n) { // 0 <= n <= 255
@@ -178,28 +178,24 @@ var hcNotify = {
 			h = "0" + h;
 		return "#" + h + h + h;
 	},
-	setColor: function() {
-		var persent = (Date.now() - this._startTime)/this._closeDelay;
-		if(persent > 1) {
-			clearInterval(this._highlightTimer);
-			this._highlightTimer = 0;
-			return;
-		}
-		this.borderColor = this.numToColor(this.startColor + Math.round(this._colorDelta*persent));
-	},
 	delayedClose: function() {
 		this.resetTimers();
 
-		if(!this._transition) {
-			this._closeTimer = setTimeout(window.close, this._closeDelay);
+		if(!this.transition) {
+			this._closeTimer = setTimeout(window.close, this.closeDelay);
 			this._startTime = Date.now();
-			var _this = this;
-			this._highlightTimer = setInterval(
-				function() {
-					_this.setColor();
-				},
-				Math.round(this._closeDelay/this._colorDelta) + 4
-			);
+			var setColor = function() {
+				var persent = (Date.now() - this._startTime)/this.closeDelay;
+				if(persent > 1) {
+					clearInterval(this._highlightTimer);
+					this._highlightTimer = 0;
+					return;
+				}
+				this.borderColor = this.numToColor(this.startColor + Math.round(this.colorDelta*persent));
+			};
+			this._highlightTimer = setInterval(function(_this) {
+				setColor.call(_this);
+			}, Math.round(this.closeDelay/this.colorDelta) + 4, this);
 			this.borderColor = this.numToColor(this.startColor);
 			return;
 		}
@@ -207,15 +203,15 @@ var hcNotify = {
 		this._closeTimer = setTimeout(function(_this) {
 			_this.rootStyle.opacity = 0;
 			_this._closeTimer = setTimeout(window.close, _this.showHideDuration);
-		}, this._closeDelay, this);
+		}, this.closeDelay, this);
 
-		this.boxStyle[this._transition] = "none";
-		this._notifyBox.removeAttribute("hc_state");
-		this._notifyBox.scrollHeight; // Force reflow
+		this.boxStyle[this.transition] = "none";
+		this.box.removeAttribute("hc_state");
+		this.box.scrollHeight; // Force reflow
 
 		setTimeout(function() {
-			this.boxStyle[this._transition] = "border-color " + this.opts.closeDelay + "ms linear";
-			this._notifyBox.setAttribute("hc_state", "end");
+			this.boxStyle[this.transition] = "border-color " + this.opts.closeDelay + "ms linear";
+			this.box.setAttribute("hc_state", "end");
 		}.bind(this), 0);
 	},
 	blink: function() {
@@ -234,7 +230,7 @@ var hcNotify = {
 	cancelDelayedClose: function() {
 		this.resetTimers();
 		this.borderColor = this.hoverColor;
-		if(this._transition)
+		if(this.transition)
 			this.rootStyle.opacity = 1;
 	},
 	resetTimers: function() {
