@@ -274,8 +274,8 @@ var handyClicksUtils = {
 		return this.ps.JSON.stringify(o, function(key, val) {
 			if(typeof val == "function")
 				return "" + val;
-			if(typeof val == "object" && key && key != "buttons")
-				return "[object]";
+			if(key && val && typeof val == "object" && key != "buttons" && key != "localized")
+				return undefined;
 			return val;
 		}, "\t");
 	},
