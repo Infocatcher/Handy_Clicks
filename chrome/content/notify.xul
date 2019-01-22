@@ -21,14 +21,13 @@
 	<script type="application/javascript" src="chrome://handyclicks/content/notify.js" />
 
 	<vbox id="hcNotifyBox" onclick="hcNotify.clickHandler(event);" context="_child">
-		<menupopup id="hcNotifyContextMenu" onclick="event.stopPropagation();"
-			onpopupshowing="this.firstChild.setAttribute('disabled', getSelection().isCollapsed);
-				this.lastChild.setAttribute('disabled', !hcNotify.canCloseAll);">
-			<menuitem oncommand="hcNotify.copy(getSelection());" label="&handyClicks.copy;" />
-			<menuitem oncommand="hcNotify.copyAll();" label="&handyClicks.copyAll;" />
+		<menupopup id="hcNotifyMenu" onclick="event.stopPropagation();"
+			onpopupshowing="hcNotify.initMenu();">
+			<menuitem id="hcNotifyMenuCopy" oncommand="hcNotify.copy(getSelection());" label="&handyClicks.copy;" />
+			<menuitem id="hcNotifyMenuCopyAll" oncommand="hcNotify.copyAll();" label="&handyClicks.copyAll;" />
 			<menuseparator />
-			<menuitem oncommand="window.close();" label="&handyClicks.close;" />
-			<menuitem oncommand="hcNotify.closeAll();" label="&handyClicks.closeAll;" />
+			<menuitem id="hcNotifyMenuClose" oncommand="window.close();" label="&handyClicks.close;" />
+			<menuitem id="hcNotifyMenuCloseAll" oncommand="hcNotify.closeAll();" label="&handyClicks.closeAll;" />
 		</menupopup>
 		<hbox id="hcNotifyTitlebar" align="top">
 			<image id="hcNotifyImg" />

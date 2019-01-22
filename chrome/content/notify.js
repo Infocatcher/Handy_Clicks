@@ -288,6 +288,10 @@ var hcNotify = {
 		else
 			window.close();
 	},
+	initMenu: function() {
+		document.getElementById("hcNotifyMenuCopy").setAttribute("disabled", getSelection().isCollapsed);
+		document.getElementById("hcNotifyMenuCloseAll").setAttribute("disabled", !this.canCloseAll);
+	},
 	get canCloseAll() {
 		var ws = this.ws;
 		while(ws.hasMoreElements())
