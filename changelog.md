@@ -92,10 +92,10 @@
 `+` Editor: added context menu to open saved shortcut.<br>
 `*` Rewritten and corrected code to select items in tree using mouse move (press mouse button and then drag to select): correctly select from topmost and bottommost visible rows (also don't scroll after inaccurate click with small mouse movement), reduced autoscroll speed, optimized performance.<br>
 `x` Fixed notification window: don't show outside of screen.<br>
-`*` Rewritten notification window to better show very long messages (also introduced <em>extensions.handyclicks.notifyMessageMaxWidth</em> and <em>extensions.handyclicks.notifyMessageMaxHeight</em> preferences).<br>
+`*` Rewritten notification window to better show very long messages (also introduced <em>extensions.handyclicks.notifyMessageMaxWidth</em> and <em>extensions.handyclicks.notifyMessageMaxHeight</em> preferences), also now used CSS transitions for closing timer visualization.<br>
 `*` Always show error notification for compilation errors (and for linked file errors), not only first time.<br>
 `*` Updated <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">notify() API</a>: used options argument for better readability, added ability to create buttons in notification window.<br>
-`*` Changed behavior of notification windows: don't close after right-click, close (focused) notification window using Esc key, close all notification windows after click with any modifier or middle-click on close button, added context menu to copy selected or all text (and left-click action will not executed after text selection).<br>
+`*` Changed behavior of notification windows: don't close after right-click, close (focused) notification window using Esc key, close all notification windows after click with any modifier or middle-click on close button, added context menu to copy selected or all text (and left-click action will not executed after text selection) and to close current or all notifications.<br>
 `x` Fixed notification window: don't close under cursor in case of wrong order of mouse events (e.g. after “mouseup” outside of window).<br>
 `*` Added ability to not open the same notification twice (<em>extensions.handyclicks.notifyDontOpenTwice</em> preference).<br>
 `x` Fixed handyClicksFuncs.getItemURI() function for bookmarks/history tree (did not work without hc.event property).<br>
