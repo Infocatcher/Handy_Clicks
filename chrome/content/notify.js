@@ -1,5 +1,4 @@
 var hcNotify = {
-	_transition: null,
 	showHideDuration: 200,
 
 	startColor: 0, // >= 0 (black)
@@ -114,21 +113,22 @@ var hcNotify = {
 		}
 
 		var box = this.box = document.getElementById("hcNotifyBox");
-		this.boxStyle = box.style;
 		if(typeof opts.onLeftClick == "function")
 			box.className = "hc-clickable";
 
 		this.closeDelay = opts.closeDelay;
-		var s = this.rootStyle = document.documentElement.style;
+		var s = this.boxStyle = box.style;
 		var transition = this.transition = "transition" in s && "transition"
 			|| "MozTransition" in s && "MozTransition";
 		if(!transition)
 			this.colorDelta = this.endColor - this.startColor;
 		else {
+			this.baseTransition = "opacity " + this.showHideDuration + "ms ease-in-out";
 			this.closeDelay = Math.max(0, this.closeDelay - this.showHideDuration);
 			s.opacity = 0;
+			box.scrollHeight; // Force reflow
 			setTimeout(function(_this) {
-				s[transition] = "opacity " + _this.showHideDuration + "ms ease-in-out";
+				s[transition] = _this.baseTransition;
 				s.opacity = 1;
 			}, 0, this);
 		}
@@ -199,29 +199,30 @@ var hcNotify = {
 		}
 
 		this._closeTimer = setTimeout(function(_this) {
-			_this.rootStyle.opacity = 0;
+			_this.boxStyle.opacity = 0;
 			_this._closeTimer = setTimeout(window.close, _this.showHideDuration);
 		}, this.closeDelay, this);
 
-		this.boxStyle[this.transition] = "none";
+		this.boxStyle[this.transition] = this.baseTransition;
 		this.box.removeAttribute("hc_state");
 		this.box.scrollHeight; // Force reflow
 
 		setTimeout(function() {
-			this.boxStyle[this.transition] = "border-color " + this.opts.closeDelay + "ms linear";
+			this.boxStyle[this.transition] = this.baseTransition
+				+ ", border-color " + this.opts.closeDelay + "ms linear";
 			this.box.setAttribute("hc_state", "end");
 		}.bind(this), 0);
 	},
 	blink: function() {
 		this.resetTimers();
-		this.rootStyle.opacity = 1;
+		this.boxStyle.opacity = 1;
 		var cnt = 3, _this = this;
 		(function blink() {
 			var hl = cnt & 1;
 			if(!_this.transition)
 				_this.borderColor = hl ? _this.blinkColor : _this.numToColor(_this.startColor);
 			else {
-				_this.boxStyle[_this.transition] = "none";
+				_this.boxStyle[_this.transition] = _this.baseTransition;
 				_this.box.setAttribute("hc_state", hl ? "blink" : "start");
 			}
 			if(cnt--)
@@ -235,8 +236,8 @@ var hcNotify = {
 		if(!this.transition)
 			this.borderColor = this.hoverColor;
 		else {
-			this.rootStyle.opacity = 1;
-			this.boxStyle[this.transition] = "none";
+			this.boxStyle.opacity = 1;
+			this.boxStyle[this.transition] = this.baseTransition;
 			this.box.setAttribute("hc_state", "hover");
 		}
 	},
