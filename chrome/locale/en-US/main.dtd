@@ -20,5 +20,6 @@
 
 <!-- Notify window -->
 <!ENTITY handyClicks.close "Close">
+<!ENTITY handyClicks.closeAll "Close All">
 <!ENTITY handyClicks.copy "Copy">
 <!ENTITY handyClicks.copyAll "Copy All">

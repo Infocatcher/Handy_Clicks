@@ -25,6 +25,9 @@
 			onpopupshowing="this.firstChild.setAttribute('disabled', getSelection().isCollapsed);">
 			<menuitem oncommand="hcNotify.copy(getSelection());" label="&handyClicks.copy;" />
 			<menuitem oncommand="hcNotify.copyAll();" label="&handyClicks.copyAll;" />
+			<menuseparator />
+			<menuitem oncommand="window.close();" label="&handyClicks.close;" />
+			<menuitem oncommand="hcNotify.closeAll();" label="&handyClicks.closeAll;" />
 		</menupopup>
 		<hbox id="hcNotifyTitlebar" align="top">
 			<image id="hcNotifyImg" />
