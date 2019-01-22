@@ -288,6 +288,13 @@ var hcNotify = {
 		else
 			window.close();
 	},
+	get canCloseAll() {
+		var ws = this.ws;
+		while(ws.hasMoreElements())
+			if(ws.getNext() != window)
+				return true;
+		return false;
+	},
 	closeAll: function() {
 		var ws = this.ws;
 		while(ws.hasMoreElements())
