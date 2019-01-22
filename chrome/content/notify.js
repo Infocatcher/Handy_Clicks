@@ -214,6 +214,7 @@ var hcNotify = {
 	},
 	blink: function() {
 		this.resetTimers();
+		this.rootStyle.opacity = 1;
 		var cnt = 3, _this = this;
 		(function blink() {
 			var hl = cnt & 1;
