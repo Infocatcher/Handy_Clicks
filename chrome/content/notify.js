@@ -13,11 +13,11 @@ var hcNotify = {
 
 	init: function() {
 		var opts = this.opts = window.arguments[0]; // See utils.js -> notify: function(...
-		document.getElementById("hcNotifyHeader").textContent = opts.title + "\n";
-		var descElt = document.getElementById("hcNotifyDesc");
+		this.$("hcNotifyHeader").textContent = opts.title + "\n";
+		var descElt = this.$("hcNotifyDesc");
 		descElt.textContent = opts.message;
-		document.getElementById("hcNotifyImg").setAttribute("hc_icon", opts.icon);
-		var closeBtn = document.getElementById("hcNotifyClose");
+		this.$("hcNotifyImg").setAttribute("hc_icon", opts.icon);
+		var closeBtn = this.$("hcNotifyClose");
 		if(getComputedStyle(closeBtn, null).listStyleImage == "none") {
 			closeBtn.className += " tabs-closebutton";
 			document.loadOverlay("data:application/vnd.mozilla.xul+xml," + encodeURIComponent(
@@ -30,7 +30,7 @@ var hcNotify = {
 		var buttons = opts.buttons || false;
 		if(buttons) {
 			var localized = opts.localized || {};
-			var btnBox = document.getElementById("hcNotifyButtons");
+			var btnBox = this.$("hcNotifyButtons");
 			for(var label in buttons) if(buttons.hasOwnProperty(label)) {
 				var btn = document.createElement("button");
 				btn._command = buttons[label];
@@ -54,7 +54,7 @@ var hcNotify = {
 			? "-moz-pre-wrap"
 			: "pre-wrap";
 		ds.wordWrap = "break-word";
-		var obs = document.getElementById("hcNotifyOverflowBox").style;
+		var obs = this.$("hcNotifyOverflowBox").style;
 		if(descElt.scrollWidth > maxW)
 			obs.width = obs.maxWidth = maxW + "px";
 		if(descElt.scrollWidth > maxW) // Still not fit? Will force apply "break-word"
@@ -112,7 +112,7 @@ var hcNotify = {
 			}
 		}
 
-		var box = this.box = document.getElementById("hcNotifyBox");
+		var box = this.box = this.$("hcNotifyBox");
 		if(typeof opts.onLeftClick == "function")
 			box.className = "hc-clickable";
 
@@ -289,8 +289,8 @@ var hcNotify = {
 			window.close();
 	},
 	initMenu: function() {
-		document.getElementById("hcNotifyMenuCopy").setAttribute("disabled", getSelection().isCollapsed);
-		document.getElementById("hcNotifyMenuCloseAll").setAttribute("disabled", !this.canCloseAll);
+		this.$("hcNotifyMenuCopy").setAttribute("disabled", getSelection().isCollapsed);
+		this.$("hcNotifyMenuCloseAll").setAttribute("disabled", !this.canCloseAll);
 	},
 	get canCloseAll() {
 		var ws = this.ws;
@@ -305,9 +305,9 @@ var hcNotify = {
 			ws.getNext().close();
 	},
 	copyAll: function() {
-		var msg = document.getElementById("hcNotifyBox").textContent;
+		var msg = this.$("hcNotifyBox").textContent;
 		var buttons = Array.prototype.map.call(
-			document.getElementById("hcNotifyButtons").childNodes,
+			this.$("hcNotifyButtons").childNodes,
 			function(btn) {
 				return btn.getAttribute("label");
 			}
@@ -322,5 +322,8 @@ var hcNotify = {
 				Components.interfaces.nsIClipboard.kGlobalClipboard,
 				document
 			);
+	},
+	$: function(id) {
+		return document.getElementById(id);
 	}
 };
