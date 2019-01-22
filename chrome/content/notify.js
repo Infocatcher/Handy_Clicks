@@ -136,6 +136,7 @@ var hcNotify = {
 		this.delayedClose();
 		if(opts.dontCloseUnderCursor)
 			this.initDontClose();
+		this.updateMenus();
 	},
 	initDontClose: function() {
 		var _this = this;
@@ -152,6 +153,7 @@ var hcNotify = {
 	},
 	destroy: function() {
 		this.resetTimers();
+		this.updateMenus();
 	},
 	get ws() {
 		return Components.classes["@mozilla.org/appshell/window-mediator;1"]
@@ -291,6 +293,14 @@ var hcNotify = {
 	initMenu: function() {
 		this.$("hcNotifyMenuCopy").setAttribute("disabled", getSelection().isCollapsed);
 		this.$("hcNotifyMenuCloseAll").setAttribute("disabled", !this.canCloseAll);
+	},
+	updateMenus: function() {
+		var ws = this.ws;
+		while(ws.hasMoreElements()) {
+			var w = ws.getNext();
+			if(w != window)
+				w.hcNotify.initMenu();
+		}
 	},
 	get canCloseAll() {
 		var ws = this.ws;
