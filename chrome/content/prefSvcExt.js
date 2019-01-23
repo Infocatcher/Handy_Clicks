@@ -140,45 +140,45 @@ var handyClicksPrefSvcExt = {
 		return tmp.path;
 	},
 	checkForBackup: function() {
-		if(!this.ps.prefsFile.exists())
+		var prefsFile = this.ps.prefsFile;
+		if(!prefsFile.exists())
 			return;
-		var minBackupInterval = (this.pu.get("sets.backupAutoInterval") || 24*60*60)*1000;
+		var max = this.pu.get("sets.backupAutoDepth");
+		var minInterval = (this.pu.get("sets.backupAutoInterval") || 24*60*60)*1000;
+		var bakFiles = [];
+		const namePrefix = this.prefsFileName + this.names.autoBackup;
 		var backupsDir = this.ps.backupsDir;
 		var entries = backupsDir.directoryEntries;
-		var entry, fName, fTime;
-		var _fTimes = [], _files = {};
-		const namePrefix = this.prefsFileName + this.names.autoBackup;
+		var r = RegExp;
 		while(entries.hasMoreElements()) {
-			entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
-			fName = entry.leafName;
+			var entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
+			var fName = entry.leafName;
 			if(
-				!entry.isFile()
-				|| !/\.js$/i.test(fName)
-				|| !this.ut.hasPrefix(fName, namePrefix)
-				|| !/-(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\.js$/.test(fName)
-			)
-				continue;
-			fTime = new Date(RegExp.$1, RegExp.$2 - 1, RegExp.$3, RegExp.$4, RegExp.$5, RegExp.$6).getTime();
-			_fTimes.push(fTime);
-			_files[fTime] = entry; // fTime must be unique
+				entry.isFile()
+				&& this.ut.hasPrefix(fName, namePrefix)
+				&& /-(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\.js$/i.test(fName)
+			) {
+				bakFiles.push({
+					file: entry,
+					time: new Date(r.$1, r.$2 - 1, r.$3, r.$4, r.$5, r.$6).getTime()
+				});
+			}
 		}
-		this.ut.sortAsNumbers(_fTimes);
-
-		var max = this.pu.get("sets.backupAutoDepth");
-
+		bakFiles.sort(function(a, b) {
+			return a.time - b.time;
+		});
 		var now = Date.now();
-		if(max > 0 && (!_fTimes.length || now >= _fTimes[_fTimes.length - 1] + minBackupInterval)) {
-			_fTimes.push(now);
-			fName = namePrefix + this.getTimeString(now) + ".js";
-			this.ut.copyFileTo(this.ps.prefsFile, backupsDir, fName);
-			_files[now] = this.getBackupFile(fName);
-			this._log("checkForBackup(): " + _files[now].leafName);
+		if(max > 0 && (!bakFiles.length || now >= bakFiles[bakFiles.length - 1].time + minInterval)) {
+			var fName = namePrefix + this.getTimeString(now) + ".js";
+			this.ut.copyFileTo(prefsFile, backupsDir, fName);
+			bakFiles.push(null); // Dummy...
+			this._log("checkForBackup(): " + fName);
 		}
-		else
+		else {
 			this._log("checkForBackup(): No backup");
-
-		while(_fTimes.length > max)
-			this.ut.removeFile(_files[_fTimes.shift()], false);
+		}
+		while(bakFiles.length > max)
+			this.ut.removeFile(bakFiles.shift().file, false);
 	},
 	getTimeString: function(date) {
 		var d = date ? new Date(date) : new Date();
