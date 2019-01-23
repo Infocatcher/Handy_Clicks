@@ -214,7 +214,7 @@ var handyClicksPrefSvcExt = {
 		this.delay(function() {
 			this.ut.alert(errTitle, errMsg);
 		}, this);
-		this.loadSettings();
+		bakPath && this.reloadSettings(true);
 	},
 
 	testSettings: function(isTest) {
