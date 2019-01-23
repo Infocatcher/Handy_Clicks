@@ -19,13 +19,12 @@ var handyClicksPrefSvcExt = {
 			callback && callback.call(context || this, Components.results.NS_OK);
 			return;
 		}
-		this.checkForBackup();
 		var pFile = this.ps.prefsFile;
 		this.moveFiles(pFile, this.names.backup);
 		if(async) {
 			this.ut.writeToFileAsync(str, pFile, this.ut.bind(function(status) {
 				if(Components.isSuccessCode(status))
-					this.ps._savedStr = str;
+					this.settingsSaved(str, true);
 				else
 					this.saveError(status);
 				callback && callback.call(context || this, status);
@@ -34,13 +33,20 @@ var handyClicksPrefSvcExt = {
 		else {
 			var err = {};
 			if(this.ut.writeToFile(str, pFile, err))
-				this.ps._savedStr = str;
+				this.settingsSaved(str);
 			else
 				this.saveError(this.ut.getErrorCode(err.value));
 		}
 	},
 	saveSettingsAsync: function(str, callback, context) {
 		this.saveSettings(str, true, callback, context);
+	},
+	settingsSaved: function(str, async) {
+		this.ps._savedStr = str;
+		if(async)
+			this.delay(this.checkForBackup, this, 50);
+		else
+			this.checkForBackup();
 	},
 	saveError: function(status) {
 		this.ut.alert(
@@ -166,10 +172,10 @@ var handyClicksPrefSvcExt = {
 			fName = namePrefix + this.getTimeString(now) + ".js";
 			this.ut.copyFileTo(this.ps.prefsFile, backupsDir, fName);
 			_files[now] = this.getBackupFile(fName);
-			this._log("Backup: " + _files[now].leafName);
+			this._log("checkForBackup(): " + _files[now].leafName);
 		}
 		else
-			this._log("checkForBackup: No backup");
+			this._log("checkForBackup(): No backup");
 
 		while(_fTimes.length > max)
 			this.ut.removeFile(_files[_fTimes.shift()], false);
