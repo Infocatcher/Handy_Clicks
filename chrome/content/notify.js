@@ -279,6 +279,8 @@ var hcNotify = {
 			&& typeof opts.onMiddleClick == "function"
 		)
 			this.doCommand(opts.onMiddleClick);
+		else if(e.button == 1 && opts.middleClickToClose)
+			window.close();
 	},
 	doCommand: function(cmd) {
 		window.close();

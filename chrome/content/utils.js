@@ -225,6 +225,7 @@ var handyClicksUtils = {
 				? opts.inWindowCorner
 				: this.pu.get("notifyInWindowCorner"),
 			dontCloseUnderCursor: this.pu.get("notifyDontCloseUnderCursor"),
+			middleClickToClose:   this.pu.get("notifyMiddleClickToClose"),
 			rearrangeWindows:     this.pu.get("notifyRearrangeWindows"),
 			messageMaxWidth:      this.pu.get("notifyMessageMaxWidth"),
 			messageMaxHeight:     this.pu.get("notifyMessageMaxHeight"),

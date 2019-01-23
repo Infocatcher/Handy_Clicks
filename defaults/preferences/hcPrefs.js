@@ -20,6 +20,7 @@ pref("extensions.handyclicks.notifyOpenTimeWarnings", 10000);
 pref("extensions.handyclicks.notifyInWindowCorner", false);
 pref("extensions.handyclicks.notifyDontOpenTwice", true);
 pref("extensions.handyclicks.notifyDontCloseUnderCursor", true);
+pref("extensions.handyclicks.notifyMiddleClickToClose", true);
 pref("extensions.handyclicks.notifyRearrangeWindows", true);
 pref("extensions.handyclicks.notifyMessageMaxWidth", 480);
 pref("extensions.handyclicks.notifyMessageMaxHeight", 240);
