@@ -89,7 +89,9 @@ var handyClicks = {
 			}
 			this._settingsLoaded = true;
 			this._log("Preload settings => loadSettingsAsync()");
-			this.ps.loadSettingsAsync();
+			this.ps.loadSettingsAsync(function() {
+				this._settingsLoaded = this.ps._loadStatus == this.ps.SETS_LOAD_OK;
+			}, this);
 		}, this, 150);
 	},
 	_hasListeners: false,
@@ -525,10 +527,10 @@ var handyClicks = {
 	// Settings service:
 	getFuncObjByEvt: function(e) {
 		if(!this._settingsLoaded) {
-			this._settingsLoaded = true;
 			clearTimeout(this._settingsLoadTimer);
 			this._log(e.type + " => loadSettings()");
 			this.ps.loadSettings();
+			this._settingsLoaded = this.ps._loadStatus == this.ps.SETS_LOAD_OK;
 		}
 		this.hasSettings = false;
 		this.settingsType = "";
