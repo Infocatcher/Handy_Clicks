@@ -3119,13 +3119,9 @@ var handyClicksSets = {
 		if(!fName)
 			return false;
 		var file = mi.__file;
-		if(!file.exists()) {
-			mi.parentNode.removeChild(mi);
-			this.updRestorePopup();
-			return false;
-		}
+		var exists = file.exists();
 
-		var dontAsk = this.ut.hasModifier(e) || e.type == "click";
+		var dontAsk = !exists || this.ut.hasModifier(e) || e.type == "click";
 		const confirmPref = "sets.removeBackupConfirm";
 		if(!dontAsk && this.pu.get(confirmPref)) {
 			this.ut.closeMenus(mi);
@@ -3143,7 +3139,7 @@ var handyClicksSets = {
 				this.pu.set(confirmPref, false);
 		}
 
-		file.remove(false);
+		exists && file.remove(false);
 		mi.parentNode.removeChild(mi);
 		this.updRestorePopup();
 		return true;
