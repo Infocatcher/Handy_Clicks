@@ -3118,7 +3118,7 @@ var handyClicksSets = {
 		var fName = mi.getAttribute("hc_fileName");
 		if(!fName)
 			return false;
-		var file = this.pe.getBackupFile(fName);
+		var file = mi.__file;
 		if(!file.exists()) {
 			mi.parentNode.removeChild(mi);
 			this.updRestorePopup();
@@ -3152,9 +3152,6 @@ var handyClicksSets = {
 		this.checkClipboard();
 		this.delay(this.buildRestorePopup, this);
 	},
-	destroyImportPopup: function() {
-		this.destroyRestorePopup();
-	},
 	handleRestoreCommand: function(e) {
 		var mi = e.target;
 		if(!mi.hasAttribute("hc_fileName"))
@@ -3172,102 +3169,75 @@ var handyClicksSets = {
 	buildRestorePopup: function() {
 		var popup = this.ubPopup;
 
+		var bakFiles = [];
 		var entries = this.ps.backupsDir.directoryEntries;
-		var _fTerms = [], _files = {}, _fTime;
-		var _ubTerms = [], _ubFiles = {}, _ubTime;
-
 		const fPrefix = this.ps.prefsFileName;
 		const mainFile   = fPrefix + ".js";
 		const corrupted  = fPrefix + this.ps.names.corrupted;
 		const userBackup = fPrefix + this.ps.names.userBackup;
 		const oldBackup  = fPrefix + this.ps.names.version;
 		const testBackup = fPrefix + this.ps.names.testBackup;
-
 		while(entries.hasMoreElements()) {
 			var entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
 			var fName = entry.leafName;
 			if(
-				!entry.isFile()
-				|| !this.ut.hasPrefix(fName, fPrefix)
-				|| !/\.js$/i.test(fName)
-				|| fName == mainFile
-				|| this.ut.hasPrefix(fName, corrupted)
-			)
-				continue;
-			if(
-				this.ut.hasPrefix(fName, userBackup)
-				&& /-(\d{14})(?:-\d+)?\.js$/.test(fName)
+				entry.isFile()
+				&& /\.js$/i.test(fName)
+				&& this.ut.hasPrefix(fName, fPrefix)
+				&& fName != mainFile
+				&& !this.ut.hasPrefix(fName, corrupted)
 			) {
-				_ubTime = +RegExp.$1;
-				if(!(_ubTime in _ubFiles))
-					_ubFiles[_ubTime] = [];
-				_ubFiles[_ubTime].push(entry);
-				_ubTerms.push(_ubTime);
+				bakFiles.push({
+					file: entry,
+					time: entry.lastModifiedTime
+				});
 			}
-			_fTime = entry.lastModifiedTime;
-			if(!(_fTime in _files))
-				_files[_fTime] = [];
-			_files[_fTime].push(entry);
-			_fTerms.push(_fTime);
 		}
-		var isEmpty = _fTerms.length == 0;
-		var ubCount = _ubTerms.length;
 
+		var isEmpty = !bakFiles.length;
+		var ubCount = 0;
 		var bytes = this.getLocalized("bytes");
 		var testBackupStatus = this.ut.storage("testBackupCreated") ? "thisSession" : "afterCrash";
 
 		var df = document.createDocumentFragment();
-		this.ut.sortAsNumbers(_fTerms).reverse().forEach(function(time) {
-			var file = _files[time].shift();
-			var fTime = new Date(time).toLocaleString();
-			var fSize = file.fileSize.toString().replace(/(\d)(?=(?:\d{3})+(?:\D|$))/g, "$1 ");
-			var fName = file.leafName;
-			var fPath = file.path;
-			df.appendChild(this.ut.createElement("menuitem", {
-				label: fTime + " [" + fSize + " " + bytes + "] \u2013 " + fName,
-				tooltiptext: fPath,
-				hc_fileName: fName,
-				hc_userBackup: this.ut.hasPrefix(fName, userBackup),
-				hc_oldBackup: this.ut.hasPrefix(fName, oldBackup),
-				hc_testBackup: this.ut.hasPrefix(fName, testBackup) && testBackupStatus
-			}));
+		bakFiles.sort(function(a, b) {
+			return b.time - a.time; // newest ... oldest
+		}).forEach(function(fo) {
+			var file = fo.file;
+			var time = new Date(fo.time).toLocaleString();
+			var size = file.fileSize.toString().replace(/(\d)(?=(?:\d{3})+(?:\D|$))/g, "$1 ");
+			var name = file.leafName;
+			var mi = this.ut.createElement("menuitem", {
+				label: time + " [" + size + " " + bytes + "] \u2013 " + name,
+				tooltiptext: file.path,
+				hc_fileName: name,
+				hc_userBackup: this.ut.hasPrefix(name, userBackup) && !!(++ubCount),
+				hc_oldBackup:  this.ut.hasPrefix(name, oldBackup),
+				hc_testBackup: this.ut.hasPrefix(name, testBackup) && testBackupStatus
+			});
+			mi.__file = file;
+			df.appendChild(mi);
 		}, this);
 
 		var sep;
-		for(;;) {
-			sep = popup.firstChild;
+		for(; sep = popup.firstChild; ) {
 			if(sep.localName == "menuseparator")
 				break;
 			popup.removeChild(sep);
 		}
 		popup.insertBefore(df, sep);
-		_fTerms = _files = null;
-
-		popup.__userBackups = this.ut.sortAsNumbers(_ubTerms).reverse().map(function(time) {
-			return _ubFiles[time].shift(); // newest ... oldest
-		});
-		_ubTerms = _ubFiles = null;
-
 		this.updRestorePopup(ubCount, isEmpty, true);
 	},
-	destroyRestorePopup: function() {
-		delete this.ubPopup.__userBackups;
-	},
-	updRestorePopup: function(ubCount, isEmpty, dontCleanup) {
+	updRestorePopup: function(ubCount, isEmpty) {
 		var popup = this.ubPopup;
 		if(ubCount === undefined)
 			ubCount = popup.getElementsByAttribute("hc_userBackup", "true").length;
-		if(isEmpty === undefined && !ubCount)
-			isEmpty = popup.getElementsByAttribute("hc_fileName", "*").length == 0;
+		if(isEmpty === undefined)
+			isEmpty = !ubCount && !popup.getElementsByAttribute("hc_fileName", "*").length;
 		var menu = popup.parentNode;
 		menu.setAttribute("disabled", isEmpty);
 		if(isEmpty)
 			popup.hidePopup();
-		if("__userBackups" in popup && !dontCleanup) this.delay(function() {
-			popup.__userBackups = popup.__userBackups.filter(function(file) {
-				return file.exists();
-			});
-		}, this);
 
 		var removeDepth = this.pu.get("sets.backupUserRemoveDepth");
 		var removeDepth2 = this.pu.get("sets.backupUserRemoveDepth2");
@@ -3292,20 +3262,13 @@ var handyClicksSets = {
 		if(store < 0)
 			store = 0;
 		var popup = this.ubPopup;
-		var ub = popup.__userBackups;
-		ub.slice(store, ub.length).forEach(
-			function(file) {
-				var fName = /[^\\\/]+$/.test(file.leafName) && RegExp.lastMatch;
-				file.exists() && file.remove(false);
-				Array.prototype.forEach.call(
-					popup.getElementsByAttribute("hc_fileName", fName),
-					function(mi) {
-						mi.parentNode.removeChild(mi);
-					}
-				);
-			}
-		);
-		popup.__userBackups = ub.slice(0, store);
+		var ubItems = popup.getElementsByAttribute("hc_userBackup", "true");
+		for(var i = ubItems.length - 1; i >= store; --i) {
+			var mi = ubItems[i];
+			var file = mi.__file;
+			file.exists() && file.remove(false);
+			mi.parentNode.removeChild(mi);
+		}
 		this.updRestorePopup(store);
 	},
 	reveal: function(file) {

@@ -235,8 +235,7 @@ preferences {
 				</button>
 				<button id="hc-sets-tree-buttonImport" class="hc-iconic" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;">
 					<menupopup id="hc-sets-tree-buttonImportPopup" position="before_start"
-						onpopupshowing="if(event.target == this) handyClicksSets.initImportPopup();"
-						onpopuphidden="if(event.target == this) handyClicksSets.destroyImportPopup();">
+						onpopupshowing="if(event.target == this) handyClicksSets.initImportPopup();">
 						<menu id="hc-sets-tree-restoreFromBackupMenu" label="&hc.sets.restoreFromBackup;"
 							oncommand="event.stopPropagation();">
 							<menupopup id="hc-sets-tree-restoreFromBackupPopup"
@@ -771,7 +770,7 @@ preferences {
 			<menuitem id="hc-sets-tree-restoreBackupFile" class="menuitem-iconic handyClicks-iconic" default="true" label="&hc.sets.restoreBackup;"
 				oncommand="(this.parentNode.triggerNode || document.popupNode).doCommand();" />
 			<menuitem id="hc-sets-tree-showBackupFile" class="menuitem-iconic handyClicks-iconic" label="&hc.sets.showBackupFile;"
-				oncommand="handyClicksSets.reveal(handyClicksSets.pe.getBackupFile((this.parentNode.triggerNode || document.popupNode).getAttribute('hc_fileName')));" />
+				oncommand="handyClicksSets.reveal((this.parentNode.triggerNode || document.popupNode).__file);" />
 			<menuseparator />
 			<menuitem id="hc-sets-removeBackup" class="menuitem-iconic handyClicks-iconic"
 				closemenu="single" label="&hc.sets.removeBackup;"
