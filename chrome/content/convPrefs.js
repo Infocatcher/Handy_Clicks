@@ -72,6 +72,22 @@ function prefsMigration(allowSave, vers) {
 		this.prefSvc.deleteBranch(pns + "uiVersion");
 	if(vers < 9) //= Added: 2014-01-16
 		this.prefSvc.deleteBranch(pns + "devMode"); // Renamed to "debug" and disabled by default
+	if(vers < 10) { //= Added: 2019-01-16
+		// Move prefs from notify* to notify.* branch
+		var ns = pns + "notify";
+		this.prefSvc.getBranch(ns)
+			.getChildList("", {})
+			.forEach(function(pName) {
+				if(pName == "EditMode" || pName.charAt(0) == ".")
+					return;
+				const fullId = ns + pName;
+				this.setPref( // We use setPref() to don't cache preferences
+					ns + "." + pName.charAt(0).toLowerCase() + pName.substr(1),
+					this.getPref(fullId)
+				);
+				this.prefSvc.deleteBranch(fullId);
+			}, this);
+	}
 	this.set("prefsVersion", this.prefsVersion);
 	allowSave && this.delay(this.savePrefFile, this);
 	this._info("Format of about:config prefs updated: " + vers + " => " + this.prefsVersion);

@@ -190,7 +190,7 @@ var handyClicksUtils = {
 			opts = this._convertNotifyArgs.apply(this, arguments);
 		if(!opts)
 			opts = {};
-		var delayPref = "notifyOpenTime";
+		var delayPref = "notify.openTime";
 		var icon = opts.icon || this.NOTIFY_ICON_NORMAL;
 		if(icon == this.NOTIFY_ICON_WARNING) {
 			opts.title = opts.title || this.getLocalized("warningTitle");
@@ -223,15 +223,15 @@ var handyClicksUtils = {
 			closeDelay: closeDelay,
 			inWindowCorner: "inWindowCorner" in opts && opts.inWindowCorner !== undefined
 				? opts.inWindowCorner
-				: this.pu.get("notifyInWindowCorner"),
-			dontCloseUnderCursor: this.pu.get("notifyDontCloseUnderCursor"),
-			middleClickToClose:   this.pu.get("notifyMiddleClickToClose"),
-			rearrangeWindows:     this.pu.get("notifyRearrangeWindows"),
-			messageMaxWidth:      this.pu.get("notifyMessageMaxWidth"),
-			messageMaxHeight:     this.pu.get("notifyMessageMaxHeight"),
+				: this.pu.get("notify.inWindowCorner"),
+			dontCloseUnderCursor: this.pu.get("notify.dontCloseUnderCursor"),
+			middleClickToClose:   this.pu.get("notify.middleClickToClose"),
+			rearrangeWindows:     this.pu.get("notify.rearrangeWindows"),
+			messageMaxWidth:      this.pu.get("notify.messageMaxWidth"),
+			messageMaxHeight:     this.pu.get("notify.messageMaxHeight"),
 			__proto__: null
 		};
-		var ws = this.pu.get("notifyDontOpenTwice")
+		var ws = this.pu.get("notify.dontOpenTwice")
 			&& this.wu.wm.getEnumerator("handyclicks:notify");
 		if(ws) while(ws.hasMoreElements()) {
 			var w = ws.getNext();

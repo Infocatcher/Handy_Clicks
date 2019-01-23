@@ -15,15 +15,15 @@ pref("extensions.handyclicks.types.links.CSSEditor", true);
 pref("extensions.handyclicks.types.images.canvas", true);
 pref("extensions.handyclicks.types.images.SpeedDial", false);
 
-pref("extensions.handyclicks.notifyOpenTime", 4000);
-pref("extensions.handyclicks.notifyOpenTimeWarnings", 10000);
-pref("extensions.handyclicks.notifyInWindowCorner", false);
-pref("extensions.handyclicks.notifyDontOpenTwice", true);
-pref("extensions.handyclicks.notifyDontCloseUnderCursor", true);
-pref("extensions.handyclicks.notifyMiddleClickToClose", true);
-pref("extensions.handyclicks.notifyRearrangeWindows", true);
-pref("extensions.handyclicks.notifyMessageMaxWidth", 480);
-pref("extensions.handyclicks.notifyMessageMaxHeight", 240);
+pref("extensions.handyclicks.notify.openTime", 4000);
+pref("extensions.handyclicks.notify.openTimeWarnings", 10000);
+pref("extensions.handyclicks.notify.inWindowCorner", false);
+pref("extensions.handyclicks.notify.dontOpenTwice", true);
+pref("extensions.handyclicks.notify.dontCloseUnderCursor", true);
+pref("extensions.handyclicks.notify.middleClickToClose", true);
+pref("extensions.handyclicks.notify.rearrangeWindows", true);
+pref("extensions.handyclicks.notify.messageMaxWidth", 480);
+pref("extensions.handyclicks.notify.messageMaxHeight", 240);
 
 pref("extensions.handyclicks.notifyEditMode", 2);
 
