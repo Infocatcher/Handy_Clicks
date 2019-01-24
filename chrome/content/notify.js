@@ -13,17 +13,20 @@ var hcNotify = {
 
 	init: function() {
 		var opts = this.opts = window.arguments[0]; // See utils.js -> notify: function(...
+		var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
+			.getService(Components.interfaces.nsIXULAppInfo);
 		this.$("hcNotifyHeader").textContent = opts.title + "\n";
 		var descElt = this.$("hcNotifyDesc");
 		descElt.textContent = opts.message;
 		this.$("hcNotifyImg").setAttribute("hc_icon", opts.icon);
 		var closeBtn = this.$("hcNotifyClose");
 		if(getComputedStyle(closeBtn, null).listStyleImage == "none") {
-			closeBtn.className += " tabs-closebutton findbar-closebutton";
+			var isSeaMonkey = appInfo.name == "SeaMonkey";
+			closeBtn.className += isSeaMonkey ? " findbar-closebutton" : " tabs-closebutton";
+			var css = isSeaMonkey ? "chrome://global/skin/findBar.css" : "chrome://browser/skin/browser.css";
 			document.loadOverlay("data:application/vnd.mozilla.xul+xml," + encodeURIComponent(
 				'<?xml version="1.0"?>'
-				+ '\n<?xml-stylesheet href="chrome://browser/skin/browser.css" type="text/css"?>'
-				+ '\n<?xml-stylesheet href="chrome://global/skin/findBar.css" type="text/css"?>'
+				+ '\n<?xml-stylesheet href="' + css + '" type="text/css"?>'
 				+ '\n<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />'
 			), null);
 		}
@@ -48,8 +51,6 @@ var hcNotify = {
 
 		var maxW = opts.messageMaxWidth  || 480;
 		var maxH = opts.messageMaxHeight || 240;
-		var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
-			.getService(Components.interfaces.nsIXULAppInfo);
 		var ds = descElt.style;
 		ds.whiteSpace = appInfo.name == "Firefox" && parseFloat(appInfo.version) < 3
 			? "-moz-pre-wrap"
