@@ -95,13 +95,17 @@
 `*` Rewritten notification window to better show very long messages (also introduced <em>extensions.handyclicks.notify.messageMaxWidth</em> and <em>extensions.handyclicks.notify.messageMaxHeight</em> preferences), also now used CSS transitions for closing timer visualization.<br>
 `*` Always show error notification for compilation errors (and for linked file errors), not only first time.<br>
 `*` Updated <a href="https://github.com/Infocatcher/Handy_Clicks#api-functions">notify() API</a>: used options argument for better readability, added ability to create buttons in notification window.<br>
-`*` Changed behavior of notification windows: don't close after right-click, close (focused) notification window using Esc key, close all notification windows after click with any modifier or middle-click on close button, added context menu to copy selected or all text (and left-click action will not executed after text selection) and to close current or all notifications.<br>
+`*` Changed behavior of notification windows: don't close after right-click (+ <em>extensions.handyclicks.notify.middleClickToClose</em> preference to close after middle-click), close (focused) notification window using Esc key, close all notification windows after click with any modifier or middle-click on close button, added context menu to copy selected or all text (and left-click action will not executed after text selection) and to close current or all notifications.<br>
 `x` Fixed notification window: don't close under cursor in case of wrong order of mouse events (e.g. after “mouseup” outside of window).<br>
 `*` Added ability to not open the same notification twice (<em>extensions.handyclicks.notify.dontOpenTwice</em> preference).<br>
 `x` Fixed handyClicksFuncs.getItemURI() function for bookmarks/history tree (did not work without hc.event property).<br>
 `x` Fixed edit mode tooltip for XUL tree (bookmarks, history items).<br>
 `x` Correctly prevent context menu after delayed action.<br>
 `*` Preferences for notification window was renamed from <em>extensions.handyclicks.notify<ins>Name</ins></em> to <em>extensions.handyclicks.notify<ins>.name</ins></em>.<br>
+`x` Correctly reload auto-restored from backup settings (in case of broken settings file).<br>
+`x` Changed auto-backups behavior (handyclicks_prefs_autobackup-<em>%date%</em>.js): create copy right after save (and not before: there is handyclicks_prefs_backup-<em>%number%</em>.js for that) and after delay (if pressed “Apply” button) for better performance.<br>
+`*` Improved internal code for backups menu.<br>
+`x` Fixed notifications from “on top” windows (now used alwaysRaised flag to make notification window topmost).<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
