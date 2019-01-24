@@ -107,7 +107,7 @@
 <!ENTITY hc.sets.restoreFromBackup "Восстановить из резервной копии">
 <!ENTITY hc.sets.openBackupDir "Открыть папку с резервными копиями">
 <!ENTITY hc.sets.openBackupDirAccesskey "О">
-<!ENTITY hc.sets.removeUserBackups "Удалить пользовательские резервные копии, оставить 1">
+<!ENTITY hc.sets.removeUserBackups "Удалить старые пользовательские резервные копии, оставить $n">
 <!ENTITY hc.sets.removeUserBackupsAccesskey "д">
 <!ENTITY hc.sets.removeUserBackups2Accesskey "У">
 <!ENTITY hc.sets.restoreBackup "Восстановить…">

@@ -3239,8 +3239,8 @@ var handyClicksSets = {
 		var removeDepth2 = this.pu.get("sets.backupUserRemoveDepth2");
 		var miRemove = this.$("hc-sets-tree-removeUserBackups");
 		var miRemove2 = this.$("hc-sets-tree-removeUserBackups2");
-		miRemove.setAttribute("label", miRemove.getAttribute("label").replace(/\d+(?!.*\d)/, removeDepth));
-		miRemove2.setAttribute("label", miRemove2.getAttribute("label").replace(/\d+(?!.*\d)/, removeDepth2));
+		miRemove.setAttribute("label", miRemove.getAttribute("hc_label").replace("$n", removeDepth));
+		miRemove2.setAttribute("label", miRemove2.getAttribute("hc_label").replace("$n", removeDepth2));
 		miRemove.setAttribute("disabled", ubCount <= removeDepth);
 		miRemove2.setAttribute("disabled", ubCount <= removeDepth2);
 

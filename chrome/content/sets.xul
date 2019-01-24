@@ -249,10 +249,10 @@ preferences {
 								<menuseparator />
 								<menuitem id="hc-sets-tree-removeUserBackups2" class="menuitem-iconic handyClicks-iconic"
 									oncommand="handyClicksSets.removeOldUserBackups(handyClicksSets.pu.get('sets.backupUserRemoveDepth2'));" closemenu="none"
-									label="&hc.sets.removeUserBackups;" accesskey="&hc.sets.removeUserBackups2Accesskey;" />
+									hc_label="&hc.sets.removeUserBackups;" accesskey="&hc.sets.removeUserBackups2Accesskey;" />
 								<menuitem id="hc-sets-tree-removeUserBackups" class="menuitem-iconic handyClicks-iconic"
 									oncommand="handyClicksSets.removeOldUserBackups(handyClicksSets.pu.get('sets.backupUserRemoveDepth'));" closemenu="none"
-									label="&hc.sets.removeUserBackups;" accesskey="&hc.sets.removeUserBackupsAccesskey;" />
+									hc_label="&hc.sets.removeUserBackups;" accesskey="&hc.sets.removeUserBackupsAccesskey;" />
 							</menupopup>
 						</menu>
 						<menuseparator />
