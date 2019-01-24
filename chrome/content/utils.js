@@ -238,11 +238,12 @@ var handyClicksUtils = {
 			var arg = w.arguments && w.arguments[0];
 			var optsStr = optsStr || this._stringifyOpts(opts);
 			if(arg && this._stringifyOpts(arg) == optsStr) {
+				this._log("notify(): switch to already opened window");
 				//w.focus();
 				// Make popup window topmost
 				var xulWin = this.wu.getXulWin(w);
 				var origZ = xulWin.zLevel;
-				xulWin.zLevel = xulWin.raisedZ;
+				xulWin.zLevel = xulWin.highestZ;
 				setTimeout(function() {
 					xulWin.zLevel = origZ;
 				}, 0);
@@ -253,7 +254,7 @@ var handyClicksUtils = {
 		return window.openDialog(
 			"chrome://handyclicks/content/notify.xul",
 			"_blank",
-			"chrome,popup,titlebar=0",
+			"chrome,popup,titlebar=0,alwaysRaised",
 			opts
 		);
 	},
