@@ -105,7 +105,8 @@
 `x` Correctly reload auto-restored from backup settings (in case of broken settings file).<br>
 `x` Changed auto-backups behavior (handyclicks_prefs_autobackup-<em>%date%</em>.js): create copy right after save (and not before: there is handyclicks_prefs_backup-<em>%number%</em>.js for that) and after delay (if pressed “Apply” button) for better performance.<br>
 `*` Improved internal code for backups menu.<br>
-`x` Fixed notifications from “on top” windows (now used alwaysRaised flag to make notification window topmost).<br>
+`x` Fixed notifications from “on top” windows.<br>
+`x` Fixed “Close” button icon in notification window in Firefox 28 and older, SeaMonkey 2.25 and older.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
