@@ -239,24 +239,25 @@ var handyClicksUtils = {
 			var optsStr = optsStr || this._stringifyOpts(opts);
 			if(arg && this._stringifyOpts(arg) == optsStr) {
 				this._log("notify(): switch to already opened window");
-				//w.focus();
-				// Make popup window topmost
-				var xulWin = this.wu.getXulWin(w);
-				var origZ = xulWin.zLevel;
-				xulWin.zLevel = xulWin.highestZ;
-				setTimeout(function() {
-					xulWin.zLevel = origZ;
-				}, 0);
+				this.makePopupWindowTopmost(w);
 				w.hcNotify.blink();
 				return w;
 			}
 		}
-		return window.openDialog(
+		var w = window.openDialog(
 			"chrome://handyclicks/content/notify.xul",
 			"_blank",
-			"chrome,popup,titlebar=0,alwaysRaised",
+			"chrome,popup,titlebar=0",
 			opts
 		);
+		// Note: alwaysRaised flag (and .zLevel = raisedZ/highestZ at startup) may cause system
+		// "on top" for other browser windows
+		var _this = this;
+		w.addEventListener("load", function onLoad(e) {
+			w.removeEventListener(e.type, onLoad, false);
+			_this.makePopupWindowTopmost(w);
+		}, false);
+		return w;
 	},
 	notifyWarning: function(msg, opts) {
 		(opts = opts || {}).icon = this.NOTIFY_ICON_WARNING;
@@ -294,6 +295,14 @@ var handyClicksUtils = {
 			parentWindow: parentWindow,
 			inWindowCorner: inWindowCorner
 		};
+	},
+	makePopupWindowTopmost: function(w) {
+		var xulWin = this.wu.getXulWin(w);
+		var origZ = xulWin.zLevel;
+		xulWin.zLevel = xulWin.raisedZ;
+		w.setTimeout(function() {
+			xulWin.zLevel = origZ;
+		}, 0);
 	},
 
 	get toErrorConsole() {
