@@ -301,7 +301,7 @@ var hcNotify = {
 		while(ws.hasMoreElements()) {
 			var w = ws.getNext();
 			if(w != window)
-				w.hcNotify.initMenu();
+				w.hcNotify && w.hcNotify.initMenu();
 		}
 	},
 	get canCloseAll() {
