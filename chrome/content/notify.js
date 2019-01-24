@@ -19,10 +19,11 @@ var hcNotify = {
 		this.$("hcNotifyImg").setAttribute("hc_icon", opts.icon);
 		var closeBtn = this.$("hcNotifyClose");
 		if(getComputedStyle(closeBtn, null).listStyleImage == "none") {
-			closeBtn.className += " tabs-closebutton";
+			closeBtn.className += " tabs-closebutton findbar-closebutton";
 			document.loadOverlay("data:application/vnd.mozilla.xul+xml," + encodeURIComponent(
 				'<?xml version="1.0"?>'
 				+ '\n<?xml-stylesheet href="chrome://browser/skin/browser.css" type="text/css"?>'
+				+ '\n<?xml-stylesheet href="chrome://global/skin/findBar.css" type="text/css"?>'
 				+ '\n<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />'
 			), null);
 		}
