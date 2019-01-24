@@ -7,6 +7,7 @@ var hcNotify = {
 	blinkColor: "%blink",
 
 	inWindowCorner: false,
+	parentWindow: null,
 	_closeTimer: 0,
 	_highlightTimer: 0,
 	_blinkTimer: 0,
@@ -68,7 +69,7 @@ var hcNotify = {
 
 		window.sizeToContent();
 		var winW = window.outerWidth, winH = window.outerHeight;
-		var wo = opts.parentWindow || window.opener;
+		var wo = this.parentWindow = opts.parentWindow || window.opener;
 		var x, y;
 		var maxX = screen.availLeft + screen.availWidth;
 		var maxY = screen.availTop + screen.availHeight;
@@ -106,7 +107,12 @@ var hcNotify = {
 			var ws = this.ws;
 			while(ws.hasMoreElements()) {
 				var w = ws.getNext();
-				if(w == window || w.hcNotify && !w.hcNotify.inWindowCorner)
+				if(
+					w == window
+					|| !w.hcNotify
+					|| !w.hcNotify.inWindowCorner
+					|| w.hcNotify.parentWindow != this.parentWindow
+				)
 					continue;
 				var dh = -(winH + 2);
 				if(w.screenY + dh >= screen.availTop)
