@@ -104,20 +104,27 @@ var hcNotify = {
 		window.moveTo(x, y);
 
 		if(this.inWindowCorner && opts.rearrangeWindows) {
+			var addY = 2;
+			var wins = [];
 			var ws = this.ws;
 			while(ws.hasMoreElements()) {
 				var w = ws.getNext();
 				if(
-					w == window
-					|| !w.hcNotify
-					|| !w.hcNotify.inWindowCorner
-					|| w.hcNotify.parentWindow != this.parentWindow
+					w != window
+					&& w.hcNotify
+					&& w.hcNotify.inWindowCorner
+					&& w.hcNotify.parentWindow == this.parentWindow
 				)
-					continue;
-				var dh = -(winH + 2);
-				if(w.screenY + dh >= screen.availTop)
-					w.moveBy(0, dh);
+					wins.push(w);
 			}
+			var wy = y;
+			wins.sort(function(a, b) {
+				return b.screenY - a.screenY;
+			}).forEach(function(w) {
+				var newY = Math.max(wy - w.outerHeight - addY, screen.availTop);
+				w.moveTo(w.screenX, newY);
+				wy = newY;
+			});
 		}
 
 		var box = this.box = this.$("hcNotifyBox");
