@@ -107,6 +107,8 @@
 `*` Improved internal code for backups menu.<br>
 `x` Fixed notifications from “on top” windows.<br>
 `x` Fixed “Close” button icon in notification window in Firefox 28 and older, SeaMonkey 2.25 and older.<br>
+`*` Improved “rearrange windows” for notifications (<em>extensions.handyclicks.notify.rearrangeWindows</em> preference): rearrange only windows with the same parent window and move all windows one by one (not just shift position).<br>
+`x` Correctly open <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">Browser Console</a> in Firefox 56.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
