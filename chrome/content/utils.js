@@ -312,8 +312,9 @@ var handyClicksUtils = {
 	openErrorConsole: function() {
 		var hasConsole2 = "@zeniko/console2-clh;1" in Components.classes
 			|| "@mozilla.org/commandlinehandler/general-startup;1?type=console2" in Components.classes; // Firefox <= 3.6
-		if(!hasConsole2 && this.canOpenBrowserConsole)
-			return this.openBrowserConsole();
+		var bcItem = !hasConsole2 && this.browserConsoleItem;
+		if(bcItem)
+			return bcItem.doCommand();
 		if("toErrorConsole" in top)
 			return top.toErrorConsole();
 		if("toJavaScriptConsole" in top)
@@ -323,44 +324,13 @@ var handyClicksUtils = {
 			: "chrome://global/content/console.xul";
 		return this.wu.openWindowByType(consoleURI, "global:console");
 	},
-	// Note: Browser Console isn't supported without opened browser windows
-	get canOpenBrowserConsole() {
+	// Note: Browser Console not supported without opened browser windows
+	get browserConsoleItem() {
 		var window = this.wu.wm.getMostRecentWindow("navigator:browser");
-		return window && !!window.document.getElementById("menu_browserConsole");
-	},
-	openBrowserConsole: function() {
-		var window = this.wu.wm.getMostRecentWindow("navigator:browser");
-		if(!window)
-			return;
-		var consoleFrame = this.getBrowserConsole(window);
-		if(consoleFrame) {
-			consoleFrame.focus();
-			return;
-		}
-		if("HUDService" in window && "toggleBrowserConsole" in window.HUDService) { // Firefox 27.0a1+
-			window.HUDService.toggleBrowserConsole();
-			return;
-		}
-		if("HUDConsoleUI" in window && "toggleBrowserConsole" in window.HUDConsoleUI) {
-			window.HUDConsoleUI.toggleBrowserConsole();
-			return;
-		}
-		window.document.getElementById("menu_browserConsole").doCommand();
-	},
-	getBrowserConsole: function(window) {
-		if("HUDService" in window && "getBrowserConsole" in window.HUDService) { // Firefox 27.0a1+
-			var hud = window.HUDService.getBrowserConsole();
-			return hud && hud.iframeWindow;
-		}
-		if("HUDConsoleUI" in window && window.HUDConsoleUI._browserConsoleID) try {
-			var HUDService = Components.utils["import"]("resource:///modules/HUDService.jsm", {}).HUDService;
-			var hud = HUDService.getHudReferenceById(window.HUDConsoleUI._browserConsoleID);
-			return hud && hud.iframeWindow;
-		}
-		catch(e) {
-			Components.utils.reportError(e);
-		}
-		return null;
+		return window && (
+			window.document.getElementById("menu_browserConsole")
+			|| window.document.getElementById("key_browserConsole")
+		);
 	},
 
 	get promptsSvc() {
