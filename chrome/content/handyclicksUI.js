@@ -157,20 +157,17 @@ var handyClicksUI = {
 	_menuContextItems: [],
 	buildSettingsPopup: function(e) {
 		this.checkClipboard();
-
-		this.$("handyClicks-allSettingsMenuitem").setAttribute(
-			"hidden",
-			!this.pu.get("ui.showAllSettingsMenuitem")
-		);
+		this.$("handyClicks-allSettingsMenuitem").hidden = !this.pu.get("ui.showAllSettingsMenuitem");
 
 		var popup = e.target;
 		var pn = popup.triggerNode || document.popupNode; // https://bugzilla.mozilla.org/show_bug.cgi?id=383930
 
 		var inheritContext = this.pu.get("ui.inheritToolbarContextMenu")
-			&& pn
-			&& !this.ut.hasPrefix(pn.localName, "statusbar")
-			&& pn.localName != "browser";
-		this.$("handyClicks-mainCommandsSeparator").setAttribute("hc_hideAllAfter", !inheritContext);
+			&& pn && pn.localName != "browser"
+			&& !this.ut.hasPrefix(pn.localName, "statusbar");
+		var sep = this.$("handyClicks-mainCommandsSeparator");
+		if(sep.hidden == inheritContext) for(; sep; sep = sep.nextSibling)
+			sep.hidden = !inheritContext;
 		if(!inheritContext)
 			return;
 
