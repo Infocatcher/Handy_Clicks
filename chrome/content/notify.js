@@ -170,10 +170,13 @@ var hcNotify = {
 		this.resetTimers();
 		this.updateMenus();
 	},
+	get wm() {
+		delete this.wm;
+		return this.wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+			.getService(Components.interfaces.nsIWindowMediator);
+	},
 	get ws() {
-		return Components.classes["@mozilla.org/appshell/window-mediator;1"]
-			.getService(Components.interfaces.nsIWindowMediator)
-			.getEnumerator(document.documentElement.getAttribute("windowtype"));
+		return this.wm.getEnumerator("handyclicks:notify");
 	},
 	set borderColor(clr) {
 		var box = this.box;
