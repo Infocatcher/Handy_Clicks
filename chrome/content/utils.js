@@ -1261,10 +1261,10 @@ var handyClicksUtils = {
 	},
 
 	trim: function(str) {
-		var f = this.trim = "trim" in String.prototype && "bind" in String
+		var f = this.trim = "trim" in String.prototype && "bind" in String.prototype.trim
 			? String.prototype.trim.call.bind(String.prototype.trim)
 			: function(str) {
-				return String(str).replace(/^\s+|\s+$/g, "");
+				return ("" + str).replace(/^\s+|\s+$/g, "");
 			};
 		return f.apply(this, arguments);
 	},
