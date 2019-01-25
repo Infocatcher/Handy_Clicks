@@ -43,6 +43,7 @@ var handyClicksUI = {
 	destroy: function(reloadFlag) {
 		clearTimeout(this._restoreIconTimeout);
 		clearTimeout(this._blinkNodeTimeout);
+		reloadFlag && this.removeInheritedContext();
 	},
 	loadBlinkStyle: function() {
 		// Styles for blinkNode() function
@@ -237,6 +238,16 @@ var handyClicksUI = {
 				this._toolbarContextItems.push(removeFromToolbar);
 				this._menuContextItems.push(mi);
 			}
+		}
+	},
+	removeInheritedContext: function() {
+		var sep = this.$("handyClicks-mainCommandsSeparator");
+		var popup = sep.parentNode;
+		popup.removeAttribute("hc_additionalItemsAdded");
+		for(var mi = popup.lastChild; mi && mi != sep; mi = ps) {
+			var ps = mi.previousSibling;
+			if(mi.id != "handyClicks-viewToolbarsSeparator")
+				popup.removeChild(mi);
 		}
 	},
 	isToolbarItem: function(node) {
