@@ -121,21 +121,17 @@ var handyClicksUI = {
 	toolbarButtonId: "handyClicks-toolbarButton",
 	get paletteButton() {
 		var elt = this.getFromPalette(this.toolbarButtonId);
-		if(elt) {
-			delete this.paletteButton;
-			return this.paletteButton = elt;
-		}
-		return null;
+		if(!elt)
+			return null;
+		delete this.paletteButton;
+		return this.paletteButton = elt;
 	},
 	getFromPalette: function(id) {
 		var tb = "gNavToolbox" in window && gNavToolbox
 			|| "getNavToolbox" in window && getNavToolbox() // Firefox 3.0
 			|| this.e("navigator-toolbox"); // Firefox <= 2.0
-		if(tb && "palette" in tb) {
-			var elts = tb.palette.getElementsByAttribute("id", id);
-			if(elts.length)
-				return elts[0];
-		}
+		if(tb && "palette" in tb)
+			return tb.palette.getElementsByAttribute("id", id)[0] || null;
 		return null;
 	},
 
