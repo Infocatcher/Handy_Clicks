@@ -175,13 +175,6 @@ var handyClicksUI = {
 			popup.setAttribute("hc_additionalItemsAdded", "true");
 			this.inheritStaticToolbarContext(popup);
 		}
-		var isMenu = pn.getAttribute("cui-areatype") == "menu-panel";
-		this._toolbarContextItems.forEach(function(mi) {
-			mi.hidden = isMenu;
-		});
-		this._menuContextItems.forEach(function(mi) {
-			mi.hidden = !isMenu;
-		});
 
 		if("onViewToolbarsPopupShowing" in window) {
 			try {
@@ -201,6 +194,14 @@ var handyClicksUI = {
 				popup.insertBefore(ch, vtSep);
 			}, this);
 		}
+
+		var isMenu = pn.getAttribute("cui-areatype") == "menu-panel";
+		this._toolbarContextItems.forEach(function(mi) {
+			mi.hidden = isMenu;
+		});
+		this._menuContextItems.forEach(function(mi) {
+			mi.hidden = !isMenu;
+		});
 	},
 	inheritStaticToolbarContext: function(popup) {
 		Array.prototype.forEach.call(
