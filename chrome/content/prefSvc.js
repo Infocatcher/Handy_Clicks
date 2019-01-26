@@ -250,6 +250,8 @@ var handyClicksPrefSvc = {
 		this._log("reinitSettingsInBrowsers()");
 		const pSvc = "handyClicksPrefSvc";
 		this.wu.forEachBrowserWindow(function(w) {
+			if(!(pSvc in w))
+				return;
 			this._log("reinitSettingsInBrowsers() -> clear caches and reinitialize");
 			w[pSvc].initCustomFuncs(this.DESTROY_FORCE_PURGE_CACHES);
 		}, this);
