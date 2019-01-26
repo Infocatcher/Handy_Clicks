@@ -407,18 +407,14 @@ var handyClicksUI = {
 			elt.setAttribute("hc_editMode", em);
 			elt.setAttribute(ttAttr, tt);
 		});
-		if(em) {
-			window.addEventListener("mouseover", this, true);
-			window.addEventListener("mousemove", this, true);
-			window.addEventListener("mouseout",  this, true);
+		var act = em ? addEventListener : removeEventListener;
+		act.call(window, "mouseover", this, true);
+		act.call(window, "mousemove", this, true);
+		act.call(window, "mouseout",  this, true);
+		if(em)
 			this.notifyEditMode();
-		}
-		else {
-			window.removeEventListener("mouseover", this, true);
-			window.removeEventListener("mousemove", this, true);
-			window.removeEventListener("mouseout",  this, true);
+		else
 			this.emtt.hidePopup();
-		}
 	},
 	notifyEditMode: function(force) {
 		var nem = this.pu.get("notifyEditMode");
