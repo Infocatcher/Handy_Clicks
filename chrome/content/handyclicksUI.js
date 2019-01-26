@@ -395,14 +395,13 @@ var handyClicksUI = {
 			this._temFromKey = false;
 		}, this);
 	},
+	get escKey() {
+		delete this.escKey;
+		return this.escKey = this.ut.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE") || "Esc";
+	},
 	setEditModeStatus: function(em) {
 		em = em === undefined ? this.editMode : em;
-		var tt = em
-			? this.getLocalized("editModeTip").replace(
-				"%key",
-				this.ut.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE") || "Esc"
-			)
-			: "";
+		var tt = em ? this.getLocalized("editModeTip").replace("%key", this.escKey) : "";
 		var ttAttr = this.tooltipAttrBase + "1";
 		this.setControls(function(elt) {
 			elt.setAttribute("hc_editMode", em);
@@ -427,8 +426,7 @@ var handyClicksUI = {
 			nem == 1 && (this._temFromKey && !this.controlsVisible || force)
 			|| nem == 2
 		) {
-			var exitKey = this.ut.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE") || "Esc";
-			this.ut.notifyInWindowCorner(this.getLocalized("editModeNote").replace("%key", exitKey), {
+			this.ut.notifyInWindowCorner(this.getLocalized("editModeNote").replace("%key", this.escKey), {
 				title: this.getLocalized("editModeTitle"),
 				onLeftClick: function() {
 					this.editMode = false;
