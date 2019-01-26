@@ -1281,21 +1281,23 @@ var handyClicks = {
 		this.cancelDelayedAction();
 		this.setMoveHandlers(false);
 
+		var type = this.itemType;
 		this.lastEvent = this.event;
-		this.lastItemType = this.itemType;
+		this.lastItemType = type;
 		this.lastAll = this._all;
 		this.isDeleyed = !!isDeleyed;
 		this.handledItem = e && e.originalTarget;
 
 		if(funcObj.custom) {
-			var fnc = this.ps.getCustomFunc(funcObj);
+			var fnc = this.ps.getCustomFunc(funcObj, isDeleyed);
 			if(fnc) try {
-				fnc.call(this.fn, e || this.event, this.item, this.origItem, this.itemType);
+				fnc.call(this.fn, e || this.event, this.item, this.origItem, type);
 			}
 			catch(err) {
 				var eLine = this.ut.getRealLineNumber(err, funcObj._line);
 				var href = this.getEditorLink(e) + "?line=" + eLine;
-				var eMsg = this.ut.errInfo("customFunctionError", funcObj.label, this.itemType, err);
+				var typeLabel = type + (isDeleyed ? " + delayed" : "");
+				var eMsg = this.ut.errInfo("customFunctionError", funcObj.label, typeLabel, err);
 				this.ut.notifyError(eMsg, { buttons: {
 					$openEditor: this.wu.getOpenEditorLink(href, eLine),
 					$openConsole: this.ut.toErrorConsole
@@ -1359,7 +1361,7 @@ var handyClicks = {
 				+ " -> " + this.ps.getModifiersStr(eStr) + " + " + this.ps.getButtonStr(eStr, true)
 				+ "\n=> executeFunction()"
 				+ "\nnodeName = " + (this.origItem ? this.origItem.nodeName : "?")
-				+ ", itemType = " + this.itemType
+				+ ", itemType = " + type
 				+ "\n=> " + (funcObj.custom ? (funcObj.label || funcObj.action.substr(0, 100)) : funcObj.action)
 			);
 		}

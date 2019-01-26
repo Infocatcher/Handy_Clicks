@@ -373,7 +373,7 @@ var handyClicksPrefSvc = {
 			);
 		}
 	},
-	getCustomFunc: function(fObj) {
+	getCustomFunc: function(fObj, isDeleyed) {
 		var useCache = this.pu.get("cacheCustomFunctions");
 		if(useCache && "_function" in fObj)
 			return fObj._function;
@@ -394,7 +394,8 @@ var handyClicksPrefSvc = {
 			var eLine = fObj._errorLine = code ? this.ut.getRealLineNumber(err, line) : 0;
 			var href = fObj._editorLink = this.hc.getEditorLink() + "?line=" + eLine;
 			var eKey = code ? "customFunctionCompileError" : "customFunctionLinkedFileError";
-			var eMsg = this.ut.errInfo(eKey, fObj.label, this.hc.itemType, err);
+			var typeLabel = this.hc.itemType + (isDeleyed ? " + delayed" : "");
+			var eMsg = this.ut.errInfo(eKey, fObj.label, typeLabel, err);
 			this.ut.notifyError(eMsg, { buttons: {
 				$openEditor: this.wu.getOpenEditorLink(href, eLine),
 				$openConsole: this.ut.toErrorConsole
@@ -485,11 +486,7 @@ var handyClicksPrefSvc = {
 			+ (isDelayed ? this.ct.EDITOR_SHORTCUT_DELAYED : this.ct.EDITOR_SHORTCUT_NORMAL) + "/"
 			+ this.ct.EDITOR_SHORTCUT_INIT
 			+ "?line=" + eLine;
-		var eMsg = this.ut.errInfo(
-			isInit ? "funcInitError" : "funcDestroyError",
-			this.ut.getOwnProperty(fObj, "label"),
-			type, e
-		);
+		var eMsg = this.ut.errInfo(isInit ? "funcInitError" : "funcDestroyError", fObj.label, type, e);
 		this.ut.notifyError(eMsg, {
 			buttons: {
 				$openEditor: this.wu.getOpenEditorLink(href, eLine),
