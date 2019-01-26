@@ -249,17 +249,10 @@ var handyClicksPrefSvc = {
 	reinitSettingsInBrowsers: function() {
 		this._log("reinitSettingsInBrowsers()");
 		const pSvc = "handyClicksPrefSvc";
-		this.wu.forEachWindow(
-			this.ut.isSeaMonkey ? null : "navigator:browser",
-			function(w) {
-				if(!("handyClicksUI" in w))
-					return;
-				this._log("reinitSettingsInBrowsers() -> clear caches and reinitialize");
-				var ps = w[pSvc];
-				ps.initCustomFuncs(this.DESTROY_FORCE_PURGE_CACHES);
-			},
-			this
-		);
+		this.wu.forEachBrowserWindow(function(w) {
+			this._log("reinitSettingsInBrowsers() -> clear caches and reinitialize");
+			w[pSvc].initCustomFuncs(this.DESTROY_FORCE_PURGE_CACHES);
+		}, this);
 	},
 	isLegacyJs: function(s) {
 		return s.substr(0, 4) == "var ";

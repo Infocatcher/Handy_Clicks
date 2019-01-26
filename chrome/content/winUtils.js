@@ -42,6 +42,14 @@ var handyClicksWinUtils = {
 			}
 		});
 	},
+	forEachBrowserWindow: function(fn, context) {
+		var ws = this.wm.getEnumerator(this.ut.isSeaMonkey ? null : "navigator:browser");
+		while(ws.hasMoreElements()) {
+			var w = ws.getNext();
+			if("handyClicksUI" in w)
+				fn.call(context || w, w);
+		}
+	},
 
 	getXulWin: function(win) {
 		var ci = Components.interfaces;

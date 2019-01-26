@@ -234,21 +234,14 @@ var handyClicksPrefSvcExt = {
 			notifyFlags |= this.SETS_TEST_UNDO;
 		}
 		const pSvc = "handyClicksPrefSvc";
-		this.wu.forEachWindow(
-			this.ut.isSeaMonkey ? null : "navigator:browser",
-			function(w) {
-				if(
-					!(pSvc in w)
-					|| !("handyClicksUI" in w) // Make sure it's a browser window, for SeaMonkey
-				)
-					return;
-				var p = w[pSvc];
-				p.oSvc.notifyObservers(notifyFlags | this.SETS_BEFORE_RELOAD);
-				p.loadSettings(src);
-				p.oSvc.notifyObservers(notifyFlags | this.SETS_RELOADED);
-			},
-			this
-		);
+		this.wu.forEachBrowserWindow(function(w) {
+			if(!(pSvc in w))
+				return;
+			var p = w[pSvc];
+			p.oSvc.notifyObservers(notifyFlags | this.SETS_BEFORE_RELOAD);
+			p.loadSettings(src);
+			p.oSvc.notifyObservers(notifyFlags | this.SETS_RELOADED);
+		}, this);
 	},
 	createTestBackup: function(pStr) {
 		var num = this.pu.get("sets.backupTestDepth") - 1;
