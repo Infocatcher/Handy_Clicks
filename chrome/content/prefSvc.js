@@ -46,16 +46,12 @@ var handyClicksPrefSvc = {
 			if(reloadFlag || disable)
 				reason = this.DESTROY_REBUILD;
 			else {
-				reason = this.DESTROY_LAST_WINDOW_UNLOAD;
-				// Note: private windows doesn't have "windowtype" in SeaMonkey
-				var ws = this.wu.wm.getEnumerator(this.ut.isSeaMonkey ? null : "navigator:browser");
-				while(ws.hasMoreElements()) {
-					var w = ws.getNext();
-					if("handyClicksUI" in w && "_handyClicksInitialized" in w) {
-						reason = this.DESTROY_WINDOW_UNLOAD;
-						break;
-					}
-				}
+				var hasBrowserWindow = this.wu.forEachBrowserWindow(function(w) {
+					return "_handyClicksInitialized" in w;
+				});
+				reason = hasBrowserWindow
+					? this.DESTROY_WINDOW_UNLOAD
+					: this.DESTROY_LAST_WINDOW_UNLOAD;
 			}
 			this.destroyCustomFuncs(reason);
 		}
@@ -615,13 +611,9 @@ var handyClicksPrefSvc = {
 
 	get hasTestSettings() {
 		const pSvc = "handyClicksPrefSvc";
-		var ws = this.wu.wm.getEnumerator(this.ut.isSeaMonkey ? null : "navigator:browser");
-		while(ws.hasMoreElements()) {
-			var w = ws.getNext();
-			if("handyClicksUI" in w && pSvc in w && w[pSvc].otherSrc)
-				return true;
-		}
-		return false;
+		return this.wu.forEachBrowserWindow(function(w) {
+			return pSvc in w && w[pSvc].otherSrc;
+		});
 	},
 
 	get hasUnsaved() {
