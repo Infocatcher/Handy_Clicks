@@ -1423,18 +1423,13 @@ var handyClicksEditor = {
 			var focus = this.pu.get("editor.testFocusMainWindow");
 			if(invertFocusPref ? !focus : focus) {
 				if(this.ut.isSeaMonkey) { // Detect private browser windows
-					var ws = this.wu.wm.getEnumerator(null);
-					while(ws.hasMoreElements()) {
-						var w = ws.getNext();
-						if("handyClicksUI" in w) {
-							w.focus();
-							break;
-						}
-					}
+					this.wu.forEachBrowserWindow(function(w) {
+						return !w.focus();
+					});
 				}
 				else {
-					var mainWin = this.wu.wm.getMostRecentWindow("navigator:browser");
-					mainWin && mainWin.focus();
+					var w = this.wu.wm.getMostRecentWindow("navigator:browser");
+					w && w.focus();
 				}
 			}
 		}
