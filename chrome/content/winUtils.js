@@ -32,13 +32,13 @@ var handyClicksWinUtils = {
 			w.arguments = args;
 		return w;
 	},
-	forEachWindow: function(winTypes, func, context) {
+	forEachWindow: function(winTypes, fn, context) {
 		var wm = this.wm;
-		(winTypes ? Array.prototype.concat.call(winTypes) : [null]).forEach(function(winType) {
+		(typeof winTypes == "string" ? [winTypes] : winTypes || [null]).forEach(function(winType) {
 			var ws = wm.getEnumerator(winType);
 			while(ws.hasMoreElements()) {
 				var w = ws.getNext();
-				func.call(context || w, w);
+				fn.call(context || w, w);
 			}
 		});
 	},

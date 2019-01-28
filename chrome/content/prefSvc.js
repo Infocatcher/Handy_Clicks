@@ -626,13 +626,10 @@ var handyClicksPrefSvc = {
 	},
 	set _savedStr(str) {
 		const pSvc = "handyClicksPrefSvc";
-		this.wu.forEachWindow(
-			["handyclicks:settings", "handyclicks:editor"],
-			function(w) {
-				if(pSvc in w)
-					w[pSvc].__savedStr = str;
-			}
-		);
+		this.wu.forEachWindow(["handyclicks:settings", "handyclicks:editor"], function(w) {
+			if(pSvc in w)
+				w[pSvc].__savedStr = str;
+		});
 	},
 
 	get isMainWnd() {

@@ -198,13 +198,10 @@ var handyClicksSets = {
 		label.value = label.getAttribute(tb.value == 1 ? "hc_labelSingle" : "hc_labelMultiple");
 	},
 	closeImportEditors: function() {
-		this.wu.forEachWindow(
-			"handyclicks:editor",
-			function(w) {
-				if(!("_handyClicksInitialized" in w) || w.handyClicksPrefSvc.otherSrc)
-					w.close();
-			}
-		);
+		this.wu.forEachWindow("handyclicks:editor", function(w) {
+			if(!("_handyClicksInitialized" in w) || w.handyClicksPrefSvc.otherSrc)
+				w.close();
+		});
 	},
 	treeState: function(saveFlag) {
 		var rememberState = this.pu.get("sets.rememberState");
@@ -533,20 +530,13 @@ var handyClicksSets = {
 	_markOpenedEditors: function() {
 		for(var rowId in this.rowsCache)
 			this._setItemStatus(rowId, false);
-		var wProp = this.wu.winIdProp;
+		const idProp = this.wu.winIdProp;
+		const pSvc = "handyClicksPrefSvc";
 		var otherSrc = this.ps.otherSrc;
-		this.wu.forEachWindow(
-			"handyclicks:editor",
-			function(w) {
-				if(
-					wProp in w
-					&& "handyClicksPrefSvc" in w
-					&& w.handyClicksPrefSvc.otherSrc == otherSrc
-				)
-					this._setItemStatus(w[wProp], true);
-			},
-			this
-		);
+		this.wu.forEachWindow("handyclicks:editor", function(w) {
+			if(idProp in w && pSvc in w && w[pSvc].otherSrc == otherSrc)
+				this._setItemStatus(w[idProp], true);
+		}, this);
 	},
 	appendContainerItem: function(parent, hash, label) {
 		var tItem = document.createElement("treeitem");

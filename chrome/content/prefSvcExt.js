@@ -68,27 +68,23 @@ var handyClicksPrefSvcExt = {
 			else
 				types.push("navigator:browser");
 		}
-		this.wu.forEachWindow(
-			types,
-			function(w) {
-				if(!(pSvc in w) || (!reloadAll && w === window))
-					return;
-				// Note: we don't need special checks for SeaMonkey, "pSvc in w" should be enough
-				var p = w[pSvc];
-				if(!curOtherSrc && p.otherSrc && "handyClicksSets" in w) {
-					var s = w.handyClicksSets;
-					//~ todo: may be deleted via garbage collector in old Firefox versions?
-					s._savedPrefs = this.prefs;
-					s._savedTypes = this.types;
-					s.updTree();
-					return;
-				}
-				p.oSvc.notifyObservers(this.SETS_BEFORE_RELOAD);
-				p.loadSettings(curOtherSrc && p.otherSrc ? curOtherSrc : p.currentOtherSrc);
-				p.oSvc.notifyObservers(this.SETS_RELOADED);
-			},
-			this
-		);
+		this.wu.forEachWindow(types, function(w) {
+			if(!(pSvc in w) || (!reloadAll && w === window))
+				return;
+			// Note: we don't need special checks for SeaMonkey, "pSvc in w" should be enough
+			var p = w[pSvc];
+			if(!curOtherSrc && p.otherSrc && "handyClicksSets" in w) {
+				var s = w.handyClicksSets;
+				//~ todo: may be deleted via garbage collector in old Firefox versions?
+				s._savedPrefs = this.prefs;
+				s._savedTypes = this.types;
+				s.updTree();
+				return;
+			}
+			p.oSvc.notifyObservers(this.SETS_BEFORE_RELOAD);
+			p.loadSettings(curOtherSrc && p.otherSrc ? curOtherSrc : p.currentOtherSrc);
+			p.oSvc.notifyObservers(this.SETS_RELOADED);
+		}, this);
 	},
 
 	getBackupFile: function(fName, parentDir) {
