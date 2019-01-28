@@ -107,7 +107,7 @@ var handyClicksWinUtils = {
 		return w;
 	},
 	openEditorEx: function(pSrc, mode, shortcut, itemType, isDelayed, src, line) {
-		var w = this.openEditor(null, mode, shortcut, itemType, isDelayed);
+		var w = this.openEditor(pSrc, mode, shortcut, itemType, isDelayed);
 		(function _oe() {
 			if("_handyClicksInitialized" in w) {
 				w.handyClicksEditor.selectTargetTab(isDelayed, src, line);
