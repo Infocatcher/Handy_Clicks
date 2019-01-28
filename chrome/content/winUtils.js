@@ -102,7 +102,7 @@ var handyClicksWinUtils = {
 			this.opener, "chrome://handyclicks/content/editor.xul", "_blank",
 			"chrome,all,toolbar,centerscreen,resizable,dialog=0", null
 		);
-		w.arguments = [pSrc, mode || "shortcut", shortcut, itemType, isDelayed];
+		w.arguments = [pSrc, mode || this.ct.EDITOR_MODE_SHORTCUT, shortcut, itemType, isDelayed];
 		w[this.winIdProp] = winId;
 		this.markOpenedEditors(winId, true, !!pSrc);
 		return w;
@@ -110,11 +110,10 @@ var handyClicksWinUtils = {
 	openEditorEx: function(pSrc, mode, shortcut, itemType, isDelayed, src, line) {
 		var w = this.openEditor(pSrc, mode, shortcut, itemType, isDelayed);
 		(function _oe() {
-			if("_handyClicksInitialized" in w) {
+			if("_handyClicksInitialized" in w)
 				w.handyClicksEditor.selectTargetTab(isDelayed, src, line);
-				return;
-			}
-			setTimeout(_oe, 5);
+			else
+				setTimeout(_oe, 5);
 		})();
 		return w;
 	},
@@ -171,11 +170,10 @@ var handyClicksWinUtils = {
 		var w = this.openSettings();
 		var args = arguments;
 		args.length && (function _imp() {
-			if("_handyClicksInitialized" in w) {
+			if("_handyClicksInitialized" in w)
 				w.handyClicksSets.importSets.apply(w.handyClicksSets, args);
-				return;
-			}
-			setTimeout(_imp, 5);
+			else
+				setTimeout(_imp, 5);
 		})();
 		return w;
 	},
