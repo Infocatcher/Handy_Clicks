@@ -489,8 +489,9 @@ var handyClicksPrefSvc = {
 		this.ut._err(e);
 	},
 
+	_defaultData: undefined,
 	defaultSettings: function() {
-		var data = this.getSettingsStr({}, {});
+		var data = this._defaultData = this.getSettingsStr({}, {});
 		this.pe.saveSettingsAsync(data);
 		return data;
 	},

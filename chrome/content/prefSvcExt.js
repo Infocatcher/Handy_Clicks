@@ -43,6 +43,8 @@ var handyClicksPrefSvcExt = {
 	},
 	settingsSaved: function(str, async) {
 		this.ps._savedStr = str;
+		if(str == this.ps._defaultData)
+			return;
 		if(async)
 			this.delay(this.checkForBackup, this, 50);
 		else
