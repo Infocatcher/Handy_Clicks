@@ -46,13 +46,10 @@ var handyClicksWinUtils = {
 	},
 	forEachBrowserWindow: function(fn, context) {
 		// Note: private windows doesn't have "windowtype" in SeaMonkey
-		var ws = this.wm.getEnumerator(this.ut.isSeaMonkey ? null : "navigator:browser");
-		while(ws.hasMoreElements()) {
-			var w = ws.getNext();
+		return this.forEachWindow(this.ut.isSeaMonkey ? null : "navigator:browser", function(w) {
 			if("handyClicksUI" in w && fn.call(context || w, w))
 				return true;
-		}
-		return false;
+		});
 	},
 
 	getXulWin: function(win) {
