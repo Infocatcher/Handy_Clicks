@@ -34,12 +34,14 @@ var handyClicksWinUtils = {
 	},
 	forEachWindow: function(winTypes, fn, context) {
 		var wm = this.wm;
-		(typeof winTypes == "string" ? [winTypes] : winTypes || [null]).forEach(function(winType) {
+		return (typeof winTypes == "string" ? [winTypes] : winTypes || [null]).some(function(winType) {
 			var ws = wm.getEnumerator(winType);
 			while(ws.hasMoreElements()) {
 				var w = ws.getNext();
-				fn.call(context || w, w);
+				if(fn.call(context || w, w))
+					return true;
 			}
+			return false;
 		});
 	},
 	forEachBrowserWindow: function(fn, context) {
