@@ -33,11 +33,6 @@ var handyClicksRegSvc = {
 			case "unload": this.destroy();
 		}
 	},
-	loadSubScript: function(/*path, obj*/) {
-		this.ut._deprecated("handyClicksRegSvc.loadSubScript() is deprecated, use handyClicksGlobals.jsLoader.loadSubScript() instead");
-		var jsl = this.jsLoader;
-		return jsl.loadSubScript.apply(jsl, arguments);
-	},
 	callMethods: function(methName, reloadFlag) {
 		var t = this.now();
 		this.callable.forEach(function(o) {
