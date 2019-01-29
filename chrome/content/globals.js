@@ -203,16 +203,16 @@ HandyClicksObservers.prototype = {
 	notifyObservers: function() {
 		var args = arguments;
 		this.observers.forEach(function(ob) {
-			ob[0].apply(ob[1], args);
+			ob[0].apply(ob[1] || window, args);
 		});
 	},
 	addObserver: function(func, context) {
-		return this.observers.push([func, context || window]) - 1;
+		return this.observers.push([func, context]) - 1;
 	},
 	removeObserver: function(oId) {
 		delete this.observers[oId];
 	},
 	destroy: function() {
-		delete this.observers;
+		this.observers.length = 0;
 	}
 };
