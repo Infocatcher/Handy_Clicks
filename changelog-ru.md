@@ -109,6 +109,11 @@
 `x` Исправлена иконка кнопки «Закрыть» во всплывающих сообщениях в Firefox 28 и более старых, SeaMonkey 2.25 и более старых.<br>
 `*` Улучшено перестраивание всплывающих сообщений при открытии новых (настройка <em>extensions.handyclicks.notify.rearrangeWindows</em>): перестраиваются только сообщения с одинаковым родительским окном, также перемещаются все окна сообщений одно за другим (а не просто сдвигается позиция каждого окна даже).<br>
 `x` Исправлено открытие <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">консоли браузера</a> в Firefox 56.<br>
+`*` Оптимизирована настройка <em>extensions.handyclicks.ui.inheritToolbarContextMenu</em>: удалено использование медленного CSS селектора «node ~ *».<br>
+`x` Исправлены пункты контекстного меню «Переместить в …»/«Удалить с/из …» в Firefox 56 (настройка <em>extensions.handyclicks.ui.inheritToolbarContextMenu</em>).<br>
+`x` Исправлено переключение вкладок с помощью прокрутки панели справа от вкладок в редакторе (настройка <em>extensions.handyclicks.sets.scrollLists</em>).<br>
+`x` Исправлена работа `handyClicksWinUtils.openSettingsPane()` в случае закрытого окна настроек.<br>
+`-` Удалено API `handyClicksCleanupSvc.registerNodeCleanup()`: слишком вредно для производительности и бесполезно в большинстве случаев, удалено `handyClicksCleanupSvc.registerCleanup(func, context, args)`, используйте вместо него `handyClicksRegSvc.registerCleanup(func, context)` (см. <a href="https://github.com/Infocatcher/Handy_Clicks/issues/13">#13</a>).<br>
 `*` Многочисленные внутренние улучшения кода.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
