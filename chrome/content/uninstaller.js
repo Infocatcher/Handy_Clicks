@@ -10,6 +10,11 @@ var handyClicksUninstaller = {
 		return this.oSvc = Components.classes["@mozilla.org/observer-service;1"]
 			.getService(Components.interfaces.nsIObserverService);
 	},
+	get wm() {
+		delete this.wm;
+		return this.wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+			.getService(Components.interfaces.nsIWindowMediator);
+	},
 	get newAddonManager() {
 		delete this.newAddonManager;
 		return this.newAddonManager = !("@mozilla.org/extensions/manager;1" in Components.classes);
@@ -18,7 +23,7 @@ var handyClicksUninstaller = {
 		// User can't remove our extensino without any UI windows, so it's better to wait for
 		// any window before import AddonManager.jsm
 		this.oSvc.addObserver(this, "domwindowopened", false);
-		var win = this.wu.wm.getMostRecentWindow(null);
+		var win = this.wm.getMostRecentWindow(null);
 		win && this.onWindowLoaded(win, 50);
 	},
 	lazyDestroy: function() {
@@ -140,7 +145,7 @@ var handyClicksUninstaller = {
 			this.getLocalized("removeSettings"),
 			false, // Cancel button is default
 			this.getLocalized("exportAllSettings"), exportAllSets,
-			this.wu.wm.getMostRecentWindow(null) //this.wu.wm.getMostRecentWindow("Extension:Manager")
+			this.wm.getMostRecentWindow(null)
 		);
 		if(confirmed && exportAllSets.value) {
 			this.st.exportPrefs();

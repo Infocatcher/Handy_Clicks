@@ -33,7 +33,7 @@ this.__defineGetter__("handyClicksGlobals", function() {
 });
 setTimeout(function() {
 	handyClicksGlobals.jsLoader.loadSubScript("chrome://handyclicks/content/uninstaller.js");
-}, 200);
+}, 300);
 
 function handleURI(uri) {
 	var g = handyClicksGlobals;
