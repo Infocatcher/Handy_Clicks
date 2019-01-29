@@ -25,6 +25,7 @@ var handyClicksRegSvc = {
 			handyClicksReloader.destroy(reloadFlag);
 		if(!reloadFlag)
 			this.g.shutdown();
+		this.cleanup();
 		delete window._handyClicksInitialized;
 	},
 	handleEvent: function(e) {
@@ -41,6 +42,20 @@ var handyClicksRegSvc = {
 		}, this);
 		var dt = (this.now() - t).toFixed(2);
 		this._log(methName + "() in " + this.path + ": " + dt + " ms");
+	},
+
+	_cleanups: [],
+	registerCleanup: function(fn, context) {
+		return this._cleanups.push([fn, context]) - 1;
+	},
+	unregisterCleanup: function(uid) {
+		delete this._cleanups[uid];
+	},
+	cleanup: function() {
+		this._cleanups.forEach(function(cd) {
+			cd[0].call(cd[1] || window);
+		});
+		this._cleanups.length = 0;
 	}
 };
 handyClicksRegSvc.instantInit();

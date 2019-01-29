@@ -95,12 +95,6 @@ Turn off from command line: `firefox -handyclicks-disable`.
 	<td>Various utils</td>
 </tr>
 <tr>
-	<td>this.cs</td>
-	<td>handyClicksCleanupSvc</td>
-	<td><a href="chrome/content/utils.js">chrome://handyclicks/content/utils.js</a></td>
-	<td>Cleanup/destructors</td>
-</tr>
-<tr>
 	<td>this.wu</td>
 	<td>handyClicksWinUtils</td>
 	<td><a href="chrome/content/winUtils.js">chrome://handyclicks/content/winUtils.js</a></td>

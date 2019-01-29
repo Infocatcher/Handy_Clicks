@@ -238,7 +238,7 @@ var handyClicksFuncs = {
 				};
 				window.addEventListener("TabSelect", resetRelIndex, false);
 				window.addEventListener("TabClose", resetRelIndex, false);
-				this.cs.registerCleanup(function() {
+				this.rs.registerCleanup(function() {
 					window.removeEventListener("TabSelect", resetRelIndex, false);
 					window.removeEventListener("TabClose", resetRelIndex, false);
 					delete window[relIndex];
