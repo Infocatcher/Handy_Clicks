@@ -1337,16 +1337,9 @@ var handyClicksUtils = {
 		if("create" in Object) { // Firefox 4.0+
 			// Simple replacement for Application.storage
 			// See https://bugzilla.mozilla.org/show_bug.cgi?id=1090880
-			//var global = Components.utils.getGlobalForObject(Services);
-			// Ensure, that we have global object (because window.Services may be overwriten)
+			// Ensure, that we have global object (because window.Services may be overwritten)
 			var global = Components.utils["import"]("resource://gre/modules/Services.jsm", {});
 			this._storage = global[ns] || (global[ns] = global.Object.create(null));
-		}
-		else if("Application" in window) { // Firefox 3.0+
-			var st = Application.storage;
-			if(!st.has(ns))
-				st.set(ns, { __proto__: null });
-			this._storage = st.get(ns, null);
 		}
 		else { // For old versions
 			var hw = Components.classes["@mozilla.org/appshell/appShellService;1"]
