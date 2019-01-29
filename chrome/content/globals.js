@@ -24,6 +24,9 @@ var g = window.handyClicksGlobals = {
 		else
 			node.removeAttribute(attr);
 	},
+	hasModifier: function(e) {
+		return e.ctrlKey || e.shiftKey || e.altKey || e.metaKey;
+	},
 
 	get jsLoader() {
 		delete g.jsLoader;

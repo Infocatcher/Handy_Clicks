@@ -1241,8 +1241,11 @@ var handyClicksUtils = {
 		}
 	},
 
-	hasModifier: function(evt) {
-		return evt.ctrlKey || evt.shiftKey || evt.altKey || evt.metaKey;
+	hasModifier: function(e) {
+		this._deprecated( //= Added: 2019-01-21
+			"handyClicksUtils.hasModifier() is deprecated. Use handyClicksGlobals.hasModifier() instead."
+		);
+		return this.g.hasModifier(e);
 	},
 
 	mm: function(n, minVal, maxVal) {

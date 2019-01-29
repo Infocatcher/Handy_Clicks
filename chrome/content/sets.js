@@ -988,7 +988,7 @@ var handyClicksSets = {
 		var btn = e.button;
 		if(btn == 0)
 			return;
-		var hasModifier = this.ut.hasModifier(e);
+		var hasModifier = this.hasModifier(e);
 		var cmdId = btn == 1
 			? "hc-sets-cmd-editSaved"
 			: btn == 2 && hasModifier
@@ -1509,7 +1509,7 @@ var handyClicksSets = {
 			tr.setAttribute(attrName, tr.getAttribute(attrName) != "true");
 		}
 
-		if(this.ut.hasModifier(e))
+		if(this.hasModifier(e))
 			popup.hidePopup();
 	},
 	viewMenuClick: function(e, popup) {
@@ -1632,7 +1632,7 @@ var handyClicksSets = {
 	treeHeaderClick: function(e) {
 		if(e.button == 1)
 			return this.toggleTreeContainers(this.treeCollapsed);
-		if(this.ut.hasModifier(e))
+		if(this.hasModifier(e))
 			return this.toggleTreeContainers(e.button == 2);
 		return this.changeTreeExpandLevel(e.button == 2 ? 1 : -1);
 	},
@@ -2569,7 +2569,7 @@ var handyClicksSets = {
 				if(e.keyCode != e.DOM_VK_RETURN)
 					break;
 				this.ut.stopEvent(e);
-				if(!this.ut.hasModifier(e))
+				if(!this.hasModifier(e))
 					this.selectExternalEditor();
 				else if(e.shiftKey)
 					this.convertPath();
@@ -3111,7 +3111,7 @@ var handyClicksSets = {
 		var file = mi.__file;
 		var exists = file.exists();
 
-		var dontAsk = !exists || this.ut.hasModifier(e) || e.type == "click";
+		var dontAsk = !exists || this.hasModifier(e) || e.type == "click";
 		const confirmPref = "sets.removeBackupConfirm";
 		if(!dontAsk && this.pu.get(confirmPref)) {
 			this.ut.closeMenus(mi);
@@ -3143,7 +3143,7 @@ var handyClicksSets = {
 		if(!mi.hasAttribute("hc_fileName"))
 			return;
 		this.importSets(
-			this.ut.hasModifier(e) || e.type == "click",
+			this.hasModifier(e) || e.type == "click",
 			this.ct.IMPORT_BACKUP,
 			mi.getAttribute("hc_fileName")
 		);

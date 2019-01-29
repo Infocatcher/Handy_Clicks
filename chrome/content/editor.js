@@ -1406,7 +1406,7 @@ var handyClicksEditor = {
 		}
 	},
 	testSettings: function(e) {
-		var invertFocusPref = e && (e.button == 1 || e.button == 0 && this.ut.hasModifier(e));
+		var invertFocusPref = e && (e.button == 1 || e.button == 0 && this.hasModifier(e));
 		if(e && !invertFocusPref)
 			return false;
 

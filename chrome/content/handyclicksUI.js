@@ -325,7 +325,7 @@ var handyClicksUI = {
 			return;
 
 		var button;
-		var hasModifier = this.ut.hasModifier(e);
+		var hasModifier = this.hasModifier(e);
 		var leftClick = e.type == "command" || e.button == 0;
 		if(leftClick && !hasModifier)
 			button = "Left";
