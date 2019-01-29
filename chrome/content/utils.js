@@ -1158,12 +1158,6 @@ var handyClicksUtils = {
 		return o.__parent__ || o.valueOf.call();
 	},
 
-	sortAsNumbers: function(arr) {
-		return arr.sort(function(a, b) {
-			return a - b;
-		});
-	},
-
 	objEquals: function() {
 		Array.prototype.forEach.call(arguments, function(o) {
 			this.sortObj(o, true);
