@@ -1346,16 +1346,17 @@ var handyClicksUtils = {
 				.getService(Components.interfaces.nsIAppShellService)
 				.hiddenDOMWindow;
 			if(!(ns in hw)) {
-				hw[ns] = { __proto__: null };
-				var destroy = hw[ns + "destroy"] = function _ds(e) {
-					var win = e.target.defaultView;
-					if(win !== win.top)
+				hw[ns] = new hw.Function("return { __proto__: null };")();
+				var destroy;
+				hw.addEventListener("unload", destroy = function destroy(e) {
+					var w = e.target.defaultView || e.target;
+					if(w != destroy.hw)
 						return;
-					win.removeEventListener(e.type, _ds, false);
-					delete win[_ds.ns];
-				};
+					w.removeEventListener(e.type, destroy, true);
+					destroy.hw = destroy.ns = w[destroy.ns] = null;
+				}, true);
 				destroy.ns = ns;
-				hw.addEventListener("unload", destroy, false);
+				destroy.hw = hw;
 			}
 			this._storage = hw[ns];
 		}
