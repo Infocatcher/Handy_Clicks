@@ -49,14 +49,15 @@ var g = window.handyClicksGlobals = {
 		}, delay || 0);
 	},
 
-	_strings: { __proto__: null }, // cache of strings from stringbundle
+	_strings: { __proto__: null },
 	_bundles: { __proto__: null },
+	get sbs() {
+		delete g.sbs;
+		return g.sbs = Components.classes["@mozilla.org/intl/stringbundle;1"]
+			.getService(Components.interfaces.nsIStringBundleService);
+	},
 	getBundle: function(src) {
-		return g._bundles[src] || (
-			g._bundles[src] = Components.classes["@mozilla.org/intl/stringbundle;1"]
-				.getService(Components.interfaces.nsIStringBundleService)
-				.createBundle(src)
-		);
+		return g._bundles[src] || (g._bundles[src] = g.sbs.createBundle(src));
 	},
 	getStr: function(src, sName, defaultStr, _callerLevel) {
 		try {
