@@ -114,6 +114,8 @@
 `x` Исправлено переключение вкладок с помощью прокрутки панели справа от вкладок в редакторе (настройка <em>extensions.handyclicks.sets.scrollLists</em>).<br>
 `x` Исправлена работа `handyClicksWinUtils.openSettingsPane()` в случае закрытого окна настроек.<br>
 `-` Удалено API `handyClicksCleanupSvc.registerNodeCleanup()`: слишком вредно для производительности и бесполезно в большинстве случаев, удалено `handyClicksCleanupSvc.registerCleanup(func, context, args)`, используйте вместо него `handyClicksRegSvc.registerCleanup(func, context)` (см. <a href="https://github.com/Infocatcher/Handy_Clicks/issues/13">#13</a>).<br>
+`*` Улучшена производительность при запуске: теперь winUtils.js не загружается из uninstaller.js.<br>
+`*` Изменено API: `handyClicksUtils.storage(key, val)` заменен на `handyClicksGlobals.storage.get(key)/set(key, val)`.<br>
 `*` Многочисленные внутренние улучшения кода.<br>
 
 ##### 0.1.3pre6 (2017-04-16)

@@ -114,6 +114,8 @@
 `x` Fixed “scroll to switch” from tabs toolbar in editor (<em>extensions.handyclicks.sets.scrollLists</em> preference).<br>
 `x` Fixed `handyClicksWinUtils.openSettingsPane()` in case of closed settings window.<br>
 `-` Removed `handyClicksCleanupSvc.registerNodeCleanup()` API: too bad for performance and useless in most cases, removed `handyClicksCleanupSvc.registerCleanup(func, context, args)`, use `handyClicksRegSvc.registerCleanup(func, context)` instead (see <a href="https://github.com/Infocatcher/Handy_Clicks/issues/13">#13</a>).<br>
+`*` Improved startup performance: don't load winUtils.js from uninstaller.js.<br>
+`*` Changed API: `handyClicksUtils.storage(key, val)` replaced with `handyClicksGlobals.storage.get(key)/set(key, val)`.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
