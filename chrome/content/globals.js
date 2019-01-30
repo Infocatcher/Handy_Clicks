@@ -225,18 +225,26 @@ function initStorage() {
 		}
 		var storage = hw[ns];
 	}
-	return {
-		_storage: storage,
-		get: function(key) {
-			return key in this._storage ? this._storage[key] : undefined;
-		},
-		set: function(key, val) {
-			if(val === undefined)
-				delete this._storage[key];
-			else
-				this._storage[key] = val;
-		}
+	var out = function(key, val) {
+		g.ut._deprecated( //= Added: 2019-01-21
+			"handyClicksUtils.storage(key, val) is deprecated. "
+			+ "Use handyClicksGlobals.storage.get(key)/set(key, val) instead."
+		);
+		if(arguments.length == 1)
+			return g.storage.get(key);
+		return g.storage.set(key, val);
 	};
+	out._storage = storage;
+	out.get = function(key) {
+		return key in this._storage ? this._storage[key] : undefined;
+	};
+	out.set = function(key, val) {
+		if(val === undefined)
+			delete this._storage[key];
+		else
+			this._storage[key] = val;
+	};
+	return out;
 }
 
 })(this);
