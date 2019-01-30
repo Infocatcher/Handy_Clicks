@@ -196,35 +196,6 @@ function now() {
 	return now();
 }
 function initStorage() {
-	const ns = "_handyClicksStorage";
-	if("create" in Object) { // Firefox 4.0+
-		// Simple replacement for Application.storage
-		// See https://bugzilla.mozilla.org/show_bug.cgi?id=1090880
-		// Ensure, that we have global object (because window.Services may be overwritten)
-		var global = Components.utils.getGlobalForObject( // For Firefox 57+
-			Components.utils["import"]("resource://gre/modules/Services.jsm", {})
-		);
-		var storage = global[ns] || (global[ns] = global.Object.create(null));
-	}
-	else { // For old versions
-		var hw = Components.classes["@mozilla.org/appshell/appShellService;1"]
-			.getService(Components.interfaces.nsIAppShellService)
-			.hiddenDOMWindow;
-		if(!(ns in hw)) {
-			hw[ns] = new hw.Function("return { __proto__: null };")();
-			var destroy;
-			hw.addEventListener("unload", destroy = function destroy(e) {
-				var w = e.target.defaultView || e.target;
-				if(w != destroy.hw)
-					return;
-				w.removeEventListener(e.type, destroy, true);
-				destroy.hw = destroy.ns = w[destroy.ns] = null;
-			}, true);
-			destroy.ns = ns;
-			destroy.hw = hw;
-		}
-		var storage = hw[ns];
-	}
 	var out = function(key, val) {
 		g.ut._deprecated( //= Added: 2019-01-21
 			"handyClicksUtils.storage(key, val) is deprecated. "
@@ -234,7 +205,7 @@ function initStorage() {
 			return g.storage.get(key);
 		return g.storage.set(key, val);
 	};
-	out._storage = storage;
+	out._storage = getStorage();
 	out.get = function(key) {
 		return key in this._storage ? this._storage[key] : undefined;
 	};
@@ -245,6 +216,33 @@ function initStorage() {
 			this._storage[key] = val;
 	};
 	return out;
+}
+function getStorage() {
+	const ns = "_handyClicksStorage";
+	if("create" in Object) { // Firefox 4+
+		// Ensure, that we have global object (because window.Services may be overwritten)
+		var g = Components.utils.getGlobalForObject( // For Firefox 57+
+			Components.utils["import"]("resource://gre/modules/Services.jsm", {})
+		);
+		return g[ns] || (g[ns] = g.Object.create(null));
+	}
+	var hw = Components.classes["@mozilla.org/appshell/appShellService;1"]
+		.getService(Components.interfaces.nsIAppShellService)
+		.hiddenDOMWindow;
+	if(ns in hw)
+		return hw[ns];
+	var st = hw[ns] = new hw.Function("return { __proto__: null };")();
+	var destroy;
+	hw.addEventListener("unload", destroy = function destroy(e) {
+		var w = e.target.defaultView || e.target;
+		if(w != destroy.hw)
+			return;
+		w.removeEventListener(e.type, destroy, true);
+		destroy.hw = destroy.ns = w[destroy.ns] = null;
+	}, true);
+	destroy.ns = ns;
+	destroy.hw = hw;
+	return st;
 }
 
 })(this);
