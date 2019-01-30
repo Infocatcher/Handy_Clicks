@@ -661,8 +661,30 @@ var handyClicksUtils = {
 	PERMS_FILE_OWNER_WRITE: parseInt("0600", 8),
 	PERMS_DIRECTORY:        parseInt("0755", 8),
 	get fp() {
-		return Components.classes["@mozilla.org/filepicker;1"]
+		var fp = Components.classes["@mozilla.org/filepicker;1"]
 			.createInstance(Components.interfaces.nsIFilePicker);
+		if("show" in fp)
+			return fp;
+		// Firefox 57+
+		var tm = this.tm;
+		return {
+			__proto__: fp,
+			show: function() {
+				var rv;
+				fp.open(function(r) {
+					rv = r;
+				});
+				var thread = tm.currentThread;
+				while(rv === undefined)
+					thread.processNextEvent(false);
+				return rv;
+			}
+		};
+	},
+	get tm() {
+		delete this.tm;
+		return this.tm = Components.classes["@mozilla.org/thread-manager;1"]
+			.getService(Components.interfaces.nsIThreadManager);
 	},
 	writeToFile: function(str, file, outErr) {
 		if(!(file instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)))
