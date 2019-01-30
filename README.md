@@ -4,6 +4,29 @@ Provides more clicks options: you can set some built-in action (or write any cus
 This is very old project (version 0.0.1.0a1 was created at 2008-08-28), it contains a lot of obsolete code (especially due to removed <a href="https://developer.mozilla.org/en-US/docs/E4X">E4X</a>), supports only clicks inside main browser window and contains many features, that not tested in new browser versions. Unfortunately I don't have enough free time to debug and make something release-like, so finally I decided to make it public “as is”.
 <br>Some old version and examples (also old) can be found <a href="http://infocatcher.ucoz.net/ext/fx/handy_clicks/hc_releases.html">here</a>.
 
+#### Compatibility
+##### Multi-process mode (Electrolysis)
+Not compatible, too many things should be rewritten (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/27">#27</a>).
+
+##### Firefox 57+ (Quantum)
+Partially compatible, but may be fixed (and installed with some hacks).
+<br>Not compatible with Firefox 61+ due to removed XUL overlays (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1448162">bug 1448162</a>).
+
+##### Clickable tab bar
+In about:config: <em>browser.tabs.drawInTitlebar</em> = false
+<br>Or <a href="http://kb.mozillazine.org/UserChrome.css">userChrome.css</a>:
+```css
+#TabsToolbar {
+    -moz-window-dragging: no-drag !important;
+}
+```
+Or leave draggable edges:
+```css
+.tabbrowser-arrowscrollbox {
+    -moz-window-dragging: no-drag !important;
+}
+```
+
 #### Options
 * <em>handyclicks/</em> directory in browser <a href="http://kb.mozillazine.org/Profile_folder">profile</a>
 * <em>extensions.handyclicks.</em>* branch in <a href="http://kb.mozillazine.org/About:config">about:config</a>
