@@ -1333,43 +1333,13 @@ var handyClicksUtils = {
 	},
 
 	storage: function(key, val) {
-		const ns = "_handyClicksStorage";
-		if("create" in Object) { // Firefox 4.0+
-			// Simple replacement for Application.storage
-			// See https://bugzilla.mozilla.org/show_bug.cgi?id=1090880
-			// Ensure, that we have global object (because window.Services may be overwritten)
-			var global = Components.utils["import"]("resource://gre/modules/Services.jsm", {});
-			this._storage = global[ns] || (global[ns] = global.Object.create(null));
-		}
-		else { // For old versions
-			var hw = Components.classes["@mozilla.org/appshell/appShellService;1"]
-				.getService(Components.interfaces.nsIAppShellService)
-				.hiddenDOMWindow;
-			if(!(ns in hw)) {
-				hw[ns] = new hw.Function("return { __proto__: null };")();
-				var destroy;
-				hw.addEventListener("unload", destroy = function destroy(e) {
-					var w = e.target.defaultView || e.target;
-					if(w != destroy.hw)
-						return;
-					w.removeEventListener(e.type, destroy, true);
-					destroy.hw = destroy.ns = w[destroy.ns] = null;
-				}, true);
-				destroy.ns = ns;
-				destroy.hw = hw;
-			}
-			this._storage = hw[ns];
-		}
-		var f  = this.storage = function(key, val) {
-			if(arguments.length == 1)
-				return key in this._storage ? this._storage[key] : undefined;
-			if(val === undefined)
-				delete this._storage[key];
-			else
-				this._storage[key] = val;
-			return val;
-		};
-		return f.apply(this, arguments);
+		this._deprecated( //= Added: 2019-01-21
+			"handyClicksUtils.storage(key, val) is deprecated. "
+			+ "Use handyClicksGlobals.storage.get(key)/set(key, val) instead."
+		);
+		if(arguments.length == 1)
+			return this.g.storage.get(key);
+		return this.g.storage.set(key, val);
 	},
 
 	get xcr() {

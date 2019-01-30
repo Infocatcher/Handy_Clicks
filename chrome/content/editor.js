@@ -112,7 +112,7 @@ var handyClicksEditor = {
 		this.wu.markOpenedEditors();
 		this.testMode && this.undoTestSettings();
 		this._savedShortcutObj = this._savedTypeObj = null;
-		if(!reloadFlag && this.ut.storage("activeLinkedFiles")) {
+		if(!reloadFlag && this.storage.get("activeLinkedFiles")) {
 			var unwatchLinkedFiles = true;
 			var ws = this.wu.wm.getEnumerator("handyclicks:editor");
 			while(ws.hasMoreElements()) {
@@ -127,9 +127,9 @@ var handyClicksEditor = {
 	},
 	watchLinkedFile: function(path, file) {
 		this._log("Editor: watchLinkedFile(): " + path);
-		var alf = this.ut.storage("activeLinkedFiles");
+		var alf = this.storage.get("activeLinkedFiles");
 		if(!alf) {
-			this.ut.storage("activeLinkedFiles", (alf = { __proto__: null }));
+			this.storage.set("activeLinkedFiles", (alf = { __proto__: null }));
 			this.watchLinkedFiles(true);
 		}
 		alf[path] = {
@@ -142,7 +142,7 @@ var handyClicksEditor = {
 	watchLinkedFiles: function(watch) {
 		this._log("Editor: watchLinkedFiles(" + watch + ")");
 		if(!watch)
-			this.ut.storage("activeLinkedFiles", undefined);
+			this.storage.set("activeLinkedFiles", undefined);
 		this.wu.forEachBrowserWindow(function(w) {
 			w.handyClicks.watchLinkedFiles(watch);
 		});
@@ -1361,7 +1361,7 @@ var handyClicksEditor = {
 		var tempDir = this.ps._tempDir;
 		if(!tempDir)
 			return false;
-		var activeFiles = this.ut.storage("activeTempFiles") || { __proto__: null };
+		var activeFiles = this.storage.get("activeTempFiles") || { __proto__: null };
 		var entries = tempDir.directoryEntries;
 		while(entries.hasMoreElements()) {
 			var entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
@@ -1681,10 +1681,10 @@ var handyClicksEditor = {
 		if(dontCopy)
 			return o;
 		this.markAs(this.$("hc-editor-funcTabbox"), "hc_copied");
-		return this.ut.storage("shortcut", o);
+		return this.storage.set("shortcut", o);
 	},
 	pasteShortcut: function(isDelayed, stored) {
-		stored = stored || this.ut.storage("shortcut");
+		stored = stored || this.storage.get("shortcut");
 		if(!stored)
 			return false;
 		var type = this.currentType;
@@ -1798,11 +1798,11 @@ var handyClicksEditor = {
 		this.setDialogButtons();
 	},
 	copyCustomType: function() {
-		this.ut.storage("type", this.getTypeObj());
+		this.storage.set("type", this.getTypeObj());
 		this.markAs(this.$("hc-editor-customTypeTabbox"), "hc_copied");
 	},
 	pasteCustomType: function() {
-		var stored = this.ut.storage("type");
+		var stored = this.storage.get("type");
 		if(!stored)
 			return;
 		this.initCustomTypesEditor(null, stored);

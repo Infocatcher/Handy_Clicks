@@ -3183,7 +3183,7 @@ var handyClicksSets = {
 		var isEmpty = !bakFiles.length;
 		var ubCount = 0;
 		var bytes = this.getLocalized("bytes");
-		var testBackupStatus = this.ut.storage("testBackupCreated") ? "thisSession" : "afterCrash";
+		var testBackupStatus = this.storage.get("testBackupCreated") ? "thisSession" : "afterCrash";
 
 		var df = document.createDocumentFragment();
 		bakFiles.sort(function(a, b) {

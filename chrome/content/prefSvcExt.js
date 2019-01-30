@@ -259,7 +259,7 @@ var handyClicksPrefSvcExt = {
 		this.ut.writeToFile(pStr, bakFile);
 		this.ut.deleteTemporaryFileOnExit(bakFile);
 
-		this.ut.storage("testBackupCreated", true);
+		this.storage.set("testBackupCreated", true);
 	},
 
 	exportFileData: function(files, code) {

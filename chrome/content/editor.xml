@@ -931,9 +931,9 @@
 					}
 					var ut = this.hcUtils;
 					if(isTemp && ut) {
-						var activeTempFiles = ut.storage("activeTempFiles");
+						var activeTempFiles = ut.g.storage.get("activeTempFiles");
 						if(!activeTempFiles)
-							ut.storage("activeTempFiles", (activeTempFiles = { __proto__: null }));
+							ut.g.storage.set("activeTempFiles", (activeTempFiles = { __proto__: null }));
 						activeTempFiles[file.path] = true;
 					}
 				]]>
@@ -955,7 +955,7 @@
 						file.remove(false);
 						var ut = this.hcUtils;
 						if(ut) {
-							var activeTempFiles = ut.storage("activeTempFiles");
+							var activeTempFiles = ut.g.storage.get("activeTempFiles");
 							if(activeTempFiles)
 								delete activeTempFiles[file.path];
 						}

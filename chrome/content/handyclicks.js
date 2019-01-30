@@ -100,7 +100,7 @@ var handyClicks = {
 			return;
 		this._hasListeners = enable;
 		this.setListeners(["mousedown", "click", "command", "mouseup", "dblclick", "contextmenu", "popupshowing"], enable);
-		if(!enable || this.ut.storage("activeLinkedFiles"))
+		if(!enable || this.storage.get("activeLinkedFiles"))
 			this.watchLinkedFiles(enable);
 		this._log("initListeners(" + enable + ")");
 	},
@@ -130,7 +130,7 @@ var handyClicks = {
 	checkLinkedFiles: function() {
 		this._focusHandlerTimer = 0;
 		this.watchLinkedFiles(false);
-		var alf = this.ut.storage("activeLinkedFiles");
+		var alf = this.storage.get("activeLinkedFiles");
 		if(!alf)
 			return;
 		var unchanged = true;
@@ -158,7 +158,7 @@ var handyClicks = {
 			window.addEventListener("blur", this, true);
 		else {
 			this._log("focusHandler() -> nothing to watch, remove storage");
-			this.ut.storage("activeLinkedFiles", undefined);
+			this.storage.set("activeLinkedFiles", undefined);
 		}
 		unchanged && this._log("focusHandler() -> linked files not changed");
 	},
