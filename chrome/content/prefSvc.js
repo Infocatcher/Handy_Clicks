@@ -415,7 +415,7 @@ var handyClicksPrefSvc = {
 			throw this.getLocalized("invalidFilePath").replace("%p", path);
 		var data = this.ut.readFromFile(file);
 		if(!data)
-			throw this.ut.getLocalized("fileNotFound").replace("%f", file.path);
+			throw this.getLocalized("fileNotFound").replace("%f", file.path);
 		expandCode._path = path;
 		return data;
 	},
@@ -720,12 +720,12 @@ var handyClicksPrefSvc = {
 		const src = "chrome://global-platform/locale/platformKeys.properties";
 		delete this.keys;
 		return this.keys = {
-			ctrl:  this.ut.getStr(src, "VK_CONTROL", "Ctrl"),
-			shift: this.ut.getStr(src, "VK_SHIFT", "Shift"),
-			alt:   this.ut.getStr(src, "VK_ALT", "Alt"),
-			meta:  this.ut.getStr(src, "VK_META", "Meta"),
-			os:    this.ut.getStr(src, "VK_WIN", "Win", this.ut.fxVersion > 3.6 ? undefined : -1),
-			sep:   this.ut.getStr(src, "MODIFIER_SEPARATOR", "+"),
+			ctrl:  this.getStr(src, "VK_CONTROL", "Ctrl"),
+			shift: this.getStr(src, "VK_SHIFT", "Shift"),
+			alt:   this.getStr(src, "VK_ALT", "Alt"),
+			meta:  this.getStr(src, "VK_META", "Meta"),
+			os:    this.getStr(src, "VK_WIN", "Win", this.ut.fxVersion > 3.6 ? undefined : -1),
+			sep:   this.getStr(src, "MODIFIER_SEPARATOR", "+"),
 			__proto__: null
 		};
 	},

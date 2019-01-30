@@ -397,7 +397,7 @@ var handyClicksUI = {
 	},
 	get escKey() {
 		delete this.escKey;
-		return this.escKey = this.ut.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE") || "Esc";
+		return this.escKey = this.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE") || "Esc";
 	},
 	setEditModeStatus: function(em) {
 		em = em === undefined ? this.editMode : em;

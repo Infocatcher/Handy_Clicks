@@ -842,7 +842,7 @@ var handyClicksFuncs = {
 
 	get defaultCharset() { // thanks to IE Tab!
 		delete this.defaultCharset;
-		return this.defaultCharset = this.ut.getStr("chrome://global-platform/locale/intl.properties", "intl.charset.default");
+		return this.defaultCharset = this.getStr("chrome://global-platform/locale/intl.properties", "intl.charset.default");
 	},
 	get charset() {
 		var charset = "";
