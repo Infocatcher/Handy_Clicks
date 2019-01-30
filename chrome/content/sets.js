@@ -77,7 +77,7 @@ var handyClicksSets = {
 			(this.ut.appInfo.name == "Pale Moon" ? this.ut.appVersion >= 27 : fxVersion >= 25)
 			&& this.ut.appInfo.OS == "WINNT"
 			&& this.ut.osVersion >= 6
-			&& document.querySelector(":-moz-system-metric(windows-default-theme)")
+			&& matchMedia("(-moz-windows-default-theme)").matches
 		)
 			this.tree.setAttribute("hc_hasOverlayBackground", "true");
 
