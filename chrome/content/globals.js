@@ -201,7 +201,9 @@ function initStorage() {
 		// Simple replacement for Application.storage
 		// See https://bugzilla.mozilla.org/show_bug.cgi?id=1090880
 		// Ensure, that we have global object (because window.Services may be overwritten)
-		var global = Components.utils["import"]("resource://gre/modules/Services.jsm", {});
+		var global = Components.utils.getGlobalForObject( // For Firefox 57+
+			Components.utils["import"]("resource://gre/modules/Services.jsm", {})
+		);
 		var storage = global[ns] || (global[ns] = global.Object.create(null));
 	}
 	else { // For old versions
