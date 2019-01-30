@@ -79,8 +79,13 @@ var handyClicksUtils = {
 			/ line (\d+) > Function$/.test(err.fileName) // Firefox 30+
 			&& RegExp.$1 == baseLine
 		)
-			return line; //~ todo: use mmLine() anyway ?
-		return this.mmLine(line - baseLine + 1);
+			return this.fixLineNumber(line); //~ todo: use mmLine() anyway ?
+		return this.mmLine(this.fixLineNumber(line) - baseLine + 1);
+	},
+	fixLineNumber: function(line) {
+		if((this.appInfo.name == "Firefox" || this.isSeaMonkey) && this.fxVersion >= 56)
+			return Math.max(1, line - 2); // O_o Strange things happens...
+		return line;
 	},
 	objProps: function(o, filter, skipNativeFuncs) {
 		if(this.isPrimitive(o))
