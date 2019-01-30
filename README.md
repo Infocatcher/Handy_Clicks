@@ -5,6 +5,8 @@ This is very old project (version 0.0.1.0a1 was created at 2008-08-28), it conta
 <br>Some old version and examples (also old) can be found <a href="http://infocatcher.ucoz.net/ext/fx/handy_clicks/hc_releases.html">here</a>.
 
 #### Compatibility
+Compatible with XUL-based browsers: Firefox 1.5 - 56, SeaMonkey 2.0+, Pale Moon, Basilisk.
+
 ##### Multi-process mode (Electrolysis)
 Not compatible, too many things should be rewritten (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/27">#27</a>).
 
