@@ -66,14 +66,8 @@ var g = window.handyClicksGlobals = {
 		catch(e) {
 			if(_callerLevel == -1)
 				return defaultStr || "";
-			var caller = Components.stack.caller;
-			while(caller && _callerLevel--)
-				caller = caller.caller;
-			g.ut._warn(
-				'Can\'t get localized string "' + sName + '" from "' + src + '"',
-				caller.filename,
-				caller.lineNumber
-			);
+			for(var c = Components.stack.caller; c && _callerLevel--; c = c.caller);
+			g.ut._warn('Can\'t get localized string "' + sName + '" from "' + src + '"', c.filename, c.lineNumber);
 		}
 		return defaultStr || "";
 	},
