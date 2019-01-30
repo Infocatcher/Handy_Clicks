@@ -1359,16 +1359,6 @@ var handyClicksUtils = {
 		elt.textContent = "";
 	},
 
-	storage: function(key, val) {
-		this._deprecated( //= Added: 2019-01-21
-			"handyClicksUtils.storage(key, val) is deprecated. "
-			+ "Use handyClicksGlobals.storage.get(key)/set(key, val) instead."
-		);
-		if(arguments.length == 1)
-			return this.g.storage.get(key);
-		return this.g.storage.set(key, val);
-	},
-
 	get xcr() {
 		delete this.xcr;
 		return this.xcr = Components.classes["@mozilla.org/chrome/chrome-registry;1"]
