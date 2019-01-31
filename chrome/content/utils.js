@@ -11,7 +11,6 @@ var handyClicksUtils = {
 			e = new Error(e, fileName || caller.filename, lineNumber || caller.lineNumber);
 		}
 		else {
-			var g = this.getGlobalForObject(e);
 			if(!e || typeof e != "object") {
 				//setTimeout(function() { throw e; }, 0);
 				Components.utils.reportError(e);
