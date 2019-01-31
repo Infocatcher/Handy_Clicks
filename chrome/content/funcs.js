@@ -597,7 +597,7 @@ var handyClicksFuncs = {
 					pw.focus();
 					if(fe)
 						fe.focus();
-				}, 5);
+				}, _this.pu.get("funcs.backgroundWindowDelay"));
 			},
 			false
 		);
