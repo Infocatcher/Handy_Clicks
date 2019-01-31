@@ -1096,8 +1096,8 @@ var handyClicksFuncs = {
 			_tabs.forEach(tbr.removeTab, tbr);
 	},
 	warnAboutClosingTabs: function(tabsToClose, tbr) {
-		// Based on code of Firefox 1.5 - 3.0
-		// "warnAboutClosingTabs" method in chrome://browser/content/tabbrowser.xml
+		// Based on code from Firefox 1.5 - 3.0 + changes from newer versions
+		// chrome://browser/content/tabbrowser.xml -> warnAboutClosingTabs()
 		tbr = tbr || this.hc.getTabBrowser();
 		tabsToClose = typeof tabsToClose == "number"
 			? tabsToClose
@@ -1117,6 +1117,13 @@ var handyClicksFuncs = {
 				: this.ut.fxVersion == 1.5
 					? tabsToClose == 1 ? "tabs.closeWarningOne"    : "tabs.closeWarningMultiple"
 					: tabsToClose == 1 ? "tabs.closeWarningOneTab" : "tabs.closeWarningMultipleTabs";
+			try {
+				var warningMessage = bundle.getFormattedString(messageKey, [tabsToClose]);
+			}
+			catch(e) { // Firefox 29+ (but not Pale Moon 28 and older)
+				warningMessage = PluralForm.get(tabsToClose, bundle.getString("tabs.closeWarningMultiple"))
+					.replace("#1", tabsToClose);
+			}
 			var closeKey = this.ut.isSeaMonkey
 				? "tabs.closeButton"
 				: tabsToClose == 1 ? "tabs.closeButtonOne" : "tabs.closeButtonMultiple";
@@ -1128,7 +1135,7 @@ var handyClicksFuncs = {
 			window.focus();
 			var buttonPressed = pSvc.confirmEx(window,
 				bundle.getString("tabs.closeWarningTitle"),
-				bundle.getFormattedString(messageKey, [tabsToClose]),
+				warningMessage,
 				  pSvc.BUTTON_POS_0 * pSvc.BUTTON_TITLE_IS_STRING
 				+ pSvc.BUTTON_POS_1 * pSvc.BUTTON_TITLE_CANCEL,
 				bundle.getString(closeKey),
