@@ -1,23 +1,21 @@
-// Implementation of handyclicks:// protocol
-// Some code based on code of following extensions:
+// Implementation of handyclicks:// protocol and command-line handler
+// Based on code from following extensions:
 //   * Adblock Plus 1.0.2 ( https://addons.mozilla.org/firefox/addon/1865 )
 //   * Custom Buttons 0.0.4.5 ( https://addons.mozilla.org/firefox/addon/2707 )
 
-// Implementation of command-line handler
-
-const cc = Components.classes,
-      ci = Components.interfaces,
-      cr = Components.results;
+const Cc = Components.classes,
+      Ci = Components.interfaces,
+      Cr = Components.results;
 
 const P_CID = Components.ID("{40835331-35F5-4bdf-85AB-6010E332D585}"),
       P_CONTRACTID = "@mozilla.org/network/protocol;1?name=handyclicks",
-      P_HANDLER = ci.nsIProtocolHandler,
+      P_HANDLER = Ci.nsIProtocolHandler,
       P_SCHEME = "handyclicks",
       P_NAME = "Handy Clicks protocol handler";
 
 const C_CID = Components.ID("{50C6263F-F53F-4fbd-A295-9BA84C5FAAC3}"),
       C_CONTRACTID = "@mozilla.org/commandlinehandler/general-startup;1?type=handyclicks",
-      C_HANDLER = ci.nsICommandLineHandler,
+      C_HANDLER = Ci.nsICommandLineHandler,
       C_CATEGORY = "m-handyclicks",
       C_ARG_DISABLE = "handyclicks-disable",
       C_ARG_DISABLE_INFO = "  -handyclicks-disable    Turn off Handy Clicks extension\n",
@@ -26,8 +24,8 @@ const C_CID = Components.ID("{50C6263F-F53F-4fbd-A295-9BA84C5FAAC3}"),
 var global = this;
 this.__defineGetter__("handyClicksGlobals", function() {
 	delete this.handyClicksGlobals;
-	cc["@mozilla.org/moz/jssubscript-loader;1"]
-		.getService(ci.mozIJSSubScriptLoader)
+	Cc["@mozilla.org/moz/jssubscript-loader;1"]
+		.getService(Ci.mozIJSSubScriptLoader)
 		.loadSubScript("chrome://handyclicks/content/globals.js");
 	return handyClicksGlobals;
 });
@@ -35,6 +33,7 @@ setTimeout(function() {
 	handyClicksGlobals.jsLoader.loadSubScript("chrome://handyclicks/content/uninstaller.js");
 }, 300);
 
+// https://bugzilla.mozilla.org/show_bug.cgi?id=1413413
 var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
 	.getService(Components.interfaces.nsIXULAppInfo);
 if(appInfo.name == "Firefox" && parseFloat(appInfo.version) >= 58) {
@@ -53,8 +52,8 @@ function handleURI(uri) {
 		g.wu.openEditorLink(uri);
 }
 function disable() {
-	cc["@mozilla.org/preferences-service;1"]
-		.getService(ci.nsIPrefBranch)
+	Cc["@mozilla.org/preferences-service;1"]
+		.getService(Ci.nsIPrefBranch)
 		.setBoolPref("extensions.handyclicks.enabled", false);
 }
 function hasPrefix(str, prefix) {
@@ -66,17 +65,9 @@ function hasPrefix(str, prefix) {
 	return f.apply(this, arguments);
 }
 
-/*
-function alert(s, title) {
-	cc["@mozilla.org/embedcomp/prompt-service;1"]
-		.getService(ci.nsIPromptService)
-		.alert(null, title || "Handy Clicks", s);
-}
-*/
-
 function setTimeout(callback, delay) {
-	var timer = cc["@mozilla.org/timer;1"]
-		.createInstance(ci.nsITimer);
+	var timer = Cc["@mozilla.org/timer;1"]
+		.createInstance(Ci.nsITimer);
 	timer.init({ observe: callback }, delay, timer.TYPE_ONE_SHOT);
 	return timer;
 }
@@ -95,10 +86,10 @@ const protocol = {
 		return false;
 	},
 	newURI: function(spec, originCharset, baseURI) {
-		var url = cc["@mozilla.org/network/standard-url;1"]
-			.createInstance(ci.nsIStandardURL);
-		url.init(ci.nsIStandardURL.URLTYPE_STANDARD, 0, spec, originCharset, baseURI);
-		return url.QueryInterface(ci.nsIURI);
+		var url = Cc["@mozilla.org/network/standard-url;1"]
+			.createInstance(Ci.nsIStandardURL);
+		url.init(Ci.nsIStandardURL.URLTYPE_STANDARD, 0, spec, originCharset, baseURI);
+		return url.QueryInterface(Ci.nsIURI);
 	},
 	newChannel: function(uri) {
 		//handleURI(uri.spec);
@@ -130,48 +121,47 @@ const factory = {
 	// nsIFactory interface implementation
 	createInstance: function(outer, iid) {
 		if(outer != null)
-			throw cr.NS_ERROR_NO_AGGREGATION;
-		//init();
+			throw Cr.NS_ERROR_NO_AGGREGATION;
 		if(iid.equals(P_HANDLER))
 			return protocol;
 		if(iid.equals(C_HANDLER))
 			return cmdLine;
-		throw cr.NS_ERROR_NO_INTERFACE;
+		throw Cr.NS_ERROR_NO_INTERFACE;
 	},
 	lockFactory: function(lock) {
-		throw cr.NS_ERROR_NOT_IMPLEMENTED;
+		throw Cr.NS_ERROR_NOT_IMPLEMENTED;
 	},
 	// nsISupports interface implementation
 	QueryInterface: function(iid) {
-		if(iid.equals(ci.nsISupports) || iid.equals(ci.nsIFactory))
+		if(iid.equals(Ci.nsISupports) || iid.equals(Ci.nsIFactory))
 			return this;
-		throw cr.NS_ERROR_NO_INTERFACE;
+		throw Cr.NS_ERROR_NO_INTERFACE;
 	}
 };
 
 const module = {
 	get catMan() {
-		return cc["@mozilla.org/categorymanager;1"]
-			.getService(ci.nsICategoryManager);
+		return Cc["@mozilla.org/categorymanager;1"]
+			.getService(Ci.nsICategoryManager);
 	},
 	// nsIModule interface implementation
 	registerSelf: function(compMgr, fileSpec, location, type) {
-		compMgr.QueryInterface(ci.nsIComponentRegistrar);
+		compMgr.QueryInterface(Ci.nsIComponentRegistrar);
 		compMgr.registerFactoryLocation(P_CID, P_NAME, P_CONTRACTID, fileSpec, location, type);
 		compMgr.registerFactoryLocation(C_CID, C_NAME, C_CONTRACTID, fileSpec, location, type);
 		this.catMan.addCategoryEntry("command-line-handler", C_CATEGORY, C_CONTRACTID, false, true);
 	},
 	unregisterSelf: function(compMgr, fileSpec, location) {
-		compMgr.QueryInterface(ci.nsIComponentRegistrar);
+		compMgr.QueryInterface(Ci.nsIComponentRegistrar);
 		compMgr.unregisterFactoryLocation(P_CID, fileSpec);
 		compMgr.unregisterFactoryLocation(C_CID, fileSpec);
 		this.catMan.deleteCategoryEntry("command-line-handler", C_CATEGORY, false);
 	},
 	getClassObject: function(compMgr, cid, iid) {
 		if(!cid.equals(P_CID) && !cid.equals(C_CID))
-			throw cr.NS_ERROR_NO_INTERFACE;
-		if(!iid.equals(ci.nsIFactory))
-			throw cr.NS_ERROR_NOT_IMPLEMENTED;
+			throw Cr.NS_ERROR_NO_INTERFACE;
+		if(!iid.equals(Ci.nsIFactory))
+			throw Cr.NS_ERROR_NOT_IMPLEMENTED;
 		return factory;
 	},
 	canUnload: function(compMgr) {
@@ -184,6 +174,6 @@ function NSGetModule(comMgr, fileSpec) {
 }
 function NSGetFactory(cid) {
 	if(!cid.equals(P_CID) && !cid.equals(C_CID))
-		throw cr.NS_ERROR_FACTORY_NOT_REGISTERED;
+		throw Cr.NS_ERROR_FACTORY_NOT_REGISTERED;
 	return factory;
 }
