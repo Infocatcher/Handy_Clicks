@@ -11,7 +11,8 @@ Compatible with XUL-based browsers: Firefox 1.5 - 56, SeaMonkey 2.0+, Pale Moon,
 Not compatible, too many things should be rewritten (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/27">#27</a>).
 
 ##### Firefox 57+ (Quantum)
-Partially compatible, but may be fixed (and installed with some hacks).
+Partially compatible and may be fixed (and installed with some hacks).
+<br>Settings window doesn't work in Firefox 59+ due to removed XBL bindings (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1379338">bug 1379338</a>).
 <br>Not compatible with Firefox 61+ due to removed XUL overlays (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1448162">bug 1448162</a>).
 
 ##### Clickable tab bar
