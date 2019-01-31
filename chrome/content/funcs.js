@@ -1106,7 +1106,7 @@ var handyClicksFuncs = {
 		if(tabsToClose <= 1)
 			return reallyClose;
 		const pref = "browser.tabs.warnOnClose";
-		var shouldPrompt = tbr.mPrefs.getBoolPref(pref);
+		var shouldPrompt = this.pu.getPref(pref);
 		if(shouldPrompt) {
 			var pSvc = this.ut.promptsSvc;
 			// default to true: if it were false, we wouldn't get this far
@@ -1146,7 +1146,7 @@ var handyClicksFuncs = {
 			reallyClose = buttonPressed == 0;
 			// don't set the pref unless they press OK and it's false
 			if(reallyClose && !warnOnClose.value)
-				tbr.mPrefs.setBoolPref(pref, false);
+				this.pu.setPref(pref, false);
 		}
 		return reallyClose;
 	},
