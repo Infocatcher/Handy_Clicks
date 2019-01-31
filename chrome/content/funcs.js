@@ -582,36 +582,28 @@ var handyClicksFuncs = {
 		return win;
 	},
 	get winEvt() {
-		return this.ut.fxVersion >= 3.7 ? "load" : "resize";
+		delete this.winEvt;
+		return this.winEvt = this.ut.fxVersion > 3.6 ? "load" : "resize";
 	},
 	initZLevelRestoring: function(win) {
 		var pw = window;
 		var _this = this;
-		win.addEventListener(
-			this.winEvt,
-			function _rs(e) {
-				win.removeEventListener(e.type, _rs, false);
-				setTimeout(function() {
-					var fe = pw.document.commandDispatcher.focusedElement;
-					_this.restoreZLevel(win);
-					pw.focus();
-					if(fe)
-						fe.focus();
-				}, _this.pu.get("funcs.backgroundWindowDelay"));
-			},
-			false
-		);
+		win.addEventListener(this.winEvt, function onLoad(e) {
+			win.removeEventListener(e.type, onLoad, false);
+			setTimeout(function() {
+				var fe = pw.document.commandDispatcher.focusedElement;
+				_this.restoreZLevel(win);
+				pw.focus();
+				fe && fe.focus();
+			}, _this.pu.get("funcs.backgroundWindowDelay"));
+		}, false);
 	},
 	initWindowMoving: function(win, x, y, w, h) {
-		win.addEventListener(
-			this.winEvt,
-			function _rs(e) {
-				win.removeEventListener(e.type, _rs, false);
-				win.moveTo(x, y);
-				win.resizeTo(w, h);
-			},
-			false
-		);
+		win.addEventListener(this.winEvt, function onLoad(e) {
+			win.removeEventListener(e.type, onLoad, false);
+			win.moveTo(x, y);
+			win.resizeTo(w, h);
+		}, false);
 	},
 	restoreZLevel: function(win) {
 		var xulWin = this.wu.getXulWin(win);
