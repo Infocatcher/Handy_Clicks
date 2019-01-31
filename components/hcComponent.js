@@ -35,6 +35,16 @@ setTimeout(function() {
 	handyClicksGlobals.jsLoader.loadSubScript("chrome://handyclicks/content/uninstaller.js");
 }, 300);
 
+var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
+	.getService(Components.interfaces.nsIXULAppInfo);
+if(appInfo.name == "Firefox" && parseFloat(appInfo.version) >= 58) {
+	var Preferences = Components.utils["import"]("resource://gre/modules/Preferences.jsm", {}).Preferences;
+	var prefs = new Preferences({ defaultBranch: true });
+	handyClicksGlobals.jsLoader.loadSubScript("chrome://handyclicks-icon/skin/defaults/preferences/hcPrefs.js", {
+		pref: prefs.set.bind(prefs)
+	}, "UTF-8");
+}
+
 function handleURI(uri) {
 	var g = handyClicksGlobals;
 	if(hasPrefix(uri, g.ct.PROTOCOL_SETTINGS))
