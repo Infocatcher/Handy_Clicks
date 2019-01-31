@@ -353,8 +353,13 @@ var handyClicksFuncs = {
 		try {
 			if("checkLoadURIStrWithPrincipal" in secMan) // Firefox 3.0+
 				secMan.checkLoadURIStrWithPrincipal(doc.nodePrincipal, url, secMan.STANDARD);
-			else
+			else {
+				if(this.ut.isChromeDoc(doc)) {
+					this._log("Alloy to open everything from privileged document " + doc.documentURI);
+					return;
+				}
 				secMan.checkLoadURIStr(doc.documentURI, url, secMan.STANDARD);
+			}
 		}
 		catch(e) {
 			Components.utils.reportError(e);
