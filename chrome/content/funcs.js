@@ -1289,6 +1289,22 @@ var handyClicksFuncs = {
 		if(parseInt(w) > 24 || parseInt(h) > 24)
 			stl.setProperty("background", "url(\"" + this.dt.loading + "\") center no-repeat", "important");
 
+		var _this = this;
+		function resetSrc() {
+			img.addEventListener("load", function onLoad() {
+				img.removeEventListener("load", onLoad, false);
+				function done(e) {
+					img.removeEventListener("load", done, false);
+					img.removeEventListener("error", done, false);
+					_this.attribute(img, "style", origStyle, true);
+				}
+				img.addEventListener("load", done, false);
+				img.addEventListener("error", done, false);
+				img.src = src;
+			}, false);
+			img.src = _this.dt.spacer; // transparent gif 1x1
+		}
+
 		// See https://github.com/Infocatcher/Custom_Buttons/tree/master/Reload_Broken_Images
 		if(img instanceof Components.interfaces.nsIImageLoadingContent && img.currentURI) try {
 			var uri = img.currentURI;
@@ -1301,24 +1317,19 @@ var handyClicksFuncs = {
 					.getService(Components.interfaces.imgICache);
 			if(cache.findEntryProperties(uri))
 				cache.removeEntry(uri);
+			resetSrc();
 		}
 		catch(e) {
-			Components.utils.reportError(e);
+			// imgICache.removeEntry() removed in Firefox 44+:
+			// https://bugzilla.mozilla.org/show_bug.cgi?id=1202085#c39
+			if(("" + e).indexOf("removeEntry is not a function") == -1)
+				Components.utils.reportError(e);
+			var req = new XMLHttpRequest();
+			req.open("GET", src, true);
+			req.channel.loadFlags |= Components.interfaces.nsIRequest.LOAD_BYPASS_CACHE;
+			req.onload = req.onerror = resetSrc;
+			req.send(null);
 		}
-
-		var _this = this;
-		img.addEventListener("load", function onLoad() {
-			img.removeEventListener("load", onLoad, false);
-			function done(e) {
-				img.removeEventListener("load", done, false);
-				img.removeEventListener("error", done, false);
-				_this.attribute(img, "style", origStyle, true);
-			}
-			img.addEventListener("load", done, false);
-			img.addEventListener("error", done, false);
-			img.src = src;
-		}, false);
-		img.src = this.dt.spacer; // transparent gif 1x1
 	},
 	copyImg: function(e, img) {
 		img = img || this.hc.item;
