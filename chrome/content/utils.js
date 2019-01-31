@@ -10,12 +10,9 @@ var handyClicksUtils = {
 				caller = caller.caller;
 			e = new Error(e, fileName || caller.filename, lineNumber || caller.lineNumber);
 		}
-		else {
-			if(!e || typeof e != "object") {
-				//setTimeout(function() { throw e; }, 0);
-				Components.utils.reportError(e);
-				return;
-			}
+		else if(!e || typeof e != "object") {
+			Components.utils.reportError(e);
+			return;
 		}
 		var cErr = Components.classes["@mozilla.org/scripterror;1"]
 			.createInstance(Components.interfaces.nsIScriptError);
