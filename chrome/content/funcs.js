@@ -1144,7 +1144,11 @@ var handyClicksFuncs = {
 			var pSvc = this.ut.promptsSvc;
 			// default to true: if it were false, we wouldn't get this far
 			var warnOnClose = { value: true };
-			var bundle = tbr.mStringBundle;
+			var bundle = tbr.mStringBundle || {
+				getString: function(name) { // Firefox 58+
+					return gTabBrowserBundle.GetStringFromName(name);
+				}
+			};
 			var messageKey = this.ut.isSeaMonkey
 				? "tabs.closeWarning"
 				: this.ut.fxVersion == 1.5
