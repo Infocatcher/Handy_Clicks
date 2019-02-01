@@ -216,6 +216,8 @@ var handyClicksUtils = {
 			&& this.wu.wm.getEnumerator("handyclicks:notify");
 		if(ws) while(ws.hasMoreElements()) {
 			var w = ws.getNext();
+			if(w.closed)
+				continue;
 			var arg = w.arguments && w.arguments[0];
 			var optsStr = optsStr || this._stringifyOpts(opts);
 			if(arg && this._stringifyOpts(arg) == optsStr) {
