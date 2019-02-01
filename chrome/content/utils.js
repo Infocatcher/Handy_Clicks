@@ -40,31 +40,15 @@ var handyClicksUtils = {
 		var caller = Components.stack.caller.caller.caller;
 		this._warn(msg, caller.filename, caller.lineNumber);
 	},
-	_stack: function _stack(desc, isWarning) {
-		if(desc)
-			desc += " ";
-		for(
-			var stackFrame = Components.stack.caller, funcCaller = _stack.caller, i = 0;
-			stackFrame && stackFrame.filename;
-			stackFrame = stackFrame.caller, funcCaller = funcCaller ? funcCaller.caller : null, ++i
-		) {
-			var line = "";
-			var req = new XMLHttpRequest();
-			req.onload = function() {
-				line = (req.responseText.split(/\r\n?|\n\r?/)[stackFrame.lineNumber - 1] || "")
-					.replace(/^\s+/, "");
-			};
-			req.open("GET", stackFrame.filename, false);
-			try {
-				req.send(null);
-			}
-			catch(e) {
-			}
-			var funcDesc = String(funcCaller).match(/^.*/)[0].substr(0, 100)
-				+ " \u2026\n"
-				+ line;
-			this._err(desc + "[stack: " + i + "] " + funcDesc, stackFrame.filename, stackFrame.lineNumber, isWarning);
-		}
+	_stack: function _stack(prefix) {
+		prefix = prefix || "";
+		var callers = [];
+		for(var cl = Components.stack.caller; cl; cl = cl.caller)
+			callers.push(cl);
+		var cnt = callers.length;
+		callers.forEach(function(cl, i) {
+			this._err(prefix + "[stack: " + ++i + "/" + cnt + "] " + cl, cl.filename, cl.lineNumber, true);
+		}, this);
 	},
 	getLineNumber: function(err) {
 		return err && (err.lineNumber || err.lineno) || undefined;
