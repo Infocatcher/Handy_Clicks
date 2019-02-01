@@ -866,7 +866,11 @@ var handyClicks = {
 			return null;
 		}
 		if(
-			/(?:^|\s)treestyletab-toolbar-inner-box(?:\s|$)/.test(it.className)
+			(
+				/(?:^|\s)treestyletab-toolbar-inner-box(?:\s|$)/.test(it.className)
+				|| it.classList && it.classList.contains("titlebar-placeholder")
+					&& /^(?:pre|post)-tabs$/.test(it.getAttribute("type"))
+			)
 			&& it.parentNode.id == "TabsToolbar"
 		)
 			return it.parentNode.getElementsByAttribute("id", "tabbrowser-tabs")[0];
