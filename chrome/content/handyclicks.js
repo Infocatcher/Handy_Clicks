@@ -849,21 +849,18 @@ var handyClicks = {
 		var itln = it.localName.toLowerCase();
 		if(itln == "toolbarbutton")
 			return null;
-		if(itln == "toolbarspacer") { // <toolbarspacer/><tabs/><toolbarspacer/> in Firefox 4
+		if(itln == "toolbarspacer") { // <toolbarspacer/><tabs/><toolbarspacer/> in Firefox 4+
 			var tabsId = "tabbrowser-tabs";
-			for(var tabs = it.nextSibling; tabs; tabs = tabs.nextSibling) {
-				if(tabs.id == tabsId)
-					return tabs;
-				if(tabs.localName != "toolbarspacer")
-					break;
-			}
-			for(var tabs = it.previousSibling; tabs; tabs = tabs.previousSibling) {
-				if(tabs.id == tabsId)
-					return tabs;
-				if(tabs.localName != "toolbarspacer")
-					break;
-			}
-			return null;
+			var siblingTabs = function(sibling) {
+				for(var tabs = it; (tabs = tabs[sibling]); ) {
+					if(tabs.id == tabsId)
+						return tabs;
+					if(tabs.localName != "toolbarspacer")
+						break;
+				}
+				return null;
+			};
+			return siblingTabs("nextSibling") || siblingTabs("previousSibling");
 		}
 		if(
 			(
