@@ -4,28 +4,17 @@
 		<implementation>
 			<!-- Forbid browser.preferences.animateFadeIn (we have buggy tree pane resizing) -->
 			<field name="_shouldAnimate">false</field>
-			<field name="_hcInstantApply">undefined</field>
 			<property name="instantApply">
 				<getter>
 				<![CDATA[
-					var instantApply = this._hcInstantApply;
-					if(instantApply === undefined) {
-						instantApply = false; // Fallback value
-						try {
-							var prefs = Components.classes["@mozilla.org/preferences-service;1"]
-								.getService(Components.interfaces.nsIPrefBranch);
-							var ovr = prefs.getIntPref("extensions.handyclicks.sets.overrideInstantApply");
-							if(ovr == -1)
-								instantApply = prefs.getBoolPref("browser.preferences.instantApply");
-							else
-								instantApply = !!ovr;
-						}
-						catch(e) {
-							Components.utils.reportError(e);
-						}
-						this._hcInstantApply = instantApply;
-					}
-					return instantApply;
+					if("_hcInstantApply" in this)
+						return this._hcInstantApply;
+					var prefs = Components.classes["@mozilla.org/preferences-service;1"]
+						.getService(Components.interfaces.nsIPrefBranch);
+					var ovr = prefs.getIntPref("extensions.handyclicks.sets.overrideInstantApply", 0);
+					return this._hcInstantApply = ovr == -1
+						? prefs.getBoolPref("browser.preferences.instantApply", false)
+						: !!ovr;
 				]]>
 				</getter>
 				<setter>
@@ -35,9 +24,7 @@
 	</binding>
 	<binding id="preferences" extends="chrome://handyclicks-quantum/content/preferences.xml#preferences">
 		<implementation>
-			<property name="instantApply"
-				onget="return document.documentElement.instantApply;"
-				onset="" />
+			<property name="instantApply" onget="return document.documentElement.instantApply;" />
 		</implementation>
 	</binding>
 </bindings>
