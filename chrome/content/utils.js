@@ -32,13 +32,9 @@ var handyClicksUtils = {
 		// Bug: any string is shown as 1 line in Firefox 2.0 and older
 		this._err(e, fileName, lineNumber, true);
 	},
-	_deprecated: function(msg) {
-		var caller = Components.stack.caller.caller;
-		this._warn(msg, caller.filename, caller.lineNumber);
-	},
-	_deprecatedCaller: function(msg) {
-		var caller = Components.stack.caller.caller.caller;
-		this._warn(msg, caller.filename, caller.lineNumber);
+	_deprecated: function(msg, callerLevel) {
+		for(var c = Components.stack.caller.caller; c && callerLevel--; c = c.caller);
+		this._warn(msg, c.filename, c.lineNumber);
 	},
 	_stack: function _stack(prefix) {
 		prefix = prefix || "";
@@ -268,9 +264,9 @@ var handyClicksUtils = {
 		return uneval(tmp);
 	},
 	_convertNotifyArgs: function(msg, header, funcLeftClick, funcMiddleClick, icon, parentWindow, inWindowCorner) {
-		this._deprecatedCaller( //= Added: 2018-12-18
+		this._deprecated( //= Added: 2018-12-18
 			'handyClicksUtils.notify(msg, header, ...) is deprecated. '
-			+ 'Use handyClicksUtils.notify(msg, { title: "", ...}) instead.'
+			+ 'Use handyClicksUtils.notify(msg, { title: "", ...}) instead.', 1
 		);
 		return {
 			title: header,
