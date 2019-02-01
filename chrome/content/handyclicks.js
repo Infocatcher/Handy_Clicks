@@ -875,7 +875,7 @@ var handyClicks = {
 			itln = it.localName.toLowerCase();
 			if(itln == "tab" || itln == "toolbarbutton")
 				return null;
-			if(/(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(it.className))
+			if(it.id == "tabbrowser-tabs" || /(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(it.className))
 				return it;
 		}
 		return null;
