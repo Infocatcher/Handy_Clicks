@@ -116,6 +116,16 @@
 `-` Removed `handyClicksCleanupSvc.registerNodeCleanup()` API: too bad for performance and useless in most cases, removed `handyClicksCleanupSvc.registerCleanup(func, context, args)`, use `handyClicksRegSvc.registerCleanup(func, context)` instead (see <a href="https://github.com/Infocatcher/Handy_Clicks/issues/13">#13</a>).<br>
 `*` Improved startup performance: don't load winUtils.js from uninstaller.js.<br>
 `*` Changed API: `handyClicksUtils.storage(key, val)` replaced with `handyClicksGlobals.storage.get(key)/set(key, val)`.<br>
+`x` Fixed `handyClicksGlobals.storage` in Firefox 57+.<br>
+`x` Fixed ability to choose files in Firefox 57+ (used hack to make nsIFilePicker synchronous).<br>
+`x` Fixed error line numbers in Firefox 56+ (looks like Firefox bug, now always decremented by 2).<br>
+`x` Fixed preferences handling in Firefox 58+: now used nsIPrefBranch.getStringPref()/setStringPref().<br>
+`x` Fixed Windows default theme detection in Firefox 58+ for correct tree styles.<br>
+`x` Fixed close tabs warning in Firefox 29+ and Basilisk (<em>browser.tabs.warnOnClose</em> preference).<br>
+`x` Fixed open in background window in new Firefox versions (added <em>extensions.handyclicks.funcs.backgroundWindowDelay</em> preference).<br>
+`x` Restored default preferences in Firefox 58+.<br>
+`x` Workaround to reload image in Firefox 44+ (imgICache.removeEntry() is gone… <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1202085#c39">bug 1202085</a>).<br>
+`x` Force use 16×16 icons for toolbar button in Firefox 59+.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)

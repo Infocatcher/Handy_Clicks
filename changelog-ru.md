@@ -116,6 +116,16 @@
 `-` Удалено API `handyClicksCleanupSvc.registerNodeCleanup()`: слишком вредно для производительности и бесполезно в большинстве случаев, удалено `handyClicksCleanupSvc.registerCleanup(func, context, args)`, используйте вместо него `handyClicksRegSvc.registerCleanup(func, context)` (см. <a href="https://github.com/Infocatcher/Handy_Clicks/issues/13">#13</a>).<br>
 `*` Улучшена производительность при запуске: теперь winUtils.js не загружается из uninstaller.js.<br>
 `*` Изменено API: `handyClicksUtils.storage(key, val)` заменен на `handyClicksGlobals.storage.get(key)/set(key, val)`.<br>
+`x` Исправлено `handyClicksGlobals.storage` в Firefox 57+.<br>
+`x` Исправлена возможность выбора файлов в Firefox 57+ (используется хак, чтобы сделать nsIFilePicker синхронным).<br>
+`x` Исправлены номера строк с ошибками в Firefox 56+ (похоже на баг в Firefox, теперь из номера строки всегда вычитается 2).<br>
+`x` Исправлена обработка настроек в Firefox 58+: теперь используется nsIPrefBranch.getStringPref()/setStringPref().<br>
+`x` Исправлено определение темы Windows по умолчанию в Firefox 58+ для корректной раскраски дерева.<br>
+`x` Исправлено предупреждение при закрытии вкладок в Firefox 29+ и Basilisk (настройка <em>browser.tabs.warnOnClose</em>).<br>
+`x` Исправлено открытие окон в фоне в новых версиях Firefox (добавлена настройка <em>extensions.handyclicks.funcs.backgroundWindowDelay</em>).<br>
+`x` Восстановлена загрузка настроек по умолчанию в Firefox 58+.<br>
+`x` Исправлено обновление изображений в Firefox 44+ (imgICache.removeEntry() удален… <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1202085#c39">bug 1202085</a>).<br>
+`x` Теперь принудительно используются иконки 16×16 для кнопки на панели инструментов в Firefox 59+.<br>
 `*` Многочисленные внутренние улучшения кода.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
