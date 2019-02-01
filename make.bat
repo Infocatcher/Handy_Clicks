@@ -40,7 +40,7 @@ if not exist %_out_tmp% (
 	del %_out_tmp%
 )
 
-set _files=install.rdf *.manifest *.js *.jsm *.xul *.xml *.html *.css license* *.png defaults modules components locale chrome idl
+set _files=install.rdf *.manifest *.js *.jsm *.xul *.xml *.html *.css license* *.png defaults modules components locale chrome idl quantum
 if exist %_7zip% (
 	echo =^> %_7zip%
 	%_7zip% a -tzip -mx9 -mfb=258 -mpass=15 -- %_out_tmp% %_files%

@@ -1,0 +1,7 @@
+# Used code from Firefox 58
+content handyclicks-quantum ./
+override chrome://handyclicks/content/prefwindow.xml#prefwindow  chrome://handyclicks-quantum/content/prefwindow.xml#prefwindow
+override chrome://handyclicks/content/prefwindow.xml#preferences chrome://handyclicks-quantum/content/prefwindow.xml#preferences
+style chrome://handyclicks/content/sets.xul chrome://handyclicks-quantum/content/xul.css
+locale handyclicks-quantum en-US locale/en-US/
+locale handyclicks-quantum ru    locale/ru/
