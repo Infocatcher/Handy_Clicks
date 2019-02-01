@@ -126,6 +126,7 @@
 `x` Restored default preferences in Firefox 58+.<br>
 `x` Workaround to reload image in Firefox 44+ (imgICache.removeEntry() is gone… <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1202085#c39">bug 1202085</a>).<br>
 `x` Force use 16×16 icons for toolbar button in Firefox 59+.<br>
+`x` Restored settings window in Firefox 59+: used XBL bindings and styles from Firefox 58 to restore &lt;prefwindow&gt; (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1379338">bug 1379338</a>).<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
