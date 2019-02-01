@@ -9,6 +9,7 @@
 /* 16x16 status icons */
 #handyClicks-statusbarButton,
 toolbar[iconsize="small"] #handyClicks-toolbarButton,
+toolbar:not([iconsize]) .customization-target > #handyClicks-toolbarButton, /* Firefox 59+ */ 
 #handyClicks-toolsMenuitem,
 #handyClicks-appMenuitem {
 	list-style-image: url("icons16.png");
@@ -16,6 +17,7 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton,
 }
 #handyClicks-statusbarButton[hc_enabled="false"],
 toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
+toolbar:not([iconsize]) .customization-target > #handyClicks-toolbarButton[hc_enabled="false"],
 #handyClicks-toolsMenuitem[hc_enabled="false"],
 #handyClicks-appMenuitem[hc_enabled="false"] {
 	-moz-image-region: rect(0 32px 16px 16px);
@@ -44,16 +46,19 @@ toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_enabled="false"],
 /* 16x16 mouse buttons icons */
 #handyClicks-statusbarButton[hc_button="0"],
 toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="0"],
+toolbar:not([iconsize]) .customization-target > #handyClicks-toolbarButton[hc_button="0"],
 #handyClicks-editModeTip-icon[hc_button="0"] {
 	-moz-image-region: rect(0 48px 16px 32px);
 }
 #handyClicks-statusbarButton[hc_button="1"],
 toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="1"],
+toolbar:not([iconsize]) .customization-target > #handyClicks-toolbarButton[hc_button="1"],
 #handyClicks-editModeTip-icon[hc_button="1"] {
 	-moz-image-region: rect(0 64px 16px 48px);
 }
 #handyClicks-statusbarButton[hc_button="2"],
 toolbar[iconsize="small"] #handyClicks-toolbarButton[hc_button="2"],
+toolbar:not([iconsize]) .customization-target > #handyClicks-toolbarButton[hc_button="2"],
 #handyClicks-editModeTip-icon[hc_button="2"] {
 	-moz-image-region: rect(0 80px 16px 64px);
 }
