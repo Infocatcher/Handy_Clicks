@@ -413,16 +413,22 @@ var handyClicksUI = {
 		act.call(window, "mouseout",  this, true);
 		if(em)
 			this.notifyEditMode();
-		else
+		else {
 			this.emtt.hidePopup();
+			this._emNotify = null;
+		}
 	},
-	notifyEditMode: function(force) {
+	_emNotify: null,
+	notifyEditMode: function(underCursor) {
 		var nem = this.pu.get("notifyEditMode");
 		if(
-			nem == 1 && (this._temFromKey && !this.controlsVisible || force)
+			nem == 1 && (this._temFromKey && !this.controlsVisible)
 			|| nem == 2
 		) {
-			this.ut.notifyInWindowCorner(this.getLocalized("editModeNote").replace("%key", this.escKey), {
+			if(this._emNotify && !this._emNotify.closed)
+				this._emNotify.close();
+			this._emNotify = this.ut.notify(this.getLocalized("editModeNote").replace("%key", this.escKey), {
+				inWindowCorner: !underCursor,
 				title: this.getLocalized("editModeTitle"),
 				onLeftClick: function() {
 					this.editMode = false;

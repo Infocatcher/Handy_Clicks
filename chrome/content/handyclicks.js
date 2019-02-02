@@ -303,7 +303,7 @@ var handyClicks = {
 		else if(this.editMode) {
 			var tar = e.originalTarget;
 			if(!this.isMenu(tar))
-				this.ui.notifyEditMode();
+				this.ui.notifyEditMode(true);
 		}
 	},
 	mouseupHandler: function(e) {
