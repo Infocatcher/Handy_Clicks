@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* set default namespace to XUL */
+@namespace html url("http://www.w3.org/1999/xhtml"); /* namespace for HTML elements */
 
 /* From chrome://global/skin/global.css */
 /* ::::: root elements ::::: */
@@ -63,4 +64,28 @@ radio[pane] {
 
 prefwindow[chromehidden~="toolbar"] .chromeclass-toolbar {
   display: none;
+}
+
+/* Firefox 60, see https://bugzilla.mozilla.org/show_bug.cgi?id=1429573 */
+textbox[type="number"][size="2"] { width: calc(2ch + 24px); }
+textbox[type="number"][size="3"] { width: calc(3ch + 24px); }
+textbox[type="number"][size="5"] { width: calc(5ch + 24px); }
+textbox[type="number"][size="7"] { width: calc(7ch + 24px); }
+textbox[type="number"][size="8"] { width: calc(8ch + 24px); }
+
+textbox[type="number"] html|*.numberbox-input::-moz-number-wrapper {
+	cursor: default;
+}
+textbox[type="number"] html|*.numberbox-input::-moz-number-spin-box {
+	position: relative !important; /* Fix accessibility */
+	z-index: 1000 !important;
+
+	margin-top: -2px !important;
+	margin-bottom: -3px !important;
+	margin-inline-end: -4px !important;
+}
+textbox[type="number"] html|*.numberbox-input::-moz-number-spin-up,
+textbox[type="number"] html|*.numberbox-input::-moz-number-spin-down {
+	min-width: 13px !important;
+	min-height: 11px !important;
 }
