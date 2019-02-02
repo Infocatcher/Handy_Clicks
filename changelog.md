@@ -127,6 +127,10 @@
 `x` Workaround to reload image in Firefox 44+ (imgICache.removeEntry() is gone… <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1202085#c39">bug 1202085</a>).<br>
 `x` Force use 16×16 icons for toolbar button in Firefox 59+.<br>
 `x` Restored settings window in Firefox 59+: used XBL bindings and styles from Firefox 58 to restore &lt;prefwindow&gt; (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1379338">bug 1379338</a>).<br>
+`x` Fixed tabs toolbar detection in Firefox 58+.<br>
+`*` Changed edit mode notification: close previous notification, open under cursor after click on unsupported element and close after exiting from edit mode.<br>
+`+` Added ability to localize custom labels, example: “Function name @ru:Имя функции” (“default text @locale1:… @locale2:…”).<br>
+`x` Fixed scripts reloader (Ctrl+Alt+R, <em>extensions.handyclicks.debug</em> = true) in Firefox 59+: chrome://…/_reloader.js doesn't work anymore, just renamed to reloader.js.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
