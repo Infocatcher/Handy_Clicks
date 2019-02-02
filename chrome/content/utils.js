@@ -397,20 +397,11 @@ var handyClicksUtils = {
 			this._entities[eName] = this.getEntity(eName, dtds) || this.makeBuggyStr(eName)
 		);
 	},
-
 	makeBuggyStr: function(s) {
 		return "(" + s + ")\u034f";
 	},
 	isBuggyStr: function(s) {
 		return s && /^\(.*\)\u034f$/.test(s);
-	},
-
-	errInfo: function(textId, label, type, err) {
-		return this.getLocalized(textId)
-			+ this.getLocalized("errorDetails")
-				.replace("%label", label)
-				.replace("%type", type)
-				.replace("%err", err);
 	},
 
 	getFileParent: function(file) {

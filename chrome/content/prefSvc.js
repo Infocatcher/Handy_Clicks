@@ -292,7 +292,7 @@ var handyClicksPrefSvc = {
 			var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
 				+ ("_contextMenuLine" in ct ? this.ct.EDITOR_TYPE_CONTEXT : this.ct.EDITOR_TYPE_DEFINE)
 				+ "?line=" + eLine;
-			var eMsg = this.ut.errInfo("customTypeCompileError", ct.label, type, e);
+			var eMsg = this.errInfo("customTypeCompileError", ct.label, type, e);
 			this.ut.notifyError(eMsg, {
 				buttons: {
 					$openEditor: this.wu.getOpenEditorLink(href, eLine),
@@ -386,7 +386,7 @@ var handyClicksPrefSvc = {
 			var href = fObj._editorLink = this.hc.getEditorLink() + "?line=" + eLine;
 			var eKey = code ? "customFunctionCompileError" : "customFunctionLinkedFileError";
 			var typeLabel = this.hc.itemType + (isDeleyed ? " + delayed" : "");
-			var eMsg = this.ut.errInfo(eKey, fObj.label, typeLabel, err);
+			var eMsg = this.errInfo(eKey, fObj.label, typeLabel, err);
 			this.ut.notifyError(eMsg, { buttons: {
 				$openEditor: this.wu.getOpenEditorLink(href, eLine),
 				$openConsole: this.ut.toErrorConsole
@@ -477,7 +477,7 @@ var handyClicksPrefSvc = {
 			+ (isDelayed ? this.ct.EDITOR_SHORTCUT_DELAYED : this.ct.EDITOR_SHORTCUT_NORMAL) + "/"
 			+ this.ct.EDITOR_SHORTCUT_INIT
 			+ "?line=" + eLine;
-		var eMsg = this.ut.errInfo(isInit ? "funcInitError" : "funcDestroyError", fObj.label, type, e);
+		var eMsg = this.errInfo(isInit ? "funcInitError" : "funcDestroyError", fObj.label, type, e);
 		this.ut.notifyError(eMsg, {
 			buttons: {
 				$openEditor: this.wu.getOpenEditorLink(href, eLine),
@@ -718,6 +718,14 @@ var handyClicksPrefSvc = {
 			|| localized[0]
 			|| localize("en-US")
 			|| localize("en");
+	},
+
+	errInfo: function(textId, label, type, err) {
+		return this.getLocalized(textId)
+			+ this.getLocalized("errorDetails")
+				.replace("%label", label)
+				.replace("%type", type)
+				.replace("%err", err);
 	},
 
 	encURI: function(s) {
