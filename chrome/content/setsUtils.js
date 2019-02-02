@@ -688,7 +688,7 @@ var handyClicksSetsUtils = {
 	},
 	getActionLabel: function(fo) {
 		if(fo.custom)
-			return fo.label || "";
+			return this.ps.localize(fo.label || "");
 		var act = fo.action;
 		if(act in this.extLabels)
 			return this.getExtLabel(act);

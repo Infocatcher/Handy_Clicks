@@ -776,6 +776,7 @@ var handyClicksEditor = {
 			var mi = this.ut.createElement("menuitem", attrs);
 			var _mi = mi.cloneNode(true);
 			mi.setAttribute("disabled", attrs.hc_disabled);
+			mi.setAttribute("label", this.ps.localize(attrs.label));
 			primaryItems.appendChild(mi);
 			secondaryItems.appendChild(_mi);
 			hideSep = false;

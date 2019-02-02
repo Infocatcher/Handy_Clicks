@@ -693,8 +693,31 @@ var handyClicksPrefSvc = {
 		var label = this.ut.getOwnProperty(this.types, type, "label");
 		if(label == undefined)
 			this.ut._warn('Custom type not found: "' + type + '"');
-		label = label ? label + " " : "";
+		label = label ? this.localize(label) + " " : "";
 		return label + "[" + this.removeCustomPrefix(type) + "]";
+	},
+	localize: function(data) {
+		if(!data)
+			return data;
+		// "String in english @ru: String in Russian @xx: ..."
+		var locale = this.ut.xcr.getSelectedLocale("global");
+		var locales = { __proto__: null };
+		var pos = 0;
+		data = data.replace(/ *@([a-z]{2,3}(?:-[A-Z]{2})?): *(?=\S)/g, function(sep, locale) {
+			locales[locale] = ++pos;
+			return "\x00";
+		});
+		if(!pos)
+			return data;
+		var localized = data.split("\x00");
+		var localize = function(locale) {
+			return locales[locale] && localized[locales[locale]];
+		};
+		return localize(locale)
+			|| /^([a-z]+)-/.test(locale) && localize(RegExp.$1)
+			|| localized[0]
+			|| localize("en-US")
+			|| localize("en");
 	},
 
 	encURI: function(s) {
