@@ -14,7 +14,7 @@ var handyClicksRegSvc = {
 		window._handyClicksInitialized = true;
 		this.delay(function() {
 			var noCache = reloadFlag ? "?" + Date.now() : "";
-			this.jsLoader.loadSubScript("chrome://handyclicks/content/_reloader.js" + noCache);
+			this.jsLoader.loadSubScript("chrome://handyclicks/content/reloader.js" + noCache);
 			handyClicksReloader.init(reloadFlag);
 		}, this, reloadFlag ? 0 : 500);
 	},
