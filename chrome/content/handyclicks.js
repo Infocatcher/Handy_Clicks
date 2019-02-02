@@ -688,7 +688,7 @@ var handyClicks = {
 		var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
 			+ this.ct.EDITOR_TYPE_DEFINE
 			+ "?line=" + eLine;
-		var eMsg = this.ps.errInfo("customTypeDefineError", ct.label, type, e);
+		var eMsg = this.ps.errInfo("customTypeDefineError", e, type);
 		this.ut.notifyError(eMsg, { buttons: {
 			$openEditor: this.wu.getOpenEditorLink(href, eLine),
 			$openConsole: this.ut.toErrorConsole
@@ -953,10 +953,10 @@ var handyClicks = {
 			}
 			catch(e) {
 				var eLine = this.ut.getRealLineNumber(e, ct._contextMenuLine);
-				var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + this.itemType + "/"
+				var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
 					+ this.ct.EDITOR_TYPE_CONTEXT
 					+ "?line=" + eLine;
-				var eMsg = this.ps.errInfo("customTypeContextMenuError", ct.label, this.itemType, e);
+				var eMsg = this.ps.errInfo("customTypeContextMenuError", e, type);
 				this.ut.notifyError(eMsg, { buttons: {
 					$openEditor: this.wu.getOpenEditorLink(href, eLine),
 					$openConsole: this.ut.toErrorConsole
@@ -1297,8 +1297,7 @@ var handyClicks = {
 			catch(err) {
 				var eLine = this.ut.getRealLineNumber(err, funcObj._line);
 				var href = this.getEditorLink(e) + "?line=" + eLine;
-				var typeLabel = type + (isDeleyed ? " + delayed" : "");
-				var eMsg = this.ps.errInfo("customFunctionError", funcObj.label, typeLabel, err);
+				var eMsg = this.ps.errInfo("customFunctionError", err, type, isDeleyed, funcObj.label || "");
 				this.ut.notifyError(eMsg, { buttons: {
 					$openEditor: this.wu.getOpenEditorLink(href, eLine),
 					$openConsole: this.ut.toErrorConsole

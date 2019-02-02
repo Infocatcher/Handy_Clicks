@@ -292,7 +292,7 @@ var handyClicksPrefSvc = {
 			var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
 				+ ("_contextMenuLine" in ct ? this.ct.EDITOR_TYPE_CONTEXT : this.ct.EDITOR_TYPE_DEFINE)
 				+ "?line=" + eLine;
-			var eMsg = this.errInfo("customTypeCompileError", ct.label, type, e);
+			var eMsg = this.errInfo("customTypeCompileError", e, type);
 			this.ut.notifyError(eMsg, {
 				buttons: {
 					$openEditor: this.wu.getOpenEditorLink(href, eLine),
@@ -385,8 +385,7 @@ var handyClicksPrefSvc = {
 			var eLine = fObj._errorLine = code ? this.ut.getRealLineNumber(err, line) : 0;
 			var href = fObj._editorLink = this.hc.getEditorLink() + "?line=" + eLine;
 			var eKey = code ? "customFunctionCompileError" : "customFunctionLinkedFileError";
-			var typeLabel = this.hc.itemType + (isDeleyed ? " + delayed" : "");
-			var eMsg = this.errInfo(eKey, fObj.label, typeLabel, err);
+			var eMsg = this.errInfo(eKey, err, this.hc.itemType, isDeleyed, fObj.label || "");
 			this.ut.notifyError(eMsg, { buttons: {
 				$openEditor: this.wu.getOpenEditorLink(href, eLine),
 				$openConsole: this.ut.toErrorConsole
@@ -477,7 +476,7 @@ var handyClicksPrefSvc = {
 			+ (isDelayed ? this.ct.EDITOR_SHORTCUT_DELAYED : this.ct.EDITOR_SHORTCUT_NORMAL) + "/"
 			+ this.ct.EDITOR_SHORTCUT_INIT
 			+ "?line=" + eLine;
-		var eMsg = this.errInfo(isInit ? "funcInitError" : "funcDestroyError", fObj.label, type, e);
+		var eMsg = this.errInfo(isInit ? "funcInitError" : "funcDestroyError", e, type, isDelayed, fObj.label || "");
 		this.ut.notifyError(eMsg, {
 			buttons: {
 				$openEditor: this.wu.getOpenEditorLink(href, eLine),
@@ -720,12 +719,17 @@ var handyClicksPrefSvc = {
 			|| localize("en");
 	},
 
-	errInfo: function(textId, label, type, err) {
-		return this.getLocalized(textId)
-			+ this.getLocalized("errorDetails")
-				.replace("%label", label)
-				.replace("%type", type)
-				.replace("%err", err);
+	errInfo: function(errMsgId, err, type, isDelayed, fnLabel) {
+		var typeLabel = this.getTypeLabel(type)
+			+ (isDelayed ? " \u21d2 " /* " => " */ + this.getLocalized("delayed") : "");
+		return this.getLocalized(errMsgId)
+			+ (
+				(fnLabel !== undefined ? this.getLocalized("errorLabel") : "")
+				+ this.getLocalized("errorDetails")
+			)
+			.replace("%label", this.localize(fnLabel))
+			.replace("%type", typeLabel)
+			.replace("%err", err);
 	},
 
 	encURI: function(s) {
