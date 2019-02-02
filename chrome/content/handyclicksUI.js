@@ -415,7 +415,7 @@ var handyClicksUI = {
 			this.notifyEditMode();
 		else {
 			this.emtt.hidePopup();
-			this._emNotify = null;
+			this.closeEditModeNotify();
 		}
 	},
 	_emNotify: null,
@@ -425,8 +425,7 @@ var handyClicksUI = {
 			nem == 1 && (this._temFromKey && !this.controlsVisible)
 			|| nem == 2
 		) {
-			if(this._emNotify && !this._emNotify.closed)
-				this._emNotify.close();
+			this.closeEditModeNotify();
 			this._emNotify = this.ut.notify(this.getLocalized("editModeNote").replace("%key", this.escKey), {
 				inWindowCorner: !underCursor,
 				title: this.getLocalized("editModeTitle"),
@@ -436,6 +435,13 @@ var handyClicksUI = {
 				context: this
 			});
 		}
+	},
+	closeEditModeNotify: function() {
+		var emn = this._emNotify;
+		if(!emn)
+			return;
+		this._emNotify = null;
+		!emn.closed && emn.close();
 	},
 	handleEvent: function(e) {
 		switch(e.type) {
