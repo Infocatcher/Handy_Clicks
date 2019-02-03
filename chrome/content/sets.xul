@@ -164,7 +164,7 @@ preferences {
 				<splitter class="tree-splitter" />
 				<treecol id="hc-sets-tree-columnInit" flex="1" label="&hc.sets.columnInit;" hidden="true" persist="hidden width ordinal" />
 				<splitter class="tree-splitter" />
-				<treecol id="hc-sets-tree-columnEnabled" type="checkbox" width="18" label="&hc.sets.columnEnabled;" persist="hidden width ordinal" />
+				<treecol id="hc-sets-tree-columnEnabled" type="checkbox" width="18" minwidth="18" label="&hc.sets.columnEnabled;" persist="hidden width ordinal" />
 			</treecols>
 			<treechildren id="hc-sets-tree-content"
 				onclick="handyClicksSets.treeClick(event);"
