@@ -1322,6 +1322,7 @@ var handyClicksFuncs = {
 			this._log("reloadImg(): nothing to reload");
 			return;
 		}
+		this.ui.blinkNode(undefined /*default duration*/, img);
 		var origStyle = img.hasAttribute("style") && img.getAttribute("style");
 		var cs = this.getStyle(img);
 		var w = cs.width;
