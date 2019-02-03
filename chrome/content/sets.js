@@ -754,7 +754,7 @@ var handyClicksSets = {
 	},
 	cropCode: function(code) {
 		var maxLen = this.maxCodeLength;
-		if(code.length > maxLen)
+		if(maxLen && code.length > maxLen)
 			return code.substr(0, maxLen) + "\n[\u2026]"; // "[...]"
 		return code;
 	},
