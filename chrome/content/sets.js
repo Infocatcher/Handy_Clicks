@@ -309,6 +309,7 @@ var handyClicksSets = {
 			: this.getLocalized("after").replace("%t", daTime);
 		this._daExpand = this.pu.get("sets.treeExpandDelayedAction");
 		this._localizeArgs = this.pu.get("sets.localizeArguments");
+		this._maxCodeLength = this.pu.get("sets.codeLengthLimit");
 
 		this.resetCounters();
 
@@ -748,12 +749,8 @@ var handyClicksSets = {
 			? this.getActionCode(init, true)
 			: "";
 	},
-	get maxCodeLength() {
-		delete this.maxCodeLength;
-		return this.maxCodeLength = this.pu.get("sets.codeLengthLimit");
-	},
 	cropCode: function(code) {
-		var maxLen = this.maxCodeLength;
+		var maxLen = this._maxCodeLength;
 		if(maxLen && code.length > maxLen)
 			return code.substr(0, maxLen) + "\n[\u2026]"; // "[...]"
 		return code;
@@ -2080,11 +2077,8 @@ var handyClicksSets = {
 			this.updTree(false);
 		else if(pName == "sets.localizeArguments")
 			this.updTree();
-		else if(pName == "sets.codeLengthLimit") {
-			delete this.maxCodeLength;
-			this.maxCodeLength = pVal;
+		else if(pName == "sets.codeLengthLimit")
 			this.redrawTree();
-		}
 		else if(this.ut.hasPrefix(pName, "editor.externalEditor")) {
 			this.initExternalEditor();
 			this.updateDependencies("externalEditor");
