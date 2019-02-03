@@ -1318,8 +1318,10 @@ var handyClicksFuncs = {
 	reloadImg: function(e, img) {
 		img = img || this.hc.item;
 		var src = img.src;
-		if(!src)
+		if(!src || /^data:/i.test(src)) {
+			this._log("reloadImg(): nothing to reload");
 			return;
+		}
 		var origStyle = img.hasAttribute("style") && img.getAttribute("style");
 		var cs = this.getStyle(img);
 		var w = cs.width;
@@ -1341,6 +1343,7 @@ var handyClicksFuncs = {
 				}
 				img.addEventListener("load", done, false);
 				img.addEventListener("error", done, false);
+				_this._log("reloadImg(): restore original src");
 				img.src = src;
 			}, false);
 			img.src = _this.dt.spacer; // transparent gif 1x1
@@ -1358,6 +1361,7 @@ var handyClicksFuncs = {
 					.getService(Components.interfaces.imgICache);
 			if(cache.findEntryProperties(uri))
 				cache.removeEntry(uri);
+			this._log("reloadImg() -> imgICache.removeEntry()");
 			resetSrc();
 		}
 		catch(e) {
@@ -1365,6 +1369,7 @@ var handyClicksFuncs = {
 			// https://bugzilla.mozilla.org/show_bug.cgi?id=1202085#c39
 			if(("" + e).indexOf("removeEntry is not a function") == -1)
 				Components.utils.reportError(e);
+			this._log("reloadImg(): will use trick with XMLHttpRequest()");
 			var req = new XMLHttpRequest();
 			req.open("GET", src, true);
 			req.channel.loadFlags |= Components.interfaces.nsIRequest.LOAD_BYPASS_CACHE;
