@@ -3328,7 +3328,7 @@ var handyClicksSets = {
 			this.pe.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, true);
 
 			this.ps.otherSrc = false;
-			if(this.$("hc-sets-tree-importFilesData").checked)
+			if(this._importFilesData)
 				this.importFilesData();
 			isPartial && this.mergePrefs();
 			this.pe.saveSettingsObjects(true);
