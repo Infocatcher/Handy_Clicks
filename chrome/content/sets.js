@@ -310,6 +310,7 @@ var handyClicksSets = {
 		this._daExpand = this.pu.get("sets.treeExpandDelayedAction");
 		this._localizeArgs = this.pu.get("sets.localizeArguments");
 		this._maxCodeLength = this.pu.get("sets.codeLengthLimit");
+		this._preserveLines = this.pu.get("sets.codeLengthLimit.preserveLines");
 
 		this.resetCounters();
 
@@ -751,8 +752,18 @@ var handyClicksSets = {
 	},
 	cropCode: function(code) {
 		var maxLen = this._maxCodeLength;
-		if(maxLen && code.length > maxLen)
-			return code.substr(0, maxLen) + "\n[\u2026]"; // "[...]"
+		if(maxLen && code.length > maxLen) {
+			var cropped = code.substr(0, maxLen);
+			if(
+				!/[\r\n]/.test(code.substr(maxLen - 1, 2)) // Already used entire line?
+				&& /^[^\n\r]+/.test(code.substr(maxLen))
+				&& RegExp.lastMatch.length <= this._preserveLines
+			)
+				cropped += RegExp.lastMatch;
+			else
+				cropped = cropped.replace(/\s+$/, "");
+			return cropped + "\n[\u2026]"; // "[...]"
+		}
 		return code;
 	},
 	isBuggyFuncObj: function(fo, isCustom, label, foStr) {
@@ -2077,7 +2088,7 @@ var handyClicksSets = {
 			this.updTree(false);
 		else if(pName == "sets.localizeArguments")
 			this.updTree();
-		else if(pName == "sets.codeLengthLimit")
+		else if(pName == "sets.codeLengthLimit" || pName == "sets.codeLengthLimit.preserveLines")
 			this.redrawTree();
 		else if(this.ut.hasPrefix(pName, "editor.externalEditor")) {
 			this.initExternalEditor();

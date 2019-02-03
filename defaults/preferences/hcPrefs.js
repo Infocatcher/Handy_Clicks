@@ -102,6 +102,7 @@ pref("extensions.handyclicks.sets.treeDrawMode", 0);
 pref("extensions.handyclicks.sets.treeExpandDelayedAction", true);
 pref("extensions.handyclicks.sets.localizeArguments", true);
 pref("extensions.handyclicks.sets.codeLengthLimit", 1000); // Crop too long custom codes to improve performance
+pref("extensions.handyclicks.sets.codeLengthLimit.preserveLines", 100); // Max additional chars to show entire line
 pref("extensions.handyclicks.sets.closeTreeViewMenu", true);
 pref("extensions.handyclicks.sets.rememberSearchQuery", true);
 pref("extensions.handyclicks.sets.rememberScrollPosition", true);
