@@ -381,7 +381,7 @@ var handyClicksSets = {
 		}
 		if(df != this.tBody)
 			this.tBody.appendChild(df);
-		this.markOpenedEditors();
+		this.markOpenedEditors(true);
 		if(this._import)
 			this.addImportStatistics();
 		delete this.eltsCache;
@@ -529,8 +529,8 @@ var handyClicksSets = {
 	markOpenedEditors: function() {
 		return this.treeBatch(this._markOpenedEditors, this, arguments);
 	},
-	_markOpenedEditors: function() {
-		for(var rowId in this.rowsCache)
+	_markOpenedEditors: function(isInitial) {
+		if(!isInitial) for(var rowId in this.rowsCache)
 			this._setItemStatus(rowId, false);
 		const idProp = this.wu.winIdProp;
 		const pSvc = "handyClicksPrefSvc";
