@@ -507,11 +507,11 @@ var handyClicksUI = {
 		var labelType = this.ps.getTypeLabel(type);
 		var labelUri = Array.prototype.concat.call(this.fn.getItemURI(this.hc.item, type, e))
 			.map(this.fn.losslessDecodeURI, this.fn)
-			.join(", ");
+			.join(", \n");
 		if(this.emttType.value != labelType)
 			this.emttType.value = labelType;
-		if(this.emttURI.value != labelUri)
-			this.emttURI.value = labelUri;
+		if(this.emttURI.textContent != labelUri)
+			this.emttURI.textContent = labelUri;
 	},
 
 	prefChanged: function(pName) {

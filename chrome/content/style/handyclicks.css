@@ -9,7 +9,7 @@
 /* 16x16 status icons */
 #handyClicks-statusbarButton,
 toolbar[iconsize="small"] #handyClicks-toolbarButton,
-toolbar:not([iconsize]) .customization-target > #handyClicks-toolbarButton, /* Firefox 59+ */ 
+toolbar:not([iconsize]) .customization-target > #handyClicks-toolbarButton, /* Firefox 59+ */
 #handyClicks-toolsMenuitem,
 #handyClicks-appMenuitem {
 	list-style-image: url("icons16.png");
@@ -167,6 +167,6 @@ toolbarpaletteitem #handyClicks-toolbarProgressContainer {
 	margin: 1px;
 	max-width: 30em;
 }
-#handyClicks-editModeTip-uri[value=""] {
+#handyClicks-editModeTip-uri:empty {
 	display: none;
 }
