@@ -769,15 +769,12 @@ var handyClicksPrefSvc = {
 		return this.spacedSep = " " + this.keys.sep + " ";
 	},
 	getModifiersStr: function(sh, _short) { // "button=0,ctrl=true,shift=true,alt=false,meta=false"
+		var mfds = [];
 		var keys = this.keys;
-		sh = sh
-			.replace(/[a-z]+=(?:false|\d),?/g, "")
-			.replace(/,+$/g, "")
-			.replace(/([a-z]+)=true/g, function($0, $1) {
-				return keys[$1] || $1;
-			})
-			.replace(/,+/g, keys.sep);
-		return sh || (_short ? "" : this.getLocalized("none"));
+		sh.replace(/(\w+)=true/g, function(s, mdf) {
+			mfds.push(keys[mdf]);
+		});
+		return mfds.length ? mfds.join(keys.sep) : (_short ? "" : this.getLocalized("none"));
 	},
 	getShortcutStr: function(sh, _short) {
 		var button = this.getButtonStr(sh, _short);
