@@ -836,7 +836,7 @@ var handyClicksPrefSvc = {
 		if(this.isLegacyJs(str))
 			str = this.pe.convertToJSON(str, silent);
 		try {
-			var prefsObj = this.JSON.parse(str);
+			var sets = this.JSON.parse(str);
 		}
 		catch(e) {
 			if(!silent) {
@@ -845,12 +845,12 @@ var handyClicksPrefSvc = {
 			}
 			return false;
 		}
-		if(!this.isValidPrefs(prefsObj)) {
+		if(!this.isValidPrefs(sets)) {
 			!silent && this.ut._err("Invalid prefs: prefs object doesn't contains required fields");
 			return false;
 		}
 		if(checkCustom)
-			this._hasCustomCode = this.pe.hasCustomCode(prefsObj);
+			this._hasCustomCode = this.pe.hasCustomCode(sets);
 		return true;
 	},
 	get clipboardPrefs() {

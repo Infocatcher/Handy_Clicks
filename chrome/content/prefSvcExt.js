@@ -262,8 +262,8 @@ var handyClicksPrefSvcExt = {
 		this.storage.set("testBackupCreated", true);
 	},
 
-	hasCustomCode: function(prefsObj) {
-		return this.forEachCode(prefsObj, function() {
+	hasCustomCode: function(sets) {
+		return this.forEachCode(sets, function() {
 			return true;
 		});
 	},
