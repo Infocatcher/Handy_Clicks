@@ -176,7 +176,9 @@ preferences {
 			<hbox id="hc-sets-tree-importPanel" hidden="true" pack="center" align="end">
 				<checkbox id="hc-sets-tree-importFilesData"
 					oncommand="handyClicksSets.toggleImportFilesData(this.checked);"
-					label="&hc.sets.importFilesData;" accesskey="&hc.sets.importFilesDataAccesskey;"
+					hc_label="&hc.sets.importFilesData;"
+					hc_labelN="&hc.sets.importFilesDataN;"
+					accesskey="&hc.sets.importFilesDataAccesskey;"
 					tooltiptext="&hc.sets.importFilesDataTip;" />
 				<radiogroup id="hc-sets-tree-importType"
 					oncommand="handyClicksSets.toggleImportType(this.value == 'true');">

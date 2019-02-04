@@ -3292,10 +3292,19 @@ var handyClicksSets = {
 			this.$("hc-sets-tree-buttonImportOk").focus();
 	},
 	setImportFilesDataStatus: function() {
+		var files = this.ps.files;
+		var countFD = 0;
+		for(var path in files) if(files.hasOwnProperty(path))
+			++countFD;
+		var noFD = !countFD;
 		var importFD = this.$("hc-sets-tree-importFilesData");
-		var noFD = this.ut.isEmptyObj(this.ps.files);
 		importFD.disabled = noFD;
 		importFD.checked = this._importFilesData = !noFD;
+		var label = countFD
+			? importFD.getAttribute("hc_labelN").replace("$n", countFD)
+			: importFD.getAttribute("hc_label");
+		if(importFD.getAttribute("label") != label)
+			importFD.setAttribute("label", label);
 	},
 	cleanImportSearch: function() {
 		var search = this.searchField.value;

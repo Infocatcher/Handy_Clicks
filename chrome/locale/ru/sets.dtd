@@ -122,6 +122,7 @@
 <!ENTITY hc.sets.importCancelAccesskey "О">
 
 <!ENTITY hc.sets.importFilesData "Файлы">
+<!ENTITY hc.sets.importFilesDataN "Файлы ($n)">
 <!ENTITY hc.sets.importFilesDataAccesskey "Ф">
 <!ENTITY hc.sets.importFilesDataTip "Импортировать содержимое связанных файлов">
 
