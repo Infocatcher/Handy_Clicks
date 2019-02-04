@@ -95,7 +95,7 @@
 	<popupset id="hc-editor-popups">
 		<menupopup id="hc-editor-editCodeContext"
 			onpopupshowing="return handyClicksEditor.initEditCodeContext();">
-			<menuitem id="hc-editor-renameFileData" label="&hc.editor.renameFileData;"
+			<menuitem id="hc-editor-renameFileData" class="menuitem-iconic handyClicks-iconic" label="&hc.editor.renameFileData;"
 				oncommand="handyClicksEditor.renameFileData();" />
 			<menuitem id="hc-editor-deleteFileData" class="menuitem-iconic handyClicks-iconic" label="&hc.editor.deleteFileData;"
 				oncommand="handyClicksEditor.deleteFileData();" />

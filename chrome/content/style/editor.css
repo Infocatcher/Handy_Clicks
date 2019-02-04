@@ -118,6 +118,9 @@ tabbox[hc_pasted="false"] {
 .hcOpenCodeButton {
 	-moz-image-region: rect(64px 64px 80px 48px);
 }
+#hc-editor-renameFileData {
+	-moz-image-region: rect(64px 96px 80px 80px);
+}
 #hc-editor-deleteFileData {
 	-moz-image-region: rect(64px 80px 80px 64px);
 }
