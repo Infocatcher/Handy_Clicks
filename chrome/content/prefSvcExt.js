@@ -293,12 +293,14 @@ var handyClicksPrefSvcExt = {
 	importAllowed: function(file) { //~ todo: add pref?
 		return this.ps._scriptsDir.contains(file, false /* aRecurse, for Firefox 31 and older */);
 	},
-	filterFilesData: function(files, prefs, types) {
+	filterFilesData: function(files) {
 		if(!files)
 			return null;
+		var prefs = this.prefs;
+		var types = this.types;
 		var linkedPaths = { __proto__: null };
-		var addPath = this.ut.bind(function() {
-			var code = this.ut.getOwnProperty.apply(this.ut, arguments);
+		var addPath = this.ut.bind(function(o, key) {
+			var code = this.ut.getOwnProperty(o, key);
 			var path = code && this.getSourcePath(code);
 			if(path)
 				linkedPaths[path] = true;
@@ -314,10 +316,12 @@ var handyClicksPrefSvcExt = {
 				continue;
 			for(var type in so) if(so.hasOwnProperty(type)) {
 				var to = so[type];
-				addPath(to, "init");
-				addPath(to, "action");
+				if(this.ut.getOwnProperty(to, "custom")) {
+					addPath(to, "init");
+					addPath(to, "action");
+				}
 				var da = this.ut.getOwnProperty(to, "delayedAction");
-				if(da) {
+				if(da && this.ut.getOwnProperty(da, "custom")) {
 					addPath(da, "init");
 					addPath(da, "action");
 				}

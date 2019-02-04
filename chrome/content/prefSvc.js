@@ -228,7 +228,7 @@ var handyClicksPrefSvc = {
 		this.prefs = scope.prefs;
 		this.types = scope.types;
 		this.files = !fromPrefs && "files" in scope
-			&& this.pe.filterFilesData(scope.files, scope.prefs, scope.types)
+			&& this.pe.filterFilesData(scope.files)
 			|| {};
 		var vers = this.loadedVersion = scope.version || 0;
 
