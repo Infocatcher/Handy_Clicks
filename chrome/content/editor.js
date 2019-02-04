@@ -1292,6 +1292,7 @@ var handyClicksEditor = {
 		var path = this.getFileDataPath();
 		if(path == undefined)
 			return false;
+		this.$("hc-editor-renameFileData").setAttribute("disabled", !path);
 		this.$("hc-editor-deleteFileData").setAttribute("disabled", !path);
 		return true;
 	},
@@ -1305,16 +1306,40 @@ var handyClicksEditor = {
 		var path = this.ps.getSourcePath(editor.value);
 		if(!path)
 			return undefined;
-		if(path in this.ps.files)
-			return path;
-		return "";
+		if(!(path in this.ps.files))
+			return "";
+		var fd = new String(path);
+		fd.editor = editor;
+		return fd;
 	},
 	deleteFileData: function() {
 		var path = this.getFileDataPath();
-		if(path) {
-			delete this.ps.files[path];
-			this.pe.reloadSettings(true);
-		}
+		if(!path)
+			return;
+		delete this.ps.files[path];
+		this.pe.reloadSettings(true);
+	},
+	renameFileData: function() {
+		var path = this.getFileDataPath();
+		if(!path)
+			return;
+		var newPath = this.ut.prompt(this.getLocalized("rename"), this.getLocalized("newFileName"), path);
+		if(!newPath || newPath == path)
+			return;
+
+		var files = this.ps.files;
+		var fd = files[path];
+		delete files[path];
+		files[newPath] = fd;
+
+		var newCode = "//> " + newPath;
+		var oldCode = path.editor.value;
+		path.editor.value = newCode;
+		this.pe.forEachCode(this.ps, function(code, o, key) {
+			if(code == oldCode)
+				o[key] = newCode;
+		}, this);
+		this.pe.reloadSettings(true);
 	},
 	doEditorCommand: function(btnCmd, cmd/*, arg1, ...*/) {
 		var tabbox = this.selectedTabbox;
