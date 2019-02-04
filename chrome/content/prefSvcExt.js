@@ -322,7 +322,7 @@ var handyClicksPrefSvcExt = {
 		if(!files)
 			return null;
 		var linkedPaths = { __proto__: null };
-		this.forEachCode(function(code) {
+		this.forEachCode(this, function(code) {
 			var path = code && this.getSourcePath(code);
 			if(path)
 				linkedPaths[path] = true;
@@ -335,17 +335,17 @@ var handyClicksPrefSvcExt = {
 		}
 		return files;
 	},
-	forEachCode: function(callback, context) {
+	forEachCode: function(sets, callback, context) {
 		var getCode = this.ut.bind(function(o, key) {
 			var code = this.ut.getOwnProperty(o, key);
-			callback.call(context, code, o, key);
+			return callback.call(context, code, o, key);
 		}, this);
-		var prefs = this.prefs;
-		var types = this.types;
+		var prefs = sets.prefs;
+		var types = sets.types;
 		for(var type in types) if(types.hasOwnProperty(type)) {
 			var to = types[type];
-			getCode(to, "define");
-			getCode(to, "contextMenu");
+			if(getCode(to, "define") || getCode(to, "contextMenu"))
+				return true;
 		}
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			var so = prefs[sh];
@@ -354,16 +354,17 @@ var handyClicksPrefSvcExt = {
 			for(var type in so) if(so.hasOwnProperty(type)) {
 				var to = so[type];
 				if(this.ut.getOwnProperty(to, "custom")) {
-					getCode(to, "init");
-					getCode(to, "action");
+					if(getCode(to, "init") || getCode(to, "action"))
+						return true;
 				}
 				var da = this.ut.getOwnProperty(to, "delayedAction");
 				if(da && this.ut.getOwnProperty(da, "custom")) {
-					getCode(da, "init");
-					getCode(da, "action");
+					if(getCode(da, "init") || getCode(da, "action"))
+						return true;
 				}
 			}
 		}
+		return false;
 	},
 
 	convertToJSON: function(s, silent) { //= Added: 2012-01-13
