@@ -263,28 +263,9 @@ var handyClicksPrefSvcExt = {
 	},
 
 	hasCustomCode: function(prefsObj) {
-		var types = prefsObj.types;
-		for(var type in types) if(types.hasOwnProperty(type))
-			if(this.ut.isObject(types[type]))
-				return true;
-		var prefs = prefsObj.prefs;
-		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
-			var so = prefs[sh];
-			if(!this.ut.isObject(so))
-				continue;
-			for(var type in so) if(so.hasOwnProperty(type)) {
-				var to = so[type];
-				if(
-					this.ut.isObject(to)
-					&& (
-						this.ut.getOwnProperty(to, "custom")
-						|| this.ut.getOwnProperty(to, "delayedAction", "custom")
-					)
-				)
-					return true;
-			}
-		}
-		return false;
+		return this.forEachCode(prefsObj, function() {
+			return true;
+		});
 	},
 
 	exportFileData: function(files, code) {
