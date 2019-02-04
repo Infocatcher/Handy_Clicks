@@ -3028,6 +3028,7 @@ var handyClicksSets = {
 				pSrc = this.ps.getPrefsStr(data);
 			break;
 			case ct.IMPORT_BACKUP:
+				delete this.ps.checkPrefsStr.checkCustomCode;
 				pSrc = this.pe.getBackupFile(data);
 			break;
 			case ct.IMPORT_FILE:
