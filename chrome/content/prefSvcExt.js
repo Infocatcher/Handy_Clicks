@@ -296,19 +296,31 @@ var handyClicksPrefSvcExt = {
 	filterFilesData: function(files) {
 		if(!files)
 			return null;
-		var prefs = this.prefs;
-		var types = this.types;
 		var linkedPaths = { __proto__: null };
-		var addPath = this.ut.bind(function(o, key) {
-			var code = this.ut.getOwnProperty(o, key);
+		this.forEachCode(function(code) {
 			var path = code && this.getSourcePath(code);
 			if(path)
 				linkedPaths[path] = true;
 		}, this);
+		for(var path in files) if(files.hasOwnProperty(path)) {
+			if(!(path in linkedPaths)) {
+				this.ut._warn("[Import] Ignore not linked path in files object: " + path);
+				delete files[path];
+			}
+		}
+		return files;
+	},
+	forEachCode: function(callback, context) {
+		var getCode = this.ut.bind(function(o, key) {
+			var code = this.ut.getOwnProperty(o, key);
+			callback.call(context, code, o, key);
+		}, this);
+		var prefs = this.prefs;
+		var types = this.types;
 		for(var type in types) if(types.hasOwnProperty(type)) {
 			var to = types[type];
-			addPath(to, "define");
-			addPath(to, "contextMenu");
+			getCode(to, "define");
+			getCode(to, "contextMenu");
 		}
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			var so = prefs[sh];
@@ -317,23 +329,16 @@ var handyClicksPrefSvcExt = {
 			for(var type in so) if(so.hasOwnProperty(type)) {
 				var to = so[type];
 				if(this.ut.getOwnProperty(to, "custom")) {
-					addPath(to, "init");
-					addPath(to, "action");
+					getCode(to, "init");
+					getCode(to, "action");
 				}
 				var da = this.ut.getOwnProperty(to, "delayedAction");
 				if(da && this.ut.getOwnProperty(da, "custom")) {
-					addPath(da, "init");
-					addPath(da, "action");
+					getCode(da, "init");
+					getCode(da, "action");
 				}
 			}
 		}
-		for(var path in files) if(files.hasOwnProperty(path)) {
-			if(!(path in linkedPaths)) {
-				this.ut._warn("[Import] Ignore not linked path in files object: " + path);
-				delete files[path];
-			}
-		}
-		return files;
 	},
 
 	convertToJSON: function(s, silent) { //= Added: 2012-01-13
