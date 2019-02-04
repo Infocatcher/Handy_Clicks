@@ -3301,7 +3301,8 @@ var handyClicksSets = {
 		var search = this.searchField.value;
 		var newSearch = search
 			.replace(this.searchPlaceholders.hc_override, "")
-			.replace(this.searchPlaceholders.hc_new, "");
+			.replace(this.searchPlaceholders.hc_new, "")
+			.replace(this.searchPlaceholders.hc_fileData, "");
 		if(newSearch == search)
 			return false;
 		this.searchField.value = this.ut.trim(newSearch);
