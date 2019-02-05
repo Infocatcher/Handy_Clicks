@@ -1250,7 +1250,7 @@ var handyClicksEditor = {
 							: "hc_renameDone"
 						: "hc_rename"
 				),
-				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut();",
+				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut(" + canRename + ");",
 				disabled: !canRename && !isRenaming
 			}), df.firstChild);
 		}
@@ -1260,11 +1260,21 @@ var handyClicksEditor = {
 		var box = mp.parentNode;
 		mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
 	},
-	renameShortcut: function() {
-		if(this.root.getAttribute("hc_renameShortcut") == "true")
-			this.root.removeAttribute("hc_renameShortcut");
-		else
+	renameShortcut: function(alreadyExists) {
+		if(this.root.getAttribute("hc_renameShortcut") != "true") {
 			this.root.setAttribute("hc_renameShortcut", "true");
+			this._shortcut = this.currentShortcut;
+			this._type = this.currentType;
+			return;
+		}
+		this.root.removeAttribute("hc_renameShortcut");
+		var sh = this._shortcut;
+		var ct = this._type;
+		this._shortcut = this._type = null;
+		if(alreadyExists) { // Cancel and restore initial shortcut
+			this.currentShortcut = sh;
+			return;
+		}
 	},
 	loadSavedShortcut: function(e) {
 		var mi = e.target;
