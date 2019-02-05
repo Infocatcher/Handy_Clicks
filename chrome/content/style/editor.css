@@ -55,6 +55,8 @@ menulist[hc_sets="disabled"] .menulist-label {
 }
 :root[hc_renameShortcut="true"] *|*:not(.hc-shortcut) {
 	-moz-user-focus: ignore !important;
+	-moz-user-input: none !important;
+	-moz-user-select: none !important;
 }
 
 #hc-editor-button menuitem.menuitem-iconic > .menu-iconic-left {
