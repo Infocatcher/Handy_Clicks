@@ -1323,11 +1323,18 @@ var handyClicksEditor = {
 		var path = this.getFileDataPath();
 		if(!path)
 			return;
-		var newPath = this.ut.prompt(this.getLocalized("rename"), this.getLocalized("newFileName"), path);
-		if(!newPath || newPath == path)
-			return;
-
 		var files = this.ps.files;
+		var newFileName = this.getLocalized("newFileName");
+		var exists = "";
+		for(;;) {
+			var newPath = this.ut.prompt(this.getLocalized("rename"), exists + newFileName, path);
+			if(!newPath || newPath == path)
+				return;
+			if(!(newPath in files))
+				break;
+			exists = this.getLocalized("renameAlreadyExists").replace("%f", newPath) + "\n";
+		}
+
 		var fd = files[path];
 		delete files[path];
 		files[newPath] = fd;
