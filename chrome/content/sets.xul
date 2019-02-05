@@ -655,6 +655,8 @@ preferences {
 			label="&hc.sets.importFromFile;" />
 		<command id="hc-sets-cmd-importFromClipboard" oncommand="handyClicksSets.importSets(true, handyClicksSets.ct.IMPORT_CLIPBOARD);"
 			label="&hc.sets.importFromClipboard;" />
+		<command id="hc-sets-cmd-importFromClipboard2" oncommand="handyClicksSets.importSets(true, handyClicksSets.ct.IMPORT_CLIPBOARD);"
+			label="&hc.sets.importFromClipboard;" />
 	</commandset>
 	<keyset id="hc-sets-keys">
 		<key id="hc-sets-key-add" keycode="VK_INSERT" command="hc-sets-cmd-add" />
@@ -687,9 +689,9 @@ preferences {
 		<key id="hc-sets-key-fullImportFromFile" key="i" modifiers="control" command="hc-sets-cmd-fullImportFromFile" />
 		<key id="hc-sets-key-importFromFile" key="i" modifiers="control,shift" command="hc-sets-cmd-importFromFile" />
 		<!-- Command "hc-sets-cmd-importFromClipboard" updates only on popupshowing -->
-		<key id="hc-sets-key-importFromClipboard" key="v" modifiers="control,shift" command="hc-sets-cmd-importFromClipboard" />
-		<key id="hc-sets-key-importFromClipboard2" key="v" modifiers="control" command="hc-sets-cmd-importFromClipboard" />
-		<key id="hc-sets-key-importFromClipboard3" keycode="VK_INSERT" modifiers="shift" command="hc-sets-cmd-importFromClipboard" />
+		<key id="hc-sets-key-importFromClipboard" key="v" modifiers="control,shift" command="hc-sets-cmd-importFromClipboard2" />
+		<key id="hc-sets-key-importFromClipboard2" key="v" modifiers="control" command="hc-sets-cmd-importFromClipboard2" />
+		<key id="hc-sets-key-importFromClipboard3" keycode="VK_INSERT" modifiers="shift" command="hc-sets-cmd-importFromClipboard2" />
 
 		<key id="hc-sets-key-selectAll" key="a" modifiers="control" oncommand="handyClicksSets.selectAll();" />
 		<key id="hc-sets-key-clearSelection" key="a" modifiers="control,shift" oncommand="handyClicksSets.clearSelection();" />
