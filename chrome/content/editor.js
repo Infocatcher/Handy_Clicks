@@ -180,8 +180,9 @@ var handyClicksEditor = {
 		this.isDelayed = wa[4];
 		this.customType = null;
 		this.customTypeLabel = "";
-		this.applyButton = document.documentElement.getButton("extra1");
-		this.deleteButton = document.documentElement.getButton("extra2");
+		var de = this.root = document.documentElement;
+		this.applyButton = de.getButton("extra1");
+		this.deleteButton = de.getButton("extra2");
 		// Will be enabled only in case of changed settings format
 		this.applyButton.disabled = true;
 	},
@@ -360,13 +361,13 @@ var handyClicksEditor = {
 		dTab.tooltipText = dTab.getAttribute("hc_tooltiptext").replace("%n", delay);
 	},
 	setFuncsNotes: function(show) {
-		document.documentElement.setAttribute(
+		this.root.setAttribute(
 			"hc_showCustomFuncsNotes",
 			show === undefined ? this.pu.get("editor.ui.showCustomFuncsNotes") : show
 		);
 	},
 	setCompactUI: function(compact) {
-		document.documentElement.setAttribute(
+		this.root.setAttribute(
 			"hc_compactUI",
 			compact === undefined ? this.pu.get("editor.ui.compact") : compact
 		);
@@ -1234,7 +1235,7 @@ var handyClicksEditor = {
 			}));
 		}
 		else {
-			var isRenaming = document.documentElement.getAttribute("hc_renameShortcut") == "true";
+			var isRenaming = this.root.getAttribute("hc_renameShortcut") == "true";
 			df.insertBefore(document.createElement("menuseparator"), df.firstChild);
 			df.insertBefore(this.ut.createElement("menuitem", {
 				id: "hc-editor-renameShortcut",
@@ -1250,10 +1251,10 @@ var handyClicksEditor = {
 		mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
 	},
 	renameShortcut: function() {
-		if(document.documentElement.getAttribute("hc_renameShortcut") == "true")
-			document.documentElement.removeAttribute("hc_renameShortcut");
+		if(this.root.getAttribute("hc_renameShortcut") == "true")
+			this.root.removeAttribute("hc_renameShortcut");
 		else
-			document.documentElement.setAttribute("hc_renameShortcut", "true");
+			this.root.setAttribute("hc_renameShortcut", "true");
 	},
 	loadSavedShortcut: function(e) {
 		var mi = e.target;
@@ -1402,7 +1403,7 @@ var handyClicksEditor = {
 	},
 	_checkForCrashBackups: function(silent) {
 		var bakPath = this._hasCrashBackup();
-		this.attribute(document.documentElement, "hc_hasCrashBackup", bakPath);
+		this.attribute(this.root, "hc_hasCrashBackup", bakPath);
 		this.hasCrashBackup = !!bakPath;
 		if(bakPath && !silent)
 			this.ut.notifyWarning(this.getLocalized("hasCrashBackup").replace("%f", bakPath));
