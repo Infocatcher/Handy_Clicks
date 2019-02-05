@@ -1137,6 +1137,10 @@ var handyClicksEditor = {
 	},
 
 	loadFuncs: function() {
+		if(this.root.getAttribute("hc_renameShortcut") == "true") {
+			this.highlightUsedTypes();
+			return;
+		}
 		var curShortcut = this.currentShortcut;
 		var curType = this.currentType;
 		if(curShortcut == this.shortcut && curType == this.type)
