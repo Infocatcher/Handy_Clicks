@@ -1203,6 +1203,7 @@ var handyClicksEditor = {
 		var curType = this.currentType;
 		var curSh = this.currentShortcut;
 		var prefs = this.ps.prefs;
+		var canRename;
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			var so = prefs[sh];
 			if(this.ut.isObject(so) && so.hasOwnProperty(curType)) {
@@ -1211,7 +1212,7 @@ var handyClicksEditor = {
 					hc_shortcut: sh,
 					label: this.ps.getShortcutStr(sh, true),
 					type: "radio",
-					checked: sh == curSh,
+					checked: sh == curSh && (canRename = true),
 					acceltext: this.su.getActionLabel(fo),
 					hc_sets: fo.enabled ? "" : "disabled"
 				});
@@ -1232,11 +1233,27 @@ var handyClicksEditor = {
 				disabled: true
 			}));
 		}
+		else {
+			var isRenaming = document.documentElement.getAttribute("hc_renameShortcut") == "true";
+			df.insertBefore(document.createElement("menuseparator"), df.firstChild);
+			df.insertBefore(this.ut.createElement("menuitem", {
+				id: "hc-editor-renameShortcut",
+				label: mp.getAttribute(isRenaming ? "hc_renameDone" : "hc_rename"),
+				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut();",
+				disabled: !canRename && !isRenaming
+			}), df.firstChild);
+		}
 		mp.textContent = "";
 		mp.appendChild(df);
 
 		var box = mp.parentNode;
 		mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
+	},
+	renameShortcut: function() {
+		if(document.documentElement.getAttribute("hc_renameShortcut") == "true")
+			document.documentElement.removeAttribute("hc_renameShortcut");
+		else
+			document.documentElement.setAttribute("hc_renameShortcut", "true");
 	},
 	loadSavedShortcut: function(e) {
 		var mi = e.target;

@@ -38,6 +38,25 @@ menulist[hc_sets="disabled"] .menulist-label {
 	text-decoration: line-through;
 }
 
+:root[hc_renameShortcut="true"] #hc-editor-renameShortcutOverlay {
+	position: fixed;
+	z-index: 10001;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: -moz-Dialog;
+	opacity: 0.6;
+}
+:root[hc_renameShortcut="true"] #hc-editor-clickButton,
+:root[hc_renameShortcut="true"] #hc-editor-shortcutBox {
+	position: relative;
+	z-index: 10002;
+}
+:root[hc_renameShortcut="true"] *|*:not(.hc-shortcut) {
+	-moz-user-focus: ignore !important;
+}
+
 #hc-editor-button menuitem.menuitem-iconic > .menu-iconic-left {
 	display: -moz-box !important;
 	-moz-appearance: none !important;
