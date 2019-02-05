@@ -1275,6 +1275,31 @@ var handyClicksEditor = {
 			this.currentShortcut = sh;
 			return;
 		}
+		// Rename shortcut
+		var p = this.ps.prefs;
+		var so = this.ut.getOwnProperty(p, sh, ct);
+		if(!so) {
+			this.ut._err("Shortcut not found: " + sh + " -> " + ct);
+			return;
+		}
+		var newSh = this.currentShortcut;
+		this.ut.setOwnProperty(p, newSh, ct, so);
+		delete p[sh][ct];
+		if(this.ut.isEmptyObj(p[sh]))
+			delete p[sh];
+
+		// Like loadFuncs(), but preserve unsaved data
+		this.shortcut = newSh;
+		this.setWinId();
+		this.setWinTitle();
+
+		if(this.ps.otherSrc)
+			this.pe.reloadSettings();
+		else
+			this.pe.saveSettingsObjects();
+		this.highlightUsedTypes();
+		this.shortcutSaved();
+		this.setDialogButtons();
 	},
 	loadSavedShortcut: function(e) {
 		var mi = e.target;
