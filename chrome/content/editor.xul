@@ -129,6 +129,7 @@
 							oncommand="event.stopPropagation(); handyClicksEditor.loadSavedShortcut(event);"
 							hc_rename="&hc.editor.renameShortcut;"
 							hc_renameDone="&hc.editor.renameShortcutDone;"
+							hc_renameCancel="&hc.editor.renameShortcutCancel;"
 							hc_noData="&hc.editor.noSavedSettings;" />
 						<menulist id="hc-editor-button" class="hc-shortcut">
 							<menupopup>

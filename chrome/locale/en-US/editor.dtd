@@ -18,6 +18,7 @@
 <!ENTITY hc.editor.clickHereTip "Click to set mouse button and modifiers">
 <!ENTITY hc.editor.renameShortcut "Rename shortcut…">
 <!ENTITY hc.editor.renameShortcutDone "Complete rename">
+<!ENTITY hc.editor.renameShortcutCancel "Cancel rename (shortcut already used)">
 <!ENTITY hc.editor.noSavedSettings "No saved settings">
 <!ENTITY hc.editor.osKeyNote "Works only in Firefox 15+ and SeaMonkey 2.12+">
 

@@ -1243,7 +1243,13 @@ var handyClicksEditor = {
 			df.insertBefore(document.createElement("menuseparator"), df.firstChild);
 			df.insertBefore(this.ut.createElement("menuitem", {
 				id: "hc-editor-renameShortcut",
-				label: mp.getAttribute(isRenaming ? "hc_renameDone" : "hc_rename"),
+				label: mp.getAttribute(
+					isRenaming
+						? canRename
+							? "hc_renameCancel"
+							: "hc_renameDone"
+						: "hc_rename"
+				),
 				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut();",
 				disabled: !canRename && !isRenaming
 			}), df.firstChild);
