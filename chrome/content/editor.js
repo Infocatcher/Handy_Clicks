@@ -1263,6 +1263,7 @@ var handyClicksEditor = {
 	renameShortcut: function(alreadyExists) {
 		if(this.root.getAttribute("hc_renameShortcut") != "true") {
 			this.root.setAttribute("hc_renameShortcut", "true");
+			this.funcOptsFixed && this.fixFuncOpts((this.$("hc-editor-funcOptsFixed").checked = false));
 			this._shortcut = this.currentShortcut;
 			this._type = this.currentType;
 			return;
