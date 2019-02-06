@@ -1240,19 +1240,18 @@ var handyClicksEditor = {
 		}
 		else {
 			var isRenaming = this.root.getAttribute("hc_renameShortcut") == "true";
-			var renameLabel = mp.getAttribute(
-				isRenaming
-					? canRename
-						? "hc_renameCancel"
-						: "hc_renameDone"
-					: "hc_rename"
-			);
+			var renameState = isRenaming
+					? canRename ? "Cancel" : "Done"
+					: "Start";
+			var renameLabel = mp.getAttribute("hc_rename" + renameState);
 			if(isRenaming && !canRename)
 				renameLabel = renameLabel.replace("$s", this.ps.getShortcutStr(curSh, true));
 			df.insertBefore(document.createElement("menuseparator"), df.firstChild);
 			df.insertBefore(this.ut.createElement("menuitem", {
 				id: "hc-editor-renameShortcut",
+				class: "menuitem-iconic handyClicks-iconic",
 				label: renameLabel,
+				hc_rename: renameState,
 				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut(" + canRename + ");",
 				disabled: !canRename && !isRenaming
 			}), df.firstChild);

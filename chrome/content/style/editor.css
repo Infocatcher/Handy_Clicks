@@ -38,6 +38,15 @@ menulist[hc_sets="disabled"] .menulist-label {
 	text-decoration: line-through;
 }
 
+#hc-editor-renameShortcut[hc_rename="Start"] {
+	list-style-image: none;
+}
+#hc-editor-renameShortcut[hc_rename="Done"] {
+	-moz-image-region: rect(48px 16px 64px 0);
+}
+#hc-editor-renameShortcut[hc_rename="Cancel"] {
+	-moz-image-region: rect(48px 64px 64px 48px);
+}
 :root[hc_renameShortcut="true"] #hc-editor-renameShortcutOverlay {
 	position: fixed;
 	z-index: 10001;
