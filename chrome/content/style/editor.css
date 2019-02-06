@@ -39,7 +39,7 @@ menulist[hc_sets="disabled"] .menulist-label {
 }
 
 #hc-editor-renameShortcut[hc_rename="Start"] {
-	list-style-image: none;
+	-moz-image-region: rect(48px 128px 64px 112px);
 }
 #hc-editor-renameShortcut[hc_rename="Done"] {
 	-moz-image-region: rect(48px 16px 64px 0);
