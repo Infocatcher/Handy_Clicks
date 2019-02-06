@@ -1262,7 +1262,7 @@ var handyClicksEditor = {
 		var box = mp.parentNode;
 		mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
 	},
-	renameShortcut: function() {
+	renameShortcut: function(onlyRename) {
 		if(this.root.getAttribute("hc_renameShortcut") != "true") {
 			this.root.setAttribute("hc_renameShortcut", "true");
 			this.funcOptsFixed && this.fixFuncOpts((this.$("hc-editor-funcOptsFixed").checked = false));
@@ -1291,6 +1291,9 @@ var handyClicksEditor = {
 		delete p[sh][ct];
 		if(this.ut.isEmptyObj(p[sh]))
 			delete p[sh];
+
+		if(onlyRename) // ondialogcancel -> checkSaved()
+			return;
 
 		// Like loadFuncs(), but preserve unsaved data
 		this.shortcut = newSh;
@@ -1583,8 +1586,11 @@ var handyClicksEditor = {
 		var res = this.su.notifyUnsaved();
 		if(res == this.su.PROMPT_CANCEL)
 			return false;
-		if(res == this.su.PROMPT_SAVE)
+		if(res == this.su.PROMPT_SAVE) {
+			if(this.root.getAttribute("hc_renameShortcut") == "true")
+				this.renameShortcut(true);
 			this.saveSettings();
+		}
 		return true;
 	},
 
