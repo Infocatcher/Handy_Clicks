@@ -1304,7 +1304,7 @@ var handyClicksEditor = {
 		if(this.ps.otherSrc)
 			this.pe.reloadSettings();
 		else
-			this.pe.saveSettingsObjects();
+			this.pe.saveSettingsObjectsAsync();
 		this.highlightUsedTypes();
 		this.shortcutSaved();
 		this.setDialogButtons();
