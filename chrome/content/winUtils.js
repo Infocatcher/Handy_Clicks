@@ -157,6 +157,14 @@ var handyClicksWinUtils = {
 			st.setItemStatus(winId, editStat);
 		st.ensureStatusSearchUpdated();
 	},
+	shortcutRenamed: function(oldHash, newHash) {
+		var wSet = this.wm.getMostRecentWindow("handyclicks:settings");
+		if(!wSet || !("_handyClicksInitialized" in wSet))
+			return;
+		var st = wSet.handyClicksSets;
+		if(st.ps.otherSrc == this.ps.otherSrc)
+			st.shortcutRenamed(oldHash, newHash);
+	},
 
 	openSettings: function(closeOpened) {
 		return this.openWindowByType(

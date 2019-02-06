@@ -516,6 +516,23 @@ var handyClicksSets = {
 			this
 		);
 	},
+	shortcutRenamed: function(oldHash, newHash) {
+		// Trick to save corrected collapsed and selected state
+		var mdfPattern = this.ps.modifiersMask;
+		var newBtn = /button=(\d)/.test(newHash) && RegExp.$1;
+		var newMdf = mdfPattern.test(newHash) && RegExp.lastMatch;
+		var rc = this.rowsCache;
+		for(var tItem = (oldHash in rc) && rc[oldHash].parentNode; tItem; tItem = tItem.parentNode.parentNode) {
+			if(tItem.__delayed)
+				tItem.__delayed.__hash = newHash + "-delayed";
+			tItem.__hash = tItem.__hash
+				.replace(/^(button=?)\d/, "$1" + newBtn)
+				.replace(/(-button)\d$/, "$1" + newBtn)
+				.replace(mdfPattern, newMdf);
+			if(tItem.parentNode == this.tBody)
+				break;
+		}
+	},
 
 	setsReloading: function(notifyReason) {
 		if(notifyReason & this.ps.SETS_RELOADED) {

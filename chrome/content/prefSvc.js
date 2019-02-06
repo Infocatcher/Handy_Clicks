@@ -37,6 +37,7 @@ var handyClicksPrefSvc = {
 		testBackup:   "_test_backup-"
 	},
 	okShortcut: /^button=[0-2](?:,(?:ctrl|shift|alt|meta|os)=(?:true|false))*$/,
+	modifiersMask: /(?:(?:^|,)(?:ctrl|shift|alt|meta|os)=(?:true|false))+/,
 
 	otherSrc: false,
 

@@ -1292,6 +1292,7 @@ var handyClicksEditor = {
 		if(this.ut.isEmptyObj(p[sh]))
 			delete p[sh];
 
+		this.wu.shortcutRenamed(sh + "-" + ct, newSh + "-" + ct);
 		if(onlyRename) // ondialogcancel -> checkSaved()
 			return;
 
