@@ -1252,7 +1252,7 @@ var handyClicksEditor = {
 				class: "menuitem-iconic handyClicks-iconic",
 				label: renameLabel,
 				hc_rename: renameState,
-				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut(" + canRename + ");",
+				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut();",
 				disabled: !canRename && !isRenaming
 			}), df.firstChild);
 		}
@@ -1262,7 +1262,7 @@ var handyClicksEditor = {
 		var box = mp.parentNode;
 		mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
 	},
-	renameShortcut: function(alreadyExists) {
+	renameShortcut: function() {
 		if(this.root.getAttribute("hc_renameShortcut") != "true") {
 			this.root.setAttribute("hc_renameShortcut", "true");
 			this.funcOptsFixed && this.fixFuncOpts((this.$("hc-editor-funcOptsFixed").checked = false));
@@ -1273,19 +1273,20 @@ var handyClicksEditor = {
 		this.root.removeAttribute("hc_renameShortcut");
 		var sh = this._shortcut;
 		var ct = this._type;
+		var newSh = this.currentShortcut;
 		this._shortcut = this._type = null;
-		if(alreadyExists) { // Cancel and restore initial shortcut
+		var p = this.ps.prefs;
+		if(this.ut.getOwnProperty(p, newSh, ct)) {
+			// Don't overwrite: cancel and restore initial shortcut
 			this.currentShortcut = sh;
 			return;
 		}
 		// Rename shortcut
-		var p = this.ps.prefs;
 		var so = this.ut.getOwnProperty(p, sh, ct);
 		if(!so) {
 			this.ut._err("Shortcut not found: " + sh + " -> " + ct);
 			return;
 		}
-		var newSh = this.currentShortcut;
 		this.ut.setOwnProperty(p, newSh, ct, so);
 		delete p[sh][ct];
 		if(this.ut.isEmptyObj(p[sh]))
