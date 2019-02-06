@@ -752,19 +752,20 @@ var handyClicksSets = {
 	},
 	cropCode: function(code) {
 		var maxLen = this._maxCodeLength;
-		if(maxLen && code.length > maxLen) {
-			var cropped = code.substr(0, maxLen);
-			if(
-				!/[\r\n]/.test(code.substr(maxLen - 1, 2)) // Already used entire line?
-				&& /^[^\n\r]+/.test(code.substr(maxLen))
-				&& RegExp.lastMatch.length <= this._preserveLines
-			)
-				cropped += RegExp.lastMatch;
-			else
-				cropped = cropped.replace(/\s+$/, "");
-			return cropped + "\n[\u2026]"; // "[...]"
-		}
-		return code;
+		if(!maxLen)
+			return code;
+		if(code.length <= (maxLen + this._preserveLines))
+			return code;
+		var cropped = code.substr(0, maxLen);
+		if(
+			!/[\r\n]/.test(code.substr(maxLen - 1, 2)) // Already used entire line?
+			&& /^[^\n\r]+/.test(code.substr(maxLen))
+			&& RegExp.lastMatch.length <= this._preserveLines
+		)
+			cropped += RegExp.lastMatch;
+		else
+			cropped = cropped.replace(/\s+$/, "");
+		return cropped + "\n[\u2026]"; // "[...]"
 	},
 	isBuggyFuncObj: function(fo, isCustom, label, foStr) {
 		if(!this.ps.isOkFuncObj(fo)) {
