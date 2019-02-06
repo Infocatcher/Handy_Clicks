@@ -2794,6 +2794,7 @@ var handyClicksSets = {
 
 		this.updateAllDependencies();
 		this.forceUpdTree(this._importSrc);
+		this.ps.otherSrc && this.pe.reloadSettings();
 
 		//this.applyButton.disabled = true;
 		this.checkTreeSaved();
