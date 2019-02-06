@@ -131,6 +131,11 @@
 `*` Changed edit mode notification: close previous notification, open under cursor after click on unsupported element and close after exiting from edit mode.<br>
 `+` Added ability to localize custom labels, example: “Function name @ru:Имя функции” (“default text @locale1:… @locale2:…”).<br>
 `x` Fixed scripts reloader (Ctrl+Alt+R, <em>extensions.handyclicks.debug</em> = true) in Firefox 59+: chrome://…/_reloader.js doesn't work anymore, just renamed to reloader.js.<br>
+`*` Edit mode tooltip: show URLs in multiple lines (e.g. for tab bar).<br>
+`*` Improved code length limit to not show too long code in settings tree: <em>extensions.handyclicks.sets.codeLengthLimit</em> = 0 to not crop code, added <em>extensions.handyclicks.sets.codeLengthLimit.preserveLines</em> preference (max additional chars to show entire line).<br>
+`*` Reload image: ignore data:… URIs (nothing to reload) + apply “blink” animation to image.<br>
+`+` Editor: added context menu item to rename shortcut.<br>
+`x` Fixed hotkeys to import from clipboard (Ctrl+V, Ctrl+Shift+V, Shift+Ins): now used separate command, which will never be disabled.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
