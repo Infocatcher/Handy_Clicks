@@ -319,18 +319,18 @@ var handyClicksSets = {
 			? document.createDocumentFragment()
 			: this.tBody;
 		this.drawPrefs(this.ps.prefs, df);
+		this._import && this.addImportStatistics(df);
 		if(df != this.tBody)
 			this.tBody.appendChild(df);
 		this.markOpenedEditors(true);
-		if(this._import)
-			this.addImportStatistics();
 		delete this.eltsCache;
 		this._hasFilter = false;
 
 		this.ut.timer("drawTree()");
 		!dontSearch && this.searchInSetsTree(true);
 	},
-	drawPrefs: function(prefs, df) {
+	drawPrefs: function(prefs, df, isRemoved) {
+		this._drawRemoved = isRemoved;
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh))
 			this.drawShortcut(prefs, sh, df);
 	},
@@ -394,7 +394,7 @@ var handyClicksSets = {
 			break;
 		}
 	},
-	addImportStatistics: function() {
+	addImportStatistics: function(df) {
 		var overrideTypes = 0;
 		var newTypes = 0;
 
@@ -416,6 +416,7 @@ var handyClicksSets = {
 
 		var prefs = this.ps.prefs;
 		var savedPrefs = this._savedPrefs;
+		var delPrefs = {};
 
 		for(var sh in savedPrefs) if(savedPrefs.hasOwnProperty(sh)) {
 			var so = savedPrefs[sh];
@@ -425,8 +426,10 @@ var handyClicksSets = {
 			for(var type in so) if(so.hasOwnProperty(type)) {
 				var to = so[type];
 				var newTo = this.ut.getOwnProperty(newSo, type);
-				if(to && !newTo)
+				if(to && !newTo) {
 					++deletable;
+					this.ut.setOwnProperty(delPrefs, sh, type, to);
+				}
 				if(!this.ut.isObject(to))
 					continue;
 				var da = this.ut.getOwnProperty(to, "delayedAction");
@@ -439,6 +442,9 @@ var handyClicksSets = {
 		for(var type in savedTypes) if(savedTypes.hasOwnProperty(type))
 			if(savedTypes[type] && !this.ut.getOwnProperty(types, type))
 				++deletableTypes;
+
+		if(!this._importPartial)
+			this.drawPrefs(delPrefs, df, true);
 
 		const id = "hc-sets-tree-import";
 		var c = this.counters;
@@ -670,6 +676,7 @@ var handyClicksSets = {
 					hc_override: overrideDa && !equalsDa && ++this.counters.overrideDa,
 					hc_equals:   overrideDa &&  equalsDa,
 					hc_new:     !overrideDa &&              ++this.counters.addedDa,
+					hc_old:      this._drawRemoved,
 					hc_fileData: daFileData
 				}, true);
 			}
@@ -726,6 +733,7 @@ var handyClicksSets = {
 				hc_override: override && !equals && ++this.counters.override,
 				hc_equals:   override &&  equals,
 				hc_new:     !override            && ++this.counters.added,
+				hc_old:      this._drawRemoved,
 				hc_fileData: fileData
 			}, true);
 
