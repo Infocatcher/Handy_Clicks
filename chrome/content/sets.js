@@ -311,74 +311,14 @@ var handyClicksSets = {
 		this._localizeArgs = this.pu.get("sets.localizeArguments");
 		this._maxCodeLength = this.pu.get("sets.codeLengthLimit");
 		this._preserveLines = this.pu.get("sets.codeLengthLimit.preserveLines");
+		this.drawMode = this.pu.get("sets.treeDrawMode");
 
 		this.resetCounters();
 
 		var df = this.ut.fxVersion >= 2
 			? document.createDocumentFragment()
 			: this.tBody;
-		var drawMode = this.pu.get("sets.treeDrawMode");
-		var p = this.ps.prefs;
-		for(var sh in p) if(p.hasOwnProperty(sh)) {
-			if(!this.ps.isOkShortcut(sh) || !this.ut.isObject(p[sh])) {
-				this.ut._warn('Invalid shortcut in prefs: "' + sh + '"');
-				continue;
-			}
-			var so = p[sh];
-			if(this.ut.isEmptyObj(so)) {
-				this.ut._warn('Empty settings object in prefs: "' + sh + '"');
-				continue;
-			}
-			switch(drawMode) {
-				case 0:
-				default: // Normal
-					var button = this.ps.getButtonId(sh);
-					var modifiers = this.ps.getModifiersStr(sh);
-					var buttonContainer = this.eltsCache[button]
-						|| this.appendContainerItem(df, button, this.getLocalized(button));
-					var modifiersContainer = this.eltsCache[sh]
-						|| this.appendContainerItem(buttonContainer, sh, modifiers);
-					this.appendItems(modifiersContainer, so, sh);
-				break;
-				case 1: // Normal (compact)
-					var label = this.ps.getShortcutStr(sh, true);
-					var buttonContainer = this.eltsCache[sh]
-						|| this.appendContainerItem(df, sh, label);
-					this.appendItems(buttonContainer, so, sh);
-				break;
-				case 2: // Normal (inline)
-					var label = this.ps.getShortcutStr(sh, true) + this.ps.spacedSep;
-					for(var type in so) if(so.hasOwnProperty(type))
-						this.appendRow(df, sh, type, so[type], label + this.ps.getTypeLabel(type));
-				break;
-				case 3: // Inverse
-					var button = this.ps.getButtonId(sh);
-					var buttonLabel = this.getLocalized(button);
-					var modifiers = this.ps.getModifiersStr(sh);
-					for(var type in so) if(so.hasOwnProperty(type)) {
-						var typeContainer = this.eltsCache[type]
-							|| this.appendContainerItem(df, type, this.ps.getTypeLabel(type));
-						var hash = type + "-" + button;
-						var buttonContainer = this.eltsCache[hash]
-							|| this.appendContainerItem(typeContainer, hash, buttonLabel);
-						this.appendRow(buttonContainer, sh, type, so[type], modifiers);
-					}
-				break;
-				case 4: // Inverse (compact)
-					var label = this.ps.getShortcutStr(sh, true);
-					for(var type in so) if(so.hasOwnProperty(type)) {
-						var typeContainer = this.eltsCache[type]
-							|| this.appendContainerItem(df, type, this.ps.getTypeLabel(type));
-						this.appendRow(typeContainer, sh, type, so[type], label);
-					}
-				break;
-				case 5: // Inverse (inline)
-					var label = this.ps.spacedSep + this.ps.getShortcutStr(sh, true);
-					for(var type in so) if(so.hasOwnProperty(type))
-						this.appendRow(df, sh, type, so[type], this.ps.getTypeLabel(type) + label);
-				break;
-			}
-		}
+		this.drawPrefs(this.ps.prefs, df);
 		if(df != this.tBody)
 			this.tBody.appendChild(df);
 		this.markOpenedEditors(true);
@@ -389,6 +329,70 @@ var handyClicksSets = {
 
 		this.ut.timer("drawTree()");
 		!dontSearch && this.searchInSetsTree(true);
+	},
+	drawPrefs: function(prefs, df) {
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh))
+			this.drawShortcut(prefs, sh, df);
+	},
+	drawShortcut: function(prefs, sh, df) {
+		var so = prefs[sh];
+		if(!this.ps.isOkShortcut(sh) || !this.ut.isObject(so)) {
+			this.ut._warn('Invalid shortcut in prefs: "' + sh + '"');
+			return;
+		}
+		if(this.ut.isEmptyObj(so)) {
+			this.ut._warn('Empty settings object in prefs: "' + sh + '"');
+			return;
+		}
+		switch(this.drawMode) {
+			case 0:
+			default: // Normal
+				var button = this.ps.getButtonId(sh);
+				var modifiers = this.ps.getModifiersStr(sh);
+				var buttonContainer = this.eltsCache[button]
+					|| this.appendContainerItem(df, button, this.getLocalized(button));
+				var modifiersContainer = this.eltsCache[sh]
+					|| this.appendContainerItem(buttonContainer, sh, modifiers);
+				this.appendItems(modifiersContainer, so, sh);
+			break;
+			case 1: // Normal (compact)
+				var label = this.ps.getShortcutStr(sh, true);
+				var buttonContainer = this.eltsCache[sh]
+					|| this.appendContainerItem(df, sh, label);
+				this.appendItems(buttonContainer, so, sh);
+			break;
+			case 2: // Normal (inline)
+				var label = this.ps.getShortcutStr(sh, true) + this.ps.spacedSep;
+				for(var type in so) if(so.hasOwnProperty(type))
+					this.appendRow(df, sh, type, so[type], label + this.ps.getTypeLabel(type));
+			break;
+			case 3: // Inverse
+				var button = this.ps.getButtonId(sh);
+				var buttonLabel = this.getLocalized(button);
+				var modifiers = this.ps.getModifiersStr(sh);
+				for(var type in so) if(so.hasOwnProperty(type)) {
+					var typeContainer = this.eltsCache[type]
+						|| this.appendContainerItem(df, type, this.ps.getTypeLabel(type));
+					var hash = type + "-" + button;
+					var buttonContainer = this.eltsCache[hash]
+						|| this.appendContainerItem(typeContainer, hash, buttonLabel);
+					this.appendRow(buttonContainer, sh, type, so[type], modifiers);
+				}
+			break;
+			case 4: // Inverse (compact)
+				var label = this.ps.getShortcutStr(sh, true);
+				for(var type in so) if(so.hasOwnProperty(type)) {
+					var typeContainer = this.eltsCache[type]
+						|| this.appendContainerItem(df, type, this.ps.getTypeLabel(type));
+					this.appendRow(typeContainer, sh, type, so[type], label);
+				}
+			break;
+			case 5: // Inverse (inline)
+				var label = this.ps.spacedSep + this.ps.getShortcutStr(sh, true);
+				for(var type in so) if(so.hasOwnProperty(type))
+					this.appendRow(df, sh, type, so[type], this.ps.getTypeLabel(type) + label);
+			break;
+		}
 	},
 	addImportStatistics: function() {
 		var overrideTypes = 0;
