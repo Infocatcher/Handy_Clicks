@@ -1263,7 +1263,9 @@ var handyClicksEditor = {
 		mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
 	},
 	renameShortcut: function(onlyRename) {
-		if(this.root.getAttribute("hc_renameShortcut") != "true") {
+		var rename = this.root.getAttribute("hc_renameShortcut") != "true";
+		this.mainTabbox.handleCtrlTab = this.mainTabbox.handleCtrlPageUpDown = !rename;
+		if(rename) {
 			var fe = document.commandDispatcher.focusedElement;
 			if(!fe || fe.parentNode.id != "hc-editor-shortcutBox")
 				this.$("hc-editor-button").focus();
