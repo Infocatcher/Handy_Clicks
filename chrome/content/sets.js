@@ -443,14 +443,27 @@ var handyClicksSets = {
 			if(savedTypes[type] && !this.ut.getOwnProperty(types, type))
 				++deletableTypes;
 
-		if(!this._importPartial)
-			this.drawPrefs(delPrefs, df, true);
+		this.drawPrefs(delPrefs, df, true);
+		if(this._importPartial)
+			this.hideOldTreeitems(true);
 
 		const id = "hc-sets-tree-import";
 		var c = this.counters;
 		this.$(id + "ChangedValue").value = c.override + "/" + c.overrideDa + " + " + overrideTypes;
 		this.$(id + "AddedValue")  .value = c.added    + "/" + c.addedDa    + " + " + newTypes;
 		this.$(id + "RemovedValue").value = deletable  + "/" + deletableDa  + " + " + deletableTypes;
+	},
+	hideOldTreeitems: function(hide) {
+		Array.prototype.forEach.call(
+			this.tBody.getElementsByAttribute("hc_old", "true"),
+			function(tItem) {
+				if(hide)
+					this.hideTreeitem(tItem);
+				else if(!("__matched" in tItem) || tItem.__matched)
+					this.showTreeitem(tItem);
+			},
+			this
+		);
 	},
 	redrawTree: function() {
 		return this.treeBatch(this._redrawTree, this, arguments);
@@ -679,6 +692,7 @@ var handyClicksSets = {
 					hc_old:      this._drawRemoved,
 					hc_fileData: daFileData
 				}, true);
+				this._drawRemoved && daItem.setAttribute("hc_old", "delayed");
 			}
 
 			daItem.__shortcut = shortcut;
@@ -736,6 +750,7 @@ var handyClicksSets = {
 				hc_old:      this._drawRemoved,
 				hc_fileData: fileData
 			}, true);
+			this._drawRemoved && tItem.setAttribute("hc_old", "true");
 
 			// Restore...
 			if(savedDa)
@@ -1241,6 +1256,14 @@ var handyClicksSets = {
 			var tChld = tItem.parentNode;
 			tItem.hidden = true;
 			if(tChld == this.tBody || this.hasVisibleChild(tChld))
+				break;
+		}
+	},
+	showTreeitem: function(tItem) {
+		for(;; tItem = tChld.parentNode) {
+			var tChld = tItem.parentNode;
+			tItem.hidden = false;
+			if(tChld == this.tBody)
 				break;
 		}
 	},
@@ -2027,8 +2050,12 @@ var handyClicksSets = {
 
 		if(this._hasFilter) {
 			var hidden = this.tBody.getElementsByAttribute("hidden", "true");
-			for(var i = hidden.length - 1; i >= 0; --i)
-				hidden[i].hidden = false;
+			for(var i = hidden.length - 1; i >= 0; --i) {
+				var tItem = hidden[i];
+				if(this._importPartial && tItem.hasAttribute("hc_old"))
+					continue;
+				tItem.hidden = false;
+			}
 		}
 		var matchedRows = [];
 		for(var h in this.rowsCache) {
@@ -3345,6 +3372,7 @@ var handyClicksSets = {
 		if(isPartial === undefined)
 			isPartial = !this._importPartial;
 		this.setImportStatus(this._import, isPartial, this._importFromClipboard, true);
+		this.hideOldTreeitems(isPartial);
 	},
 	toggleImportFilesData: function(importFD) {
 		this._importFilesData = importFD;
