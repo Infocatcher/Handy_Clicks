@@ -322,6 +322,7 @@ var handyClicksSets = {
 		this._import && this.addImportStatistics(df);
 		if(df != this.tBody)
 			this.tBody.appendChild(df);
+		this._importPartial && this.hideOldTreeitems(true);
 		this.markOpenedEditors(true);
 		delete this.eltsCache;
 		this._hasFilter = false;
@@ -444,8 +445,6 @@ var handyClicksSets = {
 				++deletableTypes;
 
 		this.drawPrefs(delPrefs, df, true);
-		if(this._importPartial)
-			this.hideOldTreeitems(true);
 
 		const id = "hc-sets-tree-import";
 		var c = this.counters;
