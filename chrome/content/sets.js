@@ -1111,39 +1111,37 @@ var handyClicksSets = {
 
 		if(itsCount > MAX_ROWS)
 			tIts.splice(MAX_ROWS - 2, itsCount - MAX_ROWS + 1, "\u2026" /* "..." */);
-		var info = tIts.map(
-			function(tItem, i) {
-				if(typeof tItem == "string") // Cropped mark
-					return tItem;
-				var type = tItem.__itemType, sh = tItem.__shortcut;
-				var mdfs = this.ps.getModifiersStr(sh);
-				var button = this.ps.getButtonStr(sh, true);
-				var sep = this.ps.spacedSep;
-				var typeLabel = this.cropStr(this.ps.getTypeLabel(type), MAX_TYPE_LENGTH);
-				var fObj = this.ut.getOwnProperty(this.ps.prefs, sh, type);
-				var dObj = this.ut.getOwnProperty(fObj, "delayedAction");
-				var addLabel = "";
-				if(tItem.__isDelayed) {
-					typeLabel += " (" + this.getLocalized("delayed") + ")";
-					fObj = dObj;
+		var info = tIts.map(function(tItem, i) {
+			if(typeof tItem == "string") // Cropped mark
+				return tItem;
+			var type = tItem.__itemType, sh = tItem.__shortcut;
+			var mdfs = this.ps.getModifiersStr(sh);
+			var button = this.ps.getButtonStr(sh, true);
+			var sep = this.ps.spacedSep;
+			var typeLabel = this.cropStr(this.ps.getTypeLabel(type), MAX_TYPE_LENGTH);
+			var fObj = this.ut.getOwnProperty(this.ps.prefs, sh, type);
+			var dObj = this.ut.getOwnProperty(fObj, "delayedAction");
+			var addLabel = "";
+			if(tItem.__isDelayed) {
+				typeLabel += " (" + this.getLocalized("delayed") + ")";
+				fObj = dObj;
+			}
+			else {
+				var daLabel = this.ut.isObject(dObj) && this.su.getActionLabel(fObj);
+				if(daLabel) {
+					addLabel = "\n\t(" + this.getLocalized("delayed") + ": "
+						+ this.cropStr(daLabel, MAX_LABEL_LENGTH) + ")";
 				}
-				else {
-					var daLabel = this.ut.isObject(dObj) && this.su.getActionLabel(fObj);
-					if(daLabel)
-						addLabel = "\n\t(" + this.getLocalized("delayed") + ": "
-							+ this.cropStr(daLabel, MAX_LABEL_LENGTH) + ")";
-				}
-				var label = this.ut.isObject(fObj)
-					? this.cropStr(this.su.getActionLabel(fObj), MAX_LABEL_LENGTH)
-					: "?";
-				var n = i + 1;
-				if(n == MAX_ROWS)
-					n = itsCount;
-				return n + ". " + mdfs + sep + button + sep + typeLabel + " \u21d2 " /* "=>" */
-					+ label + addLabel;
-			},
-			this
-		);
+			}
+			var label = this.ut.isObject(fObj)
+				? this.cropStr(this.su.getActionLabel(fObj), MAX_LABEL_LENGTH)
+				: "?";
+			var n = i + 1;
+			if(n == MAX_ROWS)
+				n = itsCount;
+			return n + ". " + mdfs + sep + button + sep + typeLabel + " \u21d2 " /* "=>" */
+				+ label + addLabel;
+		}, this);
 
 		return info;
 	},
@@ -2849,12 +2847,9 @@ var handyClicksSets = {
 		var data = this.exportPrefsHeader + "\n"
 			+ this.pu.prefSvc.getBranch(this.pu.prefNS)
 				.getChildList("", {})
-				.map(
-					function(pName) {
-						return this.pu.prefNS + pName + "=" + this.pu.get(pName);
-					},
-					this
-				).sort().join("\n");
+				.map(function(pName) {
+					return this.pu.prefNS + pName + "=" + this.pu.get(pName);
+				}, this).sort().join("\n");
 		this.ut.writeToFile(data, file);
 		this.backupsDir = file.parent;
 		return true;
@@ -3017,13 +3012,10 @@ var handyClicksSets = {
 		return this.ps.getSettingsStr(newTypes, newPrefs, true);
 	},
 	extractLabels: function(its) {
-		return its.map(
-			function(it) {
-				var fo = this.ut.getOwnProperty(this.ps.prefs, it.__shortcut, it.__itemType);
-				return this.ut.isObject(fo) && this.su.getActionLabel(fo);
-			},
-			this
-		).filter(function(label) {
+		return its.map(function(it) {
+			var fo = this.ut.getOwnProperty(this.ps.prefs, it.__shortcut, it.__itemType);
+			return this.ut.isObject(fo) && this.su.getActionLabel(fo);
+		}, this).filter(function(label) {
 			return label;
 		});
 	},
