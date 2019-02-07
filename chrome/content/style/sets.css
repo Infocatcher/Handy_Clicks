@@ -146,14 +146,14 @@ tree[hc_colored="true"] treechildren::-moz-tree-row(hc_notAvailable, hc_customTy
 	background-color: #ffa;
 }
 tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_notAvailable) {
-	color: graytext;
+	opacity: 0.6;
 }
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy),
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy, hc_customType) {
 	background-color: #faa;
 }
 tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_buggy) {
-	text-decoration: line-through;
+	opacity: 0.48;
 }
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_search) {
 	/*background-color: #e7e3ff;*/
