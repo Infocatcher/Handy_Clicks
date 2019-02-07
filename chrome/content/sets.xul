@@ -71,6 +71,7 @@ preferences {
 					<menuseparator />
 					<menuitem type="checkbox" acceltext="%ovr%" label="&hc.sets.searchChanged;" />
 					<menuitem type="checkbox" acceltext="%new%" label="&hc.sets.searchAdded;" />
+					<menuitem type="checkbox" acceltext="%old%" label="&hc.sets.searchRemoved;" />
 					<menuitem type="checkbox" acceltext="%data%" label="&hc.sets.searchFileData;" />
 				</menupopup>
 			</button>

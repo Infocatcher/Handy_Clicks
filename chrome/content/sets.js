@@ -1786,6 +1786,8 @@ var handyClicksSets = {
 			mi.setAttribute("checked", val.indexOf(ph) != -1);
 			if(ph == "%ovr%" || ph == "%new%" || ph == "%data%")
 				mi.setAttribute("disabled", !this._import);
+			else if(ph == "%old%")
+				mi.setAttribute("disabled", !this._import || this._importPartial);
 			var count = counters[ph];
 			var origLabel = mi.__origLabel || (mi.__origLabel = mi.getAttribute("label"));
 			var label = count
@@ -1909,6 +1911,7 @@ var handyClicksSets = {
 	searchPlaceholders: {
 		hc_override:     "%ovr%",
 		hc_new:          "%new%",
+		hc_old:          "%old%",
 		hc_fileData:     "%data%",
 		hc_custom:       "%custom%",
 		hc_customFile:   "%file%",

@@ -36,6 +36,7 @@
 <!ENTITY hc.sets.searchBuggy "Buggy">
 <!ENTITY hc.sets.searchChanged "Changed (import)">
 <!ENTITY hc.sets.searchAdded "Added (import)">
+<!ENTITY hc.sets.searchRemoved "Removed (import)">
 <!ENTITY hc.sets.searchFileData "File data (import)">
 <!ENTITY hc.sets.searchTip "Space = and
 'whole string'
