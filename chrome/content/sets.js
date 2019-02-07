@@ -459,7 +459,7 @@ var handyClicksSets = {
 			function(tItem) {
 				if(hide)
 					this.hideTreeitem(tItem);
-				else if(!("__matched" in tItem) || tItem.__matched)
+				else
 					this.showTreeitem(tItem);
 			},
 			this
@@ -584,6 +584,7 @@ var handyClicksSets = {
 		var tItem = document.createElement("treeitem");
 		tItem.setAttribute("container", "true");
 		tItem.setAttribute("open", "true");
+		this._drawRemoved && tItem.setAttribute("hc_old", "contains");
 		var tRow = tItem.appendChild(document.createElement("treerow"));
 		var tCell = tRow.appendChild(document.createElement("treecell"));
 		tCell.setAttribute("label", label);
@@ -692,7 +693,7 @@ var handyClicksSets = {
 					hc_old:      this._drawRemoved,
 					hc_fileData: daFileData
 				}, true);
-				this._drawRemoved && daItem.setAttribute("hc_old", "delayed");
+				this._drawRemoved && daItem.setAttribute("hc_old", "inside");
 			}
 
 			daItem.__shortcut = shortcut;
@@ -2060,10 +2061,13 @@ var handyClicksSets = {
 		var matchedRows = [];
 		for(var h in this.rowsCache) {
 			var tRow = this.rowsCache[h];
+			var tItem = tRow.parentNode;
+			if(this._importPartial && tItem.hasAttribute("hc_old"))
+				continue;
 			var okRow = !hasTerm || checkFunc(this.getRowText(tRow, caseSensitive));
 			var hl = hasTerm && okRow;
 			this.setChildNodesProperties(tRow, { hc_search: hl }, true);
-			tRow.parentNode.__matched = okRow;
+			tItem.__matched = okRow;
 			okRow && matchedRows.push(tRow);
 		}
 		var found = matchedRows.length > 0;
@@ -3373,6 +3377,7 @@ var handyClicksSets = {
 			isPartial = !this._importPartial;
 		this.setImportStatus(this._import, isPartial, this._importFromClipboard, true);
 		this.hideOldTreeitems(isPartial);
+		this.searchInSetsTree(true);
 	},
 	toggleImportFilesData: function(importFD) {
 		this._importFilesData = importFD;
