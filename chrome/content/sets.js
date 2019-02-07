@@ -452,12 +452,17 @@ var handyClicksSets = {
 		this.$(id + "AddedValue")  .value = c.added    + "/" + c.addedDa    + " + " + newTypes;
 		this.$(id + "RemovedValue").value = deletable  + "/" + deletableDa  + " + " + deletableTypes;
 	},
-	hideOldTreeitems: function(hide) {
+	hideOldTreeitems: function(hide, update) {
+		if(update) {
+			var hidden = this.tBody.getElementsByAttribute("hidden", "true");
+			for(var i = hidden.length - 1; i >= 0; --i)
+				hidden[i].hidden = false;
+		}
 		Array.prototype.forEach.call(
-			this.tBody.getElementsByAttribute("hc_old", "true"),
+			this.tBody.getElementsByAttribute("hc_old", "item"),
 			function(tItem) {
 				if(hide)
-					this.hideTreeitem(tItem);
+					this.hideTreeitem(tItem, true);
 				else
 					this.showTreeitem(tItem);
 			},
@@ -583,7 +588,6 @@ var handyClicksSets = {
 		var tItem = document.createElement("treeitem");
 		tItem.setAttribute("container", "true");
 		tItem.setAttribute("open", "true");
-		this._drawRemoved && tItem.setAttribute("hc_old", "contains");
 		var tRow = tItem.appendChild(document.createElement("treerow"));
 		var tCell = tRow.appendChild(document.createElement("treecell"));
 		tCell.setAttribute("label", label);
@@ -692,7 +696,7 @@ var handyClicksSets = {
 					hc_old:      this._drawRemoved,
 					hc_fileData: daFileData
 				}, true);
-				this._drawRemoved && daItem.setAttribute("hc_old", "inside");
+				this._drawRemoved && daItem.setAttribute("hc_old", "child");
 			}
 
 			daItem.__shortcut = shortcut;
@@ -750,7 +754,7 @@ var handyClicksSets = {
 				hc_old:      this._drawRemoved,
 				hc_fileData: fileData
 			}, true);
-			this._drawRemoved && tItem.setAttribute("hc_old", "true");
+			this._drawRemoved && tItem.setAttribute("hc_old", "item");
 
 			// Restore...
 			if(savedDa)
@@ -1251,10 +1255,11 @@ var handyClicksSets = {
 			--this.counters.buggy;
 		delete this.rowsCache[hash];
 	},
-	hideTreeitem: function(tItem) {
+	hideTreeitem: function(tItem, markAsOld) {
 		for(;; tItem = tChld.parentNode) {
 			var tChld = tItem.parentNode;
 			tItem.hidden = true;
+			markAsOld && !tItem.hasAttribute("hc_old") && tItem.setAttribute("hc_old", "container");
 			if(tChld == this.tBody || this.hasVisibleChild(tChld))
 				break;
 		}
@@ -3381,7 +3386,7 @@ var handyClicksSets = {
 		if(isPartial === undefined)
 			isPartial = !this._importPartial;
 		this.setImportStatus(this._import, isPartial, this._importFromClipboard, true);
-		this.hideOldTreeitems(isPartial);
+		this.hideOldTreeitems(isPartial, true);
 		isPartial && this.cleanImportSearch(isPartial);
 		this.searchInSetsTree(true);
 	},
