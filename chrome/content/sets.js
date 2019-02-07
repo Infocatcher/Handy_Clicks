@@ -3363,12 +3363,15 @@ var handyClicksSets = {
 		if(importFD.getAttribute("label") != label)
 			importFD.setAttribute("label", label);
 	},
-	cleanImportSearch: function() {
+	cleanImportSearch: function(typeChanged) {
 		var search = this.searchField.value;
-		var newSearch = search
-			.replace(this.searchPlaceholders.hc_override, "")
-			.replace(this.searchPlaceholders.hc_new, "")
-			.replace(this.searchPlaceholders.hc_fileData, "");
+		var newSearch = search.replace(this.searchPlaceholders.hc_old, "");
+		if(!typeChanged) {
+			newSearch = newSearch
+				.replace(this.searchPlaceholders.hc_override, "")
+				.replace(this.searchPlaceholders.hc_new, "")
+				.replace(this.searchPlaceholders.hc_fileData, "");
+		}
 		if(newSearch == search)
 			return false;
 		this.searchField.value = this.ut.trim(newSearch);
@@ -3379,6 +3382,7 @@ var handyClicksSets = {
 			isPartial = !this._importPartial;
 		this.setImportStatus(this._import, isPartial, this._importFromClipboard, true);
 		this.hideOldTreeitems(isPartial);
+		isPartial && this.cleanImportSearch(isPartial);
 		this.searchInSetsTree(true);
 	},
 	toggleImportFilesData: function(importFD) {
