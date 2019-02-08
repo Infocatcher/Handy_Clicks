@@ -3301,15 +3301,7 @@ var handyClicksSets = {
 		miRemove.setAttribute("disabled", ubCount <= removeDepth);
 		miRemove2.setAttribute("disabled", ubCount <= removeDepth2);
 
-		var mi = this.$("hc-sets-tree-openBackupsDir");
-		var isDarkFont = true;
-		var fc = window.getComputedStyle(mi, null).color;
-		if(/^rgb\((\d+), *(\d+), *(\d+)\)$/.test(fc)) {
-			var r = +RegExp.$1, g = +RegExp.$2, b = +RegExp.$3;
-			var brightness = Math.max(r/255, g/255, b/255); // HSV, 0..1
-			isDarkFont = brightness < 0.4;
-		}
-		popup.setAttribute("hc_isDarkMenuFont", isDarkFont);
+		popup.setAttribute("hc_isDarkMenuFont", this.isDarkFont(this.$("hc-sets-tree-openBackupsDir")));
 	},
 	removeOldUserBackups: function(store) {
 		if(store < 0)
@@ -3326,6 +3318,17 @@ var handyClicksSets = {
 	},
 	reveal: function(file) {
 		return this.ut.reveal(file);
+	},
+
+	isDarkFont: function(node) {
+		var isDarkFont = true;
+		var fc = window.getComputedStyle(node, null).color;
+		if(/^rgb\((\d+), *(\d+), *(\d+)\)$/.test(fc)) {
+			var r = +RegExp.$1, g = +RegExp.$2, b = +RegExp.$3;
+			var brightness = Math.max(r/255, g/255, b/255); // HSV, 0..1
+			isDarkFont = brightness < 0.4;
+		}
+		return isDarkFont;
 	},
 
 	setImportStatus: function(isImport, isPartial, fromClipboard, updMode) {
