@@ -658,9 +658,12 @@ var handyClicksPrefSvc = {
 			&& fObj.hasOwnProperty("action")
 			&& typeof fObj.action == "string";
 	},
-	isOkCustomType: function(cType) {
-		var cts = this.types;
-		return "hasOwnProperty" in cts && cts.hasOwnProperty(cType) && this.isOkCustomObj(cts[cType]);
+	isOkCustomType: function(cType, types) {
+		if(!types)
+			types = this.types;
+		return "hasOwnProperty" in types
+			&& types.hasOwnProperty(cType)
+			&& this.isOkCustomObj(types[cType]);
 	},
 	isOkCustomObj: function(ct) {
 		return this.ut.isObject(ct)

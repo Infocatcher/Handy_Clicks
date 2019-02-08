@@ -714,7 +714,7 @@ var handyClicksSets = {
 
 		var isBuggy = this.isBuggyFuncObj(fo, isCustom, actLabel, foStr)
 			|| (
-				isCustomType && !this.ps.isOkCustomType(itemType)
+				isCustomType && !this.ps.isOkCustomType(itemType, this._drawRemoved && this._savedTypes)
 				|| this.ut.isBuggyStr(typeLabel)
 			);
 
