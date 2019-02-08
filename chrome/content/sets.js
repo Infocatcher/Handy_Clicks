@@ -365,7 +365,7 @@ var handyClicksSets = {
 			case 2: // Normal (inline)
 				var label = this.ps.getShortcutStr(sh, true) + this.ps.spacedSep;
 				for(var type in so) if(so.hasOwnProperty(type))
-					this.appendRow(df, sh, type, so[type], label + this.ps.getTypeLabel(type));
+					this.appendRow(df, sh, type, so[type], label + this.getTypeLabel(type));
 			break;
 			case 3: // Inverse
 				var button = this.ps.getButtonId(sh);
@@ -373,7 +373,7 @@ var handyClicksSets = {
 				var modifiers = this.ps.getModifiersStr(sh);
 				for(var type in so) if(so.hasOwnProperty(type)) {
 					var typeContainer = this.eltsCache[type]
-						|| this.appendContainerItem(df, type, this.ps.getTypeLabel(type));
+						|| this.appendContainerItem(df, type, this.getTypeLabel(type));
 					var hash = type + "-" + button;
 					var buttonContainer = this.eltsCache[hash]
 						|| this.appendContainerItem(typeContainer, hash, buttonLabel);
@@ -384,14 +384,14 @@ var handyClicksSets = {
 				var label = this.ps.getShortcutStr(sh, true);
 				for(var type in so) if(so.hasOwnProperty(type)) {
 					var typeContainer = this.eltsCache[type]
-						|| this.appendContainerItem(df, type, this.ps.getTypeLabel(type));
+						|| this.appendContainerItem(df, type, this.getTypeLabel(type));
 					this.appendRow(typeContainer, sh, type, so[type], label);
 				}
 			break;
 			case 5: // Inverse (inline)
 				var label = this.ps.spacedSep + this.ps.getShortcutStr(sh, true);
 				for(var type in so) if(so.hasOwnProperty(type))
-					this.appendRow(df, sh, type, so[type], this.ps.getTypeLabel(type) + label);
+					this.appendRow(df, sh, type, so[type], this.getTypeLabel(type) + label);
 			break;
 		}
 	},
@@ -619,7 +619,7 @@ var handyClicksSets = {
 		var foStr = 'prefs["' + shortcut + '"].' + itemType;
 		var isCustom = !!fo.custom;
 		var isCustomType = this.ps.isCustomType(itemType);
-		var typeLabel = this.ps.getTypeLabel(itemType, isCustomType);
+		var typeLabel = this.getTypeLabel(itemType, isCustomType);
 		var label = forcedLabel || typeLabel;
 		var initCode, daInitCode;
 		var extNA = this.extTypeNotAvailable(itemType);
@@ -775,6 +775,9 @@ var handyClicksSets = {
 
 		this.rowsCache[tItem.__hash = shortcut + "-" + itemType] = tRow;
 		return tItem;
+	},
+	getTypeLabel: function(type, isCustomType) {
+		return this.ps.getTypeLabel(type, isCustomType, this._drawRemoved && this._savedTypes);
 	},
 	getActionCode: function getActionCode(action, isCustom) {
 		getActionCode._hasLinkedFile = getActionCode._hasFileData = false;

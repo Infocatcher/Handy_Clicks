@@ -684,13 +684,13 @@ var handyClicksPrefSvc = {
 		return type && this.ut.hasPrefix(type, this.extPrefix);
 	},
 
-	getTypeLabel: function(type, isCustomType) {
+	getTypeLabel: function(type, isCustomType, types) {
 		return (isCustomType === undefined ? this.isCustomType(type) : isCustomType)
-				? this.getCustomTypeLabel(type)
+				? this.getCustomTypeLabel(type, types)
 				: this.getLocalized(type);
 	},
-	getCustomTypeLabel: function(type) {
-		var label = this.ut.getOwnProperty(this.types, type, "label");
+	getCustomTypeLabel: function(type, types) {
+		var label = this.ut.getOwnProperty(types || this.types, type, "label");
 		if(label == undefined)
 			this.ut._warn('Custom type not found: "' + type + '"');
 		label = label ? this.localize(label) + " " : "";
