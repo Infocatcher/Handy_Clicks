@@ -3339,7 +3339,8 @@ var handyClicksSets = {
 			this.closeImportEditors();
 			this.checkTreeSaved();
 		}
-		this.$("hc-sets-tree-importPanel").hidden = !isImport;
+		var panel = this.$("hc-sets-tree-importPanel");
+		panel.hidden = !isImport;
 		if(!isImport) {
 			this.cleanImportSearch() && this.searchInSetsTree(true);
 			return;
@@ -3348,9 +3349,10 @@ var handyClicksSets = {
 		this.setImportFilesDataStatus();
 		this.$("hc-sets-tree-importType").value = isPartial;
 		this.$("hc-sets-tree-importRowRemoved").setAttribute("hc_collapse", isPartial);
+		panel.setAttribute("hc_isDarkFont", this.isDarkFont(this.$("hc-sets-tree-importAdded")));
 		if(
 			Array.prototype.indexOf.call(
-				this.$("hc-sets-tree-importPanel").getElementsByTagName("*"),
+				panel.getElementsByTagName("*"),
 				document.commandDispatcher.focusedElement
 			) == -1
 		)

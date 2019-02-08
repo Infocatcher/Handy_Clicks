@@ -246,10 +246,13 @@ menuitem[command="hc-sets-cmd-enable"] {
 	cursor: pointer;
 }
 #hc-sets-tree-importStatistics row[onclick]:hover {
-	opacity: 0.7;
+	color: #00e !important;
+}
+#hc-sets-tree-importPanel[hc_isDarkFont="false"] #hc-sets-tree-importStatistics row[onclick]:hover {
+	color: #aaf !important;
 }
 #hc-sets-tree-importStatistics row[onclick]:hover:active {
-	opacity: 0.55;
+	opacity: 0.75;
 }
 #hc-sets-tree-importRowRemoved[hc_collapse="true"] {
 	visibility: hidden;
