@@ -623,6 +623,7 @@ var handyClicksSets = {
 		var label = forcedLabel || typeLabel;
 		var initCode, daInitCode;
 		var extNA = this.extTypeNotAvailable(itemType);
+		var drawRemoved = this._drawRemoved;
 
 		this.appendTreeCell(tRow, "label", label);
 		this.appendTreeCell(tRow, "label", fo.eventType);
@@ -686,17 +687,19 @@ var handyClicksSets = {
 			);
 
 			if(this._import) {
-				var savedDa = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType, "delayedAction");
-				var overrideDa = savedDa;
-				var equalsDa = this.settingsEquals(da, savedDa);
+				if(!drawRemoved) {
+					var savedDa = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType, "delayedAction");
+					var overrideDa = savedDa;
+					var equalsDa = this.settingsEquals(da, savedDa);
+				}
 				this.setChildNodesProperties(daRow, {
-					hc_override: overrideDa && !equalsDa && ++this.counters.overrideDa,
-					hc_equals:   overrideDa &&  equalsDa,
-					hc_new:     !overrideDa &&              ++this.counters.addedDa,
-					hc_old:      this._drawRemoved,
+					hc_override: !drawRemoved &&  overrideDa && !equalsDa && ++this.counters.overrideDa,
+					hc_equals:   !drawRemoved &&  overrideDa &&  equalsDa,
+					hc_new:      !drawRemoved && !overrideDa &&              ++this.counters.addedDa,
+					hc_old:      drawRemoved,
 					hc_fileData: daFileData
 				}, true);
-				this._drawRemoved && daItem.setAttribute("hc_old", "child");
+				drawRemoved && daItem.setAttribute("hc_old", "child");
 			}
 
 			daItem.__shortcut = shortcut;
@@ -737,24 +740,26 @@ var handyClicksSets = {
 			if(da)
 				fo.delayedAction = null;
 
-			var override = saved;
-			var equals = this.settingsEquals(fo, saved);
-			if(isCustomType) {
-				var newType = this.ut.getOwnProperty(this.ps.types, itemType);
-				var savedType = this.ut.getOwnProperty(this._savedTypes, itemType);
-				var eqType = this.settingsEquals(newType, savedType);
-				if(!eqType && (saved || savedType))
-					override = true;
-				equals = equals && eqType;
+			if(!drawRemoved) {
+				var override = saved;
+				var equals = this.settingsEquals(fo, saved);
+				if(isCustomType) {
+					var newType = this.ut.getOwnProperty(this.ps.types, itemType);
+					var savedType = this.ut.getOwnProperty(this._savedTypes, itemType);
+					var eqType = this.settingsEquals(newType, savedType);
+					if(!eqType && (saved || savedType))
+						override = true;
+					equals = equals && eqType;
+				}
 			}
 			this.setChildNodesProperties(tRow, {
-				hc_override: override && !equals && ++this.counters.override,
-				hc_equals:   override &&  equals,
-				hc_new:     !override            && ++this.counters.added,
-				hc_old:      this._drawRemoved,
+				hc_override: !drawRemoved &&  override && !equals && ++this.counters.override,
+				hc_equals:   !drawRemoved &&  override &&  equals,
+				hc_new:      !drawRemoved && !override            && ++this.counters.added,
+				hc_old:      drawRemoved,
 				hc_fileData: fileData
 			}, true);
-			this._drawRemoved && tItem.setAttribute("hc_old", "item");
+			drawRemoved && tItem.setAttribute("hc_old", "item");
 
 			// Restore...
 			if(savedDa)
