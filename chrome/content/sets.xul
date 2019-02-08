@@ -200,28 +200,28 @@ preferences {
 					<rows>
 						<row onclick="if(event.button == 0) handyClicksSets.toggleSearch('%new%');">
 							<label id="hc-sets-tree-importAdded" value="&hc.sets.importAdded;" />
-							<label id="hc-sets-tree-importAddedNormal" value="?" />
+							<label id="hc-sets-tree-importAddedNormal" class="hc-statsValue" value="?" />
 							<label value="/" />
-							<label id="hc-sets-tree-importAddedDelayed" value="?" />
+							<label id="hc-sets-tree-importAddedDelayed" class="hc-statsValue" value="?" />
 							<label value="+" />
-							<label id="hc-sets-tree-importAddedCustomTypes" value="?" />
+							<label id="hc-sets-tree-importAddedCustomTypes" class="hc-statsValue" value="?" />
 						</row>
 						<row onclick="if(event.button == 0) handyClicksSets.toggleSearch('%ovr%');">
 							<label id="hc-sets-tree-importChanged" value="&hc.sets.importChanged;" />
-							<label id="hc-sets-tree-importChangedNormal" value="?" />
+							<label id="hc-sets-tree-importChangedNormal" class="hc-statsValue" value="?" />
 							<label value="/" />
-							<label id="hc-sets-tree-importChangedDelayed" value="?" />
+							<label id="hc-sets-tree-importChangedDelayed" class="hc-statsValue" value="?" />
 							<label value="+" />
-							<label id="hc-sets-tree-importChangedCustomTypes" value="?" />
+							<label id="hc-sets-tree-importChangedCustomTypes" class="hc-statsValue" value="?" />
 						</row>
 						<row id="hc-sets-tree-importRowRemoved"
 							onclick="if(event.button == 0) handyClicksSets.toggleSearch('%old%');">
 							<label id="hc-sets-tree-importRemoved" value="&hc.sets.importRemoved;" />
-							<label id="hc-sets-tree-importRemovedNormal" value="?" />
+							<label id="hc-sets-tree-importRemovedNormal" class="hc-statsValue" value="?" />
 							<label value="/" />
-							<label id="hc-sets-tree-importRemovedDelayed" value="?" />
+							<label id="hc-sets-tree-importRemovedDelayed" class="hc-statsValue" value="?" />
 							<label value="+" />
-							<label id="hc-sets-tree-importRemovedCustomTypes" value="?" />
+							<label id="hc-sets-tree-importRemovedCustomTypes" class="hc-statsValue" value="?" />
 						</row>
 					</rows>
 				</grid>

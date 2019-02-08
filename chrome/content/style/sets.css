@@ -244,6 +244,9 @@ menuitem[command="hc-sets-cmd-enable"] {
 #hc-sets-tree-importStatistics-sep-types {
 	padding: 0 2px;
 }
+.hc-statsValue:not([value="0"]) {
+	font-weight: bold;
+}
 #hc-sets-tree-importStatistics row[onclick],
 #hc-sets-tree-importStatistics row[onclick] > label {
 	cursor: pointer;
