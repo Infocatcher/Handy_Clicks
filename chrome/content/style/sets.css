@@ -185,7 +185,7 @@ treechildren::-moz-tree-cell-text(hc_override), #hc-sets-tree-importChanged {
 treechildren::-moz-tree-cell-text(hc_new), #hc-sets-tree-importAdded {
 	text-decoration: underline;
 }
-treechildren::-moz-tree-cell-text(hc_old) {
+treechildren::-moz-tree-cell-text(hc_old), #hc-sets-tree-importRemoved {
 	text-decoration: line-through;
 }
 treechildren::-moz-tree-checkbox(hc_checkbox),
