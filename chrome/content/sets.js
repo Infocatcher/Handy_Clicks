@@ -448,9 +448,14 @@ var handyClicksSets = {
 
 		const id = "hc-sets-tree-import";
 		var c = this.counters;
-		this.$(id + "ChangedValue").value = c.override + "/" + c.overrideDa + " + " + overrideTypes;
-		this.$(id + "AddedValue")  .value = c.added    + "/" + c.addedDa    + " + " + newTypes;
-		this.$(id + "RemovedValue").value = deletable  + "/" + deletableDa  + " + " + deletableTypes;
+		var showStats = this.ut.bind(function(type, normal, delayed, customTypes) {
+			this.$(id + type + "Normal")     .value = normal;
+			this.$(id + type + "Delayed")    .value = delayed;
+			this.$(id + type + "CustomTypes").value = customTypes;
+		}, this);
+		showStats("Added",   c.added,    c.addedDa,    newTypes);
+		showStats("Changed", c.override, c.overrideDa, overrideTypes);
+		showStats("Removed", deletable,  deletableDa,  deletableTypes);
 	},
 	hideOldTreeitems: function(hide, update) {
 		if(update) {

@@ -224,22 +224,25 @@ menuitem[command="hc-sets-cmd-enable"] {
 #hc-sets-tree-importStatistics {
 	margin: 0 4px;
 }
-#hc-sets-tree-importStatistics label:first-child {
+#hc-sets-tree-importStatistics label {
 	/* Firefox 3.6+: text-align: end; */
 	text-align: right;
 }
-:root[chromedir="rtl"] #hc-sets-tree-importStatistics label:first-child {
+:root[chromedir="rtl"] #hc-sets-tree-importStatistics label {
 	text-align: left;
-}
-#hc-sets-tree-importStatistics label:last-child {
-	text-align: center;
 }
 #hc-sets-tree-importStatistics label {
 	margin: 0 !important;
 	padding: 0 !important;
 }
-#hc-sets-tree-importStatistics column:not(:last-child) {
-	-moz-padding-end: 0.6em !important;
+#hc-sets-tree-importStatistics column:first-child {
+	-moz-padding-end: 0.5em !important;
+}
+#hc-sets-tree-importStatistics-sep-delayed {
+	padding: 0 1px;
+}
+#hc-sets-tree-importStatistics-sep-types {
+	padding: 0 2px;
 }
 #hc-sets-tree-importStatistics row[onclick],
 #hc-sets-tree-importStatistics row[onclick] > label {

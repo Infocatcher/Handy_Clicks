@@ -192,20 +192,36 @@ preferences {
 					<columns>
 						<column />
 						<column />
+						<column id="hc-sets-tree-importStatistics-sep-delayed" />
+						<column />
+						<column id="hc-sets-tree-importStatistics-sep-types" />
+						<column />
 					</columns>
 					<rows>
 						<row onclick="if(event.button == 0) handyClicksSets.toggleSearch('%new%');">
 							<label id="hc-sets-tree-importAdded" value="&hc.sets.importAdded;" />
-							<label id="hc-sets-tree-importAddedValue" value="?/? + ?" />
+							<label id="hc-sets-tree-importAddedNormal" value="?" />
+							<label value="/" />
+							<label id="hc-sets-tree-importAddedDelayed" value="?" />
+							<label value="+" />
+							<label id="hc-sets-tree-importAddedCustomTypes" value="?" />
 						</row>
 						<row onclick="if(event.button == 0) handyClicksSets.toggleSearch('%ovr%');">
 							<label id="hc-sets-tree-importChanged" value="&hc.sets.importChanged;" />
-							<label id="hc-sets-tree-importChangedValue" value="?/? + ?" />
+							<label id="hc-sets-tree-importChangedNormal" value="?" />
+							<label value="/" />
+							<label id="hc-sets-tree-importChangedDelayed" value="?" />
+							<label value="+" />
+							<label id="hc-sets-tree-importChangedCustomTypes" value="?" />
 						</row>
 						<row id="hc-sets-tree-importRowRemoved"
 							onclick="if(event.button == 0) handyClicksSets.toggleSearch('%old%');">
 							<label id="hc-sets-tree-importRemoved" value="&hc.sets.importRemoved;" />
-							<label id="hc-sets-tree-importRemovedValue" value="?/? + ?" />
+							<label id="hc-sets-tree-importRemovedNormal" value="?" />
+							<label value="/" />
+							<label id="hc-sets-tree-importRemovedDelayed" value="?" />
+							<label value="+" />
+							<label id="hc-sets-tree-importRemovedCustomTypes" value="?" />
 						</row>
 					</rows>
 				</grid>
