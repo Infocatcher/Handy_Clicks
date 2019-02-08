@@ -1270,6 +1270,8 @@ var handyClicksEditor = {
 			if(!fe || fe.parentNode.id != "hc-editor-shortcutBox")
 				this.$("hc-editor-button").focus();
 			this.root.setAttribute("hc_renameShortcut", "true");
+			this.$("hc-editor-renameShortcutOverlay").style
+				.backgroundColor = getComputedStyle(this.root, null).backgroundColor;
 			this.funcOptsFixed && this.fixFuncOpts((this.$("hc-editor-funcOptsFixed").checked = false));
 			this._shortcut = this.currentShortcut;
 			this._type = this.currentType;
