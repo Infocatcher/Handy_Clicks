@@ -218,8 +218,8 @@ menuitem[command="hc-sets-cmd-enable"] {
 	-moz-margin-end: 0.4em;
 }
 #hc-sets-tree-importFilesStatistics {
-	margin: 1px 0;
-	padding: 0 0.5em;
+	margin: 0 -1px;
+	padding: 0 0.6em;
 }
 #hc-sets-tree-importPartial,
 #hc-sets-tree-importFull,
@@ -259,16 +259,20 @@ menuitem[command="hc-sets-cmd-enable"] {
 .hc-statsValue:not([value="0"]) {
 	font-weight: bold;
 }
+#hc-sets-tree-importFilesStatistics,
 #hc-sets-tree-importStatistics row[onclick],
 #hc-sets-tree-importStatistics row[onclick] > label {
 	cursor: pointer;
 }
+#hc-sets-tree-importFilesStatistics:hover,
 #hc-sets-tree-importStatistics row[onclick]:hover {
 	color: #00e !important;
 }
+#hc-sets-tree-importPanel[hc_isDarkFont="false"] #hc-sets-tree-importFilesStatistics:hover,
 #hc-sets-tree-importPanel[hc_isDarkFont="false"] #hc-sets-tree-importStatistics row[onclick]:hover {
 	color: #aaf !important;
 }
+#hc-sets-tree-importFilesStatistics:hover:active,
 #hc-sets-tree-importStatistics row[onclick]:hover:active {
 	opacity: 0.75;
 }

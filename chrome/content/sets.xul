@@ -181,7 +181,8 @@ preferences {
 					hc_labelN="&hc.sets.importFilesDataN;"
 					accesskey="&hc.sets.importFilesDataAccesskey;"
 					tooltiptext="&hc.sets.importFilesDataTip;" />
-				<label id="hc-sets-tree-importFilesStatistics" />
+				<label id="hc-sets-tree-importFilesStatistics"
+					onclick="if(event.button == 0) handyClicksSets.toggleSearch('%data%');" />
 				<radiogroup id="hc-sets-tree-importType"
 					oncommand="handyClicksSets.toggleImportType(this.value == 'true');">
 					<radio id="hc-sets-tree-importPartial" value="true"
