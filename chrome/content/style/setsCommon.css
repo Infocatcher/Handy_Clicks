@@ -68,7 +68,6 @@ tab[hc_disabled="true"][hc_canDragSwitch="true"] {
 tooltip > description {
 	margin: 0;
 }
-label[tooltiptext]:not([tooltiptext=""]):not(#hc-sets-tree-searchResults),
 label[tooltip] {
 	border-bottom: 1px dotted;
 }

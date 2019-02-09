@@ -3373,16 +3373,16 @@ var handyClicksSets = {
 	},
 	setImportFilesDataStatus: function() {
 		var files = this.ps.files;
-		var countFD = 0;
+		var fd = [];
 		for(var path in files) if(files.hasOwnProperty(path))
-			++countFD;
-		var noFD = !countFD;
+			fd.push(path);
+		var noFD = !fd.length;
 		var importFD = this.$("hc-sets-tree-importFilesData");
 		importFD.disabled = noFD;
 		importFD.checked = this._importFilesData = !noFD;
-		var label = countFD
-			? importFD.getAttribute("hc_labelN")
-			: importFD.getAttribute("hc_label");
+		var label = noFD
+			? importFD.getAttribute("hc_label")
+			: importFD.getAttribute("hc_labelN");
 		if(importFD.getAttribute("label") != label) {
 			importFD.setAttribute("label", label);
 			// Force re-apply XBL binding to restore accesskey
@@ -3391,8 +3391,9 @@ var handyClicksSets = {
 			pn.insertBefore(pn.removeChild(importFD), ns);
 		}
 		var counter = this.$("hc-sets-tree-importFilesStatistics");
-		counter.value = countFD;
+		counter.value = fd.length;
 		counter.hidden = noFD;
+		counter.tooltipText = fd.join(" \n");
 	},
 	cleanImportSearch: function(typeChanged) {
 		var search = this.searchField.value;
