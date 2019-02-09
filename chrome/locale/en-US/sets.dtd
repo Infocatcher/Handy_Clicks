@@ -123,7 +123,7 @@
 <!ENTITY hc.sets.importCancelAccesskey "C">
 
 <!ENTITY hc.sets.importFilesData "Files">
-<!ENTITY hc.sets.importFilesDataN "Files ($n)">
+<!ENTITY hc.sets.importFilesDataN "Files:">
 <!ENTITY hc.sets.importFilesDataAccesskey "F">
 <!ENTITY hc.sets.importFilesDataTip "Import linked files data">
 

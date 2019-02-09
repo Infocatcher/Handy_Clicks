@@ -209,6 +209,18 @@ menuitem[command="hc-sets-cmd-enable"] {
 	padding-top: 1px;
 	padding-bottom: 1px;
 }
+#hc-sets-tree-importFilesData {
+	margin: 0;
+	padding-bottom: 0;
+	-moz-padding-end: 0;
+}
+#hc-sets-tree-importFilesData[disabled="true"] {
+	-moz-margin-end: 0.4em;
+}
+#hc-sets-tree-importFilesStatistics {
+	margin: 1px 0;
+	padding: 0 0.5em;
+}
 #hc-sets-tree-importPartial,
 #hc-sets-tree-importFull,
 #hc-sets-tree-importPartial *,
