@@ -1354,12 +1354,13 @@ var handyClicksSets = {
 			var column = col.value;
 			if(rowIndx == -1 || column == null)
 				return;
-
 			var checked = this.tView.getCellValue(rowIndx, column);
 			if(!checked) // real checked is "true" or "false"
 				return;
-
-			this.toggleRowEnabled(rowIndx);
+			var tItem = this.getItemAtIndex(rowIndx);
+			if(!tItem || tItem.__isRemoved)
+				return;
+			this.toggleItemEnabled(tItem);
 		}
 		else { // Space button pressed
 			var fe = document.commandDispatcher.focusedElement;
@@ -1369,7 +1370,7 @@ var handyClicksSets = {
 			if(!its.length)
 				return;
 			its.forEach(function(tItem) {
-				this.toggleRowEnabled(tItem.__index, forcedEnabled);
+				this.toggleItemEnabled(tItem, forcedEnabled);
 			}, this);
 		}
 		function callback() {
@@ -1383,8 +1384,7 @@ var handyClicksSets = {
 		else
 			callback.call(this);
 	},
-	toggleRowEnabled: function(rowIndx, forcedEnabled) {
-		var tItem = this.getItemAtIndex(rowIndx);
+	toggleItemEnabled: function(tItem, forcedEnabled) {
 		var tRow = this.getRowForItem(tItem);
 		var enabled = this.checkedState(tItem, forcedEnabled === undefined ? null : forcedEnabled);
 		var forcedDisDa = this.pu.get("delayedActionTimeout") <= 0;
@@ -1400,7 +1400,6 @@ var handyClicksSets = {
 				this.setNodeProperties(cRow, { hc_unsavedDisabled: forcedDisDa || cDis || !enabled });
 			}
 		}
-
 		var so = this.ps.prefs[tItem.__shortcut][tItem.__itemType];
 		if(tItem.__isDelayed)
 			so.delayedAction.enabled = enabled;
