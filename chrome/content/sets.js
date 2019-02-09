@@ -3403,6 +3403,8 @@ var handyClicksSets = {
 	toggleImportType: function(isPartial) {
 		if(isPartial === undefined)
 			isPartial = !this._importPartial;
+		else if(isPartial == this._importPartial) // Not changed
+			return;
 		this.setImportStatus(this._import, isPartial, this._importFromClipboard, true);
 		this.hideOldTreeitems(isPartial, true);
 		isPartial && this.cleanImportSearch(isPartial);
