@@ -711,6 +711,7 @@ var handyClicksSets = {
 			daItem.__itemType = itemType;
 			daItem.__isCustomType = isCustomType;
 			daItem.__isDelayed = true;
+			daItem.__isRemoved = drawRemoved;
 
 			this.rowsCache[daItem.__hash = shortcut + "-" + itemType + "-delayed"] = daRow; // Uses for search
 		}
@@ -777,6 +778,7 @@ var handyClicksSets = {
 		tItem.__itemType = itemType;
 		tItem.__isCustomType = isCustomType;
 		tItem.__isDelayed = false;
+		tItem.__isRemoved = drawRemoved;
 		tItem.__delayed = da && daItem;
 		tItem.__sortLabel = label;
 
@@ -963,6 +965,8 @@ var handyClicksSets = {
 				var tItem = this.getItemAtIndex(j);
 				if(!tItem || !("__shortcut" in tItem))
 					continue;
+				if(tItem.__isRemoved && !(opts && opts.withRemoved || false))
+					continue;
 				if(opts && opts.checkHasSelected || false)
 					return [tItem];
 				if(opts && opts.onlyCustomTypes && !tItem.__isCustomType)
@@ -1030,7 +1034,7 @@ var handyClicksSets = {
 				this.openEditorWindow({ __shortcut: this.ps.getEvtStr(e) }, this.ct.EDITOR_MODE_SHORTCUT, true);
 			return;
 		}
-		var its = this.selectedItems;
+		var its = this.getSelectedItems({ withRemoved: true });
 		if(its.length == 1) {
 			this.openEditorWindow(its[0], this.ct.EDITOR_MODE_SHORTCUT, true);
 			return;
@@ -1046,7 +1050,10 @@ var handyClicksSets = {
 			return;
 		if(!this.isTreePaneSelected)
 			return;
-		var its = this.selectedItemsNoDelayed;
+		var its = this.getSelectedItems({
+			noDelayed: true,
+			withRemoved: forceEditSaved
+		});
 		if(this.editorsLimit(its.length))
 			return;
 		var src = forceEditSaved ? null : undefined;
@@ -1071,7 +1078,10 @@ var handyClicksSets = {
 	editItemsTypes: function(forceEditSaved) {
 		if(!this.isTreePaneSelected)
 			return;
-		var cIts = this.selectedItemsWithCustomTypes;
+		var cIts = this.getSelectedItems({
+			onlyCustomTypes: true,
+			withRemoved: forceEditSaved
+		});
 		if(this.editorsLimit(cIts.length))
 			return;
 		var src = forceEditSaved ? null : undefined;
@@ -2831,8 +2841,13 @@ var handyClicksSets = {
 
 		this.checkClipboard();
 
-		var selIts = this.selectedItems;
+		var noImport = !this._import;
+		var selItsAll = this.getSelectedItems({ withRemoved: true });
+		var selIts = noImport ? selItsAll : selItsAll.filter(function(tItem) {
+			return !tItem.__isRemoved;
+		});
 		var noSel = !selIts.length;
+		var noSelAll = !selItsAll.length;
 		var hasEnabled = false;
 		var hasDisabled = false;
 		selIts.some(function(it) {
@@ -2847,20 +2862,22 @@ var handyClicksSets = {
 		var noTypes = noSel || !selIts.some(function(it) {
 			return it.__isCustomType;
 		});
+		var noTypesAll = noImport ? noTypes : noSelAll || !selItsAll.some(function(it) {
+			return it.__isCustomType;
+		});
 		this.$("hc-sets-cmd-editType").setAttribute("disabled", noTypes);
 		this.$("hc-sets-editType").hidden = noTypes;
 
-		var noImport = !this._import;
-		this.$("hc-sets-cmd-editSaved").setAttribute("disabled", noSel || noImport);
+		this.$("hc-sets-cmd-editSaved").setAttribute("disabled", noSelAll || noImport);
 		this.$("hc-sets-editSaved").hidden = noImport;
-		this.$("hc-sets-cmd-editSavedType").setAttribute("disabled", noTypes || noImport);
-		this.$("hc-sets-editSavedType").hidden = noTypes || noImport;
+		this.$("hc-sets-cmd-editSavedType").setAttribute("disabled", noTypesAll || noImport);
+		this.$("hc-sets-editSavedType").hidden = noTypesAll || noImport;
 
 		this.$("hc-sets-closeEditors-separator").hidden = (
 			(this.$("hc-sets-closeEditors").hidden = !this.closeItemEditors(undefined, true))
 			+ (this.$("hc-sets-closeSavedEditors").hidden = noImport || !this.closeItemEditors(false, true))
 			+ (this.$("hc-sets-closeTypeEditors").hidden = noTypes || !this.closeItemTypeEditors(undefined, true))
-			+ (this.$("hc-sets-closeSavedTypeEditors").hidden = noImport || noTypes || !this.closeItemTypeEditors(false, true))
+			+ (this.$("hc-sets-closeSavedTypeEditors").hidden = noImport || noTypesAll || !this.closeItemTypeEditors(false, true))
 		) == 4;
 
 		return true;
