@@ -3383,8 +3383,13 @@ var handyClicksSets = {
 		var label = countFD
 			? importFD.getAttribute("hc_labelN").replace("$n", countFD)
 			: importFD.getAttribute("hc_label");
-		if(importFD.getAttribute("label") != label)
+		if(importFD.getAttribute("label") != label) {
 			importFD.setAttribute("label", label);
+			// Force re-apply XBL binding to restore accesskey
+			var pn = importFD.parentNode;
+			var ns = importFD.nextSibling;
+			pn.insertBefore(pn.removeChild(importFD), ns);
+		}
 	},
 	cleanImportSearch: function(typeChanged) {
 		var search = this.searchField.value;
