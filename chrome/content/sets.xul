@@ -491,7 +491,7 @@ preferences {
 		<groupbox>
 			<caption label="&hc.sets.externalEditor;" />
 			<hbox align="center">
-				<label value="&hc.sets.externalEditorPath;" tooltip="hc-sets-externalEditorPath-tooltip" control="hc-sets-externalEditorPath" />
+				<label class="hc-tip" value="&hc.sets.externalEditorPath;" tooltip="hc-sets-externalEditorPath-tooltip" control="hc-sets-externalEditorPath" />
 				<tooltip id="hc-sets-externalEditorPath-tooltip">
 					<description>&hc.sets.externalEditorPathNote;</description>
 				</tooltip>
@@ -515,7 +515,7 @@ preferences {
 			</hbox>
 			<hbox align="top">
 				<hbox id="hc-sets-externalEditorArgs-box" align="top" flex="1" hc_dependsOn="externalEditor">
-					<label value="&hc.sets.externalEditorArgs;" tooltip="hc-sets-externalEditorArgs-tooltip" control="hc-sets-externalEditorArgs" />
+					<label class="hc-tip" value="&hc.sets.externalEditorArgs;" tooltip="hc-sets-externalEditorArgs-tooltip" control="hc-sets-externalEditorArgs" />
 					<tooltip id="hc-sets-externalEditorArgs-tooltip">
 						<description>&hc.sets.externalEditorArgsTip;</description>
 					</tooltip>

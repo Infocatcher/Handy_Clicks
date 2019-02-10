@@ -68,7 +68,7 @@ tab[hc_disabled="true"][hc_canDragSwitch="true"] {
 tooltip > description {
 	margin: 0;
 }
-label[tooltip] {
+label.hc-tip {
 	border-bottom: 1px dotted;
 }
 
