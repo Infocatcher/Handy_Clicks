@@ -1018,6 +1018,7 @@
 							var fo = ut.ps.files[this._virtualPath];
 							fo.data = fVal;
 							fo.lastModified = fTime;
+							fo.size = fSize;
 							this.fade();
 							return;
 						}
