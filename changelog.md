@@ -6,6 +6,7 @@
 `*` – improved<br>
 
 ##### master/HEAD
+##### 0.1.3pre6 (2017-04-16)
 `x` Fixed hiding of special window that open options in non-modal window.<br>
 `*` Improve “reload image” function: correct and remove image from cache before reloading.<br>
 `+` Added ability to configure or disable “scroll to switch” feature (<em>extensions.handyclicks.sets.scrollLists</em> and <em>extensions.handyclicks.sets.scrollLists.onlyInActiveWindow</em> preferences).<br>
