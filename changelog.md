@@ -6,6 +6,26 @@
 `*` – improved<br>
 
 ##### master/HEAD
+##### 0.1.3pre7 (2019-02-10)
+<em>(backported from master/HEAD)</em><br>
+`x` Editor: fixed autocomplete feature for properties of `window` object.<br>
+`x` Fixed support for <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">Browser Console</a> in Firefox 48+.<br>
+`x` Fixed Scratchpad support in Firefox 56+.<br>
+`x` Correctly reset filter: fix possible rows disappearance.<br>
+`x` Fixed XSS in labels for custom types.<br>
+`x` Fixed user backups highlighting in “Restore from backup” menu.<br>
+`x` Correctly open all preferences in case of unloaded about:config tab presence.<br>
+`x` Correctly import multiline <em>extensions.handyclicks.editor.external.args</em> preference.<br>
+`x` Correctly set selection in Scratchpad in Firefox 44+.<br>
+`x` Fixed trim trailing spaces (Alt+Backspace) in Firefox 49+ (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1108382">bug 1108382</a>).<br>
+`x` Editor: fixed temp file name for delayed actions.<br>
+`x` Fixed “scroll to switch” from tabs toolbar in editor (<em>extensions.handyclicks.sets.scrollLists</em> preference).<br>
+`x` Fixed internal storage in settings and editor windows in Firefox 47+ (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/28">#28</a>).<br>
+`x` Workaround to reload image in Firefox 44+ (imgICache.removeEntry() is gone… <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1202085#c39">bug 1202085</a>).<br>
+`*` Compatibility enhancements for Pale Moon and Basilisk.<br>
+`x` Fixed close tabs warning in Firefox 29+ and Basilisk (<em>browser.tabs.warnOnClose</em> preference).<br>
+`x` Fixed error line numbers in Firefox 56+ (looks like Firefox bug, now always decremented by 2).<br>
+
 ##### 0.1.3pre6 (2017-04-16)
 `x` Fixed hiding of special window that open options in non-modal window.<br>
 `*` Improve “reload image” function: correct and remove image from cache before reloading.<br>
