@@ -136,6 +136,9 @@
 `*` Reload image: ignore data:… URIs (nothing to reload) + apply “blink” animation to image.<br>
 `+` Editor: added context menu item to rename shortcut.<br>
 `x` Fixed hotkeys to import from clipboard (Ctrl+V, Ctrl+Shift+V, Shift+Ins): now used separate command, which will never be disabled.<br>
+`+` Import settings: show (and highlight) removed items in replace mode (available only “Edit saved” from context menu), also added %old% search placeholder (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/34">#34</a>).<br>
+`*` Improved appearance of import statistics: aligned using grid, highlight non-zero values, link-like color to highlight hovered clickable rows.<br>
+`*` Delete item: select next editable/deletable or last item.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre6 (2017-04-16)
