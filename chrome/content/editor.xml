@@ -926,6 +926,8 @@
 							ut.alert(ut.getLocalized("errorTitle"), err);
 							return;
 						}
+						if(fVal.charAt(0) == "\ufeff") // Older Firefox versions doesn't support BOM mark
+							fVal = fVal.substr(1);
 						if(detectLineBreak)
 							this._lineBreak = /\r\n?|\n\r?/.test(fVal) ? RegExp.lastMatch : ut.lineBreak;
 						fVal = ut.internalLineBreaks(fVal);
