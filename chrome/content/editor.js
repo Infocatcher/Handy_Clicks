@@ -437,7 +437,8 @@ var handyClicksEditor = {
 	setWinTitle: function() {
 		var sh = this.currentShortcut;
 		var shStr = this.ps.getModifiersStr(sh) + " + " + this.ps.getButtonStr(sh, true);
-		var type = this.$("hc-editor-itemTypes").getAttribute("label");
+		var typeItem = this.$("hc-editor-itemTypes").selectedItem;
+		var type = typeItem && typeItem.getAttribute("label"); // menulist.label may be wrong on startup!
 		var typeStr = this.$("hc-editor-customType").value || this.$("hc-editor-customTypeExtId").value;
 		var title = this.mainTabbox.selectedIndex == this.INDEX_TYPE
 			? typeStr + (typeStr ? " | " : "") + shStr + (type ? " + " + type : "")
