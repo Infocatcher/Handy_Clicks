@@ -1235,8 +1235,9 @@ var handyClicksSets = {
 			this.setDialogButtons();
 		}
 
+		var hasRemoved = this._import && !this._importPartial;
 		var foundRemoved;
-		if(this._import && !this._importPartial) tIts.forEach(function(tItem) {
+		if(hasRemoved) tIts.forEach(function(tItem) {
 			if(!(tItem.__hash in this.rowsCache))
 				return;
 			var newItem = this.rowsCache[tItem.__hash].parentNode;
@@ -1247,6 +1248,8 @@ var handyClicksSets = {
 			}
 		}, this);
 		if(!foundRemoved) {
+			if(hasRemoved && nextItem && nextItem.__hash in this.rowsCache)
+				nextItem = this.rowsCache[nextItem.__hash].parentNode;
 			var indx = nextItem
 				? this.tView.getIndexOfItem(nextItem)
 				: this.tView.rowCount - 1;
