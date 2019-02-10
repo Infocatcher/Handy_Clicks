@@ -1218,6 +1218,11 @@ var handyClicksSets = {
 		)
 			return;
 
+		// Get next deletable item
+		for(var indx = tIts[tIts.length - 1].__index + 1, nextItem; (nextItem = this.getItemAtIndex(indx)); ++indx)
+			if("__shortcut" in nextItem && !nextItem.__isDelayed)
+				break;
+
 		this.treeBatch(function() {
 			tIts.forEach(this.deleteItem, this);
 		});
@@ -1230,14 +1235,24 @@ var handyClicksSets = {
 			this.setDialogButtons();
 		}
 
+		var foundRemoved;
 		if(this._import && !this._importPartial) tIts.forEach(function(tItem) {
 			if(!(tItem.__hash in this.rowsCache))
 				return;
 			var newItem = this.rowsCache[tItem.__hash].parentNode;
 			var indx = this.tView.getIndexOfItem(newItem);
+			if(indx != -1) {
+				foundRemoved = true;
+				this.tSel.rangedSelect(indx, indx, true);
+			}
+		}, this);
+		if(!foundRemoved) {
+			var indx = nextItem
+				? this.tView.getIndexOfItem(nextItem)
+				: this.tView.rowCount - 1;
 			if(indx != -1)
 				this.tSel.rangedSelect(indx, indx, true);
-		}, this);
+		}
 
 		this.searchInSetsTree(true);
 	},
