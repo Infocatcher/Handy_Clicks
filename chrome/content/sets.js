@@ -1225,6 +1225,9 @@ var handyClicksSets = {
 			if("__shortcut" in nextItem && !nextItem.__isDelayed)
 				break;
 
+		var fvr = this.tbo.getFirstVisibleRow();
+		var lvr = this.tbo.getLastVisibleRow();
+
 		this.treeBatch(function() {
 			tIts.forEach(this.deleteItem, this);
 		});
@@ -1260,6 +1263,7 @@ var handyClicksSets = {
 		}
 
 		this.searchInSetsTree(true);
+		this.restoreScroll(fvr, lvr);
 	},
 	deleteItem: function(tItem, indx) {
 		var sh = tItem.__shortcut;
