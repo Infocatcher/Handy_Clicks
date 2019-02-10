@@ -3423,16 +3423,25 @@ var handyClicksSets = {
 	},
 	setImportFilesDataStatus: function() {
 		var files = this.ps.files;
-		var fd = [];
-		for(var path in files) if(files.hasOwnProperty(path))
-			fd.push(path);
-		var noFD = !fd.length;
+		var hasFD = false;
+		var df = document.createDocumentFragment();
+		var bytes = this.getLocalized("bytes");
+		for(var path in files) if(files.hasOwnProperty(path)) {
+			hasFD = true;
+			var fo = files[path];
+			var date = fo.lastModified ? new Date(fo.lastModified).toLocaleString() : "?";
+			var size = fo.size ? ("" + fo.size).replace(/(\d)(?=(?:\d{3})+(?:\D|$))/g, "$1 ") + " " + bytes : "?";
+			var row = df.appendChild(document.createElement("row"));
+			row.appendChild(this.ut.createElement("label", { value: path }));
+			row.appendChild(this.ut.createElement("label", { value: date }));
+			row.appendChild(this.ut.createElement("label", { value: size }));
+		}
 		var importFD = this.$("hc-sets-tree-importFilesData");
-		importFD.disabled = noFD;
-		importFD.checked = this._importFilesData = !noFD;
-		var label = noFD
-			? importFD.getAttribute("hc_label")
-			: importFD.getAttribute("hc_labelN");
+		importFD.disabled = !hasFD;
+		importFD.checked = this._importFilesData = hasFD;
+		var label = hasFD
+			? importFD.getAttribute("hc_labelN")
+			: importFD.getAttribute("hc_label");
 		if(importFD.getAttribute("label") != label) {
 			importFD.setAttribute("label", label);
 			// Force re-apply XBL binding to restore accesskey
@@ -3441,9 +3450,11 @@ var handyClicksSets = {
 			pn.insertBefore(pn.removeChild(importFD), ns);
 		}
 		var counter = this.$("hc-sets-tree-importFilesStatistics");
-		counter.value = fd.length;
-		counter.hidden = noFD;
-		counter.tooltipText = fd.join(" \n");
+		counter.value = df.childNodes.length;
+		counter.hidden = !hasFD;
+		var tipRows = this.$("hc-sets-tree-importFilesTipRows");
+		tipRows.textContent = "";
+		tipRows.appendChild(df);
 	},
 	cleanImportSearch: function(typeChanged) {
 		var search = this.searchField.value;

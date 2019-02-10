@@ -221,6 +221,9 @@ menuitem[command="hc-sets-cmd-enable"] {
 	margin: 0 -1px;
 	padding: 0 0.6em;
 }
+#hc-sets-tree-importFilesTip {
+	max-width: none;
+}
 #hc-sets-tree-importPartial,
 #hc-sets-tree-importFull,
 #hc-sets-tree-importPartial *,

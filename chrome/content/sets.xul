@@ -183,7 +183,19 @@ preferences {
 						accesskey="&hc.sets.importFilesDataAccesskey;"
 						tooltiptext="&hc.sets.importFilesDataTip;" />
 					<label id="hc-sets-tree-importFilesStatistics"
+						tooltip="hc-sets-tree-importFilesTip"
 						onclick="if(event.button == 0) handyClicksSets.toggleSearch('%data%');" />
+					<tooltip id="hc-sets-tree-importFilesTip"
+						onpopupshowing="return this.firstChild.lastChild.hasChildNodes();">
+						<grid>
+							<columns>
+								<column />
+								<column />
+								<column />
+							</columns>
+							<rows id="hc-sets-tree-importFilesTipRows" />
+						</grid>
+					</tooltip>
 				</hbox>
 				<radiogroup id="hc-sets-tree-importType"
 					oncommand="handyClicksSets.toggleImportType(this.value == 'true');">
