@@ -425,10 +425,9 @@ var handyClicksEditor = {
 	},
 	setWinId: function() {
 		var winId;
-		var cType = this.currentType || this.type; // For deleted custom types
 		switch(this.mainTabbox.selectedIndex) {
-			case this.INDEX_SHORTCUT: winId = this.currentShortcut + "-" + cType; break;
-			case this.INDEX_TYPE:     winId = cType;                              break;
+			case this.INDEX_SHORTCUT: winId = this.currentShortcut + "-" + this.currentType; break;
+			case this.INDEX_TYPE:     winId = this.currentCustomType;                        break;
 			default: return;
 		}
 		window[this.wu.winIdProp] = winId + (this.ps.otherSrc ? this.ct.OTHER_SRC_POSTFIX : "");
