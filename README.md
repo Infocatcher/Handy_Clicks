@@ -169,15 +169,15 @@ Turn off from command line: `firefox -handyclicks-disable`.
 ##### API functions:
 DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGeneratedPopup</a>(in array/string/DOMNode items)
 <br>DOMNode <a href="#handyclicksfuncsshowopenuriwithappspopup">handyClicksFuncs.showOpenURIWithAppsPopup</a>(in array items, in boolean checkPaths)
-<br>string <a href="#handyclicksfuncsgetitemuri">handyClicksFuncs.getItemURI</a>([in DOMNode item[, in string itemType[, in DOMEvent event[, in boolean noTrim]]]]) <sup><em><a href="https://github.com/Infocatcher/Handy_Clicks/blob/0.1.3pre6/README.md#api-functions">changed</a> in Handy Clicks 0.1.3pre7+</em></sup>
+<br>string <a href="#handyclicksfuncsgetitemuri">handyClicksFuncs.getItemURI</a>([in DOMNode item[, in string itemType[, in DOMEvent event[, in boolean noTrim]]]]) <sup><em><a href="https://github.com/Infocatcher/Handy_Clicks/blob/0.1.3pre6/README.md#api-functions">changed</a> in Handy Clicks 0.2.0b1+</em></sup>
 <br>string <a href="#handyclicksfuncsgetitemtext">handyClicksFuncs.getItemText</a>([in DOMNode item[, in string itemType[, in DOMEvent event[, in boolean noTrim]]]])
 <br>nsIVariant <a href="#handyclicksprefutilsgetpref">handyClicksPrefUtils.getPref</a>(in string prefName[, in nsIVariant defaultValue[, in nsIPrefBranch prefBranch]])
 <br>void <a href="#handyclicksprefutilssetpref">handyClicksPrefUtils.setPref</a>(in string prefName, in nsIVariant value[, in nsIPrefBranch prefBranch])
-<br>DOMWindow <a href="#handyclicksutilsnotify">handyClicksUtils.notify</a>(in string message[, in object options]) <sup><em><a href="https://github.com/Infocatcher/Handy_Clicks/blob/0.1.3pre6/README.md#api-functions">changed</a> in Handy Clicks 0.1.3pre7+</em></sup>
-<br>DOMWindow <a href="#handyclicksutilsnotifyinwindowcorner">handyClicksUtils.notifyInWindowCorner</a>(in string message[, in object options]) <sup><em><a href="https://github.com/Infocatcher/Handy_Clicks/blob/0.1.3pre6/README.md#api-functions">changed</a> in Handy Clicks 0.1.3pre7+</em></sup>
-<br>DOMWindow <a href="#handyclicksutilsnotifywarning">handyClicksUtils.notifyWarning</a>(in string message[, in object options]) <sup><em>Handy Clicks 0.1.3pre7+</em></sup>
-<br>DOMWindow <a href="#handyclicksutilsnotifyerror">handyClicksUtils.notifyError</a>(in string message[, in object options]) <sup><em>Handy Clicks 0.1.3pre7+</em></sup>
-<br>boolean <a href="#handyclicksinitcustomtype">handyClicks.initCustomType</a>(in object options) <sup><em>Handy Clicks 0.1.3pre7+</em></sup>
+<br>DOMWindow <a href="#handyclicksutilsnotify">handyClicksUtils.notify</a>(in string message[, in object options]) <sup><em><a href="https://github.com/Infocatcher/Handy_Clicks/blob/0.1.3pre6/README.md#api-functions">changed</a> in Handy Clicks 0.2.0b1+</em></sup>
+<br>DOMWindow <a href="#handyclicksutilsnotifyinwindowcorner">handyClicksUtils.notifyInWindowCorner</a>(in string message[, in object options]) <sup><em><a href="https://github.com/Infocatcher/Handy_Clicks/blob/0.1.3pre6/README.md#api-functions">changed</a> in Handy Clicks 0.2.0b1+</em></sup>
+<br>DOMWindow <a href="#handyclicksutilsnotifywarning">handyClicksUtils.notifyWarning</a>(in string message[, in object options]) <sup><em>Handy Clicks 0.2.0b1+</em></sup>
+<br>DOMWindow <a href="#handyclicksutilsnotifyerror">handyClicksUtils.notifyError</a>(in string message[, in object options]) <sup><em>Handy Clicks 0.2.0b1+</em></sup>
+<br>boolean <a href="#handyclicksinitcustomtype">handyClicks.initCustomType</a>(in object options) <sup><em>Handy Clicks 0.2.0b1+</em></sup>
 <br>void <a href="#handyclicksglobals_info">handyClicksGlobals.\_info</a>(in string message)
 <br>void <a href="#handyclicksglobals_log">handyClicksGlobals.\_log</a>(in string message)
 <br>void <a href="#handyclicksutils_err">handyClicksUtils.\_err</a>(in string/error message[, in string fileName[, in string lineNumber]])
