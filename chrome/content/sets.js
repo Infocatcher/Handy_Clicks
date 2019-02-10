@@ -3312,7 +3312,6 @@ var handyClicksSets = {
 
 		var isEmpty = !bakFiles.length;
 		var ubCount = 0;
-		var bytes = this.getLocalized("bytes");
 		var testBackupStatus = this.storage.get("testBackupCreated") ? "thisSession" : "afterCrash";
 
 		var df = document.createDocumentFragment();
@@ -3320,11 +3319,11 @@ var handyClicksSets = {
 			return b.time - a.time; // newest ... oldest
 		}).forEach(function(fo) {
 			var file = fo.file;
-			var time = new Date(fo.time).toLocaleString();
-			var size = file.fileSize.toString().replace(/(\d)(?=(?:\d{3})+(?:\D|$))/g, "$1 ");
+			var time = this.stringifyDate(fo.time);
+			var size = this.stringifySize(file.fileSize);
 			var name = file.leafName;
 			var mi = this.ut.createElement("menuitem", {
-				label: time + " [" + size + " " + bytes + "] \u2013 " + name,
+				label: time + " [" + size + "] \u2013 " + name,
 				tooltiptext: file.path,
 				hc_fileName: name,
 				hc_userBackup: this.ut.hasPrefix(name, userBackup) && !!(++ubCount),
@@ -3382,6 +3381,13 @@ var handyClicksSets = {
 	reveal: function(file) {
 		return this.ut.reveal(file);
 	},
+	stringifyDate: function(time) {
+		return new Date(time).toLocaleString();
+	},
+	stringifySize: function(size) {
+		return ("" + size).replace(/(\d)(?=(?:\d{3})+(?:\D|$))/g, "$1 ")
+			+ " " + this.getLocalized("bytes");
+	},
 
 	isDarkFont: function(node) {
 		var isDarkFont = true;
@@ -3425,12 +3431,11 @@ var handyClicksSets = {
 		var files = this.ps.files;
 		var hasFD = false;
 		var df = document.createDocumentFragment();
-		var bytes = this.getLocalized("bytes");
 		for(var path in files) if(files.hasOwnProperty(path)) {
 			hasFD = true;
 			var fo = files[path];
-			var date = fo.lastModified ? new Date(fo.lastModified).toLocaleString() : "?";
-			var size = fo.size ? ("" + fo.size).replace(/(\d)(?=(?:\d{3})+(?:\D|$))/g, "$1 ") + " " + bytes : "?";
+			var date = fo.lastModified ? this.stringifyDate(fo.lastModified) : "?";
+			var size = fo.size         ? this.stringifySize(fo.size)         : "?";
 			var row = df.appendChild(document.createElement("row"));
 			row.appendChild(this.ut.createElement("label", { value: path }));
 			row.appendChild(this.ut.createElement("label", { value: date }));
