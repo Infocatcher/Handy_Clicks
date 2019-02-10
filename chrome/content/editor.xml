@@ -544,10 +544,13 @@
 					if(!ut)
 						return;
 
+					var file;
 					var path = ut.ps.getSourcePath(this.value);
-					var file, fileData;
-					if(ut.ps.otherSrc && path in ut.ps.files && ut.ps.isValidFileData(ut.ps.files[path]))
-						fileData = ut.ps.files[path].data;
+					var files = ut.ps.files;
+					if(ut.ps.otherSrc && path in files && ut.ps.isValidFileData(files[path])) {
+						var fileData = files[path].data;
+						var fileTime = files[path].lastModified;
+					}
 					else if(path) {
 						if(ut.ps.otherSrc) {
 							ut.notifyWarning(ut.getLocalized("cantEditImportedFile"));
@@ -597,8 +600,10 @@
 						file = ut.ps.tempDir.clone();
 						file.append(fName);
 						file.createUnique(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
-						if(hasFileData)
+						if(hasFileData) {
 							ut.writeToFile(fileData, file);
+							file.lastModifiedTime = fileTime;
+						}
 						this._lineBreak = null; // Will use platform's line breaks
 						this.watchFile(file, true, hasFileData && path);
 
@@ -1016,6 +1021,8 @@
 							fVal = fVal.substr(1);
 						if(this._virtualPath) {
 							var fo = ut.ps.files[this._virtualPath];
+							if(fo.size == fSize && fo.lastModified == fTime)
+								return;
 							fo.data = fVal;
 							fo.lastModified = fTime;
 							fo.size = fSize;
