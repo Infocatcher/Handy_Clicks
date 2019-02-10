@@ -1229,6 +1229,16 @@ var handyClicksSets = {
 			this.ps.otherSrc && this.pe.reloadSettings(true /* reloadAll */);
 			this.setDialogButtons();
 		}
+
+		if(this._import && !this._importPartial) tIts.forEach(function(tItem) {
+			if(!(tItem.__hash in this.rowsCache))
+				return;
+			var newItem = this.rowsCache[tItem.__hash].parentNode;
+			var indx = this.tView.getIndexOfItem(newItem);
+			if(indx != -1)
+				this.tSel.rangedSelect(indx, indx, true);
+		}, this);
+
 		this.searchInSetsTree(true);
 	},
 	deleteItem: function(tItem, indx) {
