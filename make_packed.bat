@@ -26,7 +26,7 @@ if exist %_tmpDir% (
 
 cd /d "%~dp0"
 
-set _files=install.rdf *.manifest *.js *.jsm *.xul *.xml *.html license* *.png defaults modules components locale chrome idl
+set _files=install.rdf *.manifest *.js *.jsm *.xul *.xml *.html license* *.png defaults modules components locale chrome idl quantum
 
 md %_tmpDir%
 xcopy /e * %_tmpDir%
