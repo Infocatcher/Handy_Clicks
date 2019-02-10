@@ -3437,7 +3437,7 @@ var handyClicksSets = {
 			var date = fo.lastModified ? this.stringifyDate(fo.lastModified) : "?";
 			var size = fo.size         ? this.stringifySize(fo.size)         : "?";
 			var row = df.appendChild(document.createElement("row"));
-			row.appendChild(this.ut.createElement("label", { value: path }));
+			row.appendChild(this.ut.createElement("label", { value: path, crop: "center" }));
 			row.appendChild(this.ut.createElement("label", { value: date }));
 			row.appendChild(this.ut.createElement("label", { value: size }));
 		}

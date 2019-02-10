@@ -224,6 +224,15 @@ menuitem[command="hc-sets-cmd-enable"] {
 #hc-sets-tree-importFilesTip {
 	max-width: none;
 }
+#hc-sets-tree-importFilesTipPath {
+	max-width: 40em;
+}
+#hc-sets-tree-importFilesTipRows label:last-child {
+	text-align: right;
+}
+:root[chromedir="rtl"] #hc-sets-tree-importFilesTipRows label:last-child {
+	text-align: left;
+}
 #hc-sets-tree-importPartial,
 #hc-sets-tree-importFull,
 #hc-sets-tree-importPartial *,

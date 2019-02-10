@@ -185,11 +185,11 @@ preferences {
 					<label id="hc-sets-tree-importFilesStatistics"
 						tooltip="hc-sets-tree-importFilesTip"
 						onclick="if(event.button == 0) handyClicksSets.toggleSearch('%data%');" />
-					<tooltip id="hc-sets-tree-importFilesTip"
+					<tooltip id="hc-sets-tree-importFilesTip" noautohide="true"
 						onpopupshowing="return this.firstChild.lastChild.hasChildNodes();">
 						<grid>
 							<columns>
-								<column />
+								<column id="hc-sets-tree-importFilesTipPath" />
 								<column />
 								<column />
 							</columns>
