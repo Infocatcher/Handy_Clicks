@@ -230,11 +230,10 @@ var handyClicksSets = {
 	treeScrollPos: function(saveFlag) {
 		var rememberScrollPos = this.pu.get("sets.rememberScrollPosition");
 		var tr = this.tree;
-		var tbo = this.tbo;
 		if(saveFlag) {
 			if(rememberScrollPos) {
-				tr.setAttribute("hc_firstVisibleRow", tbo.getFirstVisibleRow());
-				tr.setAttribute("hc_lastVisibleRow", tbo.getLastVisibleRow());
+				tr.setAttribute("hc_firstVisibleRow", this.tbo.getFirstVisibleRow());
+				tr.setAttribute("hc_lastVisibleRow", this.tbo.getLastVisibleRow());
 			}
 			else {
 				tr.removeAttribute("hc_firstVisibleRow");
@@ -248,14 +247,17 @@ var handyClicksSets = {
 			return;
 		if(!tr.hasAttribute("hc_firstVisibleRow"))
 			return;
-		var maxRowsIndx = this.tView.rowCount - 1;
-		if(maxRowsIndx < 0)
+		if(!this.tView.rowCount)
 			return;
 		var fvr = +tr.getAttribute("hc_firstVisibleRow");
 		var lvr = +tr.getAttribute("hc_lastVisibleRow"); // Note: may be larger, than maxRowsIndx
+		this.restoreScroll(fvr, lvr);
+	},
+	restoreScroll: function(fvr, lvr) {
+		var tbo = this.tbo;
 		tbo.ensureRowIsVisible(lvr);
 		tbo.ensureRowIsVisible(fvr);
-		if(lvr >= maxRowsIndx) this.delay(function() { // Force scroll to last row
+		if(lvr >= this.tView.rowCount - 1) this.delay(function() { // Force scroll to last row
 			tbo.ensureRowIsVisible(lvr);
 			tbo.ensureRowIsVisible(fvr);
 		}, this);
