@@ -1401,6 +1401,11 @@ var handyClicksEditor = {
 				so.ignoreLinks  = this.$("hc-editor-imgIgnoreLinks") .checked;
 				so.ignoreSingle = this.$("hc-editor-imgIgnoreSingle").checked;
 			}
+			else if(type == "tab" || type == "ext_mulipletabs") { // Add forward compatibility
+				var saved = this._savedShortcutObj;
+				if(saved && "excludeCloseButton" in saved)
+					so.excludeCloseButton = saved.excludeCloseButton;
+			}
 		}
 		return so;
 	},
