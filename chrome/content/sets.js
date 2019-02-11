@@ -570,11 +570,16 @@ var handyClicksSets = {
 
 	setsReloading: function(notifyReason) {
 		if(notifyReason & this.ps.SETS_RELOADED) {
-			if(this.ps.otherSrc) // Disable checkbox, if all files data was deleted
-				this.setImportFilesDataStatus();
-			this.updTree();
+			this.changedFileData() || this.updTree();
 			this.checkTreeSaved();
 		}
+	},
+	changedFileData: function() {
+		if(!this.ps.otherSrc)
+			return false;
+		this.setImportFilesDataStatus();
+		this.updTree();
+		return true;
 	},
 
 	markOpenedEditors: function() {

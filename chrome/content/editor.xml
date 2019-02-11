@@ -1026,6 +1026,10 @@
 							fo.data = fVal;
 							fo.lastModified = fTime;
 							fo.size = fSize;
+							setTimeout(function() {
+								var wSet = ut.wu.wm.getMostRecentWindow("handyclicks:settings");
+								wSet && wSet.handyClicksSets.changedFileData();
+							}, 0);
 							this.fade();
 							return;
 						}
