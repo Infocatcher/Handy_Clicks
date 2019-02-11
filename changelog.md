@@ -139,6 +139,10 @@
 `+` Import settings: show (and highlight) removed items in replace mode (available only “Edit saved” from context menu), also added %old% search placeholder (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/34">#34</a>).<br>
 `*` Improved appearance of import statistics: aligned using grid, highlight non-zero values, link-like color to highlight hovered clickable rows.<br>
 `*` Delete item: select next editable/deletable or last item.<br>
+`*` Delete item: workaround to force restore scroll to last row.<br>
+`*` Restore from backup menu: use short date format (if available modern `Date.prototype.toLocaleString(locale, options)`) and use acceltext to show file size for better alignment.<br>
+`*` Updated checkbox icons in settings tree and added icon for “Toggle” context menu item (used icons from Windows 7).<br>
+`*` Highlight hovered checkbox cells in settings tree.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre7 (2019-02-10)
