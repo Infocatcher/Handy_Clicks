@@ -171,7 +171,8 @@ preferences {
 				onclick="handyClicksSets.treeClick(event);"
 				ondblclick="handyClicksSets.editItems(event);"
 				onmousedown="handyClicksSets.smartSelect(event); handyClicksSets.treeClick(event);"
-				onmousemove="handyClicksSets.smartSelect(event);" />
+				onmousemove="handyClicksSets.highlightHover(event); handyClicksSets.smartSelect(event);"
+				onmouseout="handyClicksSets.unhoverCheckbox();" />
 		</tree>
 		<vbox id="hc-sets-tree-buttons">
 			<hbox id="hc-sets-tree-importPanel" hidden="true" pack="center" align="end">

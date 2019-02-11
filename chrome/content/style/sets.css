@@ -204,9 +204,11 @@ menuitem[command="hc-sets-cmd-toggle"] {
 	-moz-image-region: rect(26px 13px 39px 0);
 }
 
+treechildren::-moz-tree-checkbox(hc_checkbox, hc_checkboxHover),
 menuitem[command="hc-sets-cmd-disable"]:not([disabled="true"]):hover {
 	-moz-image-region: rect(13px 26px 26px 13px);
 }
+treechildren::-moz-tree-checkbox(hc_checkbox, checked, hc_checkboxHover),
 menuitem[command="hc-sets-cmd-enable"]:not([disabled="true"]):hover {
 	-moz-image-region: rect(0 26px 13px 13px);
 }

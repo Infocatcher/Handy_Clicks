@@ -1369,6 +1369,29 @@ var handyClicksSets = {
 		if(this.searchField.value.indexOf(this.searchPlaceholders.hc_edited) != -1)
 			this.searchInSetsTree(true);
 	},
+	_hoveredCheckbox: null,
+	highlightHover: function(e) {
+		var tItem = this.getChecboxItem(e);
+		if(!tItem) {
+			this.unhoverCheckbox();
+			return;
+		}
+		var tRow = this.getRowForItem(tItem);
+		var tCell = tRow.getElementsByAttribute("value", "*")[0];
+		if(tCell != this._hoveredCheckbox)
+			this.hoverCheckbox(tCell);
+	},
+	hoverCheckbox: function(tCell) {
+		this.unhoverCheckbox();
+		this.setNodeProperties(tCell, { hc_checkboxHover: true });
+		this._hoveredCheckbox = tCell;
+	},
+	unhoverCheckbox: function() {
+		if(this._hoveredCheckbox) {
+			this.setNodeProperties(this._hoveredCheckbox, { hc_checkboxHover: false });
+			this._hoveredCheckbox = null;
+		}
+	},
 	treeClick: function _tc(e) {
 		var row = {}, col = {}, cell = {};
 		this.tbo.getCellAt(e.clientX, e.clientY, row, col, cell);
@@ -1385,19 +1408,25 @@ var handyClicksSets = {
 		}
 		_tc.row = _tc.col = null;
 	},
+	getChecboxItem: function(e) {
+		var row = {}, col = {}, cell = {};
+		this.tbo.getCellAt(e.clientX, e.clientY, row, col, cell);
+		var rowIndx = row.value;
+		var column = col.value;
+		if(rowIndx == -1 || column == null)
+			return null;
+		var checked = this.tView.getCellValue(rowIndx, column);
+		if(!checked) // real checked is "true" or "false"
+			return null;
+		var tItem = this.getItemAtIndex(rowIndx);
+		if(!tItem || tItem.__isRemoved)
+			return null;
+		return tItem
+	},
 	toggleEnabled: function(e, forcedEnabled) { //~ todo: test!
 		if(e) { // Click on checkbox cell
-			var row = {}, col = {}, cell = {};
-			this.tbo.getCellAt(e.clientX, e.clientY, row, col, cell);
-			var rowIndx = row.value;
-			var column = col.value;
-			if(rowIndx == -1 || column == null)
-				return;
-			var checked = this.tView.getCellValue(rowIndx, column);
-			if(!checked) // real checked is "true" or "false"
-				return;
-			var tItem = this.getItemAtIndex(rowIndx);
-			if(!tItem || tItem.__isRemoved)
+			var tItem = this.getChecboxItem(e);
+			if(!tItem)
 				return;
 			this.toggleItemEnabled(tItem);
 		}
