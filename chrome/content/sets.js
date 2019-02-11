@@ -3324,19 +3324,17 @@ var handyClicksSets = {
 			return b.time - a.time; // newest ... oldest
 		}).forEach(function(fo) {
 			var file = fo.file;
-			var time = this.stringifyDate(fo.time);
-			var size = this.stringifySize(file.fileSize);
 			var name = file.leafName;
-			var mi = this.ut.createElement("menuitem", {
-				label: time + " [" + size + "] \u2013 " + name,
+			var mi = df.appendChild(this.ut.createElement("menuitem", {
+				label: this.stringifyDate(fo.time) + " \u2013 " + name,
+				acceltext: this.stringifySize(file.fileSize),
 				tooltiptext: file.path,
 				hc_fileName: name,
 				hc_userBackup: this.ut.hasPrefix(name, userBackup) && !!(++ubCount),
 				hc_oldBackup:  this.ut.hasPrefix(name, oldBackup),
 				hc_testBackup: this.ut.hasPrefix(name, testBackup) && testBackupStatus
-			});
+			}));
 			mi.__file = file;
-			df.appendChild(mi);
 		}, this);
 
 		var sep;
