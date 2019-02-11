@@ -3385,11 +3385,34 @@ var handyClicksSets = {
 		return this.ut.reveal(file);
 	},
 	stringifyDate: function(time) {
-		return new Date(time).toLocaleString();
+		var d = new Date(time);
+		try {
+			return d.toLocaleDateString(undefined, {
+				year:   "numeric",
+			    month:  "2-digit",
+			    day:    "2-digit", // Doesn't work...
+			    hour:   "2-digit",
+			    minute: "2-digit",
+			    second: "2-digit"
+			}).replace(/(\s)(\d:)/, "$10$2");
+		}
+		catch(e) {
+		}
+		return d.toLocaleString();
 	},
 	stringifySize: function(size) {
-		return ("" + size).replace(/(\d)(?=(?:\d{3})+(?:\D|$))/g, "$1 ")
-			+ " " + this.getLocalized("bytes");
+		return this.stringifyInteger(size) + " " + this.getLocalized("bytes");
+	},
+	stringifyInteger: function(n) {
+		try {
+			return n.toLocaleString(undefined, {
+				minimumFractionDigits: 0,
+				maximumFractionDigits: 0
+			});
+		}
+		catch(e) {
+		}
+		return n.toLocaleString();
 	},
 
 	isDarkFont: function(node) {
