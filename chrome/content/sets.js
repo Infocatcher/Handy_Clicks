@@ -3454,19 +3454,17 @@ var handyClicksSets = {
 			this.$("hc-sets-tree-buttonImportOk").focus();
 	},
 	setImportFilesDataStatus: function() {
+		var filesData = [];
 		var files = this.ps.files;
-		var hasFD = false;
-		var df = document.createDocumentFragment();
 		for(var path in files) if(files.hasOwnProperty(path)) {
-			hasFD = true;
 			var fo = files[path];
-			var date = fo.lastModified ? this.stringifyDate(fo.lastModified) : "?";
-			var size = fo.size         ? this.stringifySize(fo.size)         : "?";
-			var row = df.appendChild(document.createElement("row"));
-			row.appendChild(this.ut.createElement("label", { value: path, crop: "center" }));
-			row.appendChild(this.ut.createElement("label", { value: date }));
-			row.appendChild(this.ut.createElement("label", { value: size }));
+			filesData.push({
+				path: path,
+				time: fo.lastModified,
+				size: fo.size
+			});
 		}
+		var hasFD = !!filesData.length;
 		var importFD = this.$("hc-sets-tree-importFilesData");
 		importFD.disabled = !hasFD;
 		importFD.checked = this._importFilesData = hasFD;
@@ -3481,11 +3479,24 @@ var handyClicksSets = {
 			pn.insertBefore(pn.removeChild(importFD), ns);
 		}
 		var counter = this.$("hc-sets-tree-importFilesStatistics");
-		counter.value = df.childNodes.length;
+		counter.value = filesData.length;
 		counter.hidden = !hasFD;
-		var tipRows = this.$("hc-sets-tree-importFilesTipRows");
-		tipRows.textContent = "";
-		tipRows.appendChild(df);
+		this.delay(function() {
+			var df = document.createDocumentFragment();
+			filesData.sort(function(a, b) {
+				return a.path > b.path;
+			}).forEach(function(fd) {
+				var date = fd.time ? this.stringifyDate(fd.time) : "?";
+				var size = fd.size ? this.stringifySize(fd.size) : "?";
+				var row = df.appendChild(document.createElement("row"));
+				row.appendChild(this.ut.createElement("label", { value: fd.path, crop: "center" }));
+				row.appendChild(this.ut.createElement("label", { value: date }));
+				row.appendChild(this.ut.createElement("label", { value: size }));
+			}, this);
+			var tipRows = this.$("hc-sets-tree-importFilesTipRows");
+			tipRows.textContent = "";
+			tipRows.appendChild(df);
+		}, this);
 	},
 	cleanImportSearch: function(typeChanged) {
 		var search = this.searchField.value;
