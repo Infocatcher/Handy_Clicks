@@ -216,6 +216,13 @@ menuitem[command="hc-sets-cmd-toggle"]:not([disabled="true"]):hover {
 	-moz-image-region: rect(26px 26px 39px 13px);
 }
 
+treechildren::-moz-tree-checkbox(hc_checkbox, hc_old) {
+	-moz-image-region: rect(13px 39px 26px 26px);
+}
+treechildren::-moz-tree-checkbox(hc_checkbox, checked, hc_old) {
+	-moz-image-region: rect(0 39px 13px 26px);
+}
+
 #hc-sets-pane-actions {
 	padding-bottom: 3px;
 }
