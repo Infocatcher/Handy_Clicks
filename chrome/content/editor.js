@@ -550,7 +550,8 @@ var handyClicksEditor = {
 		var shStr = mdf + (mdf ? " + " : "") + this.ps.getButtonStr(sh, true);
 		var typeItem = this.$("hc-editor-itemTypes").selectedItem;
 		var type = typeItem && typeItem.getAttribute("label"); // menulist.label may be wrong on startup!
-		var typeStr = this.$("hc-editor-customType").value || this.$("hc-editor-customTypeExtId").value;
+		var typeStr = this.ps.localize(this.$("hc-editor-customType").value)
+			 || this.$("hc-editor-customTypeExtId").value;
 		var title = this.editorTabIndex == this.INDEX_TYPE
 			? typeStr + (typeStr ? " | " : "") + shStr + (type ? " + " + type : "")
 			: shStr + (type ? " + " + type : "") + (typeStr ? " | " + typeStr : "");
