@@ -549,18 +549,25 @@ var handyClicks = {
 			|| e.originalTarget !== this.origItem // For "command" event
 		) {
 			this.defineItem(e, sets);
-			this.itemType && this._log("[" + e.type + "] " + "this.itemType = " + this.itemType);
+			this.itemType && this._log("[" + e.type + "] " + "type: " + this.itemType);
 		}
 		var funcObj = this.getFuncObj(sets) || this.editMode && { action: null };
-		this.hasSettings = !!funcObj;
-		if(this.hasSettings) {
+		if(funcObj) {
+			if(!this.editMode && this.isBlacklisted(e)) {
+				var pref = this.pu.prefNS + "blacklist." + e.button;
+				var url = e.view.location.href.substr(0, 100);
+				this._log("[" + e.type + "] blacklisted site (" + pref + "):\n" + url);
+				return null;
+			}
+			this.hasSettings = true;
 			this.settingsType = funcObj.eventType || "";
 			this.event = e;
 			//this.saveXY(e); // Saves incorrect coordinates...
 			this.origItem = e.originalTarget;
 		}
-		else
+		else {
 			this.event = this.origItem = null;
+		}
 		return funcObj;
 	},
 	getSettings: function(str) {
@@ -934,6 +941,46 @@ var handyClicks = {
 				(this.itemTypeInSets(sets, "$all") && sets.$all)
 				|| (this.itemTypeInSets(sets, this.itemType) && sets[this.itemType])
 			);
+	},
+	blacklists: [],
+	isBlacklisted: function(e) {
+		if(this.hasModifier(e))
+			return false;
+		var btn = e.button;
+		var patterns = this.blacklists[btn]
+			|| (this.blacklists[btn] = this.parsePatterns(this.pu.get("blacklist." + btn, "")));
+		var curURI = e.view.location.href;
+		for(var i = 0, l = patterns.length; i < l; ++i)
+			if(patterns[i].test(curURI))
+				return true;
+		return false;
+	},
+	parsePatterns: function(data) {
+		var patterns = [];
+		for(var lines = data.split(/\s+/), i = 0, l = lines.length; i < l; ++i) {
+			var str = this.ut.trim(lines[i]);
+			if(/^\/(.+)\/(i?)$/.test(str)) {
+				var pattern = RegExp.$1;
+				var flags = RegExp.$2;
+			}
+			else {
+				var pattern = "^" + str
+					.replace(/[\\\/.^$+?|()\[\]{}]/g, "\\$&") // Escape special symbols
+					.replace(/\*/g, ".*")
+					+ "$";
+				var flags = "i";
+			}
+			try {
+				patterns.push(new RegExp(pattern, flags));
+			}
+			catch(e) {
+				this.ut._err(
+					"parsePatterns(): Invalid regular expression:\n"
+					+ str + "\n-> " + pattern + "\n" + e
+				);
+			}
+		}
+		return patterns;
 	},
 
 	// Context menu:

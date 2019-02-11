@@ -531,6 +531,8 @@ var handyClicksUI = {
 			this.setupUIActions();
 		else if(pName == "ui.customizableProgressBar")
 			this.setupProgress();
+		else if(pName.substr(0, 10) == "blacklist.")
+			this.coreLoaded && (this.hc.blacklists[pName.charAt(10)] = null);
 	},
 	setStatus: function() {
 		var enabled = this.enabled;

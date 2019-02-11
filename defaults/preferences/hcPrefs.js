@@ -2,6 +2,13 @@
 pref("extensions.handyclicks@infocatcher.description", "chrome://handyclicks/locale/hcs.properties");
 
 pref("extensions.handyclicks.enabled", true);
+pref("extensions.handyclicks.blacklist.0", "");
+pref("extensions.handyclicks.blacklist.1", "");
+pref("extensions.handyclicks.blacklist.2", "");
+// Space-separated lists to not handle left (0), middle (1) and right-clicks (2) without modifiers,
+// allowed * or regular expressions:
+// https://example.com/*
+// /^https?://example(?:\.\w+){1,2}/something//i
 pref("extensions.handyclicks.focusOnItems", true);
 pref("extensions.handyclicks.disallowMousemoveButtons", "02");
 pref("extensions.handyclicks.disallowMousemoveDist", 12);
