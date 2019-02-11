@@ -188,14 +188,30 @@ treechildren::-moz-tree-cell-text(hc_new), #hc-sets-tree-importAdded {
 treechildren::-moz-tree-cell-text(hc_old), #hc-sets-tree-importRemoved {
 	text-decoration: line-through;
 }
+
 treechildren::-moz-tree-checkbox(hc_checkbox),
-menuitem[command="hc-sets-cmd-enable"], menuitem[command="hc-sets-cmd-disable"] {
-	list-style-image: url("checkbox.png"); /* Image from Adblock Plus extension */
+menuitem[command="hc-sets-cmd-enable"],
+menuitem[command="hc-sets-cmd-disable"],
+menuitem[command="hc-sets-cmd-toggle"] {
+	list-style-image: url("checkbox.png");
 	-moz-image-region: rect(13px 13px 26px 0);
 }
-treechildren::-moz-tree-checkbox(checked),
+treechildren::-moz-tree-checkbox(hc_checkbox, checked),
 menuitem[command="hc-sets-cmd-enable"] {
 	-moz-image-region: rect(0 13px 13px 0);
+}
+menuitem[command="hc-sets-cmd-toggle"] {
+	-moz-image-region: rect(26px 13px 39px 0);
+}
+
+menuitem[command="hc-sets-cmd-disable"]:not([disabled="true"]):hover {
+	-moz-image-region: rect(13px 26px 26px 13px);
+}
+menuitem[command="hc-sets-cmd-enable"]:not([disabled="true"]):hover {
+	-moz-image-region: rect(0 26px 13px 13px);
+}
+menuitem[command="hc-sets-cmd-toggle"]:not([disabled="true"]):hover {
+	-moz-image-region: rect(26px 26px 39px 13px);
 }
 
 #hc-sets-pane-actions {

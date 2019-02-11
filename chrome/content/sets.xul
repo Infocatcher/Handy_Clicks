@@ -783,7 +783,7 @@ preferences {
 			<menuseparator />
 			<menuitem command="hc-sets-cmd-enable" key="hc-sets-key-enable" class="menuitem-iconic handyClicks-iconic" />
 			<menuitem command="hc-sets-cmd-disable" key="hc-sets-key-disable" class="menuitem-iconic handyClicks-iconic" />
-			<menuitem command="hc-sets-cmd-toggle" key="hc-sets-key-toggle" />
+			<menuitem command="hc-sets-cmd-toggle" key="hc-sets-key-toggle" class="menuitem-iconic handyClicks-iconic" />
 			<menuseparator />
 			<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
 			<menuitem command="hc-sets-cmd-exportToHTML" key="hc-sets-key-exportToHTML" />
