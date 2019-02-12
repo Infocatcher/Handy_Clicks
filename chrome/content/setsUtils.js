@@ -325,6 +325,9 @@ var handyClicksSetsUtils = {
 			return;
 		this._allowScroll = now + 50;
 
+		if(this.hasScrollbar(e))
+			return;
+
 		if(
 			this.scrollList(e)
 			|| this.scrollRadioMenuitems(e)
@@ -334,6 +337,22 @@ var handyClicksSetsUtils = {
 			|| this.scrollRadios(e)
 		)
 			this.ut.stopEvent(e);
+	},
+	hasScrollbar: function(e) {
+		for(var node = e.originalTarget; node; node = node.parentNode) {
+			var sh = node.scrollHeight || 0;
+			var ch = node.clientHeight || 0;
+			if(ch && sh > ch && getComputedStyle(node, null).overflowY == "auto") {
+				if(this._debug) {
+					var info = node.nodeName
+						+ (node.id ? "#" + node.id : "")
+						+ (node.className ? "." + node.className.split(/\s+/).join(".") : "");
+					this._log("Detected scrollbar: " + info + " scrollHeight: " + sh + " clientHeight: " + ch);
+				}
+				return true;
+			}
+		}
+		return false;
 	},
 	isScrollForward: function(e) {
 		var fwd = "deltaY" in e
