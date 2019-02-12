@@ -16,6 +16,7 @@ var hcNotify = {
 		var opts = this.opts = window.arguments[0]; // See utils.js -> notify: function(...
 		var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
 			.getService(Components.interfaces.nsIXULAppInfo);
+		var appVersion = parseFloat(appInfo.version);
 		this.$("hcNotifyHeader").textContent = opts.title + "\n";
 		var descElt = this.$("hcNotifyDesc");
 		descElt.textContent = opts.message;
@@ -53,7 +54,7 @@ var hcNotify = {
 		var maxW = opts.messageMaxWidth  || 480;
 		var maxH = opts.messageMaxHeight || 240;
 		var ds = descElt.style;
-		ds.whiteSpace = appInfo.name == "Firefox" && parseFloat(appInfo.version) < 3
+		ds.whiteSpace = appInfo.name == "Firefox" && appVersion < 3
 			? "-moz-pre-wrap"
 			: "pre-wrap";
 		ds.wordWrap = "break-word";
@@ -103,6 +104,15 @@ var hcNotify = {
 			y = maxY - winH;
 		window.moveTo(x, y);
 
+		var box = this.box = this.$("hcNotifyBox");
+		if(appInfo.name == "Firefox" && appVersion < 3) setTimeout(function() {
+			var dh = box.boxObject.height - winH;
+			if(dh > 0) {
+				window.resizeBy(0, dh);
+				window.moveBy(0, -dh);
+			}
+		}, 0);
+
 		if(this.inWindowCorner && opts.rearrangeWindows) {
 			var addY = 2;
 			var wins = [];
@@ -127,7 +137,6 @@ var hcNotify = {
 			});
 		}
 
-		var box = this.box = this.$("hcNotifyBox");
 		if(typeof opts.onLeftClick == "function")
 			box.className = "hc-clickable";
 
