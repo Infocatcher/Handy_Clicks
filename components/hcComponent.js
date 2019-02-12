@@ -36,7 +36,8 @@ setTimeout(function() {
 // https://bugzilla.mozilla.org/show_bug.cgi?id=1413413
 var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
 	.getService(Components.interfaces.nsIXULAppInfo);
-if(appInfo.name == "Firefox" && parseFloat(appInfo.version) >= 58) {
+var app = appInfo.name;
+if((app == "Firefox" || app == "SeaMonkey") && parseFloat(appInfo.platformVersion) >= 58) {
 	var Preferences = Components.utils["import"]("resource://gre/modules/Preferences.jsm", {}).Preferences;
 	var prefs = new Preferences({ defaultBranch: true });
 	handyClicksGlobals.jsLoader.loadSubScript("chrome://handyclicks-icon/skin/defaults/preferences/hcPrefs.js", {
