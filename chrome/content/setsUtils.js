@@ -614,12 +614,11 @@ var handyClicksSetsUtils = {
 	TOOLTIP_OFFSET_DEFAULT: 2,
 	TOOLTIP_OFFSET_CURSOR: 12,
 	get infoTooltip() {
+		var tt = document.createElement("tooltip");
+		tt.id = "handyClicks-infoTooltip";
+		tt.appendChild(document.createElement("description"));
 		delete this.infoTooltip;
-		return this.infoTooltip = document.documentElement.appendChild(this.ut.parseXULFromString('\
-			<tooltip xmlns="' + this.ut.XULNS + '" id="handyClicks-infoTooltip">\
-				<description />\
-			</tooltip>'
-		));
+		return this.infoTooltip = document.documentElement.appendChild(tt);
 	},
 	showInfoTooltip: function _sit(anchor, msg, hideDelay, offset, tt) {
 		if(!tt) {
