@@ -10,8 +10,8 @@ var handyClicksSetsUtils = {
 		if(!reloadFlag) {
 			this.tweakDialogButtons();
 			this.createFloatToolbar();
-			this.delay(this.setDropEvents, this);
-			this.su.setKeysDescDelay();
+			this.delay(this.setKeysDesc, this, 10);
+			this.delay(this.setDropEvents, this, 20);
 		}
 		if(this.hasSizeModeChangeEvent)
 			window.addEventListener("sizemodechange", this, false);
@@ -628,19 +628,11 @@ var handyClicksSetsUtils = {
 		this.showInfoTooltip(anchor, "", hideDelay, offset, tt);
 	},
 
-	setKeysDescDelay: function() {
-		this.delay(this.setKeysDesc, this, 0, arguments);
-	},
-	setKeysDesc: function(/* node0, node1, ... */) {
-		var nodes = Array.prototype.concat.call(
-			Array.prototype.slice.call(document.getElementsByAttribute("hc_key", "*")),
-			Array.prototype.slice.call(document.documentElement.getButton("cancel").parentNode.childNodes),
-			Array.prototype.slice.call(arguments)
-		);
+	setKeysDesc: function() {
 		//~ hack: show fake hidden popup with <menuitem key="keyId" /> to get descriptions
-		var mp = document.documentElement.appendChild(document.createElement("menupopup"));
+		var mp = document.createElement("menupopup");
 		mp.style.visibility = "collapse";
-		nodes.forEach(function(node) {
+		function addNode(node) {
 			var keyId = node.getAttribute("hc_key");
 			if(!keyId)
 				return;
@@ -648,23 +640,25 @@ var handyClicksSetsUtils = {
 			mi.__node = node;
 			mi.setAttribute("key", keyId);
 			mp.appendChild(mi);
-		});
+		}
+		var forEach = Array.prototype.forEach;
+		var de = document.documentElement;
+		forEach.call(document.getElementsByAttribute("hc_key", "*"), addNode);
+		forEach.call(de.getButton("cancel").parentNode.childNodes, addNode);
 		mp._onpopupshown = function() {
-			Array.prototype.forEach.call(
-				this.childNodes,
-				function(mi) {
-					var keyDesk = mi.getAttribute("acceltext");
-					if(!keyDesk)
-						return;
-					var node = mi.__node;
-					node.tooltipText = node.tooltipText
-						? node.tooltipText + " (" + keyDesk + ")"
-						: keyDesk;
-				}
-			);
-			this.parentNode.removeChild(this);
+			forEach.call(mp.childNodes, function(mi) {
+				var keyDesk = mi.getAttribute("acceltext");
+				if(!keyDesk)
+					return;
+				var node = mi.__node;
+				node.tooltipText = node.tooltipText
+					? node.tooltipText + " (" + keyDesk + ")"
+					: keyDesk;
+			});
+			mp.parentNode.removeChild(mp);
 		};
 		mp.setAttribute("onpopupshown", "this._onpopupshown();");
+		de.appendChild(mp);
 		mp["openPopup" in mp ? "openPopup" : "showPopup"]();
 	},
 
