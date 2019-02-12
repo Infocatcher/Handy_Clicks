@@ -199,7 +199,8 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 	margin: 0 !important;
 }
 
-#hc-editor-funcSets {
+#hc-editor-funcSets,
+#hc-editor-funcSets-delay {
 	overflow: auto;
 }
 #hc-editor-itemTypes {
