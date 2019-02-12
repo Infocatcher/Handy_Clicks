@@ -2238,7 +2238,7 @@ var handyClicksSets = {
 	_updPrefsUITimeout: 0,
 	prefsChanged: function(pName, pVal) {
 		if(pName == "sets.treeDrawMode")
-			this.redrawTree();
+			this.updTree(false, true);
 		else if(pName == "sets.treeExpandDelayedAction")
 			this.updTree(false);
 		else if(pName == "sets.localizeArguments")
