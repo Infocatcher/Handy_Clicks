@@ -517,6 +517,7 @@ var handyClicksSets = {
 	},
 	getSelected: function() {
 		var selectedRows = { __proto__: null };
+		var curIndx = this.tree.currentIndex;
 		var rngCount = this.tSel.getRangeCount();
 		var start = {}, end = {};
 		for(var i = 0; i < rngCount; ++i) {
@@ -524,23 +525,29 @@ var handyClicksSets = {
 			for(var j = start.value, l = end.value; j <= l; ++j) {
 				var tItem = this.getItemAtIndex(j);
 				if(tItem) // May be out of range in case of filters
-					selectedRows[tItem.__hash] = true;
+					selectedRows[tItem.__hash] = j != curIndx || "current";
 			}
 		}
 		return selectedRows;
 	},
 	restoreSelection: function(selectedRows) {
+		var curIndx;
 		Array.prototype.forEach.call(
 			this.tBody.getElementsByTagName("treeitem"),
 			function(ti) {
 				if(ti.__hash in selectedRows) {
 					var indx = this.tView.getIndexOfItem(ti);
-					if(indx != -1)
+					if(indx != -1) {
 						this.tSel.rangedSelect(indx, indx, true);
+						if(selectedRows[ti.__hash] == "current")
+							curIndx = indx;
+					}
 				}
 			},
 			this
 		);
+		if(curIndx !== undefined)
+			this.tree.currentIndex = curIndx;
 	},
 	shortcutRenamed: function(oldHash, newHash) {
 		// Trick to save corrected collapsed and selected state
