@@ -10,13 +10,7 @@ var handyClicksSetsUtils = {
 		if(!reloadFlag) {
 			this.tweakDialogButtons();
 			this.createFloatToolbar();
-			Array.prototype.slice.call(document.getElementsByAttribute("hc_ondrop", "*")).forEach(
-				function(elt) {
-					elt.setAttribute("on" + this.dropEvent, elt.getAttribute("hc_ondrop"));
-					elt.removeAttribute("hc_ondrop");
-				},
-				this
-			);
+			this.delay(this.setDropEvents, this);
 			this.su.setKeysDescDelay();
 		}
 		if(this.hasSizeModeChangeEvent)
@@ -79,6 +73,15 @@ var handyClicksSetsUtils = {
 		okBtn.setAttribute("hc_key", "hc-sets-key-accept");
 		applyBtn.className += " hc-iconic hc-apply";
 		applyBtn.setAttribute("hc_key", "hc-sets-key-apply");
+	},
+	setDropEvents: function() {
+		var onDrop = "on" + this.dropEvent;
+		Array.prototype.slice.call(document.getElementsByAttribute("hc_ondrop", "*")).forEach(
+			function(elt) {
+				elt.setAttribute(onDrop, elt.getAttribute("hc_ondrop"));
+				elt.removeAttribute("hc_ondrop");
+			}
+		);
 	},
 	createFloatToolbar: function() {
 		var de = document.documentElement;
