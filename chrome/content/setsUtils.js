@@ -346,8 +346,12 @@ var handyClicksSetsUtils = {
 				if(this._debug) {
 					var info = node.nodeName
 						+ (node.id ? "#" + node.id : "")
-						+ (node.className ? "." + node.className.split(/\s+/).join(".") : "");
-					this._log("Detected scrollbar: " + info + " scrollHeight: " + sh + " clientHeight: " + ch);
+						+ (node.className ? "." + node.className.split(/\s+/).join(".") : "")
+						+ " scrollHeight: " + sh + " clientHeight: " + ch;
+					if(info != this._loggedInfo || "") {
+						this._loggedInfo = info;
+						this._log("Detected scrollbar: " + info);
+					}
 				}
 				return true;
 			}
