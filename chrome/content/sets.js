@@ -109,17 +109,9 @@ var handyClicksSets = {
 	},
 	restoreSearchQuery: function() {
 		if(!this.pu.get("sets.rememberSearchQuery"))
-			return false;
+			return;
 		var sf = this.searchField;
-		var obsoletePref = this.pu.prefNS + "sets.lastSearchQuery"; //= Added: 2012-01-11
-		var lsq = this.pu.getPref(obsoletePref);
-		if(lsq != undefined)
-			this.pu.prefSvc.deleteBranch(obsoletePref);
-		else
-			lsq = sf.getAttribute("hc_value");
-		sf.value = lsq;
-		//sf._enterSearch && sf._enterSearch();
-		return !!lsq;
+		sf.value = sf.getAttribute("hc_value");
 	},
 	saveSearchQuery: function() {
 		var sf = this.searchField;
@@ -2256,8 +2248,6 @@ var handyClicksSets = {
 			this.setDisallowMousemove();
 			this.updateDependencies("disallowMousemove");
 		}
-		else if(pName == "sets.lastSearchQuery") //~ obsolete
-			this.restoreSearchQuery() && this.updTree();
 		else if(this.ut.hasPrefix(pName, "ui.action"))
 			this.loadUIAction();
 		else {
