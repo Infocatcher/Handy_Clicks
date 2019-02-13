@@ -103,8 +103,10 @@
 					return this.inputField.value;
 				</getter>
 				<setter>
+					this.editor.beginTransaction();
 					this.editor.selectAll();
 					this.insertText(val);
+					this.editor.endTransaction();
 				</setter>
 			</property>
 			<property name="newValue">
