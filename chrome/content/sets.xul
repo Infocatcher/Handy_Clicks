@@ -48,7 +48,7 @@ preferences {
 	<!-- "hc_ondrop" attribute will be replaced in init() function from setsUtils.js -->
 
 	<prefpane id="hc-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1">
-		<hbox align="center">
+		<hbox id="hc-sets-tree-viewPanel" align="center">
 			<button id="hc-sets-tree-searchMenu" type="menu" label="&hc.sets.search;"
 				hc_key="hc-sets-key-focusSearch" accesskey="&hc.sets.searchAccesskey;">
 				<menupopup onpopupshowing="if(!('_hcIgnore' in event)) handyClicksSets.initSearchMenu(this);"

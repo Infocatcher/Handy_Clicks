@@ -190,7 +190,7 @@
 							<vbox id="hc-editor-funcOpts"
 								oncommand="handyClicksEditor.disableUnsupported();"
 								onchange="handyClicksEditor.disableUnsupported();">
-								<hbox align="center">
+								<hbox id="hc-editor-funcEvent" align="center">
 									<label hc_notDelay="true" value="&hc.editor.event;"
 										accesskey="&hc.editor.eventAccesskey;" control="hc-editor-events" />
 									<menulist id="hc-editor-events" hc_notDelay="true">
@@ -228,7 +228,7 @@
 								</hbox>
 							</vbox>
 
-							<hbox align="center">
+							<hbox id="hc-editor-funcName" align="center">
 								<label value="&hc.editor.func;"
 									accesskey="&hc.editor.funcAccesskey;" control="hc-editor-func" />
 								<menulist id="hc-editor-func"
