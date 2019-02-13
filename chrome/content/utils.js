@@ -1056,6 +1056,9 @@ var handyClicksUtils = {
 	internalLineBreaks: function(str) {
 		return str.replace(/\r\n?|\n\r?/g, "\n");
 	},
+	get BOM() {
+		return this.pu.get("editor.external.saveWithBOM") ? "\ufeff" : "";
+	},
 
 	isArray: function(arr) {
 		var f = this.isArray = this.hasNativeMethod(Array, "isArray")
