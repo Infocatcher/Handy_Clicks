@@ -17,17 +17,18 @@
 				}
 				if(this.hasAttribute("hc_fontSize"))
 					this.style.fontSize = this.getAttribute("hc_fontSize");
-				this.setTabSize();
 				var top = window.top;
-				var ut = this.hcUtils = "handyClicksUtils" in top && top.handyClicksUtils;
-				if(!ut)
+				var ed = this.hcEditor = "handyClicksEditor" in top && top.handyClicksEditor;
+				var pu = ed && ed.pu;
+				this.setTabSize();
+				if(!pu)
 					return;
-				this.autocomplete = ut.pu.get("editor.autocomplete");
+				this.autocomplete = pu.get("editor.autocomplete");
 				var mm = function(n) {
 					return Math.max(1, Math.min(30, n));
 				};
-				this.autocompleteMinSymbols = mm(ut.pu.get("editor.autocompleteMinSymbols"));
-				ut.pu.oSvc.addObserver(function(pName, pVal) {
+				this.autocompleteMinSymbols = mm(pu.get("editor.autocompleteMinSymbols"));
+				pu.oSvc.addObserver(function(pName, pVal) {
 					if(pName == "editor.tabSize")
 						this.setTabSize();
 					else if(pName == "editor.autocomplete")
@@ -38,15 +39,14 @@
 			]]>
 			</constructor>
 			<destructor>
-				this.hcUtils = null;
+				this.hcEditor = null;
 			</destructor>
-			<field name="hcUtils">null</field>
 			<property name="tabSize">
 				<getter>
 				<![CDATA[
 					return Math.max(1, Math.min(100,
 						+this.getAttribute("hc_tabSize")
-						|| this.hcUtils && this.hcUtils.pu.get("editor.tabSize")
+						|| this.hcEditor && this.hcEditor.pu.get("editor.tabSize")
 						|| 4
 					));
 				]]>
@@ -74,7 +74,7 @@
 				<![CDATA[
 					return this.hasAttribute("hc_tabSpaces")
 						? this.getAttribute("hc_tabSpaces") == "true"
-						: this.hcUtils && this.hcUtils.pu.get("editor.tabSpaces");
+						: this.hcEditor && this.hcEditor.pu.get("editor.tabSpaces");
 				]]>
 				</getter>
 				<setter>
@@ -349,7 +349,7 @@
 					var currLine = this.currentLine;
 					var currCol  = this.currentColumn;
 					var num = { value: currLine + ":" + currCol };
-					var ut = this.hcUtils;
+					var ut = this.hcEditor.ut;
 					var pTitle = ut ? ut.getLocalized("goToLineTitle") : "Go to line\u2026";
 					var pText = (ut ? ut.getLocalized("goToLineMessage") : "Line number (1 \u2026 %max):")
 						.replace("%max", this.linesCount);
@@ -540,7 +540,7 @@
 				<parameter name="lineNumber" />
 				<body>
 				<![CDATA[
-					var ut = this.hcUtils;
+					var ut = this.hcEditor.ut;
 					if(!ut)
 						return;
 
@@ -818,7 +818,7 @@
 			<method name="codeToFile">
 				<body>
 				<![CDATA[
-					var ut = this.hcUtils;
+					var ut = this.hcEditor.ut;
 					if(!ut)
 						return;
 
@@ -856,8 +856,8 @@
 						file = this.pickFile(watch ? "linkWithFile" : "loadCodeFromFile");
 						if(!file)
 							return null;
-						var ut = this.hcUtils;
-						var tempDir = ut && ut.ps._tempDir;
+						var ed = this.hcEditor;
+						var tempDir = ed && ed.ps._tempDir;
 						if(tempDir && file.parent && tempDir.equals(file.parent))
 							isTemp = true;
 					}
@@ -895,7 +895,7 @@
 				<parameter name="defaultString" />
 				<body>
 				<![CDATA[
-					var ut = this.hcUtils;
+					var ut = this.hcEditor.ut;
 					if(!ut)
 						return null;
 					var fp = ut.fp;
@@ -934,11 +934,11 @@
 						top.addEventListener("unload", this, false);
 						top.addEventListener("HandyClicks:editor:change", this, false);
 					}
-					var ut = this.hcUtils;
-					if(isTemp && ut) {
-						var activeTempFiles = ut.storage.get("activeTempFiles");
+					var ed = this.hcEditor;
+					if(isTemp && ed) {
+						var activeTempFiles = ed.storage.get("activeTempFiles");
 						if(!activeTempFiles)
-							ut.storage.set("activeTempFiles", (activeTempFiles = { __proto__: null }));
+							ed.storage.set("activeTempFiles", (activeTempFiles = { __proto__: null }));
 						activeTempFiles[file.path] = true;
 					}
 				]]>
@@ -958,9 +958,9 @@
 					this._virtualPath = "";
 					if(file && this._isTempFile && file.exists()) {
 						file.remove(false);
-						var ut = this.hcUtils;
-						if(ut) {
-							var activeTempFiles = ut.storage.get("activeTempFiles");
+						var ed = this.hcEditor;
+						if(ed) {
+							var activeTempFiles = ed.storage.get("activeTempFiles");
 							if(activeTempFiles)
 								delete activeTempFiles[file.path];
 						}
@@ -996,7 +996,7 @@
 				<parameter name="detectLineBreak" />
 				<body>
 				<![CDATA[
-					var ut = this.hcUtils;
+					var ut = this.hcEditor.ut;
 					if(!ut)
 						return;
 					var fromLinkedFile = !file;
@@ -1057,7 +1057,7 @@
 				<parameter name="file" />
 				<body>
 				<![CDATA[
-					var ut = this.hcUtils;
+					var ut = this.hcEditor.ut;
 					if(!ut)
 						return;
 					file = file || this._linkedFile;
