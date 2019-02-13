@@ -650,10 +650,8 @@ preferences {
 	]]>
 	</script>
 	<script type="application/javascript" src="chrome://handyclicks/content/globals.js" />
-	<script type="application/javascript" src="chrome://handyclicks/content/utils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/prefUtils.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/setsUtils.js" />
-	<script type="application/javascript" src="chrome://handyclicks/content/prefSvc.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/sets.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/regSvc.js" />
 
