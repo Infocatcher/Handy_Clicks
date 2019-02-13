@@ -1222,10 +1222,7 @@
 			<method name="trimEndSpaces">
 				<body>
 				<![CDATA[
-					const selMarker = "\uffff"
-						+ Math.random().toFixed(16).substr(2)
-						+ Math.random().toFixed(16).substr(2)
-						+ "\uffff";
+					const selMarker = "\x00" + Math.random().toFixed(16).substr(2) + "\x00";
 					var val = this.value;
 					var ifi = this.inputField;
 					var ss = ifi.selectionStart;
@@ -1233,20 +1230,19 @@
 					var newVal = val.substr(0, ss)
 						+ selMarker + val.substring(ss, se) + selMarker
 						+ val.substr(se);
-					newVal = newVal.replace(new RegExp("[ \t]*(" + selMarker + ")?[ \t]*(" + selMarker + ")?[ \t]*$", "mg"), "$1$2");
+					var markerSpaces = "(" + selMarker + ")?[ \t]*";
+					newVal = newVal.replace(new RegExp("[ \t]*" + markerSpaces + markerSpaces + "$", "mg"), "$1$2");
 					ss = newVal.indexOf(selMarker);
 					se = newVal.lastIndexOf(selMarker) - selMarker.length;
 					newVal = newVal.replace(new RegExp(selMarker, "g"), "");
 					if(newVal == val)
 						return;
 
-					this.saveScrollPos();
-
+					//this.saveScrollPos();
 					this.value = newVal;
-
 					ifi.selectionStart = ss;
 					ifi.selectionEnd = se;
-					this.restoreScrollPos();
+					//this.restoreScrollPos();
 				]]>
 				</body>
 			</method>
