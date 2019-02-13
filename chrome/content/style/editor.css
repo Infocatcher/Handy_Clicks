@@ -11,6 +11,7 @@
 	margin-top: 1px;
 	-moz-appearance: none;
 	-moz-box-flex: 1;
+	margin-top: -4px;
 }
 .hcText menuitem[cmd="cmd_undo"],
 .hcText menuitem[cmd="cmd_undo"] + menuseparator,
@@ -276,4 +277,7 @@ menulist[hc_aboutConfigEntry] .menulist-label,
 }
 :root[hc_compactUI="true"] .hcEditor {
   margin: 0;
+}
+:root[hc_compactUI="true"] .hcText {
+	margin-top: -6px;
 }
