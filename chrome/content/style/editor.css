@@ -177,8 +177,9 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 }
 
 .hcEditor {
-	font-family: "Courier New", monospace;
 	-moz-binding: url("chrome://handyclicks/content/editor.xml#codeEditor");
+	font-family: "Courier New", monospace;
+	min-height: 7.5em;
 }
 
 /* "Fullwindow" feature */
