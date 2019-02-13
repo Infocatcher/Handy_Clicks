@@ -3641,6 +3641,9 @@ var handyClicksSets = {
 					: fo.lastModified > file.lastModifiedTime
 						? "replaceByNewer"
 						: "replaceByOlder";
+				var defBtn = overwrite === undefined
+					? ps.BUTTON_POS_1_DEFAULT
+					: overwrite ? ps.BUTTON_POS_0_DEFAULT : ps.BUTTON_POS_2_DEFAULT;
 				var btn = ps.confirmEx(
 					window,
 					this.getLocalized("importJsFiles"),
@@ -3648,7 +3651,7 @@ var handyClicksSets = {
 						+ "\n" + path
 						+ "\n" + this.getLocalized(dateKey),
 					  ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING
-					+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_IS_STRING + ps.BUTTON_POS_1_DEFAULT // "Cancel"
+					+ ps.BUTTON_POS_1 * ps.BUTTON_TITLE_IS_STRING + defBtn // "Cancel"
 					+ ps.BUTTON_POS_2 * ps.BUTTON_TITLE_IS_STRING,
 					this.getLocalized("overwrite"), // pos 0
 					this.getLocalized("overwriteSkipAll"), // pos 1
