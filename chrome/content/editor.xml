@@ -473,8 +473,7 @@
 				</getter>
 				<setter>
 				<![CDATA[
-					var node = this;
-					for(; node && "setAttribute" in node; node = node.parentNode) {
+					for(var node = this; node && "setAttribute" in node; node = node.parentNode) {
 						if(val) node.setAttribute("hc_maximized", "true");
 						else    node.removeAttribute("hc_maximized");
 					}
@@ -490,14 +489,12 @@
 				<parameter name="add" />
 				<body>
 				<![CDATA[
-					var fs = add == 0
-						? ""
-						: Math.min(48, Math.max(1,
-							parseInt(this.ownerDocument.defaultView.getComputedStyle(this, null).fontSize) + add
-						)) + "px";
+					var fs = add == 0 ? "" : Math.max(1, Math.min(48,
+						parseInt(getComputedStyle(this, null).fontSize) + add
+					)) + "px";
 					this.style.fontSize = fs;
 					this.setAttribute("hc_fontSize", fs);
-					this.id && this.ownerDocument.persist(this.id, "hc_fontSize");
+					this.id && document.persist(this.id, "hc_fontSize");
 				]]>
 				</body>
 			</method>
@@ -507,7 +504,7 @@
 					var ww = this.getAttribute("hc_wrapWidth") == "0" ? -1 : 0;
 					this.editor.wrapWidth = ww;
 					this.setAttribute("hc_wrapWidth", ww);
-					this.id && this.ownerDocument.persist(this.id, "hc_wrapWidth");
+					this.id && document.persist(this.id, "hc_wrapWidth");
 				]]>
 				</body>
 			</method>
