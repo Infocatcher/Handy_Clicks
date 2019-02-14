@@ -135,6 +135,7 @@ var g = window.handyClicksGlobals = {
 
 	objects: {
 		handyClicksConsole:    "cn",
+		handyClicksData:       "dt",
 		handyClicksEditor:     "ed",
 		handyClicks:           "hc",
 		handyClicksPrefUtils:  "pu",
