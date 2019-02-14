@@ -19,15 +19,19 @@ var g = window.handyClicksGlobals = {
 	},
 	get isSeaMonkey() {
 		delete g.isSeaMonkey;
-		return g.isSeaMonkey = g.appInfo.name == "SeaMonkey";
+		return g.isSeaMonkey = g.appName == "SeaMonkey";
 	},
 	get appVersion() {
 		delete g.appVersion;
 		return g.appVersion = parseFloat(g.appInfo.version);
 	},
+	get appName() {
+		delete g.appName;
+		return g.appName = g.appInfo.name;
+	},
 	get fxVersion() {
 		var ver = g.appVersion;
-		if(g.appInfo.name == "Pale Moon" || g.appInfo.name == "Basilisk")
+		if(g.appName == "Pale Moon" || g.appName == "Basilisk")
 			ver = parseFloat(g.appInfo.platformVersion) >= 4.1 ? 56 : 28;
 		// https://developer.mozilla.org/en-US/docs/Mozilla/Gecko/Versions
 		else if(g.isSeaMonkey) switch(ver) {
