@@ -340,7 +340,7 @@ var handyClicksPrefSvc = {
 		try {
 			var line = new Error().lineNumber + 2;
 			this._destructorContext = [line, fObj, sh, type, isDelayed];
-			var legacyDestructor = new Function("itemType", this.expandCode(rawCode)).call(this.ut, type);
+			var legacyDestructor = new Function("itemType", this.expandCode(rawCode)).call(this.hc, type);
 		}
 		catch(e) {
 			this.handleCustomFuncError(e, line, fObj, sh, type, isDelayed, true);
