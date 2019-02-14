@@ -1241,21 +1241,29 @@ var handyClicksEditor = {
 		}
 		else {
 			var isRenaming = this.root.getAttribute("hc_renameShortcut") == "true";
-			var renameState = isRenaming
-					? canRename ? "Cancel" : "Done"
-					: "Start";
-			var renameLabel = mp.getAttribute("hc_rename" + renameState);
-			if(isRenaming && !canRename)
-				renameLabel = renameLabel.replace("$s", this.ps.getShortcutStr(curSh, true));
-			df.insertBefore(document.createElement("menuseparator"), df.firstChild);
+			var insPos = df.firstChild;
 			df.insertBefore(this.ut.createElement("menuitem", {
 				id: "hc-editor-renameShortcut",
 				class: "menuitem-iconic handyClicks-iconic",
-				label: renameLabel,
-				hc_rename: renameState,
+				label: isRenaming
+					? mp.getAttribute(canRename ? "hc_renameDoneDisabled" : "hc_renameDone")
+						.replace("$s", this.ps.getShortcutStr(curSh, true))
+					: mp.getAttribute("hc_renameStart"),
+				hc_rename: isRenaming ? "done" : "start",
 				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut();",
-				disabled: !canRename && !isRenaming
-			}), df.firstChild);
+				disabled: isRenaming ? canRename : !canRename
+			}), insPos);
+			if(isRenaming) df.insertBefore(this.ut.createElement("menuitem", {
+				id: "hc-editor-renameShortcut-cancel",
+				class: "menuitem-iconic handyClicks-iconic",
+				label: mp.getAttribute(
+					canRename && curSh != this._shortcut
+						? "hc_renameCancelUsed"
+						: "hc_renameCancel"
+				),
+				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut(false, true);",
+			}), insPos);
+			df.insertBefore(document.createElement("menuseparator"), insPos);
 		}
 		mp.textContent = "";
 		mp.appendChild(df);
@@ -1263,7 +1271,7 @@ var handyClicksEditor = {
 		var box = mp.parentNode;
 		mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
 	},
-	renameShortcut: function(onlyRename) {
+	renameShortcut: function(onlyRename, forceCancel) {
 		var rename = this.root.getAttribute("hc_renameShortcut") != "true";
 		this.mainTabbox.handleCtrlTab = this.mainTabbox.handleCtrlPageUpDown = !rename;
 		if(rename) {
@@ -1284,7 +1292,7 @@ var handyClicksEditor = {
 		var newSh = this.currentShortcut;
 		this._shortcut = this._type = null;
 		var p = this.ps.prefs;
-		if(this.ut.getOwnProperty(p, newSh, ct)) {
+		if(this.ut.getOwnProperty(p, newSh, ct) || forceCancel) {
 			// Don't overwrite: cancel and restore initial shortcut
 			this.currentShortcut = sh;
 			return;

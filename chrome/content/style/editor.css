@@ -39,13 +39,13 @@ menulist[hc_sets="disabled"] .menulist-label {
 	text-decoration: line-through;
 }
 
-#hc-editor-renameShortcut[hc_rename="Start"] {
+#hc-editor-renameShortcut[hc_rename="start"] {
 	-moz-image-region: rect(48px 128px 64px 112px);
 }
-#hc-editor-renameShortcut[hc_rename="Done"] {
+#hc-editor-renameShortcut[hc_rename="done"] {
 	-moz-image-region: rect(64px 112px 80px 96px);
 }
-#hc-editor-renameShortcut[hc_rename="Cancel"] {
+#hc-editor-renameShortcut-cancel {
 	-moz-image-region: rect(64px 128px 80px 112px);
 }
 :root[hc_renameShortcut="true"] #hc-editor-renameShortcutOverlay {

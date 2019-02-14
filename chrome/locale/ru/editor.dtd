@@ -17,8 +17,10 @@
 <!ENTITY hc.editor.clickHere "Кликните здесь">
 <!ENTITY hc.editor.clickHereTip "Кликните для установки кнопки мыши и модификаторов">
 <!ENTITY hc.editor.renameShortcut "Переименовать сочетание клавиш…">
-<!ENTITY hc.editor.renameShortcutDone "Завершить переименование ($s)">
-<!ENTITY hc.editor.renameShortcutCancel "Отменить переименование (сочетание уже используется)">
+<!ENTITY hc.editor.renameShortcutDoneDisabled "Переименовать сочетание клавиш">
+<!ENTITY hc.editor.renameShortcutDone "Переименовать сочетание клавиш ($s)">
+<!ENTITY hc.editor.renameShortcutCancel "Отменить переименование">
+<!ENTITY hc.editor.renameShortcutCancelUsed "Отменить переименование (уже используется)">
 <!ENTITY hc.editor.noSavedSettings "Нет сохранённых настроек">
 <!ENTITY hc.editor.osKeyNote "Работает только в Firefox 15+ и SeaMonkey 2.12+">
 
