@@ -1249,6 +1249,7 @@ var handyClicksEditor = {
 					? mp.getAttribute(canRename ? "hc_renameDoneDisabled" : "hc_renameDone")
 						.replace("$s", this.ps.getShortcutStr(curSh, true))
 					: mp.getAttribute("hc_renameStart"),
+				accesskey: mp.getAttribute("hc_renameAccesskey"),
 				hc_rename: isRenaming ? "done" : "start",
 				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut();",
 				disabled: isRenaming ? canRename : !canRename
@@ -1261,6 +1262,7 @@ var handyClicksEditor = {
 						? "hc_renameCancelUsed"
 						: "hc_renameCancel"
 				),
+				accesskey: mp.getAttribute("hc_renameCancelAccesskey"),
 				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut(false, true);",
 			}), insPos);
 			df.insertBefore(document.createElement("menuseparator"), insPos);

@@ -128,8 +128,10 @@
 							hc_renameStart="&hc.editor.renameShortcut;"
 							hc_renameDone="&hc.editor.renameShortcutDone;"
 							hc_renameDoneDisabled="&hc.editor.renameShortcutDoneDisabled;"
+							hc_renameAccesskey="&hc.editor.renameShortcutAccesskey;"
 							hc_renameCancel="&hc.editor.renameShortcutCancel;"
 							hc_renameCancelUsed="&hc.editor.renameShortcutCancelUsed;"
+							hc_renameCancelAccesskey="&hc.editor.renameShortcutCancelAccesskey;"
 							hc_noData="&hc.editor.noSavedSettings;" />
 						<menulist id="hc-editor-button" class="hc-shortcut">
 							<menupopup>
