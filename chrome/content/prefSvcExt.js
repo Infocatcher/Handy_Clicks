@@ -22,7 +22,7 @@ var handyClicksPrefSvcExt = {
 		var pFile = this.ps.prefsFile;
 		this.moveFiles(pFile, this.names.backup);
 		if(async) {
-			this.ut.writeToFileAsync(str, pFile, this.ut.bind(function(status) {
+			this.io.writeToFileAsync(str, pFile, this.ut.bind(function(status) {
 				if(Components.isSuccessCode(status))
 					this.settingsSaved(str, true);
 				else
@@ -32,7 +32,7 @@ var handyClicksPrefSvcExt = {
 		}
 		else {
 			var err = {};
-			if(this.ut.writeToFile(str, pFile, err))
+			if(this.io.writeToFile(str, pFile, err))
 				this.settingsSaved(str);
 			else
 				this.saveError(this.ut.getErrorCode(err.value));
@@ -256,7 +256,7 @@ var handyClicksPrefSvcExt = {
 				this.ut.deleteTemporaryFileOnExit(file);
 			}
 		}
-		this.ut.writeToFile(pStr, bakFile);
+		this.io.writeToFile(pStr, bakFile);
 		this.ut.deleteTemporaryFileOnExit(bakFile);
 
 		this.storage.set("testBackupCreated", true);
@@ -285,7 +285,7 @@ var handyClicksPrefSvcExt = {
 			this.ut._warn("Export not allowed for " + path + " -> " + file.path);
 			return;
 		}
-		var data = this.ut.readFromFile(file);
+		var data = this.io.readFromFile(file);
 		if(!data) {
 			this.ut._warn("Export skipped, file is empty or missing: " + path + " -> " + file.path);
 			return;

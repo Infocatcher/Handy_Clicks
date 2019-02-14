@@ -33,7 +33,7 @@ var handyClicksFuncs = {
 		var text = this.getItemText();
 		if(text) {
 			text = Array.prototype.concat.call(text);
-			this.ut.copyStr(text.join(this.ut.lineBreak), this.getSourceDocument());
+			this.ut.copyStr(text.join(this.io.lineBreak), this.getSourceDocument());
 			this.ui.blinkNode();
 		}
 		if(closePopups)
@@ -45,7 +45,7 @@ var handyClicksFuncs = {
 			link = Array.prototype.concat.call(link);
 			if(this.pu.get("funcs.decodeURIs"))
 				link = link.map(this.decodeURI, this);
-			this.ut.copyStr(link.join(this.ut.lineBreak), this.getSourceDocument());
+			this.ut.copyStr(link.join(this.io.lineBreak), this.getSourceDocument());
 			this.ui.blinkNode();
 		}
 		if(closePopups)
@@ -859,8 +859,8 @@ var handyClicksFuncs = {
 			return str;
 		this._log("convertStrFromUnicode -> charset -> " + charset);
 		var uc = charset == "UTF-8"
-			? this.ut.utf8Converter
-			: this.ut.unicodeConverter(charset);
+			? this.io.utf8Converter
+			: this.io.unicodeConverter(charset);
 		try {
 			str = decodeURIComponent(str); // to UTF-8
 		}

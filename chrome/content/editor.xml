@@ -565,7 +565,7 @@
 								buttons: {
 									$createNewFile: function() {
 										try {
-											file.create(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
+											file.create(file.NORMAL_FILE_TYPE, ut.io.PERMS_FILE_WRITE);
 										}
 										catch(e) {
 											ut.notifyError(e);
@@ -598,9 +598,9 @@
 						//file = ut.getFileByAlias("TmpD");
 						file = ut.ps.tempDir.clone();
 						file.append(fName);
-						file.createUnique(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
+						file.createUnique(file.NORMAL_FILE_TYPE, ut.io.PERMS_FILE_WRITE);
 						if(hasFileData) {
-							ut.writeToFile(fileData, file);
+							ut.io.writeToFile(fileData, file);
 							file.lastModifiedTime = fileTime;
 						}
 						this._lineBreak = null; // Will use platform's line breaks
@@ -614,7 +614,6 @@
 						var eeArgs;
 
 						if(ee == "Scratchpad") try {
-							//var val = ut.internalLineBreaks(value);
 							var val = this.value;
 							try { // Firefox 56+
 								Components.utils["import"]("resource://devtools/client/scratchpad/scratchpad-manager.jsm");
@@ -715,7 +714,7 @@
 								w && w.addEventListener("load", setCaret, false);
 							};
 							if(isExternal)
-								ut.readFromFileAsync(file, openScratchpad);
+								ut.io.readFromFileAsync(file, openScratchpad);
 							else
 								openScratchpad(val);
 
@@ -826,14 +825,14 @@
 					if(path) // Already moved
 						return;
 
-					var val = ut.platformLineBreaks(val);
+					var val = ut.io.platformLineBreaks(val);
 					var ext = ut.pu.get("editor.external.extension") || "js";
 					var fName = this.getDefaultFilename(ext, ut.canRunw && ut.pu.get("editor.external.labelInFileName"));
 					var file = ut.ps.scriptsDir.clone();
 					file.append(fName);
-					file.createUnique(file.NORMAL_FILE_TYPE, ut.PERMS_FILE_WRITE);
+					file.createUnique(file.NORMAL_FILE_TYPE, ut.io.PERMS_FILE_WRITE);
 
-					ut.writeToFileAsync(ut.BOM + val, file, function(status) {
+					ut.io.writeToFileAsync(ut.io.BOM + val, file, function(status) {
 						if(!Components.isSuccessCode(status))
 							return;
 						this.value = "//> %hc_ScriptsDir%/" + file.leafName;
@@ -874,8 +873,8 @@
 					if(!file)
 						return null;
 					var ut = top.handyClicksUtils;
-					var val = ut.platformLineBreaks(this.value);
-					ut.writeToFileAsync(ut.BOM + val, file, function(status) {
+					var val = ut.io.platformLineBreaks(this.value);
+					ut.io.writeToFileAsync(ut.io.BOM + val, file, function(status) {
 						if(watch && Components.isSuccessCode(status))
 							this.watchFile(file, false);
 					}, this);
@@ -1003,7 +1002,7 @@
 						if(fTime == this._lastModifiedTime && fSize == this._fileSize)
 							return;
 					}
-					ut.readFromFileAsync(file, function(fVal, status) {
+					ut.io.readFromFileAsync(file, function(fVal, status) {
 						if(!Components.isSuccessCode(status)) {
 							var err = "updateFromFile() failed: can't read string from file!\nFile: " + file.path
 								+ "\nError: " + ut.getErrorName(status);
@@ -1028,8 +1027,8 @@
 							return;
 						}
 						if(detectLineBreak)
-							this._lineBreak = /\r\n?|\n\r?/.test(fVal) ? RegExp.lastMatch : ut.lineBreak;
-						fVal = ut.internalLineBreaks(fVal);
+							this._lineBreak = /\r\n?|\n\r?/.test(fVal) ? RegExp.lastMatch : ut.io.lineBreak;
+						fVal = ut.io.internalLineBreaks(fVal);
 						if(fromLinkedFile) {
 							this._lastModifiedTime = fTime;
 							this._fileSize = fSize;
@@ -1058,18 +1057,18 @@
 					function _callback(status, value) {
 						callback && callback.call(context || window, status, value);
 					}
-					ut.readFromFileAsync(file, function(savedValue, status) {
+					ut.io.readFromFileAsync(file, function(savedValue, status) {
 						if(!Components.isSuccessCode(status)) {
 							_callback(status);
 							return;
 						}
 						value = value || this.value;
-						savedValue = ut.internalLineBreaks(savedValue);
+						savedValue = ut.io.internalLineBreaks(savedValue);
 						if(value == savedValue)
 							_callback(Components.results.NS_OK, value);
 						else {
-							value = ut.platformLineBreaks(value, this._lineBreak);
-							ut.writeToFileAsync(ut.BOM + value, file, callback, context);
+							value = ut.io.platformLineBreaks(value, this._lineBreak);
+							ut.io.writeToFileAsync(ut.io.BOM + value, file, callback, context);
 						}
 					}, this) || _callback(Components.results.NS_ERROR_FILE_ACCESS_DENIED);
 				]]>

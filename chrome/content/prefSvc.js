@@ -123,7 +123,7 @@ var handyClicksPrefSvc = {
 		}
 		if(!dir.exists()) {
 			try {
-				dir.create(dir.DIRECTORY_TYPE, this.ut.PERMS_DIRECTORY);
+				dir.create(dir.DIRECTORY_TYPE, this.io.PERMS_DIRECTORY);
 			}
 			catch(e) {
 				this.ut._err('Can\'t create directory: "' + dir.path + '"');
@@ -159,7 +159,7 @@ var handyClicksPrefSvc = {
 	_restoringCounter: 0,
 	loadSettingsAsync: function(callback, context) {
 		var pFile = this.prefsFile;
-		this.ut.readFromFileAsync(pFile, function(data, status) {
+		this.io.readFromFileAsync(pFile, function(data, status) {
 			if(Components.isSuccessCode(status))
 				this.loadSettings(data, true);
 			else if(status == Components.results.NS_ERROR_FILE_NOT_FOUND) {
@@ -180,7 +180,7 @@ var handyClicksPrefSvc = {
 			fromPrefs = pSrc.equals(this.prefsFile);
 			pSrc = fromPrefs && !pSrc.exists()
 				? this.defaultSettings()
-				: this.ut.readFromFile(pSrc);
+				: this.io.readFromFile(pSrc);
 			if(fromPrefs && !this.isMainWnd)
 				this._savedStr = pSrc;
 		}
@@ -413,7 +413,7 @@ var handyClicksPrefSvc = {
 		var file = this.ut.getLocalFile(path);
 		if(!file)
 			throw this.getLocalized("invalidFilePath").replace("%p", path);
-		var data = this.ut.readFromFile(file);
+		var data = this.io.readFromFile(file);
 		if(!data)
 			throw this.getLocalized("fileNotFound").replace("%f", file.path);
 		expandCode._path = path;
@@ -599,7 +599,7 @@ var handyClicksPrefSvc = {
 		return this.JSON;
 	},
 	getHash: function(str, hashFunc) {
-		var data = this.ut.utf8Converter.convertToByteArray(str, {});
+		var data = this.io.utf8Converter.convertToByteArray(str, {});
 		var ch = Components.classes["@mozilla.org/security/hash;1"]
 			.createInstance(Components.interfaces.nsICryptoHash);
 		ch.init(ch[hashFunc]);
@@ -788,7 +788,7 @@ var handyClicksPrefSvc = {
 	checkPrefs: function(pSrc) {
 		return this.checkPrefsStr(
 			pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)
-				? this.ut.readFromFile(pSrc)
+				? this.io.readFromFile(pSrc)
 				: this.getPrefsStr(pSrc)
 		);
 	},

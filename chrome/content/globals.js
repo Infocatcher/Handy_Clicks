@@ -128,6 +128,7 @@ var g = window.handyClicksGlobals = {
 	get dt() { return lazy("dt", "handyClicksData",       "data.js");        },
 	get fn() { return lazy("fn", "handyClicksFuncs",      "funcs.js");       },
 	get hc() { return lazy("hc", "handyClicks",           "handyclicks.js"); },
+	get io() { return lazy("io", "handyClicksIO",         "io.js");          },
 	get pe() { return lazy("pe", "handyClicksPrefSvcExt", "prefSvcExt.js");  },
 	get ps() { return lazy("ps", "handyClicksPrefSvc",    "prefSvc.js");     },
 	get ut() { return lazy("ut", "handyClicksUtils",      "utils.js");       },
@@ -180,7 +181,7 @@ function lazy(s, p, file) {
 		g._log(
 			"Load " + file + " into " + g.path
 			+ ": " + (now() - t).toFixed(2) + " ms"
-			+ (s == "ut" ? "\n" + new Error().stack : "")
+			+ (s == "ut" || s == "io" ? "\n" + new Error().stack : "")
 		);
 		has = p in window; // = true ?
 	}

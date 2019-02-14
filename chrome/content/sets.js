@@ -2994,7 +2994,7 @@ var handyClicksSets = {
 				.map(function(pName) {
 					return this.pu.prefNS + pName + "=" + this.pu.get(pName);
 				}, this).sort().join("\n");
-		this.ut.writeToFile(data, file);
+		this.io.writeToFile(data, file);
 		this.backupsDir = file.parent;
 		return true;
 	},
@@ -3009,7 +3009,7 @@ var handyClicksSets = {
 			return;
 		if(!file && !(file = this.pickFile(this.getLocalized("importPrefs"), false, "ini")))
 			return;
-		var lines = this.ut.readFromFile(file)
+		var lines = this.io.readFromFile(file)
 			.split(/[\r\n]+/);
 		if(lines[0] != this.exportPrefsHeader) {
 			this.ut.alert(
@@ -3107,7 +3107,7 @@ var handyClicksSets = {
 				);
 			}
 			else {
-				this.ut.writeToFileAsync(pStr, file);
+				this.io.writeToFileAsync(pStr, file);
 			}
 		}
 		else if(targetId == ct.EXPORT_FILEPICKER) {
@@ -3115,7 +3115,7 @@ var handyClicksSets = {
 			var pStr = this.ps.getSettingsStr(null, null, true /*exportLinkedFiles*/);
 			var lastMod = !this.treeUnsaved && !this.ps.otherSrc
 				&& this.ps.prefsFile.lastModifiedTime;
-			this.ut.writeToFileAsync(pStr, file, function(status) {
+			this.io.writeToFileAsync(pStr, file, function(status) {
 				if(Components.isSuccessCode(status) && lastMod)
 					file.lastModifiedTime = lastMod;
 			});
@@ -3251,10 +3251,10 @@ var handyClicksSets = {
 	createBackup: function() {
 		var bName = this.ps.prefsFileName + this.ps.names.userBackup + this.pe.getTimeString();
 		var bFile = this.pe.getBackupFile(bName + ".js");
-		bFile.createUnique(bFile.NORMAL_FILE_TYPE, this.ut.PERMS_FILE_WRITE);
+		bFile.createUnique(bFile.NORMAL_FILE_TYPE, this.io.PERMS_FILE_WRITE);
 		//this.ut.copyFileTo(this.ps.prefsFile, this.ps.backupsDir, bFile.leafName);
 		var pStr = this.ps.getSettingsStr(null, null, true /*exportLinkedFiles*/);
-		this.ut.writeToFileAsync(pStr, bFile, function(status) {
+		this.io.writeToFileAsync(pStr, bFile, function(status) {
 			if(!Components.isSuccessCode(status))
 				return;
 			this.ut.notify(this.getLocalized("backupCreated").replace("%f", bFile.path), {
@@ -3625,7 +3625,7 @@ var handyClicksSets = {
 			}
 			var exists = file.exists();
 			if(exists && file.fileSize == fo.size) try { // Compare only with different file size
-				if(this.ut.readFromFile(file) == fo.data)
+				if(this.io.readFromFile(file) == fo.data)
 					continue;
 			}
 			catch(e) {
@@ -3674,7 +3674,7 @@ var handyClicksSets = {
 			}
 			else {
 				try {
-					file.create(file.NORMAL_FILE_TYPE, this.ut.PERMS_FILE_WRITE); // Also create directories
+					file.create(file.NORMAL_FILE_TYPE, this.io.PERMS_FILE_WRITE); // Also create directories
 				}
 				catch(e) {
 					Components.utils.reportError(e);
@@ -3685,7 +3685,7 @@ var handyClicksSets = {
 		}
 	},
 	writeFileData: function(file, data, time) {
-		this.ut.writeToFileAsync(data, file, function(status) {
+		this.io.writeToFileAsync(data, file, function(status) {
 			if(Components.isSuccessCode(status))
 				file.lastModifiedTime = time;
 		}, this);
@@ -3705,7 +3705,7 @@ var handyClicksSets = {
 		if(!file.exists())
 			return false;
 		try {
-			return this.ut.readFromFile(file) == fileData;
+			return this.io.readFromFile(file) == fileData;
 		}
 		catch(e) {
 			Components.utils.reportError(e);
