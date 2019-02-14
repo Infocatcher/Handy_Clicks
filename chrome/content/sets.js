@@ -25,7 +25,7 @@ var handyClicksSets = {
 		this.initPrefs();
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 
-		var fxVersion = this.ut.fxVersion;
+		var fxVersion = this.fxVersion;
 		if(fxVersion >= 3.5) {
 			var sf = this.searchField;
 			if(typeof sf._clearSearch == "function") {
@@ -74,9 +74,9 @@ var handyClicksSets = {
 		}
 
 		if(
-			(this.ut.appInfo.name == "Pale Moon" ? this.ut.appVersion >= 27 : fxVersion >= 25)
-			&& this.ut.appInfo.OS == "WINNT"
-			&& this.ut.osVersion >= 6
+			(this.appInfo.name == "Pale Moon" ? this.appVersion >= 27 : fxVersion >= 25)
+			&& this.appInfo.OS == "WINNT"
+			&& this.osVersion >= 6
 			&& matchMedia("(-moz-windows-default-theme)").matches
 		)
 			this.tree.setAttribute("hc_hasOverlayBackground", "true");
@@ -309,7 +309,7 @@ var handyClicksSets = {
 
 		this.resetCounters();
 
-		var df = this.ut.fxVersion >= 2
+		var df = this.fxVersion >= 2
 			? document.createDocumentFragment()
 			: this.tBody;
 		this.drawPrefs(this.ps.prefs, df);
@@ -929,7 +929,7 @@ var handyClicksSets = {
 	},
 	get oldTree() {
 		delete this.oldTree;
-		return this.oldTree = this.ut.fxVersion <= 2;
+		return this.oldTree = this.fxVersion <= 2;
 	},
 	getArguments: function(argsObj, localize) {
 		var res = [];
@@ -1947,7 +1947,7 @@ var handyClicksSets = {
 			editor.insertText(ph);
 		}
 		this.fireChange(this.searchField, "input");
-		if(this.ut.fxVersion < 3.5)
+		if(this.fxVersion < 3.5)
 			this.searchInSetsTree();
 		ifi.focus();
 	},
@@ -2505,7 +2505,7 @@ var handyClicksSets = {
 		this.warnMsgsPrefs.forEach(this.pu.resetPref, this.pu);
 	},
 	showWarnMsgsPrefs: function() {
-		if(this.ut.fxVersion < 3)
+		if(this.fxVersion < 3)
 			return;
 		function escapeRegExp(str) {
 			return str.replace(/[\\\/.^$+*?|()\[\]{}]/g, "\\$&");
@@ -2562,7 +2562,7 @@ var handyClicksSets = {
 			return undefined;
 		path = file.path;
 
-		var dirSep = this.ut.appInfo.OS == "WINNT" ? "\\" : "/";
+		var dirSep = this.appInfo.OS == "WINNT" ? "\\" : "/";
 		var aliases = {
 			ProgF:        0,
 			AppData:      0,
@@ -2632,7 +2632,7 @@ var handyClicksSets = {
 			img.setAttribute("hc_existingPath", "true");
 		}
 		else if(this.ee.value == "Scratchpad") {
-			img.src = this.ut.isSeaMonkey ? "" : "chrome://branding/content/icon16.png";
+			img.src = this.isSeaMonkey ? "" : "chrome://branding/content/icon16.png";
 			img.setAttribute("hc_existingPath", "false");
 		}
 		else {
@@ -3833,7 +3833,7 @@ var handyClicksSets = {
 			"toISOString" in d // Firefox 3.5+
 			// Prefer toLocaleFormat(), if available and not raise deprecation warning
 			// https://bugzilla.mozilla.org/show_bug.cgi?id=1299900
-			&& this.ut.fxVersion >= 55
+			&& this.fxVersion >= 55
 		) {
 			// toISOString() uses zero UTC offset, trick to use locale offset
 			d.setMinutes(d.getMinutes() - d.getTimezoneOffset());

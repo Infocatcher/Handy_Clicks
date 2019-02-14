@@ -757,38 +757,6 @@ var handyClicksUtils = {
 		return this.isChromeWin(doc.defaultView);
 	},
 
-	get appInfo() {
-		delete this.appInfo;
-		return this.appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
-			.getService(Components.interfaces.nsIXULAppInfo)
-			.QueryInterface(Components.interfaces.nsIXULRuntime);
-	},
-	get isSeaMonkey() {
-		delete this.isSeaMonkey;
-		return this.isSeaMonkey = this.appInfo.name == "SeaMonkey";
-	},
-	get appVersion() {
-		delete this.appVersion;
-		return this.appVersion = parseFloat(this.appInfo.version);
-	},
-	get fxVersion() {
-		var ver = this.appVersion;
-		if(this.appInfo.name == "Pale Moon" || this.appInfo.name == "Basilisk")
-			ver = parseFloat(this.appInfo.platformVersion) >= 4.1 ? 56 : 28;
-		// https://developer.mozilla.org/en-US/docs/Mozilla/Gecko/Versions
-		else if(this.isSeaMonkey) switch(ver) {
-			case 2:   ver = 3.5; break;
-			case 2.1: ver = 4;   break;
-			default:  ver = parseFloat(this.appInfo.platformVersion);
-		}
-		delete this.fxVersion;
-		return this.fxVersion = ver;
-	},
-	get osVersion() {
-		delete this.osVersion; // String like "Windows NT 6.1"
-		return this.osVersion = /\S\s+(\d.*)/.test(navigator.oscpu) ? parseFloat(RegExp.$1) : 0;
-	},
-
 	isArray: function(arr) {
 		var f = this.isArray = this.hasNativeMethod(Array, "isArray")
 			? Array.isArray

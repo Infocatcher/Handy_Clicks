@@ -43,7 +43,7 @@ var handyClicksIO = {
 			file = this.ut.getLocalFile(file);
 
 		var encoder = this.textEncoder;
-		if(encoder && this.ut.fxVersion >= 20) {
+		if(encoder && this.fxVersion >= 20) {
 			this._log("writeToFileAsync(): will use OS.File.writeAtomic()");
 			Components.utils["import"]("resource://gre/modules/osfile.jsm");
 			var onFailure = function(err) {
@@ -61,8 +61,8 @@ var handyClicksIO = {
 			// Note: we move file into backups directory first, so "tmpPath" parameter isn't needed
 			var options = {};
 			if(
-				this.ut.fxVersion < 25
-				|| this.ut.appInfo.name == "Pale Moon" && this.ut.appVersion < 27
+				this.fxVersion < 25
+				|| this.appInfo.name == "Pale Moon" && this.appVersion < 27
 			)
 				options.tmpPath = file.path + ".tmp";
 			OS.File.writeAtomic(file.path, arr, options).then(
@@ -151,7 +151,7 @@ var handyClicksIO = {
 			file = this.ut.getLocalFile(file);
 
 		var decoder = this.textDecoder;
-		if(decoder && this.ut.fxVersion >= 20) {
+		if(decoder && this.fxVersion >= 20) {
 			this._log("readFromFileAsync(): will use OS.File.read()");
 			Components.utils["import"]("resource://gre/modules/osfile.jsm");
 			var onFailure = function(err) {
@@ -264,7 +264,7 @@ var handyClicksIO = {
 
 	get lineBreak() {
 		delete this.lineBreak;
-		return this.lineBreak = this.ut.appInfo.OS == "WINNT" ? "\r\n" : "\n";
+		return this.lineBreak = this.appInfo.OS == "WINNT" ? "\r\n" : "\n";
 	},
 	platformLineBreaks: function(str, lineBreak) {
 		return str.replace(/\r\n?|\n\r?/g, lineBreak || this.lineBreak);

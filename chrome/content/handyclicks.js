@@ -244,7 +244,7 @@ var handyClicks = {
 				var nn = tar.nodeName;
 				emAllowEvent = this.flags.allowEditModeEvents = nn == "xul:scrollbarbutton" || nn == "xul:slider";
 				if(e.button == 0 && this.isMenu(tar)) {
-					if(this.ut.fxVersion >= 3.6) {
+					if(this.fxVersion >= 3.6) {
 						this.flags.allowPopupshowing = true;
 						tar.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
 						this.flags.allowPopupshowing = false;
@@ -1045,7 +1045,7 @@ var handyClicks = {
 		if(!popup)
 			popup = this.getItemContext();
 
-		if(!popup || (this.ut.fxVersion == 2 && popup.id == "contentAreaContextMenu")) {
+		if(!popup || (this.fxVersion == 2 && popup.id == "contentAreaContextMenu")) {
 			// Some strange things happens in Firefox 2 for "contentAreaContextMenu"... Spellchecker bug?
 			this.flags.stopContextMenu = false;
 			this.createMouseEvents(this._xy, node, ["mousedown", "mouseup", "contextmenu"], 2)();
@@ -1063,7 +1063,7 @@ var handyClicks = {
 		if("openPopupAtScreen" in popup) // Firefox 3.0+
 			popup.openPopupAtScreen(xy.x, xy.y, true /*isContextMenu*/);
 		else
-			popup.showPopup(this.ut.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "context", null, null);
+			popup.showPopup(this.fxVersion >= 3 ? node : e.target, xy.x, xy.y, "context", null, null);
 		this.flags.allowPopupshowing = false;
 		this.focusOnItem();
 	},
@@ -1081,7 +1081,7 @@ var handyClicks = {
 	},
 	getXY: function(e) {
 		e = e || this._xy;
-		return this.ut.fxVersion >= 3
+		return this.fxVersion >= 3
 			? { x: e.screenX, y: e.screenY }
 			: { x: e.clientX, y: e.clientY };
 	},

@@ -65,7 +65,7 @@ var handyClicksPrefSvcExt = {
 		var curOtherSrc = this.currentOtherSrc;
 		var types = ["handyclicks:settings", "handyclicks:editor"];
 		if(!curOtherSrc) {
-			if(this.ut.isSeaMonkey)
+			if(this.isSeaMonkey)
 				types = null;
 			else
 				types.push("navigator:browser");

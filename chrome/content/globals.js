@@ -11,6 +11,38 @@ var g = window.handyClicksGlobals = {
 	_startTime: now(),
 	path: /[^\\\/]+$/.test(document.documentURI) && RegExp.lastMatch,
 
+	get appInfo() {
+		delete g.appInfo;
+		return g.appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
+			.getService(Components.interfaces.nsIXULAppInfo)
+			.QueryInterface(Components.interfaces.nsIXULRuntime);
+	},
+	get isSeaMonkey() {
+		delete g.isSeaMonkey;
+		return g.isSeaMonkey = g.appInfo.name == "SeaMonkey";
+	},
+	get appVersion() {
+		delete g.appVersion;
+		return g.appVersion = parseFloat(g.appInfo.version);
+	},
+	get fxVersion() {
+		var ver = g.appVersion;
+		if(g.appInfo.name == "Pale Moon" || g.appInfo.name == "Basilisk")
+			ver = parseFloat(g.appInfo.platformVersion) >= 4.1 ? 56 : 28;
+		// https://developer.mozilla.org/en-US/docs/Mozilla/Gecko/Versions
+		else if(g.isSeaMonkey) switch(ver) {
+			case 2:   ver = 3.5; break;
+			case 2.1: ver = 4;   break;
+			default:  ver = parseFloat(g.appInfo.platformVersion);
+		}
+		delete g.fxVersion;
+		return g.fxVersion = ver;
+	},
+	get osVersion() {
+		delete g.osVersion; // String like "Windows NT 6.1"
+		return g.osVersion = /\S\s+(\d.*)/.test(navigator.oscpu) ? parseFloat(RegExp.$1) : 0;
+	},
+
 	_elts: { __proto__: null },
 	$: function(id) {
 		return g._elts[id] || (g._elts[id] = document.getElementById(id));

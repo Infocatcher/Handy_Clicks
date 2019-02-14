@@ -99,7 +99,7 @@ var handyClicksUI = {
 			return;
 		this.loadBlinkStyle();
 		time = time || this.blinkDuration;
-		var oldFx = this.ut.fxVersion <= 2;
+		var oldFx = this.fxVersion <= 2;
 		var nodes = Array.prototype.slice.call(node);
 		if(!nodes.length)
 			nodes = [node];
@@ -480,18 +480,18 @@ var handyClicksUI = {
 			tt.openPopupAtScreen(e.screenX, e.screenY, false /*isContextMenu*/);
 		else
 			tt.showPopup(document.documentElement, e.screenX, e.screenY, "tooltip", null, null);
-		if(this.ut.fxVersion <= 2)
+		if(this.fxVersion <= 2)
 			return;
 		var x = e.screenX;
 		var y = e.screenY;
-		if(this.ut.fxVersion <= 3.5) {
+		if(this.fxVersion <= 3.5) {
 			x = Math.min(screen.width  - tt.boxObject.width,  x);
 			y = Math.min(screen.height - tt.boxObject.height, y);
 			var debo = document.documentElement.boxObject;
 			x += debo.screenX;
 			y += debo.screenY;
 		}
-		if(this.ut.fxVersion != 3.6)
+		if(this.fxVersion != 3.6)
 			y += 22;
 		tt.moveTo(x, y);
 	},

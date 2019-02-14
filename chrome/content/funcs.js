@@ -216,7 +216,7 @@ var handyClicksFuncs = {
 		var tab = this._openURIInTab(e, null, null, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction);
 		if(tab && tab.ownerDocument != document)
 			moveTo = null;
-		if(this.ut.fxVersion == 1.5 && moveTo == "relative")
+		if(this.fxVersion == 1.5 && moveTo == "relative")
 			moveTo = "after"; // Tab* events aren't supported
 		if(tab && moveTo == "relative") {
 			var tabCont = tbr.tabContainer;
@@ -271,9 +271,9 @@ var handyClicksFuncs = {
 	},
 	get isOldAddTab() {
 		delete this.isOldAddTab;
-		return this.isOldAddTab = this.ut.isSeaMonkey
-			? this.ut.fxVersion < 4
-			: this.ut.fxVersion < 3.6;
+		return this.isOldAddTab = this.isSeaMonkey
+			? this.fxVersion < 4
+			: this.fxVersion < 3.6;
 	},
 	_openURIInTab: function(e, item, uri, loadInBackground, loadJSInBackground, refererPolicy, moveTo, winRestriction) {
 		e = e || this.hc.event;
@@ -588,7 +588,7 @@ var handyClicksFuncs = {
 	},
 	get winEvt() {
 		delete this.winEvt;
-		return this.winEvt = this.ut.fxVersion > 3.6 ? "load" : "resize";
+		return this.winEvt = this.fxVersion > 3.6 ? "load" : "resize";
 	},
 	initZLevelRestoring: function(win) {
 		var pw = window;
@@ -1146,9 +1146,9 @@ var handyClicksFuncs = {
 					return gTabBrowserBundle.GetStringFromName(name);
 				}
 			};
-			var messageKey = this.ut.isSeaMonkey
+			var messageKey = this.isSeaMonkey
 				? "tabs.closeWarning"
-				: this.ut.fxVersion == 1.5
+				: this.fxVersion == 1.5
 					? tabsToClose == 1 ? "tabs.closeWarningOne"    : "tabs.closeWarningMultiple"
 					: tabsToClose == 1 ? "tabs.closeWarningOneTab" : "tabs.closeWarningMultipleTabs";
 			try {
@@ -1158,7 +1158,7 @@ var handyClicksFuncs = {
 				warningMessage = PluralForm.get(tabsToClose, bundle.getString("tabs.closeWarningMultiple"))
 					.replace("#1", tabsToClose);
 			}
-			var closeKey = this.ut.isSeaMonkey
+			var closeKey = this.isSeaMonkey
 				? "tabs.closeButton"
 				: tabsToClose == 1 ? "tabs.closeButtonOne" : "tabs.closeButtonMultiple";
 			// focus the window before prompting.

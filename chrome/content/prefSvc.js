@@ -763,7 +763,7 @@ var handyClicksPrefSvc = {
 			shift: this.getStr(src, "VK_SHIFT", "Shift"),
 			alt:   this.getStr(src, "VK_ALT", "Alt"),
 			meta:  this.getStr(src, "VK_META", "Meta"),
-			os:    this.getStr(src, "VK_WIN", "Win", this.ut.fxVersion > 3.6 ? undefined : -1),
+			os:    this.getStr(src, "VK_WIN", "Win", this.fxVersion > 3.6 ? undefined : -1),
 			sep:   this.getStr(src, "MODIFIER_SEPARATOR", "+"),
 			__proto__: null
 		};

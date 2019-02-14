@@ -19,7 +19,7 @@ var handyClicksSetsUtils = {
 			window.addEventListener("resize", this, false); // Can detect only maximize/restore
 			this.legacySizeModeChange();
 		}
-		if(this.ut.fxVersion <= 2) this.delay(function() {
+		if(this.fxVersion <= 2) this.delay(function() {
 			var sheet = document.styleSheets[0];
 			sheet.insertRule("tooltip > description { white-space: -moz-pre-wrap; }", sheet.cssRules.length);
 		}, this, 350); // Early call may break all tooltips
@@ -47,7 +47,7 @@ var handyClicksSetsUtils = {
 	},
 	get dropEvent() {
 		delete this.dropEvent;
-		var v = this.ut.fxVersion;
+		var v = this.fxVersion;
 		return this.dropEvent = v < 3
 			? "dragexit"
 			: v < 3.7
@@ -218,7 +218,7 @@ var handyClicksSetsUtils = {
 
 	get hasSizeModeChangeEvent() {
 		delete this.hasSizeModeChangeEvent;
-		return this.hasSizeModeChangeEvent = this.ut.fxVersion >= 8;
+		return this.hasSizeModeChangeEvent = this.fxVersion >= 8;
 	},
 	_sizeModeChangeTimer: 0,
 	legacySizeModeChange: function() {
@@ -582,7 +582,7 @@ var handyClicksSetsUtils = {
 			selectHandler.call(_this, tar);
 		};
 		var delay = this.pu.get("ui.dragSwitchDelay");
-		if(delay <= 0 || this.ut.fxVersion < 3)
+		if(delay <= 0 || this.fxVersion < 3)
 			dragSwitch();
 		else {
 			clearTimeout(this._dragSwitchTimer);
@@ -685,7 +685,7 @@ var handyClicksSetsUtils = {
 	},
 
 	fixAccelWidth: function(mp) {
-		if(this.ut.fxVersion >= 4)
+		if(this.fxVersion >= 4)
 			return;
 		var evt = document.createEvent("Events");
 		evt.initEvent("popupshowing", false, false);

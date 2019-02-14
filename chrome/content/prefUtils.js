@@ -174,7 +174,7 @@ var handyClicksPrefUtils = {
 		brWin.focus();
 
 		var configURI = "about:config";
-		var builtInFilter = this.ut.fxVersion >= 8;
+		var builtInFilter = this.fxVersion >= 8;
 		if(builtInFilter)
 			configURI += "?filter=" + encodeURIComponent(filter);
 
@@ -189,7 +189,7 @@ var handyClicksPrefUtils = {
 			return;
 
 		var br = tab.linkedBrowser;
-		var oldFx = this.ut.fxVersion <= 3.0;
+		var oldFx = this.fxVersion <= 3.0;
 		var _this = this;
 		br.addEventListener("load", function _l(e) {
 			br.removeEventListener("load", _l, true);

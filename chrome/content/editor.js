@@ -39,7 +39,7 @@ var handyClicksEditor = {
 	testMode: false,
 
 	init: function hce_init(reloadFlag) {
-		if(this.ut.fxVersion == 1.5) // "relative" is not supported
+		if(this.fxVersion == 1.5) // "relative" is not supported
 			this.types.menulists.moveTabTo.pop();
 		this.initShortcuts();
 		if(!reloadFlag) {
@@ -82,7 +82,7 @@ var handyClicksEditor = {
 				os.setAttribute("tooltiptext", os.getAttribute("hc_note"));
 			}
 
-			if(this.ut.fxVersion == 3) { // Trick to show line-through
+			if(this.fxVersion == 3) { // Trick to show line-through
 				var sheet = document.styleSheets[0];
 				sheet.insertRule(
 					'menuitem[hc_sets="disabled"], menulist[hc_sets="disabled"] > .menulist-label-box\n\
@@ -331,7 +331,7 @@ var handyClicksEditor = {
 			},
 			this
 		);
-		if(this.ut.fxVersion >= 3)
+		if(this.fxVersion >= 3)
 			return;
 		// Fix bug in Firefox 1.5 and 2.0
 		var si = ml.selectedIndex;
@@ -929,7 +929,7 @@ var handyClicksEditor = {
 			var appName    = RegExp.$1;
 			var appMinVers = RegExp.$2;
 			var appMaxVers = RegExp.$3;
-			var info = this.ut.appInfo;
+			var info = this.appInfo;
 			if(appName != info.name)
 				return false;
 			if(appMinVers && this.versComparator.compare(appMinVers, info.version) > 0)
@@ -1544,7 +1544,7 @@ var handyClicksEditor = {
 			this.$("hc-editor-cmd-undo").setAttribute("disabled", "false");
 			var focus = this.pu.get("editor.testFocusMainWindow");
 			if(invertFocusPref ? !focus : focus) {
-				if(this.ut.isSeaMonkey) { // Detect private browser windows
+				if(this.isSeaMonkey) { // Detect private browser windows
 					this.wu.forEachBrowserWindow(function(w) {
 						return !w.focus();
 					});
