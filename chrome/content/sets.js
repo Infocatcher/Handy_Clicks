@@ -331,11 +331,11 @@ var handyClicksSets = {
 	},
 	drawShortcut: function(prefs, sh, df) {
 		var so = prefs[sh];
-		if(!this.ps.isOkShortcut(sh) || !this.ut.isObject(so)) {
+		if(!this.ps.isOkShortcut(sh) || !this.ju.isObject(so)) {
 			this.ut._warn('Invalid shortcut in prefs: "' + sh + '"');
 			return;
 		}
-		if(this.ut.isEmptyObj(so)) {
+		if(this.ju.isEmptyObj(so)) {
 			this.ut._warn('Empty settings object in prefs: "' + sh + '"');
 			return;
 		}
@@ -398,7 +398,7 @@ var handyClicksSets = {
 
 		for(var type in types) if(types.hasOwnProperty(type)) {
 			var to = types[type];
-			var oldTo = this.ut.getOwnProperty(savedTypes, type);
+			var oldTo = this.ju.getOwnProperty(savedTypes, type);
 			if(!oldTo)
 				++newTypes;
 			else if(!this.settingsEquals(to, oldTo))
@@ -415,27 +415,27 @@ var handyClicksSets = {
 
 		for(var sh in savedPrefs) if(savedPrefs.hasOwnProperty(sh)) {
 			var so = savedPrefs[sh];
-			if(!this.ut.isObject(so))
+			if(!this.ju.isObject(so))
 				continue;
-			var newSo = this.ut.getOwnProperty(prefs, sh);
+			var newSo = this.ju.getOwnProperty(prefs, sh);
 			for(var type in so) if(so.hasOwnProperty(type)) {
 				var to = so[type];
-				var newTo = this.ut.getOwnProperty(newSo, type);
+				var newTo = this.ju.getOwnProperty(newSo, type);
 				if(to && !newTo) {
 					++deletable;
-					this.ut.setOwnProperty(delPrefs, sh, type, to);
+					this.ju.setOwnProperty(delPrefs, sh, type, to);
 				}
-				if(!this.ut.isObject(to))
+				if(!this.ju.isObject(to))
 					continue;
-				var da = this.ut.getOwnProperty(to, "delayedAction");
-				var newDa = this.ut.getOwnProperty(newTo, "delayedAction");
+				var da = this.ju.getOwnProperty(to, "delayedAction");
+				var newDa = this.ju.getOwnProperty(newTo, "delayedAction");
 				if(da && !newDa)
 					++deletableDa;
 			}
 		}
 
 		for(var type in savedTypes) if(savedTypes.hasOwnProperty(type))
-			if(savedTypes[type] && !this.ut.getOwnProperty(types, type))
+			if(savedTypes[type] && !this.ju.getOwnProperty(types, type))
 				++deletableTypes;
 
 		this.drawPrefs(delPrefs, df, true);
@@ -625,7 +625,7 @@ var handyClicksSets = {
 	appendRow: function(parent, shortcut, itemType, fo, forcedLabel) {
 		var tItem = document.createElement("treeitem");
 		var tRow = tItem.appendChild(document.createElement("treerow"));
-		if(!this.ut.isObject(fo))
+		if(!this.ju.isObject(fo))
 			fo = {};
 		var foStr = 'prefs["' + shortcut + '"].' + itemType;
 		var isCustom = !!fo.custom;
@@ -650,7 +650,7 @@ var handyClicksSets = {
 		if(this.getActionCode._hasLinkedFile)
 			linkedFile = true;
 
-		var da = this.ut.getOwnProperty(fo, "delayedAction");
+		var da = this.ju.getOwnProperty(fo, "delayedAction");
 		if(da) {
 			tItem.setAttribute("container", "true");
 			if(this._daExpand)
@@ -659,7 +659,7 @@ var handyClicksSets = {
 			var daItem = daChild.appendChild(document.createElement("treeitem"));
 			var daRow = daItem.appendChild(document.createElement("treerow"));
 
-			if(!this.ut.isObject(da))
+			if(!this.ju.isObject(da))
 				da = {};
 
 			this.appendTreeCell(daRow, "label", this.getLocalized("delayed"));
@@ -699,7 +699,7 @@ var handyClicksSets = {
 
 			if(this._import) {
 				if(!drawRemoved) {
-					var savedDa = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType, "delayedAction");
+					var savedDa = this.ju.getOwnProperty(this._savedPrefs, shortcut, itemType, "delayedAction");
 					var overrideDa = savedDa;
 					var equalsDa = this.settingsEquals(da, savedDa);
 				}
@@ -744,7 +744,7 @@ var handyClicksSets = {
 			hc_customType: isCustomType
 		}, true);
 		if(this._import) {
-			var saved = this.ut.getOwnProperty(this._savedPrefs, shortcut, itemType);
+			var saved = this.ju.getOwnProperty(this._savedPrefs, shortcut, itemType);
 
 			// Ignore delayed actions:
 			if(savedDa)
@@ -756,8 +756,8 @@ var handyClicksSets = {
 				var override = saved;
 				var equals = this.settingsEquals(fo, saved);
 				if(isCustomType) {
-					var newType = this.ut.getOwnProperty(this.ps.types, itemType);
-					var savedType = this.ut.getOwnProperty(this._savedTypes, itemType);
+					var newType = this.ju.getOwnProperty(this.ps.types, itemType);
+					var savedType = this.ju.getOwnProperty(this._savedTypes, itemType);
 					var eqType = this.settingsEquals(newType, savedType);
 					if(!eqType && (saved || savedType))
 						override = true;
@@ -814,7 +814,7 @@ var handyClicksSets = {
 			+ this.cropCode(action || "");
 	},
 	getInitCode: function(fo) {
-		var init = this.ut.getOwnProperty(fo, "init");
+		var init = this.ju.getOwnProperty(fo, "init");
 		return init
 			? this.getActionCode(init, true)
 			: "";
@@ -1179,21 +1179,21 @@ var handyClicksSets = {
 			var button = this.ps.getButtonStr(sh, true);
 			var sep = this.ps.spacedSep;
 			var typeLabel = this.cropStr(this.ps.getTypeLabel(type), MAX_TYPE_LENGTH);
-			var fObj = this.ut.getOwnProperty(this.ps.prefs, sh, type);
-			var dObj = this.ut.getOwnProperty(fObj, "delayedAction");
+			var fObj = this.ju.getOwnProperty(this.ps.prefs, sh, type);
+			var dObj = this.ju.getOwnProperty(fObj, "delayedAction");
 			var addLabel = "";
 			if(tItem.__isDelayed) {
 				typeLabel += " (" + this.getLocalized("delayed") + ")";
 				fObj = dObj;
 			}
 			else {
-				var daLabel = this.ut.isObject(dObj) && this.su.getActionLabel(fObj);
+				var daLabel = this.ju.isObject(dObj) && this.su.getActionLabel(fObj);
 				if(daLabel) {
 					addLabel = "\n\t(" + this.getLocalized("delayed") + ": "
 						+ this.cropStr(daLabel, MAX_LABEL_LENGTH) + ")";
 				}
 			}
-			var label = this.ut.isObject(fObj)
+			var label = this.ju.isObject(fObj)
 				? this.cropStr(this.su.getActionLabel(fObj), MAX_LABEL_LENGTH)
 				: "?";
 			var n = i + 1;
@@ -1289,7 +1289,7 @@ var handyClicksSets = {
 		}
 		else {
 			delete so[type];
-			if(this.ut.isEmptyObj(so))
+			if(this.ju.isEmptyObj(so))
 				delete p[sh];
 
 			this.removeTreeitem(tItem);
@@ -1575,7 +1575,7 @@ var handyClicksSets = {
 			return;
 		var row = this.tbo.getRowAt(e.clientX, e.clientY);
 		var et = e.type;
-		var lastHandledRow = this.ut.getOwnProperty(ss, "_lastHandledRow");
+		var lastHandledRow = this.ju.getOwnProperty(ss, "_lastHandledRow");
 		if(row == -1)
 			return;
 		if(et == "mousedown") { // Start
@@ -1593,7 +1593,7 @@ var handyClicksSets = {
 			return;
 
 		// mouseup or mousemove:
-		var initialRow = this.ut.getOwnProperty(ss, "_initialRow");
+		var initialRow = this.ju.getOwnProperty(ss, "_initialRow");
 		if(initialRow === undefined)
 			return;
 		if(et == "mousemove" && ss._startY != undefined && Math.abs(ss._startY - e.screenY) <= 4)
@@ -3134,13 +3134,13 @@ var handyClicksSets = {
 		its.forEach(function(it, i, its) {
 			var type = it.__itemType;
 			if(it.__isCustomType) {
-				var to = this.ut.getOwnProperty(types, type);
-				this.ut.setOwnProperty(newTypes, type, to);
+				var to = this.ju.getOwnProperty(types, type);
+				this.ju.setOwnProperty(newTypes, type, to);
 			}
 			if(extractShortcuts) {
 				var sh = it.__shortcut;
-				var to = this.ut.getOwnProperty(prefs, sh, type);
-				this.ut.setOwnProperty(newPrefs, sh, type, to);
+				var to = this.ju.getOwnProperty(prefs, sh, type);
+				this.ju.setOwnProperty(newPrefs, sh, type, to);
 			}
 			if(it.__isDelayed && (!i || its[i - 1] != it.parentNode.parentNode))
 				normalItems.push(it.parentNode.parentNode); // Add not selected normal items
@@ -3157,8 +3157,8 @@ var handyClicksSets = {
 	},
 	extractLabels: function(its) {
 		return its.map(function(it) {
-			var fo = this.ut.getOwnProperty(this.ps.prefs, it.__shortcut, it.__itemType);
-			return this.ut.isObject(fo) && this.su.getActionLabel(fo);
+			var fo = this.ju.getOwnProperty(this.ps.prefs, it.__shortcut, it.__itemType);
+			return this.ju.isObject(fo) && this.su.getActionLabel(fo);
 		}, this).filter(function(label) {
 			return label;
 		});
@@ -3588,20 +3588,20 @@ var handyClicksSets = {
 			var to = types[type];
 			if(!this.ps.isOkCustomObj(to))
 				continue;
-			this.ut.setOwnProperty(this.ps.types, type, to);
+			this.ju.setOwnProperty(this.ps.types, type, to);
 		}
 
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			if(!this.ps.isOkShortcut(sh))
 				continue;
 			var so = prefs[sh];
-			if(!this.ut.isObject(so))
+			if(!this.ju.isObject(so))
 				continue;
 			for(type in so) if(so.hasOwnProperty(type)) {
 				var to = so[type];
-				if(!this.ut.isObject(to))
+				if(!this.ju.isObject(to))
 					continue;
-				this.ut.setOwnProperty(this.ps.prefs, sh, type, to);
+				this.ju.setOwnProperty(this.ps.prefs, sh, type, to);
 			}
 		}
 	},
@@ -3692,13 +3692,13 @@ var handyClicksSets = {
 	},
 	getFileData: function(code) {
 		var path = this.ps.getSourcePath(code);
-		return path && this.ut.getOwnProperty(this.ps.files, path, "data");
+		return path && this.ju.getOwnProperty(this.ps.files, path, "data");
 	},
 	fileDataEquals: function(code) {
 		var path = this.ps.getSourcePath(code);
 		if(!path)
 			return true;
-		var fileData = this.ut.getOwnProperty(this.ps.files, path, "data");
+		var fileData = this.ju.getOwnProperty(this.ps.files, path, "data");
 		if(!fileData) // File will be unchanged
 			return true;
 		var file = this.ut.getLocalFile(path);

@@ -318,7 +318,7 @@ var handyClicksPrefSvcExt = {
 	},
 	forEachCode: function(sets, callback, context) {
 		var getCode = this.ut.bind(function(o, key) {
-			var code = this.ut.getOwnProperty(o, key);
+			var code = this.ju.getOwnProperty(o, key);
 			return callback.call(context, code, o, key);
 		}, this);
 		var prefs = sets.prefs;
@@ -330,16 +330,16 @@ var handyClicksPrefSvcExt = {
 		}
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			var so = prefs[sh];
-			if(!this.ut.isObject(so))
+			if(!this.ju.isObject(so))
 				continue;
 			for(var type in so) if(so.hasOwnProperty(type)) {
 				var to = so[type];
-				if(this.ut.getOwnProperty(to, "custom")) {
+				if(this.ju.getOwnProperty(to, "custom")) {
 					if(getCode(to, "init") || getCode(to, "action"))
 						return true;
 				}
-				var da = this.ut.getOwnProperty(to, "delayedAction");
-				if(da && this.ut.getOwnProperty(da, "custom")) {
+				var da = this.ju.getOwnProperty(to, "delayedAction");
+				if(da && this.ju.getOwnProperty(da, "custom")) {
 					if(getCode(da, "init") || getCode(da, "action"))
 						return true;
 				}

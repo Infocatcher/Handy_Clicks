@@ -318,23 +318,23 @@ var handyClicksPrefSvc = {
 			if(!this.isOkShortcut(sh))
 				continue;
 			var so = p[sh];
-			if(!this.ut.isObject(so))
+			if(!this.ju.isObject(so))
 				continue;
 			for(var type in so) if(so.hasOwnProperty(type)) {
 				var to = so[type];
 				if(!this.isOkFuncObj(to) || !to.enabled)
 					continue;
-				if(this.ut.getOwnProperty(to, "custom"))
+				if(this.ju.getOwnProperty(to, "custom"))
 					this.initCustomFunc(to, sh, type, false);
-				var da = this.ut.getOwnProperty(to, "delayedAction");
-				if(this.isOkFuncObj(da) && da.enabled && this.ut.getOwnProperty(da, "custom"))
+				var da = this.ju.getOwnProperty(to, "delayedAction");
+				if(this.isOkFuncObj(da) && da.enabled && this.ju.getOwnProperty(da, "custom"))
 					this.initCustomFunc(da, sh, type, true);
 			}
 		}
 		this._destructorContext = null;
 	},
 	initCustomFunc: function(fObj, sh, type, isDelayed) {
-		var rawCode = this.ut.getOwnProperty(fObj, "init");
+		var rawCode = this.ju.getOwnProperty(fObj, "init");
 		if(!rawCode)
 			return;
 		try {
@@ -355,11 +355,11 @@ var handyClicksPrefSvc = {
 			this.registerDestructor(
 				this.ut.bind(
 					legacyDestructor,
-					this.ut.getOwnProperty(legacyDestructor, "context"),
-					this.ut.getOwnProperty(legacyDestructor, "args")
+					this.ju.getOwnProperty(legacyDestructor, "context"),
+					this.ju.getOwnProperty(legacyDestructor, "args")
 				),
 				null,
-				this.ut.getOwnProperty(legacyDestructor, "handleUnload") === false
+				this.ju.getOwnProperty(legacyDestructor, "handleUnload") === false
 					? this.DESTROY_REBUILD
 					: 0
 			);
@@ -420,7 +420,7 @@ var handyClicksPrefSvc = {
 		return data;
 	},
 	isValidFileData: function(fo) {
-		return this.ut.isObject(fo) && !!fo.data;
+		return this.ju.isObject(fo) && !!fo.data;
 	},
 
 	_destructors: [],
@@ -457,7 +457,7 @@ var handyClicksPrefSvc = {
 				continue;
 			}
 			var v = o[p];
-			if(this.ut.isObject(v))
+			if(this.ju.isObject(v))
 				this.removeCached(v);
 		}
 	},
@@ -513,11 +513,11 @@ var handyClicksPrefSvc = {
 
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			var so = prefs[sh];
-			if(!this.isOkShortcut(sh) || !this.ut.isObject(so)) {
+			if(!this.isOkShortcut(sh) || !this.ju.isObject(so)) {
 				delete prefs[sh];
 				continue;
 			}
-			var forcedDis = this.ut.getOwnProperty(so, "$all", "enabled") == true;
+			var forcedDis = this.ju.getOwnProperty(so, "$all", "enabled") == true;
 			for(var type in so) if(so.hasOwnProperty(type)) {
 				var to = so[type];
 				if(!this.isOkFuncObj(to)) {
@@ -649,7 +649,7 @@ var handyClicksPrefSvc = {
 		return s && this.okShortcut.test(s);
 	},
 	isOkFuncObj: function(fObj) {
-		return this.ut.isObject(fObj)
+		return this.ju.isObject(fObj)
 			&& "hasOwnProperty" in fObj
 			&& fObj.hasOwnProperty("enabled")
 			&& typeof fObj.enabled == "boolean"
@@ -666,7 +666,7 @@ var handyClicksPrefSvc = {
 			&& this.isOkCustomObj(types[cType]);
 	},
 	isOkCustomObj: function(ct) {
-		return this.ut.isObject(ct)
+		return this.ju.isObject(ct)
 			&& "hasOwnProperty" in ct
 			&& ct.hasOwnProperty("enabled")
 			&& typeof ct.enabled == "boolean"
@@ -693,7 +693,7 @@ var handyClicksPrefSvc = {
 				: this.getLocalized(type);
 	},
 	getCustomTypeLabel: function(type, types) {
-		var label = this.ut.getOwnProperty(types || this.types, type, "label");
+		var label = this.ju.getOwnProperty(types || this.types, type, "label");
 		if(label == undefined)
 			this.ut._warn('Custom type not found: "' + type + '"');
 		label = label ? this.localize(label) + " " : "";
@@ -802,9 +802,9 @@ var handyClicksPrefSvc = {
 		return str.replace(/^(?:\/\/[^\n\r]+[\n\r]+)+/, "");
 	},
 	isValidPrefs: function(obj) {
-		return this.ut.isObject(obj)
-			&& this.ut.isObject(obj.prefs)
-			&& this.ut.isObject(obj.types)
+		return this.ju.isObject(obj)
+			&& this.ju.isObject(obj.prefs)
+			&& this.ju.isObject(obj.types)
 			&& (
 				!("version" in obj) // Support for old format
 				|| typeof obj.version == "number" && isFinite(obj.version)

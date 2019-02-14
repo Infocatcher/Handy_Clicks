@@ -475,7 +475,7 @@ var handyClicksEditor = {
 	get canDelete() {
 		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT:
-				return !!this.ut.getOwnProperty(this.ps.prefs, this.currentShortcut, this.currentType);
+				return !!this.ju.getOwnProperty(this.ps.prefs, this.currentShortcut, this.currentType);
 			case this.INDEX_TYPE:
 				return this.ps.types.hasOwnProperty(this.currentCustomType);
 			default:
@@ -490,10 +490,10 @@ var handyClicksEditor = {
 		this.typeSaved();
 	},
 	shortcutSaved: function() {
-		this._savedShortcutObj = this.ut.getOwnProperty(this.ps.prefs, this.currentShortcut, this.currentType);
+		this._savedShortcutObj = this.ju.getOwnProperty(this.ps.prefs, this.currentShortcut, this.currentType);
 	},
 	typeSaved: function() {
-		this._savedTypeObj = this.ut.getOwnProperty(this.ps.types, this.currentCustomType);
+		this._savedTypeObj = this.ju.getOwnProperty(this.ps.types, this.currentCustomType);
 	},
 	get shortcutUnsaved() {
 		var curr = this.currentShortcutObj;
@@ -563,33 +563,33 @@ var handyClicksEditor = {
 			: baseTitle + " [" + title + "]";
 	},
 	initShortcutEditor: function() {
-		var so = this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
+		var so = this.ju.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
 		this.initFuncEditor(so, "");
 		this.$("hc-editor-events").value = so.eventType || "click";
 
-		so = this.ut.getOwnProperty(so, "delayedAction") || {};
+		so = this.ju.getOwnProperty(so, "delayedAction") || {};
 		this.initFuncEditor(so, this.delayId);
 		this.currentShortcut = this.shortcut;
 
 		this.delay(this.shortcutSaved, this); // Wait for XBL bindings setup
 	},
 	initFuncEditor: function(setsObj, delayed, allowUndo) {
-		var isCustom = this.ut.getOwnProperty(setsObj, "custom");
+		var isCustom = this.ju.getOwnProperty(setsObj, "custom");
 		this.selectCustomFunc(isCustom, delayed);
 		if(isCustom) {
 			const val = allowUndo || this._allowUndo ? "value" : "newValue";
-			this.$("hc-editor-funcField" + delayed)[val]  = this.ut.getOwnProperty(setsObj, "action") || "";
-			this.$("hc-editor-funcLabel" + delayed).value = this.ut.getOwnProperty(setsObj, "label") || "";
+			this.$("hc-editor-funcField" + delayed)[val]  = this.ju.getOwnProperty(setsObj, "action") || "";
+			this.$("hc-editor-funcLabel" + delayed).value = this.ju.getOwnProperty(setsObj, "label") || "";
 
 			var initField = this.$("hc-editor-funcInitField" + delayed);
-			initField[val] = this.ut.getOwnProperty(setsObj, "init") || "";
+			initField[val] = this.ju.getOwnProperty(setsObj, "init") || "";
 			this.highlightEmpty(initField);
 		}
 		this.initFuncsList(setsObj, delayed);
-		var enabled = this.ut.getOwnProperty(setsObj, "enabled");
+		var enabled = this.ju.getOwnProperty(setsObj, "enabled");
 		this.$("hc-editor-enabled" + delayed).checked = typeof enabled != "boolean" || enabled;
 		if(!delayed) {
-			this.$("hc-editor-allowMousedown").value = String(this.ut.getOwnProperty(setsObj, "allowMousedownEvent"));
+			this.$("hc-editor-allowMousedown").value = String(this.ju.getOwnProperty(setsObj, "allowMousedownEvent"));
 			this.initAdditionalOptions(null, setsObj);
 		}
 	},
@@ -663,7 +663,7 @@ var handyClicksEditor = {
 			return;
 		}
 		var ct = to || cts[cType];
-		if(!this.ut.isObject(ct))
+		if(!this.ju.isObject(ct))
 			ct = {};
 		enabledElt.checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
 		const val = to || this._allowUndo ? "value" : "newValue";
@@ -748,7 +748,7 @@ var handyClicksEditor = {
 				continue;
 			}
 			var typeObj = cTypes[cType];
-			if(!this.ut.isObject(typeObj)) {
+			if(!this.ju.isObject(typeObj)) {
 				this.ut._warn('Invalid custom type: "' + cType + '" (' + typeObj + ")");
 				continue;
 			}
@@ -792,7 +792,7 @@ var handyClicksEditor = {
 	typeUsed: function(type, prefs) {
 		prefs = prefs || this.ps.prefs;
 		for(var sh in prefs)
-			if(this.ut.getOwnProperty(prefs, sh, type))
+			if(this.ju.getOwnProperty(prefs, sh, type))
 				return true;
 		return false;
 	},
@@ -800,7 +800,7 @@ var handyClicksEditor = {
 		prefs = prefs || this.ps.prefs;
 		var cnt = 0;
 		for(var sh in prefs)
-			if(this.ut.getOwnProperty(prefs, sh, type, "enabled"))
+			if(this.ju.getOwnProperty(prefs, sh, type, "enabled"))
 				++cnt;
 		return cnt;
 	},
@@ -818,14 +818,14 @@ var handyClicksEditor = {
 		);
 	},
 	highlightUsedTypes: function() {
-		var so = this.ut.getOwnProperty(this.ps.prefs, this.currentShortcut);
+		var so = this.ju.getOwnProperty(this.ps.prefs, this.currentShortcut);
 		var ml = this.$("hc-editor-itemTypes");
 		Array.prototype.forEach.call(
 			ml.getElementsByTagName("menuitem"),
 			function(mi) {
-				var to = this.ut.getOwnProperty(so, mi.value);
+				var to = this.ju.getOwnProperty(so, mi.value);
 				var val = this.ps.isOkFuncObj(to)
-					? this.ut.getOwnProperty(to, "enabled")
+					? this.ju.getOwnProperty(to, "enabled")
 						? "enabled"
 						: "disabled"
 					: "none";
@@ -874,9 +874,9 @@ var handyClicksEditor = {
 	},
 	initFuncsList: function(setsObj, delayed) {
 		delayed = delayed || "";
-		var action = this.ut.getOwnProperty(setsObj, "action") || null;
+		var action = this.ju.getOwnProperty(setsObj, "action") || null;
 		var fList = this.$("hc-editor-func" + delayed);
-		fList.value = this.ut.getOwnProperty(setsObj, "custom") // <menulist>
+		fList.value = this.ju.getOwnProperty(setsObj, "custom") // <menulist>
 			? "$custom"
 			: delayed && !action
 				? "$auto"
@@ -961,15 +961,15 @@ var handyClicksEditor = {
 		this.$("hc-editor-funcOpts-tab").hidden = !showTab;
 		if(!showImg && !showTab)
 			return;
-		setsObj = setsObj || this.ut.getOwnProperty(this.ps.prefs, this.shortcut, iType);
+		setsObj = setsObj || this.ju.getOwnProperty(this.ps.prefs, this.shortcut, iType);
 		if(showImg) {
-			var ignoreLinks = this.ut.getOwnProperty(setsObj, "ignoreLinks") || false;
+			var ignoreLinks = this.ju.getOwnProperty(setsObj, "ignoreLinks") || false;
 			this.$("hc-editor-imgIgnoreLinks").checked = ignoreLinks;
-			var ignoreSingle = this.ut.getOwnProperty(setsObj, "ignoreSingle") || false;
+			var ignoreSingle = this.ju.getOwnProperty(setsObj, "ignoreSingle") || false;
 			this.$("hc-editor-imgIgnoreSingle").checked = ignoreSingle;
 		}
 		else if(showTab) {
-			var excludeBtn = this.ut.getOwnProperty(setsObj, "excludeCloseButton");
+			var excludeBtn = this.ju.getOwnProperty(setsObj, "excludeCloseButton");
 			this.$("hc-editor-tabExcludeCloseButton").checked = excludeBtn === undefined ? true : excludeBtn;
 		}
 	},
@@ -996,10 +996,10 @@ var handyClicksEditor = {
 		}, this);
 	},
 	addArgControls: function(argName, delayed, so) {
-		var setsObj = so || this.ut.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
+		var setsObj = so || this.ju.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
 		if(delayed) //~ todo: test part with "so"
-			setsObj = so || this.ut.getOwnProperty(setsObj, "delayedAction") || {};
-		var argVal = this.ut.getOwnProperty(setsObj, "arguments", argName);
+			setsObj = so || this.ju.getOwnProperty(setsObj, "delayedAction") || {};
+		var argVal = this.ju.getOwnProperty(setsObj, "arguments", argName);
 		var argType = this.getArgType(argName);
 		if(argType)
 			this.addControl(argName, argType, argVal, delayed); // "loadInBackground", "checkbox", true
@@ -1212,9 +1212,9 @@ var handyClicksEditor = {
 		var canRename;
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			var so = prefs[sh];
-			if(this.ut.isObject(so) && so.hasOwnProperty(curType)) {
+			if(this.ju.isObject(so) && so.hasOwnProperty(curType)) {
 				var fo = so[curType];
-				this.ut.isObject(fo) && shortcuts.push({
+				this.ju.isObject(fo) && shortcuts.push({
 					hc_shortcut: sh,
 					label: this.ps.getShortcutStr(sh, true),
 					type: "radio",
@@ -1294,20 +1294,20 @@ var handyClicksEditor = {
 		var newSh = this.currentShortcut;
 		this._shortcut = this._type = null;
 		var p = this.ps.prefs;
-		if(this.ut.getOwnProperty(p, newSh, ct) || forceCancel) {
+		if(this.ju.getOwnProperty(p, newSh, ct) || forceCancel) {
 			// Don't overwrite: cancel and restore initial shortcut
 			this.currentShortcut = sh;
 			return;
 		}
 		// Rename shortcut
-		var so = this.ut.getOwnProperty(p, sh, ct);
+		var so = this.ju.getOwnProperty(p, sh, ct);
 		if(!so) {
 			this.ut._err("Shortcut not found: " + sh + " -> " + ct);
 			return;
 		}
-		this.ut.setOwnProperty(p, newSh, ct, so);
+		this.ju.setOwnProperty(p, newSh, ct, so);
 		delete p[sh][ct];
-		if(this.ut.isEmptyObj(p[sh]))
+		if(this.ju.isEmptyObj(p[sh]))
 			delete p[sh];
 
 		this.wu.shortcutRenamed(sh + "-" + ct, newSh + "-" + ct);
@@ -1644,15 +1644,15 @@ var handyClicksEditor = {
 			return false;
 		}
 
-		this.ut.setOwnProperty(this.ps.prefs, sh, type, so);
+		this.ju.setOwnProperty(this.ps.prefs, sh, type, so);
 
 		var loadCorrectedSettings = !dontUpdate  && this.ut.bind(function(status) {
 			if(status !== undefined && !Components.isSuccessCode(status))
 				return;
 			var prefs = this.ps.prefs;
-			var to = this.ut.getOwnProperty(prefs, sh, type);
-			var enabled = this.ut.getOwnProperty(to, "enabled");
-			var daEnabled = this.ut.getOwnProperty(to, "delayedAction", "enabled");
+			var to = this.ju.getOwnProperty(prefs, sh, type);
+			var enabled = this.ju.getOwnProperty(to, "enabled");
+			var daEnabled = this.ju.getOwnProperty(to, "delayedAction", "enabled");
 			if(typeof daEnabled != "boolean")
 				daEnabled = true;
 			var enabledItem = this.$("hc-editor-enabled");
@@ -1772,9 +1772,9 @@ var handyClicksEditor = {
 		var p = this.ps.prefs;
 		var sh = this.currentShortcut;
 		var ct = this.currentType;
-		if(this.ut.getOwnProperty(p, sh, ct)) {
+		if(this.ju.getOwnProperty(p, sh, ct)) {
 			delete p[sh][ct];
-			if(this.ut.isEmptyObj(p[sh]))
+			if(this.ju.isEmptyObj(p[sh]))
 				delete p[sh];
 		}
 		else { // Nothing to delete

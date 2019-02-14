@@ -4,7 +4,7 @@ var handyClicksUtils = {
 	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
 
 	_err: function(e, fileName, lineNumber, isWarning) {
-		if(this.isPrimitive(e) || typeof e == "xml") {
+		if(this.ju.isPrimitive(e) || typeof e == "xml") {
 			var caller = Components.stack.caller;
 			if(isWarning) // Don't call directly, always use _warn()!
 				caller = caller.caller;
@@ -68,7 +68,7 @@ var handyClicksUtils = {
 		return line;
 	},
 	objProps: function(o, filter, skipNativeFuncs) {
-		if(this.isPrimitive(o))
+		if(this.ju.isPrimitive(o))
 			return String(o);
 
 		var skip = function() {
@@ -102,9 +102,9 @@ var handyClicksUtils = {
 			if(
 				skipNativeFuncs
 				&& (
-					typeof value == "function" && this.isNativeFunction(value)
-					|| typeof getter == "function" && this.isNativeFunction(getter)
-					|| typeof setter == "function" && this.isNativeFunction(setter)
+					typeof value == "function" && this.ju.isNativeFunction(value)
+					|| typeof getter == "function" && this.ju.isNativeFunction(getter)
+					|| typeof setter == "function" && this.ju.isNativeFunction(setter)
 				)
 			)
 				continue;
@@ -167,7 +167,7 @@ var handyClicksUtils = {
 	NOTIFY_ICON_WARNING: "warning",
 	NOTIFY_ICON_ERROR: "error",
 	notify: function(msg, opts) {
-		if(arguments.length > 1 && !this.isObject(opts))
+		if(arguments.length > 1 && !this.ju.isObject(opts))
 			opts = this._convertNotifyArgs.apply(this, arguments);
 		if(!opts)
 			opts = {};
@@ -251,7 +251,7 @@ var handyClicksUtils = {
 		return this.notify(msg, opts);
 	},
 	notifyInWindowCorner: function(msg, opts) {
-		if(arguments.length > 1 && !this.isObject(opts))
+		if(arguments.length > 1 && !this.ju.isObject(opts))
 			opts = this._convertNotifyArgs.apply(this, arguments);
 		(opts = opts || {}).inWindowCorner = true;
 		return this.notify(msg, opts);
@@ -757,38 +757,6 @@ var handyClicksUtils = {
 		return this.isChromeWin(doc.defaultView);
 	},
 
-	isArray: function(arr) {
-		var f = this.isArray = this.hasNativeMethod(Array, "isArray")
-			? Array.isArray
-			: function(arr) {
-				return arr instanceof Array
-					|| Object.prototype.toString.call(arr) == "[object Array]";
-			};
-		return f.apply(this, arguments);
-	},
-	isObject: function(o) {
-		return typeof o == "object" && o !== null;
-	},
-	isEmptyObj: function(o) {
-		// obj.__count__ is deprecated and removed in Firefox 4.0
-		// Object.keys(o).length
-		for(var p in o) if(Object.hasOwnProperty.call(o, p))
-			return false;
-		return true;
-	},
-	isPrimitive: function(v) {
-		if(v === null || v === undefined)
-			return true;
-		var t = typeof v;
-		return t == "string" || t == "number" || t == "boolean";
-	},
-	isNativeFunction: function(func) {
-		// Example: function alert() {[native code]}
-		return /\[native code\]\s*\}$/.test(Function.toString.call(func));
-	},
-	hasNativeMethod: function(obj, methName) {
-		return methName in obj && typeof obj[methName] == "function" && this.isNativeFunction(obj[methName]);
-	},
 	unwrap: function(o) {
 		var f = this.unwrap = "XPCNativeWrapper" in window && "unwrap" in XPCNativeWrapper
 			? function(o) {
@@ -800,54 +768,8 @@ var handyClicksUtils = {
 		return f.apply(this, arguments);
 	},
 
-	getOwnProperty: function(obj) { // this.getOwnProperty(obj, "a", "b", "propName") instead of obj.a.b.propName
-		var u;
-		if(this.isPrimitive(obj))
-			return u;
-		var a = arguments, p;
-		for(var i = 1, len = a.length - 1; i <= len; ++i) {
-			p = a[i];
-			if(!Object.hasOwnProperty.call(obj, p))
-				return u;
-			obj = obj[p];
-			if(i == len)
-				return obj;
-			if(this.isPrimitive(obj))
-				return u;
-		}
-		return u;
-	},
-	getProperty: function(obj) {
-		var u;
-		if(this.isPrimitive(obj))
-			return u;
-		var a = arguments, p;
-		for(var i = 1, len = a.length - 1; i <= len; ++i) {
-			p = a[i];
-			if(!(p in obj))
-				return u;
-			obj = obj[p];
-			if(i == len)
-				return obj;
-			if(this.isPrimitive(obj))
-				return u;
-		}
-		return u;
-	},
-	setOwnProperty: function(obj) { // obj, "x", "y", value
-		var a = arguments, p;
-		for(var i = 1, len = a.length - 2; i <= len; ++i) {
-			p = a[i];
-			if(!Object.hasOwnProperty.call(obj, p) || !this.isObject(obj[p]))
-				obj[p] = {};
-			if(i != len)
-				obj = obj[p];
-		}
-		obj[p] = a[len + 1];
-	},
-
 	getGlobalForObject: function(o) {
-		if(this.isPrimitive(o))
+		if(this.ju.isPrimitive(o))
 			return null;
 		if("getGlobalForObject" in Components.utils)
 			return Components.utils.getGlobalForObject(o);
@@ -867,7 +789,7 @@ var handyClicksUtils = {
 		}, this);
 	},
 	sortObj: function(obj, deep, ignore) {
-		if(!this.isObject(obj))
+		if(!this.ju.isObject(obj))
 			return obj;
 		var arr = [], ex = { __proto__: null };
 		for(var p in obj) if(Object.hasOwnProperty.call(obj, p)) {
@@ -884,7 +806,7 @@ var handyClicksUtils = {
 		return obj;
 	},
 	getSource: function(o) {
-		return !this.isPrimitive(o) && !("toSource" in o) // !o.__proto__
+		return !this.ju.isPrimitive(o) && !("toSource" in o) // !o.__proto__
 			? Object.prototype.toSource.call(o)
 			: uneval(o);
 	},

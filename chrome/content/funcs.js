@@ -144,7 +144,7 @@ var handyClicksFuncs = {
 				uri = this.getNodeURI(it, itemType, e);
 		}
 
-		var isArr = this.ut.isArray(uri);
+		var isArr = this.ju.isArray(uri);
 		uri = Array.prototype.concat.call(uri).map(
 			function(s) {
 				if(this.isJSURI(s))
@@ -175,7 +175,7 @@ var handyClicksFuncs = {
 	trimStr: function(s) {
 		if(!this.pu.get("funcs.trimStrings"))
 			return s;
-		var isArr = this.ut.isArray(s);
+		var isArr = this.ju.isArray(s);
 		s = Array.prototype.concat.call(s)
 			.map(this.safeToString, this)
 			.map(this.ut.trim, this.ut);
@@ -188,7 +188,7 @@ var handyClicksFuncs = {
 			// Looks like wrapper error with chrome://global/content/bindings/text.xml#text-link binding
 			// on "content" pages (e.g. chrome://global/content/console.xul)
 			: it.href || it.getAttribute("href")
-				|| this.ut.getProperty(it, "repObject", "href") // Firebug
+				|| this.ju.getProperty(it, "repObject", "href") // Firebug
 				|| this.hc.getCSSEditorURI(it)
 				|| this.hc.getWebConsoleURI(it);
 	},
@@ -654,7 +654,7 @@ var handyClicksFuncs = {
 
 	// Generated popup:
 	createPopup: function(items) {
-		if(this.ut.isArray(items))
+		if(this.ju.isArray(items))
 			return this.appendItems(this.getPopup(), items);
 		return this.getPopup(items);
 	},
@@ -685,9 +685,9 @@ var handyClicksFuncs = {
 		return parent;
 	},
 	appendItem: function(parent, item) {
-		var tag = this.ut.getOwnProperty(item, "tagName");
+		var tag = this.ju.getOwnProperty(item, "tagName");
 		delete item.tagName;
-		var childs = this.ut.getOwnProperty(item, "childNodes");
+		var childs = this.ju.getOwnProperty(item, "childNodes");
 		delete item.childNodes;
 
 		var node = parent.appendChild(document.createElement(tag));
@@ -702,7 +702,7 @@ var handyClicksFuncs = {
 			else
 				node[pName] = item[rawName];
 		}
-		if(this.ut.isArray(childs))
+		if(this.ju.isArray(childs))
 			this.appendItems(node, childs);
 	},
 
@@ -732,15 +732,15 @@ var handyClicksFuncs = {
 		}, this);
 	},
 	addAppProps: function(item, uris, checkFiles) {
-		var childs = this.ut.getOwnProperty(item, "childNodes");
-		if(this.ut.isArray(childs))
+		var childs = this.ju.getOwnProperty(item, "childNodes");
+		if(this.ju.isArray(childs))
 			this.addAppsProps(childs, uris, checkFiles);
-		var path = this.ut.getOwnProperty(item, "prop_hc_path");
+		var path = this.ju.getOwnProperty(item, "prop_hc_path");
 		if(!path)
 			return;
-		var icon = this.ut.getOwnProperty(item, "prop_hc_icon");
+		var icon = this.ju.getOwnProperty(item, "prop_hc_icon");
 		delete item.prop_hc_icon;
-		var img = this.ut.getOwnProperty(item, "prop_hc_image");
+		var img = this.ju.getOwnProperty(item, "prop_hc_image");
 		delete item.prop_hc_image;
 
 		const ttBase = "attr_" + this.ui.tooltipAttrBase;
@@ -760,8 +760,8 @@ var handyClicksFuncs = {
 		item[ttBase + ++n] = path;
 		item.prop_hc_path = path;
 
-		var args = this.ut.getOwnProperty(item, "prop_hc_args");
-		if(this.ut.isArray(args))
+		var args = this.ju.getOwnProperty(item, "prop_hc_args");
+		if(this.ju.isArray(args))
 			for(var j = 0, len = args.length; j < len; ++j)
 				item[ttBase + ++n] = args[j];
 		var addNums = uris.length > 1;
@@ -776,7 +776,7 @@ var handyClicksFuncs = {
 		const accesskey = this.getLocalized("editAccesskey");
 		const sepClass = "handyClicks-editItem-separator";
 		const miClass = "menuitem-iconic handyClicks-iconic handyClicks-editItem";
-		if(this.ut.isArray(items)) {
+		if(this.ju.isArray(items)) {
 			items.push(
 				{
 					tagName: "menuseparator",
@@ -792,7 +792,7 @@ var handyClicksFuncs = {
 			);
 			return;
 		}
-		if(this.ut.isObject(items) && "nodeName" in items) {
+		if(this.ju.isObject(items) && "nodeName" in items) {
 			var df = document.createDocumentFragment();
 			df.appendChild(this.ut.createElement("menuseparator", {
 				class: sepClass
@@ -1540,7 +1540,7 @@ var handyClicksFuncs = {
 				_this.ui.setTaskbarProgressState(_this.ui.progressPart, _this.ui.progressCount);
 				var done = state >= _this.ui.progress.max;
 			}
-			if(_this.ut.isEmptyObj(hrefs)) {
+			if(_this.ju.isEmptyObj(hrefs)) {
 				showProgress && done && _this.ui.progressDelayedHide();
 				return;
 			}

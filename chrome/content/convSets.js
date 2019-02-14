@@ -48,16 +48,16 @@ function setsMigration(allowSave, vers) {
 				obj[aName] = a[aName];
 		}
 		var changeTypeObj = this.ut.bind(function(to) {
-			if(this.ut.getOwnProperty(to, "custom"))
+			if(this.ju.getOwnProperty(to, "custom"))
 				return;
-			var act = this.ut.getOwnProperty(to, "action");
+			var act = this.ju.getOwnProperty(to, "action");
 			if(act == "submitFormToNewDoc")
 				to.action = "submitForm";
 			else if(act == "openUriInWindow")
 				try { delete to.arguments.loadJSInBackground; } catch(e) {}
 
-			var args = this.ut.getOwnProperty(to, "arguments");
-			if(!this.ut.isObject(args))
+			var args = this.ju.getOwnProperty(to, "arguments");
+			if(!this.ju.isObject(args))
 				return;
 			changeArg(args, "hidePopup", "closePopups");
 			changeArg(args, "inWin", "winRestriction");
@@ -68,15 +68,15 @@ function setsMigration(allowSave, vers) {
 			if(!this.isOkShortcut(sh))
 				continue;
 			var so = prefs[sh];
-			if(!this.ut.isObject(so))
+			if(!this.ju.isObject(so))
 				continue;
 			for(var type in so) if(so.hasOwnProperty(type)) {
 				var to = so[type];
-				if(!this.ut.isObject(to))
+				if(!this.ju.isObject(to))
 					continue;
 				changeTypeObj(to);
-				var da = this.ut.getOwnProperty(to, "delayedAction");
-				if(this.ut.isObject(da))
+				var da = this.ju.getOwnProperty(to, "delayedAction");
+				if(this.ju.isObject(da))
 					changeTypeObj(da);
 			}
 		}
@@ -86,9 +86,9 @@ function setsMigration(allowSave, vers) {
 		//   openIn => openURIIn
 		//   openUriIn => openURIIn
 		var convAct = this.ut.bind(function(to) {
-			if(this.ut.getOwnProperty(to, "custom"))
+			if(this.ju.getOwnProperty(to, "custom"))
 				return;
-			var act = this.ut.getOwnProperty(to, "action");
+			var act = this.ju.getOwnProperty(to, "action");
 			if(act)
 				to.action = act.replace(/^(_?)open(?:Uri)?In/, "$1openURIIn");
 		}, this);
@@ -98,15 +98,15 @@ function setsMigration(allowSave, vers) {
 			if(!this.isOkShortcut(sh))
 				continue;
 			var so = prefs[sh];
-			if(!this.ut.isObject(so))
+			if(!this.ju.isObject(so))
 				continue;
 			for(var type in so) if(so.hasOwnProperty(type)) {
 				var to = so[type];
-				if(!this.ut.isObject(to))
+				if(!this.ju.isObject(to))
 					continue;
 				convAct(to);
-				var da = this.ut.getOwnProperty(to, "delayedAction");
-				if(this.ut.isObject(da))
+				var da = this.ju.getOwnProperty(to, "delayedAction");
+				if(this.ju.isObject(da))
 					convAct(da);
 			}
 		}
@@ -114,7 +114,7 @@ function setsMigration(allowSave, vers) {
 	if(vers < 0.2) { //= Added: 2010-05-14
 		// Strings are not encoded anymore
 		var recode = this.ut.bind(function(obj, pName) {
-			var pVal = this.ut.getOwnProperty(obj, pName);
+			var pVal = this.ju.getOwnProperty(obj, pName);
 			if(!pVal)
 				return;
 			try {
@@ -128,7 +128,7 @@ function setsMigration(allowSave, vers) {
 			obj[pName] = pVal;
 		}, this);
 		var recodeTypeObj = this.ut.bind(function(to) {
-			if(!this.ut.getOwnProperty(to, "custom"))
+			if(!this.ju.getOwnProperty(to, "custom"))
 				return;
 			recode(to, "label");
 			recode(to, "action");
@@ -140,15 +140,15 @@ function setsMigration(allowSave, vers) {
 			if(!this.isOkShortcut(sh))
 				continue;
 			var so = prefs[sh];
-			if(!this.ut.isObject(so))
+			if(!this.ju.isObject(so))
 				continue;
 			for(var type in so) if(so.hasOwnProperty(type)) {
 				var to = so[type];
-				if(!this.ut.isObject(to))
+				if(!this.ju.isObject(to))
 					continue;
 				recodeTypeObj(to);
-				var da = this.ut.getOwnProperty(to, "delayedAction");
-				if(!this.ut.isObject(da))
+				var da = this.ju.getOwnProperty(to, "delayedAction");
+				if(!this.ju.isObject(da))
 					continue;
 				recodeTypeObj(da);
 			}
@@ -157,7 +157,7 @@ function setsMigration(allowSave, vers) {
 		var types = this.types;
 		for(var type in types) if(types.hasOwnProperty(type)) {
 			var to = types[type];
-			if(!this.ut.isObject(to))
+			if(!this.ju.isObject(to))
 				continue;
 			recode(to, "label");
 			recode(to, "define");
@@ -196,21 +196,21 @@ function setsMigration(allowSave, vers) {
 		var prefs = this.prefs;
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			var so = prefs[sh];
-			if(!this.ut.isObject(so))
+			if(!this.ju.isObject(so))
 				continue;
-			if(so.hasOwnProperty("img") && this.ut.isObject(so.img)) {
+			if(so.hasOwnProperty("img") && this.ju.isObject(so.img)) {
 				so.img.ignoreLinks = so.img.ignoreLinks || false;
 				so.img.ignoreSingle = so.img.ignoreSingle || false;
 			}
 			if(
 				so.hasOwnProperty("tab")
-				&& this.ut.isObject(so.tab)
+				&& this.ju.isObject(so.tab)
 				&& !so.tab.hasOwnProperty("excludeCloseButton")
 			)
 				so.tab.excludeCloseButton = true;
 			if(
 				so.hasOwnProperty("ext_mulipletabs")
-				&& this.ut.isObject(so.ext_mulipletabs)
+				&& this.ju.isObject(so.ext_mulipletabs)
 				&& !so.ext_mulipletabs.hasOwnProperty("excludeCloseButton")
 			)
 				so.ext_mulipletabs.excludeCloseButton = true;

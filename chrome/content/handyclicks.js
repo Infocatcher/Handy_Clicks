@@ -154,7 +154,7 @@ var handyClicks = {
 				break;
 			}
 		}
-		if(!this.ut.isEmptyObj(alf))
+		if(!this.ju.isEmptyObj(alf))
 			window.addEventListener("blur", this, true);
 		else {
 			this._log("focusHandler() -> nothing to watch, remove storage");
@@ -259,7 +259,7 @@ var handyClicks = {
 			}
 		}
 
-		var amd = this.ut.getOwnProperty(funcObj, "allowMousedownEvent");
+		var amd = this.ju.getOwnProperty(funcObj, "allowMousedownEvent");
 		// true      - don't stop
 		// undefined - smart
 		// false     - always stop
@@ -278,7 +278,7 @@ var handyClicks = {
 
 		var delay = this.pu.get("delayedActionTimeout");
 		if(delay > 0 && !em) {
-			var delayedAction = this.ut.getOwnProperty(funcObj, "delayedAction");
+			var delayedAction = this.ju.getOwnProperty(funcObj, "delayedAction");
 			if(
 				(!delayedAction && e.button == 2) // Show context menu after delay
 				|| this.isOkFuncObj(delayedAction) // Other action after delay
@@ -640,13 +640,13 @@ var handyClicks = {
 			_it = this.getImg(it);
 			if(
 				_it && (
-					!this.ut.getOwnProperty(sets, "img", "ignoreSingle")
+					!this.ju.getOwnProperty(sets, "img", "ignoreSingle")
 					|| _it.ownerDocument.documentURI != _it.src
 				)
 			) {
 				this.itemType = "img";
 				this.item = _it;
-				if(this.ut.getOwnProperty(sets, "img", "ignoreLinks"))
+				if(this.ju.getOwnProperty(sets, "img", "ignoreLinks"))
 					return;
 			}
 		}
@@ -659,7 +659,7 @@ var handyClicks = {
 		var mth = all || this.itemTypeInSets(sets, "ext_mulipletabs");
 		var tab = all || this.itemTypeInSets(sets, "tab");
 		if(mth || tab) {
-			var excludeBtn = this.ut.getOwnProperty(sets, mth ? "ext_mulipletabs" : "tab", "excludeCloseButton");
+			var excludeBtn = this.ju.getOwnProperty(sets, mth ? "ext_mulipletabs" : "tab", "excludeCloseButton");
 			_it = this.getTab(it, excludeBtn === undefined ? true : excludeBtn);
 			if(_it && mth && "MultipleTabService" in window && MultipleTabService.isSelected(_it)) {
 				this.itemType = "ext_mulipletabs";
@@ -782,7 +782,7 @@ var handyClicks = {
 				)
 				&& (
 					it.hasAttribute("href")
-					|| this.ut.getProperty(it, "repObject", "href") // Firebug
+					|| this.ju.getProperty(it, "repObject", "href") // Firebug
 				)
 				|| it.nodeType == eltNode && it.hasAttributeNS("http://www.w3.org/1999/xlink", "href")
 			)
@@ -1013,7 +1013,7 @@ var handyClicks = {
 			}
 		}
 
-		if(this.ut.isObject(cm) && typeof cm.hidePopup != "function") {
+		if(this.ju.isObject(cm) && typeof cm.hidePopup != "function") {
 			// XUL document with custom context...
 			this.ut._warn('getItemContext: context menu has no "hidePopup" method, id: "' + cm.id + '"');
 			cm = null;
@@ -1116,7 +1116,7 @@ var handyClicks = {
 				it = it.parentNode;
 			var uri = it.classList
 				&& it.classList.contains("ruleview-rule-source")
-				&& this.ut.getProperty(it, "parentNode", "_ruleEditor", "rule", "sheet", "href");
+				&& this.ju.getProperty(it, "parentNode", "_ruleEditor", "rule", "sheet", "href");
 			if(uri)
 				return uri;
 		}
@@ -1261,7 +1261,7 @@ var handyClicks = {
 			return;
 		it = it || this.mainItem || this.item;
 		if(
-			!this.ut.isObject(it)
+			!this.ju.isObject(it)
 			|| document.commandDispatcher.focusedElement === it // Already focused
 			|| !("focus" in it) // typeof it.focus == "function"
 			|| it.ownerDocument.defaultView.getComputedStyle(it, null).MozUserFocus == "ignore"
