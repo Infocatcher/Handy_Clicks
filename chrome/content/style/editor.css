@@ -43,10 +43,10 @@ menulist[hc_sets="disabled"] .menulist-label {
 	-moz-image-region: rect(48px 128px 64px 112px);
 }
 #hc-editor-renameShortcut[hc_rename="Done"] {
-	-moz-image-region: rect(48px 16px 64px 0);
+	-moz-image-region: rect(64px 112px 80px 96px);
 }
 #hc-editor-renameShortcut[hc_rename="Cancel"] {
-	-moz-image-region: rect(48px 64px 64px 48px);
+	-moz-image-region: rect(64px 128px 80px 112px);
 }
 :root[hc_renameShortcut="true"] #hc-editor-renameShortcutOverlay {
 	position: fixed;
