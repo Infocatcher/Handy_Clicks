@@ -655,6 +655,9 @@ preferences {
 	<script type="application/javascript" src="chrome://handyclicks/content/sets.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/regSvc.js" />
 
+	<html:link xmlns:html="http://www.w3.org/1999/xhtml" rel="shortcut icon" style="display: none;"
+		href="chrome://handyclicks-icon/skin/chrome/icons/default/handyClicks-settings.ico" />
+
 	<commandset id="hc-sets-cmds">
 		<command id="hc-sets-cmd-add" oncommand="handyClicksSets.addItems();" label="&hc.sets.cmdAdd;" />
 		<command id="hc-sets-cmd-edit" oncommand="handyClicksSets.editItems();" label="&hc.sets.cmdEdit;" />

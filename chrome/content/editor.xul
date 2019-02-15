@@ -43,6 +43,9 @@
 	<script type="application/javascript" src="chrome://handyclicks/content/editor.js" />
 	<script type="application/javascript" src="chrome://handyclicks/content/regSvc.js" />
 
+	<html:link xmlns:html="http://www.w3.org/1999/xhtml" rel="shortcut icon" style="display: none;"
+		href="chrome://handyclicks-icon/skin/chrome/icons/default/handyClicks-editor.ico" />
+
 	<commandset id="hc-editor-commands">
 		<command id="hc-editor-cmd-test" oncommand="event.stopPropagation(); handyClicksEditor.testSettings();"
 			disabled="true" label="&hc.editor.test;" accesskey="&hc.editor.testAccesskey;" />
