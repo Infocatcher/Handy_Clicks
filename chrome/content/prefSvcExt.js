@@ -153,7 +153,7 @@ var handyClicksPrefSvcExt = {
 			var fName = entry.leafName;
 			if(
 				entry.isFile()
-				&& this.ju.hasPrefix(fName, namePrefix)
+				&& this.ju.startsWith(fName, namePrefix)
 				&& /-(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\.js$/i.test(fName)
 			) {
 				bakFiles.push({

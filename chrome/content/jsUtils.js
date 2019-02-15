@@ -73,8 +73,8 @@ var handyClicksJsUtils = {
 		obj[p] = a[len + 1];
 	},
 
-	hasPrefix: function(str, prefix) {
-		var f = this.hasPrefix = "startsWith" in String.prototype
+	startsWith: function(str, prefix) {
+		var f = this.startsWith = "startsWith" in String.prototype
 			? String.prototype.startsWith.call.bind(String.prototype.startsWith)
 			: function(str, prefix) {
 				return str.substr(0, prefix.length) == prefix;
@@ -82,12 +82,12 @@ var handyClicksJsUtils = {
 		return f.apply(this, arguments);
 	},
 	removePrefix: function(str, prefix, forced) {
-		if(forced || this.hasPrefix(str, prefix))
+		if(forced || this.startsWith(str, prefix))
 			return str.substr(prefix.length);
 		return str;
 	},
-	hasPostfix: function(str, postfix) {
-		var f = this.hasPostfix = "endsWith" in String.prototype
+	endsWith: function(str, postfix) {
+		var f = this.endsWith = "endsWith" in String.prototype
 			? String.prototype.endsWith.call.bind(String.prototype.endsWith)
 			: function(str, postfix) {
 				return str.substr(-postfix.length) == postfix;
@@ -95,7 +95,7 @@ var handyClicksJsUtils = {
 		return f.apply(this, arguments);
 	},
 	removePostfix: function(str, postfix, forced) {
-		if(forced || this.hasPostfix(str, postfix))
+		if(forced || this.endsWith(str, postfix))
 			return str.substr(0, str.length - postfix.length);
 		return str;
 	},

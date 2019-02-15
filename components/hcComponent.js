@@ -47,9 +47,9 @@ if((app == "Firefox" || app == "SeaMonkey") && parseFloat(appInfo.platformVersio
 
 function handleURI(uri) {
 	var g = handyClicksGlobals;
-	if(hasPrefix(uri, g.ct.PROTOCOL_SETTINGS))
+	if(startsWith(uri, g.ct.PROTOCOL_SETTINGS))
 		g.wu.openSettingsLink(uri);
-	else if(hasPrefix(uri, g.ct.PROTOCOL_EDITOR))
+	else if(startsWith(uri, g.ct.PROTOCOL_EDITOR))
 		g.wu.openEditorLink(uri);
 }
 function disable() {
@@ -57,8 +57,8 @@ function disable() {
 		.getService(Ci.nsIPrefBranch)
 		.setBoolPref("extensions.handyclicks.enabled", false);
 }
-function hasPrefix(str, prefix) {
-	var f = hasPrefix = "startsWith" in String.prototype
+function startsWith(str, prefix) {
+	var f = startsWith = "startsWith" in String.prototype
 		? String.prototype.startsWith.call.bind(String.prototype.startsWith)
 		: function(str, prefix) {
 			return str.substr(0, prefix.length) == prefix;

@@ -118,7 +118,7 @@ var handyClicksWinUtils = {
 	},
 	openEditorLink: function(href, line) {
 		const ed = this.ct.PROTOCOL_EDITOR;
-		if(!href || !this.hasPrefix(href, ed))
+		if(!href || !this.startsWith(href, ed))
 			return null;
 		href = href.replace(/\?(.*)$/, "");
 		var args = RegExp.$1;
@@ -186,7 +186,7 @@ var handyClicksWinUtils = {
 	},
 	openSettingsPane: function(paneId) {
 		const idPrefix = "hc-sets-pane-";
-		if(!this.hasPrefix(paneId, idPrefix))
+		if(!this.startsWith(paneId, idPrefix))
 			paneId = idPrefix + paneId;
 		var w = this.openSettings();
 		var showPane = function(e) {
@@ -202,19 +202,19 @@ var handyClicksWinUtils = {
 		return w;
 	},
 	openSettingsLink: function(uri) {
-		if(this.hasPrefix(uri, this.ct.PROTOCOL_SETTINGS_ADD))
+		if(this.startsWith(uri, this.ct.PROTOCOL_SETTINGS_ADD))
 			this.openSettingsImport(true, this.ct.IMPORT_STRING, uri);
-		else if(this.hasPrefix(uri, this.ct.PROTOCOL_SETTINGS_PANE))
+		else if(this.startsWith(uri, this.ct.PROTOCOL_SETTINGS_PANE))
 			this.openSettingsPane(uri.substr(this.ct.PROTOCOL_SETTINGS_PANE.length));
-		else if(this.hasPrefix(uri, this.ct.PROTOCOL_SETTINGS))
+		else if(this.startsWith(uri, this.ct.PROTOCOL_SETTINGS))
 			this.openSettings();
 	},
 
 	// See the same function in utils.js (winUtils.js is global, but utils.js - not)
 	// Used from components/hcComponent.js and from console.js
 	//~ todo: use global utils
-	hasPrefix: function(str, prefix) {
-		var f = this.hasPrefix = "startsWith" in String.prototype
+	startsWith: function(str, prefix) {
+		var f = this.startsWith = "startsWith" in String.prototype
 			? String.prototype.startsWith.call.bind(String.prototype.startsWith)
 			: function(str, prefix) {
 				return str.substr(0, prefix.length) == prefix;
