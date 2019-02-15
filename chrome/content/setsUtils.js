@@ -480,7 +480,7 @@ var handyClicksSetsUtils = {
 		return true;
 	},
 	scrollTabs: function(e) {
-		for(var node = e.target; node; node = node.parentNode) {
+		for(var node = e.target; node && "localName" in node; node = node.parentNode) {
 			if(node.localName == "tabs") {
 				node.advanceSelectedTab(this.isScrollForward(e) ? 1 : -1, true);
 				return true;
@@ -500,47 +500,47 @@ var handyClicksSetsUtils = {
 		return false;
 	},
 	scrollRadios: function(e) {
-		for(var node = e.originalTarget; node; node = node.parentNode) {
-			if(node.localName == "radiogroup") {
-				var maxIndx = (node.itemCount || node._getRadioChildren().length) - 1;
-				if(maxIndx < 0)
+		for(var node = e.originalTarget; node && "localName" in node; node = node.parentNode) {
+			if(node.localName != "radiogroup")
+				continue;
+			var maxIndx = (node.itemCount || node._getRadioChildren().length) - 1;
+			if(maxIndx < 0)
+				return false;
+			var fwd = this.isScrollForward(e);
+			var si = node.selectedIndex;
+			if(si < 0 || si > maxIndx)
+				si = fwd ? 0 : maxIndx;
+			var si0 = si;
+			var add = fwd ? 1 : -1;
+			var next = function() {
+				si += add;
+				if(si < 0)
+					si = maxIndx;
+				else if(si > maxIndx)
+					si = 0;
+			};
+			var get = function(indx) {
+				if("getItemAtIndex" in node)
+					return node.getItemAtIndex(indx);
+				var children = node._getRadioChildren();
+				return indx >= 0 && indx < children.length ? children[indx] : null;
+			};
+			for(;;) {
+				next();
+				if(si == si0)
 					return false;
-				var fwd = this.isScrollForward(e);
-				var si = node.selectedIndex;
-				if(si < 0 || si > maxIndx)
-					si = fwd ? 0 : maxIndx;
-				var si0 = si;
-				var add = fwd ? 1 : -1;
-				var next = function() {
-					si += add;
-					if(si < 0)
-						si = maxIndx;
-					else if(si > maxIndx)
-						si = 0;
-				};
-				var get = function(indx) {
-					if("getItemAtIndex" in node)
-						return node.getItemAtIndex(indx);
-					var children = node._getRadioChildren();
-					return indx >= 0 && indx < children.length ? children[indx] : null;
-				};
-				for(;;) {
-					next();
-					if(si == si0)
-						return false;
-					var it = get(si);
-					if(
-						it.getAttribute("disabled") != "true"
-						&& this.ut.isElementVisible(it)
-					)
-						break
-				}
-				if(si == node.selectedIndex)
-					return false;
-				node.selectedIndex = si;
-				it.doCommand();
-				return true;
+				var it = get(si);
+				if(
+					it.getAttribute("disabled") != "true"
+					&& this.ut.isElementVisible(it)
+				)
+					break
 			}
+			if(si == node.selectedIndex)
+				return false;
+			node.selectedIndex = si;
+			it.doCommand();
+			return true;
 		}
 		return false;
 	},
