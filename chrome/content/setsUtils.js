@@ -136,24 +136,25 @@ var handyClicksSetsUtils = {
 	},
 	checkWindowStatus: function(checkOpener) {
 		var onTopBtn = this.onTopBtn;
-		var na = String(top.windowState != top.STATE_NORMAL);
+		var top = this.topWindow;
+		var na = "" + (top.windowState != top.STATE_NORMAL);
 		if(onTopBtn.getAttribute(this.onTopNAAttr) == na)
 			return;
 		onTopBtn.setAttribute(this.onTopNAAttr, na);
 		this.setOnTop(false, checkOpener);
 	},
 	setOnTop: function(toggle, checkOpener) {
-		var document = top.document;
 		var root = document.documentElement;
 		var onTop = root.getAttribute(this.onTopAttr) == "true";
 		var forceOnTop = checkOpener && !onTop && !toggle
-			&& top.opener && top.opener.document
-			&& top.opener.document.documentElement.getAttribute(this.onTopAttr) == "true";
+			&& opener && opener.document
+			&& opener.document.documentElement.getAttribute(this.onTopAttr) == "true";
 		if(toggle || forceOnTop) {
 			onTop = !onTop;
 			root.setAttribute(this.onTopAttr, onTop);
 			root.id && document.persist(root.id, this.onTopAttr);
 		}
+		var top = this.topWindow;
 		var state = top.windowState;
 		// Strange glitches with minimized "raisedZ" window...
 		var restore = onTop && state == top.STATE_MINIMIZED;
@@ -171,7 +172,7 @@ var handyClicksSetsUtils = {
 		this.setOnTop(true);
 	},
 	showOnTopStatus: function(onTop) {
-		var root = top.document.documentElement;
+		var root = document.documentElement;
 		if(onTop === undefined)
 			onTop = root.getAttribute(this.onTopAttr) == "true";
 		var btnVisible = this.pu.get("ui.onTopButton");
