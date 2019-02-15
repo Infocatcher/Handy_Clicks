@@ -249,8 +249,8 @@ var handyClicksSetsUtils = {
 		return this.importFlag = this.ut.trim(this.getLocalized("importFlag")) + " ";
 	},
 	removeTitleFlags: function(title) {
-		title = this.ut.removePrefix(title, this.modifiedFlag);
-		title = this.ut.removePrefix(title, this.importFlag);
+		title = this.ju.removePrefix(title, this.modifiedFlag);
+		title = this.ju.removePrefix(title, this.importFlag);
 		return title;
 	},
 	createTitle: function(title, isModified, isImport) {

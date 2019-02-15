@@ -165,7 +165,7 @@ var handyClicksUI = {
 
 		var inheritContext = this.pu.get("ui.inheritToolbarContextMenu")
 			&& pn && pn.localName != "browser"
-			&& !this.ut.hasPrefix(pn.localName, "statusbar");
+			&& !this.ju.hasPrefix(pn.localName, "statusbar");
 		var sep = this.$("handyClicks-mainCommandsSeparator");
 		if(sep.hidden == inheritContext) for(; sep; sep = sep.nextSibling)
 			sep.hidden = !inheritContext;
@@ -525,9 +525,9 @@ var handyClicksUI = {
 	prefChanged: function(pName) {
 		if(pName == "enabled")
 			this.setStatus();
-		else if(this.ut.hasPrefix(pName, "ui.showIn") || pName == "ui.showAppMenuSeparator")
+		else if(this.ju.hasPrefix(pName, "ui.showIn") || pName == "ui.showAppMenuSeparator")
 			this.showHideControls();
-		else if(this.ut.hasPrefix(pName, "ui.action"))
+		else if(this.ju.hasPrefix(pName, "ui.action"))
 			this.setupUIActions();
 		else if(pName == "ui.customizableProgressBar")
 			this.setupProgress();

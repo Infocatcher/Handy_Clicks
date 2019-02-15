@@ -179,7 +179,7 @@ function setsMigration(allowSave, vers) {
 				var fName = entry.leafName;
 				if(
 					!entry.isFile()
-					|| !this.ut.hasPrefix(fName, fPrefix)
+					|| !this.ju.hasPrefix(fName, fPrefix)
 					|| !/\.js$/i.test(fName)
 					|| fName == mainFile
 				)

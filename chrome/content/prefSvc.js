@@ -679,13 +679,13 @@ var handyClicksPrefSvc = {
 	customPrefix: "custom_",
 	extPrefix: "ext_",
 	isCustomType: function(type) {
-		return type && this.ut.hasPrefix(type, this.customPrefix);
+		return type && this.ju.hasPrefix(type, this.customPrefix);
 	},
 	removeCustomPrefix: function(type) {
-		return this.ut.removePrefix(type, this.customPrefix);
+		return this.ju.removePrefix(type, this.customPrefix);
 	},
 	isExtType: function(type) {
-		return type && this.ut.hasPrefix(type, this.extPrefix);
+		return type && this.ju.hasPrefix(type, this.extPrefix);
 	},
 
 	getTypeLabel: function(type, isCustomType, types) {
@@ -795,7 +795,7 @@ var handyClicksPrefSvc = {
 	},
 	getPrefsStr: function(str) {
 		const add = this.ct.PROTOCOL_SETTINGS_ADD;
-		if(this.ut.hasPrefix(str, add))
+		if(this.ju.hasPrefix(str, add))
 			return this.decURI(str.substr(add.length));
 		return str;
 	},
@@ -819,7 +819,7 @@ var handyClicksPrefSvc = {
 		this._hashMissing = true;
 		this._hasCustomCode = checkCustom ? false : undefined;
 
-		if(!this.ut.hasPrefix(str, this.requiredHeader)) {
+		if(!this.ju.hasPrefix(str, this.requiredHeader)) {
 			!silent && this.ut._err("Invalid prefs: wrong header");
 			return false;
 		}

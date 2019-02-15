@@ -120,33 +120,6 @@ var handyClicksUtils = {
 		catch(e) { return e; }
 	},
 
-	hasPrefix: function(str, prefix) {
-		var f = this.hasPrefix = "startsWith" in String.prototype
-			? String.prototype.startsWith.call.bind(String.prototype.startsWith)
-			: function(str, prefix) {
-				return str.substr(0, prefix.length) == prefix;
-			};
-		return f.apply(this, arguments);
-	},
-	removePrefix: function(str, prefix, forced) {
-		if(forced || this.hasPrefix(str, prefix))
-			return str.substr(prefix.length);
-		return str;
-	},
-	hasPostfix: function(str, postfix) {
-		var f = this.hasPostfix = "endsWith" in String.prototype
-			? String.prototype.endsWith.call.bind(String.prototype.endsWith)
-			: function(str, postfix) {
-				return str.substr(-postfix.length) == postfix;
-			};
-		return f.apply(this, arguments);
-	},
-	removePostfix: function(str, postfix, forced) {
-		if(forced || this.hasPostfix(str, postfix))
-			return str.substr(0, str.length - postfix.length);
-		return str;
-	},
-
 	NOTIFY_ICON_NORMAL: "normal",
 	NOTIFY_ICON_DISABLED: "disabled",
 	NOTIFY_ICON_WARNING: "warning",

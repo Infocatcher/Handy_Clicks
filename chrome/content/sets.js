@@ -1356,7 +1356,7 @@ var handyClicksSets = {
 	_setItemStatus: function(rowId, editStat) {
 		if(!rowId)
 			return;
-		rowId = this.ut.removePostfix(rowId, this.ct.OTHER_SRC_POSTFIX);
+		rowId = this.ju.removePostfix(rowId, this.ct.OTHER_SRC_POSTFIX);
 		if(!(rowId in this.rowsCache))
 			return;
 		this.setChildNodesProperties(
@@ -2245,7 +2245,7 @@ var handyClicksSets = {
 			this.updTree();
 		else if(pName == "sets.codeLengthLimit" || pName == "sets.codeLengthLimit.preserveLines")
 			this.redrawTree();
-		else if(this.ut.hasPrefix(pName, "editor.externalEditor")) {
+		else if(this.ju.hasPrefix(pName, "editor.externalEditor")) {
 			this.initExternalEditor();
 			this.updateDependencies("externalEditor");
 		}
@@ -2255,7 +2255,7 @@ var handyClicksSets = {
 			this.setDisallowMousemove();
 			this.updateDependencies("disallowMousemove");
 		}
-		else if(this.ut.hasPrefix(pName, "ui.action"))
+		else if(this.ju.hasPrefix(pName, "ui.action"))
 			this.loadUIAction();
 		else {
 			this.updateAllDependencies();
@@ -2585,7 +2585,7 @@ var handyClicksSets = {
 			var aliasFile = this.ut.getFileByAlias(alias, true);
 			for(var level = 0; aliasFile && level <= maxLevel; ++level) {
 				var aliasPath = aliasFile.path;
-				if(this.ut.hasPrefix(path, aliasPath + dirSep)) {
+				if(this.ju.hasPrefix(path, aliasPath + dirSep)) {
 					return "%" + alias + "%"
 						+ new Array(level + 1).join(dirSep + "..")
 						+ path.substr(aliasPath.length);
@@ -3036,7 +3036,7 @@ var handyClicksSets = {
 				continue;
 			}
 			var pName = line.substr(0, indx);
-			if(!this.ut.hasPrefix(pName, this.pu.prefNS)) {
+			if(!this.ju.hasPrefix(pName, this.pu.prefNS)) {
 				this.ut._warn('[Import INI] Skipped pref with invalid name: "' + pName + '"');
 				continue;
 			}
@@ -3055,7 +3055,7 @@ var handyClicksSets = {
 				// Backward compatible fix for multiline string pref
 				for(; i < l; ) {
 					var nextLine = lines[i + 1];
-					if(this.ut.hasPrefix(nextLine, this.pu.prefNS))
+					if(this.ju.hasPrefix(nextLine, this.pu.prefNS))
 						break;
 					pVal += "\n" + nextLine;
 					++i;
@@ -3330,9 +3330,9 @@ var handyClicksSets = {
 			if(
 				entry.isFile()
 				&& /\.js$/i.test(fName)
-				&& this.ut.hasPrefix(fName, fPrefix)
+				&& this.ju.hasPrefix(fName, fPrefix)
 				&& fName != mainFile
-				&& !this.ut.hasPrefix(fName, corrupted)
+				&& !this.ju.hasPrefix(fName, corrupted)
 			) {
 				bakFiles.push({
 					file: entry,
@@ -3356,9 +3356,9 @@ var handyClicksSets = {
 				acceltext: this.stringifySize(file.fileSize),
 				tooltiptext: file.path,
 				hc_fileName: name,
-				hc_userBackup: this.ut.hasPrefix(name, userBackup) && !!(++ubCount),
-				hc_oldBackup:  this.ut.hasPrefix(name, oldBackup),
-				hc_testBackup: this.ut.hasPrefix(name, testBackup) && testBackupStatus
+				hc_userBackup: this.ju.hasPrefix(name, userBackup) && !!(++ubCount),
+				hc_oldBackup:  this.ju.hasPrefix(name, oldBackup),
+				hc_testBackup: this.ju.hasPrefix(name, testBackup) && testBackupStatus
 			}));
 			mi.__file = file;
 		}, this);
@@ -3775,13 +3775,13 @@ var handyClicksSets = {
 				}
 				if(type == "text/x-moz-url") {
 					var url = getDataAt(type, i).match(/^[^\r\n]*/)[0];
-					return this.ut.hasPrefix(url, this.ct.PROTOCOL_SETTINGS_ADD) && url;
+					return this.ju.hasPrefix(url, this.ct.PROTOCOL_SETTINGS_ADD) && url;
 				}
 				if(type == "text/plain") {
 					var str = this.ut.trim(getDataAt(type, i) || "");
 					return (
-						this.ut.hasPrefix(str, this.ps.requiredHeader)
-						|| this.ut.hasPrefix(str, this.ct.PROTOCOL_SETTINGS_ADD)
+						this.ju.hasPrefix(str, this.ps.requiredHeader)
+						|| this.ju.hasPrefix(str, this.ct.PROTOCOL_SETTINGS_ADD)
 					) && str;
 				}
 			}

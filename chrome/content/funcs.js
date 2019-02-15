@@ -14,7 +14,7 @@ var handyClicksFuncs = {
 		uri = uri || this.getItemURI(item);
 		var doc = item.ownerDocument;
 		var loc = doc.location.href.replace(/#.*$/, "");
-		if(!this.ut.hasPrefix(uri, loc))
+		if(!this.ju.hasPrefix(uri, loc))
 			return false;
 		var _uri = uri.substr(loc.length);
 		if(_uri == "" && item.getAttribute && item.hasAttribute("href") && !item.getAttribute("href")) // <a href="">
@@ -847,7 +847,7 @@ var handyClicksFuncs = {
 			charset = this.pu.get("funcs.convertURIsCharset");
 			if(!charset) {
 				charset = this.pu.getPref("intl.charset.default");
-				if(!charset || this.ut.hasPrefix(charset, "chrome://"))
+				if(!charset || this.ju.hasPrefix(charset, "chrome://"))
 					charset = this.defaultCharset;
 			}
 		}
