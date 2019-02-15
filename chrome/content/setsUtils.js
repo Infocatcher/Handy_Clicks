@@ -291,6 +291,15 @@ var handyClicksSetsUtils = {
 		return ret;
 	},
 
+	get topWindow() {
+		return window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+			.getInterface(Components.interfaces.nsIWebNavigation)
+			.QueryInterface(Components.interfaces.nsIDocShellTreeItem)
+			.rootTreeItem
+			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+			.getInterface(Components.interfaces.nsIDOMWindow);
+	},
+
 	_allowScroll: 0,
 	handleScroll: function(e) {
 		if(
@@ -301,23 +310,8 @@ var handyClicksSetsUtils = {
 		var aw = this.wu.ww.activeWindow;
 		if(aw && aw.location.href == "chrome://global/content/commonDialog.xul")
 			return; // Scroll still works for disabled window...
-
-		if(aw) try {
-			var topWin = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-				.getInterface(Components.interfaces.nsIWebNavigation)
-				.QueryInterface(Components.interfaces.nsIDocShellTreeItem)
-				.rootTreeItem
-				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-				.getInterface(Components.interfaces.nsIDOMWindow);
-			if(
-				aw != topWin
-				&& this.pu.get("sets.scrollLists.onlyInActiveWindow")
-			)
-				return;
-		}
-		catch(e) {
-			Components.utils.reportError(e);
-		}
+		if(aw && this.pu.get("sets.scrollLists.onlyInActiveWindow") && aw != this.topWindow)
+			return;
 
 		// Forbid too quickly scroll
 		var now = Date.now();
