@@ -628,9 +628,10 @@ var handyClicksPrefSvc = {
 	set _savedStr(str) {
 		const pSvc = "handyClicksPrefSvc";
 		this.wu.forEachWindow(["handyclicks:settings", "handyclicks:editor"], function(w) {
-			if(pSvc in w)
+			if(w != window && pSvc in w)
 				w[pSvc].__savedStr = str;
 		});
+		this.__savedStr = str; // Directly set for settings in tab
 	},
 
 	get isMainWnd() {
