@@ -120,21 +120,6 @@ var handyClicksUtils = {
 		catch(e) { return e; }
 	},
 
-	_timers: { __proto__: null },
-	timer: function(tId, division) {
-		var ts = this._timers;
-		if(tId in ts) {
-			var dt = this.now() - ts[tId];
-			if(division)
-				dt /= division;
-			var dtr = Math.floor(dt) == dt ? dt : dt.toFixed(3);
-			this._log("[timer] " + tId + " -> " + dtr + " ms");
-			delete ts[tId];
-			return dt;
-		}
-		return ts[tId] = this.now();
-	},
-
 	hasPrefix: function(str, prefix) {
 		var f = this.hasPrefix = "startsWith" in String.prototype
 			? String.prototype.startsWith.call.bind(String.prototype.startsWith)

@@ -151,6 +151,20 @@ var g = window.handyClicksGlobals = {
 		try { return "" + o; }
 		catch(e) { return "" + e; }
 	},
+	_timers: { __proto__: null },
+	timer: function(tId, division) {
+		var ts = this._timers;
+		if(tId in ts) {
+			var dt = this.now() - ts[tId];
+			if(division)
+				dt /= division;
+			var dtr = Math.floor(dt) == dt ? dt : dt.toFixed(3);
+			this._log("[timer] " + tId + " -> " + dtr + " ms");
+			delete ts[tId];
+			return dt;
+		}
+		return ts[tId] = this.now();
+	},
 
 	get cn() { return lazy("cn", "handyClicksConsole");    },
 	get ed() { return lazy("ed", "handyClicksEditor");     },
