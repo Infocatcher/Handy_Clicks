@@ -143,6 +143,18 @@
 `*` Restore from backup menu: use short date format (if available modern `Date.prototype.toLocaleString(locale, options)`) and use acceltext to show file size for better alignment.<br>
 `*` Updated checkbox icons in settings tree and added icon for “Toggle” context menu item (used icons from Windows 7).<br>
 `*` Highlight hovered checkbox cells in settings tree.<br>
+`+` Added blacklists for left- middle- and right-clicks without modifiers to disable click handling on user-defined sites (<em>extensions.handyclicks.blacklist.0</em>, …<em>1</em>, …<em>2</em> preferences).<br>
+`*` Also remember current index in settings tree, not only selected items.<br>
+`x` Compatibility fixes for SeaMonkey 2.55+.<br>
+`x` Fixed missing overflow style for delayed function (for too many function arguments), also added min height for code textbox.<br>
+`*` Disable “scroll to switch”, if detected scrollbar.<br>
+`*` Used lazy loading for utils.js and prefSvc.js in settings and editor for better performance.<br>
+`*` Moved I/O-related code from utils.js to separate io.js file with lazy loading (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/35">#35</a>).<br>
+`*` Moved often used utils from utils.js to separate jsUtils.js file with lazy loading (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/36">#36</a>).<br>
+`*` Changed execution context to initialize custom functions from this.fn to this.hc (to not load funcs.js on startup).<br>
+`x` Fixed “on top” button, if opened in tab.<br>
+`x` Correctly check for unsaved tree, if opened in tab.<br>
+`+` Added favicons for editor and settings in tab.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre7 (2019-02-10)
