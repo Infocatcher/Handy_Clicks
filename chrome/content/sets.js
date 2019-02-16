@@ -738,6 +738,7 @@ var handyClicksSets = {
 			daItem.__shortcut = shortcut;
 			daItem.__itemType = itemType;
 			daItem.__isCustomType = isCustomType;
+			daItem.__isType = false;
 			daItem.__isDelayed = true;
 			daItem.__isRemoved = drawRemoved;
 
@@ -805,6 +806,7 @@ var handyClicksSets = {
 		tItem.__shortcut = shortcut;
 		tItem.__itemType = itemType;
 		tItem.__isCustomType = isCustomType;
+		tItem.__isType = false;
 		tItem.__isDelayed = false;
 		tItem.__isRemoved = drawRemoved;
 		tItem.__delayed = da && daItem;
@@ -843,6 +845,7 @@ var handyClicksSets = {
 		tItem.__shortcut = undefined;
 		tItem.__itemType = type;
 		tItem.__isCustomType = true;
+		tItem.__isType = true;
 		tItem.__isDelayed = false;
 		tItem.__isRemoved = drawRemoved;
 		tItem.__delayed = null;
@@ -1254,11 +1257,19 @@ var handyClicksSets = {
 		var info = tIts.map(function(tItem, i) {
 			if(typeof tItem == "string") // Cropped mark
 				return tItem;
-			var type = tItem.__itemType, sh = tItem.__shortcut;
+			var type = tItem.__itemType;
+			var typeLabel = this.cropStr(this.ps.getTypeLabel(type), MAX_TYPE_LENGTH);
+			var n = i + 1;
+			if(n == MAX_ROWS)
+				n = itsCount;
+			if(tItem.__isType) {
+				return n + ". " + this.getLocalized("customType")
+					.replace("%s", typeLabel);
+			}
+			var sh = tItem.__shortcut;
 			var mdfs = this.ps.getModifiersStr(sh);
 			var button = this.ps.getButtonStr(sh, true);
 			var sep = this.ps.spacedSep;
-			var typeLabel = this.cropStr(this.ps.getTypeLabel(type), MAX_TYPE_LENGTH);
 			var fObj = this.ju.getOwnProperty(this.ps.prefs, sh, type);
 			var dObj = this.ju.getOwnProperty(fObj, "delayedAction");
 			var addLabel = "";
@@ -1276,9 +1287,6 @@ var handyClicksSets = {
 			var label = this.ju.isObject(fObj)
 				? this.cropStr(this.su.getActionLabel(fObj), MAX_LABEL_LENGTH)
 				: "?";
-			var n = i + 1;
-			if(n == MAX_ROWS)
-				n = itsCount;
 			return n + ". " + mdfs + sep + button + sep + typeLabel + " \u21d2 " /* "=>" */
 				+ label + addLabel;
 		}, this);
