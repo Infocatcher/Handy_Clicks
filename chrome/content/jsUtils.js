@@ -86,19 +86,6 @@ var handyClicksJsUtils = {
 			return str.substr(prefix.length);
 		return str;
 	},
-	endsWith: function(str, postfix) {
-		var f = this.endsWith = "endsWith" in String.prototype
-			? String.prototype.endsWith.call.bind(String.prototype.endsWith)
-			: function(str, postfix) {
-				return str.substr(-postfix.length) == postfix;
-			};
-		return f.apply(this, arguments);
-	},
-	removePostfix: function(str, postfix, forced) {
-		if(forced || this.endsWith(str, postfix))
-			return str.substr(0, str.length - postfix.length);
-		return str;
-	},
 
 	isNativeFunction: function(func) {
 		// Example: function alert() {[native code]}

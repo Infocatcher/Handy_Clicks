@@ -1356,7 +1356,9 @@ var handyClicksSets = {
 	_setItemStatus: function(rowId, editStat) {
 		if(!rowId)
 			return;
-		rowId = this.ju.removePostfix(rowId, this.ct.OTHER_SRC_POSTFIX);
+		var pf = this.ct.OTHER_SRC_POSTFIX;
+		if(rowId.slice(-pf.length) == pf)
+			rowId = rowId.slice(0, -pf.length);
 		if(!(rowId in this.rowsCache))
 			return;
 		this.setChildNodesProperties(
