@@ -63,7 +63,7 @@ var handyClicksWinUtils = {
 
 	winIdProp: "__handyClicks__winId",
 	getWinId: function(pSrc, mode, shortcut, itemType, isDelayed) {
-		return (mode == this.ct.EDITOR_MODE_TYPE ? itemType : shortcut + "-" + itemType)
+		return (mode == this.ct.EDITOR_MODE_TYPE ? "#custom_types-" + itemType : shortcut + "-" + itemType)
 			+ (pSrc ? this.ct.OTHER_SRC_POSTFIX : "");
 	},
 	getEditorById: function(winId) {

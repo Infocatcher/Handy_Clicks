@@ -534,7 +534,7 @@ var handyClicksEditor = {
 		var winId;
 		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT: winId = this.currentShortcut + "-" + this.currentType; break;
-			case this.INDEX_TYPE:     winId = this.currentCustomType;                        break;
+			case this.INDEX_TYPE:     winId = "#custom_types-" + this.currentCustomType;     break;
 			default: return;
 		}
 		winId += this.ps.otherSrc ? this.ct.OTHER_SRC_POSTFIX : "";
