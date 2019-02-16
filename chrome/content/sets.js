@@ -1547,6 +1547,7 @@ var handyClicksSets = {
 			callback.call(this);
 	},
 	toggleItemEnabled: function(tItem, forcedEnabled) {
+		//~ todo: see notification in editor, getActiveSettingsForType() & Co
 		var tRow = this.getRowForItem(tItem);
 		var enabled = this.checkedState(tItem, forcedEnabled === undefined ? null : forcedEnabled);
 		var forcedDisDa = this.pu.get("delayedActionTimeout") <= 0;
@@ -1562,11 +1563,17 @@ var handyClicksSets = {
 				this.setNodeProperties(cRow, { hc_unsavedDisabled: forcedDisDa || cDis || !enabled });
 			}
 		}
-		var so = this.ps.prefs[tItem.__shortcut][tItem.__itemType];
-		if(tItem.__isDelayed)
-			so.delayedAction.enabled = enabled;
-		else
-			so.enabled = enabled;
+		if(tItem.__isType) {
+			var to = this.ps.types[tItem.__itemType];
+			to.enabled = enabled;
+		}
+		else {
+			var so = this.ps.prefs[tItem.__shortcut][tItem.__itemType];
+			if(tItem.__isDelayed)
+				so.delayedAction.enabled = enabled;
+			else
+				so.enabled = enabled;
+		}
 	},
 	checkedState: function(tItem, val) {
 		var tRow = this.getRowForItem(tItem);
