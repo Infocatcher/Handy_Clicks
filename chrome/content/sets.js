@@ -314,6 +314,8 @@ var handyClicksSets = {
 			: this.tBody;
 		this.drawPrefs(this.ps.prefs, df);
 		this._import && this.addImportStatistics(df);
+		this.drawTypes(this.ps.types, df);
+		this._import && this.drawTypes(this._delTypes, df, true);
 		if(df != this.tBody)
 			this.tBody.appendChild(df);
 		this._importPartial && this.hideOldTreeitems(true);
@@ -328,6 +330,16 @@ var handyClicksSets = {
 		this._drawRemoved = isRemoved;
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh))
 			this.drawShortcut(prefs, sh, df);
+	},
+	drawTypes: function(types, df, isRemoved) {
+		this._drawRemoved = isRemoved;
+		if(this.drawMode != 2 && this.drawMode != 5) { // Don't add container for inline mode
+			var hash = "#custom_types";
+			df = this.eltsCache[hash]
+				|| this.appendContainerItem(df, hash, "Custom types", "\uffff\uffff");
+		}
+		for(var type in types) if(types.hasOwnProperty(type))
+			this.appendType(df, type, types[type]);
 	},
 	drawShortcut: function(prefs, sh, df) {
 		var so = prefs[sh];
@@ -412,6 +424,7 @@ var handyClicksSets = {
 		var prefs = this.ps.prefs;
 		var savedPrefs = this._savedPrefs;
 		var delPrefs = {};
+		var delTypes = this._delTypes = {};
 
 		for(var sh in savedPrefs) if(savedPrefs.hasOwnProperty(sh)) {
 			var so = savedPrefs[sh];
@@ -434,9 +447,12 @@ var handyClicksSets = {
 			}
 		}
 
-		for(var type in savedTypes) if(savedTypes.hasOwnProperty(type))
-			if(savedTypes[type] && !this.ju.getOwnProperty(types, type))
+		for(var type in savedTypes) if(savedTypes.hasOwnProperty(type)) {
+			if(savedTypes[type] && !this.ju.getOwnProperty(types, type)) {
 				++deletableTypes;
+				this.ju.setOwnProperty(delTypes, type, savedTypes[type]);
+			}
+		}
 
 		this.drawPrefs(delPrefs, df, true);
 
@@ -595,7 +611,7 @@ var handyClicksSets = {
 				this._setItemStatus(w[idProp], true);
 		}, this);
 	},
-	appendContainerItem: function(parent, hash, label) {
+	appendContainerItem: function(parent, hash, label, sortLabel) {
 		var tItem = document.createElement("treeitem");
 		tItem.setAttribute("container", "true");
 		tItem.setAttribute("open", "true");
@@ -605,7 +621,7 @@ var handyClicksSets = {
 		var tChld = tItem.appendChild(document.createElement("treechildren"));
 
 		tItem.__hash = hash;
-		tItem.__sortLabel = label;
+		tItem.__sortLabel = sortLabel || label;
 		var insPos = this.getSortedInsPos(parent, tItem);
 		parent.insertBefore(tItem, insPos);
 		return this.eltsCache[hash] = tChld;
@@ -792,6 +808,60 @@ var handyClicksSets = {
 		parent.insertBefore(tItem, insPos);
 
 		this.rowsCache[tItem.__hash = shortcut + "-" + itemType] = tRow;
+		return tItem;
+	},
+	appendType: function(parent, type, to) {
+		var tItem = document.createElement("treeitem");
+		var tRow = tItem.appendChild(document.createElement("treerow"));
+		if(!this.ju.isObject(to))
+			to = {};
+		var label = this.getTypeLabel(type, true);
+		var drawRemoved = this._drawRemoved;
+
+		this.appendTreeCell(tRow, "label", label);
+		this.appendTreeCell(tRow, "label", "Custom type");
+		this.appendTreeCell(tRow, "label", "-");
+		this.appendTreeCell(tRow, "label", this.getActionCode(to.define, true));
+		var linkedFile = this.getActionCode._hasLinkedFile;
+		var fileData = this.getActionCode._hasFileData;
+		this.appendTreeCell(tRow, "label", "-");
+		this.appendTreeCell(tRow, "label", "-");
+		this.setNodeProperties(
+			this.appendTreeCell(tRow, "value", to.enabled),
+			{ hc_checkbox: true }
+		);
+
+		tItem.__shortcut = undefined;
+		tItem.__itemType = type;
+		tItem.__isCustomType = true;
+		tItem.__isDelayed = false;
+		tItem.__isRemoved = drawRemoved;
+		tItem.__delayed = null;
+		tItem.__sortLabel = "\uffff\uffff" + label; // Trick to show at the end
+
+		this.setChildNodesProperties(tRow, {
+			hc_enabled: to.enabled,
+			hc_disabled: !to.enabled,
+			//hc_buggy:
+			hc_custom: true,
+			hc_customFile: linkedFile,
+			hc_customType: true
+		}, true);
+		if(this._import) {
+			this.setChildNodesProperties(tRow, {
+				//hc_override:
+				//hc_equals:
+				//hc_new:
+				hc_old:      drawRemoved,
+				hc_fileData: fileData
+			}, true);
+			drawRemoved && tItem.setAttribute("hc_old", "item");
+		}
+
+		var insPos = this.getSortedInsPos(parent, tItem);
+		parent.insertBefore(tItem, insPos);
+
+		this.rowsCache[tItem.__hash = "#custom_types-" + type] = tRow;
 		return tItem;
 	},
 	getTypeLabel: function(type, isCustomType) {
@@ -3578,6 +3648,7 @@ var handyClicksSets = {
 		this.tree.focus();
 		this.setDialogButtons();
 		this._importSrc = this._savedPrefs = this._savedTypes = null;
+		this._delTypes = null;
 	},
 	mergePrefs: function() {
 		var types = this.ps.types;
