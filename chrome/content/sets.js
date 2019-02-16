@@ -1248,8 +1248,8 @@ var handyClicksSets = {
 		if(!itsCount)
 			return [];
 
-		const MAX_TYPE_LENGTH = 40;
-		const MAX_LABEL_LENGTH = 50;
+		const MAX_TYPE_LENGTH = 60;
+		const MAX_LABEL_LENGTH = 60;
 		const MAX_ROWS = 12;
 
 		if(itsCount > MAX_ROWS)
