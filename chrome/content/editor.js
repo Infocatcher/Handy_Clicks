@@ -93,7 +93,6 @@ var handyClicksEditor = {
 		}
 		this.ps.loadSettings(this.src || null);
 		this.selectTargetTab(this.isDelayed);
-		this.delay(this.dataSaved, this); // Wait for XBL bindings setup
 		this.initUI();
 		if(!this.type)
 			this.$("hc-editor-itemTypes").setAttribute("label", " "); // Fix height
@@ -416,10 +415,11 @@ var handyClicksEditor = {
 		this.disableUnsupported();
 		this._allowUndo = false;
 
+		this.dataSaved();
 		this.setWinId();
 		this.setWinTitle();
 		this.setEditorButtons();
-		this.delay(this.setDialogButtons, this);
+		this.setDialogButtons();
 	},
 	handleTabSelect: function(e) {
 		if(!("_handyClicksInitialized" in window))
@@ -570,8 +570,7 @@ var handyClicksEditor = {
 		so = this.ju.getOwnProperty(so, "delayedAction") || {};
 		this.initFuncEditor(so, this.delayId);
 		this.currentShortcut = this.shortcut;
-
-		this.delay(this.shortcutSaved, this); // Wait for XBL bindings setup
+		this.shortcutSaved();
 	},
 	initFuncEditor: function(setsObj, delayed, allowUndo) {
 		var isCustom = this.ju.getOwnProperty(setsObj, "custom");
