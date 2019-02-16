@@ -34,7 +34,7 @@ var handyClicksIO = {
 	},
 	get textEncoder() {
 		delete this.textEncoder;
-		if("TextEncoder" in window) // Firefox 18+
+		if(typeof TextEncoder != "undefined") // Firefox 18+
 			return this.textEncoder = new TextEncoder();
 		return this.textEncoder = null;
 	},
@@ -142,7 +142,7 @@ var handyClicksIO = {
 	},
 	get textDecoder() {
 		delete this.textDecoder;
-		if("TextDecoder" in window) // Firefox 18+
+		if(typeof TextDecoder != "undefined") // Firefox 18+
 			return this.textDecoder = new TextDecoder();
 		return this.textDecoder = null;
 	},
