@@ -411,10 +411,14 @@ var handyClicksSets = {
 		for(var type in types) if(types.hasOwnProperty(type)) {
 			var to = types[type];
 			var oldTo = this.ju.getOwnProperty(savedTypes, type);
-			if(!oldTo)
+			if(!oldTo) {
 				++newTypes;
-			else if(!this.settingsEquals(to, oldTo))
+				to._importNew = true;
+			}
+			else if(!this.settingsEquals(to, oldTo)) {
 				++overrideTypes;
+				to._importOvr = true;
+			}
 		}
 
 		var deletable = 0;
@@ -842,16 +846,17 @@ var handyClicksSets = {
 		this.setChildNodesProperties(tRow, {
 			hc_enabled: to.enabled,
 			hc_disabled: !to.enabled,
-			//hc_buggy:
+			hc_buggy: !this.ps.isOkCustomType(type, drawRemoved && this._savedTypes),
 			hc_custom: true,
 			hc_customFile: linkedFile,
 			hc_customType: true
 		}, true);
 		if(this._import) {
+			var ovr = to._importOvr || false;
 			this.setChildNodesProperties(tRow, {
-				//hc_override:
-				//hc_equals:
-				//hc_new:
+				hc_override: ovr,
+				hc_equals:  !ovr,
+				hc_new:      to._importNew || false,
 				hc_old:      drawRemoved,
 				hc_fileData: fileData
 			}, true);
