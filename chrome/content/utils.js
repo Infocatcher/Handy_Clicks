@@ -63,7 +63,7 @@ var handyClicksUtils = {
 		return this.mmLine(this.fixLineNumber(line) - baseLine + 1);
 	},
 	fixLineNumber: function(line) {
-		if(this.appName == "Firefox" && this.appVersion >= 56)
+		if(this.fxVersion >= 56 && (this.appName == "Firefox" || this.isSeaMonkey))
 			return Math.max(1, line - 2); // O_o Strange things happens...
 		return line;
 	},
