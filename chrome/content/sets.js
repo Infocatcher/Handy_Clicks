@@ -331,12 +331,13 @@ var handyClicksSets = {
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh))
 			this.drawShortcut(prefs, sh, df);
 	},
+	typesSortPrefix: "\uffff\uffff", // Trick to show at the end
 	drawTypes: function(types, df, isRemoved) {
 		this._drawRemoved = isRemoved;
 		if(this.drawMode != 2 && this.drawMode != 5) { // Don't add container for inline mode
 			var hash = "#custom_types";
 			df = this.eltsCache[hash]
-				|| this.appendContainerItem(df, hash, "Custom types", "\uffff\uffff");
+				|| this.appendContainerItem(df, hash, "Custom types", this.typesSortPrefix);
 		}
 		for(var type in types) if(types.hasOwnProperty(type))
 			this.appendType(df, type, types[type]);
@@ -841,7 +842,7 @@ var handyClicksSets = {
 		tItem.__isDelayed = false;
 		tItem.__isRemoved = drawRemoved;
 		tItem.__delayed = null;
-		tItem.__sortLabel = "\uffff\uffff" + label; // Trick to show at the end
+		tItem.__sortLabel = this.typesSortPrefix + label;
 
 		this.setChildNodesProperties(tRow, {
 			hc_enabled: to.enabled,
