@@ -1143,6 +1143,10 @@ var handyClicksSets = {
 			noDelayed: true,
 			withRemoved: forceEditSaved
 		});
+		if(e && its.every(function(it) { return it.__isType; })) {
+			this.editItemsTypes(forceEditSaved);
+			return;
+		}
 		if(this.editorsLimit(its.length))
 			return;
 		var src = forceEditSaved ? null : undefined;
