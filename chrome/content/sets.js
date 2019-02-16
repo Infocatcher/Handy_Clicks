@@ -1360,11 +1360,15 @@ var handyClicksSets = {
 	deleteItem: function(tItem, indx) {
 		var sh = tItem.__shortcut;
 		var type = tItem.__itemType;
-		if(!sh || !type)
+		if(!type || !tItem.__isType && !sh)
 			return;
-		var p = this.ps.prefs;
-		var so = p[sh];
-		if(tItem.__isDelayed) { // Remove delayed action
+		var prefs = this.ps.prefs;
+		if(tItem.__isType) {
+			delete this.ps.types[type];
+			this.removeTreeitem(tItem);
+		}
+		else if(tItem.__isDelayed) { // Remove delayed action
+			var so = prefs[sh];
 			var to = so[type];
 			delete to.delayedAction;
 
@@ -1376,9 +1380,10 @@ var handyClicksSets = {
 			tItem.removeAttribute("container");
 		}
 		else {
+			var so = prefs[sh];
 			delete so[type];
 			if(this.ju.isEmptyObj(so))
-				delete p[sh];
+				delete prefs[sh];
 
 			this.removeTreeitem(tItem);
 		}
