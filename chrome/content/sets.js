@@ -305,7 +305,8 @@ var handyClicksSets = {
 		this._localizeArgs = this.pu.get("sets.localizeArguments");
 		this._maxCodeLength = this.pu.get("sets.codeLengthLimit");
 		this._preserveLines = this.pu.get("sets.codeLengthLimit.preserveLines");
-		this.drawMode = this.pu.get("sets.treeDrawMode");
+		var dm = this.drawMode = this.pu.get("sets.treeDrawMode");
+		this.drawInline = dm == 2 || dm == 5;
 
 		this.resetCounters();
 
@@ -334,10 +335,10 @@ var handyClicksSets = {
 	typesSortPrefix: "\uffff\uffff", // Trick to show at the end
 	drawTypes: function(types, df, isRemoved) {
 		this._drawRemoved = isRemoved;
-		if(this.drawMode != 2 && this.drawMode != 5) { // Don't add container for inline mode
+		if(!this.drawInline) {
 			var hash = "#custom_types";
 			df = this.eltsCache[hash]
-				|| this.appendContainerItem(df, hash, "Custom types", this.typesSortPrefix);
+				|| this.appendContainerItem(df, hash, this.getLocalized("customTypes"), this.typesSortPrefix);
 		}
 		for(var type in types) if(types.hasOwnProperty(type))
 			this.appendType(df, type, types[type]);
@@ -820,11 +821,14 @@ var handyClicksSets = {
 		var tRow = tItem.appendChild(document.createElement("treerow"));
 		if(!this.ju.isObject(to))
 			to = {};
-		var label = this.getTypeLabel(type, true);
+		var typeLabel = this.getTypeLabel(type, true);
+		var label = this.drawInline
+			? this.getLocalized("customType").replace("%s", typeLabel)
+			: typeLabel;
 		var drawRemoved = this._drawRemoved;
 
 		this.appendTreeCell(tRow, "label", label);
-		this.appendTreeCell(tRow, "label", "Custom type");
+		this.appendTreeCell(tRow, "label", "-");
 		this.appendTreeCell(tRow, "label", "-");
 		this.appendTreeCell(tRow, "label", this.getActionCode(to.define, true));
 		var linkedFile = this.getActionCode._hasLinkedFile;
