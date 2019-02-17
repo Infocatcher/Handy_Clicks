@@ -714,6 +714,7 @@ var handyClicksSetsUtils = {
 		return !activeTypes || this.ut.confirm(
 			this.getLocalized("warningTitle"),
 			this.getLocalized("typeDisablingWarning")
+				.replace("%t", this.ps.getTypeLabel(type, true))
 				.replace("%n", activeTypes)
 		);
 	},
