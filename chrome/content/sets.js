@@ -1120,14 +1120,19 @@ var handyClicksSets = {
 	addItems: function(e) {
 		if(!this.isTreePaneSelected)
 			return;
+		const MODE_SHORTCUT = this.ct.EDITOR_MODE_SHORTCUT;
 		if(e) {
 			if(e.type == "command" || e.button > 0)
-				this.openEditorWindow({ __shortcut: this.ps.getEvtStr(e) }, this.ct.EDITOR_MODE_SHORTCUT, true);
+				this.openEditorWindow({ __shortcut: this.ps.getEvtStr(e) }, MODE_SHORTCUT, true);
 			return;
 		}
 		var its = this.getSelectedItems({ withRemoved: true });
-		if(its.length == 1) {
-			this.openEditorWindow(its[0], this.ct.EDITOR_MODE_SHORTCUT, true);
+		var singleItem = its.length == 1 && its[0];
+		if(singleItem) {
+			if(singleItem.__isType)
+				this.wu.openEditor(this.ps.currentOtherSrc, MODE_SHORTCUT, undefined, singleItem.__itemType);
+			else
+				this.openEditorWindow(singleItem, MODE_SHORTCUT, true);
 			return;
 		}
 		this.openEditorWindow();
