@@ -327,6 +327,7 @@
 						hc_ondrop="handyClicksEditor.customTypeIdFilter(event);"
 						oncut="handyClicksEditor.customTypeIdFilter(event);" />
 					<checkbox id="hc-editor-customTypeEnabled" hc_important="enabled"
+						oncommand="handyClicksEditor.onTypeEnabledChange(this);"
 						label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
 				</hbox>
 

@@ -1851,8 +1851,6 @@ var handyClicksEditor = {
 		var ct = cts[cType] || {};
 		var curEnabl = ct.enabled || false;
 		var newEnabl = this.$("hc-editor-customTypeEnabled").checked;
-		if(!newEnabl && curEnabl && !this.su.confirmTypeDisabling(cType))
-			return false;
 		cts[cType] = this.getTypeObj(label, def, newEnabl);
 
 		var loadCorrectedSettings = !dontUpdate && this.ut.bind(function(status) {
@@ -1866,6 +1864,15 @@ var handyClicksEditor = {
 			return loadCorrectedSettings;
 		this.applySettings(testFlag, applyFlag, loadCorrectedSettings);
 		return true;
+	},
+	onTypeEnabledChange: function(cb) {
+		var type = this.currentCustomType;
+		var to = this.ju.getOwnProperty(this.ps.types, type);
+		if(
+			to && to.enabled && !cb.checked
+			&& !this.su.confirmTypeDisabling(type)
+		)
+			cb.checked = true;
 	},
 	testCustomType: function() {
 		return this.saveCustomType(true, true);
