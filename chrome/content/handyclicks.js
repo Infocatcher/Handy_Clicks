@@ -280,7 +280,7 @@ var handyClicks = {
 		if(delay > 0 && !em) {
 			var delayedAction = this.ju.getOwnProperty(funcObj, "delayedAction");
 			if(
-				(!delayedAction && e.button == 2) // Show context menu after delay
+				!delayedAction && e.button == 2 // Show context menu after delay
 				|| this.isOkFuncObj(delayedAction) // Other action after delay
 			) {
 				this.cancelDelayedAction(); // Only one timeout... (for dblclick event)
@@ -372,8 +372,7 @@ var handyClicks = {
 			return;
 		this.checkForStopEvent(e);
 		var funcObj = this.getFuncObjByEvt(e);
-		if(funcObj)
-			this.functionEvent(funcObj, e);
+		funcObj && this.functionEvent(funcObj, e);
 	},
 	dblclickHandler: function(e) {
 		if(!this.enabled)
@@ -381,8 +380,7 @@ var handyClicks = {
 		if(this.flags.allowEvents)
 			return;
 		var funcObj = this.getFuncObjByEvt(e);
-		if(funcObj)
-			this.functionEvent(funcObj, e);
+		funcObj && this.functionEvent(funcObj, e);
 	},
 
 	isMenu: function(node) {
@@ -573,9 +571,7 @@ var handyClicks = {
 	getSettings: function(str) {
 		return this.ps.prefs.hasOwnProperty(str)
 			? this.ps.prefs[str]
-			: this.editMode
-				? {}
-				: null;
+			: this.editMode ? {} : null;
 	},
 
 	checkOtherTypes: false,
@@ -735,7 +731,7 @@ var handyClicks = {
 		if(
 			(
 				(itln == "img" || itln == "image") && it.hasAttribute("src")
-				|| (it instanceof HTMLCanvasElement && this.pu.get("types.images.canvas"))
+				|| it instanceof HTMLCanvasElement && this.pu.get("types.images.canvas")
 			)
 			&& !this.ut.isChromeDoc(it.ownerDocument) // Not for interface...
 			&& ( // Speed Dial has own settings for right clicks
@@ -916,7 +912,7 @@ var handyClicks = {
 		return this.ps.isOkFuncObj(fObj) && fObj.enabled;
 	},
 	hasParent: function(it, pId) {
-		for(it = it.parentNode; it && "id" in it; it = it.parentNode)
+		for(; "id" in (it = it.parentNode); )
 			if(it.id == pId)
 				return true;
 		return false;
@@ -936,11 +932,11 @@ var handyClicks = {
 		return tree.getAttribute("type") == "places";
 	},
 	getFuncObj: function(sets) {
-		return this.itemType // see .defineItem()
-			&& (
-				(this.itemTypeInSets(sets, "$all") && sets.$all)
-				|| (this.itemTypeInSets(sets, this.itemType) && sets[this.itemType])
-			);
+		var type = this.itemType;
+		return type && ( // see .defineItem()
+			this.itemTypeInSets(sets, "$all") && sets.$all
+			|| this.itemTypeInSets(sets, type) && sets[type]
+		);
 	},
 	blacklists: [],
 	isBlacklisted: function(e) {
