@@ -3035,8 +3035,11 @@ var handyClicksSets = {
 		var noTypesAll = noImport ? noTypes : noSelAll || !selItsAll.some(function(it) {
 			return it.__isCustomType;
 		});
+		var onlyTypes = !noTypesAll && selItsAll.every(function(it) { return it.__isType; });
 		this.$("hc-sets-cmd-editType").setAttribute("disabled", noTypes);
 		this.$("hc-sets-editType").hidden = noTypes;
+		this.$("hc-sets-edit").setAttribute("default", !onlyTypes);
+		this.$("hc-sets-editType").setAttribute("default", onlyTypes);
 
 		this.$("hc-sets-cmd-editSaved").setAttribute("disabled", noSelAll || noImport);
 		this.$("hc-sets-editSaved").hidden = noImport;
