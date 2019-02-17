@@ -307,6 +307,9 @@ var handyClicksSets = {
 		this._preserveLines = this.pu.get("sets.codeLengthLimit.preserveLines");
 		var dm = this.drawMode = this.pu.get("sets.treeDrawMode");
 		this.drawInline = dm == 2 || dm == 5;
+		var sortTypes = this.pu.get("sets.treeSortCustomTypes");
+		this.typesSortPrefix = sortTypes > 0 ? "\uffff\uffff" // show after shortcut items
+			: sortTypes == 0 ? "" : "\x00\x00"; // show before shortcut items
 
 		this.resetCounters();
 
@@ -332,7 +335,6 @@ var handyClicksSets = {
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh))
 			this.drawShortcut(prefs, sh, df);
 	},
-	typesSortPrefix: "\uffff\uffff", // Trick to show at the end
 	drawTypes: function(types, df, isRemoved) {
 		this._drawRemoved = isRemoved;
 		if(!this.drawInline) {
@@ -2347,6 +2349,8 @@ var handyClicksSets = {
 			this.updTree(false, true);
 		else if(pName == "sets.treeExpandDelayedAction")
 			this.updTree(false);
+		else if(pName == "sets.treeSortCustomTypes")
+			this.updTree();
 		else if(pName == "sets.localizeArguments")
 			this.updTree();
 		else if(pName == "sets.codeLengthLimit" || pName == "sets.codeLengthLimit.preserveLines")
