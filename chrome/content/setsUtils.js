@@ -707,5 +707,22 @@ var handyClicksSetsUtils = {
 		if(act in this.extLabels)
 			return this.getExtLabel(act);
 		return this.getLocalized(act);
+	},
+
+	confirmTypeDisabling: function(type, prefs) {
+		var activeTypes = this.getActiveSettingsForType(type, prefs);
+		return !activeTypes || this.ut.confirm(
+			this.getLocalized("warningTitle"),
+			this.getLocalized("typeDisablingWarning")
+				.replace("%n", activeTypes)
+		);
+	},
+	getActiveSettingsForType: function(type, prefs) {
+		prefs = prefs || this.ps.prefs;
+		var cnt = 0;
+		for(var sh in prefs)
+			if(this.ju.getOwnProperty(prefs, sh, type, "enabled"))
+				++cnt;
+		return cnt;
 	}
 };

@@ -1559,7 +1559,13 @@ var handyClicksSets = {
 			callback.call(this);
 	},
 	toggleItemEnabled: function(tItem, forcedEnabled) {
-		//~ todo: see notification in editor, getActiveSettingsForType() & Co
+		if(
+			tItem.__isType
+			&& this.checkedState(tItem)
+			&& !forcedEnabled
+			&& !this.su.confirmTypeDisabling(tItem.__itemType)
+		)
+			return;
 		var tRow = this.getRowForItem(tItem);
 		var enabled = this.checkedState(tItem, forcedEnabled === undefined ? null : forcedEnabled);
 		var forcedDisDa = this.pu.get("delayedActionTimeout") <= 0;
