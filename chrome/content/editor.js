@@ -795,6 +795,14 @@ var handyClicksEditor = {
 				return true;
 		return false;
 	},
+	confirmTypeDisabling: function(type, prefs) {
+		var activeTypes = this.getActiveSettingsForType(type, prefs);
+		return !activeTypes || this.ut.confirm(
+			this.getLocalized("warningTitle"),
+			this.getLocalized("typeDisablingWarning")
+				.replace("%n", activeTypes)
+		);
+	},
 	getActiveSettingsForType: function(type, prefs) {
 		prefs = prefs || this.ps.prefs;
 		var cnt = 0;
@@ -1859,16 +1867,7 @@ var handyClicksEditor = {
 		var ct = cts[cType] || {};
 		var curEnabl = ct.enabled || false;
 		var newEnabl = this.$("hc-editor-customTypeEnabled").checked;
-		var willDis = !newEnabl && curEnabl;
-		var activeTypes = willDis && this.getActiveSettingsForType(cType);
-		if(
-			!newEnabl && curEnabl && activeTypes
-			&& !this.ut.confirm(
-				this.getLocalized("warningTitle"),
-				this.getLocalized("typeDisablingWarning")
-					.replace("%n", activeTypes)
-			)
-		)
+		if(!newEnabl && curEnabl && !this.confirmTypeDisabling(cType))
 			return false;
 		cts[cType] = this.getTypeObj(label, def, newEnabl);
 
