@@ -411,17 +411,18 @@ var handyClicksSets = {
 
 		var types = this.ps.types;
 		var savedTypes = this._savedTypes;
+		var state = this._typesState = { __proto__: null };
 
 		for(var type in types) if(types.hasOwnProperty(type)) {
 			var to = types[type];
 			var oldTo = this.ju.getOwnProperty(savedTypes, type);
 			if(!oldTo) {
 				++newTypes;
-				to._importNew = true;
+				state[type] = "new";
 			}
 			else if(!this.settingsEquals(to, oldTo)) {
 				++overrideTypes;
-				to._importOvr = true;
+				state[type] = "changed";
 			}
 		}
 
@@ -863,11 +864,12 @@ var handyClicksSets = {
 			hc_customType: true
 		}, true);
 		if(this._import) {
-			var ovr = to._importOvr || false;
+			var state = this._typesState[type] || "";
+			var ovr = state == "changed";
 			this.setChildNodesProperties(tRow, {
 				hc_override: ovr,
 				hc_equals:  !ovr,
-				hc_new:      to._importNew || false,
+				hc_new:      state == "new",
 				hc_old:      drawRemoved,
 				hc_fileData: fileData
 			}, true);
@@ -3700,7 +3702,7 @@ var handyClicksSets = {
 		}
 		this.tree.focus();
 		this.setDialogButtons();
-		this._importSrc = this._savedPrefs = this._savedTypes = null;
+		this._importSrc = this._savedPrefs = this._savedTypes = this._typesState = null;
 		this._delTypes = null;
 	},
 	mergePrefs: function() {
