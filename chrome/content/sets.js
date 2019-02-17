@@ -830,15 +830,16 @@ var handyClicksSets = {
 			? this.getLocalized("customType").replace("%s", typeLabel)
 			: typeLabel;
 		var drawRemoved = this._drawRemoved;
+		var na = "\u2013";
 
 		this.appendTreeCell(tRow, "label", label);
-		this.appendTreeCell(tRow, "label", "-");
-		this.appendTreeCell(tRow, "label", "-");
+		this.appendTreeCell(tRow, "label", na);
+		this.appendTreeCell(tRow, "label", na);
 		this.appendTreeCell(tRow, "label", this.getActionCode(to.define, true));
 		var linkedFile = this.getActionCode._hasLinkedFile;
 		var fileData = this.getActionCode._hasFileData;
-		this.appendTreeCell(tRow, "label", "-");
-		this.appendTreeCell(tRow, "label", "-");
+		this.appendTreeCell(tRow, "label", "");
+		this.appendTreeCell(tRow, "label", "");
 		this.setNodeProperties(
 			this.appendTreeCell(tRow, "value", to.enabled),
 			{ hc_checkbox: true }
