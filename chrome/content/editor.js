@@ -201,8 +201,7 @@ var handyClicksEditor = {
 	set applyDisabled(dis) {
 		this.applyButton.disabled = dis;
 		this.$("hc-editor-cmd-test").setAttribute("disabled", dis);
-		if(dis)
-			this.$("hc-editor-cmd-undo").setAttribute("disabled", !this.ps.hasTestSettings);
+		dis && this.$("hc-editor-cmd-undo").setAttribute("disabled", !this.ps.hasTestSettings);
 	},
 	selectTargetTab: function hce_selectTargetTab(isDelayed, src, line) {
 		this.editorTabIndex = this.editorMode == this.ct.EDITOR_MODE_TYPE
@@ -1521,44 +1520,38 @@ var handyClicksEditor = {
 	testSettings: function(e) {
 		var invertFocusPref = e && (e.button == 1 || e.button == 0 && this.hasModifier(e));
 		if(e && !invertFocusPref)
-			return false;
+			return;
 
 		this.$("hc-editor-cmd-test").setAttribute("disabled", "true");
 		var ok = false;
 		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT: ok = this.testShortcut();   break;
 			case this.INDEX_TYPE:     ok = this.testCustomType(); break;
-			default:                  return false;
+			default:                  return;
 		}
-		ok = ok && this.testMode;
-		if(ok) {
-			this.$("hc-editor-cmd-undo").setAttribute("disabled", "false");
-			var focus = this.pu.get("editor.testFocusMainWindow");
-			if(invertFocusPref ? !focus : focus) {
-				if(this.isSeaMonkey) { // Detect private browser windows
-					this.wu.forEachBrowserWindow(function(w) {
-						return !w.focus();
-					});
-				}
-				else {
-					var w = this.wu.wm.getMostRecentWindow("navigator:browser");
-					w && w.focus();
-				}
+		if(!(ok && this.testMode))
+			return;
+		this.$("hc-editor-cmd-undo").setAttribute("disabled", "false");
+		var focus = this.pu.get("editor.testFocusMainWindow");
+		if(invertFocusPref ? !focus : focus) {
+			if(this.isSeaMonkey) { // Detect private browser windows
+				this.wu.forEachBrowserWindow(function(w) {
+					return !w.focus();
+				});
+			}
+			else {
+				var w = this.wu.wm.getMostRecentWindow("navigator:browser");
+				w && w.focus();
 			}
 		}
-		return ok;
 	},
 	undoTestSettings: function(reloadAll) {
-		try {
-			this.pe.testSettings(false);
-			if(reloadAll) {
-				this.ps.loadSettings();
-				this.initUI(true);
-				this.$("hc-editor-cmd-undo").setAttribute("disabled", "true");
-			}
-		}
-		finally {
-			this.testMode = false;
+		this.testMode = false;
+		this.pe.testSettings(false);
+		if(reloadAll) {
+			this.ps.loadSettings();
+			this.initUI(true);
+			this.$("hc-editor-cmd-undo").setAttribute("disabled", "true");
 		}
 	},
 	deleteSettings: function() {
