@@ -166,17 +166,17 @@ var handyClicksWinUtils = {
 			st.shortcutRenamed(oldHash, newHash);
 	},
 
-	openSettings: function(closeOpened) {
+	openSettings: function(closeOpened, args) {
 		return this.openWindowByType(
 			"chrome://handyclicks/content/sets.xul",
 			"handyclicks:settings",
-			null, null, closeOpened
+			null, args, closeOpened
 		);
 	},
 	openSettingsImport: function(/* importArgs */) {
-		var w = this.openSettings();
 		var args = arguments;
-		args.length && (function _imp() {
+		var w = this.openSettings(false, [{ importArgs: args }]);
+		this.openWindowByType.alreadyOpened && (function _imp() {
 			if("_handyClicksInitialized" in w)
 				w.handyClicksSets.importSets.apply(w.handyClicksSets, args);
 			else

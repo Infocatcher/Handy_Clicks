@@ -10,13 +10,19 @@ var handyClicksSets = {
 	_savedTypes: null,
 
 	init: function(reloadFlag) {
+		var args = window.arguments && window.arguments[0] || {};
+		var importArgs = args.importArgs || null;
+
 		this.ps.loadSettings();
 		this.initShortcuts();
 
 		this.restoreSearchQuery();
-		this[reloadFlag ? "updTree" : "drawTree"]();
-
-		!reloadFlag && this.focusSearch(true);
+		if(importArgs) // NS_ERROR_NOT_AVAILABLE: Cannot call openModalWindow on a hidden window
+			this.delay(this.importSets, this, 0, importArgs);
+		else {
+			this[reloadFlag ? "updTree" : "drawTree"]();
+			!reloadFlag && this.focusSearch(true);
+		}
 
 		this.updTreeButtons();
 		this.checkTreeSaved();
