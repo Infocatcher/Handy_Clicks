@@ -1289,14 +1289,14 @@ var handyClicksSets = {
 			var dObj = this.ju.getOwnProperty(fObj, "delayedAction");
 			var addLabel = "";
 			if(tItem.__isDelayed) {
-				typeLabel += " (" + this.getLocalized("delayed") + ")";
+				typeLabel += " " + this.getLocalized("delayedActionMark");
 				fObj = dObj;
 			}
 			else {
 				var daLabel = this.ju.isObject(dObj) && this.su.getActionLabel(fObj);
 				if(daLabel) {
-					addLabel = "\n\t(" + this.getLocalized("delayed") + ": "
-						+ this.cropStr(daLabel, MAX_LABEL_LENGTH) + ")";
+					addLabel = this.getLocalized("delayedAction")
+						.replace("%s", this.cropStr(daLabel, MAX_LABEL_LENGTH));
 				}
 			}
 			var label = this.ju.isObject(fObj)
