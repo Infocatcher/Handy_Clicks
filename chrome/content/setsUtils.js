@@ -709,13 +709,15 @@ var handyClicksSetsUtils = {
 		return this.getLocalized(act);
 	},
 
-	confirmTypeDisabling: function(type, prefs) {
-		var activeTypes = this.getActiveSettingsForType(type, prefs);
-		return !activeTypes || this.ut.confirm(
+	confirmTypeAction: function(type, key, prefs) {
+		var related = key == "typeDeletingWarning"
+			? this.getSettingsForType(type, prefs)
+			: this.getActiveSettingsForType(type, prefs);
+		return !related || this.ut.confirm(
 			this.getLocalized("warningTitle"),
-			this.getLocalized("typeDisablingWarning")
+			this.getLocalized(key)
 				.replace("%t", this.ps.getTypeLabel(type, true))
-				.replace("%n", activeTypes)
+				.replace("%n", related)
 		);
 	},
 	getSettingsForType: function(type, prefs) {

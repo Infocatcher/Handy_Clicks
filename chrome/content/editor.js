@@ -1870,7 +1870,7 @@ var handyClicksEditor = {
 		var to = this.ju.getOwnProperty(this.ps.types, type);
 		if(
 			to && to.enabled && !cb.checked
-			&& !this.su.confirmTypeDisabling(type)
+			&& !this.su.confirmTypeAction(type, "typeDisablingWarning")
 		)
 			cb.checked = true;
 	},
@@ -1898,10 +1898,12 @@ var handyClicksEditor = {
 	},
 	deleteCustomType: function() {
 		var cts = this.ps.types;
-		var cct = this.currentCustomType;
-		if(!cts.hasOwnProperty(cct)) // Nothing to delete
+		var type = this.currentCustomType;
+		if(!cts.hasOwnProperty(type)) // Nothing to delete
 			return;
-		delete cts[cct];
+		if(!this.su.confirmTypeAction(type, "typeDeletingWarning"))
+			return;
+		delete cts[type];
 		if(this.ps.otherSrc)
 			this.pe.reloadSettings();
 		else

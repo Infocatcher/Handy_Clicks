@@ -1565,7 +1565,7 @@ var handyClicksSets = {
 			tItem.__isType
 			&& this.checkedState(tItem)
 			&& !forcedEnabled
-			&& !this.su.confirmTypeDisabling(tItem.__itemType)
+			&& !this.su.confirmTypeAction(tItem.__itemType, "typeDisablingWarning")
 		)
 			return;
 		var tRow = this.getRowForItem(tItem);
