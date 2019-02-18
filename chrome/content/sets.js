@@ -1292,15 +1292,14 @@ var handyClicksSets = {
 				typeLabel += " " + this.getLocalized("delayedActionMark");
 				fObj = dObj;
 			}
-			else {
-				var daLabel = this.ju.isObject(dObj) && this.su.getActionLabel(fObj);
-				if(daLabel) {
-					addLabel = this.getLocalized("delayedAction")
-						.replace("%s", this.cropStr(daLabel, MAX_LABEL_LENGTH));
-				}
+			else if(this.ju.isObject(dObj)) {
+				var daLabel = this.cropStr(this.su.getActionLabel(fObj), MAX_LABEL_LENGTH);
+				addLabel = this.getLocalized("delayedAction")
+					.replace("%s", daLabel || this.getLocalized("unnamed"));
 			}
 			var label = this.ju.isObject(fObj)
 				? this.cropStr(this.su.getActionLabel(fObj), MAX_LABEL_LENGTH)
+					|| this.getLocalized("unnamed")
 				: "?";
 			return n + ". " + mdfs + sep + button + sep + typeLabel + " \u21d2 " /* "=>" */
 				+ label + addLabel;
