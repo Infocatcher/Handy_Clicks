@@ -718,6 +718,14 @@ var handyClicksSetsUtils = {
 				.replace("%n", activeTypes)
 		);
 	},
+	getSettingsForType: function(type, prefs) {
+		prefs = prefs || this.ps.prefs;
+		var cnt = 0;
+		for(var sh in prefs)
+			if(this.ju.getOwnProperty(prefs, sh, type))
+				++cnt;
+		return cnt;
+	},
 	getActiveSettingsForType: function(type, prefs) {
 		prefs = prefs || this.ps.prefs;
 		var cnt = 0;

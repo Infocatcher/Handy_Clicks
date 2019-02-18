@@ -1277,8 +1277,9 @@ var handyClicksSets = {
 			if(n == MAX_ROWS)
 				n = itsCount;
 			if(tItem.__isType) {
-				return n + ". " + this.getLocalized("customType")
-					.replace("%s", typeLabel);
+				var related = this.su.getSettingsForType(type);
+				return n + ". " + this.getLocalized("customType").replace("%s", typeLabel)
+					+ this.getLocalized("customTypeRelated").replace("%n", related);
 			}
 			var sh = tItem.__shortcut;
 			var mdfs = this.ps.getModifiersStr(sh);
