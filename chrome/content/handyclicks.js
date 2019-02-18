@@ -193,8 +193,9 @@ var handyClicks = {
 		this._editMode = em;
 		this.setListeners(["keypress"], em);
 		this.ui.setEditModeStatus(em);
-		if(!em && this.enabledForEditMode)
+		if(!em && this.enabledForEditMode) this.delay(function() {
 			this.enabled = this.enabledForEditMode = false;
+		}, this);
 	},
 
 	// Handlers:
