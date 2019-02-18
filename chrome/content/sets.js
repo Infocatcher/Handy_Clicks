@@ -3576,11 +3576,13 @@ var handyClicksSets = {
 
 	isDarkFont: function(node) {
 		var isDarkFont = true;
-		var fc = window.getComputedStyle(node, null).color;
+		var fc = getComputedStyle(node, null).color;
 		if(/^rgb\((\d+), *(\d+), *(\d+)\)$/.test(fc)) {
 			var r = +RegExp.$1, g = +RegExp.$2, b = +RegExp.$3;
-			var brightness = Math.max(r/255, g/255, b/255); // HSV, 0..1
-			isDarkFont = brightness < 0.4;
+			// See https://github.com/bgrins/TinyColor/blob/1.4.1/tinycolor.js#L70 getBrightness()
+			// + https://github.com/bgrins/TinyColor/blob/1.4.1/tinycolor.js#L52 isDark()
+			var brightness = (r*299 + g*587 + b*114)/1000;
+			isDarkFont = brightness < 128;
 		}
 		return isDarkFont;
 	},
