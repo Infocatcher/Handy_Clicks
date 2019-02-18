@@ -201,7 +201,12 @@ var handyClicksEditor = {
 	set applyDisabled(dis) {
 		this.applyButton.disabled = dis;
 		this.$("hc-editor-cmd-test").setAttribute("disabled", dis);
-		dis && this.$("hc-editor-cmd-undo").setAttribute("disabled", !this.ps.hasTestSettings);
+		dis && this.setTestUndo();
+	},
+	setTestUndo: function(canUndo) {
+		if(canUndo === undefined)
+			canUndo = this.ps.hasTestSettings;
+		this.$("hc-editor-cmd-undo").setAttribute("disabled", !canUndo);
 	},
 	selectTargetTab: function hce_selectTargetTab(isDelayed, src, line) {
 		this.editorTabIndex = this.editorMode == this.ct.EDITOR_MODE_TYPE
@@ -371,6 +376,8 @@ var handyClicksEditor = {
 		);
 	},
 	prefChanged: function(pName, pVal) {
+		if(pName == "enabled")
+			this.setTestUndo(false);
 		if(pName == "delayedActionTimeout")
 			this.setTooltip(pVal);
 		else if(pName == "editor.ui.sortInternalTypes")
