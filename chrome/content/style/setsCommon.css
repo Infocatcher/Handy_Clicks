@@ -42,16 +42,12 @@ checkbox[hc_important="enabled"]:not([checked="true"]) {
 }
 
 #hc-sets-onTop {
-	list-style-image: url("icons16.png");
 	-moz-image-region: rect(16px 32px 32px 16px);
 }
 #hc-sets-onTop[checked="true"] {
 	-moz-image-region: rect(16px 16px 32px 0);
 }
-#hc-sets-onTop label {
-	-moz-margin-start: 2px !important;
-}
-#hc-sets-onTop[hc_hideLabel="true"] label {
+#hc-sets-onTop[hc_hideLabel="true"] .button-text {
 	display: none;
 }
 #hc-sets-onTop[hc_onTopNA="true"] {
@@ -72,14 +68,11 @@ label.hc-tip {
 	border-bottom: 1px dotted;
 }
 
-button.hc-iconic .button-icon {
-	/* It's important to use "button .button-icon" ! */
-	/* Without them we can see same icon instead of dropmarker on Linux */
+button.hc-iconic .button-icon { /* Applied to .button-icon to not break dropmarker in Linux */
 	list-style-image: url("icons16.png");
 }
 button .button-icon {
-	/* We can see strange things on Firefox 1.5 and 2.0 without them */
-	opacity: 0.999;
+	opacity: 0.9999; /* Fix for right-placed icon glitches in Firefox 1.5 and 2.0 */
 }
 button.hc-iconic .button-text {
 	-moz-margin-start: 2px !important;

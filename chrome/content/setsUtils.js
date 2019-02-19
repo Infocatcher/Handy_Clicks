@@ -91,7 +91,7 @@ var handyClicksSetsUtils = {
 			<hbox xmlns="' + this.ut.XULNS + '" id="hc-sets-floatToolbar"\
 				oncommand="event.stopPropagation();">\
 				<button id="hc-sets-onTop"\
-					class="hcFloatButton"\
+					class="hcFloatButton hc-iconic"\
 					type="checkbox"\
 					autoCheck="false"\
 					context="hc-sets-onTopContext"\
