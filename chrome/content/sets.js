@@ -10,7 +10,7 @@ var handyClicksSets = {
 	_savedTypes: null,
 
 	init: function(reloadFlag) {
-		var args = window.arguments && window.arguments[0] || {};
+		var args = "arguments" in window && window.arguments[0] || {};
 		var importArgs = args.importArgs || null;
 
 		this.ps.loadSettings();

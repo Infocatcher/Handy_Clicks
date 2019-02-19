@@ -1254,7 +1254,7 @@ var handyClicksEditor = {
 						: "hc_renameCancel"
 				),
 				accesskey: mp.getAttribute("hc_renameCancelAccesskey"),
-				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut(false, true);",
+				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut(false, true);"
 			}), insPos);
 			df.insertBefore(document.createElement("menuseparator"), insPos);
 		}
