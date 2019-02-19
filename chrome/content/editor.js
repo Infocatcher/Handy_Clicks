@@ -1119,12 +1119,13 @@ var handyClicksEditor = {
 	set currentCustomType(customType) {
 		this.$("hc-editor-customTypeExtId").value = this.ps.removeCustomPrefix(customType || "");
 		var notUsed = !this.typeUsed(customType);
-		var labelField = this.$("hc-editor-customType");
-		labelField.setAttribute("hc_notUsed", notUsed);
+		var ml = this.$("hc-editor-customType");
+		ml.setAttribute("hc_notUsed", notUsed);
+		var inp = document.getAnonymousElementByAttribute(ml, "anonid", "input");
 		if(notUsed)
-			labelField.setAttribute("tooltiptext", this.getLocalized("customTypeNotUsed"));
+			inp.setAttribute("tooltiptext", this.getLocalized("customTypeNotUsed"));
 		else
-			labelField.removeAttribute("tooltiptext");
+			inp.removeAttribute("tooltiptext");
 	},
 
 	loadFuncs: function() {
