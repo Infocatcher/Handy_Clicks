@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://handyclicks/content/style/global.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/setsCommon.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/editor.css" type="text/css"?>
 
@@ -96,10 +95,10 @@
 	<popupset id="hc-editor-popups">
 		<menupopup id="hc-editor-editCodeContext"
 			onpopupshowing="return handyClicksEditor.initEditCodeContext();">
-			<menuitem id="hc-editor-renameFileData" class="menuitem-iconic handyClicks-iconic" label="&hc.editor.renameFileData;"
+			<menuitem id="hc-editor-renameFileData" class="menuitem-iconic hc-iconic" label="&hc.editor.renameFileData;"
 				oncommand="handyClicksEditor.renameFileData();" />
 			<menuseparator />
-			<menuitem id="hc-editor-deleteFileData" class="menuitem-iconic handyClicks-iconic" label="&hc.editor.deleteFileData;"
+			<menuitem id="hc-editor-deleteFileData" class="menuitem-iconic hc-iconic" label="&hc.editor.deleteFileData;"
 				oncommand="handyClicksEditor.deleteFileData();" />
 		</menupopup>
 	</popupset>

@@ -1248,7 +1248,7 @@ var handyClicksEditor = {
 			var insPos = df.firstChild;
 			df.insertBefore(this.ut.createElement("menuitem", {
 				id: "hc-editor-renameShortcut",
-				class: "menuitem-iconic handyClicks-iconic",
+				class: "menuitem-iconic hc-iconic",
 				label: isRenaming
 					? mp.getAttribute(canRename ? "hc_renameDoneDisabled" : "hc_renameDone")
 						.replace("$s", this.ps.getShortcutStr(curSh, true))
@@ -1260,7 +1260,7 @@ var handyClicksEditor = {
 			}), insPos);
 			if(isRenaming) df.insertBefore(this.ut.createElement("menuitem", {
 				id: "hc-editor-renameShortcut-cancel",
-				class: "menuitem-iconic handyClicks-iconic",
+				class: "menuitem-iconic hc-iconic",
 				label: mp.getAttribute(
 					canRename && curSh != this._shortcut
 						? "hc_renameCancelUsed"

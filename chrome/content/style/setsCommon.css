@@ -68,8 +68,18 @@ label.hc-tip {
 	border-bottom: 1px dotted;
 }
 
+menuitem.hc-iconic,
 button.hc-iconic .button-icon { /* Applied to .button-icon to not break dropmarker in Linux */
 	list-style-image: url("icons16.png");
+}
+menuitem.hc-iconic image.menu-iconic-left, /* Firefox 1.5 - 2.0 */
+menuitem.hc-iconic .menu-iconic-icon {
+	width: auto !important;
+	height: auto !important;
+	min-width: 0 !important;
+	min-height: 0 !important;
+	max-width: none !important;
+	max-height: none !important;
 }
 button .button-icon {
 	opacity: 0.9999; /* Fix for right-placed icon glitches in Firefox 1.5 and 2.0 */
@@ -77,6 +87,8 @@ button .button-icon {
 button.hc-iconic .button-text {
 	-moz-margin-start: 2px !important;
 }
+menuitem.hc-iconic[disabled="true"] image.menu-iconic-left, /* Firefox 1.5 - 2.0 */
+menuitem.hc-iconic[disabled="true"] .menu-iconic-icon,
 button.hc-iconic[disabled="true"] .button-icon {
 	opacity: 0.32;
 }

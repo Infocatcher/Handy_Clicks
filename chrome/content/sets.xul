@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://handyclicks/content/style/global.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/setsCommon.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/sets.css" type="text/css"?>
 <?xml-stylesheet href='data:text/css,
@@ -280,14 +279,14 @@ preferences {
 								oncommand="handyClicksSets.handleRestoreCommand(event);"
 								onclick="if(event.button == 1) { handyClicksSets.handleRestoreCommand(event); handyClicksUtils.closeMenus(this); }">
 								<menuseparator />
-								<menuitem id="hc-sets-tree-openBackupsDir" class="menuitem-iconic handyClicks-iconic"
+								<menuitem id="hc-sets-tree-openBackupsDir" class="menuitem-iconic hc-iconic"
 									oncommand="handyClicksSets.reveal(handyClicksPrefSvc.backupsDir);"
 									label="&hc.sets.openBackupDir;" accesskey="&hc.sets.openBackupDirAccesskey;" />
 								<menuseparator />
-								<menuitem id="hc-sets-tree-removeUserBackups2" class="menuitem-iconic handyClicks-iconic"
+								<menuitem id="hc-sets-tree-removeUserBackups2" class="menuitem-iconic hc-iconic"
 									oncommand="handyClicksSets.removeOldUserBackups(handyClicksSets.pu.get('sets.backupUserRemoveDepth2'));" closemenu="none"
 									hc_label="&hc.sets.removeUserBackups;" accesskey="&hc.sets.removeUserBackups2Accesskey;" />
-								<menuitem id="hc-sets-tree-removeUserBackups" class="menuitem-iconic handyClicks-iconic"
+								<menuitem id="hc-sets-tree-removeUserBackups" class="menuitem-iconic hc-iconic"
 									oncommand="handyClicksSets.removeOldUserBackups(handyClicksSets.pu.get('sets.backupUserRemoveDepth'));" closemenu="none"
 									hc_label="&hc.sets.removeUserBackups;" accesskey="&hc.sets.removeUserBackupsAccesskey;" />
 							</menupopup>
@@ -764,13 +763,13 @@ preferences {
 		<menupopup id="hc-sets-tree-context"
 			onpopupshowing="return handyClicksSets.initTreeMenu();">
 			<menuitem id="hc-sets-edit" command="hc-sets-cmd-edit" key="hc-sets-key-edit"
-				class="menuitem-iconic handyClicks-iconic" default="true" />
+				class="menuitem-iconic hc-iconic" default="true" />
 			<menuitem id="hc-sets-editSaved" command="hc-sets-cmd-editSaved" key="hc-sets-key-editSaved"
-				class="menuitem-iconic handyClicks-iconic" />
+				class="menuitem-iconic hc-iconic" />
 			<menuitem id="hc-sets-editType" command="hc-sets-cmd-editType" key="hc-sets-key-editType"
-				class="menuitem-iconic handyClicks-iconic" />
+				class="menuitem-iconic hc-iconic" />
 			<menuitem id="hc-sets-editSavedType" command="hc-sets-cmd-editSavedType" key="hc-sets-key-editSavedType"
-				class="menuitem-iconic handyClicks-iconic" />
+				class="menuitem-iconic hc-iconic" />
 
 			<menuseparator id="hc-sets-closeEditors-separator" />
 			<menuitem id="hc-sets-closeEditors" command="hc-sets-cmd-closeEditors" key="hc-sets-key-closeEditors" />
@@ -779,13 +778,13 @@ preferences {
 			<menuitem id="hc-sets-closeSavedTypeEditors" command="hc-sets-cmd-closeSavedTypeEditors" key="hc-sets-key-closeSavedTypeEditors" />
 
 			<menuseparator />
-			<menuitem id="hc-sets-delete" command="hc-sets-cmd-delete" key="hc-sets-key-delete" class="menuitem-iconic handyClicks-iconic" />
+			<menuitem id="hc-sets-delete" command="hc-sets-cmd-delete" key="hc-sets-key-delete" class="menuitem-iconic hc-iconic" />
 			<menuseparator />
-			<menuitem command="hc-sets-cmd-add" key="hc-sets-key-add" class="menuitem-iconic handyClicks-iconic" />
+			<menuitem command="hc-sets-cmd-add" key="hc-sets-key-add" class="menuitem-iconic hc-iconic" />
 			<menuseparator />
-			<menuitem command="hc-sets-cmd-enable" key="hc-sets-key-enable" class="menuitem-iconic handyClicks-iconic" />
-			<menuitem command="hc-sets-cmd-disable" key="hc-sets-key-disable" class="menuitem-iconic handyClicks-iconic" />
-			<menuitem command="hc-sets-cmd-toggle" key="hc-sets-key-toggle" class="menuitem-iconic handyClicks-iconic" />
+			<menuitem command="hc-sets-cmd-enable" key="hc-sets-key-enable" class="menuitem-iconic hc-iconic" />
+			<menuitem command="hc-sets-cmd-disable" key="hc-sets-key-disable" class="menuitem-iconic hc-iconic" />
+			<menuitem command="hc-sets-cmd-toggle" key="hc-sets-key-toggle" class="menuitem-iconic hc-iconic" />
 			<menuseparator />
 			<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
 			<menuitem command="hc-sets-cmd-exportToHTML" key="hc-sets-key-exportToHTML" />
@@ -795,24 +794,24 @@ preferences {
 			<menuitem command="hc-sets-cmd-importFromClipboard" key="hc-sets-key-importFromClipboard" />
 		</menupopup>
 		<menupopup id="hc-sets-prefsManagementPopup" position="before_start">
-			<menuitem id="hc-sets-prefs-all" class="menuitem-iconic handyClicks-iconic" oncommand="handyClicksPrefUtils.openAboutConfig();"
+			<menuitem id="hc-sets-prefs-all" class="menuitem-iconic hc-iconic" oncommand="handyClicksPrefUtils.openAboutConfig();"
 				label="&hc.sets.allPrefs;" />
 			<menuseparator />
 			<menuitem oncommand="handyClicksSets.resetPrefs();" label="&hc.sets.defaults;" />
 			<menuseparator />
-			<menuitem id="hc-sets-prefs-miImport" class="menuitem-iconic handyClicks-iconic" oncommand="handyClicksSets.importPrefs();"
+			<menuitem id="hc-sets-prefs-miImport" class="menuitem-iconic hc-iconic" oncommand="handyClicksSets.importPrefs();"
 				label="&hc.sets.importPrefs;" />
-			<menuitem id="hc-sets-prefs-miExport" class="menuitem-iconic handyClicks-iconic" oncommand="handyClicksSets.exportPrefs();"
+			<menuitem id="hc-sets-prefs-miExport" class="menuitem-iconic hc-iconic" oncommand="handyClicksSets.exportPrefs();"
 				label="&hc.sets.exportPrefs;" />
 		</menupopup>
 		<menupopup id="hc-sets-tree-restoreFromBackupContext"
 			onpopupshowing="return (this.triggerNode || document.popupNode).hasAttribute('hc_fileName');">
-			<menuitem id="hc-sets-tree-restoreBackupFile" class="menuitem-iconic handyClicks-iconic" default="true" label="&hc.sets.restoreBackup;"
+			<menuitem id="hc-sets-tree-restoreBackupFile" class="menuitem-iconic hc-iconic" default="true" label="&hc.sets.restoreBackup;"
 				oncommand="(this.parentNode.triggerNode || document.popupNode).doCommand();" />
-			<menuitem id="hc-sets-tree-showBackupFile" class="menuitem-iconic handyClicks-iconic" label="&hc.sets.showBackupFile;"
+			<menuitem id="hc-sets-tree-showBackupFile" class="menuitem-iconic hc-iconic" label="&hc.sets.showBackupFile;"
 				oncommand="handyClicksSets.reveal((this.parentNode.triggerNode || document.popupNode).__file);" />
 			<menuseparator />
-			<menuitem id="hc-sets-removeBackup" class="menuitem-iconic handyClicks-iconic"
+			<menuitem id="hc-sets-removeBackup" class="menuitem-iconic hc-iconic"
 				closemenu="single" label="&hc.sets.removeBackup;"
 				oncommand="handyClicksSets.removeBackup((this.parentNode.triggerNode || document.popupNode), event);"
 				onclick="if(event.button == 1) { handyClicksSets.removeBackup((this.parentNode.triggerNode || document.popupNode), event); this.parentNode.hidePopup(); }" />
