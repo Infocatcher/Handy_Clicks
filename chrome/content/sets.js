@@ -676,10 +676,10 @@ var handyClicksSets = {
 		var fileData = this.getActionCode._hasFileData;
 		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}, this._localizeArgs));
 		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)));
-		if(this.getActionCode._hasFileData)
-			fileData = true;
 		if(this.getActionCode._hasLinkedFile)
 			linkedFile = true;
+		if(this.getActionCode._hasFileData)
+			fileData = true;
 
 		var da = this.ju.getOwnProperty(fo, "delayedAction");
 		if(da) {
@@ -846,7 +846,15 @@ var handyClicksSets = {
 		var linkedFile = this.getActionCode._hasLinkedFile;
 		var fileData = this.getActionCode._hasFileData;
 		this.appendTreeCell(tRow, "label", "");
-		this.appendTreeCell(tRow, "label", "");
+		var cmCode = "";
+		if(to.contextMenu) {
+			cmCode = this.getActionCode(to.contextMenu, true);
+			if(this.getActionCode._hasLinkedFile)
+				linkedFile = true;
+			if(this.getActionCode._hasFileData)
+				fileData = true;
+		}
+		this.appendTreeCell(tRow, "label", cmCode);
 		this.setNodeProperties(
 			this.appendTreeCell(tRow, "value", to.enabled),
 			{ hc_checkbox: true }
