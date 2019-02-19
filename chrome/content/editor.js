@@ -786,23 +786,19 @@ var handyClicksEditor = {
 		}, this);
 		parent.insertBefore(dfTarget, sep);
 		tList.appendChild(dfEdit);
-		this.delay(function() {
-			tList.style.visibility = "collapse";
-			"openPopup" in tList ? tList.openPopup() : tList.showPopup(); // Force initialize XBL bindings
-			tList.hidePopup();
-			tList.style.visibility = "";
-			Array.prototype.forEach.call(
-				tList.getElementsByTagName("menuitem"),
-				function(mi) {
-					// Trick: localize real <label> and leave raw value in label attribute
-					var lb = document.getAnonymousElementByAttribute(mi, "class", "menu-iconic-text");
-					lb && lb.setAttribute("value", mi.getAttribute("hc_localizedLabel"));
-				}
-			);
-		}, this);
 		sep.hidden = hideSep;
 		parent.parentNode.value = this.type || ""; // <menulist>
 		this.highlightUsedTypes();
+	},
+	showLocalizedLabels: function(mp) {
+		Array.prototype.forEach.call(
+			mp.getElementsByTagName("menuitem"),
+			function(mi) {
+				// Trick: localize real <label> and leave raw value in label attribute
+				var lb = document.getAnonymousElementByAttribute(mi, "class", "menu-iconic-text");
+				lb.setAttribute("value", mi.getAttribute("hc_localizedLabel"));
+			}
+		);
 	},
 	typeUsed: function(type, prefs) {
 		prefs = prefs || this.ps.prefs;

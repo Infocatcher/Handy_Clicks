@@ -319,7 +319,8 @@
 						hc_ondrop="handyClicksEditor.customTypeLabelChangedDelay(this);"
 						oncut="handyClicksEditor.customTypeLabelChangedDelay(this);"
 						hc_tooltiptext="&hc.editor.labelLocalize;">
-						<menupopup id="hc-editor-customTypePopup" />
+						<menupopup id="hc-editor-customTypePopup"
+							onpopupshowing="handyClicksEditor.showLocalizedLabels(this);" />
 					</menulist>
 					<label value="&hc.editor.internalId;"
 						accesskey="&hc.editor.internalIdAccesskey;" control="hc-editor-customTypeExtId" />
