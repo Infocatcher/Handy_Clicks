@@ -52,15 +52,8 @@ var handyClicksEditor = {
 			this.addTestButtons();
 
 			this.delay(function() {
-				Array.prototype.forEach.call( // Add spellcheck feature for <menulist editable="true" />
-					document.getElementsByTagName("menulist"),
-					function(ml) {
-						if(ml.getAttribute("spellcheck") != "true")
-							return;
-						var inp = ml.ownerDocument.getAnonymousElementByAttribute(ml, "anonid", "input");
-						inp && inp.setAttribute("spellcheck", "true");
-					}
-				);
+				document.getAnonymousElementByAttribute(this.$("hc-editor-customType"), "anonid", "input")
+					.setAttribute("spellcheck", "true");
 			}, this);
 
 			// Fix Ctrl(+Shift)+Tab and Ctrl+PageUp/Ctrl+PageDown navigation in Firefox 52+
