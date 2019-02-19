@@ -764,27 +764,42 @@ var handyClicksEditor = {
 				: cType;
 			sortedTypes.push({
 				label: label,
+				hc_localizedLabel: this.ps.localize(label),
 				value: cType,
 				tooltiptext: tip,
 				hc_notUsed: notUsed,
 				hc_disabled: dis
 			});
 		}
-		var primaryItems = document.createDocumentFragment();
-		var secondaryItems = document.createDocumentFragment();
+		var dfTarget = document.createDocumentFragment();
+		var dfEdit = document.createDocumentFragment();
 		sortedTypes.sort(function(a, b) {
 			return a.label > b.label;
 		}).forEach(function(attrs) {
 			var mi = this.ut.createElement("menuitem", attrs);
 			var _mi = mi.cloneNode(true);
 			mi.setAttribute("disabled", attrs.hc_disabled);
-			mi.setAttribute("label", this.ps.localize(attrs.label));
-			primaryItems.appendChild(mi);
-			secondaryItems.appendChild(_mi);
+			mi.setAttribute("label", attrs.hc_localizedLabel);
+			dfTarget.appendChild(mi);
+			dfEdit.appendChild(_mi);
 			hideSep = false;
 		}, this);
-		parent.insertBefore(primaryItems, sep);
-		tList.appendChild(secondaryItems);
+		parent.insertBefore(dfTarget, sep);
+		tList.appendChild(dfEdit);
+		this.delay(function() {
+			tList.style.visibility = "collapse";
+			"openPopup" in tList ? tList.openPopup() : tList.showPopup(); // Force initialize XBL bindings
+			tList.hidePopup();
+			tList.style.visibility = "";
+			Array.prototype.forEach.call(
+				tList.getElementsByTagName("menuitem"),
+				function(mi) {
+					// Trick: localize real <label> and leave raw value in label attribute
+					var lb = document.getAnonymousElementByAttribute(mi, "class", "menu-iconic-text");
+					lb && lb.setAttribute("value", mi.getAttribute("hc_localizedLabel"));
+				}
+			);
+		}, this);
 		sep.hidden = hideSep;
 		parent.parentNode.value = this.type || ""; // <menulist>
 		this.highlightUsedTypes();
