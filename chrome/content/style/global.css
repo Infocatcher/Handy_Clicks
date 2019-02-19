@@ -3,7 +3,8 @@
 .handyClicks-iconic {
 	list-style-image: url("icons16.png");
 }
-.handyClicks-iconic image {
+.handyClicks-iconic image.menu-iconic-left, /* Firefox 1.5 - 2.0 */
+.handyClicks-iconic .menu-iconic-icon {
 	width: auto !important;
 	height: auto !important;
 	min-width: 0 !important;
@@ -11,6 +12,7 @@
 	max-width: none !important;
 	max-height: none !important;
 }
+.handyClicks-iconic[disabled="true"] image.menu-iconic-left, /* Firefox 1.5 - 2.0 */
 .handyClicks-iconic[disabled="true"] .menu-iconic-icon {
 	opacity: 0.32;
 }
