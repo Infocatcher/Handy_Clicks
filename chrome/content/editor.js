@@ -791,6 +791,8 @@ var handyClicksEditor = {
 		this.highlightUsedTypes();
 	},
 	showLocalizedLabels: function(mp) {
+		var mi = mp.getElementsByAttribute("value", this.currentCustomType)[0] || null;
+		mi && mi.setAttribute("label", mp.parentNode.label); // Set new label for auto-selection
 		Array.prototype.forEach.call(
 			mp.getElementsByTagName("menuitem"),
 			function(mi) {
