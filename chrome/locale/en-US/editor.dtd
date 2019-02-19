@@ -64,6 +64,7 @@ Ctrl+Shift+V – paste">
 <!ENTITY hc.editor.funcInit "Initialization">
 <!ENTITY hc.editor.funcInitAccesskey "I">
 <!ENTITY hc.editor.funcInitTip "Executes when settings (re)loading">
+<!ENTITY hc.editor.labelLocalize "Localization: Default string @locale:Localized string @locale2:…">
 
 <!ENTITY hc.editor.editCode "Edit…">
 <!ENTITY hc.editor.editCodeTip "Edit code in external editor…">

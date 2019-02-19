@@ -64,6 +64,7 @@ Ctrl+Shift+V – вставить">
 <!ENTITY hc.editor.funcInit "Инициализация">
 <!ENTITY hc.editor.funcInitAccesskey "И">
 <!ENTITY hc.editor.funcInitTip "Выполняется при (пере)загрузке настроек">
+<!ENTITY hc.editor.labelLocalize "Локализация: Default string @locale:Локализованная строка @locale2:…">
 
 <!ENTITY hc.editor.editCode "Редактировать…">
 <!ENTITY hc.editor.editCodeTip "Редактировать код во внешнем редакторе…">

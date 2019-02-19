@@ -52,8 +52,10 @@ var handyClicksEditor = {
 			this.addTestButtons();
 
 			this.delay(function() {
-				document.getAnonymousElementByAttribute(this.$("hc-editor-customType"), "anonid", "input")
-					.setAttribute("spellcheck", "true");
+				var ml = this.$("hc-editor-customType");
+				var inp = document.getAnonymousElementByAttribute(ml, "anonid", "input");
+				inp.setAttribute("spellcheck", "true");
+				inp.setAttribute("tooltiptext", ml.getAttribute("hc_tooltiptext"));
 			}, this);
 
 			// Fix Ctrl(+Shift)+Tab and Ctrl+PageUp/Ctrl+PageDown navigation in Firefox 52+
@@ -1122,10 +1124,8 @@ var handyClicksEditor = {
 		var ml = this.$("hc-editor-customType");
 		ml.setAttribute("hc_notUsed", notUsed);
 		var inp = document.getAnonymousElementByAttribute(ml, "anonid", "input");
-		if(notUsed)
-			inp.setAttribute("tooltiptext", this.getLocalized("customTypeNotUsed"));
-		else
-			inp.removeAttribute("tooltiptext");
+		var tt = notUsed ? this.getLocalized("customTypeNotUsed") + " \n" : "";
+		inp.setAttribute("tooltiptext", tt + ml.getAttribute("hc_tooltiptext"));
 	},
 
 	loadFuncs: function() {

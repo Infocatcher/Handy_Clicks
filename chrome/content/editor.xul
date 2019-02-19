@@ -245,7 +245,8 @@
 								<hbox id="hc-editor-funcLabelBox" align="center" flex="1">
 									<label value="&hc.editor.funcLabel;"
 										accesskey="&hc.editor.funcLabelAccesskey;" control="hc-editor-funcLabel" />
-									<textbox id="hc-editor-funcLabel" flex="1" spellcheck="true" />
+									<textbox id="hc-editor-funcLabel" flex="1" spellcheck="true"
+										tooltiptext="&hc.editor.labelLocalize;" />
 								</hbox>
 							</hbox>
 							<vbox id="hc-editor-funcSets" flex="1">
@@ -316,7 +317,8 @@
 						oncommand="event.stopPropagation(); handyClicksEditor.initCustomTypesEditor();"
 						oninput="handyClicksEditor.customTypeLabelChanged(this);"
 						hc_ondrop="handyClicksEditor.customTypeLabelChangedDelay(this);"
-						oncut="handyClicksEditor.customTypeLabelChangedDelay(this);">
+						oncut="handyClicksEditor.customTypeLabelChangedDelay(this);"
+						hc_tooltiptext="&hc.editor.labelLocalize;">
 						<menupopup id="hc-editor-customTypePopup" />
 					</menulist>
 					<label value="&hc.editor.internalId;"
