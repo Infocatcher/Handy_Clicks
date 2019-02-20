@@ -29,7 +29,7 @@ var handyClicksSets = {
 		this.ps.oSvc.addObserver(this.setsReloading, this);
 
 		this.initPrefs();
-		this.pu.oSvc.addObserver(this.prefsChanged, this);
+		this.pu.oSvc.addObserver(this.prefChanged, this);
 
 		var fxVersion = this.fxVersion;
 		if(fxVersion >= 3.5) {
@@ -1792,7 +1792,7 @@ var handyClicksSets = {
 			this.setDrawMode(mi.value);
 		else if(mi.hasAttribute("hc_pref")) {
 			var prefName = mi.getAttribute("hc_pref");
-			this.pu.set(prefName, !this.pu.get(prefName)); // => prefsChanged()
+			this.pu.set(prefName, !this.pu.get(prefName)); // => prefChanged()
 		}
 		else if(mi.hasAttribute("hc_treeAttr")) {
 			var attrName = mi.getAttribute("hc_treeAttr");
@@ -1826,7 +1826,7 @@ var handyClicksSets = {
 	},
 	setDrawMode: function(dm) {
 		// <preference instantApply="true" ... /> is bad on slow devices (it saves prefs.js file)
-		this.pu.set("sets.treeDrawMode", +dm); // => prefsChanged()
+		this.pu.set("sets.treeDrawMode", +dm); // => prefChanged()
 	},
 
 	get treeContainers() {
@@ -2383,7 +2383,7 @@ var handyClicksSets = {
 
 	/*** Prefs pane ***/
 	_updPrefsUITimeout: 0,
-	prefsChanged: function(pName, pVal) {
+	prefChanged: function(pName, pVal) {
 		if(pName == "sets.treeDrawMode")
 			this.updTree(false, true);
 		else if(pName == "sets.treeExpandDelayedAction")
