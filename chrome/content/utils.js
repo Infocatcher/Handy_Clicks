@@ -253,25 +253,21 @@ var handyClicksUtils = {
 	openErrorConsole: function() {
 		var hasConsole2 = "@zeniko/console2-clh;1" in Components.classes
 			|| "@mozilla.org/commandlinehandler/general-startup;1?type=console2" in Components.classes; // Firefox <= 3.6
-		var bcItem = !hasConsole2 && this.browserConsoleItem;
+		if(hasConsole2)
+			return this.wu.openWindowByType("chrome://console2/content/console2.xul", "global:console");
+		// Note: Browser Console not supported without opened browser windows
+		var window = this.wu.wm.getMostRecentWindow("navigator:browser");
+		if(!window)
+			return this.wu.openWindowByType("chrome://global/content/console.xul", "global:console");
+		var bcItem = window.document.getElementById("key_browserConsole");
 		if(bcItem)
 			return bcItem.doCommand();
-		if("toErrorConsole" in top)
-			return top.toErrorConsole();
-		if("toJavaScriptConsole" in top)
-			return top.toJavaScriptConsole();
-		var consoleURI = hasConsole2
-			? "chrome://console2/content/console2.xul"
-			: "chrome://global/content/console.xul";
-		return this.wu.openWindowByType(consoleURI, "global:console");
-	},
-	// Note: Browser Console not supported without opened browser windows
-	get browserConsoleItem() {
-		var window = this.wu.wm.getMostRecentWindow("navigator:browser");
-		return window && (
-			window.document.getElementById("menu_browserConsole")
-			|| window.document.getElementById("key_browserConsole")
-		);
+		if("toErrorConsole" in window)
+			return window.toErrorConsole();
+		if("toJavaScriptConsole" in window)
+			return window.toJavaScriptConsole();
+		this._warn("openErrorConsole() failed: not found supported item in browser window");
+		return null;
 	},
 
 	get promptsSvc() {
