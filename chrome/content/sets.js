@@ -3669,9 +3669,20 @@ var handyClicksSets = {
 				var date = fd.time ? this.stringifyDate(fd.time) : "?";
 				var size = fd.size ? this.stringifySize(fd.size) : "?";
 				var row = df.appendChild(document.createElement("row"));
-				row.appendChild(this.ut.createElement("label", { value: fd.path, crop: "center" }));
+				row.appendChild(this.ut.createElement("label", {
+					value: fd.path,
+					crop: "center",
+					class: "hc-path"
+				}));
 				row.appendChild(this.ut.createElement("label", { value: date }));
 				row.appendChild(this.ut.createElement("label", { value: size }));
+				this.delay(function() {
+					var file = this.ut.getLocalFile(fd.path);
+					if(!file.exists())
+						row.className = "hc-new";
+					else if(this.io.readFromFile(file) != files[path].data)
+						row.className = "hc-override";
+				}, this);
 			}, this);
 			var tipRows = this.$("hc-sets-tree-importFilesTipRows");
 			tipRows.textContent = "";

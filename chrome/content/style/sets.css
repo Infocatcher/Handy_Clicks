@@ -179,13 +179,18 @@ tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_copied),
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_copied, selected) {
 	color: #bfc1ca !important;
 }
-treechildren::-moz-tree-cell-text(hc_override), #hc-sets-tree-importChanged {
+treechildren::-moz-tree-cell-text(hc_override),
+#hc-sets-tree-importChanged,
+row.hc-override > .hc-path {
 	font-style: italic;
 }
-treechildren::-moz-tree-cell-text(hc_new), #hc-sets-tree-importAdded {
+treechildren::-moz-tree-cell-text(hc_new),
+#hc-sets-tree-importAdded,
+row.hc-new > .hc-path {
 	text-decoration: underline;
 }
-treechildren::-moz-tree-cell-text(hc_old), #hc-sets-tree-importRemoved {
+treechildren::-moz-tree-cell-text(hc_old),
+#hc-sets-tree-importRemoved {
 	text-decoration: line-through;
 }
 
