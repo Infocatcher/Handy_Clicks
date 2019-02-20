@@ -3674,14 +3674,14 @@ var handyClicksSets = {
 					crop: "center",
 					class: "hc-path"
 				}));
-				row.appendChild(this.ut.createElement("label", { value: date }));
-				row.appendChild(this.ut.createElement("label", { value: size }));
+				row.appendChild(this.ut.createElement("label", { value: date, class: "hc-date" }));
+				row.appendChild(this.ut.createElement("label", { value: size, class: "hc-size" }));
 				this.delay(function() {
 					var file = this.ut.getLocalFile(fd.path);
 					if(!file.exists())
 						row.className = "hc-new";
 					else if(this.io.readFromFile(file) != files[path].data)
-						row.className = "hc-override";
+						row.className = "hc-override" + (fd.time < file.lastModifiedTime ? " hc-older" : "");
 				}, this);
 			}, this);
 			var tipRows = this.$("hc-sets-tree-importFilesTipRows");

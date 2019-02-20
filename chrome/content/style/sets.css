@@ -193,6 +193,9 @@ treechildren::-moz-tree-cell-text(hc_old),
 #hc-sets-tree-importRemoved {
 	text-decoration: line-through;
 }
+row.hc-older {
+	opacity: 0.6;
+}
 
 treechildren::-moz-tree-checkbox(hc_checkbox),
 menuitem[command="hc-sets-cmd-enable"],
