@@ -155,6 +155,16 @@
 `x` Fixed “on top” button, if opened in tab.<br>
 `x` Correctly check for unsaved tree, if opened in tab.<br>
 `+` Added favicons for editor and settings in tab.<br>
+`+` Show custom types in settings tree (+ <em>extensions.handyclicks.sets.treeSortCustomTypes</em> preference: -1 – show before settings, 0 – sort with settings, 1 – show after settings) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/37">#37</a>).<br>
+`x` Delete item in tree: correctly handle unnamed items.<br>
+`*` Confirm custom type deletion in case of related actions presence.<br>
+`*` Don't draw tree, if settings opened in import mode.<br>
+`*` Improved font color brightness detection for dark themes (based on code from <a href="https://github.com/bgrins/TinyColor">TinyColor</a>).<br>
+`x` Fixed “custom type not used” tooltip in new Firefox versions.<br>
+`*` Editor: auto-select custom type in list even if type was renamed (and also show localized labels).<br>
+`*` Rewritten styles for iconized menu items + removed global.css (so, also improved performance).<br>
+`*` Settings: improved localization for export/copy to clipboard menu items.<br>
+`*` Improved behavior of “Close this menu after click” menu item: apply new logic right after click.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre7 (2019-02-10)
