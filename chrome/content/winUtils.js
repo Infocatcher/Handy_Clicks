@@ -50,6 +50,10 @@ var handyClicksWinUtils = {
 			return "handyClicksUI" in w && fn.call(context || w, w);
 		});
 	},
+	get browserWindow() {
+		var bw = this.wm.getMostRecentWindow("navigator:browser");
+		return bw || this.isSeaMonkey && this.forEachBrowserWindow(function(w) { return (bw = w); }) && bw;
+	},
 
 	getXulWin: function(win) {
 		var ci = Components.interfaces;

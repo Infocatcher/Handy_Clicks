@@ -256,7 +256,7 @@ var handyClicksUtils = {
 		if(hasConsole2)
 			return this.wu.openWindowByType("chrome://console2/content/console2.xul", "global:console");
 		// Note: Browser Console not supported without opened browser windows
-		var window = this.wu.wm.getMostRecentWindow("navigator:browser");
+		var window = this.wu.browserWindow;
 		if(!window)
 			return this.wu.openWindowByType("chrome://global/content/console.xul", "global:console");
 		var bcItem = window.document.getElementById("key_browserConsole");

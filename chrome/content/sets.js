@@ -66,7 +66,7 @@ var handyClicksSets = {
 				window.resizeTo(+de.width, +de.height);
 		}
 
-		var brWin = this.wu.wm.getMostRecentWindow("navigator:browser");
+		var brWin = this.wu.browserWindow;
 		if(brWin) {
 			if(!brWin.document.getElementById("appmenu_preferences"))
 				document.getElementsByAttribute("preference", "showInAppMenu")[0].hidden = true;

@@ -1550,15 +1550,8 @@ var handyClicksEditor = {
 		this.$("hc-editor-cmd-undo").setAttribute("disabled", "false");
 		var focus = this.pu.get("editor.testFocusMainWindow");
 		if(invertFocusPref ? !focus : focus) {
-			if(this.isSeaMonkey) { // Detect private browser windows
-				this.wu.forEachBrowserWindow(function(w) {
-					return !w.focus();
-				});
-			}
-			else {
-				var w = this.wu.wm.getMostRecentWindow("navigator:browser");
-				w && w.focus();
-			}
+			var w = this.wu.browserWindow;
+			w && w.focus();
 		}
 	},
 	undoTestSettings: function(reloadAll) {
