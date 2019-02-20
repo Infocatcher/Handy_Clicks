@@ -188,7 +188,8 @@
 							tooltiptext="&hc.editor.tabActionTip;" />
 						<tab id="hc-editor-funcTab-delay"
 							label="&hc.editor.tabActionDelay;" accesskey="&hc.editor.tabActionDelayAccesskey;"
-							hc_tooltiptext="&hc.editor.tabActionDelayTip;" />
+							hc_tooltiptext="&hc.editor.tabActionDelayTip;"
+							hc_tooltiptextDisabled="&hc.editor.tabActionDelayDisabledTip;" />
 					</tabs>
 					<tabpanels id="hc-editor-funcsTab" flex="1">
 						<tabpanel id="hc-editor-funcTab" flex="1" orient="vertical">

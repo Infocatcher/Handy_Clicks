@@ -1,5 +1,3 @@
-<!-- &#37;x (&#37; - percent symbol) will be replaced with some value -->
-
 <!-- Editor -->
 <!ENTITY hc.editor.title "Handy Clicks: Редактор">
 <!ENTITY hc.editor.defaultWindowWidth "780">
@@ -45,7 +43,8 @@
 <!ENTITY hc.editor.tabActionTip "Выполняется при наступлении выбранного события">
 <!ENTITY hc.editor.tabActionDelay "Отложенное действие">
 <!ENTITY hc.editor.tabActionDelayAccesskey "л">
-<!ENTITY hc.editor.tabActionDelayTip "Выполняется через &#37;n мс">
+<!ENTITY hc.editor.tabActionDelayTip "Выполняется через $n мс">
+<!ENTITY hc.editor.tabActionDelayDisabledTip "Отключено, установлена нулевая задержка">
 <!ENTITY hc.editor.fixActionOpts "Зафиксировать">
 <!ENTITY hc.editor.fixActionOptsAccesskey "З">
 <!ENTITY hc.editor.fixActionOptsTip "Зафиксировать настройки действия

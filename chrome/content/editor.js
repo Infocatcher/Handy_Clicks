@@ -356,7 +356,9 @@ var handyClicksEditor = {
 		if(delay === undefined)
 			delay = this.pu.get("delayedActionTimeout");
 		var dTab = this.$("hc-editor-funcTab-delay");
-		dTab.tooltipText = dTab.getAttribute("hc_tooltiptext").replace("%n", delay);
+		dTab.tooltipText = delay <= 0
+			? dTab.getAttribute("hc_tooltiptextDisabled")
+			: dTab.getAttribute("hc_tooltiptext").replace("$n", delay);
 	},
 	setFuncsNotes: function(show) {
 		this.root.setAttribute(
