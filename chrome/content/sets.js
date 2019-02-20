@@ -1775,9 +1775,11 @@ var handyClicksSets = {
 		Array.prototype.forEach.call(
 			mp.getElementsByTagName("menuitem"),
 			function(mi) {
-				mi.setAttribute("closemenu", closeMenu);
-				if(mi.hasAttribute("hc_pref"))
-					mi.setAttribute("checked", this.pu.get(mi.getAttribute("hc_pref")));
+				var pref = mi.getAttribute("hc_pref");
+				if(pref != "sets.closeTreeViewMenu")
+					mi.setAttribute("closemenu", closeMenu);
+				if(pref)
+					mi.setAttribute("checked", this.pu.get(pref));
 				else if(mi.hasAttribute("hc_treeAttr"))
 					mi.setAttribute("checked", this.tree.getAttribute(mi.getAttribute("hc_treeAttr")) == "true");
 			},
@@ -1797,9 +1799,7 @@ var handyClicksSets = {
 			var tr = this.tree;
 			tr.setAttribute(attrName, tr.getAttribute(attrName) != "true");
 		}
-
-		if(this.hasModifier(e))
-			popup.hidePopup();
+		this.hasModifier(e) && popup.hidePopup();
 	},
 	viewMenuClick: function(e, popup) {
 		if(e.button == 0)
@@ -1812,6 +1812,17 @@ var handyClicksSets = {
 				return;
 		}
 		popup.hidePopup();
+	},
+	setViewMenuClose: function(e, mi) {
+		e.stopPropagation();
+		var prefName = mi.getAttribute("hc_pref");
+		var close = !this.pu.get(prefName);
+		this.pu.set(prefName, close);
+		var popup = mi.parentNode;
+		if(close)
+			popup.hidePopup();
+		else
+			this.initViewMenu(popup);
 	},
 	setDrawMode: function(dm) {
 		// <preference instantApply="true" ... /> is bad on slow devices (it saves prefs.js file)

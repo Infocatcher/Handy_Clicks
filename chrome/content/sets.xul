@@ -142,7 +142,10 @@ preferences {
 					<menuitem type="checkbox" hc_pref="sets.rememberScrollPosition" label="&hc.sets.rememberScrollPosition;" />
 					<menuitem type="checkbox" hc_pref="sets.rememberState" label="&hc.sets.rememberState;" />
 					<menuseparator />
-					<menuitem type="checkbox" hc_pref="sets.closeTreeViewMenu" label="&hc.sets.closeThisMenu;" />
+					<menuitem type="checkbox" hc_pref="sets.closeTreeViewMenu" label="&hc.sets.closeThisMenu;"
+						closemenu="none"
+						oncommand="handyClicksSets.setViewMenuClose(event, this);"
+						onclick="if(event.button == 1) handyClicksSets.setViewMenuClose(event, this);" />
 				</menupopup>
 			</button>
 		</hbox>
