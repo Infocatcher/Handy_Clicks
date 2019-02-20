@@ -98,9 +98,9 @@
 <!ENTITY hc.sets.fullExportToFile "Экспорт в файл…">
 <!ENTITY hc.sets.createBackup "Сделать резервную копию">
 <!ENTITY hc.sets.exportSelectedToFile "Экспорт выделенного в файл…">
-<!ENTITY hc.sets.exportSelectedToClipboard "Экспорт выделенного в буфер обмена">
-<!ENTITY hc.sets.exportToURI "Копировать ссылку">
-<!ENTITY hc.sets.exportToHTML "Копировать в формате HTML">
+<!ENTITY hc.sets.exportSelectedToClipboard "Копировать во внутреннем формате JSON">
+<!ENTITY hc.sets.exportToURI "Копировать как ссылку">
+<!ENTITY hc.sets.exportToHTML "Копировать как ссылку в формате HTML">
 
 <!ENTITY hc.sets.import "Импорт">
 <!ENTITY hc.sets.importAccesskey "И">
