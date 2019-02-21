@@ -3795,13 +3795,9 @@ var handyClicksSets = {
 				continue;
 			}
 			var exists = file.exists();
-			if(exists && file.fileSize == fo.size) try { // Compare only with different file size
+			if(exists && file.fileSize == fo.size) // Compare only with different file size
 				if(this.io.readFromFile(file) == fo.data)
 					continue;
-			}
-			catch(e) {
-				Components.utils.reportError(e);
-			}
 			if(exists && overwriteAsk) {
 				// See this.ut.confirmEx()
 				this.ut.ensureNotMinimized(window);
@@ -3873,15 +3869,7 @@ var handyClicksSets = {
 		if(!fileData) // File will be unchanged
 			return true;
 		var file = this.ut.getLocalFile(path);
-		if(!file.exists())
-			return false;
-		try {
-			return this.io.readFromFile(file) == fileData;
-		}
-		catch(e) {
-			Components.utils.reportError(e);
-		}
-		return undefined;
+		return file.exists() && this.io.readFromFile(file) == fileData;
 	},
 
 	// Import using drag-and-drop
