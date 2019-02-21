@@ -1012,8 +1012,9 @@
 						}
 						if(fVal.charAt(0) == "\ufeff") // Older Firefox versions doesn't support BOM mark
 							fVal = fVal.substr(1);
-						if(this._virtualPath) {
-							var fo = ut.ps.files[this._virtualPath];
+						var virtualPath = this._virtualPath;
+						if(virtualPath) {
+							var fo = ut.ps.files[virtualPath];
 							if(fo.size == fSize && fo.lastModified == fTime)
 								return;
 							fo.data = fVal;
@@ -1021,7 +1022,7 @@
 							fo.size = fSize;
 							setTimeout(function() {
 								var wSet = ut.wu.wm.getMostRecentWindow("handyclicks:settings");
-								wSet && wSet.handyClicksSets.changedFileData();
+								wSet && wSet.handyClicksSets.changedFileData(virtualPath);
 							}, 0);
 							this.fade();
 							return;

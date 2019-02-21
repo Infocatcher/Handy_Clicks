@@ -109,6 +109,7 @@ var handyClicksSets = {
 		this.saveSearchQuery();
 		reloadFlag && this.setImportStatus(false);
 		this.rowsCache = this._savedPrefs = this._savedTypes = null;
+		this._typesState = this._filesState = null;
 
 		window.removeEventListener("mouseover", this, true);
 		document.removeEventListener(this.su.dropEvent, this, false);
@@ -604,11 +605,15 @@ var handyClicksSets = {
 			this.checkTreeSaved();
 		}
 	},
-	changedFileData: function() {
+	changedFileData: function(path) {
 		if(!this.ps.otherSrc)
 			return false;
-		this.setImportFilesDataStatus();
+		if(path)
+			delete this._filesState[path];
+		else
+			this._filesState = { __proto__: null };
 		this.updTree();
+		this.setImportFilesDataStatus();
 		return true;
 	},
 
@@ -3105,6 +3110,7 @@ var handyClicksSets = {
 		//this.prefsSaved();
 
 		this.updateAllDependencies();
+		this._filesState = { __proto__: null };
 		this.forceUpdTree(this._importSrc);
 		this.ps.otherSrc && this.pe.reloadSettings();
 
@@ -3388,6 +3394,7 @@ var handyClicksSets = {
 		//this.pe.reloadSettings(false);
 		if(this.ps._loadStatus)
 			return;
+		this._filesState = { __proto__: null };
 		this._importSrc = pSrc;
 		this.setImportStatus(true, partialImport, srcId == ct.IMPORT_CLIPBOARD);
 		if(partialImport)
@@ -3668,12 +3675,13 @@ var handyClicksSets = {
 				return a.path > b.path;
 			}).forEach(function(fd, i) {
 				var n = i + 1;
+				var path = fd.path;
 				var date = fd.time ? this.stringifyDate(fd.time) : "?";
 				var size = fd.size ? this.stringifySize(fd.size) : "?";
 				var row = df.appendChild(document.createElement("row"));
 				row.appendChild(this.ut.createElement("label", { value: n + ".", class: "hc-num" }));
 				row.appendChild(this.ut.createElement("label", {
-					value: fd.path,
+					value: path,
 					crop: "center",
 					class: "hc-path"
 				}));
@@ -3682,11 +3690,13 @@ var handyClicksSets = {
 				if(this.fxVersion >= 51) // https://bugzilla.mozilla.org/show_bug.cgi?id=1318898
 					row.style.filter = "contrast(1)"; // Prevent disappearance of semi-transparent nodes
 				this.delay(function() {
-					var file = this.ut.getLocalFile(fd.path);
-					if(!file.exists())
+					var equals = path in this._filesState ? this._filesState[path] : undefined;
+					if(equals === undefined)
 						row.className = "hc-new";
-					else if(this.io.readFromFile(file) != files[path].data)
+					else if(!equals) {
+						var file = this.ut.getLocalFile(path);
 						row.className = "hc-override" + (fd.time < file.lastModifiedTime ? " hc-older" : "");
+					}
 					if(n < countFD)
 						return;
 					var tipRows = this.$("hc-sets-tree-importFilesTipRows");
@@ -3747,7 +3757,8 @@ var handyClicksSets = {
 		}
 		this.tree.focus();
 		this.setDialogButtons();
-		this._importSrc = this._savedPrefs = this._savedTypes = this._typesState = null;
+		this._importSrc = this._savedPrefs = this._savedTypes = null;
+		this._typesState = this._filesState = null;
 		this._delTypes = null;
 	},
 	mergePrefs: function() {
@@ -3870,8 +3881,13 @@ var handyClicksSets = {
 		var fileData = this.ju.getOwnProperty(this.ps.files, path, "data");
 		if(!fileData) // File will be unchanged
 			return true;
+		var fs = this._filesState;
+		if(path in fs)
+			return fs[path];
 		var file = this.ut.getLocalFile(path);
-		return file.exists() && this.io.readFromFile(file) == fileData;
+		if(!file.exists())
+			return fs[path] = undefined;
+		return fs[path] = this.io.readFromFile(file) == fileData;
 	},
 
 	// Import using drag-and-drop
