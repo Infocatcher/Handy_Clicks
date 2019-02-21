@@ -196,6 +196,12 @@ treechildren::-moz-tree-cell-text(hc_old),
 row.hc-older {
 	opacity: 0.6;
 }
+.hc-newer {
+	color: #00e !important;
+}
+#hc-sets-tree-importPanel[hc_isDarkFont="false"] .hc-newer {
+	color: #aaf !important;
+}
 
 treechildren::-moz-tree-checkbox(hc_checkbox),
 menuitem[command="hc-sets-cmd-enable"],

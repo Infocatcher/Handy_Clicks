@@ -3695,7 +3695,12 @@ var handyClicksSets = {
 						row.className = "hc-new";
 					else if(!equals) {
 						var file = this.ut.getLocalFile(path);
-						row.className = "hc-override" + (fd.time < file.lastModifiedTime ? " hc-older" : "");
+						var flm = file.lastModifiedTime;
+						row.className = "hc-override" + (
+							fd.time < flm
+								? " hc-older"
+								: fd.time > flm ? " hc-newer" : ""
+						);
 					}
 					if(n < countFD)
 						return;
