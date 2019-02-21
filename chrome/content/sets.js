@@ -3667,9 +3667,11 @@ var handyClicksSets = {
 			filesData.sort(function(a, b) {
 				return a.path > b.path;
 			}).forEach(function(fd, i) {
+				var n = i + 1;
 				var date = fd.time ? this.stringifyDate(fd.time) : "?";
 				var size = fd.size ? this.stringifySize(fd.size) : "?";
 				var row = df.appendChild(document.createElement("row"));
+				row.appendChild(this.ut.createElement("label", { value: n + ".", class: "hc-num" }));
 				row.appendChild(this.ut.createElement("label", {
 					value: fd.path,
 					crop: "center",
@@ -3685,7 +3687,7 @@ var handyClicksSets = {
 						row.className = "hc-new";
 					else if(this.io.readFromFile(file) != files[path].data)
 						row.className = "hc-override" + (fd.time < file.lastModifiedTime ? " hc-older" : "");
-					if(i < countFD - 1)
+					if(n < countFD)
 						return;
 					var tipRows = this.$("hc-sets-tree-importFilesTipRows");
 					tipRows.textContent = "";

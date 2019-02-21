@@ -260,10 +260,16 @@ treechildren::-moz-tree-checkbox(hc_checkbox, checked, hc_old) {
 #hc-sets-tree-importFilesTipPath {
 	max-width: 40em;
 }
-#hc-sets-tree-importFilesTipRows label:last-child {
+#hc-sets-tree-importFilesTipRows .hc-num {
+	-moz-margin-end: 0.4em;
+}
+#hc-sets-tree-importFilesTipRows .hc-path {
+	-moz-margin-start: 0;
+}
+#hc-sets-tree-importFilesTipRows .hc-size {
 	text-align: right;
 }
-:root[chromedir="rtl"] #hc-sets-tree-importFilesTipRows label:last-child {
+:root[chromedir="rtl"] #hc-sets-tree-importFilesTipRows .hc-size {
 	text-align: left;
 }
 #hc-sets-tree-importPartial,

@@ -192,6 +192,7 @@ preferences {
 						onpopupshowing="return this.firstChild.lastChild.hasChildNodes();">
 						<grid>
 							<columns>
+								<column />
 								<column id="hc-sets-tree-importFilesTipPath" />
 								<column />
 								<column />
