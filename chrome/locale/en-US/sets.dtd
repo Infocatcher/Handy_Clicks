@@ -136,6 +136,10 @@
 <!ENTITY hc.sets.importChanged "Changed:">
 <!ENTITY hc.sets.importRemoved "Removed:">
 <!ENTITY hc.sets.importTip "Normal settings / Delayed actions settings + Custom types">
+<!-- Tooltip for files counter -->
+<!ENTITY hc.sets.importOlder "older">
+<!ENTITY hc.sets.importSameDate "same date">
+<!ENTITY hc.sets.importNewer "newer">
 
 
 <!ENTITY hc.sets.clickPrefsTitle "Preferences">

@@ -3669,6 +3669,7 @@ var handyClicksSets = {
 		var counter = this.$("hc-sets-tree-importFilesStatistics");
 		counter.value = countFD;
 		counter.hidden = !hasFD;
+		var added = 0, changed = 0, older = 0, newer = 0;
 		this.delay(function() {
 			var df = document.createDocumentFragment();
 			filesData.sort(function(a, b) {
@@ -3687,24 +3688,32 @@ var handyClicksSets = {
 				}));
 				row.appendChild(this.ut.createElement("label", { value: date, class: "hc-date" }));
 				row.appendChild(this.ut.createElement("label", { value: size, class: "hc-size" }));
-				if(this.fxVersion >= 51) // https://bugzilla.mozilla.org/show_bug.cgi?id=1318898
-					row.style.filter = "contrast(1)"; // Prevent disappearance of semi-transparent nodes
+				if(this.fxVersion >= 51) { // https://bugzilla.mozilla.org/show_bug.cgi?id=1318898
+					// Prevent disappearance of semi-transparent nodes
+					this.$("hc-sets-tree-importFilesTip").style.filter = "contrast(1)";
+				}
 				this.delay(function() {
 					var equals = path in this._filesState ? this._filesState[path] : undefined;
 					if(equals === undefined)
-						row.className = "hc-new";
+						row.className = "hc-new", ++added;
 					else if(!equals) {
+						++changed;
 						var file = this.ut.getLocalFile(path);
 						var flm = file.lastModifiedTime;
 						row.className = "hc-override" + (
-							fd.time < flm
+							fd.time < flm && ++older
 								? " hc-older"
-								: fd.time > flm ? " hc-newer" : ""
+								: fd.time > flm && ++newer ? " hc-newer" : ""
 						);
 					}
 					if(n < countFD)
 						return;
-					var tipRows = this.$("hc-sets-tree-importFilesTipRows");
+					const id = "hc-sets-tree-importFilesTip";
+					this.$(id + "Added").value = added;
+					this.$(id + "Older").value = older;
+					this.$(id + "SameDate").value = changed - older - newer;
+					this.$(id + "Newer").value = newer;
+					var tipRows = this.$(id + "Rows");
 					tipRows.textContent = "";
 					tipRows.appendChild(df);
 				}, this);

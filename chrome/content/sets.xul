@@ -189,7 +189,27 @@ preferences {
 						tooltip="hc-sets-tree-importFilesTip"
 						onclick="if(event.button == 0) handyClicksSets.toggleSearch('%data%');" />
 					<tooltip id="hc-sets-tree-importFilesTip" noautohide="true"
-						onpopupshowing="return this.firstChild.lastChild.hasChildNodes();">
+						onpopupshowing="return this.lastChild.lastChild.hasChildNodes();">
+						<hbox align="center">
+							<label class="hc-new" value="&hc.sets.importAdded;" />
+							<label class="hc-mark hc-statsValue" id="hc-sets-tree-importFilesTipAdded" value="?" />
+
+							<label class="hc-override hc-markStart" value="&hc.sets.importChanged;" />
+
+							<label class="hc-mark hc-older hc-statsValue" id="hc-sets-tree-importFilesTipOlder" value="?" />
+							<label class="hc-mark" value="/" />
+							<label class="hc-mark hc-statsValue" id="hc-sets-tree-importFilesTipSameDate" value="?" />
+							<label class="hc-mark" value="/" />
+							<label class="hc-mark hc-newer hc-statsValue" id="hc-sets-tree-importFilesTipNewer" value="?" />
+
+							<label class="hc-mark hc-markStart" value="(" />
+							<label class="hc-mark hc-override hc-older" value="&hc.sets.importOlder;" />
+							<label class="hc-mark" value="/" />
+							<label class="hc-mark hc-override" value="&hc.sets.importSameDate;" />
+							<label class="hc-mark" value="/" />
+							<label class="hc-mark hc-override hc-newer" value="&hc.sets.importNewer;" />
+							<label class="hc-mark" value=")" />
+						</hbox>
 						<grid>
 							<columns>
 								<column />

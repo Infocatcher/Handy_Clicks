@@ -136,6 +136,10 @@
 <!ENTITY hc.sets.importChanged "Изменённые:">
 <!ENTITY hc.sets.importRemoved "Удалённые:">
 <!ENTITY hc.sets.importTip "Обычные настройки / Настройки отложенных действий + Пользовательские типы">
+<!-- Tooltip for files counter -->
+<!ENTITY hc.sets.importOlder "старше">
+<!ENTITY hc.sets.importSameDate "та же дата">
+<!ENTITY hc.sets.importNewer "новее">
 
 
 <!ENTITY hc.sets.clickPrefsTitle "Настройки">

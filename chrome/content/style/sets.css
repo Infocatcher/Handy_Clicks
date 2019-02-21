@@ -181,11 +181,13 @@ tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_copied, selected) {
 }
 treechildren::-moz-tree-cell-text(hc_override),
 #hc-sets-tree-importChanged,
+label.hc-override,
 row.hc-override > .hc-path {
 	font-style: italic;
 }
 treechildren::-moz-tree-cell-text(hc_new),
 #hc-sets-tree-importAdded,
+label.hc-new,
 row.hc-new > .hc-path {
 	text-decoration: underline;
 }
@@ -193,7 +195,14 @@ treechildren::-moz-tree-cell-text(hc_old),
 #hc-sets-tree-importRemoved {
 	text-decoration: line-through;
 }
-row.hc-older {
+.hc-mark {
+	margin-left: 1px;
+	margin-right: 1px;
+}
+.hc-markStart {
+	-moz-margin-start: 0.8em;
+}
+.hc-older {
 	opacity: 0.6;
 }
 .hc-newer {
