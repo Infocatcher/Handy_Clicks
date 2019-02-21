@@ -686,24 +686,19 @@ var handyClicksFuncs = {
 	},
 	appendItem: function(parent, item) {
 		var tag = this.ju.getOwnProperty(item, "tagName");
-		delete item.tagName;
 		var childs = this.ju.getOwnProperty(item, "childNodes");
-		delete item.childNodes;
-
 		var node = parent.appendChild(document.createElement(tag));
-		var type, pName;
-		for(var rawName in item) {
+		for(var rawName in item) if(item.hasOwnProperty(rawName)) {
 			if(!/^(attr|prop)_(.+)$/.test(rawName))
 				continue;
-			type = RegExp.$1;
-			pName = RegExp.$2;
+			var type = RegExp.$1;
+			var pName = RegExp.$2;
 			if(type == "attr")
 				node.setAttribute(pName, item[rawName]);
 			else
 				node[pName] = item[rawName];
 		}
-		if(this.ju.isArray(childs))
-			this.appendItems(node, childs);
+		this.ju.isArray(childs) && this.appendItems(node, childs);
 	},
 
 	showGeneratedPopup: function(items) {
