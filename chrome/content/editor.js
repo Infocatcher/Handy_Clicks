@@ -549,15 +549,15 @@ var handyClicksEditor = {
 	},
 	setWinTitle: function() {
 		var sh = this.currentShortcut;
-		var mdf = this.ps.getModifiersStr(sh, true);
-		var shStr = mdf + (mdf ? " + " : "") + this.ps.getButtonStr(sh, true);
+		var shStr = this.ps.getShortcutStr(sh, true);
 		var typeItem = this.$("hc-editor-itemTypes").selectedItem;
 		var type = typeItem && typeItem.getAttribute("label"); // menulist.label may be wrong on startup!
+		var shFull = shStr + (type ? this.ps.spacedSep + type : "");
 		var typeStr = this.ps.localize(this.$("hc-editor-customType").value)
 			 || this.$("hc-editor-customTypeExtId").value;
 		var title = this.editorTabIndex == this.INDEX_TYPE
-			? typeStr + (typeStr ? " | " : "") + shStr + (type ? " + " + type : "")
-			: shStr + (type ? " + " + type : "") + (typeStr ? " | " + typeStr : "");
+			? typeStr + (typeStr ? " | " : "") + shFull
+			: shFull + (typeStr ? " | " + typeStr : "");
 		var baseTitle = this.su.removeTitleFlags(document.title)
 			.replace(/\s+\[.+\]\*?$/, "")
 			.replace(/^.*? \u2013 /, "");
