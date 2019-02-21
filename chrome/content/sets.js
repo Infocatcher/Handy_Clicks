@@ -3822,8 +3822,8 @@ var handyClicksSets = {
 				continue;
 			}
 			var exists = file.exists();
-			if(exists && file.fileSize == fo.size) // Compare only with different file size
-				if(this.io.readFromFile(file) == fo.data)
+			if(exists && file.fileSize == fo.size)
+				if(this.compareFileData(file, fo.data))
 					continue;
 			if(exists && overwriteAsk) {
 				// See this.ut.confirmEx()
@@ -3901,7 +3901,10 @@ var handyClicksSets = {
 		var file = this.ut.getLocalFile(path);
 		if(!file.exists())
 			return fs[path] = undefined;
-		return fs[path] = this.io.readFromFile(file) == fileData;
+		return fs[path] = this.compareFileData(file, fileData);
+	},
+	compareFileData: function(file, data) {
+		return this.io.readFromFile(file).replace(/^\ufeff/, "") == data.replace(/^\ufeff/, "");
 	},
 
 	// Import using drag-and-drop

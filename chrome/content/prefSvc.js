@@ -414,7 +414,8 @@ var handyClicksPrefSvc = {
 		var file = this.ut.getLocalFile(path);
 		if(!file)
 			throw this.getLocalized("invalidFilePath").replace("%p", path);
-		var data = this.io.readFromFile(file);
+		var data = this.io.readFromFile(file)
+			.replace(/^\ufeff/, ""); // Older Firefox versions doesn't support BOM mark
 		if(!data)
 			throw this.getLocalized("fileNotFound").replace("%f", file.path);
 		expandCode._path = path;
