@@ -1335,15 +1335,14 @@ var handyClicksSets = {
 		if(!this.isTreePaneSelected)
 			return;
 		var tIts = this.selectedItemsNoDelayed;
-		if(
-			!tIts.length
-			|| !this.ut.confirm(
-				this.getLocalized("title"),
-				this.getLocalized("deleteConfirm").replace("%n", tIts.length)
-					+ "\n\n" + this.getItemsInfo(tIts).join("\n")
-			)
-		)
+		var deleteTypes = { value: false };
+		if(!this.confirmDelete(tIts, deleteTypes))
 			return;
+		if(!deleteTypes.value) {
+			tIts = tIts.filter(function(it) { return !it.__isType; });
+			if(!tIts.length)
+				return;
+		}
 
 		// Get next deletable item
 		for(var indx = tIts[tIts.length - 1].__index + 1, nextItem; (nextItem = this.getItemAtIndex(indx)); ++indx)
@@ -1422,6 +1421,19 @@ var handyClicksSets = {
 		}
 		if(indx === undefined)
 			this.searchInSetsTree(true);
+	},
+	confirmDelete: function(tIts, deleteTypes) {
+		if(!tIts.length)
+			return true;
+		var hasTypes = tIts.some(function(it) { return it.__isType; });
+		return this.ut.confirmEx(
+			this.getLocalized("title"),
+			this.getLocalized("deleteConfirm").replace("%n", tIts.length)
+				+ "\n\n" + this.getItemsInfo(tIts).join("\n"),
+			this.getLocalized("delete"), true,
+			hasTypes && this.getLocalized("deleteCustomTypes"),
+			deleteTypes
+		);
 	},
 	removeTreeitem: function(tItem) {
 		for(;; tItem = tChld.parentNode) {
