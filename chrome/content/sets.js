@@ -1425,13 +1425,24 @@ var handyClicksSets = {
 	confirmDelete: function(tIts, deleteTypes) {
 		if(!tIts.length)
 			return true;
-		var hasTypes = tIts.some(function(it) { return it.__isType; });
+		var typesCount = 0;
+		var setsCount = 0;
+		tIts.forEach(function(it) {
+			if(!it.__isType)
+				return;
+			++typesCount;
+			setsCount += this.su.getSettingsForType(it.__itemType);
+		}, this);
+		if(!setsCount) // Safe to delete
+			deleteTypes.value = true;
 		return this.ut.confirmEx(
 			this.getLocalized("title"),
 			this.getLocalized("deleteConfirm").replace("%n", tIts.length)
 				+ "\n\n" + this.getItemsInfo(tIts).join("\n"),
 			this.getLocalized("delete"), true,
-			hasTypes && this.getLocalized("deleteCustomTypes"),
+			setsCount && this.getLocalized("deleteCustomTypes")
+				.replace("%n", typesCount)
+				.replace("%s", setsCount),
 			deleteTypes
 		);
 	},
