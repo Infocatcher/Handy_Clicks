@@ -3644,7 +3644,8 @@ var handyClicksSets = {
 				size: fo.size
 			});
 		}
-		var hasFD = !!filesData.length;
+		var countFD = filesData.length;
+		var hasFD = !!countFD;
 		var importFD = this.$("hc-sets-tree-importFilesData");
 		importFD.disabled = !hasFD;
 		importFD.checked = this._importFilesData = hasFD;
@@ -3659,13 +3660,13 @@ var handyClicksSets = {
 			pn.insertBefore(pn.removeChild(importFD), ns);
 		}
 		var counter = this.$("hc-sets-tree-importFilesStatistics");
-		counter.value = filesData.length;
+		counter.value = countFD;
 		counter.hidden = !hasFD;
 		this.delay(function() {
 			var df = document.createDocumentFragment();
 			filesData.sort(function(a, b) {
 				return a.path > b.path;
-			}).forEach(function(fd) {
+			}).forEach(function(fd, i) {
 				var date = fd.time ? this.stringifyDate(fd.time) : "?";
 				var size = fd.size ? this.stringifySize(fd.size) : "?";
 				var row = df.appendChild(document.createElement("row"));
@@ -3684,12 +3685,14 @@ var handyClicksSets = {
 						row.className = "hc-new";
 					else if(this.io.readFromFile(file) != files[path].data)
 						row.className = "hc-override" + (fd.time < file.lastModifiedTime ? " hc-older" : "");
+					if(i < countFD - 1)
+						return;
+					var tipRows = this.$("hc-sets-tree-importFilesTipRows");
+					tipRows.textContent = "";
+					tipRows.appendChild(df);
 				}, this);
 			}, this);
-			var tipRows = this.$("hc-sets-tree-importFilesTipRows");
-			tipRows.textContent = "";
-			tipRows.appendChild(df);
-		}, this);
+		}, this, 50);
 	},
 	cleanImportSearch: function(typeChanged) {
 		var search = this.searchField.value;
