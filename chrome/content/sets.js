@@ -3676,6 +3676,8 @@ var handyClicksSets = {
 				}));
 				row.appendChild(this.ut.createElement("label", { value: date, class: "hc-date" }));
 				row.appendChild(this.ut.createElement("label", { value: size, class: "hc-size" }));
+				if(this.fxVersion >= 51) // https://bugzilla.mozilla.org/show_bug.cgi?id=1318898
+					row.style.filter = "contrast(1)"; // Prevent disappearance of semi-transparent nodes
 				this.delay(function() {
 					var file = this.ut.getLocalFile(fd.path);
 					if(!file.exists())
