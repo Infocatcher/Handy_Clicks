@@ -3606,7 +3606,7 @@ var handyClicksSets = {
 		Array.prototype.forEach.call(this.backupItems, function(mi) {
 			var size = mi.__file.fileSize;
 			if(size in sizes)
-				sizes[size].push(mi);
+				sizes[size].push(mi); // From newer to older
 			else
 				sizes[size] = [mi];
 		}, this);
@@ -3633,13 +3633,17 @@ var handyClicksSets = {
 					if(fileData(mi2) != data)
 						continue;
 					mi2.setAttribute("hc_duplicateRemove", "true");
-					mi.setAttribute("hc_duplicateKeep", "true");
-					this.delay(function(mi, mi2) { // Pseudo-async + progress animation
+					this.delay(function(mi2) { // Pseudo-async + progress animation
 						var file = mi2.__file;
 						file.exists() && file.remove(false);
 						mi2.parentNode.removeChild(mi2);
+					}, this, 100, [mi2]);
+					if(mi.hasAttribute("hc_duplicateKeep"))
+						continue;
+					mi.setAttribute("hc_duplicateKeep", "true");
+					this.delay(function(mi) {
 						mi.removeAttribute("hc_duplicateKeep");
-					}, this, 100, [mi, mi2]);
+					}, this, 110, [mi]);
 				}
 			}
 		}
