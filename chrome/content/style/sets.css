@@ -416,6 +416,9 @@ checkbox[id^="hc-sets-disallowMousemove-"] .checkbox-label-box {
 #hc-sets-tree-showBackupFile {
 	-moz-image-region: rect(64px 48px 80px 32px);
 }
+#hc-sets-tree-removeDuplicateBackups {
+	-moz-image-region: rect(80px 16px 96px 0);
+}
 menuitem[hc_duplicateRemove] {
 	text-decoration: line-through;
 }
