@@ -308,7 +308,7 @@ preferences {
 									label="&hc.sets.openBackupDir;" accesskey="&hc.sets.openBackupDirAccesskey;" />
 								<menuseparator />
 								<menuitem id="hc-sets-tree-removeDuplicateBackups"
-									oncommand="handyClicksSets.removeDuplicateBackups();" closemenu="none"
+									oncommand="handyClicksSets.removeDuplicateBackups(this);" closemenu="none"
 									label="&hc.sets.removeDuplicateBackups;" accesskey="&hc.sets.removeDuplicateBackupsAccesskey;" />
 								<menuseparator />
 								<menuitem id="hc-sets-tree-removeUserBackups2" class="menuitem-iconic hc-iconic"

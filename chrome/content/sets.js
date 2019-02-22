@@ -3596,7 +3596,12 @@ var handyClicksSets = {
 		}
 		this.updRestorePopup(store);
 	},
-	removeDuplicateBackups: function() {
+	removeDuplicateBackups: function(miRD) {
+		miRD.setAttribute("disabled", "true");
+		setTimeout(function() {
+			miRD.removeAttribute("disabled");
+		}, 400);
+
 		var sizes = { __proto__: null };
 		Array.prototype.forEach.call(this.backupItems, function(mi) {
 			var size = mi.__file.fileSize;
