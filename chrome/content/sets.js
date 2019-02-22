@@ -3600,28 +3600,33 @@ var handyClicksSets = {
 		var sizes = { __proto__: null };
 		Array.prototype.forEach.call(this.backupItems, function(mi) {
 			var size = mi.__file.fileSize;
-			if(!(size in sizes)) {
+			if(size in sizes)
+				sizes[size].push(mi);
+			else
 				sizes[size] = [mi];
-				return;
-			}
-			var mis = sizes[size];
-			var data = mi.__data = this.io.readFromFile(mi.__file);
-			mis.forEach(function(mi2) {
-				if(!mi2.hasAttribute("hc_duplicate") && mi2.__data == data) {
-					mi2.setAttribute("hc_duplicate", "true");
-					mi2.style.textDecoration = "line-through";
-					mi.style.textDecoration = "underline";
-					this.delay(function() { // Pseudo-async + progress animation
-						var file = mi2.__file;
-						file.exists() && file.remove(false);
-						mi2.parentNode.removeChild(mi2);
-						mi.style.textDecoration = "";
-						delete mi.__data;
-					}, this, 100);
-				}
-			}, this);
-			mis.push(mi);
 		}, this);
+		for(var size in sizes) {
+			var mis = sizes[size];
+			var len = mis.length;
+			if(len == 1)
+				continue;
+			var mi = mis[len - 1]; // Will keep older file
+			var data = this.io.readFromFile(mi.__file);
+			for(var i = len - 2; i >= 0; --i) {
+				var mi2 = mis[i];
+				var file = mi2.__file;
+				if(this.io.readFromFile(file) != data)
+					continue;
+				mi2.setAttribute("hc_duplicate", "true");
+				mi2.style.textDecoration = "line-through";
+				mi.style.textDecoration = "underline";
+				this.delay(function(mi, mi2, file) { // Pseudo-async + progress animation
+					file.exists() && file.remove(false);
+					mi2.parentNode.removeChild(mi2);
+					mi.style.textDecoration = "";
+				}, this, 100, [mi, mi2, file]);
+			}
+		}
 	},
 	reveal: function(file) {
 		return this.ut.reveal(file);
