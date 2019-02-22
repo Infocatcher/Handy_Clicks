@@ -3610,25 +3610,37 @@ var handyClicksSets = {
 			else
 				sizes[size] = [mi];
 		}, this);
+		var fileData = this.ju.bind(function(mi) {
+			var file = mi.__file;
+			var path = file.path;
+			if(path in contents)
+				return contents[path];
+			return contents[path] = this.io.readFromFile(file);
+		}, this);
 		for(var size in sizes) {
 			var mis = sizes[size];
 			var len = mis.length;
 			if(len == 1)
 				continue;
-			var mi = mis[len - 1]; // Will keep older file
-			var data = this.io.readFromFile(mi.__file);
-			for(var i = len - 2; i >= 0; --i) {
-				var mi2 = mis[i];
-				var file = mi2.__file;
-				if(this.io.readFromFile(file) != data)
+			var contents = { __proto__: null };
+			for(var i = len - 1; i >= 1; --i) { // Will keep older file
+				var mi = mis[i];
+				if(mi.hasAttribute("hc_duplicateRemove"))
 					continue;
-				mi2.setAttribute("hc_duplicateRemove", "true");
-				mi.setAttribute("hc_duplicateKeep", "true");
-				this.delay(function(mi, mi2, file) { // Pseudo-async + progress animation
-					file.exists() && file.remove(false);
-					mi2.parentNode.removeChild(mi2);
-					mi.removeAttribute("hc_duplicateKeep");
-				}, this, 100, [mi, mi2, file]);
+				var data = fileData(mi);
+				for(var j = i - 1; j >= 0; --j) {
+					var mi2 = mis[j];
+					if(fileData(mi2) != data)
+						continue;
+					mi2.setAttribute("hc_duplicateRemove", "true");
+					mi.setAttribute("hc_duplicateKeep", "true");
+					this.delay(function(mi, mi2) { // Pseudo-async + progress animation
+						var file = mi2.__file;
+						file.exists() && file.remove(false);
+						mi2.parentNode.removeChild(mi2);
+						mi.removeAttribute("hc_duplicateKeep");
+					}, this, 100, [mi, mi2]);
+				}
 			}
 		}
 	},
