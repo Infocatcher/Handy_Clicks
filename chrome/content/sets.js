@@ -2412,16 +2412,18 @@ var handyClicksSets = {
 	/*** Prefs pane ***/
 	_updPrefsUITimeout: 0,
 	prefChanged: function(pName, pVal) {
-		if(pName == "sets.treeDrawMode")
-			this.updTree(false, true);
-		else if(pName == "sets.treeExpandDelayedAction")
+		if(
+			pName == "sets.treeDrawMode"
+			|| pName == "sets.treeExpandDelayedAction"
+		)
 			this.updTree(false);
-		else if(pName == "sets.treeSortCustomTypes")
+		else if(
+			pName == "sets.treeSortCustomTypes"
+			|| pName == "sets.localizeArguments"
+			|| pName == "sets.codeLengthLimit"
+			|| pName == "sets.codeLengthLimit.preserveLines"
+		)
 			this.updTree();
-		else if(pName == "sets.localizeArguments")
-			this.updTree();
-		else if(pName == "sets.codeLengthLimit" || pName == "sets.codeLengthLimit.preserveLines")
-			this.redrawTree();
 		else if(this.ju.startsWith(pName, "editor.externalEditor")) {
 			this.initExternalEditor();
 			this.updateDependencies("externalEditor");
