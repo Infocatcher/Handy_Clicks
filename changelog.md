@@ -165,6 +165,8 @@
 `*` Rewritten styles for iconized menu items + removed global.css (so, also improved performance).<br>
 `*` Settings: improved localization for export/copy to clipboard menu items.<br>
 `*` Improved behavior of “Close this menu after click” menu item: apply new logic right after click.<br>
+`*` Changed title of editor window: used “button + modifiers” order, used separator from browser localization and added “Type:” prefix for custom type.<br>
+`+` Added Ctrl+1…6 hotkeys to change settings tree draw mode.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre7 (2019-02-10)
