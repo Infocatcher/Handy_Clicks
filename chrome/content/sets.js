@@ -3617,13 +3617,12 @@ var handyClicksSets = {
 				var file = mi2.__file;
 				if(this.io.readFromFile(file) != data)
 					continue;
-				mi2.setAttribute("hc_duplicate", "true");
-				mi2.style.textDecoration = "line-through";
-				mi.style.textDecoration = "underline";
+				mi2.setAttribute("hc_duplicateRemove", "true");
+				mi.setAttribute("hc_duplicateKeep", "true");
 				this.delay(function(mi, mi2, file) { // Pseudo-async + progress animation
 					file.exists() && file.remove(false);
 					mi2.parentNode.removeChild(mi2);
-					mi.style.textDecoration = "";
+					mi.removeAttribute("hc_duplicateKeep");
 				}, this, 100, [mi, mi2, file]);
 			}
 		}
