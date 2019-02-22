@@ -307,6 +307,10 @@ preferences {
 									oncommand="handyClicksSets.reveal(handyClicksPrefSvc.backupsDir);"
 									label="&hc.sets.openBackupDir;" accesskey="&hc.sets.openBackupDirAccesskey;" />
 								<menuseparator />
+								<menuitem id="hc-sets-tree-removeDuplicateBackups"
+									oncommand="handyClicksSets.removeDuplicateBackups();" closemenu="none"
+									label="&hc.sets.removeDuplicateBackups;" accesskey="&hc.sets.removeDuplicateBackupsAccesskey;" />
+								<menuseparator />
 								<menuitem id="hc-sets-tree-removeUserBackups2" class="menuitem-iconic hc-iconic"
 									oncommand="handyClicksSets.removeOldUserBackups(handyClicksSets.pu.get('sets.backupUserRemoveDepth2'));" closemenu="none"
 									hc_label="&hc.sets.removeUserBackups;" accesskey="&hc.sets.removeUserBackups2Accesskey;" />

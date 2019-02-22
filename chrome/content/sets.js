@@ -3596,6 +3596,33 @@ var handyClicksSets = {
 		}
 		this.updRestorePopup(store);
 	},
+	removeDuplicateBackups: function() {
+		var sizes = { __proto__: null };
+		Array.prototype.forEach.call(this.backupItems, function(mi) {
+			var size = mi.__file.fileSize;
+			if(!(size in sizes)) {
+				sizes[size] = [mi];
+				return;
+			}
+			var mis = sizes[size];
+			var data = mi.__data = this.io.readFromFile(mi.__file);
+			mis.forEach(function(mi2) {
+				if(!mi2.hasAttribute("hc_duplicate") && mi2.__data == data) {
+					mi2.setAttribute("hc_duplicate", "true");
+					mi2.style.textDecoration = "line-through";
+					mi.style.textDecoration = "underline";
+					this.delay(function() { // Pseudo-async + progress animation
+						var file = mi2.__file;
+						file.exists() && file.remove(false);
+						mi2.parentNode.removeChild(mi2);
+						mi.style.textDecoration = "";
+						delete mi.__data;
+					}, this, 100);
+				}
+			}, this);
+			mis.push(mi);
+		}, this);
+	},
 	reveal: function(file) {
 		return this.ut.reveal(file);
 	},
