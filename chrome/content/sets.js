@@ -3556,12 +3556,18 @@ var handyClicksSets = {
 		popup.insertBefore(df, sep);
 		this.updRestorePopup(ubCount, isEmpty, true);
 	},
+	get backupItems() {
+		return this.ubPopup.getElementsByAttribute("hc_fileName", "*");
+	},
+	get userBackupItems() {
+		return this.ubPopup.getElementsByAttribute("hc_userBackup", "true");
+	},
 	updRestorePopup: function(ubCount, isEmpty) {
 		var popup = this.ubPopup;
 		if(ubCount === undefined)
-			ubCount = popup.getElementsByAttribute("hc_userBackup", "true").length;
+			ubCount = this.userBackupItems.length;
 		if(isEmpty === undefined)
-			isEmpty = !ubCount && !popup.getElementsByAttribute("hc_fileName", "*").length;
+			isEmpty = !ubCount && !this.backupItems.length;
 		var menu = popup.parentNode;
 		menu.setAttribute("disabled", isEmpty);
 		if(isEmpty)
@@ -3581,8 +3587,7 @@ var handyClicksSets = {
 	removeOldUserBackups: function(store) {
 		if(store < 0)
 			store = 0;
-		var popup = this.ubPopup;
-		var ubItems = popup.getElementsByAttribute("hc_userBackup", "true");
+		var ubItems = this.userBackupItems;
 		for(var i = ubItems.length - 1; i >= store; --i) {
 			var mi = ubItems[i];
 			var file = mi.__file;
