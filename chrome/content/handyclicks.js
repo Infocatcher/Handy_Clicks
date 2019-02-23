@@ -656,15 +656,18 @@ var handyClicks = {
 		var mth = all || this.itemTypeInSets(sets, "ext_mulipletabs");
 		var tab = all || this.itemTypeInSets(sets, "tab");
 		if(mth || tab) {
-			var excludeBtn = this.ju.getOwnProperty(sets, mth ? "ext_mulipletabs" : "tab", "excludeCloseButton");
-			_it = this.getTab(it, excludeBtn === undefined ? true : excludeBtn);
-			if(_it && mth && "MultipleTabService" in window && MultipleTabService.isSelected(_it)) {
+			if(it.localName == "toolbarbutton") {
+				var mthExc = mth && this.ju.getOwnProperty(sets, "ext_mulipletabs", "excludeCloseButton");
+				var tabExc = tab && this.ju.getOwnProperty(sets, "tab",             "excludeCloseButton");
+			}
+			_it = !(mthExc && tabExc) && this.getTab(it);
+			if(_it && mth && !mthExc && "MultipleTabService" in window && MultipleTabService.isSelected(_it)) {
 				this.itemType = "ext_mulipletabs";
 				this.item = MultipleTabService.getSelectedTabs(MultipleTabService.getTabBrowserFromChild(_it));
 				this.mainItem = _it;
 				return;
 			}
-			if(_it && tab) {
+			if(_it && tab && !tabExc) {
 				this.itemType = "tab";
 				this.item = _it;
 				return;
