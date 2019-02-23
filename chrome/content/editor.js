@@ -961,6 +961,7 @@ var handyClicksEditor = {
 	itemTypeChanged: function(type) {
 		if(this.ps.isCustomType(type))
 			this.initCustomTypesEditor(type);
+		this.updateShortcutContext();
 	},
 	initAdditionalOptions: function(iType, setsObj) {
 		iType = iType || this.currentType;
@@ -1240,7 +1241,7 @@ var handyClicksEditor = {
 			df.appendChild(this.ut.createElement("menuitem", attrs));
 		}, this);
 
-		var mp = e.target;
+		var mp = this.$("hc-editor-shortcutContext");
 		if(!df.hasChildNodes()) {
 			df.appendChild(this.ut.createElement("menuitem", {
 				label: mp.getAttribute("hc_noData"),
@@ -1279,7 +1280,12 @@ var handyClicksEditor = {
 		mp.appendChild(df);
 
 		var box = mp.parentNode;
-		mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
+		e && mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
+	},
+	updateShortcutContext: function() {
+		var mp = this.$("hc-editor-shortcutContext");
+		if(!("state" in mp) || mp.state == "open") // Changed using mouse scroll
+			this.loadSavedShortcuts();
 	},
 	renameShortcut: function(onlyRename, forceCancel) {
 		var rename = this.root.getAttribute("hc_renameShortcut") != "true";

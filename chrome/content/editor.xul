@@ -135,7 +135,7 @@
 							hc_renameCancelUsed="&hc.editor.renameShortcutCancelUsed;"
 							hc_renameCancelAccesskey="&hc.editor.renameShortcutCancelAccesskey;"
 							hc_noData="&hc.editor.noSavedSettings;" />
-						<menulist id="hc-editor-button" class="hc-shortcut">
+						<menulist id="hc-editor-button" class="hc-shortcut" oncommand="handyClicksEditor.updateShortcutContext();">
 							<menupopup>
 								<menuitem value="0" label="button0short" tooltiptext="button0" class="menuitem-iconic" />
 								<menuitem value="1" label="button1short" tooltiptext="button1" class="menuitem-iconic" />
