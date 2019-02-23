@@ -182,8 +182,10 @@ var handyClicksPrefSvc = {
 			pSrc = fromPrefs && !pSrc.exists()
 				? this.defaultSettings()
 				: this.io.readFromFile(pSrc);
-			if(fromPrefs && !this.isMainWnd)
-				this._savedStr = pSrc;
+			if(fromPrefs && !this.isMainWnd) {
+				this._savedStr = pSrc // Ignore version difference, if there is no actual changes
+					.replace(/"version": \d+(?:\.\d+)?,/, '"version": ' + this.setsVersion + ',');
+			}
 		}
 		this.otherSrc = !fromPrefs;
 
