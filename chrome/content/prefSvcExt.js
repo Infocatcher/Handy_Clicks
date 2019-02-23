@@ -111,22 +111,30 @@ var handyClicksPrefSvcExt = {
 				return fName.replace(/-$/, "") + ".js";
 			return fName + n + ".js";
 		}
-		var num, file;
-		num = maxNum;
-		for(;;) {
-			file = this.getBackupFile(getName(++num), pDir);
-			if(!file.exists())
+		for(var i = maxNum, maxNotExists = 5; ; ) { // Was reduced backups depth?
+			var file = this.getBackupFile(getName(++i), pDir);
+			if(file.exists())
+				this.ut.removeFile(file, true);
+			else if(!--maxNotExists)
 				break;
-			this.ut.removeFile(file, true);
 		}
 		if(depth <= 0)
 			return null;
-		num = maxNum;
-		while(--num >= 0) {
-			file = this.getBackupFile(getName(num), pDir);
-			if(file.exists())
-				this.ut.moveFileTo(file, pDir, getName(num + 1));
+
+		var files = [];
+		for(var i = 0, di = 0, max = maxNum; i < max; ++i) {
+			var file = this.getBackupFile(getName(i), pDir);
+			if(!file.exists()) {
+				if(++di > 1) // Also rename last file
+					max = maxNum + 1;
+				continue;
+			}
+			di && this.ut.moveFileTo(file, pDir, getName(i - di));
+			files.push(file);
 		}
+		for(var i = files.length - 1; i >= 0; --i)
+			this.ut.moveFileTo(files[i], pDir, getName(i + 1));
+
 		var tmp = firstFile.clone();
 		var name = getName(0);
 		if(!leaveOriginal)
