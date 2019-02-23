@@ -83,7 +83,7 @@
 		<key id="hc-editor-key-paste" key="v" modifiers="control,shift" oncommand="handyClicksEditor.pasteSettings();" />
 
 		<key id="hc-editor-key-rewindFocus" keycode="VK_UP" modifiers="control" oncommand="document.commandDispatcher.rewindFocus();" />
-		<key id="hc-editor-key-rewindFocus" keycode="VK_DOWN" modifiers="control" oncommand="document.commandDispatcher.advanceFocus();" />
+		<key id="hc-editor-key-advanceFocus" keycode="VK_DOWN" modifiers="control" oncommand="document.commandDispatcher.advanceFocus();" />
 
 		<key id="hc-editor-key-openErrorConsole" key="j" modifiers="control,shift" oncommand="handyClicksUtils.openErrorConsole();" />
 
