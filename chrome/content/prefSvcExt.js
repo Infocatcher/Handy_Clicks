@@ -96,7 +96,7 @@ var handyClicksPrefSvcExt = {
 		file.append(fName);
 		return file;
 	},
-	moveFiles: function(firstFile, nameAdd, leaveOriginal, noFirstNum, depth) {
+	moveFiles: function(firstFile, nameAdd, keepOriginal, noFirstNum, depth) {
 		if(!firstFile.exists())
 			return null;
 		if(depth === undefined)
@@ -106,26 +106,35 @@ var handyClicksPrefSvcExt = {
 			: this.ps.backupsDir;
 		var maxNum = depth - 1;
 		var fName = this.prefsFileName + nameAdd;
-		function getName(n) {
-			if(noFirstNum && n == 0)
+		function getName(i) {
+			if(noFirstNum && i == 0)
 				return fName.replace(/-$/, "") + ".js";
-			return fName + n + ".js";
+			return fName + i + ".js";
 		}
-		for(var i = maxNum, maxNotExists = 5; ; ) { // Was reduced backups depth?
-			var file = this.getBackupFile(getName(++i), pDir);
-			if(file.exists())
-				this.ut.removeFile(file, true);
-			else if(!--maxNotExists)
-				break;
+		function getFile(i) {
+			var file = pDir.clone();
+			file.append(getName(i));
+			return file;
 		}
+		var timer = Components.classes["@mozilla.org/timer;1"]
+			.createInstance(Components.interfaces.nsITimer);
+		timer.init({observe: function() { // Async + handle even if window was closed
+			for(var i = maxNum, maxNotExists = 5; ; ) { // Was reduced backups depth?
+				var file = getFile(++i);
+				if(file.exists())
+					file.remove(false);
+				else if(!--maxNotExists) // Some files was removed and not renamed?
+					break;
+			}
+		}}, 20, timer.TYPE_ONE_SHOT);
 		if(depth <= 0)
 			return null;
 
 		var files = [];
 		for(var i = 0, di = 0, max = maxNum; i < max; ++i) {
-			var file = this.getBackupFile(getName(i), pDir);
+			var file = getFile(i);
 			if(!file.exists()) {
-				if(++di > 1) // Also rename last file
+				if(++di == 2) // Also rename last file
 					max = maxNum + 1;
 				continue;
 			}
@@ -137,7 +146,7 @@ var handyClicksPrefSvcExt = {
 
 		var tmp = firstFile.clone();
 		var name = getName(0);
-		if(!leaveOriginal)
+		if(!keepOriginal)
 			this.ut.moveFileTo(tmp, pDir, name);
 		else {
 			this.ut.copyFileTo(firstFile, pDir, name);
