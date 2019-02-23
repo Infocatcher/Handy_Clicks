@@ -143,6 +143,10 @@ var handyClicksSets = {
 			this.applyButton.hidden = true;
 		else
 			this.applyButton.disabled = true;
+		this.delay(function() {
+			if(!this.ps._loadStatus && this.treeUnsaved)
+				this.setModifiedState(true);
+		}, this, 50);
 
 		var prefsButt = de.getButton("extra2");
 		prefsButt.className += " hc-iconic hc-preferences";
@@ -2956,7 +2960,9 @@ var handyClicksSets = {
 	},
 
 	setDialogButtons: function() {
-		var isModified = this.hasUnsaved;
+		this.setModifiedState(this.hasUnsaved);
+	},
+	setModifiedState: function(isModified) {
 		document.title = this.su.createTitle(document.title, isModified, this.ps.otherSrc);
 		if(this.instantApply)
 			return; // Button is hidden
