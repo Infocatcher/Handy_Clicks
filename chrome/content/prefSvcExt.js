@@ -22,7 +22,7 @@ var handyClicksPrefSvcExt = {
 		var pFile = this.ps.prefsFile;
 		this.moveFiles(pFile, this.names.backup);
 		if(async) {
-			this.io.writeToFileAsync(str, pFile, this.ut.bind(function(status) {
+			this.io.writeToFileAsync(str, pFile, this.ju.bind(function(status) {
 				if(Components.isSuccessCode(status))
 					this.settingsSaved(str, true);
 				else
@@ -317,7 +317,7 @@ var handyClicksPrefSvcExt = {
 		return files;
 	},
 	forEachCode: function(sets, callback, context) {
-		var getCode = this.ut.bind(function(o, key) {
+		var getCode = this.ju.bind(function(o, key) {
 			var code = this.ju.getOwnProperty(o, key);
 			return callback.call(context, code, o, key);
 		}, this);

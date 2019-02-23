@@ -1,6 +1,12 @@
 var handyClicksJsUtils = {
 	__proto__: handyClicksGlobals,
 
+	bind: function(func, context, args) {
+		return function() {
+			return func.apply(context, args || arguments);
+		};
+	},
+
 	isArray: function(arr) {
 		var f = this.isArray = this.hasNativeMethod(Array, "isArray")
 			? Array.isArray

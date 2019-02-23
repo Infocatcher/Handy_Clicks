@@ -622,7 +622,7 @@ var handyClicks = {
 			}
 		}
 
-		var checkSimpleType = this.ut.bind(function(type, getter) {
+		var checkSimpleType = this.ju.bind(function(type, getter) {
 			var _it = (all || this.itemTypeInSets(sets, type))
 				&& getter.call(this, it, e);
 			if(!_it)

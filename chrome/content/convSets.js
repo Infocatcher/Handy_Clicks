@@ -47,7 +47,7 @@ function setsMigration(allowSave, vers) {
 			for(aName in a)
 				obj[aName] = a[aName];
 		}
-		var changeTypeObj = this.ut.bind(function(to) {
+		var changeTypeObj = this.ju.bind(function(to) {
 			if(this.ju.getOwnProperty(to, "custom"))
 				return;
 			var act = this.ju.getOwnProperty(to, "action");
@@ -85,7 +85,7 @@ function setsMigration(allowSave, vers) {
 		// Functions:
 		//   openIn => openURIIn
 		//   openUriIn => openURIIn
-		var convAct = this.ut.bind(function(to) {
+		var convAct = this.ju.bind(function(to) {
 			if(this.ju.getOwnProperty(to, "custom"))
 				return;
 			var act = this.ju.getOwnProperty(to, "action");
@@ -113,7 +113,7 @@ function setsMigration(allowSave, vers) {
 	}
 	if(vers < 0.2) { //= Added: 2010-05-14
 		// Strings are not encoded anymore
-		var recode = this.ut.bind(function(obj, pName) {
+		var recode = this.ju.bind(function(obj, pName) {
 			var pVal = this.ju.getOwnProperty(obj, pName);
 			if(!pVal)
 				return;
@@ -127,7 +127,7 @@ function setsMigration(allowSave, vers) {
 			}
 			obj[pName] = pVal;
 		}, this);
-		var recodeTypeObj = this.ut.bind(function(to) {
+		var recodeTypeObj = this.ju.bind(function(to) {
 			if(!this.ju.getOwnProperty(to, "custom"))
 				return;
 			recode(to, "label");

@@ -354,7 +354,7 @@ var handyClicksPrefSvc = {
 				+ "instead"
 			);
 			this.registerDestructor(
-				this.ut.bind(
+				this.ju.bind(
 					legacyDestructor,
 					this.ju.getOwnProperty(legacyDestructor, "context"),
 					this.ju.getOwnProperty(legacyDestructor, "args")

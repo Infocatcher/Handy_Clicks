@@ -95,7 +95,7 @@ var handyClicksIO = {
 			var ostream = FileUtils.openSafeFileOutputStream(file);
 			var uc = this.utf8Converter;
 			var istream = uc.convertToInputStream(str);
-			NetUtil.asyncCopy(istream, ostream, this.ut.bind(function(status) {
+			NetUtil.asyncCopy(istream, ostream, this.ju.bind(function(status) {
 				var err = !Components.isSuccessCode(status);
 				if(err)
 					this.ut._err("NetUtil.asyncCopy() failed: " + this.ut.getErrorName(status));
@@ -195,7 +195,7 @@ var handyClicksIO = {
 		try {
 			// Don't check permissions: this is slow
 			//this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_READ);
-			NetUtil.asyncFetch(file, this.ut.bind(function(istream, status) {
+			NetUtil.asyncFetch(file, this.ju.bind(function(istream, status) {
 				var data = "";
 				if(Components.isSuccessCode(status)) {
 					try { // Firefox 7.0a1+ throws after istream.available() on empty files

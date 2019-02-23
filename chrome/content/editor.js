@@ -1532,7 +1532,7 @@ var handyClicksEditor = {
 			var okSh = this.saveShortcut(applyFlag, false, false, true);
 			var okType = this.saveCustomType(applyFlag, false, false, true);
 			var ok = okSh && okType;
-			this.applySettings(false, false, this.ut.bind(function() {
+			this.applySettings(false, false, this.ju.bind(function() {
 				if(ok)
 					return;
 				if(typeof okSh == "function")
@@ -1656,7 +1656,7 @@ var handyClicksEditor = {
 
 		this.ju.setOwnProperty(this.ps.prefs, sh, type, so);
 
-		var loadCorrectedSettings = !dontUpdate  && this.ut.bind(function(status) {
+		var loadCorrectedSettings = !dontUpdate  && this.ju.bind(function(status) {
 			if(status !== undefined && !Components.isSuccessCode(status))
 				return;
 			var prefs = this.ps.prefs;
@@ -1872,7 +1872,7 @@ var handyClicksEditor = {
 		var newEnabl = this.$("hc-editor-customTypeEnabled").checked;
 		cts[cType] = this.getTypeObj(label, def, newEnabl);
 
-		var loadCorrectedSettings = !dontUpdate && this.ut.bind(function(status) {
+		var loadCorrectedSettings = !dontUpdate && this.ju.bind(function(status) {
 			if(status !== undefined && !Components.isSuccessCode(status))
 				return;
 			this.appendTypesList();

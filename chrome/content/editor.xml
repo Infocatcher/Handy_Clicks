@@ -609,7 +609,7 @@
 						ut.deleteTemporaryFileOnExit(file);
 					}
 
-					var openInEditor = ut.bind(function() {
+					var openInEditor = ut.ju.bind(function() {
 						var ee = ut.pu.get("editor.external.path");
 						var eeArgs;
 

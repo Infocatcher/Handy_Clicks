@@ -248,7 +248,7 @@ var handyClicksUtils = {
 
 	get toErrorConsole() {
 		delete this.toErrorConsole;
-		return this.toErrorConsole = this.bind(this.openErrorConsole, this);
+		return this.toErrorConsole = this.ju.bind(this.openErrorConsole, this);
 	},
 	openErrorConsole: function() {
 		var hasConsole2 = "@zeniko/console2-clh;1" in Components.classes
@@ -315,10 +315,9 @@ var handyClicksUtils = {
 			win.focus();
 	},
 
-	bind: function(func, context, args) {
-		return function() {
-			return func.apply(context, args || arguments);
-		};
+	bind: function(func, context, args) { //= Added: 2019-02-13
+		this._deprecated("handyClicksUtils.bind() is deprecated. Use handyClicksJsUtils.bind() instead.");
+		return this.ju.bind.apply(this.ju, arguments);
 	},
 
 	_entities: { __proto__: null }, // cache of strings from *.dtd files
@@ -423,7 +422,7 @@ var handyClicksUtils = {
 	expandInternalVariables: function (str) {
 		return str.replace(
 			/^%([^%]+)%/, //~ todo: may conflict with environment variables => [ProfD]/dir like Thunderbird or some other
-			this.bind(function(s, alias) {
+			this.ju.bind(function(s, alias) {
 				if(alias == "profile" || alias == "ProfD")
 					return this.ps.profileDir.path;
 				var aliasFile = this.getFileByAlias(alias, true);

@@ -403,7 +403,7 @@ var handyClicksFuncs = {
 			button: isTree ? 1 : 0,
 			ctrlKey: isTree ? false : target != "cur" && dummyURI == 2 // Link may be real
 		});
-		var loadLink = this.ut.bind(function() {
+		var loadLink = this.ju.bind(function() {
 			this.setPrefs(target, loadJSInBackground, refererPolicy, winRestriction, false /* winOpenFix */);
 
 			if(this.pu.get("funcs.workaroundForMousedownImitation")) {
@@ -456,7 +456,7 @@ var handyClicksFuncs = {
 		item = item || this.hc.item;
 		uri = uri || this.getItemURI(item);
 
-		var loadLink = this.ut.bind(function() {
+		var loadLink = this.ju.bind(function() {
 			this.setPrefs(target, loadJSInBackground, refererPolicy, winRestriction, true /* winOpenFix */);
 
 			var oDoc = item.ownerDocument;
@@ -1438,7 +1438,7 @@ var handyClicksFuncs = {
 		if(!onlyUnvisited)
 			this.openLinks(hrefs, refererPolicy, useDelays);
 		else {
-			this.filterVisited(hrefs, this.ut.bind(function() {
+			this.filterVisited(hrefs, this.ju.bind(function() {
 				this.openLinks(hrefs, refererPolicy, useDelays);
 			}, this));
 		}

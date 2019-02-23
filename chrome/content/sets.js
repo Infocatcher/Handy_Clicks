@@ -474,7 +474,7 @@ var handyClicksSets = {
 
 		const id = "hc-sets-tree-import";
 		var c = this.counters;
-		var showStats = this.ut.bind(function(type, normal, delayed, customTypes) {
+		var showStats = this.ju.bind(function(type, normal, delayed, customTypes) {
 			this.$(id + type + "Normal")     .value = normal;
 			this.$(id + type + "Delayed")    .value = delayed;
 			this.$(id + type + "CustomTypes").value = customTypes;
