@@ -100,8 +100,7 @@ var handyClicksFuncs = {
 			|| "";
 	},
 	getTreeText: function(it, e) {
-		var ln = it.localName;
-		return ln && ln.toLowerCase() == "treechildren"
+		return it.localName == "treechildren"
 			? this.hc.getTreeInfo(it, e, "title")
 			: "";
 	},

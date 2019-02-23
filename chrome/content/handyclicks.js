@@ -406,7 +406,7 @@ var handyClicks = {
 		// Force prevent any popup
 		// This is for RightToClick extension https://addons.mozilla.org/firefox/addon/righttoclick/
 		if(this.enabled && this.flags.stopContextMenu && !this.flags.allowPopupshowing) {
-			var ln = e.target.localName.toLowerCase();
+			var ln = e.target.localName;
 			if(ln == "menupopup" || ln == "popup")
 				this.ut.stopEvent(e);
 		}
@@ -790,11 +790,10 @@ var handyClicks = {
 	getHistoryItem: function(it, e) {
 		if(it.namespaceURI != this.ut.XULNS)
 			return null;
-		var itln = it.localName.toLowerCase();
 		if(
 			(
 				this.hasParent(it, "goPopup")
-				|| itln == "treechildren" && this.isHistoryTree(it.parentNode)
+				|| it.localName == "treechildren" && this.isHistoryTree(it.parentNode)
 			)
 			&& this.getBookmarkURI(it, e)
 		)
@@ -809,7 +808,7 @@ var handyClicks = {
 	getBookmarkItem: function(it, e) {
 		if(it.namespaceURI != this.ut.XULNS)
 			return null;
-		var itln = it.localName.toLowerCase();
+		var itln = it.localName;
 		if(
 			!("type" in it && it.type == "menu")
 			&& (
@@ -832,12 +831,12 @@ var handyClicks = {
 	getTab: function(it, excludeCloseButton) {
 		if(it.namespaceURI != this.ut.XULNS)
 			return null;
-		if(excludeCloseButton && it.localName.toLowerCase() == "toolbarbutton")
+		if(excludeCloseButton && it.localName == "toolbarbutton")
 			return null;
 		const docNode = Node.DOCUMENT_NODE; // 9
 		for(; it && it.nodeType != docNode; it = it.parentNode) {
 			if(
-				it.localName.toLowerCase() == "tab"
+				it.localName == "tab"
 				&& (
 					/(?:^|\s)tabbrowser-tab(?:\s|$)/.test(it.className)
 					|| /(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(it.parentNode.className) // >1 tab in Firefox 1.5
@@ -850,7 +849,7 @@ var handyClicks = {
 	getTabbar: function(it) {
 		if(it.namespaceURI != this.ut.XULNS)
 			return null;
-		var itln = it.localName.toLowerCase();
+		var itln = it.localName;
 		if(itln == "toolbarbutton")
 			return null;
 		if(itln == "toolbarspacer") { // <toolbarspacer/><tabs/><toolbarspacer/> in Firefox 4+
@@ -877,7 +876,7 @@ var handyClicks = {
 			return it.parentNode.getElementsByAttribute("id", "tabbrowser-tabs")[0];
 		const docNode = Node.DOCUMENT_NODE; // 9
 		for(; it && it.nodeType != docNode; it = it.parentNode) {
-			itln = it.localName.toLowerCase();
+			itln = it.localName;
 			if(itln == "tab" || itln == "toolbarbutton")
 				return null;
 			if(it.id == "tabbrowser-tabs" || /(?:^|\s)tabbrowser-tabs(?:\s|$)/.test(it.className))
@@ -1143,8 +1142,7 @@ var handyClicks = {
 			&& this.uri(it.getAttribute("title"));
 	},
 	getBookmarkURI:	function(it, e, usePlacesURIs) {
-		var ln = it.localName;
-		var uri = ln && ln.toLowerCase() == "treechildren"
+		var uri = it.localName == "treechildren"
 			? this.getTreeInfo(it, e, "uri")
 			: it.statusText
 				|| it._placesNode && it._placesNode.uri // Firefox 3.7a5pre+
