@@ -82,14 +82,14 @@
 		<key id="hc-editor-key-copy" key="c" modifiers="control,shift" oncommand="handyClicksEditor.copySettings();" />
 		<key id="hc-editor-key-paste" key="v" modifiers="control,shift" oncommand="handyClicksEditor.pasteSettings();" />
 
-		<key id="hc-editor-key-rewindFocus" keycode="VK_UP" modifiers="control" oncommand="document.commandDispatcher.rewindFocus();" />
-		<key id="hc-editor-key-advanceFocus" keycode="VK_DOWN" modifiers="control" oncommand="document.commandDispatcher.advanceFocus();" />
+		<key id="hc-editor-key-rewindFocus" keycode="VK_UP" modifiers="control" hc_allowInRenameMode="true" oncommand="document.commandDispatcher.rewindFocus();" />
+		<key id="hc-editor-key-advanceFocus" keycode="VK_DOWN" modifiers="control" hc_allowInRenameMode="true" oncommand="document.commandDispatcher.advanceFocus();" />
 
-		<key id="hc-editor-key-openErrorConsole" key="j" modifiers="control,shift" oncommand="handyClicksUtils.openErrorConsole();" />
+		<key id="hc-editor-key-openErrorConsole" key="j" modifiers="control,shift" hc_allowInRenameMode="true" oncommand="handyClicksUtils.openErrorConsole();" />
 
-		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" oncommand="handyClicksSetsUtils.maximizeWindow();" />
-		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" oncommand="handyClicksSetsUtils.toggleFullscreen();" />
-		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" oncommand="handyClicksSetsUtils.toggleOnTop();" />
+		<key id="hc-sets-key-maximizeWindow" keycode="VK_F10" hc_allowInRenameMode="true" oncommand="handyClicksSetsUtils.maximizeWindow();" />
+		<key id="hc-sets-key-toggleFullscreen" keycode="VK_F11" hc_allowInRenameMode="true" oncommand="handyClicksSetsUtils.toggleFullscreen();" />
+		<key id="hc-sets-key-toggleOnTop" key="t" modifiers="control,shift" hc_allowInRenameMode="true" oncommand="handyClicksSetsUtils.toggleOnTop();" />
 	</keyset>
 
 	<popupset id="hc-editor-popups">

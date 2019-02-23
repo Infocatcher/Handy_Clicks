@@ -1286,6 +1286,7 @@ var handyClicksEditor = {
 		this.mainTabbox.handleCtrlTab = this.mainTabbox.handleCtrlPageUpDown = !rename;
 		var act = rename ? addEventListener : removeEventListener;
 		act.call(window, "keydown", this.preventAccesskeys, true);
+		act.call(window, "command", this.preventCommands, true);
 		if(rename) {
 			var fe = document.commandDispatcher.focusedElement;
 			if(!fe || fe.parentNode.id != "hc-editor-shortcutBox")
@@ -1340,6 +1341,14 @@ var handyClicksEditor = {
 	preventAccesskeys: function(e) {
 		if(e.altKey && !e.ctrlKey && !e.shiftKey && !e.metaKey)
 			e.preventDefault();
+	},
+	preventCommands: function(e) {
+		var trg = e.target;
+		var nn = trg.localName;
+		if((nn == "command" || nn == "key") && !trg.hasAttribute("hc_allowInRenameMode")) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
 	},
 	loadSavedShortcut: function(e) {
 		var mi = e.target;
