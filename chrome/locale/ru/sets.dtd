@@ -190,6 +190,8 @@
 <!ENTITY hc.sets.actionShowAllSettings "Показать все настройки">
 <!ENTITY hc.sets.actionContext "Показать контекстное меню">
 <!ENTITY hc.sets.actionEditMode "Режим редактирования">
+<!ENTITY hc.sets.actionOpenEditor "Открыть редактор">
+<!ENTITY hc.sets.actionOpenEditorTypes "Открыть редактор типов">
 <!ENTITY hc.sets.actionDoNothing "Ничего не делать">
 <!ENTITY hc.sets.actionReset "Сбросить">
 <!ENTITY hc.sets.actionResetAll "Сбросить всё">

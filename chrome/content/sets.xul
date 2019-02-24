@@ -443,6 +443,8 @@ preferences {
 						<menuitem value="4" label="&hc.sets.actionShowAllSettings;" />
 						<menuitem value="2" label="&hc.sets.actionContext;" />
 						<menuitem value="3" label="&hc.sets.actionEditMode;" />
+						<menuitem value="6" label="&hc.sets.actionOpenEditor;" />
+						<menuitem value="7" label="&hc.sets.actionOpenEditorTypes;" />
 						<menuseparator />
 						<menuitem value="-1" label="&hc.sets.actionDoNothing;" />
 					</menupopup>

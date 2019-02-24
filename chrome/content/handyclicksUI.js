@@ -281,6 +281,8 @@ var handyClicksUI = {
 	ACTION_EDIT_MODE:       3,
 	ACTION_ALL_SETTINGS:    4,
 	ACTION_SETTINGS_TOGGLE: 5,
+	ACTION_EDITOR:          6,
+	ACTION_EDITOR_TYPE:     7,
 	setupUIActions: function() {
 		this.setControls(function(elt) {
 			var type = this.getTypeByLocalName(elt.localName);
@@ -346,7 +348,9 @@ var handyClicksUI = {
 			case this.ACTION_POPUP:           this.showSettingsPopup(e);  break;
 			case this.ACTION_EDIT_MODE:       this.toggleEditMode();      break;
 			case this.ACTION_ALL_SETTINGS:    this.pu.openAboutConfig();  break;
-			case this.ACTION_SETTINGS_TOGGLE: this.wu.openSettings(true);
+			case this.ACTION_SETTINGS_TOGGLE: this.wu.openSettings(true); break;
+			case this.ACTION_EDITOR:          this.wu.openEditor();       break;
+			case this.ACTION_EDITOR_TYPE:     this.wu.openEditor(undefined, this.ct.EDITOR_MODE_TYPE);
 		}
 		if(!leftClick && actionId != this.ACTION_POPUP)
 			this.delay(this.ut.closeMenus, this.ut, 0, [e.target]);

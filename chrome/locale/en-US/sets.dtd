@@ -190,6 +190,8 @@
 <!ENTITY hc.sets.actionShowAllSettings "Show all settings">
 <!ENTITY hc.sets.actionContext "Show context menu">
 <!ENTITY hc.sets.actionEditMode "Edit mode">
+<!ENTITY hc.sets.actionOpenEditor "Open editor">
+<!ENTITY hc.sets.actionOpenEditorTypes "Open types editor">
 <!ENTITY hc.sets.actionDoNothing "Do nothing">
 <!ENTITY hc.sets.actionReset "Reset">
 <!ENTITY hc.sets.actionResetAll "Reset All">
