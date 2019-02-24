@@ -644,10 +644,10 @@ var handyClicksPrefSvc = {
 	},
 	getEvtStr: function(e) {
 		return "button=" + (e.button || 0)
-			+ ",ctrl=" + e.ctrlKey
-			+ ",shift=" + e.shiftKey
-			+ ",alt=" + e.altKey
-			+ ",meta=" + e.metaKey
+			+ ",ctrl="  + (e.ctrlKey  || false)
+			+ ",shift=" + (e.shiftKey || false)
+			+ ",alt="   + (e.altKey   || false)
+			+ ",meta="  + (e.metaKey  || false)
 			+ (e.getModifierState && e.getModifierState("OS") ? ",os=true" : "");
 	},
 	isOkShortcut: function(s) {
