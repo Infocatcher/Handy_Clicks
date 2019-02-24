@@ -118,12 +118,23 @@ var handyClicksReloader = {
 		var de = document.documentElement;
 		if(!("cancelDialog" in de) || !de.cancelDialog())
 			return;
+		this.flushCaches();
 		var args = [location.href, "",
 			"chrome,all,resizable,dialog=0" + ",left=" + window.screenX + ",top=" + window.screenY
 		];
 		"arguments" in window && args.push.apply(args, window.arguments);
 		window.openDialog.apply(window, args)
 			.focus();
+	},
+	flushCaches: function() {
+		// Based on flushCaches() from
+		// https://github.com/Infocatcher/Custom_Buttons/tree/master/Extensions_Developer_Tools
+		var obs = Components.classes["@mozilla.org/observer-service;1"]
+			.getService(Components.interfaces.nsIObserverService);
+		obs.notifyObservers(null, "startupcache-invalidate", null);
+		obs.notifyObservers(null, "chrome-flush-skin-caches", null);
+		obs.notifyObservers(null, "chrome-flush-caches", null);
+		this.sbs.flushBundles && this.sbs.flushBundles();
 	},
 	_lastAction: 0,
 	keydownHandler: function(e) {
