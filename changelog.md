@@ -167,6 +167,13 @@
 `*` Improved behavior of “Close this menu after click” menu item: apply new logic right after click.<br>
 `*` Changed title of editor window: used “button + modifiers” order, used separator from browser localization and added “Type:” prefix for custom type.<br>
 `+` Added Ctrl+1…6 hotkeys to change settings tree draw mode.<br>
+`+` Added menu item to remove duplicate backups (Import – Restore from backup – Remove duplicates), also improved backup process: files will be renamed in case of detected files removal and now used async way to remove backups after depth change.<br>
+`*` Optimized items detection: don't call node.localName.toLowerCase() for XUL nodes (XUL tags should be always in lower case).<br>
+`x` Correctly show unsaved state of settings tree after startup (e.g. due to settings format change).<br>
+`x` Fixed settings preloading in case of fast disable/enable calls.<br>
+`x` Settings for controls behavior: added “open editor” and “open types editor” commands.<br>
+`+` Scripts reloader (<em>extensions.handyclicks.debug</em> = true): added Ctrl+Alt+W hotkey to reopen dialog window (settings, editor).<br>
+`*` Scripts reloader (<em>extensions.handyclicks.debug</em> = true): flush internal browser caches in Firefox 3.6+ instead of .js?random_numbers hack.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre7 (2019-02-10)
