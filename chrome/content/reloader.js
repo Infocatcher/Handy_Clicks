@@ -114,6 +114,17 @@ var handyClicksReloader = {
 
 		this._log("css [" + sheetsHrefs.length + "] reloaded");
 	},
+	reopenDialog: function() {
+		var de = document.documentElement;
+		if(!("cancelDialog" in de) || !de.cancelDialog())
+			return;
+		var args = [location.href, "",
+			"chrome,all,resizable,dialog=0" + ",left=" + window.screenX + ",top=" + window.screenY
+		];
+		"arguments" in window && args.push.apply(args, window.arguments);
+		window.openDialog.apply(window, args)
+			.focus();
+	},
 	_lastAction: 0,
 	keydownHandler: function(e) {
 		if(e.ctrlKey && e.altKey && !e.shiftKey && !e.metaKey && this._debug) {
@@ -122,6 +133,7 @@ var handyClicksReloader = {
 			switch(e.keyCode) {
 				case e.DOM_VK_R: this.reloadScripts(); break;
 				case e.DOM_VK_C: this.reloadStyles();  break;
+				case e.DOM_VK_W: this.reopenDialog();  break;
 				default: return;
 			}
 			this._lastAction = Date.now();
