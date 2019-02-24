@@ -542,6 +542,11 @@ var handyClicksUI = {
 		}, this);
 		if(!enabled && this.coreLoaded && this.hc._settingsLoaded) {
 			this.hc._settingsLoaded = false;
+			var timer = this.hc._settingsLoadTimer;
+			if(timer) {
+				this.hc._settingsLoadTimer = 0;
+				clearTimeout(timer);
+			}
 			this.ps.disable();
 		}
 		var tt = this.getLocalized(enabled ? "enabledTip" : "disabledTip");
