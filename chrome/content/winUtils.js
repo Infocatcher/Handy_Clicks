@@ -159,8 +159,8 @@ var handyClicksWinUtils = {
 		var st = wSet.handyClicksSets;
 		if(!arguments.length)
 			st.markOpenedEditors();
-		else if(st.ps.otherSrc == otherSrc)
-			st.setItemStatus(winId, editStat);
+		else
+			st.setItemStatus(winId, editStat, otherSrc);
 		st.ensureStatusSearchUpdated();
 	},
 	shortcutRenamed: function(oldHash, newHash) {

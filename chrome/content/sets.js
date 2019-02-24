@@ -626,13 +626,12 @@ var handyClicksSets = {
 	},
 	_markOpenedEditors: function(isInitial) {
 		if(!isInitial) for(var rowId in this.rowsCache)
-			this._setItemStatus(rowId, false);
+			this._setItemStatus(rowId, false, undefined);
 		const idProp = this.wu.winIdProp;
 		const pSvc = "handyClicksPrefSvc";
-		var otherSrc = this.ps.otherSrc;
 		this.wu.forEachWindow("handyclicks:editor", function(w) {
-			if(idProp in w && pSvc in w && w[pSvc].otherSrc == otherSrc)
-				this._setItemStatus(w[idProp], true);
+			if(idProp in w && pSvc in w)
+				this._setItemStatus(w[idProp], true, w[pSvc].otherSrc);
 		}, this);
 	},
 	appendContainerItem: function(parent, hash, label, sortLabel) {
@@ -1506,7 +1505,7 @@ var handyClicksSets = {
 	setItemStatus: function() {
 		return this.treeBatch(this._setItemStatus, this, arguments);
 	},
-	_setItemStatus: function(rowId, editStat) {
+	_setItemStatus: function(rowId, editStat, otherSrc) {
 		if(!rowId)
 			return;
 		var pf = this.ct.OTHER_SRC_POSTFIX;
@@ -1514,10 +1513,12 @@ var handyClicksSets = {
 			rowId = rowId.slice(0, -pf.length);
 		if(!(rowId in this.rowsCache))
 			return;
-		this.setChildNodesProperties(
-			this.rowsCache[rowId].parentNode, // <treeitem>
-			{ hc_edited: editStat }
-		);
+		var tItem = this.rowsCache[rowId].parentNode;
+		if(
+			otherSrc == undefined // Force remove all highlighting
+			|| (tItem.__isRemoved ? !otherSrc && this.ps.otherSrc : otherSrc == this.ps.otherSrc)
+		)
+			this.setChildNodesProperties(tItem, { hc_edited: editStat });
 	},
 	ensureStatusSearchUpdated: function() {
 		if(this.searchField.value.indexOf(this.searchPlaceholders.hc_edited) != -1)
