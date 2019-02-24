@@ -187,7 +187,7 @@
 <!ENTITY hc.sets.actionToggleStatus "Переключить статус">
 <!ENTITY hc.sets.actionOpenSettings "Открыть настройки">
 <!ENTITY hc.sets.actionOpenCloseSettings "Открыть/закрыть настройки">
-<!ENTITY hc.sets.actionShowAllSettings "Показать все настройки">
+<!ENTITY hc.sets.actionOpenAllSettings "Открыть все настройки">
 <!ENTITY hc.sets.actionContext "Показать контекстное меню">
 <!ENTITY hc.sets.actionEditMode "Режим редактирования">
 <!ENTITY hc.sets.actionOpenEditor "Открыть редактор">
