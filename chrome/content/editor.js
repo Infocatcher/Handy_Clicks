@@ -735,6 +735,7 @@ var handyClicksEditor = {
 		else {
 			ml.selectedItem = null;
 			this.$("hc-editor-customTypeEnabled").checked = true;
+			this.setWinId();
 		}
 	},
 	customTypeIdInfo: function(anchor) {
