@@ -1033,7 +1033,7 @@ var handyClicksEditor = {
 			onclick: "handyClicksEditor.clickHelper(event);"
 		});
 
-		var cfgTt = this.getLocalized("openAboutConfig");
+		var cfgTt = this.getLocalized("openAboutConfigRightClick");
 		switch(argType) {
 			case "checkbox":
 				var label = this.getLocalized(argName);
@@ -1094,7 +1094,7 @@ var handyClicksEditor = {
 		var si = ml.selectedItem;
 		if(si && si.hasAttribute("hc_aboutConfigEntry")) {
 			ml.setAttribute("hc_aboutConfigEntry", si.getAttribute("hc_aboutConfigEntry"));
-			ml.setAttribute("tooltiptext", this.getLocalized("openAboutConfig"));
+			ml.setAttribute("tooltiptext", this.getLocalized("openAboutConfigRightClick"));
 			return;
 		}
 		ml.removeAttribute("hc_aboutConfigEntry");
