@@ -33,11 +33,17 @@ var handyClicksReloader = {
 		};
 		try {
 			var t = this.now();
+			var rnd = "";
+			if(this.fxVersion < 3.6)
+				rnd = "?" + Date.now();
+			else
+				this.flushCaches();
+			rnd = "";
 			handyClicksRegSvc.destroy(true);
 			for(var f in files) {
 				var p = files[f];
 				if(p in window && !window.__lookupGetter__(p))
-					jsLoader.loadSubScript(path + f + "?" + Date.now());
+					jsLoader.loadSubScript(path + f + rnd);
 			}
 			handyClicksRegSvc.init(true);
 			this._log("js reloaded (" + (this.now() - t).toFixed(2) + " ms)");
@@ -103,7 +109,11 @@ var handyClicksReloader = {
 			return;
 		}
 
-		var rnd = "?" + Date.now();
+		var rnd = "";
+		if(this.fxVersion < 3.6)
+			rnd = "?" + Date.now();
+		else
+			this.flushCaches();
 		document.loadOverlay("data:application/vnd.mozilla.xul+xml," + encodeURIComponent(
 			'<?xml version="1.0"?>\n'
 			+ sheetsHrefs.map(function(href, indx) {
