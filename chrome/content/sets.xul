@@ -153,21 +153,21 @@ preferences {
 			hc_colored="true" hc_hasOverlayBackground="false" persist="hc_colored hc_grid"
 			onselect="handyClicksSets.updTreeButtons();">
 			<treecols id="hc-sets-tree-columns">
-				<treecol id="hc-sets-tree-columnShortcutAndTarget" flex="1" primary="true" persist="width ordinal"
+				<treecol id="hc-sets-tree-columnShortcutAndTarget" sort="hc_sortData0" flex="1" primary="true" persist="width ordinal"
 					label="&hc.sets.columnShortcutAndTarget;"
-					onclick="handyClicksSets.treeHeaderClick(event);" />
+					_onclick="handyClicksSets.treeHeaderClick(event);" />
 				<splitter class="tree-splitter" />
-				<treecol id="hc-sets-tree-columnEvent" flex="1" label="&hc.sets.columnEvent;" persist="hidden width ordinal" />
+				<treecol id="hc-sets-tree-columnEvent" sort="hc_sortData1" flex="1" label="&hc.sets.columnEvent;" persist="hidden width ordinal" />
 				<splitter class="tree-splitter" />
-				<treecol id="hc-sets-tree-columnAction" flex="1" label="&hc.sets.columnAction;" persist="hidden width ordinal" />
+				<treecol id="hc-sets-tree-columnAction" sort="hc_sortData2" flex="1" label="&hc.sets.columnAction;" persist="hidden width ordinal" />
 				<splitter class="tree-splitter" />
-				<treecol id="hc-sets-tree-columnFunction" flex="1" label="&hc.sets.columnFunction;" persist="hidden width ordinal" />
+				<treecol id="hc-sets-tree-columnFunction" sort="hc_sortData3" flex="1" label="&hc.sets.columnFunction;" persist="hidden width ordinal" />
 				<splitter class="tree-splitter" />
-				<treecol id="hc-sets-tree-columnArguments" flex="1" label="&hc.sets.columnArguments;" persist="hidden width ordinal" />
+				<treecol id="hc-sets-tree-columnArguments" sort="hc_sortData4" flex="1" label="&hc.sets.columnArguments;" persist="hidden width ordinal" />
 				<splitter class="tree-splitter" />
-				<treecol id="hc-sets-tree-columnInit" flex="1" label="&hc.sets.columnInit;" hidden="true" persist="hidden width ordinal" />
+				<treecol id="hc-sets-tree-columnInit" sort="hc_sortData5" flex="1" label="&hc.sets.columnInit;" hidden="true" persist="hidden width ordinal" />
 				<splitter class="tree-splitter" />
-				<treecol id="hc-sets-tree-columnEnabled" type="checkbox" width="18" minwidth="18" label="&hc.sets.columnEnabled;" persist="hidden width ordinal" />
+				<treecol id="hc-sets-tree-columnEnabled" sort="hc_sortData6" type="checkbox" width="18" minwidth="18" label="&hc.sets.columnEnabled;" persist="hidden width ordinal" />
 			</treecols>
 			<treechildren id="hc-sets-tree-content"
 				onclick="handyClicksSets.treeClick(event);"

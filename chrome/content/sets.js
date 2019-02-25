@@ -639,8 +639,7 @@ var handyClicksSets = {
 		tItem.setAttribute("container", "true");
 		tItem.setAttribute("open", "true");
 		var tRow = tItem.appendChild(document.createElement("treerow"));
-		var tCell = tRow.appendChild(document.createElement("treecell"));
-		tCell.setAttribute("label", label);
+		this.appendTreeCell(tRow, "label", label, 0, sortLabel || label);
 		var tChld = tItem.appendChild(document.createElement("treechildren"));
 
 		tItem.__hash = hash;
@@ -675,19 +674,24 @@ var handyClicksSets = {
 		var extNA = this.extTypeNotAvailable(itemType);
 		var drawRemoved = this._drawRemoved;
 
-		this.appendTreeCell(tRow, "label", label);
-		this.appendTreeCell(tRow, "label", fo.eventType);
+		var col = -1;
+		this.appendTreeCell(tRow, "label", label, ++col);
+		this.appendTreeCell(tRow, "label", fo.eventType, ++col);
 		var actLabel = this.su.getActionLabel(fo);
-		this.appendTreeCell(tRow, "label", actLabel);
-		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom));
+		this.appendTreeCell(tRow, "label", actLabel, ++col);
+		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom), ++col);
 		var linkedFile = this.getActionCode._hasLinkedFile;
 		var fileData = this.getActionCode._hasFileData;
-		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}, this._localizeArgs));
-		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)));
+		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}, this._localizeArgs), ++col);
+		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)), ++col);
 		if(this.getActionCode._hasLinkedFile)
 			linkedFile = true;
 		if(this.getActionCode._hasFileData)
 			fileData = true;
+		this.setNodeProperties(
+			this.appendTreeCell(tRow, "value", fo.enabled, ++col),
+			{ hc_checkbox: true }
+		);
 
 		var da = this.ju.getOwnProperty(fo, "delayedAction");
 		if(da) {
@@ -701,23 +705,28 @@ var handyClicksSets = {
 			if(!this.ju.isObject(da))
 				da = {};
 
-			this.appendTreeCell(daRow, "label", this.getLocalized("delayed"));
-			this.appendTreeCell(daRow, "label", this._daAfter);
+			var col = -1;
+			this.appendTreeCell(daRow, "label", this.getLocalized("delayed"), ++col);
+			this.appendTreeCell(daRow, "label", this._daAfter, ++col);
 
 			var daStr = foStr + ".delayedAction";
 			var daCustom = !!da.custom;
 			var daLabel = this.su.getActionLabel(da);
 			var daDis = this._daForceDisable || !fo.enabled || !da.enabled;
-			this.appendTreeCell(daRow, "label", daLabel);
-			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom));
+			this.appendTreeCell(daRow, "label", daLabel, ++col);
+			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom), ++col);
 			var daLinkedFile = this.getActionCode._hasLinkedFile;
 			var daFileData = this.getActionCode._hasFileData;
-			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}, this._localizeArgs));
-			this.appendTreeCell(daRow, "label", (daInitCode = this.getInitCode(da, true)));
+			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}, this._localizeArgs), ++col);
+			this.appendTreeCell(daRow, "label", (daInitCode = this.getInitCode(da, true)), ++col);
 			if(this.getActionCode._hasLinkedFile)
 				daLinkedFile = true;
 			if(this.getActionCode._hasFileData)
 				daFileData = true;
+			this.setNodeProperties(
+				this.appendTreeCell(daRow, "value", da.enabled, ++col),
+				{ hc_checkbox: true }
+			);
 
 			this.setChildNodesProperties(daRow, {
 				hc_delayed: true,
@@ -730,11 +739,6 @@ var handyClicksSets = {
 				hc_customInit: !!daInitCode,
 				hc_customType: isCustomType
 			}, true);
-
-			this.setNodeProperties(
-				this.appendTreeCell(daRow, "value", da.enabled),
-				{ hc_checkbox: true }
-			);
 
 			if(this._import) {
 				if(!drawRemoved) {
@@ -761,11 +765,6 @@ var handyClicksSets = {
 
 			this.rowsCache[daItem.__hash = shortcut + "-" + itemType + "-delayed"] = daRow; // Uses for search
 		}
-
-		this.setNodeProperties(
-			this.appendTreeCell(tRow, "value", fo.enabled),
-			{ hc_checkbox: true }
-		);
 
 		var isBuggy = this.isBuggyFuncObj(fo, isCustom, actLabel, foStr)
 			|| (
@@ -844,16 +843,18 @@ var handyClicksSets = {
 		var label = this.drawInline
 			? this.getLocalized("customType").replace("%s", typeLabel)
 			: typeLabel;
+		var sortLabel = this.typesSortPrefix + label;
 		var drawRemoved = this._drawRemoved;
 		var na = "\u2013";
 
-		this.appendTreeCell(tRow, "label", label);
-		this.appendTreeCell(tRow, "label", na);
-		this.appendTreeCell(tRow, "label", na);
-		this.appendTreeCell(tRow, "label", this.getActionCode(to.define, true));
+		var col = -1;
+		this.appendTreeCell(tRow, "label", label, ++col, sortLabel);
+		this.appendTreeCell(tRow, "label", na, ++col);
+		this.appendTreeCell(tRow, "label", na, ++col);
+		this.appendTreeCell(tRow, "label", this.getActionCode(to.define, true), ++col);
 		var linkedFile = this.getActionCode._hasLinkedFile;
 		var fileData = this.getActionCode._hasFileData;
-		this.appendTreeCell(tRow, "label", "");
+		this.appendTreeCell(tRow, "label", "", ++col);
 		var cmCode = "";
 		if(to.contextMenu) {
 			cmCode = this.getActionCode(to.contextMenu, true);
@@ -862,9 +863,9 @@ var handyClicksSets = {
 			if(this.getActionCode._hasFileData)
 				fileData = true;
 		}
-		this.appendTreeCell(tRow, "label", cmCode);
+		this.appendTreeCell(tRow, "label", cmCode, ++col);
 		this.setNodeProperties(
-			this.appendTreeCell(tRow, "value", to.enabled),
+			this.appendTreeCell(tRow, "value", to.enabled, ++col),
 			{ hc_checkbox: true }
 		);
 
@@ -875,7 +876,7 @@ var handyClicksSets = {
 		tItem.__isDelayed = false;
 		tItem.__isRemoved = drawRemoved;
 		tItem.__delayed = null;
-		tItem.__sortLabel = this.typesSortPrefix + label;
+		tItem.__sortLabel = sortLabel;
 
 		this.setChildNodesProperties(tRow, {
 			hc_enabled: to.enabled,
@@ -1032,10 +1033,11 @@ var handyClicksSets = {
 			this
 		);
 	},
-	appendTreeCell: function(parent, attrName, attrValue) {
-		var cell = document.createElement("treecell");
-		attrName && cell.setAttribute(attrName, attrValue);
-		return parent.appendChild(cell);
+	appendTreeCell: function(tRow, attr, val, col, sortData) {
+		var cell = tRow.appendChild(document.createElement("treecell"));
+		cell.setAttribute(attr, val);
+		tRow.parentNode.setAttribute("hc_sortData" + col, sortData || val);
+		return cell;
 	},
 	get oldTree() {
 		delete this.oldTree;
