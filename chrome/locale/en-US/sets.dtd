@@ -75,6 +75,11 @@
 <!ENTITY hc.sets.rememberScrollPosition "Scroll position">
 <!ENTITY hc.sets.rememberState "Tree state">
 
+<!ENTITY hc.sets.customTypes "Custom types">
+<!ENTITY hc.sets.customTypesBefore "Before settings">
+<!ENTITY hc.sets.customTypesBetween "Sort with settings">
+<!ENTITY hc.sets.customTypesAfter "After settings">
+
 <!ENTITY hc.sets.expandDa "Expand delayed actions">
 <!ENTITY hc.sets.colorizeTree "Colorize tree">
 <!ENTITY hc.sets.showTreeGrid "Show grid">

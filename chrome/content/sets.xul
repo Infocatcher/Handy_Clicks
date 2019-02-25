@@ -140,6 +140,13 @@ preferences {
 							<menuitem type="checkbox" hc_pref="sets.rememberState" label="&hc.sets.rememberState;" />
 						</menupopup>
 					</menu>
+					<menu label="&hc.sets.customTypes;">
+						<menupopup>
+							<menuitem type="radio" hc_sortTypes="-1" label="&hc.sets.customTypesBefore;" />
+							<menuitem type="radio" hc_sortTypes="0" label="&hc.sets.customTypesBetween;" />
+							<menuitem type="radio" hc_sortTypes="1" label="&hc.sets.customTypesAfter;" />
+						</menupopup>
+					</menu>
 					<menuseparator />
 					<menuitem type="checkbox" hc_pref="sets.treeExpandDelayedAction" label="&hc.sets.expandDa;" />
 					<menuitem type="checkbox" hc_treeAttr="hc_colored" label="&hc.sets.colorizeTree;" />

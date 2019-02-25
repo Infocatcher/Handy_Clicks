@@ -75,6 +75,11 @@
 <!ENTITY hc.sets.rememberScrollPosition "Положение прокрутки">
 <!ENTITY hc.sets.rememberState "Состояние дерева">
 
+<!ENTITY hc.sets.customTypes "Добавленные типы">
+<!ENTITY hc.sets.customTypesBefore "Перед настройками">
+<!ENTITY hc.sets.customTypesBetween "Сортировать вместе с настройками">
+<!ENTITY hc.sets.customTypesAfter "После настроек">
+
 <!ENTITY hc.sets.expandDa "Разворачивать отложенные действия">
 <!ENTITY hc.sets.colorizeTree "Раскрашивать дерево">
 <!ENTITY hc.sets.showTreeGrid "Показывать сетку">

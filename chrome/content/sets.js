@@ -1803,6 +1803,8 @@ var handyClicksSets = {
 	initViewMenu: function(mp) {
 		var tdm = this.ut.mm(this.pu.get("sets.treeDrawMode"), 0, 5);
 		mp.getElementsByAttribute("hc_drawMode", tdm)[0].setAttribute("checked", "true");
+		var sct = this.ut.mm(this.pu.get("sets.treeSortCustomTypes"), -1, 1);
+		mp.getElementsByAttribute("hc_sortTypes", sct)[0].setAttribute("checked", "true");
 		var closeMenu = this.pu.get("sets.closeTreeViewMenu") ? "auto" : "none";
 		Array.prototype.forEach.call(
 			mp.getElementsByTagName("menuitem"),
@@ -1822,6 +1824,8 @@ var handyClicksSets = {
 		var mi = e.target;
 		if(mi.hasAttribute("hc_drawMode"))
 			this.setDrawMode(+mi.getAttribute("hc_drawMode"));
+		if(mi.hasAttribute("hc_sortTypes"))
+			this.pu.set("sets.treeSortCustomTypes", +mi.getAttribute("hc_sortTypes"));
 		else if(mi.hasAttribute("hc_pref")) {
 			var prefName = mi.getAttribute("hc_pref");
 			this.pu.set(prefName, !this.pu.get(prefName)); // => prefChanged()
