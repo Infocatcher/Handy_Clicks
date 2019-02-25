@@ -126,12 +126,12 @@ preferences {
 				<menupopup onpopupshowing="handyClicksSets.initViewMenu(this);"
 					oncommand="event.stopPropagation(); handyClicksSets.viewMenuCommand(event, this);"
 					onclick="handyClicksSets.viewMenuClick(event, this);">
-					<menuitem value="0" type="radio" key="hc-sets-key-treeDrawMode-normal"         label="&hc.sets.drawModeNormal;" />
-					<menuitem value="1" type="radio" key="hc-sets-key-treeDrawMode-normalCompact"  label="&hc.sets.drawModeNormalCompact;" />
-					<menuitem value="2" type="radio" key="hc-sets-key-treeDrawMode-normalInline"   label="&hc.sets.drawModeNormalInline;" />
-					<menuitem value="3" type="radio" key="hc-sets-key-treeDrawMode-inverse"        label="&hc.sets.drawModeInverse;" />
-					<menuitem value="4" type="radio" key="hc-sets-key-treeDrawMode-inverseCompact" label="&hc.sets.drawModeInverseCompact;" />
-					<menuitem value="5" type="radio" key="hc-sets-key-treeDrawMode-inverseInline"  label="&hc.sets.drawModeInverseInline;" />
+					<menuitem type="radio" hc_drawMode="0" key="hc-sets-key-treeDrawMode-normal"         label="&hc.sets.drawModeNormal;" />
+					<menuitem type="radio" hc_drawMode="1" key="hc-sets-key-treeDrawMode-normalCompact"  label="&hc.sets.drawModeNormalCompact;" />
+					<menuitem type="radio" hc_drawMode="2" key="hc-sets-key-treeDrawMode-normalInline"   label="&hc.sets.drawModeNormalInline;" />
+					<menuitem type="radio" hc_drawMode="3" key="hc-sets-key-treeDrawMode-inverse"        label="&hc.sets.drawModeInverse;" />
+					<menuitem type="radio" hc_drawMode="4" key="hc-sets-key-treeDrawMode-inverseCompact" label="&hc.sets.drawModeInverseCompact;" />
+					<menuitem type="radio" hc_drawMode="5" key="hc-sets-key-treeDrawMode-inverseInline"  label="&hc.sets.drawModeInverseInline;" />
 					<menuseparator />
 					<menu label="&hc.sets.remember;">
 						<menupopup>

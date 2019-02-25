@@ -1801,11 +1801,8 @@ var handyClicksSets = {
 	},
 
 	initViewMenu: function(mp) {
-		var tdm = this.pu.get("sets.treeDrawMode");
-		if(tdm < 0 || tdm > 5) // see drawTree() and switch(drawMode) { ... }
-			tdm = 0;
-		var checkbox = mp.getElementsByAttribute("value", tdm);
-		checkbox.length && checkbox[0].setAttribute("checked", "true");
+		var tdm = this.ut.mm(this.pu.get("sets.treeDrawMode"), 0, 5);
+		mp.getElementsByAttribute("hc_drawMode", tdm)[0].setAttribute("checked", "true");
 		var closeMenu = this.pu.get("sets.closeTreeViewMenu") ? "auto" : "none";
 		Array.prototype.forEach.call(
 			mp.getElementsByTagName("menuitem"),
@@ -1823,8 +1820,8 @@ var handyClicksSets = {
 	},
 	viewMenuCommand: function(e, popup) {
 		var mi = e.target;
-		if(mi.hasAttribute("value"))
-			this.setDrawMode(mi.value);
+		if(mi.hasAttribute("hc_drawMode"))
+			this.setDrawMode(+mi.getAttribute("hc_drawMode"));
 		else if(mi.hasAttribute("hc_pref")) {
 			var prefName = mi.getAttribute("hc_pref");
 			this.pu.set(prefName, !this.pu.get(prefName)); // => prefChanged()
@@ -1861,7 +1858,7 @@ var handyClicksSets = {
 	},
 	setDrawMode: function(dm) {
 		// <preference instantApply="true" ... /> is bad on slow devices (it saves prefs.js file)
-		this.pu.set("sets.treeDrawMode", +dm); // => prefChanged()
+		this.pu.set("sets.treeDrawMode", dm); // => prefChanged()
 	},
 
 	get treeContainers() {
