@@ -3605,8 +3605,10 @@ var handyClicksSets = {
 	},
 	removeDuplicateBackups: function(miRD) {
 		miRD.setAttribute("disabled", "true");
+		miRD.parentNode.setAttribute("hc_duplicateCheck", "true");
 		setTimeout(function() {
 			miRD.removeAttribute("disabled");
+			miRD.parentNode.removeAttribute("hc_duplicateCheck");
 		}, 400);
 
 		var sizes = { __proto__: null };

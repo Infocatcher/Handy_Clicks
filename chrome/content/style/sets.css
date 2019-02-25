@@ -445,6 +445,10 @@ menuitem[hc_duplicateKeep] {
 	min-width: 26px !important; /* For scrollbar */
 	-moz-box-pack: end;
 }
+#hc-sets-tree-restoreFromBackupPopup[hc_duplicateCheck] {
+	outline: 2px solid ThreeDShadow;
+	outline-offset: -2px;
+}
 
 menuitem[hc_oldBackup="true"] image, menuitem[hc_oldBackup="true"] > label {
 	opacity: 0.45;
