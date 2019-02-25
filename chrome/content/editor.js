@@ -1388,7 +1388,7 @@ var handyClicksEditor = {
 	codeToFile: function() {
 		this.doEditorCommand("hc-editor-cmd-codeToFile", "codeToFile", function() {
 			var editCode = this.getFloatButton("hc-editor-cmd-editCode");
-			this.markAs(editCode, "hc_attention");
+			this.markAs(editCode, "hc_attention", "", 2);
 		}, this);
 	},
 	openScriptsDir: function() {
@@ -1616,13 +1616,16 @@ var handyClicksEditor = {
 			default:                  return false;
 		}
 	},
-	markAs: function(node, attr, val) {
+	markAs: function(node, attr, val, count) {
 		if(node.hasAttribute(attr) && node.getAttribute(attr) != "true")
 			return; // Leave error indication
-		node.setAttribute(attr, val || "true");
-		setTimeout(function() {
-			node.removeAttribute(attr);
-		}, 200);
+		(function mark() {
+			node.setAttribute(attr, val || "true");
+			setTimeout(function() {
+				node.removeAttribute(attr);
+				--count && setTimeout(mark, 200);
+			}, 200);
+		})();
 	},
 	checkSaved: function() {
 		if(!this.hasUnsaved)
