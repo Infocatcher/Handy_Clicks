@@ -312,7 +312,7 @@ var handyClicksEditor = {
 		var insPos = mi;
 		var mp = mi.parentNode;
 		mis.sort(function(a, b) {
-			return a.getAttribute("label") > b.getAttribute("label")
+			return a.getAttribute("label").localeCompare(b.getAttribute("label"));
 		}).forEach(function(mi) {
 			mp.insertBefore(mi, insPos);
 		});
@@ -784,7 +784,7 @@ var handyClicksEditor = {
 		var dfTarget = document.createDocumentFragment();
 		var dfEdit = document.createDocumentFragment();
 		sortedTypes.sort(function(a, b) {
-			return a.label > b.label;
+			return a.label.localeCompare(b.label);
 		}).forEach(function(attrs) {
 			var mi = this.ut.createElement("menuitem", attrs);
 			var _mi = mi.cloneNode(true);
@@ -1242,7 +1242,7 @@ var handyClicksEditor = {
 
 		var df = document.createDocumentFragment();
 		shortcuts.sort(function(a, b) {
-			return a.label > b.label
+			return a.label.localeCompare(b.label);
 		}).forEach(function(attrs) {
 			df.appendChild(this.ut.createElement("menuitem", attrs));
 		}, this);

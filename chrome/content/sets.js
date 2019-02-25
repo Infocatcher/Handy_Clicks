@@ -652,7 +652,7 @@ var handyClicksSets = {
 		var sortedItems = Array.prototype.slice.call(parent.childNodes);
 		sortedItems.push(sortItem);
 		sortedItems.sort(function(a, b) {
-			return a.__sortLabel > b.__sortLabel;
+			return a.__sortLabel.localeCompare(b.__sortLabel);
 		});
 		return sortedItems[sortedItems.indexOf(sortItem) + 1] || null;
 	},
@@ -3769,7 +3769,7 @@ var handyClicksSets = {
 		this.delay(function() {
 			var df = document.createDocumentFragment();
 			filesData.sort(function(a, b) {
-				return a.path > b.path;
+				return a.path.localeCompare(b.path);
 			}).forEach(function(fd, i) {
 				var n = i + 1;
 				var path = fd.path;
