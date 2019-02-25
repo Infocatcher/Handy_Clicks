@@ -133,14 +133,18 @@ preferences {
 					<menuitem value="4" type="radio" key="hc-sets-key-treeDrawMode-inverseCompact" label="&hc.sets.drawModeInverseCompact;" />
 					<menuitem value="5" type="radio" key="hc-sets-key-treeDrawMode-inverseInline"  label="&hc.sets.drawModeInverseInline;" />
 					<menuseparator />
+					<menu label="&hc.sets.remember;">
+						<menupopup>
+							<menuitem type="checkbox" hc_pref="sets.rememberSearchQuery" label="&hc.sets.rememberSearchQuery;" />
+							<menuitem type="checkbox" hc_pref="sets.rememberScrollPosition" label="&hc.sets.rememberScrollPosition;" />
+							<menuitem type="checkbox" hc_pref="sets.rememberState" label="&hc.sets.rememberState;" />
+						</menupopup>
+					</menu>
+					<menuseparator />
 					<menuitem type="checkbox" hc_pref="sets.treeExpandDelayedAction" label="&hc.sets.expandDa;" />
 					<menuitem type="checkbox" hc_treeAttr="hc_colored" label="&hc.sets.colorizeTree;" />
 					<menuitem type="checkbox" hc_treeAttr="hc_grid" label="&hc.sets.showTreeGrid;" />
 					<menuitem type="checkbox" hc_pref="sets.localizeArguments" label="&hc.sets.localizeArgs;" />
-					<menuseparator />
-					<menuitem type="checkbox" hc_pref="sets.rememberSearchQuery" label="&hc.sets.rememberSearchQuery;" />
-					<menuitem type="checkbox" hc_pref="sets.rememberScrollPosition" label="&hc.sets.rememberScrollPosition;" />
-					<menuitem type="checkbox" hc_pref="sets.rememberState" label="&hc.sets.rememberState;" />
 					<menuseparator />
 					<menuitem type="checkbox" hc_pref="sets.closeTreeViewMenu" label="&hc.sets.closeThisMenu;"
 						closemenu="none"

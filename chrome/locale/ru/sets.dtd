@@ -69,13 +69,16 @@
 <!ENTITY hc.sets.drawModeInverse "Инвертированный">
 <!ENTITY hc.sets.drawModeInverseCompact "Инвертированный (компактный)">
 <!ENTITY hc.sets.drawModeInverseInline "Инвертированный (линейный)">
+
+<!ENTITY hc.sets.remember "Запоминать после закрытия">
+<!ENTITY hc.sets.rememberSearchQuery "Поисковый запрос">
+<!ENTITY hc.sets.rememberScrollPosition "Положение прокрутки">
+<!ENTITY hc.sets.rememberState "Состояние дерева">
+
 <!ENTITY hc.sets.expandDa "Разворачивать отложенные действия">
 <!ENTITY hc.sets.colorizeTree "Раскрашивать дерево">
 <!ENTITY hc.sets.showTreeGrid "Показывать сетку">
 <!ENTITY hc.sets.localizeArgs "Переводить аргументы">
-<!ENTITY hc.sets.rememberSearchQuery "Запоминать поисковый запрос">
-<!ENTITY hc.sets.rememberScrollPosition "Запоминать положение прокрутки">
-<!ENTITY hc.sets.rememberState "Запоминать состояние дерева">
 <!ENTITY hc.sets.closeThisMenu "Закрывать это меню после клика">
 
 <!ENTITY hc.sets.cmdAdd "Добавить…">

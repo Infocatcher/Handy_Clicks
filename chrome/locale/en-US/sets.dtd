@@ -69,13 +69,16 @@
 <!ENTITY hc.sets.drawModeInverse "Inverse">
 <!ENTITY hc.sets.drawModeInverseCompact "Inverse (compact)">
 <!ENTITY hc.sets.drawModeInverseInline "Inverse (inline)">
+
+<!ENTITY hc.sets.remember "Remember after closing">
+<!ENTITY hc.sets.rememberSearchQuery "Search query">
+<!ENTITY hc.sets.rememberScrollPosition "Scroll position">
+<!ENTITY hc.sets.rememberState "Tree state">
+
 <!ENTITY hc.sets.expandDa "Expand delayed actions">
 <!ENTITY hc.sets.colorizeTree "Colorize tree">
 <!ENTITY hc.sets.showTreeGrid "Show grid">
 <!ENTITY hc.sets.localizeArgs "Localize arguments">
-<!ENTITY hc.sets.rememberSearchQuery "Remember search query">
-<!ENTITY hc.sets.rememberScrollPosition "Remember scroll position">
-<!ENTITY hc.sets.rememberState "Remember tree state">
 <!ENTITY hc.sets.closeThisMenu "Close this menu after click">
 
 <!ENTITY hc.sets.cmdAdd "Add…">
