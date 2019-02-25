@@ -814,6 +814,8 @@
 				</body>
 			</method>
 			<method name="codeToFile">
+				<parameter name="callback" />
+				<parameter name="context" />
 				<body>
 				<![CDATA[
 					var ut = this.hcEditor.ut;
@@ -836,7 +838,8 @@
 						if(!Components.isSuccessCode(status))
 							return;
 						this.value = "//> %hc_ScriptsDir%/" + file.leafName;
-						this.openExternalEditor();
+						//this.openExternalEditor();
+						callback && callback.call(context);
 					}, this);
 				]]>
 				</body>

@@ -110,7 +110,8 @@ menulist[hc_sets="disabled"] .menulist-label {
 
 hbox[hc_fixedFields="true"],
 tabbox[hc_copied="true"],
-tabbox[hc_pasted="true"] {
+tabbox[hc_pasted="true"],
+button[hc_attention] {
 	outline: 1px solid ThreeDShadow;
 	outline-offset: -1px;
 	background-color: ThreeDFace;

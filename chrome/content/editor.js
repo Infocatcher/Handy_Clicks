@@ -277,15 +277,15 @@ var handyClicksEditor = {
 		return this.getEditorFromPanel(this.getSelectedPanel(tabbox));
 	},
 	getTabboxFromChild: function(node) {
-		for(node = node.parentNode; node; node = node.parentNode)
+		for(; node; node = node.parentNode)
 			if(node.localName == "tabbox")
 				return node;
 		return null;
 	},
 	getFloatButton: function(cmd, sourceNode) {
-		var tabbox = sourceNode.localName == "tabbox"
-			? sourceNode
-			: this.getTabboxFromChild(sourceNode);
+		var tabbox = sourceNode
+			? this.getTabboxFromChild(sourceNode)
+			: this.selectedTabbox;
 		var toolbar = tabbox.firstChild;
 		return toolbar.getElementsByAttribute("command", cmd)[0];
 	},
@@ -1386,7 +1386,10 @@ var handyClicksEditor = {
 		this.doEditorCommand("hc-editor-cmd-editCode", "openExternalEditor");
 	},
 	codeToFile: function() {
-		this.doEditorCommand("hc-editor-cmd-codeToFile", "codeToFile");
+		this.doEditorCommand("hc-editor-cmd-codeToFile", "codeToFile", function() {
+			var editCode = this.getFloatButton("hc-editor-cmd-editCode");
+			this.markAs(editCode, "hc_attention");
+		}, this);
 	},
 	openScriptsDir: function() {
 		var tabbox = this.selectedTabbox;
