@@ -784,7 +784,7 @@ var handyClicksEditor = {
 		var dfTarget = document.createDocumentFragment();
 		var dfEdit = document.createDocumentFragment();
 		sortedTypes.sort(function(a, b) {
-			return a.label.localeCompare(b.label);
+			return a.hc_localizedLabel.localeCompare(b.hc_localizedLabel);
 		}).forEach(function(attrs) {
 			var mi = this.ut.createElement("menuitem", attrs);
 			var _mi = mi.cloneNode(true);
