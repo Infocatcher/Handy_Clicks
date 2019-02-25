@@ -832,13 +832,16 @@
 					var fName = this.getDefaultFilename(ext, ut.canRunw && ut.pu.get("editor.external.labelInFileName"));
 					var file = ut.ps.scriptsDir.clone();
 					file.append(fName);
+					if(file.exists() && ut.io.readFromFile(file).replace(/^\ufeff/, "") == val) {
+						this.value = "//> %hc_ScriptsDir%/" + file.leafName;
+						callback && callback.call(context);
+						return;
+					}
 					file.createUnique(file.NORMAL_FILE_TYPE, ut.io.PERMS_FILE_WRITE);
-
 					ut.io.writeToFileAsync(ut.io.BOM + val, file, function(status) {
 						if(!Components.isSuccessCode(status))
 							return;
 						this.value = "//> %hc_ScriptsDir%/" + file.leafName;
-						//this.openExternalEditor();
 						callback && callback.call(context);
 					}, this);
 				]]>
