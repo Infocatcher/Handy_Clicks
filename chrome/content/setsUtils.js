@@ -412,6 +412,7 @@ var handyClicksSetsUtils = {
 	},
 	_showTooltip: false,
 	scrollRadioMenuitems: function(e) {
+		// Note: we don't receive scroll events from opened menu itself
 		var rds = this.getSameLevelRadios(e.target);
 		if(!rds.length)
 			return false;
