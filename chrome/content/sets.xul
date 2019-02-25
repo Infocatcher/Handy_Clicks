@@ -155,7 +155,7 @@ preferences {
 			<treecols id="hc-sets-tree-columns">
 				<treecol id="hc-sets-tree-columnShortcutAndTarget" sort="hc_sortData0" flex="1" primary="true" persist="width ordinal"
 					label="&hc.sets.columnShortcutAndTarget;"
-					_onclick="handyClicksSets.treeHeaderClick(event);" />
+					onclick="handyClicksSets.treeHeaderClick(event);" />
 				<splitter class="tree-splitter" />
 				<treecol id="hc-sets-tree-columnEvent" sort="hc_sortData1" flex="1" label="&hc.sets.columnEvent;" persist="hidden width ordinal" />
 				<splitter class="tree-splitter" />

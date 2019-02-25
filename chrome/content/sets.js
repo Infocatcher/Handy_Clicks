@@ -1965,11 +1965,13 @@ var handyClicksSets = {
 	},
 
 	treeHeaderClick: function(e) {
-		if(e.button == 1)
-			return this.toggleTreeContainers(this.treeCollapsed);
-		if(this.hasModifier(e))
-			return this.toggleTreeContainers(e.button == 2);
-		return this.changeTreeExpandLevel(e.button == 2 ? 1 : -1);
+		if(e.button == 0 && !this.hasModifier(e)) // Left-click to sort
+			return;
+		this.ut.stopEvent(e);
+		if(e.shiftKey || e.altKey || e.metaKey)
+			this.toggleTreeContainers(this.treeCollapsed);
+		else
+			this.changeTreeExpandLevel(e.button == 2 ? 1 : -1);
 	},
 
 	isMenuButton: function(node) {

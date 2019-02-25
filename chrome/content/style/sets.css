@@ -68,10 +68,6 @@ radio[pane="hc-sets-pane-funcs"] {
 }
 
 /* Tree style */
-#hc-sets-tree-columns > treecol[onclick] {
-	cursor: pointer;
-}
-
 prefwindow[animated="true"] #hc-sets-tree-content {
 	min-height: 270px;
 }
