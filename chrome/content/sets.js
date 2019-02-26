@@ -346,8 +346,9 @@ var handyClicksSets = {
 		var dm = this.drawMode = this.pu.get("sets.treeDrawMode");
 		this.drawInline = dm == 2 || dm == 5;
 		var sortTypes = this.pu.get("sets.treeSortCustomTypes");
-		this.typesSortPrefix = sortTypes > 0 ? "\uffff\uffff" // show after shortcut items
-			: sortTypes == 0 ? "" : "\x00\x00"; // show before shortcut items
+		var sp = sortTypes > 0 ? "\uffdc" // show after shortcut items
+			: sortTypes == 0 ? "" : "\t"; // show before shortcut items
+		this.typesSortPrefix = sp && new Array(11).join(sp);
 
 		this.resetCounters();
 
