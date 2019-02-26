@@ -290,6 +290,7 @@ var handyClicksSets = {
 		var dirs = ["", "ascending", "descending", ""];
 		sortCol.setAttribute("sortDirection", dirs[dirs.lastIndexOf(dir) - 1]);
 		this.tView.cycleHeader(this.tree.columns[sortCol.id]);
+		this._log("ensureTreeSorted() -> " + sortCol.id.substr(13) + " -> " + (dir || "(unsorted)"));
 	},
 
 	/*** Actions pane ***/
