@@ -704,11 +704,15 @@ var handyClicksPrefSvc = {
 		label = label ? this.localize(label) + " " : "";
 		return label + "[" + this.removeCustomPrefix(type) + "]";
 	},
+	get locale() {
+		delete this.locale;
+		return this.locale = this.pu.get("locale") || this.ut.xcr.getSelectedLocale("global");
+	},
 	localize: function(data) {
 		if(!data)
 			return data;
 		// "String in english @ru: String in Russian @xx: ..."
-		var locale = this.ut.xcr.getSelectedLocale("global");
+		var locale = this.locale;
 		var locales = { __proto__: null };
 		var pos = 0;
 		data = data.replace(/ *@([a-z]{2,3}(?:-[A-Z]{2})?): *(?=\S)/g, function(sep, locale) {

@@ -17,6 +17,7 @@ pref("extensions.handyclicks.cacheCustomFunctions", true);
 // true  - call new Function() only once (and cache result), better performance
 // false - call new Function() each time, less memory usage
 pref("extensions.handyclicks.precompileCustomTypes", false);
+pref("extensions.handyclicks.locale", ""); // Override locale for custom functions
 
 pref("extensions.handyclicks.types.links.CSSEditor", true);
 pref("extensions.handyclicks.types.images.canvas", true);
