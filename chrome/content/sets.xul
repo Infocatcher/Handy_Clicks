@@ -138,6 +138,7 @@ preferences {
 							<menuitem type="checkbox" hc_pref="sets.rememberSearchQuery" label="&hc.sets.rememberSearchQuery;" />
 							<menuitem type="checkbox" hc_pref="sets.rememberScrollPosition" label="&hc.sets.rememberScrollPosition;" />
 							<menuitem type="checkbox" hc_pref="sets.rememberState" label="&hc.sets.rememberState;" />
+							<menuitem type="checkbox" hc_pref="sets.rememberSort" label="&hc.sets.rememberSort;" />
 						</menupopup>
 					</menu>
 					<menu label="&hc.sets.customTypes;">

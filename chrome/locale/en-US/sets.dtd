@@ -74,6 +74,7 @@
 <!ENTITY hc.sets.rememberSearchQuery "Search query">
 <!ENTITY hc.sets.rememberScrollPosition "Scroll position">
 <!ENTITY hc.sets.rememberState "Tree state">
+<!ENTITY hc.sets.rememberSort "Sort order">
 
 <!ENTITY hc.sets.customTypes "Custom types">
 <!ENTITY hc.sets.customTypesBefore "Before settings">

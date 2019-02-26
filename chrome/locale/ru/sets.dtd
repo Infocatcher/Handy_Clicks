@@ -74,6 +74,7 @@
 <!ENTITY hc.sets.rememberSearchQuery "Поисковый запрос">
 <!ENTITY hc.sets.rememberScrollPosition "Положение прокрутки">
 <!ENTITY hc.sets.rememberState "Состояние дерева">
+<!ENTITY hc.sets.rememberSort "Порядок сортировки">
 
 <!ENTITY hc.sets.customTypes "Добавленные типы">
 <!ENTITY hc.sets.customTypesBefore "Перед настройками">
