@@ -279,15 +279,17 @@ var handyClicksSets = {
 		});
 	},
 	ensureTreeSorted: function() {
-		var treeCol = this.tree.columns.getSortedColumn();
-		if(!treeCol)
+		//var treeCol = this.tree.columns.getSortedColumn();
+		var sortCol = this.$("hc-sets-tree-columns").getElementsByAttribute("sortActive", "true")[0] || null;
+		if(!sortCol)
 			return;
 		// Trick: set sore direction to previous state and invoke sorting
-		var col = treeCol.element;
-		var dir = col.getAttribute("sortDirection");
+		var dir = sortCol.getAttribute("sortDirection");
+		if(!dir && sortCol.hasAttribute("primary"))
+			return;
 		var dirs = ["", "ascending", "descending", ""];
-		col.setAttribute("sortDirection", dirs[dirs.lastIndexOf(dir) - 1]);
-		this.tView.cycleHeader(treeCol);
+		sortCol.setAttribute("sortDirection", dirs[dirs.lastIndexOf(dir) - 1]);
+		this.tView.cycleHeader(this.tree.columns[sortCol.id]);
 	},
 
 	/*** Actions pane ***/
