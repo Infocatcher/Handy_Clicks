@@ -1008,7 +1008,7 @@ var handyClicksSets = {
 			if( // Will ignore saved files, that will be unchanged
 				newObj.hasOwnProperty(key)
 				&& savedObj[key] == newObj[key]
-				&& !this.fileDataEquals(savedObj[key])
+				&& !this.fileDataEquals(this.ps.getSourcePath(savedObj[key]))
 			)
 				return false;
 		}
@@ -3818,7 +3818,7 @@ var handyClicksSets = {
 					this.$("hc-sets-tree-importFilesTip").style.filter = "contrast(1)";
 				}
 				this.delay(function() {
-					var equals = path in this._filesState ? this._filesState[path] : undefined;
+					var equals = this.fileDataEquals(path);
 					if(equals === undefined)
 						row.className = "hc-new", ++added;
 					else if(!equals) {
@@ -4013,8 +4013,7 @@ var handyClicksSets = {
 		var path = this.ps.getSourcePath(code);
 		return path && this.ju.getOwnProperty(this.ps.files, path, "data");
 	},
-	fileDataEquals: function(code) {
-		var path = this.ps.getSourcePath(code);
+	fileDataEquals: function(path) {
 		if(!path)
 			return true;
 		var fileData = this.ju.getOwnProperty(this.ps.files, path, "data");
