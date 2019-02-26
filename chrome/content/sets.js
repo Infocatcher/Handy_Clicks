@@ -104,6 +104,7 @@ var handyClicksSets = {
 	},
 	destroy: function(reloadFlag) {
 		this.closeImportEditors();
+		this.treeSort(true);
 		this.treeState(true);
 		this.treeScrollPos(true);
 		this.saveSearchQuery();
@@ -128,6 +129,7 @@ var handyClicksSets = {
 			sf.removeAttribute("hc_value");
 	},
 	startupUI: function() {
+		this.treeSort(false);
 		this.treeState(false);
 		this.treeScrollPos(false);
 		Array.prototype.forEach.call(
@@ -264,6 +266,31 @@ var handyClicksSets = {
 			tbo.ensureRowIsVisible(lvr);
 			tbo.ensureRowIsVisible(fvr);
 		}, this);
+	},
+	treeSort: function(saveFlag) {
+		var treeCols = this.tree.columns;
+		if(saveFlag) {
+			var rememberSort = this.pu.get("sets.rememberSort");
+			Array.prototype.forEach.call(treeCols, function(treeCol) {
+				var col = treeCol.element;
+				if(!rememberSort) {
+					col.removeAttribute("sortDirection");
+					col.removeAttribute("sortActive");
+				}
+				document.persist(col.id, "sortDirection");
+				document.persist(col.id, "sortActive");
+			});
+			return;
+		}
+		var treeCol = treeCols.getSortedColumn();
+		if(!treeCol)
+			return;
+		// Trick: set sore direction to previous state and invoke sorting
+		var col = treeCol.element;
+		var dir = col.getAttribute("sortDirection");
+		var dirs = ["", "ascending", "descending", ""];
+		col.setAttribute("sortDirection", dirs[dirs.lastIndexOf(dir) - 1]);
+		this.tView.cycleHeader(treeCol);
 	},
 
 	/*** Actions pane ***/

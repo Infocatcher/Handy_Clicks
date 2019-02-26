@@ -115,6 +115,7 @@ pref("extensions.handyclicks.sets.closeTreeViewMenu", true);
 pref("extensions.handyclicks.sets.rememberSearchQuery", true);
 pref("extensions.handyclicks.sets.rememberScrollPosition", true);
 pref("extensions.handyclicks.sets.rememberState", true);
+pref("extensions.handyclicks.sets.rememberSort", true);
 pref("extensions.handyclicks.sets.overrideInstantApply", -1);
 // Override browser.preferences.instantApply behavior:
 // -1 - don't change (use browser defaults)
