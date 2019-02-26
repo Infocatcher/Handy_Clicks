@@ -423,9 +423,6 @@ var handyClicksPrefSvc = {
 		expandCode._path = path;
 		return data;
 	},
-	isValidFileData: function(fo) {
-		return this.ju.isObject(fo) && !!fo.data;
-	},
 
 	_destructors: [],
 	_destructorContext: null,

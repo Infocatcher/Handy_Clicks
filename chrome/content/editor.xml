@@ -546,7 +546,7 @@
 					var file;
 					var path = ut.ps.getSourcePath(this.value);
 					var files = ut.ps.files;
-					if(ut.ps.otherSrc && path in files && ut.ps.isValidFileData(files[path])) {
+					if(ut.ps.otherSrc && path in files) {
 						var fileData = files[path].data;
 						var fileTime = files[path].lastModified;
 					}

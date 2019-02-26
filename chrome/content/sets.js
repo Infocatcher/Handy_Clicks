@@ -945,8 +945,7 @@ var handyClicksSets = {
 		if(path) {
 			getActionCode._hasLinkedFile = true;
 			var hasData = getActionCode._hasFileData = this._import
-				&& path in this.ps.files
-				&& this.ps.isValidFileData(this.ps.files[path]);
+				&& path in this.ps.files;
 			return this.getLocalized("customFile" + (hasData ? "WithData" : "")) + " " + path;
 		}
 		return this.getLocalized("customFunction")
@@ -3933,10 +3932,6 @@ var handyClicksSets = {
 		var files = this.ps.files;
 		for(var path in files) if(files.hasOwnProperty(path)) {
 			var fo = files[path];
-			if(!this.ps.isValidFileData(fo)) {
-				this.ut._warn("Import skipped, invalid data for " + path);
-				continue;
-			}
 			var file = this.ut.getLocalFile(path);
 			if(!file) {
 				this.ut._warn("Import skipped, invalid path: " + path);
@@ -4016,12 +4011,12 @@ var handyClicksSets = {
 	fileDataEquals: function(path) {
 		if(!path)
 			return true;
-		var fileData = this.ju.getOwnProperty(this.ps.files, path, "data");
-		if(!fileData) // File will be unchanged
-			return true;
 		var fs = this._filesState;
 		if(path in fs)
 			return fs[path];
+		var fileData = this.ju.getOwnProperty(this.ps.files, path, "data");
+		if(!fileData) // File will be unchanged
+			return true;
 		var file = this.ut.getLocalFile(path);
 		if(!file.exists())
 			return fs[path] = undefined;

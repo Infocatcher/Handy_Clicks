@@ -326,12 +326,19 @@ var handyClicksPrefSvcExt = {
 				linkedPaths[path] = true;
 		}, this);
 		for(var path in files) if(files.hasOwnProperty(path)) {
+			if(!this.isValidFileData(files[path])) {
+				this.ut._warn("[Import] Ignore invalid or empty file data: " + path);
+				delete files[path];
+			}
 			if(!(path in linkedPaths)) {
 				this.ut._warn("[Import] Ignore not linked path in files object: " + path);
 				delete files[path];
 			}
 		}
 		return files;
+	},
+	isValidFileData: function(fo) {
+		return this.ju.isObject(fo) && !!fo.data;
 	},
 	forEachCode: function(sets, callback, context) {
 		var getCode = this.ju.bind(function(o, key) {
