@@ -104,9 +104,9 @@ var handyClicksSets = {
 	},
 	destroy: function(reloadFlag) {
 		this.closeImportEditors();
-		this.treeSort(true);
 		this.treeState(true);
 		this.treeScrollPos(true);
+		this.saveTreeSortOrder();
 		this.saveSearchQuery();
 		reloadFlag && this.setImportStatus(false);
 		this.rowsCache = this._savedPrefs = this._savedTypes = null;
@@ -129,7 +129,6 @@ var handyClicksSets = {
 			sf.removeAttribute("hc_value");
 	},
 	startupUI: function() {
-		this.treeSort(false);
 		this.treeState(false);
 		this.treeScrollPos(false);
 		Array.prototype.forEach.call(
@@ -267,22 +266,20 @@ var handyClicksSets = {
 			tbo.ensureRowIsVisible(fvr);
 		}, this);
 	},
-	treeSort: function(saveFlag) {
-		var treeCols = this.tree.columns;
-		if(saveFlag) {
-			var rememberSort = this.pu.get("sets.rememberSort");
-			Array.prototype.forEach.call(treeCols, function(treeCol) {
-				var col = treeCol.element;
-				if(!rememberSort) {
-					col.removeAttribute("sortDirection");
-					col.removeAttribute("sortActive");
-				}
-				document.persist(col.id, "sortDirection");
-				document.persist(col.id, "sortActive");
-			});
-			return;
-		}
-		var treeCol = treeCols.getSortedColumn();
+	saveTreeSortOrder: function() {
+		var rememberSort = this.pu.get("sets.rememberSort");
+		Array.prototype.forEach.call(this.tree.columns, function(treeCol) {
+			var col = treeCol.element;
+			if(!rememberSort) {
+				col.removeAttribute("sortDirection");
+				col.removeAttribute("sortActive");
+			}
+			document.persist(col.id, "sortDirection");
+			document.persist(col.id, "sortActive");
+		});
+	},
+	ensureTreeSorted: function() {
+		var treeCol = this.tree.columns.getSortedColumn();
 		if(!treeCol)
 			return;
 		// Trick: set sore direction to previous state and invoke sorting
@@ -364,6 +361,7 @@ var handyClicksSets = {
 		this.markOpenedEditors(true);
 		delete this.eltsCache;
 		this._hasFilter = false;
+		this.ensureTreeSorted();
 
 		this.timer("drawTree()");
 		!dontSearch && this.searchInSetsTree(true);
