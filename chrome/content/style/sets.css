@@ -67,6 +67,13 @@ radio[pane="hc-sets-pane-funcs"] {
 	opacity: 0.5;
 }
 
+#hc-sets-tree-sortMenu menuitem[type="radio"] hbox[anonid="accel"] {
+	min-width: 3em;
+	font-size: 0.75em;
+	-moz-margin-start: 3px;
+	opacity: 0.6;
+}
+
 /* Tree style */
 treecol[sortActive="true"]:not([sortDirection]):not([primary]) > .treecol-sortdirection,
 treecol[sortActive="true"][sortDirection=""]:not([primary]) > .treecol-sortdirection {
