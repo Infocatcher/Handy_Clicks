@@ -4325,14 +4325,20 @@ var handyClicksSetsSearcher = {
 	_unwrapTimeout: 0,
 	_unwrapDelay: 700,
 	set wrapped(val) {
-		clearTimeout(this._unwrapTimeout);
-		this.searchField.setAttribute("hc_searchWrapped", val);
-		this.tree.setAttribute("hc_searchWrapped", val);
+		if(this.searchField.hasAttribute("hc_searchWrapped") == val)
+			return;
+		if(this._unwrapTimeout) {
+			clearTimeout(this._unwrapTimeout);
+			this._unwrapTimeout = 0;
+		}
+		this.attribute(this.searchField, "hc_searchWrapped", val);
+		this.attribute(this.tree, "hc_searchWrapped", val);
 		if(!val)
 			return;
 		this._unwrapTimeout = this.delay(function() {
-			this.searchField.setAttribute("hc_searchWrapped", "false");
-			this.tree.setAttribute("hc_searchWrapped", "false");
+			this._unwrapTimeout = 0;
+			this.searchField.removeAttribute("hc_searchWrapped");
+			this.tree.removeAttribute("hc_searchWrapped");
 		}, this, this._unwrapDelay);
 	}
 };

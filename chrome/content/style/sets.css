@@ -46,7 +46,7 @@ radio[pane="hc-sets-pane-funcs"] {
 	background-color: #f66;
 	color: #fff;
 }
-#hc-sets-tree-searchField[hc_searchWrapped="true"], #hc-sets-tree-searchField[hc_searchWrapped="true"] > * {
+#hc-sets-tree-searchField[hc_searchWrapped], #hc-sets-tree-searchField[hc_searchWrapped] > * {
 	background-color: #e4ffe4;
 	color: black;
 }
@@ -164,13 +164,13 @@ tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_buggy) {
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_search) {
 	color: #00e !important;
 }
-tree[hc_colored="true"][hc_searchWrapped="true"] treechildren::-moz-tree-cell-text(hc_search, current) {
+tree[hc_colored="true"][hc_searchWrapped] treechildren::-moz-tree-cell-text(hc_search, current) {
 	border-bottom: 1px dotted #00e;
 }
 tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_search) {
 	border-bottom: 1px dotted graytext;
 }
-tree[hc_colored="false"][hc_searchWrapped="true"] treechildren::-moz-tree-cell-text(hc_search, current) {
+tree[hc_colored="false"][hc_searchWrapped] treechildren::-moz-tree-cell-text(hc_search, current) {
 	border-bottom-style: dashed;
 }
 tree[hc_colored="true"][hc_hasOverlayBackground="false"] treechildren::-moz-tree-row(hover) {
