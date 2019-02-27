@@ -2925,15 +2925,18 @@ var handyClicksSets = {
 					this.showExternalEditorFile();
 			break;
 			case "keypress":
-				if(
-					e.charCode
+				var chr = e.charCode
 					&& !e.ctrlKey && !e.altKey && !e.metaKey
-					&& String.fromCharCode(e.charCode).toLowerCase() == "c"
-				) {
+					&& String.fromCharCode(e.charCode).toLowerCase();
+				if(chr) {
 					var ee = this.ee;
-					var val = ee.value;
-					if(
-						val.toLowerCase() == "s"
+					var val = ee.value.toLowerCase();
+					var sp = "scratchpad";
+					if(val == sp && ee.inputField.selectionStart == val.length)
+						e.preventDefault(); // Don't break autocompleted string
+					else if(
+						val && this.ju.startsWith(sp, val)
+						&& chr == sp.charAt(val.length)
 						&& ee.inputField.selectionStart == val.length
 					) {
 						e.preventDefault();
@@ -2941,8 +2944,8 @@ var handyClicksSets = {
 						this.eeArgs.value = "";
 						this.fireChange(ee);
 						this.fireChange(this.eeArgs);
-						break;
 					}
+					break;
 				}
 				if(e.keyCode != e.DOM_VK_RETURN)
 					break;
