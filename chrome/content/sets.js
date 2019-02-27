@@ -1904,8 +1904,9 @@ var handyClicksSets = {
 		this.pu.set("sets.treeDrawMode", dm); // => prefChanged()
 	},
 	initSortMenu: function(mp) {
+		var cols = this.$("hc-sets-tree-columns");
 		mp.hasChildNodes() || Array.prototype.forEach.call(
-			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
+			cols.getElementsByTagName("treecol"),
 			function(col) {
 				var mi = this.ut.createElement("menuitem", {
 					label: col.getAttribute("label"),
@@ -1917,11 +1918,13 @@ var handyClicksSets = {
 			},
 			this
 		);
+		var sortCol = cols.getElementsByAttribute("sortActive", "true")[0]
+			|| cols.getElementsByAttribute("primary", "true")[0];
 		Array.prototype.forEach.call(
 			mp.getElementsByAttribute("type", "radio"),
 			function(mi) {
 				var col = mi.__column;
-				mi.setAttribute("checked", col.getAttribute("sortActive") == "true");
+				mi.setAttribute("checked", col == sortCol);
 				var sd = col.getAttribute("sortDirection");
 				var dir = sd == "ascending" ? "\u25b2"
 					: sd == "descending" ? "\u25bc" : "";
