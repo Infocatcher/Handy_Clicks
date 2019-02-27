@@ -2533,8 +2533,6 @@ var handyClicksSets = {
 			return _this.pu.getPref(pName, undefined, defaultBranch) != tb.value;
 		}
 		this.$("hc-sets-action-reset").setAttribute("disabled", !prefChanged(prefName, tb));
-		//ml.getElementsByAttribute("value", 2 /*ACTION_POPUP*/)[0]
-		//	.setAttribute("disabled", prefName == "ui.actionMenuLeftClick");
 		const ns = "ui.action";
 		var hasChanged = this.pu.prefSvc.getBranch(this.pu.prefNS + ns)
 			.getChildList("", {})
@@ -2644,7 +2642,6 @@ var handyClicksSets = {
 			this.pe.saveSettingsObjectsAsync(applyFlag, callback, context);
 		else
 			this.pe.saveSettingsObjects(applyFlag);
-		//this.setDialogButtons();
 		return true;
 	},
 	savePrefpanes: function() {
@@ -2655,8 +2652,6 @@ var handyClicksSets = {
 			}
 		);
 		this.pu.savePrefFile();
-		//this.prefsSaved();
-		//this.setDialogButtons();
 	},
 	reloadPrefpanes: function() {
 		Array.prototype.forEach.call(
@@ -2975,8 +2970,6 @@ var handyClicksSets = {
 		return true;
 	},
 	checkImport: function(isImport) {
-		//return !this.ps.otherSrc
-		//	|| this.ut.confirm(this.getLocalized("title"), this.getLocalized("importIncomplete"));
 		if(!this.ps.otherSrc)
 			return true;
 		var askPref = "sets.incompleteImportWarning";
@@ -3022,11 +3015,10 @@ var handyClicksSets = {
 				if(elts.length)
 					ps.value = ps.getElementValue(elts[0]);
 
-				return ps.value != ps.valueFromPreferences; // May be string and number on Firefox 3.0
+				return ps.value != ps.valueFromPreferences; // May be string and number in Firefox 3.0
 			},
 			this
-		)
-		|| this.disallowMousemoveButtons != this.pu.get("disallowMousemoveButtons");
+		) || this.disallowMousemoveButtons != this.pu.get("disallowMousemoveButtons");
 	},
 	get hasUnsaved() {
 		return this.instantApply
@@ -3043,10 +3035,6 @@ var handyClicksSets = {
 		if(!("hasAttribute" in tar))
 			return;
 		var ln = tar.localName;
-		//if(ln == "prefwindow") {
-		//	this.focusSearch(true); //?
-		//	return;
-		//}
 		if(tar.localName == "menuitem")
 			tar = tar.parentNode.parentNode;
 		if(tar.hasAttribute("hc_requiredFor"))
@@ -3063,7 +3051,6 @@ var handyClicksSets = {
 		if(this.instantApply)
 			this.saveSettings(true);
 		else
-			//this.delay(this.setDialogButtons, this);
 			this.setDialogButtons();
 	},
 	updateAllDependencies: function() {
@@ -3176,7 +3163,6 @@ var handyClicksSets = {
 	reloadSettings: function() {
 		this.reloadPrefpanes();
 		this.initPrefs();
-		//this.prefsSaved();
 		this.updateAllDependencies();
 
 		this.reloadTree();
@@ -3349,7 +3335,6 @@ var handyClicksSets = {
 		}
 	},
 	extractPrefs: function(extractShortcuts, _its) {
-		//~ todo: with "extractShortcuts == false" user see empty tree on import
 		var types = this.ps.types, newTypes = {};
 		var prefs = this.ps.prefs, newPrefs = {};
 
@@ -3456,8 +3441,6 @@ var handyClicksSets = {
 			this._savedTypes = this.ps.types;
 		}
 		this.ps.loadSettings(pSrc);
-		//this.setDialogButtons();
-		//this.pe.reloadSettings(false);
 		if(this.ps._loadStatus)
 			return;
 		this._filesState = { __proto__: null };
