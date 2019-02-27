@@ -295,8 +295,8 @@ var handyClicksSets = {
 		this.tView.cycleHeader(this.tree.columns[sortCol.id]);
 		this._log("ensureTreeSorted() -> " + sortCol.id.substr(13) + " -> " + (dir || "(unsorted)"));
 	},
-	sortTree: function(col) {
-		this.tView.cycleHeader(this.tree.columns[col.id]);
+	sortTree: function(colId) {
+		this.tView.cycleHeader(this.tree.columns[colId]);
 	},
 
 	/*** Actions pane ***/
@@ -1911,9 +1911,9 @@ var handyClicksSets = {
 				var mi = this.ut.createElement("menuitem", {
 					label: col.getAttribute("label"),
 					type: "radio",
-					oncommand: "handyClicksSets.sortTree(this.__column);"
+					hc_column: col.id,
+					oncommand: "handyClicksSets.sortTree(this.getAttribute('hc_column'));"
 				});
-				mi.__column = col;
 				mp.appendChild(mi);
 			},
 			this
@@ -1923,13 +1923,14 @@ var handyClicksSets = {
 		Array.prototype.forEach.call(
 			mp.getElementsByAttribute("type", "radio"),
 			function(mi) {
-				var col = mi.__column;
+				var col = this.$(mi.getAttribute("hc_column"));
 				mi.setAttribute("checked", col == sortCol);
 				var sd = col.getAttribute("sortDirection");
 				var dir = sd == "ascending" ? "\u25b2"
 					: sd == "descending" ? "\u25bc" : "";
 				mi.setAttribute("acceltext", dir);
-			}
+			},
+			this
 		);
 	},
 
