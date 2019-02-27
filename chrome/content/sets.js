@@ -294,11 +294,6 @@ var handyClicksSets = {
 	},
 
 	/*** Actions pane ***/
-	forceUpdTree: function(pSrc) {
-		this.ps.loadSettings(pSrc);
-		this.setDialogButtons();
-		this.updTree();
-	},
 	_treeBatchMode: false,
 	treeBatch: function(func, context, args) {
 		if(!this._treeBatchMode) {
@@ -559,6 +554,12 @@ var handyClicksSets = {
 
 		saveClosed && this.restoreCollapsed(collapsedRows);
 		saveSel && this.restoreSelection(selectedRows);
+	},
+	reloadTree: function() {
+		this._filesState = { __proto__: null };
+		this.ps.loadSettings(this._importSrc);
+		this.updTree();
+		this._importSrc && this.pe.reloadSettings();
 	},
 	getCollapsed: function() {
 		var collapsedRows = { __proto__: null };
@@ -3176,14 +3177,11 @@ var handyClicksSets = {
 		this.reloadPrefpanes();
 		this.initPrefs();
 		//this.prefsSaved();
-
 		this.updateAllDependencies();
-		this._filesState = { __proto__: null };
-		this.forceUpdTree(this._importSrc);
-		this.ps.otherSrc && this.pe.reloadSettings();
 
-		//this.applyButton.disabled = true;
+		this.reloadTree();
 		this.checkTreeSaved();
+
 		this.setDialogButtons();
 	},
 
