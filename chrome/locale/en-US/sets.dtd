@@ -70,6 +70,8 @@
 <!ENTITY hc.sets.drawModeInverseCompact "Inverse (compact)">
 <!ENTITY hc.sets.drawModeInverseInline "Inverse (inline)">
 
+<!ENTITY hc.sets.sortBy "Sort by">
+
 <!ENTITY hc.sets.remember "Remember after closing">
 <!ENTITY hc.sets.rememberSearchQuery "Search query">
 <!ENTITY hc.sets.rememberScrollPosition "Scroll position">

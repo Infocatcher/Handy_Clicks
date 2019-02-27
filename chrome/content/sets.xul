@@ -133,6 +133,10 @@ preferences {
 					<menuitem type="radio" hc_drawMode="4" key="hc-sets-key-treeDrawMode-inverseCompact" label="&hc.sets.drawModeInverseCompact;" />
 					<menuitem type="radio" hc_drawMode="5" key="hc-sets-key-treeDrawMode-inverseInline"  label="&hc.sets.drawModeInverseInline;" />
 					<menuseparator />
+					<menu label="&hc.sets.sortBy;">
+						<menupopup onpopupshowing="handyClicksSets.initSortMenu(this);"
+							oncommand="handyClicksSets.initSortMenu(this);" />
+					</menu>
 					<menu label="&hc.sets.remember;">
 						<menupopup>
 							<menuitem type="checkbox" hc_pref="sets.rememberSearchQuery" label="&hc.sets.rememberSearchQuery;" />

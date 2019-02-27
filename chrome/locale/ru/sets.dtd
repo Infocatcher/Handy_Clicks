@@ -70,6 +70,8 @@
 <!ENTITY hc.sets.drawModeInverseCompact "Инвертированный (компактный)">
 <!ENTITY hc.sets.drawModeInverseInline "Инвертированный (линейный)">
 
+<!ENTITY hc.sets.sortBy "Сортировка">
+
 <!ENTITY hc.sets.remember "Запоминать после закрытия">
 <!ENTITY hc.sets.rememberSearchQuery "Поисковый запрос">
 <!ENTITY hc.sets.rememberScrollPosition "Положение прокрутки">

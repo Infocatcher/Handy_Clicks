@@ -295,6 +295,9 @@ var handyClicksSets = {
 		this.tView.cycleHeader(this.tree.columns[sortCol.id]);
 		this._log("ensureTreeSorted() -> " + sortCol.id.substr(13) + " -> " + (dir || "(unsorted)"));
 	},
+	sortTree: function(col) {
+		this.tView.cycleHeader(this.tree.columns[col.id]);
+	},
 
 	/*** Actions pane ***/
 	_treeBatchMode: false,
@@ -1899,6 +1902,32 @@ var handyClicksSets = {
 	setDrawMode: function(dm) {
 		// <preference instantApply="true" ... /> is bad on slow devices (it saves prefs.js file)
 		this.pu.set("sets.treeDrawMode", dm); // => prefChanged()
+	},
+	initSortMenu: function(mp) {
+		mp.hasChildNodes() || Array.prototype.forEach.call(
+			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
+			function(col) {
+				var mi = this.ut.createElement("menuitem", {
+					label: col.getAttribute("label"),
+					type: "radio",
+					oncommand: "handyClicksSets.sortTree(this.__column);"
+				});
+				mi.__column = col;
+				mp.appendChild(mi);
+			},
+			this
+		);
+		Array.prototype.forEach.call(
+			mp.getElementsByAttribute("type", "radio"),
+			function(mi) {
+				var col = mi.__column;
+				mi.setAttribute("checked", col.getAttribute("sortActive") == "true");
+				var sd = col.getAttribute("sortDirection");
+				var dir = sd == "ascending" ? "\u25b2"
+					: sd == "descending" ? "\u25bc" : "";
+				mi.setAttribute("acceltext", dir);
+			}
+		);
 	},
 
 	get treeContainers() {
