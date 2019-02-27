@@ -46,7 +46,7 @@ radio[pane="hc-sets-pane-funcs"] {
 	background-color: #f66;
 	color: #fff;
 }
-#hc-sets-tree-searchField[hc_wrapped="true"], #hc-sets-tree-searchField[hc_wrapped="true"] > * {
+#hc-sets-tree-searchField[hc_searchWrapped="true"], #hc-sets-tree-searchField[hc_searchWrapped="true"] > * {
 	background-color: #e4ffe4;
 	color: black;
 }
@@ -162,11 +162,16 @@ tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_buggy) {
 	opacity: 0.48;
 }
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_search) {
-	/*background-color: #e7e3ff;*/
 	color: #00e !important;
+}
+tree[hc_colored="true"][hc_searchWrapped="true"] treechildren::-moz-tree-cell-text(hc_search, current) {
+	border-bottom: 1px dotted #00e;
 }
 tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_search) {
 	border-bottom: 1px dotted graytext;
+}
+tree[hc_colored="false"][hc_searchWrapped="true"] treechildren::-moz-tree-cell-text(hc_search, current) {
+	border-bottom-style: dashed;
 }
 tree[hc_colored="true"][hc_hasOverlayBackground="false"] treechildren::-moz-tree-row(hover) {
 	border: 1px dotted black;

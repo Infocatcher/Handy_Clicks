@@ -4326,11 +4326,13 @@ var handyClicksSetsSearcher = {
 	_unwrapDelay: 700,
 	set wrapped(val) {
 		clearTimeout(this._unwrapTimeout);
-		this.searchField.setAttribute("hc_wrapped", val);
+		this.searchField.setAttribute("hc_searchWrapped", val);
+		this.tree.setAttribute("hc_searchWrapped", val);
 		if(!val)
 			return;
 		this._unwrapTimeout = this.delay(function() {
-			this.searchField.setAttribute("hc_wrapped", "false");
+			this.searchField.setAttribute("hc_searchWrapped", "false");
+			this.tree.setAttribute("hc_searchWrapped", "false");
 		}, this, this._unwrapDelay);
 	}
 };
