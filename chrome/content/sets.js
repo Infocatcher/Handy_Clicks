@@ -1023,9 +1023,12 @@ var handyClicksSets = {
 	setNodeProperties: function(node, propsObj) {
 		// Optimize: use prefixes and add space after each property
 		var propsVal = node.getAttribute("properties") || "";
+		var noProps = !propsVal;
 		var changed = false;
 		for(var p in propsObj) if(propsObj.hasOwnProperty(p)) {
 			var add = !!propsObj[p];
+			if(!add && noProps)
+				continue;
 			p += " ";
 			var indx = propsVal.indexOf(p);
 			if(add) {
