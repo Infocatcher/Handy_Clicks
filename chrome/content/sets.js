@@ -20,7 +20,10 @@ var handyClicksSets = {
 		if(importArgs) // NS_ERROR_NOT_AVAILABLE: Cannot call openModalWindow on a hidden window
 			this.delay(this.importSets, this, 0, importArgs);
 		else {
-			this[reloadFlag ? "updTree" : "drawTree"]();
+			if(reloadFlag)
+				this.updTree();
+			else
+				this.drawTree(false, this.pu.get("sets.rememberState"));
 			!reloadFlag && this.focusSearch(true);
 		}
 
@@ -324,7 +327,7 @@ var handyClicksSets = {
 	drawTree: function() {
 		return this.treeBatch(this._drawTree, this, arguments);
 	},
-	_drawTree: function(dontSearch) {
+	_drawTree: function(dontSearch, saveClosed) {
 		this.timer("drawTree()");
 		this.eltsCache = { __proto__: null };
 		this.rowsCache = { __proto__: null };
@@ -334,7 +337,8 @@ var handyClicksSets = {
 		this._daAfter = daForceDis
 			? this.getLocalized("disabled")
 			: this.getLocalized("after").replace("%t", daTime);
-		this._daExpand = this.pu.get("sets.treeExpandDelayedAction");
+		this._daExpand = saveClosed // Will restore collapsed/expanded state
+			|| this.pu.get("sets.treeExpandDelayedAction");
 		this._localizeArgs = this.pu.get("sets.localizeArguments");
 		this._maxCodeLength = this.pu.get("sets.codeLengthLimit");
 		this._preserveLines = this.pu.get("sets.codeLengthLimit.preserveLines");
@@ -531,9 +535,9 @@ var handyClicksSets = {
 	redrawTree: function() {
 		return this.treeBatch(this._redrawTree, this, arguments);
 	},
-	_redrawTree: function(dontSearch) {
+	_redrawTree: function(dontSearch, saveClosed) {
 		this.tBody.textContent = "";
-		this._drawTree(dontSearch);
+		this._drawTree(dontSearch, saveClosed);
 		this.setDialogButtons();
 	},
 	updTree: function() {
@@ -548,7 +552,7 @@ var handyClicksSets = {
 		var collapsedRows = saveClosed && this.getCollapsed();
 		var selectedRows = saveSel && this.getSelected();
 
-		this._redrawTree();
+		this._redrawTree(false, saveClosed);
 		if(!this.tView.rowCount)
 			return;
 
