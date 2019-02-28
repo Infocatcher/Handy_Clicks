@@ -307,10 +307,14 @@ var handyClicksSets = {
 			col.hasAttribute("primary")
 			&& col.getAttribute("sortDirection") == "descending" // Will be initial sort order
 			&& this.drawInline
-		)
-			dm = this.drawMode == 2 ? 0 : 3; // Restore normal/inverse mode
-		else if(!this.drawInline)
+		) {
+			dm = "drawModeOrig" in this ? this.drawModeOrig
+				: this.drawMode == 2 ? 0 : 3; // Restore normal/inverse mode
+		}
+		else if(!this.drawInline) {
+			this.drawModeOrig = this.drawMode;
 			dm = this.drawMode < 2 ? 2 : 5;
+		}
 		if(dm !== undefined) {
 			this.setDrawMode(dm);
 			this.initViewMenu(this.$("hc-sets-tree-viewPopup"));
