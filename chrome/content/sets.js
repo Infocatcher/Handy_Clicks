@@ -288,12 +288,16 @@ var handyClicksSets = {
 	ensureTreeSorted: function() {
 		//var treeCol = this.tree.columns.getSortedColumn();
 		var sortCol = this.$("hc-sets-tree-columns").getElementsByAttribute("sortActive", "true")[0] || null;
-		if(!sortCol)
+		if(!sortCol) {
+			this.ensureInitialDrawMode();
 			return;
+		}
 		// Trick: set sore direction to previous state and invoke sorting
 		var dir = sortCol.getAttribute("sortDirection");
-		if(!dir && sortCol.hasAttribute("primary"))
+		if(!dir && sortCol.hasAttribute("primary")) {
+			this.ensureInitialDrawMode();
 			return;
+		}
 		var dirs = ["", "ascending", "descending", ""];
 		sortCol.setAttribute("sortDirection", dirs[dirs.lastIndexOf(dir) - 1]);
 		this.tView.cycleHeader(this.tree.columns[sortCol.id]);
@@ -308,11 +312,10 @@ var handyClicksSets = {
 			&& col.getAttribute("sortDirection") == "descending" // Will be initial sort order
 			&& this.drawInline
 		) {
-			dm = "drawModeOrig" in this ? this.drawModeOrig
+			dm = "drawModeInitial" in this ? this.drawModeInitial
 				: this.modeToTree();
 		}
 		else if(!this.drawInline) {
-			this.drawModeOrig = this.drawMode;
 			dm = this.modeToInline();
 		}
 		if(dm !== undefined) {
@@ -1909,7 +1912,7 @@ var handyClicksSets = {
 	viewMenuCommand: function(e, popup) {
 		var mi = e.target;
 		if(mi.hasAttribute("hc_drawMode"))
-			this.setDrawMode(+mi.getAttribute("hc_drawMode"));
+			this.setDrawMode(+mi.getAttribute("hc_drawMode"), true);
 		if(mi.hasAttribute("hc_sortTypes"))
 			this.pu.set("sets.treeSortCustomTypes", +mi.getAttribute("hc_sortTypes"));
 		else if(mi.hasAttribute("hc_pref")) {
@@ -1946,9 +1949,15 @@ var handyClicksSets = {
 		else
 			this.initViewMenu(popup);
 	},
-	setDrawMode: function(dm) {
+	setDrawMode: function(dm, changedByUser) {
 		// <preference instantApply="true" ... /> is bad on slow devices (it saves prefs.js file)
 		this.pu.set("sets.treeDrawMode", dm); // => prefChanged()
+		if(changedByUser)
+			this.drawModeInitial = dm;
+	},
+	ensureInitialDrawMode: function() {
+		if(!("drawModeInitial" in this))
+			this.drawModeInitial = this.drawMode;
 	},
 	initSortMenu: function(mp) {
 		this.createSortMenu(mp);
