@@ -95,6 +95,7 @@ var handyClicksSets = {
 
 		window.addEventListener("mouseover", this, true);
 		document.addEventListener(this.su.dropEvent, this, false);
+		this.$("hc-sets-tree-columns").addEventListener("click", this, true);
 	},
 	initShortcuts: function() {
 		var tr = this.tree = this.$("hc-sets-tree");
@@ -117,6 +118,7 @@ var handyClicksSets = {
 
 		window.removeEventListener("mouseover", this, true);
 		document.removeEventListener(this.su.dropEvent, this, false);
+		this.$("hc-sets-tree-columns").removeEventListener("click", this, true);
 	},
 	restoreSearchQuery: function() {
 		if(!this.pu.get("sets.rememberSearchQuery"))
@@ -197,6 +199,8 @@ var handyClicksSets = {
 			this.openMenu(e);
 		else if(e.type == this.su.dropEvent)
 			this.dataChanged(e, true);
+		else if(e.type == "click")
+			this.treeColumnsClick(e);
 	},
 	setAutocompletePlural: function(tb) {
 		if(!tb)
@@ -295,7 +299,14 @@ var handyClicksSets = {
 		this.tView.cycleHeader(this.tree.columns[sortCol.id]);
 		this._log("ensureTreeSorted() -> " + sortCol.id.substr(13) + " -> " + (dir || "(unsorted)"));
 	},
+	ensureTreeDrawMode: function() {
+		if(!this.drawInline && this.pu.get("sets.treeSortAutoInlineDrawMode")) {
+			this.setDrawMode(this.drawMode < 2 ? 2 : 5);
+			this.initViewMenu(this.$("hc-sets-tree-viewPopup"));
+		}
+	},
 	sortTree: function(colId) {
+		this.ensureTreeDrawMode();
 		this.tView.cycleHeader(this.tree.columns[colId]);
 	},
 
@@ -2039,8 +2050,15 @@ var handyClicksSets = {
 		}
 	},
 
-	treeHeaderClick: function(e) {
-		if(e.button == 0 && !this.hasModifier(e)) // Left-click to sort
+	treeColumnsClick: function(e) {
+		var col = e.target;
+		if(col.localName != "treecol")
+			return;
+		if(e.button == 0 && !this.hasModifier(e)) { // Left-click to sort
+			this.ensureTreeDrawMode();
+			return;
+		}
+		if(!col.hasAttribute("primary"))
 			return;
 		this.ut.stopEvent(e);
 		if(e.shiftKey || e.altKey || e.metaKey)

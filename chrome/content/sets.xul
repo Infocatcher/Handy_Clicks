@@ -123,7 +123,7 @@ preferences {
 				</menupopup>
 			</button>
 			<button id="hc-sets-tree-viewMenu" type="menu" label="&hc.sets.viewMenu;" accesskey="&hc.sets.viewMenuAccesskey;">
-				<menupopup onpopupshowing="handyClicksSets.initViewMenu(this);"
+				<menupopup id="hc-sets-tree-viewPopup" onpopupshowing="handyClicksSets.initViewMenu(this);"
 					oncommand="event.stopPropagation(); handyClicksSets.viewMenuCommand(event, this);"
 					onclick="handyClicksSets.viewMenuClick(event, this);">
 					<menuitem type="radio" hc_drawMode="0" key="hc-sets-key-treeDrawMode-normal"         label="&hc.sets.drawModeNormal;" />
@@ -170,8 +170,7 @@ preferences {
 			onselect="handyClicksSets.updTreeButtons();">
 			<treecols id="hc-sets-tree-columns">
 				<treecol id="hc-sets-tree-columnShortcutAndTarget" sort="hc_sortData0" flex="1" primary="true" persist="width ordinal"
-					label="&hc.sets.columnShortcutAndTarget;"
-					onclick="handyClicksSets.treeHeaderClick(event);" />
+					label="&hc.sets.columnShortcutAndTarget;" />
 				<splitter class="tree-splitter" />
 				<treecol id="hc-sets-tree-columnEvent" sort="hc_sortData1" flex="1" label="&hc.sets.columnEvent;" persist="hidden width ordinal" />
 				<splitter class="tree-splitter" />

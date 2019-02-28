@@ -109,6 +109,7 @@ pref("extensions.handyclicks.sets.dateFormat", "_%Y-%m-%d_%H-%M"); // String for
 pref("extensions.handyclicks.sets.treeDrawMode", 0);
 pref("extensions.handyclicks.sets.treeExpandDelayedAction", true);
 pref("extensions.handyclicks.sets.treeSortCustomTypes", 1); // -1 - before all, 0 - in sort order, 1 - after all
+pref("extensions.handyclicks.sets.treeSortAutoInlineDrawMode", true);
 pref("extensions.handyclicks.sets.localizeArguments", true);
 pref("extensions.handyclicks.sets.codeLengthLimit", 1000); // Crop too long custom codes to improve performance
 pref("extensions.handyclicks.sets.codeLengthLimit.preserveLines", 100); // Max additional chars to show entire line
