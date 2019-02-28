@@ -1930,6 +1930,10 @@ var handyClicksSets = {
 				var dir = sd == "ascending" ? "\u25b2"
 					: sd == "descending" ? "\u25bc" : "";
 				mi.setAttribute("acceltext", dir);
+				setTimeout(function() { // Hack for Firefox 3.6 and older
+					var accel = document.getAnonymousElementByAttribute(mi, "class", "menu-iconic-accel");
+					accel.value = dir;
+				}, 0);
 			},
 			this
 		);
