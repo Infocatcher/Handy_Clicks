@@ -1916,20 +1916,8 @@ var handyClicksSets = {
 		this.pu.set("sets.treeDrawMode", dm); // => prefChanged()
 	},
 	initSortMenu: function(mp) {
+		this.createSortMenu(mp);
 		var cols = this.$("hc-sets-tree-columns");
-		mp.hasChildNodes() || Array.prototype.forEach.call(
-			cols.getElementsByTagName("treecol"),
-			function(col) {
-				var mi = this.ut.createElement("menuitem", {
-					label: col.getAttribute("label"),
-					type: "radio",
-					hc_column: col.id,
-					oncommand: "handyClicksSets.sortTree(this.getAttribute('hc_column'));"
-				});
-				mp.appendChild(mi);
-			},
-			this
-		);
 		var sortCol = cols.getElementsByAttribute("sortActive", "true")[0]
 			|| cols.getElementsByAttribute("primary", "true")[0];
 		Array.prototype.forEach.call(
@@ -1948,6 +1936,25 @@ var handyClicksSets = {
 			},
 			this
 		);
+	},
+	createSortMenu: function(mp) {
+		this.createSortMenu = function() {}; // Only once
+		var df = document.createDocumentFragment();
+		var cols = this.$("hc-sets-tree-columns");
+		Array.prototype.forEach.call(
+			cols.getElementsByTagName("treecol"),
+			function(col) {
+				var mi = this.ut.createElement("menuitem", {
+					label: col.getAttribute("label"),
+					type: "radio",
+					hc_column: col.id,
+					oncommand: "handyClicksSets.sortTree(this.getAttribute('hc_column'));"
+				});
+				df.appendChild(mi);
+			},
+			this
+		);
+		mp.insertBefore(df, mp.firstChild);
 	},
 
 	get treeContainers() {

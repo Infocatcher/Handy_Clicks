@@ -71,6 +71,7 @@
 <!ENTITY hc.sets.drawModeInverseInline "Inverse (inline)">
 
 <!ENTITY hc.sets.sortBy "Sort by">
+<!ENTITY hc.sets.sortAutoInline "Switch to inline mode">
 
 <!ENTITY hc.sets.remember "Remember after closing">
 <!ENTITY hc.sets.rememberSearchQuery "Search query">

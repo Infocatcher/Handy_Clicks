@@ -135,7 +135,10 @@ preferences {
 					<menuseparator />
 					<menu id="hc-sets-tree-sortMenu" label="&hc.sets.sortBy;">
 						<menupopup onpopupshowing="handyClicksSets.initSortMenu(this);"
-							oncommand="handyClicksSets.initSortMenu(this);" />
+							oncommand="handyClicksSets.initSortMenu(this);">
+							<menuseparator />
+							<menuitem type="checkbox" hc_pref="sets.treeSortAutoInlineDrawMode" label="&hc.sets.sortAutoInline;" />
+						</menupopup>
 					</menu>
 					<menu label="&hc.sets.remember;">
 						<menupopup>

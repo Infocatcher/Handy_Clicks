@@ -71,6 +71,7 @@
 <!ENTITY hc.sets.drawModeInverseInline "Инвертированный (линейный)">
 
 <!ENTITY hc.sets.sortBy "Сортировка">
+<!ENTITY hc.sets.sortAutoInline "Переключаться на линейный режим">
 
 <!ENTITY hc.sets.remember "Запоминать после закрытия">
 <!ENTITY hc.sets.rememberSearchQuery "Поисковый запрос">
