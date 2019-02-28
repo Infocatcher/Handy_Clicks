@@ -299,14 +299,25 @@ var handyClicksSets = {
 		this.tView.cycleHeader(this.tree.columns[sortCol.id]);
 		this._log("ensureTreeSorted() -> " + sortCol.id.substr(13) + " -> " + (dir || "(unsorted)"));
 	},
-	ensureTreeDrawMode: function() {
-		if(!this.drawInline && this.pu.get("sets.treeSortAutoInlineDrawMode")) {
-			this.setDrawMode(this.drawMode < 2 ? 2 : 5);
+	ensureTreeDrawMode: function(col) {
+		if(!this.pu.get("sets.treeSortAutoInlineDrawMode"))
+			return;
+		var dm;
+		if(
+			col.hasAttribute("primary")
+			&& col.getAttribute("sortDirection") == "descending" // Will be initial sort order
+			&& this.drawInline
+		)
+			dm = this.drawMode == 2 ? 0 : 3; // Restore normal/inverse mode
+		else if(!this.drawInline)
+			dm = this.drawMode < 2 ? 2 : 5;
+		if(dm !== undefined) {
+			this.setDrawMode(dm);
 			this.initViewMenu(this.$("hc-sets-tree-viewPopup"));
 		}
 	},
 	sortTree: function(colId) {
-		this.ensureTreeDrawMode();
+		this.ensureTreeDrawMode(this.$(colId));
 		this.tView.cycleHeader(this.tree.columns[colId]);
 	},
 
@@ -2062,7 +2073,7 @@ var handyClicksSets = {
 		if(col.localName != "treecol")
 			return;
 		if(e.button == 0 && !this.hasModifier(e)) { // Left-click to sort
-			this.ensureTreeDrawMode();
+			this.ensureTreeDrawMode(col);
 			return;
 		}
 		if(!col.hasAttribute("primary"))
