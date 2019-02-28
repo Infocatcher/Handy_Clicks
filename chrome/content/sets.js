@@ -309,11 +309,11 @@ var handyClicksSets = {
 			&& this.drawInline
 		) {
 			dm = "drawModeOrig" in this ? this.drawModeOrig
-				: this.drawMode == 2 ? 0 : 3; // Restore normal/inverse mode
+				: this.modeToTree();
 		}
 		else if(!this.drawInline) {
 			this.drawModeOrig = this.drawMode;
-			dm = this.drawMode < 2 ? 2 : 5;
+			dm = this.modeToInline();
 		}
 		if(dm !== undefined) {
 			this.setDrawMode(dm);
@@ -372,7 +372,7 @@ var handyClicksSets = {
 		this._maxCodeLength = this.pu.get("sets.codeLengthLimit");
 		this._preserveLines = this.pu.get("sets.codeLengthLimit.preserveLines");
 		var dm = this.drawMode = this.pu.get("sets.treeDrawMode");
-		this.drawInline = dm == 2 || dm == 5;
+		this.drawInline = this.isInline(dm);
 		var sortTypes = this.pu.get("sets.treeSortCustomTypes");
 		var sp = sortTypes > 0 ? "\uffdc" // show after shortcut items
 			: sortTypes == 0 ? "" : "\t"; // show before shortcut items
@@ -413,6 +413,26 @@ var handyClicksSets = {
 		for(var type in types) if(types.hasOwnProperty(type))
 			this.appendType(df, type, types[type]);
 	},
+	DRAW_NORMAL:          0,
+	DRAW_NORMAL_COMPACT:  1,
+	DRAW_NORMAL_INLINE:   2,
+	DRAW_INVERSE:         3,
+	DRAW_INVERSE_COMPACT: 4,
+	DRAW_INVERSE_INLINE:  5,
+	isInline: function(dm) {
+		return dm == this.DRAW_NORMAL_INLINE
+			|| dm == this.DRAW_INVERSE_INLINE;
+	},
+	modeToInline: function() {
+		return this.drawMode < 2
+			? this.DRAW_NORMAL_INLINE
+			: this.DRAW_INVERSE_INLINE;
+	},
+	modeToTree: function() {
+		return this.drawMode == this.DRAW_NORMAL_INLINE
+			? this.DRAW_NORMAL
+			: this.DRAW_INVERSE;
+	},
 	drawShortcut: function(prefs, sh, df) {
 		var so = prefs[sh];
 		if(!this.ps.isOkShortcut(sh) || !this.ju.isObject(so)) {
@@ -424,8 +444,8 @@ var handyClicksSets = {
 			return;
 		}
 		switch(this.drawMode) {
-			case 0:
-			default: // Normal
+			default:
+			case this.DRAW_NORMAL:
 				var button = this.ps.getButtonId(sh);
 				var modifiers = this.ps.getModifiersStr(sh);
 				var buttonContainer = this.eltsCache[button]
@@ -434,18 +454,18 @@ var handyClicksSets = {
 					|| this.appendContainerItem(buttonContainer, sh, modifiers);
 				this.appendItems(modifiersContainer, so, sh);
 			break;
-			case 1: // Normal (compact)
+			case this.DRAW_NORMAL_COMPACT:
 				var label = this.ps.getShortcutStr(sh, true);
 				var buttonContainer = this.eltsCache[sh]
 					|| this.appendContainerItem(df, sh, label);
 				this.appendItems(buttonContainer, so, sh);
 			break;
-			case 2: // Normal (inline)
+			case this.DRAW_NORMAL_INLINE:
 				var label = this.ps.getShortcutStr(sh, true) + this.ps.spacedSep;
 				for(var type in so) if(so.hasOwnProperty(type))
 					this.appendRow(df, sh, type, so[type], label + this.getTypeLabel(type));
 			break;
-			case 3: // Inverse
+			case this.DRAW_INVERSE:
 				var button = this.ps.getButtonId(sh);
 				var buttonLabel = this.getLocalized(button);
 				var modifiers = this.ps.getModifiersStr(sh);
@@ -458,7 +478,7 @@ var handyClicksSets = {
 					this.appendRow(buttonContainer, sh, type, so[type], modifiers);
 				}
 			break;
-			case 4: // Inverse (compact)
+			case this.DRAW_INVERSE_COMPACT:
 				var label = this.ps.getShortcutStr(sh, true);
 				for(var type in so) if(so.hasOwnProperty(type)) {
 					var typeContainer = this.eltsCache[type]
@@ -466,7 +486,7 @@ var handyClicksSets = {
 					this.appendRow(typeContainer, sh, type, so[type], label);
 				}
 			break;
-			case 5: // Inverse (inline)
+			case this.DRAW_INVERSE_INLINE:
 				var label = this.ps.spacedSep + this.ps.getShortcutStr(sh, true);
 				for(var type in so) if(so.hasOwnProperty(type))
 					this.appendRow(df, sh, type, so[type], this.getTypeLabel(type) + label);
