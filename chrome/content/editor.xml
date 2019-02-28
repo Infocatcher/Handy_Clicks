@@ -613,15 +613,23 @@
 						var ee = ut.pu.get("editor.external.path");
 						var eeArgs;
 
+						scratchpad:
 						if(ee == "Scratchpad") try {
-							var val = this.value;
-							try { // Firefox 56+
-								Components.utils["import"]("resource://devtools/client/scratchpad/scratchpad-manager.jsm");
+							var paths = [
+								"resource://devtools/client/scratchpad/scratchpad-manager.jsm", // Firefox 56+
+								"resource:///modules/devtools/scratchpad-manager.jsm"
+							];
+							for(var i = 0, l = paths.length; i < l && !ScratchpadManager; ++i) try {
+								var ScratchpadManager = Components.utils["import"](paths[i], {}).ScratchpadManager;
 							}
-							catch(e2) {
-								Components.utils["import"]("resource:///modules/devtools/scratchpad-manager.jsm");
+							catch(e) {
+							}
+							if(!ScratchpadManager) {
+								ut._info("openExternalEditor(): Scratchpad not supported");
+								break scratchpad;
 							}
 							var _this = this;
+							var val = this.value;
 							var w;
 							var setCaret = function(e) {
 								e && w.removeEventListener(e.type, setCaret, false);
@@ -722,11 +730,12 @@
 							return;
 						}
 						catch(e) {
-							ut._err("openExternalEditor: ScratchpadManager.openScratchpad() failed");
+							ut._err("openExternalEditor(): ScratchpadManager.openScratchpad() failed");
 							ut._err(e);
-							ee = eeArgs = "";
 						}
 
+						if(ee == "Scratchpad")
+							ee = eeArgs = "";
 						var eeFile = ee && ut.getLocalFile(ee);
 						var eeFileExists = eeFile && eeFile.exists();
 
