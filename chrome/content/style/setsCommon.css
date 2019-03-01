@@ -81,9 +81,6 @@ menuitem.hc-iconic .menu-iconic-icon {
 	max-width: none !important;
 	max-height: none !important;
 }
-button .button-icon {
-	opacity: 0.9999; /* Fix for right-placed icon glitches in Firefox 1.5 and 2.0 */
-}
 button.hc-iconic .button-text {
 	-moz-margin-start: 2px !important;
 }

@@ -1,6 +1,14 @@
 var handyClicksSetsUtils = {
 	__proto__: handyClicksGlobals,
 
+	instantInit: function(reloadFlag) {
+		if(!reloadFlag && this.fxVersion <= 2) {
+			var sheet = document.styleSheets[0];
+			sheet.insertRule("tooltip > description { white-space: -moz-pre-wrap; }", sheet.cssRules.length);
+			// Fix for right-placed icon glitches in Firefox 1.5 and 2.0
+			sheet.insertRule("button .button-icon { opacity: 0.9999; }", sheet.cssRules.length);
+		}
+	},
 	init: function(reloadFlag) {
 		window.addEventListener(this.ut.wheelEvent, this, true);
 		window.addEventListener("dragenter", this, true);
@@ -19,10 +27,6 @@ var handyClicksSetsUtils = {
 			window.addEventListener("resize", this, false); // Can detect only maximize/restore
 			this.legacySizeModeChange();
 		}
-		if(this.fxVersion <= 2) this.delay(function() {
-			var sheet = document.styleSheets[0];
-			sheet.insertRule("tooltip > description { white-space: -moz-pre-wrap; }", sheet.cssRules.length);
-		}, this, 350); // Early call may break all tooltips
 	},
 	destroy: function(reloadFlag) {
 		window.removeEventListener(this.ut.wheelEvent, this, true);
