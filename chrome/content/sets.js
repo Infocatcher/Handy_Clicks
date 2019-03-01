@@ -396,6 +396,7 @@ var handyClicksSets = {
 		this.markOpenedEditors(true);
 		delete this.eltsCache;
 		this._hasFilter = false;
+		this._hasHighlighted = false;
 		this.ensureTreeSorted();
 
 		this.timer("drawTree()");
@@ -2490,11 +2491,14 @@ var handyClicksSets = {
 				continue;
 			var okRow = !hasTerm || checkFunc(this.getRowText(tRow, caseSensitive));
 			var hl = hasTerm && okRow;
-			this.setChildNodesProperties(tRow, { hc_search: hl }, true);
+			if(hl || this._hasHighlighted)
+				this.setChildNodesProperties(tRow, { hc_search: hl }, true);
 			tItem.__matched = okRow;
 			okRow && matchedRows.push(tRow);
 		}
 		var found = matchedRows.length > 0;
+		if(hasTerm && found)
+			this._hasHighlighted = true;
 
 		if(hasTerm && filterMode) {
 			this._hasFilter = true;
