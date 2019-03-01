@@ -171,14 +171,20 @@ tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_buggy) {
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_search) {
 	color: #00e !important;
 }
+tree[hc_colored="true"][hc_searchWrapped] treechildren::-moz-tree-cell-text(current) {
+	border-bottom: 1px dotted #555;
+	margin-bottom: -1px;
+}
 tree[hc_colored="true"][hc_searchWrapped] treechildren::-moz-tree-cell-text(hc_search, current) {
-	border-bottom: 1px dotted #00e;
+	border-bottom-color: #00e;
 }
 tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_search) {
 	border-bottom: 1px dotted graytext;
+	margin-bottom: -1px;
 }
-tree[hc_colored="false"][hc_searchWrapped] treechildren::-moz-tree-cell-text(hc_search, current) {
-	border-bottom-style: dashed;
+tree[hc_colored="false"][hc_searchWrapped] treechildren::-moz-tree-cell-text(current) {
+	border-bottom: 1px dashed graytext;
+	margin-bottom: -1px;
 }
 tree[hc_colored="true"][hc_hasOverlayBackground="false"] treechildren::-moz-tree-row(hover) {
 	border: 1px dotted black;
