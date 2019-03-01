@@ -129,7 +129,7 @@
 `x` Restored settings window in Firefox 59+: used XBL bindings and styles from Firefox 58 to restore &lt;prefwindow&gt; (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1379338">bug 1379338</a>).<br>
 `x` Fixed tabs toolbar detection in Firefox 58+.<br>
 `*` Changed edit mode notification: close previous notification, open under cursor after click on unsupported element and close after exiting from edit mode.<br>
-`+` Added ability to localize custom labels, example: “Function name @ru:Имя функции” (“default text @locale1:… @locale2:…”).<br>
+`+` Added ability to localize custom labels, example: “Function name @ru:Имя функции” (“default text @locale1:… @locale2:…”), also added <em>extensions.handyclicks.locale</em> preference to set override browser locale.<br>
 `x` Fixed scripts reloader (Ctrl+Alt+R, <em>extensions.handyclicks.debug</em> = true) in Firefox 59+: chrome://…/_reloader.js doesn't work anymore, just renamed to reloader.js.<br>
 `*` Edit mode tooltip: show URLs in multiple lines (e.g. for tab bar).<br>
 `*` Improved code length limit to not show too long code in settings tree: <em>extensions.handyclicks.sets.codeLengthLimit</em> = 0 to not crop code, added <em>extensions.handyclicks.sets.codeLengthLimit.preserveLines</em> preference (max additional chars to show entire line).<br>
@@ -174,6 +174,12 @@
 `x` Settings for controls behavior: added “open editor” and “open types editor” commands.<br>
 `+` Scripts reloader (<em>extensions.handyclicks.debug</em> = true): added Ctrl+Alt+W hotkey to reopen dialog window (settings, editor).<br>
 `*` Scripts reloader (<em>extensions.handyclicks.debug</em> = true): flush internal browser caches in Firefox 3.6+ instead of .js?random_numbers hack.<br>
+`+` Added ability to sort tree (click on column or from menu: View – Sort by), also added <em>extensions.handyclicks.sets.rememberSort</em> and <em>extensions.handyclicks.sets.treeSortAutoInlineDrawMode</em> preferences.<br>
+`*` Changed behavior for clicks on “Shortcut and target” column: hold Shift, Alt or Meta to collapse/expand tree, right-click to expand one tree level, middle-click (or Ctrl+left-click) to collapse one tree level.<br>
+`*` Used sub-menu for “Remember …” menu items.<br>
+`+` Highlight current row in tree, if search was wrapped (navigated from last to first search result or vice versa).<br>
+`*` Improved <em>extensions.handyclicks.sets.treeExpandDelayedAction</em> = false: don't force collapse delayed actions and restore saved state.<br>
+`*` Better autocompletion for “Scratchpad” in external editor path: ignore input after already autocompleted “Scratchpad”, autocomplete after any character, not only for “s” + typed “c”.
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre7 (2019-02-10)
