@@ -157,7 +157,7 @@ var handyClicksPrefSvc = {
 	SETS_LOAD_DECODE_ERROR: 1,
 	SETS_LOAD_INVALID_DATA: 2,
 	_loadStatus: -1, // SETS_LOAD_UNKNOWN
-	_restoringCounter: 0,
+	_restoredFromBackup: false,
 	loadSettingsAsync: function(callback, context) {
 		var pFile = this.prefsFile;
 		this.io.readFromFileAsync(pFile, function(data, status) {
@@ -238,7 +238,8 @@ var handyClicksPrefSvc = {
 
 		if(vers < this.setsVersion)
 			this.setsMigration(fromPrefs, vers);
-		this._restoringCounter = 0;
+		if(this._restoredFromBackup)
+			delete this.pe._backups;
 		if(this.isMainWnd) {
 			this.initCustomFuncs();
 			if(this.pu.get("precompileCustomTypes"))

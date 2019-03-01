@@ -220,22 +220,45 @@ var handyClicksPrefSvcExt = {
 			this.ut.moveFileTo(tmp, this.ps.corruptedDir, this.prefsFileName + this.names.corrupted.replace(/-$/, "") + ".js");
 			corruptedPath = tmp.path;
 		}
-		while(++this.ps._restoringCounter <= this.pu.get("sets.backupDepth")) {
-			var bName = this.prefsFileName + this.names.backup + (this.ps._restoringCounter - 1) + ".js";
-			var bFile = this.getBackupFile(bName);
-			if(bFile.exists()) {
-				var bakPath = this.moveFiles(bFile, this.names.restored, true);
-				this.ut.moveFileTo(bFile, pFile.parent, pFile.leafName);
-				break;
-			}
-		}
 		var errTitle = this.getLocalized("errorTitle");
-		var errMsg = this.getLocalized("badJSFile").replace("%f", corruptedPath)
-			+ (bakPath ? this.getLocalized("restoredFromBackup").replace("%f", bakPath) : "")
+		var errMsg = this.getLocalized("badJSFile").replace("%f", corruptedPath);
+		var bFile = this.getBackup();
+		if(bFile) {
+			var bakPath = bFile.path;
+			this.ps._restoredFromBackup = true;
+			var restoredPath = this.moveFiles(bFile, this.names.restored, true);
+			this.ut.moveFileTo(bFile, pFile.parent, pFile.leafName);
+			errMsg += this.getLocalized("restoredFromBackup")
+				.replace("%b", bakPath)
+				.replace("%r", restoredPath);
+		}
 		this.delay(function() {
 			this.ut.alert(errTitle, errMsg);
 		}, this);
-		bakPath && this.reloadSettings(true);
+		bFile && this.reloadSettings(true);
+	},
+	getBackup: function() {
+		if("_backups" in this)
+			return this._backups.pop();
+		var bakFiles = this._backups = [];
+		const fPrefix = this.ps.prefsFileName;
+		var names = this.ps.names;
+		const prefixes = [names.backup, names.autoBackup, names.beforeImport];
+		var entries = this.ps.backupsDir.directoryEntries;
+		while(entries.hasMoreElements()) {
+			var entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
+			var fName = entry.leafName;
+			if(!entry.isFile() || !/\.js$/i.test(fName) || !this.ju.startsWith(fName, fPrefix))
+				continue;
+			var checkName = fName.substr(fPrefix.length);
+			if(prefixes.some(function(prefix) { return this.ju.startsWith(checkName, prefix); }, this))
+				bakFiles.push(entry);
+		}
+		bakFiles.sort(function(a, b) {
+			return a.lastModifiedTime - b.lastModifiedTime; // oldest ... newest
+		});
+		this._info("getBackup():\n" + bakFiles.map(function(f) { return f.leafName; }).join("\n"));
+		return bakFiles.pop();
 	},
 
 	testSettings: function(isTest) {
