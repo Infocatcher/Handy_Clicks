@@ -217,7 +217,7 @@ var handyClicksPrefSvcExt = {
 		if(pFile.exists()) { // Backups disabled
 			var tmp = pFile.clone();
 			// But save backup anyway :)
-			this.ut.moveFileTo(tmp, this.ps.backupsDir, this.prefsFileName + this.names.corrupted.replace(/-$/, "") + ".js");
+			this.ut.moveFileTo(tmp, this.ps.corruptedDir, this.prefsFileName + this.names.corrupted.replace(/-$/, "") + ".js");
 			corruptedPath = tmp.path;
 		}
 		while(++this.ps._restoringCounter <= this.pu.get("sets.backupDepth")) {
