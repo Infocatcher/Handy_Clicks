@@ -6,7 +6,7 @@ var handyClicksSetsUtils = {
 			var sheet = document.styleSheets[0];
 			sheet.insertRule("tooltip > description { white-space: -moz-pre-wrap; }", sheet.cssRules.length);
 			// Fix for right-placed icon glitches in Firefox 1.5 and 2.0
-			sheet.insertRule("button .button-icon { opacity: 0.9999; }", sheet.cssRules.length);
+			sheet.insertRule("button:not([hc_hideLabel='true']) .button-icon { opacity: 0.9999; }", sheet.cssRules.length);
 		}
 	},
 	init: function(reloadFlag) {
