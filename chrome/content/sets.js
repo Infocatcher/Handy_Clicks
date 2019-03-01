@@ -1596,20 +1596,24 @@ var handyClicksSets = {
 	setItemStatus: function() {
 		return this.treeBatch(this._setItemStatus, this, arguments);
 	},
-	_setItemStatus: function(rowId, editStat, otherSrc) {
-		if(!rowId)
+	_setItemStatus: function(winId, editStat, otherSrc) {
+		var tItem = this.getTreeitemByWinId(winId);
+		if(!tItem)
 			return;
-		var pf = this.ct.OTHER_SRC_POSTFIX;
-		if(rowId.slice(-pf.length) == pf)
-			rowId = rowId.slice(0, -pf.length);
-		if(!(rowId in this.rowsCache))
-			return;
-		var tItem = this.rowsCache[rowId].parentNode;
 		if(
 			otherSrc == undefined // Force remove all highlighting
 			|| (tItem.__isRemoved ? !otherSrc && this.ps.otherSrc : otherSrc == this.ps.otherSrc)
 		)
 			this.setChildNodesProperties(tItem, { hc_edited: editStat });
+	},
+	getTreeitemByWinId: function(winId) {
+		if(!winId)
+			return null;
+		var pf = this.ct.OTHER_SRC_POSTFIX;
+		if(winId.slice(-pf.length) == pf)
+			winId = winId.slice(0, -pf.length);
+		return winId in this.rowsCache
+			&& this.rowsCache[winId].parentNode;
 	},
 	ensureStatusSearchUpdated: function() {
 		if(this.searchField.value.indexOf(this.searchPlaceholders.hc_edited) != -1)
