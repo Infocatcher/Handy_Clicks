@@ -1650,7 +1650,7 @@ var handyClicksSets = {
 	},
 	blinkTreeitem: function(tItem) {
 		var hl = this.ju.bind(function(hl) {
-			this.setChildNodesProperties(tItem, { hc_copied: hl }, true);
+			this.setChildNodesProperties(tItem, { hc_blink: hl }, true);
 		}, this);
 		var count = 3;
 		(function blink() {

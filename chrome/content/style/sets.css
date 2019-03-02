@@ -199,6 +199,13 @@ treechildren::-moz-tree-cell-text(hc_edited) {
 treechildren::-moz-tree-cell-text(hc_copied) {
 	color: highlight !important;
 }
+tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_blink) {
+	color: #06d !important;
+}
+tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_blink) {
+	border-bottom: 1px dashed graytext !important;
+	margin-bottom: -1px;
+}
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_copied),
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_copied, selected) {
 	color: #bfc1ca !important;
