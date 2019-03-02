@@ -1634,6 +1634,7 @@ var handyClicksSets = {
 			this.focusSetsTree();
 			this.tSel.select(indx);
 			this.searcher.scrollToRow(indx);
+			this.ensureLastRowIsVisible();
 		}
 	},
 	ensureStatusSearchUpdated: function() {
