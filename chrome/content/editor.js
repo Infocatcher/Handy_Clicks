@@ -552,6 +552,16 @@ var handyClicksEditor = {
 		window[winIdProp] = winId;
 		this.wu.markOpenedEditors();
 	},
+	switchToSettings: function() {
+		var winId = window[this.wu.winIdProp];
+		var w = this.wu.openSettings(false, [{ winId: winId }]);
+		this.wu.openWindowByType.alreadyOpened && (function wait() {
+			if("_handyClicksInitialized" in w)
+				w.handyClicksSets.scrollToOpened(winId);
+			else
+				setTimeout(wait, 5);
+		})();
+	},
 	setWinTitle: function() {
 		var shStr = this.ps.getShortcutStr(this.currentShortcut, true);
 		var typeItem = this.$("hc-editor-itemTypes").selectedItem; // menulist.label may be wrong on startup!

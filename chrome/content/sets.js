@@ -12,6 +12,7 @@ var handyClicksSets = {
 	init: function(reloadFlag) {
 		var args = "arguments" in window && window.arguments[0] || {};
 		var importArgs = args.importArgs || null;
+		var winId = args.winId || null;
 
 		this.ps.loadSettings();
 		this.initShortcuts();
@@ -56,7 +57,7 @@ var handyClicksSets = {
 		if(reloadFlag)
 			this.setDialogButtons();
 		else {
-			this.startupUI();
+			this.startupUI(winId);
 			if(this.counters.buggy) {
 				this.setDialogButtons();
 				this.notifyBuggyPrefs();
@@ -133,9 +134,12 @@ var handyClicksSets = {
 		else
 			sf.removeAttribute("hc_value");
 	},
-	startupUI: function() {
+	startupUI: function(winId) {
 		this.treeState(false);
-		this.treeScrollPos(false);
+		if(winId)
+			this.scrollToOpened(winId);
+		else
+			this.treeScrollPos(false);
 		Array.prototype.forEach.call(
 			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
 			function(col) {
@@ -1614,6 +1618,18 @@ var handyClicksSets = {
 			winId = winId.slice(0, -pf.length);
 		return winId in this.rowsCache
 			&& this.rowsCache[winId].parentNode;
+	},
+	scrollToOpened: function(winId) {
+		var tItem = this.getTreeitemByWinId(winId);
+		if(!tItem)
+			return;
+		this.ensureTreeitemVisible(tItem);
+		var indx = this.tView.getIndexOfItem(tItem);
+		if(indx != -1) {
+			this.focusSetsTree();
+			this.tSel.select(indx);
+			this.searcher.scrollToRow(indx);
+		}
 	},
 	ensureStatusSearchUpdated: function() {
 		if(this.searchField.value.indexOf(this.searchPlaceholders.hc_edited) != -1)
