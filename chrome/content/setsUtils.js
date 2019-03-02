@@ -113,15 +113,12 @@ var handyClicksSetsUtils = {
 					oncommand="handyClicksSetsUtils.toggleOnTop();"\
 					hc_key="hc-sets-key-toggleOnTop"\
 					label="' + this.getLocalized("onTop") + '"\
-					tooltiptext="' + this.getLocalized("onTopTip") + '"\
-				/>\
+					tooltiptext="' + this.getLocalized("onTopTip") + '" />\
 				<menupopup id="hc-sets-onTopContext"\
-					onpopupshowing="handyClicksSetsUtils.initOnTopContext(this);"\
-					oncommand="handyClicksSetsUtils.handleOnTopContextCommand(event.target);">\
-					<menuitem id="hc-sets-onTopButtonLabel" type="checkbox"\
-						hc_pref="ui.onTopButtonLabel"\
-						label="' + this.getLocalized("onTopButtonLabel") + '"\
-					/>\
+					onpopupshowing="handyClicksSetsUtils.initPrefsMenu(this);"\
+					oncommand="handyClicksSetsUtils.handlePrefCommand(event.target);">\
+					<menuitem type="checkbox" hc_pref="ui.onTopButtonLabel"\
+						label="' + this.getLocalized("onTopButtonLabel") + '" />\
 				</menupopup>\
 			</hbox>'
 		);
@@ -129,17 +126,18 @@ var handyClicksSetsUtils = {
 
 		this.checkWindowStatus(true);
 	},
-	initOnTopContext: function(popup) {
+	initPrefsMenu: function(popup) {
 		Array.prototype.forEach.call(
-			popup.getElementsByTagName("menuitem"),
+			popup.getElementsByAttribute("hc_pref", "*"),
 			function(mi) {
 				mi.setAttribute("checked", this.pu.get(mi.getAttribute("hc_pref")));
 			},
 			this
 		);
 	},
-	handleOnTopContextCommand: function(mi) {
-		this.pu.set(mi.getAttribute("hc_pref"), mi.getAttribute("checked") == "true");
+	handlePrefCommand: function(mi) {
+		if(mi.hasAttribute("hc_pref"))
+			this.pu.set(mi.getAttribute("hc_pref"), mi.getAttribute("checked") == "true");
 	},
 
 	onTopAttr: "hc_onTop",
