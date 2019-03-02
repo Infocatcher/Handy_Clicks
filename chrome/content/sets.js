@@ -1629,6 +1629,14 @@ var handyClicksSets = {
 		if(!tItem)
 			return;
 		this.ensureTreeitemVisible(tItem);
+		if(
+			this.filterMode
+			&& this.isTreeitemHidden(tItem)
+			&& !(this._importPartial && tItem.hasAttribute("hc_old"))
+		) {
+			this._log("scrollToOpened(): reset filter");
+			this.resetTreeFilter();
+		}
 		var indx = this.tView.getIndexOfItem(tItem);
 		if(indx != -1) {
 			this.focusSetsTree();
@@ -2405,6 +2413,16 @@ var handyClicksSets = {
 	doSearch: function(str, dontSelect) {
 		this.searchField.value = str;
 		this.searchInSetsTree(dontSelect);
+	},
+	resetTreeFilter: function() {
+		this.searchField.value = "";
+		// Force search in synchronous mode
+		this._lastSearch = 0;
+		if(this._searchTimer) {
+			clearTimeout(this._searchTimer);
+			this._searchTimer = 0;
+		}
+		this.searchInSetsTree(true);
 	},
 	searchInSetsTree: function(dontSelect) {
 		if(this._searchTimer)
