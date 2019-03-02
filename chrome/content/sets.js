@@ -1643,7 +1643,24 @@ var handyClicksSets = {
 			this.tSel.select(indx);
 			this.searcher.scrollToRow(indx);
 			this.ensureLastRowIsVisible();
+			this.delay(function() {
+				this.blinkTreeitem(tItem);
+			}, this, 20);
 		}
+	},
+	blinkTreeitem: function(tItem) {
+		var hl = this.ju.bind(function(hl) {
+			this.setChildNodesProperties(tItem, { hc_copied: hl }, true);
+		}, this);
+		var count = 3;
+		(function blink() {
+			hl(true);
+			setTimeout(function() {
+				hl(false);
+				if(--count)
+					setTimeout(blink, 80);
+			}, 150);
+		})();
 	},
 	ensureStatusSearchUpdated: function() {
 		if(this.searchField.value.indexOf(this.searchPlaceholders.hc_edited) != -1)
