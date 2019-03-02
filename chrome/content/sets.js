@@ -1802,10 +1802,7 @@ var handyClicksSets = {
 		this.$("hc-sets-tree-findPrev")       .setAttribute("disabled", !found);
 		this.$("hc-sets-tree-findSelectAll")  .setAttribute("disabled", !found);
 
-		this.$("hc-sets-tree-findFilter").setAttribute(
-			"checked",
-			this.$("hc-sets-tree-searchFilterMode").getAttribute("checked")
-		);
+		this.$("hc-sets-tree-findFilter").setAttribute("checked", this.filterMode);
 	},
 	selectAll: function() {
 		if(this.isTreePaneSelected)
@@ -2202,6 +2199,12 @@ var handyClicksSets = {
 		delete this.searchField;
 		return this.searchField = this.$("hc-sets-tree-searchField");
 	},
+	get filterMode() {
+		return this.$("hc-sets-tree-searchFilterMode").getAttribute("checked") == "true";
+	},
+	set filterMode(fm) {
+		this.attribute(this.$("hc-sets-tree-searchFilterMode"), "checked", fm);
+	},
 
 	get searcher() {
 		delete this.searcher;
@@ -2346,11 +2349,7 @@ var handyClicksSets = {
 	toggleFilterMode: function() {
 		if(!this.isTreePaneSelected)
 			return;
-		var fm = this.$("hc-sets-tree-searchFilterMode");
-		if(fm.getAttribute("checked") != "true")
-			fm.setAttribute("checked", "true");
-		else
-			fm.removeAttribute("checked");
+		this.filterMode = !this.filterMode;
 		this.searchInSetsTree(true, true);
 	},
 
@@ -2433,7 +2432,7 @@ var handyClicksSets = {
 	_searchInSetsTree: function(dontSelect) {
 		this.timer("searchInSetsTree()");
 		var sf = this.searchField;
-		var filterMode = this.$("hc-sets-tree-searchFilterMode").getAttribute("checked") == "true";
+		var filterMode = this.filterMode;
 
 		var sTerm = sf.value;
 		var checkFunc;
