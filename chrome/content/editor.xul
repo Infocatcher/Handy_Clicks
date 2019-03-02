@@ -68,7 +68,7 @@
 		<key id="hc-editor-key-delete" key="d" modifiers="control" oncommand="handyClicksEditor.deleteSettings();" />
 		<key id="hc-editor-key-reload" keycode="VK_F5" oncommand="handyClicksEditor.initUI(true);" />
 		<key id="hc-editor-key-reload2" key="r" modifiers="control" oncommand="handyClicksEditor.initUI(true);" />
-		<key id="hc-editor-key-switchToSettings" key="s" modifiers="control,shift" oncommand="handyClicksEditor.switchToSettings();" />
+		<key id="hc-editor-key-switchToSettings" key="s" modifiers="control,shift" hc_allowInRenameMode="true" oncommand="handyClicksEditor.switchToSettings();" />
 
 		<key id="hc-editor-key-editCode" key="E" modifiers="control,shift" command="hc-editor-cmd-editCode" />
 		<key id="hc-editor-key-editCode2" keycode="VK_F4" command="hc-editor-cmd-editCode" />
