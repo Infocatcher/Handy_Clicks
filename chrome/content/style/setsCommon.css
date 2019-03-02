@@ -30,7 +30,10 @@ checkbox[hc_important="enabled"]:not([checked="true"]) {
 	position: relative;
 	z-index: 10000;
 }
-.hcFloatButton, .hcFloatButton * {
+.hcFloatButton,
+.hcFloatButton .box-inherit,
+.hcFloatButton .button-icon,
+.hcFloatButton .button-text {
 	margin: 0 !important;
 	padding: 0 !important;
 	min-width: 0 !important;

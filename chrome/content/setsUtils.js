@@ -91,9 +91,19 @@ var handyClicksSetsUtils = {
 		var de = document.documentElement;
 		de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
 
+		var editorSets = this.ed ? '\
+			<button id="hc-editor-sets" type="menu"\
+				class="hcFloatButton hc-iconic hc-preferences"\
+				label="' + this.getLocalized("settings") + '">\
+				<menupopup>\
+					<menuitem oncommand="handyClicksEditor.switchToSettings();"\
+						label="' + this.getLocalized("switchToSettings") + '" />\
+				</menupopup>\
+			</button>' : "";
+
 		var onTop = this.ut.parseXULFromString('\
 			<hbox xmlns="' + this.ut.XULNS + '" id="hc-sets-floatToolbar"\
-				oncommand="event.stopPropagation();">\
+				oncommand="event.stopPropagation();">' + editorSets + '\
 				<button id="hc-sets-onTop"\
 					class="hcFloatButton hc-iconic"\
 					type="checkbox"\
