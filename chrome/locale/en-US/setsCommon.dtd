@@ -1,3 +1,10 @@
+<!-- Top toolbar in settings and editor windows -->
 <!ENTITY hc.common.onTop "On top">
 <!ENTITY hc.common.onTopTip "Always on top">
 <!ENTITY hc.common.onTopButtonLabel "Show label">
+
+<!-- Notify window -->
+<!ENTITY handyClicks.close "Close">
+<!ENTITY handyClicks.closeAll "Close All">
+<!ENTITY handyClicks.copy "Copy">
+<!ENTITY handyClicks.copyAll "Copy All">

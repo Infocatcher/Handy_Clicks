@@ -1,3 +1,10 @@
+<!-- Top toolbar in settings and editor windows -->
 <!ENTITY hc.common.onTop "Закрепить">
 <!ENTITY hc.common.onTopTip "Поверх других окон">
 <!ENTITY hc.common.onTopButtonLabel "Показывать подпись">
+
+<!-- Notify window -->
+<!ENTITY handyClicks.close "Закрыть">
+<!ENTITY handyClicks.closeAll "Закрыть все">
+<!ENTITY handyClicks.copy "Копировать">
+<!ENTITY handyClicks.copyAll "Копировать всё">

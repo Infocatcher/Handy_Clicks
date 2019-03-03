@@ -17,9 +17,3 @@
 <!ENTITY handyClicks.importFromClipboardAccesskey "И">
 <!ENTITY handyClicks.progress "Handy Clicks: Прогресс"> <!-- Visible only in "Customize Toolbar" dialog -->
 <!ENTITY handyClicks.cancel "Отменить">
-
-<!-- Notify window -->
-<!ENTITY handyClicks.close "Закрыть">
-<!ENTITY handyClicks.closeAll "Закрыть все">
-<!ENTITY handyClicks.copy "Копировать">
-<!ENTITY handyClicks.copyAll "Копировать всё">

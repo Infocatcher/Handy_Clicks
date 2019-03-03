@@ -3,9 +3,9 @@
 <?xml-stylesheet href="chrome://handyclicks/content/style/notify.css" type="text/css"?>
 
 <!DOCTYPE window [
-	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/main.dtd">
+	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/setsCommon.dtd">
 	%locale;
-	<!ENTITY % default SYSTEM "chrome://handyclicks-locale/content/main.dtd">
+	<!ENTITY % default SYSTEM "chrome://handyclicks-locale/content/setsCommon.dtd">
 	%default;
 ]>
 
