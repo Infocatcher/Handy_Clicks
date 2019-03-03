@@ -94,11 +94,13 @@ var handyClicksSetsUtils = {
 		var editorSets = this.ed ? '\
 			<button id="hc-editor-sets" type="menu"\
 				class="hcFloatButton hc-iconic hc-preferences"\
-				label="' + this.getLocalized("settings") + '">\
+				label="' + this.getLocalized("settings") + '"\
+				accesskey="' + this.getLocalized("settingsAccesskey") + '">\
 				<menupopup\
 					onpopupshowing="handyClicksSetsUtils.initPrefsMenu(this);"\
 					oncommand="handyClicksSetsUtils.handlePrefCommand(event.target);">\
 					<menuitem oncommand="handyClicksEditor.switchToSettings();"\
+						key="hc-editor-key-switchToSettings"\
 						label="' + this.getLocalized("switchToSettings") + '" />\
 					<menuseparator />\
 					<menuitem type="checkbox" hc_pref="editor.ui.invertWindowTitle"\
