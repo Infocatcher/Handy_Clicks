@@ -14,6 +14,7 @@
 <!ENTITY hc.editor.settingsAccesskey "Н">
 <!ENTITY hc.editor.switchToSettings "Переключиться на настройки">
 <!ENTITY hc.editor.invertWindowTitle "Инвертировать заголовок окна">
+<!ENTITY hc.editor.sortInternalTypes "Сортировать встроенные типы">
 <!ENTITY hc.editor.compactUI "Компактный интерфейс">
 
 <!ENTITY hc.editor.mainTabActions "Действия">

@@ -398,6 +398,8 @@
 				<menuseparator />
 				<menuitem type="checkbox" hc_pref="editor.ui.invertWindowTitle"
 					label="&hc.editor.invertWindowTitle;" />
+				<menuitem type="checkbox" hc_pref="editor.ui.sortInternalTypes"
+					label="&hc.editor.sortInternalTypes;" />
 				<menuitem type="checkbox" hc_pref="editor.ui.compact"
 					label="&hc.editor.compactUI;" />
 			</menupopup>
