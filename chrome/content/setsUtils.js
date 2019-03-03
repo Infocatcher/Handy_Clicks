@@ -103,6 +103,8 @@ var handyClicksSetsUtils = {
 					<menuseparator />\
 					<menuitem type="checkbox" hc_pref="editor.ui.invertWindowTitle"\
 						label="' + this.getLocalized("invertWindowTitle") + '" />\
+					<menuitem type="checkbox" hc_pref="editor.ui.compact"\
+						label="' + this.getLocalized("compactUI") + '" />\
 				</menupopup>\
 			</button>' : "";
 

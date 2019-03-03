@@ -270,7 +270,7 @@ menulist[hc_aboutConfigEntry] .menulist-label,
 	padding-bottom: 0;
 }
 :root[hc_compactUI="true"] .hcFloatButton > .button-box {
-	margin-top: -2px !important;
+	margin-top: -1px !important;
 	margin-bottom: -1px !important;
 }
 :root[hc_compactUI="true"] checkbox {
