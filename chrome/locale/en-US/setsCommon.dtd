@@ -4,7 +4,7 @@
 <!ENTITY hc.common.onTopButtonLabel "Show label">
 
 <!-- Notify window -->
-<!ENTITY handyClicks.close "Close">
-<!ENTITY handyClicks.closeAll "Close All">
-<!ENTITY handyClicks.copy "Copy">
-<!ENTITY handyClicks.copyAll "Copy All">
+<!ENTITY hc.common.close "Close">
+<!ENTITY hc.common.closeAll "Close All">
+<!ENTITY hc.common.copy "Copy">
+<!ENTITY hc.common.copyAll "Copy All">

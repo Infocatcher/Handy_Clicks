@@ -4,7 +4,7 @@
 <!ENTITY hc.common.onTopButtonLabel "Показывать подпись">
 
 <!-- Notify window -->
-<!ENTITY handyClicks.close "Закрыть">
-<!ENTITY handyClicks.closeAll "Закрыть все">
-<!ENTITY handyClicks.copy "Копировать">
-<!ENTITY handyClicks.copyAll "Копировать всё">
+<!ENTITY hc.common.close "Закрыть">
+<!ENTITY hc.common.closeAll "Закрыть все">
+<!ENTITY hc.common.copy "Копировать">
+<!ENTITY hc.common.copyAll "Копировать всё">
