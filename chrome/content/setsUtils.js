@@ -13,11 +13,13 @@ var handyClicksSetsUtils = {
 		window.addEventListener(this.ut.wheelEvent, this, true);
 		window.addEventListener("dragenter", this, true);
 		window.addEventListener("dragexit", this, true);
-		this.setEnabledStatus();
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 		if(!reloadFlag) {
 			this.tweakDialogButtons();
-			this.initFloatToolbar();
+			this.setEnabledStatus();
+			var de = document.documentElement;
+			de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
+			this.checkWindowStatus(true);
 			this.delay(this.setKeysDesc, this, 10);
 			this.delay(this.setDropEvents, this, 20);
 		}
@@ -86,11 +88,6 @@ var handyClicksSetsUtils = {
 				elt.removeAttribute("hc_ondrop");
 			}
 		);
-	},
-	initFloatToolbar: function() {
-		var de = document.documentElement;
-		de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
-		this.checkWindowStatus(true);
 	},
 	initPrefsMenu: function(popup) {
 		Array.prototype.forEach.call(
