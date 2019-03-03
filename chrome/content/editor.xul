@@ -4,6 +4,7 @@
 <?xml-stylesheet href="chrome://handyclicks/content/style/setsCommon.css" type="text/css"?>
 <?xml-stylesheet href="chrome://handyclicks/content/style/editor.css" type="text/css"?>
 
+<?xul-overlay href="chrome://handyclicks/content/setsOverlay.xul"?>
 <?xul-overlay href="chrome://handyclicks/content/editorFuncs.xul"?>
 
 <!DOCTYPE dialog [
@@ -384,5 +385,23 @@
 			</tabpanel>
 		</tabpanels>
 	</tabbox>
+
+	<hbox id="hc-sets-floatToolbar">
+		<button id="hc-editor-sets" class="hcFloatButton hc-iconic hc-preferences" type="menu"
+			label="&hc.editor.settings;" accesskey="&hc.editor.settingsAccesskey;">
+			<menupopup
+				onpopupshowing="handyClicksSetsUtils.initPrefsMenu(this);"
+				oncommand="handyClicksSetsUtils.handlePrefCommand(event.target);">
+				<menuitem oncommand="handyClicksEditor.switchToSettings();"
+					key="hc-editor-key-switchToSettings"
+					label="&hc.editor.switchToSettings;" />
+				<menuseparator />
+				<menuitem type="checkbox" hc_pref="editor.ui.invertWindowTitle"
+					label="&hc.editor.invertWindowTitle;" />
+				<menuitem type="checkbox" hc_pref="editor.ui.compact"
+					label="&hc.editor.compactUI;" />
+			</menupopup>
+		</button>
+	</hbox>
 
 </dialog>

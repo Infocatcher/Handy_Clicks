@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE overlay [
+	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/setsCommon.dtd">
+	%locale;
+	<!ENTITY % default SYSTEM "chrome://handyclicks-locale/content/setsCommon.dtd">
+	%default;
+]>
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<hbox id="hc-sets-floatToolbar" oncommand="event.stopPropagation();">
+		<button id="hc-sets-onTop"
+			class="hcFloatButton hc-iconic"
+			type="checkbox"
+			autoCheck="false"
+			context="hc-sets-onTopContext"
+			oncommand="handyClicksSetsUtils.toggleOnTop();"
+			hc_key="hc-sets-key-toggleOnTop"
+			label="&hc.common.onTop;"
+			tooltiptext="&hc.common.onTopTip;" />
+		<menupopup id="hc-sets-onTopContext"
+			onpopupshowing="handyClicksSetsUtils.initPrefsMenu(this);"
+			oncommand="handyClicksSetsUtils.handlePrefCommand(event.target);">
+			<menuitem type="checkbox" hc_pref="ui.onTopButtonLabel"
+				label="&hc.common.onTopButtonLabel;" />
+		</menupopup>
+	</hbox>
+</overlay>

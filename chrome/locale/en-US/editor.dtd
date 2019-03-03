@@ -10,6 +10,12 @@
 <!ENTITY hc.editor.undo "Undo">
 <!ENTITY hc.editor.undoAccesskey "U">
 
+<!ENTITY hc.editor.settings "Settings">
+<!ENTITY hc.editor.settingsAccesskey "g">
+<!ENTITY hc.editor.switchToSettings "Switch to settings">
+<!ENTITY hc.editor.invertWindowTitle "Invert window title">
+<!ENTITY hc.editor.compactUI "Compact interface">
+
 <!ENTITY hc.editor.mainTabActions "Actions">
 <!ENTITY hc.editor.mainTabActionsAccesskey "o">
 <!ENTITY hc.editor.clickHere "Click here">

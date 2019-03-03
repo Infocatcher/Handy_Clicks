@@ -10,6 +10,12 @@
 <!ENTITY hc.editor.undo "Отменить">
 <!ENTITY hc.editor.undoAccesskey "О">
 
+<!ENTITY hc.editor.settings "Настройки">
+<!ENTITY hc.editor.settingsAccesskey "Н">
+<!ENTITY hc.editor.switchToSettings "Переключиться на настройки">
+<!ENTITY hc.editor.invertWindowTitle "Инвертировать заголовок окна">
+<!ENTITY hc.editor.compactUI "Компактный интерфейс">
+
 <!ENTITY hc.editor.mainTabActions "Действия">
 <!ENTITY hc.editor.mainTabActionsAccesskey "Д">
 <!ENTITY hc.editor.clickHere "Кликните здесь">

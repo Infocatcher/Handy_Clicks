@@ -13,6 +13,8 @@ preferences {
 }
 ' type="text/css"?>
 
+<?xul-overlay href="chrome://handyclicks/content/setsOverlay.xul"?>
+
 <!DOCTYPE prefwindow [
 	<!ENTITY % locale SYSTEM "chrome://handyclicks/locale/sets.dtd">
 	%locale;
@@ -704,6 +706,8 @@ preferences {
 
 	<html:link xmlns:html="http://www.w3.org/1999/xhtml" rel="shortcut icon" style="display: none;"
 		href="chrome://handyclicks-icon/skin/chrome/icons/default/handyClicks-settings.ico" />
+
+	<hbox id="hc-sets-floatToolbar" />
 
 	<commandset id="hc-sets-cmds">
 		<command id="hc-sets-cmd-add" oncommand="handyClicksSets.addItems();" label="&hc.sets.cmdAdd;" />

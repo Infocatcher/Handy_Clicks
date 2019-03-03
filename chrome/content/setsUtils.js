@@ -17,7 +17,7 @@ var handyClicksSetsUtils = {
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
 		if(!reloadFlag) {
 			this.tweakDialogButtons();
-			this.createFloatToolbar();
+			this.initFloatToolbar();
 			this.delay(this.setKeysDesc, this, 10);
 			this.delay(this.setDropEvents, this, 20);
 		}
@@ -87,52 +87,9 @@ var handyClicksSetsUtils = {
 			}
 		);
 	},
-	createFloatToolbar: function() {
+	initFloatToolbar: function() {
 		var de = document.documentElement;
 		de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
-
-		var editorSets = this.ed ? '\
-			<button id="hc-editor-sets" type="menu"\
-				class="hcFloatButton hc-iconic hc-preferences"\
-				label="' + this.getLocalized("settings") + '"\
-				accesskey="' + this.getLocalized("settingsAccesskey") + '">\
-				<menupopup\
-					onpopupshowing="handyClicksSetsUtils.initPrefsMenu(this);"\
-					oncommand="handyClicksSetsUtils.handlePrefCommand(event.target);">\
-					<menuitem oncommand="handyClicksEditor.switchToSettings();"\
-						key="hc-editor-key-switchToSettings"\
-						label="' + this.getLocalized("switchToSettings") + '" />\
-					<menuseparator />\
-					<menuitem type="checkbox" hc_pref="editor.ui.invertWindowTitle"\
-						label="' + this.getLocalized("invertWindowTitle") + '" />\
-					<menuitem type="checkbox" hc_pref="editor.ui.compact"\
-						label="' + this.getLocalized("compactUI") + '" />\
-				</menupopup>\
-			</button>' : "";
-
-		var onTop = this.ut.parseXULFromString('\
-			<hbox xmlns="' + this.ut.XULNS + '" id="hc-sets-floatToolbar"\
-				oncommand="event.stopPropagation();">' + editorSets + '\
-				<button id="hc-sets-onTop"\
-					class="hcFloatButton hc-iconic"\
-					type="checkbox"\
-					autoCheck="false"\
-					context="hc-sets-onTopContext"\
-					hidden="' + !this.pu.get("ui.onTopButton") + '"\
-					oncommand="handyClicksSetsUtils.toggleOnTop();"\
-					hc_key="hc-sets-key-toggleOnTop"\
-					label="' + this.getLocalized("onTop") + '"\
-					tooltiptext="' + this.getLocalized("onTopTip") + '" />\
-				<menupopup id="hc-sets-onTopContext"\
-					onpopupshowing="handyClicksSetsUtils.initPrefsMenu(this);"\
-					oncommand="handyClicksSetsUtils.handlePrefCommand(event.target);">\
-					<menuitem type="checkbox" hc_pref="ui.onTopButtonLabel"\
-						label="' + this.getLocalized("onTopButtonLabel") + '" />\
-				</menupopup>\
-			</hbox>'
-		);
-		de.appendChild(onTop);
-
 		this.checkWindowStatus(true);
 	},
 	initPrefsMenu: function(popup) {
@@ -197,7 +154,7 @@ var handyClicksSetsUtils = {
 		if(onTop === undefined)
 			onTop = root.getAttribute(this.onTopAttr) == "true";
 		var btnVisible = this.pu.get("ui.onTopButton");
-		var btn = this.onTopBtn;;
+		var btn = this.onTopBtn;
 		btn.hidden = !btnVisible;
 		if(btnVisible) {
 			btn.setAttribute("checked", onTop); // + autoCheck="false"
