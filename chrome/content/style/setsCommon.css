@@ -20,6 +20,9 @@
 	padding-top: 1px !important;
 	padding-bottom: 1px !important;
 }
+#hc-sets-floatToolbar .hcFloatButton .button-text {
+	margin-top: -1px !important;
+}
 
 checkbox[hc_important="enabled"] label {
 	font-weight: bold;
