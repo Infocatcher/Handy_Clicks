@@ -394,7 +394,7 @@
 				oncommand="handyClicksSetsUtils.handlePrefCommand(event.target);">
 				<menuitem oncommand="handyClicksEditor.switchToSettings();"
 					key="hc-editor-key-switchToSettings"
-					label="&hc.editor.switchToSettings;" />
+					label="&hc.editor.switchToSettingsTree;" />
 				<menuseparator />
 				<menuitem oncommand="handyClicksEditor.wu.openSettingsPane('editor');"
 					label="&hc.editor.openEditorSettings;" />
