@@ -18,7 +18,7 @@
 		<command id="handyClicks-cmd-openSettings" oncommand="handyClicksUI.wu.openSettings();"
 			label="&handyClicks.settingsLabel;" accesskey="&handyClicks.settingsAccesskey;" />
 		<command id="handyClicks-cmd-openAboutConfig" oncommand="handyClicksPrefUtils.openAboutConfig();"
-			label="&handyClicks.allSettingsLabel;" accesskey="&handyClicks.allSettingsAccesskey;" />
+			label="&handyClicks.allPrefsLabel;" accesskey="&handyClicks.allPrefsAccesskey;" />
 		<command id="handyClicks-cmd-editMode" oncommand="handyClicksUI.toggleEditMode();"
 			label="&handyClicks.editModeLabel;" accesskey="&handyClicks.editModeAccesskey;" />
 		<command id="handyClicks-cmd-importFromClipboard"

@@ -8,8 +8,8 @@
 
 <!ENTITY hc.sets.exportPrefs "Export preferences to file…">
 <!ENTITY hc.sets.importPrefs "Import preferences from file…">
-<!ENTITY hc.sets.defaults "Reset to defaults">
-<!ENTITY hc.sets.allPrefs "All preferences…">
+<!ENTITY hc.sets.defaults "Reset to defaults…">
+<!ENTITY hc.sets.allPrefs "All preferences">
 
 <!ENTITY hc.sets.clickOptionsTitle "Clicks options">
 
