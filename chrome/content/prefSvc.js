@@ -179,8 +179,10 @@ var handyClicksPrefSvc = {
 			pSrc = fromProfile && !pSrc.exists()
 				? this.defaultSettings()
 				: this.ut.readFromFile(pSrc);
-			if(fromProfile && !this.isMainWnd)
-				this._savedStr = pSrc;
+			if(fromProfile && !this.isMainWnd) {
+				this._savedStr = pSrc // Ignore version difference, if there is no actual changes
+					.replace(/"version": \d+(?:\.\d+)?,/, '"version": ' + this.setsVersion + ',');
+			}
 		}
 		this.otherSrc = !fromProfile;
 
