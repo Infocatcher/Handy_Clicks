@@ -972,11 +972,10 @@ var handyClicksSets = {
 					typeLabel += " (" + this.getLocalized("delayed") + ")";
 					fObj = dObj;
 				}
-				else {
-					var daLabel = this.ut.isObject(dObj) && this.getActionLabel(fObj);
-					if(daLabel)
-						addLabel = "\n\t(" + this.getLocalized("delayed") + ": "
-							+ this.cropStr(daLabel, MAX_LABEL_LENGTH) + ")";
+				else if(this.ut.isObject(dObj)) {
+					var daLabel = this.getActionLabel(fObj);
+					addLabel = "\n\t(" + this.getLocalized("delayed") + ": "
+						+ this.cropStr(daLabel, MAX_LABEL_LENGTH) + ")";
 				}
 				var label = this.ut.isObject(fObj)
 					? this.cropStr(this.getActionLabel(fObj), MAX_LABEL_LENGTH)

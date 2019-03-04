@@ -9,6 +9,7 @@
 `*` Improved settings performance: used faster way to detect unsaved state (compare only settings data without hash calculations).<br>
 `*` Compare current and saved settings: ignore version difference, if there is no actual changes (for forward compatibility).<br>
 `x` Fixed hotkeys to import from clipboard (Ctrl+V, Ctrl+Shift+V, Shift+Ins): now used separate command, which will never be disabled.<br>
+`x` Delete item in tree: correctly handle unnamed items.<br>
 
 ##### 0.1.3pre7 (2019-02-10)
 <em>(backported from master/HEAD)</em><br>
