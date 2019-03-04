@@ -1625,6 +1625,7 @@ var handyClicksSets = {
 			&& this.rowsCache[winId].parentNode;
 	},
 	scrollToOpened: function(winId) {
+		this.focusSetsTree();
 		var tItem = this.getTreeitemByWinId(winId);
 		if(!tItem)
 			return;
@@ -1639,7 +1640,6 @@ var handyClicksSets = {
 		}
 		var indx = this.tView.getIndexOfItem(tItem);
 		if(indx != -1) {
-			this.focusSetsTree();
 			this.tSel.select(indx);
 			this.searcher.scrollToRow(indx);
 			this.ensureLastRowIsVisible();
