@@ -137,10 +137,6 @@ tabbox[hc_pasted="false"] {
 .hcTabsToolbar {
 	position: relative;
 }
-.hcFloatButton > .button-box {
-	margin-top: -1px !important;
-	margin-bottom: 0 !important;
-}
 .hcEditCodeButton {
 	-moz-image-region: rect(64px 16px 80px 0);
 }
@@ -241,10 +237,10 @@ menulist[hc_aboutConfigEntry] .menulist-label,
 	padding: 4px;
 }
 :root[hc_compactUI="true"] tab {
-	padding: 0px 4px 1px 4px;
+	padding: 0 4px 1px 4px;
 }
 :root[hc_compactUI="true"] tab[selected="true"] {
-	padding: 0px 6px 3px 6px;
+	padding: 0 6px 3px 6px;
 }
 :root[hc_compactUI="true"] menulist {
 	margin-top: 1px;
@@ -269,9 +265,9 @@ menulist[hc_aboutConfigEntry] .menulist-label,
 	padding-top: 0;
 	padding-bottom: 0;
 }
-:root[hc_compactUI="true"] .hcFloatButton > .button-box {
-	margin-top: -1px !important;
-	margin-bottom: -1px !important;
+:root[hc_compactUI="true"] .hcTabsToolbar > .hcFloatButton > .button-box {
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
 }
 :root[hc_compactUI="true"] checkbox {
 	margin-right: 2px;

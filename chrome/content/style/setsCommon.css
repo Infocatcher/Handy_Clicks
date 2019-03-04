@@ -16,13 +16,6 @@
 	right: auto !important;
 	left: 0 !important;
 }
-#hc-sets-floatToolbar .hcFloatButton > .button-box {
-	padding-top: 1px !important;
-	padding-bottom: 1px !important;
-}
-#hc-sets-floatToolbar .hcFloatButton .button-text {
-	margin-top: -1px !important;
-}
 
 checkbox[hc_important="enabled"] label {
 	font-weight: bold;
@@ -49,6 +42,13 @@ checkbox[hc_important="enabled"]:not([checked="true"]) {
 .hcFloatButton {
 	-moz-margin-start: 2px !important;
 	padding: 0 2px !important;
+}
+.hcFloatButton > .button-box {
+	padding-top: 1px !important;
+	padding-bottom: 1px !important;
+}
+.hcFloatButton .button-text {
+	margin-top: -1px !important;
 }
 
 #hc-sets-onTop {
