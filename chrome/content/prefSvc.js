@@ -610,7 +610,7 @@ var handyClicksPrefSvc = {
 		Array.prototype.forEach.call(arguments, this.sortSettings, this);
 		return this.ut.objEqualsRaw.apply(this.ut, arguments);
 	},
-	getSettingsStr: function(types, prefs) {
+	getSettingsStr: function(types, prefs, noHash) {
 		types = types || this.types;
 		prefs = prefs || this.prefs;
 
@@ -631,9 +631,8 @@ var handyClicksPrefSvc = {
 		}, "\t");
 
 		const hashFunc = "SHA256";
-		return this.setsHeader
-			+ "// " + hashFunc + ": " + this.getHash(json, hashFunc) + "\n"
-			+ json;
+		var hashData = noHash ? "" : "// " + hashFunc + ": " + this.getHash(json, hashFunc) + "\n";
+		return this.setsHeader + hashData + json;
 	},
 	get JSON() { // For Firefox < 3.5
 		delete this.JSON;
@@ -855,7 +854,12 @@ var handyClicksPrefSvc = {
 		}
 		return d.toLocaleFormat("%Y%m%d%H%M%S");
 	},
-	__savedStr: null,
+
+	get hasUnsaved() {
+		return this.getSettingsStr(null, null, true)
+			!= this.__savedStr.replace(this.hashRe, "");
+	},
+	__savedStr: "",
 	get _savedStr() {
 		return this.__savedStr;
 	},

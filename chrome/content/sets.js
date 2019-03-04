@@ -2229,7 +2229,7 @@ var handyClicksSets = {
 	checkTreeSaved: function() {
 		this.treeUnsaved = this.ps.otherSrc
 			? false
-			: this.ps.getSettingsStr() != this.ps._savedStr;
+			: this.ps.hasUnsaved;
 	},
 	get prefsUnsaved() { //~ todo: this is buggy
 		return Array.prototype.some.call(
