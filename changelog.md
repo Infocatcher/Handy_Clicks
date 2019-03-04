@@ -182,6 +182,14 @@
 `*` Better autocompletion for “Scratchpad” in external editor path: ignore input after already autocompleted “Scratchpad”, autocomplete after any character, not only for “s” + typed “c”.
 `*` Various internal code enhancements.<br>
 
+##### 0.1.3pre8 (2019-03-04)
+<em>(backported from master/HEAD)</em><br>
+`*` Improved settings performance: used faster way to detect unsaved state (compare only settings data without hash calculations).<br>
+`*` Compare current and saved settings: ignore version difference, if there is no actual changes (for forward compatibility).<br>
+`x` Fixed hotkeys to import from clipboard (Ctrl+V, Ctrl+Shift+V, Shift+Ins): now used separate command, which will never be disabled.<br>
+`x` Delete item in tree: correctly handle unnamed items.<br>
+`x` Fixed Ctrl+Tab/Ctrl+Shift+Tab and Ctrl+PageDown/Ctrl+PageUp tabs navigation in Firefox 52+: force navigate only inside focused tabs.<br>
+
 ##### 0.1.3pre7 (2019-02-10)
 <em>(backported from master/HEAD)</em><br>
 `x` Editor: fixed autocomplete feature for properties of `window` object.<br>
