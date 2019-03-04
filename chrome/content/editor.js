@@ -619,10 +619,9 @@ var handyClicksEditor = {
 	},
 	selectCustomFunc: function(isCustom, delayed) {
 		delayed = delayed || "";
-		this.$("hc-editor-funcArgsBox"             + delayed).collapsed =  isCustom;
-		this.$("hc-editor-funcLabelBox"            + delayed).style.visibility = isCustom ? "" : "hidden";
-		this.$("hc-editor-funcCustomTabbox"        + delayed).collapsed = !isCustom;
-		this.$("hc-editor-funcCustomTabboxToolbar" + delayed).hidden = !isCustom;
+		this.$("hc-editor-funcArgsBox"      + delayed).collapsed =  isCustom;
+		this.$("hc-editor-funcLabelBox"     + delayed).style.visibility = isCustom ? "" : "hidden";
+		this.$("hc-editor-funcCustomTabbox" + delayed).collapsed = !isCustom;
 	},
 	editCustomType: function(e) {
 		if(e.button != 2)
