@@ -120,7 +120,7 @@
 					hc_ondrop="event.stopPropagation();">
 					<!-- Prevent bubbling of all events from this box (any modifications will not change apply button state) -->
 					<box id="hc-editor-renameShortcutOverlay" />
-					<button id="hc-editor-clickButton" class="hc-shortcut"
+					<button id="hc-editor-clickButton" hc_allowInRenameMode="true"
 						onclick="handyClicksEditor.setClickOptions(event);"
 						oncommand="event.stopPropagation();"
 						label="&hc.editor.clickHere;" tooltiptext="&hc.editor.clickHereTip;" />
@@ -137,18 +137,18 @@
 							hc_renameCancelUsed="&hc.editor.renameShortcutCancelUsed;"
 							hc_renameCancelAccesskey="&hc.editor.renameShortcutCancelAccesskey;"
 							hc_noData="&hc.editor.noSavedSettings;" />
-						<menulist id="hc-editor-button" class="hc-shortcut" oncommand="handyClicksEditor.updateShortcutContext();">
+						<menulist id="hc-editor-button" hc_allowInRenameMode="true" oncommand="handyClicksEditor.updateShortcutContext();">
 							<menupopup>
 								<menuitem value="0" label="button0short" tooltiptext="button0" class="menuitem-iconic" />
 								<menuitem value="1" label="button1short" tooltiptext="button1" class="menuitem-iconic" />
 								<menuitem value="2" label="button2short" tooltiptext="button2" class="menuitem-iconic" />
 							</menupopup>
 						</menulist>
-						<checkbox id="hc-editor-ctrl" class="hc-shortcut" label="ctrl" />
-						<checkbox id="hc-editor-shift" class="hc-shortcut" label="shift" />
-						<checkbox id="hc-editor-alt" class="hc-shortcut" label="alt" />
-						<checkbox id="hc-editor-meta" class="hc-shortcut" label="meta" />
-						<checkbox id="hc-editor-os" class="hc-shortcut" label="os" hc_note="&hc.editor.osKeyNote;" />
+						<checkbox id="hc-editor-ctrl" hc_allowInRenameMode="true" label="ctrl" />
+						<checkbox id="hc-editor-shift" hc_allowInRenameMode="true" label="shift" />
+						<checkbox id="hc-editor-alt" hc_allowInRenameMode="true" label="alt" />
+						<checkbox id="hc-editor-meta" hc_allowInRenameMode="true" label="meta" />
+						<checkbox id="hc-editor-os" hc_allowInRenameMode="true" label="os" hc_note="&hc.editor.osKeyNote;" />
 					</hbox>
 					<!-- Dummy label for accesskey -->
 					<label style="margin: 0; padding: 0; border: none;"
@@ -388,6 +388,7 @@
 
 	<hbox id="hc-sets-floatToolbar">
 		<button id="hc-editor-sets" class="hcFloatButton hc-iconic hc-preferences" type="menu"
+			hc_allowInRenameMode="true"
 			label="&hc.editor.settings;" accesskey="&hc.editor.settingsAccesskey;">
 			<menupopup
 				onpopupshowing="handyClicksSetsUtils.initPrefsMenu(this);"

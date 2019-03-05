@@ -66,7 +66,7 @@ menulist[hc_sets="disabled"] .menulist-label {
 :root[hc_renameShortcut="true"] #hc-sets-floatToolbar {
 	z-index: 10002;
 }
-:root[hc_renameShortcut="true"] *|*:not(.hc-shortcut):not(#hc-sets-onTop) {
+:root[hc_renameShortcut="true"] *|*:not([hc_allowInRenameMode]) {
 	-moz-user-focus: ignore !important;
 	-moz-user-input: none !important;
 	-moz-user-select: none !important;
