@@ -655,7 +655,7 @@ var handyClicksEditor = {
 				this._savedTypeObj
 			)
 		) {
-			var res = this.su.notifyUnsaved(
+			var res = this._allowUndo ? this.su.PROMPT_DONT_SAVE : this.su.notifyUnsaved(
 				this.getLocalized("editorUnsavedSwitchWarning"),
 				"editor.unsavedSwitchWarning"
 			);
