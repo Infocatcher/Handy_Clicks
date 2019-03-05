@@ -43,7 +43,7 @@ checkbox[hc_important="enabled"]:not([checked="true"]) {
 	-moz-margin-start: 2px !important;
 	padding: 0 2px !important;
 }
-.hcFloatButton > .button-box {
+:root[hc_slimFloatButtons="true"] .hcFloatButton > .button-box { /* Firefox 56+ */
 	padding-top: 1px !important;
 	padding-bottom: 1px !important;
 }
