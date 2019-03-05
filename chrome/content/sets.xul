@@ -858,6 +858,8 @@ preferences {
 			<menuseparator />
 			<menuitem oncommand="handyClicksSets.resetPrefs();" label="&hc.sets.defaults;" />
 			<menuseparator />
+			<menuitem oncommand="handyClicksSets.reloadSettings();" key="hc-sets-key-reload" label="&hc.sets.reloadSettings;" />
+			<menuseparator />
 			<menuitem id="hc-sets-prefs-miImport" class="menuitem-iconic hc-iconic" oncommand="handyClicksSets.importPrefs();"
 				label="&hc.sets.importPrefs;" />
 			<menuitem id="hc-sets-prefs-miExport" class="menuitem-iconic hc-iconic" oncommand="handyClicksSets.exportPrefs();"
