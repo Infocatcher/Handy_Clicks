@@ -266,6 +266,23 @@ var handyClicksSetsUtils = {
 			this.pu.set(askPref, false);
 		return ret;
 	},
+	confirmReload: function() {
+		var askPref = "ui.confirmReload";
+		if(!this.pu.get(askPref))
+			return true;
+		var dontAsk = { value: false };
+		var confirmed = this.ut.confirmEx(
+			this.getLocalized("warningTitle"),
+			this.getLocalized("confirmReload"),
+			this.getLocalized("reload"),
+			true,
+			this.getLocalized("dontAskAgain"),
+			dontAsk
+		);
+		if(confirmed && dontAsk.value)
+			this.pu.set(askPref, false);
+		return confirmed;
+	},
 
 	get topWindow() {
 		return window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)

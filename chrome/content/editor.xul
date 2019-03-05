@@ -67,8 +67,8 @@
 		<key id="hc-editor-key-test" key="t" modifiers="control" command="hc-editor-cmd-test" />
 		<key id="hc-editor-key-undo" key="u" modifiers="control" command="hc-editor-cmd-undo" />
 		<key id="hc-editor-key-delete" key="d" modifiers="control" oncommand="handyClicksEditor.deleteSettings();" />
-		<key id="hc-editor-key-reload" keycode="VK_F5" oncommand="handyClicksEditor.initUI(true);" />
-		<key id="hc-editor-key-reload2" key="r" modifiers="control" oncommand="handyClicksEditor.initUI(true);" />
+		<key id="hc-editor-key-reload" keycode="VK_F5" oncommand="handyClicksEditor.reloadSettings();" />
+		<key id="hc-editor-key-reload2" key="r" modifiers="control" oncommand="handyClicksEditor.reloadSettings();" />
 		<key id="hc-editor-key-switchToSettings" key="s" modifiers="control,shift" hc_allowInRenameMode="true" oncommand="handyClicksEditor.switchToSettings();" />
 
 		<key id="hc-editor-key-editCode" key="E" modifiers="control,shift" command="hc-editor-cmd-editCode" />
@@ -399,7 +399,7 @@
 				<menuitem oncommand="handyClicksEditor.wu.openSettingsPane('editor');"
 					label="&hc.editor.openEditorSettings;" />
 				<menuseparator />
-				<menuitem oncommand="handyClicksEditor.initUI(true);"
+				<menuitem oncommand="handyClicksEditor.reloadSettings();"
 					key="hc-editor-key-reload"
 					label="&hc.editor.reloadSettings;" />
 				<menuseparator />

@@ -429,6 +429,10 @@ var handyClicksEditor = {
 		this.setEditorButtons();
 		this.setDialogButtons();
 	},
+	reloadSettings: function() {
+		if(!this.hasUnsaved || this.su.confirmReload())
+			this.initUI(true);
+	},
 	handleTabSelect: function(e) {
 		if(!("_handyClicksInitialized" in window))
 			return;

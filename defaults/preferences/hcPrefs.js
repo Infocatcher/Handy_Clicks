@@ -60,6 +60,7 @@ pref("extensions.handyclicks.ui.reverseScrollDirection", false);
 pref("extensions.handyclicks.ui.dragSwitchDelay", 250);
 pref("extensions.handyclicks.ui.openMenuDelay", 300);
 pref("extensions.handyclicks.ui.notifyUnsaved", true);
+pref("extensions.handyclicks.ui.confirmReload", true);
 
 pref("extensions.handyclicks.funcs.loadJavaScriptLinks", true);
 pref("extensions.handyclicks.funcs.notifyJavaScriptLinks", true);
