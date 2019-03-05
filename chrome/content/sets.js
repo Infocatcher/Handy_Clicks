@@ -148,12 +148,14 @@ var handyClicksSets = {
 			}
 		);
 		var de = document.documentElement;
-		this.instantApply = de.instantApply;
-		if(this.instantApply)
+		var instantApply = this.instantApply = de.instantApply;
+		if(instantApply)
 			this.applyButton.hidden = true;
 		else
 			this.applyButton.disabled = true;
 		this.delay(function() {
+			if(instantApply)
+				this.$("hc-sets-prefs-reload").hidden = this.$("hc-sets-prefs-reloadSep").hidden = true;
 			if(!this.ps._loadStatus && this.treeUnsaved)
 				this.setModifiedState(true);
 		}, this, 50);
