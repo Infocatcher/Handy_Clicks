@@ -3343,6 +3343,9 @@ var handyClicksSets = {
 	},
 
 	reloadSettings: function() {
+		if(this.hasUnsaved && !this.su.confirmReload())
+			return;
+
 		this.reloadPrefpanes();
 		this.initPrefs();
 		this.updateAllDependencies();
