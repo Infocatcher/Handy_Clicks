@@ -2841,6 +2841,7 @@ var handyClicksSets = {
 		"sets.openEditorsLimit",
 		"sets.removeBackupConfirm",
 		"ui.notifyUnsaved",
+		"ui.confirmReload",
 		"editor.unsavedSwitchWarning",
 		"sets.incompleteImportWarning"
 	],
@@ -2877,6 +2878,9 @@ var handyClicksSets = {
 				break;
 				case "ui.notifyUnsaved":
 					text = this.getLocalized("notifyUnsaved");
+				break;
+				case "ui.confirmReload":
+					text = this.getLocalized("confirmReload");
 				break;
 				case "editor.unsavedSwitchWarning":
 					text = this.getLocalized("editorUnsavedSwitchWarning");
