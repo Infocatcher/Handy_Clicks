@@ -14,6 +14,7 @@
 <!ENTITY hc.editor.settingsAccesskey "g">
 <!ENTITY hc.editor.switchToSettingsTree "Switch to settings tree">
 <!ENTITY hc.editor.openEditorSettings "Editor settings">
+<!ENTITY hc.editor.reloadSettings "Reload settings">
 <!ENTITY hc.editor.invertWindowTitle "Invert window title">
 <!ENTITY hc.editor.sortInternalTypes "Sort built-in types">
 <!ENTITY hc.editor.compactUI "Compact interface">

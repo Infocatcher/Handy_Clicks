@@ -399,6 +399,10 @@
 				<menuitem oncommand="handyClicksEditor.wu.openSettingsPane('editor');"
 					label="&hc.editor.openEditorSettings;" />
 				<menuseparator />
+				<menuitem oncommand="handyClicksEditor.initUI(true);"
+					key="hc-editor-key-reload"
+					label="&hc.editor.reloadSettings;" />
+				<menuseparator />
 				<menuitem type="checkbox" hc_pref="editor.ui.invertWindowTitle"
 					label="&hc.editor.invertWindowTitle;" />
 				<menuitem type="checkbox" hc_pref="editor.ui.sortInternalTypes"
