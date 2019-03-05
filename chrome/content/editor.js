@@ -1317,6 +1317,7 @@ var handyClicksEditor = {
 		var act = rename ? addEventListener : removeEventListener;
 		act.call(window, "keydown", this.preventAccesskeys, true);
 		act.call(window, "command", this.preventCommands, true);
+		this.disableTextboxes(rename); // Force prevent focus...
 		if(rename) {
 			var fe = document.commandDispatcher.focusedElement;
 			if(!fe || fe.parentNode.id != "hc-editor-shortcutBox")
@@ -1379,6 +1380,22 @@ var handyClicksEditor = {
 			e.preventDefault();
 			e.stopPropagation();
 		}
+	},
+	disableTextboxes: function(disable) {
+		var disAttr = "hc_disableInput";
+		Array.forEach(document.getElementsByTagName("textbox"), function(tb) {
+			if(disable) {
+				if(tb.disabled)
+					return;
+				tb.setAttribute(disAttr, "true");
+			}
+			else if(tb.hasAttribute(disAttr))
+				tb.removeAttribute(disAttr);
+			else
+				return;
+			var inp = document.getAnonymousElementByAttribute(tb, "anonid", "input");
+			inp.disabled = disable;
+		});
 	},
 	loadSavedShortcut: function(e) {
 		var mi = e.target;
