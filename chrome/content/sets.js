@@ -2546,11 +2546,13 @@ var handyClicksSets = {
 			}
 		}
 		var matchedRows = [];
+		var rowsCount = 0;
 		for(var h in this.rowsCache) {
 			var tRow = this.rowsCache[h];
 			var tItem = tRow.parentNode;
 			if(this._importPartial && tItem.hasAttribute("hc_old"))
 				continue;
+			++rowsCount;
 			var okRow = !hasTerm || checkFunc(this.getRowText(tRow, caseSensitive));
 			var hl = hasTerm && okRow;
 			if(hl || this._hasHighlighted)
@@ -2589,6 +2591,7 @@ var handyClicksSets = {
 			found && this.searcher.select();
 
 		this.$("hc-sets-tree-searchResults").value = matchedRows.length;
+		this.$("hc-sets-tree-searchTotal").value = rowsCount;
 		sf.setAttribute("hc_notFound", hasTerm && !found);
 
 		this._lastSearch = Date.now();

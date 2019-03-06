@@ -62,10 +62,19 @@ radio[pane="hc-sets-pane-funcs"] {
 #hc-sets-tree-searchFilterMode > .toolbarbutton-icon {
 	margin: 0; /* Correct margin in Firefox 3.0 and older */
 }
-#hc-sets-tree-searchResults {
-	min-width: 1.6em;
+
+#hc-sets-tree-searchStatistics {
 	opacity: 0.5;
+	min-width: 3em;
+	margin: 0 4px;
+	-moz-box-pack: end;
 }
+#hc-sets-tree-searchResults,
+#hc-sets-tree-searchTotal {
+	margin-left: 0;
+	margin-right: 0;
+}
+
 
 #hc-sets-tree-sortMenu menuitem[type="radio"] hbox[anonid="accel"] {
 	min-width: 3em;

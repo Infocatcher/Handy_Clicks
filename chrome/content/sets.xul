@@ -91,7 +91,11 @@ preferences {
 				oncommand="handyClicksSets.searchInSetsTreeDelay(true);"
 				hc_key="hc-sets-key-toggleFilterMode"
 				tooltiptext="&hc.sets.filterTip;" />
-			<label id="hc-sets-tree-searchResults" tooltiptext="&hc.sets.searchResultsTip;" />
+			<hbox id="hc-sets-tree-searchStatistics" align="center" tooltiptext="&hc.sets.searchResultsTip;">
+				<label id="hc-sets-tree-searchResults" />
+				<label class="hc-mark" value="/" />
+				<label id="hc-sets-tree-searchTotal" />
+			</hbox>
 			<spacer flex="1" />
 			<button id="hc-sets-tree-editMenu" type="menu" label="&hc.sets.editMenu;" accesskey="&hc.sets.editMenuAccesskey;">
 				<menupopup onpopupshowing="handyClicksSets.initEditMenu(this);">
