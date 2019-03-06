@@ -794,9 +794,8 @@ var handyClicksEditor = {
 				_labels[label] = 1;
 			var dis = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
 			var notUsed = !this.typeUsed(cType);
-			var tip = notUsed
-				? this.getLocalized("customTypeNotUsed") + " \n" + cType
-				: cType;
+			var tip = this.getLocalized("internalId").replace("%id", cType)
+				+ (notUsed ? " \n" + this.getLocalized("customTypeNotUsed") : "");
 			sortedTypes.push({
 				label: label,
 				hc_localizedLabel: this.ps.localize(label),
@@ -1173,8 +1172,8 @@ var handyClicksEditor = {
 		var ml = this.$("hc-editor-customType");
 		ml.setAttribute("hc_notUsed", notUsed);
 		var inp = document.getAnonymousElementByAttribute(ml, "anonid", "input");
-		var tt = notUsed ? this.getLocalized("customTypeNotUsed") + " \n" : "";
-		inp.setAttribute("tooltiptext", tt + ml.getAttribute("hc_tooltiptext"));
+		var ttNotUsed = notUsed ? " \n" + this.getLocalized("customTypeNotUsed") : "";
+		inp.setAttribute("tooltiptext", ml.getAttribute("hc_tooltiptext") + ttNotUsed);
 	},
 
 	loadFuncs: function() {
