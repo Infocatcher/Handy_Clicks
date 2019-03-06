@@ -1177,9 +1177,15 @@ var handyClicksEditor = {
 			inp.setAttribute("tooltiptext", ml.getAttribute("hc_tooltiptext") + ttNotUsed);
 		}, this);
 	},
+	get renameShortcutMode() {
+		return this.root.getAttribute("hc_renameShortcut") == "true";
+	},
+	set renameShortcutMode(rename) {
+		this.attribute(this.root, "hc_renameShortcut", !!rename);
+	},
 
 	loadFuncs: function() {
-		if(this.root.getAttribute("hc_renameShortcut") == "true") {
+		if(this.renameShortcutMode) {
 			this.highlightUsedTypes();
 			return;
 		}
@@ -1281,7 +1287,7 @@ var handyClicksEditor = {
 			}));
 		}
 		else {
-			var isRenaming = this.root.getAttribute("hc_renameShortcut") == "true";
+			var isRenaming = this.renameShortcutMode;
 			var insPos = df.firstChild;
 			df.insertBefore(this.ut.createElement("menuitem", {
 				id: "hc-editor-renameShortcut",
@@ -1320,7 +1326,7 @@ var handyClicksEditor = {
 			this.loadSavedShortcuts();
 	},
 	renameShortcut: function(onlyRename, forceCancel) {
-		var rename = this.root.getAttribute("hc_renameShortcut") != "true";
+		var rename = this.renameShortcutMode = !this.renameShortcutMode;
 		this.mainTabbox.handleCtrlTab = this.mainTabbox.handleCtrlPageUpDown = !rename;
 		var act = rename ? addEventListener : removeEventListener;
 		act.call(window, "keydown", this.preventAccesskeys, true);
@@ -1330,7 +1336,6 @@ var handyClicksEditor = {
 			var fe = document.commandDispatcher.focusedElement;
 			if(!fe || fe.parentNode.id != "hc-editor-shortcutBox")
 				this.$("hc-editor-button").focus();
-			this.root.setAttribute("hc_renameShortcut", "true");
 			this.$("hc-editor-renameShortcutOverlay").style
 				.backgroundColor = getComputedStyle(this.root, null).backgroundColor;
 			this.funcOptsFixed && this.fixFuncOpts((this.$("hc-editor-funcOptsFixed").checked = false));
@@ -1338,7 +1343,6 @@ var handyClicksEditor = {
 			this._type = this.currentType;
 			return;
 		}
-		this.root.removeAttribute("hc_renameShortcut");
 		var sh = this._shortcut;
 		var ct = this._type;
 		var newSh = this.currentShortcut;
@@ -1677,7 +1681,7 @@ var handyClicksEditor = {
 		if(res == this.su.PROMPT_CANCEL)
 			return false;
 		if(res == this.su.PROMPT_SAVE) {
-			if(this.root.getAttribute("hc_renameShortcut") == "true")
+			if(this.renameShortcutMode)
 				this.renameShortcut(true);
 			this.saveSettings();
 		}
