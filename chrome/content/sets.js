@@ -2839,14 +2839,14 @@ var handyClicksSets = {
 		);
 	},
 	warnMsgsPrefs: [
+		"editor.confirmRename",
+		"editor.unsavedSwitchWarning",
 		"sets.importJSWarning",
+		"sets.incompleteImportWarning",
 		"sets.openEditorsLimit",
 		"sets.removeBackupConfirm",
-		"ui.notifyUnsaved",
 		"ui.confirmReload",
-		"editor.unsavedSwitchWarning",
-		"editor.confirmRename",
-		"sets.incompleteImportWarning"
+		"ui.notifyUnsaved"
 	],
 	initResetWarnMsgs: function() {
 		var changed = this.warnMsgsPrefs.filter(this.pu.prefChanged, this.pu);
@@ -2868,8 +2868,17 @@ var handyClicksSets = {
 			var desc = document.createElement("description");
 			var text;
 			switch(pName) {
+				case "editor.confirmRename":
+					text = this.getLocalized("confirmRename");
+				break;
+				case "editor.unsavedSwitchWarning":
+					text = this.getLocalized("editorUnsavedSwitchWarning");
+				break;
 				case "sets.importJSWarning":
 					text = this.getLocalized("importSetsWarning");
+				break;
+				case "sets.incompleteImportWarning":
+					text = this.getLocalized("importIncomplete");
 				break;
 				case "sets.openEditorsLimit":
 					text = this.getLocalized("openEditorsWarning")
@@ -2879,20 +2888,11 @@ var handyClicksSets = {
 					text = this.getLocalized("removeBackupConfirm")
 						.replace("%f", this.ps.prefsFileName + ".js");
 				break;
-				case "ui.notifyUnsaved":
-					text = this.getLocalized("notifyUnsaved");
-				break;
 				case "ui.confirmReload":
 					text = this.getLocalized("confirmReload");
 				break;
-				case "editor.unsavedSwitchWarning":
-					text = this.getLocalized("editorUnsavedSwitchWarning");
-				break;
-				case "editor.confirmRename":
-					text = this.getLocalized("confirmRename");
-				break;
-				case "sets.incompleteImportWarning":
-					text = this.getLocalized("importIncomplete");
+				case "ui.notifyUnsaved":
+					text = this.getLocalized("notifyUnsaved");
 				break;
 				default:
 					this.ut._warn('initResetWarnMsgs: no description for "' + pName + '" pref');
