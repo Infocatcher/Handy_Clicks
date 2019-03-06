@@ -133,6 +133,7 @@ pref("extensions.handyclicks.editor.autocomplete", true);
 pref("extensions.handyclicks.editor.autocompleteMinSymbols", 2);
 pref("extensions.handyclicks.editor.testFocusMainWindow", true);
 pref("extensions.handyclicks.editor.unsavedSwitchWarning", true);
+pref("extensions.handyclicks.editor.confirmRename", true);
 pref("extensions.handyclicks.editor.ui.showCustomFuncsNotes", true);
 pref("extensions.handyclicks.editor.ui.sortInternalTypes", false);
 pref("extensions.handyclicks.editor.ui.compact", false);

@@ -1325,7 +1325,7 @@ var handyClicksEditor = {
 		if(!("state" in mp) || mp.state == "open") // Changed using mouse scroll
 			this.loadSavedShortcuts();
 	},
-	renameShortcut: function(onlyRename, forceCancel) {
+	renameShortcut: function(onlyRename, forceCancel, syncSave) {
 		var rename = this.renameShortcutMode = !this.renameShortcutMode;
 		this.mainTabbox.handleCtrlTab = this.mainTabbox.handleCtrlPageUpDown = !rename;
 		var act = rename ? addEventListener : removeEventListener;
@@ -1367,6 +1367,10 @@ var handyClicksEditor = {
 		this.wu.shortcutRenamed(sh + "-" + ct, newSh + "-" + ct);
 		if(onlyRename) // ondialogcancel -> checkSaved()
 			return;
+		if(syncSave) {
+			this.pe.saveSettingsObjects();
+			return;
+		}
 
 		// Like loadFuncs(), but preserve unsaved data
 		this.shortcut = newSh;
@@ -1501,7 +1505,7 @@ var handyClicksEditor = {
 		var newFileName = this.getLocalized("newFileName");
 		var exists = "";
 		for(;;) {
-			var newPath = this.ut.prompt(this.getLocalized("rename"), exists + newFileName, path);
+			var newPath = this.ut.prompt(this.getLocalized("renameFile"), exists + newFileName, path);
 			if(!newPath || newPath == path)
 				return;
 			if(!(newPath in files))
@@ -1675,15 +1679,18 @@ var handyClicksEditor = {
 		})();
 	},
 	checkSaved: function() {
-		if(!this.hasUnsaved)
-			return true;
-		var res = this.su.notifyUnsaved();
+		var hasUnsaved = this.hasUnsaved;
+		var hasRename = this.renameShortcutMode && this._shortcut != this.currentShortcut;
+		var res = hasUnsaved
+			? this.su.notifyUnsaved()
+			: hasRename
+				? this.su.notifyUnsaved(this.getLocalized("confirmRename"), "editor.confirmRename")
+				: undefined;
 		if(res == this.su.PROMPT_CANCEL)
 			return false;
 		if(res == this.su.PROMPT_SAVE) {
-			if(this.renameShortcutMode)
-				this.renameShortcut(true);
-			this.saveSettings();
+			hasRename && this.renameShortcut(hasUnsaved, false, true);
+			hasUnsaved && this.saveSettings();
 		}
 		return true;
 	},
