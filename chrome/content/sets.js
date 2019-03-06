@@ -2845,6 +2845,7 @@ var handyClicksSets = {
 		"ui.notifyUnsaved",
 		"ui.confirmReload",
 		"editor.unsavedSwitchWarning",
+		"editor.confirmRename",
 		"sets.incompleteImportWarning"
 	],
 	initResetWarnMsgs: function() {
@@ -2886,6 +2887,9 @@ var handyClicksSets = {
 				break;
 				case "editor.unsavedSwitchWarning":
 					text = this.getLocalized("editorUnsavedSwitchWarning");
+				break;
+				case "editor.confirmRename":
+					text = this.getLocalized("confirmRename");
 				break;
 				case "sets.incompleteImportWarning":
 					text = this.getLocalized("importIncomplete");
