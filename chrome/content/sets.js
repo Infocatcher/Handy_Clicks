@@ -2851,9 +2851,9 @@ var handyClicksSets = {
 		var changed = this.warnMsgsPrefs.filter(this.pu.prefChanged, this.pu);
 		var notChanged = !changed.length;
 		this.$("hc-sets-resetWarnMsgs").disabled = notChanged;
-		if(notChanged)
-			return;
-
+		!notChanged && this.delay(this.addResetWarnMsgsTip, this, 50, [changed]);
+	},
+	addResetWarnMsgsTip: function(changed) {
 		var tt = this.$("hc-sets-warnMsgsPrefs-tooltip");
 		var ttSep = this.$("hc-sets-warnMsgsPrefs-tooltipSep");
 		while(ttSep.nextSibling)
@@ -2907,7 +2907,7 @@ var handyClicksSets = {
 		function escapeRegExp(str) {
 			return str.replace(/[\\\/.^$+*?|()\[\]{}]/g, "\\$&");
 		}
-		var re = escapeRegExp(this.pu.prefNS)
+		var re = "^" + escapeRegExp(this.pu.prefNS)
 			+ "(?:" + this.warnMsgsPrefs.map(escapeRegExp).join("|") + ")";
 		this.pu.openAboutConfig("/" + re + "/");
 	},
