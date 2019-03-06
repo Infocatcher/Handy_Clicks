@@ -442,7 +442,9 @@ var handyClicksSetsUtils = {
 		var isClosedMenu = false;
 		if(elt.localName == "menu" || elt.getAttribute("type") == "menu") {
 			isClosedMenu = elt.getAttribute("open") != "true";
-			elt = elt.hasChildNodes() && elt.firstChild.firstChild;
+			var mp = elt.firstChild;
+			isClosedMenu && this.ensureMenupopupInitialized(mp);
+			elt = mp && mp.firstChild;
 			if(!elt)
 				return null;
 		}
@@ -461,6 +463,13 @@ var handyClicksSetsUtils = {
 			},
 			this
 		);
+	},
+	ensureMenupopupInitialized: function(mp) {
+		this._log("ensureMenupopupInitialized()");
+		mp.collapsed = true;
+		mp["openPopup" in mp ? "openPopup" : "showPopup"]();
+		mp.hidePopup();
+		mp.collapsed = false;
 	},
 	scrollNumTextbox: function(e) {
 		var tar = e.target;
