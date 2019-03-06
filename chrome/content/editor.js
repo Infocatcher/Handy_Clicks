@@ -717,14 +717,21 @@ var handyClicksEditor = {
 	customTypeLabelChangedDelay: function(it) {
 		this.delay(this.customTypeLabelChanged, this, 0, arguments);
 	},
+	typeFilterTimer: 0,
 	customTypeIdFilter: function(e) {
-		this.delay(this._customTypeIdFilter, this, 0, [e.target]);
+		var trg = e.target;
+		if(!this.typeFilterTimer) {
+			this.typeFilterTimer = this.delay(function() {
+				this.typeFilterTimer = 0;
+				this._customTypeIdFilter(trg);
+			}, this);
+		}
 		if(e.type != "keypress")
 			return false;
 		var key = e.charCode;
 		var okChar = !key || key < 32 || e.ctrlKey || e.altKey || e.metaKey || !/[^\w$]/.test(String.fromCharCode(key));
 		if(!okChar)
-			this.customTypeIdInfo(e.target);
+			this.customTypeIdInfo(trg);
 		return okChar;
 	},
 	_customTypeIdFilter: function(node) {
