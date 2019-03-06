@@ -1681,11 +1681,8 @@ var handyClicksEditor = {
 	checkSaved: function() {
 		var hasUnsaved = this.hasUnsaved;
 		var hasRename = this.renameShortcutMode && this._shortcut != this.currentShortcut;
-		var res = hasUnsaved
-			? this.su.notifyUnsaved()
-			: hasRename
-				? this.su.notifyUnsaved(this.getLocalized("confirmRename"), "editor.confirmRename")
-				: undefined;
+		var res = hasUnsaved ? this.su.notifyUnsaved()
+			: hasRename ? this.notifyUnsavedRename() : undefined;
 		if(res == this.su.PROMPT_CANCEL)
 			return false;
 		if(res == this.su.PROMPT_SAVE) {
@@ -1693,6 +1690,14 @@ var handyClicksEditor = {
 			hasUnsaved && this.saveSettings();
 		}
 		return true;
+	},
+	notifyUnsavedRename: function() {
+		var sh = "\n" + this.ps.getShortcutStr(this._shortcut, true)
+			+ "\n\u21d2 " /* "=>" */ + this.ps.getShortcutStr(this.currentShortcut, true);
+		return this.su.notifyUnsaved(
+			this.getLocalized("confirmRename") + sh,
+			"editor.confirmRename"
+		);
 	},
 
 	saveShortcut: function(applyFlag, testFlag, dontUpdate, saveAll) {
