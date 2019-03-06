@@ -1171,9 +1171,11 @@ var handyClicksEditor = {
 		var notUsed = !this.typeUsed(customType);
 		var ml = this.$("hc-editor-customType");
 		ml.setAttribute("hc_notUsed", notUsed);
-		var inp = document.getAnonymousElementByAttribute(ml, "anonid", "input");
-		var ttNotUsed = notUsed ? " \n" + this.getLocalized("customTypeNotUsed") : "";
-		inp.setAttribute("tooltiptext", ml.getAttribute("hc_tooltiptext") + ttNotUsed);
+		this.delay(function() { // Wait to correctly set tooltip on startup
+			var inp = document.getAnonymousElementByAttribute(ml, "anonid", "input");
+			var ttNotUsed = notUsed ? " \n" + this.getLocalized("customTypeNotUsed") : "";
+			inp.setAttribute("tooltiptext", ml.getAttribute("hc_tooltiptext") + ttNotUsed);
+		}, this);
 	},
 
 	loadFuncs: function() {
