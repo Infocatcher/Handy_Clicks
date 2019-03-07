@@ -286,7 +286,8 @@ var handyClicksSets = {
 	},
 	saveTreeSortOrder: function() {
 		var rememberSort = this.pu.get("sets.rememberSort");
-		Array.prototype.forEach.call(this.tree.columns, function(treeCol) {
+		var tr = this.tree;
+		Array.prototype.forEach.call(tr.columns, function(treeCol) {
 			var col = treeCol.element;
 			if(!rememberSort) {
 				col.removeAttribute("sortDirection");
@@ -295,6 +296,18 @@ var handyClicksSets = {
 			document.persist(col.id, "sortDirection");
 			document.persist(col.id, "sortActive");
 		});
+		var hasDMi = "drawModeInitial" in this;
+		var dmi = hasDMi && this.drawModeInitial;
+		if(rememberSort) {
+			if(hasDMi)
+				tr.setAttribute("hc_drawModeInitial", dmi);
+			else
+				tr.removeAttribute("hc_drawModeInitial");
+			document.persist(tr.id, "hc_drawModeInitial");
+		}
+		else if(hasDMi) {
+			this.setDrawMode(dmi);
+		}
 	},
 	ensureTreeSorted: function() {
 		//var treeCol = this.tree.columns.getSortedColumn();
@@ -313,6 +326,12 @@ var handyClicksSets = {
 		sortCol.setAttribute("sortDirection", dirs[dirs.lastIndexOf(dir) - 1]);
 		this.tView.cycleHeader(this.tree.columns[sortCol.id]);
 		this._log("ensureTreeSorted() -> " + sortCol.id.substr(13) + " -> " + (dir || "(unsorted)"));
+
+		var tr = this.tree;
+		if(tr.hasAttribute("hc_drawModeInitial")) {
+			this.drawModeInitial = +tr.getAttribute("hc_drawModeInitial");
+			tr.removeAttribute("hc_drawModeInitial");
+		}
 	},
 	ensureTreeDrawMode: function(col) {
 		if(!this.pu.get("sets.treeSortAutoInlineDrawMode"))
