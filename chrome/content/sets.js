@@ -2560,7 +2560,8 @@ var handyClicksSets = {
 			tItem.__matched = okRow;
 			okRow && matchedRows.push(tRow);
 		}
-		var found = matchedRows.length > 0;
+		var foundCount = matchedRows.length;
+		var found = foundCount > 0;
 		if(hasTerm && found)
 			this._hasHighlighted = true;
 
@@ -2590,8 +2591,9 @@ var handyClicksSets = {
 		else
 			found && this.searcher.select();
 
-		this.$("hc-sets-tree-searchResults").value = matchedRows.length;
+		this.$("hc-sets-tree-searchResults").value = foundCount;
 		this.$("hc-sets-tree-searchTotal").value = rowsCount;
+		this.$("hc-sets-tree-searchStatistics").setAttribute("hc_search", hasTerm);
 		sf.setAttribute("hc_notFound", hasTerm && !found);
 
 		this._lastSearch = Date.now();

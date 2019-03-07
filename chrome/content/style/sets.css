@@ -74,7 +74,10 @@ radio[pane="hc-sets-pane-funcs"] {
 	margin-left: 0;
 	margin-right: 0;
 }
-
+#hc-sets-tree-searchStatistics[hc_search="false"] > .hc-mark,
+#hc-sets-tree-searchStatistics[hc_search="false"] > #hc-sets-tree-searchTotal {
+	visibility: hidden;
+}
 
 #hc-sets-tree-sortMenu menuitem[type="radio"] hbox[anonid="accel"] {
 	min-width: 3em;
