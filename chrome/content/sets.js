@@ -2604,15 +2604,14 @@ var handyClicksSets = {
 	},
 	getRowText: function(tRow, caseSensitive) {
 		var tChld = tRow, tItem;
-		var tBody = this.tBody;
 		var rowText = [];
 		do {
 			tItem = tChld.parentNode;
 			tChld = tItem.parentNode;
 			if(tItem.__isDelayed)
-				tChld.parentNode.__tempIgnore = true;
-			else if(tItem.__tempIgnore) {
-				delete tItem.__tempIgnore;
+				var skipLevel = true;
+			else if(skipLevel) {
+				skipLevel = false;
 				continue;
 			}
 			var row = this.getRowForItem(tItem);
@@ -2621,17 +2620,15 @@ var handyClicksSets = {
 				function(elt) {
 					var label = elt.getAttribute("label");
 					label && rowText.push(label);
-				},
-				this
+				}
 			);
 			var sr = this.searchReplacements;
 			var props = row.getAttribute("properties");
 			props && props.split(/\s+/).forEach(function(prop) {
-				if(prop in sr)
-					rowText.push(sr[prop]);
+				prop in sr && rowText.push(sr[prop]);
 			});
 		}
-		while(tChld != tBody);
+		while(tChld != this.tBody);
 		rowText = rowText.join("\n");
 		return caseSensitive ? rowText : rowText.toLowerCase();
 	},
