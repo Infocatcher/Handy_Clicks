@@ -181,6 +181,17 @@
 `+` Highlight current row in tree, if search was wrapped (navigated from last to first search result or vice versa).<br>
 `*` Improved <em>extensions.handyclicks.sets.treeExpandDelayedAction</em> = false: don't force collapse delayed actions and restore saved state.<br>
 `*` Better autocompletion for “Scratchpad” in external editor path: ignore input after already autocompleted “Scratchpad”, autocomplete after any character, not only for “s” + typed “c”.
+`*` Iterate over all backups and auto-restore newest appreciate file (especially useful in case of removed duplicate backups).<br>
+`+` Editor: added “switch to settings tree” command (Ctrl+Shift+S).<br>
+`+` Editor: added “Settings” menu.<br>
+`+` Editor: added UI for <em>extensions.handyclicks.editor.ui.invertWindowTitle</em> and <em>extensions.handyclicks.editor.ui.compact</em> preferences.<br>
+`+` Editor: added menu item to open settings.<br>
+`+` Settings, editor: added menu item to reload settings (for already existing F5/Ctrl+R hotkey).<br>
+`*` Added confirmation for “reload settings” command (<em>extensions.handyclicks.ui.confirmReload</em> preference).<br>
+`x` Reload settings + custom type: don't show unsaved warning.<br>
+`x` Scroll to switch: correctly scroll radio menu items inside closed menu-buttons (simulate open/close menu to initialize).<br>
+`*` Improve search/filter counter: also show total settings count.<br>
+`+` Added %internal% search placeholder for built-in code/items.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
