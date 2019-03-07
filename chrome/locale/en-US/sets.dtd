@@ -46,6 +46,7 @@
 &#37;&#37;on&#37;&#37; = &#37;on&#37; (not treat as search placeholder)">
 <!ENTITY hc.sets.filterTip "Filter">
 <!ENTITY hc.sets.searchResultsTip "Count of found items">
+<!ENTITY hc.sets.searchTotalTip "Total items count">
 
 <!ENTITY hc.sets.editMenu "Edit">
 <!ENTITY hc.sets.editMenuAccesskey "E">

@@ -46,6 +46,7 @@
 &#37;&#37;on&#37;&#37; = &#37;on&#37; (не обрабатывать как поисковую замену)">
 <!ENTITY hc.sets.filterTip "Фильтр">
 <!ENTITY hc.sets.searchResultsTip "Количество найденных настроек">
+<!ENTITY hc.sets.searchTotalTip "Общее количество настроек">
 
 <!ENTITY hc.sets.editMenu "Правка">
 <!ENTITY hc.sets.editMenuAccesskey "П">
