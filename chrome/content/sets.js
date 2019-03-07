@@ -84,7 +84,7 @@ var handyClicksSets = {
 		}
 
 		if(
-			(this.appName == "Pale Moon" ? this.appVersion >= 27 : fxVersion >= 25)
+			(this.isPaleMoon ? this.appVersion >= 27 : fxVersion >= 25)
 			&& this.appInfo.OS == "WINNT"
 			&& this.osVersion >= 6
 			&& matchMedia("(-moz-windows-default-theme)").matches

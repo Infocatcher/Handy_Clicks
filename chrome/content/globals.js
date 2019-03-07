@@ -17,10 +17,6 @@ var g = window.handyClicksGlobals = {
 			.getService(Components.interfaces.nsIXULAppInfo)
 			.QueryInterface(Components.interfaces.nsIXULRuntime);
 	},
-	get isSeaMonkey() {
-		delete g.isSeaMonkey;
-		return g.isSeaMonkey = g.appName == "SeaMonkey";
-	},
 	get appVersion() {
 		delete g.appVersion;
 		return g.appVersion = parseFloat(g.appInfo.version);
@@ -31,7 +27,7 @@ var g = window.handyClicksGlobals = {
 	},
 	get fxVersion() {
 		var ver = g.appVersion;
-		if(g.appName == "Pale Moon" || g.appName == "Basilisk")
+		if(g.isPaleMoon || g.isBasilisk)
 			ver = parseFloat(g.appInfo.platformVersion) >= 4.1 ? 56 : 28;
 		// https://developer.mozilla.org/en-US/docs/Mozilla/Gecko/Versions
 		else if(g.isSeaMonkey) switch(ver) {
@@ -221,6 +217,22 @@ var g = window.handyClicksGlobals = {
 	}
 };
 g.g = g;
+
+var apps = {
+	isSeaMonkey: "SeaMonkey",
+	isFirefox:   "Firefox",
+	isPaleMoon:  "Pale Moon",
+	isBasilisk:  "Basilisk",
+	__proto__: null
+};
+function appGetter(p, n) {
+	g.__defineGetter__(p, function() {
+		delete g[p];
+		return g[p] = g.appName == n;
+	});
+}
+for(var p in apps)
+	appGetter(p, apps[p]);
 
 function lazy(s, p, file) {
 	var has = p in window && !window.__lookupGetter__(p);

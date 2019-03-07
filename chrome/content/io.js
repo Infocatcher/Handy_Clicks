@@ -62,7 +62,7 @@ var handyClicksIO = {
 			var options = {};
 			if(
 				this.fxVersion < 25
-				|| this.appName == "Pale Moon" && this.appVersion < 27
+				|| this.isPaleMoon && this.appVersion < 27
 			)
 				options.tmpPath = file.path + ".tmp";
 			OS.File.writeAtomic(file.path, arr, options).then(

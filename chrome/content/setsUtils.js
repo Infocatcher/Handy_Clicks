@@ -19,7 +19,7 @@ var handyClicksSetsUtils = {
 			this.setEnabledStatus();
 			var de = document.documentElement;
 			de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
-			var slimFloatButtons = this.fxVersion >= 56 && (this.appName == "Firefox" || this.isSeaMonkey);
+			var slimFloatButtons = this.fxVersion >= 56 && (this.isFirefox || this.isSeaMonkey);
 			de.setAttribute("hc_slimFloatButtons", slimFloatButtons);
 			this.checkWindowStatus(true);
 			this.delay(this.setKeysDesc, this, 10);
