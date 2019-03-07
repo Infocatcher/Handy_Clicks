@@ -65,14 +65,22 @@ radio[pane="hc-sets-pane-funcs"] {
 
 #hc-sets-tree-searchStatistics {
 	opacity: 0.5;
-	min-width: 3em;
 	margin: 0 4px;
-	-moz-box-pack: end;
+	min-width: 3.2em;
 }
 #hc-sets-tree-searchResults,
 #hc-sets-tree-searchTotal {
 	margin-left: 0;
 	margin-right: 0;
+	min-width: 1.55em;
+}
+#hc-sets-tree-searchResults,
+:root[chromedir="rtl"] #hc-sets-tree-searchTotal {
+	text-align: right;
+}
+#hc-sets-tree-searchTotal,
+:root[chromedir="rtl"] #hc-sets-tree-searchResults  {
+	text-align: left;
 }
 #hc-sets-tree-searchStatistics[hc_search="false"] > .hc-mark,
 #hc-sets-tree-searchStatistics[hc_search="false"] > #hc-sets-tree-searchTotal {
