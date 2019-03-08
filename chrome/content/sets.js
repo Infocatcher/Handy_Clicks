@@ -4572,17 +4572,23 @@ var handyClicksSetsSearcher = {
 	_selectAll: function() {
 		var tSel = this.tSel;
 		tSel.clearSelection();
-		var firstIndx, lastIndx;
+		var fvr = this.tbo.getFirstVisibleRow();
+		var lvr = this.tbo.getLastVisibleRow();
+		var hasVisible, firstIndx, lastIndx;
 		this._res.forEach(function(tItem, n) {
 			this.ensureTreeitemVisible(tItem);
 			var i = this.tView.getIndexOfItem(tItem);
 			tSel.rangedSelect(i, i, true);
+			if(hasVisible)
+				return;
+			if(i >= fvr && i <= lvr)
+				hasVisible = true;
 			if(!n)
 				firstIndx = i;
 			else
 				lastIndx = i;
 		}, this);
-		this.delay(function() {
+		if(!hasVisible) this.delay(function() {
 			lastIndx  != undefined && this.tbo.ensureRowIsVisible(lastIndx);
 			firstIndx != undefined && this.tbo.ensureRowIsVisible(firstIndx);
 		}, this);
