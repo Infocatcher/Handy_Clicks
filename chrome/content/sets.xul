@@ -118,9 +118,9 @@ preferences {
 					<menuseparator />
 					<menuitem id="hc-sets-tree-find" oncommand="handyClicksSets.focusSearch();" key="hc-sets-key-focusSearch"
 						label="&hc.sets.find;" />
-					<menuitem id="hc-sets-tree-findNext" oncommand="handyClicksSets.searcher.next();" key="hc-sets-key-findNext"
+					<menuitem id="hc-sets-tree-findNext" oncommand="handyClicksSets.searcher.next(true);" key="hc-sets-key-findNext"
 						label="&hc.sets.findNext;" />
-					<menuitem id="hc-sets-tree-findPrev" oncommand="handyClicksSets.searcher.prev();" key="hc-sets-key-findPrev"
+					<menuitem id="hc-sets-tree-findPrev" oncommand="handyClicksSets.searcher.prev(true);" key="hc-sets-key-findPrev"
 						label="&hc.sets.findPrev;" />
 					<menuitem id="hc-sets-tree-findSelectAll" oncommand="handyClicksSets.searcher.selectAll();" key="hc-sets-key-findSelectAll"
 						label="&hc.sets.findSelectAll;" />

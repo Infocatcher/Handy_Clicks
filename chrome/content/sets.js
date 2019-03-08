@@ -4412,9 +4412,10 @@ var handyClicksSetsSearcher = {
 	reset: function() {
 		this._current = 0;
 	},
-	next: function() {
+	next: function(focusTree) {
 		if(!this.isTreePaneSelected)
 			return;
+		focusTree && this.tree.focus();
 		if(this.startFromSelection(true))
 			return;
 		if(this.checkVisibility())
@@ -4423,9 +4424,10 @@ var handyClicksSetsSearcher = {
 			this._wrapped = true, this._current = 0;
 		this.select();
 	},
-	prev: function() {
+	prev: function(focusTree) {
 		if(!this.isTreePaneSelected)
 			return;
+		focusTree && this.tree.focus();
 		if(this.startFromSelection(false))
 			return;
 		if(this.checkVisibility())
@@ -4530,8 +4532,10 @@ var handyClicksSetsSearcher = {
 		tbo.ensureRowIsVisible(i); // Should be visible, but...
 	},
 	selectAll: function() {
-		if(this.isTreePaneSelected)
-			this.treeBatch(this._selectAll, this, arguments);
+		if(!this.isTreePaneSelected)
+			return;
+		this.tree.focus();
+		this.treeBatch(this._selectAll, this, arguments);
 	},
 	_selectAll: function() {
 		var tSel = this.tSel;
