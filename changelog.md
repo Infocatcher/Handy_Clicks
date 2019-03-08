@@ -78,7 +78,7 @@
 `*` Rewritten and simplified trick to not focus read-only textboxes with functions arguments description.<br>
 `*` Search: expand only to matched items (and don't expand all tree).<br>
 `*` Find next down/up: select first search result, if it not visible inside collapsed tree, also start navigation from selection (instead of internal index).<br>
-`*` Select all search results: ensure first item visible.<br>
+`*` Select all search results: scroll to nearest not visible item, if there is not visible items.<br>
 `+` Added menu items and hotkeys to collapse/expand tree (now not only not intuitive click on “Shortcut and target” column).<br>
 `x` Correctly reload settings in import mode (F5): will be stored source of imported data for future reloading.<br>
 `*` Added icons to “Open backups directory”, “Restore…”, “Show file” and “Remove” menu items (<a href="https://www.fatcow.com/free-icons">Farm-Fresh Web Icons by FatCow Web Hosting</a>).
