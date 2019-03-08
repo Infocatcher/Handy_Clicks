@@ -1874,16 +1874,21 @@ var handyClicksSets = {
 		this.$("hc-sets-tree-findFilter").setAttribute("checked", this.filterMode);
 	},
 	selectAll: function() {
-		if(this.isTreePaneSelected)
-			this.tSel.selectAll();
+		if(!this.isTreePaneSelected)
+			return;
+		this.tree.focus();
+		this.tSel.selectAll();
 	},
 	clearSelection: function() {
-		if(this.isTreePaneSelected)
-			this.tSel.clearSelection();
+		if(!this.isTreePaneSelected)
+			return;
+		this.tree.focus();
+		this.tSel.clearSelection();
 	},
 	invertSelection: function() {
 		if(!this.isTreePaneSelected)
 			return;
+		this.tree.focus();
 		var tSel = this.tSel;
 		try {
 			tSel.invertSelection();
