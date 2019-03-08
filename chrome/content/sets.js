@@ -1771,8 +1771,13 @@ var handyClicksSets = {
 		if(row.value == _tc.row) {
 			if(e.button == 0 && col.value == _tc.col)
 				this.toggleEnabled(e);
-			else if(e.button == 1)
-				this.editItems(e);
+			else if(e.button == 1) {
+				var it = this.tView.getItemAtIndex(row.value);
+				if("__shortcut" in it) {
+					var mode = it.__isType ? this.ct.EDITOR_MODE_TYPE : this.ct.EDITOR_MODE_SHORTCUT;
+					this.openEditorWindow(it, mode);
+				}
+			}
 		}
 		_tc.row = _tc.col = null;
 	},
