@@ -1679,14 +1679,16 @@ var handyClicksSets = {
 		}
 	},
 	blinkTreeitem: function(tItem) {
-		var hl = this.ju.bind(function(hl) {
-			this.setChildNodesProperties(tItem, { hc_blink: hl }, true);
-		}, this);
+		this.blinkNode(tItem, this.ju.bind(function(ti, hl) {
+			this.setChildNodesProperties(ti, { hc_blink: hl }, true);
+		}, this));
+	},
+	blinkNode: function(node, hl) {
 		var count = 3;
 		(function blink() {
-			hl(true);
+			hl(node, true);
 			setTimeout(function() {
-				hl(false);
+				hl(node, false);
 				if(--count)
 					setTimeout(blink, 80);
 			}, 150);
