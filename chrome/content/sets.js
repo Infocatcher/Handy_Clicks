@@ -225,24 +225,42 @@ var handyClicksSets = {
 		var tr = this.tree;
 		if(saveFlag) {
 			if(rememberState) {
-				tr.setAttribute("hc_stateCollapsed", this.ps.JSON.stringify(this.getCollapsed()));
-				tr.setAttribute("hc_stateSelected", this.ps.JSON.stringify(this.getSelected()));
+				this.persistLong(tr, "hc_stateCollapsed", this.ps.JSON.stringify(this.getCollapsed()));
+				this.persistLong(tr, "hc_stateSelected", this.ps.JSON.stringify(this.getSelected()));
 			}
 			else {
-				tr.removeAttribute("hc_stateCollapsed");
-				tr.removeAttribute("hc_stateSelected");
+				this.persistLong(tr, "hc_stateCollapsed", "");
+				this.persistLong(tr, "hc_stateSelected", "");
 			}
-			document.persist(tr.id, "hc_stateCollapsed");
-			document.persist(tr.id, "hc_stateSelected");
 			return;
 		}
 		if(!rememberState)
 			return;
 
-		var collapsedRows = tr.getAttribute("hc_stateCollapsed");
-		var selectedRows = tr.getAttribute("hc_stateSelected");
+		var collapsedRows = this.getPersistedLong(tr, "hc_stateCollapsed");
+		var selectedRows = this.getPersistedLong(tr, "hc_stateSelected");
 		collapsedRows && this.restoreCollapsed(this.parseJSON(collapsedRows));
 		selectedRows && this.restoreSelection(this.parseJSON(selectedRows));
+	},
+	persistLong: function(node, attr, val) {
+		var maxLen = 4096;
+		for(var i = 0; ; ++i) {
+			var v = val.substr(i*maxLen, maxLen);
+			var a = attr + (i ? i + 1 : "");
+			if(v)
+				node.setAttribute(a, v);
+			else if(node.hasAttribute(a)) // Remove previously persisted
+				node.removeAttribute(a);
+			else
+				break;
+			document.persist(node.id, a);
+		}
+	},
+	getPersistedLong: function(node, attr) {
+		var val = "";
+		for(var i = 1, a; node.hasAttribute((a = attr + (i > 1 ? i : ""))); ++i)
+			val += node.getAttribute(a);
+		return val;
 	},
 	parseJSON: function(s) {
 		try { // Can't store too long data using document.persist()
