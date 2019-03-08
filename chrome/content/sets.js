@@ -241,8 +241,17 @@ var handyClicksSets = {
 
 		var collapsedRows = tr.getAttribute("hc_stateCollapsed");
 		var selectedRows = tr.getAttribute("hc_stateSelected");
-		collapsedRows && this.restoreCollapsed(this.ps.JSON.parse(collapsedRows));
-		selectedRows && this.restoreSelection(this.ps.JSON.parse(selectedRows));
+		collapsedRows && this.restoreCollapsed(this.parseJSON(collapsedRows));
+		selectedRows && this.restoreSelection(this.parseJSON(selectedRows));
+	},
+	parseJSON: function(s) {
+		try { // Can't store too long data using document.persist()
+			return this.ps.JSON.parse(s);
+		}
+		catch(e) {
+			Components.utils.reportError(e);
+		}
+		return {};
 	},
 	treeScrollPos: function(saveFlag) {
 		var rememberScrollPos = this.pu.get("sets.rememberScrollPosition");
