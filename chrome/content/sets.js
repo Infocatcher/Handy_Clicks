@@ -4570,27 +4570,28 @@ var handyClicksSetsSearcher = {
 		this.treeBatch(this._selectAll, this, arguments);
 	},
 	_selectAll: function() {
-		var tSel = this.tSel;
-		tSel.clearSelection();
+		this.tSel.clearSelection();
 		var fvr = this.tbo.getFirstVisibleRow();
 		var lvr = this.tbo.getLastVisibleRow();
-		var hasVisible, firstIndx, lastIndx;
+		var hasVisible, nearestIndx, offset = Infinity;
 		this._res.forEach(function(tItem, n) {
 			this.ensureTreeitemVisible(tItem);
 			var i = this.tView.getIndexOfItem(tItem);
-			tSel.rangedSelect(i, i, true);
+			this.tSel.rangedSelect(i, i, true);
 			if(hasVisible)
 				return;
-			if(i >= fvr && i <= lvr)
+			if(i >= fvr && i <= lvr) {
 				hasVisible = true;
-			if(!n)
-				firstIndx = i;
-			else
-				lastIndx = i;
+				return;
+			}
+			var di = i < fvr ? fvr - i : i - lvr;
+			if(di < offset) {
+				offset = di;
+				nearestIndx = i;
+			}
 		}, this);
-		if(!hasVisible) this.delay(function() {
-			lastIndx  != undefined && this.tbo.ensureRowIsVisible(lastIndx);
-			firstIndx != undefined && this.tbo.ensureRowIsVisible(firstIndx);
+		if(!hasVisible && nearestIndx !== undefined) this.delay(function() {
+			this.scrollToRow(nearestIndx);
 		}, this);
 	},
 	_unwrapTimeout: 0,
