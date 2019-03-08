@@ -299,29 +299,33 @@ var handyClicksSets = {
 		var hasDMi = "drawModeInitial" in this;
 		var dmi = hasDMi && this.drawModeInitial;
 		if(rememberSort) {
-			if(hasDMi)
+			if(hasDMi && this.treeSortColumn) {
 				tr.setAttribute("hc_drawModeInitial", dmi);
-			else
+				this._log("Save initial tree draw mode: " + dmi);
+			}
+			else {
 				tr.removeAttribute("hc_drawModeInitial");
+			}
 			document.persist(tr.id, "hc_drawModeInitial");
 		}
 		else if(hasDMi) {
 			this.setDrawMode(dmi);
 		}
 	},
-	ensureTreeSorted: function() {
-		//var treeCol = this.tree.columns.getSortedColumn();
+	get treeSortColumn() {
 		var sortCol = this.$("hc-sets-tree-columns").getElementsByAttribute("sortActive", "true")[0] || null;
+		if(sortCol && sortCol.hasAttribute("primary") && !sortCol.getAttribute("sortDirection"))
+			return null;
+		return sortCol;
+	},
+	ensureTreeSorted: function() {
+		var sortCol = this.treeSortColumn;
 		if(!sortCol) {
 			this.ensureInitialDrawMode();
 			return;
 		}
 		// Trick: set sore direction to previous state and invoke sorting
 		var dir = sortCol.getAttribute("sortDirection");
-		if(!dir && sortCol.hasAttribute("primary")) {
-			this.ensureInitialDrawMode();
-			return;
-		}
 		var dirs = ["", "ascending", "descending", ""];
 		sortCol.setAttribute("sortDirection", dirs[dirs.lastIndexOf(dir) - 1]);
 		this.tView.cycleHeader(this.tree.columns[sortCol.id]);
@@ -331,6 +335,7 @@ var handyClicksSets = {
 		if(tr.hasAttribute("hc_drawModeInitial")) {
 			this.drawModeInitial = +tr.getAttribute("hc_drawModeInitial");
 			tr.removeAttribute("hc_drawModeInitial");
+			this._log("Read initial tree draw mode: " + this.drawModeInitial);
 		}
 	},
 	ensureTreeDrawMode: function(col) {
