@@ -2103,8 +2103,10 @@ var handyClicksSets = {
 		return this.tBody.getElementsByAttribute("container", "true");
 	},
 	toggleTreeContainers: function() {
-		if(this.isTreePaneSelected)
-			this.treeBatch(this._toggleTreeContainers, this, arguments);
+		if(!this.isTreePaneSelected)
+			return;
+		this.tree.focus();
+		this.treeBatch(this._toggleTreeContainers, this, arguments);
 	},
 	_toggleTreeContainers: function(expand) {
 		Array.prototype.forEach.call(
@@ -2153,8 +2155,10 @@ var handyClicksSets = {
 		);
 	},
 	changeTreeExpandLevel: function(levelDiff) {
-		if(this.isTreePaneSelected)
-			this.expandTreeLevel(this.maxExpandedLevel + levelDiff);
+		if(!this.isTreePaneSelected)
+			return;
+		this.tree.focus();
+		this.expandTreeLevel(this.maxExpandedLevel + levelDiff);
 	},
 	expandTreeLevel: function(level) {
 		this.treeBatch(this._expandTreeLevel, this, arguments);
