@@ -192,6 +192,8 @@
 `x` Scroll to switch: correctly scroll radio menu items inside closed menu-buttons (simulate open/close menu to initialize).<br>
 `*` Improve search/filter counter: also show total settings count.<br>
 `+` Added %internal% search placeholder for built-in code/items.<br>
+`*` Focus settings tree after execution of tree-related commands.<br>
+`*` Edit only clicked row after middle-click (instead of all selected rows).<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
