@@ -1657,8 +1657,12 @@ var handyClicksSets = {
 	scrollToOpened: function(winId) {
 		this.focusSetsTree();
 		var tItem = this.getTreeitemByWinId(winId);
-		if(!tItem)
+		if(!tItem) {
+			this.delay(function() {
+				this.blinkTree("hc_notFound");
+			}, this, 20);
 			return;
+		}
 		this.ensureTreeitemVisible(tItem);
 		if(
 			this.filterMode
@@ -1673,10 +1677,18 @@ var handyClicksSets = {
 			this.tSel.select(indx);
 			this.searcher.scrollToRow(indx);
 			this.ensureLastRowIsVisible();
-			this.delay(function() {
-				this.blinkTreeitem(tItem);
-			}, this, 20);
 		}
+		this.delay(function() {
+			if(indx != -1)
+				this.blinkTreeitem(tItem);
+			else
+				this.blinkTree("hc_notFound");
+		}, this, 20);
+	},
+	blinkTree: function(attr) {
+		this.blinkNode(this.tBody, this.ju.bind(function(tb, hl) {
+			this.attribute(tb, attr, hl);
+		}, this));
 	},
 	blinkTreeitem: function(tItem) {
 		this.blinkNode(tItem, this.ju.bind(function(ti, hl) {

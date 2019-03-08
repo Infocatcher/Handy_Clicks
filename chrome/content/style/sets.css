@@ -226,6 +226,10 @@ tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_blink) {
 	border-bottom: 1px dashed graytext !important;
 	margin-bottom: -1px;
 }
+treechildren[hc_notFound="true"] {
+	outline: 2px solid #f66;
+	outline-offset: -2px;
+}
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_copied),
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_copied, selected) {
 	color: #bfc1ca !important;
