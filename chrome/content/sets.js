@@ -4564,12 +4564,11 @@ var handyClicksSetsSearcher = {
 		tbo.ensureRowIsVisible(i); // Should be visible, but...
 	},
 	selectAll: function() {
-		if(!this.isTreePaneSelected)
-			return;
-		this.tree.focus();
-		this.treeBatch(this._selectAll, this, arguments);
+		if(this.isTreePaneSelected)
+			this.treeBatch(this._selectAll, this, arguments);
 	},
-	_selectAll: function() {
+	_selectAll: function(focusTree) {
+		focusTree && this.tree.focus();
 		this.tSel.clearSelection();
 		var fvr = this.tbo.getFirstVisibleRow();
 		var lvr = this.tbo.getLastVisibleRow();

@@ -122,7 +122,7 @@ preferences {
 						label="&hc.sets.findNext;" />
 					<menuitem id="hc-sets-tree-findPrev" oncommand="handyClicksSets.searcher.prev(true);" key="hc-sets-key-findPrev"
 						label="&hc.sets.findPrev;" />
-					<menuitem id="hc-sets-tree-findSelectAll" oncommand="handyClicksSets.searcher.selectAll();" key="hc-sets-key-findSelectAll"
+					<menuitem id="hc-sets-tree-findSelectAll" oncommand="handyClicksSets.searcher.selectAll(true);" key="hc-sets-key-findSelectAll"
 						label="&hc.sets.findSelectAll;" />
 					<menuseparator />
 					<menuitem id="hc-sets-tree-findFilter" type="checkbox" oncommand="handyClicksSets.toggleFilterMode();" key="hc-sets-key-toggleFilterMode"
