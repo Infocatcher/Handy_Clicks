@@ -1595,12 +1595,13 @@ var handyClicksSets = {
 		}, this);
 		if(!setsCount) // Safe to delete
 			deleteTypes.value = true;
+		var onlyTypes = typesCount == tIts.length;
 		return this.ut.confirmEx(
 			this.getLocalized("title"),
 			this.getLocalized("deleteConfirm").replace("%n", tIts.length)
 				+ "\n\n" + this.getItemsInfo(tIts).join("\n"),
 			this.getLocalized("delete"), true,
-			setsCount && this.getLocalized("deleteCustomTypes")
+			setsCount && this.getLocalized(onlyTypes ? "deleteCustomTypesConfirm" : "deleteCustomTypes")
 				.replace("%n", typesCount)
 				.replace("%s", setsCount),
 			deleteTypes
