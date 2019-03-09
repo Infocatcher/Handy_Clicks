@@ -54,6 +54,7 @@
 <!ENTITY hc.sets.selectAll "Select all">
 <!ENTITY hc.sets.clearSelection "Clear selection">
 <!ENTITY hc.sets.invertSelection "Invert selection">
+<!ENTITY hc.sets.focusTree "Focus tree">
 <!ENTITY hc.sets.collapseTree "Collapse tree">
 <!ENTITY hc.sets.collapseTreeLevel "Collapse tree level">
 <!ENTITY hc.sets.expandTreeLevel "Expand tree level">

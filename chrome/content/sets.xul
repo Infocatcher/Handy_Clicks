@@ -107,6 +107,9 @@ preferences {
 					<menuitem id="hc-sets-tree-invertSelection" oncommand="handyClicksSets.invertSelection();" key="hc-sets-key-invertSelection"
 						label="&hc.sets.invertSelection;" />
 					<menuseparator />
+					<menuitem id="hc-sets-tree-focus" oncommand="handyClicksSets.focusSetsTree();" key="hc-sets-key-focusSetsTree"
+						label="&hc.sets.focusTree;" />
+					<menuseparator />
 					<menuitem id="hc-sets-tree-collapse" oncommand="handyClicksSets.toggleTreeContainers(false);" key="hc-sets-key-collapseTree"
 						label="&hc.sets.collapseTree;" />
 					<menuitem id="hc-sets-tree-collapseLevel" oncommand="handyClicksSets.changeTreeExpandLevel(-1);" key="hc-sets-key-collapseTreeLevel"
