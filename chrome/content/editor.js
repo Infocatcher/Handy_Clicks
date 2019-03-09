@@ -490,9 +490,8 @@ var handyClicksEditor = {
 				return !!this.ju.getOwnProperty(this.ps.prefs, this.currentShortcut, this.currentType);
 			case this.INDEX_TYPE:
 				return this.ps.types.hasOwnProperty(this.currentCustomType);
-			default:
-				return false;
 		}
+		return false;
 	},
 
 	_savedShortcutObj: null,
@@ -551,8 +550,6 @@ var handyClicksEditor = {
 			case this.INDEX_TYPE:
 				var type = this.currentCustomType;
 				winId = "#custom_types-" + (type == this.ps.customPrefix ? this.ct.EDITOR_NO_TYPE : type);
-			break;
-			default: return;
 		}
 		winId += this.ps.otherSrc ? this.ct.OTHER_SRC_POSTFIX : "";
 		var winIdProp = this.wu.winIdProp;
@@ -1613,8 +1610,8 @@ var handyClicksEditor = {
 		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT: return this.saveShortcut(applyFlag);
 			case this.INDEX_TYPE:     return this.saveCustomType(applyFlag);
-			default:                  return false;
 		}
+		return false;
 	},
 	testSettings: function(e) {
 		var invertFocusPref = e && (e.button == 1 || e.button == 0 && this.hasModifier(e));
@@ -1625,8 +1622,7 @@ var handyClicksEditor = {
 		var ok = false;
 		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT: ok = this.testShortcut();   break;
-			case this.INDEX_TYPE:     ok = this.testCustomType(); break;
-			default:                  return;
+			case this.INDEX_TYPE:     ok = this.testCustomType();
 		}
 		if(!(ok && this.testMode))
 			return;
@@ -1648,23 +1644,20 @@ var handyClicksEditor = {
 	},
 	deleteSettings: function() {
 		switch(this.editorTabIndex) {
-			case this.INDEX_SHORTCUT: return this.deleteShortcut();
-			case this.INDEX_TYPE:     return this.deleteCustomType();
-			default:                  return false;
+			case this.INDEX_SHORTCUT: this.deleteShortcut();   break;
+			case this.INDEX_TYPE:     this.deleteCustomType();
 		}
 	},
 	copySettings: function() {
 		switch(this.editorTabIndex) {
-			case this.INDEX_SHORTCUT: return this.copyShortcut();
-			case this.INDEX_TYPE:     return this.copyCustomType();
-			default:                  return false;
+			case this.INDEX_SHORTCUT: this.copyShortcut();   break;
+			case this.INDEX_TYPE:     this.copyCustomType();
 		}
 	},
 	pasteSettings: function() {
 		switch(this.editorTabIndex) {
-			case this.INDEX_SHORTCUT: return this.pasteShortcut();
-			case this.INDEX_TYPE:     return this.pasteCustomType();
-			default:                  return false;
+			case this.INDEX_SHORTCUT: this.pasteShortcut();   break;
+			case this.INDEX_TYPE:     this.pasteCustomType();
 		}
 	},
 	markAs: function(node, attr, val, count) {
