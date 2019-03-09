@@ -813,12 +813,12 @@ preferences {
 		<key id="hc-sets-key-reload" keycode="VK_F5" oncommand="handyClicksSets.reloadSettings();" />
 		<key id="hc-sets-key-reload2" key="r" modifiers="control" oncommand="handyClicksSets.reloadSettings();" />
 
-		<key id="hc-sets-key-treeDrawMode-normal"         key="1" modifiers="control" oncommand="handyClicksSets.setDrawMode(0);" />
-		<key id="hc-sets-key-treeDrawMode-normalCompact"  key="2" modifiers="control" oncommand="handyClicksSets.setDrawMode(1);" />
-		<key id="hc-sets-key-treeDrawMode-normalInline"   key="3" modifiers="control" oncommand="handyClicksSets.setDrawMode(2);" />
-		<key id="hc-sets-key-treeDrawMode-inverse"        key="4" modifiers="control" oncommand="handyClicksSets.setDrawMode(3);" />
-		<key id="hc-sets-key-treeDrawMode-inverseCompact" key="5" modifiers="control" oncommand="handyClicksSets.setDrawMode(4);" />
-		<key id="hc-sets-key-treeDrawMode-inverseInline"  key="6" modifiers="control" oncommand="handyClicksSets.setDrawMode(5);" />
+		<key id="hc-sets-key-treeDrawMode-normal"         key="1" modifiers="control" oncommand="handyClicksSets.setDrawMode(0, true);" />
+		<key id="hc-sets-key-treeDrawMode-normalCompact"  key="2" modifiers="control" oncommand="handyClicksSets.setDrawMode(1, true);" />
+		<key id="hc-sets-key-treeDrawMode-normalInline"   key="3" modifiers="control" oncommand="handyClicksSets.setDrawMode(2, true);" />
+		<key id="hc-sets-key-treeDrawMode-inverse"        key="4" modifiers="control" oncommand="handyClicksSets.setDrawMode(3, true);" />
+		<key id="hc-sets-key-treeDrawMode-inverseCompact" key="5" modifiers="control" oncommand="handyClicksSets.setDrawMode(4, true);" />
+		<key id="hc-sets-key-treeDrawMode-inverseInline"  key="6" modifiers="control" oncommand="handyClicksSets.setDrawMode(5, true);" />
 
 		<key id="hc-editor-key-openErrorConsole" key="j" modifiers="control,shift" oncommand="handyClicksUtils.openErrorConsole();" />
 
