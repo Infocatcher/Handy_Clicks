@@ -612,6 +612,7 @@ var handyClicksSetsUtils = {
 	TOOLTIP_HIDE_SLOW: 5000,
 	TOOLTIP_OFFSET_DEFAULT: 2,
 	TOOLTIP_OFFSET_CURSOR: 12,
+	TOOLTIP_OFFSET_ABOVE: -1e5,
 	get infoTooltip() {
 		var tt = document.createElement("tooltip");
 		tt.id = "handyClicks-infoTooltip";
@@ -626,14 +627,22 @@ var handyClicksSetsUtils = {
 			tt = this.infoTooltip;
 			tt.firstChild.textContent = msg;
 		}
-		var bo = anchor.boxObject;
-		var x = bo.screenX;
-		var y = bo.screenY + bo.height + (offset === undefined ? this.TOOLTIP_OFFSET_DEFAULT : offset);
 		tt.onmouseover = null; // Trick to show tooltip under cursor
-		if("openPopupAtScreen" in tt) // Firefox 3.0+
-			tt.openPopupAtScreen(x, y, false /*isContextMenu*/);
-		else
-			tt.showPopup(anchor, x, y, "tooltip", null, null);
+		if(offset == this.TOOLTIP_OFFSET_ABOVE) {
+			if("openPopup" in tt)
+				tt.openPopup(anchor, "before_start", 0, 0);
+			else
+				tt.showPopup(anchor, -1, -1, "tooltip", "topleft", "bottomleft");
+		}
+		else {
+			var bo = anchor.boxObject;
+			var x = bo.screenX;
+			var y = bo.screenY + bo.height + (offset === undefined ? this.TOOLTIP_OFFSET_DEFAULT : offset);
+			if("openPopupAtScreen" in tt) // Firefox 3.0+
+				tt.openPopupAtScreen(x, y, false /*isContextMenu*/);
+			else
+				tt.showPopup(anchor, x, y, "tooltip", null, null);
+		}
 		setTimeout(function() {
 			tt.onmouseover = function() {
 				this.hidePopup();
