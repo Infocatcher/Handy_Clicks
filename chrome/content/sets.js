@@ -4580,7 +4580,7 @@ var handyClicksSetsSearcher = {
 			this.tSel.rangedSelect(i, i, true);
 			if(hasVisible)
 				return;
-			if(i >= fvr && i <= lvr) {
+			if(i >= fvr && i < lvr) { // "Last visible row" may be not really visible
 				hasVisible = true;
 				return;
 			}
