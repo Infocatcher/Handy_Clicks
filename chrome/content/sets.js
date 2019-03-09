@@ -2085,6 +2085,14 @@ var handyClicksSets = {
 		if(changedByUser)
 			this.drawModeInitial = dm;
 	},
+	setDrawModeFromKey: function(dm) {
+		if(!this.isTreePaneSelected)
+			return;
+		var viewMenu = this.$("hc-sets-tree-viewMenu");
+		var label = viewMenu.getElementsByAttribute("hc_drawMode", dm)[0].getAttribute("label");
+		this.su.showInfoTooltip(viewMenu, label, this.su.TOOLTIP_HIDE_QUICK);
+		this.setDrawMode(dm, true);
+	},
 	ensureInitialDrawMode: function() {
 		if(!("drawModeInitial" in this))
 			this.drawModeInitial = this.drawMode;
