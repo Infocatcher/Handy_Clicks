@@ -1647,6 +1647,12 @@ var handyClicksEditor = {
 			case this.INDEX_SHORTCUT: this.deleteShortcut();   break;
 			case this.INDEX_TYPE:     this.deleteCustomType();
 		}
+		this.su.showInfoTooltip(
+			this.deleteButton,
+			this.getLocalized("deleteUndo"),
+			this.su.TOOLTIP_HIDE_DEFAULT,
+			this.su.TOOLTIP_OFFSET_ABOVE
+		);
 	},
 	copySettings: function() {
 		switch(this.editorTabIndex) {
