@@ -2987,7 +2987,7 @@ var handyClicksSets = {
 					text = pName;
 			}
 			var attrs = {
-				label: text.replace(/\s+/g, " "),
+				label: text.replace(/\s+/g, " ").replace(/\s*\.\s*$/, ""),
 				tooltiptext: text,
 				type: "checkbox",
 				hc_pref: pName,
