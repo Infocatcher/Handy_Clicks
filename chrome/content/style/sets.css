@@ -549,15 +549,8 @@ button[type="menu"] dropmarker {
 	-moz-padding-start: 22px;
 }
 
-#hc-sets-warnMsgsPrefs-tooltip > description {
-	margin: 1px 2px;
-}
-
-#hc-sets-resetWarnMsgs label {
-	border-bottom: 1px dotted;
-}
-#hc-sets-resetWarnMsgs[disabled="true"] label {
-	border-color: transparent;
+#hc-sets-resetWarnMsgs[hc_canReset="false"] .button-text {
+	opacity: 0.6;
 }
 
 #charsetMenu {

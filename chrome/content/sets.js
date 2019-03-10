@@ -2945,22 +2945,12 @@ var handyClicksSets = {
 	],
 	initResetWarnMsgs: function() {
 		var changed = this.warnMsgsPrefs.filter(this.pu.prefChanged, this.pu);
-		var notChanged = !changed.length;
-		this.$("hc-sets-resetWarnMsgs").disabled = notChanged;
-		!notChanged && this.delay(this.addResetWarnMsgsTip, this, 50, [changed]);
+		this.$("hc-sets-resetWarnMsgs").setAttribute("hc_canReset", !!changed.length);
 	},
-	addResetWarnMsgsTip: function(changed) {
-		var tt = this.$("hc-sets-warnMsgsPrefs-tooltip");
-		var ttSep = this.$("hc-sets-warnMsgsPrefs-tooltipSep");
-		while(ttSep.nextSibling)
-			tt.removeChild(ttSep.nextSibling);
-		changed.forEach(function(pName, i) {
-			if(i != 0) {
-				var sep = ttSep.cloneNode(true);
-				sep.removeAttribute("id");
-				tt.appendChild(sep);
-			}
-			var desc = document.createElement("description");
+	initResetWarnMsgsMenu: function() {
+		var mp = this.$("hc-sets-resetWarnMsgs-popup");
+		var df = document.createDocumentFragment();
+		this.warnMsgsPrefs.forEach(function(pName, i) {
 			var text;
 			switch(pName) {
 				case "editor.confirmRename":
@@ -2993,12 +2983,24 @@ var handyClicksSets = {
 					this.ut._warn('initResetWarnMsgs: no description for "' + pName + '" pref');
 					text = pName;
 			}
-			desc.textContent = text;
-			tt.appendChild(desc);
+			var mi = this.ut.createElement("menuitem", {
+				label: text.replace(/\s+/g, " "),
+				tooltiptext: text,
+				hc_pref: pName,
+				disabled: !this.pu.prefChanged(pName),
+				closemenu: "none"
+			});
+			df.appendChild(mi);
 		}, this);
+		mp.textContent = "";
+		mp.appendChild(df);
 	},
-	resetWarnMsgs: function() {
-		this.warnMsgsPrefs.forEach(this.pu.resetPref, this.pu);
+	resetWarnMsg: function(mi) {
+		var pref = mi.getAttribute("hc_pref");
+		if(pref) {
+			this.pu.resetPref(pref);
+			mi.setAttribute("disabled", "true");
+		}
 	},
 	showWarnMsgsPrefs: function() {
 		if(this.fxVersion < 3)

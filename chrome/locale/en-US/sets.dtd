@@ -252,7 +252,6 @@ Or use “Scratchpad” instead of path to launch built-in browser editor (if av
 <!ENTITY hc.sets.externalEditorTempFileExt "File extension:">
 
 <!ENTITY hc.sets.resetWarnMsgs "Reset warning messages">
-<!ENTITY hc.sets.resetWarnMsgsTip "Disabled warnings:">
 
 
 <!ENTITY hc.sets.builtInFuncsTitle "Built-in functions">

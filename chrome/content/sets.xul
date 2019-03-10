@@ -602,15 +602,12 @@ preferences {
 			</hbox>
 		</groupbox>
 		<hbox pack="center">
-			<button id="hc-sets-resetWarnMsgs"
-				oncommand="handyClicksSets.resetWarnMsgs();"
-				onclick="if(event.button == 2) handyClicksSets.showWarnMsgsPrefs();"
-				label="&hc.sets.resetWarnMsgs;" tooltip="hc-sets-warnMsgsPrefs-tooltip" />
-			<tooltip id="hc-sets-warnMsgsPrefs-tooltip" orient="vertical" noautohide="true"
-				onpopupshowing="return !document.tooltipNode.disabled;">
-				<description class="header">&hc.sets.resetWarnMsgsTip;</description>
-				<separator id="hc-sets-warnMsgsPrefs-tooltipSep" class="groove" />
-			</tooltip>
+			<button id="hc-sets-resetWarnMsgs" type="menu" label="&hc.sets.resetWarnMsgs;"
+				onclick="if(event.button == 2) handyClicksSets.showWarnMsgsPrefs();">
+				<menupopup id="hc-sets-resetWarnMsgs-popup"
+					onpopupshowing="handyClicksSets.initResetWarnMsgsMenu();"
+					oncommand="handyClicksSets.resetWarnMsg(event.target);" />
+			</button>
 		</hbox>
 	</prefpane>
 
