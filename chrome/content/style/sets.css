@@ -550,7 +550,7 @@ button[type="menu"] dropmarker {
 }
 
 #hc-sets-warnMsgs[hc_canReset="false"] .button-text {
-	opacity: 0.6;
+	color: grayText;
 }
 
 #charsetMenu {
