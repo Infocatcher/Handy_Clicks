@@ -265,7 +265,8 @@ Or use “Scratchpad” instead of path to launch built-in browser editor (if av
 <!ENTITY hc.sets.fileLinksNotCheck "Not check">
 <!ENTITY hc.sets.fileLinksShowContext "Show context menu">
 <!ENTITY hc.sets.fileLinksOpen "Open in current tab">
-<!ENTITY hc.sets.fileLinksFilter "Filter (RegExp):">
+<!ENTITY hc.sets.fileLinksFilter "Filter:">
+<!ENTITY hc.sets.fileLinksFilterTip "Regular expression, example: \.(?:zip|tar|xpi)$">
 
 <!ENTITY hc.sets.openURIsInApps "Opening URIs in other applications">
 <!ENTITY hc.sets.convertURIs "Convert URIs to following charset:">

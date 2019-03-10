@@ -648,7 +648,8 @@ preferences {
 				</menulist>
 			</hbox>
 			<hbox align="center" hc_dependsOn="regexp">
-				<label value="&hc.sets.fileLinksFilter;" control="hc-sets-filesLinksMask" />
+				<label class="hc-tip" control="hc-sets-filesLinksMask"
+					value="&hc.sets.fileLinksFilter;" tooltiptext="&hc.sets.fileLinksFilterTip;" />
 				<textbox id="hc-sets-filesLinksMask" preference="filesLinksMask" flex="1" />
 			</hbox>
 		</groupbox>

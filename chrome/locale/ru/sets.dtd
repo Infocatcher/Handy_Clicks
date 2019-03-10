@@ -265,7 +265,8 @@
 <!ENTITY hc.sets.fileLinksNotCheck "Не проверять">
 <!ENTITY hc.sets.fileLinksShowContext "Показывать контекстное меню">
 <!ENTITY hc.sets.fileLinksOpen "Открывать в текущей вкладке">
-<!ENTITY hc.sets.fileLinksFilter "Фильтр (RegExp):">
+<!ENTITY hc.sets.fileLinksFilter "Фильтр:">
+<!ENTITY hc.sets.fileLinksFilterTip "Регулярное выражение, пример: \.(?:zip|tar|xpi)$">
 
 <!ENTITY hc.sets.openURIsInApps "Открытие ссылок в других приложениях">
 <!ENTITY hc.sets.convertURIs "Конвертировать ссылки в следующую кодировку:">
