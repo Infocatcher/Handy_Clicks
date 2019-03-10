@@ -3012,15 +3012,18 @@ var handyClicksSets = {
 			this.pu.set(pName, typeof this.pu.get(pName) == "number" ? 0 : false);
 		this.attribute(mi, "checked", reset);
 	},
-	showWarnMsgsPrefs: function() {
+	showWarnMsgsPrefs: function(mi) {
 		if(this.fxVersion < 3)
 			return;
 		function escapeRegExp(str) {
 			return str.replace(/[\\\/.^$+*?|()\[\]{}]/g, "\\$&");
 		}
-		var re = "^" + escapeRegExp(this.pu.prefNS)
-			+ "(?:" + this.warnMsgsPrefs.map(escapeRegExp).join("|") + ")";
-		this.pu.openAboutConfig("/" + re + "/");
+		var filter = mi && mi.hasAttribute("hc_pref")
+			? this.pu.prefNS + mi.getAttribute("hc_pref")
+			: "/^" + escapeRegExp(this.pu.prefNS)
+				+ "(?:" + this.warnMsgsPrefs.map(escapeRegExp).join("|")
+				+ ")/";
+		this.pu.openAboutConfig(filter);
 	},
 	get ee() {
 		var ee = this.e("hc-sets-externalEditorPath");
