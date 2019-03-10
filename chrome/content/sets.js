@@ -3662,13 +3662,16 @@ var handyClicksSets = {
 		this.selectTreePane();
 		var ct = this.ct;
 		var pSrc;
-		this.ps.checkPrefsStr.checkCustomCode = true;
+		var cps = this.ps.checkPrefsStr;
+		cps.checkCustomCode = true;
 		switch(srcId) {
 			default:
 			case ct.IMPORT_FILEPICKER:
 				pSrc = this.pickFile(this.getLocalized("importSets"), false, "js");
-				if(!pSrc)
+				if(!pSrc) {
+					cps.checkCustomCode = false;
 					return;
+				}
 			break;
 			case ct.IMPORT_CLIPBOARD:
 				pSrc = this.ps.clipboardPrefs;
@@ -3678,17 +3681,17 @@ var handyClicksSets = {
 				pSrc = this.ps.getPrefsStr(data);
 			break;
 			case ct.IMPORT_BACKUP:
-				delete this.ps.checkPrefsStr.checkCustomCode;
+				cps.checkCustomCode = false;
 				pSrc = this.pe.getBackupFile(data);
 			break;
 			case ct.IMPORT_FILE:
 				pSrc = data;
 		}
-		if(
-			fromClip
-				? !pSrc // this.ps.clipboardPrefs are valid or empty
-				: !this.ps.checkPrefs(pSrc)
-		) {
+		var isInvalid = fromClip
+			? !pSrc // this.ps.clipboardPrefs is valid or empty
+			: !this.ps.checkPrefs(pSrc);
+		cps.checkCustomCode = false;
+		if(isInvalid) {
 			this.ut.alert(
 				this.getLocalized("importErrorTitle"),
 				this.getLocalized("invalidConfigFormat")

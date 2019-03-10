@@ -820,8 +820,7 @@ var handyClicksPrefSvc = {
 	},
 	hashRe: /(?:\r\n|\n|\r)\/\/[ \t]?(MD2|MD5|SHA1|SHA512|SHA256|SHA384):[ \t]?([a-f0-9]+)(?=[\n\r]|$)/,
 	checkPrefsStr: function _cps(str, silent) {
-		var checkCustom = _cps.hasOwnProperty("checkCustomCode");
-		delete _cps.checkCustomCode;
+		var checkCustom = _cps.checkCustomCode || false;
 		this._hashError = false;
 		this._hashMissing = true;
 		this._hasCustomCode = checkCustom ? false : undefined;
