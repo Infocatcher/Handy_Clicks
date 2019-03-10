@@ -602,9 +602,9 @@ preferences {
 			</hbox>
 		</groupbox>
 		<hbox pack="center">
-			<button id="hc-sets-resetWarnMsgs" type="menu" label="&hc.sets.resetWarnMsgs;"
+			<button id="hc-sets-warnMsgs" type="menu" label="&hc.sets.warnMsgs;"
 				onclick="if(event.button == 2) handyClicksSets.showWarnMsgsPrefs();">
-				<menupopup id="hc-sets-resetWarnMsgs-popup"
+				<menupopup id="hc-sets-warnMsgs-popup"
 					onpopupshowing="handyClicksSets.initResetWarnMsgsMenu();"
 					oncommand="handyClicksSets.resetWarnMsg(event.target);" />
 			</button>

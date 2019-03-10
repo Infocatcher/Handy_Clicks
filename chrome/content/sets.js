@@ -2945,10 +2945,10 @@ var handyClicksSets = {
 	],
 	initResetWarnMsgs: function() {
 		var changed = this.warnMsgsPrefs.filter(this.pu.prefChanged, this.pu);
-		this.$("hc-sets-resetWarnMsgs").setAttribute("hc_canReset", !!changed.length);
+		this.$("hc-sets-warnMsgs").setAttribute("hc_canReset", !!changed.length);
 	},
 	initResetWarnMsgsMenu: function() {
-		var mp = this.$("hc-sets-resetWarnMsgs-popup");
+		var mp = this.$("hc-sets-warnMsgs-popup");
 		var df = document.createDocumentFragment();
 		this.warnMsgsPrefs.forEach(function(pName, i) {
 			var text;
@@ -2983,24 +2983,31 @@ var handyClicksSets = {
 					this.ut._warn('initResetWarnMsgs: no description for "' + pName + '" pref');
 					text = pName;
 			}
-			var mi = this.ut.createElement("menuitem", {
+			var attrs = {
 				label: text.replace(/\s+/g, " "),
 				tooltiptext: text,
+				type: "checkbox",
 				hc_pref: pName,
-				disabled: !this.pu.prefChanged(pName),
 				closemenu: "none"
-			});
+			};
+			if(!this.pu.prefChanged(pName))
+				attrs.checked = true;
+			var mi = this.ut.createElement("menuitem", attrs);
 			df.appendChild(mi);
 		}, this);
 		mp.textContent = "";
 		mp.appendChild(df);
 	},
 	resetWarnMsg: function(mi) {
-		var pref = mi.getAttribute("hc_pref");
-		if(pref) {
-			this.pu.resetPref(pref);
-			mi.setAttribute("disabled", "true");
-		}
+		var pName = mi.getAttribute("hc_pref");
+		if(!pName)
+			return;
+		var reset = this.pu.prefChanged(pName);
+		if(reset)
+			this.pu.resetPref(pName);
+		else
+			this.pu.set(pName, typeof this.pu.get(pName) == "number" ? 0 : false);
+		this.attribute(mi, "checked", reset);
 	},
 	showWarnMsgsPrefs: function() {
 		if(this.fxVersion < 3)
