@@ -2943,9 +2943,12 @@ var handyClicksSets = {
 		"ui.confirmReload",
 		"ui.notifyUnsaved"
 	],
+	warnEnabled: function(pName) {
+		return this.pu.get(pName) > 0; // true or positive integer
+	},
 	initResetWarnMsgs: function() {
-		var changed = this.warnMsgsPrefs.filter(this.pu.prefChanged, this.pu);
-		this.$("hc-sets-warnMsgs").setAttribute("hc_canReset", !!changed.length);
+		var allEnabled = this.warnMsgsPrefs.every(this.warnEnabled, this);
+		this.$("hc-sets-warnMsgs").setAttribute("hc_canReset", !allEnabled);
 	},
 	initResetWarnMsgsMenu: function() {
 		var mp = this.$("hc-sets-warnMsgs-popup");
@@ -2990,7 +2993,7 @@ var handyClicksSets = {
 				hc_pref: pName,
 				closemenu: "none"
 			};
-			if(!this.pu.prefChanged(pName))
+			if(this.warnEnabled(pName))
 				attrs.checked = true;
 			var mi = this.ut.createElement("menuitem", attrs);
 			df.appendChild(mi);
@@ -3002,7 +3005,7 @@ var handyClicksSets = {
 		var pName = mi.getAttribute("hc_pref");
 		if(!pName)
 			return;
-		var reset = this.pu.prefChanged(pName);
+		var reset = !this.warnEnabled(pName);
 		if(reset)
 			this.pu.resetPref(pName);
 		else
