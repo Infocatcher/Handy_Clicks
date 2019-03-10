@@ -225,6 +225,8 @@
 <!ENTITY hc.sets.overrideInstantApply.forceOff "Принудительно показывать">
 <!ENTITY hc.sets.overrideInstantApply.forceOn "Принудительно скрывать">
 <!ENTITY hc.sets.reopenWindow "Переоткрыть окно">
+<!ENTITY hc.sets.warnMsgs "Предупреждающие сообщения:">
+<!ENTITY hc.sets.warnMsgsSelect "Выбрать…">
 
 <!ENTITY hc.sets.tabulation "Табуляция">
 <!ENTITY hc.sets.tabSize "Ширина:">
@@ -250,8 +252,6 @@
 <!ENTITY hc.sets.externalEditorTempFile "Временный файл">
 <!ENTITY hc.sets.externalEditorTempFileName "Название функции в имени файла">
 <!ENTITY hc.sets.externalEditorTempFileExt "Расширение файла:">
-
-<!ENTITY hc.sets.warnMsgs "Предупреждающие сообщения">
 
 
 <!ENTITY hc.sets.builtInFuncsTitle "Встроенные функции">

@@ -539,6 +539,15 @@ preferences {
 					if(notSaved)
 						handyClicksPrefUtils.savePrefFile();' />
 			</hbox>
+			<hbox align="center">
+				<label value="&hc.sets.warnMsgs;" />
+				<button id="hc-sets-warnMsgs" type="menu" label="&hc.sets.warnMsgsSelect;"
+					onclick="if(event.button == 2) handyClicksSets.showWarnMsgsPrefs(event.target);">
+					<menupopup id="hc-sets-warnMsgs-popup"
+						onpopupshowing="handyClicksSets.initResetWarnMsgsMenu();"
+						oncommand="handyClicksSets.resetWarnMsg(event.target);" />
+				</button>
+			</hbox>
 		</groupbox>
 		<hbox>
 			<groupbox orient="horizontal" align="center">
@@ -601,14 +610,6 @@ preferences {
 				</groupbox>
 			</hbox>
 		</groupbox>
-		<hbox pack="center">
-			<button id="hc-sets-warnMsgs" type="menu" label="&hc.sets.warnMsgs;"
-				onclick="if(event.button == 2) handyClicksSets.showWarnMsgsPrefs(event.target);">
-				<menupopup id="hc-sets-warnMsgs-popup"
-					onpopupshowing="handyClicksSets.initResetWarnMsgsMenu();"
-					oncommand="handyClicksSets.resetWarnMsg(event.target);" />
-			</button>
-		</hbox>
 	</prefpane>
 
 	<prefpane id="hc-sets-pane-funcs" label="&hc.sets.builtInFuncsTitle;" flex="1">

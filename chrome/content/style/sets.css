@@ -549,6 +549,9 @@ button[type="menu"] dropmarker {
 	-moz-padding-start: 22px;
 }
 
+#hc-sets-warnMsgs {
+	min-width: 0;
+}
 #hc-sets-warnMsgs[hc_canReset="false"] .button-text {
 	color: grayText;
 }

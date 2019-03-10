@@ -225,6 +225,8 @@
 <!ENTITY hc.sets.overrideInstantApply.forceOff "Force show">
 <!ENTITY hc.sets.overrideInstantApply.forceOn "Force hide">
 <!ENTITY hc.sets.reopenWindow "Reopen window">
+<!ENTITY hc.sets.warnMsgs "Warning messages:">
+<!ENTITY hc.sets.warnMsgsSelect "Select…">
 
 <!ENTITY hc.sets.tabulation "Tabulation">
 <!ENTITY hc.sets.tabSize "Size:">
@@ -250,8 +252,6 @@ Or use “Scratchpad” instead of path to launch built-in browser editor (if av
 <!ENTITY hc.sets.externalEditorTempFile "Temp file">
 <!ENTITY hc.sets.externalEditorTempFileName "Function label in file name">
 <!ENTITY hc.sets.externalEditorTempFileExt "File extension:">
-
-<!ENTITY hc.sets.warnMsgs "Warning messages">
 
 
 <!ENTITY hc.sets.builtInFuncsTitle "Built-in functions">
