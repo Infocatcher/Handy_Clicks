@@ -670,7 +670,7 @@ var handyClicksUtils = {
 		var cb = this.cb;
 		cb.setData(ta, null, clipId === undefined ? cb.kGlobalClipboard : clipId);
 	},
-	getClipboardData: function(flavor, clipId) {
+	getClipboardData: function(flavor, clipId, qi) {
 		if(!flavor)
 			flavor = "text/unicode";
 		var ta = this.getTransferable();
@@ -680,6 +680,8 @@ var handyClicksUtils = {
 		var data = {}, len = {};
 		try {
 			ta.getTransferData(flavor, data, len);
+			if(flavor != "text/unicode")
+				return data.value.QueryInterface(qi);
 			return data.value
 				.QueryInterface(Components.interfaces.nsISupportsString)
 				.data

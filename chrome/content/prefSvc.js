@@ -792,11 +792,12 @@ var handyClicksPrefSvc = {
 		var modifiers = this.getModifiersStr(sh, _short);
 		return button + (modifiers ? this.spacedSep + modifiers : "");
 	},
-	checkPrefs: function(pSrc) {
+	checkPrefs: function(pSrc, silent) {
 		return this.checkPrefsStr(
 			pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)
 				? this.io.readFromFile(pSrc)
-				: this.getPrefsStr(pSrc)
+				: this.getPrefsStr(pSrc),
+			silent
 		);
 	},
 	getPrefsStr: function(str) {
@@ -869,6 +870,13 @@ var handyClicksPrefSvc = {
 		var cbStr = this.getPrefsStr(this.ut.readFromClipboard(true, cb.kGlobalClipboard));
 		if(this.checkPrefsStr(cbStr, true))
 			return cbStr;
+		var cbFile = this.ut.getClipboardData(
+			"application/x-moz-file",
+			cb.kGlobalClipboard,
+			Components.interfaces.nsILocalFile || Components.interfaces.nsIFile
+		);
+		if(cbFile && this.checkPrefs(cbFile, true))
+			return cbFile;
 		if(!cb.supportsSelectionClipboard())
 			return "";
 		cbStr = this.getPrefsStr(this.ut.readFromClipboard(true, cb.kSelectionClipboard));
