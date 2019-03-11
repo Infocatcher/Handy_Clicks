@@ -99,6 +99,7 @@ var handyClicksEditor = {
 		this.setCompactUI();
 		this.pu.oSvc.addObserver(this.prefChanged, this);
 		this.checkForCrashBackups(700);
+		window.addEventListener("keydown", this.tabLikeNavigation, true);
 
 		this._startTime1 = Date.now();
 	},
@@ -118,6 +119,7 @@ var handyClicksEditor = {
 			}
 		}
 		unwatchLinkedFiles && this.watchLinkedFiles(false); // Will be closed all editors
+		window.removeEventListener("keydown", this.tabLikeNavigation, true);
 	},
 	watchLinkedFile: function(path, file) {
 		this._log("Editor: watchLinkedFile(): " + path);
@@ -1409,6 +1411,18 @@ var handyClicksEditor = {
 			var inp = document.getAnonymousElementByAttribute(tb, "anonid", "input");
 			inp.disabled = disable;
 		});
+	},
+	tabLikeNavigation: function(e) {
+		if(e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) {
+			if(e.keyCode == e.DOM_VK_UP) { // Ctrl+Up
+				document.commandDispatcher.rewindFocus();
+				e.preventDefault();
+			}
+			else if(e.keyCode == e.DOM_VK_DOWN) { // Ctrl+Down
+				document.commandDispatcher.advanceFocus();
+				e.preventDefault();
+			}
+		}
 	},
 	loadSavedShortcut: function(e) {
 		var mi = e.target;
