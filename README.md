@@ -61,7 +61,7 @@ Note: some hotkeys are described in the interface and not listed here.
 <tr><td>Space                 </td><td>indent selected lines using spaces  </td></tr>
 <tr><td>Shift+Space           </td><td>unindent selected lines using spaces</td></tr>
 <tr><td>Ctrl+Shift+Q          </td><td>Comment/uncomment                   </td></tr>
-<tr><td>Ctrl+Shift+A          </td><td>Comment/uncomment at line start     </td></tr>
+<tr><td>Ctrl+Shift+A, Ctrl+/  </td><td>Comment/uncomment at line start     </td></tr>
 <tr><td>Alt+Backspace         </td><td>Trim trailing spaces                </td></tr>
 <tr><td>Ctrl+G, Ctrl+L, Ctrl+J</td><td>Go to line                          </td></tr>
 <tr><td>Ctrl++                </td><td>Increase font size                  </td></tr>
