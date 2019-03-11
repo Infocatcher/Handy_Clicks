@@ -1152,11 +1152,11 @@
 					var se = ifi.selectionEnd;
 					var val = this.value;
 					var selText = val.substring(ss, se);
-					if(selText && !/^[\w$]+['"]?$/.test(selText))
+					if(selText && !/^[\w$-]+['"]?$/.test(selText))
 						return;
 					var startText = val.substr(0, ss);
 
-					if(!/(?:(\.)\s*|('|"))?([\w$]+)$/.test(startText))
+					if(!/(?:(\.)\s*|('|"))?([\w$-]+)$/.test(startText))
 						return;
 					var isProp = !!RegExp.$1;
 					var isStr = !!RegExp.$2, strComma = RegExp.$2;
