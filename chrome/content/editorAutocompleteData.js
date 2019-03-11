@@ -125,6 +125,8 @@ var handyClicksAutocompleteData = {
 		"true"
 	],
 	_jsProps: [
+		"style",
+
 		// JSON methods:
 		"stringify",
 		"parse",
