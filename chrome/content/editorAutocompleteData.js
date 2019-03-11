@@ -50,20 +50,30 @@ var handyClicksAutocompleteData = {
 		return this.jsProps = this.sortAndCleanup(ret);
 	},
 	get jsStrings() {
-		var ret = this._jsStrings.filter(this.lengthFilter, this).sort();
+		this.jsProps; // -> appendProperty()
+		var ret = this.sortAndCleanup(this._jsStrings);
 		delete this._jsStrings;
 		delete this.jsStrings;
 		return this.jsStrings = ret;
 	},
 	appendProperties: function(arr, obj) {
 		if("getOwnPropertyNames" in Object) { // JavaScript 1.8.5
-			for(var o = obj; o; o = Object.getPrototypeOf(o))
-				arr.push.apply(arr, Object.getOwnPropertyNames(o));
+			for(var o = obj; o; o = Object.getPrototypeOf(o)) {
+				Object.getOwnPropertyNames(o).forEach(function(p) {
+					this.appendProperty(arr, p);
+				}, this);
+			}
 		}
 		else {
 			for(var p in obj)
-				arr.push(p);
+				this.appendProperty(arr, p);
 		}
+	},
+	appendProperty: function(arr, p) {
+		if(p.indexOf("-") != -1)
+			this._jsStrings.push(p);
+		else
+			arr.push(p);
 	},
 	lengthFilter: function(s) {
 		return s.length >= this.minLength;
