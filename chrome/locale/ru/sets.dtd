@@ -228,10 +228,10 @@
 <!ENTITY hc.sets.warnMsgs "Предупреждающие сообщения:">
 <!ENTITY hc.sets.warnMsgsSelect "Выбрать…">
 
+<!ENTITY hc.sets.internalEditor "Встроенный редактор">
 <!ENTITY hc.sets.tabulation "Табуляция">
 <!ENTITY hc.sets.tabSize "Ширина:">
 <!ENTITY hc.sets.tabSpaces "Пробелы">
-
 <!ENTITY hc.sets.autocomplete "Автодополнение">
 <!ENTITY hc.sets.autocompleteShowAfter "Показывать после">
 <!ENTITY hc.sets.autocompleteMinSymbol "символа">

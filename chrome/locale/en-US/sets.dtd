@@ -228,10 +228,10 @@
 <!ENTITY hc.sets.warnMsgs "Warning messages:">
 <!ENTITY hc.sets.warnMsgsSelect "Select…">
 
+<!ENTITY hc.sets.internalEditor "Internal editor">
 <!ENTITY hc.sets.tabulation "Tabulation">
 <!ENTITY hc.sets.tabSize "Size:">
 <!ENTITY hc.sets.tabSpaces "Spaces">
-
 <!ENTITY hc.sets.autocomplete "Autocompletion">
 <!ENTITY hc.sets.autocompleteShowAfter "Show after">
 <!ENTITY hc.sets.autocompleteMinSymbol "symbol">

@@ -549,7 +549,8 @@ preferences {
 				</button>
 			</hbox>
 		</groupbox>
-		<hbox>
+		<groupbox orient="horizontal">
+			<caption label="&hc.sets.internalEditor;" />
 			<groupbox orient="horizontal" align="center">
 				<caption label="&hc.sets.tabulation;" />
 				<label value="&hc.sets.tabSize;" control="hc-sets-tabSize" />
@@ -566,7 +567,7 @@ preferences {
 				<label hc_dependsOn="autocomplete" value="&hc.sets.autocompleteMinSymbols;"
 					hc_labelSingle="&hc.sets.autocompleteMinSymbol;" hc_labelMultiple="&hc.sets.autocompleteMinSymbols;" />
 			</groupbox>
-		</hbox>
+		</groupbox>
 		<groupbox>
 			<caption label="&hc.sets.externalEditor;" />
 			<hbox align="center">
