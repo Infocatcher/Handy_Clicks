@@ -73,7 +73,7 @@
 `+` Added ability to search for placeholder string itself (e.g. “%%on%%” for “%on%”).<br>
 `*` Optimized filter mode: hide items instead of remove them (≈2.5x faster filtration).<br>
 `x` Correctly initialize delayed actions for not custom actions.<br>
-`x` Fixed Ctrl+Up/Down in editor fields in Firefox 52+ (still doesn't work in another textboxes, but not so needed).<br>
+`x` Fixed Ctrl+Down/Up in editor's text fields in Firefox 52+ (for navigation like Tab/Ctrl+Tab).<br>
 `x` Fixed Ctrl+Tab/Ctrl+Shift+Tab and Ctrl+PageDown/Ctrl+PageUp tabs navigation in Firefox 52+: force navigate only inside focused tabs.<br>
 `*` Rewritten and simplified trick to not focus read-only textboxes with functions arguments description.<br>
 `*` Search: expand only to matched items (and don't expand all tree).<br>
