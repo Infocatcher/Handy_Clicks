@@ -194,6 +194,10 @@
 `+` Added %internal% search placeholder for built-in code/items.<br>
 `*` Focus settings tree after execution of tree-related commands.<br>
 `*` Edit only clicked row after middle-click (instead of all selected rows).<br>
+`+` Added “focus tree” menu item (to show Ctrl+T hotkey).<br>
+`*` Import from clipboard: added support for settings files.<br>
+`*` Added menu to disable/restore each warning message (instead of tooltip and ability to restore all warnings).<br>
+`+` Internal editor: added Ctrl+/ hotkey to comment code (like in Scratchpad).<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
