@@ -1181,18 +1181,23 @@
 					if(reverseFlag)
 						scopeArr = scopeArr.slice().reverse(); // Don't reverse original
 
+					var startsWith = "startsWith" in String.prototype
+						? String.prototype.startsWith.call.bind(String.prototype.startsWith)
+						: function(str, prefix) {
+							return str.substr(0, prefix.length) == prefix;
+						};
 					var found = false;
 					scopeArr.some(function(p) {
 						if(!found && p == curWord) {
 							found = true;
 							return false;
 						}
-						if(found && p.indexOf(lastWord) == 0)
+						if(found && startsWith(p, lastWord))
 							return newWord = p;
 						return false;
 					});
 					!newWord && scopeArr.some(function(p) {
-						if(p.indexOf(lastWord) == 0)
+						if(startsWith(p, lastWord))
 							return newWord = p;
 						return false;
 					});
@@ -1201,7 +1206,7 @@
 
 					var cnt = 0;
 					scopeArr.forEach(function(p) {
-						if(p.indexOf(lastWord) == 0)
+						if(startsWith(p, lastWord))
 							++cnt;
 					});
 
