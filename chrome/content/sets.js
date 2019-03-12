@@ -305,14 +305,18 @@ var handyClicksSets = {
 		var tbo = this.tbo;
 		tbo.ensureRowIsVisible(lvr);
 		tbo.ensureRowIsVisible(fvr);
-		this.ensureLastRowIsVisible(lvr);
+		this.ensureLastRowIsVisible(lvr, fvr);
 	},
-	ensureLastRowIsVisible: function(lvr) {
+	ensureLastRowIsVisible: function(lvr, fvr) {
 		// ensureRowIsVisible() doesn't work correctly for last row on startup
 		if(lvr === undefined)
 			lvr = this.tbo.getLastVisibleRow();
 		if(lvr >= this.tView.rowCount - 1) this.delay(function() {
 			this.tbo.ensureRowIsVisible(lvr);
+			if(fvr !== undefined && this.tbo.getFirstVisibleRow() == fvr + 1) {
+				this._log("ensureLastRowIsVisible(): restore scroll to second-to-last row");
+				this.tbo.scrollByLines(-1);
+			}
 		}, this);
 	},
 	saveTreeSortOrder: function() {
