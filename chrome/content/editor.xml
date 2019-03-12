@@ -489,7 +489,7 @@
 				<parameter name="add" />
 				<body>
 				<![CDATA[
-					var fs = add == 0 ? "" : Math.max(1, Math.min(48,
+					var fs = add == 0 ? "" : Math.max(1, Math.min(64,
 						parseInt(getComputedStyle(this, null).fontSize) + add
 					)) + "px";
 					this.style.fontSize = fs;
