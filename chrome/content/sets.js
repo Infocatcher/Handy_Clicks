@@ -140,37 +140,39 @@ var handyClicksSets = {
 			this.scrollToOpened(winId);
 		else
 			this.treeScrollPos(false);
-		Array.prototype.forEach.call(
-			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
-			function(col) {
-				if(!col.tooltipText)
-					col.tooltipText = col.getAttribute("label");
-			}
-		);
+
 		var de = document.documentElement;
 		var instantApply = this.instantApply = de.instantApply;
 		if(instantApply)
 			this.applyButton.hidden = true;
 		else
 			this.applyButton.disabled = true;
-		this.delay(function() {
-			if(instantApply)
-				this.$("hc-sets-prefs-reload").hidden = this.$("hc-sets-prefs-reloadSep").hidden = true;
-			if(!this.ps._loadStatus && this.treeUnsaved)
-				this.setModifiedState(true);
-		}, this, 50);
 
 		var prefsButt = de.getButton("extra2");
 		prefsButt.className += " hc-iconic hc-preferences";
 		// Used menu button (instead of "popup" attributes) to make popup accessible from keyboard
 		prefsButt.setAttribute("type", "menu");
 		prefsButt.appendChild(this.e("hc-sets-prefsManagementPopup"));
-		Array.prototype.forEach.call( // Fix command handler from dialog binding
-			prefsButt.getElementsByTagName("menuitem"),
-			function(mi) {
-				mi.setAttribute("dlgtype", "extra2");
-			}
-		);
+
+		this.delay(function() {
+			Array.prototype.forEach.call(
+				this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
+				function(col) {
+					if(!col.tooltipText)
+						col.tooltipText = col.getAttribute("label");
+				}
+			);
+			Array.prototype.forEach.call( // Fix command handler from dialog binding
+				prefsButt.getElementsByTagName("menuitem"),
+				function(mi) {
+					mi.setAttribute("dlgtype", "extra2");
+				}
+			);
+			if(instantApply)
+				this.$("hc-sets-prefs-reload").hidden = this.$("hc-sets-prefs-reloadSep").hidden = true;
+			if(!this.ps._loadStatus && this.treeUnsaved)
+				this.setModifiedState(true);
+		}, this, 50);
 	},
 	buildCharsetMenu: function(popup) {
 		Components.classes["@mozilla.org/observer-service;1"]
