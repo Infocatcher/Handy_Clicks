@@ -3013,16 +3013,15 @@ var handyClicksSets = {
 		this.attribute(mi, "checked", reset);
 	},
 	showWarnMsgsPrefs: function(mi) {
-		if(this.fxVersion < 3)
+		var pName = mi && mi.getAttribute("hc_pref");
+		if(!pName && this.fxVersion < 3)
 			return;
 		function escapeRegExp(str) {
 			return str.replace(/[\\\/.^$+*?|()\[\]{}]/g, "\\$&");
 		}
-		var filter = mi && mi.hasAttribute("hc_pref")
-			? this.pu.prefNS + mi.getAttribute("hc_pref")
-			: "/^" + escapeRegExp(this.pu.prefNS)
-				+ "(?:" + this.warnMsgsPrefs.map(escapeRegExp).join("|")
-				+ ")/";
+		var filter = pName || "/^" + escapeRegExp(this.pu.prefNS)
+			+ "(?:" + this.warnMsgsPrefs.map(escapeRegExp).join("|")
+			+ ")/";
 		this.pu.openAboutConfig(filter);
 	},
 	get ee() {
