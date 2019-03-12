@@ -25,7 +25,7 @@
 					return;
 				this.autocomplete = pu.get("editor.autocomplete");
 				var mm = function(n) {
-					return Math.max(1, Math.min(30, n));
+					return Math.max(1, Math.min(10, n));
 				};
 				this.autocompleteMinSymbols = mm(pu.get("editor.autocompleteMinSymbols"));
 				pu.oSvc.addObserver(function(pName, pVal) {
@@ -44,7 +44,7 @@
 			<property name="tabSize">
 				<getter>
 				<![CDATA[
-					return Math.max(1, Math.min(100,
+					return Math.max(1, Math.min(300,
 						+this.getAttribute("hc_tabSize")
 						|| this.hcEditor && this.hcEditor.pu.get("editor.tabSize")
 						|| 4

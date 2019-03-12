@@ -554,14 +554,14 @@ preferences {
 			<groupbox orient="horizontal" align="center">
 				<caption label="&hc.sets.tabulation;" />
 				<label value="&hc.sets.tabSize;" control="hc-sets-tabSize" />
-				<textbox id="hc-sets-tabSize" preference="tabSize" type="number" min="1" max="100" increment="1" size="2" />
+				<textbox id="hc-sets-tabSize" preference="tabSize" type="number" min="1" max="300" increment="1" size="2" />
 				<checkbox preference="tabSpaces" label="&hc.sets.tabSpaces;" />
 			</groupbox>
 			<groupbox orient="horizontal" align="center">
 				<caption label="&hc.sets.autocomplete;" />
 				<checkbox preference="autocomplete" hc_requiredFor="autocomplete" label="&hc.sets.autocompleteShowAfter;" />
 				<textbox id="hc-sets-tabSize" hc_dependsOn="autocomplete"
-					preference="autocompleteMinSymbols" type="number" min="1" max="30" increment="1" size="2"
+					preference="autocompleteMinSymbols" type="number" min="1" max="10" increment="1" size="2"
 					onchange="handyClicksSets.setAutocompletePlural(this);"
 					onsyncfrompreference="handyClicksSets.setAutocompletePlural(this);" />
 				<label hc_dependsOn="autocomplete" value="&hc.sets.autocompleteMinSymbols;"
