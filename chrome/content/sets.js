@@ -4623,6 +4623,28 @@ var handyClicksSetsSearcher = {
 			this.scrollToRow(nearestIndx);
 		}, this);
 	},
+	get allSelected() {
+		var res = this._res;
+		if(!res.length)
+			return undefined;
+		var rngCount = this.tSel.getRangeCount();
+		if(!rngCount)
+			return false;
+		var selCount = 0;
+		var start = {}, end = {};
+		for(var i = 0; i < rngCount; ++i) {
+			this.tSel.getRangeAt(i, start, end);
+			for(var j = start.value, l = end.value; j <= l; ++j) {
+				var tItem = this.getItemAtIndex(j);
+				if(!tItem)
+					continue;
+				++selCount;
+				if(res.indexOf(tItem) == -1)
+					return false;
+			}
+		}
+		return selCount == res.length;
+	},
 	_unwrapTimeout: 0,
 	_unwrapDelay: 700,
 	set wrapped(val) {
@@ -4646,7 +4668,11 @@ var handyClicksSetsSearcher = {
 		switch(e.button) {
 			case 0: this.prev(true); break;
 			case 2: this.next(true); break;
-			case 1: this.selectAll(true);
+			case 1:
+				if(this.allSelected)
+					this.clearSelection();
+				else
+					this.selectAll(true);
 		}
 	}
 };
