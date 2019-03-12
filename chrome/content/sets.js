@@ -155,6 +155,8 @@ var handyClicksSets = {
 		prefsButt.appendChild(this.e("hc-sets-prefsManagementPopup"));
 
 		this.delay(function() {
+			this.e("hc-sets-tree-searchDiv").tooltipText = this.$("hc-sets-tree-searchResults").tooltipText
+				+ " / " + this.$("hc-sets-tree-searchTotal").tooltipText;
 			Array.prototype.forEach.call(
 				this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
 				function(col) {

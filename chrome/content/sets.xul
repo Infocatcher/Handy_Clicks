@@ -94,7 +94,7 @@ preferences {
 				tooltiptext="&hc.sets.filterTip;" />
 			<hbox id="hc-sets-tree-searchStatistics" align="center">
 				<label id="hc-sets-tree-searchResults" tooltiptext="&hc.sets.searchResultsTip;" />
-				<label class="hc-mark" value="/" />
+				<label id="hc-sets-tree-searchDiv" class="hc-mark" value="/" />
 				<label id="hc-sets-tree-searchTotal" tooltiptext="&hc.sets.searchTotalTip;" />
 			</hbox>
 			<spacer flex="1" />
