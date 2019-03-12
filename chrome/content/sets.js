@@ -4670,8 +4670,8 @@ var handyClicksSetsSearcher = {
 	},
 	navigate: function(e) {
 		switch(e.button) {
-			case 0: this.prev(true); break;
-			case 2: this.next(true); break;
+			case 0: this.next(true); break;
+			case 2: this.prev(true); break;
 			case 1:
 				if(this.allSelected)
 					this.clearSelection();
