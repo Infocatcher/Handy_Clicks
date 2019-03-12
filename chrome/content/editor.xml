@@ -4,16 +4,12 @@
 		<implementation implements="nsIDOMEventListener">
 			<constructor>
 			<![CDATA[
-				var ww = -1;
-				if(this.hasAttribute("hc_wrapWidth")) {
-					var _ww = +this.getAttribute("hc_wrapWidth");
-					if(isFinite(_ww))
-						ww = _ww;
+				try {
+					this.editor.wrapWidth = this.hasAttribute("hc_wrapWidth")
+						? +this.getAttribute("hc_wrapWidth")
+						: -1;
 				}
-				try { // Strange bug in Firefox 1.5
-					this.editor.wrapWidth = ww;
-				}
-				catch(e) {
+				catch(e) { // Strange bug in Firefox 1.5
 				}
 				if(this.hasAttribute("hc_fontSize"))
 					this.style.fontSize = this.getAttribute("hc_fontSize");
@@ -503,7 +499,10 @@
 				<![CDATA[
 					var ww = this.getAttribute("hc_wrapWidth") == "0" ? -1 : 0;
 					this.editor.wrapWidth = ww;
-					this.setAttribute("hc_wrapWidth", ww);
+					if(!ww)
+						this.setAttribute("hc_wrapWidth", ww);
+					else
+						this.removeAttribute("hc_wrapWidth");
 					this.id && document.persist(this.id, "hc_wrapWidth");
 				]]>
 				</body>
