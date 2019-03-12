@@ -1346,11 +1346,11 @@
 					|| event.ctrlKey
 					|| event.altKey
 					|| event.metaKey
-					|| !/[a-z_]/i.test(String.fromCharCode(event.charCode))
+					|| !/[\w-]/i.test(String.fromCharCode(event.charCode))
 				)
 					return;
 				var offset = this.autocompleteMinSymbols - 1; // Symbol from this keypress event aren't typed yet
-				if(offset > 0 && !/^[a-z_]+$/i.test(this.value.substr(this.inputField.selectionStart - offset, offset)))
+				if(offset > 0 && !/^[\w-]+$/i.test(this.value.substr(this.inputField.selectionStart - offset, offset)))
 					return;
 				setTimeout(function(_this) {
 					_this.jsAutocomplete(false, true);
