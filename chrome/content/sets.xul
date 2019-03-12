@@ -92,7 +92,7 @@ preferences {
 				oncommand="handyClicksSets.searchInSetsTreeDelay(true);"
 				hc_key="hc-sets-key-toggleFilterMode"
 				tooltiptext="&hc.sets.filterTip;" />
-			<hbox id="hc-sets-tree-searchStatistics" align="center">
+			<hbox id="hc-sets-tree-searchStatistics" align="center" onclick="handyClicksSets.searcher.navigate(event);">
 				<label id="hc-sets-tree-searchResults" tooltiptext="&hc.sets.searchResultsTip;" />
 				<label id="hc-sets-tree-searchDiv" class="hc-mark" value="/" />
 				<label id="hc-sets-tree-searchTotal" tooltiptext="&hc.sets.searchTotalTip;" />

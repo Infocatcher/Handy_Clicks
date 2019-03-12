@@ -4641,5 +4641,12 @@ var handyClicksSetsSearcher = {
 			this.searchField.removeAttribute("hc_searchWrapped");
 			this.tree.removeAttribute("hc_searchWrapped");
 		}, this, this._unwrapDelay);
+	},
+	navigate: function(e) {
+		switch(e.button) {
+			case 0: this.prev(true); break;
+			case 2: this.next(true); break;
+			case 1: this.selectAll(true);
+		}
 	}
 };
