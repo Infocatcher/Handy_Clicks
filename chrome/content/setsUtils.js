@@ -643,14 +643,20 @@ var handyClicksSetsUtils = {
 			else
 				tt.showPopup(anchor, x, y, "tooltip", null, null);
 		}
+		var destroy = function() {
+			_sit.closeTimer = 0;
+			tt.onmouseover = null;
+		};
 		setTimeout(function() {
 			tt.onmouseover = function() {
+				_sit.closeTimer && clearTimeout(_sit.closeTimer);
+				destroy();
 				this.hidePopup();
 			};
 		}, 25);
-		if(_sit.hasOwnProperty("timeout"))
-			clearTimeout(_sit.timeout);
-		_sit.timeout = setTimeout(function(tt) {
+		_sit.closeTimer && clearTimeout(_sit.closeTimer);
+		_sit.closeTimer = setTimeout(function(tt) {
+			destroy();
 			tt.hidePopup();
 		}, hideDelay || this.TOOLTIP_HIDE_DEFAULT, tt);
 	},
