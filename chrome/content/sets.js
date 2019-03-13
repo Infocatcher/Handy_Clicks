@@ -3000,6 +3000,7 @@ var handyClicksSets = {
 				label: text.replace(/\s+/g, " ").replace(/\s*\.\s*$/, ""),
 				tooltiptext: text,
 				type: "checkbox",
+				autocheck: "false",
 				hc_pref: pName,
 				closemenu: "none"
 			};
