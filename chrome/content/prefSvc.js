@@ -878,6 +878,7 @@ var handyClicksPrefSvc = {
 			cbFile
 			&& /\.(?:jsm?|json)$/i.test(cbFile.leafName)
 			&& cbFile.fileSize <= 16*1024*1024
+			&& this.ju.startsWith(this.io.readLineFromFile(cbFile), this.requiredHeader)
 			&& this.checkPrefs(cbFile, true)
 		)
 			return cbFile;
