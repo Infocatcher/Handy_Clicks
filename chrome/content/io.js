@@ -140,6 +140,37 @@ var handyClicksIO = {
 		fis.close();
 		return this.convertToUnicode(str);
 	},
+	readLineFromFile: function(file, callback, context) {
+		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
+			.createInstance(Components.interfaces.nsIFileInputStream);
+		try {
+			fis.init(file, 0x01, this.PERMS_FILE_READ, 0);
+		}
+		catch(e) {
+			Components.utils.reportError(e);
+			fis.close();
+			return "";
+		}
+		var cis = Components.classes["@mozilla.org/intl/converter-input-stream;1"]
+			.createInstance(Components.interfaces.nsIConverterInputStream);
+		// This assumes that fis is the nsIInputStream you want to read from
+		cis.init(fis, "UTF-8", 1024, cis.DEFAULT_REPLACEMENT_CHARACTER);
+		if(!(cis instanceof Components.interfaces.nsIUnicharLineInputStream)) {
+			this.ut._err("readLineFromFile(): missed nsIUnicharLineInputStream");
+			fis.close();
+			cis.close();
+			return "";
+		}
+		var line = {};
+		for(; cis.readLine(line); ) {
+			var lv = line.value;
+			if(!callback || callback.call(context, lv))
+				break;
+		}
+		fis.close();
+		cis.close();
+		return lv;
+	},
 	get textDecoder() {
 		delete this.textDecoder;
 		if(typeof TextDecoder != "undefined") // Firefox 18+
