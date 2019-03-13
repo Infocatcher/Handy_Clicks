@@ -874,7 +874,12 @@ var handyClicksPrefSvc = {
 			cb.kGlobalClipboard,
 			Components.interfaces.nsILocalFile || Components.interfaces.nsIFile
 		);
-		if(cbFile && /\.(?:jsm?|json)$/i.test(cbFile.leafName) && this.checkPrefs(cbFile, true))
+		if(
+			cbFile
+			&& /\.(?:jsm?|json)$/i.test(cbFile.leafName)
+			&& cbFile.fileSize <= 16*1024*1024
+			&& this.checkPrefs(cbFile, true)
+		)
 			return cbFile;
 		if(!cb.supportsSelectionClipboard())
 			return "";
