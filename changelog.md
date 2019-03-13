@@ -196,8 +196,12 @@
 `*` Edit only clicked row after middle-click (instead of all selected rows).<br>
 `+` Added “focus tree” menu item (to show Ctrl+T hotkey).<br>
 `*` Import from clipboard: added support for settings files.<br>
-`*` Added menu to disable/restore each warning message (instead of tooltip and ability to restore all warnings).<br>
+`*` Added menu to disable/restore warning messages.<br>
 `+` Internal editor: added Ctrl+/ hotkey to comment code (like in Scratchpad).<br>
+`x` Editor: fixed autocompletion for words with “-” (e.g. “background-color”) and with numbers (e.g. “Float32Array”).<br>
+`*` Editor: autocompletion for “style” property.<br>
+`*` Changed limits for editor preferences (<em>extensions.handyclicks.editor.autocompleteMinSymbols</em>: 30 -> 10, <em>extensions.handyclicks.editor.tabSize</em>: 100 -> 300, font size limit: 48 -> 64).<br>
+`*` Make search/filter counter clickable: left/right-click – find next down/up, middle-click – select all search results/clear selection.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
