@@ -2958,7 +2958,10 @@ var handyClicksSets = {
 		return this.warnMsgsPrefs.every(this.warnEnabled, this);
 	},
 	initResetWarnMsgs: function() {
-		this.$("hc-sets-warnMsgs").setAttribute("hc_canReset", !this.allWarnEnabled);
+		var allEnabled = this.allWarnEnabled;
+		this.$("hc-sets-warnMsgs").setAttribute("hc_canReset", !allEnabled);
+		var restoreAll = this.e("hc-sets-warnMsgs-restoreAll");
+		restoreAll && this.attribute(restoreAll, "disabled", allEnabled);
 	},
 	initResetWarnMsgsMenu: function() {
 		var mp = this.$("hc-sets-warnMsgs-popup");
@@ -3029,7 +3032,6 @@ var handyClicksSets = {
 		else
 			this.pu.set(pName, typeof this.pu.get(pName) == "number" ? 0 : false);
 		this.attribute(mi, "checked", reset);
-		this.attribute(this.e("hc-sets-warnMsgs-restoreAll"), "disabled", this.allWarnEnabled);
 	},
 	resetWarnMsgs: function() {
 		this.warnMsgsPrefs.forEach(function(pName) {
