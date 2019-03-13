@@ -545,7 +545,8 @@ preferences {
 					onclick="if(event.button == 2) handyClicksSets.showWarnMsgsPrefs(event.target);">
 					<menupopup id="hc-sets-warnMsgs-popup"
 						onpopupshowing="handyClicksSets.initResetWarnMsgsMenu();"
-						oncommand="handyClicksSets.resetWarnMsg(event.target);" />
+						oncommand="handyClicksSets.resetWarnMsg(event.target);"
+						hc_restoreAll="&hc.sets.warnMsgsRestoreAll;" />
 				</button>
 			</hbox>
 		</groupbox>

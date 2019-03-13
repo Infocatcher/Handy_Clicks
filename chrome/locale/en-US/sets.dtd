@@ -227,6 +227,7 @@
 <!ENTITY hc.sets.reopenWindow "Reopen window">
 <!ENTITY hc.sets.warnMsgs "Warning messages:">
 <!ENTITY hc.sets.warnMsgsSelect "Select…">
+<!ENTITY hc.sets.warnMsgsRestoreAll "Restore all warnings">
 
 <!ENTITY hc.sets.internalEditor "Internal editor">
 <!ENTITY hc.sets.tabulation "Tabulation">

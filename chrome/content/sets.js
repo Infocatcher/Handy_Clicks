@@ -3006,6 +3006,11 @@ var handyClicksSets = {
 			var mi = this.ut.createElement("menuitem", attrs);
 			df.appendChild(mi);
 		}, this);
+		df.appendChild(document.createElement("menuseparator"));
+		df.appendChild(this.ut.createElement("menuitem", {
+			label: mp.getAttribute("hc_restoreAll"),
+			oncommand: "handyClicksSets.resetWarnMsgs();"
+		}));
 		mp.textContent = "";
 		mp.appendChild(df);
 	},
@@ -3019,6 +3024,12 @@ var handyClicksSets = {
 		else
 			this.pu.set(pName, typeof this.pu.get(pName) == "number" ? 0 : false);
 		this.attribute(mi, "checked", reset);
+	},
+	resetWarnMsgs: function() {
+		this.warnMsgsPrefs.forEach(function(pName) {
+			if(!this.warnEnabled(pName))
+				this.pu.resetPref(pName);
+		}, this);
 	},
 	showWarnMsgsPrefs: function(mi) {
 		var pName = mi && mi.getAttribute("hc_pref");

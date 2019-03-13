@@ -227,6 +227,7 @@
 <!ENTITY hc.sets.reopenWindow "Переоткрыть окно">
 <!ENTITY hc.sets.warnMsgs "Предупреждающие сообщения:">
 <!ENTITY hc.sets.warnMsgsSelect "Выбрать…">
+<!ENTITY hc.sets.warnMsgsRestoreAll "Восстановить все предупреждения">
 
 <!ENTITY hc.sets.internalEditor "Встроенный редактор">
 <!ENTITY hc.sets.tabulation "Табуляция">
