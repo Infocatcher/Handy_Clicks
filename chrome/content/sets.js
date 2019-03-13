@@ -2954,9 +2954,11 @@ var handyClicksSets = {
 	warnEnabled: function(pName) {
 		return this.pu.get(pName) > 0; // true or positive integer
 	},
+	get allWarnEnabled() {
+		return this.warnMsgsPrefs.every(this.warnEnabled, this);
+	},
 	initResetWarnMsgs: function() {
-		var allEnabled = this.warnMsgsPrefs.every(this.warnEnabled, this);
-		this.$("hc-sets-warnMsgs").setAttribute("hc_canReset", !allEnabled);
+		this.$("hc-sets-warnMsgs").setAttribute("hc_canReset", !this.allWarnEnabled);
 	},
 	initResetWarnMsgsMenu: function() {
 		var mp = this.$("hc-sets-warnMsgs-popup");
@@ -3008,8 +3010,10 @@ var handyClicksSets = {
 		}, this);
 		df.appendChild(document.createElement("menuseparator"));
 		df.appendChild(this.ut.createElement("menuitem", {
+			id: "hc-sets-warnMsgs-restoreAll",
 			label: mp.getAttribute("hc_restoreAll"),
-			oncommand: "handyClicksSets.resetWarnMsgs();"
+			oncommand: "handyClicksSets.resetWarnMsgs();",
+			disabled: this.allWarnEnabled
 		}));
 		mp.textContent = "";
 		mp.appendChild(df);
@@ -3024,6 +3028,7 @@ var handyClicksSets = {
 		else
 			this.pu.set(pName, typeof this.pu.get(pName) == "number" ? 0 : false);
 		this.attribute(mi, "checked", reset);
+		this.attribute(this.e("hc-sets-warnMsgs-restoreAll"), "disabled", this.allWarnEnabled);
 	},
 	resetWarnMsgs: function() {
 		this.warnMsgsPrefs.forEach(function(pName) {
