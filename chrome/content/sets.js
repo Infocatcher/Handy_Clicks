@@ -2263,8 +2263,10 @@ var handyClicksSets = {
 		if(!col.hasAttribute("primary"))
 			return;
 		this.ut.stopEvent(e);
-		var notify = this.ju.bind(function(id) {
+		var notify = this.ju.bind(function(id, template, n) {
 			var s = this.$(id).getAttribute("label");
+			if(template)
+				s = template.replace("%s", s).replace("%n", n);
 			this.su.showInfoTooltip(col, s, this.su.TOOLTIP_HIDE_QUICK, this.su.TOOLTIP_OFFSET_CURSOR);
 		}, this);
 		if(e.shiftKey || e.altKey || e.metaKey) {
@@ -2274,8 +2276,19 @@ var handyClicksSets = {
 		}
 		else {
 			var expand = e.button == 2;
-			notify(expand ? "hc-sets-tree-expandLevel" : "hc-sets-tree-collapseLevel");
-			this.changeTreeExpandLevel(expand ? 1 : -1);
+			var levelDiff = expand ? 1 : -1;
+			var levelNew = this.maxExpandedLevel + 1 + levelDiff;
+			var template = "%s: %n";
+			if(expand && this.treeExpanded) {
+				template += " (already expanded)";
+				--levelNew;
+			}
+			else if(!expand && levelNew < 0) {
+				template += " (already collapsed)";
+				levelNew = 0;
+			}
+			notify(expand ? "hc-sets-tree-expandLevel" : "hc-sets-tree-collapseLevel", template, levelNew);
+			this.changeTreeExpandLevel(levelDiff);
 		}
 	},
 
