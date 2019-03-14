@@ -3973,6 +3973,7 @@ var handyClicksSets = {
 				return contents[path];
 			return contents[path] = this.io.readFromFile(file);
 		}, this);
+		var dupCount = 0;
 		for(var size in sizes) {
 			var mis = sizes[size];
 			var len = mis.length;
@@ -3988,6 +3989,7 @@ var handyClicksSets = {
 					var mi2 = mis[j];
 					if(fileData(mi2) != data)
 						continue;
+					++dupCount;
 					mi2.setAttribute("hc_duplicateRemove", "true");
 					this.delay(function(mi2) { // Pseudo-async + progress animation
 						var file = mi2.__file;
@@ -4003,6 +4005,15 @@ var handyClicksSets = {
 				}
 			}
 		}
+		this.delay(function() {
+			this.su.showInfoTooltip(
+				miRD,
+				this.getLocalized(dupCount ? "duplicateBackupsRemoved" : "duplicateBackupsNA")
+					.replace("%n", dupCount),
+				this.su.TOOLTIP_HIDE_DEFAULT,
+				this.su.TOOLTIP_OFFSET_ABOVE
+			);
+		}, this, 100);
 	},
 	reveal: function(file) {
 		return this.ut.reveal(file);
