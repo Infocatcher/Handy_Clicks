@@ -628,6 +628,7 @@ var handyClicksSetsUtils = {
 			tt.firstChild.textContent = msg;
 		}
 		tt.onmouseover = null; // Trick to show tooltip under cursor
+		tt.setAttribute("hc_anchor", anchor.id); // For userChrome.css tweaks
 		if(offset == this.TOOLTIP_OFFSET_ABOVE) {
 			if("openPopup" in tt)
 				tt.openPopup(anchor, "before_start", 0, 0);
@@ -646,6 +647,7 @@ var handyClicksSetsUtils = {
 		var destroy = function() {
 			_sit.closeTimer = 0;
 			tt.onmouseover = null;
+			tt.removeAttribute("hc_anchor");
 		};
 		setTimeout(function() {
 			tt.onmouseover = function() {
