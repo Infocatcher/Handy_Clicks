@@ -2203,11 +2203,35 @@ var handyClicksSets = {
 			this
 		);
 	},
+	notifyCollapseExpand: function(id, template, n) {
+		var s = this.$(id).getAttribute("label");
+		this.su.showInfoTooltip(
+			this.$("hc-sets-tree-columnShortcutAndTarget"),
+			template ? template.replace("%s", s).replace("%n", n) : s,
+			this.su.TOOLTIP_HIDE_QUICK,
+			this.su.TOOLTIP_OFFSET_ABOVE
+		);
+	},
 	changeTreeExpandLevel: function(levelDiff) {
 		if(!this.isTreePaneSelected)
 			return;
 		this.tree.focus();
-		this.expandTreeLevel(this.maxExpandedLevel + levelDiff);
+		var levelNew = this.maxExpandedLevel + levelDiff + 1;
+		var expand = levelDiff > 0;
+		var template = "%s: %n";
+		if(expand && this.treeExpanded) {
+			template += " (already expanded)";
+			--levelNew;
+		}
+		else if(!expand && levelNew < 0) {
+			template += " (already collapsed)";
+			levelNew = 0;
+		}
+		this.notifyCollapseExpand(
+			expand ? "hc-sets-tree-expandLevel" : "hc-sets-tree-collapseLevel",
+			template, levelNew
+		);
+		this.expandTreeLevel(levelNew - 1);
 	},
 	expandTreeLevel: function(level) {
 		this.treeBatch(this._expandTreeLevel, this, arguments);
@@ -2263,32 +2287,13 @@ var handyClicksSets = {
 		if(!col.hasAttribute("primary"))
 			return;
 		this.ut.stopEvent(e);
-		var notify = this.ju.bind(function(id, template, n) {
-			var s = this.$(id).getAttribute("label");
-			if(template)
-				s = template.replace("%s", s).replace("%n", n);
-			this.su.showInfoTooltip(col, s, this.su.TOOLTIP_HIDE_QUICK, this.su.TOOLTIP_OFFSET_CURSOR);
-		}, this);
 		if(e.shiftKey || e.altKey || e.metaKey) {
 			var cantCollapse = this.treeCollapsed;
-			notify(cantCollapse ? "hc-sets-tree-expand" : "hc-sets-tree-collapse");
 			this.toggleTreeContainers(cantCollapse);
+			this.notifyCollapseExpand(cantCollapse ? "hc-sets-tree-expand" : "hc-sets-tree-collapse");
 		}
 		else {
-			var expand = e.button == 2;
-			var levelDiff = expand ? 1 : -1;
-			var levelNew = this.maxExpandedLevel + 1 + levelDiff;
-			var template = "%s: %n";
-			if(expand && this.treeExpanded) {
-				template += " (already expanded)";
-				--levelNew;
-			}
-			else if(!expand && levelNew < 0) {
-				template += " (already collapsed)";
-				levelNew = 0;
-			}
-			notify(expand ? "hc-sets-tree-expandLevel" : "hc-sets-tree-collapseLevel", template, levelNew);
-			this.changeTreeExpandLevel(levelDiff);
+			this.changeTreeExpandLevel(e.button == 2 ? 1 : -1);
 		}
 	},
 
