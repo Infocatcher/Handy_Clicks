@@ -2097,9 +2097,14 @@ var handyClicksSets = {
 	setDrawModeFromKey: function(dm) {
 		if(!this.isTreePaneSelected)
 			return;
-		var viewMenu = this.$("hc-sets-tree-viewMenu");
-		var label = viewMenu.getElementsByAttribute("hc_drawMode", dm)[0].getAttribute("label");
-		this.su.showInfoTooltip(viewMenu, label, this.su.TOOLTIP_HIDE_QUICK);
+		this.su.showInfoTooltip(
+			this.$("hc-sets-tree-columnShortcutAndTarget"),
+			this.$("hc-sets-tree-viewMenu")
+				.getElementsByAttribute("hc_drawMode", dm)[0]
+				.getAttribute("label"),
+			this.su.TOOLTIP_HIDE_QUICK,
+			this.su.TOOLTIP_OFFSET_ABOVE
+		);
 		this.setDrawMode(dm, true);
 	},
 	ensureInitialDrawMode: function() {
