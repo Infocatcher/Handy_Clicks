@@ -2157,13 +2157,14 @@ var handyClicksSets = {
 		this.tree.focus();
 		this.treeBatch(this._toggleTreeContainers, this, arguments);
 	},
-	_toggleTreeContainers: function(expand) {
+	_toggleTreeContainers: function(expand, notify) {
 		Array.prototype.forEach.call(
 			this.treeContainers,
 			function(ti) {
 				ti.setAttribute("open", expand);
 			}
 		);
+		notify && this.notifyCollapseExpand(expand ? "hc-sets-tree-expand" : "hc-sets-tree-collapse");
 	},
 	get maxExpandedLevel() {
 		var expandedLevel = -1;
@@ -2287,14 +2288,10 @@ var handyClicksSets = {
 		if(!col.hasAttribute("primary"))
 			return;
 		this.ut.stopEvent(e);
-		if(e.shiftKey || e.altKey || e.metaKey) {
-			var cantCollapse = this.treeCollapsed;
-			this.toggleTreeContainers(cantCollapse);
-			this.notifyCollapseExpand(cantCollapse ? "hc-sets-tree-expand" : "hc-sets-tree-collapse");
-		}
-		else {
+		if(e.shiftKey || e.altKey || e.metaKey)
+			this.toggleTreeContainers(this.treeCollapsed, true);
+		else
 			this.changeTreeExpandLevel(e.button == 2 ? 1 : -1);
-		}
 	},
 
 	isMenuButton: function(node) {
