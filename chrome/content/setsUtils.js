@@ -644,23 +644,22 @@ var handyClicksSetsUtils = {
 			else
 				tt.showPopup(anchor, x, y, "tooltip", null, null);
 		}
-		var destroy = function() {
-			_sit.closeTimer = 0;
-			tt.onmouseover = null;
-			tt.removeAttribute("hc_anchor");
-		};
 		setTimeout(function() {
 			tt.onmouseover = function() {
 				_sit.closeTimer && clearTimeout(_sit.closeTimer);
-				destroy();
 				this.hidePopup();
 			};
 		}, 25);
 		_sit.closeTimer && clearTimeout(_sit.closeTimer);
 		_sit.closeTimer = setTimeout(function(tt) {
-			destroy();
 			tt.hidePopup();
 		}, hideDelay || this.TOOLTIP_HIDE_DEFAULT, tt);
+		tt.addEventListener("popuphidden", function onHide(e) {
+			tt.removeEventListener(e.type, onHide, false);
+			_sit.closeTimer = 0;
+			tt.onmouseover = null;
+			tt.removeAttribute("hc_anchor");
+		}, false);
 	},
 	showTooltip: function(tt, anchor, hideDelay, offset) {
 		this.showInfoTooltip(anchor, "", hideDelay, offset, tt);
