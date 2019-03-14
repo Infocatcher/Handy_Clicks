@@ -2263,10 +2263,20 @@ var handyClicksSets = {
 		if(!col.hasAttribute("primary"))
 			return;
 		this.ut.stopEvent(e);
-		if(e.shiftKey || e.altKey || e.metaKey)
-			this.toggleTreeContainers(this.treeCollapsed);
-		else
-			this.changeTreeExpandLevel(e.button == 2 ? 1 : -1);
+		var notify = this.ju.bind(function(id) {
+			var s = this.$(id).getAttribute("label");
+			this.su.showInfoTooltip(col, s, this.su.TOOLTIP_HIDE_QUICK, this.su.TOOLTIP_OFFSET_CURSOR);
+		}, this);
+		if(e.shiftKey || e.altKey || e.metaKey) {
+			var cantCollapse = this.treeCollapsed;
+			notify(cantCollapse ? "hc-sets-tree-expand" : "hc-sets-tree-collapse");
+			this.toggleTreeContainers(cantCollapse);
+		}
+		else {
+			var expand = e.button == 2;
+			notify(expand ? "hc-sets-tree-expandLevel" : "hc-sets-tree-collapseLevel");
+			this.changeTreeExpandLevel(expand ? 1 : -1);
+		}
 	},
 
 	isMenuButton: function(node) {
