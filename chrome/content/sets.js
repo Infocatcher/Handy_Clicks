@@ -2097,19 +2097,23 @@ var handyClicksSets = {
 	setDrawModeFromKey: function(dm) {
 		if(!this.isTreePaneSelected)
 			return;
-		this.su.showInfoTooltip(
-			this.$("hc-sets-tree-columnShortcutAndTarget"),
-			this.$("hc-sets-tree-viewMenu")
-				.getElementsByAttribute("hc_drawMode", dm)[0]
-				.getAttribute("label"),
-			this.su.TOOLTIP_HIDE_QUICK,
-			this.su.TOOLTIP_OFFSET_ABOVE
-		);
+		var mi = this.$("hc-sets-tree-viewMenu").getElementsByAttribute("hc_drawMode", dm)[0];
+		this.notifyTreeChange(mi);
 		this.setDrawMode(dm, true);
 	},
 	ensureInitialDrawMode: function() {
 		if(!("drawModeInitial" in this))
 			this.drawModeInitial = this.drawMode;
+	},
+	notifyTreeChange: function(id, template, n) {
+		var node = typeof id == "string" ? this.$(id) : id;
+		var s = node.getAttribute("label");
+		this.su.showInfoTooltip(
+			this.$("hc-sets-tree-columnShortcutAndTarget"),
+			template ? template.replace("%s", s).replace("%n", n) : s,
+			this.su.TOOLTIP_HIDE_QUICK,
+			this.su.TOOLTIP_OFFSET_ABOVE
+		);
 	},
 	initSortMenu: function(mp) {
 		this.createSortMenu(mp);
@@ -2169,7 +2173,7 @@ var handyClicksSets = {
 				ti.setAttribute("open", expand);
 			}
 		);
-		notify && this.notifyCollapseExpand(expand ? "hc-sets-tree-expand" : "hc-sets-tree-collapse");
+		notify && this.notifyTreeChange(expand ? "hc-sets-tree-expand" : "hc-sets-tree-collapse");
 	},
 	get maxExpandedLevel() {
 		var expandedLevel = -1;
@@ -2209,15 +2213,6 @@ var handyClicksSets = {
 			this
 		);
 	},
-	notifyCollapseExpand: function(id, template, n) {
-		var s = this.$(id).getAttribute("label");
-		this.su.showInfoTooltip(
-			this.$("hc-sets-tree-columnShortcutAndTarget"),
-			template ? template.replace("%s", s).replace("%n", n) : s,
-			this.su.TOOLTIP_HIDE_QUICK,
-			this.su.TOOLTIP_OFFSET_ABOVE
-		);
-	},
 	changeTreeExpandLevel: function(levelDiff) {
 		if(!this.isTreePaneSelected)
 			return;
@@ -2233,7 +2228,7 @@ var handyClicksSets = {
 			template += this.getLocalized("alreadyCollapsed");
 			levelNew = 0;
 		}
-		this.notifyCollapseExpand(
+		this.notifyTreeChange(
 			expand ? "hc-sets-tree-expandLevel" : "hc-sets-tree-collapseLevel",
 			template, levelNew
 		);
