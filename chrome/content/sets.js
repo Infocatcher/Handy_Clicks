@@ -2218,13 +2218,13 @@ var handyClicksSets = {
 		this.tree.focus();
 		var levelNew = this.maxExpandedLevel + levelDiff + 1;
 		var expand = levelDiff > 0;
-		var template = "%s: %n";
+		var template = this.getLocalized("changeTreeLevelTemplate");
 		if(expand && this.treeExpanded) {
-			template += " (already expanded)";
+			template += this.getLocalized("alreadyExpanded");
 			--levelNew;
 		}
 		else if(!expand && levelNew < 0) {
-			template += " (already collapsed)";
+			template += this.getLocalized("alreadyCollapsed");
 			levelNew = 0;
 		}
 		this.notifyCollapseExpand(
