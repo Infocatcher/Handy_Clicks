@@ -889,9 +889,9 @@
 					var file = this.pickFile("saveCodeToFile", true, this.getDefaultFilename("js", true));
 					if(!file)
 						return null;
-					var ut = top.handyClicksUtils;
-					var val = ut.io.platformLineBreaks(this.value);
-					ut.io.writeToFileAsync(ut.io.BOM + val, file, function(status) {
+					var io = this.hcEditor.io;
+					var val = io.platformLineBreaks(this.value);
+					io.writeToFileAsync(io.BOM + val, file, function(status) {
 						if(watch && Components.isSuccessCode(status))
 							this.watchFile(file, false);
 					}, this);
