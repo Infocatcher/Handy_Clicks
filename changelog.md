@@ -182,7 +182,7 @@
 `*` Improved <em>extensions.handyclicks.sets.treeExpandDelayedAction</em> = false: don't force collapse delayed actions and restore saved state.<br>
 `*` Better autocompletion for “Scratchpad” in external editor path: ignore input after already autocompleted “Scratchpad”, autocomplete after any character, not only for “s” + typed “c”.
 `*` Iterate over all backups and auto-restore newest appreciate file (especially useful in case of removed duplicate backups).<br>
-`+` Editor: added “switch to settings tree” command (Ctrl+Shift+S).<br>
+`+` Editor: added “switch to settings tree” command (F3).<br>
 `+` Editor: added “Settings” menu.<br>
 `+` Editor: added UI for <em>extensions.handyclicks.editor.ui.invertWindowTitle</em> and <em>extensions.handyclicks.editor.ui.compact</em> preferences.<br>
 `+` Editor: added menu item to open settings.<br>
