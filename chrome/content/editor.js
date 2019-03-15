@@ -1030,13 +1030,9 @@ var handyClicksEditor = {
 		this.$("hc-editor-funcArgsBox" + delayed).hidden = !cArgs;
 	},
 	addArgControls: function(argName, delayed, so) {
-		var setsObj = so || this.ju.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
-		if(delayed) //~ todo: test part with "so"
-			setsObj = so || this.ju.getOwnProperty(setsObj, "delayedAction") || {};
-		var argVal = this.ju.getOwnProperty(setsObj, "arguments", argName);
+		var argVal = this.ju.getOwnProperty(so, "arguments", argName);
 		var argType = this.getArgType(argName);
-		if(argType)
-			this.addControl(argName, argType, argVal, delayed); // "loadInBackground", "checkbox", true
+		argType && this.addControl(argName, argType, argVal, delayed);
 	},
 	getArgType: function(argName) {
 		var types = this.types;
