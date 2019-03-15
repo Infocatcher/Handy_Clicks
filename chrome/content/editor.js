@@ -1020,20 +1020,14 @@ var handyClicksEditor = {
 		var cFunc = funcsList.value || null;
 		var isCustom = cFunc == "$custom";
 		this.selectCustomFunc(isCustom, delayed);
-		var argBox = this.$("hc-editor-funcArgsBox" + delayed);
-		argBox.hidden = true;
-		if(isCustom)
-			return;
-		var cMi = funcsList.selectedItem;
-		if(!cMi)
-			return;
-		var cArgs = cMi.getAttribute("hc_args");
-		if(!cArgs)
-			return;
-		argBox.hidden = false;
-		cArgs.split(/,\s*/).forEach(function(argName) {
-			this.addArgControls(argName, delayed, setsObj);
-		}, this);
+		if(!isCustom) {
+			var cMi = funcsList.selectedItem;
+			var cArgs = cMi && cMi.getAttribute("hc_args");
+			cArgs && cArgs.split(/,\s*/).forEach(function(argName) {
+				this.addArgControls(argName, delayed, setsObj);
+			}, this);
+		}
+		this.$("hc-editor-funcArgsBox" + delayed).hidden = !cArgs;
 	},
 	addArgControls: function(argName, delayed, so) {
 		var setsObj = so || this.ju.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
