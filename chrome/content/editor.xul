@@ -71,14 +71,14 @@
 		<key id="hc-editor-key-reload2" key="r" modifiers="control" oncommand="handyClicksEditor.reloadSettings();" />
 		<key id="hc-editor-key-switchToSettings" keycode="VK_F3" hc_allowInRenameMode="true" oncommand="handyClicksEditor.switchToSettings();" />
 
-		<key id="hc-editor-key-editCode" key="E" modifiers="control,shift" command="hc-editor-cmd-editCode" />
+		<key id="hc-editor-key-editCode" key="e" modifiers="control,shift" command="hc-editor-cmd-editCode" />
 		<key id="hc-editor-key-editCode2" keycode="VK_F4" command="hc-editor-cmd-editCode" />
-		<key id="hc-editor-key-codeToFile" key="X" modifiers="control,shift" command="hc-editor-cmd-codeToFile" />
-		<key id="hc-editor-key-openScriptsDir" key="D" modifiers="control,shift" command="hc-editor-cmd-openScriptsDir" />
-		<key id="hc-editor-key-openCode" key="O" modifiers="control,shift" command="hc-editor-cmd-openCode" />
-		<key id="hc-editor-key-openCodeNoWatch" key="O" modifiers="control"
+		<key id="hc-editor-key-codeToFile" key="x" modifiers="control,shift" command="hc-editor-cmd-codeToFile" />
+		<key id="hc-editor-key-openScriptsDir" key="d" modifiers="control,shift" command="hc-editor-cmd-openScriptsDir" />
+		<key id="hc-editor-key-openCode" key="o" modifiers="control,shift" command="hc-editor-cmd-openCode" />
+		<key id="hc-editor-key-openCodeNoWatch" key="o" modifiers="control"
 			oncommand="handyClicksEditor.doEditorCommand(null, 'loadFromFile', false);" />
-		<key id="hc-editor-key-saveCode" key="S" modifiers="control,shift"
+		<key id="hc-editor-key-saveCode" key="s" modifiers="control,shift"
 			oncommand="handyClicksEditor.doEditorCommand(null, 'saveToFile', true);" />
 
 		<key id="hc-editor-key-copy" key="c" modifiers="control,shift" oncommand="handyClicksEditor.copySettings();" />
