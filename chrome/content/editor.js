@@ -50,22 +50,7 @@ var handyClicksEditor = {
 			this.loadLabels();
 			this.createDelayedFuncTab();
 			this.addTestButtons();
-
-			this.delay(function() {
-				var ml = this.$("hc-editor-customType");
-				var inp = document.getAnonymousElementByAttribute(ml, "anonid", "input");
-				inp.setAttribute("spellcheck", "true");
-				inp.setAttribute("tooltiptext", ml.getAttribute("hc_tooltiptext"));
-			}, this);
-
-			// Fix Ctrl(+Shift)+Tab and Ctrl+PageUp/Ctrl+PageDown navigation in Firefox 52+
-			var tabboxProto = this.mainTabbox.__proto__;
-			tabboxProto._origHandleEvent = tabboxProto.handleEvent;
-			tabboxProto.handleEvent = function(e) {
-				if("defaultPrevented" in e && e.defaultPrevented)
-					return undefined;
-				return this._origHandleEvent.apply(this, arguments);
-			};
+			this.delay(this.delayedInit, this, 20);
 
 			var mouseEvt = typeof MouseEvent == "function" // Firefox 11+
 				&& ("" + MouseEvent).charAt(0) != "[" // Trick for Firefox <= 2.0
@@ -94,7 +79,6 @@ var handyClicksEditor = {
 
 		this.ps.oSvc.addObserver(this.setsReloading, this);
 
-		this.setTooltip();
 		this.setFuncsNotes();
 		this.setCompactUI();
 		this.pu.oSvc.addObserver(this.prefChanged, this);
@@ -102,6 +86,23 @@ var handyClicksEditor = {
 		window.addEventListener("keydown", this.tabLikeNavigation, true);
 
 		this._startTime1 = Date.now();
+	},
+	delayedInit: function() {
+		this.setTooltip();
+
+		// Fix Ctrl(+Shift)+Tab and Ctrl+PageUp/Ctrl+PageDown navigation in Firefox 52+
+		var tabboxProto = this.mainTabbox.__proto__;
+		tabboxProto._origHandleEvent = tabboxProto.handleEvent;
+		tabboxProto.handleEvent = function(e) {
+			if("defaultPrevented" in e && e.defaultPrevented)
+				return undefined;
+			return this._origHandleEvent.apply(this, arguments);
+		};
+
+		var ml = this.$("hc-editor-customType");
+		var inp = document.getAnonymousElementByAttribute(ml, "anonid", "input");
+		inp.setAttribute("spellcheck", "true");
+		inp.setAttribute("tooltiptext", ml.getAttribute("hc_tooltiptext"));
 	},
 	destroy: function(reloadFlag) {
 		this.wu.markOpenedEditors();
