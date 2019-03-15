@@ -2109,7 +2109,7 @@ var handyClicksSets = {
 		var node = typeof id == "string" ? this.$(id) : id;
 		var s = node.getAttribute("label");
 		this.su.showInfoTooltip(
-			this.$("hc-sets-tree-columnShortcutAndTarget"),
+			this.$("hc-sets-tree-columns"),
 			template ? template.replace("%s", s).replace("%n", n) : s,
 			this.su.TOOLTIP_HIDE_QUICK,
 			this.su.TOOLTIP_OFFSET_ABOVE
