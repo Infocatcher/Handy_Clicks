@@ -794,13 +794,11 @@ var handyClicksEditor = {
 				_labels[label] = 1;
 			var dis = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
 			var notUsed = !this.typeUsed(cType);
-			var tip = this.getLocalized("internalId").replace("%id", cType)
-				+ (notUsed ? " \n" + this.getLocalized("customTypeNotUsed") : "");
 			sortedTypes.push({
 				label: label,
 				hc_localizedLabel: this.ps.localize(label),
 				value: cType,
-				tooltiptext: tip,
+				tooltiptext: this.getTypeTip(cType, notUsed),
 				hc_notUsed: notUsed,
 				hc_disabled: dis
 			});
@@ -823,6 +821,10 @@ var handyClicksEditor = {
 		sep.hidden = hideSep;
 		parent.parentNode.value = this.type || ""; // <menulist>
 		this.highlightUsedTypes();
+	},
+	getTypeTip: function(cType, notUsed) {
+		return this.getLocalized("internalId").replace("%id", cType)
+			+ (notUsed ? " \n" + this.getLocalized("customTypeNotUsed") : "");
 	},
 	showLocalizedLabels: function(mp) {
 		var mi = mp.getElementsByAttribute("value", this.currentCustomType)[0] || null;
@@ -1153,14 +1155,26 @@ var handyClicksEditor = {
 	},
 	set currentCustomType(customType) {
 		this.$("hc-editor-customTypeExtId").value = this.ps.removeCustomPrefix(customType || "");
-		var notUsed = !this.typeUsed(customType);
+		this.checkNotUsedType(customType);
+	},
+	checkNotUsedType: function(type, updateMenu) {
+		var notUsed = !this.typeUsed(type);
 		var ml = this.$("hc-editor-customType");
 		ml.setAttribute("hc_notUsed", notUsed);
 		this.delay(function() { // Wait to correctly set tooltip on startup
 			var inp = document.getAnonymousElementByAttribute(ml, "anonid", "input");
 			var ttNotUsed = notUsed ? " \n" + this.getLocalized("customTypeNotUsed") : "";
 			inp.setAttribute("tooltiptext", ml.getAttribute("hc_tooltiptext") + ttNotUsed);
-		}, this);
+			var mi = updateMenu && ml.getElementsByAttribute("value", type)[0] || null;
+			if(mi) {
+				mi.setAttribute("tooltiptext", this.getTypeTip(type, notUsed));
+				mi.setAttribute("hc_notUsed", notUsed);
+			}
+		}, this, 50);
+	},
+	typeUsageChanged: function(type) {
+		if(type == this.currentCustomType)
+			this.checkNotUsedType(type, true);
 	},
 	get renameShortcutMode() {
 		return this.root.getAttribute("hc_renameShortcut") == "true";
@@ -1755,6 +1769,7 @@ var handyClicksEditor = {
 		if(saveAll)
 			return loadCorrectedSettings;
 		this.applySettings(testFlag, applyFlag, loadCorrectedSettings);
+		applyFlag && this.delay(this.typeUsageChanged, this, 0, [type]);
 		return true;
 	},
 	applySettings: function(testFlag, applyFlag, callback) {
@@ -1860,6 +1875,7 @@ var handyClicksEditor = {
 		var p = this.ps.prefs;
 		var sh = this.currentShortcut;
 		var ct = this.currentType;
+		this.delay(this.typeUsageChanged, this, 0, [ct]);
 		if(!this.ju.getOwnProperty(p, sh, ct)) { // Nothing to delete
 			this._savedShortcutObj = null;
 			this.setDialogButtons();
