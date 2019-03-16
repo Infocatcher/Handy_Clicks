@@ -1996,8 +1996,11 @@ var handyClicksEditor = {
 	deleteCustomType: function() {
 		var cts = this.ps.types;
 		var type = this.currentCustomType;
-		if(!cts.hasOwnProperty(type)) // Nothing to delete
+		if(!cts.hasOwnProperty(type)) { // Nothing to delete
+			this._savedTypeObj = null;
+			this.setDialogButtons();
 			return;
+		}
 		if(!this.su.confirmTypeAction(type, "typeDeletingWarning"))
 			return;
 		delete cts[type];
