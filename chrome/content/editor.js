@@ -1117,7 +1117,7 @@ var handyClicksEditor = {
 		var si = ml.selectedItem;
 		if(si && si.hasAttribute("hc_aboutConfigEntry")) {
 			ml.setAttribute("hc_aboutConfigEntry", si.getAttribute("hc_aboutConfigEntry"));
-			ml.setAttribute("tooltiptext", si.getAttribute("tooltiptext"));
+			ml.setAttribute("tooltiptext", this.getLocalized("openAboutConfigF2"));
 			return;
 		}
 		ml.removeAttribute("hc_aboutConfigEntry");
