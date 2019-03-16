@@ -1860,14 +1860,14 @@ var handyClicksEditor = {
 		var p = this.ps.prefs;
 		var sh = this.currentShortcut;
 		var ct = this.currentType;
-		if(this.ju.getOwnProperty(p, sh, ct)) {
-			delete p[sh][ct];
-			if(this.ju.isEmptyObj(p[sh]))
-				delete p[sh];
-		}
-		else { // Nothing to delete
+		if(!this.ju.getOwnProperty(p, sh, ct)) { // Nothing to delete
+			this._savedShortcutObj = null;
+			this.setDialogButtons();
 			return;
 		}
+		delete p[sh][ct];
+		if(this.ju.isEmptyObj(p[sh]))
+			delete p[sh];
 		if(this.ps.otherSrc)
 			this.pe.reloadSettings();
 		else
