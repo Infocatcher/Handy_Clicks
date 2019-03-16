@@ -353,7 +353,8 @@
 						</hbox>
 					</hbox>
 					<tabs setfocus="false" onselect="handyClicksEditor.handleTabSelect(event);">
-						<tab label="&hc.editor.defineItem;" accesskey="&hc.editor.defineItemAccesskey;" />
+						<tab label="&hc.editor.defineItem;" accesskey="&hc.editor.defineItemAccesskey;"
+							tooltiptext="&hc.editor.defineItemTip;" />
 						<tab hc_empty="true" label="&hc.editor.defineContext;" accesskey="&hc.editor.defineContextAccesskey;"
 							tooltiptext="&hc.editor.defineContextTip;" />
 					</tabs>

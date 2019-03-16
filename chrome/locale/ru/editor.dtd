@@ -89,12 +89,13 @@ Ctrl+Shift+V – вставить">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "б">
 <!ENTITY hc.editor.internalId "Внутренний id:">
 <!ENTITY hc.editor.internalIdAccesskey "й">
-<!ENTITY hc.editor.defineItem "Определение элемента">
-<!ENTITY hc.editor.defineItemAccesskey "э">
+<!ENTITY hc.editor.defineItem "Определение">
+<!ENTITY hc.editor.defineItemAccesskey "п">
+<!ENTITY hc.editor.defineItemTip "Код для получения узла нужного типа после события клика">
 <!ENTITY hc.editor.defineReturnNote "Должно возвращать: элемент или null"> <!-- Do not translate "null"! -->
-<!ENTITY hc.editor.defineContext "Контекстное меню элемента">
-<!ENTITY hc.editor.defineContextAccesskey "К">
-<!ENTITY hc.editor.defineContextTip "Для автоопределения оставьте поле пустым">
+<!ENTITY hc.editor.defineContext "Контекстное меню">
+<!ENTITY hc.editor.defineContextAccesskey "м">
+<!ENTITY hc.editor.defineContextTip "Для имитации события «contextmenu» и автоопределения оставьте поле пустым">
 
 <!-- Invisible accesskeys -->
 <!ENTITY hc.editor.itemTypesAccesskey "э">
