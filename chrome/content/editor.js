@@ -1082,10 +1082,9 @@ var handyClicksEditor = {
 					if(cfg) {
 						mi.setAttribute("hc_aboutConfigEntry", cfg);
 						mi.setAttribute("tooltiptext", cfgTt);
-						if(!argVal && indx === 0 || val == argVal) { //~ todo: test!
-							elt.setAttribute("hc_aboutConfigEntry", cfg);
-							elt.setAttribute("tooltiptext", cfgTt);
+						if(!elt.hasAttribute("oncommand")) {
 							elt.setAttribute("oncommand", "handyClicksEditor.setAboutConfigTooltip(this);");
+							this.delay(this.setAboutConfigTooltip, this, 50, [elt]);
 						}
 					}
 					mp.appendChild(mi);
@@ -1114,7 +1113,7 @@ var handyClicksEditor = {
 		var si = ml.selectedItem;
 		if(si && si.hasAttribute("hc_aboutConfigEntry")) {
 			ml.setAttribute("hc_aboutConfigEntry", si.getAttribute("hc_aboutConfigEntry"));
-			ml.setAttribute("tooltiptext", this.getLocalized("openAboutConfigRightClick"));
+			ml.setAttribute("tooltiptext", si.getAttribute("tooltiptext"));
 			return;
 		}
 		ml.removeAttribute("hc_aboutConfigEntry");
