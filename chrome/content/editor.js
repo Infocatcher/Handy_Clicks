@@ -1050,7 +1050,7 @@ var handyClicksEditor = {
 		});
 		var elt = this.ut.createElement(argType, {
 			hc_argName: argName,
-			onclick: "handyClicksEditor.clickHelper(event);"
+			onclick: "handyClicksEditor.openAboutConfig(event);"
 		});
 
 		var cfgTt = this.getLocalized("openAboutConfigRightClick");
@@ -1098,16 +1098,16 @@ var handyClicksEditor = {
 	getAboutConfigEntry: function(label) {
 		return /\(([\w-]+(?:\.[\w-]+)+)\)/.test(label) && RegExp.$1;
 	},
-	clickHelper: function(e) {
+	openAboutConfig: function(e) {
 		if(e.button != 2)
 			return;
-		var tar = e.target;
-		if(!tar.hasAttribute("hc_aboutConfigEntry"))
+		var trg = e.target;
+		var pName = trg.getAttribute("hc_aboutConfigEntry");
+		if(!pName)
 			return;
-		var mp = tar.parentNode;
-		if("hidePopup" in mp)
-			mp.hidePopup();
-		this.pu.openAboutConfig(tar.getAttribute("hc_aboutConfigEntry"));
+		var mp = trg.parentNode;
+		"hidePopup" in mp && mp.hidePopup();
+		this.pu.openAboutConfig(pName);
 	},
 	setAboutConfigTooltip: function(ml) {
 		var si = ml.selectedItem;
