@@ -756,8 +756,12 @@ var handyClicksPrefSvc = {
 			return "[invalid URI]";
 		}
 	},
+	getButton: function(sh) {
+		return /button=([0-2])/.test(sh) ? RegExp.$1 : "";
+	},
 	getButtonId: function(sh, _short) {
-		return /button=([0-2])/.test(sh) ? "button" + RegExp.$1 + (_short ? "short" : "") : "?";
+		var btn = this.getButton(sh);
+		return btn ? "button" + btn + (_short ? "short" : "") : "?";
 	},
 	getButtonStr: function(sh, _short) {
 		return this.getLocalized(this.getButtonId(sh, _short));

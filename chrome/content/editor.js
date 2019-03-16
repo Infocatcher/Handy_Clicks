@@ -1125,30 +1125,22 @@ var handyClicksEditor = {
 	},
 
 	get currentShortcut() {
-		return ["button", "ctrl", "shift", "alt", "meta", "os"].map(
-			function(key) {
-				var elt = this.$("hc-editor-" + key);
-				var val = elt.value || elt.checked;
-				if(key == "os" && !val)
-					return "";
-				return key + "=" + val;
-			},
-			this
-		).filter(function(data) {
-			return data;
-		}).join(",");
+		var vals = [];
+		["button", "ctrl", "shift", "alt", "meta", "os"].forEach(function(key) {
+			var elt = this.$("hc-editor-" + key);
+			var val = elt.value || elt.checked;
+			if(val || key != "os")
+				vals.push(key + "=" + val);
+		}, this);
+		return vals.join(",");
 	},
-	set currentShortcut(shortcut) {
-		var butt = /(?:^|,)button=([0-2])(?:,|$)/.test(shortcut) ? RegExp.$1 : "0";
-		this.$("hc-editor-button").value = butt;
-		this.$("hc-editor-events-command").disabled = butt != "0";
-		["ctrl", "shift", "alt", "meta", "os"].forEach(
-			function(mdf) {
-				var re = new RegExp("(?:^|,)" + mdf + "=true(?:,|$)");
-				this.$("hc-editor-" + mdf).checked = re.test(shortcut);
-			},
-			this
-		);
+	set currentShortcut(sh) {
+		var btn = sh ? this.ps.getButton(sh) : "0";
+		this.$("hc-editor-button").value = btn;
+		this.$("hc-editor-events-command").disabled = btn != "0";
+		["ctrl", "shift", "alt", "meta", "os"].forEach(function(mdf) {
+			this.$("hc-editor-" + mdf).checked = sh && sh.indexOf(mdf + "=true") != -1;
+		}, this);
 	},
 	get currentType() {
 		return this.$("hc-editor-itemTypes").value || undefined;
