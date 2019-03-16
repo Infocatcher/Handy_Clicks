@@ -1050,7 +1050,8 @@ var handyClicksEditor = {
 		});
 		var elt = this.ut.createElement(argType, {
 			hc_argName: argName,
-			onclick: "handyClicksEditor.openAboutConfig(event);"
+			onclick: "handyClicksEditor.openAboutConfig(event);",
+			onkeydown: "handyClicksEditor.openAboutConfig(event);"
 		});
 
 		var cfgTt = this.getLocalized("openAboutConfigRightClick");
@@ -1099,7 +1100,10 @@ var handyClicksEditor = {
 		return /\(([\w-]+(?:\.[\w-]+)+)\)/.test(label) && RegExp.$1;
 	},
 	openAboutConfig: function(e) {
-		if(e.button != 2)
+		if(
+			e.type == "click" && e.button != 2
+			|| e.type == "keydown" && !(e.keyCode == e.DOM_VK_F2 && !this.hasModifier(e))
+		)
 			return;
 		var trg = e.target;
 		var pName = trg.getAttribute("hc_aboutConfigEntry");
