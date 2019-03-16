@@ -1283,7 +1283,7 @@ var handyClicksEditor = {
 					: mp.getAttribute("hc_renameStart"),
 				accesskey: mp.getAttribute("hc_renameAccesskey"),
 				hc_rename: isRenaming ? "done" : "start",
-				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut();",
+				oncommand: "handyClicksEditor.renameShortcut();",
 				disabled: isRenaming ? canRename : !canRename
 			}), insPos);
 			if(isRenaming) df.insertBefore(this.ut.createElement("menuitem", {
@@ -1295,7 +1295,7 @@ var handyClicksEditor = {
 						: "hc_renameCancel"
 				),
 				accesskey: mp.getAttribute("hc_renameCancelAccesskey"),
-				oncommand: "event.stopPropagation(); handyClicksEditor.renameShortcut(false, true);"
+				oncommand: "handyClicksEditor.renameShortcut(false, true);"
 			}), insPos);
 			df.insertBefore(document.createElement("menuseparator"), insPos);
 		}
@@ -1413,6 +1413,8 @@ var handyClicksEditor = {
 	loadSavedShortcut: function(e) {
 		var mi = e.target;
 		var sh = mi.getAttribute("hc_shortcut");
+		if(!sh)
+			return;
 		this.currentShortcut = sh;
 		this.loadFuncs();
 	},
