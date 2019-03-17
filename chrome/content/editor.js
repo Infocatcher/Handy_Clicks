@@ -1590,11 +1590,14 @@ var handyClicksEditor = {
 		this.attribute(this.root, "hc_hasCrashBackup", bakPath);
 		this.hasCrashBackup = !!bakPath;
 		if(bakPath && !silent) {
-			this.ut.notifyWarning(
-				this.getLocalized("hasCrashBackup")
-					.replace("%b", this.$("hc-editor-cmd-openCode").getAttribute("label"))
-					.replace("%f", bakPath)
-			);
+			var msg = this.getLocalized("hasCrashBackup")
+				.replace("%b", this.$("hc-editor-cmd-openCode").getAttribute("label"))
+				.replace("%f", bakPath);
+			this.ut.notifyWarning(msg, { buttons: {
+				$openDirectory: function() {
+					this.ut.reveal(this.ps._tempDir);
+				},
+			}, context: this });
 		}
 	},
 	_hasCrashBackup: function() {
