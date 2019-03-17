@@ -1586,16 +1586,16 @@ var handyClicksEditor = {
 		}, delay || 500, this);
 	},
 	_checkForCrashBackups: function(silent) {
-		var bakPath = this._hasCrashBackup();
-		this.attribute(this.root, "hc_hasCrashBackup", bakPath);
-		this.hasCrashBackup = !!bakPath;
-		if(bakPath && !silent) {
+		var bakFile = this._hasCrashBackup();
+		var hasBak = this.hasCrashBackup = !!bakFile;
+		this.attribute(this.root, "hc_hasCrashBackup", hasBak);
+		if(bakFile && !silent) {
 			var msg = this.getLocalized("hasCrashBackup")
 				.replace("%b", this.$("hc-editor-cmd-openCode").getAttribute("label"))
-				.replace("%f", bakPath);
+				.replace("%f", bakFile.path);
 			this.ut.notifyWarning(msg, { buttons: {
 				$openDirectory: function() {
-					this.ut.reveal(this.ps._tempDir);
+					this.ut.reveal(bakFile);
 				},
 			}, context: this });
 		}
@@ -1603,16 +1603,16 @@ var handyClicksEditor = {
 	_hasCrashBackup: function() {
 		var tempDir = this.ps._tempDir;
 		if(!tempDir)
-			return false;
+			return null;
 		var activeFiles = this.storage.get("activeTempFiles") || { __proto__: null };
 		var entries = tempDir.directoryEntries;
 		while(entries.hasMoreElements()) {
 			var entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
 			var fName = entry.leafName;
 			if(fName.substr(0, 3) == "hc_" && !(entry.path in activeFiles))
-				return entry.path;
+				return entry;
 		}
-		return false;
+		return null;
 	},
 
 	disableUnsupported: function() {
