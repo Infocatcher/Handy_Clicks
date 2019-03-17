@@ -399,6 +399,9 @@
 				<menuitem oncommand="handyClicksEditor.wu.openSettingsPane('editor');"
 					label="&hc.editor.openEditorSettings;" />
 				<menuseparator />
+				<menuitem oncommand="this.parentNode.hidePopup(); handyClicksEditor.openShortcutsMenu();"
+					key="hc-editor-key-shortcutsMenu"
+					label="&hc.editor.shortcutsMenu;" />
 				<menuitem oncommand="handyClicksEditor.reloadSettings();"
 					key="hc-editor-key-reload"
 					label="&hc.editor.reloadSettings;" />
