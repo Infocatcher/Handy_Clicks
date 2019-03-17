@@ -70,6 +70,7 @@
 		<key id="hc-editor-key-reload" keycode="VK_F5" oncommand="handyClicksEditor.reloadSettings();" />
 		<key id="hc-editor-key-reload2" key="r" modifiers="control" oncommand="handyClicksEditor.reloadSettings();" />
 		<key id="hc-editor-key-switchToSettings" keycode="VK_F3" hc_allowInRenameMode="true" oncommand="handyClicksEditor.switchToSettings();" />
+		<key id="hc-editor-key-shortcutsMenu" keycode="VK_F3" modifiers="shift" hc_allowInRenameMode="true" oncommand="handyClicksEditor.openShortcutsMenu();" />
 
 		<key id="hc-editor-key-editCode" key="e" modifiers="control,shift" command="hc-editor-cmd-editCode" />
 		<key id="hc-editor-key-editCode2" keycode="VK_F4" command="hc-editor-cmd-editCode" />

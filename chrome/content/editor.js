@@ -1250,6 +1250,14 @@ var handyClicksEditor = {
 		this.$("hc-editor-os").checked = e.getModifierState && e.getModifierState("OS");
 		this.loadFuncs();
 	},
+	openShortcutsMenu: function() {
+		var shBox = this.$("hc-editor-shortcutBox");
+		var cm = this.$("hc-editor-shortcutContext");
+		if("openPopup" in cm)
+			cm.openPopup(shBox, "after_start", 0, 0);
+		else
+			cm.showPopup(shBox, -1, -1, "popup", "bottomleft", "topleft");
+	},
 	loadSavedShortcuts: function(e) {
 		var shortcuts = [];
 		var curType = this.currentType;
@@ -1317,7 +1325,8 @@ var handyClicksEditor = {
 		mp.appendChild(df);
 
 		var box = mp.parentNode;
-		e && mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
+		if(e && document.popupNode) // Ignore, if called from openShortcutsMenu()
+			mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
 	},
 	updateShortcutContext: function() {
 		var mp = this.$("hc-editor-shortcutContext");
