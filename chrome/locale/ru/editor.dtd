@@ -82,7 +82,7 @@ Ctrl+Shift+V – вставить">
 <!ENTITY hc.editor.codeToFile "В файл">
 <!ENTITY hc.editor.codeToFileTip "Использовать ссылку на файл с кодом">
 <!ENTITY hc.editor.openScriptsDir "Скрипты…">
-<!ENTITY hc.editor.openScriptsDirTip "Открыть каталог со скриптами…">
+<!ENTITY hc.editor.openScriptsDirTip "Открыть папку со скриптами…">
 <!ENTITY hc.editor.openCode "Из файла…">
 <!ENTITY hc.editor.openCodeTip "Загрузить код из файла…">
 
