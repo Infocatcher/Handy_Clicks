@@ -59,6 +59,8 @@
 			label="&hc.editor.openScriptsDir;" tooltiptext="&hc.editor.openScriptsDirTip;" />
 		<command id="hc-editor-cmd-openCode" oncommand="handyClicksEditor.openCode();"
 			label="&hc.editor.openCode;" tooltiptext="&hc.editor.openCodeTip;" />
+		<command id="hc-editor-cmd-reloadSettings" oncommand="handyClicksEditor.reloadSettings();"
+			label="&hc.editor.reloadSettings;" />
 	</commandset>
 
 	<keyset id="hc-editor-keys">
@@ -67,8 +69,8 @@
 		<key id="hc-editor-key-test" key="t" modifiers="control" command="hc-editor-cmd-test" />
 		<key id="hc-editor-key-undo" key="u" modifiers="control" command="hc-editor-cmd-undo" />
 		<key id="hc-editor-key-delete" key="d" modifiers="control" oncommand="handyClicksEditor.deleteSettings();" />
-		<key id="hc-editor-key-reload" keycode="VK_F5" oncommand="handyClicksEditor.reloadSettings();" />
-		<key id="hc-editor-key-reload2" key="r" modifiers="control" oncommand="handyClicksEditor.reloadSettings();" />
+		<key id="hc-editor-key-reload" keycode="VK_F5" command="hc-editor-cmd-reloadSettings" />
+		<key id="hc-editor-key-reload2" key="r" modifiers="control" command="hc-editor-cmd-reloadSettings" />
 		<key id="hc-editor-key-switchToSettings" keycode="VK_F3" hc_allowInRenameMode="true" oncommand="handyClicksEditor.switchToSettings();" />
 		<key id="hc-editor-key-shortcutsMenu" keycode="VK_F3" modifiers="shift" hc_allowInRenameMode="true" oncommand="handyClicksEditor.openShortcutsMenu();" />
 
@@ -402,9 +404,7 @@
 				<menuitem oncommand="this.parentNode.hidePopup(); handyClicksEditor.openShortcutsMenu();"
 					key="hc-editor-key-shortcutsMenu"
 					label="&hc.editor.shortcutsMenu;" />
-				<menuitem oncommand="handyClicksEditor.reloadSettings();"
-					key="hc-editor-key-reload"
-					label="&hc.editor.reloadSettings;" />
+				<menuitem command="hc-editor-cmd-reloadSettings" key="hc-editor-key-reload" />
 				<menuseparator />
 				<menuitem type="checkbox" hc_pref="editor.ui.invertWindowTitle"
 					label="&hc.editor.invertWindowTitle;" />
