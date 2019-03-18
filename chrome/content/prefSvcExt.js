@@ -282,23 +282,21 @@ var handyClicksPrefSvcExt = {
 		}, this);
 	},
 	createTestBackup: function(pStr) {
-		var num = this.pu.get("sets.backupTestDepth") - 1;
-		if(num < 0)
+		var depth = this.pu.get("sets.backupTestDepth");
+		if(depth < 1)
 			return;
 		var fName = this.prefsFileName + this.names.testBackup;
-		var file, bakFile;
-		while(--num >= 0) {
-			file = this.getBackupFile(fName + num + ".js");
+		for(var num = Math.max(0, depth - 2); num >= 0; --num) {
+			var file = this.getBackupFile(fName + num + ".js");
 			if(num == 0)
-				bakFile = file.clone();
-			if(file.exists()) {
+				var bakFile = file.clone();
+			if(depth > 1 && file.exists()) {
 				this.ut.moveFileTo(file, this.ps.backupsDir, fName + (num + 1) + ".js");
 				this.ut.deleteTemporaryFileOnExit(file);
 			}
 		}
 		this.io.writeToFile(pStr, bakFile);
 		this.ut.deleteTemporaryFileOnExit(bakFile);
-
 		this.storage.set("testBackupCreated", true);
 	},
 
