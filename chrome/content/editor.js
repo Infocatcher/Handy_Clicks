@@ -297,13 +297,9 @@ var handyClicksEditor = {
 			this.localizeLabels,
 			this
 		);
-		["ctrl", "shift", "alt", "meta", "os"].forEach(
-			function(mdf) {
-				var elt = this.$("hc-editor-" + mdf);
-				elt.setAttribute("label", this.ps.keys[mdf]);
-			},
-			this
-		);
+		["ctrl", "shift", "alt", "meta", "os"].forEach(function(mdf) {
+			this.$("hc-editor-" + mdf).setAttribute("label", this.ps.keys[mdf]);
+		}, this);
 		if(this.pu.get("editor.ui.sortInternalTypes"))
 			this.sortInternalTypes(true);
 	},
