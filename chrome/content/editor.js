@@ -782,15 +782,16 @@ var handyClicksEditor = {
 				continue;
 			}
 			var label = typeObj.label || cType;
-			if(label in _labels)
-				label += " (" + ++_labels[label] + ")";
+			var localizedLabel = this.ps.localize(label);
+			if(localizedLabel in _labels)
+				localizedLabel += " (" + ++_labels[localizedLabel] + ")";
 			else
-				_labels[label] = 1;
+				_labels[localizedLabel] = 1;
 			var dis = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
 			var notUsed = !this.typeUsed(cType);
 			sortedTypes.push({
 				label: label,
-				hc_localizedLabel: this.ps.localize(label),
+				hc_localizedLabel: localizedLabel,
 				value: cType,
 				tooltiptext: this.getTypeTip(cType, notUsed),
 				hc_notUsed: notUsed,
