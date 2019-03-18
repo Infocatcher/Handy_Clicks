@@ -823,7 +823,16 @@ var handyClicksEditor = {
 	},
 	showLocalizedLabels: function(mp) {
 		var mi = mp.getElementsByAttribute("value", this.currentCustomType)[0] || null;
-		mi && mi.setAttribute("label", mp.parentNode.label); // Set new label for auto-selection
+		if(mi) {
+			var label = mp.parentNode.label;
+			var mis = mp.getElementsByAttribute("label", label);
+			for(var i = mis.length - 1; i >= 0; --i) {
+				var mi2 = mis[i];
+				if(mi2 != mi) // Trick to edit select items with equals labels
+					mi2.setAttribute("label", label + " " + i + "#" + Date.now());
+			}
+			mi.setAttribute("label", label); // Set new label for auto-selection
+		}
 		Array.prototype.forEach.call(
 			mp.getElementsByTagName("menuitem"),
 			function(mi) {
