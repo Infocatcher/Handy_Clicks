@@ -673,11 +673,9 @@ var handyClicksEditor = {
 			updateUI = true;
 		}
 
-		if(!to) {
-			if(!cType) {
-				var sItem = cList.selectedItem;
-				cType = sItem ? sItem.value : null;
-			}
+		if(!to && !cType) {
+			var sItem = cList.selectedItem;
+			cType = sItem ? sItem.value : null;
 		}
 		var enabledElt = this.$("hc-editor-customTypeEnabled");
 		var cts = this.ps.types;
