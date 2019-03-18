@@ -266,7 +266,9 @@ var handyClicksPrefSvcExt = {
 		var notifyFlags = this.SETS_TEST;
 		if(isTest) {
 			src = this.getSettingsStr();
-			this.createTestBackup(src);
+			this.delay(function() {
+				this.createTestBackup(src);
+			}, this);
 		}
 		else {
 			notifyFlags |= this.SETS_TEST_UNDO;
@@ -295,7 +297,7 @@ var handyClicksPrefSvcExt = {
 				this.ut.deleteTemporaryFileOnExit(file);
 			}
 		}
-		this.io.writeToFile(pStr, bakFile);
+		this.io.writeToFileAsync(pStr, bakFile);
 		this.ut.deleteTemporaryFileOnExit(bakFile);
 		this.storage.set("testBackupCreated", true);
 	},
