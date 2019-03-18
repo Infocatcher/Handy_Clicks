@@ -300,7 +300,7 @@ var handyClicksEditor = {
 		["ctrl", "shift", "alt", "meta", "os"].forEach(
 			function(mdf) {
 				var elt = this.$("hc-editor-" + mdf);
-				elt.setAttribute("label", this.ps.keys[elt.getAttribute("label")]);
+				elt.setAttribute("label", this.ps.keys[mdf]);
 			},
 			this
 		);
