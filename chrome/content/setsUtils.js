@@ -31,6 +31,7 @@ var handyClicksSetsUtils = {
 			window.addEventListener("resize", this, false); // Can detect only maximize/restore
 			this.legacySizeModeChange();
 		}
+		this.obs.addObserver(this, "quit-application-requested", false);
 	},
 	destroy: function(reloadFlag) {
 		window.removeEventListener(this.ut.wheelEvent, this, true);
@@ -42,6 +43,7 @@ var handyClicksSetsUtils = {
 			window.removeEventListener("resize", this, false);
 			clearInterval(this._sizeModeChangeTimer);
 		}
+		this.obs.removeObserver(this, "quit-application-requested");
 	},
 	handleEvent: function(e) {
 		switch(e.type) {
@@ -53,6 +55,14 @@ var handyClicksSetsUtils = {
 			case "sizemodechange": this.checkWindowStatus();
 		}
 	},
+	observe: function(subject, topic, data) {
+		if(
+			topic == "quit-application-requested"
+			&& subject instanceof Components.interfaces.nsISupportsPRBool
+			&& !subject.data
+		)
+			subject.data = !document.documentElement.cancelDialog();
+	},
 	get dropEvent() {
 		delete this.dropEvent;
 		var v = this.fxVersion;
@@ -61,6 +71,11 @@ var handyClicksSetsUtils = {
 			: v < 3.7
 				? "dragend"
 				: "drop";
+	},
+	get obs() {
+		delete this.obs;
+		return this.obs = Components.classes["@mozilla.org/observer-service;1"]
+			.getService(Components.interfaces.nsIObserverService);
 	},
 	tweakDialogButtons: function() {
 		// Insert Apply button between Ok and Cancel
