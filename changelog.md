@@ -202,6 +202,10 @@
 `*` Editor: autocompletion for “style” property.<br>
 `*` Changed limits for editor preferences (<em>extensions.handyclicks.editor.autocompleteMinSymbols</em>: 30 -> 10, <em>extensions.handyclicks.editor.tabSize</em>: 100 -> 300, font size limit: 48 -> 64).<br>
 `*` Make search/filter counter clickable: left/right-click – find next down/up, middle-click – select all search results/clear selection.<br>
+`+` Editor: added F2 hotkey to open about:config for focused depended option.<br>
+`+` Added ability to open temp directory from “Looks like browser was crashed: at least one temporary file for external editor wasn't removed” warning message.<br>
+`x` Fixed test backups for <em>extensions.handyclicks.sets.backupTestDepth</em> = 1.<br>
+`+` Ask to save settings before browser quit/restart.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
