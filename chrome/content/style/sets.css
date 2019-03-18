@@ -518,7 +518,10 @@ menuitem[hc_testBackup="thisSession"] > label {
 	opacity: 0.45;
 }
 menuitem[hc_testBackup="afterCrash"] > label {
-	font-weight: bold;
+	color: #d00;
+}
+#hc-sets-tree-restoreFromBackupPopup[hc_isDarkMenuFont="false"] > menuitem[hc_testBackup="afterCrash"] > label {
+	color: #f22;
 }
 
 .hcHSpacer {
