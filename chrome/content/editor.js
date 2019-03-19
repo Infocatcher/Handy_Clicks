@@ -1700,7 +1700,8 @@ var handyClicksEditor = {
 		}
 		this.su.showInfoTooltip(
 			this.deleteButton,
-			this.getLocalized("deleteUndo"),
+			this.getLocalized("deleteUndo")
+				.replace("%b", this.applyButton.label),
 			this.su.TOOLTIP_HIDE_DEFAULT,
 			this.su.TOOLTIP_OFFSET_ABOVE
 		);
