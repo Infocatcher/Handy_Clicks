@@ -587,6 +587,11 @@ var handyClicksEditor = {
 			? title + " \u2013 " + baseTitle
 			: baseTitle + " [" + title + "]";
 	},
+	initSettingsMenu: function() {
+		this.$("hc-editor-sets-shortcutsMenu").setAttribute(
+			"hidden", this.editorTabIndex != this.INDEX_SHORTCUT
+		);
+	},
 	initShortcutEditor: function() {
 		var so = this.ju.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
 		this.initFuncEditor(so, "");

@@ -392,7 +392,7 @@
 			hc_allowInRenameMode="true"
 			label="&hc.editor.settings;" accesskey="&hc.editor.settingsAccesskey;">
 			<menupopup
-				onpopupshowing="handyClicksSetsUtils.initPrefsMenu(this);"
+				onpopupshowing="handyClicksEditor.initSettingsMenu(); handyClicksSetsUtils.initPrefsMenu(this);"
 				oncommand="handyClicksSetsUtils.handlePrefCommand(event.target);">
 				<menuitem oncommand="handyClicksEditor.switchToSettings();"
 					key="hc-editor-key-switchToSettings"
@@ -401,7 +401,8 @@
 				<menuitem oncommand="handyClicksEditor.wu.openSettingsPane('editor');"
 					label="&hc.editor.openEditorSettings;" />
 				<menuseparator />
-				<menuitem oncommand="this.parentNode.hidePopup(); handyClicksEditor.openShortcutsMenu();"
+				<menuitem id="hc-editor-sets-shortcutsMenu"
+					oncommand="this.parentNode.hidePopup(); handyClicksEditor.openShortcutsMenu();"
 					key="hc-editor-key-shortcutsMenu"
 					label="&hc.editor.shortcutsMenu;" />
 				<menuitem command="hc-editor-cmd-reloadSettings" key="hc-editor-key-reload" />
