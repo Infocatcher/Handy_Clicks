@@ -391,7 +391,7 @@
 		<button id="hc-editor-sets" class="hcFloatButton hc-iconic hc-preferences" type="menu"
 			hc_allowInRenameMode="true"
 			label="&hc.editor.settings;" accesskey="&hc.editor.settingsAccesskey;">
-			<menupopup
+			<menupopup id="hc-editor-sets-popup"
 				onpopupshowing="handyClicksEditor.initSettingsMenu(); handyClicksSetsUtils.initPrefsMenu(this);"
 				oncommand="handyClicksSetsUtils.handlePrefCommand(event.target);">
 				<menuitem oncommand="handyClicksEditor.switchToSettings();"
