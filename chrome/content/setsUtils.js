@@ -379,9 +379,11 @@ var handyClicksSetsUtils = {
 			return false;
 		var mp = ml.menupopup;
 
+		var evt = document.createEvent("Events");
+		evt.initEvent("popupshowing", true, false); // Trick to reinitialize menupopup
+		mp.dispatchEvent(evt);
+
 		if(ml.open) {
-			ml.open = false;
-			ml.open = true;
 			var popupHeight = (mp.boxObject.firstChild || mp).boxObject.height;
 			var childsHeight = 0;
 			Array.prototype.forEach.call(
@@ -393,10 +395,6 @@ var handyClicksSetsUtils = {
 			//this._log("popupHeight: " + popupHeight + "\nchildsHeight: " + childsHeight);
 			if(childsHeight > popupHeight) // Has scrollbar
 				return false;
-		}
-		else {
-			ml.open = true;
-			ml.open = false;
 		}
 
 		var fwd = this.isScrollForward(e);
