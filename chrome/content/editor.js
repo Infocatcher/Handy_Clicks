@@ -1261,6 +1261,8 @@ var handyClicksEditor = {
 		this.loadFuncs();
 	},
 	openShortcutsMenu: function() {
+		if(this.editorTabIndex != this.INDEX_SHORTCUT)
+			this.editorTabIndex = this.INDEX_SHORTCUT;
 		var shBox = this.$("hc-editor-shortcutBox");
 		var cm = this.$("hc-editor-shortcutContext");
 		if("openPopup" in cm)
