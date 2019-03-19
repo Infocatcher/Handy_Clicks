@@ -3820,7 +3820,11 @@ var handyClicksSets = {
 		this.io.writeToFileAsync(pStr, bFile, function(status) {
 			if(!Components.isSuccessCode(status))
 				return;
-			this.ut.notify(this.getLocalized("backupCreated").replace("%f", bFile.path), {
+			var msg = this.getLocalized("backupCreated")
+				.replace("%f", bFile.path)
+				.replace("%i", this.$("hc-sets-tree-buttonImport").getAttribute("label"))
+				.replace("%r", this.$("hc-sets-tree-restoreFromBackupMenu").getAttribute("label"));
+			this.ut.notify(msg, {
 				onLeftClick: function() {
 					this.reveal(bFile)
 				},
