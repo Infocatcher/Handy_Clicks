@@ -461,9 +461,8 @@ var handyClicksEditor = {
 		this.setWinTitle();
 		this.setDialogButtons();
 		this.setEditorButtons();
-		var sp = this.$("hc-editor-sets-popup");
-		if(!("state" in sp) || sp.state == "open") // Changed using mouse scroll
-			this.initSettingsMenu();
+		if(this.isPopupOpened(this.$("hc-editor-sets-popup")))
+			this.initSettingsMenu(); // Changed using mouse scroll
 	},
 	fireEditorChange: function(node) {
 		var evt = document.createEvent("Events");
@@ -1344,9 +1343,12 @@ var handyClicksEditor = {
 			mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
 	},
 	updateShortcutContext: function() {
-		var mp = this.$("hc-editor-shortcutContext");
-		if(!("state" in mp) || mp.state == "open") // Changed using mouse scroll
-			this.loadSavedShortcuts();
+		if(this.isPopupOpened(this.$("hc-editor-shortcutContext")))
+			this.loadSavedShortcuts(); // Changed using mouse scroll
+	},
+	isPopupOpened: function(mp) {
+		return "open" in mp.parentNode && mp.parentNode.open
+			|| !("state" in mp) || mp.state == "open";
 	},
 	renameShortcut: function(onlyRename, forceCancel, syncSave) {
 		var rename = this.renameShortcutMode = !this.renameShortcutMode;
