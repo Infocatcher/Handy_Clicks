@@ -378,10 +378,7 @@ var handyClicksSetsUtils = {
 		if(ln != "menulist" || ml.disabled)
 			return false;
 		var mp = ml.menupopup;
-
-		var evt = document.createEvent("Events");
-		evt.initEvent("popupshowing", true, false); // Trick to reinitialize menupopup
-		mp.dispatchEvent(evt);
+		this.ensureMenupopupInitialized(mp);
 
 		if(ml.open) {
 			var popupHeight = (mp.boxObject.firstChild || mp).boxObject.height;
@@ -485,10 +482,10 @@ var handyClicksSetsUtils = {
 	},
 	ensureMenupopupInitialized: function(mp) {
 		this._log("ensureMenupopupInitialized()");
-		mp.collapsed = true;
-		mp["openPopup" in mp ? "openPopup" : "showPopup"]();
-		mp.hidePopup();
-		mp.collapsed = false;
+		// Will dispatcs only "popupshowing" (depends on our code!)
+		var evt = document.createEvent("Events");
+		evt.initEvent("popupshowing", true, false);
+		mp.dispatchEvent(evt);
 	},
 	scrollNumTextbox: function(e) {
 		var tar = e.target;
