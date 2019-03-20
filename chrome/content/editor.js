@@ -1244,12 +1244,9 @@ var handyClicksEditor = {
 	},
 	setClickOptions: function(e) {
 		this.$("hc-editor-button").value = e.button;
-		["ctrl", "shift", "alt", "meta"].forEach(
-			function(mdf) {
-				this.$("hc-editor-" + mdf).checked = e[mdf + "Key"];
-			},
-			this
-		);
+		["ctrl", "shift", "alt", "meta"].forEach(function(mdf) {
+			this.$("hc-editor-" + mdf).checked = e[mdf + "Key"];
+		}, this);
 		this.$("hc-editor-os").checked = e.getModifierState && e.getModifierState("OS");
 		this.loadFuncs();
 	},
