@@ -1314,7 +1314,7 @@ var handyClicksEditor = {
 				id: "hc-editor-renameShortcut-cancel",
 				class: "menuitem-iconic hc-iconic",
 				label: mp.getAttribute(
-					canRename && curSh != this._shortcut
+					canRename && curSh != this._shortcutBeforeRename
 						? "hc_renameCancelUsed"
 						: "hc_renameCancel"
 				),
@@ -1353,14 +1353,14 @@ var handyClicksEditor = {
 			this.$("hc-editor-renameShortcutOverlay").style
 				.backgroundColor = getComputedStyle(this.root, null).backgroundColor;
 			this.funcOptsFixed && this.fixFuncOpts((this.$("hc-editor-funcOptsFixed").checked = false));
-			this._shortcut = this.currentShortcut;
-			this._type = this.currentType;
+			this._shortcutBeforeRename = this.currentShortcut;
+			this._typeBeforeRename = this.currentType;
 			return;
 		}
-		var sh = this._shortcut;
-		var ct = this._type;
+		var sh = this._shortcutBeforeRename;
+		var ct = this._typeBeforeRename;
 		var newSh = this.currentShortcut;
-		this._shortcut = this._type = null;
+		this._shortcutBeforeRename = this._typeBeforeRename = null;
 		var p = this.ps.prefs;
 		if(this.ju.getOwnProperty(p, newSh, ct) || forceCancel) {
 			// Don't overwrite: cancel and restore initial shortcut
@@ -1719,7 +1719,7 @@ var handyClicksEditor = {
 	},
 	checkSaved: function() {
 		var hasUnsaved = this.hasUnsaved;
-		var hasRename = this.renameShortcutMode && this._shortcut != this.currentShortcut;
+		var hasRename = this.renameShortcutMode && this._shortcutBeforeRename != this.currentShortcut;
 		var res = hasUnsaved ? this.su.notifyUnsaved()
 			: hasRename ? this.notifyUnsavedRename() : undefined;
 		if(res == this.su.PROMPT_CANCEL)
@@ -1731,7 +1731,7 @@ var handyClicksEditor = {
 		return true;
 	},
 	notifyUnsavedRename: function() {
-		var sh = "\n" + this.ps.getShortcutStr(this._shortcut, true)
+		var sh = "\n" + this.ps.getShortcutStr(this._shortcutBeforeRename, true)
 			+ "\n\u21d2 " /* "=>" */ + this.ps.getShortcutStr(this.currentShortcut, true);
 		return this.su.notifyUnsaved(
 			this.getLocalized("confirmRename") + sh,
