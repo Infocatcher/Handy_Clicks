@@ -895,31 +895,24 @@ var handyClicksEditor = {
 		tab && tab.setAttribute("hc_empty", empty);
 	},
 	getTabForNode: function(node, noWarnings) {
-		var tabPanel, tabBox;
-		for(node = node.parentNode; node; node = node.parentNode) {
+		var tabPanel, tabPanels, tabBox;
+		for(; (node = node.parentNode); ) {
 			var ln = node.localName;
 			if(ln == "tabpanel")
 				tabPanel = node;
+			else if(tabPanel && ln == "tabpanels")
+				tabPanels = node;
 			else if(tabPanel && ln == "tabbox") {
 				tabBox = node;
 				break;
 			}
 		}
 		if(!tabPanel || !tabBox) {
-			!noWarnings && this.ut._warn("getTabForNode: <tabpanel> or <tabbox> not found!");
+			!noWarnings && this.ut._warn("getTabForNode(): <tabpanel> or <tabbox> not found!");
 			return null;
 		}
-		var tabPanels = tabBox.tabpanels || tabBox.getElementsByTagNameNS(this.ut.XULNS, "tabpanels")[0];
 		var tabs = tabBox.tabs || tabBox.getElementsByTagNameNS(this.ut.XULNS, "tabs")[0];
-		if(!tabPanels || !tabs) {
-			!noWarnings && this.ut._warn("getTabForNode: <tabpanels> or <tabs> not found!");
-			return null;
-		}
 		var tabPanelIndx = Array.prototype.indexOf.call(tabPanels.childNodes, tabPanel);
-		if(tabPanelIndx == -1) {
-			!noWarnings && this.ut._warn("getTabForNode: index of <tabpanel> not found!");
-			return null;
-		}
 		return tabs.childNodes[tabPanelIndx];
 	},
 	initFuncsList: function(setsObj, delayed) {
