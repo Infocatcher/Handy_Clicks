@@ -84,8 +84,6 @@ var handyClicksEditor = {
 		this.pu.oSvc.addObserver(this.prefChanged, this);
 		this.checkForCrashBackups(700);
 		window.addEventListener("keydown", this.tabLikeNavigation, true);
-
-		this._startTime1 = Date.now();
 	},
 	delayedInit: function() {
 		this.setTooltip();
