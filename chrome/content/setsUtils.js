@@ -612,9 +612,9 @@ var handyClicksSetsUtils = {
 		}
 	},
 	selectTab: function(tab) {
-		for(var node = tab.parentNode; node; node = node.parentNode) {
-			if(node.localName == "tabbox") {
-				node.selectedTab = tab;
+		for(var tabbox = tab; (tabbox = tabbox.parentNode); ) {
+			if(tabbox.localName == "tabbox") {
+				tabbox.selectedTab = tab;
 				return;
 			}
 		}
