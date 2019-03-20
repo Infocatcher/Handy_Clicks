@@ -424,24 +424,24 @@ var handyClicksSetsUtils = {
 	scrollRadioMenuitems: function(e) {
 		// Note: we don't receive scroll events from opened menu itself
 		var rds = this.getSameLevelRadios(e.target);
-		if(!rds.length)
+		var cnt = rds.length;
+		if(!cnt)
 			return false;
 		var si, indx;
 		rds.some(function(rd, i) {
-			if(rd.getAttribute("checked") == "true") {
-				si = rd;
-				indx = i;
-				return true;
-			}
-			return false;
+			if(rd.getAttribute("checked") != "true")
+				return false;
+			si = rd;
+			indx = i;
+			return true;
 		});
 		var fwd = this.isScrollForward(e);
 		indx = fwd
-			? !si || indx == rds.length - 1
+			? !si || indx == cnt - 1
 				? 0
 				: indx + 1
 			: !si || indx == 0
-				? rds.length - 1
+				? cnt - 1
 				: indx - 1;
 		si = rds[indx];
 		si.doCommand();
