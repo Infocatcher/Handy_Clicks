@@ -1800,18 +1800,14 @@ var handyClicksEditor = {
 		this.testMode = testFlag; //~ todo: test!
 		if(testFlag)
 			this.pe.testSettings(true);
+		else if(this.ps.otherSrc)
+			this.pe.reloadSettings(applyFlag);
+		else if(!applyFlag) // ondialogaccept
+			this.pe.saveSettingsObjects();
 		else {
-			if(this.ps.otherSrc)
-				this.pe.reloadSettings(applyFlag);
-			else {
-				if(!applyFlag) // ondialogaccept
-					this.pe.saveSettingsObjects(applyFlag);
-				else {
-					this.applyDisabled = true; // Don't wait for callback
-					this.pe.saveSettingsObjectsAsync(applyFlag, callback);
-					return;
-				}
-			}
+			this.applyDisabled = true; // Don't wait for callback
+			this.pe.saveSettingsObjectsAsync(applyFlag, callback);
+			return;
 		}
 		callback && callback();
 	},
