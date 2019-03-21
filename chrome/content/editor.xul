@@ -79,11 +79,8 @@
 		<key id="hc-editor-key-codeToFile" key="x" modifiers="control,shift" command="hc-editor-cmd-codeToFile" />
 		<key id="hc-editor-key-openScriptsDir" key="d" modifiers="control,shift" command="hc-editor-cmd-openScriptsDir" />
 		<key id="hc-editor-key-openCode" key="o" modifiers="control,shift" command="hc-editor-cmd-openCode" />
-		<key id="hc-editor-key-openCodeNoWatch" key="o" modifiers="control"
-			oncommand="handyClicksEditor.doEditorCommand(null, 'loadFromFile', false);" />
-		<key id="hc-editor-key-saveCode" key="s" modifiers="control,shift"
-			oncommand="handyClicksEditor.doEditorCommand(null, 'saveToFile', true);" />
-
+		<key id="hc-editor-key-openCodeNoWatch" key="o" modifiers="control" oncommand="handyClicksEditor.doEditorCommand(null, 'loadFromFile', false);" />
+		<key id="hc-editor-key-saveCode" key="s" modifiers="control,shift" oncommand="handyClicksEditor.doEditorCommand(null, 'saveToFile', true);" />
 		<key id="hc-editor-key-copy" key="c" modifiers="control,shift" oncommand="handyClicksEditor.copySettings();" />
 		<key id="hc-editor-key-paste" key="v" modifiers="control,shift" oncommand="handyClicksEditor.pasteSettings();" />
 
@@ -200,8 +197,8 @@
 								oncommand="handyClicksEditor.disableUnsupported();"
 								onchange="handyClicksEditor.disableUnsupported();">
 								<hbox id="hc-editor-funcEvent" align="center">
-									<label hc_notDelay="true" value="&hc.editor.event;"
-										accesskey="&hc.editor.eventAccesskey;" control="hc-editor-events" />
+									<label hc_notDelay="true" value="&hc.editor.event;" accesskey="&hc.editor.eventAccesskey;"
+										control="hc-editor-events" />
 									<menulist id="hc-editor-events" hc_notDelay="true">
 										<menupopup>
 											<menuitem value="mousedown" label="Mousedown" />
@@ -211,8 +208,8 @@
 										</menupopup>
 									</menulist>
 
-									<label id="hc-editor-allowMousedownLabel" hc_notDelay="true"
-										value="&hc.editor.mousedownEvent;" control="hc-editor-allowMousedown" />
+									<label id="hc-editor-allowMousedownLabel" hc_notDelay="true" value="&hc.editor.mousedownEvent;"
+										control="hc-editor-allowMousedown" />
 									<menulist id="hc-editor-allowMousedown" hc_notDelay="true">
 										<menupopup>
 											<menuitem value="true" label="&hc.editor.mousedownAllow;" />
@@ -224,13 +221,13 @@
 									<checkbox id="hc-editor-enabled" hc_important="enabled"
 										label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
 								</hbox>
-								<hbox id="hc-editor-funcOpts-img" align="center" hc_notDelay="true">
+								<hbox id="hc-editor-funcOpts-img" hc_notDelay="true" align="center">
 									<label value="&hc.editor.funcOptsAdd;" accesskey="&hc.editor.funcOptsAddAccesskey;"
 										control="hc-editor-imgIgnoreLinks" />
 									<checkbox id="hc-editor-imgIgnoreLinks" label="&hc.editor.ignoreLinks;" />
 									<checkbox id="hc-editor-imgIgnoreSingle" label="&hc.editor.ignoreSingle;" />
 								</hbox>
-								<hbox id="hc-editor-funcOpts-tab" align="center" hc_notDelay="true">
+								<hbox id="hc-editor-funcOpts-tab" hc_notDelay="true" align="center">
 									<label value="&hc.editor.funcOptsAdd;" accesskey="&hc.editor.funcOptsAddAccesskey;"
 										control="hc-editor-tabExcludeCloseButton" />
 									<checkbox id="hc-editor-tabExcludeCloseButton" label="&hc.editor.excludeCloseButton;" />
@@ -238,15 +235,15 @@
 							</vbox>
 
 							<hbox id="hc-editor-funcName" align="center">
-								<label value="&hc.editor.func;"
-									accesskey="&hc.editor.funcAccesskey;" control="hc-editor-func" />
+								<label value="&hc.editor.func;" accesskey="&hc.editor.funcAccesskey;"
+									control="hc-editor-func" />
 								<menulist id="hc-editor-func"
 									oncommand="handyClicksEditor.addFuncArgs(this.id.replace(/^hc-editor-func/, ''));">
 									<!-- See editorFuncs.xul -->
 								</menulist>
 								<hbox id="hc-editor-funcLabelBox" align="center" flex="1">
-									<label value="&hc.editor.funcLabel;"
-										accesskey="&hc.editor.funcLabelAccesskey;" control="hc-editor-funcLabel" />
+									<label value="&hc.editor.funcLabel;" accesskey="&hc.editor.funcLabelAccesskey;"
+										control="hc-editor-funcLabel" />
 									<textbox id="hc-editor-funcLabel" flex="1" spellcheck="true"
 										tooltiptext="&hc.editor.labelLocalize;" />
 								</hbox>
@@ -313,8 +310,8 @@
 			</tabpanel>
 			<tabpanel id="hc-editor-itemTypePanel" flex="1" orient="vertical">
 				<hbox align="center">
-					<label value="&hc.editor.funcLabel;"
-						accesskey="&hc.editor.funcLabelAccesskey;" control="hc-editor-customType" />
+					<label value="&hc.editor.funcLabel;" accesskey="&hc.editor.funcLabelAccesskey;"
+						control="hc-editor-customType" />
 					<menulist id="hc-editor-customType" editable="true" spellcheck="true" flex="1"
 						oncommand="event.stopPropagation(); handyClicksEditor.initCustomTypesEditor();"
 						oninput="handyClicksEditor.customTypeLabelChanged(this);"
@@ -324,8 +321,8 @@
 						<menupopup id="hc-editor-customTypePopup"
 							onpopupshowing="handyClicksEditor.showLocalizedLabels(this);" />
 					</menulist>
-					<label value="&hc.editor.internalId;"
-						accesskey="&hc.editor.internalIdAccesskey;" control="hc-editor-customTypeExtId" />
+					<label value="&hc.editor.internalId;" accesskey="&hc.editor.internalIdAccesskey;"
+						control="hc-editor-customTypeExtId" />
 					<textbox id="hc-editor-customTypeExtId" flex="1"
 						onkeypress="return handyClicksEditor.customTypeIdFilter(event);"
 						oninput="handyClicksEditor.customTypeIdFilter(event);"
