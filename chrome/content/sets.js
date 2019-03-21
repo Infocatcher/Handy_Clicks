@@ -4149,6 +4149,10 @@ var handyClicksSets = {
 		counter.hidden = !hasFD;
 		var added = 0, changed = 0, older = 0, newer = 0;
 		this.delay(function() {
+			if(this.fxVersion >= 51) { // https://bugzilla.mozilla.org/show_bug.cgi?id=1318898
+				// Prevent disappearance of semi-transparent nodes
+				this.$("hc-sets-tree-importFilesTip").style.filter = "contrast(1)";
+			}
 			var df = document.createDocumentFragment();
 			filesData.sort(function(a, b) {
 				return a.path.localeCompare(b.path);
@@ -4166,10 +4170,6 @@ var handyClicksSets = {
 				}));
 				row.appendChild(this.ut.createElement("label", { value: date, class: "hc-date" }));
 				row.appendChild(this.ut.createElement("label", { value: size, class: "hc-size" }));
-				if(this.fxVersion >= 51) { // https://bugzilla.mozilla.org/show_bug.cgi?id=1318898
-					// Prevent disappearance of semi-transparent nodes
-					this.$("hc-sets-tree-importFilesTip").style.filter = "contrast(1)";
-				}
 				this.delay(function() {
 					var equals = this.fileDataEquals(path);
 					if(equals === undefined)
