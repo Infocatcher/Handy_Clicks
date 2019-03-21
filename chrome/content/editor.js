@@ -1948,10 +1948,8 @@ var handyClicksEditor = {
 		var so = stored.so;
 
 		this.initFuncEditor(so, delayed, true);
-		if(!isDelayed) {
+		if(!isDelayed)
 			this.$("hc-editor-events").value = so.eventType || "click";
-			//this.initAdditionalOptions(type, so);
-		}
 
 		this.disableUnsupported();
 		this.setDialogButtons();
