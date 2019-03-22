@@ -104,7 +104,9 @@ var handyClicksSets = {
 		this.tBody = tr.body;
 		this.tSel = tView.selection;
 
-		this.applyButton = document.documentElement.getButton("extra1");
+		var de = document.documentElement;
+		this.applyButton = de.getButton("extra1");
+		this.prefsButton = de.getButton("extra2");
 	},
 	destroy: function(reloadFlag) {
 		this.closeImportEditors();
@@ -147,33 +149,34 @@ var handyClicksSets = {
 		else
 			this.applyButton.disabled = true;
 
-		var prefsButt = de.getButton("extra2");
-		prefsButt.className += " hc-iconic hc-preferences";
+		var prefsBtn = this.prefsButton;
+		prefsBtn.className += " hc-iconic hc-preferences";
 		// Used menu button (instead of "popup" attributes) to make popup accessible from keyboard
-		prefsButt.setAttribute("type", "menu");
-		prefsButt.appendChild(this.e("hc-sets-prefsManagementPopup"));
+		prefsBtn.setAttribute("type", "menu");
+		prefsBtn.appendChild(this.e("hc-sets-prefsManagementPopup"));
 
-		this.delay(function() {
-			this.e("hc-sets-tree-searchDiv").tooltipText = this.$("hc-sets-tree-searchResults").tooltipText
-				+ " / " + this.$("hc-sets-tree-searchTotal").tooltipText;
-			Array.prototype.forEach.call(
-				this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
-				function(col) {
-					if(!col.tooltipText)
-						col.tooltipText = col.getAttribute("label");
-				}
-			);
-			Array.prototype.forEach.call( // Fix command handler from dialog binding
-				prefsButt.getElementsByTagName("menuitem"),
-				function(mi) {
-					mi.setAttribute("dlgtype", "extra2");
-				}
-			);
-			if(instantApply)
-				this.$("hc-sets-prefs-reload").hidden = this.$("hc-sets-prefs-reloadSep").hidden = true;
-			if(!this.ps._loadStatus && this.treeUnsaved)
-				this.setModifiedState(true);
-		}, this, 50);
+		this.delay(this.startupUIDelayed, this, 50);
+	},
+	startupUIDelayed: function() {
+		this.e("hc-sets-tree-searchDiv").tooltipText = this.$("hc-sets-tree-searchResults").tooltipText
+			+ " / " + this.$("hc-sets-tree-searchTotal").tooltipText;
+		Array.prototype.forEach.call(
+			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
+			function(col) {
+				if(!col.tooltipText)
+					col.tooltipText = col.getAttribute("label");
+			}
+		);
+		Array.prototype.forEach.call( // Fix command handler from dialog binding
+			this.prefsButton.getElementsByTagName("menuitem"),
+			function(mi) {
+				mi.setAttribute("dlgtype", "extra2");
+			}
+		);
+		if(this.instantApply)
+			this.$("hc-sets-prefs-reload").hidden = this.$("hc-sets-prefs-reloadSep").hidden = true;
+		if(!this.ps._loadStatus && this.treeUnsaved)
+			this.setModifiedState(true);
 	},
 	buildCharsetMenu: function(popup) {
 		Components.classes["@mozilla.org/observer-service;1"]
