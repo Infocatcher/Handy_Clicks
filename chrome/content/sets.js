@@ -3995,7 +3995,7 @@ var handyClicksSets = {
 			else
 				sizes[size] = [mi];
 		}, this);
-		var fileData = this.ju.bind(function(mi) {
+		var fileData = this.ju.bind(function(contents, mi) {
 			var file = mi.__file;
 			var path = file.path;
 			if(path in contents)
@@ -4011,27 +4011,29 @@ var handyClicksSets = {
 			var contents = { __proto__: null };
 			for(var i = len - 1; i >= 1; --i) { // Will keep older file
 				var mi = mis[i];
-				if(mi.hasAttribute("hc_duplicateRemove"))
-					continue;
-				var data = fileData(mi);
-				for(var j = i - 1; j >= 0; --j) {
-					var mi2 = mis[j];
-					if(fileData(mi2) != data)
-						continue;
-					++dupCount;
-					mi2.setAttribute("hc_duplicateRemove", "true");
-					this.delay(function(mi2) { // Pseudo-async + progress animation
-						var file = mi2.__file;
-						file.exists() && file.remove(false);
-						mi2.parentNode.removeChild(mi2);
-					}, this, 100, [mi2]);
-					if(mi.hasAttribute("hc_duplicateKeep"))
-						continue;
-					mi.setAttribute("hc_duplicateKeep", "true");
-					this.delay(function(mi) {
-						mi.removeAttribute("hc_duplicateKeep");
-					}, this, 110, [mi]);
-				}
+				this.delay(function(mis, contents, i, mi) {
+					if(mi.hasAttribute("hc_duplicateRemove"))
+						return;
+					var data = fileData(contents, mi);
+					for(var j = i - 1; j >= 0; --j) {
+						var mi2 = mis[j];
+						if(fileData(contents, mi2) != data)
+							continue;
+						++dupCount;
+						mi2.setAttribute("hc_duplicateRemove", "true");
+						this.delay(function(mi2) { // Pseudo-async + progress animation
+							var file = mi2.__file;
+							file.exists() && file.remove(false);
+							mi2.parentNode.removeChild(mi2);
+						}, this, 100, [mi2]);
+						if(mi.hasAttribute("hc_duplicateKeep"))
+							continue;
+						mi.setAttribute("hc_duplicateKeep", "true");
+						this.delay(function(mi) {
+							mi.removeAttribute("hc_duplicateKeep");
+						}, this, 110, [mi]);
+					}
+				}, this, 0, [mis, contents, i, mi]);
 			}
 		}
 		this.delay(function() {
@@ -4042,7 +4044,7 @@ var handyClicksSets = {
 				this.su.TOOLTIP_HIDE_DEFAULT,
 				this.su.TOOLTIP_OFFSET_ABOVE
 			);
-		}, this, 100);
+		}, this, 110);
 	},
 	reveal: function(file) {
 		return this.ut.reveal(file);
