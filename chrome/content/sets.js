@@ -4,7 +4,6 @@ var handyClicksSets = {
 	_import: false,
 	_importPartial: false,
 	_importFilesData: false,
-	_importFromClipboard: false,
 	_importSrc: null,
 	_savedPrefs: null,
 	_savedTypes: null,
@@ -3800,7 +3799,7 @@ var handyClicksSets = {
 			return;
 		this._filesState = { __proto__: null };
 		this._importSrc = pSrc;
-		this.setImportStatus(true, partialImport, srcId == ct.IMPORT_CLIPBOARD);
+		this.setImportStatus(true, partialImport);
 		if(partialImport)
 			this.redrawTree();
 		else
@@ -4093,10 +4092,9 @@ var handyClicksSets = {
 		return isDarkFont;
 	},
 
-	setImportStatus: function(isImport, isPartial, fromClipboard, updMode) {
-		this._import              = isImport;
-		this._importPartial       = isImport && isPartial;
-		this._importFromClipboard = isImport && fromClipboard;
+	setImportStatus: function(isImport, isPartial, updMode) {
+		this._import        = isImport;
+		this._importPartial = isImport && isPartial;
 		if(!updMode) {
 			this.closeImportEditors();
 			this.checkTreeSaved();
@@ -4221,7 +4219,7 @@ var handyClicksSets = {
 			isPartial = !this._importPartial;
 		else if(isPartial == this._importPartial) // Not changed
 			return;
-		this.setImportStatus(this._import, isPartial, this._importFromClipboard, true);
+		this.setImportStatus(this._import, isPartial, true);
 		this.hideOldTreeitems(isPartial, true);
 		isPartial && this.cleanImportSearch(isPartial);
 		this.searchInSetsTree(true);
@@ -4235,7 +4233,6 @@ var handyClicksSets = {
 			return;
 
 		var isPartial = this._importPartial;
-		//var fromClip = this._importFromClipboard;
 		this.setImportStatus(false);
 		if(ok) {
 			// Keep prefs file because content of new file may be equals!
