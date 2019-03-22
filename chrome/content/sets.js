@@ -1436,14 +1436,11 @@ var handyClicksSets = {
 		return false;
 	},
 	isClickOnRow: function(e) {
-		var row = {}, col = {}, cell = {};
-		this.tbo.getCellAt(e.clientX, e.clientY, row, col, cell);
-		return row.value > -1;
+		return this.tbo.getRowAt(e.clientX, e.clientY) > -1;
 	},
 	isClickOnContainer: function(e) {
-		var row = {}, col = {}, cell = {};
-		this.tbo.getCellAt(e.clientX, e.clientY, row, col, cell);
-		return row.value > -1 && this.tView.isContainer(row.value);
+		var row = this.tbo.getRowAt(e.clientX, e.clientY);
+		return row > -1 && this.tView.isContainer(row);
 	},
 	getItemsInfo: function(tIts) {
 		tIts = tIts ? tIts.slice() : this.selectedItemsNoDelayed;
