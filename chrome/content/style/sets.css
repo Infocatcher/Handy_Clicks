@@ -330,6 +330,9 @@ treechildren::-moz-tree-checkbox(hc_checkbox, checked, hc_old) {
 #hc-sets-tree-importFilesTip[hc_hasFilesData="false"] > .hc-filesData {
 	display: none;
 }
+#hc-sets-tree-importFilesTip[hc_hasFilesData="false"] > label {
+	margin: 0;
+}
 #hc-sets-tree-importFilesTipPath {
 	max-width: 40em;
 }

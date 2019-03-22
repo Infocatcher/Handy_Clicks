@@ -220,6 +220,7 @@ preferences {
 						onclick="if(event.button == 0) handyClicksSets.toggleSearch('%data%');" />
 					<tooltip id="hc-sets-tree-importFilesTip" noautohide="true">
 						<label value="&hc.sets.importFilesDataTip;" />
+						<separator class="groove hc-filesData" />
 						<hbox class="hc-filesData" align="center">
 							<label class="hc-new" value="&hc.sets.importAdded;" />
 							<label class="hc-mark hc-statsValue" id="hc-sets-tree-importFilesTipAdded" value="?" />
