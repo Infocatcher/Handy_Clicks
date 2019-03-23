@@ -1652,13 +1652,14 @@ var handyClicksSets = {
 		});
 	},
 	openEditorWindow: function(tItem, mode, add, src) { // mode: this.ct.EDITOR_MODE_*
-		var shortcut = tItem
-			? tItem.__shortcut
-			: undefined;
-		var itemType = tItem && add !== true
-			? tItem.__itemType
-			: undefined;
-		var isDelayed = tItem && add !== true && tItem.__isDelayed;
+		var shortcut, itemType, isDelayed;
+		if(tItem) {
+			shortcut = tItem.__shortcut;
+			if(!add) {
+				itemType = tItem.__itemType;
+				isDelayed = tItem.__isDelayed;
+			}
+		}
 		if(src === undefined)
 			src = this.ps.currentOtherSrc;
 		this.wu.openEditor(src, mode || this.ct.EDITOR_MODE_SHORTCUT, shortcut, itemType, isDelayed);
