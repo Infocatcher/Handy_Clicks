@@ -1559,8 +1559,6 @@ var handyClicksSets = {
 	deleteItem: function(tItem) {
 		var sh = tItem.__shortcut;
 		var type = tItem.__itemType;
-		if(!type || !tItem.__isType && !sh)
-			return;
 		var prefs = this.ps.prefs;
 		if(tItem.__isType) {
 			delete this.ps.types[type];
