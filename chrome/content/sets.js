@@ -1556,7 +1556,7 @@ var handyClicksSets = {
 		this.searchInSetsTree(true);
 		this.restoreScroll(fvr, lvr);
 	},
-	deleteItem: function(tItem, indx) {
+	deleteItem: function(tItem) {
 		var sh = tItem.__shortcut;
 		var type = tItem.__itemType;
 		if(!type || !tItem.__isType && !sh)
@@ -1586,8 +1586,6 @@ var handyClicksSets = {
 
 			this.removeTreeitem(tItem);
 		}
-		if(indx === undefined)
-			this.searchInSetsTree(true);
 	},
 	confirmDelete: function(tIts, deleteTypes) {
 		if(!tIts.length)
