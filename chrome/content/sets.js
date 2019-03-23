@@ -1791,10 +1791,7 @@ var handyClicksSets = {
 		this.tbo.getCellAt(e.clientX, e.clientY, row, col, cell);
 		var rowIndx = row.value;
 		var column = col.value;
-		if(rowIndx == -1 || column == null)
-			return null;
-		var checked = this.tView.getCellValue(rowIndx, column);
-		if(!checked) // real checked is "true" or "false"
+		if(rowIndx == -1 || !column || column.id != "hc-sets-tree-columnEnabled")
 			return null;
 		var tItem = this.getItemAtIndex(rowIndx);
 		if(!tItem || tItem.__isRemoved)
