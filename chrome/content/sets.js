@@ -4104,13 +4104,11 @@ var handyClicksSets = {
 		this.$("hc-sets-tree-importType").value = isPartial;
 		this.$("hc-sets-tree-importRowRemoved").setAttribute("hc_collapse", isPartial);
 		panel.setAttribute("hc_isDarkFont", this.isDarkFont(this.$("hc-sets-tree-importAdded")));
-		if(
-			Array.prototype.indexOf.call(
-				panel.getElementsByTagName("*"),
-				document.commandDispatcher.focusedElement
-			) == -1
-		)
-			this.$("hc-sets-tree-buttonImportOk").focus();
+
+		for(var fe = document.commandDispatcher.focusedElement; fe; fe = fe.parentNode)
+			if(fe == panel)
+				return;
+		this.$("hc-sets-tree-buttonImportOk").focus();
 	},
 	setImportFilesDataStatus: function() {
 		var filesData = [];
