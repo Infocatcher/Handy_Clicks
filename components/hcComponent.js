@@ -87,10 +87,21 @@ const protocol = {
 		return false;
 	},
 	newURI: function(spec, originCharset, baseURI) {
-		var url = Cc["@mozilla.org/network/standard-url;1"]
-			.createInstance(Ci.nsIStandardURL);
-		url.init(Ci.nsIStandardURL.URLTYPE_STANDARD, 0, spec, originCharset, baseURI);
-		return url.QueryInterface(Ci.nsIURI);
+		var uri = "@mozilla.org/network/simple-uri;1" in Cc // Removed in Firefox 61+
+			&& Cc["@mozilla.org/network/simple-uri;1"]
+				.createInstance(Ci.nsIURI);
+		if(!uri) {
+			var mutator = Cc["@mozilla.org/network/simple-uri-mutator;1"]
+				.createInstance(Ci.nsIURIMutator);
+			return (this.newURI = function(spec, originCharset, baseURI) {
+				return mutator.setSpec(spec).finalize();
+			})(spec);
+		}
+		// nsIURI.spec is read-only in Firefox 58+: https://bugzilla.mozilla.org/show_bug.cgi?id=1431204
+		if("mutate" in uri)
+			return uri.mutate().setSpec(spec).finalize();
+		uri.spec = spec;
+		return uri;
 	},
 	newChannel: function(uri) {
 		//handleURI(uri.spec);
