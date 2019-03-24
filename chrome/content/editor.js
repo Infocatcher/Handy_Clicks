@@ -1600,7 +1600,7 @@ var handyClicksEditor = {
 			this.ut.notifyWarning(msg, { buttons: {
 				$openDirectory: function() {
 					this.ut.reveal(bakFile);
-				},
+				}
 			}, context: this });
 		}
 	},
