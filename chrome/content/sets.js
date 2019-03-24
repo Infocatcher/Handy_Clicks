@@ -1798,8 +1798,8 @@ var handyClicksSets = {
 			return null;
 		return tItem
 	},
-	toggleEnabled: function(e, forcedEnabled) { //~ todo: test!
-		if(e) { // Click on checkbox cell
+	toggleEnabled: function(e, forceEnable) {
+		if(e) { // Check for click on checkbox cell
 			var tItem = this.getChecboxItem(e);
 			if(!tItem)
 				return;
@@ -1813,30 +1813,30 @@ var handyClicksSets = {
 			if(!its.length)
 				return;
 			its.forEach(function(tItem) {
-				this.toggleItemEnabled(tItem, forcedEnabled);
+				this.toggleItemEnabled(tItem, forceEnable);
 			}, this);
 		}
-		function callback() {
+		function updUI() {
 			this.checkTreeSaved();
 			this.setDialogButtons();
 			this.updTreeButtons();
 		}
 		this.ps.otherSrc && this.pe.reloadSettings(true /* applyFlag */);
 		if(this.instantApply && !this.ps.otherSrc)
-			this.saveSettingsObjectsCheck(true, callback, this);
+			this.saveSettingsObjectsCheck(true, updUI, this);
 		else
-			callback.call(this);
+			updUI.call(this);
 	},
-	toggleItemEnabled: function(tItem, forcedEnabled) {
+	toggleItemEnabled: function(tItem, forceEnable) {
 		if(
 			tItem.__isType
 			&& this.checkedState(tItem)
-			&& !forcedEnabled
+			&& !forceEnable
 			&& !this.su.confirmTypeAction(tItem.__itemType, "typeDisablingWarning")
 		)
 			return;
 		var tRow = this.getRowForItem(tItem);
-		var enabled = this.checkedState(tItem, forcedEnabled === undefined ? null : forcedEnabled);
+		var enabled = this.checkedState(tItem, forceEnable === undefined ? null : forceEnable);
 		var forcedDisDa = this.pu.get("delayedActionTimeout") <= 0;
 		if(tItem.__isDelayed) {
 			var pDis = !this.checkedState(tItem.parentNode.parentNode); // Check state of parent
