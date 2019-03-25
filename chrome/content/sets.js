@@ -3981,11 +3981,12 @@ var handyClicksSets = {
 		this.updRestorePopup(store);
 	},
 	removeDuplicateBackups: function(miRD) {
+		var ubPopup = this.ubPopup;
 		miRD.setAttribute("disabled", "true");
-		miRD.parentNode.setAttribute("hc_duplicateCheck", "true");
+		ubPopup.setAttribute("hc_duplicateCheck", "true");
 		setTimeout(function() {
 			miRD.removeAttribute("disabled");
-			miRD.parentNode.removeAttribute("hc_duplicateCheck");
+			ubPopup.removeAttribute("hc_duplicateCheck");
 		}, 400);
 
 		var sizes = { __proto__: null };
@@ -4038,14 +4039,17 @@ var handyClicksSets = {
 			}
 		}
 		this.delay(function() {
-			this.su.showInfoTooltip(
-				miRD,
-				this.getLocalized(dupCount ? "duplicateBackupsRemoved" : "duplicateBackupsNA")
-					.replace("%n", dupCount),
-				this.su.TOOLTIP_HIDE_DEFAULT,
-				this.su.TOOLTIP_OFFSET_ABOVE
-			);
-		}, this, 110);
+			ubPopup.scrollHeight || ubPopup.offsetHeight; // Force redraw
+			this.delay(function() {
+				this.su.showInfoTooltip(
+					miRD,
+					this.getLocalized(dupCount ? "duplicateBackupsRemoved" : "duplicateBackupsNA")
+						.replace("%n", dupCount),
+					this.su.TOOLTIP_HIDE_DEFAULT,
+					this.su.TOOLTIP_OFFSET_ABOVE
+				);
+			}, this);
+		}, this, 120);
 	},
 	reveal: function(file) {
 		return this.ut.reveal(file);
