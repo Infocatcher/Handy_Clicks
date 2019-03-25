@@ -1313,10 +1313,10 @@ var handyClicksEditor = {
 			if(isRenaming) df.insertBefore(this.ut.createElement("menuitem", {
 				id: "hc-editor-renameShortcut-cancel",
 				class: "menuitem-iconic hc-iconic",
-				label: mp.getAttribute(
+				label: mp.getAttribute("hc_renameCancel") + (
 					canRename && curSh != this._shortcutBeforeRename
-						? "hc_renameCancelUsed"
-						: "hc_renameCancel"
+						? this.getLocalized("alreadyUsed")
+						: ""
 				),
 				accesskey: mp.getAttribute("hc_renameCancelAccesskey"),
 				oncommand: "handyClicksEditor.renameShortcut(false, true);"

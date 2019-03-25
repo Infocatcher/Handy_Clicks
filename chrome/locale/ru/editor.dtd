@@ -29,7 +29,6 @@
 <!ENTITY hc.editor.renameShortcutDone "Переименовать сочетание клавиш ($s)">
 <!ENTITY hc.editor.renameShortcutAccesskey "П">
 <!ENTITY hc.editor.renameShortcutCancel "Отменить переименование">
-<!ENTITY hc.editor.renameShortcutCancelUsed "Отменить переименование (уже используется)">
 <!ENTITY hc.editor.renameShortcutCancelAccesskey "О">
 <!ENTITY hc.editor.noSavedSettings "Нет сохранённых настроек">
 <!ENTITY hc.editor.osKeyNote "Работает только в Firefox 15+ и SeaMonkey 2.12+">

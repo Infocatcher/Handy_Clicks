@@ -29,7 +29,6 @@
 <!ENTITY hc.editor.renameShortcutDone "Rename shortcut ($s)">
 <!ENTITY hc.editor.renameShortcutAccesskey "R">
 <!ENTITY hc.editor.renameShortcutCancel "Cancel rename">
-<!ENTITY hc.editor.renameShortcutCancelUsed "Cancel rename (already used)">
 <!ENTITY hc.editor.renameShortcutCancelAccesskey "C">
 <!ENTITY hc.editor.noSavedSettings "No saved settings">
 <!ENTITY hc.editor.osKeyNote "Works only in Firefox 15+ and SeaMonkey 2.12+">
