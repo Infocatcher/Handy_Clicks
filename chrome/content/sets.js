@@ -18,7 +18,7 @@ var handyClicksSets = {
 
 		this.restoreSearchQuery();
 		if(importArgs) // NS_ERROR_NOT_AVAILABLE: Cannot call openModalWindow on a hidden window
-			this.delay(this.importSets, this, 0, importArgs);
+			this.delay(this.importSetsFromArgs, this, 0, importArgs);
 		else {
 			if(reloadFlag)
 				this.updTree();
@@ -3716,6 +3716,14 @@ var handyClicksSets = {
 		}, this).filter(function(label) {
 			return label;
 		});
+	},
+	importSetsFromArgs: function() {
+		this.importSets.apply(this, arguments);
+		if(!this._importSrc) { // Failed or canceled?
+			this.drawTree(false, this.pu.get("sets.rememberState"));
+			this.treeState(false);
+			this.treeScrollPos(false);
+		}
 	},
 	importSets: function(partialImport, srcId, data) {
 		this.selectTreePane();
