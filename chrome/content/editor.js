@@ -1731,8 +1731,11 @@ var handyClicksEditor = {
 		return true;
 	},
 	notifyUnsavedRename: function() {
+		var newSh = this.currentShortcut;
+		var alreadyUsed = !!this.ju.getOwnProperty(this.ps.prefs, newSh, this._typeBeforeRename);
 		var sh = "\n" + this.ps.getShortcutStr(this._shortcutBeforeRename, true)
-			+ "\n\u21d2 " /* "=>" */ + this.ps.getShortcutStr(this.currentShortcut, true);
+			+ "\n\u21d2 " /* "=>" */ + this.ps.getShortcutStr(newSh, true)
+			+ (alreadyUsed ? this.getLocalized("alreadyUsed") : "");
 		return this.su.notifyUnsaved(
 			this.getLocalized("confirmRename") + sh,
 			"editor.confirmRename"
