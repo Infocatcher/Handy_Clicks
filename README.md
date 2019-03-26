@@ -84,6 +84,25 @@ Note: some hotkeys are described in the interface and not listed here.
 Turn off from command line: `firefox -handyclicks-disable`.
 <br>Log debug messages into error console: <em>extensions.handyclicks.debug</em> preference.
 
+#### Special URLs
+<table>
+<tr><td><a href="handyclicks://settings/">             handyclicks://settings/             </a></td><td>Settings                     </td></tr>
+
+<tr><td><a href="handyclicks://settings/pane/actions"> handyclicks://settings/pane/actions </a></td><td>Settings – Click options     </td></tr>
+<tr><td><a href="handyclicks://settings/pane/prefs">   handyclicks://settings/pane/prefs   </a></td><td>Settings – Preferences       </td></tr>
+<tr><td><a href="handyclicks://settings/pane/organize">handyclicks://settings/pane/organize</a></td><td>Settings – Organize          </td></tr>
+<tr><td><a href="handyclicks://settings/pane/editor">  handyclicks://settings/pane/editor  </a></td><td>Settings – Editor            </td></tr>
+<tr><td><a href="handyclicks://settings/pane/funcs">   handyclicks://settings/pane/funcs   </a></td><td>Settings – Built-in functions</td></tr>
+
+<tr><td><a href="handyclicks://editor/">               handyclicks://editor/               </a></td><td>Editor                       </td></tr>
+<tr><td><a href="handyclicks://editor/itemType">       handyclicks://editor/itemType       </a></td><td>Editor – Custom Types        </td></tr>
+
+<tr>
+	<td><a href="handyclicks://settings/add/%2F%2F%20Preferences%20of%20Handy%20Clicks%20extension.%0A%2F%2F%20Do%20not%20edit.%0A%2F%2F%20SHA256%3A%2063af4de93df322a081d27c8850eca85b764ff658778220bb50ebbdde89200c01%0A%7B%0A%09%22version%22%3A%200.4%2C%0A%09%22types%22%3A%20%7B%7D%2C%0A%09%22prefs%22%3A%20%7B%0A%09%09%22button%3D1%2Cctrl%3Dtrue%2Cshift%3Dfalse%2Calt%3Dfalse%2Cmeta%3Dfalse%22%3A%20%7B%0A%09%09%09%22bookmark%22%3A%20%7B%0A%09%09%09%09%22action%22%3A%20%22openURIInTab%22%2C%0A%09%09%09%09%22arguments%22%3A%20%7B%0A%09%09%09%09%09%22loadInBackground%22%3A%20true%2C%0A%09%09%09%09%09%22loadJSInBackground%22%3A%20true%2C%0A%09%09%09%09%09%22refererPolicy%22%3A%20-1%2C%0A%09%09%09%09%09%22moveTabTo%22%3A%20null%2C%0A%09%09%09%09%09%22closePopups%22%3A%20false%2C%0A%09%09%09%09%09%22winRestriction%22%3A%20-1%0A%09%09%09%09%7D%2C%0A%09%09%09%09%22delayedAction%22%3A%20%7B%0A%09%09%09%09%09%22action%22%3A%20%22openURIInTab%22%2C%0A%09%09%09%09%09%22arguments%22%3A%20%7B%0A%09%09%09%09%09%09%22loadInBackground%22%3A%20true%2C%0A%09%09%09%09%09%09%22loadJSInBackground%22%3A%20true%2C%0A%09%09%09%09%09%09%22refererPolicy%22%3A%20-1%2C%0A%09%09%09%09%09%09%22moveTabTo%22%3A%20null%2C%0A%09%09%09%09%09%09%22closePopups%22%3A%20true%2C%0A%09%09%09%09%09%09%22winRestriction%22%3A%20-1%0A%09%09%09%09%09%7D%2C%0A%09%09%09%09%09%22enabled%22%3A%20true%2C%0A%09%09%09%09%09%22eventType%22%3A%20%22__delayed__%22%0A%09%09%09%09%7D%2C%0A%09%09%09%09%22enabled%22%3A%20true%2C%0A%09%09%09%09%22eventType%22%3A%20%22click%22%0A%09%09%09%7D%0A%09%09%7D%0A%09%7D%2C%0A%09%22files%22%3A%20%7B%7D%0A%7D">handyclicks://settings/add/…</a></td>
+	<td>Import settings</td>
+</tr>
+</table>
+
 #### API
 ##### Execution context
 <table>
