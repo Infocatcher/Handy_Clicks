@@ -103,6 +103,12 @@ Turn off from command line: `firefox -handyclicks-disable`.
 </tr>
 </table>
 
+#### Localized labels
+In function or custom type label:
+<br>`Default string @locale:Localized string @locale2:…` <sup><em>added in Handy Clicks 0.2.0b1+</em></sup>
+Example:
+<br>`Copy menu @ru:Меню копирования @fr:Menu de copie`
+
 #### API
 ##### Execution context
 <table>
