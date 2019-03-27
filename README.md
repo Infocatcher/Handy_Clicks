@@ -122,12 +122,6 @@ Example:
 </thead>
 <tbody>
 <tr>
-	<td>this</td>
-	<td>handyClicksFuncs</td>
-	<td><a href="chrome/content/funcs.js">chrome://handyclicks/content/funcs.js</a></td>
-	<td>Built-in functions</td>
-</tr>
-<tr>
 	<td>this.g</td>
 	<td>handyClicksGlobals</td>
 	<td><a href="chrome/content/globals.js">chrome://handyclicks/content/globals.js</a></td>
@@ -138,6 +132,12 @@ Example:
 	<td>handyClicks</td>
 	<td><a href="chrome/content/handyclicks.js">chrome://handyclicks/content/handyclicks.js</a></td>
 	<td>Core with functions to detect built-in types</td>
+</tr>
+<tr>
+	<td>this.fn</td>
+	<td>handyClicksFuncs</td>
+	<td><a href="chrome/content/funcs.js">chrome://handyclicks/content/funcs.js</a></td>
+	<td>Built-in functions</td>
 </tr>
 <tr>
 	<td>this.ut</td>
