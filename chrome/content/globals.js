@@ -88,12 +88,10 @@ var g = window.handyClicksGlobals = {
 		return g.sbs = Components.classes["@mozilla.org/intl/stringbundle;1"]
 			.getService(Components.interfaces.nsIStringBundleService);
 	},
-	getBundle: function(src) {
-		return g._bundles[src] || (g._bundles[src] = g.sbs.createBundle(src));
-	},
 	getStr: function(src, sName, defaultStr, _callerLevel) {
 		try {
-			return g.getBundle(src).GetStringFromName(sName);
+			var sb = g._bundles[src] || (g._bundles[src] = g.sbs.createBundle(src));
+			return sb.GetStringFromName(sName);
 		}
 		catch(e) {
 			if(_callerLevel == -1)
