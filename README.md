@@ -196,6 +196,7 @@ DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGener
 <br>DOMNode <a href="#handyclicksfuncsshowopenuriwithappspopup">handyClicksFuncs.showOpenURIWithAppsPopup</a>(in array items, in boolean checkPaths)
 <br>string <a href="#handyclicksfuncsgetitemuri">handyClicksFuncs.getItemURI</a>([in DOMNode item[, in string itemType[, in DOMEvent event[, in boolean noTrim]]]]) <sup><em><a href="https://github.com/Infocatcher/Handy_Clicks/blob/0.1.3pre6/README.md#api-functions">changed</a> in Handy Clicks 0.2.0b1+</em></sup>
 <br>string <a href="#handyclicksfuncsgetitemtext">handyClicksFuncs.getItemText</a>([in DOMNode item[, in string itemType[, in DOMEvent event[, in boolean noTrim]]]])
+<br>DOMNode <a href="#handyclicksgettab">handyClicks.getTab</a>(in DOMNode item[, in boolean excludeCloseButton])
 <br>nsIVariant <a href="#handyclicksprefutilsgetpref">handyClicksPrefUtils.getPref</a>(in string prefName[, in nsIVariant defaultValue[, in nsIPrefBranch prefBranch]])
 <br>void <a href="#handyclicksprefutilssetpref">handyClicksPrefUtils.setPref</a>(in string prefName, in nsIVariant value[, in nsIPrefBranch prefBranch])
 <br>DOMWindow <a href="#handyclicksutilsnotify">handyClicksUtils.notify</a>(in string message[, in object options]) <sup><em><a href="https://github.com/Infocatcher/Handy_Clicks/blob/0.1.3pre6/README.md#api-functions">changed</a> in Handy Clicks 0.2.0b1+</em></sup>
@@ -277,6 +278,9 @@ Gets URI of link-like item.
 
 ###### handyClicksFuncs.getItemText()
 Gets text of item, like “text” from `<a href="#">text</a>`.
+
+###### handyClicks.getTab()
+Gets browser tab from clicked node, to add tab-like custom types, see <a href="https://github.com/Infocatcher/Handy_Clicks_scripts/tree/master/Private_Tab">example</a> for <a href="https://github.com/Infocatcher/Private_Tab">Private Tab</a>.
 
 ###### handyClicksPrefUtils.getPref()
 Reads preference from about:config storage.
