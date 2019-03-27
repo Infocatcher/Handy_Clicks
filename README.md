@@ -199,6 +199,7 @@ DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGener
 <br>DOMNode <a href="#handyclicksgettab">handyClicks.getTab</a>(in DOMNode item[, in boolean excludeCloseButton])
 <br>nsIVariant <a href="#handyclicksprefutilsgetpref">handyClicksPrefUtils.getPref</a>(in string prefName[, in nsIVariant defaultValue[, in nsIPrefBranch prefBranch]])
 <br>void <a href="#handyclicksprefutilssetpref">handyClicksPrefUtils.setPref</a>(in string prefName, in nsIVariant value[, in nsIPrefBranch prefBranch])
+<br>string <a href="#handyclicksutilsreadfromclipboard">handyClicksUtils.readFromClipboard</a>([in boolean trim[, in integer clipboardId]])
 <br>DOMWindow <a href="#handyclicksutilsnotify">handyClicksUtils.notify</a>(in string message[, in object options]) <sup><em><a href="https://github.com/Infocatcher/Handy_Clicks/blob/0.1.3pre6/README.md#api-functions">changed</a> in Handy Clicks 0.2.0b1+</em></sup>
 <br>DOMWindow <a href="#handyclicksutilsnotifyinwindowcorner">handyClicksUtils.notifyInWindowCorner</a>(in string message[, in object options]) <sup><em><a href="https://github.com/Infocatcher/Handy_Clicks/blob/0.1.3pre6/README.md#api-functions">changed</a> in Handy Clicks 0.2.0b1+</em></sup>
 <br>DOMWindow <a href="#handyclicksutilsnotifywarning">handyClicksUtils.notifyWarning</a>(in string message[, in object options]) <sup><em>Handy Clicks 0.2.0b1+</em></sup>
@@ -296,6 +297,15 @@ Writes preference to about:config storage.
 // Toggle boolean preference
 var pref = "middlemouse.scrollbarPosition";
 this.pu.setPref(pref, !this.pu.getPref(pref));
+```
+
+###### handyClicksUtils.readFromClipboard()
+Reads string from system clipboard.
+```js
+var cbGlobal = this.ut.readFromClipboard(); // From Components.interfaces.nsIClipboard.kGlobalClipboard
+var cbSelection = this.ut.cb.supportsSelectionClipboard() // Selection clipboard, Linux
+	? this.ut.readFromClipboard(false, this.ut.cb.kSelectionClipboard)
+	: "";
 ```
 
 ###### handyClicksUtils.notify()
