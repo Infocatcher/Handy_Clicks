@@ -206,6 +206,7 @@ DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGener
 <br>DOMWindow <a href="#handyclicksutilsnotifyerror">handyClicksUtils.notifyError</a>(in string message[, in object options]) <sup><em>Handy Clicks 0.2.0b1+</em></sup>
 <br>boolean <a href="#handyclicksinitcustomtype">handyClicks.initCustomType</a>(in object options) <sup><em>Handy Clicks 0.2.0b1+</em></sup>
 <br>string <a href="#handyclicksglobalsgetstr">handyClicksGlobals.getStr</a>(in string dtdSource, in string stringName[, in string defaultString])
+<br>string <a href="#handyclicksglobalsgetlocalized">handyClicksGlobals.getLocalized</a>(in string stringName)
 <br>void <a href="#handyclicksglobals_info">handyClicksGlobals.\_info</a>(in string message)
 <br>void <a href="#handyclicksglobals_log">handyClicksGlobals.\_log</a>(in string message)
 <br>void <a href="#handyclicksutils_err">handyClicksUtils.\_err</a>(in string/error message[, in string fileName[, in string lineNumber]])
@@ -394,6 +395,13 @@ Returns localised string.
 ```js
 var escStr = this.getStr("chrome://global/locale/keys.properties", "VK_ESCAPE"); // "Esc"
 var someStr = this.getStr("chrome://global/locale/keys.properties", "something_unknown", "some"); // "some"
+```
+
+###### handyClicksGlobals.getLocalized()
+Like handyClicksGlobals.getStr(), for internal extension strings from chrome://handyclicks/locale/hcs.properties (but be careful, internal strings may be changed):
+```js
+var enabled = true;
+var msg = this.getLocalized(enabled ? "enabled" : "disabled"); // "Enabled" or "Disabled"
 ```
 
 ###### handyClicksGlobals._info()
