@@ -1599,6 +1599,19 @@ var handyClicksSets = {
 		if(!setsCount) // Safe to delete
 			deleteTypes.value = true;
 		var onlyTypes = typesCount == tIts.length;
+		onlyTypes && setsCount && this.ut.waitForPromptWindow(function(win) {
+			var btn = win.document.documentElement.getButton("accept");
+			var cb = win.document.getElementById("checkbox");
+			function setCanDelete() {
+				btn.disabled = !cb.checked;
+			}
+			setCanDelete();
+			cb.addEventListener("command", setCanDelete, false);
+			win.addEventListener("unload", function destroy(e) {
+				win.removeEventListener(e.type, destroy, false);
+				cb.removeEventListener("command", setCanDelete, false);
+			}, false);
+		});
 		return this.ut.confirmEx(
 			this.getLocalized("title"),
 			this.getLocalized("deleteConfirm").replace("%n", tIts.length)
