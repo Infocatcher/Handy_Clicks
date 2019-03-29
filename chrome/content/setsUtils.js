@@ -255,7 +255,7 @@ var handyClicksSetsUtils = {
 	PROMPT_SAVE: 0,
 	PROMPT_CANCEL: 1,
 	PROMPT_DONT_SAVE: 2,
-	notifyUnsaved: function(msg, askPref) {
+	notifyUnsaved: function(msg, askPref, defaultBtn) {
 		if(!msg)
 			msg = this.getLocalized("notifyUnsaved");
 		if(!askPref)
@@ -274,7 +274,7 @@ var handyClicksSetsUtils = {
 			  ps["BUTTON_POS_" + this.PROMPT_SAVE]      * ps.BUTTON_TITLE_SAVE
 			+ ps["BUTTON_POS_" + this.PROMPT_CANCEL]    * ps.BUTTON_TITLE_CANCEL
 			+ ps["BUTTON_POS_" + this.PROMPT_DONT_SAVE] * ps.BUTTON_TITLE_DONT_SAVE
-			+ ps["BUTTON_POS_" + this.PROMPT_SAVE + "_DEFAULT"],
+			+ ps["BUTTON_POS_" + (defaultBtn || this.PROMPT_SAVE) + "_DEFAULT"],
 			"", "", "",
 			this.getLocalized("dontAskAgain"),
 			dontAsk

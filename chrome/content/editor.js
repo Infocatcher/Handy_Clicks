@@ -1738,7 +1738,8 @@ var handyClicksEditor = {
 			+ (alreadyUsed ? this.getLocalized("alreadyUsed") : "");
 		return this.su.notifyUnsaved(
 			this.getLocalized("confirmRename") + sh,
-			"editor.confirmRename"
+			"editor.confirmRename",
+			alreadyUsed ? this.su.PROMPT_DONT_SAVE : this.su.PROMPT_SAVE
 		);
 	},
 
