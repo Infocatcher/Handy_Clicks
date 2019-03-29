@@ -314,6 +314,23 @@ var handyClicksUtils = {
 		if(win.windowState == win.STATE_MINIMIZED)
 			win.focus();
 	},
+	waitForPromptWindow: function(callback, context) {
+		this.wu.ww.registerNotification({
+			context: this,
+			observe: function(subject, topic, data) {
+				if(topic == "domwindowopened")
+					subject.addEventListener("load", this, false);
+			},
+			handleEvent: function(e) {
+				var win = e.currentTarget;
+				win.removeEventListener(e.type, this, false);
+				if(win.location != "chrome://global/content/commonDialog.xul")
+					return;
+				this.context.wu.ww.unregisterNotification(this);
+				callback.call(context, win);
+			}
+		});
+	},
 
 	bind: function(func, context, args) { //= Added: 2019-02-13
 		this._deprecated("handyClicksUtils.bind() is deprecated. Use handyClicksJsUtils.bind() instead.");

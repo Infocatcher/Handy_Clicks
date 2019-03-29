@@ -1736,21 +1736,9 @@ var handyClicksEditor = {
 		var sh = "\n" + this.ps.getShortcutStr(this._shortcutBeforeRename, true)
 			+ "\n\u21d2 " /* "=>" */ + this.ps.getShortcutStr(newSh, true)
 			+ (alreadyUsed ? this.getLocalized("alreadyUsed") : "");
-		alreadyUsed && this.wu.ww.registerNotification({
-			context: this,
-			observe: function(subject, topic, data) {
-				if(topic == "domwindowopened")
-					subject.addEventListener("load", this, false);
-			},
-			handleEvent: function(e) {
-				var win = e.currentTarget;
-				win.removeEventListener(e.type, this, false);
-				if(win.location != "chrome://global/content/commonDialog.xul")
-					return;
-				this.context.wu.ww.unregisterNotification(this);
-				var btn = win.document.documentElement.getButton("accept");
-				btn.disabled = true;
-			}
+		alreadyUsed && this.ut.waitForPromptWindow(function(win) {
+			var btn = win.document.documentElement.getButton("accept");
+			btn.disabled = true;
 		});
 		return this.su.notifyUnsaved(
 			this.getLocalized("confirmRename") + sh,
