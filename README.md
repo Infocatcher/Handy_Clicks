@@ -32,6 +32,9 @@ Or leave draggable edges:
 
 #### Options
 * <em>handyclicks/</em> directory in browser <a href="http://kb.mozillazine.org/Profile_folder">profile</a>
+  * <em>handyclicks/backups/</em> – backups
+  * <em>handyclicks/scripts/</em> – linked script files (for `//> %hc_ScriptsDir%/file.js` instead of code)
+  * <em>handyclicks/temp/</em> – temporary files, e.g. for external editor
 * <em>extensions.handyclicks.</em>* branch in <a href="http://kb.mozillazine.org/About:config">about:config</a>
 
 #### Hotkeys
