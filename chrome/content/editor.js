@@ -1339,7 +1339,8 @@ var handyClicksEditor = {
 			|| !("state" in mp) || mp.state == "open";
 	},
 	renameShortcut: function(onlyRename, forceCancel, syncSave) {
-		var rename = this.renameShortcutMode = !this.renameShortcutMode;
+		var rename = !this.renameShortcutMode;
+		this.renameShortcutMode = rename;
 		this.mainTabbox.handleCtrlTab = this.mainTabbox.handleCtrlPageUpDown = !rename;
 		var act = rename ? addEventListener : removeEventListener;
 		act.call(window, "keydown", this.preventAccesskeys, true);
