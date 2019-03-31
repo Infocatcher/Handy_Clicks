@@ -1722,6 +1722,9 @@ var handyClicksSets = {
 			this.tSel.select(indx);
 			this.searcher.scrollToRow(indx);
 			this.ensureLastRowIsVisible();
+			if(this.fxVersion <= 2) this.delay(function() {
+				this.searcher.scrollToRow(indx);
+			}, this);
 		}
 		this.delay(function() {
 			if(indx != -1)
