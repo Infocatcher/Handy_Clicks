@@ -1807,7 +1807,11 @@ var handyClicksSets = {
 		this.tbo.getCellAt(e.clientX, e.clientY, row, col, cell);
 		var rowIndx = row.value;
 		var column = col.value;
-		if(rowIndx == -1 || !column || column.id != "hc-sets-tree-columnEnabled")
+		if(
+			rowIndx == -1
+			|| !column || column.id != "hc-sets-tree-columnEnabled"
+			|| !this.tView.getCellValue(rowIndx, column) // Should be "true" or "false"
+		)
 			return null;
 		var tItem = this.getItemAtIndex(rowIndx);
 		if(!tItem || tItem.__isRemoved)
