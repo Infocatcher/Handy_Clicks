@@ -335,7 +335,7 @@ preferences {
 								onclick="if(event.button == 1) { handyClicksSets.handleRestoreCommand(event); handyClicksUtils.closeMenus(this); }">
 								<menuseparator />
 								<menuitem id="hc-sets-tree-openBackupsDir" class="menuitem-iconic hc-iconic"
-									oncommand="handyClicksSets.reveal(handyClicksPrefSvc.backupsDir);"
+									oncommand="handyClicksSets.ut.reveal(handyClicksPrefSvc.backupsDir);"
 									label="&hc.sets.openBackupDir;" accesskey="&hc.sets.openBackupDirAccesskey;" />
 								<menuseparator />
 								<menuitem id="hc-sets-tree-removeDuplicateBackups" class="menuitem-iconic hc-iconic"
@@ -883,7 +883,7 @@ preferences {
 			<menuitem id="hc-sets-tree-restoreBackupFile" class="menuitem-iconic hc-iconic" default="true" label="&hc.sets.restoreBackup;"
 				oncommand="(this.parentNode.triggerNode || document.popupNode).doCommand();" />
 			<menuitem id="hc-sets-tree-showBackupFile" class="menuitem-iconic hc-iconic" label="&hc.sets.showBackupFile;"
-				oncommand="handyClicksSets.reveal((this.parentNode.triggerNode || document.popupNode).__file);" />
+				oncommand="handyClicksSets.ut.reveal((this.parentNode.triggerNode || document.popupNode).__file);" />
 			<menuseparator />
 			<menuitem id="hc-sets-removeBackup" class="menuitem-iconic hc-iconic"
 				closemenu="single" label="&hc.sets.removeBackup;"

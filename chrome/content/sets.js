@@ -3268,7 +3268,7 @@ var handyClicksSets = {
 	showExternalEditorFile: function() {
 		var eeFile = this.eeFile;
 		if(eeFile && eeFile.exists()) {
-			this.reveal(eeFile);
+			this.ut.reveal(eeFile);
 			return;
 		}
 		this.ee.focus();
@@ -3847,7 +3847,7 @@ var handyClicksSets = {
 				.replace("%r", this.$("hc-sets-tree-restoreFromBackupMenu").getAttribute("label"));
 			this.ut.notify(msg, {
 				onLeftClick: function() {
-					this.reveal(bFile)
+					this.ut.reveal(bFile);
 				},
 				context: this
 			});
@@ -4070,9 +4070,6 @@ var handyClicksSets = {
 				);
 			}, this);
 		}, this, 120);
-	},
-	reveal: function(file) {
-		return this.ut.reveal(file);
 	},
 	stringifyDate: function(time) {
 		var d = new Date(time);
