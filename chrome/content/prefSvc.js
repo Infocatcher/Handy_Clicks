@@ -822,7 +822,7 @@ var handyClicksPrefSvc = {
 				|| typeof obj.version == "number" && isFinite(obj.version)
 			);
 	},
-	hashRe: /(?:\r\n|\n|\r)\/\/[ \t]?(MD2|MD5|SHA1|SHA512|SHA256|SHA384):[ \t]?([a-f0-9]+)(?=[\n\r]|$)/,
+	hashRe: /(?:\r\n|\n|\r)\/\/[ \t]?(MD[25]|SHA(?:1|256|384|512)):[ \t]?([a-f0-9]+)(?=[\n\r]|$)/,
 	checkPrefsStr: function _cps(str, silent) {
 		var checkCustom = _cps.checkCustomCode || false;
 		this._hashError = false;
