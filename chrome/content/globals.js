@@ -243,13 +243,12 @@ function lazy(s, p, file) {
 			+ ": " + (now() - t).toFixed(2) + " ms"
 			+ (s == "ut" || s == "io" ? "\n" + new Error().stack : "")
 		);
-		has = p in window; // = true ?
+		has = p in window;
 	}
-	if(has) {
-		delete g[s];
-		return g[s] = window[p];
-	}
-	return null;
+	if(!has)
+		return null;
+	delete g[s];
+	return g[s] = window[p];
 }
 function now() {
 	now = "performance" in window && "now" in performance
