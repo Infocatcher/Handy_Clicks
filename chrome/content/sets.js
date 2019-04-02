@@ -175,7 +175,7 @@ var handyClicksSets = {
 		);
 		if(this.instantApply)
 			this.$("hc-sets-prefs-reload").hidden = this.$("hc-sets-prefs-reloadSep").hidden = true;
-		if(!this.ps._loadStatus && this.treeUnsaved)
+		if(this.ps.loaded && this.treeUnsaved)
 			this.setModifiedState(true);
 	},
 	buildCharsetMenu: function(popup) {
@@ -3817,7 +3817,7 @@ var handyClicksSets = {
 			this._savedTypes = this.ps.types;
 		}
 		this.ps.loadSettings(pSrc);
-		if(this.ps._loadStatus)
+		if(!this.ps.loaded)
 			return;
 		this._filesState = { __proto__: null };
 		this._importSrc = pSrc;

@@ -157,6 +157,9 @@ var handyClicksPrefSvc = {
 	SETS_LOAD_DECODE_ERROR: 1,
 	SETS_LOAD_INVALID_DATA: 2,
 	_loadStatus: -1, // SETS_LOAD_UNKNOWN
+	get loaded() {
+		return this._loadStatus == this.SETS_LOAD_OK;
+	},
 	_restoredFromBackup: false,
 	loadSettingsAsync: function(callback, context) {
 		var pFile = this.prefsFile;
@@ -175,7 +178,6 @@ var handyClicksPrefSvc = {
 		this._loadStatus = this.SETS_LOAD_UNKNOWN;
 		if(this.isMainWnd)
 			this._log(fromPrefs ? "loadSettingsAsync()" : "loadSettings()");
-		//this.otherSrc = !!pSrc;
 		pSrc = pSrc || this.prefsFile;
 		if(pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)) {
 			fromPrefs = pSrc.equals(this.prefsFile);

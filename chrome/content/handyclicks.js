@@ -90,7 +90,7 @@ var handyClicks = {
 			this._settingsLoaded = true;
 			this._log("Preload settings => loadSettingsAsync()");
 			this.ps.loadSettingsAsync(function() {
-				this._settingsLoaded = this.ps._loadStatus == this.ps.SETS_LOAD_OK;
+				this._settingsLoaded = this.ps.loaded;
 			}, this);
 		}, this, 150);
 	},
@@ -529,7 +529,7 @@ var handyClicks = {
 			clearTimeout(this._settingsLoadTimer);
 			this._log(e.type + " => loadSettings()");
 			this.ps.loadSettings();
-			this._settingsLoaded = this.ps._loadStatus == this.ps.SETS_LOAD_OK;
+			this._settingsLoaded = this.ps.loaded;
 		}
 		this.hasSettings = false;
 		this.settingsType = "";
