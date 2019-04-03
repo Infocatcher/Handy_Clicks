@@ -3817,8 +3817,10 @@ var handyClicksSets = {
 			this._savedTypes = this.ps.types;
 		}
 		this.ps.loadSettings(pSrc);
-		if(!this.ps.loaded)
+		if(!this.ps.loaded) {
+			this.ut._err("importSets(): something went wrong, ps.loadSettings() failed");
 			return;
+		}
 		this._filesState = { __proto__: null };
 		this._importSrc = pSrc;
 		this.setImportStatus(true, partialImport);
