@@ -843,9 +843,12 @@ var handyClicksPrefSvc = {
 			this._hashMissing = false;
 			var hashFunc = RegExp.$1;
 			var hash = RegExp.$2;
-			if(hash != this.getHash(str, hashFunc)) {
+			var realHash = this.getHash(str, hashFunc);
+			if(hash != realHash) {
 				this._hashError = true;
-				!silent && this.ut._warn("Invalid prefs: wrong checksum");
+				!silent && this.ut._warn(
+					"Invalid prefs: wrong checksum\nIn header: " + hash + "\nCalculated: " + realHash
+				);
 				return false;
 			}
 		}
