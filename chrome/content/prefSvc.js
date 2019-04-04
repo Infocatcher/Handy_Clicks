@@ -833,7 +833,7 @@ var handyClicksPrefSvc = {
 
 		if(!this.ju.startsWith(str, this.requiredHeader)) {
 			!silent && this.ut._err("Invalid prefs: wrong header");
-			return false;
+			return null;
 		}
 
 		str = this.removePrefsDesription(str);
@@ -849,7 +849,7 @@ var handyClicksPrefSvc = {
 				!silent && this.ut._warn(
 					"Invalid prefs: wrong checksum\nIn header: " + hash + "\nCalculated: " + realHash
 				);
-				return false;
+				return null;
 			}
 		}
 
@@ -863,15 +863,15 @@ var handyClicksPrefSvc = {
 				this.ut._err("Invalid prefs: JSON.parse() failed:\n" + str);
 				this.ut._err(e);
 			}
-			return false;
+			return null;
 		}
 		if(!this.isValidPrefs(sets)) {
 			!silent && this.ut._err("Invalid prefs: prefs object doesn't contains required fields");
-			return false;
+			return null;
 		}
 		if(checkCustom)
 			this._hasCustomCode = this.pe.hasCustomCode(sets);
-		return true;
+		return sets;
 	},
 	get clipboardPrefs() {
 		var cb = this.ut.cb;
