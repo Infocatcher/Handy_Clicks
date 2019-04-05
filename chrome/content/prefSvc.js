@@ -192,8 +192,10 @@ var handyClicksPrefSvc = {
 		this.otherSrc = !fromPrefs;
 
 		var scope;
-		if(typeof pSrc != "string")
+		if(typeof pSrc != "string") {
+			this._log("loadSettings(): passed already parsed data");
 			scope = pSrc;
+		}
 		else {
 			pSrc = this.removePrefsDesription(pSrc);
 			if(this.isLegacyJs(pSrc))

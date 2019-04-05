@@ -3774,11 +3774,11 @@ var handyClicksSets = {
 			case ct.IMPORT_FILE:
 				pSrc = data;
 		}
-		var isInvalid = fromClip
-			? !pSrc // this.ps.clipboardPrefs is valid or empty
-			: !this.ps.checkPrefs(pSrc);
+		var validPrefs = fromClip
+			? pSrc // this.ps.clipboardPrefs is valid or empty
+			: this.ps.checkPrefs(pSrc);
 		cps.checkCustomCode = false;
-		if(isInvalid) {
+		if(!validPrefs) {
 			this.ut.alert(
 				this.getLocalized("importErrorTitle"),
 				this.getLocalized("invalidConfigFormat")
@@ -3816,7 +3816,7 @@ var handyClicksSets = {
 			this._savedPrefs = this.ps.prefs;
 			this._savedTypes = this.ps.types;
 		}
-		this.ps.loadSettings(pSrc);
+		this.ps.loadSettings(validPrefs);
 		if(!this.ps.loaded) {
 			this.ut._err("importSets(): something went wrong, ps.loadSettings() failed");
 			return;
