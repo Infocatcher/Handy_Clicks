@@ -878,8 +878,9 @@ var handyClicksPrefSvc = {
 	get clipboardPrefs() {
 		var cb = this.ut.cb;
 		var cbStr = this.getPrefsStr(this.ut.readFromClipboard(true, cb.kGlobalClipboard));
-		if(this.checkPrefsStr(cbStr, true))
-			return cbStr;
+		var validPrefs = null;
+		if((validPrefs = this.checkPrefsStr(cbStr, true)))
+			return validPrefs;
 		var cbFile = this.ut.getClipboardData(
 			"application/x-moz-file",
 			cb.kGlobalClipboard,
@@ -890,14 +891,14 @@ var handyClicksPrefSvc = {
 			&& /\.(?:jsm?|json)$/i.test(cbFile.leafName)
 			&& cbFile.fileSize <= 16*1024*1024
 			&& this.ju.startsWith(this.io.readLineFromFile(cbFile), this.requiredHeader)
-			&& this.checkPrefs(cbFile, true)
+			&& (validPrefs = this.checkPrefs(cbFile, true))
 		)
-			return cbFile;
+			return validPrefs;
 		if(!cb.supportsSelectionClipboard())
-			return "";
+			return null;
 		cbStr = this.getPrefsStr(this.ut.readFromClipboard(true, cb.kSelectionClipboard));
-		if(this.checkPrefsStr(cbStr, true))
-			return cbStr;
-		return "";
+		if((validPrefs = this.checkPrefsStr(cbStr, true)))
+			return validPrefs;
+		return null;
 	}
 };
