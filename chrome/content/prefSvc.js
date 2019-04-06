@@ -624,8 +624,11 @@ var handyClicksPrefSvc = {
 	},
 
 	get hasUnsaved() {
+		return this.checkUnsaved(this.__savedStr);
+	},
+	checkUnsaved: function(savedStr) {
 		return this.getSettingsStr(null, null, false, true)
-			!= this.__savedStr.replace(this.hashRe, "");
+			!= savedStr.replace(this.hashRe, "");
 	},
 	__savedStr: "",
 	get _savedStr() {

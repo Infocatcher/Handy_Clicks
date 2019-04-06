@@ -3523,7 +3523,15 @@ var handyClicksSets = {
 	},
 
 	reloadSettings: function() {
-		if(this.hasUnsaved && !this.su.confirmReload())
+		var hasUnsaved = this.hasUnsaved;
+		if(!hasUnsaved && this._import) {
+			var pSrc = this._importSrc || "";
+			if(pSrc instanceof Components.interfaces.nsIFile)
+				pSrc = this.io.readFromFile(pSrc);
+			pSrc = pSrc.replace(/,\s*"files":\s*\{[\s\S]*?\}(\s*\}\s*)$/, "$1");
+			hasUnsaved = this.ps.checkUnsaved(pSrc);
+		}
+		if(hasUnsaved && !this.su.confirmReload())
 			return;
 
 		this.reloadPrefpanes();
