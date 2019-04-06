@@ -189,7 +189,7 @@
 `+` Settings, editor: added menu item to reload settings (for already existing F5/Ctrl+R hotkey).<br>
 `*` Added confirmation for “reload settings” command (<em>extensions.handyclicks.ui.confirmReload</em> preference).<br>
 `x` Reload settings + custom type: don't show unsaved warning.<br>
-`x` Scroll to switch: correctly scroll radio menu items inside closed menu-buttons (simulate open/close menu to initialize).<br>
+`x` Scroll to switch: correctly scroll radio menu items inside closed menu-buttons (dispatch fake “popupshowing” event to initialize).<br>
 `*` Improve search/filter counter: also show total settings count.<br>
 `+` Added %internal% search placeholder for built-in code/items.<br>
 `*` Focus settings tree after execution of tree-related commands.<br>
@@ -206,6 +206,9 @@
 `+` Added ability to open temp directory from “Looks like browser was crashed: at least one temporary file for external editor wasn't removed” warning message.<br>
 `x` Fixed test backups for <em>extensions.handyclicks.sets.backupTestDepth</em> = 1.<br>
 `+` Ask to save settings before browser quit/restart.<br>
+`*` Editor: better tricks to allow edit custom types with equals labels (but it's recommended to use unique labels).<br>
+`x` Fixed `nsIProtocolHandler.newURI()` implementation for handyclicks://… protocol in Firefox 58+.<br>
+`*` Improved import performance: re-use data, that was already parsed on validation step.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
