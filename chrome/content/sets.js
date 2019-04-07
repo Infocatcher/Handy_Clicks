@@ -3806,7 +3806,8 @@ var handyClicksSets = {
 		)
 			return;
 		const warnPref = "sets.importJSWarning";
-		if(srcId != ct.IMPORT_BACKUP && this.ps._hasCustomCode && this.pu.get(warnPref)) {
+		var isBackup = srcId == ct.IMPORT_BACKUP;
+		if(!isBackup && this.ps._hasCustomCode && this.pu.get(warnPref)) {
 			this.ut.ensureNotMinimized();
 			var dontAsk = { value: false };
 			var ok = this.ut.promptsSvc.confirmCheck(
@@ -3838,10 +3839,7 @@ var handyClicksSets = {
 			this.redrawTree();
 		else
 			this.updTree();
-		if(
-			pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)
-			&& !this.ps.prefsDir.contains(pSrc, false /* aRecurse, for Firefox 31 and older */)
-		)
+		if(!isBackup && pSrc instanceof Components.interfaces.nsIFile)
 			this.backupsDir = pSrc.parent;
 	},
 	createBackup: function() {
