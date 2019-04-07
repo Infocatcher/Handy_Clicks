@@ -3387,6 +3387,15 @@ var handyClicksSets = {
 			? false
 			: this.treeUnsaved || this.prefsUnsaved;
 	},
+	get hasChangedImport() {
+		var pSrc = this._importSrc;
+		if(!pSrc)
+			return false;
+		if(pSrc instanceof Components.interfaces.nsIFile)
+			pSrc = this.io.readFromFile(pSrc);
+		pSrc = pSrc.replace(/,\s*"files":\s*\{[\s\S]*?\}(\s*\}\s*)$/, "$1");
+		return this.ps.checkUnsaved(pSrc);
+	},
 
 	dataChanged: function(e, delayed) {
 		if(delayed) {
@@ -3523,14 +3532,7 @@ var handyClicksSets = {
 	},
 
 	reloadSettings: function() {
-		var hasUnsaved = this.hasUnsaved;
-		if(!hasUnsaved && this._import) {
-			var pSrc = this._importSrc || "";
-			if(pSrc instanceof Components.interfaces.nsIFile)
-				pSrc = this.io.readFromFile(pSrc);
-			pSrc = pSrc.replace(/,\s*"files":\s*\{[\s\S]*?\}(\s*\}\s*)$/, "$1");
-			hasUnsaved = this.ps.checkUnsaved(pSrc);
-		}
+		var hasUnsaved = this.hasUnsaved || this.hasChangedImport;
 		if(hasUnsaved && !this.su.confirmReload())
 			return;
 
