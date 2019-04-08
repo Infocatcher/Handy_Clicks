@@ -4367,6 +4367,7 @@ var handyClicksSets = {
 					file.create(file.NORMAL_FILE_TYPE, this.io.PERMS_FILE_WRITE); // Also create directories
 				}
 				catch(e) {
+					this.ut._err("Import skipped, can't create " + path + " -> " + file.path);
 					Components.utils.reportError(e);
 					continue;
 				}
