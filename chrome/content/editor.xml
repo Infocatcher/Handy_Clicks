@@ -263,14 +263,10 @@
 					}
 					var comment = "//";
 					var lines = block.split("\n");
-					//var hasComments = re.test(block);
 					var hasComments = lines.every(function(line) {
 						re.lastIndex = 0;
 						return re.test(line);
 					});
-					//block = hasComments
-					//	? block.replace(re, subst)
-					//	: block.replace(/^/mg, comment);
 					if(hasComments)
 						block = block.replace(re, subst);
 					else if(onlyInLineStart)
@@ -280,7 +276,7 @@
 						var spacePrefixLen = 0;
 						var linesCnt = lines.length;
 
-						// Note: spaces + tabs mix aren't supported!
+						// Note: spaces + tabs mix not supported!
 						var minSpLen = Infinity;
 						for(var i = 0; i < linesCnt; ++i) {
 							var line = lines[i];
@@ -530,7 +526,7 @@
 							val = this.hcEditor.ps.localize(val);
 						var label = val
 							.replace(/\s+/g, "_")
-							// Based on code of Session Manager 0.7.9.2
+							// Based on code from Session Manager 0.7.9.2
 							.replace(/[<>:"\/\\|*?^\x00-\x1f]+/g, "_");
 					}
 					return "hc_" + type + (label ? "_[" + label + "]" : "") + "." + (ext || "js");
@@ -597,7 +593,6 @@
 						var fName = hasFileData
 							? path.match(/[^\/\\]*$/)
 							: this.getDefaultFilename(ext, ut.canRunw && ut.pu.get("editor.external.labelInFileName"));
-						//file = ut.getFileByAlias("TmpD");
 						file = ut.ps.tempDir.clone();
 						file.append(fName);
 						file.createUnique(file.NORMAL_FILE_TYPE, ut.io.PERMS_FILE_WRITE);
@@ -1224,7 +1219,6 @@
 					var sel = alwaysSelect || cnt > 1;
 					ifi.selectionStart = sPos + (sel ? lastWord.length : newWord.length);
 					ifi.selectionEnd = sPos + newWord.length;
-					//this.isAutocompleteSelection = sel;
 					setTimeout(function(_this) {
 						_this.isAutocompleteSelection = sel;
 					}, 0, this, sel);
@@ -1351,7 +1345,7 @@
 					|| !/[\w-]/i.test(String.fromCharCode(event.charCode))
 				)
 					return;
-				var offset = this.autocompleteMinSymbols - 1; // Symbol from this keypress event aren't typed yet
+				var offset = this.autocompleteMinSymbols - 1; // Symbol from this keypress event not typed yet
 				if(offset > 0 && !/^[\w-]+$/i.test(this.value.substr(this.inputField.selectionStart - offset, offset)))
 					return;
 				setTimeout(function(_this) {
@@ -1393,9 +1387,6 @@
 				var bo = this.boxObject;
 				var minX = bo.screenX, maxX = minX + bo.width;
 				var minY = bo.screenY, maxY = minY + bo.height;
-
-				//if(ex < minX || ex > maxX || ey < minY || ey > maxY)
-				//	return;
 
 				const corner = 30;
 
