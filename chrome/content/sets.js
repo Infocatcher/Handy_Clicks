@@ -158,8 +158,6 @@ var handyClicksSets = {
 		this.delay(this.startupUIDelayed, this, 50);
 	},
 	startupUIDelayed: function() {
-		this.e("hc-sets-tree-searchDiv").tooltipText = this.$("hc-sets-tree-searchResults").tooltipText
-			+ " / " + this.$("hc-sets-tree-searchTotal").tooltipText;
 		Array.prototype.forEach.call(
 			this.$("hc-sets-tree-columns").getElementsByTagName("treecol"),
 			function(col) {
@@ -2732,7 +2730,11 @@ var handyClicksSets = {
 
 		this.$("hc-sets-tree-searchResults").value = foundCount;
 		this.$("hc-sets-tree-searchTotal").value = rowsCount;
-		this.$("hc-sets-tree-searchStatistics").setAttribute("hc_search", hasTerm);
+		var st = this.$("hc-sets-tree-searchStatistics");
+		st.setAttribute("hc_search", hasTerm);
+		st.tooltipText = hasTerm
+			? st.getAttribute("hc_tooltipResults") + " / " + st.getAttribute("hc_tooltipTotal")
+			: st.getAttribute("hc_tooltipResults");
 		sf.setAttribute("hc_notFound", hasTerm && !found);
 
 		this._lastSearch = Date.now();
