@@ -588,9 +588,9 @@ var handyClicksEditor = {
 			: baseTitle + " [" + title + "]";
 	},
 	initSettingsMenu: function() {
-		this.$("hc-editor-sets-shortcutsMenu").setAttribute(
-			"hidden", this.editorTabIndex != this.INDEX_SHORTCUT
-		);
+		var sm = this.$("hc-editor-sets-shortcutsMenu");
+		sm.setAttribute("hidden", this.editorTabIndex != this.INDEX_SHORTCUT);
+		sm.setAttribute("default", this.renameShortcutMode);
 	},
 	initShortcutEditor: function() {
 		var so = this.ju.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
