@@ -2735,8 +2735,12 @@ var handyClicksSets = {
 		var tt = hasTerm
 			? st.getAttribute("hc_tooltipResults") + " / " + st.getAttribute("hc_tooltipTotal")
 			: st.getAttribute("hc_tooltipResults");
-		if(st.tooltipText != tt)
+		if(st.tooltipText != tt) {
 			st.tooltipText = tt;
+			if(this.fxVersion < 3) Array.forEach(st.getElementsByTagName("*"), function(node) {
+				node.tooltipText = tt;
+			});
+		}
 		sf.setAttribute("hc_notFound", hasTerm && !found);
 
 		this._lastSearch = Date.now();
