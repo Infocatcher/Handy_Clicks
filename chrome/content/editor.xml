@@ -550,7 +550,19 @@
 					}
 					else if(path) {
 						if(ut.ps.otherSrc) {
-							ut.notifyWarning(ut.getLocalized("cantEditImportedFile"));
+							ut.notifyWarning(ut.getLocalized("cantEditImportedFile"), {
+								buttons: {
+									$createNewFile: function() {
+										files[path] = {
+											lastModified: Date.now(),
+											size: 0,
+											data: ""
+										};
+										this.openExternalEditor();
+									}
+								},
+								context: this
+							});
 							return;
 						}
 						file = ut.getLocalFile(path);
