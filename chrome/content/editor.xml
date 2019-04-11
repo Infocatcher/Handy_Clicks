@@ -850,10 +850,18 @@
 					var fName = this.getDefaultFilename(ext, ut.canRunw && ut.pu.get("editor.external.labelInFileName"));
 					if(ut.ps.otherSrc) { // Import mode
 						path = "%hc_ScriptsDir%/" + fName;
+						var data = ut.io.BOM + val, size;
+						try {
+							size = ut.io.utf8Converter.ConvertFromUnicode(data).length;
+						}
+						catch(e) {
+							Components.utils.reportError(e);
+							size = data.length;
+						}
 						ut.ps.files[path] = {
 							lastModified: Date.now(),
-							size: ut.io.BOM.length + val.length, // May be wrong...
-							data: ut.io.BOM + val
+							size: size,
+							data: data
 						};
 						this.value = "//> " + path;
 						callback && callback.call(context);
