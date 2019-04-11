@@ -848,6 +848,17 @@
 					var val = ut.io.platformLineBreaks(val);
 					var ext = ut.pu.get("editor.external.extension") || "js";
 					var fName = this.getDefaultFilename(ext, ut.canRunw && ut.pu.get("editor.external.labelInFileName"));
+					if(ut.ps.otherSrc) { // Import mode
+						path = "%hc_ScriptsDir%/" + fName;
+						ut.ps.files[path] = {
+							lastModified: Date.now(),
+							size: ut.io.BOM.length + val.length, // May be wrong...
+							data: ut.io.BOM + val
+						};
+						this.value = "//> " + path;
+						callback && callback.call(context);
+						return;
+					}
 					var file = ut.ps.scriptsDir.clone();
 					file.append(fName);
 					if(file.exists() && ut.io.readFromFile(file).replace(/^\ufeff/, "") == val) {
