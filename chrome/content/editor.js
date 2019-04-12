@@ -1555,6 +1555,12 @@ var handyClicksEditor = {
 		}, this);
 		this.pe.reloadSettings(true);
 	},
+	changedFileData: function(path) {
+		this.delay(function() {
+			var wSet = this.wu.wm.getMostRecentWindow("handyclicks:settings");
+			wSet && wSet.handyClicksSets.changedFileData(path);
+		}, this);
+	},
 	doEditorCommand: function(btnCmd, cmd/*, arg1, ...*/) {
 		var tabbox = this.selectedTabbox;
 		if(tabbox.collapsed)
