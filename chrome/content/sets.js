@@ -4190,8 +4190,8 @@ var handyClicksSets = {
 			}).forEach(function(fd, i) {
 				var n = i + 1;
 				var path = fd.path;
-				var date = fd.time ? this.stringifyDate(fd.time) : "?";
-				var size = fd.size ? this.stringifySize(fd.size) : "?";
+				var date = fd.time >= 0 ? this.stringifyDate(fd.time) : "?";
+				var size = fd.size >= 0 ? this.stringifySize(fd.size) : "?";
 				var row = df.appendChild(document.createElement("row"));
 				row.appendChild(this.ut.createElement("label", { value: n + ".", class: "hc-num" }));
 				row.appendChild(this.ut.createElement("label", {
