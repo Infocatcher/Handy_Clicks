@@ -853,7 +853,8 @@
 						path = "%hc_ScriptsDir%/" + fName;
 						var data = ut.io.BOM + val, size;
 						try {
-							size = ut.io.utf8Converter.ConvertFromUnicode(data).length;
+							var uc = ut.io.utf8Converter;
+							size = (uc.ConvertFromUnicode(data) + uc.Finish()).length;
 						}
 						catch(e) {
 							Components.utils.reportError(e);
