@@ -608,7 +608,17 @@
 							: this.getDefaultFilename(ext, ut.canRunw && ut.pu.get("editor.external.labelInFileName"));
 						file = ut.ps.tempDir.clone();
 						file.append(fName);
-						file.createUnique(file.NORMAL_FILE_TYPE, ut.io.PERMS_FILE_WRITE);
+						try {
+							file.createUnique(file.NORMAL_FILE_TYPE, ut.io.PERMS_FILE_WRITE);
+						}
+						catch(e) {
+							ut.notifyError(
+								ut.getLocalized("fileCreateError")
+									.replace("%p", file.path)
+									.replace("%err", e)
+							);
+							Components.utils.reportError(e);
+						}
 						if(hasFileData) {
 							ut.io.writeToFile(fileData, file);
 							file.lastModifiedTime = fileTime;
