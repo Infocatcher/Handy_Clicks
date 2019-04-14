@@ -549,6 +549,11 @@
 						var fileTime = files[path].lastModified;
 					}
 					else if(path) {
+						file = ut.getLocalFile(path);
+						if(!file) {
+							ut.notifyError(ut.getLocalized("invalidFilePath").replace("%p", path));
+							return;
+						}
 						if(ut.ps.otherSrc) {
 							ut.notifyWarning(ut.getLocalized("cantEditImportedFile"), {
 								buttons: {
@@ -564,11 +569,6 @@
 								},
 								context: this
 							});
-							return;
-						}
-						file = ut.getLocalFile(path);
-						if(!file) {
-							ut.notifyError(ut.getLocalized("invalidFilePath").replace("%p", path));
 							return;
 						}
 						if(!file.exists()) {
