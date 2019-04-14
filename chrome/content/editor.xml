@@ -887,7 +887,17 @@
 						callback && callback.call(context);
 						return;
 					}
-					file.createUnique(file.NORMAL_FILE_TYPE, ut.io.PERMS_FILE_WRITE);
+					try {
+						file.createUnique(file.NORMAL_FILE_TYPE, ut.io.PERMS_FILE_WRITE);
+					}
+					catch(e) {
+						ut.notifyError(
+							ut.getLocalized("fileCreateError")
+								.replace("%p", file.path)
+								.replace("%err", e)
+						);
+						Components.utils.reportError(e);
+					}
 					ut.io.writeToFileAsync(ut.io.BOM + val, file, function(status) {
 						if(!Components.isSuccessCode(status))
 							return;
