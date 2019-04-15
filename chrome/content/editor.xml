@@ -579,7 +579,11 @@
 											file.create(file.NORMAL_FILE_TYPE, ut.io.PERMS_FILE_WRITE);
 										}
 										catch(e) {
-											ut.notifyError(e);
+											ut.notifyError(
+												ut.getLocalized("fileCreateError")
+													.replace("%p", file.path)
+													.replace("%err", e)
+											);
 											throw e;
 										}
 										this.openExternalEditor();
