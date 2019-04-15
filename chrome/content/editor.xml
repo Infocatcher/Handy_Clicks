@@ -621,7 +621,7 @@
 									.replace("%p", file.path)
 									.replace("%err", e)
 							);
-							Components.utils.reportError(e);
+							throw e;
 						}
 						if(hasFileData) {
 							ut.io.writeToFile(fileData, file);
@@ -900,7 +900,7 @@
 								.replace("%p", file.path)
 								.replace("%err", e)
 						);
-						Components.utils.reportError(e);
+						throw e;
 					}
 					ut.io.writeToFileAsync(ut.io.BOM + val, file, function(status) {
 						if(!Components.isSuccessCode(status))
