@@ -529,7 +529,7 @@ var handyClicksUtils = {
 		if(!file.exists()) {
 			this.alert(
 				this.getLocalized("errorTitle"),
-				this.getLocalized("fileNotFound").replace("%f", path)
+				this.getLocalized("fileNotFound").replace("%p", file.path)
 			);
 			return false;
 		}
@@ -543,7 +543,9 @@ var handyClicksUtils = {
 		catch(e) {
 			this.alert(
 				this.getLocalized("errorTitle"),
-				this.getLocalized("fileCantRun").replace("%f", path).replace("%err", e)
+				this.getLocalized("fileCantRun")
+					.replace("%p", file.path)
+					.replace("%err", e)
 			);
 			return false;
 		}
