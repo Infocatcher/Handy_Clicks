@@ -420,7 +420,7 @@ var handyClicksPrefSvc = {
 			return this._fnCache[expandCode._path = path];
 		var file = this.ut.getLocalFile(path);
 		if(!file)
-			throw this.getLocalized("invalidFilePath").replace("%p", path);
+			throw this.getLocalized("fileInvalidPath").replace("%p", path);
 		var data = this.io.readFromFile(file)
 			.replace(/^\ufeff/, ""); // Older Firefox versions doesn't support BOM mark
 		if(!data)

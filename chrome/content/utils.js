@@ -520,7 +520,7 @@ var handyClicksUtils = {
 		args = args || [];
 		var file = this.getLocalFile(path);
 		if(!file) {
-			var err = this.getLocalized("invalidFilePath").replace("%p", path);
+			var err = this.getLocalized("fileInvalidPath").replace("%p", path);
 			this.notifyError(err, { buttons: {
 				$openConsole: this.toErrorConsole
 			}});

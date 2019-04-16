@@ -551,7 +551,7 @@
 					else if(path) {
 						file = ut.getLocalFile(path);
 						if(!file) {
-							ut.notifyError(ut.getLocalized("invalidFilePath").replace("%p", path));
+							ut.notifyError(ut.getLocalized("fileInvalidPath").replace("%p", path));
 							return;
 						}
 						if(ut.ps.otherSrc) {
