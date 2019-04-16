@@ -1581,7 +1581,7 @@ var handyClicksEditor = {
 	},
 	setEditorButtons: function(editor) {
 		editor = editor || this.getEditorFromTabbox(this.selectedTabbox);
-		var dis = editor.textLength <= 1000 // Too long for path?
+		var dis = editor.textLength <= 1028 // Too long for path? ("//> ".length + PATH_MAX)
 			&& !!this.ps.getSourcePath(editor.value);
 		var codeToFileBtn = editor.__codeToFileBtn || (
 			editor.__codeToFileBtn = this.getFloatButton("hc-editor-cmd-codeToFile", editor)
