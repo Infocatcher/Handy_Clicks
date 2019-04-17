@@ -528,6 +528,9 @@
 							.replace(/\s+/g, "_")
 							// Based on code from Session Manager 0.7.9.2
 							.replace(/[<>:"\/\\|*?^\x00-\x1f]+/g, "_");
+						var maxLabel = 60;
+						if(label.length > maxLabel)
+							label = label.substr(0, maxLabel - 1) + "\u2026";
 					}
 					return "hc_" + type + (label ? "_[" + label + "]" : "") + "." + (ext || "js");
 				]]>
