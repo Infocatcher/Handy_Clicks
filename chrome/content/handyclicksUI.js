@@ -295,6 +295,7 @@ var handyClicksUI = {
 				: "_handyClicks-noContext"; // Dummy value
 			this.attribute(elt, "popup", popup);
 			elt.setAttribute("context", context);
+			elt.setAttribute("onmousedown", "handyClicksUI.forceShowContextMenu(event);");
 			//~ note: "popup" doesn't work for menuitems
 			if(elt.localName == "menuitem")
 				elt.setAttribute("closemenu", popup ? "none" : "auto");
@@ -312,6 +313,23 @@ var handyClicksUI = {
 					elt.removeAttribute("key");
 			}
 		});
+	},
+	forceShowContextMenu: function(e) {
+		var elt = e.target;
+		if(elt != e.currentTarget || e.button != 2 || !this.hasModifier(e))
+			return;
+		var cmId = "handyClicks-settingsPopup";
+		var cmIdOrig = elt.getAttribute("context");
+		if(cmIdOrig == cmId)
+			return;
+		elt.setAttribute("context", cmId);
+		window.addEventListener("mouseup", function restoreContext(e) {
+			window.removeEventListener(e.type, restoreContext, true);
+			setTimeout(function() {
+				if(elt.getAttribute("context") == cmId)
+					elt.setAttribute("context", cmIdOrig);
+			}, 0);
+		}, true);
 	},
 	getTypeByLocalName: function(ln) {
 		switch(ln) {
@@ -333,8 +351,11 @@ var handyClicksUI = {
 			button = "Left";
 		else if(e.button == 1 || leftClick && hasModifier)
 			button = "Middle";
-		else if(e.button == 2)
+		else if(e.button == 2) {
+			if(hasModifier) // Will show context menu
+				return;
 			button = "Right";
+		}
 
 		var actionId = this.pu.get("ui.action" + type + button + "Click");
 		if(leftClick) {
