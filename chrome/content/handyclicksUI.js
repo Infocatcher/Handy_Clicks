@@ -286,22 +286,22 @@ var handyClicksUI = {
 	setupUIActions: function() {
 		this.setControls(function(elt) {
 			var type = this.getTypeByLocalName(elt.localName);
-			var defaultAction = this.pu.get("ui.action" + type + "LeftClick");
-			var popup = defaultAction == this.ACTION_POPUP
-				? "handyClicks-settingsPopup"
-				: null;
-			var context = this.pu.get("ui.action" + type + "RightClick") == this.ACTION_POPUP
-				? "handyClicks-settingsPopup"
-				: "_handyClicks-noContext"; // Dummy value
+			var leftClickAction = this.pu.get("ui.action" + type + "LeftClick");
+			var rightClickAction = this.pu.get("ui.action" + type + "RightClick");
+			var cmId = "handyClicks-settingsPopup";
+			var popup = leftClickAction == this.ACTION_POPUP ? cmId : null;
+			var origContext = rightClickAction == this.ACTION_POPUP;
+			var context = origContext ? cmId : "_handyClicks-noContext"; // Dummy value
 			this.attribute(elt, "popup", popup);
 			elt.setAttribute("context", context);
-			elt.setAttribute("onmousedown", "handyClicksUI.forceShowContextMenu(event);");
+			if(!origContext && !elt.hasAttribute("onmousedown"))
+				elt.setAttribute("onmousedown", "handyClicksUI.forceShowContextMenu(event);");
 			//~ note: "popup" doesn't work for menuitems
 			if(elt.localName == "menuitem")
 				elt.setAttribute("closemenu", popup ? "none" : "auto");
 			if(type == "Menu") {
 				var key;
-				switch(defaultAction) {
+				switch(leftClickAction) {
 					case this.ACTION_STATUS:       key = "toggleStatus";    break;
 					case this.ACTION_SETTINGS:     key = "openSettings";    break;
 					case this.ACTION_EDIT_MODE:    key = "editMode";        break;
