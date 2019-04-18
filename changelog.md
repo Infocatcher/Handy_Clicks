@@ -209,6 +209,7 @@
 `*` Editor: better tricks to allow edit custom types with equals labels (but it's recommended to use unique labels).<br>
 `x` Fixed `nsIProtocolHandler.newURI()` implementation for handyclicks://… protocol in Firefox 58+.<br>
 `*` Improved import performance: re-use data, that was already parsed on validation step.<br>
+`*` Controls behavior: force show context menu after right-click with any modifier.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
