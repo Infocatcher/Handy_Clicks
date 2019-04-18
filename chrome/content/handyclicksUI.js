@@ -721,16 +721,14 @@ var handyClicksUI = {
 		return this.taskbarProgress = taskbar.getTaskbarProgress(docShell);
 	},
 	setTaskbarProgressState: function(current, max, state) {
-		if(this.taskbarProgress)
-			this.taskbarProgress.setProgressState(
-				state === undefined ? Components.interfaces.nsITaskbarProgress.STATE_NORMAL : state,
-				current || 0,
-				max     || 0
-			);
+		this.taskbarProgress && this.taskbarProgress.setProgressState(
+			state === undefined ? Components.interfaces.nsITaskbarProgress.STATE_NORMAL : state,
+			current || 0,
+			max     || 0
+		);
 	},
 	hideTaskbarProgress: function() {
-		if(this.taskbarProgress)
-			this.setTaskbarProgressState(0, 0, Components.interfaces.nsITaskbarProgress.STATE_NO_PROGRESS);
+		this.setTaskbarProgressState(0, 0, Components.interfaces.nsITaskbarProgress.STATE_NO_PROGRESS);
 	},
 	progressCancel: function() {
 		this.userCancelled = true;
