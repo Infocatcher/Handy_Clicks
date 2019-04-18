@@ -200,6 +200,7 @@
 <!ENTITY hc.sets.actionButtonMiddle "Middle-click">
 <!ENTITY hc.sets.actionButtonMiddleTip "Or left-click with any modifier">
 <!ENTITY hc.sets.actionButtonRight "Right-click">
+<!ENTITY hc.sets.actionButtonRightTip "Right-click with any modifier will always show context menu">
 <!ENTITY hc.sets.actionToggleStatus "Toggle status">
 <!ENTITY hc.sets.actionOpenSettings "Open settings">
 <!ENTITY hc.sets.actionOpenCloseSettings "Open/close settings">

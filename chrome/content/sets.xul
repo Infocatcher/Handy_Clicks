@@ -464,7 +464,7 @@ preferences {
 			<radiogroup id="hc-sets-action-button" onselect="handyClicksSets.loadUIAction();">
 				<radio value="Left" label="&hc.sets.actionButtonLeft;" selected="true" />
 				<radio value="Middle" label="&hc.sets.actionButtonMiddle;" tooltiptext="&hc.sets.actionButtonMiddleTip;" />
-				<radio value="Right" label="&hc.sets.actionButtonRight;" />
+				<radio value="Right" label="&hc.sets.actionButtonRight;" tooltiptext="&hc.sets.actionButtonRightTip;" />
 			</radiogroup>
 			<spacer class="hcHSpacerSmall" />
 			<vbox>
