@@ -71,7 +71,7 @@ var handyClicksIO = {
 				}.bind(this),
 				onFailure
 			).then(null, Components.utils.reportError);
-			return true
+			return true;
 		}
 
 		try {

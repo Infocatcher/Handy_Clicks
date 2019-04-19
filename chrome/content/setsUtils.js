@@ -554,7 +554,7 @@ var handyClicksSetsUtils = {
 					it.getAttribute("disabled") != "true"
 					&& this.ut.isElementVisible(it)
 				)
-					break
+					break;
 			}
 			if(si == node.selectedIndex)
 				return false;
