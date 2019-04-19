@@ -1994,10 +1994,8 @@ var handyClicksEditor = {
 		cType = this.ps.customPrefix + cType;
 
 		var cts = this.ps.types;
-		var ct = cts[cType] || {};
-		var curEnabl = ct.enabled || false;
-		var newEnabl = this.$("hc-editor-customTypeEnabled").checked;
-		cts[cType] = this.getTypeObj(label, def, newEnabl);
+		var enabled = this.$("hc-editor-customTypeEnabled").checked;
+		cts[cType] = this.getTypeObj(label, def, enabled);
 
 		var loadCorrectedSettings = !dontUpdate && this.ju.bind(function(status) {
 			if(status !== undefined && !Components.isSuccessCode(status))
