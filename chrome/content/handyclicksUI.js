@@ -290,12 +290,11 @@ var handyClicksUI = {
 			var rightClickAction = this.pu.get("ui.action" + type + "RightClick");
 			var cmId = "handyClicks-settingsPopup";
 			var popup = leftClickAction == this.ACTION_POPUP ? cmId : null;
-			var origContext = rightClickAction == this.ACTION_POPUP;
-			var context = origContext ? cmId : "_handyClicks-noContext"; // Dummy value
 			this.attribute(elt, "popup", popup);
-			elt.setAttribute("context", context);
-			if(!origContext && !elt.hasAttribute("onmousedown"))
-				elt.setAttribute("onmousedown", "handyClicksUI.forceShowContextMenu(event);");
+			elt.setAttribute("context", cmId);
+			elt.setAttribute("hc_preventContextMenu", rightClickAction != this.ACTION_POPUP);
+			if(!elt.hasAttribute("oncontextmenu"))
+				elt.setAttribute("oncontextmenu", "return handyClicksUI.allowContextMenu(event);");
 			//~ note: "popup" doesn't work for menuitems
 			if(elt.localName == "menuitem")
 				elt.setAttribute("closemenu", popup ? "none" : "auto");
@@ -314,22 +313,11 @@ var handyClicksUI = {
 			}
 		});
 	},
-	forceShowContextMenu: function(e) {
+	allowContextMenu: function(e) {
 		var elt = e.target;
-		if(elt != e.currentTarget || e.button != 2 || !this.hasModifier(e))
-			return;
-		var cmId = "handyClicks-settingsPopup";
-		var cmIdOrig = elt.getAttribute("context");
-		if(cmIdOrig == cmId)
-			return;
-		elt.setAttribute("context", cmId);
-		window.addEventListener("mouseup", function restoreContext(e) {
-			window.removeEventListener(e.type, restoreContext, true);
-			setTimeout(function() {
-				if(elt.getAttribute("context") == cmId)
-					elt.setAttribute("context", cmIdOrig);
-			}, 0);
-		}, true);
+		return elt != e.currentTarget
+			|| elt.getAttribute("hc_preventContextMenu") != "true"
+			|| this.hasModifier(e);
 	},
 	getTypeByLocalName: function(ln) {
 		switch(ln) {
