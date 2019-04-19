@@ -3259,10 +3259,8 @@ var handyClicksSets = {
 			return;
 		this._prevApp = app;
 		var args;
-		if(app == "AkelPad") {
-			args = "/Call('Scripts::Main', 1, 'EvalCmd.js', `AkelPad.SendMessage("
-				+ "AkelPad.GetMainWnd(), 1204 /*AKD_GOTO*/, 0x1 /*GT_LINE*/, '%L:%C');`)";
-		}
+		if(app == "AkelPad") // AkelPad 4.9.1 (15.12.2014)+
+			args = "/If(`SendMain(1204 /*AKD_GOTO*/, 0x1 /*GT_LINE*/, '%L:%C')`, ``, ``)";
 		else if(app == "Notepad++")
 			args = "-n%L";
 		else if(app.substr(0, 12) == "Sublime Text")
