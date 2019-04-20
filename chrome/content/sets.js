@@ -3265,6 +3265,8 @@ var handyClicksSets = {
 			args = "-n%L";
 		else if(app.substr(0, 12) == "Sublime Text")
 			args = "%F:%L:%C";
+		else if(app == "Visual Studio Code")
+			args = "--goto\n%F:%L:%C";
 		else
 			return;
 		var eeArgs = this.eeArgs;
