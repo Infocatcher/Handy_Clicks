@@ -169,7 +169,7 @@ var handyClicksIO = {
 		}
 		fis.close();
 		cis.close();
-		return lv;
+		return lv || "";
 	},
 	get textDecoder() {
 		delete this.textDecoder;
