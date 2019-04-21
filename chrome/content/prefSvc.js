@@ -892,7 +892,11 @@ var handyClicksPrefSvc = {
 		if(
 			cbFile
 			&& /\.(?:jsm?|json)$/i.test(cbFile.leafName)
-			&& cbFile.fileSize <= 16*1024*1024
+			&& (function() {
+				try { return cbFile.fileSize <= 16*1024*1024; }
+				catch(e) {} // NS_ERROR_FILE_ACCESS_DENIED?
+				return false;
+			})()
 			&& this.ju.startsWith(this.io.readLineFromFile(cbFile), this.requiredHeader)
 			&& (validPrefs = this.checkPrefs(cbFile, true))
 		)
