@@ -3799,8 +3799,10 @@ var handyClicksSets = {
 		if(!validPrefs) {
 			this.ut.alert(
 				this.getLocalized("importErrorTitle"),
-				this.getLocalized("invalidConfigFormat")
-					+ (this.ps._hashError ? this.getLocalized("invalidHash") : "")
+				this.ps._ioError
+					? this.getLocalized("readError").replace("%err", this.ps._ioError)
+					: this.getLocalized("invalidConfigFormat")
+						+ (this.ps._hashError ? this.getLocalized("invalidHash") : "")
 			);
 			return;
 		}

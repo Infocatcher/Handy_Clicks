@@ -804,12 +804,16 @@ var handyClicksPrefSvc = {
 		return button + (modifiers ? this.spacedSep + modifiers : "");
 	},
 	checkPrefs: function(pSrc, silent) {
-		return this.checkPrefsStr(
-			pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)
-				? this.io.readFromFile(pSrc)
-				: this.getPrefsStr(pSrc),
-			silent
-		);
+		this._ioError = null;
+		if(pSrc instanceof Components.interfaces.nsIFile) {
+			var err = { value: null };
+			pSrc = this.io.readFromFile(pSrc, err);
+			if(err.value) {
+				this._ioError = err.value;
+				return null;
+			}
+		}
+		return this.checkPrefsStr(pSrc, silent);
 	},
 	getPrefsStr: function(str) {
 		const add = this.ct.PROTOCOL_SETTINGS_ADD;
@@ -832,6 +836,7 @@ var handyClicksPrefSvc = {
 	hashRe: /(?:\r\n|\n|\r)\/\/[ \t]?(MD[25]|SHA(?:1|256|384|512)):[ \t]?([a-f0-9]+)(?=[\n\r]|$)/,
 	checkPrefsStr: function _cps(str, silent) {
 		var checkCustom = _cps.checkCustomCode || false;
+		this._ioError = null;
 		this._hashError = false;
 		this._hashMissing = true;
 		this._hasCustomCode = checkCustom ? false : undefined;
