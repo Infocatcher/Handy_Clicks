@@ -894,18 +894,25 @@ var handyClicksPrefSvc = {
 			cb.kGlobalClipboard,
 			Components.interfaces.nsILocalFile || Components.interfaces.nsIFile
 		);
-		if(
-			cbFile
-			&& /\.(?:jsm?|json)$/i.test(cbFile.leafName)
-			&& (function() {
-				try { return cbFile.fileSize <= 16*1024*1024; }
-				catch(e) {} // NS_ERROR_FILE_ACCESS_DENIED?
-				return false;
-			})()
-			&& this.ju.startsWith(this.io.readLineFromFile(cbFile), this.requiredHeader)
-			&& (validPrefs = this.checkPrefs(cbFile, true))
-		)
-			return validPrefs;
+		if(cbFile && /\.(?:jsm?|json)$/i.test(cbFile.leafName)) {
+			var err = { value: null };
+			try {
+				if(
+					cbFile.fileSize <= 16*1024*1024
+					&& this.ju.startsWith(this.io.readLineFromFile(cbFile, err), this.requiredHeader)
+					&& (validPrefs = this.checkPrefs(cbFile, true))
+				)
+					return validPrefs;
+			}
+			catch(e) {
+				err.value = e;
+				this._log("clipboardPrefs: read error:\n" + cbFile.path + "\n" + e);
+				if(("" + e).indexOf("NS_ERROR_FILE_ACCESS_DENIED") == -1)
+					Components.utils.reportError(e);
+			}
+			this._ioError = err.value;
+			return null;
+		}
 		if(!cb.supportsSelectionClipboard())
 			return null;
 		cbStr = this.getPrefsStr(this.ut.readFromClipboard(true, cb.kSelectionClipboard));

@@ -140,13 +140,16 @@ var handyClicksIO = {
 		fis.close();
 		return this.convertToUnicode(str);
 	},
-	readLineFromFile: function(file, callback, context) {
+	readLineFromFile: function(file, outErr, callback, context) {
 		var fis = Components.classes["@mozilla.org/network/file-input-stream;1"]
 			.createInstance(Components.interfaces.nsIFileInputStream);
 		try {
 			fis.init(file, 0x01, this.PERMS_FILE_READ, 0);
 		}
 		catch(e) {
+			if(outErr)
+				outErr.value = e;
+			this._log("Can't read line(s) from file " + this.ut._fileInfo(file));
 			Components.utils.reportError(e);
 			fis.close();
 			return "";
