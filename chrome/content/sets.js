@@ -3606,8 +3606,16 @@ var handyClicksSets = {
 			return;
 		if(!file && !(file = this.pickFile(this.getLocalized("importPrefs"), false, "ini")))
 			return;
-		var lines = this.io.readFromFile(file)
+		var err = { value: null };
+		var lines = this.io.readFromFile(file, err)
 			.split(/[\r\n]+/);
+		if(err.value) {
+			this.ut.alert(
+				this.getLocalized("importErrorTitle"),
+				this.getLocalized("readError").replace("%err", err.value)
+			);
+			return;
+		}
 		if(lines[0] != this.exportPrefsHeader) {
 			this.ut.alert(
 				this.getLocalized("importErrorTitle"),
