@@ -1396,9 +1396,10 @@ var handyClicksSets = {
 		var winIds = { __proto__: null };
 		if(otherSrc === undefined)
 			otherSrc = this.ps.otherSrc;
-		var selectedItems = mode == this.ct.EDITOR_MODE_SHORTCUT
-			? this.selectedItems
-			: this.selectedItemsWithCustomTypes;
+		var selectedItems = this.getSelectedItems({
+			onlyCustomTypes: mode == this.ct.EDITOR_MODE_TYPE,
+			withRemoved: true
+		});
 		selectedItems.forEach(function(it) {
 			var winId = mode == this.ct.EDITOR_MODE_SHORTCUT
 				? this.wu.getWinId(otherSrc, this.ct.EDITOR_MODE_SHORTCUT, it.__shortcut, it.__itemType, it.__isDelayed)
