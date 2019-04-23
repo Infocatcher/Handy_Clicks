@@ -3264,7 +3264,10 @@ var handyClicksSets = {
 			args = "/If(`SendMain(1204 /*AKD_GOTO*/, 0x1 /*GT_LINE*/, '%L:%C')`, ``, ``)";
 		else if(app == "Notepad++")
 			args = "-n%L";
-		else if(app.substr(0, 12) == "Sublime Text")
+		else if(
+			app.substr(0, 12) == "Sublime Text"
+			|| app == "CudaText"
+		)
 			args = "%F:%L:%C";
 		else if(app == "Visual Studio Code")
 			args = "--goto\n%F:%L:%C";
