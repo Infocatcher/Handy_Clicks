@@ -1329,6 +1329,11 @@ var handyClicksEditor = {
 		var box = mp.parentNode;
 		if(e && document.popupNode) // Ignore, if called from openShortcutsMenu()
 			mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
+		if(!curType) {
+			var nodes = [this.$("hc-editor-itemTypes")];
+			this.highlightRequiredFields(nodes, true);
+			this.highlightRequiredFields(nodes, false);
+		}
 	},
 	updateShortcutContext: function() {
 		if(this.isPopupOpened(this.$("hc-editor-shortcutContext")))
