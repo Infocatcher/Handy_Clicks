@@ -2079,8 +2079,17 @@ var handyClicksEditor = {
 
 	highlightRequiredFields: function _hl(fields, addFlag, noDelay) {
 		if(!addFlag && !noDelay) {
-			this.delay(_hl, this, 2500, [fields, false, true]);
+			var timer = this.delay(_hl, this, 2500, [fields, false, true]);
+			fields.forEach(function(field) {
+				field.__timer = timer;
+			});
 			return;
+		}
+		function cancelTimer(node) {
+			if(node.__timer || 0) {
+				addFlag && clearTimeout(node.__timer);
+				node.__timer = 0;
+			}
 		}
 		fields.forEach(function(field) {
 			if(
@@ -2088,9 +2097,12 @@ var handyClicksEditor = {
 				&& (field.localName != "menulist" || this.checkMenulist(field))
 			)
 				return;
+			cancelTimer(field);
 			this.attribute(field, "hc_requiredField", addFlag);
-			for(var tab = this.getTabForNode(field); tab; tab = this.getTabForNode(tab, true))
+			for(var tab = this.getTabForNode(field); tab; tab = this.getTabForNode(tab, true)) {
+				cancelTimer(tab);
 				this.attribute(tab, "hc_requiredFieldParentTab", addFlag && tab.getAttribute("selected") != "true");
+			}
 		}, this);
 	},
 	checkMenulist: function(ml) {
