@@ -737,7 +737,7 @@ var handyClicksUtils = {
 				return o && XPCNativeWrapper.unwrap(o);
 			}
 			: function(o) {
-				return o && o.wrappedJSObject || o
+				return o && o.wrappedJSObject || o;
 			};
 		return f.apply(this, arguments);
 	},

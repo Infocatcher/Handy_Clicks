@@ -411,7 +411,7 @@ var handyClicksSetsUtils = {
 				&& si.localName == "menuitem"
 				&& this.ut.isElementVisible(si)
 			)
-				break
+				break;
 		}
 		if(si == ml.selectedItem)
 			return false;

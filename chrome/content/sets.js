@@ -1815,7 +1815,7 @@ var handyClicksSets = {
 		var tItem = this.getItemAtIndex(rowIndx);
 		if(!tItem || tItem.__isRemoved)
 			return null;
-		return tItem
+		return tItem;
 	},
 	toggleEnabled: function(e, forceEnable) {
 		if(e) { // Check for click on checkbox cell
@@ -4533,7 +4533,7 @@ var handyClicksSets = {
 		var path = dir.path;
 		var curDrv = this.ut.getFileRoot(this.ps.profileDir);
 		if(curDrv.contains(dir, false /* aRecurse, for Firefox 31 and older */))
-			path = "%hc_ProfDrv%" + path.substr(curDrv.path.length)
+			path = "%hc_ProfDrv%" + path.substr(curDrv.path.length);
 		this.pu.set("sets.backupsDir", path);
 	},
 	getFormattedDate: function(date) {

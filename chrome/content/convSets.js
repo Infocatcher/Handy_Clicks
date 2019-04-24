@@ -46,7 +46,7 @@ function setsMigration(allowSave, vers) {
 			}
 			for(aName in a)
 				obj[aName] = a[aName];
-		}
+		};
 		var changeTypeObj = this.ju.bind(function(to) {
 			if(this.ju.getOwnProperty(to, "custom"))
 				return;
