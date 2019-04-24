@@ -548,7 +548,12 @@ var handyClicksEditor = {
 			break;
 			case this.INDEX_TYPE:
 				var type = this.currentCustomType;
-				winId = "#custom_types-" + (type == this.ps.customPrefix ? this.ct.EDITOR_NO_TYPE : type);
+				if(type == this.ps.customPrefix) {
+					type = this.ps.isCustomType(this.type)
+						? this.type
+						: this.ct.EDITOR_NO_TYPE;
+				}
+				winId = "#custom_types-" + type;
 		}
 		winId += this.ps.otherSrc ? this.ct.OTHER_SRC_POSTFIX : "";
 		var winIdProp = this.wu.winIdProp;
