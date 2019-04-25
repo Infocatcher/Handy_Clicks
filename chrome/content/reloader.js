@@ -116,7 +116,7 @@ var handyClicksReloader = {
 			this.flushCaches();
 		document.loadOverlay("data:application/vnd.mozilla.xul+xml," + encodeURIComponent(
 			'<?xml version="1.0"?>\n'
-			+ sheetsHrefs.map(function(href, indx) {
+			+ sheetsHrefs.map(function(href) {
 				return '<?xml-stylesheet href="' + href.replace(/\?\d+$/, "") + rnd + '" type="text/css"?>';
 			}).join("\n")
 			+ '<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />'

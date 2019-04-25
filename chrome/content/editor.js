@@ -1082,7 +1082,7 @@ var handyClicksEditor = {
 				}));
 				// List of values:
 				var mp = document.createElement("menupopup");
-				this.types.menulists[argName].forEach(function(val, indx) {
+				this.types.menulists[argName].forEach(function(val) {
 					var label = this.getLocalized(argName + "[" + val + "]");
 					var cfg = this.getAboutConfigEntry(label);
 					var mi = this.ut.createElement("menuitem", {

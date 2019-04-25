@@ -93,7 +93,6 @@ function setsMigration(allowSave, vers) {
 				to.action = act.replace(/^(_?)open(?:Uri)?In/, "$1openURIIn");
 		}, this);
 		var prefs = this.prefs;
-		var act, dAct;
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			if(!this.isOkShortcut(sh))
 				continue;

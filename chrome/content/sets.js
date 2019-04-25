@@ -2870,8 +2870,6 @@ var handyClicksSets = {
 		this.$("hc-sets-action-resetAll").setAttribute("disabled", !hasChanged);
 	},
 	changeUIAction: function() {
-		var type = this.$("hc-sets-action-type").selectedIndex;
-		var button = this.$("hc-sets-action-button").selectedIndex;
 		var tb = this.currentActionTextbox;
 		if(tb) {
 			tb.value = this.$("hc-sets-action-value").value;
@@ -3013,7 +3011,7 @@ var handyClicksSets = {
 	initResetWarnMsgsMenu: function() {
 		var mp = this.$("hc-sets-warnMsgs-popup");
 		var df = document.createDocumentFragment();
-		this.warnMsgsPrefs.forEach(function(pName, i) {
+		this.warnMsgsPrefs.forEach(function(pName) {
 			var text;
 			switch(pName) {
 				case "editor.confirmRename":
@@ -4711,7 +4709,7 @@ var handyClicksSetsSearcher = {
 		var fvr = this.tbo.getFirstVisibleRow();
 		var lvr = this.tbo.getLastVisibleRow();
 		var hasVisible, nearestIndx, offset = Infinity;
-		this._res.forEach(function(tItem, n) {
+		this._res.forEach(function(tItem) {
 			this.ensureTreeitemVisible(tItem);
 			var i = this.tView.getIndexOfItem(tItem);
 			this.tSel.rangedSelect(i, i, true);
