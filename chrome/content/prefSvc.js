@@ -507,7 +507,7 @@ var handyClicksPrefSvc = {
 
 		var forcedDisByType = { __proto__: null };
 
-		for(type in types) if(types.hasOwnProperty(type)) {
+		for(var type in types) if(types.hasOwnProperty(type)) {
 			var to = types[type];
 			if(!this.isCustomType(type) || !this.isOkCustomObj(to)) {
 				delete types[type];
