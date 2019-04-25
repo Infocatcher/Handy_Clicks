@@ -364,7 +364,7 @@ var handyClicksUtils = {
 	},
 	getLocalizedEntity: function(eName, dtds, contentType) {
 		return this._entities[eName] || (
-			this._entities[eName] = this.getEntity(eName, dtds) || this.makeBuggyStr(eName)
+			this._entities[eName] = this.getEntity(eName, dtds, contentType) || this.makeBuggyStr(eName)
 		);
 	},
 	makeBuggyStr: function(s) {
