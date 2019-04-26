@@ -50,6 +50,16 @@ var handyClicksPrefSvcExt = {
 		else
 			this.checkForBackup();
 	},
+	loadError: function() {
+		this.loadError = function() {}; // Notify only once
+		this.delay(function() { // Avoid "Cannot call openModalWindow on a hidden window" error
+			this.ut.alert(
+				this.getLocalized("errorTitle"),
+				this.getLocalized("loadError")
+					.replace("%f", this.ps.prefsFile.path)
+			);
+		}, this);
+	},
 	saveError: function(status) {
 		this.ut.alert(
 			this.getLocalized("errorTitle"),

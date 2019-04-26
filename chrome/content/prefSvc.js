@@ -175,6 +175,7 @@ var handyClicksPrefSvc = {
 			}
 			else { // NS_ERROR_FAILURE?
 				this._loadStatus = this.SETS_LOAD_READ_ERROR;
+				this.pe.loadError();
 			}
 			callback && callback.call(context, status);
 		}, this);
@@ -193,6 +194,7 @@ var handyClicksPrefSvc = {
 				pSrc = this.io.readFromFile(pSrc, err);
 				if(err.value) {
 					this._loadStatus = this.SETS_LOAD_READ_ERROR;
+					this.pe.loadError();
 					return;
 				}
 			}
