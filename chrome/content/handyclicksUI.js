@@ -730,15 +730,10 @@ var handyClicksUI = {
 	},
 
 	// Multiline tooltip:
-	get tt() {
-		delete this.tt;
-		return this.tt = this.$("handyClicks-tooltip");
-	},
 	tooltipAttrBase: "handyclicks_tooltip-",
 	tooltipAttrStyle: "handyclicks_tooltipStyle-",
 	tooltipAttrClass: "handyclicks_tooltipClass-",
-	fillInTooltip: function(tooltip) {
-		var tt = this.tt;
+	fillInTooltip: function(tt) {
 		tt.textContent = "";
 		var tNode = document.tooltipNode;
 		var attrBase = this.tooltipAttrBase;
