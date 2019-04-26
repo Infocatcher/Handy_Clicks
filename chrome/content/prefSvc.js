@@ -156,12 +156,14 @@ var handyClicksPrefSvc = {
 	SETS_LOAD_OK:           0,
 	SETS_LOAD_DECODE_ERROR: 1,
 	SETS_LOAD_INVALID_DATA: 2,
+	SETS_LOAD_READ_ERROR:   3,
 	_loadStatus: -1, // SETS_LOAD_UNKNOWN
 	get loaded() {
 		return this._loadStatus == this.SETS_LOAD_OK;
 	},
 	_restoredFromBackup: false,
 	loadSettingsAsync: function(callback, context) {
+		this._loadStatus = this.SETS_LOAD_UNKNOWN;
 		var pFile = this.prefsFile;
 		this.io.readFromFileAsync(pFile, function(data, status) {
 			if(Components.isSuccessCode(status))
@@ -170,6 +172,9 @@ var handyClicksPrefSvc = {
 				this._log("loadSettingsAsync() -> save default settings");
 				this.loadSettings(this.defaultSettings(), true);
 				status = Components.results.NS_OK;
+			}
+			else { // NS_ERROR_FAILURE?
+				this._loadStatus = this.SETS_LOAD_READ_ERROR;
 			}
 			callback && callback.call(context, status);
 		}, this);
@@ -181,9 +186,16 @@ var handyClicksPrefSvc = {
 		pSrc = pSrc || this.prefsFile;
 		if(pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)) {
 			fromPrefs = pSrc.equals(this.prefsFile);
-			pSrc = fromPrefs && !pSrc.exists()
-				? this.defaultSettings()
-				: this.io.readFromFile(pSrc);
+			if(fromPrefs && !pSrc.exists())
+				pSrc = this.defaultSettings();
+			else {
+				var err = { value: null };
+				pSrc = this.io.readFromFile(pSrc, err);
+				if(err.value) {
+					this._loadStatus = this.SETS_LOAD_READ_ERROR;
+					return;
+				}
+			}
 			if(fromPrefs && !this.isMainWnd) {
 				this._savedStr = pSrc // Ignore version difference, if there is no actual changes
 					.replace(/"version": \d+(?:\.\d+)?,/, '"version": ' + this.setsVersion + ',');
