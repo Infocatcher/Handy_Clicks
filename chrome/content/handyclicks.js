@@ -136,7 +136,6 @@ var handyClicks = {
 		var unchanged = true;
 		for(var path in alf) {
 			var fd = alf[path];
-			var file = fd.file;
 			var file = this.ut.getLocalFileFromPath(fd.path);
 			if(!file.exists()) {
 				this._log("focusHandler() -> file was removed " + path);
