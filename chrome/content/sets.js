@@ -479,7 +479,7 @@ var handyClicksSets = {
 	},
 	drawTypes: function(types, df, isRemoved) {
 		this._drawRemoved = isRemoved;
-		if(!this.drawInline) {
+		if(!this.drawInline && !this.ju.isEmptyObj(types)) {
 			var hash = "#custom_types";
 			df = this.eltsCache[hash]
 				|| this.appendContainerItem(df, hash, this.getLocalized("customTypes"), this.typesSortPrefix);
