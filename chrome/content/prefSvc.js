@@ -182,6 +182,12 @@ var handyClicksPrefSvc = {
 	},
 	loadSettings: function(pSrc, fromPrefs) {
 		this._loadStatus = this.SETS_LOAD_UNKNOWN;
+		// Reset loaded data to correctly handle load errors
+		this.types = {};
+		this.prefs = {};
+		this.files = {};
+		this.otherSrc = false;
+
 		if(this.isMainWnd)
 			this._log(fromPrefs ? "loadSettingsAsync()" : "loadSettings()");
 		pSrc = pSrc || this.prefsFile;
