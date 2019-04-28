@@ -18,22 +18,10 @@ var handyClicksWinUtils = {
 		var w = this.wm.getMostRecentWindow(type);
 		_ow.alreadyOpened = !!w;
  		if(w) {
-			if(!closeOpened)
+			if(closeOpened)
+				this.askToCloseWindow(w);
+			else
 				w.focus();
-			else if("_handyClicksClosing" in w)
-				w.focus(), w.getAttention(); // Note: window won't be focused...
-			else {
-				w._handyClicksClosing = true; // Trick to not call, if was opened modal confirmation
-				w.setTimeout(function() {
-					delete w._handyClicksClosing;
-				}, 0);
-				var evt = w.document.createEvent("Events");
-				evt.initEvent("close", true, true);
-				var t = Date.now();
-				w.document.documentElement.dispatchEvent(evt);
-				if(Date.now() - t < 50)
-					w.close();
-			}
  			return w;
  		}
 		w = this.ww.openWindow(
@@ -43,6 +31,26 @@ var handyClicksWinUtils = {
 		if(args)
 			w.arguments = args;
 		return w;
+	},
+	askToCloseWindow: function(w) {
+		if("_handyClicksClosing" in w) {
+			w.focus(); // Note: window won't be focused...
+			w.getAttention();
+			return false;
+		}
+		w._handyClicksClosing = true; // Trick to not call, if was opened modal confirmation
+		w.setTimeout(function() {
+			delete w._handyClicksClosing;
+		}, 0);
+		var evt = w.document.createEvent("Events");
+		evt.initEvent("close", true, true);
+		var t = Date.now();
+		w.document.documentElement.dispatchEvent(evt);
+		if(Date.now() - t < 50) {
+			w.close();
+			return true;
+		}
+		return w.closed;
 	},
 	forEachWindow: function(winTypes, fn, context) {
 		var wm = this.wm;
