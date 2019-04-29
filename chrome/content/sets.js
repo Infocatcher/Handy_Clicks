@@ -220,7 +220,11 @@ var handyClicksSets = {
 	},
 	closeImportEditors: function() {
 		this.wu.forEachWindow("handyclicks:editor", function(w) {
-			if(!("_handyClicksInitialized" in w) || w.handyClicksPrefSvc.otherSrc)
+			if(
+				"_handyClicksInitialized" in w
+					? w.handyClicksPrefSvc.otherSrc
+					: "arguments" in w && w.arguments && w.arguments[0]
+			)
 				w.close();
 		});
 	},
