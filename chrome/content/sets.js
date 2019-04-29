@@ -4201,6 +4201,10 @@ var handyClicksSets = {
 		counter.hidden = !hasFD;
 		var added = 0, changed = 0, older = 0, newer = 0;
 		this.delay(function() {
+			if(!this._import) {
+				this._log("setImportFilesDataStatus() -> delay() -> not in import mode, ignore");
+				return;
+			}
 			var tt = this.$("hc-sets-tree-importFilesTip");
 			if(this.fxVersion >= 51) { // https://bugzilla.mozilla.org/show_bug.cgi?id=1318898
 				// Prevent disappearance of semi-transparent nodes
