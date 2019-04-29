@@ -109,7 +109,7 @@ var handyClicksSets = {
 		this.prefsButton = de.getButton("extra2");
 	},
 	destroy: function(reloadFlag) {
-		this.closeImportEditors();
+		this.closeImportEditors(true);
 		this.treeState(true);
 		this.treeScrollPos(true);
 		this.saveTreeSortOrder();
@@ -218,15 +218,21 @@ var handyClicksSets = {
 		var label = tb.nextSibling;
 		label.value = label.getAttribute(tb.value == 1 ? "hc_labelSingle" : "hc_labelMultiple");
 	},
-	closeImportEditors: function() {
+	closeImportEditors: function(force) {
+		var hasNotClosed;
 		this.wu.forEachWindow("handyclicks:editor", function(w) {
 			if(
 				"_handyClicksInitialized" in w
 					? w.handyClicksPrefSvc.otherSrc
 					: "arguments" in w && w.arguments && w.arguments[0]
-			)
-				w.close();
-		});
+			) {
+				if(force)
+					w.close();
+				else if(!this.wu.askToCloseWindow(w))
+					hasNotClosed = true;
+			}
+		}, this);
+		return !hasNotClosed;
 	},
 	treeState: function(saveFlag) {
 		var rememberState = this.pu.get("sets.rememberState");
@@ -4140,12 +4146,13 @@ var handyClicksSets = {
 	},
 
 	setImportStatus: function(isImport, isPartial, updMode) {
-		this._import        = isImport;
-		this._importPartial = isImport && isPartial;
 		if(!updMode) {
-			this.closeImportEditors();
+			if(!this.closeImportEditors())
+				return;
 			this.checkTreeSaved();
 		}
+		this._import        = isImport;
+		this._importPartial = isImport && isPartial;
 		var panel = this.$("hc-sets-tree-importPanel");
 		panel.hidden = !isImport;
 		if(!isImport) {
@@ -4279,6 +4286,8 @@ var handyClicksSets = {
 
 		var isPartial = this._importPartial;
 		this.setImportStatus(false);
+		if(this._import) // Not changed (canceled)
+			return;
 		if(ok) {
 			// Keep prefs file because content of new file may be equals!
 			this.pe.moveFiles(this.ps.prefsFile, this.ps.names.beforeImport, true);
