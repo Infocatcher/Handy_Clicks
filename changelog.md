@@ -210,6 +210,10 @@
 `x` Fixed `nsIProtocolHandler.newURI()` implementation for handyclicks://… protocol in Firefox 58+.<br>
 `*` Improved import performance: re-use data, that was already parsed on validation step.<br>
 `*` Controls behavior: force show context menu after right-click with any modifier.<br>
+`*` External editor: added default command line arguments for Visual Studio Code, CudaText and updated for AkelPad (Windows only).<br>
+`*` Settings: better handle I/O errors.<br>
+`*` Open/close settings: ask to save changes.<br>
+`*` Exit from import mode: ask to save in changed editors.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
