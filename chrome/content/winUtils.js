@@ -42,13 +42,18 @@ var handyClicksWinUtils = {
 		w.setTimeout(function() {
 			delete w._handyClicksClosing;
 		}, 0);
-		var evt = w.document.createEvent("Events");
-		evt.initEvent("close", true, true);
-		var t = Date.now();
-		w.document.documentElement.dispatchEvent(evt);
-		if(Date.now() - t < 50) {
-			w.close();
-			return true;
+		var de = w.document.documentElement;
+		if("cancelDialog" in de) // <dialog>, Firefox 3.0+
+			de.cancelDialog();
+		else {
+			var evt = w.document.createEvent("Events");
+			evt.initEvent("close", true, true);
+			var t = Date.now();
+			de.dispatchEvent(evt);
+			if(Date.now() - t < 50) {
+				w.close();
+				return true;
+			}
 		}
 		return w.closed;
 	},
