@@ -1417,9 +1417,7 @@ var handyClicksSets = {
 			winIds[winId] = true;
 		}, this);
 		var wins = this.wu.getEditorsById(winIds);
-		if(getCanClose)
-			return wins.length;
-		wins.forEach(function(win) {
+		if(!getCanClose) wins.forEach(function(win) {
 			win.document.documentElement.cancelDialog();
 		});
 		return wins.length;
