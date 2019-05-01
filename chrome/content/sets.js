@@ -3549,18 +3549,27 @@ var handyClicksSets = {
 		return true;
 	},
 
-	reloadSettings: function() {
-		var hasUnsaved = this.hasUnsaved || this.hasChangedImport;
+	RELOAD_TREE:  1,
+	RELOAD_PREFS: 2,
+	RELOAD_ALL:   3,
+	reloadSettings: function(flags) {
+		if(this.instantApply)
+			return;
+		if(!flags)
+			flags = this.RELOAD_ALL;
+		var hasUnsaved = flags & this.RELOAD_TREE && (this.treeUnsaved || this.hasChangedImport)
+			|| flags & this.RELOAD_PREFS && this.prefsUnsaved;
 		if(hasUnsaved && !this.su.confirmReload())
 			return;
-
-		this.reloadPrefpanes();
-		this.initPrefs();
-		this.updateAllDependencies();
-
-		this.reloadTree();
-		this.checkTreeSaved();
-
+		if(flags & this.RELOAD_TREE) {
+			this.reloadTree();
+			this.checkTreeSaved();
+		}
+		if(flags & this.RELOAD_PREFS) {
+			this.reloadPrefpanes();
+			this.initPrefs();
+			this.updateAllDependencies();
+		}
 		this.setDialogButtons();
 	},
 
