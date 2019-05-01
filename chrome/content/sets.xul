@@ -118,7 +118,7 @@ preferences {
 						oncommand="handyClicksSets.toggleTreeContainers(false);" />
 					<menuitem id="hc-sets-tree-collapseLevel" key="hc-sets-key-collapseTreeLevel" label="&hc.sets.collapseTreeLevel;"
 						oncommand="handyClicksSets.changeTreeExpandLevel(-1);" />
-					<menuitem id="hc-sets-tree-expandLevel"  key="hc-sets-key-expandTreeLevel" label="&hc.sets.expandTreeLevel;"
+					<menuitem id="hc-sets-tree-expandLevel" key="hc-sets-key-expandTreeLevel" label="&hc.sets.expandTreeLevel;"
 						oncommand="handyClicksSets.changeTreeExpandLevel(1);" />
 					<menuitem id="hc-sets-tree-expand" key="hc-sets-key-expandTree" label="&hc.sets.expandTree;"
 						oncommand="handyClicksSets.toggleTreeContainers(true);" />
@@ -871,8 +871,8 @@ preferences {
 				oncommand="handyClicksPrefUtils.openAboutConfig();" />
 			<menuseparator />
 			<menuitem oncommand="handyClicksSets.resetPrefs();" label="&hc.sets.defaults;" />
-			<menuseparator id="hc-sets-prefs-reloadSep" />
-			<menuitem id="hc-sets-prefs-reload"  key="hc-sets-key-reload" label="&hc.sets.reloadSettings;"
+			<menuseparator class="hc-reloadSettings" />
+			<menuitem id="hc-sets-prefs-reload" class="hc-reloadSettings" key="hc-sets-key-reload" label="&hc.sets.reloadSettings;"
 				oncommand="handyClicksSets.reloadSettings();" />
 			<menuseparator />
 			<menuitem id="hc-sets-prefs-miImport" class="menuitem-iconic hc-iconic" label="&hc.sets.importPrefs;"

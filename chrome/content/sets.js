@@ -172,7 +172,7 @@ var handyClicksSets = {
 			}
 		);
 		if(this.instantApply)
-			this.$("hc-sets-prefs-reload").hidden = this.$("hc-sets-prefs-reloadSep").hidden = true;
+			document.documentElement.setAttribute("hc_instantApply", "true");
 		if(this.ps.loaded && this.treeUnsaved)
 			this.setModifiedState(true);
 	},

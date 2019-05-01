@@ -453,6 +453,10 @@ treechildren::-moz-tree-checkbox(hc_checkbox, checked, hc_old) {
 	-moz-image-region: rect(48px 96px 64px 80px);
 }
 
+:root[hc_instantApply] .hc-reloadSettings {
+	display: none;
+}
+
 checkbox[id^="hc-sets-disallowMousemove-"],
 #hc-sets-action-button > radio {
 	list-style-image: url("icons16.png");
