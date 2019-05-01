@@ -872,8 +872,12 @@ preferences {
 			<menuseparator />
 			<menuitem oncommand="handyClicksSets.resetPrefs();" label="&hc.sets.defaults;" />
 			<menuseparator class="hc-reloadSettings" />
-			<menuitem id="hc-sets-prefs-reload" class="hc-reloadSettings" key="hc-sets-key-reload" label="&hc.sets.reloadSettings;"
+			<menuitem id="hc-sets-prefs-reload" class="hc-reloadSettings" key="hc-sets-key-reload" label="&hc.sets.reloadAllSettings;"
 				oncommand="handyClicksSets.reloadSettings();" />
+			<menuitem id="hc-sets-prefs-reloadTree" class="hc-reloadSettings" label="&hc.sets.reloadTree;"
+				oncommand="handyClicksSets.reloadSettings(handyClicksSets.RELOAD_TREE);" />
+			<menuitem id="hc-sets-prefs-reloadPrefs" class="hc-reloadSettings" label="&hc.sets.reloadPrefs;"
+				oncommand="handyClicksSets.reloadSettings(handyClicksSets.RELOAD_PREFS);" />
 			<menuseparator />
 			<menuitem id="hc-sets-prefs-miImport" class="menuitem-iconic hc-iconic" label="&hc.sets.importPrefs;"
 				oncommand="handyClicksSets.importPrefs();" />
