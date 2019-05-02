@@ -1944,8 +1944,10 @@ var handyClicksEditor = {
 		var delayed = isDelayed ? this.delayId : "";
 		var funcs = this.$("hc-editor-func" + delayed);
 		var si = funcs.selectedItem;
-		if(!si)
+		if(!si) {
+			this.markAs(this.$("hc-editor-funcTabbox"), "hc_copied", "false");
 			return null;
+		}
 		var o = {
 			supports: si.getAttribute("hc_supports"),
 			app:      si.getAttribute("hc_app"),

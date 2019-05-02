@@ -116,6 +116,7 @@ button[hc_attention] {
 	outline-offset: -1px;
 	background-color: ThreeDFace;
 }
+tabbox[hc_copied="false"],
 tabbox[hc_pasted="false"] {
 	outline: 1px solid #d00;
 	outline-offset: -1px;
