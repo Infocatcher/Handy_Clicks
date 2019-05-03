@@ -1963,17 +1963,22 @@ var handyClicksEditor = {
 		stored = stored || this.storage.get("shortcut");
 		if(!stored)
 			return false;
+		var so = stored.so;
 		var type = this.currentType;
-		if(!type || this.notSupported(type, null, stored.supports, stored.app, stored.required)) {
+		if(isDelayed === undefined)
+			isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == this.INDEX_SHORTCUT_DELAYED;
+		var isDefaultDelayed = so === undefined;
+
+		if(
+			!type
+			|| isDefaultDelayed && !isDelayed
+			|| this.notSupported(type, null, stored.supports, stored.app, stored.required)
+		) {
 			this.markAs(this.$("hc-editor-funcTabbox"), "hc_pasted", "false");
 			return false;
 		}
 
-		if(isDelayed === undefined)
-			isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == this.INDEX_SHORTCUT_DELAYED;
 		var delayed = isDelayed ? this.delayId : "";
-		var so = stored.so;
-
 		this.initFuncEditor(so, delayed, true);
 		if(!isDelayed)
 			this.$("hc-editor-events").value = so.eventType || "click";
