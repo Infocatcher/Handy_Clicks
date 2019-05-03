@@ -1975,6 +1975,11 @@ var handyClicksEditor = {
 			|| this.notSupported(type, null, stored.supports, stored.app, stored.required)
 		) {
 			this.markAs(this.$("hc-editor-funcTabbox"), "hc_pasted", "false");
+			if(!type && !(isDefaultDelayed && !isDelayed)) {
+				var nodes = [this.$("hc-editor-itemTypes")];
+				this.highlightRequiredFields(nodes, true);
+				this.highlightRequiredFields(nodes, false);
+			}
 			return false;
 		}
 
