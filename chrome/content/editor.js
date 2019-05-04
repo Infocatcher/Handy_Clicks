@@ -1334,11 +1334,8 @@ var handyClicksEditor = {
 		var box = mp.parentNode;
 		if(e && document.popupNode) // Ignore, if called from openShortcutsMenu()
 			mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
-		if(!curType) {
-			var nodes = [this.$("hc-editor-itemTypes")];
-			this.highlightRequiredFields(nodes, true);
-			this.highlightRequiredFields(nodes, false);
-		}
+		if(!curType)
+			this.typeRequired();
 	},
 	updateShortcutContext: function() {
 		if(this.isPopupOpened(this.$("hc-editor-shortcutContext")))
@@ -1975,11 +1972,8 @@ var handyClicksEditor = {
 			|| this.notSupported(type, null, stored.supports, stored.app, stored.required)
 		) {
 			this.markAs(this.$("hc-editor-funcTabbox"), "hc_pasted", "false");
-			if(!type && !(isDefaultDelayed && !isDelayed)) {
-				var nodes = [this.$("hc-editor-itemTypes")];
-				this.highlightRequiredFields(nodes, true);
-				this.highlightRequiredFields(nodes, false);
-			}
+			if(!type && !(isDefaultDelayed && !isDelayed))
+				this.typeRequired();
 			return false;
 		}
 
@@ -2121,6 +2115,11 @@ var handyClicksEditor = {
 				this.attribute(tab, "hc_requiredFieldParentTab", addFlag && tab.getAttribute("selected") != "true");
 			}
 		}, this);
+	},
+	typeRequired: function() {
+		var nodes = [this.$("hc-editor-itemTypes")];
+		this.highlightRequiredFields(nodes, true);
+		this.highlightRequiredFields(nodes, false);
 	},
 	checkMenulist: function(ml) {
 		//~ note: disabled state isn't checked
