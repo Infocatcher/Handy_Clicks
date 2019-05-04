@@ -1964,15 +1964,15 @@ var handyClicksEditor = {
 		var type = this.currentType;
 		if(isDelayed === undefined)
 			isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == this.INDEX_SHORTCUT_DELAYED;
-		var isDefaultDelayed = so === undefined;
+		var cantPasteDefault = so === undefined && !isDelayed;
 
 		if(
 			!type
-			|| isDefaultDelayed && !isDelayed
+			|| cantPasteDefault
 			|| this.notSupported(type, null, stored.supports, stored.app, stored.required)
 		) {
 			this.markAs(this.$("hc-editor-funcTabbox"), "hc_pasted", "false");
-			if(!type && !(isDefaultDelayed && !isDelayed))
+			if(!cantPasteDefault)
 				this.typeRequired();
 			return false;
 		}
@@ -2088,7 +2088,7 @@ var handyClicksEditor = {
 		this.setDialogButtons();
 	},
 
-	highlightRequiredFields: function _hl(fields, addFlag, noDelay) {
+	highlightRequiredFields: function _hl(fields, addFlag, noDelay, force) {
 		if(!addFlag && !noDelay) {
 			var timer = this.delay(_hl, this, 2500, [fields, false, true]);
 			fields.forEach(function(field) {
@@ -2104,7 +2104,7 @@ var handyClicksEditor = {
 		}
 		fields.forEach(function(field) {
 			if(
-				addFlag && field.value
+				addFlag && !force && field.value
 				&& (field.localName != "menulist" || this.checkMenulist(field))
 			)
 				return;
@@ -2118,7 +2118,7 @@ var handyClicksEditor = {
 	},
 	typeRequired: function() {
 		var nodes = [this.$("hc-editor-itemTypes")];
-		this.highlightRequiredFields(nodes, true);
+		this.highlightRequiredFields(nodes, true, false, true);
 		this.highlightRequiredFields(nodes, false);
 	},
 	checkMenulist: function(ml) {
