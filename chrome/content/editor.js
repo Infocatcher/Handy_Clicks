@@ -2047,14 +2047,12 @@ var handyClicksEditor = {
 		return this.getTypeObj();
 	},
 	getTypeObj: function(label, def, enabled) {
-		var ct = {
+		return {
 			enabled: enabled !== undefined ? enabled : this.$("hc-editor-customTypeEnabled").checked,
-			label:  label !== undefined ? label : this.$("hc-editor-customType")      .value,
-			define: def   !== undefined ? def   : this.$("hc-editor-customTypeDefine").value
+			label:   label   !== undefined ? label   : this.$("hc-editor-customType")       .value,
+			define:  def     !== undefined ? def     : this.$("hc-editor-customTypeDefine") .value,
+			contextMenu: this.$("hc-editor-customTypeContext").value || null
 		};
-		var cMenu = this.$("hc-editor-customTypeContext").value;
-		ct.contextMenu = cMenu || null;
-		return ct;
 	},
 	deleteCustomType: function() {
 		var cts = this.ps.types;
