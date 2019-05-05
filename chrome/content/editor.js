@@ -2038,13 +2038,10 @@ var handyClicksEditor = {
 		return this.saveCustomType(true, true);
 	},
 	get currentTypeObj() {
-		if(
-			!this.$("hc-editor-customType").value
-			|| !this.$("hc-editor-customTypeExtId").value
-			|| !this.$("hc-editor-customTypeDefine").value
-		)
-			return null;
-		return this.getTypeObj();
+		return this.$("hc-editor-customType").value
+			&& this.$("hc-editor-customTypeExtId").value
+			&& this.$("hc-editor-customTypeDefine").value
+			&& this.getTypeObj() || null;
 	},
 	getTypeObj: function(label, def, enabled) {
 		return {
