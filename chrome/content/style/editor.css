@@ -108,6 +108,10 @@ menulist[hc_sets="disabled"] .menulist-label {
 	text-decoration: line-through;
 }
 
+checkbox[hc_notSupported] {
+	opacity: 0.55;
+}
+
 hbox[hc_fixedFields="true"],
 tabbox[hc_copied="true"],
 tabbox[hc_pasted="true"],

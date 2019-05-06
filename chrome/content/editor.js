@@ -58,7 +58,7 @@ var handyClicksEditor = {
 				: document.createEvent("MouseEvents");
 			if(!("getModifierState" in mouseEvt)) { // Works only in Firefox 15+
 				var os = this.$("hc-editor-os");
-				os.style.opacity = 0.55;
+				os.setAttribute("hc_notSupported", "true");
 				os.setAttribute("tooltiptext", os.getAttribute("hc_note"));
 			}
 
