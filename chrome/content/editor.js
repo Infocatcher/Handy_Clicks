@@ -61,6 +61,11 @@ var handyClicksEditor = {
 				os.setAttribute("hc_notSupported", "true");
 				os.setAttribute("tooltiptext", os.getAttribute("hc_note"));
 			}
+			if(this.appInfo.OS != "Darwin") {
+				var meta = this.$("hc-editor-meta");
+				meta.setAttribute("hc_notSupported", "true");
+				meta.setAttribute("tooltiptext", meta.getAttribute("hc_note"));
+			}
 
 			if(this.fxVersion == 3) { // Trick to show line-through
 				var sheet = document.styleSheets[0];

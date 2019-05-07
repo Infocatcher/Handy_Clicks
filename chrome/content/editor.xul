@@ -143,7 +143,7 @@
 						<checkbox id="hc-editor-ctrl" hc_allowInRenameMode="true" label="Ctrl" />
 						<checkbox id="hc-editor-shift" hc_allowInRenameMode="true" label="Shift" />
 						<checkbox id="hc-editor-alt" hc_allowInRenameMode="true" label="Alt" />
-						<checkbox id="hc-editor-meta" hc_allowInRenameMode="true" label="Meta" />
+						<checkbox id="hc-editor-meta" hc_allowInRenameMode="true" label="Meta" hc_note="&hc.editor.metaKeyNote;" />
 						<checkbox id="hc-editor-os" hc_allowInRenameMode="true" label="Os" hc_note="&hc.editor.osKeyNote;" />
 					</hbox>
 					<!-- Dummy label for accesskey -->
