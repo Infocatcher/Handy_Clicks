@@ -267,17 +267,13 @@ var handyClicksEditor = {
 				.getElementsByTagName("tabpanel")[tabbox.selectedIndex];
 	},
 	getEditorFromPanel: function (panel) {
-		var cre = /(?:^|\s)hcEditor(?:\s|$)/;
-		var editor;
-		Array.prototype.some.call(
-			panel.getElementsByTagName("textbox"),
-			function(tb) {
-				if(cre.test(tb.className))
-					return editor = tb;
-				return false;
-			}
-		);
-		return editor;
+		var tbs = panel.getElementsByTagName("textbox");
+		for(var i = 0, l = tbs.length; i < l; ++i) {
+			var tb = tbs[i];
+			if(/(?:^|\s)hcEditor(?:\s|$)/.test(tb.className))
+				return tb;
+		}
+		return null;
 	},
 	getEditorFromTabbox: function(tabbox) {
 		return this.getEditorFromPanel(this.getSelectedPanel(tabbox));
