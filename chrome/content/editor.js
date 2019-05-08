@@ -263,7 +263,7 @@ var handyClicksEditor = {
 	},
 	getSelectedPanel: function(tabbox) {
 		return tabbox.selectedPanel
-			|| tabbox.getElementsByTagName("tabpanels")[0] //~ todo: test
+			|| tabbox.getElementsByTagName("tabpanels")[0]
 				.getElementsByTagName("tabpanel")[tabbox.selectedIndex];
 	},
 	getEditorFromPanel: function (panel) {
