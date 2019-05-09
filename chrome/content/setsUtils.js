@@ -218,9 +218,10 @@ var handyClicksSetsUtils = {
 		var lastState = window.windowState;
 		this._sizeModeChangeTimer = setInterval(function(_this) {
 			var state = window.windowState;
-			if(state != lastState)
-				_this.checkWindowStatus();
+			if(state == lastState)
+				return;
 			lastState = state;
+			_this.checkWindowStatus();
 		}, 350, this);
 	},
 	prefsChanged: function(pName, pVal) {
