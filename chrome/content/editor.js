@@ -477,12 +477,18 @@ var handyClicksEditor = {
 			case this.INDEX_TYPE:     this.applyDisabled = !typeModified;
 		}
 		this.deleteButton.disabled = !this.canDelete;
-		document.title = this.su.createTitle(document.title, shModified || typeModified, this.ps.otherSrc);
+		var title = document.title;
+		var newTitle = this.su.createTitle(title, shModified || typeModified, this.ps.otherSrc);
+		if(newTitle != title)
+			document.title = newTitle;
 		this.setModifiedTab(this.$("hc-editor-shortcutTab"), shModified);
 		this.setModifiedTab(this.$("hc-editor-itemTypeTab"), typeModified);
 	},
 	setModifiedTab: function(tab, isModified) {
-		tab.setAttribute("label", this.su.createTitle(tab.getAttribute("label"), isModified));
+		var label = tab.getAttribute("label");
+		var newLabel = this.su.createTitle(label, isModified);
+		if(newLabel != label)
+			tab.setAttribute("label", newLabel);
 	},
 	get canDelete() {
 		switch(this.editorTabIndex) {
