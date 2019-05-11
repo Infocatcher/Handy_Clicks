@@ -37,7 +37,7 @@ var handyClicks = {
 		this.cancelDelayedAction();
 		if(this.editMode)
 			this.editMode = false;
-		this.setMoveHandlers(false);
+		this.setMoveHandlers(null);
 		this.cleanup();
 	},
 	cleanup: function() {
@@ -358,7 +358,7 @@ var handyClicks = {
 			}
 			this.clickHandler(fakeEvent);
 		}
-		this.setMoveHandlers(false);
+		this.setMoveHandlers(null);
 		this.saveXY(e);
 
 		this.ui.restoreIcon();
@@ -450,22 +450,23 @@ var handyClicks = {
 		this.flags.stopContextMenu = false; //~ ?
 
 		this.cancelDelayedAction();
-		this.setMoveHandlers(false);
+		this.setMoveHandlers(null);
 
 		this.ui.restoreIcon();
 	},
-	setMoveHandlers: function(add) {
-		if(!add ^ this._hasMoveHandlers)
+	setMoveHandlers: function(e) {
+		var add = !!e;
+		if(add == this._hasMoveHandlers)
 			return;
-		this._hasMoveHandlers = !!add;
-		if(add) {
+		this._hasMoveHandlers = add;
+		if(e) {
 			var dist = this.disallowMousemoveDist = this.pu.get("disallowMousemoveDist");
 			this.disallowMousemove = dist >= 0
-				&& this.pu.get("disallowMousemoveButtons").indexOf(add.button) != -1;
+				&& this.pu.get("disallowMousemoveButtons").indexOf(e.button) != -1;
 			this.mousemoveParams = {
 				dist: 0,
-				screenX: add.screenX,
-				screenY: add.screenY,
+				screenX: e.screenX,
+				screenY: e.screenY,
 				__proto__: null
 			};
 		}
@@ -1326,7 +1327,7 @@ var handyClicks = {
 	},
 	executeFunction: function(funcObj, e, isDeleyed) {
 		this.cancelDelayedAction();
-		this.setMoveHandlers(false);
+		this.setMoveHandlers(null);
 
 		var type = this.itemType;
 		this.lastEvent = this.event;
