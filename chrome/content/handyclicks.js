@@ -389,6 +389,7 @@ var handyClicks = {
 			// See https://github.com/Infocatcher/Handy_Clicks/issues/31
 			//&& node.boxObject
 			//&& node.boxObject instanceof Components.interfaces.nsIMenuBoxObject;
+			&& "open" in node
 			&& Array.prototype.some.call(
 				node.getElementsByTagNameNS(this.ut.XULNS, "menupopup"),
 				function(mp) {
