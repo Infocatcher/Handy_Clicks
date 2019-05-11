@@ -46,9 +46,10 @@ var handyClicks = {
 	},
 	_forceCleanupTimer: 0,
 	forceCleanup: function() {
-		if(this._forceCleanupTimer)
+		if(this._forceCleanupTimer) {
 			clearTimeout(this._forceCleanupTimer);
-		this._forceCleanupTimer = 0;
+			this._forceCleanupTimer = 0;
+		}
 		this.handledItem = null;
 	},
 
