@@ -522,7 +522,10 @@ var handyClicks = {
 			fls[p] = false;
 	},
 	cancelDelayedAction: function() {
-		clearTimeout(this.daTimeout);
+		if(this.daTimeout) {
+			clearTimeout(this.daTimeout);
+			this.daTimeout = 0;
+		}
 	},
 
 	// Settings service:
@@ -1311,6 +1314,7 @@ var handyClicks = {
 		this.executeFunction(funcObj, e);
 	},
 	executeDelayedAction: function(da, e) {
+		this.daTimeout = 0;
 		if(this.flags.runned || this.flags.cancelled)
 			return;
 		this.flags.runned = true;
