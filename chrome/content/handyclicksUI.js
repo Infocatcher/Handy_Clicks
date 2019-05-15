@@ -434,20 +434,17 @@ var handyClicksUI = {
 	_emNotify: null,
 	notifyEditMode: function(underCursor) {
 		var nem = this.pu.get("notifyEditMode");
-		if(
-			nem == 1 && (this._temFromKey && !this.controlsVisible)
-			|| nem == 2
-		) {
-			this.closeEditModeNotify();
-			this._emNotify = this.ut.notify(this.getLocalized("editModeNote").replace("%key", this.escKey), {
-				inWindowCorner: !underCursor,
-				title: this.getLocalized("editModeTitle"),
-				onLeftClick: function() {
-					this.editMode = false;
-				},
-				context: this
-			});
-		}
+		if(!(nem == 1 && this._temFromKey && !this.controlsVisible || nem == 2))
+			return;
+		this.closeEditModeNotify();
+		this._emNotify = this.ut.notify(this.getLocalized("editModeNote").replace("%key", this.escKey), {
+			inWindowCorner: !underCursor,
+			title: this.getLocalized("editModeTitle"),
+			onLeftClick: function() {
+				this.editMode = false;
+			},
+			context: this
+		});
 	},
 	closeEditModeNotify: function() {
 		var emn = this._emNotify;
