@@ -1570,27 +1570,5 @@ var handyClicksFuncs = {
 	},
 	showContextMenu: function(e) {
 		this.hc.showPopupOnItem();
-	},
-
-	__noSuchMethod__: function(meth, args) {
-		// Support for old names of methods
-		const newMeth = meth
-			//= Added: 2010-01-27
-			.replace(/^(_?)open(?:Uri)?In/, "$1openURIIn") // openIn => openURIIn, openUriIn => openURIIn
-			.replace(/^get(\w*)Uri(Of[A-Z]\w*)?$/, "get$1URI$2") // getTabUri => getTabURI, getUriOfItem => getURIOfItem
-			.replace(/^get(\w+)OfItem$/, "getItem$1")
-			//= Added: 2010-05-10
-			.replace(/^showOpenUriWithAppsPopup$/, "showOpenURIWithAppsPopup");
-		const oName = "handyClicksFuncs";
-		if(!(newMeth in this)) {
-			var caller = Components.stack.caller;
-			throw new Error(
-				this.ut.errPrefix + 'Method "' + meth + '" does not exist in "' + oName + '" object',
-				caller.filename,
-				caller.lineNumber
-			);
-		}
-		this.ut._deprecated('Function "' + oName + "." + meth + '" is deprecated. Use "' + oName + "." + newMeth + '" instead.');
-		return this[newMeth].apply(this, args);
 	}
 };
