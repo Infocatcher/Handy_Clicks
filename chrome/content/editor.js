@@ -661,12 +661,11 @@ var handyClicksEditor = {
 		var updateUI = this.editorTabIndex == this.INDEX_TYPE;
 		if(
 			this.customType
-			&& !this.testMode
-			&& this._savedTypeObj
-			&& !this.ps.settingsEquals( //~ todo: add API for this?
-				this.ps.sortSettings(this.getTypeObj(this.customTypeLabel)),
-				this._savedTypeObj
-			)
+				? !this.testMode && this._savedTypeObj && !this.ps.settingsEquals(
+					this.ps.sortSettings(this.getTypeObj(this.customTypeLabel)),
+					this._savedTypeObj
+				)
+				: this.getCurrentTypeObj(this.customTypeLabel) // Switch from typed unsaved data
 		) {
 			var res = this._allowUndo ? this.su.PROMPT_DONT_SAVE : this.su.notifyUnsaved(
 				this.getLocalized("editorUnsavedSwitchWarning"),
@@ -2045,7 +2044,11 @@ var handyClicksEditor = {
 		return this.saveCustomType(true, true);
 	},
 	get currentTypeObj() {
-		var label = this.$("hc-editor-customType").value;
+		return this.getCurrentTypeObj();
+	},
+	getCurrentTypeObj: function(label) {
+		if(label === undefined)
+			label = this.$("hc-editor-customType").value;
 		var def = this.$("hc-editor-customTypeDefine").value;
 		var cm = this.$("hc-editor-customTypeContext").value;
 		return (label || def || cm || this.$("hc-editor-customTypeExtId").value)
