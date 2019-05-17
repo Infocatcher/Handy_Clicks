@@ -2045,17 +2045,19 @@ var handyClicksEditor = {
 		return this.saveCustomType(true, true);
 	},
 	get currentTypeObj() {
-		return this.$("hc-editor-customType").value
-			&& this.$("hc-editor-customTypeExtId").value
-			&& this.$("hc-editor-customTypeDefine").value
-			&& this.getTypeObj() || null;
+		var label = this.$("hc-editor-customType").value;
+		var def = this.$("hc-editor-customTypeDefine").value;
+		var cm = this.$("hc-editor-customTypeContext").value;
+		return (label || def || cm || this.$("hc-editor-customTypeExtId").value)
+			? this.getTypeObj(label, def, undefined, cm || null)
+			: null;
 	},
-	getTypeObj: function(label, def, enabled) {
+	getTypeObj: function(label, def, enabled, cm) {
 		return {
-			enabled: enabled !== undefined ? enabled : this.$("hc-editor-customTypeEnabled").checked,
-			label:   label   !== undefined ? label   : this.$("hc-editor-customType")       .value,
-			define:  def     !== undefined ? def     : this.$("hc-editor-customTypeDefine") .value,
-			contextMenu: this.$("hc-editor-customTypeContext").value || null
+			enabled:     enabled !== undefined ? enabled : this.$("hc-editor-customTypeEnabled").checked,
+			label:       label   !== undefined ? label   : this.$("hc-editor-customType")       .value,
+			define:      def     !== undefined ? def     : this.$("hc-editor-customTypeDefine") .value,
+			contextMenu: cm      !== undefined ? cm      : this.$("hc-editor-customTypeContext").value || null
 		};
 	},
 	deleteCustomType: function() {
