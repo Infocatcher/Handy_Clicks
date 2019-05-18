@@ -695,10 +695,6 @@ var handyClicksEditor = {
 		}
 		var enabledElt = this.$("hc-editor-customTypeEnabled");
 		var cts = this.ps.types;
-		if(!to && (!cType || !cts.hasOwnProperty(cType))) {
-			enabledElt.checked = true;
-			return;
-		}
 		var ct = to || cts[cType];
 		if(!this.ju.isObject(ct))
 			ct = {};
@@ -707,6 +703,8 @@ var handyClicksEditor = {
 		this.$("hc-editor-customTypeDefine")[val] = ct.define || "";
 		var contextField = this.$("hc-editor-customTypeContext");
 		contextField[val] = ct.contextMenu || "";
+		if(!to && (!cType || !cts.hasOwnProperty(cType)))
+			return;
 		this.highlightEmpty(contextField);
 		if(!to) {
 			cList.value = this.customTypeLabel = ct.label || "";
