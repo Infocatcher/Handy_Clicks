@@ -778,9 +778,10 @@ var handyClicksEditor = {
 	},
 	appendTypesList: function() {
 		var sep = this.$("hc-editor-customTypesSep");
-		var parent = sep.parentNode;
-		var tList = this.$("hc-editor-customTypePopup");
-		this.delCustomTypes();
+		var typesPopup = sep.parentNode;
+		var customTypesPopup = this.$("hc-editor-customTypePopup");
+		this.delCustomTypes(typesPopup);
+		this.delCustomTypes(customTypesPopup);
 		var cTypes = this.ps.types;
 		var hideSep = true;
 		var _labels = { __proto__: null };
@@ -825,10 +826,10 @@ var handyClicksEditor = {
 			dfEdit.appendChild(_mi);
 			hideSep = false;
 		}, this);
-		parent.insertBefore(dfTarget, sep);
-		tList.appendChild(dfEdit);
+		typesPopup.insertBefore(dfTarget, sep);
+		customTypesPopup.appendChild(dfEdit);
 		sep.hidden = hideSep;
-		parent.parentNode.value = this.type || ""; // <menulist>
+		typesPopup.parentNode.value = this.type || ""; // <menulist>
 		this.highlightUsedTypes();
 	},
 	getTypeTip: function(cType, notUsed) {
@@ -863,18 +864,13 @@ var handyClicksEditor = {
 				return true;
 		return false;
 	},
-	delCustomTypes: function() {
-		["hc-editor-itemTypes", "hc-editor-customTypePopup"].forEach(
-			function(pId) {
-				var mis = this.$(pId).getElementsByTagName("menuitem"), mi;
-				for(var i = mis.length - 1; i >= 0; --i) {
-					mi = mis[i];
-					if(this.ps.isCustomType(mi.getAttribute("value")))
-						mi.parentNode.removeChild(mi);
-				}
-			},
-			this
-		);
+	delCustomTypes: function(popup) {
+		var mis = popup.getElementsByTagName("menuitem");
+		for(var i = mis.length - 1; i >= 0; --i) {
+			var mi = mis[i];
+			if(this.ps.isCustomType(mi.getAttribute("value")))
+				mi.parentNode.removeChild(mi);
+		}
 	},
 	highlightUsedTypes: function() {
 		var so = this.ju.getOwnProperty(this.ps.prefs, this.currentShortcut);
