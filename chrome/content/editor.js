@@ -672,18 +672,15 @@ var handyClicksEditor = {
 				"editor.unsavedSwitchWarning"
 			);
 			if(res == this.su.PROMPT_CANCEL) {
-				this.currentCustomType = this.customType;
 				cList.value = this.customTypeLabel;
 				return;
 			}
 			if(res == this.su.PROMPT_SAVE) {
 				var customType = this.currentCustomType;
 				var customTypeLabel = cList.value;
-				this.currentCustomType = this.customType;
 				cList.value = this.customTypeLabel;
 				if(!this.saveCustomType(true))
 					return;
-				this.currentCustomType = customType;
 				cList.value = customTypeLabel;
 			}
 			updateUI = true;
