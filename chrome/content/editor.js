@@ -659,15 +659,16 @@ var handyClicksEditor = {
 	initCustomTypesEditor: function(cType, to) {
 		var cList = this.$("hc-editor-customType");
 		var updateUI = this.editorTabIndex == this.INDEX_TYPE;
-		if(
+		var hasUnsaved = !this._allowUndo && (
 			this.customType
 				? !this.testMode && this._savedTypeObj && !this.ps.settingsEquals(
 					this.ps.sortSettings(this.getTypeObj(this.customTypeLabel)),
 					this._savedTypeObj
 				)
 				: this.getCurrentTypeObj(this.customTypeLabel) // Switch from typed unsaved data
-		) {
-			var res = this._allowUndo ? this.su.PROMPT_DONT_SAVE : this.su.notifyUnsaved(
+		);
+		if(hasUnsaved) {
+			var res = this.su.notifyUnsaved(
 				this.getLocalized("editorUnsavedSwitchWarning"),
 				"editor.unsavedSwitchWarning"
 			);
