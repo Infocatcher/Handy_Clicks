@@ -668,22 +668,17 @@ var handyClicksEditor = {
 				: this.getCurrentTypeObj(this.customTypeLabel) // Switch from typed unsaved data
 		);
 		if(hasUnsaved) {
+			var customTypeLabel = cList.value;
+			cList.value = this.customTypeLabel;
 			var res = this.su.notifyUnsaved(
 				this.getLocalized("editorUnsavedSwitchWarning"),
 				"editor.unsavedSwitchWarning"
 			);
-			if(res == this.su.PROMPT_CANCEL) {
-				cList.value = this.customTypeLabel;
+			if(res == this.su.PROMPT_CANCEL)
 				return;
-			}
-			if(res == this.su.PROMPT_SAVE) {
-				var customType = this.currentCustomType;
-				var customTypeLabel = cList.value;
-				cList.value = this.customTypeLabel;
-				if(!this.saveCustomType(true))
-					return;
-				cList.value = customTypeLabel;
-			}
+			if(res == this.su.PROMPT_SAVE && !this.saveCustomType(true))
+				return;
+			cList.value = customTypeLabel;
 			updateUI = true;
 		}
 
