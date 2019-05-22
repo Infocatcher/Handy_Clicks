@@ -644,19 +644,19 @@ var handyClicksEditor = {
 		if(e.button != 2)
 			return;
 		var trg = e.target;
-		var cType = trg.value;
-		if(!this.ps.isCustomType(cType))
+		var type = trg.value;
+		if(!this.ps.isCustomType(type))
 			return;
 
 		var mp = trg.parentNode;
 		if("hidePopup" in mp)
 			mp.hidePopup();
-		this.initCustomTypesEditor(cType);
+		this.initCustomTypesEditor(type);
 		this.delay(function() { // Trick to prevent context menu for items inside type tab
 			this.editorTabIndex = this.INDEX_TYPE;
 		}, this);
 	},
-	initCustomTypesEditor: function(cType, to) {
+	initCustomTypesEditor: function(type, to) {
 		var cList = this.$("hc-editor-customType");
 		var updateUI = this.editorTabIndex == this.INDEX_TYPE;
 		var hasUnsaved = !this._allowUndo && (
@@ -682,13 +682,13 @@ var handyClicksEditor = {
 			updateUI = true;
 		}
 
-		if(!to && !cType) {
+		if(!to && !type) {
 			var sItem = cList.selectedItem;
-			cType = sItem ? sItem.value : null;
+			type = sItem ? sItem.value : null;
 		}
 		var enabledElt = this.$("hc-editor-customTypeEnabled");
-		var cts = this.ps.types;
-		var ct = to || cts[cType];
+		var types = this.ps.types;
+		var ct = to || types[type];
 		if(!this.ju.isObject(ct))
 			ct = {};
 		enabledElt.checked = typeof ct.enabled == "boolean" ? ct.enabled : true;
@@ -696,12 +696,12 @@ var handyClicksEditor = {
 		this.$("hc-editor-customTypeDefine")[val] = ct.define || "";
 		var contextField = this.$("hc-editor-customTypeContext");
 		contextField[val] = ct.contextMenu || "";
-		if(!to && (!cType || !cts.hasOwnProperty(cType)))
+		if(!to && (!type || !types.hasOwnProperty(type)))
 			return;
 		this.highlightEmpty(contextField);
 		if(!to) {
 			cList.value = this.customTypeLabel = ct.label || "";
-			this.customType = this.currentCustomType = cType;
+			this.customType = this.currentCustomType = type;
 		}
 		this.delay(this.typeSaved, this); // Wait for XBL bindings setup
 		this.fireEditorChange(this.$("hc-editor-itemTypePanel"));
@@ -775,33 +775,33 @@ var handyClicksEditor = {
 		var customTypesPopup = this.$("hc-editor-customTypePopup");
 		this.delCustomTypes(typesPopup);
 		this.delCustomTypes(customTypesPopup);
-		var cTypes = this.ps.types;
+		var types = this.ps.types;
 		var hideSep = true;
 		var _labels = { __proto__: null };
 		var sortedTypes = [];
-		for(var cType in cTypes) if(cTypes.hasOwnProperty(cType)) {
-			if(!this.ps.isCustomType(cType)) {
-				this.ut._warn('Invalid custom type id: "' + cType + '"');
+		for(var type in types) if(types.hasOwnProperty(type)) {
+			if(!this.ps.isCustomType(type)) {
+				this.ut._warn('Invalid custom type id: "' + type + '"');
 				continue;
 			}
-			var typeObj = cTypes[cType];
-			if(!this.ju.isObject(typeObj)) {
-				this.ut._warn('Invalid custom type: "' + cType + '" (' + typeObj + ")");
+			var to = types[type];
+			if(!this.ju.isObject(to)) {
+				this.ut._warn('Invalid custom type: "' + type + '" (' + to + ")");
 				continue;
 			}
-			var label = typeObj.label || cType;
+			var label = to.label || type;
 			var localizedLabel = this.ps.localize(label);
 			if(localizedLabel in _labels)
 				localizedLabel += " (" + ++_labels[localizedLabel] + ")";
 			else
 				_labels[localizedLabel] = 1;
-			var dis = typeof typeObj.enabled == "boolean" ? !typeObj.enabled : true;
-			var notUsed = !this.typeUsed(cType);
+			var dis = typeof to.enabled == "boolean" ? !to.enabled : true;
+			var notUsed = !this.typeUsed(type);
 			sortedTypes.push({
 				label: label,
 				hc_localizedLabel: localizedLabel,
-				value: cType,
-				tooltiptext: this.getTypeTip(cType, notUsed),
+				value: type,
+				tooltiptext: this.getTypeTip(type, notUsed),
 				hc_notUsed: notUsed,
 				hc_disabled: dis
 			});
@@ -825,8 +825,8 @@ var handyClicksEditor = {
 		typesPopup.parentNode.value = this.type || ""; // <menulist>
 		this.highlightUsedTypes();
 	},
-	getTypeTip: function(cType, notUsed) {
-		return this.getLocalized("internalId").replace("%id", cType)
+	getTypeTip: function(type, notUsed) {
+		return this.getLocalized("internalId").replace("%id", type)
 			+ (notUsed ? " \n" + this.getLocalized("customTypeNotUsed") : "");
 	},
 	showLocalizedLabels: function(mp) {
@@ -1982,9 +1982,9 @@ var handyClicksEditor = {
 	},
 	saveCustomType: function(applyFlag, testFlag, dontUpdate, saveAll) {
 		var label = this.$("hc-editor-customType").value;
-		var cType = this.$("hc-editor-customTypeExtId").value;
+		var type = this.$("hc-editor-customTypeExtId").value;
 		var def = this.$("hc-editor-customTypeDefine").value;
-		if(!label || !cType || !def) {
+		if(!label || !type || !def) {
 			if(saveAll && this.editorTabIndex != this.INDEX_TYPE)
 				return true;
 			var req = [
@@ -2000,11 +2000,11 @@ var handyClicksEditor = {
 			this.highlightRequiredFields(req, false);
 			return false;
 		}
-		cType = this.ps.customPrefix + cType;
+		type = this.ps.customPrefix + type;
 
-		var cts = this.ps.types;
+		var types = this.ps.types;
 		var enabled = this.$("hc-editor-customTypeEnabled").checked;
-		cts[cType] = this.getTypeObj(label, def, enabled);
+		types[type] = this.getTypeObj(label, def, enabled);
 
 		var loadCorrectedSettings = !dontUpdate && this.ju.bind(function(status) {
 			if(status !== undefined && !Components.isSuccessCode(status))
@@ -2051,16 +2051,16 @@ var handyClicksEditor = {
 		};
 	},
 	deleteCustomType: function() {
-		var cts = this.ps.types;
+		var types = this.ps.types;
 		var type = this.currentCustomType;
-		if(!cts.hasOwnProperty(type)) { // Nothing to delete
+		if(!types.hasOwnProperty(type)) { // Nothing to delete
 			this._savedTypeObj = null;
 			this.setDialogButtons();
 			return;
 		}
 		if(!this.su.confirmTypeAction(type, "typeDeletingWarning"))
 			return;
-		delete cts[type];
+		delete types[type];
 		if(this.ps.otherSrc)
 			this.pe.reloadSettings();
 		else
