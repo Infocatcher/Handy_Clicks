@@ -619,7 +619,7 @@ var handyClicksEditor = {
 		this.selectCustomFunc(isCustom, delayed);
 		if(isCustom) {
 			const val = allowUndo || this._allowUndo ? "value" : "newValue";
-			this.$("hc-editor-funcField" + delayed)[val]  = this.ju.getOwnProperty(setsObj, "action") || "";
+			this.$("hc-editor-funcField" + delayed)[val]  = this.ju.getOwnProperty(setsObj, "action") || " "; // Fix height
 			this.$("hc-editor-funcLabel" + delayed).value = this.ju.getOwnProperty(setsObj, "label") || "";
 
 			var initField = this.$("hc-editor-funcInitField" + delayed);
