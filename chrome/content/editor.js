@@ -699,8 +699,9 @@ var handyClicksEditor = {
 		this.highlightEmpty(contextField);
 		if(!to) {
 			cList.value = this.customTypeLabel = ct.label || "";
-			this.customType = this.currentCustomType = type;
+			this.currentCustomType = type;
 		}
+		this.customType = type;
 		this.delay(this.typeSaved, this); // Wait for XBL bindings setup
 		this.fireEditorChange(this.$("hc-editor-itemTypePanel"));
 		this.setWinId();
