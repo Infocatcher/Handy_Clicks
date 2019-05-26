@@ -1414,10 +1414,8 @@
 			<handler event="keypress" keycode="VK_BACK" modifiers="control" action="this.insertText('');" />
 			<handler event="blur">
 			<![CDATA[
-				if(event.originalTarget !== this.inputField || !this.maximized)
-					return;
-				setTimeout(function(_this) {
-					if(document.commandDispatcher.focusedElement !== _this.inputField) // E.g. user press Ctrl+Tab
+				if(event.originalTarget == this.inputField && this.maximized) setTimeout(function(_this) {
+					if(document.commandDispatcher.focusedElement != _this.inputField) // E.g. user press Ctrl+Tab
 						_this.maximized = false;
 				}, 0, this);
 			]]>
