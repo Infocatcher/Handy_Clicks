@@ -795,7 +795,7 @@ var handyClicksEditor = {
 			else
 				_labels[localizedLabel] = 1;
 			var dis = typeof to.enabled == "boolean" ? !to.enabled : true;
-			var notUsed = !this.typeUsed(type);
+			var notUsed = !this.su.hasSettingsForType(type);
 			sortedTypes.push({
 				label: label,
 				hc_localizedLabel: localizedLabel,
@@ -848,13 +848,6 @@ var handyClicksEditor = {
 				lb.setAttribute("value", mi.getAttribute("hc_localizedLabel"));
 			}
 		);
-	},
-	typeUsed: function(type, prefs) {
-		prefs = prefs || this.ps.prefs;
-		for(var sh in prefs)
-			if(this.ju.getOwnProperty(prefs, sh, type))
-				return true;
-		return false;
 	},
 	delCustomTypes: function(popup) {
 		var mis = popup.getElementsByTagName("menuitem");
@@ -1157,7 +1150,7 @@ var handyClicksEditor = {
 		this.checkNotUsedType(customType);
 	},
 	checkNotUsedType: function(type, updateMenu) {
-		var notUsed = !this.typeUsed(type);
+		var notUsed = !this.su.hasSettingsForType(type);
 		var ml = this.$("hc-editor-customType");
 		ml.setAttribute("hc_notUsed", notUsed);
 		this.delay(function() { // Wait to correctly set tooltip on startup
