@@ -65,6 +65,8 @@ var handyClicksUtils = {
 	fixLineNumber: function(line) {
 		if(this.fxVersion >= 56 && (this.isFirefox || this.isSeaMonkey))
 			return Math.max(1, line - 2); // O_o Strange things happens...
+		if(this.isPaleMoon && this.appVersion >= 28.5)
+			return Math.max(1, line - 1);
 		return line;
 	},
 	objProps: function(o, filter, skipNativeFuncs) {
