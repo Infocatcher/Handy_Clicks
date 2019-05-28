@@ -628,7 +628,7 @@ var handyClicksEditor = {
 		var enabled = this.ju.getOwnProperty(setsObj, "enabled");
 		this.$("hc-editor-enabled" + delayed).checked = typeof enabled != "boolean" || enabled;
 		if(!delayed) {
-			this.$("hc-editor-allowMousedown").value = String(this.ju.getOwnProperty(setsObj, "allowMousedownEvent"));
+			this.$("hc-editor-allowMousedown").value = "" + this.ju.getOwnProperty(setsObj, "allowMousedownEvent");
 			this.initAdditionalOptions(null, setsObj);
 		}
 	},

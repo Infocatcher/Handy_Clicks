@@ -71,7 +71,7 @@ var handyClicksUtils = {
 	},
 	objProps: function(o, filter, skipNativeFuncs) {
 		if(this.ju.isPrimitive(o))
-			return String(o);
+			return "" + o;
 
 		var skip = function() {
 			return false;
@@ -634,7 +634,7 @@ var handyClicksUtils = {
 		for(var errName in cr)
 			if(cr[errName] == code)
 				return errName;
-		return String(code);
+		return "" + code;
 	},
 	_fileInfo: function(file) {
 		return file instanceof Components.interfaces.nsIFile

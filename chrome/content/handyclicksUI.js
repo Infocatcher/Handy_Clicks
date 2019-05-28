@@ -573,7 +573,7 @@ var handyClicksUI = {
 		if(!this.pu.get("ui.showMouseButton"))
 			return;
 		clearTimeout(this._restoreIconTimeout);
-		var icon = e ? String(e.button || 0) : null;
+		var icon = e ? "" + (e.button || 0) : null;
 		this._hasIcon = !!icon;
 		this.setControls(function(elt) {
 			this.attribute(elt, "hc_button", icon);
