@@ -70,8 +70,20 @@ var handyClicksUtils = {
 		return line;
 	},
 	objProps: function(o, filter, skipNativeFuncs) {
-		if(this.ju.isPrimitive(o))
-			return "" + o;
+		var isPrimitive = this.ju.isPrimitive;
+		var safeToString = this.safeToString;
+		var str = function(o) {
+			if(o && typeof o == "object" && !o.__proto__)
+				return "[object { __proto__: null }]";
+			if(o === undefined)
+				return "undefined";
+			if(isPrimitive(o))
+				return uneval(o);
+			return safeToString(o);
+		};
+
+		if(isPrimitive(o))
+			return str(o);
 
 		var skip = function() {
 			return false;
@@ -99,7 +111,12 @@ var handyClicksUtils = {
 			var prefix = p + " = " + (Object.hasOwnProperty.call(o, p) ? "" : "[inherited] ");
 			var getter = Object.__lookupGetter__.call(o, p);
 			var setter = Object.__lookupSetter__.call(o, p);
-			var value = this.safeGet(o, p);
+			try {
+				var value = o[p];
+			}
+			catch(e) {
+				value = e;
+			}
 
 			if(
 				skipNativeFuncs
@@ -111,15 +128,11 @@ var handyClicksUtils = {
 			)
 				continue;
 
-			r.push(prefix + (this.safeToString(value) || '""'));
-			getter && r.push(prefix + "[getter] " + this.safeToString(getter));
-			setter && r.push(prefix + "[setter] " + this.safeToString(setter));
+			r.push(prefix + (str(value) || '""'));
+			getter && r.push(prefix + "[getter] " + str(getter));
+			setter && r.push(prefix + "[setter] " + str(setter));
 		}
 		return r.join("\n");
-	},
-	safeGet: function(o, p) {
-		try { return o[p]; }
-		catch(e) { return e; }
 	},
 
 	NOTIFY_ICON_NORMAL: "normal",
