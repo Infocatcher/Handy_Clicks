@@ -88,7 +88,7 @@ var handyClicksEditor = {
 		this.setCompactUI();
 		this.pu.oSvc.addObserver(this.prefChanged, this);
 		this.checkForCrashBackups(700);
-		window.addEventListener("keydown", this.tabLikeNavigation, true);
+		document.addEventListener("keydown", this.tabLikeNavigation, true);
 	},
 	delayedInit: function() {
 		this.setTooltip();
@@ -123,7 +123,7 @@ var handyClicksEditor = {
 			}
 		}
 		unwatchLinkedFiles && this.watchLinkedFiles(false); // Will be closed all editors
-		window.removeEventListener("keydown", this.tabLikeNavigation, true);
+		document.removeEventListener("keydown", this.tabLikeNavigation, true);
 	},
 	watchLinkedFile: function(path, file) {
 		this._log("Editor: watchLinkedFile(): " + path);
@@ -1422,6 +1422,8 @@ var handyClicksEditor = {
 	},
 	tabLikeNavigation: function(e) {
 		if(e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) {
+			if("defaultPrevented" in e ? e.defaultPrevented : e.getPreventDefault())
+				return;
 			if(e.keyCode == e.DOM_VK_UP) { // Ctrl+Up
 				document.commandDispatcher.rewindFocus();
 				e.preventDefault();
