@@ -509,6 +509,14 @@ var handyClicksUtils = {
 		}
 	},
 	moveFileTo: function(file, newParentDir, newName) {
+		try { // Note: nsIFile.renameTo() is faster, but doesn't update nsIFile instance
+			file.moveTo(newParentDir, newName);
+			return;
+		}
+		catch(e) {
+			this._warn("Can't move " + file.path + " to " + (newParentDir || file.parent).path + "\n" + e);
+		}
+
 		var target = (newParentDir || file.parent).clone();
 		target.leafName = newName;
 		this.io.ensureFilePermissions(file, this.io.PERMS_FILE_OWNER_WRITE);
@@ -517,7 +525,7 @@ var handyClicksUtils = {
 			file.moveTo(newParentDir, newName);
 		}
 		catch(e) {
-			this._err("Can't move " + file.path + " to " + target.path);
+			this._err("Can't move " + file.path + " to " + target.path + ", moveTo() failed");
 			Components.utils.reportError(e);
 		}
 	},
