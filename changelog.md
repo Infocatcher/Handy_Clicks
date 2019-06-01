@@ -214,6 +214,11 @@
 `*` Settings: better handle I/O errors.<br>
 `*` Open/close settings: ask to save changes.<br>
 `*` Exit from import mode: ask to save in changed editors.<br>
+`+` Settings: added menu items and hotkeys to separately reload clicks options / about:config preferences.<br>
+`*` Editor: added note for Meta key (Mac OS only).<br>
+`*` Editor: better handle unsaved custom type.<br>
+`x` Fixed error line numbers in Pale Moon 28.5+ (looks like Pale Moon bug, now always decremented by 1).<br>
+`*` Increased saving performance, optimized way to rename backup files (≈2.4x faster with default settings).<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
