@@ -499,6 +499,14 @@ var handyClicksUtils = {
 		target.leafName = newName;
 		if(target.exists())
 			this.removeFile(file, true);
+		try { // Try without slow ensureFilePermissions() first
+			file.copyTo(newParentDir, newName);
+			return;
+		}
+		catch(e) {
+			this._warn("Can't copy " + file.path + " to " + target.path + "\n" + e);
+		}
+
 		this.io.ensureFilePermissions(file, this.io.PERMS_FILE_OWNER_READ);
 		try {
 			file.copyTo(newParentDir, newName);
