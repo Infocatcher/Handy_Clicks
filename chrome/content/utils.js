@@ -568,7 +568,7 @@ var handyClicksUtils = {
 			.createInstance(Components.interfaces.nsIProcess);
 		try {
 			process.init(file);
-			process[w && process.hasOwnProperty("runw") ? "runw" : "run"](false, args, args.length);
+			process[w && this.canRunw ? "runw" : "run"](false, args, args.length);
 			return true;
 		}
 		catch(e) {
@@ -578,8 +578,8 @@ var handyClicksUtils = {
 					.replace("%p", file.path)
 					.replace("%err", e)
 			);
-			return false;
 		}
+		return false;
 	},
 	get canRunw() {
 		delete this.canRunw;
