@@ -369,7 +369,6 @@ var handyClicksUtils = {
 			dtd + '<page xmlns="' + this.XULNS + '">&' + eName + ';</page>',
 			contentType
 		);
-		//if(node.namespaceURI == "http://www.mozilla.org/newlayout/xml/parsererror.xml") {
 		if(node.localName != "page") {
 			dtd = dtds && Array.prototype.concat.call(dtds).join("\n");
 			this._warn('Invalid XML entity: "' + eName + '"' + (dtd ? ", DTD:\n" + dtd : ""));
@@ -394,9 +393,8 @@ var handyClicksUtils = {
 			return file.parent;
 		}
 		catch(e) {
-			// Firefox 1.5 and 2.0 says:
+			// In Firefox 1.5 and 2.0 for root directories:
 			// Component returned failure code: 0x80520001 (NS_ERROR_FILE_UNRECOGNIZED_PATH) [nsIFile.parent]
-			// for root directories
 		}
 		return null;
 	},
@@ -453,7 +451,7 @@ var handyClicksUtils = {
 	},
 	expandInternalVariables: function (str) {
 		return str.replace(
-			/^%([^%]+)%/, //~ todo: may conflict with environment variables => [ProfD]/dir like Thunderbird or some other
+			/^%([^%]+)%/,
 			this.ju.bind(function(s, alias) {
 				if(alias == "profile" || alias == "ProfD")
 					return this.ps.profileDir.path;
@@ -832,7 +830,6 @@ var handyClicksUtils = {
 		e.preventDefault();
 		e.stopPropagation();
 		e.stopImmediatePropagation && e.stopImmediatePropagation();
-		//this._log("stopEvent " + e.type + "\n" + arguments.callee.caller);
 	},
 	isElementVisible: function(elt) {
 		if(!elt)
@@ -936,7 +933,7 @@ var handyClicksUtils = {
 			node.setAttribute(attrName, attrs[attrName]);
 		return node;
 	},
-	parseFromXML: function(xml) { // Deprecated
+	parseFromXML: function(xml) {
 		this._deprecated("Called obsolete parseFromXML(), use parseXULFromString() without E4X instead");
 		var pp = XML.prettyPrinting;
 		XML.prettyPrinting = false;

@@ -20,8 +20,6 @@ var handyClicksJsUtils = {
 		return typeof o == "object" && o !== null;
 	},
 	isEmptyObj: function(o) {
-		// obj.__count__ is deprecated and removed in Firefox 4.0
-		// Object.keys(o).length
 		for(var p in o) if(Object.hasOwnProperty.call(o, p))
 			return false;
 		return true;
