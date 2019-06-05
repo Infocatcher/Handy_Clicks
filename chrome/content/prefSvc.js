@@ -117,19 +117,19 @@ var handyClicksPrefSvc = {
 		var dir = parentDir.clone();
 		dir.append(dirName);
 		if(dir.exists() && !dir.isDirectory()) {
+			this.ut._warn('Found non-directory "' + dir.path + '", will try to move');
 			var tmp = dir.clone(), i = -1;
 			do tmp.leafName = dir.leafName + "-moved-" + ++i;
 			while(tmp.exists());
 			this.ut.moveFileTo(dir.clone(), null, tmp.leafName);
+			this.ut._warn('Moved non-directory: "' + dir.leafName + '" -> "' + tmp.leafName + '"');
 		}
-		if(!dir.exists()) {
-			try {
-				dir.create(dir.DIRECTORY_TYPE, this.io.PERMS_DIRECTORY);
-			}
-			catch(e) {
-				this.ut._err('Can\'t create directory: "' + dir.path + '"');
-				this.ut._err(e);
-			}
+		if(!dir.exists()) try {
+			dir.create(dir.DIRECTORY_TYPE, this.io.PERMS_DIRECTORY);
+		}
+		catch(e) {
+			this.ut._err('Can\'t create directory: "' + dir.path + '"');
+			this.ut._err(e);
 		}
 		return dir;
 	},
