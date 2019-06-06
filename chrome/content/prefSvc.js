@@ -43,17 +43,11 @@ var handyClicksPrefSvc = {
 
 	destroy: function(reloadFlag, disable) {
 		if(this.isMainWnd) {
-			var reason;
-			if(reloadFlag || disable)
-				reason = this.DESTROY_REBUILD;
-			else {
-				var hasBrowserWindow = this.wu.forEachBrowserWindow(function(w) {
-					return "_handyClicksInitialized" in w;
-				});
-				reason = hasBrowserWindow
+			var reason = reloadFlag || disable
+				? this.DESTROY_REBUILD
+				: this.wu.forEachBrowserWindow(function(w) { return "_handyClicksInitialized" in w; })
 					? this.DESTROY_WINDOW_UNLOAD
 					: this.DESTROY_LAST_WINDOW_UNLOAD;
-			}
 			this.destroyCustomFuncs(reason);
 		}
 		// Force unload prefs to avoid memory leaks
