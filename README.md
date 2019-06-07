@@ -210,6 +210,8 @@ DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGener
 <br>boolean <a href="#handyclicksinitcustomtype">handyClicks.initCustomType</a>(in object options) <sup><em>Handy Clicks 0.2.0b1+</em></sup>
 <br>string <a href="#handyclicksglobalsgetstr">handyClicksGlobals.getStr</a>(in string dtdSource, in string stringName[, in string defaultString])
 <br>string <a href="#handyclicksglobalsgetlocalized">handyClicksGlobals.getLocalized</a>(in string stringName)
+<br>unsigned integer <a href="#handyclicksprefsvcregisterdestructor">handyClicksPrefSvc.registerDestructor</a>(in function destructor, in object context, in unsigned integer notifyFlags)
+<br>void <a href="#handyclicksprefsvcunregisterdestructor">handyClicksPrefSvc.unregisterDestructor</a>(in unsigned integer destructorId)
 <br>void <a href="#handyclicksglobals_info">handyClicksGlobals.\_info</a>(in string message)
 <br>void <a href="#handyclicksglobals_log">handyClicksGlobals.\_log</a>(in string message)
 <br>void <a href="#handyclicksutils_err">handyClicksUtils.\_err</a>(in string/error message[, in string fileName[, in string lineNumber]])
@@ -405,6 +407,50 @@ Like handyClicksGlobals.getStr(), for internal extension strings from chrome://h
 ```js
 var enabled = true;
 var msg = this.getLocalized(enabled ? "enabled" : "disabled"); // "Enabled" or "Disabled"
+```
+
+###### handyClicksPrefSvc.registerDestructor()
+Registers destructor function, for initialization code.
+<br>Available flags:
+```js
+this.ps.DESTROY_REBUILD            // each re-initialization
+this.ps.DESTROY_WINDOW_UNLOAD      // closed not last browser window
+this.ps.DESTROY_LAST_WINDOW_UNLOAD // closed last browser window
+```
+Example:
+```js
+// Register demo style using nsIStyleSheetService
+var cssStr = '\
+	@-moz-document url("' + document.documentURI + '") {\n\
+		* { color: red !important; }\n\
+	}';
+var cssURI = Services.io.newURI("data:text/css," + encodeURIComponent(cssStr), null, null);
+function setSheet(addFlag) {
+	var sss = Components.classes["@mozilla.org/content/style-sheet-service;1"]
+		.getService(Components.interfaces.nsIStyleSheetService);
+	if(addFlag == sss.sheetRegistered(cssURI, sss.USER_SHEET))
+		return;
+	if(addFlag)
+		sss.loadAndRegisterSheet(cssURI, sss.USER_SHEET);
+	else
+		sss.unregisterSheet(cssURI, sss.USER_SHEET);
+}
+setSheet(true);
+this.ps.registerDestructor(function(reason) {
+	setSheet(false);
+}, this, this.ps.DESTROY_REBUILD);
+```
+
+###### handyClicksPrefSvc.unregisterDestructor()
+Unregisters destructor function, just for compliance (will be unregistered automatically, use only if you want change something).
+```js
+var did = this.ps.registerDestructor(function(reason) {
+	Services.console.logStringMessage("[test] Destructor");
+}, this, this.ps.DESTROY_REBUILD);
+setTimeout(function() {
+	Services.console.logStringMessage("[test] Unregister destructor");
+	this.ps.unregisterDestructor(did);
+}.bind(this), 15e3); // Just for demonstration, unregister after 15 seconds
 ```
 
 ###### handyClicksGlobals._info()
