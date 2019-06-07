@@ -370,8 +370,8 @@ var handyClicksPrefSvc = {
 		if(typeof legacyDestructor == "function") { // Added: 2010-06-15
 			this.ut._deprecated(
 				"Construction \"return destructorFunction;\" is deprecated, use "
-				+ "\"void handyClicksPrefSvc.registerDestructor"
-				+ "(in function destructor, in object context, in unsigned long notifyFlags)\" "
+				+ "\"unsigned integer handyClicksPrefSvc.registerDestructor"
+				+ "(in function destructor, in object context, in unsigned integer notifyFlags)\" "
 				+ "instead"
 			);
 			this.registerDestructor(
