@@ -47,7 +47,7 @@ var handyClicksPrefSvc = {
 				? this.DESTROY_REBUILD
 				: this.wu.forEachBrowserWindow(function(w) { return "_handyClicksInitialized" in w; })
 					? this.DESTROY_WINDOW_UNLOAD
-					: this.DESTROY_LAST_WINDOW_UNLOAD;
+					: this.DESTROY_WINDOW_UNLOAD | this.DESTROY_LAST_WINDOW_UNLOAD;
 			this.destroyCustomFuncs(reason);
 		}
 		// Force unload prefs to avoid memory leaks
