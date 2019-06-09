@@ -414,7 +414,7 @@ Registers destructor function, for initialization code.
 <br>Available flags:
 ```js
 this.ps.DESTROY_REBUILD            // each re-initialization
-this.ps.DESTROY_WINDOW_UNLOAD      // closed not last browser window
+this.ps.DESTROY_WINDOW_UNLOAD      // closed browser window
 this.ps.DESTROY_LAST_WINDOW_UNLOAD // closed last browser window
 ```
 Example:
