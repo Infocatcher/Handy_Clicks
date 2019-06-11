@@ -1156,7 +1156,10 @@ var handyClicksEditor = {
 		this.delay(function() { // Wait to correctly set tooltip on startup
 			var inp = document.getAnonymousElementByAttribute(ml, "anonid", "input");
 			var ttNotUsed = notUsed ? " \n" + this.getLocalized("customTypeNotUsed") : "";
-			inp.setAttribute("tooltiptext", ml.getAttribute("hc_tooltiptext") + ttNotUsed);
+			var tt = ml.getAttribute("hc_tooltiptext") + ttNotUsed;
+			inp.setAttribute("tooltiptext", tt);
+			if(inp.parentNode.classList && inp.parentNode.classList.contains("menulist-editable-box"))
+				inp.parentNode.setAttribute("tooltiptext", tt); // For Firefox 60
 			var mi = updateMenu && ml.getElementsByAttribute("value", type)[0] || null;
 			if(mi) {
 				mi.setAttribute("tooltiptext", this.getTypeTip(type, notUsed));
