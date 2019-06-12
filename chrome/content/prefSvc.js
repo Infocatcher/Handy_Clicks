@@ -482,9 +482,7 @@ var handyClicksPrefSvc = {
 		}
 	},
 	destroyCustomFunc: function(destructor, context, notifyFlags, baseLine, fObj, sh, type, isDelayed, reason) {
-		if(notifyFlags && !(notifyFlags & reason))
-			return;
-		try {
+		if(!notifyFlags || notifyFlags & reason) try {
 			destructor.call(context, reason);
 		}
 		catch(e) {
