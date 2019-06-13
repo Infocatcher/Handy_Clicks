@@ -210,7 +210,7 @@ DOMNode <a href="#handyclicksfuncsshowgeneratedpopup">handyClicksFuncs.showGener
 <br>boolean <a href="#handyclicksinitcustomtype">handyClicks.initCustomType</a>(in object options) <sup><em>Handy Clicks 0.2.0b1+</em></sup>
 <br>string <a href="#handyclicksglobalsgetstr">handyClicksGlobals.getStr</a>(in string dtdSource, in string stringName[, in string defaultString])
 <br>string <a href="#handyclicksglobalsgetlocalized">handyClicksGlobals.getLocalized</a>(in string stringName)
-<br>unsigned integer <a href="#handyclicksprefsvcregisterdestructor">handyClicksPrefSvc.registerDestructor</a>(in function destructor, in object context, in unsigned integer notifyFlags)
+<br>unsigned integer <a href="#handyclicksprefsvcregisterdestructor">handyClicksPrefSvc.registerDestructor</a>(in function destructor[, in object context[, in unsigned integer notifyFlags]])
 <br>void <a href="#handyclicksprefsvcunregisterdestructor">handyClicksPrefSvc.unregisterDestructor</a>(in unsigned integer destructorId)
 <br>void <a href="#handyclicksglobals_info">handyClicksGlobals.\_info</a>(in string message)
 <br>void <a href="#handyclicksglobals_log">handyClicksGlobals.\_log</a>(in string message)
@@ -411,7 +411,7 @@ var msg = this.getLocalized(enabled ? "enabled" : "disabled"); // "Enabled" or "
 
 ###### handyClicksPrefSvc.registerDestructor()
 Registers destructor function, for initialization code.
-<br>Available flags:
+<br>Available flags (will be called for each reason without `notifyFlags`):
 ```js
 this.ps.DESTROY_REBUILD            // each re-initialization
 this.ps.DESTROY_WINDOW_UNLOAD      // closed browser window
