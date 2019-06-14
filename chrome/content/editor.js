@@ -1999,12 +1999,14 @@ var handyClicksEditor = {
 		}
 		type = this.ps.customPrefix + type;
 
-		var types = this.ps.types;
 		var enabled = this.$("hc-editor-customTypeEnabled").checked;
-		types[type] = this.getTypeObj(label, def, enabled);
+		this.ps.types[type] = this.getTypeObj(label, def, enabled);
 
 		var loadCorrectedSettings = !dontUpdate && this.ju.bind(function(status) {
 			if(status !== undefined && !Components.isSuccessCode(status))
+				return;
+			var to = this.ps.types[type];
+			if(to.enabled == enabled && to.label == label) // Looks not changed
 				return;
 			this.appendTypesList();
 			this.setWinTitle(); // Label changed?
