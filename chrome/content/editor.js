@@ -1734,6 +1734,22 @@ var handyClicksEditor = {
 		}
 		return true;
 	},
+	checkCanEnable: function(cb) {
+		var type = this.currentType;
+		if(
+			cb.checked
+			&& cb.id == "hc-editor-enabled" // Ignore checkbox for delayed action
+			&& this.ps.isCustomType(type)
+			&& !this.ju.getOwnProperty(this.ps.types, type, "enabled")
+		) {
+			this.su.showInfoTooltip(
+				cb,
+				this.getLocalized("cantBeEnabled"),
+				this.su.TOOLTIP_HIDE_DEFAULT,
+				this.su.TOOLTIP_OFFSET_CURSOR
+			);
+		}
+	},
 	notifyUnsavedRename: function() {
 		var newSh = this.currentShortcut;
 		var alreadyUsed = !!this.ju.getOwnProperty(this.ps.prefs, newSh, this._typeBeforeRename);

@@ -218,7 +218,8 @@
 									</menulist>
 
 									<checkbox id="hc-editor-enabled" hc_important="enabled"
-										label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;" />
+										label="&hc.editor.enabled;" accesskey="&hc.editor.enabledAccesskey;"
+										oncommand="handyClicksEditor.checkCanEnable(this);" />
 								</hbox>
 								<hbox id="hc-editor-funcOpts-img" hc_notDelay="true" align="center">
 									<label value="&hc.editor.funcOptsAdd;" accesskey="&hc.editor.funcOptsAddAccesskey;"
