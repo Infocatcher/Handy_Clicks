@@ -219,6 +219,7 @@
 `*` Editor: better handle unsaved custom type.<br>
 `x` Fixed error line numbers in Pale Moon 28.5+ (looks like Pale Moon bug, now always decremented by 1).<br>
 `*` Increased saving performance, optimized way to rename backup files (≈2.4x faster with default settings).<br>
+`*` Changed handyClicksPrefSvc.registerDestructor(): also specify DESTROY_WINDOW_UNLOAD reason for last window (more intuitive).<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
