@@ -346,8 +346,14 @@ var handyClicksPrefSvcExt = {
 			data: data
 		};
 	},
-	importAllowed: function(file) { //~ todo: add pref?
-		return this.ps._scriptsDir.contains(file, false /* aRecurse, for Firefox 31 and older */);
+	importAllowed: function(file) {
+		if(this.ps._scriptsDir.contains(file, false /* aRecurse, for Firefox 31 and older */))
+			return true;
+		var paths = this.pu.get("sets.importPaths");
+		return paths && paths.split(/\s*\|\s*/).some(function(path) {
+			var dir = this.ut.getLocalFile(path);
+			return dir && dir.contains(file, false /* aRecurse, for Firefox 31 and older */);
+		}, this);
 	},
 	filterFilesData: function(files) {
 		if(!files)

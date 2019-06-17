@@ -104,6 +104,7 @@ pref("extensions.handyclicks.sets.backupUserRemoveDepth", 1);
 pref("extensions.handyclicks.sets.backupUserRemoveDepth2", 10);
 pref("extensions.handyclicks.sets.removeBackupConfirm", true);
 pref("extensions.handyclicks.sets.importJSWarning", true);
+pref("extensions.handyclicks.sets.importPaths", ""); // Allow import/export file data, example: D:\\hcScripts|%CurProcD%\\hcScripts
 pref("extensions.handyclicks.sets.incompleteImportWarning", true);
 pref("extensions.handyclicks.sets.openEditorsLimit", 5);
 pref("extensions.handyclicks.sets.dateFormat", "_%Y-%m-%d_%H-%M"); // String for new Date().toLocaleFormat(), Firefox 54 and older
