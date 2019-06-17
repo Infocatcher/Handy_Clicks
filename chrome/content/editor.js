@@ -2022,7 +2022,7 @@ var handyClicksEditor = {
 			if(status !== undefined && !Components.isSuccessCode(status))
 				return;
 			var to = this.ps.types[type];
-			if(to.enabled == enabled && to.label == label) // Looks not changed
+			if(to && to.enabled == enabled && to.label == label) // Looks not changed
 				return;
 			this.appendTypesList();
 			this.setWinTitle(); // Label changed?
