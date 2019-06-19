@@ -4358,7 +4358,7 @@ var handyClicksSets = {
 				continue;
 			}
 			if(!this.pe.importAllowed(file)) {
-				this.ut._warn("Import not allowed for " + path + " -> " + file.path);
+				this.ut._warn("Import not allowed for " + path + " -> " + file.path + this.pe._importPathsInfo);
 				continue;
 			}
 			var exists = file.exists();

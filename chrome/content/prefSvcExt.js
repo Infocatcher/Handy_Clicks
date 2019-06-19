@@ -332,7 +332,7 @@ var handyClicksPrefSvcExt = {
 			return;
 		}
 		if(!this.importAllowed(file)) {
-			this.ut._warn("Export not allowed for " + path + " -> " + file.path);
+			this.ut._warn("Export not allowed for " + path + " -> " + file.path + this._importPathsInfo);
 			return;
 		}
 		var data = this.io.readFromFile(file);
@@ -354,6 +354,11 @@ var handyClicksPrefSvcExt = {
 			var dir = this.ut.getLocalFile(path);
 			return dir && dir.contains(file, false /* aRecurse, for Firefox 31 and older */);
 		}, this);
+	},
+	get _importPathsInfo() {
+		var paths = this.pu.get("sets.importPaths");
+		return "\nAllowed paths (+ " + this.pu.prefNS + "sets.importPaths):\n"
+			+ this.ps._scriptsDir.path + (paths ? "\n" + paths.replace(/\s*\|\s*/g, "\n") : "");
 	},
 	filterFilesData: function(files) {
 		if(!files)
