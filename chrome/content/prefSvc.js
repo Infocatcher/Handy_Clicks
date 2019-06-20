@@ -589,13 +589,17 @@ var handyClicksPrefSvc = {
 			o.files = {};
 
 		var _this = this;
+		var errors = 0;
 		var json = this.JSON.stringify(o, function censor(key, val) {
 			if(key.charAt(0) == "_")
 				return undefined;
 			if(exportLinkedFiles && key in _this.codeKeys)
-				_this.pe.exportFileData(o.files, val);
+				_this.pe.exportFileData(o.files, val) || (++errors);
 			return val;
 		}, "\t");
+		errors && this.ut.notifyWarning(this.getLocalized("skippedFileData"), { buttons: {
+			$openConsole: this.ut.toErrorConsole
+		}});
 
 		const hashFunc = "SHA256";
 		var hashData = noHash ? "" : "// " + hashFunc + ": " + this.getHash(json, hashFunc) + "\n";

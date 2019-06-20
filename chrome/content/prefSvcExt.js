@@ -321,26 +321,26 @@ var handyClicksPrefSvcExt = {
 	exportFileData: function(files, code) {
 		var path = this.getSourcePath(code);
 		if(!path)
-			return;
+			return true;
 		var exported = files._exported || (files._exported = { __proto__: null });
 		if(path in exported)
-			return;
+			return true;
 		exported[path] = true;
 		var file = this.ut.getLocalFile(path);
 		if(!file) {
 			this.ut._warn("Export skipped, invalid path: " + path);
-			return;
+			return null;
 		}
 		if(!this.importAllowed(file)) {
 			this.ut._warn("Export not allowed for " + path + " -> " + file.path + this._importPathsInfo);
-			return;
+			return null;
 		}
 		var data = this.io.readFromFile(file);
 		if(!data) {
 			this.ut._warn("Export skipped, file is empty or missing: " + path + " -> " + file.path);
-			return;
+			return null;
 		}
-		files[path] = {
+		return files[path] = {
 			lastModified: file.lastModifiedTime,
 			size: file.fileSize,
 			data: data
