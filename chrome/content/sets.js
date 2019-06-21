@@ -4349,19 +4349,19 @@ var handyClicksSets = {
 	},
 	importFilesData: function() {
 		var overwriteAsk = true, overwrite;
-		var errors = 0;
+		var errors = [];
 		var files = this.ps.files;
 		for(var path in files) if(files.hasOwnProperty(path)) {
 			var fo = files[path];
 			var file = this.ut.getLocalFile(path);
 			if(!file) {
 				this.ut._warn("Import skipped, invalid path: " + path);
-				++errors;
+				errors.push(path);
 				continue;
 			}
 			if(!this.pe.importAllowed(file)) {
 				this.ut._warn("Import not allowed for " + path + " -> " + file.path + this.pe._importPathsInfo);
-				++errors;
+				errors.push(path + " -> " + file.path);
 				continue;
 			}
 			var exists = file.exists();
@@ -4416,15 +4416,18 @@ var handyClicksSets = {
 				catch(e) {
 					this.ut._err("Import skipped, can't create " + path + " -> " + file.path);
 					Components.utils.reportError(e);
-					++errors;
+					errors.push(path + " -> " + file.path);
 					continue;
 				}
 			}
 			this.writeFileData(file, fo.data, fo.lastModified || Date.now());
 		}
-		errors && this.ut.notifyWarning(this.getLocalized("skippedFileData"), { buttons: {
-			$openConsole: this.ut.toErrorConsole
-		}});
+		if(errors.length) {
+			var msg = this.getLocalized("skippedFileData") + "\n" + errors.join("\n");
+			this.ut.notifyWarning(msg, { buttons: {
+				$openConsole: this.ut.toErrorConsole
+			}});
+		}
 	},
 	writeFileData: function(file, data, time) {
 		this.io.writeToFileAsync(data, file, function(status) {

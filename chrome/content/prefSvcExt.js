@@ -321,30 +321,31 @@ var handyClicksPrefSvcExt = {
 	exportFileData: function(files, code) {
 		var path = this.getSourcePath(code);
 		if(!path)
-			return true;
+			return "";
 		var exported = files._exported || (files._exported = { __proto__: null });
 		if(path in exported)
-			return true;
+			return "";
 		exported[path] = true;
 		var file = this.ut.getLocalFile(path);
 		if(!file) {
 			this.ut._warn("Export skipped, invalid path: " + path);
-			return null;
+			return path;
 		}
 		if(!this.importAllowed(file)) {
 			this.ut._warn("Export not allowed for " + path + " -> " + file.path + this._importPathsInfo);
-			return null;
+			return path + " -> " + file.path;
 		}
 		var data = this.io.readFromFile(file);
 		if(!data) {
 			this.ut._warn("Export skipped, file is empty or missing: " + path + " -> " + file.path);
-			return null;
+			return path + " -> " + file.path;
 		}
-		return files[path] = {
+		files[path] = {
 			lastModified: file.lastModifiedTime,
 			size: file.fileSize,
 			data: data
 		};
+		return "";
 	},
 	importAllowed: function(file) {
 		if(this.ps._scriptsDir.contains(file, false /* aRecurse, for Firefox 31 and older */))
