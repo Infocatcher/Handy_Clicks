@@ -226,7 +226,8 @@ tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_blink) {
 	border-bottom: 1px dashed graytext !important;
 	margin-bottom: -1px;
 }
-treechildren[hc_notFound="true"] {
+treechildren[hc_notFound="true"],
+#hc-sets-tree-importPanel[hc_notify] {
 	outline: 2px solid #f66;
 	outline-offset: -2px;
 }

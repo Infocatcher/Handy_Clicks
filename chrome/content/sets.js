@@ -1750,8 +1750,9 @@ var handyClicksSets = {
 			this.setChildNodesProperties(ti, { hc_blink: hl }, true);
 		}, this));
 	},
-	blinkNode: function(node, hl) {
-		var count = 3;
+	blinkNode: function(node, hl, count) {
+		if(!count)
+			count = 3;
 		(function blink() {
 			hl(node, true);
 			setTimeout(function() {
@@ -3352,6 +3353,13 @@ var handyClicksSets = {
 	checkImport: function(isImport) {
 		if(!this.ps.otherSrc)
 			return true;
+
+		if(!this.isTreePaneSelected)
+			this.selectTreePane();
+		this.blinkNode(this.$("hc-sets-tree-importPanel"), this.ju.bind(function(node, hl) {
+			this.attribute(node, "hc_notify", hl);
+		}, this), 1);
+
 		var askPref = "sets.incompleteImportWarning";
 		var dontAsk = { value: false };
 		var ok = this.ut.confirmEx(
