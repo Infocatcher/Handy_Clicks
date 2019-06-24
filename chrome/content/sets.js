@@ -3354,8 +3354,14 @@ var handyClicksSets = {
 		if(!this.ps.otherSrc)
 			return true;
 
-		if(!this.isTreePaneSelected)
+		if(!this.isTreePaneSelected) {
+			var prefWin = document.documentElement;
+			var currentPane = prefWin.currentPane;
 			this.selectTreePane();
+			setTimeout(function() { // Will restore, if window not closed (pressed Cancel)
+				prefWin.showPane(currentPane);
+			}, 0);
+		}
 		this.blinkNode(this.$("hc-sets-tree-importPanel"), this.ju.bind(function(node, hl) {
 			this.attribute(node, "hc_notify", hl);
 		}, this), 1);
