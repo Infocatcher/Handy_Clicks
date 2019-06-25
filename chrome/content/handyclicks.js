@@ -242,16 +242,15 @@ var handyClicks = {
 		if(em) {
 			var tar = e.originalTarget;
 			if(tar.namespaceURI == this.ut.XULNS) {
-				var nn = tar.nodeName;
-				emAllowEvent = this.flags.allowEditModeEvents = nn == "xul:scrollbarbutton" || nn == "xul:slider";
+				var ln = tar.localName;
+				emAllowEvent = this.flags.allowEditModeEvents = ln == "scrollbarbutton" || ln == "slider";
 				if(e.button == 0 && this.isMenu(tar)) {
+					this.flags.allowPopupshowing = true;
 					if(this.fxVersion >= 3.6) {
-						this.flags.allowPopupshowing = true;
 						tar.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
 						this.flags.allowPopupshowing = false;
 					}
 					else {
-						this.flags.allowPopupshowing = true;
 						this.delay(function() {
 							this.flags.allowPopupshowing = false;
 						}, this);
