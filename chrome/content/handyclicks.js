@@ -280,8 +280,9 @@ var handyClicks = {
 		if(delay > 0 && !em) {
 			var delayedAction = this.ju.getOwnProperty(funcObj, "delayedAction");
 			if(
-				!delayedAction && e.button == 2 // Show context menu after delay
-				|| this.isOkFuncObj(delayedAction) // Other action after delay
+				delayedAction
+					? this.isOkFuncObj(delayedAction)
+					: e.button == 2 // Will show context menu
 			) {
 				this.cancelDelayedAction(); // Only one timeout... (for dblclick event)
 				this.daTimeout = this.delay(this.executeDelayedAction, this, delay, [delayedAction, e]);
