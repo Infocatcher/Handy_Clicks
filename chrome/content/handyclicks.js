@@ -240,14 +240,14 @@ var handyClicks = {
 
 		var emAllowEvent = false;
 		if(em) {
-			var tar = e.originalTarget;
-			if(tar.namespaceURI == this.ut.XULNS) {
-				var ln = tar.localName;
+			var trg = e.originalTarget;
+			if(trg.namespaceURI == this.ut.XULNS) {
+				var ln = trg.localName;
 				emAllowEvent = this.flags.allowEditModeEvents = ln == "scrollbarbutton" || ln == "slider";
-				if(e.button == 0 && this.isMenu(tar)) {
+				if(e.button == 0 && this.isMenu(trg)) {
 					this.flags.allowPopupshowing = true;
 					if(this.fxVersion >= 3.6) {
-						tar.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
+						trg.open = true; // Open <menu>, <toolbarbutton type="menu">, etc.
 						this.flags.allowPopupshowing = false;
 					}
 					else {
@@ -301,11 +301,8 @@ var handyClicks = {
 		var funcObj = this.getFuncObjByEvt(e);
 		if(funcObj)
 			this.functionEvent(funcObj, e);
-		else if(this.editMode) {
-			var tar = e.originalTarget;
-			if(!this.isMenu(tar))
-				this.ui.notifyEditMode(true);
-		}
+		else if(this.editMode && !this.isMenu(e.originalTarget))
+			this.ui.notifyEditMode(true);
 	},
 	mouseupHandler: function(e) {
 		if(!this.enabled)
@@ -482,7 +479,8 @@ var handyClicks = {
 			&& !this.flags.cancelled;
 		if(canStop && this.editMode && this.flags.allowEditModeEvents)
 			return;
-		var same = e.originalTarget === this.origItem;
+		var trg = e.originalTarget;
+		var same = trg === this.origItem;
 		if(
 			same
 			&& this.settingsType == "command"
@@ -495,9 +493,9 @@ var handyClicks = {
 			_cs.time = Date.now();
 		if(
 			e.type == "command"
-				? stop && !this.isMenu(e.originalTarget) || (
+				? stop && !this.isMenu(trg) || (
 					canStop
-					&& e.originalTarget.localName == "command"
+					&& trg.localName == "command"
 					&& _cs.hasOwnProperty("time")
 					&& Date.now() - _cs.time < 100
 				)
@@ -594,7 +592,6 @@ var handyClicks = {
 		this.itemType = undefined; // "link", "img", "bookmark", "historyItem", "tab", "ext_mulipletabs", "submitButton"
 		this.item = this.mainItem = this.itemData = null;
 
-		//var it = this.origItem = e.originalTarget;
 		var it = e.originalTarget;
 		if(!it.localName) // it == document
 			return;
