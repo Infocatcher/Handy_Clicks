@@ -3,6 +3,10 @@
 
 #hc-editor-clickButton {
 	-moz-user-focus: ignore;
+	margin-top: 3px;
+}
+#hc-editor-clickButton > .button-box {
+	margin-bottom: -1px;
 }
 .hcText {
 	background: transparent !important;
