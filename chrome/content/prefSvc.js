@@ -600,7 +600,8 @@ var handyClicksPrefSvc = {
 			return val;
 		}, "\t");
 		if(errors.length) {
-			var msg = this.getLocalized("skippedFileData") + "\n" + errors.join("\n");
+			var msg = this.getLocalized("skippedFileData")
+				+ "\n" + errors.map(function(e, i) { return ++i + ") " + e; }).join("\n");
 			this.ut.notifyWarning(msg, { buttons: {
 				$openConsole: this.ut.toErrorConsole
 			}});
