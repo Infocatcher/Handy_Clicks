@@ -1686,11 +1686,12 @@ var handyClicksEditor = {
 		}
 	},
 	deleteSettings: function() {
+		var deleted;
 		switch(this.editorTabIndex) {
-			case this.INDEX_SHORTCUT: this.deleteShortcut();   break;
-			case this.INDEX_TYPE:     this.deleteCustomType();
+			case this.INDEX_SHORTCUT: deleted = this.deleteShortcut();   break;
+			case this.INDEX_TYPE:     deleted = this.deleteCustomType();
 		}
-		this.su.showInfoTooltip(
+		deleted && this.su.showInfoTooltip(
 			this.deleteButton,
 			this.getLocalized("deleteUndo")
 				.replace("%b", this.applyButton.label),
@@ -1927,7 +1928,7 @@ var handyClicksEditor = {
 		if(!this.ju.getOwnProperty(p, sh, ct)) { // Nothing to delete
 			this._savedShortcutObj = null;
 			this.setDialogButtons();
-			return;
+			return false;
 		}
 		delete p[sh][ct];
 		if(this.ju.isEmptyObj(p[sh]))
@@ -1940,6 +1941,7 @@ var handyClicksEditor = {
 
 		this.shortcutSaved();
 		this.setDialogButtons();
+		return true;
 	},
 	copyShortcut: function(isDelayed, dontCopy) {
 		if(isDelayed === undefined)
@@ -2071,10 +2073,10 @@ var handyClicksEditor = {
 		if(!types.hasOwnProperty(type)) { // Nothing to delete
 			this._savedTypeObj = null;
 			this.setDialogButtons();
-			return;
+			return false;
 		}
 		if(!this.su.confirmTypeAction(type, "typeDeletingWarning"))
-			return;
+			return false;
 		delete types[type];
 		if(this.ps.otherSrc)
 			this.pe.reloadSettings();
@@ -2084,6 +2086,7 @@ var handyClicksEditor = {
 
 		this.typeSaved();
 		this.setDialogButtons();
+		return true;
 	},
 	copyCustomType: function() {
 		this.storage.set("type", this.getTypeObj());
