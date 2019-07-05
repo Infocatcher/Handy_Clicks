@@ -1089,7 +1089,7 @@ var handyClicksSets = {
 			return this.getLocalized("customFile" + (hasData ? "WithData" : "")) + " " + path;
 		}
 		return this.getLocalized("customFunction")
-			+ (this.oldTree ? " " : " \n")
+			+ this.treeNewline
 			+ this.cropCode(action || "");
 	},
 	getInitCode: function(fo) {
@@ -1210,9 +1210,9 @@ var handyClicksSets = {
 		tRow.parentNode.setAttribute("hc_sortData" + col, sortData || val);
 		return cell;
 	},
-	get oldTree() {
-		delete this.oldTree;
-		return this.oldTree = this.fxVersion <= 2;
+	get treeNewline() {
+		delete this.treeNewline;
+		return this.treeNewline = this.fxVersion <= 2 ? " " : " \n";
 	},
 	getArguments: function(argsObj, localize) {
 		var res = [];
@@ -1223,7 +1223,7 @@ var handyClicksSets = {
 					: this.getRawArguments(argsObj, p)
 			)
 		}
-		return res.join(this.oldTree ? ", " : ", \n");
+		return res.join("," + this.treeNewline);
 	},
 	getLocalizedArguments: function(argsObj, p) {
 		var argVal = argsObj[p];
