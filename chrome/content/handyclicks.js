@@ -402,7 +402,7 @@ var handyClicks = {
 	},
 	popupshowingHandler: function(e) {
 		// Force prevent any popup
-		// This is for RightToClick extension https://addons.mozilla.org/firefox/addon/righttoclick/
+		// For RightToClick extension https://addons.mozilla.org/firefox/addon/righttoclick/
 		if(this.enabled && this.flags.stopContextMenu && !this.flags.allowPopupshowing) {
 			var ln = e.target.localName;
 			if(ln == "menupopup" || ln == "popup")
@@ -444,7 +444,7 @@ var handyClicks = {
 	},
 	cancel: function() {
 		this.flags.cancelled = true;
-		this.flags.stopContextMenu = false; //~ ?
+		this.flags.stopContextMenu = false;
 
 		this.cancelDelayedAction();
 		this.setMoveHandlers(null);
@@ -1030,8 +1030,8 @@ var handyClicks = {
 			return; // e.g. rocker gesture => go back => node.ownerDocument.location === null
 
 		if(this.itemType == "tab" || this.itemType == "ext_mulipletabs" || this.getTab(node)) {
-			// Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
-			// mousedown -> ...delay... -> this popup -> Tab Scope popup hide this popup
+			// Tab Scope https://addons.mozilla.org/firefox/addon/4882
+			// mousedown -> ...delay... -> our popup -> Tab Scope popup hides our popup
 			var tabscope = this.$("tabscopePopup");
 			if(tabscope) {
 				var _openPopup = tabscope.openPopup;
@@ -1150,7 +1150,7 @@ var handyClicks = {
 		var uri = it.localName == "treechildren"
 			? this.getTreeInfo(it, e, "uri")
 			: it.statusText
-				|| it._placesNode && it._placesNode.uri // Firefox 3.7a5pre+
+				|| it._placesNode && it._placesNode.uri // Firefox 4+
 				|| it.node && it.node.uri
 				|| it.getAttribute("siteURI")
 				|| it.getAttribute("targetURI")

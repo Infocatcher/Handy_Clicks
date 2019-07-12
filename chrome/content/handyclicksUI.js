@@ -37,7 +37,6 @@ var handyClicksUI = {
 		this.delay(function() {
 			this.setupUIActions();
 			this.setupProgress();
-			//this.loadBlinkStyle();
 		}, this);
 	},
 	destroy: function(reloadFlag) {
