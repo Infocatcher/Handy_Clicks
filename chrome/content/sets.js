@@ -3734,11 +3734,14 @@ var handyClicksSets = {
 				var info = this.ut.encodeHTML(this.getItemsInfo(its).join(" \n"))
 					.replace(/\n/g, "&#10;")
 					.replace(/\u21d2/g, "&#8658;");
-				this.ut.copyStr(
-					'<a href="' + this.ut.encodeHTML(uri) + '" title="' + info + '">'
+				var html = '<a href="' + this.ut.encodeHTML(uri) + '" title="' + info + '">'
 					+ this.ut.encodeHTML(label, false)
-					+ "</a>"
-				);
+					+ "</a>";
+				//this.ut.copyStr(html);
+				this.ut.setClipboardData({
+					"text/unicode": html,
+					"text/html":    html
+				});
 			}
 			else {
 				this.io.writeToFileAsync(pStr, file);
