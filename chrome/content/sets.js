@@ -1802,7 +1802,7 @@ var handyClicksSets = {
 				this.toggleEnabled(e);
 			else if(e.button == 1) {
 				var it = this.tView.getItemAtIndex(row.value);
-				if("__shortcut" in it) {
+				if("__shortcut" in it && !it.__isRemoved) {
 					var mode = it.__isType ? this.ct.EDITOR_MODE_TYPE : this.ct.EDITOR_MODE_SHORTCUT;
 					this.openEditorWindow(it, mode);
 				}
