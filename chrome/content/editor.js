@@ -1545,7 +1545,14 @@ var handyClicksEditor = {
 
 		var newCode = "//> " + newPath;
 		var oldCode = path.editor.value;
-		path.editor.value = newCode;
+		//path.editor.value = newCode;
+		Array.prototype.forEach.call(
+			document.getElementsByTagName("textbox"),
+			function(tb) {
+				if(/(?:^|\s)hcEditor(?:\s|$)/.test(tb.className) && tb.value == oldCode)
+					tb.value = newCode;
+			}
+		);
 		this.pe.forEachCode(this.ps, function(code, o, key) {
 			if(code == oldCode)
 				o[key] = newCode;
