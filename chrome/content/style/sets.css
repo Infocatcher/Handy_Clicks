@@ -63,6 +63,10 @@ radio[pane="hc-sets-pane-funcs"] {
 	margin: 0; /* Correct margin in Firefox 3.0 and older */
 }
 
+#hc-sets-tree-searchMenu menuitem[hc_notFound="true"]:not([disabled="true"]) {
+	color: grayText;
+}
+
 #hc-sets-tree-searchStatistics {
 	opacity: 0.5;
 	margin: 0 4px;

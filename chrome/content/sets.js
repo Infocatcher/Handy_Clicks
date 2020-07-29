@@ -2422,6 +2422,9 @@ var handyClicksSets = {
 				: origLabel;
 			if(label != mi.getAttribute("label"))
 				mi.setAttribute("label", label);
+			var nf = !count;
+			if(nf != (mi.getAttribute("hc_notFound") == "true"))
+				mi.setAttribute("hc_notFound", nf);
 		}, this);
 	},
 	insertSearchPlaceholder: function(mi) {
