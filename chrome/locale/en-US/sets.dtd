@@ -48,7 +48,7 @@
 /regular expression/i
 &#37;&#37;on&#37;&#37; = &#37;on&#37; (not treat as search placeholder)">
 <!ENTITY hc.sets.filterTip "Filter">
-<!ENTITY hc.sets.searchResultsTip "Count of found items">
+<!ENTITY hc.sets.searchResultsTip "Count of items found">
 <!ENTITY hc.sets.searchTotalTip "Total items count">
 
 <!ENTITY hc.sets.editMenu "Edit">
@@ -65,7 +65,7 @@
 <!ENTITY hc.sets.findNext "Find next down">
 <!ENTITY hc.sets.findPrev "Find next up">
 <!ENTITY hc.sets.findSelectAll "Select all search results">
-<!ENTITY hc.sets.findFilter "Enable filter">
+<!ENTITY hc.sets.findFilter "Filter mode">
 
 <!ENTITY hc.sets.viewMenu "View">
 <!ENTITY hc.sets.viewMenuAccesskey "V">

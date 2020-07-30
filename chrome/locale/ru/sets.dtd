@@ -65,7 +65,7 @@
 <!ENTITY hc.sets.findNext "Найти далее вниз">
 <!ENTITY hc.sets.findPrev "Найти далее вверх">
 <!ENTITY hc.sets.findSelectAll "Выделить всё найденное">
-<!ENTITY hc.sets.findFilter "Включить фильтр">
+<!ENTITY hc.sets.findFilter "Режим фильтрации">
 
 <!ENTITY hc.sets.viewMenu "Вид">
 <!ENTITY hc.sets.viewMenuAccesskey "В">
