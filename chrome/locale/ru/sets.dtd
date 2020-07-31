@@ -79,10 +79,10 @@
 <!ENTITY hc.sets.sortBy "Сортировка">
 <!ENTITY hc.sets.sortAutoInline "Переключаться на линейный режим">
 
-<!ENTITY hc.sets.remember "Запоминать после закрытия">
+<!ENTITY hc.sets.remember "Восстанавливать состояние">
 <!ENTITY hc.sets.rememberSearchQuery "Поисковый запрос">
 <!ENTITY hc.sets.rememberScrollPosition "Положение прокрутки">
-<!ENTITY hc.sets.rememberState "Состояние дерева">
+<!ENTITY hc.sets.rememberState "Свёрнутое/развёрнутое">
 <!ENTITY hc.sets.rememberSort "Порядок сортировки">
 
 <!ENTITY hc.sets.customTypes "Добавленные типы">

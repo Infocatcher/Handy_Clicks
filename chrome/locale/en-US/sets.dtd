@@ -79,10 +79,10 @@
 <!ENTITY hc.sets.sortBy "Sort by">
 <!ENTITY hc.sets.sortAutoInline "Switch to inline mode">
 
-<!ENTITY hc.sets.remember "Remember after closing">
+<!ENTITY hc.sets.remember "Restore state">
 <!ENTITY hc.sets.rememberSearchQuery "Search query">
 <!ENTITY hc.sets.rememberScrollPosition "Scroll position">
-<!ENTITY hc.sets.rememberState "Tree state">
+<!ENTITY hc.sets.rememberState "Collapsed/expanded">
 <!ENTITY hc.sets.rememberSort "Sort order">
 
 <!ENTITY hc.sets.customTypes "Custom types">
