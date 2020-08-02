@@ -4025,6 +4025,7 @@ var handyClicksSets = {
 			popup.removeChild(sep);
 		}
 		popup.insertBefore(df, sep);
+		this.$("hc-sets-tree-removeDuplicateBackups").removeAttribute("disabled");
 		this.updRestorePopup(ubCount, isEmpty, true);
 	},
 	get backupItems() {
@@ -4072,7 +4073,7 @@ var handyClicksSets = {
 		miRD.setAttribute("disabled", "true");
 		ubPopup.setAttribute("hc_duplicateCheck", "true");
 		setTimeout(function() {
-			miRD.removeAttribute("disabled");
+			// .buildRestorePopup() -> .removeAttribute("disabled")
 			ubPopup.removeAttribute("hc_duplicateCheck");
 		}, 400);
 
