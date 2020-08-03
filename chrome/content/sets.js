@@ -3968,6 +3968,10 @@ var handyClicksSets = {
 		delete this.ubPopup;
 		return this.ubPopup = this.$("hc-sets-tree-restoreFromBackupPopup");
 	},
+	get ubRD() {
+		delete this.ubRD;
+		return this.ubRD = this.$("hc-sets-tree-removeDuplicateBackups");
+	},
 	buildRestorePopup: function() {
 		var popup = this.ubPopup;
 
@@ -4025,7 +4029,7 @@ var handyClicksSets = {
 			popup.removeChild(sep);
 		}
 		popup.insertBefore(df, sep);
-		this.$("hc-sets-tree-removeDuplicateBackups").removeAttribute("disabled");
+		this.ubRD.hasAttribute("disabled") && this.ubRD.removeAttribute("disabled");
 		this.updRestorePopup(ubCount, isEmpty, true);
 	},
 	get backupItems() {
@@ -4068,9 +4072,10 @@ var handyClicksSets = {
 		}
 		this.updRestorePopup(store);
 	},
-	removeDuplicateBackups: function(miRD) {
+	removeDuplicateBackups: function() {
 		var ubPopup = this.ubPopup;
-		miRD.setAttribute("disabled", "true");
+		var ubRD = this.ubRD;
+		ubRD.setAttribute("disabled", "true");
 		ubPopup.setAttribute("hc_duplicateCheck", "true");
 		setTimeout(function() {
 			// .buildRestorePopup() -> .removeAttribute("disabled")
@@ -4130,7 +4135,7 @@ var handyClicksSets = {
 			ubPopup.scrollHeight || ubPopup.offsetHeight; // Force redraw
 			this.delay(function() {
 				this.su.showInfoTooltip(
-					miRD,
+					ubRD,
 					this.getLocalized(dupCount ? "duplicateBackupsRemoved" : "duplicateBackupsNA")
 						.replace("%n", dupCount),
 					this.su.TOOLTIP_HIDE_DEFAULT,
