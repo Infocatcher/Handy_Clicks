@@ -2370,7 +2370,7 @@ var handyClicksSets = {
 	},
 	get searchField() {
 		delete this.searchField;
-		return this.searchField = this.$("hc-sets-tree-searchField");
+		return this.searchField = this.e("hc-sets-tree-searchField");
 	},
 	get filterMode() {
 		return this.$("hc-sets-tree-searchFilterMode").getAttribute("checked") == "true";
@@ -3966,11 +3966,11 @@ var handyClicksSets = {
 	},
 	get ubPopup() {
 		delete this.ubPopup;
-		return this.ubPopup = this.$("hc-sets-tree-restoreFromBackupPopup");
+		return this.ubPopup = this.e("hc-sets-tree-restoreFromBackupPopup");
 	},
 	get ubRD() {
 		delete this.ubRD;
-		return this.ubRD = this.$("hc-sets-tree-removeDuplicateBackups");
+		return this.ubRD = this.e("hc-sets-tree-removeDuplicateBackups");
 	},
 	buildRestorePopup: function() {
 		var popup = this.ubPopup;
