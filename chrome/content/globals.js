@@ -223,14 +223,12 @@ var apps = {
 	isBasilisk:  "Basilisk",
 	__proto__: null
 };
-function appGetter(p, n) {
+for(var p in apps) (function(p, n) {
 	g.__defineGetter__(p, function() {
 		delete g[p];
 		return g[p] = g.appName == n;
 	});
-}
-for(var p in apps)
-	appGetter(p, apps[p]);
+})(p, apps[p]);
 
 function lazy(s, p, file) {
 	var has = p in window && !window.__lookupGetter__(p);
