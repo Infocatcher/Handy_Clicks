@@ -229,6 +229,7 @@ for(var p in apps) (function(p, n) {
 		return g[p] = g.appName == n;
 	});
 })(p, apps[p]);
+apps = null;
 
 function lazy(s, p, file) {
 	var has = p in window && !window.__lookupGetter__(p);
@@ -274,6 +275,7 @@ function initStorage() {
 		else
 			this._storage[key] = val;
 	};
+	initStorage = getStorage = null;
 	return out;
 }
 function getStorage() {
