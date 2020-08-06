@@ -31,7 +31,7 @@ this.__defineGetter__("handyClicksGlobals", function() {
 });
 setTimeout(function() {
 	handyClicksGlobals.jsLoader.loadSubScript("chrome://handyclicks/content/uninstaller.js");
-}, 300);
+}, 1500);
 
 // https://bugzilla.mozilla.org/show_bug.cgi?id=1413413
 var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
