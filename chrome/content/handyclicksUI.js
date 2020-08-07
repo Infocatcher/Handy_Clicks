@@ -283,34 +283,35 @@ var handyClicksUI = {
 	ACTION_EDITOR:          6,
 	ACTION_EDITOR_TYPE:     7,
 	setupUIActions: function() {
-		this.setControls(function(elt) {
-			var type = this.getTypeByLocalName(elt.localName);
-			var leftClickAction = this.pu.get("ui.action" + type + "LeftClick");
-			var rightClickAction = this.pu.get("ui.action" + type + "RightClick");
-			var cmId = "handyClicks-settingsPopup";
-			var popup = leftClickAction == this.ACTION_POPUP ? cmId : null;
-			this.attribute(elt, "popup", popup);
-			elt.setAttribute("context", cmId);
-			elt.setAttribute("hc_preventContextMenu", rightClickAction != this.ACTION_POPUP);
-			if(!elt.hasAttribute("oncontextmenu"))
-				elt.setAttribute("oncontextmenu", "return handyClicksUI.allowContextMenu(event);");
-			//~ note: "popup" doesn't work for menuitems
-			if(elt.localName == "menuitem")
-				elt.setAttribute("closemenu", popup ? "none" : "auto");
-			if(type == "Menu") {
-				var key;
-				switch(leftClickAction) {
-					case this.ACTION_STATUS:       key = "toggleStatus";    break;
-					case this.ACTION_SETTINGS:     key = "openSettings";    break;
-					case this.ACTION_EDIT_MODE:    key = "editMode";        break;
-					case this.ACTION_ALL_SETTINGS: key = "openAboutConfig";
-				}
-				if(key)
-					elt.setAttribute("key", "handyClicks-key-" + key);
-				else
-					elt.removeAttribute("key");
+		this.setControls(this.setupUIAction);
+	},
+	setupUIAction: function(elt) {
+		var type = this.getTypeByLocalName(elt.localName);
+		var leftClickAction = this.pu.get("ui.action" + type + "LeftClick");
+		var rightClickAction = this.pu.get("ui.action" + type + "RightClick");
+		var cmId = "handyClicks-settingsPopup";
+		var popup = leftClickAction == this.ACTION_POPUP ? cmId : null;
+		this.attribute(elt, "popup", popup);
+		elt.setAttribute("context", cmId);
+		elt.setAttribute("hc_preventContextMenu", rightClickAction != this.ACTION_POPUP);
+		if(!elt.hasAttribute("oncontextmenu"))
+			elt.setAttribute("oncontextmenu", "return handyClicksUI.allowContextMenu(event);");
+		//~ note: "popup" doesn't work for menuitems
+		if(elt.localName == "menuitem")
+			elt.setAttribute("closemenu", popup ? "none" : "auto");
+		if(type == "Menu") {
+			var key;
+			switch(leftClickAction) {
+				case this.ACTION_STATUS:       key = "toggleStatus";    break;
+				case this.ACTION_SETTINGS:     key = "openSettings";    break;
+				case this.ACTION_EDIT_MODE:    key = "editMode";        break;
+				case this.ACTION_ALL_SETTINGS: key = "openAboutConfig";
 			}
-		});
+			if(key)
+				elt.setAttribute("key", "handyClicks-key-" + key);
+			else
+				elt.removeAttribute("key");
+		}
 	},
 	allowContextMenu: function(e) {
 		var elt = e.target;
