@@ -36,7 +36,7 @@ var handyClicksUI = {
 
 		this.delay(function() {
 			this.setupUIActions();
-			this.setupProgress();
+			this.delay(this.setupProgress, this, 50);
 		}, this);
 	},
 	destroy: function(reloadFlag) {
