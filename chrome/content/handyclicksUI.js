@@ -486,14 +486,14 @@ var handyClicksUI = {
 			return;
 		}
 		// Are you see these great backward compatibility? >_<
-		if("openPopupAtScreen" in tt) // Firefox 3.0+
-			tt.openPopupAtScreen(e.screenX, e.screenY, false /*isContextMenu*/);
-		else
-			tt.showPopup(document.documentElement, e.screenX, e.screenY, "tooltip", null, null);
-		if(this.fxVersion <= 2)
-			return;
 		var x = e.screenX;
 		var y = e.screenY;
+		if("openPopupAtScreen" in tt) // Firefox 3.0+
+			tt.openPopupAtScreen(x, y, false /*isContextMenu*/);
+		else
+			tt.showPopup(document.documentElement, x, y, "tooltip", null, null);
+		if(this.fxVersion <= 2)
+			return;
 		if(this.fxVersion <= 3.5) {
 			x = Math.min(screen.width  - tt.boxObject.width,  x);
 			y = Math.min(screen.height - tt.boxObject.height, y);
