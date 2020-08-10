@@ -480,14 +480,19 @@ var handyClicksUI = {
 		var trg = e.originalTarget;
 		if(trg.namespaceURI == this.ut.XULNS && trg.localName == "treechildren")
 			this.updateEditModeTip(e);
+		this.showEditModeTip(e.screenX, e.screenY);
+	},
+	mouseoutHandler: function(e) {
+		if(!e.relatedTarget)
+			this.emtt.hidePopup();
+	},
+	showEditModeTip: function(x, y) {
 		var tt = this.emtt;
 		if(!this.hc.itemType) {
 			tt.hidePopup();
 			return;
 		}
 		// Are you see these great backward compatibility? >_<
-		var x = e.screenX;
-		var y = e.screenY;
 		if("openPopupAtScreen" in tt) // Firefox 3.0+
 			tt.openPopupAtScreen(x, y, false /*isContextMenu*/);
 		else
@@ -504,10 +509,6 @@ var handyClicksUI = {
 		if(this.fxVersion != 3.6)
 			y += 22;
 		tt.moveTo(x, y);
-	},
-	mouseoutHandler: function(e) {
-		if(!e.relatedTarget)
-			this.emtt.hidePopup();
 	},
 	updateEditModeTip: function(e) {
 		this.hc.defineItem(e, {});
