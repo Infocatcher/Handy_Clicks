@@ -424,6 +424,7 @@ var handyClicksUI = {
 		act.call(window, "mouseover", this, true);
 		act.call(window, "mousemove", this, true);
 		act.call(window, "mouseout",  this, true);
+		act.call(window, "popupshown", this, true);
 		if(em)
 			this.notifyEditMode();
 		else {
@@ -457,7 +458,8 @@ var handyClicksUI = {
 		switch(e.type) {
 			case "mouseover": this.mouseoverHandler(e); break;
 			case "mousemove": this.mousemoveHandler(e); break;
-			case "mouseout":  this.mouseoutHandler(e);
+			case "mouseout":  this.mouseoutHandler(e);  break;
+			case "popupshown": this.popupshownHandler(e);
 		}
 	},
 	get emtt() {
@@ -486,12 +488,23 @@ var handyClicksUI = {
 		if(!e.relatedTarget)
 			this.emtt.hidePopup();
 	},
+	popupshownHandler: function(e) {
+		var tt = this.emtt;
+		var trg = e.target;
+		if(trg == tt || trg.localName != "tooltip")
+			return;
+		// Force make topmost
+		tt.hidePopup();
+		this.showEditModeTip(tt._lastX, tt._lastY);
+	},
 	showEditModeTip: function(x, y) {
 		var tt = this.emtt;
 		if(!this.hc.itemType) {
 			tt.hidePopup();
 			return;
 		}
+		tt._lastX = x;
+		tt._lastY = y;
 		// Are you see these great backward compatibility? >_<
 		if("openPopupAtScreen" in tt) // Firefox 3.0+
 			tt.openPopupAtScreen(x, y, false /*isContextMenu*/);
