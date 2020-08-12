@@ -421,9 +421,9 @@ var handyClicksUI = {
 			elt.setAttribute(ttAttr, tt);
 		});
 		var act = em ? addEventListener : removeEventListener;
-		act.call(window, "mouseover", this, true);
-		act.call(window, "mousemove", this, true);
-		act.call(window, "mouseout",  this, true);
+		act.call(window, "mouseover",  this, true);
+		act.call(window, "mousemove",  this, true);
+		act.call(window, "mouseout",   this, true);
 		act.call(window, "popupshown", this, true);
 		if(em)
 			this.notifyEditMode();
@@ -456,9 +456,9 @@ var handyClicksUI = {
 	},
 	handleEvent: function(e) {
 		switch(e.type) {
-			case "mouseover": this.mouseoverHandler(e); break;
-			case "mousemove": this.mousemoveHandler(e); break;
-			case "mouseout":  this.mouseoutHandler(e);  break;
+			case "mouseover":  this.mouseoverHandler(e);  break;
+			case "mousemove":  this.mousemoveHandler(e);  break;
+			case "mouseout":   this.mouseoutHandler(e);   break;
 			case "popupshown": this.popupshownHandler(e);
 		}
 	},
