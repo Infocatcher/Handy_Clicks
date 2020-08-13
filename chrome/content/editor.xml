@@ -575,7 +575,8 @@
 							return;
 						}
 						if(!file.exists()) {
-							ut.notifyWarning(ut.getLocalized("cantEditFile"), {
+							var msg = ut.getLocalized("cantEditFile") + "\n" + path + "\n=> " + file.path;
+							ut.notifyWarning(msg, {
 								buttons: {
 									$createNewFile: function() {
 										try {
