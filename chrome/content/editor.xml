@@ -612,7 +612,7 @@
 					var ext = ut.pu.get("editor.external.extension") || "js";
 					if((!isExternal || hasFileData) && (!file || !file.exists())) {
 						var fName = hasFileData
-							? path.match(/[^\/\\]*$/)
+							? path.match(/[^\/\\]*$/)[0]
 							: this.getDefaultFilename(ext, ut.canRunw && ut.pu.get("editor.external.labelInFileName"));
 						file = ut.ps.tempDir.clone();
 						file.append(fName);
