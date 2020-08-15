@@ -737,9 +737,13 @@ var handyClicksSetsUtils = {
 	getExtLabel: function(name) {
 		return this.ut.getLocalizedEntity.apply(this.ut, this.extLabels[name]);
 	},
-	getActionLabel: function(fo) {
-		if(fo.custom)
-			return this.ps.localize(fo.label || "");
+	getActionLabel: function gl(fo) {
+		gl._localized = false;
+		if(fo.custom) {
+			var label = this.ps.localize(fo.label || "");
+			gl._localized = this.ps.localize._localized;
+			return label;
+		}
 		var act = fo.action;
 		if(act in this.extLabels)
 			return this.getExtLabel(act);
