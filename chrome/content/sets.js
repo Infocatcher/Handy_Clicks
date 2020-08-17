@@ -845,6 +845,7 @@ var handyClicksSets = {
 		this.appendTreeCell(tRow, "label", label, ++col);
 		this.appendTreeCell(tRow, "label", fo.eventType, ++col);
 		var actLabel = this.su.getActionLabel(fo);
+		var localized = this.su.getActionLabel._localized;
 		this.appendTreeCell(tRow, "label", actLabel, ++col);
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom), ++col);
 		var linkedFile = this.getActionCode._hasLinkedFile;
@@ -879,6 +880,7 @@ var handyClicksSets = {
 			var daStr = foStr + ".delayedAction";
 			var daCustom = !!da.custom;
 			var daLabel = this.su.getActionLabel(da);
+			var daLocalized = this.su.getActionLabel._localized;
 			var daDis = this._daForceDisable || !fo.enabled || !da.enabled;
 			this.appendTreeCell(daRow, "label", daLabel, ++col);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom), ++col);
@@ -905,7 +907,9 @@ var handyClicksSets = {
 				hc_custom: daCustom,
 				hc_customFile: daLinkedFile,
 				hc_customInit: !!daInitCode,
-				hc_customType: isCustomType
+				hc_customType: isCustomType,
+				hc_customLocalized: daLocalized,
+				hc_customNotLocalized: daCustom && !daLocalized
 			}, true);
 
 			if(this._import) {
@@ -949,7 +953,9 @@ var handyClicksSets = {
 			hc_custom: isCustom,
 			hc_customFile: linkedFile,
 			hc_customInit: !!initCode,
-			hc_customType: isCustomType
+			hc_customType: isCustomType,
+			hc_customLocalized: localized,
+			hc_customNotLocalized: isCustom && !localized
 		}, true);
 		if(this._import) {
 			var saved = this.ju.getOwnProperty(this._savedPrefs, shortcut, itemType);
@@ -2542,6 +2548,8 @@ var handyClicksSets = {
 		hc_customFile:   "%file%",
 		hc_customInit:   "%init%",
 		hc_customType:   "%type%",
+		hc_customLocalized: "%+lng%",
+		hc_customNotLocalized: "%-lng%",
 		hc_enabled:      "%on%",
 		hc_disabled:     "%off%",
 		hc_delayed:      "%delay%",
