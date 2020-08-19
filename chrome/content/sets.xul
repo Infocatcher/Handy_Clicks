@@ -68,6 +68,8 @@ preferences {
 					<menuitem type="checkbox" acceltext="%file%" label="&hc.sets.searchCustomFile;" />
 					<menuitem type="checkbox" acceltext="%init%" label="&hc.sets.searchCustomInit;" />
 					<menuitem type="checkbox" acceltext="%type%" label="&hc.sets.searchCustomType;" />
+					<menuitem type="checkbox" acceltext="%+lng%" label="&hc.sets.searchCustomLocalized;" />
+					<menuitem type="checkbox" acceltext="%-lng%" label="&hc.sets.searchCustomNotLocalized;" />
 					<menuseparator />
 					<menuitem type="checkbox" acceltext="%na%" label="&hc.sets.searchNA;" />
 					<menuitem type="checkbox" acceltext="%bug%" label="&hc.sets.searchBuggy;" />

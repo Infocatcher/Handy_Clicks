@@ -36,6 +36,8 @@
 <!ENTITY hc.sets.searchCustomFile "Custom file">
 <!ENTITY hc.sets.searchCustomInit "Custom initialization">
 <!ENTITY hc.sets.searchCustomType "Custom type">
+<!ENTITY hc.sets.searchCustomLocalized "Custom localized">
+<!ENTITY hc.sets.searchCustomNotLocalized "Custom not localized">
 <!ENTITY hc.sets.searchNA "Not available">
 <!ENTITY hc.sets.searchBuggy "Buggy">
 <!ENTITY hc.sets.searchChanged "Changed (import)">
