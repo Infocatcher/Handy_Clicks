@@ -1015,6 +1015,7 @@ var handyClicksSets = {
 		if(!this.ju.isObject(to))
 			to = {};
 		var typeLabel = this.getTypeLabel(type, true);
+		var localized = this.ps.localize._localized;
 		var label = this.drawInline
 			? this.getLocalized("customType").replace("%s", typeLabel)
 			: typeLabel;
@@ -1059,7 +1060,9 @@ var handyClicksSets = {
 			hc_buggy: !this.ps.isOkCustomType(type, drawRemoved && this._savedTypes),
 			hc_custom: true,
 			hc_customFile: linkedFile,
-			hc_customType: true
+			hc_customType: true,
+			hc_customLocalized: localized,
+			hc_customNotLocalized: !localized
 		}, true);
 		if(this._import) {
 			var state = this._typesState[type] || "";
@@ -1081,6 +1084,7 @@ var handyClicksSets = {
 		return tItem;
 	},
 	getTypeLabel: function(type, isCustomType) {
+		this.ps.localize._localized = false;
 		return this.ps.getTypeLabel(type, isCustomType, this._drawRemoved && this._savedTypes);
 	},
 	getActionCode: function getActionCode(action, isCustom) {
