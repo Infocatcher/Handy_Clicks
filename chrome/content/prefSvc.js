@@ -736,7 +736,7 @@ var handyClicksPrefSvc = {
 		return this.locale = this.pu.get("locale") || this.ut.xcr.getSelectedLocale("global");
 	},
 	localize: function lz(data) {
-		lz._localized = false;
+		//lz._localized = false;
 		if(!data)
 			return data;
 		// "String in English @ru: String in Russian @xx: ..."
