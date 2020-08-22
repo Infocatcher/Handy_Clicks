@@ -97,6 +97,9 @@ radio[pane="hc-sets-pane-funcs"] {
 	-moz-margin-start: 3px;
 	opacity: 0.6;
 }
+#hc-sets-tree-sortMenu menuitem[hc_forHidden="true"] > .menu-iconic-text {
+	opacity: 0.45;
+}
 
 /* Tree style */
 treecol[sortActive="true"]:not([sortDirection]):not([primary]) > .treecol-sortdirection,

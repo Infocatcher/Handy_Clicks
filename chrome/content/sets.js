@@ -2156,6 +2156,7 @@ var handyClicksSets = {
 			function(mi) {
 				var col = this.$(mi.getAttribute("hc_column"));
 				mi.setAttribute("checked", col == sortCol);
+				mi.setAttribute("hc_forHidden", col.hidden);
 				var sd = col.getAttribute("sortDirection");
 				var dir = sd == "ascending" ? "\u25b2"
 					: sd == "descending" ? "\u25bc" : "";
