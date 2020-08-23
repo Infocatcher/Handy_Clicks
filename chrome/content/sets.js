@@ -2179,14 +2179,20 @@ var handyClicksSets = {
 				var mi = this.ut.createElement("menuitem", {
 					label: col.getAttribute("label"),
 					type: "radio",
-					hc_column: col.id,
-					oncommand: "handyClicksSets.sortTree(this.getAttribute('hc_column'));"
+					hc_column: col.id
 				});
 				df.appendChild(mi);
 			},
 			this
 		);
 		mp.insertBefore(df, mp.firstChild);
+	},
+	sortMenuCommand: function(e) {
+		var colId = e.target.getAttribute("hc_column");
+		if(!colId)
+			return;
+		this.sortTree(colId);
+		this.initSortMenu(e.currentTarget);
 	},
 
 	get treeContainers() {
