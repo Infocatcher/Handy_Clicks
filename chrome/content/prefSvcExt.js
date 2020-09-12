@@ -332,13 +332,13 @@ var handyClicksPrefSvcExt = {
 			return path;
 		}
 		if(!this.importAllowed(file)) {
-			this.ut._warn("Export not allowed for " + path + " -> " + file.path + this._importPathsInfo);
-			return path + " -> " + file.path;
+			this.ut._warn("Export not allowed for " + path + "\n=> " + file.path + this._importPathsInfo);
+			return path + "\n=> " + file.path;
 		}
 		var data = this.io.readFromFile(file);
 		if(!data) {
-			this.ut._warn("Export skipped, file is empty or missing: " + path + " -> " + file.path);
-			return path + " -> " + file.path;
+			this.ut._warn("Export skipped, file is empty or missing: " + path + "\n=> " + file.path);
+			return path + "\n=> " + file.path;
 		}
 		files[path] = {
 			lastModified: file.lastModifiedTime,

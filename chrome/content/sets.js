@@ -4405,8 +4405,8 @@ var handyClicksSets = {
 				continue;
 			}
 			if(!this.pe.importAllowed(file)) {
-				this.ut._warn("Import not allowed for " + path + " -> " + file.path + this.pe._importPathsInfo);
-				errors.push(path + " -> " + file.path);
+				this.ut._warn("Import not allowed for " + path + "\n=> " + file.path + this.pe._importPathsInfo);
+				errors.push(path + "\n=> " + file.path);
 				continue;
 			}
 			var exists = file.exists();
@@ -4459,9 +4459,9 @@ var handyClicksSets = {
 					file.create(file.NORMAL_FILE_TYPE, this.io.PERMS_FILE_WRITE); // Also create directories
 				}
 				catch(e) {
-					this.ut._err("Import skipped, can't create " + path + " -> " + file.path);
+					this.ut._err("Import skipped, can't create " + path + "\n=> " + file.path);
 					Components.utils.reportError(e);
-					errors.push(path + " -> " + file.path);
+					errors.push(path + "\n=> " + file.path);
 					continue;
 				}
 			}
