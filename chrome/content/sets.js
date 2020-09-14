@@ -2486,9 +2486,9 @@ var handyClicksSets = {
 		}
 		else {
 			// Check for selection inside placeholder
-			var leftPh = /%[^%]*$/.test(val.substr(0, ifi.selectionStart)) && RegExp.lastMatch;
-			var rightPh = /^[^%]*%+/.test(val.substr(ifi.selectionEnd)) && RegExp.lastMatch;
-			if(leftPh && rightPh && /^[^%]*$/.test(val.substring(ifi.selectionStart, ifi.selectionEnd)))
+			var leftPh = /%[a-z+-]*$/.test(val.substr(0, ifi.selectionStart)) && RegExp.lastMatch;
+			var rightPh = /^[a-z+-]*%+/.test(val.substr(ifi.selectionEnd)) && RegExp.lastMatch;
+			if(leftPh && rightPh && /^[a-z+-]*$/.test(val.substring(ifi.selectionStart, ifi.selectionEnd)))
 				ifi.selectionStart = ifi.selectionEnd = ifi.selectionEnd + rightPh.length;
 
 			if(/\S$/.test(val.substr(0, ifi.selectionStart)))
