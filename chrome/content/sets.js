@@ -2455,6 +2455,18 @@ var handyClicksSets = {
 			.QueryInterface(Components.interfaces.nsIDOMNSEditableElement)
 			.editor
 			.QueryInterface(Components.interfaces.nsIPlaintextEditor);
+		if(pos == -1 && ph in this.oppositeSearchPlaceholders) {
+			var alts = this.oppositeSearchPlaceholders[ph];
+			for(var i = 0, l = alts.length; i < l; ++i) {
+				var alpPh = alts[i];
+				var alpPos = val.indexOf(alpPh);
+				if(alpPos != -1) {
+					ifi.selectionStart = alpPos;
+					ifi.selectionEnd = alpPos + alpPh.length;
+					break;
+				}
+			}
+		}
 		if(pos != -1) {
 			var posEnd = pos + ph.length;
 			var before = val.substr(0, pos);
@@ -2567,6 +2579,21 @@ var handyClicksSets = {
 		hc_edited:             "%open%",
 		hc_notAvailable:       "%na%",
 		hc_buggy:              "%bug%",
+		__proto__: null
+	},
+	oppositeSearchPlaceholders: {
+		"%ovr%":      ["%new%", "%old%"],
+		"%new%":      ["%ovr%", "%old%"],
+		"%old%":      ["%ovr%", "%new%"],
+		"%internal%": ["%custom%", "%file%", "%init%", "%type%", "%+lng%", "%-lng%"],
+		"%custom%":   ["%internal%"],
+		"%file%":     ["%internal%"],
+		"%init%":     ["%internal%"],
+		"%type%":     ["%internal%"],
+		"%+lng%":     ["%internal%", "%-lng%"],
+		"%-lng%":     ["%internal%", "%+lng%"],
+		"%on%":       ["%off%"],
+		"%off%":      ["%on%"],
 		__proto__: null
 	},
 	get searchReplacements() { // hc_foo: "internal string"
