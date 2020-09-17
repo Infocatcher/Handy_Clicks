@@ -2450,24 +2450,14 @@ var handyClicksSets = {
 			return;
 		var ifi = this.searchField.inputField;
 		var val = ifi.value;
-		var pos = val.indexOf(ph);
 		var editor = ifi
 			.QueryInterface(Components.interfaces.nsIDOMNSEditableElement)
 			.editor
 			.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-		if(pos == -1 && ph in this.oppositeSearchPlaceholders) {
-			var alts = this.oppositeSearchPlaceholders[ph];
-			for(var i = 0, l = alts.length; i < l; ++i) {
-				var alpPh = alts[i];
-				var alpPos = val.indexOf(alpPh);
-				if(alpPos != -1) {
-					ifi.selectionStart = alpPos;
-					ifi.selectionEnd = alpPos + alpPh.length;
-					break;
-				}
-			}
-		}
-		if(pos != -1) {
+		function removePh(ph) {
+			var pos = val.indexOf(ph);
+			if(pos == -1)
+				return false;
 			var posEnd = pos + ph.length;
 			var before = val.substr(0, pos);
 			var after = val.substr(posEnd);
@@ -2495,8 +2485,13 @@ var handyClicksSets = {
 			ifi.selectionStart = pos;
 			ifi.selectionEnd = posEnd;
 			editor.deleteSelection(0, 0);
+			val = ifi.value;
+			return true;
 		}
-		else {
+		if(!removePh(ph)) {
+			if(ph in this.oppositeSearchPlaceholders)
+				this.oppositeSearchPlaceholders[ph].forEach(removePh);
+
 			// Check for selection inside placeholder
 			var leftPh = /%[a-z+-]*$/.test(val.substr(0, ifi.selectionStart)) && RegExp.lastMatch;
 			var rightPh = /^[a-z+-]*%+/.test(val.substr(ifi.selectionEnd)) && RegExp.lastMatch;
