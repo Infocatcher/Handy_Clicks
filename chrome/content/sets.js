@@ -2401,16 +2401,20 @@ var handyClicksSets = {
 		return this.searcher = handyClicksSetsSearcher;
 	},
 	initSearchMenu: function(mp) {
+		var val = this.searchField.value;
+		var hasSearch = /\S/.test(val);
 		var counters = { __proto__: null };
 		var sp = this.searchPlaceholders;
 		Array.prototype.forEach.call(
 			this.tree.getElementsByTagName("treerow"),
 			function(tRow) {
 				var tItem = tRow.parentNode;
-				if(tItem.hidden || tItem.parentNode.parentNode.hidden)
-					return;
+				//if(tItem.hidden || tItem.parentNode.parentNode.hidden)
+				//	return;
 				var props = tRow.getAttribute("properties");
-				props && props.split(/\s+/).forEach(function(prop) {
+				if(!props || hasSearch && props.indexOf("hc_search ") == -1) // See .setNodeProperties()
+					return;
+				props.split(/\s+/).forEach(function(prop) {
 					if(!(prop in sp))
 						return;
 					var ph = sp[prop];
@@ -2419,7 +2423,6 @@ var handyClicksSets = {
 			}
 		);
 
-		var val = this.searchField.value;
 		var labelTemplate = mp.getAttribute("hc_labelTemplate");
 		Array.prototype.forEach.call(mp.getElementsByTagName("menuitem"), function(mi) {
 			var ph = mi.getAttribute("acceltext");
