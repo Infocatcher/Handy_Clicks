@@ -11,7 +11,7 @@
 `*` Editor: disable “Delete” button, if there is nothing to delete.<br>
 `x` Fixed Scratchpad support in Firefox 56+.<br>
 `*` Edit mode tooltip: hide empty URI field.<br>
-`+` Added export/import for separate *.js files (`//> %hc_ScriptsDir%/example.js` in code, also added %hc_ScriptsDir% alias for %profile%/handyclicks/scripts/ and %data% search placeholder) (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/32">#32</a>).<br>
+`+` Added export/import for separate *.js files (`//> %hc_ScriptsDir%/example.js` in code, also added %hc_ScriptsDir% alias for %profile%/handyclicks/scripts/ and %data% search placeholder, <em>extensions.handyclicks.sets.importPaths</em> preference to allow import/export: "D:\hcScripts|%CurProcD%\hcScripts") (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/32">#32</a>).<br>
 `*` Restored window.handyClicks (as lazy getter) to detect Handy Clicks presence even in disabled mode.<br>
 `*` Improved startup performance: load handyclicks.js after small delay, increased delay to preload settings.<br>
 `*` Added special highlighting for custom files (`//> %hc_ScriptsDir%/example.js` in code).<br>
@@ -220,6 +220,10 @@
 `x` Fixed error line numbers in Pale Moon 28.5+ (looks like Pale Moon bug, now always decremented by 1).<br>
 `*` Increased saving performance, optimized way to rename backup files (≈2.4x faster with default settings).<br>
 `*` Changed handyClicksPrefSvc.registerDestructor(): also specify DESTROY_WINDOW_UNLOAD reason for last window (more intuitive).<br>
+`*` Copy in HTML format: also add text/html data for WYSIWYG editors & Co.<br>
+`*` Reopen edit mode tooltip to force make it topmost, if was opened another tooltip.<br>
+`+` Added %+lng%/%-lng% search placeholders for custom functions with localized/not localized labels.<br>
+`x` Correctly rename unloaded tabs.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
