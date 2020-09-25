@@ -1758,6 +1758,7 @@ var handyClicksSets = {
 	blinkTreeitem: function(tItem) {
 		this.blinkNode(tItem, this.ju.bind(function(ti, hl) {
 			this.setChildNodesProperties(ti, { hc_blink: hl }, true);
+			this.tBody.boxObject.height; // Force reflow
 		}, this));
 	},
 	blinkNode: function(node, hl, count) {
@@ -1767,8 +1768,7 @@ var handyClicksSets = {
 			hl(node, true);
 			setTimeout(function() {
 				hl(node, false);
-				if(--count)
-					setTimeout(blink, 80);
+				--count && setTimeout(blink, 80);
 			}, 150);
 		})();
 	},
