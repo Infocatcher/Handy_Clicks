@@ -852,7 +852,7 @@ var handyClicksSets = {
 		var fileData = this.getActionCode._hasFileData;
 		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}, this._localizeArgs), ++col);
 		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)), ++col);
-		var linkedFileInit = this.getActionCode._linkedFile;
+		var linkedFileInit = initCode && this.getActionCode._linkedFile;
 		var hasLinkedFile = linkedFile || linkedFileInit;
 		if(this.getActionCode._hasFileData)
 			fileData = true;
@@ -888,7 +888,7 @@ var handyClicksSets = {
 			var daFileData = this.getActionCode._hasFileData;
 			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}, this._localizeArgs), ++col);
 			this.appendTreeCell(daRow, "label", (daInitCode = this.getInitCode(da, true)), ++col);
-			var daLinkedFileInit = this.getActionCode._linkedFile;
+			var daLinkedFileInit = daInitCode && this.getActionCode._linkedFile;
 			var daHasLinkedFile = daLinkedFile || daLinkedFileInit;
 			if(this.getActionCode._hasFileData)
 				daFileData = true;
