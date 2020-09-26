@@ -848,12 +848,12 @@ var handyClicksSets = {
 		var localized = this.ps.localize._localized;
 		this.appendTreeCell(tRow, "label", actLabel, ++col);
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom), ++col);
-		var linkedFile = this.getActionCode._hasLinkedFile;
+		var linkedFile = this.getActionCode._linkedFile;
 		var fileData = this.getActionCode._hasFileData;
 		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}, this._localizeArgs), ++col);
 		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)), ++col);
-		if(this.getActionCode._hasLinkedFile)
-			linkedFile = true;
+		var linkedFileInit = this.getActionCode._linkedFile;
+		var hasLinkedFile = linkedFile || linkedFileInit;
 		if(this.getActionCode._hasFileData)
 			fileData = true;
 		this.setNodeProperties(
@@ -884,12 +884,12 @@ var handyClicksSets = {
 			var daDis = this._daForceDisable || !fo.enabled || !da.enabled;
 			this.appendTreeCell(daRow, "label", daLabel, ++col);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom), ++col);
-			var daLinkedFile = this.getActionCode._hasLinkedFile;
+			var daLinkedFile = this.getActionCode._linkedFile;
 			var daFileData = this.getActionCode._hasFileData;
 			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}, this._localizeArgs), ++col);
 			this.appendTreeCell(daRow, "label", (daInitCode = this.getInitCode(da, true)), ++col);
-			if(this.getActionCode._hasLinkedFile)
-				daLinkedFile = true;
+			var daLinkedFileInit = this.getActionCode._linkedFile;
+			var daHasLinkedFile = daLinkedFile || daLinkedFileInit;
 			if(this.getActionCode._hasFileData)
 				daFileData = true;
 			this.setNodeProperties(
@@ -905,7 +905,7 @@ var handyClicksSets = {
 				hc_notAvailable: extNA,
 				hc_internal: !daCustom,
 				hc_custom: daCustom,
-				hc_customFile: daLinkedFile,
+				hc_customFile: daHasLinkedFile,
 				hc_customInit: !!daInitCode,
 				hc_customType: isCustomType,
 				hc_customLocalized: daLocalized,
@@ -951,7 +951,7 @@ var handyClicksSets = {
 			hc_notAvailable: extNA,
 			hc_internal: !isCustom,
 			hc_custom: isCustom,
-			hc_customFile: linkedFile,
+			hc_customFile: hasLinkedFile,
 			hc_customInit: !!initCode,
 			hc_customType: isCustomType,
 			hc_customLocalized: localized,
@@ -1028,17 +1028,17 @@ var handyClicksSets = {
 		this.appendTreeCell(tRow, "label", na, ++col);
 		this.appendTreeCell(tRow, "label", na, ++col);
 		this.appendTreeCell(tRow, "label", this.getActionCode(to.define, true), ++col);
-		var linkedFile = this.getActionCode._hasLinkedFile;
+		var linkedFile = this.getActionCode._linkedFile;
 		var fileData = this.getActionCode._hasFileData;
 		this.appendTreeCell(tRow, "label", "", ++col);
 		var cmCode = "";
 		if(to.contextMenu) {
 			cmCode = this.getActionCode(to.contextMenu, true);
-			if(this.getActionCode._hasLinkedFile)
-				linkedFile = true;
+			var linkedFileCM = this.getActionCode._linkedFile;
 			if(this.getActionCode._hasFileData)
 				fileData = true;
 		}
+		var hasLinkedFile = linkedFile || linkedFileCM;
 		this.appendTreeCell(tRow, "label", cmCode, ++col);
 		this.setNodeProperties(
 			this.appendTreeCell(tRow, "value", to.enabled, ++col),
@@ -1059,7 +1059,7 @@ var handyClicksSets = {
 			hc_disabled: !to.enabled,
 			hc_buggy: !this.ps.isOkCustomType(type, drawRemoved && this._savedTypes),
 			hc_custom: true,
-			hc_customFile: linkedFile,
+			hc_customFile: hasLinkedFile,
 			hc_customType: true,
 			hc_customLocalized: localized,
 			hc_customNotLocalized: !localized
@@ -1088,12 +1088,12 @@ var handyClicksSets = {
 		return this.ps.getTypeLabel(type, isCustomType, this._drawRemoved && this._savedTypes);
 	},
 	getActionCode: function getActionCode(action, isCustom) {
-		getActionCode._hasLinkedFile = getActionCode._hasFileData = false;
+		getActionCode._linkedFile = getActionCode._hasFileData = undefined;
 		if(!isCustom)
 			return action;
 		var path = this.ps.getSourcePath(action);
 		if(path) {
-			getActionCode._hasLinkedFile = true;
+			getActionCode._linkedFile = path;
 			var hasData = getActionCode._hasFileData = this._import
 				&& path in this.ps.files;
 			return this.getLocalized("customFile" + (hasData ? "WithData" : "")) + " " + path;
