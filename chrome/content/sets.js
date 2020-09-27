@@ -1003,6 +1003,15 @@ var handyClicksSets = {
 		tItem.__delayed = da && daItem;
 		tItem.__sortLabel = label;
 
+		if((hasLinkedFile || daHasLinkedFile) && !extNA) this.delay(function() {
+			var na = this.linkedFileNotExists(linkedFile)
+				|| this.linkedFileNotExists(linkedFileInit);
+			var daNa = this.linkedFileNotExists(daLinkedFile)
+				|| this.linkedFileNotExists(daLinkedFileInit);
+			na   && this.setChildNodesProperties(tRow,  { hc_notAvailable: true }, true);
+			daNa && this.setChildNodesProperties(daRow, { hc_notAvailable: true }, true);
+		}, this, 250);
+
 		var insPos = this.getSortedInsPos(parent, tItem);
 		parent.insertBefore(tItem, insPos);
 
@@ -1077,11 +1086,21 @@ var handyClicksSets = {
 			drawRemoved && tItem.setAttribute("hc_old", "item");
 		}
 
+		if(hasLinkedFile) this.delay(function() {
+			var na = this.linkedFileNotExists(linkedFile)
+				|| this.linkedFileNotExists(linkedFileCM);
+			na && this.setChildNodesProperties(tRow, { hc_notAvailable: true }, true);
+		}, this, 250);
+
 		var insPos = this.getSortedInsPos(parent, tItem);
 		parent.insertBefore(tItem, insPos);
 
 		this.rowsCache[tItem.__hash = "#custom_types-" + type] = tRow;
 		return tItem;
+	},
+	linkedFileNotExists: function(path) {
+		var file = path && this.ut.getLocalFile(path);
+		return file && !file.exists();
 	},
 	getTypeLabel: function(type, isCustomType) {
 		this.ps.localize._localized = false;
