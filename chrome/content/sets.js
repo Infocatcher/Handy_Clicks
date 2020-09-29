@@ -1108,7 +1108,7 @@ var handyClicksSets = {
 	},
 	ensureNASearchUpdated: function() {
 		if(this.searchField.value.indexOf(this.searchPlaceholders.hc_notAvailable) != -1)
-			this.searchInSetsTree(true);
+			this.searchInSetsTreeDelay(true, 25);
 	},
 	getTypeLabel: function(type, isCustomType) {
 		this.ps.localize._localized = false;
@@ -2680,13 +2680,13 @@ var handyClicksSets = {
 
 		this.treeBatch(this._searchInSetsTree, this, arguments);
 	},
-	searchInSetsTreeDelay: function(dontSelect) {
+	searchInSetsTreeDelay: function(dontSelect, delay) {
 		if(this._searchTimer)
 			return;
 		this._searchTimer = this.delay(function() {
 			this._searchTimer = 0;
 			this.searchInSetsTree(dontSelect);
-		}, this);
+		}, this, delay || 0);
 	},
 	_searchInSetsTree: function(dontSelect) {
 		this.timer("searchInSetsTree()");
