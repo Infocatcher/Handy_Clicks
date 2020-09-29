@@ -1010,6 +1010,7 @@ var handyClicksSets = {
 				|| this.linkedFileNotExists(daLinkedFileInit);
 			na   && this.setChildNodesProperties(tRow,  { hc_notAvailable: true }, true);
 			daNa && this.setChildNodesProperties(daRow, { hc_notAvailable: true }, true);
+			(na || daNa) && this.ensureNASearchUpdated();
 		}, this, 250);
 
 		var insPos = this.getSortedInsPos(parent, tItem);
@@ -1089,7 +1090,10 @@ var handyClicksSets = {
 		if(hasLinkedFile) this.delay(function() {
 			var na = this.linkedFileNotExists(linkedFile)
 				|| this.linkedFileNotExists(linkedFileCM);
-			na && this.setChildNodesProperties(tRow, { hc_notAvailable: true }, true);
+			if(na) {
+				this.setChildNodesProperties(tRow, { hc_notAvailable: true }, true);
+				this.ensureNASearchUpdated();
+			}
 		}, this, 250);
 
 		var insPos = this.getSortedInsPos(parent, tItem);
@@ -1101,6 +1105,10 @@ var handyClicksSets = {
 	linkedFileNotExists: function(path) {
 		var file = path && this.ut.getLocalFile(path);
 		return file && !file.exists();
+	},
+	ensureNASearchUpdated: function() {
+		if(this.searchField.value.indexOf(this.searchPlaceholders.hc_notAvailable) != -1)
+			this.searchInSetsTree(true);
 	},
 	getTypeLabel: function(type, isCustomType) {
 		this.ps.localize._localized = false;
