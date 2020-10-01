@@ -1106,10 +1106,6 @@ var handyClicksSets = {
 		var file = path && this.ut.getLocalFile(path);
 		return file && !file.exists();
 	},
-	ensureNASearchUpdated: function() {
-		if(this.searchField.value.indexOf(this.searchPlaceholders.hc_notAvailable) != -1)
-			this.searchInSetsTreeDelay(true, 25);
-	},
 	getTypeLabel: function(type, isCustomType) {
 		this.ps.localize._localized = false;
 		return this.ps.getTypeLabel(type, isCustomType, this._drawRemoved && this._savedTypes);
@@ -1798,10 +1794,6 @@ var handyClicksSets = {
 				--count && setTimeout(blink, 80);
 			}, 150);
 		})();
-	},
-	ensureStatusSearchUpdated: function() {
-		if(this.searchField.value.indexOf(this.searchPlaceholders.hc_edited) != -1)
-			this.searchInSetsTree(true);
 	},
 	_hoveredCheckbox: null,
 	highlightHover: function(e) {
@@ -2647,6 +2639,17 @@ var handyClicksSets = {
 		for(var p in sp)
 			sm[sp[p]] = sr[p];
 		return sm;
+	},
+	usedPlaceholder: function(ph) {
+		return this.searchField.value.indexOf(ph) != -1;
+	},
+	ensureNASearchUpdated: function() {
+		if(this.usedPlaceholder(this.searchPlaceholders.hc_notAvailable))
+			this.searchInSetsTreeDelay(true, 25);
+	},
+	ensureStatusSearchUpdated: function() {
+		if(this.usedPlaceholder(this.searchPlaceholders.hc_edited))
+			this.searchInSetsTree(true);
 	},
 	toggleSearch: function(str, dontSelect) {
 		this.doSearch(this.searchField.value == str ? "" : str, dontSelect);
