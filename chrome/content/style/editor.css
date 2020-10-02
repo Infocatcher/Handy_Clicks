@@ -164,6 +164,9 @@ tabbox[hc_pasted="false"] {
 #hc-editor-deleteFileData {
 	-moz-image-region: rect(64px 80px 80px 64px);
 }
+.hcEditCodeButton[hc_fileNotFound] {
+	color: red;
+}
 :root[hc_hasCrashBackup] .hcOpenCodeButton {
 	outline: 1px solid red;
 	outline-offset: -1px;

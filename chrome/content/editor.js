@@ -1585,13 +1585,21 @@ var handyClicksEditor = {
 	},
 	setEditorButtons: function(editor) {
 		editor = editor || this.getEditorFromTabbox(this.selectedTabbox);
-		var dis = editor.textLength <= 1028 // Too long for path? ("//> ".length + PATH_MAX)
-			&& !!this.ps.getSourcePath(editor.value);
+		var path = editor.textLength <= 1028 // Too long for path? ("//> ".length + PATH_MAX)
+			&& this.ps.getSourcePath(editor.value);
 		var codeToFileBtn = editor.__codeToFileBtn || (
 			editor.__codeToFileBtn = this.getFloatButton("hc-editor-cmd-codeToFile", editor)
 		);
+		var dis = !!path;
 		if(codeToFileBtn.disabled != dis)
 			codeToFileBtn.disabled = dis;
+		this.delay(function() {
+			var editCodeBtn = editor.__editCodeBtn || (
+				editor.__editCodeBtn = this.getFloatButton("hc-editor-cmd-editCode", editor)
+			);
+			var file = path && this.ut.getLocalFile(path);
+			this.attribute(editCodeBtn, "hc_fileNotFound", file && !file.exists());
+		}, this, 10);
 	},
 
 	hasCrashBackup: false,
