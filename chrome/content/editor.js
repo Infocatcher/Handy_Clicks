@@ -48,6 +48,12 @@ var handyClicksEditor = {
 				this.currentType = type;
 			this.initExtTypes();
 			this.loadLabels();
+			if(this.ps.isExtType(type)) {
+				var ml = this.$("hc-editor-itemTypes");
+				var si = ml.selectedItem;
+				if(si && si.hidden)
+					ml.setAttribute("hc_extNotAvailable", "true");
+			}
 			this.createDelayedFuncTab();
 			this.addTestButtons();
 			this.delay(this.delayedInit, this, 20);
@@ -986,6 +992,10 @@ var handyClicksEditor = {
 		if(this.ps.isCustomType(type))
 			this.initCustomTypesEditor(type);
 		this.updateShortcutContext();
+
+		var ml = this.$("hc-editor-itemTypes");
+		if(ml.hasAttribute("hc_extNotAvailable"))
+			ml.removeAttribute("hc_extNotAvailable");
 	},
 	initAdditionalOptions: function(iType, setsObj) {
 		iType = iType || this.currentType;

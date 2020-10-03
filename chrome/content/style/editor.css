@@ -164,7 +164,8 @@ tabbox[hc_pasted="false"] {
 #hc-editor-deleteFileData {
 	-moz-image-region: rect(64px 80px 80px 64px);
 }
-.hcEditCodeButton[hc_fileNotFound] {
+.hcEditCodeButton[hc_fileNotFound],
+#hc-editor-itemTypes[hc_extNotAvailable] .menulist-label {
 	color: red;
 }
 :root[hc_hasCrashBackup] .hcOpenCodeButton {
