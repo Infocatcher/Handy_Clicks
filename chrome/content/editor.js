@@ -1598,7 +1598,16 @@ var handyClicksEditor = {
 				editor.__editCodeBtn = this.getFloatButton("hc-editor-cmd-editCode", editor)
 			);
 			var file = path && this.ut.getLocalFile(path);
-			this.attribute(editCodeBtn, "hc_fileNotFound", file && !file.exists());
+			var notFound = file && !file.exists();
+			this.attribute(editCodeBtn, "hc_fileNotFound", notFound);
+			this.delay(function() { // Wait for su.setKeysDesc()
+				var baseTip = editCodeBtn.__baseTip || (
+					editCodeBtn.__baseTip = editCodeBtn.getAttribute("tooltiptext")
+				);
+				var newTip = notFound ? baseTip + " \n" + this.getLocalized("cantEditFile") : baseTip;
+				if(editCodeBtn.getAttribute("tooltiptext") != newTip)
+					editCodeBtn.setAttribute("tooltiptext", newTip);
+			}, this, 150);
 		}, this, 10);
 	},
 
