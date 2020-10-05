@@ -46,14 +46,8 @@ var handyClicksEditor = {
 			var type = this.type;
 			if(type)
 				this.currentType = type;
-			this.initExtTypes();
+			this.initExtTypes(type);
 			this.loadLabels();
-			if(this.ps.isExtType(type)) {
-				var ml = this.$("hc-editor-itemTypes");
-				var si = ml.selectedItem;
-				if(si && si.hidden)
-					ml.setAttribute("hc_extNotAvailable", "true");
-			}
 			this.createDelayedFuncTab();
 			this.addTestButtons();
 			this.delay(this.delayedInit, this, 20);
@@ -397,13 +391,15 @@ var handyClicksEditor = {
 			this.setDialogButtons();
 		}
 	},
-	initExtTypes: function() {
+	initExtTypes: function(curType) {
 		Array.prototype.forEach.call(
 			this.$("hc-editor-itemTypes").getElementsByAttribute("hc_required", "*"),
 			function(mi) {
 				var ext = mi.getAttribute("hc_required");
 				if(!this.extEnabled(ext)) {
 					mi.hidden = true;
+					if(curType && mi.getAttribute("value") == curType)
+						this.$("hc-editor-itemTypes").setAttribute("hc_extNotAvailable", "true");
 					return;
 				}
 				Array.prototype.forEach.call(
