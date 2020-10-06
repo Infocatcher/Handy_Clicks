@@ -80,7 +80,7 @@ var handyClicksEditor = {
 		this.selectTargetTab(this.isDelayed);
 		this.initUI();
 		if(!this.type)
-			this.$("hc-editor-itemTypes").setAttribute("label", " "); // Fix height
+			this.typesList.setAttribute("label", " "); // Fix height
 
 		this.ps.oSvc.addObserver(this.setsReloading, this);
 
@@ -393,13 +393,13 @@ var handyClicksEditor = {
 	},
 	initExtTypes: function(curType) {
 		Array.prototype.forEach.call(
-			this.$("hc-editor-itemTypes").getElementsByAttribute("hc_required", "*"),
+			this.typesList.getElementsByAttribute("hc_required", "*"),
 			function(mi) {
 				var ext = mi.getAttribute("hc_required");
 				if(!this.extEnabled(ext)) {
 					mi.hidden = true;
 					if(curType && mi.getAttribute("value") == curType)
-						this.$("hc-editor-itemTypes").setAttribute("hc_extNotAvailable", "true");
+						this.typesList.setAttribute("hc_extNotAvailable", "true");
 					return;
 				}
 				Array.prototype.forEach.call(
@@ -581,7 +581,7 @@ var handyClicksEditor = {
 	},
 	setWinTitle: function() {
 		var shStr = this.ps.getShortcutStr(this.currentShortcut, true);
-		var typeItem = this.$("hc-editor-itemTypes").selectedItem; // menulist.label may be wrong on startup!
+		var typeItem = this.typesList.selectedItem; // menulist.label may be wrong on startup!
 		if(typeItem)
 			shStr += this.ps.spacedSep + typeItem.getAttribute("label");
 		var typeStr = this.ps.localize(this.$("hc-editor-customType").value)
@@ -861,7 +861,7 @@ var handyClicksEditor = {
 	},
 	highlightUsedTypes: function() {
 		var so = this.ju.getOwnProperty(this.ps.prefs, this.currentShortcut);
-		var ml = this.$("hc-editor-itemTypes");
+		var ml = this.typesList;
 		Array.prototype.forEach.call(
 			ml.getElementsByTagName("menuitem"),
 			function(mi) {
@@ -989,7 +989,7 @@ var handyClicksEditor = {
 			this.initCustomTypesEditor(type);
 		this.updateShortcutContext();
 
-		var ml = this.$("hc-editor-itemTypes");
+		var ml = this.typesList;
 		if(ml.hasAttribute("hc_extNotAvailable"))
 			ml.removeAttribute("hc_extNotAvailable");
 	},
@@ -1142,11 +1142,15 @@ var handyClicksEditor = {
 			this.$("hc-editor-" + mdf).checked = sh && sh.indexOf(mdf + "=true") != -1;
 		}, this);
 	},
+	get typesList() {
+		delete this.typesList;
+		return this.typesList = this.e("hc-editor-itemTypes");
+	},
 	get currentType() {
-		return this.$("hc-editor-itemTypes").value || undefined;
+		return this.typesList.value || undefined;
 	},
 	set currentType(type) {
-		this.$("hc-editor-itemTypes").value = type;
+		this.typesList.value = type;
 	},
 	get currentCustomType() {
 		return this.ps.customPrefix + this.$("hc-editor-customTypeExtId").value;
@@ -1803,7 +1807,7 @@ var handyClicksEditor = {
 		var type = this.currentType;
 		var so = this.currentShortcutObj;
 
-		var typesList = this.$("hc-editor-itemTypes");
+		var typesList = this.typesList;
 		var eventsList = this.$("hc-editor-events");
 		var funcList = this.$("hc-editor-func");
 		if(
@@ -2159,7 +2163,7 @@ var handyClicksEditor = {
 		}, this);
 	},
 	typeRequired: function() {
-		var nodes = [this.$("hc-editor-itemTypes")];
+		var nodes = [this.typesList];
 		this.highlightRequiredFields(nodes, true, false, true);
 		this.highlightRequiredFields(nodes, false);
 	},
