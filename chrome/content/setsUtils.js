@@ -780,5 +780,18 @@ var handyClicksSetsUtils = {
 			if(this.ju.getOwnProperty(prefs, sh, type, "enabled"))
 				++cnt;
 		return cnt;
+	},
+
+	isDarkFont: function(node) {
+		var isDarkFont = true;
+		var fc = getComputedStyle(node, null).color;
+		if(/^rgb\((\d+), *(\d+), *(\d+)\)$/.test(fc)) {
+			var r = +RegExp.$1, g = +RegExp.$2, b = +RegExp.$3;
+			// See https://github.com/bgrins/TinyColor/blob/1.4.1/tinycolor.js#L70 getBrightness()
+			// + https://github.com/bgrins/TinyColor/blob/1.4.1/tinycolor.js#L52 isDark()
+			var brightness = (r*299 + g*587 + b*114)/1000;
+			isDarkFont = brightness < 128;
+		}
+		return isDarkFont;
 	}
 };

@@ -4133,7 +4133,7 @@ var handyClicksSets = {
 		miRemove.setAttribute("disabled", ubCount <= removeDepth);
 		miRemove2.setAttribute("disabled", ubCount <= removeDepth2);
 
-		popup.setAttribute("hc_isDarkMenuFont", this.isDarkFont(this.$("hc-sets-tree-openBackupsDir")));
+		popup.setAttribute("hc_isDarkMenuFont", this.su.isDarkFont(this.$("hc-sets-tree-openBackupsDir")));
 	},
 	removeOldUserBackups: function(store) {
 		if(store < 0)
@@ -4240,19 +4240,6 @@ var handyClicksSets = {
 		});
 	},
 
-	isDarkFont: function(node) {
-		var isDarkFont = true;
-		var fc = getComputedStyle(node, null).color;
-		if(/^rgb\((\d+), *(\d+), *(\d+)\)$/.test(fc)) {
-			var r = +RegExp.$1, g = +RegExp.$2, b = +RegExp.$3;
-			// See https://github.com/bgrins/TinyColor/blob/1.4.1/tinycolor.js#L70 getBrightness()
-			// + https://github.com/bgrins/TinyColor/blob/1.4.1/tinycolor.js#L52 isDark()
-			var brightness = (r*299 + g*587 + b*114)/1000;
-			isDarkFont = brightness < 128;
-		}
-		return isDarkFont;
-	},
-
 	setImportStatus: function(isImport, isPartial, updMode) {
 		if(!updMode) {
 			if(!this.closeImportEditors())
@@ -4271,7 +4258,7 @@ var handyClicksSets = {
 		this.setImportFilesDataStatus();
 		this.$("hc-sets-tree-importType").value = isPartial;
 		this.$("hc-sets-tree-importRowRemoved").setAttribute("hc_collapse", isPartial);
-		panel.setAttribute("hc_isDarkFont", this.isDarkFont(this.$("hc-sets-tree-importAdded")));
+		panel.setAttribute("hc_isDarkFont", this.su.isDarkFont(this.$("hc-sets-tree-importAdded")));
 
 		for(var fe = document.commandDispatcher.focusedElement; fe; fe = fe.parentNode)
 			if(fe == panel)
