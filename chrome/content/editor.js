@@ -537,15 +537,17 @@ var handyClicksEditor = {
 			this.editorChanged(trg);
 	},
 	_editorTimer: 0,
+	_editorLastUpdate: 0,
 	editorChanged: function(editor) {
 		if(this._editorTimer)
 			return;
 		this._editorTimer = this.delay(function() {
 			this._editorTimer = 0;
+			this._editorLastUpdate = Date.now();
 			this.setEditorButtons(editor);
 			if(editor.getAttribute("hc_highlightEmpty") == "true")
 				this.highlightEmpty(editor);
-		}, this, 25);
+		}, this, Date.now() - this._editorLastUpdate > 1000 ? 10 : 100);
 	},
 	setWinId: function() {
 		var winId;
