@@ -782,6 +782,9 @@ var handyClicksSetsUtils = {
 		return cnt;
 	},
 
+	checkDarkFont: function(node, target) {
+		(target || node).setAttribute("hc_isDarkFont", this.isDarkFont(node));
+	},
 	isDarkFont: function(node) {
 		var isDarkFont = true;
 		var fc = getComputedStyle(node, null).color;

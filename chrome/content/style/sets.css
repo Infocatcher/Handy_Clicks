@@ -529,7 +529,7 @@ menuitem[hc_oldBackup="true"] image, menuitem[hc_oldBackup="true"] > label {
 menuitem[hc_userBackup="true"] > label {
 	color: #00e;
 }
-#hc-sets-tree-restoreFromBackupPopup[hc_isDarkMenuFont="false"] > menuitem[hc_userBackup="true"] > label {
+#hc-sets-tree-restoreFromBackupPopup[hc_isDarkFont="false"] > menuitem[hc_userBackup="true"] > label {
 	color: #aaf;
 }
 menuitem[hc_testBackup="thisSession"] > label {
@@ -538,7 +538,7 @@ menuitem[hc_testBackup="thisSession"] > label {
 menuitem[hc_testBackup="afterCrash"] > label {
 	color: #d00;
 }
-#hc-sets-tree-restoreFromBackupPopup[hc_isDarkMenuFont="false"] > menuitem[hc_testBackup="afterCrash"] > label {
+#hc-sets-tree-restoreFromBackupPopup[hc_isDarkFont="false"] > menuitem[hc_testBackup="afterCrash"] > label {
 	color: #f22;
 }
 

@@ -4132,8 +4132,7 @@ var handyClicksSets = {
 		miRemove2.setAttribute("label", miRemove2.getAttribute("hc_label").replace("$n", removeDepth2));
 		miRemove.setAttribute("disabled", ubCount <= removeDepth);
 		miRemove2.setAttribute("disabled", ubCount <= removeDepth2);
-
-		popup.setAttribute("hc_isDarkMenuFont", this.su.isDarkFont(this.$("hc-sets-tree-openBackupsDir")));
+		this.su.checkDarkFont(this.$("hc-sets-tree-openBackupsDir"), popup);
 	},
 	removeOldUserBackups: function(store) {
 		if(store < 0)
@@ -4258,7 +4257,7 @@ var handyClicksSets = {
 		this.setImportFilesDataStatus();
 		this.$("hc-sets-tree-importType").value = isPartial;
 		this.$("hc-sets-tree-importRowRemoved").setAttribute("hc_collapse", isPartial);
-		panel.setAttribute("hc_isDarkFont", this.su.isDarkFont(this.$("hc-sets-tree-importAdded")));
+		this.su.checkDarkFont(this.$("hc-sets-tree-importAdded"), panel);
 
 		for(var fe = document.commandDispatcher.focusedElement; fe; fe = fe.parentNode)
 			if(fe == panel)
