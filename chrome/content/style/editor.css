@@ -166,7 +166,11 @@ tabbox[hc_pasted="false"] {
 }
 .hcEditCodeButton[hc_fileNotFound],
 #hc-editor-itemTypes[hc_extNotAvailable] .menulist-label {
-	color: red;
+	color: #f00;
+}
+.hcEditCodeButton[hc_isDarkFont="true"][hc_fileNotFound],
+#hc-editor-itemTypes[hc_isDarkFont="true"][hc_extNotAvailable] .menulist-label {
+	color: #c00;
 }
 :root[hc_hasCrashBackup] .hcOpenCodeButton {
 	outline: 1px solid red;

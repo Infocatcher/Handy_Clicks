@@ -392,14 +392,17 @@ var handyClicksEditor = {
 		}
 	},
 	initExtTypes: function(curType) {
+		var typesList = this.typesList;
 		Array.prototype.forEach.call(
-			this.typesList.getElementsByAttribute("hc_required", "*"),
+			typesList.getElementsByAttribute("hc_required", "*"),
 			function(mi) {
 				var ext = mi.getAttribute("hc_required");
 				if(!this.extEnabled(ext)) {
 					mi.hidden = true;
-					if(curType && mi.getAttribute("value") == curType)
-						this.typesList.setAttribute("hc_extNotAvailable", "true");
+					if(curType && mi.getAttribute("value") == curType) {
+						typesList.setAttribute("hc_extNotAvailable", "true");
+						this.su.checkDarkFont(typesList);
+					}
 					return;
 				}
 				Array.prototype.forEach.call(
@@ -1612,6 +1615,8 @@ var handyClicksEditor = {
 			var file = path && this.ut.getLocalFile(path);
 			var notFound = file && !file.exists();
 			this.attribute(editCodeBtn, "hc_fileNotFound", notFound);
+			if(!editCodeBtn.hasAttribute("hc_isDarkFont")) // Only once... for better performance
+				this.su.checkDarkFont(editCodeBtn);
 			this.delay(function() { // Wait for su.setKeysDesc()
 				var baseTip = editCodeBtn.__baseTip || (
 					editCodeBtn.__baseTip = editCodeBtn.getAttribute("tooltiptext")
