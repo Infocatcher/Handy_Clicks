@@ -23,7 +23,10 @@ checkbox[hc_important="enabled"] label {
 	padding-bottom: 0;
 }
 checkbox[hc_important="enabled"]:not([checked="true"]) {
-	color: red;
+	color: #f00;
+}
+:root[hc_isDarkFont="true"] checkbox[hc_important="enabled"]:not([checked="true"]) {
+	color: #c00;
 }
 
 .hcFloatControl, .hcFloatButton {

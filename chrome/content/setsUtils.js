@@ -14,10 +14,10 @@ var handyClicksSetsUtils = {
 		window.addEventListener("dragenter", this, true);
 		window.addEventListener("dragexit", this, true);
 		this.pu.oSvc.addObserver(this.prefsChanged, this);
+		var de = document.documentElement;
 		if(!reloadFlag) {
 			this.tweakDialogButtons();
 			this.setEnabledStatus();
-			var de = document.documentElement;
 			de.setAttribute("chromedir", window.getComputedStyle(de, null).direction);
 			var slimFloatButtons = this.fxVersion >= 56 && (this.isFirefox || this.isSeaMonkey);
 			de.setAttribute("hc_slimFloatButtons", slimFloatButtons);
@@ -31,6 +31,7 @@ var handyClicksSetsUtils = {
 			window.addEventListener("resize", this, false); // Can detect only maximize/restore
 			this.legacySizeModeChange();
 		}
+		this.checkDarkFont(de);
 		this.obs.addObserver(this, "quit-application-requested", false);
 	},
 	destroy: function(reloadFlag) {
