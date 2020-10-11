@@ -271,7 +271,7 @@ treechildren::-moz-tree-cell-text(hc_old),
 .hc-newer {
 	color: #00e !important;
 }
-#hc-sets-tree-importPanel[hc_isDarkFont="false"] .hc-newer {
+:root[hc_isDarkFont="false"] .hc-newer {
 	color: #aaf !important;
 }
 
@@ -404,8 +404,8 @@ treechildren::-moz-tree-checkbox(hc_checkbox, checked, hc_old) {
 #hc-sets-tree-importStatistics row[onclick]:hover {
 	color: #00e !important;
 }
-#hc-sets-tree-importPanel[hc_isDarkFont="false"] #hc-sets-tree-importFilesStatistics:hover,
-#hc-sets-tree-importPanel[hc_isDarkFont="false"] #hc-sets-tree-importStatistics row[onclick]:hover {
+:root[hc_isDarkFont="false"] #hc-sets-tree-importFilesStatistics:hover,
+:root[hc_isDarkFont="false"] #hc-sets-tree-importStatistics row[onclick]:hover {
 	color: #aaf !important;
 }
 #hc-sets-tree-importFilesStatistics:hover:active,

@@ -4257,7 +4257,6 @@ var handyClicksSets = {
 		this.setImportFilesDataStatus();
 		this.$("hc-sets-tree-importType").value = isPartial;
 		this.$("hc-sets-tree-importRowRemoved").setAttribute("hc_collapse", isPartial);
-		this.su.checkDarkFont(this.$("hc-sets-tree-importAdded"), panel);
 
 		for(var fe = document.commandDispatcher.focusedElement; fe; fe = fe.parentNode)
 			if(fe == panel)

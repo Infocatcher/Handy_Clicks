@@ -168,8 +168,8 @@ tabbox[hc_pasted="false"] {
 #hc-editor-itemTypes[hc_extNotAvailable] .menulist-label {
 	color: #f00;
 }
-.hcEditCodeButton[hc_isDarkFont="true"][hc_fileNotFound],
-#hc-editor-itemTypes[hc_isDarkFont="true"][hc_extNotAvailable] .menulist-label {
+:root[hc_isDarkFont="true"] .hcEditCodeButton[hc_fileNotFound],
+:root[hc_isDarkFont="true"] #hc-editor-itemTypes[hc_extNotAvailable] .menulist-label {
 	color: #c00;
 }
 :root[hc_hasCrashBackup] .hcOpenCodeButton {
