@@ -479,8 +479,9 @@ var handyClicksUtils = {
 			this._err(e);
 			return null;
 		}
-		try {
-			if(file.exists() && file.isDirectory()) //~ Hack: correctly handle install drive
+		if(path.indexOf("..") != -1) try {
+			// Hack: correctly handle install drive, C: may expands into C:\Program Files\Mozilla Firefox
+			if(file.exists() && file.isDirectory())
 				file.append(".");
 			file.normalize(); // dir1/dir2/../file -> dir1/file
 		}
