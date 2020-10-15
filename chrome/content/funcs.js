@@ -1204,7 +1204,7 @@ var handyClicksFuncs = {
 		}
 		if(doc)
 			doc.title = newTitle;
-		else
+		if(!doc || tab.getAttribute("pending") == "true")
 			tab.label = newTitle;
 	},
 	toggleTabPinned: function(e, tab) {
