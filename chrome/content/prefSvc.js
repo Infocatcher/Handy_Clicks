@@ -775,7 +775,14 @@ var handyClicksPrefSvc = {
 	},
 
 	encURI: function(s) {
-		return encodeURIComponent(s || "");
+		try {
+			return encodeURIComponent(s || "");
+		}
+		catch(e) {
+			this.ut._err('Can\'t encode URI: "' + s + '"');
+			this.ut._err(e);
+		}
+		return s;
 	},
 	decURI: function(s) {
 		try {
@@ -784,8 +791,8 @@ var handyClicksPrefSvc = {
 		catch(e) {
 			this.ut._err('Can\'t decode URI: "' + s + '"');
 			this.ut._err(e);
-			return "[invalid URI]";
 		}
+		return s;
 	},
 	getButton: function(sh) {
 		return /button=([0-2])/.test(sh) ? RegExp.$1 : "";
