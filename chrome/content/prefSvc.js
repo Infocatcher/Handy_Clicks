@@ -1011,21 +1011,17 @@ var handyClicksPrefSvc = {
 		return s || "";
 	},
 	encURI: function(s) {
-		try {
-			return encodeURIComponent(s || "");
-		}
-		catch(e) {
-			this.ut._err('Can\'t encode URI: "' + s + '"');
-			this.ut._err(e);
-		}
-		return s;
+		return this._safe(encodeURIComponent, s, "encode");
 	},
 	decURI: function(s) {
+		return this._safe(decodeURIComponent, s, "decode");
+	},
+	_safe: function(fn, s, key) {
 		try {
-			return decodeURIComponent(s || "");
+			return fn(s || "");
 		}
 		catch(e) {
-			this.ut._err('Can\'t decode URI: "' + s + '"');
+			this.ut._err("Can't " + key + ' URI: "' + s + '"');
 			this.ut._err(e);
 		}
 		return s;
