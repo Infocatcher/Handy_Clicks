@@ -1,8 +1,6 @@
 var handyClicksUtils = {
 	__proto__: handyClicksGlobals,
 
-	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
-
 	_err: function(e, fileName, lineNumber, isWarning) {
 		if(this.ju.isPrimitive(e) || typeof e == "xml") {
 			var caller = Components.stack.caller;

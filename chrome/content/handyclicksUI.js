@@ -480,7 +480,7 @@ var handyClicksUI = {
 	},
 	mousemoveHandler: function(e) {
 		var trg = e.originalTarget;
-		if(trg.namespaceURI == this.ut.XULNS && trg.localName == "treechildren")
+		if(trg.namespaceURI == this.XULNS && trg.localName == "treechildren")
 			this.updateEditModeTip(e);
 		this.showEditModeTip(e.screenX, e.screenY);
 	},

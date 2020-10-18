@@ -803,8 +803,8 @@ var handyClicksFuncs = {
 		if(typeof items == "xml") {
 			this.ut._warn("addEditItem() with E4X is deprecated");
 			eval('\
-				var sep = <menuseparator xmlns={this.ut.XULNS} />;\
-				var mi = <menuitem xmlns={this.ut.XULNS}\
+				var sep = <menuseparator xmlns={this.XULNS} />;\
+				var mi = <menuitem xmlns={this.XULNS}\
 					oncommand={cmd}\
 					class={miClass}\
 					label={label}\

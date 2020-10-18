@@ -6,6 +6,7 @@ var document = inWindow ? window.document : {
 };
 var g = window.handyClicksGlobals = {
 	errPrefix: "[Handy Clicks] ",
+	XULNS: "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
 
 	now: now,
 	_startTime: now(),

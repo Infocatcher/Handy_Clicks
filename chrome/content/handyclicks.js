@@ -241,7 +241,7 @@ var handyClicks = {
 		var emAllowEvent = false;
 		if(em) {
 			var trg = e.originalTarget;
-			if(trg.namespaceURI == this.ut.XULNS) {
+			if(trg.namespaceURI == this.XULNS) {
 				var ln = trg.localName;
 				emAllowEvent = this.flags.allowEditModeEvents = ln == "scrollbarbutton" || ln == "slider";
 				if(e.button == 0 && this.isMenu(trg)) {
@@ -382,13 +382,13 @@ var handyClicks = {
 	},
 
 	isMenu: function(node) {
-		return node.namespaceURI == this.ut.XULNS
+		return node.namespaceURI == this.XULNS
 			// See https://github.com/Infocatcher/Handy_Clicks/issues/31
 			//&& node.boxObject
 			//&& node.boxObject instanceof Components.interfaces.nsIMenuBoxObject;
 			&& "open" in node
 			&& Array.prototype.some.call(
-				node.getElementsByTagNameNS(this.ut.XULNS, "menupopup"),
+				node.getElementsByTagNameNS(this.XULNS, "menupopup"),
 				function(mp) {
 					return mp.parentNode == node;
 				}
@@ -753,7 +753,7 @@ var handyClicks = {
 	},
 	getLink: function(it) {
 		if(
-			it.namespaceURI == this.ut.XULNS
+			it.namespaceURI == this.XULNS
 			&& this.inObject(it, "href") && (it.href || it.hasAttribute("href"))
 			//&& this.ut.unwrap(it).accessibleType == Components.interfaces.nsIAccessibleProvider.XULLink
 			&& (
@@ -793,7 +793,7 @@ var handyClicks = {
 		return null;
 	},
 	getHistoryItem: function(it, e) {
-		if(it.namespaceURI != this.ut.XULNS)
+		if(it.namespaceURI != this.XULNS)
 			return null;
 		if(
 			(
@@ -811,7 +811,7 @@ var handyClicks = {
 		return null;
 	},
 	getBookmarkItem: function(it, e) {
-		if(it.namespaceURI != this.ut.XULNS)
+		if(it.namespaceURI != this.XULNS)
 			return null;
 		var itln = it.localName;
 		if(
@@ -834,7 +834,7 @@ var handyClicks = {
 		return null;
 	},
 	getTab: function(it, excludeCloseButton) {
-		if(it.namespaceURI != this.ut.XULNS)
+		if(it.namespaceURI != this.XULNS)
 			return null;
 		if(excludeCloseButton && it.localName == "toolbarbutton")
 			return null;
@@ -852,7 +852,7 @@ var handyClicks = {
 		return null;
 	},
 	getTabbar: function(it) {
-		if(it.namespaceURI != this.ut.XULNS)
+		if(it.namespaceURI != this.XULNS)
 			return null;
 		var itln = it.localName;
 		if(itln == "toolbarbutton")

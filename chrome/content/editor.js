@@ -908,7 +908,7 @@ var handyClicksEditor = {
 			!noWarnings && this.ut._warn("getTabForNode(): <tabpanel> or <tabbox> not found!");
 			return null;
 		}
-		var tabs = tabBox.tabs || tabBox.getElementsByTagNameNS(this.ut.XULNS, "tabs")[0];
+		var tabs = tabBox.tabs || tabBox.getElementsByTagNameNS(this.XULNS, "tabs")[0];
 		var tabPanelIndx = Array.prototype.indexOf.call(tabPanels.childNodes, tabPanel);
 		return tabs.childNodes[tabPanelIndx];
 	},

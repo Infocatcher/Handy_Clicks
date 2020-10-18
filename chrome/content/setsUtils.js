@@ -514,7 +514,7 @@ var handyClicksSetsUtils = {
 		for(var node = e.target; node; node = node.parentNode) {
 			if("className" in node && /(?:^|\s)hcTabsToolbar(?:\s|$)/.test(node.className)) {
 				var tabbox = node.parentNode.parentNode;
-				var tabs = tabbox.tabs || tabbox.getElementsByTagNameNS(this.ut.XULNS, "tabs")[0];
+				var tabs = tabbox.tabs || tabbox.getElementsByTagNameNS(this.XULNS, "tabs")[0];
 				tabs.advanceSelectedTab(this.isScrollForward(e) ? 1 : -1, true);
 				return true;
 			}
