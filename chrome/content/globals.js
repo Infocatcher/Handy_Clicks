@@ -72,9 +72,7 @@ var g = window.handyClicksGlobals = {
 	},
 	timeout: function(func, context, args, delay) { //= Added: 2015-12-17
 		g.ut._deprecated("handyClicksGlobals.timeout() is deprecated. Use handyClicksGlobals.delay() instead.");
-		return setTimeout(function() {
-			func.apply(context, args);
-		}, delay || 0);
+		return g.delay(func, context, delay, args);
 	},
 	delay: function(func, context, delay, args) {
 		return setTimeout(function() {
