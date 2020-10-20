@@ -260,9 +260,7 @@ function initStorage() {
 			"handyClicksUtils.storage(key, val) is deprecated. "
 			+ "Use handyClicksGlobals.storage.get(key)/set(key, val) instead."
 		);
-		if(arguments.length == 1)
-			return g.storage.get(key);
-		return g.storage.set(key, val);
+		return arguments.length == 1 ? g.storage.get(key) : g.storage.set(key, val);
 	};
 	out._storage = getStorage();
 	out.get = function(key) {
