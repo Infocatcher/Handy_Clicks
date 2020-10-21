@@ -149,7 +149,7 @@ var g = window.handyClicksGlobals = {
 		var ts = this._timers;
 		if(!(key in ts))
 			return ts[key] = now();
-		var dt = this.now() - ts[key];
+		var dt = now() - ts[key];
 		if(div)
 			dt /= div;
 		this._log("[timer] " + key + ": " + (Math.floor(dt) == dt ? dt : dt.toFixed(2)) + " ms");
