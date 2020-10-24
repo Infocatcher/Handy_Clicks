@@ -306,22 +306,27 @@ function getStorage() {
 })(this);
 
 function HandyClicksObservers() {
-	this.observers = [];
+	this.destroy();
 }
 HandyClicksObservers.prototype = {
 	notifyObservers: function() {
 		var args = arguments;
-		this.observers.forEach(function(ob) {
-			ob[0].apply(ob[1] || window, args);
-		});
+		var obs = this.observers;
+		for(var i in obs) {
+			var ob = obs[i];
+			ob.fn.apply(ob.ctx || window, args);
+		}
 	},
-	addObserver: function(func, context) {
-		return this.observers.push([func, context]) - 1;
+	addObserver: function(fn, context) {
+		var i = ++this.i;
+		this.observers[i] = { fn: fn, ctx: context };
+		return i;
 	},
-	removeObserver: function(oId) {
-		delete this.observers[oId];
+	removeObserver: function(i) {
+		delete this.observers[i];
 	},
 	destroy: function() {
-		this.observers.length = 0;
+		this.i = -1;
+		this.observers = { __proto__: null };
 	}
 };
