@@ -44,18 +44,24 @@ var handyClicksRegSvc = {
 		this._log(methName + "() in " + this.path + ": " + dt + " ms");
 	},
 
-	_cleanups: [],
+	_i: -1,
+	_cleanups: { __proto__: null },
 	registerCleanup: function(fn, context) {
-		return this._cleanups.push([fn, context]) - 1;
+		var i = ++this._i;
+		this._cleanups[i] = { fn: fn, ctx: context };
+		return i;
 	},
-	unregisterCleanup: function(uid) {
-		delete this._cleanups[uid];
+	unregisterCleanup: function(i) {
+		delete this._cleanups[i];
 	},
 	cleanup: function() {
-		this._cleanups.forEach(function(cd) {
-			cd[0].call(cd[1] || window);
-		});
-		this._cleanups.length = 0;
+		var cs = this._cleanups;
+		for(var i in cs) {
+			var c = cs[i];
+			delete cs[i];
+			c.fn.call(c.ctx || window);
+		}
+		this._i = -1;
 	}
 };
 handyClicksRegSvc.instantInit();
