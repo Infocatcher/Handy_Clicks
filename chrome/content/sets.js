@@ -369,7 +369,7 @@ var handyClicksSets = {
 			this.ensureInitialDrawMode();
 			return;
 		}
-		// Trick: set sore direction to previous state and invoke sorting
+		// Trick: set sort direction to previous state and invoke sorting
 		var dir = sortCol.getAttribute("sortDirection");
 		var dirs = ["", "ascending", "descending", ""];
 		sortCol.setAttribute("sortDirection", dirs[dirs.lastIndexOf(dir) - 1]);
