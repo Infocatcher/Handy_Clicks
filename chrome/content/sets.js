@@ -1218,15 +1218,10 @@ var handyClicksSets = {
 		changed && node.setAttribute("properties", propsVal);
 	},
 	setChildNodesProperties: function(parent, propsObj, addToParent) {
-		if(addToParent)
-			this.setNodeProperties(parent, propsObj);
-		Array.prototype.forEach.call(
-			parent.getElementsByTagName("*"),
-			function(elt) {
-				this.setNodeProperties(elt, propsObj);
-			},
-			this
-		);
+		addToParent && this.setNodeProperties(parent, propsObj);
+		var nodes = parent.getElementsByTagName("*");
+		for(var i = 0, l = nodes.length; i < l; ++i)
+			this.setNodeProperties(nodes[i], propsObj);
 	},
 	setNodesProperties: function(parents, propsObj, addToParent) {
 		Array.prototype.forEach.call(
