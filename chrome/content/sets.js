@@ -1224,13 +1224,9 @@ var handyClicksSets = {
 			this.setNodeProperties(nodes[i], propsObj);
 	},
 	setNodesProperties: function(parents, propsObj, addToParent) {
-		Array.prototype.forEach.call(
-			parents,
-			function(parent) {
-				this.setChildNodesProperties(parent, propsObj, addToParent);
-			},
-			this
-		);
+		parents.forEach(function(parent) {
+			this.setChildNodesProperties(parent, propsObj, addToParent);
+		}, this);
 	},
 	appendTreeCell: function(tRow, attr, val, col, sortData) {
 		var cell = tRow.appendChild(document.createElement("treecell"));
