@@ -30,7 +30,11 @@ menuitem[hc_disabled="true"] {
 }
 #hc-editor-customType[hc_notUsed="true"] html|*.menulist-editable-input,
 #hc-editor-customTypePopup > menuitem[hc_notUsed="true"] {
-	color: red;
+	color: #c00;
+}
+:root[hc_isDarkFont="false"] #hc-editor-customType[hc_notUsed="true"] html|*.menulist-editable-input,
+:root[hc_isDarkFont="false"] #hc-editor-customTypePopup > menuitem[hc_notUsed="true"] {
+	color: #f22;
 }
 menuitem[hc_sets="enabled"],
 menulist[hc_sets="enabled"] .menulist-label {
