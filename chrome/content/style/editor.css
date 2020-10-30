@@ -176,7 +176,7 @@ tabbox[hc_pasted="false"] {
 }
 .hcEditCodeButton[hc_fileNotFound],
 #hc-editor-itemTypes[hc_extNotAvailable] .menulist-label {
-	color: #f00;
+	color: #f22;
 }
 :root[hc_isDarkFont="true"] .hcEditCodeButton[hc_fileNotFound],
 :root[hc_isDarkFont="true"] #hc-editor-itemTypes[hc_extNotAvailable] .menulist-label {
