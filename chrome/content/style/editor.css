@@ -36,6 +36,12 @@ menuitem[hc_disabled="true"] {
 :root[hc_isDarkFont="false"] #hc-editor-customTypePopup > menuitem[hc_notUsed="true"] {
 	color: #f22;
 }
+#hc-editor-customTypePopup > menuitem[hc_notUsed="true"][_moz-menuactive="true"] {
+	background: #fcc;
+}
+:root[hc_isDarkFont="false"] #hc-editor-customTypePopup > menuitem[hc_notUsed="true"][_moz-menuactive="true"] {
+	background: #700;
+}
 menuitem[hc_sets="enabled"],
 menulist[hc_sets="enabled"] .menulist-label {
 	/*color: -moz-hyperlinktext;*/
