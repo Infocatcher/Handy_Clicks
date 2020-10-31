@@ -528,18 +528,21 @@ var handyClicksUI = {
 		var type = this.hc.itemType;
 		if(!type)
 			return;
+		const MAX_URI_LENGTH = 60;
+		const MAX_URIS = 10;
 		var labelType = this.ps.getTypeLabel(type);
-		var maxLen = 60;
-		var labelUri = Array.prototype.concat.call(this.fn.getItemURI(this.hc.item, type, e))
-			.map(function(url) {
-				url = this.fn.losslessDecodeURI(url);
-				if(url.length > maxLen) {
-					var start = Math.floor(maxLen*0.65);
-					return url.substr(0, start) + "\u2026" /* "..." */ + url.substr(start - maxLen);
-				}
-				return url;
-			}, this)
-			.join(", \n");
+		var uris = Array.prototype.concat.call(this.fn.getItemURI(this.hc.item, type, e));
+		if(uris.length > MAX_URIS)
+			uris.splice(MAX_URIS - 2, uris.length - MAX_URIS + 1, "\u2026" /* "..." */);
+		var labelUri = uris.map(function(url) {
+			url = this.fn.losslessDecodeURI(url);
+			if(url.length > MAX_URI_LENGTH) {
+				var start = Math.floor(MAX_URI_LENGTH*0.65);
+				return url.substr(0, start) + "\u2026" /* "..." */ + url.substr(start - MAX_URI_LENGTH);
+			}
+			return url;
+		}, this)
+		.join(", \n");
 		if(this.emttType.value != labelType)
 			this.emttType.value = labelType;
 		if(this.emttURI.textContent != labelUri)
