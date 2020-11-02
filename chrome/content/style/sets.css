@@ -66,8 +66,11 @@ radio[pane="hc-sets-pane-funcs"] {
 #hc-sets-tree-searchMenu menuitem[hc_notFound="true"]:not([disabled="true"]) label {
 	opacity: 0.45;
 }
-#hc-sets-tree-searchMenu .hc-buggy:not([hc_notFound="true"]) > label {
+#hc-sets-tree-searchPopup .hc-buggy:not([hc_notFound="true"]) > label {
 	color: #c00;
+}
+#hc-sets-tree-searchPopup[hc_isDarkFont="false"] .hc-buggy:not([hc_notFound="true"]) > label {
+	color: #f22;
 }
 
 #hc-sets-tree-searchStatistics {

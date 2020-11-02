@@ -2456,6 +2456,8 @@ var handyClicksSets = {
 			if(nf != (mi.getAttribute("hc_notFound") == "true"))
 				mi.setAttribute("hc_notFound", nf);
 		}, this);
+
+		this.su.checkDarkFont(mp.firstChild, mp);
 	},
 	insertSearchPlaceholder: function(mi) {
 		var ph = mi.getAttribute("acceltext");

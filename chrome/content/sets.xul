@@ -53,7 +53,8 @@ preferences {
 			<button id="hc-sets-tree-searchMenu" type="menu"
 				label="&hc.sets.search;" accesskey="&hc.sets.searchAccesskey;"
 				hc_key="hc-sets-key-focusSearch">
-				<menupopup onpopupshowing="if(!('_hcIgnore' in event)) handyClicksSets.initSearchMenu(this);"
+				<menupopup id="hc-sets-tree-searchPopup"
+					onpopupshowing="if(!('_hcIgnore' in event)) handyClicksSets.initSearchMenu(this);"
 					onpopupshown="handyClicksSetsUtils.fixAccelWidth(this);"
 					oncommand="handyClicksSets.insertSearchPlaceholder(event.target);"
 					hc_labelTemplate="&hc.sets.searchCounterTemplate;">
