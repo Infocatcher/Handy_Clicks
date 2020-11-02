@@ -66,6 +66,9 @@ radio[pane="hc-sets-pane-funcs"] {
 #hc-sets-tree-searchMenu menuitem[hc_notFound="true"]:not([disabled="true"]) label {
 	opacity: 0.45;
 }
+#hc-sets-tree-searchMenu .hc-buggy:not([hc_notFound="true"]) > label {
+	color: #c00;
+}
 
 #hc-sets-tree-searchStatistics {
 	opacity: 0.5;
