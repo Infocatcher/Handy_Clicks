@@ -801,13 +801,21 @@ var handyClicksSets = {
 				this._setItemStatus(w[idProp], true, w[pSvc].otherSrc);
 		}, this);
 	},
-	appendContainerItem: function(parent, hash, label, sortLabel) {
+	createContainer: function() {
 		var tItem = document.createElement("treeitem");
 		tItem.setAttribute("container", "true");
 		tItem.setAttribute("open", "true");
-		var tRow = tItem.appendChild(document.createElement("treerow"));
+		tItem.appendChild(document.createElement("treerow"));
+		tItem.appendChild(document.createElement("treechildren"));
+		return (this.createContainer = function() {
+			return tItem.cloneNode(true);
+		})();
+	},
+	appendContainerItem: function(parent, hash, label, sortLabel) {
+		var tItem = this.createContainer();
+		var tRow = tItem.firstChild;
+		var tChld = tItem.lastChild;
 		this.appendTreeCell(tRow, "label", label, 0, sortLabel || label);
-		var tChld = tItem.appendChild(document.createElement("treechildren"));
 
 		tItem.__hash = hash;
 		tItem.__sortLabel = sortLabel || label;
