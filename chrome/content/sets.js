@@ -824,7 +824,9 @@ var handyClicksSets = {
 		return this.eltsCache[hash] = tChld;
 	},
 	getSortedInsPos: function(parent, sortItem) {
-		var sortedItems = Array.prototype.slice.call(parent.childNodes);
+		var sortedItems = parent.__sortedChildNodes || (
+			parent.__sortedChildNodes = Array.prototype.slice.call(parent.childNodes)
+		);
 		sortedItems.push(sortItem);
 		sortedItems.sort(function(a, b) {
 			return a.__sortLabel.localeCompare(b.__sortLabel);
