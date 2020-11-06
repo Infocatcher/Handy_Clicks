@@ -483,6 +483,7 @@ var handyClicksSets = {
 		!dontSearch && this.searchInSetsTree(true);
 
 		this.delay(function() { // Cleanup, see getSortedInsPos()
+			delete this.tBody.__sortedChildNodes;
 			Array.prototype.forEach.call(
 				this.tBody.getElementsByTagName("treechildren"),
 				function(tChld) {
