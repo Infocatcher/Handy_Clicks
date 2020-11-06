@@ -481,6 +481,15 @@ var handyClicksSets = {
 
 		this.timer("drawTree()");
 		!dontSearch && this.searchInSetsTree(true);
+
+		this.delay(function() { // Cleanup, see getSortedInsPos()
+			Array.prototype.forEach.call(
+				this.tBody.getElementsByTagName("treechildren"),
+				function(tChld) {
+					delete tChld.__sortedChildNodes;
+				}
+			);
+		}, this);
 	},
 	drawPrefs: function(prefs, df, isRemoved) {
 		this._drawRemoved = isRemoved;
