@@ -649,11 +649,12 @@ var handyClicksSets = {
 
 		const id = "hc-sets-tree-import";
 		var c = this.counters;
-		var showStats = this.ju.bind(function(type, normal, delayed, customTypes) {
-			this.$(id + type + "Normal")     .value = normal;
-			this.$(id + type + "Delayed")    .value = delayed;
-			this.$(id + type + "CustomTypes").value = customTypes;
-		}, this);
+		var $ = this.$;
+		function showStats(type, normal, delayed, customTypes) {
+			$(id + type + "Normal")     .value = normal;
+			$(id + type + "Delayed")    .value = delayed;
+			$(id + type + "CustomTypes").value = customTypes;
+		}
 		showStats("Added",   c.added,    c.addedDa,    newTypes);
 		showStats("Changed", c.override, c.overrideDa, overrideTypes);
 		showStats("Removed", deletable,  deletableDa,  deletableTypes);
