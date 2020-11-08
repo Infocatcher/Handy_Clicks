@@ -1786,23 +1786,23 @@ var handyClicksSets = {
 		}, this, 20);
 	},
 	blinkTree: function(attr) {
-		this.blinkNode(this.tBody, this.ju.bind(function(tb, hl) {
+		this.blinkNode(this.tBody, function(tb, hl) {
 			this.attribute(tb, attr, hl);
-		}, this));
+		}, this);
 	},
 	blinkTreeitem: function(tItem) {
-		this.blinkNode(tItem, this.ju.bind(function(ti, hl) {
+		this.blinkNode(tItem, function(ti, hl) {
 			this.setChildNodesProperties(ti, { hc_blink: hl }, true);
 			this.tBody.boxObject.height; // Force reflow
-		}, this));
+		}, this);
 	},
-	blinkNode: function(node, hl, count) {
+	blinkNode: function(node, hl, context, count) {
 		if(!count)
 			count = 3;
 		(function blink() {
-			hl(node, true);
+			hl.call(context, node, true);
 			setTimeout(function() {
-				hl(node, false);
+				hl.call(context, node, false);
 				--count && setTimeout(blink, 80);
 			}, 150);
 		})();
@@ -3454,9 +3454,9 @@ var handyClicksSets = {
 				prefWin.showPane(currentPane);
 			}, 0);
 		}
-		this.blinkNode(this.$("hc-sets-tree-importPanel"), this.ju.bind(function(node, hl) {
+		this.blinkNode(this.$("hc-sets-tree-importPanel"), function(node, hl) {
 			this.attribute(node, "hc_notify", hl);
-		}, this), 1);
+		}, this, 1);
 
 		var askPref = "sets.incompleteImportWarning";
 		var dontAsk = { value: false };
