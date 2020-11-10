@@ -1612,8 +1612,12 @@ var handyClicksEditor = {
 			var editCodeBtn = editor.__editCodeBtn || (
 				editor.__editCodeBtn = this.getFloatButton("hc-editor-cmd-editCode", editor)
 			);
-			var file = path && this.ut.getLocalFile(path);
-			var notFound = file && !file.exists();
+			if(path && this.ps.otherSrc)
+				var notFound = !(path in this.ps.files) || !this.ps.files[path];
+			else {
+				var file = path && this.ut.getLocalFile(path);
+				var notFound = file && !file.exists();
+			}
 			this.attribute(editCodeBtn, "hc_fileNotFound", notFound);
 			if(!editCodeBtn.hasAttribute("hc_isDarkFont")) // Only once... for better performance
 				this.su.checkDarkFont(editCodeBtn);
