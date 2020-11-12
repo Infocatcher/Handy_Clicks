@@ -1025,10 +1025,10 @@ var handyClicksSets = {
 		tItem.__sortLabel = label;
 
 		if((hasLinkedFile || daHasLinkedFile) && !extNA) this.delay(function() {
-			var na = this.linkedFileNotExists(linkedFile)
-				|| this.linkedFileNotExists(linkedFileInit);
-			var daNa = this.linkedFileNotExists(daLinkedFile)
-				|| this.linkedFileNotExists(daLinkedFileInit);
+			var na = this.su.linkedFileNotExists(linkedFile)
+				|| this.su.linkedFileNotExists(linkedFileInit);
+			var daNa = this.su.linkedFileNotExists(daLinkedFile)
+				|| this.su.linkedFileNotExists(daLinkedFileInit);
 			na   && this.setChildNodesProperties(tRow,  { hc_notAvailable: true }, true);
 			daNa && this.setChildNodesProperties(daRow, { hc_notAvailable: true }, true);
 			(na || daNa) && this.ensureNASearchUpdated();
@@ -1109,8 +1109,8 @@ var handyClicksSets = {
 		}
 
 		if(hasLinkedFile) this.delay(function() {
-			var na = this.linkedFileNotExists(linkedFile)
-				|| this.linkedFileNotExists(linkedFileCM);
+			var na = this.su.linkedFileNotExists(linkedFile)
+				|| this.su.linkedFileNotExists(linkedFileCM);
 			if(na) {
 				this.setChildNodesProperties(tRow, { hc_notAvailable: true }, true);
 				this.ensureNASearchUpdated();
@@ -1122,12 +1122,6 @@ var handyClicksSets = {
 
 		this.rowsCache[tItem.__hash = "#custom_types-" + type] = tRow;
 		return tItem;
-	},
-	linkedFileNotExists: function(path) {
-		if(path && this.ps.otherSrc)
-			return !(path in this.ps.files) || !this.ps.files[path];
-		var file = path && this.ut.getLocalFile(path);
-		return file && !file.exists();
 	},
 	getTypeLabel: function(type, isCustomType) {
 		this.ps.localize._localized = false;

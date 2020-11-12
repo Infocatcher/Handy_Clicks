@@ -783,6 +783,13 @@ var handyClicksSetsUtils = {
 		return cnt;
 	},
 
+	linkedFileNotExists: function(path) {
+		if(path && this.ps.otherSrc)
+			return !(path in this.ps.files) || !this.ps.files[path];
+		var file = path && this.ut.getLocalFile(path);
+		return file && !file.exists();
+	},
+
 	checkDarkFont: function(node, target) {
 		(target || node).setAttribute("hc_isDarkFont", this.isDarkFont(node));
 	},
