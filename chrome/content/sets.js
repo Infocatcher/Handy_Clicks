@@ -96,6 +96,8 @@ var handyClicksSets = {
 		window.addEventListener("mouseover", this, true);
 		document.addEventListener(this.su.dropEvent, this, false);
 		this.$("hc-sets-tree-columns").addEventListener("click", this, true);
+
+		this.checkLinkedFilesDelay = 10;
 	},
 	initShortcuts: function() {
 		var tr = this.tree = this.$("hc-sets-tree");
@@ -848,6 +850,7 @@ var handyClicksSets = {
 		for(var itemType in items) if(items.hasOwnProperty(itemType))
 			this.appendRow(parent, shortcut, itemType, items[itemType]);
 	},
+	checkLinkedFilesDelay: 250,
 	appendRow: function(parent, shortcut, itemType, fo, forcedLabel) {
 		var tItem = document.createElement("treeitem");
 		var tRow = tItem.appendChild(document.createElement("treerow"));
@@ -1032,7 +1035,7 @@ var handyClicksSets = {
 			na   && this.setChildNodesProperties(tRow,  { hc_notAvailable: true }, true);
 			daNa && this.setChildNodesProperties(daRow, { hc_notAvailable: true }, true);
 			(na || daNa) && this.ensureNASearchUpdated();
-		}, this, 250);
+		}, this, this.checkLinkedFilesDelay);
 
 		var insPos = this.getSortedInsPos(parent, tItem);
 		parent.insertBefore(tItem, insPos);
@@ -1115,7 +1118,7 @@ var handyClicksSets = {
 				this.setChildNodesProperties(tRow, { hc_notAvailable: true }, true);
 				this.ensureNASearchUpdated();
 			}
-		}, this, 250);
+		}, this, this.checkLinkedFilesDelay);
 
 		var insPos = this.getSortedInsPos(parent, tItem);
 		parent.insertBefore(tItem, insPos);
