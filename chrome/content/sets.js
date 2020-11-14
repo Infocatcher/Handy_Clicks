@@ -1359,13 +1359,23 @@ var handyClicksSets = {
 		prefWin.showPane(panes[n]);
 	},
 
-	addItems: function(e) {
+	addItems: function addItems(e) {
 		if(!this.isTreePaneSelected)
 			return;
 		const MODE_SHORTCUT = this.ct.EDITOR_MODE_SHORTCUT;
 		if(e) {
-			if(e.type == "command" || e.button > 0)
-				this.openEditorWindow({ __shortcut: this.ps.getEvtStr(e) }, MODE_SHORTCUT, true);
+			var isCmd = e.type == "command";
+			if(!isCmd) { // Preserve "click" event with getModifierState()
+				"__click" in addItems && clearTimeout(addItems.__click.timer);
+				var tmr = setTimeout(function() {
+					delete addItems.__click;
+				}, 25);
+				addItems.__click = { event: e, timer: tmr };
+			}
+			if(isCmd || e.button > 0) {
+				var evt = isCmd && addItems.__click && addItems.__click.event || e;
+				this.openEditorWindow({ __shortcut: this.ps.getEvtStr(evt) }, MODE_SHORTCUT, true);
+			}
 			return;
 		}
 		var its = this.getSelectedItems({ withRemoved: true });
