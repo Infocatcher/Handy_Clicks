@@ -96,7 +96,7 @@ Ctrl+Shift+V – paste">
 <!ENTITY hc.editor.defineReturnNote "Return: node or null"> <!-- Do not translate "null"! -->
 <!ENTITY hc.editor.defineContext "Context menu">
 <!ENTITY hc.editor.defineContextAccesskey "C">
-<!ENTITY hc.editor.defineContextTip "Leave this field empty for “contextmenu” event imitation and autodetection">
+<!ENTITY hc.editor.defineContextTip "Leave this field empty for autodetection (and “contextmenu” event imitation)">
 
 <!-- Invisible accesskeys -->
 <!ENTITY hc.editor.itemTypesAccesskey "m">

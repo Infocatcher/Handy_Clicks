@@ -96,7 +96,7 @@ Ctrl+Shift+V – вставить">
 <!ENTITY hc.editor.defineReturnNote "Должно возвращать: элемент или null"> <!-- Do not translate "null"! -->
 <!ENTITY hc.editor.defineContext "Контекстное меню">
 <!ENTITY hc.editor.defineContextAccesskey "м">
-<!ENTITY hc.editor.defineContextTip "Для имитации события «contextmenu» и автоопределения оставьте поле пустым">
+<!ENTITY hc.editor.defineContextTip "Оставьте поле пустым для автоопределения (и имитации события «contextmenu»)">
 
 <!-- Invisible accesskeys -->
 <!ENTITY hc.editor.itemTypesAccesskey "э">
