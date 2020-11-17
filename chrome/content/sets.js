@@ -2104,6 +2104,7 @@ var handyClicksSets = {
 		var sct = this.ut.mm(this.pu.get("sets.treeSortCustomTypes"), -1, 1);
 		mp.getElementsByAttribute("hc_sortTypes", sct)[0].setAttribute("checked", "true");
 		this.$("hc-sets-tree-sortMenu").hidden = this.fxVersion <= 2;
+		this.$("hc-sets-tree-customTypesMenu").setAttribute("hc_notFound", this.ju.isEmptyObj(this.ps.types));
 		var closeMenu = this.pu.get("sets.closeTreeViewMenu") ? "auto" : "none";
 		Array.prototype.forEach.call(
 			mp.getElementsByTagName("menuitem"),

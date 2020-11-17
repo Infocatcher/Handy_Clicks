@@ -166,7 +166,7 @@ preferences {
 							<menuitem type="checkbox" hc_pref="sets.rememberSort" label="&hc.sets.rememberSort;" />
 						</menupopup>
 					</menu>
-					<menu label="&hc.sets.customTypes;">
+					<menu id="hc-sets-tree-customTypesMenu" label="&hc.sets.customTypes;">
 						<menupopup>
 							<menuitem type="radio" hc_sortTypes="-1" label="&hc.sets.customTypesBefore;" />
 							<menuitem type="radio" hc_sortTypes="0" label="&hc.sets.customTypesBetween;" />

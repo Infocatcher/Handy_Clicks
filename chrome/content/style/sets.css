@@ -106,6 +106,9 @@ radio[pane="hc-sets-pane-funcs"] {
 #hc-sets-tree-sortMenu menuitem[hc_forHidden="true"] > .menu-iconic-text {
 	opacity: 0.45;
 }
+#hc-sets-tree-customTypesMenu[hc_notFound="true"] > .menu-text {
+	opacity: 0.45;
+}
 
 /* Tree style */
 treecol[sortActive="true"]:not([sortDirection]):not([primary]) > .treecol-sortdirection,
