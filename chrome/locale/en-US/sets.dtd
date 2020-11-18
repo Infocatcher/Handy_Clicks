@@ -6,13 +6,13 @@
 <!ENTITY hc.sets.settings "Settings">
 <!ENTITY hc.sets.settingsAccesskey "S">
 
-<!ENTITY hc.sets.exportPrefs "Export preferences to file…">
-<!ENTITY hc.sets.importPrefs "Import preferences from file…">
+<!ENTITY hc.sets.exportPrefs "Export about:config preferences to file…">
+<!ENTITY hc.sets.importPrefs "Import about:config preferences from file…">
 <!ENTITY hc.sets.reloadTree "Reload clicks options">
 <!ENTITY hc.sets.reloadPrefs "Reload about:config preferences">
 <!ENTITY hc.sets.reloadAllSettings "Reload all settings">
-<!ENTITY hc.sets.defaults "Reset to defaults…">
-<!ENTITY hc.sets.allPrefs "All preferences">
+<!ENTITY hc.sets.defaults "Reset about:config preferences to defaults…">
+<!ENTITY hc.sets.allPrefs "All about:config preferences">
 
 <!ENTITY hc.sets.clickOptionsTitle "Clicks options">
 

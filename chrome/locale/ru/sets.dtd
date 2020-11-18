@@ -6,13 +6,13 @@
 <!ENTITY hc.sets.settings "Настройки">
 <!ENTITY hc.sets.settingsAccesskey "Н">
 
-<!ENTITY hc.sets.exportPrefs "Экспорт настроек в файл…">
-<!ENTITY hc.sets.importPrefs "Импорт настроек из файла…">
+<!ENTITY hc.sets.exportPrefs "Экспорт настроек about:config в файл…">
+<!ENTITY hc.sets.importPrefs "Импорт настроек about:config из файла…">
 <!ENTITY hc.sets.reloadTree "Перезагрузить настройки кликов">
 <!ENTITY hc.sets.reloadPrefs "Перезагрузить настройки about:config">
 <!ENTITY hc.sets.reloadAllSettings "Перезагрузить все настройки">
-<!ENTITY hc.sets.defaults "Сбросить настройки…">
-<!ENTITY hc.sets.allPrefs "Все настройки">
+<!ENTITY hc.sets.defaults "Сбросить настройки about:config…">
+<!ENTITY hc.sets.allPrefs "Все настройки about:config">
 
 <!ENTITY hc.sets.clickOptionsTitle "Настройки кликов">
 
