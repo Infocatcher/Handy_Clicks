@@ -115,7 +115,7 @@
 
 <!ENTITY hc.sets.export "Export">
 <!ENTITY hc.sets.exportAccesskey "E">
-<!ENTITY hc.sets.fullExportToFile "Export to file…">
+<!ENTITY hc.sets.fullExportToFile "Export all to file…">
 <!ENTITY hc.sets.createBackup "Create backup">
 <!ENTITY hc.sets.exportSelectedToFile "Export selected to file…">
 <!ENTITY hc.sets.exportSelectedToClipboard "Copy in internal JSON format">
