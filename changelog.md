@@ -227,6 +227,11 @@
 `x` Fixed import for legacy js format (not JSON): correctly convert $all property.<br>
 `*` Various internal code enhancements.<br>
 
+##### legacy-0.1.3.x/HEAD
+<em>(backported from master/HEAD)</em><br>
+`x` Correctly rename unloaded tabs.<br>
+`x` Fixed import for legacy js format (not JSON): correctly convert $all property.<br>
+
 ##### 0.1.3pre8 (2019-03-04)
 <em>(backported from master/HEAD)</em><br>
 `*` Improved settings performance: used faster way to detect unsaved state (compare only settings data without hash calculations).<br>
