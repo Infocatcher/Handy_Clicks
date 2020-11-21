@@ -267,7 +267,7 @@ var handyClicksPrefSvc = {
 					return s.replace(/(\w+):/g, '"$1":');
 				})
 				// Add commas to each property name
-				.replace(/^(\s*)(\w+): /mg, '$1"$2": ')
+				.replace(/^(\s*)(\$?\w+): /mg, '$1"$2": ')
 				.replace(/;\s*$/, "")
 				//.replace(/^\s+/mg, "")
 				//.replace(/[\n\r]+/g, "")
