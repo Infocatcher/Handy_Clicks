@@ -1157,7 +1157,7 @@ var handyClicksFuncs = {
 	renameTab: function(e, tab) {
 		tab = this.fixTab(tab);
 		var doc = tab.linkedBrowser.contentDocument;
-		var curTitle = doc.title;
+		var curTitle = doc && doc.title || tab.label;
 		var newTitle = this.ut.prompt(
 			this.getLocalized("renameTabTitle"),
 			this.getLocalized("tabNewName"),
@@ -1166,12 +1166,18 @@ var handyClicksFuncs = {
 		const p = "__handyClicks__title";
 		if(newTitle != null) {
 			tab[p] = curTitle;
-			doc.title = newTitle;
 		}
 		else if(p in tab) {
-			doc.title = tab[p];
+			newTitle = tab[p];
 			delete tab[p];
 		}
+		else {
+			return;
+		}
+		if(doc)
+			doc.title = newTitle;
+		if(!doc || tab.getAttribute("pending") == "true")
+			tab.label = newTitle;
 	},
 	toggleTabPinned: function(e, tab) {
 		tab = this.fixTab(tab);
