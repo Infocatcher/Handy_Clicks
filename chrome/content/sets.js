@@ -4313,6 +4313,7 @@ var handyClicksSets = {
 			var ns = importFD.nextSibling;
 			pn.insertBefore(pn.removeChild(importFD), ns);
 		}
+		importFD.className = "";
 		var counter = this.$("hc-sets-tree-importFilesStatistics");
 		counter.value = countFD;
 		counter.hidden = !hasFD;
@@ -4369,6 +4370,8 @@ var handyClicksSets = {
 					var tipRows = this.$(id + "Rows");
 					tipRows.textContent = "";
 					tipRows.appendChild(df);
+					importFD.className = (added ? "hc-new" : "")
+						+ (changed ? " hc-override" : "");
 				}, this);
 			}, this);
 		}, this, 50);

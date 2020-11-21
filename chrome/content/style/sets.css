@@ -254,12 +254,14 @@ tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_copied, selected) {
 treechildren::-moz-tree-cell-text(hc_override),
 #hc-sets-tree-importChanged,
 label.hc-override,
+checkbox.hc-override,
 row.hc-override > .hc-path {
 	font-style: italic;
 }
 treechildren::-moz-tree-cell-text(hc_new),
 #hc-sets-tree-importAdded,
 label.hc-new,
+checkbox.hc-new,
 row.hc-new > .hc-path {
 	text-decoration: underline;
 }
