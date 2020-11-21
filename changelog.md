@@ -224,6 +224,7 @@
 `*` Reopen edit mode tooltip to force make it topmost, if was opened another tooltip.<br>
 `+` Added %+lng%/%-lng% search placeholders for custom functions with localized/not localized labels.<br>
 `x` Correctly rename unloaded tabs.<br>
+`x` Fixed import for legacy js format (not JSON): correctly convert $all property.<br>
 `*` Various internal code enhancements.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
