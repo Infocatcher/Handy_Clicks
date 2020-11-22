@@ -269,6 +269,9 @@ treechildren::-moz-tree-cell-text(hc_old),
 #hc-sets-tree-importRemoved {
 	text-decoration: line-through;
 }
+checkbox.hc-equals .checkbox-label {
+	opacity: 0.6;
+}
 .hc-mark {
 	margin-left: 1px;
 	margin-right: 1px;

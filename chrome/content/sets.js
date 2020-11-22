@@ -4370,7 +4370,7 @@ var handyClicksSets = {
 					var tipRows = this.$(id + "Rows");
 					tipRows.textContent = "";
 					tipRows.appendChild(df);
-					importFD.className = (added ? "hc-new" : "")
+					importFD.className = (added ? "hc-new" : (changed ? "" : "hc-equals"))
 						+ (changed ? " hc-override" : "");
 				}, this);
 			}, this);
