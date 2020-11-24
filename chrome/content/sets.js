@@ -4374,7 +4374,7 @@ var handyClicksSets = {
 						+ (changed ? " hc-override" : "");
 				}, this);
 			}, this);
-		}, this, 50);
+		}, this, 10);
 	},
 	cleanImportSearch: function(typeChanged) {
 		var search = this.searchField.value;
