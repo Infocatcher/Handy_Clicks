@@ -123,6 +123,7 @@ var handyClicksEditor = {
 			}
 		}
 		unwatchLinkedFiles && this.watchLinkedFiles(false); // Will be closed all editors
+		this.cleanupFilesData();
 		document.removeEventListener("keydown", this.tabLikeNavigation, true);
 	},
 	watchLinkedFile: function(path, file) {
@@ -1574,11 +1575,23 @@ var handyClicksEditor = {
 		}, this);
 		this.pe.reloadSettings(true);
 	},
+	_fdChanged: false,
 	changedFileData: function(path) {
 		this.delay(function() {
-			var wSet = this.wu.wm.getMostRecentWindow("handyclicks:settings");
-			wSet && wSet.handyClicksSets.changedFileData(path);
+			this._fdChanged = true;
+			this.changedFileDataSync(path);
 		}, this);
+	},
+	changedFileDataSync: function(path) {
+		var wSet = this.wu.wm.getMostRecentWindow("handyclicks:settings");
+		wSet && wSet.handyClicksSets.changedFileData(path);
+	},
+	cleanupFilesData: function() {
+		if(!this._fdChanged)
+			return;
+		this._log("cleanupFilesData()");
+		this.pe.filterFilesData(this.ps.files);
+		this.changedFileDataSync();
 	},
 	doEditorCommand: function(btnCmd, cmd/*, arg1, ...*/) {
 		var tabbox = this.selectedTabbox;
