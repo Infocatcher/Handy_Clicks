@@ -363,7 +363,8 @@ var handyClicksPrefSvcExt = {
 	},
 	filterFilesData: function(files) {
 		if(!files)
-			return null;
+			return false;
+		var filtered = false;
 		var linkedPaths = { __proto__: null };
 		this.forEachCode(this, function(code) {
 			var path = code && this.getSourcePath(code);
@@ -374,13 +375,15 @@ var handyClicksPrefSvcExt = {
 			if(!this.isValidFileData(files[path])) {
 				this.ut._warn("[Import] Ignore invalid or empty file data: " + path);
 				delete files[path];
+				filtered = true;
 			}
 			if(!(path in linkedPaths)) {
 				this.ut._warn("[Import] Ignore not linked path in files object: " + path);
 				delete files[path];
+				filtered = true;
 			}
 		}
-		return files;
+		return filtered;
 	},
 	isValidFileData: function(fo) {
 		return this.ju.isObject(fo) && !!fo.data;
