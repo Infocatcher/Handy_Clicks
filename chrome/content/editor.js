@@ -1590,8 +1590,7 @@ var handyClicksEditor = {
 		if(!this._fdChanged)
 			return;
 		this._log("cleanupFilesData()");
-		this.pe.filterFilesData(this.ps.files);
-		this.changedFileDataSync();
+		this.pe.filterFilesData(this.ps.files) && this.changedFileDataSync();
 	},
 	doEditorCommand: function(btnCmd, cmd/*, arg1, ...*/) {
 		var tabbox = this.selectedTabbox;
