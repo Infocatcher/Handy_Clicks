@@ -262,6 +262,9 @@ var handyClicksEditor = {
 		}
 		return tabbox;
 	},
+	get selectedEditor() {
+		return this.getEditorFromTabbox(this.selectedTabbox);
+	},
 	getSelectedPanel: function(tabbox) {
 		return tabbox.selectedPanel
 			|| tabbox.getElementsByTagName("tabpanels")[0]
@@ -548,7 +551,8 @@ var handyClicksEditor = {
 		this._editorTimer = this.delay(function() {
 			this._editorTimer = 0;
 			this._editorLastUpdate = Date.now();
-			this.setEditorButtons(editor);
+			if(editor == this.selectedEditor)
+				this.setEditorButtons(editor);
 			if(editor.getAttribute("hc_highlightEmpty") == "true")
 				this.highlightEmpty(editor);
 		}, this, Date.now() - this._editorLastUpdate > 1000 ? 10 : 100);
@@ -1611,7 +1615,7 @@ var handyClicksEditor = {
 		}, 300);
 	},
 	setEditorButtons: function(editor) {
-		editor = editor || this.getEditorFromTabbox(this.selectedTabbox);
+		editor = editor || this.selectedEditor;
 		var path = editor.textLength <= 1028 // Too long for path? ("//> ".length + PATH_MAX)
 			&& this.ps.getSourcePath(editor.value);
 		var codeToFileBtn = editor.__codeToFileBtn || (
