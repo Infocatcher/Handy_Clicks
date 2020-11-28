@@ -282,15 +282,15 @@ var handyClicksEditor = {
 	getEditorFromTabbox: function(tabbox) {
 		return this.getEditorFromPanel(this.getSelectedPanel(tabbox));
 	},
-	getTabboxFromChild: function(node) {
+	getNodeFromChild: function(name, node) {
 		for(; node; node = node.parentNode)
-			if(node.localName == "tabbox")
+			if(node.localName == name)
 				return node;
 		return null;
 	},
 	getFloatButton: function(cmd, sourceNode) {
 		var tabbox = sourceNode
-			? this.getTabboxFromChild(sourceNode)
+			? this.getNodeFromChild("tabbox", sourceNode)
 			: this.selectedTabbox;
 		var toolbar = tabbox.firstChild;
 		return toolbar.getElementsByAttribute("command", cmd)[0];
