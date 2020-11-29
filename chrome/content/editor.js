@@ -265,6 +265,12 @@ var handyClicksEditor = {
 	get selectedEditor() {
 		return this.getEditorFromTabbox(this.selectedTabbox);
 	},
+	insideSelectedPanel: function(node) {
+		var tabpanel = this.getNodeFromChild("tabpanel", node);
+		var tabpanels = tabpanel.parentNode;
+		var selectedPanel = tabpanels.selectedPanel || tabpanels.getElementsByTagName("tabpanel")[0];
+		return selectedPanel == tabpanel;
+	},
 	getSelectedPanel: function(tabbox) {
 		return tabbox.selectedPanel
 			|| tabbox.getElementsByTagName("tabpanels")[0]
@@ -551,7 +557,7 @@ var handyClicksEditor = {
 		this._editorTimer = this.delay(function() {
 			this._editorTimer = 0;
 			this._editorLastUpdate = Date.now();
-			if(editor == this.selectedEditor)
+			if(this.insideSelectedPanel(editor))
 				this.setEditorButtons(editor);
 			if(editor.getAttribute("hc_highlightEmpty") == "true")
 				this.highlightEmpty(editor);
