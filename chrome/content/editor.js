@@ -123,7 +123,6 @@ var handyClicksEditor = {
 			}
 		}
 		unwatchLinkedFiles && this.watchLinkedFiles(false); // Will be closed all editors
-		this.cleanupFilesData();
 		document.removeEventListener("keydown", this.tabLikeNavigation, true);
 	},
 	watchLinkedFile: function(path, file) {
@@ -1795,6 +1794,7 @@ var handyClicksEditor = {
 			hasRename && this.renameShortcut(hasUnsaved, false, true);
 			hasUnsaved && this.saveSettings();
 		}
+		this.cleanupFilesData();
 		return true;
 	},
 	checkCanEnable: function(cb) {
