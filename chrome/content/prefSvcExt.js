@@ -372,7 +372,12 @@ var handyClicksPrefSvcExt = {
 				linkedPaths[path] = true;
 		}, this);
 		for(var path in files) if(files.hasOwnProperty(path)) {
-			if(!this.isValidFileData(files[path])) {
+			var fd = files[path];
+			if(fd && fd._locked || false) {
+				this._log("filterFilesData(): locked path: " + path);
+				continue;
+			}
+			if(!this.isValidFileData(fd)) {
 				this.ut._warn("[Import] Ignore invalid or empty file data: " + path);
 				delete files[path];
 				filtered = true;

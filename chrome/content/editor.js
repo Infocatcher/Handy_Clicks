@@ -1585,6 +1585,7 @@ var handyClicksEditor = {
 		this.pe.reloadSettings(true);
 	},
 	_fdChanged: false,
+	_windowClosing: false,
 	changedFileData: function(path) {
 		this.delay(function() {
 			this._fdChanged = true;
@@ -1794,6 +1795,7 @@ var handyClicksEditor = {
 			hasRename && this.renameShortcut(hasUnsaved, false, true);
 			hasUnsaved && this.saveSettings();
 		}
+		this._windowClosing = true;
 		this.cleanupFilesData();
 		return true;
 	},

@@ -540,7 +540,8 @@
 				<parameter name="lineNumber" />
 				<body>
 				<![CDATA[
-					var ut = this.hcEditor.ut;
+					var ed = this.hcEditor;
+					var ut = ed.ut;
 					if(!ut)
 						return;
 
@@ -564,7 +565,10 @@
 										files[path] = {
 											lastModified: Date.now(),
 											size: 0,
-											data: ""
+											data: "",
+											get _locked() {
+												return window.top && !window.top.closed && !ed._windowClosing;
+											}
 										};
 										this.openExternalEditor();
 										this.hcEditor.changedFileData(path);
@@ -855,7 +859,8 @@
 				<parameter name="context" />
 				<body>
 				<![CDATA[
-					var ut = this.hcEditor.ut;
+					var ed = this.hcEditor;
+					var ut = ed.ut;
 					if(!ut)
 						return;
 
@@ -881,7 +886,10 @@
 						ut.ps.files[path] = {
 							lastModified: Date.now(),
 							size: size,
-							data: data
+							data: data,
+							get _locked() {
+								return window.top && !window.top.closed && !ed._windowClosing;
+							}
 						};
 						this.hcEditor.changedFileData(path);
 						this.value = "//> " + path;
