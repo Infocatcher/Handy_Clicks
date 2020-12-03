@@ -275,11 +275,14 @@ var handyClicksEditor = {
 			|| tabbox.getElementsByTagName("tabpanels")[0]
 				.getElementsByTagName("tabpanel")[tabbox.selectedIndex];
 	},
+	isEditor: function(tb) {
+		return /(?:^|\s)hcEditor(?:\s|$)/.test(tb.className);
+	},
 	getEditorFromPanel: function (panel) {
 		var tbs = panel.getElementsByTagName("textbox");
 		for(var i = 0, l = tbs.length; i < l; ++i) {
 			var tb = tbs[i];
-			if(/(?:^|\s)hcEditor(?:\s|$)/.test(tb.className))
+			if(this.isEditor(tb))
 				return tb;
 		}
 		return null;
@@ -545,7 +548,7 @@ var handyClicksEditor = {
 			return;
 		//this.setDialogButtons();
 		this.delay(this.setDialogButtons, this, 5);
-		if(ln == "textbox" && /(?:^|\s)hcEditor(?:\s|$)/.test(trg.className))
+		if(ln == "textbox" && this.isEditor(trg))
 			this.editorChanged(trg);
 	},
 	_editorTimer: 0,
@@ -1574,9 +1577,10 @@ var handyClicksEditor = {
 		Array.prototype.forEach.call(
 			document.getElementsByTagName("textbox"),
 			function(tb) {
-				if(/(?:^|\s)hcEditor(?:\s|$)/.test(tb.className) && tb.value == oldCode)
+				if(this.isEditor(tb) && tb.value == oldCode)
 					tb.value = newCode;
-			}
+			},
+			this
 		);
 		this.pe.forEachCode(this.ps, function(code, o, key) {
 			if(code == oldCode)
