@@ -3104,6 +3104,7 @@ var handyClicksSets = {
 		"sets.incompleteImportWarning",
 		"sets.openEditorsLimit",
 		"sets.removeBackupConfirm",
+		"sets.removeOldBackupsConfirm",
 		"ui.confirmReload",
 		"ui.notifyUnsaved"
 	],
@@ -3144,6 +3145,10 @@ var handyClicksSets = {
 				case "sets.removeBackupConfirm":
 					text = this.getLocalized("removeBackupConfirm")
 						.replace("%f", this.ps.prefsFileName + ".js");
+				break;
+				case "sets.removeOldBackupsConfirm":
+					text = this.getLocalized("removeOldBackupsConfirm")
+						.replace("%n", "N");
 				break;
 				case "ui.confirmReload":
 					text = this.getLocalized("confirmReload");
