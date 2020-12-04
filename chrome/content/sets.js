@@ -4162,12 +4162,33 @@ var handyClicksSets = {
 		if(store < 0)
 			store = 0;
 		var ubItems = this.userBackupItems;
-		for(var i = ubItems.length - 1; i >= store; --i) {
-			var mi = ubItems[i];
+		var toRemove = Array.prototype.slice.call(this.userBackupItems, store);
+		if(!toRemove.length)
+			return;
+
+		const confirmPref = "sets.removeOldBackupsConfirm";
+		if(this.pu.get(confirmPref)) {
+			this.ut.closeMenus(toRemove[0]);
+			this.ut.ensureNotMinimized();
+			var dontAsk = { value: false };
+			var ok = this.ut.promptsSvc.confirmCheck(
+				window, this.getLocalized("title"),
+				this.getLocalized("removeOldBackupsConfirm").replace("%n", toRemove.length),
+				this.getLocalized("dontAskAgain"),
+				dontAsk
+			);
+			if(!ok)
+				return;
+			if(dontAsk.value)
+				this.pu.set(confirmPref, false);
+		}
+
+		toRemove.forEach(function(mi) {
 			var file = mi.__file;
 			file.exists() && file.remove(false);
 			mi.parentNode.removeChild(mi);
-		}
+		});
+
 		this.updRestorePopup(store);
 	},
 	removeDuplicateBackups: function() {

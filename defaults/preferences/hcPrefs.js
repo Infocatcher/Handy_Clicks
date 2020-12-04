@@ -103,6 +103,7 @@ pref("extensions.handyclicks.sets.backupCorruptedDepth", 15);
 pref("extensions.handyclicks.sets.backupUserRemoveDepth", 1);
 pref("extensions.handyclicks.sets.backupUserRemoveDepth2", 10);
 pref("extensions.handyclicks.sets.removeBackupConfirm", true);
+pref("extensions.handyclicks.sets.removeOldBackupsConfirm", true);
 pref("extensions.handyclicks.sets.importJSWarning", true);
 pref("extensions.handyclicks.sets.importPaths", ""); // Allow import/export file data, example: D:\\hcScripts|%CurProcD%\\hcScripts
 pref("extensions.handyclicks.sets.incompleteImportWarning", true);
