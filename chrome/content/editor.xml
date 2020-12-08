@@ -562,14 +562,7 @@
 							ut.notifyWarning(ut.getLocalized("cantEditImportedFile"), {
 								buttons: {
 									$createNewFile: function() {
-										files[path] = {
-											lastModified: Date.now(),
-											size: 0,
-											data: "",
-											get _locked() {
-												return window.top && !window.top.closed && !ed._windowClosing;
-											}
-										};
+										files[path] = ed.createLockedFileData();
 										this.openExternalEditor();
 										this.hcEditor.changedFileData(path);
 									}
@@ -883,14 +876,7 @@
 							Components.utils.reportError(e);
 							size = data.length;
 						}
-						ut.ps.files[path] = {
-							lastModified: Date.now(),
-							size: size,
-							data: data,
-							get _locked() {
-								return window.top && !window.top.closed && !ed._windowClosing;
-							}
-						};
+						ut.ps.files[path] = ed.createLockedFileData(data, size);
 						this.hcEditor.changedFileData(path);
 						this.value = "//> " + path;
 						callback && callback.call(context);
