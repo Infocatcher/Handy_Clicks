@@ -1613,7 +1613,10 @@ var handyClicksEditor = {
 			size: size || 0,
 			data: data || "",
 			get _locked() {
-				return window && !window.closed && !_this._windowClosing;
+				if(window && !window.closed && !_this._windowClosing)
+					return true;
+				delete this._locked;
+				return this._locked = false;
 			}
 		};
 	},
