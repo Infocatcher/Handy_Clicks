@@ -302,6 +302,22 @@ var handyClicksSetsUtils = {
 			this.pu.set(askPref, false);
 		return confirmed;
 	},
+	confirmCheckPref: function(confirmPref, title, text, win, menuNode) {
+		if(!this.pu.get(confirmPref))
+			return true;
+		menuNode && this.ut.closeMenus(menuNode);
+		this.ut.ensureNotMinimized();
+		var dontAsk = { value: false };
+		var ok = this.ut.promptsSvc.confirmCheck(
+			win || window,
+			title, text,
+			this.getLocalized("dontAskAgain"),
+			dontAsk
+		);
+		if(ok && dontAsk.value)
+			this.pu.set(confirmPref, false);
+		return ok;
+	},
 
 	get topWindow() {
 		return window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)

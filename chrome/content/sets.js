@@ -4032,22 +4032,15 @@ var handyClicksSets = {
 		var exists = file.exists();
 
 		var dontAsk = !exists || this.hasModifier(e) || e.type == "click";
-		const confirmPref = "sets.removeBackupConfirm";
-		if(!dontAsk && this.pu.get(confirmPref)) {
-			this.ut.closeMenus(mi);
-			this.ut.ensureNotMinimized();
-			var dontAsk = { value: false };
-			var ok = this.ut.promptsSvc.confirmCheck(
-				window, this.getLocalized("title"),
-				this.getLocalized("removeBackupConfirm").replace("%f", fName),
-				this.getLocalized("dontAskAgain"),
-				dontAsk
-			);
-			if(!ok)
-				return false;
-			if(dontAsk.value)
-				this.pu.set(confirmPref, false);
-		}
+		var confirmed = !dontAsk && this.su.confirmCheckPref(
+			"sets.removeBackupConfirm",
+			this.getLocalized("title"),
+			this.getLocalized("removeBackupConfirm").replace("%f", fName),
+			window,
+			mi
+		);
+		if(!confirmed)
+			return false;
 
 		exists && file.remove(false);
 		mi.parentNode.removeChild(mi);
@@ -4171,22 +4164,15 @@ var handyClicksSets = {
 		if(!toRemove.length)
 			return;
 
-		const confirmPref = "sets.removeOldBackupsConfirm";
-		if(this.pu.get(confirmPref)) {
-			this.ut.closeMenus(toRemove[0]);
-			this.ut.ensureNotMinimized();
-			var dontAsk = { value: false };
-			var ok = this.ut.promptsSvc.confirmCheck(
-				window, this.getLocalized("title"),
-				this.getLocalized("removeOldBackupsConfirm").replace("%n", toRemove.length),
-				this.getLocalized("dontAskAgain"),
-				dontAsk
-			);
-			if(!ok)
-				return;
-			if(dontAsk.value)
-				this.pu.set(confirmPref, false);
-		}
+		var confirmed = this.su.confirmCheckPref(
+			"sets.removeOldBackupsConfirm",
+			this.getLocalized("title"),
+			this.getLocalized("removeOldBackupsConfirm").replace("%n", toRemove.length),
+			window,
+			toRemove[0]
+		);
+		if(!confirmed)
+			return;
 
 		toRemove.forEach(function(mi) {
 			var file = mi.__file;
