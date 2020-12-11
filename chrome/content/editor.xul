@@ -104,9 +104,9 @@
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">
 		<tabs setfocus="false" onselect="handyClicksEditor.handleTabSelect(event);">
-			<tab id="hc-editor-shortcutTab" selected="true"
+			<tab id="hc-editor-shortcutTab" selected="true" class="hcTabIconized"
 				label="&hc.editor.mainTabActions;" accesskey="&hc.editor.mainTabActionsAccesskey;" />
-			<tab id="hc-editor-itemTypeTab"
+			<tab id="hc-editor-itemTypeTab" class="hcTabIconized"
 				label="&hc.editor.mainTabCustomTypes;" accesskey="&hc.editor.mainTabCustomTypesAccesskey;" />
 		</tabs>
 		<tabpanels flex="1">

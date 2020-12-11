@@ -1,12 +1,16 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 @namespace html url("http://www.w3.org/1999/xhtml");
 
-#hc-editor-shortcutTab {
+.hcTabIconized {
 	list-style-image: url("icons16.png");
+}
+.hcTabIconized .tab-text {
+	-moz-margin-start: 3px !important;
+}
+#hc-editor-shortcutTab {
 	-moz-image-region: rect(80px 32px 96px 16px);
 }
 #hc-editor-itemTypeTab {
-	list-style-image: url("icons16.png");
 	-moz-image-region: rect(80px 48px 96px 32px);
 }
 
