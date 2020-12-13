@@ -1529,8 +1529,6 @@ var handyClicksEditor = {
 		return true;
 	},
 	getFileDataPath: function() {
-		if(!this.ps.otherSrc)
-			return undefined;
 		var tabbox = this.selectedTabbox;
 		if(tabbox.collapsed)
 			return undefined;
@@ -1538,11 +1536,20 @@ var handyClicksEditor = {
 		var path = this.ps.getSourcePath(editor.value);
 		if(!path)
 			return undefined;
-		if(!(path in this.ps.files))
-			return "";
-		var fd = new String(path);
-		fd.editor = editor;
-		return fd;
+		if(this.ps.otherSrc) {
+			if(!(path in this.ps.files))
+				return "";
+			var fd = new String(path);
+			fd.editor = editor;
+			return fd
+		}
+		var file = this.ut.getLocalFile(path);
+		if(!file.exists())
+			return undefined;
+		return {
+			editor: editor,
+			__proto__: file
+		};
 	},
 	deleteFileData: function() {
 		var path = this.getFileDataPath();
