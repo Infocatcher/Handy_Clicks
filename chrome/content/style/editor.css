@@ -4,6 +4,9 @@
 .hcTabIconized {
 	list-style-image: url("icons16.png");
 }
+.hcTabIconized .tab-icon {
+	margin-bottom: -1px;
+}
 .hcTabIconized .tab-text {
 	-moz-margin-start: 3px !important;
 }
