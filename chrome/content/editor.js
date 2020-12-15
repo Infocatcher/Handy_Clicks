@@ -1555,7 +1555,10 @@ var handyClicksEditor = {
 		var path = this.getFileDataPath();
 		if(!path)
 			return;
-		delete this.ps.files[path];
+		if(this.ps.otherSrc)
+			delete this.ps.files[path];
+		else //~ todo: confirmation + handle errors
+			path.remove(true);
 		this.pe.reloadSettings(true);
 	},
 	renameFileData: function() {
