@@ -1548,6 +1548,9 @@ var handyClicksEditor = {
 			return undefined;
 		return {
 			editor: editor,
+			toString: function() {
+				return path;
+			},
 			__proto__: file
 		};
 	},
@@ -1569,17 +1572,31 @@ var handyClicksEditor = {
 		var newFileName = this.getLocalized("newFileName");
 		var exists = "";
 		for(;;) {
-			var newPath = this.ut.prompt(this.getLocalized("renameFile"), exists + newFileName, path);
-			if(!newPath || newPath == path)
+			var newPath = this.ut.prompt(this.getLocalized("renameFile"), exists + newFileName, path.toString());
+			if(!newPath || newPath == path.toString())
 				return;
-			if(!(newPath in files))
-				break;
+			if(this.ps.otherSrc) {
+				if(!(newPath in files))
+					break;
+			}
+			else {
+				var newFile = this.ut.getLocalFile(newPath);
+				if(!this.pe.importAllowed(newFile)) //~ todo: show warnings
+					continue;
+				if(!newFile.exists())
+					break;
+			}
 			exists = this.getLocalized("renameAlreadyExists").replace("%f", newPath) + "\n";
 		}
 
-		var fd = files[path];
-		delete files[path];
-		files[newPath] = fd;
+		if(this.ps.otherSrc) {
+			var fd = files[path];
+			delete files[path];
+			files[newPath] = fd;
+		}
+		else {
+			path.moveTo(newFile.parent, newFile.leafName);
+		}
 
 		var newCode = "//> " + newPath;
 		var oldCode = path.editor.value;
@@ -1596,7 +1613,10 @@ var handyClicksEditor = {
 			if(code == oldCode)
 				o[key] = newCode;
 		}, this);
-		this.pe.reloadSettings(true);
+		if(this.ps.otherSrc)
+			this.pe.reloadSettings(true);
+		else
+			this.saveSettings(true);
 	},
 	_fdChanged: false,
 	_windowClosing: false,
