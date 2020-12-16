@@ -1539,20 +1539,17 @@ var handyClicksEditor = {
 		if(this.ps.otherSrc) {
 			if(!(path in this.ps.files))
 				return "";
-			var fd = new String(path);
-			fd.editor = editor;
-			return fd
 		}
-		var file = this.ut.getLocalFile(path);
-		if(!file.exists())
-			return undefined;
-		return {
-			editor: editor,
-			toString: function() {
-				return path;
-			},
-			__proto__: file
-		};
+		else {
+			var file = this.ut.getLocalFile(path);
+			if(!file.exists())
+				return "";
+		}
+		var fd = new String(path);
+		fd.editor = editor;
+		if(file)
+			fd.file = file;
+		return fd;
 	},
 	deleteFileData: function() {
 		var path = this.getFileDataPath();
@@ -1561,7 +1558,7 @@ var handyClicksEditor = {
 		if(this.ps.otherSrc)
 			delete this.ps.files[path];
 		else //~ todo: confirmation + handle errors
-			path.remove(true);
+			path.file.remove(true);
 		this.pe.reloadSettings(true);
 	},
 	renameFileData: function() {
@@ -1572,8 +1569,8 @@ var handyClicksEditor = {
 		var newFileName = this.getLocalized("newFileName");
 		var exists = "";
 		for(;;) {
-			var newPath = this.ut.prompt(this.getLocalized("renameFile"), exists + newFileName, path.toString());
-			if(!newPath || newPath == path.toString())
+			var newPath = this.ut.prompt(this.getLocalized("renameFile"), exists + newFileName, path);
+			if(!newPath || newPath == path)
 				return;
 			if(this.ps.otherSrc) {
 				if(!(newPath in files))
@@ -1595,7 +1592,7 @@ var handyClicksEditor = {
 			files[newPath] = fd;
 		}
 		else {
-			path.moveTo(newFile.parent, newFile.leafName);
+			path.file.moveTo(newFile.parent, newFile.leafName);
 		}
 
 		var newCode = "//> " + newPath;
