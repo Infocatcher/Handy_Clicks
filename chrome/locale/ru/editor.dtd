@@ -77,8 +77,8 @@ Ctrl+Shift+V – вставить">
 
 <!ENTITY hc.editor.editCode "Редактировать…">
 <!ENTITY hc.editor.editCodeTip "Редактировать код во внешнем редакторе…">
-<!ENTITY hc.editor.deleteFileData "Удалить сохранённое содержимое файла">
-<!ENTITY hc.editor.renameFileData "Переименовать сохранённый файл…">
+<!ENTITY hc.editor.deleteFile "Удалить файл">
+<!ENTITY hc.editor.renameFile "Переименовать файл…">
 <!ENTITY hc.editor.codeToFile "В файл">
 <!ENTITY hc.editor.codeToFileTip "Использовать ссылку на файл с кодом">
 <!ENTITY hc.editor.openScriptsDir "Скрипты…">
