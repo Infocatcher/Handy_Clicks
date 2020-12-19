@@ -1566,23 +1566,21 @@ var handyClicksEditor = {
 			return;
 		var files = this.ps.files;
 		var newFileName = this.getLocalized("newFileName");
-		var exists = "";
+		var msg = "";
 		for(;;) {
-			var newPath = this.ut.prompt(this.getLocalized("renameFile"), exists + newFileName, path);
+			var newPath = this.ut.prompt(this.getLocalized("renameFile"), msg + newFileName, path);
 			if(!newPath || newPath == path)
 				return;
-			if(path.file) {
-				var newFile = this.ut.getLocalFile(newPath);
-				if(!this.pe.importAllowed(newFile)) //~ todo: show warnings
-					continue;
-				if(!newFile.exists())
-					break;
+			var newFile = this.ut.getLocalFile(newPath);
+			if(!this.pe.importAllowed(newFile)) {
+				var expPath = newPath + "\n=> " + newFile.path;
+				this.ut._warn("Export/import not allowed for " + expPath + this.pe._importPathsInfo);
+				msg = this.getLocalized("renameNotAllowed").replace("%f", expPath) + "\n";
+				continue;
 			}
-			else {
-				if(!(newPath in files))
-					break;
-			}
-			exists = this.getLocalized("renameAlreadyExists").replace("%f", newPath) + "\n";
+			if(path.file ? !newFile.exists() : !(newPath in files))
+				break;
+			msg = this.getLocalized("renameAlreadyExists").replace("%f", newPath) + "\n";
 		}
 
 		if(path.file) {
