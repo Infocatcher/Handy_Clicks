@@ -1630,7 +1630,7 @@ var handyClicksEditor = {
 		this._log("cleanupFilesData()");
 		this.pe.filterFilesData(this.ps.files) && this.changedFileDataSync();
 	},
-	createLockedFileData(data, size) {
+	createLockedFileData: function(data, size) {
 		var _this = this;
 		return {
 			lastModified: Date.now(),
