@@ -1572,6 +1572,10 @@ var handyClicksEditor = {
 			if(!newPath || newPath == path)
 				return;
 			var newFile = this.ut.getLocalFile(newPath);
+			if(!newFile) {
+				msg = this.getLocalized("fileInvalidPath").replace("%p", newPath) + "\n";
+				continue;
+			}
 			if(!this.pe.importAllowed(newFile)) {
 				var expPath = newPath + "\n=> " + newFile.path;
 				this.ut._warn("Export/import not allowed for " + expPath + this.pe._importPathsInfo);
