@@ -1588,7 +1588,17 @@ var handyClicksEditor = {
 		}
 
 		if(path.file) {
-			path.file.moveTo(newFile.parent, newFile.leafName);
+			try {
+				path.file.moveTo(newFile.parent, newFile.leafName);
+			}
+			catch(e) {
+				Components.utils.reportError(e);
+				var err = this.getLocalized("fileCreateError")
+					.replace("%p", newPath)
+					.replace("%err", e);
+				this.ut.notifyError(err);
+				return;
+			}
 		}
 		else {
 			var fd = files[path];
