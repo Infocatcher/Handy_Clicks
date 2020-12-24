@@ -1554,10 +1554,21 @@ var handyClicksEditor = {
 		var path = this.getFileDataPath();
 		if(!path)
 			return;
-		if(path.file) //~ todo: confirmation + handle errors
+		if(path.file) { //~ todo: handle errors
+			var confirmed = this.su.confirmCheckPref(
+				"sets.removeFileConfirm",
+				this.getLocalized("title"),
+				this.getLocalized("removeFileConfirm").replace("%f", path),
+				window,
+				this.$("hc-editor-deleteFileData")
+			);
+			if(!confirmed)
+				return;
 			path.file.remove(true);
-		else
+		}
+		else {
 			delete this.ps.files[path];
+		}
 		this.pe.reloadSettings(true);
 	},
 	renameFileData: function() {
