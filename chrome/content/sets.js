@@ -3105,6 +3105,7 @@ var handyClicksSets = {
 		"sets.openEditorsLimit",
 		"sets.removeBackupConfirm",
 		"sets.removeOldBackupsConfirm",
+		"sets.removeFileConfirm",
 		"ui.confirmReload",
 		"ui.notifyUnsaved"
 	],
@@ -3149,6 +3150,10 @@ var handyClicksSets = {
 				case "sets.removeOldBackupsConfirm":
 					text = this.getLocalized("removeOldBackupsConfirm")
 						.replace("%n", "N");
+				break;
+				case "sets.removeFileConfirm":
+					text = this.getLocalized("removeFileConfirm")
+						.replace("%f", "%hc_ScriptsDir%/customScript.js");
 				break;
 				case "ui.confirmReload":
 					text = this.getLocalized("confirmReload");
