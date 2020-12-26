@@ -1554,7 +1554,7 @@ var handyClicksEditor = {
 		var path = this.getFileDataPath();
 		if(!path)
 			return;
-		if(path.file) { //~ todo: handle errors
+		if(path.file) {
 			var confirmed = this.su.confirmCheckPref(
 				"sets.removeFileConfirm",
 				this.getLocalized("title"),
@@ -1564,7 +1564,14 @@ var handyClicksEditor = {
 			);
 			if(!confirmed)
 				return;
-			path.file.remove(true);
+			try {
+				path.file.remove(true);
+			}
+			catch(e) {
+				Components.utils.reportError(e);
+				this.ut.notifyError(e);
+				return;
+			}
 		}
 		else {
 			delete this.ps.files[path];
