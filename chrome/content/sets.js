@@ -3861,7 +3861,7 @@ var handyClicksSets = {
 		}
 		else if(targetId == ct.EXPORT_FILEPICKER) {
 			//this.ut.copyFileTo(this.ps.prefsFile, file.parent, file.leafName);
-			var pStr = this.ps.getSettingsStr(null, null, true /*exportLinkedFiles*/);
+			var pStr = this.ps.getSettingsStr({ exportLinkedFiles: true });
 			var lastMod = !this.treeUnsaved && !this.ps.otherSrc
 				&& this.ps.prefsFile.lastModifiedTime;
 			this.io.writeToFileAsync(pStr, file, function(status) {
@@ -3901,7 +3901,7 @@ var handyClicksSets = {
 			this.setNodesProperties(its, { hc_copied: false });
 		}, this, 200);
 
-		return this.ps.getSettingsStr(newTypes, newPrefs, true);
+		return this.ps.getSettingsStr({ types: newTypes, prefs: newPrefs, exportLinkedFiles: true });
 	},
 	extractLabels: function(its) {
 		return its.map(function(it) {
@@ -4013,7 +4013,7 @@ var handyClicksSets = {
 		var bFile = this.pe.getBackupFile(bName + ".js");
 		bFile.createUnique(bFile.NORMAL_FILE_TYPE, this.io.PERMS_FILE_WRITE);
 		//this.ut.copyFileTo(this.ps.prefsFile, this.ps.backupsDir, bFile.leafName);
-		var pStr = this.ps.getSettingsStr(null, null, true /*exportLinkedFiles*/);
+		var pStr = this.ps.getSettingsStr({ exportLinkedFiles: true });
 		this.io.writeToFileAsync(pStr, bFile, function(status) {
 			if(!Components.isSuccessCode(status))
 				return;

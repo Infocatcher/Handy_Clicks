@@ -510,7 +510,7 @@ var handyClicksPrefSvc = {
 
 	_defaultData: undefined,
 	defaultSettings: function() {
-		var data = this._defaultData = this.getSettingsStr({}, {});
+		var data = this._defaultData = this.getSettingsStr({ types: {}, prefs: {} });
 		this.pe.saveSettingsAsync(data);
 		return data;
 	},
@@ -573,9 +573,13 @@ var handyClicksPrefSvc = {
 		Array.prototype.forEach.call(arguments, this.sortSettings, this);
 		return this.ut.objEqualsRaw.apply(this.ut, arguments);
 	},
-	getSettingsStr: function(types, prefs, exportLinkedFiles, noHash) {
-		types = types || this.types;
-		prefs = prefs || this.prefs;
+	getSettingsStr: function(opts) {
+		if(!opts)
+			opts = {};
+		var types             = opts.types             || this.types;
+		var prefs             = opts.prefs             || this.prefs;
+		var exportLinkedFiles = opts.exportLinkedFiles || false;
+		var noHash            = opts.noHash            || false;
 
 		this.correctSettings(types, prefs);
 		this.sortSettings(types);
@@ -650,7 +654,7 @@ var handyClicksPrefSvc = {
 		return this.checkUnsaved(this.__savedStr);
 	},
 	checkUnsaved: function(savedStr) {
-		return this.getSettingsStr(null, null, false, true)
+		return this.getSettingsStr({ noHash: true })
 			!= savedStr.replace(this.hashRe, "");
 	},
 	__savedStr: "",
