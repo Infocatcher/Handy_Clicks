@@ -579,6 +579,7 @@ var handyClicksPrefSvc = {
 		var types             = opts.types             || this.types;
 		var prefs             = opts.prefs             || this.prefs;
 		var exportLinkedFiles = opts.exportLinkedFiles || false;
+		var outFiles          = opts.outFiles          || null;
 		var noHash            = opts.noHash            || false;
 
 		this.correctSettings(types, prefs);
@@ -590,8 +591,11 @@ var handyClicksPrefSvc = {
 			types:   types,
 			prefs:   prefs
 		};
-		if(exportLinkedFiles)
-			o.files = {};
+		if(exportLinkedFiles) {
+			var files = o.files = {};
+			if(outFiles)
+				outFiles.value = files;
+		}
 
 		var _this = this;
 		var errors = [];
@@ -599,11 +603,13 @@ var handyClicksPrefSvc = {
 			if(key.charAt(0) == "_")
 				return undefined;
 			if(exportLinkedFiles && key in _this.codeKeys) {
-				var err = _this.pe.exportFileData(o.files, val);
+				var err = _this.pe.exportFileData(files, val);
 				err && errors.push(err);
 			}
 			return val;
 		}, "\t");
+		if(files) // See pe.exportFileData()
+			delete files._exported;
 		if(errors.length) {
 			var msg = this.getLocalized("skippedFileData")
 				+ "\n" + errors.map(function(e, i) { return ++i + ") " + e; }).join("\n");
