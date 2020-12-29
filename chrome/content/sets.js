@@ -3861,9 +3861,19 @@ var handyClicksSets = {
 		}
 		else if(targetId == ct.EXPORT_FILEPICKER) {
 			//this.ut.copyFileTo(this.ps.prefsFile, file.parent, file.leafName);
-			var pStr = this.ps.getSettingsStr({ exportLinkedFiles: true });
-			var lastMod = !this.treeUnsaved && !this.ps.otherSrc
-				&& this.ps.prefsFile.lastModifiedTime;
+			var outFiles = {};
+			var pStr = this.ps.getSettingsStr({ exportLinkedFiles: true, outFiles: outFiles });
+			if(!this.treeUnsaved && !this.ps.otherSrc) {
+				var lastMod = this.ps.prefsFile.lastModifiedTime;
+				var files = outFiles.value;
+				for(var path in files) if(files.hasOwnProperty(path)) {
+					var fd = files[path];
+					if(fd.lastModified > lastMod) {
+						this._log("Use last modified date from file " + path);
+						lastMod = fd.lastModified;
+					}
+				}
+			}
 			this.io.writeToFileAsync(pStr, file, function(status) {
 				if(Components.isSuccessCode(status) && lastMod)
 					file.lastModifiedTime = lastMod;
