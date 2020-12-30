@@ -2,12 +2,12 @@ var handyClicksPrefSvcExt = {
 	__proto__: handyClicksPrefSvc,
 
 	saveSettingsObjects: function(reloadAll) {
-		this.saveSettings(this.getSettingsStr());
+		this.saveSettings(this.stringifySettings());
 		this.reloadSettings(reloadAll);
 	},
 	saveSettingsObjectsAsync: function(reloadAll, callback, context) {
 		this.delay(function() {
-			this.saveSettingsAsync(this.getSettingsStr(), function(status) {
+			this.saveSettingsAsync(this.stringifySettings(), function(status) {
 				if(Components.isSuccessCode(status))
 					this.reloadSettings(reloadAll);
 				callback && callback.call(context || this, status);
@@ -275,7 +275,7 @@ var handyClicksPrefSvcExt = {
 		var src = null;
 		var notifyFlags = this.SETS_TEST;
 		if(isTest) {
-			src = this.getSettingsStr();
+			src = this.stringifySettings();
 			this.delay(function() {
 				this.createTestBackup(src);
 			}, this);

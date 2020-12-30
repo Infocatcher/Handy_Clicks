@@ -510,7 +510,7 @@ var handyClicksPrefSvc = {
 
 	_defaultData: undefined,
 	defaultSettings: function() {
-		var data = this._defaultData = this.getSettingsStr({ types: {}, prefs: {} });
+		var data = this._defaultData = this.stringifySettings({ types: {}, prefs: {} });
 		this.pe.saveSettingsAsync(data);
 		return data;
 	},
@@ -573,7 +573,19 @@ var handyClicksPrefSvc = {
 		Array.prototype.forEach.call(arguments, this.sortSettings, this);
 		return this.ut.objEqualsRaw.apply(this.ut, arguments);
 	},
-	getSettingsStr: function(opts) {
+	getSettingsStr: function(types, prefs, exportLinkedFiles, noHash) {
+		this.ut._deprecated( //= Added: 2020-12-20
+			"handyClicksPrefSvc.getSettingsStr(types, prefs, exportLinkedFiles, noHash) is deprecated, use "
+			+ "handyClicksPrefSvc.stringifySettings(options) instead"
+		);
+		return this.stringifySettings({
+			types:             types,
+			prefs:             prefs,
+			exportLinkedFiles: exportLinkedFiles,
+			noHash:            noHash
+		});
+	},
+	stringifySettings: function(opts) {
 		if(!opts)
 			opts = {};
 		var types             = opts.types             || this.types;
@@ -660,7 +672,7 @@ var handyClicksPrefSvc = {
 		return this.checkUnsaved(this.__savedStr);
 	},
 	checkUnsaved: function(savedStr) {
-		return this.getSettingsStr({ noHash: true })
+		return this.stringifySettings({ noHash: true })
 			!= savedStr.replace(this.hashRe, "");
 	},
 	__savedStr: "",
