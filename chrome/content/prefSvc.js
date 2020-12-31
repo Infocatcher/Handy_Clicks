@@ -630,9 +630,9 @@ var handyClicksPrefSvc = {
 			}});
 		}
 
-		const hashFunc = "SHA256";
-		var hashData = noHash ? "" : "// " + hashFunc + ": " + this.getHash(json, hashFunc) + "\n";
-		return this.setsHeader + hashData + json;
+		return this.setsHeader
+			+ (noHash ? "" : "// " + this.hashFunc + ": " + this.getHash(json, this.hashFunc) + "\n")
+			+ json;
 	},
 	codeKeys: {
 		contextMenu: true,
@@ -883,6 +883,7 @@ var handyClicksPrefSvc = {
 				|| typeof obj.version == "number" && isFinite(obj.version)
 			);
 	},
+	hashFunc: "SHA256",
 	hashRe: /(?:\r\n|\n|\r)\/\/[ \t]?(MD[25]|SHA(?:1|256|384|512)):[ \t]?([a-f0-9]+)(?=[\n\r]|$)/,
 	checkPrefsStr: function _cps(str, silent) {
 		var checkCustom = _cps.checkCustomCode || false;
