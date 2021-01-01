@@ -19,13 +19,11 @@
 
 #hc-editor-clickButton {
 	-moz-user-focus: ignore;
-	margin-top: 3px;
 	list-style-image: url("icons16.png");
 	-moz-image-region: rect(0 96px 16px 80px);
+	margin: 3px 4px;
 	min-width: 32px;
-}
-#hc-editor-clickButton > .button-box {
-	margin-bottom: -1px;
+	min-height: 25px;
 }
 .hcText {
 	background: transparent !important;
