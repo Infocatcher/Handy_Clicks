@@ -22,7 +22,6 @@
 
 <!ENTITY hc.editor.mainTabActions "Actions">
 <!ENTITY hc.editor.mainTabActionsAccesskey "o">
-<!ENTITY hc.editor.clickHere "Click here">
 <!ENTITY hc.editor.clickHereTip "Click to set mouse button and modifiers">
 <!ENTITY hc.editor.renameShortcut "Rename shortcut…">
 <!ENTITY hc.editor.renameShortcutDoneDisabled "Rename shortcut">

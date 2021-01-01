@@ -22,7 +22,6 @@
 
 <!ENTITY hc.editor.mainTabActions "Действия">
 <!ENTITY hc.editor.mainTabActionsAccesskey "Д">
-<!ENTITY hc.editor.clickHere "Кликните здесь">
 <!ENTITY hc.editor.clickHereTip "Кликните для установки кнопки мыши и модификаторов">
 <!ENTITY hc.editor.renameShortcut "Переименовать сочетание клавиш…">
 <!ENTITY hc.editor.renameShortcutDoneDisabled "Переименовать сочетание клавиш">
