@@ -115,13 +115,13 @@ menulist[hc_sets="disabled"] .menulist-label {
 	list-style-image: url("icons16.png");
 	-moz-image-region: rect(0 32px 16px 16px); /* Icon for wrong value */
 }
-#hc-editor-button[value="0"], #hc-editor-button menuitem[value="0"] {
+#hc-editor-button[value="0"], #hc-editor-button menuitem[value="0"], #hc-editor-clickButton[hc_button="0"] {
 	-moz-image-region: rect(0 48px 16px 32px);
 }
-#hc-editor-button[value="1"], #hc-editor-button menuitem[value="1"] {
+#hc-editor-button[value="1"], #hc-editor-button menuitem[value="1"], #hc-editor-clickButton[hc_button="1"] {
 	-moz-image-region: rect(0 64px 16px 48px);
 }
-#hc-editor-button[value="2"], #hc-editor-button menuitem[value="2"] {
+#hc-editor-button[value="2"], #hc-editor-button menuitem[value="2"], #hc-editor-clickButton[hc_button="2"] {
 	-moz-image-region: rect(0 80px 16px 64px);
 }
 

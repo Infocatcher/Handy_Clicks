@@ -1263,6 +1263,13 @@ var handyClicksEditor = {
 
 		this.fireEditorChange(this.$("hc-editor-shortcutPanel"));
 	},
+	showMouseButton: function(btn, e) {
+		btn.setAttribute("hc_button", e.button);
+		window.addEventListener("mouseup", function onMouseUp(e) {
+			window.removeEventListener(e.type, onMouseUp, true);
+			btn.removeAttribute("hc_button");
+		}, true);
+	},
 	setClickOptions: function(e) {
 		this.$("hc-editor-button").value = e.button;
 		["ctrl", "shift", "alt", "meta"].forEach(function(mdf) {

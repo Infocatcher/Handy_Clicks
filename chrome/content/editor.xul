@@ -118,6 +118,7 @@
 					<!-- Prevent bubbling of all events from this box (any modifications will not change apply button state) -->
 					<box id="hc-editor-renameShortcutOverlay" />
 					<button id="hc-editor-clickButton" hc_allowInRenameMode="true"
+						onmousedown="handyClicksEditor.showMouseButton(this, event);"
 						onclick="handyClicksEditor.setClickOptions(event);"
 						oncommand="event.stopPropagation();"
 						tooltiptext="&hc.editor.clickHereTip;" />
