@@ -1,7 +1,7 @@
 <!-- Editor -->
 <!ENTITY hc.editor.title "Handy Clicks: Редактор">
 <!ENTITY hc.editor.defaultWindowWidth "700">
-<!ENTITY hc.editor.defaultWindowHeight "490">
+<!ENTITY hc.editor.defaultWindowHeight "500">
 <!ENTITY hc.editor.apply "Применить">
 <!ENTITY hc.editor.delete "Удалить">
 <!ENTITY hc.editor.deleteAccesskey "У">

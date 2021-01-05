@@ -1,7 +1,7 @@
 <!-- Options dialog -->
 <!ENTITY hc.sets.title "Handy Clicks: Settings">
 <!ENTITY hc.sets.defaultWindowWidth "580">
-<!ENTITY hc.sets.defaultWindowHeight "490">
+<!ENTITY hc.sets.defaultWindowHeight "500">
 <!ENTITY hc.sets.apply "Apply">
 <!ENTITY hc.sets.settings "Settings">
 <!ENTITY hc.sets.settingsAccesskey "S">
