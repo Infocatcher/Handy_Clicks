@@ -602,23 +602,37 @@ preferences {
 						hc_dependsOn="externalEditor" />
 				</deck>
 			</hbox>
-			<hbox align="top">
-				<hbox id="hc-sets-externalEditorArgs-box" align="top" flex="1" hc_dependsOn="externalEditor">
-					<label class="hc-tip" value="&hc.sets.externalEditorArgs;" tooltip="hc-sets-externalEditorArgs-tooltip" control="hc-sets-externalEditorArgs" />
-					<tooltip id="hc-sets-externalEditorArgs-tooltip">
-						<description>&hc.sets.externalEditorArgsTip;</description>
-					</tooltip>
-					<textbox id="hc-sets-externalEditorArgs" preference="externalEditorArgs" multiline="true" rows="3" wrap="off" flex="1" />
-				</hbox>
-				<groupbox id="hc-sets-externalEditorTempFile-box">
-					<caption label="&hc.sets.externalEditorTempFile;" />
-					<checkbox preference="labelInFileName" label="&hc.sets.externalEditorTempFileName;" />
-					<hbox id="hc-sets-externalEditorTempFileExt-box" align="center">
-						<label value="&hc.sets.externalEditorTempFileExt;" control="hc-sets-externalEditorExt" />
-						<textbox preference="externalEditorExt" size="8" />
-					</hbox>
-				</groupbox>
-			</hbox>
+			<grid>
+				<columns>
+					<column hc_dependsOn="externalEditor">
+						<vbox> <!-- Trick to prevent vertical flexibility -->
+							<label class="hc-tip" value="&hc.sets.externalEditorArgs;"
+								tooltip="hc-sets-externalEditorArgs-tooltip"
+								control="hc-sets-externalEditorArgs" />
+							<tooltip id="hc-sets-externalEditorArgs-tooltip">
+								<description>&hc.sets.externalEditorArgsTip;</description>
+							</tooltip>
+						</vbox>
+					</column>
+					<column flex="1" hc_dependsOn="externalEditor">
+						<textbox id="hc-sets-externalEditorArgs" preference="externalEditorArgs" multiline="true" rows="3" wrap="off"
+							style="margin-bottom: 3px;" />
+					</column>
+					<column>
+						<groupbox id="hc-sets-externalEditorTempFile-box" style="margin-bottom: 3px;">
+							<caption label="&hc.sets.externalEditorTempFile;" />
+							<checkbox preference="labelInFileName" label="&hc.sets.externalEditorTempFileName;" />
+							<hbox id="hc-sets-externalEditorTempFileExt-box" align="center">
+								<label value="&hc.sets.externalEditorTempFileExt;" control="hc-sets-externalEditorExt" />
+								<textbox preference="externalEditorExt" size="8" />
+							</hbox>
+						</groupbox>
+					</column>
+				</columns>
+				<rows>
+					<row />
+				</rows>
+			</grid>
 		</groupbox>
 	</prefpane>
 
