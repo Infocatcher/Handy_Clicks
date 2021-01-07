@@ -625,7 +625,7 @@ preferences {
 								style="position: relative;" />
 							<hbox id="hc-sets-externalEditorTempFileExt-box" align="center">
 								<label value="&hc.sets.externalEditorTempFileExt;" control="hc-sets-externalEditorExt" />
-								<textbox preference="externalEditorExt" size="8" />
+								<textbox id="hc-sets-externalEditorExt" preference="externalEditorExt" size="8" />
 							</hbox>
 						</groupbox>
 					</column>
