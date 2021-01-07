@@ -621,7 +621,8 @@ preferences {
 					<column>
 						<groupbox id="hc-sets-externalEditorTempFile-box" style="margin-bottom: 3px;">
 							<caption label="&hc.sets.externalEditorTempFile;" />
-							<checkbox preference="labelInFileName" label="&hc.sets.externalEditorTempFileName;" />
+							<checkbox preference="labelInFileName" label="&hc.sets.externalEditorTempFileName;"
+								style="position: relative;" />
 							<hbox id="hc-sets-externalEditorTempFileExt-box" align="center">
 								<label value="&hc.sets.externalEditorTempFileExt;" control="hc-sets-externalEditorExt" />
 								<textbox preference="externalEditorExt" size="8" />
