@@ -848,6 +848,15 @@ var handyClicksEditor = {
 		return this.getLocalized("internalId").replace("%id", type)
 			+ (notUsed ? " \n" + this.getLocalized("customTypeNotUsed") : "");
 	},
+	initLabelTip: function() {
+		var tn = document.tooltipNode;
+		var raw = tn && tn.value || "";
+		var localized = raw && this.ps.localize(raw) || "";
+		var notLocalized = raw && localized == raw;
+		this.$("hc-editor-labelTip-localized").value = notLocalized
+			? this.getLocalized("notLocalized")
+			: localized;
+	},
 	showLocalizedLabels: function(mp) {
 		var mi = mp.getElementsByAttribute("value", this.currentCustomType)[0] || null;
 		if(mi) {

@@ -100,6 +100,10 @@
 			<menuitem id="hc-editor-deleteFileData" class="menuitem-iconic hc-iconic" label="&hc.editor.deleteFile;"
 				oncommand="handyClicksEditor.deleteFileData();" />
 		</menupopup>
+		<tooltip id="hc-editor-labelTip" onpopupshowing="handyClicksEditor.initLabelTip();">
+			<label id="hc-editor-labelTip-localized" value="" />
+			<label id="hc-editor-labelTip-localize" value="&hc.editor.labelLocalize;" />
+		</tooltip>
 	</popupset>
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">
@@ -246,7 +250,7 @@
 									<label value="&hc.editor.funcLabel;" accesskey="&hc.editor.funcLabelAccesskey;"
 										control="hc-editor-funcLabel" />
 									<textbox id="hc-editor-funcLabel" flex="1" spellcheck="true"
-										tooltiptext="&hc.editor.labelLocalize;" />
+										tooltip="hc-editor-labelTip" />
 								</hbox>
 							</hbox>
 							<vbox id="hc-editor-funcSets" flex="1">
