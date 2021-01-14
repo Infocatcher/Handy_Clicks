@@ -220,6 +220,12 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 	/* Empty menulists */
 	min-height: 1em;
 }
+#hc-editor-labelTip-localized[value=""] {
+	display: none;
+}
+#hc-editor-labelTip-localize {
+	font-style: italic;
+}
 
 .hcEditor {
 	-moz-binding: url("chrome://handyclicks/content/editor.xml#codeEditor");

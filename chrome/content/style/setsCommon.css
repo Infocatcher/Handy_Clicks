@@ -74,7 +74,8 @@ tab[hc_disabled="true"][hc_canDragSwitch="true"] {
 	text-decoration: underline line-through !important;
 }
 
-tooltip > description {
+tooltip > description,
+tooltip > label {
 	margin: 0;
 }
 label.hc-tip {
