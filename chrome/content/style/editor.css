@@ -220,7 +220,7 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 	/* Empty menulists */
 	min-height: 1em;
 }
-#hc-editor-labelTip-localized[value=""] {
+#hc-editor-labelTip > label[value=""] {
 	display: none;
 }
 #hc-editor-labelTip-localize {

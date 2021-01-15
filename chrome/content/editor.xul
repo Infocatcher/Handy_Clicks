@@ -103,6 +103,7 @@
 		<tooltip id="hc-editor-labelTip" onpopupshowing="handyClicksEditor.initLabelTip();">
 			<label id="hc-editor-labelTip-localized" value="" />
 			<label id="hc-editor-labelTip-localize" value="&hc.editor.labelLocalize;" />
+			<label id="hc-editor-labelTip-message" value="" />
 		</tooltip>
 	</popupset>
 
@@ -322,7 +323,7 @@
 						oninput="handyClicksEditor.customTypeLabelChanged(this);"
 						hc_ondrop="handyClicksEditor.customTypeLabelChangedDelay(this);"
 						oncut="handyClicksEditor.customTypeLabelChangedDelay(this);"
-						hc_tooltiptext="&hc.editor.labelLocalize;">
+						tooltip="hc-editor-labelTip">
 						<menupopup id="hc-editor-customTypePopup"
 							onpopupshowing="handyClicksEditor.showLocalizedLabels(this);" />
 					</menulist>

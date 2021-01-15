@@ -105,7 +105,6 @@ var handyClicksEditor = {
 		var ml = this.$("hc-editor-customType");
 		var inp = document.getAnonymousElementByAttribute(ml, "anonid", "input");
 		inp.setAttribute("spellcheck", "true");
-		inp.setAttribute("tooltiptext", ml.getAttribute("hc_tooltiptext"));
 	},
 	destroy: function(reloadFlag) {
 		this.wu.markOpenedEditors();
@@ -856,6 +855,8 @@ var handyClicksEditor = {
 		this.$("hc-editor-labelTip-localized").value = notLocalized
 			? this.getLocalized("notLocalized")
 			: localized;
+		var msg = tn && tn.getAttribute("hc_tooltipMessage") || "";
+		this.$("hc-editor-labelTip-message").value = msg;
 	},
 	showLocalizedLabels: function(mp) {
 		var mi = mp.getElementsByAttribute("value", this.currentCustomType)[0] || null;
@@ -1191,12 +1192,8 @@ var handyClicksEditor = {
 		var ml = this.$("hc-editor-customType");
 		ml.setAttribute("hc_notUsed", notUsed);
 		this.delay(function() { // Wait to correctly set tooltip on startup
-			var inp = document.getAnonymousElementByAttribute(ml, "anonid", "input");
-			var ttNotUsed = notUsed ? " \n" + this.getLocalized("customTypeNotUsed") : "";
-			var tt = ml.getAttribute("hc_tooltiptext") + ttNotUsed;
-			inp.setAttribute("tooltiptext", tt);
-			if(inp.parentNode.classList && inp.parentNode.classList.contains("menulist-editable-box"))
-				inp.parentNode.setAttribute("tooltiptext", tt); // For Firefox 60
+			var ttNotUsed = notUsed ? this.getLocalized("customTypeNotUsed") : "";
+			ml.setAttribute("hc_tooltipMessage", ttNotUsed);
 			var mi = updateMenu && ml.getElementsByAttribute("value", type)[0] || null;
 			if(mi) {
 				mi.setAttribute("tooltiptext", this.getTypeTip(type, notUsed));
