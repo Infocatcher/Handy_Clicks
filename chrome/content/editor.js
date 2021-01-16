@@ -1200,7 +1200,7 @@ var handyClicksEditor = {
 				mi.setAttribute("tooltiptext", this.getTypeTip(type, notUsed));
 				mi.setAttribute("hc_notUsed", notUsed);
 			}
-		}, this, 50);
+		}, this, 5);
 	},
 	typeUsageChanged: function(type) {
 		if(type == this.currentCustomType)

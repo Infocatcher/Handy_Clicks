@@ -436,6 +436,9 @@ var handyClicksSetsUtils = {
 		ml.selectedItem = si;
 		ml.menuBoxObject.activeChild = ml.mSelectedInternal || ml.selectedInternal;
 		ml.doCommand();
+		this.delay(function() { // Wait for changes, see ed.checkNotUsedType()
+			this.ensureTooltipInitialized(ml);
+		}, this, 10);
 		return true;
 	},
 	_showTooltip: false,
@@ -504,6 +507,10 @@ var handyClicksSetsUtils = {
 		var evt = document.createEvent("Events");
 		evt.initEvent("popupshowing", true, false);
 		mp.dispatchEvent(evt);
+	},
+	ensureTooltipInitialized: function(tn) {
+		var ttId = tn.getAttribute("tooltip");
+		ttId && this.ensureMenupopupInitialized(this.$(ttId));
 	},
 	scrollNumTextbox: function(e) {
 		var tar = e.target;
