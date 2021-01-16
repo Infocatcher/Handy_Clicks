@@ -226,6 +226,12 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 #hc-editor-labelTip-localize {
 	font-style: italic;
 }
+#hc-editor-labelTip-message {
+	color: #c00;
+}
+#hc-editor-labelTip[hc_isDarkFont="false"] > #hc-editor-labelTip-message {
+	color: #f22;
+}
 
 .hcEditor {
 	-moz-binding: url("chrome://handyclicks/content/editor.xml#codeEditor");

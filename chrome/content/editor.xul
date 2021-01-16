@@ -100,7 +100,7 @@
 			<menuitem id="hc-editor-deleteFileData" class="menuitem-iconic hc-iconic" label="&hc.editor.deleteFile;"
 				oncommand="handyClicksEditor.deleteFileData();" />
 		</menupopup>
-		<tooltip id="hc-editor-labelTip" onpopupshowing="handyClicksEditor.initLabelTip();">
+		<tooltip id="hc-editor-labelTip" onpopupshowing="handyClicksEditor.initLabelTip(this);">
 			<label id="hc-editor-labelTip-localized" value="" />
 			<label id="hc-editor-labelTip-localize" value="&hc.editor.labelLocalize;" />
 			<label id="hc-editor-labelTip-message" value="" />

@@ -847,7 +847,7 @@ var handyClicksEditor = {
 		return this.getLocalized("internalId").replace("%id", type)
 			+ (notUsed ? " \n" + this.getLocalized("customTypeNotUsed") : "");
 	},
-	initLabelTip: function() {
+	initLabelTip: function(tt) {
 		var tn = document.tooltipNode;
 		var raw = tn && tn.value || "";
 		var localized = raw && this.ps.localize(raw) || "";
@@ -857,6 +857,7 @@ var handyClicksEditor = {
 			: localized;
 		var msg = tn && tn.getAttribute("hc_tooltipMessage") || "";
 		this.$("hc-editor-labelTip-message").value = msg;
+		this.su.checkDarkFont(tt);
 	},
 	showLocalizedLabels: function(mp) {
 		var mi = mp.getElementsByAttribute("value", this.currentCustomType)[0] || null;
