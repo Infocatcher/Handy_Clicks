@@ -193,7 +193,7 @@ var handyClicksEditor = {
 	},
 	setsReloading: function(notifyReason) {
 		if(notifyReason & this.ps.SETS_RELOADED) {
-			this.appendTypesList();
+			this.appendTypesList(true);
 			this.dataSaved();
 			this.setDialogButtons();
 		}
@@ -787,7 +787,7 @@ var handyClicksEditor = {
 			.replace("%s", "a-z, A-Z, 0-9, $, _");
 		this.su.showInfoTooltip(anchor, msg);
 	},
-	appendTypesList: function() {
+	appendTypesList: function(wasReloaded) {
 		var sep = this.$("hc-editor-customTypesSep");
 		var typesPopup = sep.parentNode;
 		var customTypesPopup = this.$("hc-editor-customTypePopup");
@@ -842,6 +842,9 @@ var handyClicksEditor = {
 		sep.hidden = hideSep;
 		typesPopup.parentNode.value = this.type || ""; // <menulist>
 		this.highlightUsedTypes();
+		wasReloaded && this.delay(function() {
+			this.typeUsageChanged(this.currentCustomType);
+		}, this);
 	},
 	getTypeTip: function(type, notUsed) {
 		return this.getLocalized("internalId").replace("%id", type)
