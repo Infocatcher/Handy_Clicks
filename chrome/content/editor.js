@@ -858,8 +858,8 @@ var handyClicksEditor = {
 		this.$("hc-editor-labelTip-localized").value = notLocalized
 			? this.getLocalized("notLocalized")
 			: localized;
-		var msg = tn && tn.getAttribute("hc_tooltipMessage") || "";
-		this.$("hc-editor-labelTip-message").value = msg;
+		var wrn = tn && tn.getAttribute("hc_tooltipWarning") || "";
+		this.$("hc-editor-labelTip-warning").value = wrn;
 		this.su.checkDarkFont(tt);
 	},
 	showLocalizedLabels: function(mp) {
@@ -1197,7 +1197,7 @@ var handyClicksEditor = {
 		ml.setAttribute("hc_notUsed", notUsed);
 		this.delay(function() { // Wait to correctly set tooltip on startup
 			var ttNotUsed = notUsed ? this.getLocalized("customTypeNotUsed") : "";
-			ml.setAttribute("hc_tooltipMessage", ttNotUsed);
+			ml.setAttribute("hc_tooltipWarning", ttNotUsed);
 			var mi = updateMenu && ml.getElementsByAttribute("value", type)[0] || null;
 			if(mi) {
 				mi.setAttribute("tooltiptext", this.getTypeTip(type, notUsed));

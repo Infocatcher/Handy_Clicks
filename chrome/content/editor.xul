@@ -103,7 +103,7 @@
 		<tooltip id="hc-editor-labelTip" onpopupshowing="handyClicksEditor.initLabelTip(this);">
 			<label id="hc-editor-labelTip-localized" value="" />
 			<label id="hc-editor-labelTip-localize" value="&hc.editor.labelLocalize;" />
-			<label id="hc-editor-labelTip-message" value="" />
+			<label id="hc-editor-labelTip-warning" value="" />
 		</tooltip>
 	</popupset>
 

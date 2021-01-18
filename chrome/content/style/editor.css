@@ -226,10 +226,10 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 #hc-editor-labelTip-localize {
 	font-style: italic;
 }
-#hc-editor-labelTip-message {
+#hc-editor-labelTip-warning {
 	color: #c00;
 }
-#hc-editor-labelTip[hc_isDarkFont="false"] > #hc-editor-labelTip-message {
+#hc-editor-labelTip[hc_isDarkFont="false"] > #hc-editor-labelTip-warning {
 	color: #f22;
 }
 
