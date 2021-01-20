@@ -819,7 +819,9 @@ var handyClicksEditor = {
 				label: label,
 				hc_localizedLabel: localizedLabel,
 				value: type,
-				tooltiptext: this.getTypeTip(type, notUsed),
+				tooltip: "hc-editor-labelTip",
+				hc_tooltipMessage: this.getLocalized("internalId").replace("%id", type),
+				hc_tooltipWarning: notUsed ? this.getLocalized("customTypeNotUsed") : "",
 				hc_notUsed: notUsed,
 				hc_disabled: dis
 			});
@@ -846,18 +848,16 @@ var handyClicksEditor = {
 			this.typeUsageChanged(this.currentCustomType);
 		}, this);
 	},
-	getTypeTip: function(type, notUsed) {
-		return this.getLocalized("internalId").replace("%id", type)
-			+ (notUsed ? " \n" + this.getLocalized("customTypeNotUsed") : "");
-	},
 	initLabelTip: function(tt) {
 		var tn = document.tooltipNode;
-		var raw = tn && tn.value || "";
-		var localized = raw && this.ps.localize(raw) || "";
-		var notLocalized = raw && localized == raw;
-		this.$("hc-editor-labelTip-localized").value = notLocalized
-			? this.getLocalized("notLocalized")
-			: localized;
+		var msg = tn && tn.getAttribute("hc_tooltipMessage") || "";
+		this.$("hc-editor-labelTip-localize").hidden = !!msg;
+		if(!msg) {
+			var raw = tn && tn.value || "";
+			var localized = raw && this.ps.localize(raw) || "";
+			msg = raw && localized == raw ? this.getLocalized("notLocalized") : localized;
+		}
+		this.$("hc-editor-labelTip-message").value = msg;
 		var wrn = tn && tn.getAttribute("hc_tooltipWarning") || "";
 		this.$("hc-editor-labelTip-warning").value = wrn;
 		this.su.checkDarkFont(tt);
@@ -1200,7 +1200,8 @@ var handyClicksEditor = {
 			ml.setAttribute("hc_tooltipWarning", ttNotUsed);
 			var mi = updateMenu && ml.getElementsByAttribute("value", type)[0] || null;
 			if(mi) {
-				mi.setAttribute("tooltiptext", this.getTypeTip(type, notUsed));
+				mi.setAttribute("hc_tooltipMessage", this.getLocalized("internalId").replace("%id", type));
+				mi.setAttribute("hc_tooltipWarning", ttNotUsed);
 				mi.setAttribute("hc_notUsed", notUsed);
 			}
 		}, this, 5);
