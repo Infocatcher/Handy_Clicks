@@ -63,8 +63,8 @@ radio[pane="hc-sets-pane-funcs"] {
 	margin: 0; /* Correct margin in Firefox 3.0 and older */
 }
 
-#hc-sets-tree-searchMenu menuitem[hc_notFound="true"]:not([disabled="true"]) label {
-	opacity: 0.45;
+#hc-sets-tree-searchMenu menuitem[hc_notFound="true"]:not([disabled="true"]) {
+	color: grayText;
 }
 #hc-sets-tree-searchPopup .hc-buggy:not([hc_notFound="true"]) > label {
 	color: #c00;
