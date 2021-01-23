@@ -104,10 +104,10 @@ radio[pane="hc-sets-pane-funcs"] {
 	opacity: 0.6;
 }
 #hc-sets-tree-sortMenu menuitem[hc_forHidden="true"] > .menu-iconic-text {
-	opacity: 0.45;
+	color: grayText;
 }
 #hc-sets-tree-customTypesMenu[hc_notFound="true"] > .menu-text {
-	opacity: 0.45;
+	color: grayText;
 }
 
 /* Tree style */
@@ -537,8 +537,11 @@ menuitem[hc_duplicateKeep] {
 	outline-offset: -2px;
 }
 
-menuitem[hc_oldBackup="true"] image, menuitem[hc_oldBackup="true"] > label {
+menuitem[hc_oldBackup="true"] image {
 	opacity: 0.45;
+}
+menuitem[hc_oldBackup="true"] > label {
+	color: grayText;
 }
 menuitem[hc_userBackup="true"] > label {
 	color: #00e;
@@ -547,7 +550,7 @@ menuitem[hc_userBackup="true"] > label {
 	color: #aaf;
 }
 menuitem[hc_testBackup="thisSession"] > label {
-	opacity: 0.45;
+	color: grayText;
 }
 menuitem[hc_testBackup="afterCrash"] > label {
 	color: #c00;
