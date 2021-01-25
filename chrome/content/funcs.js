@@ -625,10 +625,10 @@ var handyClicksFuncs = {
 	},
 
 	getMissingExtWarning: function(extName, amoId) {
+		var arch = "https://web.archive.org/web/2017/";
 		return "Missing %name extension (%url)"
 			.replace("%name", extName)
-			.replace("%url", "https://addons.mozilla.org/firefox/addon/" + amoId);
-
+			.replace("%url", arch + "https://addons.mozilla.org/firefox/addon/" + amoId);
 	},
 	downloadWithFlashGot: function(e, item) {
 		if(!("gFlashGot" in window)) {
