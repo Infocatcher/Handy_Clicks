@@ -807,10 +807,12 @@ var handyClicksSetsUtils = {
 	},
 
 	linkedFileNotExists: function(path) {
-		if(path && this.ps.otherSrc)
+		if(!path)
+			return undefined;
+		if(this.ps.otherSrc)
 			if(path in this.ps.files && this.ps.files[path])
 				return false;
-		var file = path && this.ut.getLocalFile(path);
+		var file = this.ut.getLocalFile(path);
 		return file && !file.exists();
 	},
 

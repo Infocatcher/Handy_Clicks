@@ -191,13 +191,19 @@ tabbox[hc_pasted="false"] {
 #hc-editor-deleteFileData {
 	-moz-image-region: rect(64px 80px 80px 64px);
 }
-.hcEditCodeButton[hc_fileNotFound],
+.hcEditCodeButton[hc_fileNotFound="true"],
 #hc-editor-itemTypes[hc_extNotAvailable] .menulist-label {
 	color: #f22;
 }
-:root[hc_isDarkFont="true"] .hcEditCodeButton[hc_fileNotFound],
+:root[hc_isDarkFont="true"] .hcEditCodeButton[hc_fileNotFound="true"],
 :root[hc_isDarkFont="true"] #hc-editor-itemTypes[hc_extNotAvailable] .menulist-label {
 	color: #c00;
+}
+.hcEditCodeButton[hc_fileNotFound="false"] {
+	color: #aaf;
+}
+:root[hc_isDarkFont="true"] .hcEditCodeButton[hc_fileNotFound="false"] {
+	color: #00e;
 }
 :root[hc_hasCrashBackup] .hcOpenCodeButton {
 	outline: 1px solid red;

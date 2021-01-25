@@ -1727,7 +1727,10 @@ var handyClicksEditor = {
 				editor.__editCodeBtn = this.getFloatButton("hc-editor-cmd-editCode", editor)
 			);
 			var notFound = this.su.linkedFileNotExists(path);
-			this.attribute(editCodeBtn, "hc_fileNotFound", notFound);
+			if(notFound !== undefined)
+				editCodeBtn.setAttribute("hc_fileNotFound", !!notFound);
+			else
+				editCodeBtn.removeAttribute("hc_fileNotFound");
 			if(!editCodeBtn.hasAttribute("hc_isDarkFont")) // Only once... for better performance
 				this.su.checkDarkFont(editCodeBtn);
 			this.delay(function() { // Wait for su.setKeysDesc()
