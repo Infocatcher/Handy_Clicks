@@ -1271,6 +1271,7 @@ var handyClicksEditor = {
 		this.setWinId();
 		this.setWinTitle();
 		this.delay(this.setDialogButtons, this);
+		this.delay(this.setEditorButtons, this);
 
 		this.fireEditorChange(this.$("hc-editor-shortcutPanel"));
 	},
