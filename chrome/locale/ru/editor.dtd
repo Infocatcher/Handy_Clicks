@@ -25,7 +25,7 @@
 <!ENTITY hc.editor.clickHereTip "Кликните для установки кнопки мыши и модификаторов">
 <!ENTITY hc.editor.renameShortcut "Переименовать сочетание клавиш…">
 <!ENTITY hc.editor.renameShortcutDoneDisabled "Переименовать сочетание клавиш">
-<!ENTITY hc.editor.renameShortcutDone "Переименовать сочетание клавиш ($s)">
+<!ENTITY hc.editor.renameShortcutDone "Переименовать сочетание клавиш (⇒ $s)">
 <!ENTITY hc.editor.renameShortcutAccesskey "П">
 <!ENTITY hc.editor.renameShortcutCancel "Отменить переименование">
 <!ENTITY hc.editor.renameShortcutCancelAccesskey "О">

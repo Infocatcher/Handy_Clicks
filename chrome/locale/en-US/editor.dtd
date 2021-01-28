@@ -25,7 +25,7 @@
 <!ENTITY hc.editor.clickHereTip "Click to set mouse button and modifiers">
 <!ENTITY hc.editor.renameShortcut "Rename shortcut…">
 <!ENTITY hc.editor.renameShortcutDoneDisabled "Rename shortcut">
-<!ENTITY hc.editor.renameShortcutDone "Rename shortcut ($s)">
+<!ENTITY hc.editor.renameShortcutDone "Rename shortcut (⇒ $s)">
 <!ENTITY hc.editor.renameShortcutAccesskey "R">
 <!ENTITY hc.editor.renameShortcutCancel "Cancel rename">
 <!ENTITY hc.editor.renameShortcutCancelAccesskey "C">
