@@ -1304,6 +1304,7 @@ var handyClicksEditor = {
 		var shortcuts = [];
 		var curType = this.currentType;
 		var curSh = this.currentShortcut;
+		var initSh = this._shortcutBeforeRename || null;
 		var prefs = this.ps.prefs;
 		var canRename;
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
@@ -1312,6 +1313,7 @@ var handyClicksEditor = {
 				var fo = so[curType];
 				this.ju.isObject(fo) && shortcuts.push({
 					hc_shortcut: sh,
+					hc_initialShortcut: sh == initSh,
 					label: this.ps.getShortcutStr(sh, true),
 					type: "radio",
 					checked: sh == curSh && (canRename = true),

@@ -103,6 +103,10 @@ menulist[hc_sets="disabled"] .menulist-label {
 	-moz-user-select: none !important;
 }
 
+#hc-editor-shortcutContext > menuitem[hc_initialShortcut="true"] {
+	color: grayText;
+}
+
 #hc-editor-button menuitem.menuitem-iconic > .menu-iconic-left {
 	display: -moz-box !important;
 	-moz-appearance: none !important;
