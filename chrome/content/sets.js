@@ -800,6 +800,10 @@ var handyClicksSets = {
 		this.setImportFilesDataStatus();
 		return true;
 	},
+	changedFile: function(path) {
+		if(!this.ps.otherSrc)
+			this.updTree();
+	},
 
 	markOpenedEditors: function() {
 		return this.treeBatch(this._markOpenedEditors, this, arguments);

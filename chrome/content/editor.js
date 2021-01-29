@@ -1677,6 +1677,10 @@ var handyClicksEditor = {
 		var wSet = this.wu.wm.getMostRecentWindow("handyclicks:settings");
 		wSet && wSet.handyClicksSets.changedFileData(path);
 	},
+	changedFile: function(path) {
+		var wSet = this.wu.wm.getMostRecentWindow("handyclicks:settings");
+		wSet && wSet.handyClicksSets.changedFile(path);
+	},
 	cleanupFilesData: function() {
 		if(!this._fdChanged)
 			return;

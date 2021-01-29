@@ -564,7 +564,7 @@
 									$createNewFile: function() {
 										files[path] = ed.createLockedFileData();
 										this.openExternalEditor();
-										this.hcEditor.changedFileData(path);
+										ed.changedFileData(path);
 									}
 								},
 								context: this
@@ -588,6 +588,7 @@
 											throw e;
 										}
 										this.openExternalEditor();
+										ed.changedFile(path);
 									}
 								},
 								context: this
