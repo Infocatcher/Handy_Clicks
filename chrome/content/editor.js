@@ -1680,6 +1680,7 @@ var handyClicksEditor = {
 	changedFile: function(path) {
 		var wSet = this.wu.wm.getMostRecentWindow("handyclicks:settings");
 		wSet && wSet.handyClicksSets.changedFile(path);
+		this.delay(this.setEditorButtons, this);
 	},
 	cleanupFilesData: function() {
 		if(!this._fdChanged)
