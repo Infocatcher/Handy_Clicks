@@ -1598,6 +1598,7 @@ var handyClicksEditor = {
 			delete this.ps.files[path];
 		}
 		this.pe.reloadSettings(true);
+		this.delay(this.setEditorButtons, this);
 	},
 	renameFileData: function() {
 		var path = this.getFileDataPath();
