@@ -1677,6 +1677,7 @@ var handyClicksEditor = {
 	changedFileDataSync: function(path) {
 		var wSet = this.wu.wm.getMostRecentWindow("handyclicks:settings");
 		wSet && wSet.handyClicksSets.changedFileData(path);
+		this.delay(this.setEditorButtons, this);
 	},
 	changedFile: function(path) {
 		var wSet = this.wu.wm.getMostRecentWindow("handyclicks:settings");
