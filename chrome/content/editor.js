@@ -1598,7 +1598,7 @@ var handyClicksEditor = {
 			delete this.ps.files[path];
 		}
 		this.pe.reloadSettings(true);
-		this.delay(this.setEditorButtons, this);
+		this.setAllEditorButtons();
 	},
 	renameFileData: function() {
 		var path = this.getFileDataPath();
@@ -1677,12 +1677,12 @@ var handyClicksEditor = {
 	changedFileDataSync: function(path) {
 		var wSet = this.wu.wm.getMostRecentWindow("handyclicks:settings");
 		wSet && wSet.handyClicksSets.changedFileData(path);
-		this.delay(this.setEditorButtons, this);
+		this.setAllEditorButtons();
 	},
 	changedFile: function(path) {
 		var wSet = this.wu.wm.getMostRecentWindow("handyclicks:settings");
 		wSet && wSet.handyClicksSets.changedFile(path);
-		this.delay(this.setEditorButtons, this);
+		this.setAllEditorButtons();
 	},
 	cleanupFilesData: function() {
 		if(!this._fdChanged)
@@ -1752,6 +1752,17 @@ var handyClicksEditor = {
 					editCodeBtn.setAttribute("tooltiptext", newTip);
 			}, this, 150);
 		}, this, 10);
+	},
+	setAllEditorButtons: function() {
+		this.delay(this.setAllEditorButtonsSync, this);
+	},
+	setAllEditorButtonsSync: function() {
+		const hcEd = "handyClicksEditor";
+		this.wu.forEachWindow("handyclicks:editor", function(w) {
+			w.setTimeout(function() {
+				hcEd in w && w[hcEd].setEditorButtons();
+			}, 0);
+		}, this);
 	},
 
 	hasCrashBackup: false,
