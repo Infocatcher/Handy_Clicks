@@ -83,7 +83,8 @@ label.hc-tip {
 }
 
 menuitem.hc-iconic,
-button.hc-iconic .button-icon { /* Applied to .button-icon to not break dropmarker in Linux */
+button.hc-iconic .button-icon, /* Applied to .button-icon to not break dropmarker in Linux */
+tab.hc-iconic {
 	list-style-image: url("icons16.png");
 }
 menuitem.hc-iconic image.menu-iconic-left, /* Firefox 1.5 - 2.0 */
@@ -97,6 +98,12 @@ menuitem.hc-iconic .menu-iconic-icon {
 }
 button.hc-iconic .button-text {
 	-moz-margin-start: 2px !important;
+}
+tab.hc-iconic .tab-icon {
+	margin-bottom: -1px;
+}
+tab.hc-iconic .tab-text {
+	-moz-margin-start: 3px !important;
 }
 menuitem.hc-iconic[disabled="true"] image.menu-iconic-left, /* Firefox 1.5 - 2.0 */
 menuitem.hc-iconic[disabled="true"] .menu-iconic-icon,

@@ -109,9 +109,9 @@
 
 	<tabbox id="hc-editor-mainTabbox" flex="1">
 		<tabs setfocus="false" onselect="handyClicksEditor.handleTabSelect(event);">
-			<tab id="hc-editor-shortcutTab" selected="true" class="hcTabIconized"
+			<tab id="hc-editor-shortcutTab" selected="true" class="hc-iconic"
 				label="&hc.editor.mainTabActions;" accesskey="&hc.editor.mainTabActionsAccesskey;" />
-			<tab id="hc-editor-itemTypeTab" class="hcTabIconized"
+			<tab id="hc-editor-itemTypeTab" class="hc-iconic"
 				label="&hc.editor.mainTabCustomTypes;" accesskey="&hc.editor.mainTabCustomTypesAccesskey;" />
 		</tabs>
 		<tabpanels flex="1">
@@ -188,10 +188,10 @@
 						</hbox>
 					</hbox>
 					<tabs setfocus="false" onselect="handyClicksEditor.handleTabSelect(event);">
-						<tab id="hc-editor-funcTab-click" class="hcTabIconized"
+						<tab id="hc-editor-funcTab-click" class="hc-iconic"
 							label="&hc.editor.tabAction;" accesskey="&hc.editor.tabActionAccesskey;"
 							tooltiptext="&hc.editor.tabActionTip;" />
-						<tab id="hc-editor-funcTab-delay" class="hcTabIconized"
+						<tab id="hc-editor-funcTab-delay" class="hc-iconic"
 							label="&hc.editor.tabActionDelay;" accesskey="&hc.editor.tabActionDelayAccesskey;"
 							hc_tooltiptext="&hc.editor.tabActionDelayTip;"
 							hc_tooltiptextDisabled="&hc.editor.tabActionDelayDisabledTip;" />
