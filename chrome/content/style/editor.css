@@ -278,8 +278,8 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 	min-width: 9em;
 }
 
-#hc-editor-funcTab-delay [hc_notDelay="true"],
-#hc-editor-funcTab [hc_notFunc="true"] {
+#hc-editor-funcPanel [hc_notFunc="true"],
+#hc-editor-funcPanel-delay [hc_notDelay="true"] {
 	display: none;
 }
 

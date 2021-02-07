@@ -351,14 +351,14 @@ var handyClicksEditor = {
 		ml.selectedIndex = si;
 	},
 	createDelayedFuncTab: function() {
-		var dTab = this.$("hc-editor-funcTab").cloneNode(true);
+		var dTab = this.$("hc-editor-funcPanel").cloneNode(true);
 		this.makeDelayedNode(dTab);
 		Array.prototype.forEach.call(
 			dTab.getElementsByTagName("*"),
 			this.makeDelayedNode,
 			this
 		);
-		this.$("hc-editor-funcsTab").appendChild(dTab);
+		this.$("hc-editor-funcPanels").appendChild(dTab);
 	},
 	makeDelayedNode: function(node) {
 		if(node.hasAttribute("id"))

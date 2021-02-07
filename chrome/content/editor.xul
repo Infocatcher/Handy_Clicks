@@ -196,8 +196,8 @@
 							hc_tooltiptext="&hc.editor.tabActionDelayTip;"
 							hc_tooltiptextDisabled="&hc.editor.tabActionDelayDisabledTip;" />
 					</tabs>
-					<tabpanels id="hc-editor-funcsTab" flex="1">
-						<tabpanel id="hc-editor-funcTab" flex="1" orient="vertical">
+					<tabpanels id="hc-editor-funcPanels" flex="1">
+						<tabpanel id="hc-editor-funcPanel" flex="1" orient="vertical">
 
 							<vbox id="hc-editor-funcOpts"
 								oncommand="handyClicksEditor.disableUnsupported();"
@@ -310,7 +310,7 @@
 
 						</tabpanel>
 						<!-- See createDelayedFuncTab() function in editor.js
-						<tabpanel id="hc-editor-funcTab-delay" flex="1" orient="vertical"> ... </tabpanel>
+						<tabpanel id="hc-editor-funcPanel-delay" flex="1" orient="vertical"> ... </tabpanel>
 						-->
 					</tabpanels>
 				</tabbox>
