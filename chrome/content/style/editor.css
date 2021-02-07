@@ -7,10 +7,10 @@
 #hc-editor-itemTypeTab {
 	-moz-image-region: rect(80px 48px 96px 32px);
 }
-#hc-editor-funcTab-click {
+#hc-editor-funcTabClick {
 	-moz-image-region: rect(80px 64px 96px 48px);
 }
-#hc-editor-funcTab-delay {
+#hc-editor-funcTabDelayed {
 	-moz-image-region: rect(80px 80px 96px 64px);
 }
 

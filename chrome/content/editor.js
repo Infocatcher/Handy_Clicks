@@ -369,7 +369,7 @@ var handyClicksEditor = {
 	setTooltip: function(delay) {
 		if(delay === undefined)
 			delay = this.pu.get("delayedActionTimeout");
-		var dTab = this.$("hc-editor-funcTab-delay");
+		var dTab = this.$("hc-editor-funcTabDelayed");
 		dTab.tooltipText = delay <= 0
 			? dTab.getAttribute("hc_tooltiptextDisabled")
 			: dTab.getAttribute("hc_tooltiptext").replace("$n", delay);
@@ -1803,7 +1803,7 @@ var handyClicksEditor = {
 
 	disableUnsupported: function() {
 		var isMd = this.$("hc-editor-events").value == "mousedown";
-		this.$("hc-editor-funcTab-delay").setAttribute(
+		this.$("hc-editor-funcTabDelayed").setAttribute(
 			"hc_disabled",
 			isMd || !this.$("hc-editor-enabled").checked || !this.$("hc-editor-enabled" + this.delayId).checked
 		);
