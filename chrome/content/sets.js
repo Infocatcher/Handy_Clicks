@@ -4432,6 +4432,10 @@ var handyClicksSets = {
 		this.searchInSetsTree(true);
 	},
 	toggleImportFilesData: function(importFD) {
+		// Leave "Files" checkbox in place, if width of statistics grid will be increased
+		var statsGrid = this.$("hc-sets-tree-importStatistics");
+		statsGrid.setAttribute("minwidth", statsGrid.boxObject.width);
+
 		this._importFilesData = importFD;
 		this.updTree();
 	},
