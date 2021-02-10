@@ -4306,6 +4306,7 @@ var handyClicksSets = {
 		panel.hidden = !isImport;
 		if(!isImport) {
 			this.cleanImportSearch() && this.searchInSetsTree(true);
+			this.$("hc-sets-tree-importStatistics").removeAttribute("minwidth");
 			return;
 		}
 
