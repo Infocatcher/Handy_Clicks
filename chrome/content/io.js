@@ -191,12 +191,14 @@ var handyClicksIO = {
 			var onFailure = function(err) {
 				var noSuchFile = err && err instanceof OS.File.Error && err.becauseNoSuchFile;
 				if(!noSuchFile) {
-					err && this.ut._err(err);
+					err && Components.utils.reportError(err);
 					this.ut._err("Can't read string from file " + this.ut._fileInfo(file));
 				}
 				var status = noSuchFile
 					? Components.results.NS_ERROR_FILE_NOT_FOUND
-					: Components.results.NS_ERROR_FAILURE;
+					: /out of memory/i.test(err)
+						? Components.results.NS_ERROR_OUT_OF_MEMORY
+						: Components.results.NS_ERROR_FAILURE;
 				callback.call(context || this, "", status);
 			}.bind(this);
 			OS.File.read(file.path).then(
@@ -206,11 +208,7 @@ var handyClicksIO = {
 						callback.call(context || this, data, Components.results.NS_OK);
 					}
 					catch(e) {
-						Components.utils.reportError(e);
-						var status = /out of memory/i.test(e)
-							? Components.results.NS_ERROR_OUT_OF_MEMORY
-							: Components.results.NS_ERROR_FAILURE;
-						callback.call(context || this, "", status);
+						onFailure(e);
 					}
 				}.bind(this),
 				onFailure
