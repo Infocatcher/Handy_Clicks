@@ -227,6 +227,7 @@
 `x` Fixed import for legacy js format (not JSON): correctly convert $all property.<br>
 `*` Increased default value for <em>extensions.handyclicks.sets.backupUserRemoveDepth</em> preference: 1 -&gt; 5.<br>
 `*` Editor: added icons for “Actions”, “Action”, “Delayed Action”, “Custom Types” tabs and for “Click here” button (used <a href="https://www.fatcow.com/free-icons">Farm-Fresh Web Icons by FatCow Web Hosting</a> and <a href="http://p.yusukekamiyamane.com/">Fugue Icons</a>).<br>
+`x` Fixed async file reading in `handyClicksIO.readFromFileAsync()` function: handle errors like out of memory from `TextDecoder.decode()`.<br>
 `*` Various internal code enhancements.<br>
 
 ##### legacy-0.1.3.x/HEAD

@@ -228,6 +228,7 @@
 `x` Исправлен импорт устаревшего js-формата (не JSON): исправлено конвертирование свойства $all.<br>
 `*` Увеличено значение по умолчанию для настройки <em>extensions.handyclicks.sets.backupUserRemoveDepth</em>: 1 -&gt; 5.<br>
 `*` Редактор: добавлены иконки для вкладок «Действия», «Действие», «Отложенное действие», «Добавленные типы» и для кнопки «Кликните здесь» (использованы <a href="https://www.fatcow.com/free-icons">Farm-Fresh Web Icons от FatCow Web Hosting</a> и <a href="http://p.yusukekamiyamane.com/">Fugue Icons</a>).<br>
+`x` Исправлено асинхронное чтение файлов в функции `handyClicksIO.readFromFileAsync()`: добавлена обработка ошибок наподобие out of memory из функции `TextDecoder.decode()`.<br>
 `*` Многочисленные внутренние улучшения кода.<br>
 
 ##### legacy-0.1.3.x/HEAD
