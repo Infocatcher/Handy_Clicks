@@ -245,7 +245,7 @@ var handyClicksEditor = {
 			editor.selectLine(line);
 	},
 	selectFuncTab: function(isDelayed) {
-		this.$("hc-editor-funcTabbox").selectedIndex = isDelayed
+		this.funcTabbox.selectedIndex = isDelayed
 			? this.INDEX_SHORTCUT_DELAYED
 			: this.INDEX_SHORTCUT_NORMAL;
 	},
@@ -1173,6 +1173,10 @@ var handyClicksEditor = {
 		["ctrl", "shift", "alt", "meta", "os"].forEach(function(mdf) {
 			this.$("hc-editor-" + mdf).checked = sh && sh.indexOf(mdf + "=true") != -1;
 		}, this);
+	},
+	get funcTabbox() {
+		delete this.funcTabbox;
+		return this.funcTabbox = this.e("hc-editor-funcTabbox");
 	},
 	get typesList() {
 		delete this.typesList;
@@ -2125,12 +2129,12 @@ var handyClicksEditor = {
 	},
 	copyShortcut: function(isDelayed, dontCopy) {
 		if(isDelayed === undefined)
-			isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == this.INDEX_SHORTCUT_DELAYED;
+			isDelayed = this.funcTabbox.selectedIndex == this.INDEX_SHORTCUT_DELAYED;
 		var delayed = isDelayed ? this.delayId : "";
 		var funcs = this.$("hc-editor-func" + delayed);
 		var si = funcs.selectedItem;
 		if(!si) {
-			this.markAs(this.$("hc-editor-funcTabbox"), "hc_copied", "false");
+			this.markAs(this.funcTabbox, "hc_copied", "false");
 			return null;
 		}
 		var o = {
@@ -2141,7 +2145,7 @@ var handyClicksEditor = {
 		};
 		if(dontCopy)
 			return o;
-		this.markAs(this.$("hc-editor-funcTabbox"), "hc_copied");
+		this.markAs(this.funcTabbox, "hc_copied");
 		return this.storage.set("shortcut", o);
 	},
 	pasteShortcut: function(isDelayed, stored) {
@@ -2151,7 +2155,7 @@ var handyClicksEditor = {
 		var so = stored.so;
 		var type = this.currentType;
 		if(isDelayed === undefined)
-			isDelayed = this.$("hc-editor-funcTabbox").selectedIndex == this.INDEX_SHORTCUT_DELAYED;
+			isDelayed = this.funcTabbox.selectedIndex == this.INDEX_SHORTCUT_DELAYED;
 		var cantPasteDefault = so === undefined && !isDelayed;
 
 		if(
@@ -2159,7 +2163,7 @@ var handyClicksEditor = {
 			|| cantPasteDefault
 			|| this.notSupported(type, null, stored.supports, stored.app, stored.required)
 		) {
-			this.markAs(this.$("hc-editor-funcTabbox"), "hc_pasted", "false");
+			this.markAs(this.funcTabbox, "hc_pasted", "false");
 			if(!cantPasteDefault)
 				this.typeRequired();
 			return false;
@@ -2172,7 +2176,7 @@ var handyClicksEditor = {
 
 		this.disableUnsupported();
 		this.setDialogButtons();
-		this.markAs(this.$("hc-editor-funcTabbox"), "hc_pasted");
+		this.markAs(this.funcTabbox, "hc_pasted");
 		return true;
 	},
 	saveCustomType: function(applyFlag, testFlag, dontUpdate, saveAll) {
