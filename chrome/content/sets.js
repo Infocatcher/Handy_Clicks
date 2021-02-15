@@ -930,7 +930,10 @@ var handyClicksSets = {
 				hc_enabled: !daDis,
 				hc_disabled: daDis,
 				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel, daStr) && ++this.counters.buggy,
-				hc_notAvailable: extNA,
+				hc_notAvailable: extNA || daHasLinkedFile && (
+					this.su.linkedFileNotExists(daLinkedFile, true)
+					|| this.su.linkedFileNotExists(daLinkedFileInit, true)
+				),
 				hc_internal: !daCustom,
 				hc_custom: daCustom,
 				hc_customFile: daHasLinkedFile,
@@ -976,7 +979,10 @@ var handyClicksSets = {
 			hc_enabled: fo.enabled,
 			hc_disabled: !fo.enabled,
 			hc_buggy: isBuggy && ++this.counters.buggy,
-			hc_notAvailable: extNA,
+			hc_notAvailable: extNA || hasLinkedFile && (
+				this.su.linkedFileNotExists(linkedFile, true)
+				|| this.su.linkedFileNotExists(linkedFileInit, true)
+			),
 			hc_internal: !isCustom,
 			hc_custom: isCustom,
 			hc_customFile: hasLinkedFile,
@@ -1031,7 +1037,7 @@ var handyClicksSets = {
 		tItem.__delayed = da && daItem;
 		tItem.__sortLabel = label;
 
-		if((hasLinkedFile || daHasLinkedFile) && !extNA) this.delay(function() {
+		if(!extNA && (hasLinkedFile || daHasLinkedFile)) this.delay(function() {
 			var na = this.su.linkedFileNotExists(linkedFile)
 				|| this.su.linkedFileNotExists(linkedFileInit);
 			var daNa = this.su.linkedFileNotExists(daLinkedFile)
@@ -1096,6 +1102,10 @@ var handyClicksSets = {
 			hc_enabled: to.enabled,
 			hc_disabled: !to.enabled,
 			hc_buggy: !this.ps.isOkCustomType(type, drawRemoved && this._savedTypes),
+			hc_notAvailable: hasLinkedFile && (
+				this.su.linkedFileNotExists(linkedFile, true)
+				|| this.su.linkedFileNotExists(linkedFileCM, true)
+			),
 			hc_custom: true,
 			hc_customFile: hasLinkedFile,
 			hc_customType: true,

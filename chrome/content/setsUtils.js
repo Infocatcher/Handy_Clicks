@@ -806,14 +806,17 @@ var handyClicksSetsUtils = {
 		return cnt;
 	},
 
-	linkedFileNotExists: function(path) {
+	_notExistsFiles: { __proto__: null },
+	linkedFileNotExists: function(path, useCache) {
 		if(!path)
 			return undefined;
 		if(this.ps.otherSrc)
 			if(path in this.ps.files && this.ps.files[path])
 				return false;
+		if(useCache)
+			return this._notExistsFiles[path] || false;
 		var file = this.ut.getLocalFile(path);
-		return file && !file.exists();
+		return this._notExistsFiles[path] = file && !file.exists();
 	},
 
 	checkDarkFont: function(node, target) {
