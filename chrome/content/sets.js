@@ -925,15 +925,16 @@ var handyClicksSets = {
 				{ hc_checkbox: true }
 			);
 
+			var daCachedNa = extNA || daHasLinkedFile && (
+				this.su.linkedFileNotExists(daLinkedFile, true)
+				|| this.su.linkedFileNotExists(daLinkedFileInit, true)
+			);
 			this.setChildNodesProperties(daRow, {
 				hc_delayed: true,
 				hc_enabled: !daDis,
 				hc_disabled: daDis,
 				hc_buggy: this.isBuggyFuncObj(da, daCustom, daLabel, daStr) && ++this.counters.buggy,
-				hc_notAvailable: extNA || daHasLinkedFile && (
-					this.su.linkedFileNotExists(daLinkedFile, true)
-					|| this.su.linkedFileNotExists(daLinkedFileInit, true)
-				),
+				hc_notAvailable: daCachedNa,
 				hc_internal: !daCustom,
 				hc_custom: daCustom,
 				hc_customFile: daHasLinkedFile,
@@ -975,14 +976,15 @@ var handyClicksSets = {
 				|| this.ut.isBuggyStr(typeLabel)
 			);
 
+		var cachedNa = extNA || hasLinkedFile && (
+			this.su.linkedFileNotExists(linkedFile, true)
+			|| this.su.linkedFileNotExists(linkedFileInit, true)
+		);
 		this.setChildNodesProperties(tRow, {
 			hc_enabled: fo.enabled,
 			hc_disabled: !fo.enabled,
 			hc_buggy: isBuggy && ++this.counters.buggy,
-			hc_notAvailable: extNA || hasLinkedFile && (
-				this.su.linkedFileNotExists(linkedFile, true)
-				|| this.su.linkedFileNotExists(linkedFileInit, true)
-			),
+			hc_notAvailable: cachedNa,
 			hc_internal: !isCustom,
 			hc_custom: isCustom,
 			hc_customFile: hasLinkedFile,
@@ -1042,9 +1044,12 @@ var handyClicksSets = {
 				|| this.su.linkedFileNotExists(linkedFileInit);
 			var daNa = this.su.linkedFileNotExists(daLinkedFile)
 				|| this.su.linkedFileNotExists(daLinkedFileInit);
-			na   && this.setChildNodesProperties(tRow,  { hc_notAvailable: true }, true);
-			daNa && this.setChildNodesProperties(daRow, { hc_notAvailable: true }, true);
-			(na || daNa) && this.ensureNASearchUpdated();
+			var naChanged;
+			if(na != cachedNa)
+				this.setChildNodesProperties(tRow,  { hc_notAvailable: na }, true), naChanged = true;
+			if(daNa != daCachedNa)
+				this.setChildNodesProperties(daRow, { hc_notAvailable: daNa }, true), naChanged = true;
+			naChanged && this.ensureNASearchUpdated();
 		}, this, this.checkLinkedFilesDelay);
 
 		var insPos = this.getSortedInsPos(parent, tItem);
@@ -1098,14 +1103,15 @@ var handyClicksSets = {
 		tItem.__delayed = null;
 		tItem.__sortLabel = sortLabel;
 
+		var cachedNa = hasLinkedFile && (
+			this.su.linkedFileNotExists(linkedFile, true)
+			|| this.su.linkedFileNotExists(linkedFileCM, true)
+		);
 		this.setChildNodesProperties(tRow, {
 			hc_enabled: to.enabled,
 			hc_disabled: !to.enabled,
 			hc_buggy: !this.ps.isOkCustomType(type, drawRemoved && this._savedTypes),
-			hc_notAvailable: hasLinkedFile && (
-				this.su.linkedFileNotExists(linkedFile, true)
-				|| this.su.linkedFileNotExists(linkedFileCM, true)
-			),
+			hc_notAvailable: cachedNa,
 			hc_custom: true,
 			hc_customFile: hasLinkedFile,
 			hc_customType: true,
@@ -1128,8 +1134,8 @@ var handyClicksSets = {
 		if(hasLinkedFile) this.delay(function() {
 			var na = this.su.linkedFileNotExists(linkedFile)
 				|| this.su.linkedFileNotExists(linkedFileCM);
-			if(na) {
-				this.setChildNodesProperties(tRow, { hc_notAvailable: true }, true);
+			if(na != cachedNa) {
+				this.setChildNodesProperties(tRow, { hc_notAvailable: na }, true);
 				this.ensureNASearchUpdated();
 			}
 		}, this, this.checkLinkedFilesDelay);
