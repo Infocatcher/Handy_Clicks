@@ -214,6 +214,9 @@ tabbox[hc_pasted="false"] {
 tab[hc_disabled="true"] {
 	text-decoration: line-through;
 }
+tab.hc-iconic[hc_disabled="true"] .tab-icon {
+	opacity: 0.7;
+}
 tab[hc_empty="true"] label {
 	opacity: 0.6;
 }
