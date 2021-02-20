@@ -302,10 +302,12 @@ var handyClicksPrefSvc = {
 		try {
 			var df = ct.define;
 			var cm = ct.contextMenu;
+			var codeDf = this.expandCode(df);
+			var codeCM = cm && this.expandCode(cm);
 			ct._defineLine = new Error().lineNumber + 1;
-			ct._define = new Function("event,item,itemType,firstCall", this.expandCode(df));
+			ct._define = new Function("event,item,itemType,firstCall", codeDf);
 			ct._contextMenuLine = new Error().lineNumber + 1;
-			ct._contextMenu = cm ? new Function("event,item,origItem,itemType", this.expandCode(cm)) : null;
+			ct._contextMenu = cm ? new Function("event,item,origItem,itemType", codeCM) : null;
 			ct._firstCall = true;
 			this._log('Type "' + type + '" => initialized');
 			return state[type] = true;
@@ -316,7 +318,8 @@ var handyClicksPrefSvc = {
 			var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
 				+ ("_contextMenuLine" in ct ? this.ct.EDITOR_TYPE_CONTEXT : this.ct.EDITOR_TYPE_DEFINE)
 				+ "?line=" + eLine;
-			var eMsg = this.errInfo("customTypeCompileError", e, type);
+			var eKey = !codeDf || cm && !codeCM ? "customFunctionLinkedFileError" : "customTypeCompileError";
+			var eMsg = this.errInfo(eKey, e, type);
 			this.ut.notifyError(eMsg, {
 				buttons: {
 					$openEditor: this.wu.getOpenEditorLink(href, eLine),
