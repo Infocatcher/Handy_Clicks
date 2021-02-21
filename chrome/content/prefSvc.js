@@ -318,7 +318,7 @@ var handyClicksPrefSvc = {
 			var href = this.ct.PROTOCOL_EDITOR + this.ct.EDITOR_MODE_TYPE + "/" + type + "/"
 				+ ("_contextMenuLine" in ct ? this.ct.EDITOR_TYPE_CONTEXT : this.ct.EDITOR_TYPE_DEFINE)
 				+ "?line=" + eLine;
-			var eKey = !codeDf || cm && !codeCM ? "customFunctionLinkedFileError" : "customTypeCompileError";
+			var eKey = !codeDf || cm && !codeCM ? "customTypeLinkedFileError" : "customTypeCompileError";
 			var eMsg = this.errInfo(eKey, e, type);
 			this.ut.notifyError(eMsg, {
 				buttons: {
