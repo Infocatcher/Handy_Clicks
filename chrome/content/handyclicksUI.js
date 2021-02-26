@@ -441,8 +441,11 @@ var handyClicksUI = {
 		this._emNotify = this.ut.notify(this.getLocalized("editModeNote").replace("%key", this.escKey), {
 			inWindowCorner: !underCursor,
 			title: this.getLocalized("editModeTitle"),
-			onLeftClick: function() {
-				this.editMode = false;
+			buttons: {
+				$editModeOK: function() {},
+				$editModeExit: function() {
+					this.editMode = false;
+				}
 			},
 			context: this
 		});
