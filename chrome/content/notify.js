@@ -39,6 +39,7 @@ var hcNotify = {
 			var btnBox = this.$("hcNotifyButtons");
 			for(var label in buttons) if(buttons.hasOwnProperty(label)) {
 				var btn = document.createElement("button");
+				btn.setAttribute("hc_label", label);
 				btn._command = buttons[label];
 				label = localized[label] || label;
 				if(/(^|[^&])&([^&])/.test(label)) {
