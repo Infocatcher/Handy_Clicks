@@ -569,6 +569,7 @@
 								},
 								context: this
 							});
+							ed.setAllEditorButtons();
 							return;
 						}
 						if(!file.exists()) {
@@ -593,6 +594,7 @@
 								},
 								context: this
 							});
+							ed.setAllEditorButtons();
 							return;
 						}
 						else if(ut.pu.get("enabled")) {
