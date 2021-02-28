@@ -729,6 +729,11 @@ var handyClicksSetsUtils = {
 				if(!keyDesk)
 					return;
 				var node = mi.__node;
+				var ttm = node.getAttribute("hc_tooltipMessage");
+				if(ttm) {
+					node.setAttribute("hc_tooltipMessage", ttm + " (" + keyDesk + ")");
+					return;
+				}
 				node.tooltipText = node.tooltipText
 					? node.tooltipText + " (" + keyDesk + ")"
 					: keyDesk;
