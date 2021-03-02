@@ -52,7 +52,7 @@
 		<command id="hc-editor-cmd-undo" oncommand="event.stopPropagation(); handyClicksEditor.undoTestSettings(true);"
 			disabled="true" label="&hc.editor.undo;" accesskey="&hc.editor.undoAccesskey;" />
 		<command id="hc-editor-cmd-editCode" oncommand="handyClicksEditor.editCode();"
-			label="&hc.editor.editCode;" tooltiptext="&hc.editor.editCodeTip;" />
+			label="&hc.editor.editCode;" tooltip="hc-editor-labelTip" hc_tooltipMessage="&hc.editor.editCodeTip;" />
 		<command id="hc-editor-cmd-codeToFile" oncommand="handyClicksEditor.codeToFile();"
 			label="&hc.editor.codeToFile;" tooltiptext="&hc.editor.codeToFileTip;" />
 		<command id="hc-editor-cmd-openScriptsDir" oncommand="handyClicksEditor.openScriptsDir();"
