@@ -1747,11 +1747,9 @@ var handyClicksEditor = {
 				editCodeBtn.removeAttribute("hc_fileNotFound");
 			if(!editCodeBtn.hasAttribute("hc_isDarkFont")) // Only once... for better performance
 				this.su.checkDarkFont(editCodeBtn);
-			this.delay(function() { // Wait for su.setKeysDesc()
-				var wrn = notFound ? this.getLocalized("cantEditFile") : "";
-				if(editCodeBtn.getAttribute("hc_tooltipWarning") != wrn)
-					editCodeBtn.setAttribute("hc_tooltipWarning", wrn);
-			}, this, 150);
+			var wrn = notFound ? this.getLocalized("cantEditFile") : "";
+			if(editCodeBtn.getAttribute("hc_tooltipWarning") != wrn)
+				editCodeBtn.setAttribute("hc_tooltipWarning", wrn);
 		}, this, 10);
 	},
 	setAllEditorButtons: function() {
