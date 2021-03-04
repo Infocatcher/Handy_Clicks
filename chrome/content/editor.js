@@ -850,17 +850,20 @@ var handyClicksEditor = {
 	},
 	initLabelTip: function(tt) {
 		var tn = document.tooltipNode;
-		var msg = tn && tn.getAttribute("hc_tooltipMessage") || "";
+		if(!tn)
+			return false;
+		var msg = tn.getAttribute("hc_tooltipMessage") || "";
 		this.$("hc-editor-labelTip-localize").hidden = !!msg;
 		if(!msg) {
-			var raw = tn && tn.value || "";
+			var raw = tn.value || "";
 			var localized = raw && this.ps.localize(raw) || "";
 			msg = raw && localized == raw ? this.getLocalized("notLocalized") : localized;
 		}
 		this.$("hc-editor-labelTip-message").value = msg;
-		var wrn = tn && tn.getAttribute("hc_tooltipWarning") || "";
+		var wrn = tn.getAttribute("hc_tooltipWarning") || "";
 		this.$("hc-editor-labelTip-warning").value = wrn;
 		this.su.checkDarkFont(tt);
+		return true;
 	},
 	showLocalizedLabels: function(mp) {
 		var mi = mp.getElementsByAttribute("value", this.currentCustomType)[0] || null;
