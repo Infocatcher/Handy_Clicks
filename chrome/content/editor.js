@@ -853,8 +853,10 @@ var handyClicksEditor = {
 		if(!tn)
 			return false;
 		var msg = tn.getAttribute("hc_tooltipMessage") || "";
-		this.$("hc-editor-labelTip-localize").hidden = !!msg;
-		if(!msg) {
+		var editable = tn.localName == "textbox" && tn.getAttribute("readonly") != "true"
+			|| tn.localName == "menulist" && tn.getAttribute("editable") == "true";
+		this.$("hc-editor-labelTip-localize").hidden = !!msg || !editable;
+		if(!msg && editable) {
 			var raw = tn.value || "";
 			var localized = raw && this.ps.localize(raw) || "";
 			msg = raw && localized == raw ? this.getLocalized("notLocalized") : localized;
