@@ -412,6 +412,8 @@ var handyClicksEditor = {
 					mi.hidden = true;
 					if(curType && mi.getAttribute("value") == curType) {
 						typesList.setAttribute("hc_extNotAvailable", "true");
+						typesList.setAttribute("tooltip", "hc-editor-labelTip");
+						typesList.setAttribute("hc_tooltipWarning", this.getLocalized("extensionNA"));
 						this.su.checkDarkFont(typesList);
 					}
 					return;
@@ -1027,8 +1029,11 @@ var handyClicksEditor = {
 		this.updateShortcutContext();
 
 		var ml = this.typesList;
-		if(ml.hasAttribute("hc_extNotAvailable"))
+		if(ml.hasAttribute("hc_extNotAvailable")) {
 			ml.removeAttribute("hc_extNotAvailable");
+			ml.removeAttribute("tooltip");
+			ml.removeAttribute("hc_tooltipWarning");
+		}
 	},
 	initAdditionalOptions: function(iType, setsObj) {
 		iType = iType || this.currentType;
