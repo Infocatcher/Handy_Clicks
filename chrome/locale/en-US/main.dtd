@@ -5,7 +5,7 @@
 <!ENTITY handyClicks.toolbarbuttonLabel "Handy Clicks">
 <!ENTITY handyClicks.settingsLabel "Settings">
 <!ENTITY handyClicks.settingsAccesskey "S">
-<!ENTITY handyClicks.allPrefsLabel "All preferences">
+<!ENTITY handyClicks.allPrefsLabel "All preferences"> <!-- For extensions.handyclicks.ui.showAllSettingsMenuitem = true -->
 <!ENTITY handyClicks.allPrefsAccesskey "A">
 <!ENTITY handyClicks.enableLabel "Enable Handy Clicks">
 <!ENTITY handyClicks.enableAccesskey "n">

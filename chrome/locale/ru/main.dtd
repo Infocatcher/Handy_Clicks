@@ -5,7 +5,7 @@
 <!ENTITY handyClicks.toolbarbuttonLabel "Handy Clicks">
 <!ENTITY handyClicks.settingsLabel "Настройки">
 <!ENTITY handyClicks.settingsAccesskey "Н">
-<!ENTITY handyClicks.allPrefsLabel "Все настройки">
+<!ENTITY handyClicks.allPrefsLabel "Все настройки"> <!-- For extensions.handyclicks.ui.showAllSettingsMenuitem = true -->
 <!ENTITY handyClicks.allPrefsAccesskey "й">
 <!ENTITY handyClicks.enableLabel "Включить Handy Clicks">
 <!ENTITY handyClicks.enableAccesskey "В">
