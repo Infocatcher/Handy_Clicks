@@ -4971,14 +4971,17 @@ var handyClicksSetsSearcher = {
 		}, this, this._unwrapDelay);
 	},
 	navigate: function(e) {
-		switch(e.button) {
-			case 0: this.next(true); break;
-			case 2: this.prev(true); break;
-			case 1:
-				if(this.allSelected)
-					this.clearSelection();
-				else
-					this.selectAll(true);
+		var btn = e.button;
+		var mdf = this.hasModifier(e);
+		if(btn == 0 && !mdf)
+			this.next(true);
+		else if(btn == 2 && !mdf)
+			this.prev(true);
+		else if(btn == (mdf ? 0 : 1)) {
+			if(this.allSelected)
+				this.clearSelection();
+			else
+				this.selectAll(true);
 		}
 	}
 };
