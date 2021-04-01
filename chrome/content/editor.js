@@ -2207,9 +2207,12 @@ var handyClicksEditor = {
 		type = this.ps.customPrefix + type;
 
 		var enabled = this.$("hc-editor-customTypeEnabled").checked;
+		var oldTo = this.ps.types[type];
 		this.ps.types[type] = this.getTypeObj(label, def, enabled);
 
 		var loadCorrectedSettings = !dontUpdate && this.ju.bind(function(status) {
+			if(applyFlag && (!oldTo || oldTo.label != label))
+				this.setWinTitle();
 			if(status !== undefined && !Components.isSuccessCode(status))
 				return;
 			var to = this.ps.types[type];
