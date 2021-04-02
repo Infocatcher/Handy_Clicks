@@ -495,9 +495,9 @@ var handyClicksEditor = {
 			case this.INDEX_TYPE:     this.applyDisabled = !typeModified;
 		}
 		this.deleteButton.disabled = !this.canDelete;
-		var title = document.title;
-		var newTitle = this.su.createTitle(title, shModified || typeModified, this.ps.otherSrc);
-		if(newTitle != title)
+		var oldTitle = document.title;
+		var newTitle = this.su.createTitle(oldTitle, shModified || typeModified, this.ps.otherSrc);
+		if(newTitle != oldTitle)
 			document.title = newTitle;
 		this.setModifiedTab(this.$("hc-editor-shortcutTab"), shModified);
 		this.setModifiedTab(this.$("hc-editor-itemTypeTab"), typeModified);
