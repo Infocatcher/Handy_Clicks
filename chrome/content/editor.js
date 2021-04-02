@@ -611,12 +611,15 @@ var handyClicksEditor = {
 		var title = this.editorTabIndex == this.INDEX_TYPE
 			? typeStr + sep + shStr
 			: shStr + sep + typeStr;
-		var baseTitle = this.su.removeTitleFlags(document.title)
+		var oldTitle = document.title;
+		var baseTitle = this.su.removeTitleFlags(oldTitle)
 			.replace(/\s+\[.+\]\*?$/, "")
 			.replace(/^.*? \u2013 /, "");
-		document.title = this.pu.get("editor.ui.invertWindowTitle")
+		var newTitle = this.pu.get("editor.ui.invertWindowTitle")
 			? title + " \u2013 " + baseTitle
 			: baseTitle + " [" + title + "]";
+		if(newTitle != oldTitle)
+			document.title = newTitle;
 	},
 	initSettingsMenu: function() {
 		var sm = this.$("hc-editor-sets-shortcutsMenu");
