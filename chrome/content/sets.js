@@ -1656,6 +1656,7 @@ var handyClicksSets = {
 			tItem = tChld.parentNode;
 			tItem.removeChild(tChld);
 			tItem.removeAttribute("container");
+			delete tItem.__delayed;
 		}
 		else {
 			var so = prefs[sh];
