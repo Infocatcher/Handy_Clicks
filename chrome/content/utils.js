@@ -141,18 +141,16 @@ var handyClicksUtils = {
 	},
 
 	_timers: { __proto__: null },
-	timer: function(tId, division) {
+	timer: function(key, div) {
 		var ts = this._timers;
-		if(tId in ts) {
-			var dt = this.now() - ts[tId];
-			if(division)
-				dt /= division;
-			var dtr = Math.floor(dt) == dt ? dt : dt.toFixed(3);
-			this._log("[timer] " + tId + " -> " + dtr + " ms");
-			delete ts[tId];
-			return dt;
-		}
-		return ts[tId] = this.now();
+		if(!(key in ts))
+			return ts[key] = this.now();
+		var dt = this.now() - ts[key];
+		if(div)
+			dt /= div;
+		this._log("[timer] " + key + ": " + (Math.floor(dt) == dt ? dt : dt.toFixed(2)) + " ms");
+		delete ts[key];
+		return dt;
 	},
 
 	hasPrefix: function(str, prefix) {
