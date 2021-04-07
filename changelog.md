@@ -9,6 +9,8 @@
 <em>(backported from master/HEAD)</em><br>
 `x` Correctly rename unloaded tabs.<br>
 `x` Fixed import for legacy js format (not JSON): correctly convert $all property.<br>
+`x` Fixed search in settings tree after delayed action deletion: correctly remove link to removed delayed action DOM node.<br>
+`x` Fixed async file reading in `handyClicksUtils.readFromFileAsync()` function: handle errors like out of memory from `TextDecoder.decode()`.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
 <em>(backported from master/HEAD)</em><br>
