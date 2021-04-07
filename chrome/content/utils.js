@@ -743,11 +743,20 @@ var handyClicksUtils = {
 			}.bind(this);
 			OS.File.read(file.path).then(
 				function onSuccess(arr) {
-					var data = decoder.decode(arr);
-					callback.call(context || this, data, Components.results.NS_OK);
+					try {
+						var data = decoder.decode(arr);
+						callback.call(context || this, data, Components.results.NS_OK);
+					}
+					catch(e) {
+						Components.utils.reportError(e);
+						var status = /out of memory/i.test(e)
+							? Components.results.NS_ERROR_OUT_OF_MEMORY
+							: Components.results.NS_ERROR_FAILURE;
+						callback.call(context || this, "", status);
+					}
 				}.bind(this),
 				onFailure
-			).then(null, onFailure);
+			).then(null, Components.utils.reportError);
 			return true;
 		}
 
