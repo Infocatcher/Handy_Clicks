@@ -969,8 +969,37 @@ var handyClicksPrefSvc = {
 	},
 	getCustomTypeLabel: function(type) {
 		var label = this.ut.getOwnProperty(this.types, type, "label");
-		label = label ? label + " " : "";
+		label = label ? this.localize(label) + " " : "";
 		return label + "[" + this.removeCustomPrefix(type) + "]";
+	},
+	get locale() {
+		delete this.locale;
+		return this.locale = this.pu.get("locale") || this.ut.xcr.getSelectedLocale("global");
+	},
+	localize: function lz(data) {
+		//lz._localized = false;
+		if(!data)
+			return data;
+		// "String in English @ru: String in Russian @xx: ..."
+		var locale = this.locale;
+		var locales = { __proto__: null };
+		var pos = 0;
+		data = data.replace(/ *@([a-z]{2,3}(?:-[A-Z]{2})?): *(?=\S)/g, function(sep, locale) {
+			locales[locale] = ++pos;
+			return "\x00";
+		});
+		if(!pos)
+			return data;
+		var localized = data.split("\x00");
+		var localize = function(locale) {
+			return locales[locale] && localized[locales[locale]];
+		};
+		lz._localized = true;
+		return localize(locale)
+			|| /^([a-z]+)-/.test(locale) && localize(RegExp.$1)
+			|| localized[0]
+			|| localize("en-US")
+			|| localize("en");
 	},
 
 	enc: function(s) { //~todo: Not needed, but still used in editor

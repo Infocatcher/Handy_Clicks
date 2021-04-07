@@ -447,7 +447,8 @@ var handyClicksEditor = {
 		var shStr = this.ps.getModifiersStr(sh) + " + " + this.ps.getButtonStr(sh, true);
 		var typeItem = this.$("hc-editor-itemTypes").selectedItem;
 		var type = typeItem && typeItem.getAttribute("label"); // menulist.label may be wrong on startup!
-		var typeStr = this.$("hc-editor-customType").value || this.$("hc-editor-customTypeExtId").value;
+		var typeStr = this.ps.localize(this.$("hc-editor-customType").value)
+			|| this.$("hc-editor-customTypeExtId").value;
 		var title = this.mainTabbox.selectedIndex == this.INDEX_TYPE
 			? typeStr + (typeStr ? " | " : "") + shStr + (type ? " + " + type : "")
 			: shStr + (type ? " + " + type : "") + (typeStr ? " | " + typeStr : "");
@@ -648,7 +649,7 @@ var handyClicksEditor = {
 				this.ut._warn('Invalid custom type: "' + cType + '" (' + typeObj + ")");
 				continue;
 			}
-			var label = typeObj.label || cType;
+			var label = this.ps.localize(typeObj.label || cType);
 			if(label in _labels)
 				label += " (" + ++_labels[label] + ")";
 			else

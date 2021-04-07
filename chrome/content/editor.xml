@@ -510,7 +510,10 @@
 								? "hc-editor-funcLabel" + type.match(/(?:-delay)?$/)[0]
 								: "hc-editor-customType"
 						);
-						var label = (tb && tb.value || "")
+						var val = tb && tb.value || "";
+						if("handyClicksPrefSvc" in top)
+							val = top.handyClicksPrefSvc.localize(val);
+						var label = val
 							.replace(/\s+/g, "_")
 							// Based on code of Session Manager 0.7.9.2
 							.replace(/[<>:"\/\\|*?^\x00-\x1f]+/g, "_");
