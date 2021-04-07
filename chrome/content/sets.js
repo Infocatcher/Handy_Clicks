@@ -1583,7 +1583,7 @@ var handyClicksSets = {
 		if(!this.isTreePaneSelected)
 			return;
 		var tIts = this.selectedItemsNoDelayed;
-		var deleteTypes = { value: false };
+		var deleteTypes = { value: false, hasSettings: false };
 		if(!this.confirmDelete(tIts, deleteTypes))
 			return;
 		if(!deleteTypes.value) {
@@ -1634,7 +1634,10 @@ var handyClicksSets = {
 				this.tSel.rangedSelect(indx, indx, true);
 		}
 
-		this.searchInSetsTree(true);
+		if(deleteTypes.value && deleteTypes.hasSettings)
+			this.updTree();
+		else
+			this.searchInSetsTree(true);
 		this.restoreScroll(fvr, lvr);
 	},
 	deleteItem: function(tItem) {
@@ -1680,6 +1683,8 @@ var handyClicksSets = {
 		}, this);
 		if(!setsCount) // Safe to delete
 			deleteTypes.value = true;
+		else
+			deleteTypes.hasSettings = true;
 		var onlyTypes = typesCount == tIts.length;
 		onlyTypes && setsCount && this.ut.waitForPromptWindow(function(win) {
 			var btn = win.document.documentElement.getButton("accept");
