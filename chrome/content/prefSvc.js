@@ -23,6 +23,7 @@ var handyClicksPrefSvc = {
 	prefsFileName: "handyclicks_prefs",
 	backupsDirName: "backups",
 	tempDirName: "temp",
+	scriptsDirName: "scripts",
 	corruptedDirName: "corrupted",
 	names: {
 		backup:       "_backup-",
@@ -94,6 +95,12 @@ var handyClicksPrefSvc = {
 	get tempDir() {
 		delete this.tempDir;
 		return this.tempDir = this.getSubDir(this.prefsDir, this.tempDirName);
+	},
+	get scriptsDir() {
+		var dir = this.prefsDir.clone();
+		dir.append(this.scriptsDirName);
+		delete this.scriptsDir;
+		return this.scriptsDir = dir;
 	},
 	get _tempDir() { // Don't create directory automatically
 		var tempDir = this.prefsDir.clone();
