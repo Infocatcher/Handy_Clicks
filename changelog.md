@@ -235,6 +235,10 @@
 <em>(backported from master/HEAD)</em><br>
 `x` Correctly rename unloaded tabs.<br>
 `x` Fixed import for legacy js format (not JSON): correctly convert $all property.<br>
+`+` Added basic support for localized labels from v.0.2.0b1.<br>
+`x` Fixed search in settings tree after delayed action deletion: correctly remove link to removed delayed action DOM node.<br>
+`x` Fixed async file reading in `handyClicksUtils.readFromFileAsync()` function: handle errors like out of memory from `TextDecoder.decode()`.<br>
+`+` Added support for %hc_ScriptsDir% alias for settings from v.0.2.0b1.<br>
 
 ##### 0.1.3pre8 (2019-03-04)
 <em>(backported from master/HEAD)</em><br>
