@@ -878,7 +878,7 @@ var handyClicksSets = {
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom), ++col);
 		var linkedFile = this.getActionCode._linkedFile;
 		var fileData = this.getActionCode._hasFileData;
-		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || {}, this._localizeArgs), ++col);
+		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || null, this._localizeArgs), ++col);
 		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)), ++col);
 		var linkedFileInit = initCode && this.getActionCode._linkedFile;
 		var hasLinkedFile = linkedFile || linkedFileInit;
@@ -914,7 +914,7 @@ var handyClicksSets = {
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom), ++col);
 			var daLinkedFile = this.getActionCode._linkedFile;
 			var daFileData = this.getActionCode._hasFileData;
-			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || {}, this._localizeArgs), ++col);
+			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || null, this._localizeArgs), ++col);
 			this.appendTreeCell(daRow, "label", (daInitCode = this.getInitCode(da, true)), ++col);
 			var daLinkedFileInit = daInitCode && this.getActionCode._linkedFile;
 			var daHasLinkedFile = daLinkedFile || daLinkedFileInit;
@@ -1279,6 +1279,8 @@ var handyClicksSets = {
 		return this.treeNewline = this.fxVersion <= 2 ? " " : " \n";
 	},
 	getArguments: function(argsObj, localize) {
+		if(!argsObj)
+			return "";
 		var res = [];
 		for(var p in argsObj) if(argsObj.hasOwnProperty(p)) {
 			res.push(
