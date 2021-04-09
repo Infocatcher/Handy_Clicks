@@ -1287,7 +1287,7 @@ var handyClicksSets = {
 				localize
 					? this.getLocalizedArguments(argsObj, p)
 					: this.getRawArguments(argsObj, p)
-			)
+			);
 		}
 		return res.join("," + this.treeNewline);
 	},
