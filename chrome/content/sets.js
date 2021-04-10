@@ -1166,10 +1166,8 @@ var handyClicksSets = {
 			+ this.cropCode(action || "");
 	},
 	getInitCode: function(fo) {
-		var init = this.ju.getOwnProperty(fo, "init");
-		return init
-			? this.getActionCode(init, true)
-			: "";
+		var init = fo.init || null;
+		return init ? this.getActionCode(init, true) : "";
 	},
 	cropCode: function(code) {
 		var maxLen = this._maxCodeLength;
