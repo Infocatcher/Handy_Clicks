@@ -889,7 +889,7 @@ var handyClicksSets = {
 			{ hc_checkbox: true }
 		);
 
-		var da = this.ju.getOwnProperty(fo, "delayedAction");
+		var da = fo.delayedAction || null;
 		if(da) {
 			tItem.setAttribute("container", "true");
 			if(this._daExpand)
