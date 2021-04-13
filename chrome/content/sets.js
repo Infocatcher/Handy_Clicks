@@ -2070,7 +2070,7 @@ var handyClicksSets = {
 			return;
 		var row = this.tbo.getRowAt(e.clientX, e.clientY);
 		var et = e.type;
-		var lastHandledRow = this.ju.getOwnProperty(ss, "_lastHandledRow");
+		var lastHandledRow = ss._lastHandledRow || undefined;
 		if(row == -1)
 			return;
 		if(et == "mousedown") { // Start
@@ -2088,7 +2088,7 @@ var handyClicksSets = {
 			return;
 
 		// mouseup or mousemove:
-		var initialRow = this.ju.getOwnProperty(ss, "_initialRow");
+		var initialRow = ss._initialRow || undefined;
 		if(initialRow === undefined)
 			return;
 		if(et == "mousemove" && ss._startY != undefined && Math.abs(ss._startY - e.screenY) <= 4)
