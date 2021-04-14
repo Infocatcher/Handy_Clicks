@@ -63,7 +63,7 @@ var handyClicksSets = {
 		}
 
 		if(fxVersion >= 3.6) { // Fix wrong resizing after sizeToContent() call
-			var de = document.documentElement;
+			var de = this.de;
 			if(de.getAttribute("sizemode") == "normal")
 				window.resizeTo(+de.width, +de.height);
 		}
@@ -105,7 +105,7 @@ var handyClicksSets = {
 		this.tBody = tr.body;
 		this.tSel = tView.selection;
 
-		var de = document.documentElement;
+		var de = this.de = document.documentElement;
 		this.applyButton = de.getButton("extra1");
 		this.prefsButton = de.getButton("extra2");
 	},
@@ -143,8 +143,7 @@ var handyClicksSets = {
 		else
 			this.treeScrollPos(false);
 
-		var de = document.documentElement;
-		var instantApply = this.instantApply = de.instantApply;
+		var instantApply = this.instantApply = this.de.instantApply;
 		if(instantApply)
 			this.applyButton.hidden = true;
 		else
@@ -173,7 +172,7 @@ var handyClicksSets = {
 			}
 		);
 		if(this.instantApply)
-			document.documentElement.setAttribute("hc_instantApply", "true");
+			this.de.setAttribute("hc_instantApply", "true");
 		if(this.ps.loaded && this.treeUnsaved)
 			this.setModifiedState(true);
 	},
@@ -1361,21 +1360,21 @@ var handyClicksSets = {
 	},
 
 	get isTreePaneSelected() {
-		var prefWin = document.documentElement;
-		return prefWin.currentPane == prefWin.preferencePanes[0];
+		var de = this.de;
+		return de.currentPane == de.preferencePanes[0];
 	},
 	selectTreePane: function() {
-		var prefWin = document.documentElement;
-		prefWin.showPane(prefWin.preferencePanes[0]);
+		var de = this.de;
+		de.showPane(de.preferencePanes[0]);
 	},
 	switchPanes: function(nextFlag) {
-		var prefWin = document.documentElement;
-		var panes = prefWin.preferencePanes;
+		var de = this.de;
+		var panes = de.preferencePanes;
 		var pCount = panes.length;
-		var n = Array.prototype.indexOf.call(panes, prefWin.currentPane) + (nextFlag ? 1 : -1);
+		var n = Array.prototype.indexOf.call(panes, de.currentPane) + (nextFlag ? 1 : -1);
 		if(n >= pCount) n = 0;
 		else if(n < 0)  n = pCount - 1;
-		prefWin.showPane(panes[n]);
+		de.showPane(panes[n]);
 	},
 
 	addItems: function addItems(e) {
@@ -3492,11 +3491,11 @@ var handyClicksSets = {
 			return true;
 
 		if(!this.isTreePaneSelected) {
-			var prefWin = document.documentElement;
-			var currentPane = prefWin.currentPane;
+			var de = this.de;
+			var currentPane = de.currentPane;
 			this.selectTreePane();
 			setTimeout(function() { // Will restore, if window not closed (pressed Cancel)
-				prefWin.showPane(currentPane);
+				de.showPane(currentPane);
 			}, 0);
 		}
 		this.blinkNode(this.$("hc-sets-tree-importPanel"), function(node, hl) {
