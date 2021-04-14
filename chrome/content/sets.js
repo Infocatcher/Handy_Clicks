@@ -28,7 +28,6 @@ var handyClicksSets = {
 		}
 
 		this.updTreeButtons();
-		this.checkTreeSaved();
 		this.ps.oSvc.addObserver(this.setsReloading, this);
 
 		this.initPrefs();
@@ -3532,7 +3531,11 @@ var handyClicksSets = {
 		this.applyButton.disabled = !isModified;
 	},
 
-	treeUnsaved: true,
+	get treeUnsaved() {
+		delete this.treeUnsaved;
+		this.checkTreeSaved();
+		return this.treeUnsaved;
+	},
 	checkTreeSaved: function() {
 		this.treeUnsaved = this.ps.otherSrc
 			? false
