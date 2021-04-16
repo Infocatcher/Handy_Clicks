@@ -137,15 +137,15 @@ var handyClicksSetsUtils = {
 		this.setOnTop(false, checkOpener);
 	},
 	setOnTop: function(toggle, checkOpener) {
-		var root = document.documentElement;
-		var onTop = root.getAttribute(this.onTopAttr) == "true";
+		var de = document.documentElement;
+		var onTop = de.getAttribute(this.onTopAttr) == "true";
 		var forceOnTop = checkOpener && !onTop && !toggle
 			&& opener && opener.document
 			&& opener.document.documentElement.getAttribute(this.onTopAttr) == "true";
 		if(toggle || forceOnTop) {
 			onTop = !onTop;
-			root.setAttribute(this.onTopAttr, onTop);
-			root.id && document.persist(root.id, this.onTopAttr);
+			de.setAttribute(this.onTopAttr, onTop);
+			de.id && document.persist(de.id, this.onTopAttr);
 		}
 		var top = this.topWindow;
 		var state = top.windowState;
@@ -165,9 +165,9 @@ var handyClicksSetsUtils = {
 		this.setOnTop(true);
 	},
 	showOnTopStatus: function(onTop) {
-		var root = document.documentElement;
+		var de = document.documentElement;
 		if(onTop === undefined)
-			onTop = root.getAttribute(this.onTopAttr) == "true";
+			onTop = de.getAttribute(this.onTopAttr) == "true";
 		var btnVisible = this.pu.get("ui.onTopButton");
 		var btn = this.onTopBtn;
 		btn.hidden = !btnVisible;
@@ -175,7 +175,7 @@ var handyClicksSetsUtils = {
 			btn.setAttribute("checked", onTop); // + autoCheck="false"
 			btn.setAttribute("hc_hideLabel", !this.pu.get("ui.onTopButtonLabel"));
 		}
-		var s = root.style;
+		var s = de.style;
 		if(onTop && !btnVisible) {
 			s.outline = "2px groove " + (this.pu.get("ui.onTopBorderColor") || "orange");
 			s.outlineOffset = "-2px";
