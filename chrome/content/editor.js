@@ -179,7 +179,7 @@ var handyClicksEditor = {
 		this.isDelayed = wa[4];
 		this.customType = null;
 		this.customTypeLabel = "";
-		var de = this.root = document.documentElement;
+		var de = this.de = document.documentElement;
 		this.applyButton = de.getButton("extra1");
 		this.deleteButton = de.getButton("extra2");
 		// Will be enabled only in case of changed settings format
@@ -375,13 +375,13 @@ var handyClicksEditor = {
 			: dTab.getAttribute("hc_tooltiptext").replace("$n", delay);
 	},
 	setFuncsNotes: function(show) {
-		this.root.setAttribute(
+		this.de.setAttribute(
 			"hc_showCustomFuncsNotes",
 			show === undefined ? this.pu.get("editor.ui.showCustomFuncsNotes") : show
 		);
 	},
 	setCompactUI: function(compact) {
-		this.root.setAttribute(
+		this.de.setAttribute(
 			"hc_compactUI",
 			compact === undefined ? this.pu.get("editor.ui.compact") : compact
 		);
@@ -1228,10 +1228,10 @@ var handyClicksEditor = {
 			this.checkNotUsedType(type, true);
 	},
 	get renameShortcutMode() {
-		return this.root.getAttribute("hc_renameShortcut") == "true";
+		return this.de.getAttribute("hc_renameShortcut") == "true";
 	},
 	set renameShortcutMode(rename) {
-		this.attribute(this.root, "hc_renameShortcut", !!rename);
+		this.attribute(this.de, "hc_renameShortcut", !!rename);
 	},
 
 	loadFuncs: function() {
@@ -1413,7 +1413,7 @@ var handyClicksEditor = {
 			if(!fe || fe.parentNode.id != "hc-editor-shortcutBox")
 				this.$("hc-editor-button").focus();
 			this.$("hc-editor-renameShortcutOverlay").style
-				.backgroundColor = getComputedStyle(this.root, null).backgroundColor;
+				.backgroundColor = getComputedStyle(this.de, null).backgroundColor;
 			this.funcOptsFixed && this.fixFuncOpts((this.$("hc-editor-funcOptsFixed").checked = false));
 			this._shortcutBeforeRename = this.currentShortcut;
 			this._typeBeforeRename = this.currentType;
@@ -1786,7 +1786,7 @@ var handyClicksEditor = {
 	_checkForCrashBackups: function(silent) {
 		var bakFile = this._hasCrashBackup();
 		var hasBak = this.hasCrashBackup = !!bakFile;
-		this.attribute(this.root, "hc_hasCrashBackup", hasBak);
+		this.attribute(this.de, "hc_hasCrashBackup", hasBak);
 		if(bakFile && !silent) {
 			var msg = this.getLocalized("hasCrashBackup")
 				.replace("%b", this.$("hc-editor-cmd-openCode").getAttribute("label"))
