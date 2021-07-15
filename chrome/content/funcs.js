@@ -59,6 +59,7 @@ var handyClicksFuncs = {
 				node.localName == "tab"
 				&& "linkedBrowser" in node
 				&& "PrivateBrowsingUtils" in window // Firefox 20.0+
+				&& node.linkedBrowser.contentWindow
 				&& PrivateBrowsingUtils.isWindowPrivate(node.linkedBrowser.contentWindow)
 			)
 				return privateDoc = node.linkedBrowser.contentDocument;
@@ -66,7 +67,7 @@ var handyClicksFuncs = {
 		});
 		// This should be better in most (?) cases...
 		// Like https://addons.mozilla.org/addon/private-tab/
-		return privateDoc || content.document;
+		return privateDoc || content && content.document || document;
 	},
 	getItemText: function(it, itemType, e, noTrim) {
 		it = it || this.hc.item;
