@@ -205,6 +205,8 @@ var handyClicksSets = {
 			this.smartSelect(e);
 			this.delay(this.smartSelectStop, this, 10);
 		}
+		else if(e.type == "DOMMouseScroll")
+			this.smartSelect(e);
 		else if(e.type == "mouseover")
 			this.openMenu(e);
 		else if(e.type == this.su.dropEvent)
@@ -2074,6 +2076,7 @@ var handyClicksSets = {
 		if(et == "mousedown") { // Start
 			this.smartSelectStop();
 			window.addEventListener("mouseup", this, true);
+			this.tree.addEventListener("DOMMouseScroll", this, false);
 			ss._initialRow = row;
 			ss._startY = e.screenY;
 			return;
@@ -2120,6 +2123,7 @@ var handyClicksSets = {
 		var ss = this.smartSelect;
 		ss._initialRow = ss._lastHandledRow = ss._startY = undefined;
 		window.removeEventListener("mouseup", this, true);
+		this.tree.removeEventListener("DOMMouseScroll", this, false);
 	},
 
 	initViewMenu: function(mp) {
