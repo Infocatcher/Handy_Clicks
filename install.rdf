@@ -19,6 +19,7 @@
 		<em:contributor>Gloss icons (http://momentumdesignlab.com/)</em:contributor>
 		<em:optionsURL>chrome://handyclicks/content/setsOpener.xul</em:optionsURL>
 		<em:iconURL>chrome://handyclicks-icon/skin/icon.png</em:iconURL>
+		<em:homepageURL>https://github.com/Infocatcher/Handy_Clicks</em:homepageURL>
 		<em:updateURL>http://infocatcher.ucoz.net/ext/fx/handy_clicks/update-dev.rdf</em:updateURL>
 		<em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLgtEbrhCdZetIAanFNvkT441WwBgXcg1Zzlo5s5
 		              j9VLByj/L6UXAVqSria1dejjkKfxVbRXvqalJ7mENRambKpZ4AfV3dBCKUDjME56CMaAK7+DxMqaM3
