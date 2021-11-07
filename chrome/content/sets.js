@@ -3419,6 +3419,8 @@ var handyClicksSets = {
 			args = "%F:%L:%C";
 		else if(app == "Visual Studio Code")
 			args = "--goto\n%F:%L:%C";
+		else if(app == "SynWrite")
+			args = "/n=%L";
 		else
 			return;
 		var eeArgs = this.eeArgs;
