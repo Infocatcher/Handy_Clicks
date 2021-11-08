@@ -3415,6 +3415,7 @@ var handyClicksSets = {
 		else if(
 			app.substr(0, 12) == "Sublime Text"
 			|| app == "CudaText"
+			|| app == "Atom"
 		)
 			args = "%F:%L:%C";
 		else if(app == "Visual Studio Code")
