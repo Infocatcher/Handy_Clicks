@@ -3427,6 +3427,9 @@ var handyClicksSets = {
 			return;
 		var eeArgs = this.eeArgs;
 		eeArgs.value = args;
+		this.blinkNode(eeArgs, function(node, hl) {
+			this.attribute(node, "hc_notify", hl);
+		}, this, 1);
 		this.fireChange(eeArgs);
 	},
 	showExternalEditorFile: function() {
