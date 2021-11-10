@@ -461,7 +461,7 @@ var handyClicksSets = {
 		var sortTypes = this.pu.get("sets.treeSortCustomTypes");
 		var sp = sortTypes > 0 ? "\uffdc" // show after shortcut items
 			: sortTypes == 0 ? "" : "\t"; // show before shortcut items
-		this.typesSortPrefix = sp && new Array(11).join(sp);
+		this.typesSortPrefix = sp && this.ju.repeatString(sp, 10); // new Array(11).join(sp);
 
 		this.resetCounters();
 
@@ -3318,7 +3318,8 @@ var handyClicksSets = {
 				var aliasPath = aliasFile.path;
 				if(this.ju.startsWith(path, aliasPath + dirSep)) {
 					return "%" + alias + "%"
-						+ new Array(level + 1).join(dirSep + "..")
+						//+ new Array(level + 1).join(dirSep + "..")
+						+ this.ju.repeatString(dirSep + "..", level)
 						+ path.substr(aliasPath.length);
 				}
 				aliasFile = this.ut.getFileParent(aliasFile);

@@ -91,6 +91,24 @@ var handyClicksJsUtils = {
 		return str;
 	},
 
+	repeatString: function(str, count) {
+		var f = this.repeatString = "repeat" in String.prototype
+			? String.prototype.repeat.call.bind(String.prototype.repeat)
+			: function(str, count) {
+				var rpt = "";
+				for(;;) {
+					if((count & 1) == 1)
+						rpt += str;
+					count >>>= 1;
+					if(count == 0)
+						break;
+					str += str;
+				}
+				return rpt;
+			};
+		return f.apply(this, arguments);
+	},
+
 	isNativeFunction: function(func) {
 		// Example: function alert() {[native code]}
 		return /\[native code\]\s*\}$/.test(Function.toString.call(func));
