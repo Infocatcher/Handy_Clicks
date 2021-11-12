@@ -3426,6 +3426,8 @@ var handyClicksSets = {
 		else
 			return;
 		var eeArgs = this.eeArgs;
+		if(eeArgs.value == args)
+			return;
 		eeArgs.value = args;
 		this.blinkNode(eeArgs, function(node, hl) {
 			this.attribute(node, "hc_notify", hl);
