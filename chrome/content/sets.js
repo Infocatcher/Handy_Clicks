@@ -1292,7 +1292,7 @@ var handyClicksSets = {
 	getLocalizedArguments: function(argsObj, p) {
 		var argVal = argsObj[p];
 		return typeof argVal == "boolean"
-			? this.getLocalized(p) + ": " + this.getLocalized(argVal ? "yes" : "no")
+			? (argVal ? "[+]" : "[−]") + " " + this.getLocalized(p)
 			: this.getLocalized(p) + " " + this.getLocalized(p + "[" + argVal + "]");
 	},
 	getRawArguments: function(argsObj, p) {
