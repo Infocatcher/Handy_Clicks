@@ -878,7 +878,8 @@ var handyClicksSets = {
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom), ++col);
 		var linkedFile = this.getActionCode._linkedFile;
 		var fileData = this.getActionCode._hasFileData;
-		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || null, this._localizeArgs), ++col);
+		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || null, this._localizeArgs), ++col)
+			.setAttribute("hc_cell", "arguments");
 		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)), ++col);
 		var linkedFileInit = initCode && this.getActionCode._linkedFile;
 		var hasLinkedFile = linkedFile || linkedFileInit;
@@ -2903,7 +2904,11 @@ var handyClicksSets = {
 				row.getElementsByAttribute("label", "*"),
 				function(elt) {
 					var label = elt.getAttribute("label");
-					label && rowText.push(label);
+					if(!label)
+						return;
+					if(elt.getAttribute("hc_cell") == "arguments")
+						label = label.replace(/\[−\]/g, "[-]"); // Simplify search
+					rowText.push(label);
 				}
 			);
 			var sr = this.searchReplacements;
