@@ -1985,16 +1985,23 @@ var handyClicksSets = {
 		var cantCollapse = !rowCount || this.treeCollapsed;
 		var cantExpand = !rowCount || this.treeExpanded;
 		var found = this.searcher.count > 0;
+		var searchRes = this.searcher._res;
 
 		var selected = 0;
+		var selectedFounded = 0;
 		var tSel = this.tSel;
 		var rngCount = tSel.getRangeCount();
 		var start = {}, end = {};
 		for(var i = 0; i < rngCount; ++i) {
 			tSel.getRangeAt(i, start, end);
-			for(var j = start.value, l = end.value; j <= l; ++j)
+			for(var j = start.value, l = end.value; j <= l; ++j) {
+				var tItem = this.getItemAtIndex(j);
+				if(tItem && searchRes.indexOf(tItem) != -1)
+					++selectedFounded;
 				++selected;
+			}
 		}
+		var selectedAllFounded = selectedFounded == searchRes.length && selectedFounded == selected;
 
 		this.$("hc-sets-tree-selectAll")      .setAttribute("disabled", !rowCount || selected == rowCount);
 		this.$("hc-sets-tree-clearSelection") .setAttribute("disabled", !rowCount || selected == 0);
@@ -2008,7 +2015,7 @@ var handyClicksSets = {
 		this.$("hc-sets-tree-find")           .setAttribute("disabled", !rowCount);
 		this.$("hc-sets-tree-findNext")       .setAttribute("disabled", !found);
 		this.$("hc-sets-tree-findPrev")       .setAttribute("disabled", !found);
-		this.$("hc-sets-tree-findSelectAll")  .setAttribute("disabled", !found);
+		this.$("hc-sets-tree-findSelectAll")  .setAttribute("disabled", !found || selectedAllFounded);
 
 		this.$("hc-sets-tree-findFilter").setAttribute("checked", this.filterMode);
 	},
