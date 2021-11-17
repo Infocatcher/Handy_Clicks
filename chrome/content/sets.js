@@ -875,12 +875,14 @@ var handyClicksSets = {
 		var actLabel = this.su.getActionLabel(fo);
 		var localized = this.ps.localize._localized;
 		this.appendTreeCell(tRow, "label", actLabel, ++col);
-		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom), ++col);
+		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom), ++col)
+			.__fullLabel = this.getActionCode._fullLabel;
 		var linkedFile = this.getActionCode._linkedFile;
 		var fileData = this.getActionCode._hasFileData;
 		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || null, this._localizeArgs), ++col)
 			.setAttribute("hc_cell", "arguments");
-		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)), ++col);
+		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)), ++col)
+			.__fullLabel = initCode && this.getActionCode._fullLabel;
 		var linkedFileInit = initCode && this.getActionCode._linkedFile;
 		var hasLinkedFile = linkedFile || linkedFileInit;
 		if(this.getActionCode._hasFileData)
@@ -912,11 +914,13 @@ var handyClicksSets = {
 			var daLocalized = this.ps.localize._localized;
 			var daDis = this._daForceDisable || !fo.enabled || !da.enabled;
 			this.appendTreeCell(daRow, "label", daLabel, ++col);
-			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom), ++col);
+			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom), ++col)
+				.__fullLabel = this.getActionCode._fullLabel;
 			var daLinkedFile = this.getActionCode._linkedFile;
 			var daFileData = this.getActionCode._hasFileData;
 			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || null, this._localizeArgs), ++col);
-			this.appendTreeCell(daRow, "label", (daInitCode = this.getInitCode(da, true)), ++col);
+			this.appendTreeCell(daRow, "label", (daInitCode = this.getInitCode(da, true)), ++col)
+				.__fullLabel = daInitCode && this.getActionCode._fullLabel;
 			var daLinkedFileInit = daInitCode && this.getActionCode._linkedFile;
 			var daHasLinkedFile = daLinkedFile || daLinkedFileInit;
 			if(this.getActionCode._hasFileData)
@@ -1077,19 +1081,22 @@ var handyClicksSets = {
 		this.appendTreeCell(tRow, "label", label, ++col, sortLabel);
 		this.appendTreeCell(tRow, "label", na, ++col);
 		this.appendTreeCell(tRow, "label", na, ++col);
-		this.appendTreeCell(tRow, "label", this.getActionCode(to.define, true), ++col);
+		this.appendTreeCell(tRow, "label", this.getActionCode(to.define, true), ++col)
+			.__fullLabel = this.getActionCode._fullLabel;
 		var linkedFile = this.getActionCode._linkedFile;
 		var fileData = this.getActionCode._hasFileData;
 		this.appendTreeCell(tRow, "label", "", ++col);
 		var cmCode = "";
 		if(to.contextMenu) {
 			cmCode = this.getActionCode(to.contextMenu, true);
+			var fullLabelCM = this.getActionCode._fullLabel;
 			var linkedFileCM = this.getActionCode._linkedFile;
 			if(this.getActionCode._hasFileData)
 				fileData = true;
 		}
 		var hasLinkedFile = linkedFile || linkedFileCM;
-		this.appendTreeCell(tRow, "label", cmCode, ++col);
+		this.appendTreeCell(tRow, "label", cmCode, ++col)
+			.__fullLabel = fullLabelCM;
 		this.setNodeProperties(
 			this.appendTreeCell(tRow, "value", to.enabled, ++col),
 			{ hc_checkbox: true }
@@ -1153,6 +1160,7 @@ var handyClicksSets = {
 	},
 	getActionCode: function getActionCode(action, isCustom) {
 		getActionCode._linkedFile = getActionCode._hasFileData = undefined;
+		getActionCode._fullLabel = "";
 		if(!isCustom)
 			return action;
 		var path = this.ps.getSourcePath(action);
@@ -1162,15 +1170,18 @@ var handyClicksSets = {
 				&& path in this.ps.files;
 			return this.getLocalized("customFile" + (hasData ? "WithData" : "")) + " " + path;
 		}
-		return this.getLocalized("customFunction")
-			+ this.treeNewline
-			+ this.cropCode(action || "");
+		var header = this.getLocalized("customFunction") + this.treeNewline;
+		var cropped = header + this.cropCode(action || "");
+		if(this.cropCode._isCropped)
+			getActionCode._fullLabel = header + (action || "");
+		return cropped;
 	},
 	getInitCode: function(fo) {
 		var init = fo.init || null;
 		return init ? this.getActionCode(init, true) : "";
 	},
-	cropCode: function(code) {
+	cropCode: function cropCode(code) {
+		cropCode._isCropped = false;
 		var maxLen = this._maxCodeLength;
 		if(!maxLen)
 			return code;
@@ -1185,6 +1196,7 @@ var handyClicksSets = {
 			cropped += RegExp.lastMatch;
 		else
 			cropped = cropped.replace(/\s+$/, "");
+		cropCode._isCropped = true;
 		return cropped + "\n[\u2026]"; // "[...]"
 	},
 	isBuggyFuncObj: function(fo, isCustom, label, foStr) {
@@ -2910,7 +2922,7 @@ var handyClicksSets = {
 			Array.prototype.forEach.call(
 				row.getElementsByAttribute("label", "*"),
 				function(elt) {
-					var label = elt.getAttribute("label");
+					var label = elt.__fullLabel || elt.getAttribute("label");
 					if(!label)
 						return;
 					if(elt.getAttribute("hc_cell") == "arguments")
