@@ -1172,7 +1172,7 @@ var handyClicksSets = {
 		}
 		var header = this.getLocalized("customFunction") + this.treeNewline;
 		var cropped = header + this.cropCode(action || "");
-		if(this.cropCode._isCropped)
+		if(this.cropCode._isCropped && !this.pu.get("sets.codeLengthLimit.limitSearch"))
 			getActionCode._fullLabel = header + (action || "");
 		return cropped;
 	},
