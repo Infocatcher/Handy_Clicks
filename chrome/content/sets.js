@@ -456,6 +456,7 @@ var handyClicksSets = {
 		this._localizeArgs = this.pu.get("sets.localizeArguments");
 		this._maxCodeLength = this.pu.get("sets.codeLengthLimit");
 		this._preserveLines = this.pu.get("sets.codeLengthLimit.preserveLines");
+		this._limitSearch = this.pu.get("sets.codeLengthLimit.limitSearch");
 		var dm = this.drawMode = this.pu.get("sets.treeDrawMode");
 		this.drawInline = this.isInline(dm);
 		var sortTypes = this.pu.get("sets.treeSortCustomTypes");
@@ -1172,7 +1173,7 @@ var handyClicksSets = {
 		}
 		var header = this.getLocalized("customFunction") + this.treeNewline;
 		var cropped = header + this.cropCode(action || "");
-		if(this.cropCode._isCropped && !this.pu.get("sets.codeLengthLimit.limitSearch"))
+		if(this.cropCode._isCropped && !this._limitSearch)
 			getActionCode._fullLabel = header + (action || "");
 		return cropped;
 	},
