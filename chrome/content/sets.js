@@ -2955,6 +2955,7 @@ var handyClicksSets = {
 			|| pName == "sets.localizeArguments"
 			|| pName == "sets.codeLengthLimit"
 			|| pName == "sets.codeLengthLimit.preserveLines"
+			|| pName == "sets.codeLengthLimit.limitSearch"
 		)
 			this.updTree();
 		else if(this.ju.startsWith(pName, "editor.externalEditor")) {
