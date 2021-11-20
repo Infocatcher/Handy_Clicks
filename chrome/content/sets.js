@@ -867,6 +867,7 @@ var handyClicksSets = {
 		var typeLabel = this.getTypeLabel(itemType, isCustomType);
 		var label = forcedLabel || typeLabel;
 		var initCode, daInitCode;
+		var fullCode, fullCodeInit, daFullCode, daFullCodeInit;
 		var extNA = this.extTypeNotAvailable(itemType);
 		var drawRemoved = this._drawRemoved;
 
@@ -877,13 +878,13 @@ var handyClicksSets = {
 		var localized = this.ps.localize._localized;
 		this.appendTreeCell(tRow, "label", actLabel, ++col);
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom), ++col)
-			.__fullLabel = this.getActionCode._fullLabel;
+			.__fullLabel = (fullCode = this.getActionCode._fullLabel);
 		var linkedFile = this.getActionCode._linkedFile;
 		var fileData = this.getActionCode._hasFileData;
 		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || null, this._localizeArgs), ++col)
 			.setAttribute("hc_cell", "arguments");
 		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)), ++col)
-			.__fullLabel = initCode && this.getActionCode._fullLabel;
+			.__fullLabel = (fullCodeInit = initCode && this.getActionCode._fullLabel);
 		var linkedFileInit = initCode && this.getActionCode._linkedFile;
 		var hasLinkedFile = linkedFile || linkedFileInit;
 		if(this.getActionCode._hasFileData)
@@ -916,12 +917,12 @@ var handyClicksSets = {
 			var daDis = this._daForceDisable || !fo.enabled || !da.enabled;
 			this.appendTreeCell(daRow, "label", daLabel, ++col);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom), ++col)
-				.__fullLabel = this.getActionCode._fullLabel;
+				.__fullLabel = (daFullCode = this.getActionCode._fullLabel);
 			var daLinkedFile = this.getActionCode._linkedFile;
 			var daFileData = this.getActionCode._hasFileData;
 			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || null, this._localizeArgs), ++col);
 			this.appendTreeCell(daRow, "label", (daInitCode = this.getInitCode(da, true)), ++col)
-				.__fullLabel = daInitCode && this.getActionCode._fullLabel;
+				.__fullLabel = (daFullCodeInit = daInitCode && this.getActionCode._fullLabel);
 			var daLinkedFileInit = daInitCode && this.getActionCode._linkedFile;
 			var daHasLinkedFile = daLinkedFile || daLinkedFileInit;
 			if(this.getActionCode._hasFileData)
@@ -947,7 +948,8 @@ var handyClicksSets = {
 				hc_customInit: !!daInitCode,
 				hc_customType: isCustomType,
 				hc_customLocalized: daLocalized,
-				hc_customNotLocalized: daCustom && !daLocalized
+				hc_customNotLocalized: daCustom && !daLocalized,
+				hc_customLong: !!(daFullCode || daFullCodeInit)
 			}, true);
 
 			if(this._import) {
@@ -997,7 +999,8 @@ var handyClicksSets = {
 			hc_customInit: !!initCode,
 			hc_customType: isCustomType,
 			hc_customLocalized: localized,
-			hc_customNotLocalized: isCustom && !localized
+			hc_customNotLocalized: isCustom && !localized,
+			hc_customLong: !!(fullCode || fullCodeInit)
 		}, true);
 		if(this._import) {
 			var saved = this.ju.getOwnProperty(this._savedPrefs, shortcut, itemType);
@@ -1074,6 +1077,7 @@ var handyClicksSets = {
 		var label = this.drawInline
 			? this.getLocalized("customType").replace("%s", typeLabel)
 			: typeLabel;
+		var fullCode, fullCodeCM;
 		var sortLabel = this.typesSortPrefix + label;
 		var drawRemoved = this._drawRemoved;
 		var na = "\u2013";
@@ -1083,21 +1087,21 @@ var handyClicksSets = {
 		this.appendTreeCell(tRow, "label", na, ++col);
 		this.appendTreeCell(tRow, "label", na, ++col);
 		this.appendTreeCell(tRow, "label", this.getActionCode(to.define, true), ++col)
-			.__fullLabel = this.getActionCode._fullLabel;
+			.__fullLabel = (fullCode = this.getActionCode._fullLabel);
 		var linkedFile = this.getActionCode._linkedFile;
 		var fileData = this.getActionCode._hasFileData;
 		this.appendTreeCell(tRow, "label", "", ++col);
 		var cmCode = "";
 		if(to.contextMenu) {
 			cmCode = this.getActionCode(to.contextMenu, true);
-			var fullLabelCM = this.getActionCode._fullLabel;
+			var fullCodeCM = this.getActionCode._fullLabel;
 			var linkedFileCM = this.getActionCode._linkedFile;
 			if(this.getActionCode._hasFileData)
 				fileData = true;
 		}
 		var hasLinkedFile = linkedFile || linkedFileCM;
 		this.appendTreeCell(tRow, "label", cmCode, ++col)
-			.__fullLabel = fullLabelCM;
+			.__fullLabel = fullCodeCM;
 		this.setNodeProperties(
 			this.appendTreeCell(tRow, "value", to.enabled, ++col),
 			{ hc_checkbox: true }
@@ -1125,7 +1129,8 @@ var handyClicksSets = {
 			hc_customFile: hasLinkedFile,
 			hc_customType: true,
 			hc_customLocalized: localized,
-			hc_customNotLocalized: !localized
+			hc_customNotLocalized: !localized,
+			hc_customLong: !!(fullCode || fullCodeCM)
 		}, true);
 		if(this._import) {
 			var state = this._typesState[type] || "";
@@ -2663,6 +2668,7 @@ var handyClicksSets = {
 		hc_customType:         "%type%",
 		hc_customLocalized:    "%+lng%",
 		hc_customNotLocalized: "%-lng%",
+		hc_customLong:         "%long%",
 		hc_enabled:            "%on%",
 		hc_disabled:           "%off%",
 		hc_delayed:            "%delay%",
@@ -2676,13 +2682,14 @@ var handyClicksSets = {
 		"%new%":      ["%ovr%", "%old%"],
 		"%old%":      ["%ovr%", "%new%"],
 		"%data%":     ["%internal%"],
-		"%internal%": ["%custom%", "%file%", "%init%", "%type%", "%+lng%", "%-lng%", "%data%"],
+		"%internal%": ["%custom%", "%file%", "%init%", "%type%", "%+lng%", "%-lng%", "%long%", "%data%"],
 		"%custom%":   ["%internal%"],
 		"%file%":     ["%internal%"],
 		"%init%":     ["%internal%"],
 		"%type%":     ["%internal%"],
 		"%+lng%":     ["%internal%", "%-lng%"],
 		"%-lng%":     ["%internal%", "%+lng%"],
+		"%long%":     ["%internal%"],
 		"%on%":       ["%off%"],
 		"%off%":      ["%on%"],
 		__proto__: null
