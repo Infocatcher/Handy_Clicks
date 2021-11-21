@@ -38,6 +38,7 @@
 <!ENTITY hc.sets.searchCustomType "Добавленный тип">
 <!ENTITY hc.sets.searchCustomLocalized "Свой код с переводом">
 <!ENTITY hc.sets.searchCustomNotLocalized "Свой код без перевода">
+<!ENTITY hc.sets.searchCustomLong "Свой код большого размера">
 <!ENTITY hc.sets.searchNA "Недоступные">
 <!ENTITY hc.sets.searchBuggy "Дефектные">
 <!ENTITY hc.sets.searchAdded "Добавляемые (импорт)">
