@@ -949,7 +949,7 @@ var handyClicksSets = {
 				hc_customType: isCustomType,
 				hc_customLocalized: daLocalized,
 				hc_customNotLocalized: daCustom && !daLocalized,
-				hc_customLong: !!(daFullCode || daFullCodeInit)
+				hc_customLong: this._wasCropped(daFullCode, daFullCodeInit)
 			}, true);
 
 			if(this._import) {
@@ -1000,7 +1000,7 @@ var handyClicksSets = {
 			hc_customType: isCustomType,
 			hc_customLocalized: localized,
 			hc_customNotLocalized: isCustom && !localized,
-			hc_customLong: !!(fullCode || fullCodeInit)
+			hc_customLong: this._wasCropped(fullCode, fullCodeInit)
 		}, true);
 		if(this._import) {
 			var saved = this.ju.getOwnProperty(this._savedPrefs, shortcut, itemType);
@@ -1130,7 +1130,7 @@ var handyClicksSets = {
 			hc_customType: true,
 			hc_customLocalized: localized,
 			hc_customNotLocalized: !localized,
-			hc_customLong: !!(fullCode || fullCodeCM)
+			hc_customLong: this._wasCropped(fullCode, fullCodeCM)
 		}, true);
 		if(this._import) {
 			var state = this._typesState[type] || "";
@@ -1178,9 +1178,12 @@ var handyClicksSets = {
 		}
 		var header = this.getLocalized("customFunction") + this.treeNewline;
 		var cropped = header + this.cropCode(action || "");
-		if(this.cropCode._isCropped && !this._limitSearch)
-			getActionCode._fullLabel = header + (action || "");
+		if(this.cropCode._isCropped)
+			getActionCode._fullLabel = this._limitSearch ? null : header + (action || "");
 		return cropped;
+	},
+	_wasCropped: function(code1, code2) { // For getActionCode._fullLabel
+		return !!(code1 || code2) || code1 === null || code2 === null;
 	},
 	getInitCode: function(fo) {
 		var init = fo.init || null;
