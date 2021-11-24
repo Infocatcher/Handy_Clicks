@@ -71,7 +71,8 @@ preferences {
 					<menuitem type="checkbox" acceltext="%type%" label="&hc.sets.searchCustomType;" />
 					<menuitem type="checkbox" acceltext="%+lng%" label="&hc.sets.searchCustomLocalized;" />
 					<menuitem type="checkbox" acceltext="%-lng%" label="&hc.sets.searchCustomNotLocalized;" />
-					<menuitem type="checkbox" acceltext="%long%" label="&hc.sets.searchCustomLong;" />
+					<menuitem type="checkbox" acceltext="%long%" label="&hc.sets.searchCustomLong;"
+						hc_tooltipTemplate="&hc.sets.searchCustomLong.tip;" />
 					<menuseparator />
 					<menuitem type="checkbox" acceltext="%na%" label="&hc.sets.searchNA;" class="hc-buggy" />
 					<menuitem type="checkbox" acceltext="%bug%" label="&hc.sets.searchBuggy;" class="hc-buggy" />

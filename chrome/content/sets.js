@@ -2531,6 +2531,15 @@ var handyClicksSets = {
 				mi.setAttribute("disabled", !this._import);
 			else if(ph == "%old%")
 				mi.setAttribute("disabled", !this._import || this._importPartial);
+			else if(ph == "%long%") {
+				mi.setAttribute(
+					"tooltiptext",
+					mi.getAttribute("hc_tooltipTemplate")
+						.replace("$max", this._maxCodeLength)
+						.replace("$preserve", this._maxCodeLength + this._preserveLines)
+						.replace("(", "\n(")
+				);
+			}
 			var count = counters[ph];
 			var origLabel = mi.__origLabel || (mi.__origLabel = mi.getAttribute("label"));
 			var label = count
