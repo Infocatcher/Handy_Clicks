@@ -2532,13 +2532,13 @@ var handyClicksSets = {
 			else if(ph == "%old%")
 				mi.setAttribute("disabled", !this._import || this._importPartial);
 			else if(ph == "%long%") {
-				mi.setAttribute(
-					"tooltiptext",
-					mi.getAttribute("hc_tooltipTemplate")
+				var tt = mi.getAttribute("hc_tooltipTemplate");
+				tt = this._preserveLines > 0
+					? tt
 						.replace("$max", this._maxCodeLength)
 						.replace("$preserve", this._maxCodeLength + this._preserveLines)
-						.replace("(", "\n(")
-				);
+					: tt.replace(/\$max.*\$preserve/, this._maxCodeLength);
+				mi.setAttribute("tooltiptext", tt.replace("(", "\n("));
 			}
 			var count = counters[ph];
 			var origLabel = mi.__origLabel || (mi.__origLabel = mi.getAttribute("label"));
