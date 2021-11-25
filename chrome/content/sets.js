@@ -2537,7 +2537,7 @@ var handyClicksSets = {
 					? tt
 						.replace("$max", this._maxCodeLength)
 						.replace("$preserve", this._maxCodeLength + this._preserveLines)
-					: tt.replace(/\$max.*\$preserve/, this._maxCodeLength);
+					: tt.replace(/\$(?:max|preserve).*\$(?:preserve|max)/, this._maxCodeLength);
 				mi.setAttribute("tooltiptext", tt.replace("(", "\n("));
 			}
 			var count = counters[ph];
