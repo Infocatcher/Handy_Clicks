@@ -454,8 +454,8 @@ var handyClicksSets = {
 		this._daExpand = saveClosed // Will restore collapsed/expanded state
 			|| this.pu.get("sets.treeExpandDelayedAction");
 		this._localizeArgs = this.pu.get("sets.localizeArguments");
-		this._maxCodeLength = this.pu.get("sets.codeLengthLimit");
-		this._preserveLines = this.pu.get("sets.codeLengthLimit.preserveLines");
+		this._maxCodeLength = Math.max(0, this.pu.get("sets.codeLengthLimit"));
+		this._preserveLines = Math.max(0, this.pu.get("sets.codeLengthLimit.preserveLines"));
 		this._limitSearch = this.pu.get("sets.codeLengthLimit.limitSearch");
 		var dm = this.drawMode = this.pu.get("sets.treeDrawMode");
 		this.drawInline = this.isInline(dm);
