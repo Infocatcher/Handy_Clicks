@@ -2531,15 +2531,6 @@ var handyClicksSets = {
 				mi.setAttribute("disabled", !this._import);
 			else if(ph == "%old%")
 				mi.setAttribute("disabled", !this._import || this._importPartial);
-			else if(ph == "%long%") {
-				var tt = mi.getAttribute("hc_tooltipTemplate");
-				tt = this._preserveLines > 0
-					? tt
-						.replace("$max", this._maxCodeLength)
-						.replace("$preserve", this._maxCodeLength + this._preserveLines)
-					: tt.replace(/\$(?:max|preserve).*\$(?:preserve|max)/, this._maxCodeLength);
-				mi.setAttribute("tooltiptext", tt.replace("(", "\n("));
-			}
 			var count = counters[ph];
 			var origLabel = mi.__origLabel || (mi.__origLabel = mi.getAttribute("label"));
 			var label = count
@@ -2620,6 +2611,18 @@ var handyClicksSets = {
 		if(this.fxVersion < 3.5)
 			this.searchInSetsTree();
 		ifi.focus();
+	},
+	initSearchTip: function(tt) {
+		var label = tt.firstChild;
+		var na = !this._maxCodeLength;
+		label.hidden = na;
+		label.nextSibling.hidden = !na;
+		var tt = label.__baseLabel || (label.__baseLabel = label.value);
+		label.value = this._preserveLines > 0
+			? tt
+				.replace("$max", this._maxCodeLength)
+				.replace("$preserve", this._maxCodeLength + this._preserveLines)
+			: tt.replace(/\$(?:max|preserve).*\$(?:preserve|max)/, this._maxCodeLength);
 	},
 	navigateSearchResults: function(e) {
 		var code = e.keyCode;

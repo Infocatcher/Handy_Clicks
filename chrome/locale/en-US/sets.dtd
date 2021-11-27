@@ -39,7 +39,9 @@
 <!ENTITY hc.sets.searchCustomLocalized "Custom localized">
 <!ENTITY hc.sets.searchCustomNotLocalized "Custom not localized">
 <!ENTITY hc.sets.searchCustomLong "Custom long-sized code">
-<!ENTITY hc.sets.searchCustomLong.tip "More than $max…$preserve characters (see extensions.handyclicks.sets.codeLengthLimit* preferences)">
+<!ENTITY hc.sets.searchCustomLong.tip "More than $max…$preserve characters">
+<!ENTITY hc.sets.searchCustomLong.tipNA "Not available">
+<!ENTITY hc.sets.searchCustomLong.tipNote "(see extensions.handyclicks.sets.codeLengthLimit* preferences)">
 <!ENTITY hc.sets.searchNA "Not available">
 <!ENTITY hc.sets.searchBuggy "Buggy">
 <!ENTITY hc.sets.searchAdded "Added (import)">

@@ -72,7 +72,7 @@ preferences {
 					<menuitem type="checkbox" acceltext="%+lng%" label="&hc.sets.searchCustomLocalized;" />
 					<menuitem type="checkbox" acceltext="%-lng%" label="&hc.sets.searchCustomNotLocalized;" />
 					<menuitem type="checkbox" acceltext="%long%" label="&hc.sets.searchCustomLong;"
-						hc_tooltipTemplate="&hc.sets.searchCustomLong.tip;" />
+						tooltip="hc-sets-search-customLongTooltip" />
 					<menuseparator />
 					<menuitem type="checkbox" acceltext="%na%" label="&hc.sets.searchNA;" class="hc-buggy" />
 					<menuitem type="checkbox" acceltext="%bug%" label="&hc.sets.searchBuggy;" class="hc-buggy" />
@@ -83,6 +83,11 @@ preferences {
 					<menuitem type="checkbox" acceltext="%data%" label="&hc.sets.searchFileData;" />
 				</menupopup>
 			</button>
+			<tooltip id="hc-sets-search-customLongTooltip" onpopupshowing="handyClicksSets.initSearchTip(this);">
+				<label value="&hc.sets.searchCustomLong.tip;" />
+				<label value="&hc.sets.searchCustomLong.tipNA;" />
+				<label value="&hc.sets.searchCustomLong.tipNote;" />
+			</tooltip>
 			<hbox id="hc-sets-tree-searchContainer" flex="100">
 				<textbox id="hc-sets-tree-searchField" type="search" flex="1" persist="hc_value"
 					tooltip="hc-sets-search-tooltip"
