@@ -51,8 +51,7 @@ preferences {
 	<prefpane id="hc-sets-pane-actions" label="&hc.sets.clickOptionsTitle;" flex="1">
 		<hbox id="hc-sets-tree-viewPanel" align="center">
 			<button id="hc-sets-tree-searchMenu" type="menu"
-				label="&hc.sets.search;" accesskey="&hc.sets.searchAccesskey;"
-				hc_key="hc-sets-key-focusSearch">
+				label="&hc.sets.search;" accesskey="&hc.sets.searchAccesskey;">
 				<menupopup id="hc-sets-tree-searchPopup"
 					onpopupshowing="if(!('_hcIgnore' in event)) handyClicksSets.initSearchMenu(this);"
 					onpopupshown="handyClicksSetsUtils.fixAccelWidth(this);"
