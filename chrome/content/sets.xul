@@ -82,7 +82,8 @@ preferences {
 					<menuitem type="checkbox" acceltext="%data%" label="&hc.sets.searchFileData;" />
 				</menupopup>
 			</button>
-			<tooltip id="hc-sets-search-customLongTooltip" onpopupshowing="handyClicksSets.initSearchTip(this);">
+			<tooltip id="hc-sets-search-customLongTooltip" orient="vertical"
+				onpopupshowing="handyClicksSets.initSearchTip(this);">
 				<label value="&hc.sets.searchCustomLong.tip;" />
 				<label value="&hc.sets.searchCustomLong.tipNA;" />
 				<label value="&hc.sets.searchCustomLong.tipNote;" />
