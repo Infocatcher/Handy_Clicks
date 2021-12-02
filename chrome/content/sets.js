@@ -449,8 +449,8 @@ var handyClicksSets = {
 		var daTime = this.pu.get("delayedActionTimeout");
 		var daForceDis = this._daForceDisable = daTime <= 0;
 		this._daAfter = daForceDis
-			? this.getLocalized("disabled")
-			: this.getLocalized("after").replace("%t", daTime);
+			? this.getLocalized("delayedActionDisabled")
+			: this.getLocalized("delayedActionAfter").replace("%t", daTime);
 		this._daExpand = saveClosed // Will restore collapsed/expanded state
 			|| this.pu.get("sets.treeExpandDelayedAction");
 		this._localizeArgs = this.pu.get("sets.localizeArguments");
