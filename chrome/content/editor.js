@@ -444,6 +444,9 @@ var handyClicksEditor = {
 		this.setWinTitle();
 		this.setEditorButtons();
 		this.setDialogButtons();
+		this.delay(function() { // Wait to ignore initial focus right after window opening
+			this.de.setAttribute("onfocus", "handyClicksEditor.windowFocused();");
+		}, this, 10);
 	},
 	reloadSettings: function() {
 		if(!this.hasUnsaved || this.su.confirmReload())
@@ -566,6 +569,11 @@ var handyClicksEditor = {
 				this.highlightEmpty(editor);
 		}, this, Date.now() - this._editorLastUpdate > 1000 ? 10 : 100);
 	},
+	windowFocused: function(e) {
+		this._log("windowFocused() -> setEditorButtons()");
+		this.delay(this.setEditorButtons, this);
+	},
+
 	setWinId: function() {
 		var winId;
 		switch(this.editorTabIndex) {
