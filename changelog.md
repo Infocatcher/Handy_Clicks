@@ -210,7 +210,7 @@
 `x` Fixed `nsIProtocolHandler.newURI()` implementation for handyclicks://… protocol in Firefox 58+.<br>
 `*` Improved import performance: re-use data, that was already parsed on validation step.<br>
 `*` Controls behavior: force show context menu after right-click with any modifier.<br>
-`*` External editor: added default command line arguments for Visual Studio Code, CudaText and updated for AkelPad (Windows only).<br>
+`*` External editor: added default command line arguments for Visual Studio Code, CudaText, SynWrite, Atom and updated for AkelPad (Windows only).<br>
 `*` Settings: better handle I/O errors.<br>
 `*` Open/close settings: ask to save changes.<br>
 `*` Exit from import mode: ask to save in changed editors.<br>
@@ -229,6 +229,8 @@
 `*` Editor: added icons for “Actions”, “Action”, “Delayed Action”, “Custom Types” tabs and for “Click here” button (used <a href="https://www.fatcow.com/free-icons">Farm-Fresh Web Icons by FatCow Web Hosting</a> and <a href="http://p.yusukekamiyamane.com/">Fugue Icons</a>).<br>
 `x` Fixed async file reading in `handyClicksIO.readFromFileAsync()` function: handle errors like out of memory from `TextDecoder.decode()`.<br>
 `x` Fixed search in settings tree after delayed action deletion: correctly remove link to removed delayed action DOM node.<br>
+`*` Search for full original code, even if displayed string was cropped (<em>extensions.handyclicks.sets.codeLengthLimit.limitSearch</em> preference).<br>
+`+` Added %long% search placeholders for cropped too long code strings (<em>extensions.handyclicks.sets.codeLengthLimit</em> and <em>extensions.handyclicks.sets.codeLengthLimit.preserveLines</em> preferences).<br>
 `*` Various internal code enhancements.<br>
 
 ##### legacy-0.1.3.x/HEAD
