@@ -358,8 +358,11 @@ var handyClicksPrefSvcExt = {
 	},
 	get _importPathsInfo() {
 		var paths = this.pu.get("sets.importPaths");
-		return "\nAllowed paths (+ " + this.pu.prefNS + "sets.importPaths):\n"
-			+ this.ps._scriptsDir.path + (paths ? "\n" + paths.replace(/\s*\|\s*/g, "\n") : "");
+		return "\nAllowed path:"
+			+ "\n  " + this.ps._scriptsDir.path + " (%hc_ScriptsDir%/…)"
+			+ '\nUser-defined allowed paths, "' + this.pu.prefNS
+			+ 'sets.importPaths" preference (example: "D:\\hcScripts|%CurProcD%\\hcScripts"):'
+			+ "\n  " + (paths ? paths.replace(/\s*\|\s*/g, "\n  ") : "(not specified)");
 	},
 	filterFilesData: function(files) {
 		if(!files)
