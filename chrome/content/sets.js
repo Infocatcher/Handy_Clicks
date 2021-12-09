@@ -3347,8 +3347,8 @@ var handyClicksSets = {
 			ProgF:        0,
 			AppData:      0,
 			LocalAppData: 0,
-			ProfD:        3,
-			CurProcD:     3,
+			ProfD:        2,
+			CurProcD:     2,
 			Home:         0,
 			SysD:         0,
 			WinD:         0,
@@ -3358,10 +3358,13 @@ var handyClicksSets = {
 			LibD:         0,
 			hc_SysDrv:    0,
 			hc_ProfDrv:   0,
+			__ProfD:      4,
+			__CurProcD:   4,
 			__proto__: null
 		};
 		for(var alias in aliases) {
 			var maxLevel = aliases[alias];
+			alias = alias.replace(/^__/, "");
 			var aliasFile = this.ut.getFileByAlias(alias, true);
 			for(var level = 0; aliasFile && level <= maxLevel; ++level) {
 				var aliasPath = aliasFile.path;
