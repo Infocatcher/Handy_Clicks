@@ -2612,6 +2612,9 @@ var handyClicksSets = {
 			this.searchInSetsTree();
 		ifi.focus();
 	},
+	openCodeLengthLimitConfig: function() {
+		this.pu.openAboutConfig(this.pu.prefNS + "sets.codeLengthLimit");
+	},
 	initSearchTip: function(tt) {
 		var label = tt.firstChild;
 		var na = !this._maxCodeLength;

@@ -71,6 +71,7 @@ preferences {
 					<menuitem type="checkbox" acceltext="%+lng%" label="&hc.sets.searchCustomLocalized;" />
 					<menuitem type="checkbox" acceltext="%-lng%" label="&hc.sets.searchCustomNotLocalized;" />
 					<menuitem type="checkbox" acceltext="%long%" label="&hc.sets.searchCustomLong;"
+						onclick="if(event.button == 2) handyClicksSets.openCodeLengthLimitConfig();"
 						tooltip="hc-sets-search-customLongTooltip" />
 					<menuseparator />
 					<menuitem type="checkbox" acceltext="%na%" label="&hc.sets.searchNA;" class="hc-buggy" />
