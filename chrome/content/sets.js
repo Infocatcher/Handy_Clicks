@@ -386,15 +386,27 @@ var handyClicksSets = {
 		}
 	},
 	ensureTreeDrawMode: function(col) {
+		var willRestore = col.hasAttribute("primary")
+			&& col.getAttribute("sortDirection") == "descending" // Will be restored initial sort order
+		if(this.pu.get("sets.treeSortAutoCollapseDelayedAction")) {
+			var eda;
+			if(willRestore && "collapseDAInitial" in this) {
+				eda = this.collapseDAInitial;
+				delete this.collapseDAInitial;
+			}
+			else if(!willRestore && !("collapseDAInitial" in this)) {
+				this.collapseDAInitial = this.pu.get("sets.treeExpandDelayedAction");
+				eda = false;
+			}
+			if(eda !== undefined)
+				this.pu.set("sets.treeExpandDelayedAction", eda);
+		}
 		if(!this.pu.get("sets.treeSortAutoInlineDrawMode"))
 			return;
 		var dm;
-		if(
-			col.hasAttribute("primary")
-			&& col.getAttribute("sortDirection") == "descending" // Will be initial sort order
-			&& this.drawInline
-		) {
-			dm = "drawModeInitial" in this ? this.drawModeInitial
+		if(willRestore && this.drawInline) {
+			dm = "drawModeInitial" in this
+				? this.drawModeInitial
 				: this.modeToTree();
 		}
 		else if(!this.drawInline) {
