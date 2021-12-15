@@ -84,6 +84,7 @@
 
 <!ENTITY hc.sets.sortBy "Сортировка">
 <!ENTITY hc.sets.sortAutoInline "Переключаться на линейный режим">
+<!ENTITY hc.sets.sortAutoCollapseDa "Сворачивать отложенные действия">
 
 <!ENTITY hc.sets.remember "Восстанавливать состояние">
 <!ENTITY hc.sets.rememberSearchQuery "Поисковый запрос">

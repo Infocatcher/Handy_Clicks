@@ -84,6 +84,7 @@
 
 <!ENTITY hc.sets.sortBy "Sort by">
 <!ENTITY hc.sets.sortAutoInline "Switch to inline mode">
+<!ENTITY hc.sets.sortAutoCollapseDa "Collapse delayed actions">
 
 <!ENTITY hc.sets.remember "Restore state">
 <!ENTITY hc.sets.rememberSearchQuery "Search query">

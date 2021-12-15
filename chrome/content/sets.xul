@@ -164,6 +164,7 @@ preferences {
 							oncommand="handyClicksSets.sortMenuCommand(event);">
 							<menuseparator />
 							<menuitem type="checkbox" hc_pref="sets.treeSortAutoInlineDrawMode" label="&hc.sets.sortAutoInline;" />
+							<menuitem type="checkbox" hc_pref="sets.treeSortAutoCollapseDelayedAction" label="&hc.sets.sortAutoCollapseDa;" />
 						</menupopup>
 					</menu>
 					<menu label="&hc.sets.remember;">
