@@ -386,8 +386,10 @@ var handyClicksSets = {
 		}
 	},
 	ensureTreeDrawMode: function(col) {
+		this.prefChanged.__locked = true;
 		var willRestore = col.hasAttribute("primary")
 			&& col.getAttribute("sortDirection") == "descending" // Will be restored initial sort order
+		var changed = {};
 		if(this.pu.get("sets.treeSortAutoCollapseDelayedAction")) {
 			var eda;
 			if(willRestore && "collapseDAInitial" in this) {
@@ -398,24 +400,31 @@ var handyClicksSets = {
 				this.collapseDAInitial = this.pu.get("sets.treeExpandDelayedAction");
 				eda = false;
 			}
-			if(eda !== undefined)
+			if(eda !== undefined && this.pu.get("sets.treeExpandDelayedAction") != eda) {
+				changed.eda = true;
 				this.pu.set("sets.treeExpandDelayedAction", eda);
+			}
 		}
-		if(!this.pu.get("sets.treeSortAutoInlineDrawMode"))
-			return;
-		var dm;
-		if(willRestore && this.drawInline) {
-			dm = "drawModeInitial" in this
-				? this.drawModeInitial
-				: this.modeToTree();
+		if(this.pu.get("sets.treeSortAutoInlineDrawMode")) {
+			var dm;
+			if(willRestore && this.drawInline) {
+				dm = "drawModeInitial" in this
+					? this.drawModeInitial
+					: this.modeToTree();
+			}
+			else if(!this.drawInline) {
+				dm = this.modeToInline();
+			}
+			if(dm !== undefined && this.pu.get("sets.treeDrawMode") != dm) {
+				changed.dm = true;
+				this.setDrawMode(dm);
+			}
 		}
-		else if(!this.drawInline) {
-			dm = this.modeToInline();
-		}
-		if(dm !== undefined) {
-			this.setDrawMode(dm);
+		if(changed.eda || changed.dm || false) {
 			this.initViewMenu(this.$("hc-sets-tree-viewPopup"));
+			this.updTree(false);
 		}
+		this.prefChanged.__locked = false;
 	},
 	sortTree: function(colId) {
 		this.ensureTreeDrawMode(this.$(colId));
@@ -2981,7 +2990,9 @@ var handyClicksSets = {
 
 	/*** Prefs pane ***/
 	_updPrefsUITimeout: 0,
-	prefChanged: function(pName, pVal) {
+	prefChanged: function prefChanged(pName, pVal) {
+		if(prefChanged.__locked || false)
+			return;
 		if(
 			pName == "sets.treeDrawMode"
 			|| pName == "sets.treeExpandDelayedAction"
