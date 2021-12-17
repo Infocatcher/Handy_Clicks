@@ -389,42 +389,51 @@ var handyClicksSets = {
 		this.prefChanged.__locked = true;
 		var willRestore = col.hasAttribute("primary")
 			&& col.getAttribute("sortDirection") == "descending" // Will be restored initial sort order
-		var changed = {};
-		if(this.pu.get("sets.treeSortAutoCollapseDelayedAction")) {
-			var eda;
-			if(willRestore && "collapseDAInitial" in this) {
-				eda = this.collapseDAInitial;
-				delete this.collapseDAInitial;
-			}
-			else if(!willRestore && !("collapseDAInitial" in this)) {
-				this.collapseDAInitial = this.pu.get("sets.treeExpandDelayedAction");
-				eda = false;
-			}
-			if(eda !== undefined && this.pu.get("sets.treeExpandDelayedAction") != eda) {
-				changed.eda = true;
-				this.pu.set("sets.treeExpandDelayedAction", eda);
-			}
-		}
-		if(this.pu.get("sets.treeSortAutoInlineDrawMode")) {
-			var dm;
-			if(willRestore && this.drawInline) {
-				dm = "drawModeInitial" in this
-					? this.drawModeInitial
-					: this.modeToTree();
-			}
-			else if(!this.drawInline) {
-				dm = this.modeToInline();
-			}
-			if(dm !== undefined && this.pu.get("sets.treeDrawMode") != dm) {
-				changed.dm = true;
-				this.setDrawMode(dm);
-			}
-		}
-		if(changed.eda || changed.dm || false) {
+		var changed = (
+			this.treeSortAutoCollapseDA(willRestore)
+			+ this.treeSortAutoInline(willRestore)
+		) > 0;
+		if(changed) {
 			this.initViewMenu(this.$("hc-sets-tree-viewPopup"));
 			this.updTree(false);
 		}
 		this.prefChanged.__locked = false;
+	},
+	treeSortAutoCollapseDA: function(willRestore) {
+		if(!this.pu.get("sets.treeSortAutoCollapseDelayedAction"))
+			return false;
+		var eda;
+		if(willRestore && "collapseDAInitial" in this) {
+			eda = this.collapseDAInitial;
+			delete this.collapseDAInitial;
+		}
+		else if(!willRestore && !("collapseDAInitial" in this)) {
+			this.collapseDAInitial = this.pu.get("sets.treeExpandDelayedAction");
+			eda = false;
+		}
+		if(eda !== undefined && this.pu.get("sets.treeExpandDelayedAction") != eda) {
+			this.pu.set("sets.treeExpandDelayedAction", eda);
+			return true;
+		}
+		return false;
+	},
+	treeSortAutoInline: function(willRestore) {
+		if(!this.pu.get("sets.treeSortAutoInlineDrawMode"))
+			return false;
+		var dm;
+		if(willRestore && this.drawInline) {
+			dm = "drawModeInitial" in this
+				? this.drawModeInitial
+				: this.modeToTree();
+		}
+		else if(!this.drawInline) {
+			dm = this.modeToInline();
+		}
+		if(dm !== undefined && this.pu.get("sets.treeDrawMode") != dm) {
+			this.setDrawMode(dm);
+			return true;
+		}
+		return false;
 	},
 	sortTree: function(colId) {
 		this.ensureTreeDrawMode(this.$(colId));
