@@ -386,18 +386,22 @@ var handyClicksSets = {
 		}
 	},
 	ensureTreeDrawMode: function(col) {
-		this.prefChanged.__locked = true;
 		var willRestore = col.hasAttribute("primary")
 			&& col.getAttribute("sortDirection") == "descending" // Will be restored initial sort order
-		var changed = (
-			this.treeSortAutoCollapseDA(willRestore)
-			+ this.treeSortAutoInline(willRestore)
-		) > 0;
+		this.prefChanged.__locked = true;
+		try {
+			var changed = (
+				this.treeSortAutoCollapseDA(willRestore)
+				+ this.treeSortAutoInline(willRestore)
+			) > 0;
+		}
+		finally {
+			this.prefChanged.__locked = false;
+		}
 		if(changed) {
 			this.initViewMenu(this.$("hc-sets-tree-viewPopup"));
 			this.updTree(false);
 		}
-		this.prefChanged.__locked = false;
 	},
 	treeSortAutoCollapseDA: function(willRestore) {
 		if(!this.pu.get("sets.treeSortAutoCollapseDelayedAction"))
