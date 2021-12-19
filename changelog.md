@@ -174,7 +174,7 @@
 `x` Settings for controls behavior: added “open editor” and “open types editor” commands.<br>
 `+` Scripts reloader (<em>extensions.handyclicks.debug</em> = true): added Ctrl+Alt+W hotkey to reopen dialog window (settings, editor).<br>
 `*` Scripts reloader (<em>extensions.handyclicks.debug</em> = true): flush internal browser caches in Firefox 3.6+ instead of .js?random_numbers hack.<br>
-`+` Added ability to sort tree (click on column or from menu: View – Sort by), also added <em>extensions.handyclicks.sets.rememberSort</em> and <em>extensions.handyclicks.sets.treeSortAutoInlineDrawMode</em> preferences.<br>
+`+` Added ability to sort tree (click on column or from menu: View – Sort by), also added <em>extensions.handyclicks.sets.rememberSort</em>, <em>extensions.handyclicks.sets.treeSortAutoInlineDrawMode</em> and <em>extensions.handyclicks.sets.treeSortAutoCollapseDelayedAction</em> preferences.<br>
 `*` Compare current and saved settings: ignore version difference, if there is no actual changes (for forward compatibility).<br>
 `*` Changed behavior for clicks on “Shortcut and target” column: hold Shift, Alt or Meta to collapse/expand tree, right-click to expand one tree level, middle-click (or Ctrl+left-click) to collapse one tree level.<br>
 `*` Used sub-menu for “Remember …” menu items.<br>
