@@ -407,12 +407,12 @@ var handyClicksSets = {
 		if(!this.pu.get("sets.treeSortAutoCollapseDelayedAction"))
 			return false;
 		var eda;
-		if(willRestore && "collapseDAInitial" in this) {
-			eda = this.collapseDAInitial;
-			delete this.collapseDAInitial;
+		if(willRestore && "expandDAInitial" in this) {
+			eda = this.expandDAInitial;
+			delete this.expandDAInitial;
 		}
-		else if(!willRestore && !("collapseDAInitial" in this)) {
-			this.collapseDAInitial = this.pu.get("sets.treeExpandDelayedAction");
+		else if(!willRestore && !("expandDAInitial" in this)) {
+			this.expandDAInitial = this.pu.get("sets.treeExpandDelayedAction");
 			eda = false;
 		}
 		if(eda !== undefined && this.pu.get("sets.treeExpandDelayedAction") != eda) {
