@@ -345,6 +345,8 @@ var handyClicksSets = {
 		});
 		var hasDMi = "drawModeInitial" in this;
 		var dmi = hasDMi && this.drawModeInitial;
+		var hasEDAi = "expandDAInitial" in this;
+		var edai = hasEDAi && this.expandDAInitial;
 		if(rememberSort) {
 			if(hasDMi && this.treeSortColumn) {
 				tr.setAttribute("hc_drawModeInitial", dmi);
@@ -354,20 +356,25 @@ var handyClicksSets = {
 				tr.removeAttribute("hc_drawModeInitial");
 			}
 			document.persist(tr.id, "hc_drawModeInitial");
-		}
-		else if(hasDMi) {
-			this.setDrawMode(dmi);
-		}
-		var hasEDAi = "expandDAInitial" in this;
-		var edai = hasEDAi && this.expandDAInitial;
-		if(hasEDAi) {
-			tr.setAttribute("hc_expandDAInitial", edai);
-			this._log("Save initial expand delayed action state: " + edai);
+			if(hasEDAi) {
+				tr.setAttribute("hc_expandDAInitial", edai);
+				this._log("Save initial expand delayed action state: " + edai);
+			}
+			else {
+				tr.removeAttribute("hc_expandDAInitial");
+			}
+			document.persist(tr.id, "hc_expandDAInitial");
 		}
 		else {
-			tr.removeAttribute("hc_expandDAInitial");
+			if(hasDMi) {
+				this.setDrawMode(dmi);
+				this._log("Restore initial tree draw mode: " + dmi);
+			}
+			if(hasEDAi) {
+				this._log("Restore initial expand delayed action state: " + edai);
+				this.pu.set("sets.treeExpandDelayedAction", edai);
+			}
 		}
-		document.persist(tr.id, "hc_expandDAInitial");
 	},
 	get treeSortColumn() {
 		var sortCol = this.$("hc-sets-tree-columns").getElementsByAttribute("sortActive", "true")[0] || null;
