@@ -366,11 +366,11 @@ var handyClicksSets = {
 			document.persist(tr.id, "hc_expandDAInitial");
 		}
 		else {
-			if(hasDMi) {
+			if(hasDMi && this.pu.get("sets.treeDrawMode") != dmi) {
 				this.setDrawMode(dmi);
 				this._log("Restore initial tree draw mode: " + dmi);
 			}
-			if(hasEDAi) {
+			if(hasEDAi && this.pu.get("sets.treeExpandDelayedAction") != edai) {
 				this._log("Restore initial expand delayed action state: " + edai);
 				this.pu.set("sets.treeExpandDelayedAction", edai);
 			}
