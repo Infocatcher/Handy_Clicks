@@ -366,11 +366,11 @@ var handyClicksSets = {
 			document.persist(tr.id, "hc_expandDAInitial");
 		}
 		else {
-			if(hasDMi && this.pu.get("sets.treeDrawMode") != dmi) {
+			if(hasDMi && this.drawModePref != dmi) {
 				this.setDrawMode(dmi);
 				this._log("Restore initial tree draw mode: " + dmi);
 			}
-			if(hasEDAi && this.pu.get("sets.treeExpandDelayedAction") != edai) {
+			if(hasEDAi && this.daExpandPref != edai) {
 				this._log("Restore initial expand delayed action state: " + edai);
 				this.pu.set("sets.treeExpandDelayedAction", edai);
 			}
@@ -434,10 +434,10 @@ var handyClicksSets = {
 			delete this.expandDAInitial;
 		}
 		else if(!willRestore && !("expandDAInitial" in this)) {
-			this.expandDAInitial = this.pu.get("sets.treeExpandDelayedAction");
+			this.expandDAInitial = this.daExpandPref;
 			eda = false;
 		}
-		if(eda !== undefined && this.pu.get("sets.treeExpandDelayedAction") != eda) {
+		if(eda !== undefined && this.daExpandPref != eda) {
 			this.pu.set("sets.treeExpandDelayedAction", eda);
 			return true;
 		}
@@ -455,7 +455,7 @@ var handyClicksSets = {
 		else if(!this.drawInline) {
 			dm = this.modeToInline();
 		}
-		if(dm !== undefined && this.pu.get("sets.treeDrawMode") != dm) {
+		if(dm !== undefined && this.drawModePref != dm) {
 			this.setDrawMode(dm);
 			return true;
 		}
@@ -494,6 +494,12 @@ var handyClicksSets = {
 		for(var p in c)
 			c[p] = 0;
 	},
+	get drawModePref() {
+		return this.pu.get("sets.treeDrawMode");
+	},
+	get daExpandPref() {
+		return this.pu.get("sets.treeExpandDelayedAction");
+	},
 	drawTree: function() {
 		return this.treeBatch(this._drawTree, this, arguments);
 	},
@@ -508,12 +514,12 @@ var handyClicksSets = {
 			? this.getLocalized("delayedActionDisabled")
 			: this.getLocalized("delayedActionAfter").replace("%t", daTime);
 		this._daExpand = saveClosed // Will restore collapsed/expanded state
-			|| this.pu.get("sets.treeExpandDelayedAction");
+			|| this.daExpandPref;
 		this._localizeArgs = this.pu.get("sets.localizeArguments");
 		this._maxCodeLength = Math.max(0, this.pu.get("sets.codeLengthLimit"));
 		this._preserveLines = Math.max(0, this.pu.get("sets.codeLengthLimit.preserveLines"));
 		this._limitSearch = this.pu.get("sets.codeLengthLimit.limitSearch");
-		var dm = this.drawMode = this.pu.get("sets.treeDrawMode");
+		var dm = this.drawMode = this.drawModePref;
 		this.drawInline = this.isInline(dm);
 		var sortTypes = this.pu.get("sets.treeSortCustomTypes");
 		var sp = sortTypes > 0 ? "\uffdc" // show after shortcut items
@@ -2212,7 +2218,7 @@ var handyClicksSets = {
 	},
 
 	initViewMenu: function(mp) {
-		var tdm = this.ut.mm(this.pu.get("sets.treeDrawMode"), 0, 5);
+		var tdm = this.ut.mm(this.drawModePref, 0, 5);
 		mp.getElementsByAttribute("hc_drawMode", tdm)[0].setAttribute("checked", "true");
 		var sct = this.ut.mm(this.pu.get("sets.treeSortCustomTypes"), -1, 1);
 		mp.getElementsByAttribute("hc_sortTypes", sct)[0].setAttribute("checked", "true");
