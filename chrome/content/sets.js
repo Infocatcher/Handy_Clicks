@@ -345,8 +345,8 @@ var handyClicksSets = {
 		});
 		var hasDMi = "drawModeInitial" in this;
 		var dmi = hasDMi && this.drawModeInitial;
-		var hasEDAi = "expandDAInitial" in this;
-		var edai = hasEDAi && this.expandDAInitial;
+		var hasEDAi = "daExpandInitial" in this;
+		var edai = hasEDAi && this.daExpandInitial;
 		if(rememberSort) {
 			if(hasDMi && this.treeSortColumn) {
 				tr.setAttribute("hc_drawModeInitial", dmi);
@@ -357,13 +357,13 @@ var handyClicksSets = {
 			}
 			document.persist(tr.id, "hc_drawModeInitial");
 			if(hasEDAi) {
-				tr.setAttribute("hc_expandDAInitial", edai);
+				tr.setAttribute("hc_daExpandInitial", edai);
 				this._log("Save initial expand delayed action state: " + edai);
 			}
 			else {
-				tr.removeAttribute("hc_expandDAInitial");
+				tr.removeAttribute("hc_daExpandInitial");
 			}
-			document.persist(tr.id, "hc_expandDAInitial");
+			document.persist(tr.id, "hc_daExpandInitial");
 		}
 		else {
 			if(hasDMi && this.drawModePref != dmi) {
@@ -401,10 +401,10 @@ var handyClicksSets = {
 			tr.removeAttribute("hc_drawModeInitial");
 			this._log("Read initial tree draw mode: " + this.drawModeInitial);
 		}
-		if(tr.hasAttribute("hc_expandDAInitial")) {
-			this.expandDAInitial = tr.getAttribute("hc_expandDAInitial") == "true";
-			tr.removeAttribute("hc_expandDAInitial");
-			this._log("Read initial expand delayed action state: " + this.expandDAInitial);
+		if(tr.hasAttribute("hc_daExpandInitial")) {
+			this.daExpandInitial = tr.getAttribute("hc_daExpandInitial") == "true";
+			tr.removeAttribute("hc_daExpandInitial");
+			this._log("Read initial expand delayed action state: " + this.daExpandInitial);
 		}
 	},
 	ensureTreeDrawMode: function(col) {
@@ -429,12 +429,12 @@ var handyClicksSets = {
 		if(!this.pu.get("sets.treeSortAutoCollapseDelayedAction"))
 			return false;
 		var eda;
-		if(willRestore && "expandDAInitial" in this) {
-			eda = this.expandDAInitial;
-			delete this.expandDAInitial;
+		if(willRestore && "daExpandInitial" in this) {
+			eda = this.daExpandInitial;
+			delete this.daExpandInitial;
 		}
-		else if(!willRestore && !("expandDAInitial" in this)) {
-			this.expandDAInitial = this.daExpandPref;
+		else if(!willRestore && !("daExpandInitial" in this)) {
+			this.daExpandInitial = this.daExpandPref;
 			eda = false;
 		}
 		if(eda !== undefined && this.daExpandPref != eda) {
