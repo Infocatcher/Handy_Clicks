@@ -3986,13 +3986,9 @@ var handyClicksSets = {
 			this.selectTreePane();
 		var ct = this.ct;
 		if(targetId == ct.EXPORT_FILEPICKER) {
-			var file = this.pickFile(
-				this.getLocalized("exportSets"), true, "js",
-				!partialExport && this.ps.prefsFile.lastModifiedTime
-			);
+			var file = this.getExportFile(!partialExport && this.ps.prefsFile.lastModifiedTime);
 			if(!file)
 				return;
-			this.backupsDir = file.parent;
 		}
 		if(partialExport) {
 			var its = onlyCustomTypes ? this.selectedItemsWithCustomTypes : this.selectedItemsNoDelayed;
@@ -4043,6 +4039,13 @@ var handyClicksSets = {
 		else {
 			throw new Error(this.errPrefix + "Full export to clipboard not supported");
 		}
+	},
+	getExportFile: function(lastMod) {
+		var file = this.pickFile(this.getLocalized("exportSets"), true, "js", lastMod);
+		if(!file)
+			return null;
+		this.backupsDir = file.parent;
+		return file;
 	},
 	extractPrefs: function(extractShortcuts, _its) {
 		var types = this.ps.types, newTypes = {};
