@@ -3985,11 +3985,6 @@ var handyClicksSets = {
 		if(typeof document == "object")
 			this.selectTreePane();
 		var ct = this.ct;
-		if(targetId == ct.EXPORT_FILEPICKER) {
-			var file = this.getExportFile(!partialExport && this.ps.prefsFile.lastModifiedTime);
-			if(!file)
-				return;
-		}
 		if(partialExport) {
 			var its = onlyCustomTypes ? this.selectedItemsWithCustomTypes : this.selectedItemsNoDelayed;
 			var pStr = this.extractPrefs(!onlyCustomTypes, its);
@@ -4013,15 +4008,16 @@ var handyClicksSets = {
 				});
 			}
 			else {
-				this.io.writeToFileAsync(pStr, file);
+				var file = this.getExportFile();
+				file && this.io.writeToFileAsync(pStr, file);
 			}
 		}
 		else if(targetId == ct.EXPORT_FILEPICKER) {
 			//this.ut.copyFileTo(this.ps.prefsFile, file.parent, file.leafName);
 			var outFiles = {};
 			var pStr = this.ps.stringifySettings({ exportLinkedFiles: true, outFiles: outFiles });
+			var lastMod = this.ps.prefsFile.lastModifiedTime;
 			if(!this.treeUnsaved && !this.ps.otherSrc) {
-				var lastMod = this.ps.prefsFile.lastModifiedTime;
 				var files = outFiles.value;
 				for(var path in files) if(files.hasOwnProperty(path)) {
 					var fd = files[path];
@@ -4031,7 +4027,8 @@ var handyClicksSets = {
 					}
 				}
 			}
-			this.io.writeToFileAsync(pStr, file, function(status) {
+			var file = this.getExportFile(!partialExport && lastMod);
+			file && this.io.writeToFileAsync(pStr, file, function(status) {
 				if(Components.isSuccessCode(status) && lastMod)
 					file.lastModifiedTime = lastMod;
 			});
