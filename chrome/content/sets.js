@@ -3504,7 +3504,7 @@ var handyClicksSets = {
 				catch(e) { return ""; }
 			};
 			tt = getVI("FileDescription") || eeFile.leafName || "";
-			changed && this.setDefaultArgs(getVI("ProductName"));
+			changed && this.setDefaultArgs(getVI("ProductName") || eeFile.leafName.replace(/\.[^.]+$/, ""));
 		}
 		else if(
 			eeFile
