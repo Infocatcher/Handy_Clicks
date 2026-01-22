@@ -88,7 +88,7 @@ var handyClicksEditor = {
 		this.setCompactUI();
 		this.pu.oSvc.addObserver(this.prefChanged, this);
 		this.checkForCrashBackups(700);
-		document.addEventListener("keydown", this.tabLikeNavigation, true);
+		document.addEventListener("keydown", this, true);
 	},
 	delayedInit: function() {
 		this.setTooltip();
@@ -122,7 +122,7 @@ var handyClicksEditor = {
 			}
 		}
 		unwatchLinkedFiles && this.watchLinkedFiles(false); // Will be closed all editors
-		document.removeEventListener("keydown", this.tabLikeNavigation, true);
+		document.removeEventListener("keydown", this, true);
 	},
 	watchLinkedFile: function(path, file) {
 		this._log("Editor: watchLinkedFile(): " + path);
@@ -1386,7 +1386,7 @@ var handyClicksEditor = {
 						: ""
 				),
 				accesskey: mp.getAttribute("hc_renameCancelAccesskey"),
-				oncommand: "handyClicksEditor.renameShortcut(false, true);"
+				oncommand: "handyClicksEditor.renameShortcutCancel();"
 			}), insPos);
 			df.insertBefore(document.createElement("menuseparator"), insPos);
 		}
@@ -1406,6 +1406,9 @@ var handyClicksEditor = {
 	isPopupOpened: function(mp) {
 		return "open" in mp.parentNode && mp.parentNode.open
 			|| !("state" in mp) || mp.state == "open";
+	},
+	renameShortcutCancel: function() {
+		this.renameShortcut(false, true);
 	},
 	renameShortcut: function(onlyRename, forceCancel, syncSave) {
 		var rename = !this.renameShortcutMode;
@@ -1497,8 +1500,8 @@ var handyClicksEditor = {
 			inp.disabled = disable;
 		});
 	},
-	tabLikeNavigation: function(e) {
-		if(e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) {
+	handleEvent: function(e) { // "keydown"
+		if(e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) { // Tab-like navigation
 			if("defaultPrevented" in e ? e.defaultPrevented : e.getPreventDefault())
 				return;
 			if(e.keyCode == e.DOM_VK_UP) { // Ctrl+Up
