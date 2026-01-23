@@ -1385,6 +1385,7 @@ var handyClicksEditor = {
 						? this.getLocalized("alreadyUsed")
 						: ""
 				),
+				key: "hc-editor-key-esc",
 				accesskey: mp.getAttribute("hc_renameCancelAccesskey"),
 				oncommand: "handyClicksEditor.renameShortcutCancel();"
 			}), insPos);
@@ -1501,7 +1502,16 @@ var handyClicksEditor = {
 		});
 	},
 	handleEvent: function(e) { // "keydown"
-		if(e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) { // Tab-like navigation
+		if(
+			e.keyCode == e.DOM_VK_ESCAPE
+			&& !e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey
+		) {
+			if(this.renameShortcutMode) {
+				this.renameShortcutCancel();
+				e.preventDefault();
+			}
+		}
+		else if(e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) { // Tab-like navigation
 			if("defaultPrevented" in e ? e.defaultPrevented : e.getPreventDefault())
 				return;
 			if(e.keyCode == e.DOM_VK_UP) { // Ctrl+Up
