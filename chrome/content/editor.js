@@ -1501,7 +1501,11 @@ var handyClicksEditor = {
 			inp.disabled = disable;
 		});
 	},
-	handleEvent: function(e) { // "keydown"
+	handleEvent: function(e) {
+		if(e.type == "keydown")
+			this.keydownHandler(e);
+	},
+	keydownHandler: function(e) {
 		if(
 			e.keyCode == e.DOM_VK_ESCAPE
 			&& !e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey
