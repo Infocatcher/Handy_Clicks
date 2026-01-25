@@ -1506,23 +1506,23 @@ var handyClicksEditor = {
 			this.keydownHandler(e);
 	},
 	keydownHandler: function(e) {
+		var code = e.keyCode;
 		if(
-			e.keyCode == e.DOM_VK_ESCAPE
+			code == e.DOM_VK_ESCAPE
 			&& !e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey
+			&& this.renameShortcutMode
 		) {
-			if(this.renameShortcutMode) {
-				this.renameShortcutCancel();
-				e.preventDefault();
-			}
+			this.renameShortcutCancel();
+			e.preventDefault();
 		}
 		else if(e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) { // Tab-like navigation
 			if("defaultPrevented" in e ? e.defaultPrevented : e.getPreventDefault())
 				return;
-			if(e.keyCode == e.DOM_VK_UP) { // Ctrl+Up
+			if(code == e.DOM_VK_UP) { // Ctrl+Up
 				document.commandDispatcher.rewindFocus();
 				e.preventDefault();
 			}
-			else if(e.keyCode == e.DOM_VK_DOWN) { // Ctrl+Down
+			else if(code == e.DOM_VK_DOWN) { // Ctrl+Down
 				document.commandDispatcher.advanceFocus();
 				e.preventDefault();
 			}
