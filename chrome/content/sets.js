@@ -3504,7 +3504,7 @@ var handyClicksSets = {
 				catch(e) { return ""; }
 			};
 			tt = getVI("FileDescription") || eeFile.leafName || "";
-			changed && this.setDefaultArgs(getVI("ProductName") || eeFile.leafName.replace(/\.[^.]+$/, ""));
+			changed && this.setDefaultArgs(getVI("ProductName"), eeFile.leafName);
 		}
 		else if(
 			eeFile
@@ -3522,12 +3522,16 @@ var handyClicksSets = {
 		this.attribute(img, "tooltiptext", tt);
 	},
 	_prevApp: null,
-	setDefaultArgs: function(app) {
-		if(app == this._prevApp)
+	setDefaultArgs: function(app, fName) {
+		var _app = app || fName;
+		if(_app == this._prevApp)
 			return;
-		this._prevApp = app;
+		this._prevApp = _app;
 		var args;
-		if(app == "AkelPad") // AkelPad 4.9.1 (15.12.2014)+
+		if(
+			app == "AkelPad"
+			|| !app && /^AkelPad(?:64)?\.exe$/i.test(fName) // AkelPad 4.9.9
+		) // AkelPad 4.9.1 (15.12.2014)+
 			args = "/If(`SendMain(1204 /*AKD_GOTO*/, 0x1 /*GT_LINE*/, '%L:%C')`, ``, ``)";
 		else if(app == "Notepad++")
 			args = "-n%L";
