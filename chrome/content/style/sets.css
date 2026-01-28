@@ -78,6 +78,9 @@ radio[pane="hc-sets-pane-funcs"] {
 	margin: 0 4px;
 	min-width: 3.2em;
 }
+#hc-sets-tree-importFilesStatistics:-moz-focusring {
+	outline: 1px dotted ThreeDDarkShadow;
+}
 #hc-sets-tree-searchResults,
 #hc-sets-tree-searchTotal {
 	margin-left: 0;
