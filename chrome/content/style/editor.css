@@ -193,12 +193,17 @@ tabbox[hc_pasted="false"] {
 	-moz-image-region: rect(64px 80px 80px 64px);
 }
 .hcEditCodeButton[hc_fileNotFound="true"],
-#hc-editor-itemTypes[hc_extNotAvailable] .menulist-label {
+#hc-editor-itemTypes[hc_extNotAvailable] .menulist-label,
+menuitem[hc_extNotAvailable] {
 	color: #f22;
 }
 :root[hc_isDarkFont="true"] .hcEditCodeButton[hc_fileNotFound="true"],
-:root[hc_isDarkFont="true"] #hc-editor-itemTypes[hc_extNotAvailable] .menulist-label {
+:root[hc_isDarkFont="true"] #hc-editor-itemTypes[hc_extNotAvailable] .menulist-label,
+:root[hc_isDarkFont="true"] menuitem[hc_extNotAvailable] {
 	color: #c00;
+}
+menuitem[hc_extNotAvailable][hc_sets="none"] {
+	display: none;
 }
 .hcEditCodeButton[hc_fileNotFound="false"] {
 	color: #aaf;

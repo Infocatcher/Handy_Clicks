@@ -409,7 +409,9 @@ var handyClicksEditor = {
 			function(mi) {
 				var ext = mi.getAttribute("hc_required");
 				if(!this.extEnabled(ext)) {
-					mi.hidden = true;
+					mi.setAttribute("hc_extNotAvailable", "true");
+					mi.setAttribute("tooltip", "hc-editor-labelTip");
+					mi.setAttribute("hc_tooltipWarning", this.getLocalized("extensionNA"));
 					if(curType && mi.getAttribute("value") == curType) {
 						typesList.setAttribute("hc_extNotAvailable", "true");
 						typesList.setAttribute("tooltip", "hc-editor-labelTip");
@@ -1040,7 +1042,14 @@ var handyClicksEditor = {
 		this.updateShortcutContext();
 
 		var ml = this.typesList;
-		if(ml.hasAttribute("hc_extNotAvailable")) {
+		var hasNA = ml.hasAttribute("hc_extNotAvailable");
+		var typeItem = ml.selectedItem;
+		if(!hasNA && typeItem && typeItem.hasAttribute("hc_extNotAvailable")) {
+			ml.setAttribute("hc_extNotAvailable", typeItem.getAttribute("hc_extNotAvailable"));
+			ml.setAttribute("tooltip",            typeItem.getAttribute("tooltip"));
+			ml.setAttribute("hc_tooltipWarning",  typeItem.getAttribute("hc_tooltipWarning"));
+		}
+		else if(hasNA) {
 			ml.removeAttribute("hc_extNotAvailable");
 			ml.removeAttribute("tooltip");
 			ml.removeAttribute("hc_tooltipWarning");
