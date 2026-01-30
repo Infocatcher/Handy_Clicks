@@ -418,8 +418,8 @@ var handyClicksEditor = {
 						typesList.setAttribute("hc_tooltipWarning", this.getLocalized("extensionNA"));
 						this.su.checkDarkFont(typesList);
 					}
-					return;
 				}
+				// Always set labels to match settings window
 				Array.prototype.forEach.call(
 					this.$("hc-editor-funcPopup").getElementsByAttribute("hc_extLabel", ext),
 					function(mi) {
