@@ -376,13 +376,19 @@ var handyClicksUtils = {
 	},
 	getLocalizedEntity: function(eName, dtds, contentType) {
 		return this._entities[eName] || (
-			this._entities[eName] = this.getEntity(eName, dtds, contentType) || this.makeBuggyStr(eName)
+			this._entities[eName] = this.getEntity(eName, dtds, contentType) || this.makeNaStr(eName)
 		);
 	},
 	makeBuggyStr: function(s) {
-		return "(" + s + ")\u034f";
+		return "(" + s + ")\u034f\u034f";
 	},
 	isBuggyStr: function(s) {
+		return s && /^\(.*\)\u034f\u034f$/.test(s);
+	},
+	makeNaStr: function(s) {
+		return "(" + s + ")\u034f";
+	},
+	isNaStr: function(s) {
 		return s && /^\(.*\)\u034f$/.test(s);
 	},
 
