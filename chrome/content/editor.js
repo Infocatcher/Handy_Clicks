@@ -408,7 +408,8 @@ var handyClicksEditor = {
 			typesList.getElementsByAttribute("hc_required", "*"),
 			function(mi) {
 				var ext = mi.getAttribute("hc_required");
-				if(!this.extEnabled(ext)) {
+				var na = !this.extEnabled(ext);
+				if(na) {
 					mi.setAttribute("hc_extNotAvailable", "true");
 					mi.setAttribute("tooltip", "hc-editor-labelTip");
 					mi.setAttribute("hc_tooltipWarning", this.getLocalized("extensionNA"));
@@ -423,7 +424,7 @@ var handyClicksEditor = {
 				Array.prototype.forEach.call(
 					this.$("hc-editor-funcPopup").getElementsByAttribute("hc_extLabel", ext),
 					function(mi) {
-						mi.setAttribute("label", this.su.getExtLabel(mi.getAttribute("label")));
+						mi.setAttribute("label", this.su.getExtLabel(mi.getAttribute("label"), na));
 					},
 					this
 				);

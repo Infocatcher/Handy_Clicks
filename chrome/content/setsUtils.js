@@ -763,8 +763,10 @@ var handyClicksSetsUtils = {
 		mthSplitWindowFromTabs: ["popup.selection.splitWindow",   "chrome://multipletab/locale/multipletab.dtd"],
 		__proto__: null
 	},
-	getExtLabel: function(name) {
-		return this.ut.getLocalizedEntity.apply(this.ut, this.extLabels[name]);
+	getExtLabel: function(name, na) {
+		return na
+			? this.ut.makeNaStr(this.extLabels[name][0])
+			: this.ut.getLocalizedEntity.apply(this.ut, this.extLabels[name]);
 	},
 	getActionLabel: function(fo) {
 		this.ps.localize._localized = false;
