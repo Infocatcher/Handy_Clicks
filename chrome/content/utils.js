@@ -383,13 +383,13 @@ var handyClicksUtils = {
 		return "(" + s + ")\u034f\u034f";
 	},
 	isBuggyStr: function(s) {
-		return s && /^\(.*\)\u034f\u034f$/.test(s);
+		return s && /^\([\s\S]*\)\u034f\u034f$/.test(s);
 	},
 	makeNaStr: function(s) {
 		return "(" + s + ")\u034f";
 	},
 	isNaStr: function(s) {
-		return s && /^\(.*\)\u034f$/.test(s);
+		return s && /^\([\s\S]*\)\u034f$/.test(s);
 	},
 
 	getFileParent: function(file) {
