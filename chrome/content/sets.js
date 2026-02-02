@@ -936,7 +936,7 @@ var handyClicksSets = {
 		var col = -1;
 		this.appendTreeCell(tRow, "label", label, ++col);
 		this.appendTreeCell(tRow, "label", fo.eventType, ++col);
-		var actLabel = this.su.getActionLabel(fo);
+		var actLabel = this.su.getActionLabel(fo, extNA);
 		var localized = this.ps.localize._localized;
 		this.appendTreeCell(tRow, "label", actLabel, ++col);
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom), ++col)
@@ -974,7 +974,7 @@ var handyClicksSets = {
 
 			var daStr = foStr + ".delayedAction";
 			var daCustom = !!da.custom;
-			var daLabel = this.su.getActionLabel(da);
+			var daLabel = this.su.getActionLabel(da, extNA);
 			var daLocalized = this.ps.localize._localized;
 			var daDis = this._daForceDisable || !fo.enabled || !da.enabled;
 			this.appendTreeCell(daRow, "label", daLabel, ++col);

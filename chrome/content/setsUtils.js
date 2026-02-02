@@ -768,13 +768,13 @@ var handyClicksSetsUtils = {
 			? this.ut.makeNaStr(this.extLabels[name][0])
 			: this.ut.getLocalizedEntity.apply(this.ut, this.extLabels[name]);
 	},
-	getActionLabel: function(fo) {
+	getActionLabel: function(fo, extNA) {
 		this.ps.localize._localized = false;
 		if(fo.custom)
 			return this.ps.localize(fo.label || "");
 		var act = fo.action;
 		if(act in this.extLabels)
-			return this.getExtLabel(act);
+			return this.getExtLabel(act, extNA);
 		return this.getLocalized(act);
 	},
 
