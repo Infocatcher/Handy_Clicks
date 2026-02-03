@@ -410,13 +410,9 @@ var handyClicksEditor = {
 				var ext = mi.getAttribute("hc_required");
 				var na = !this.extEnabled(ext);
 				if(na) {
-					mi.setAttribute("hc_extNotAvailable", "true");
-					mi.setAttribute("tooltip", "hc-editor-labelTip");
-					mi.setAttribute("hc_tooltipWarning", this.getLocalized("extensionNA"));
+					this.markAsExtNA(mi, true);
 					if(curType && mi.getAttribute("value") == curType) {
-						typesList.setAttribute("hc_extNotAvailable", "true");
-						typesList.setAttribute("tooltip", "hc-editor-labelTip");
-						typesList.setAttribute("hc_tooltipWarning", this.getLocalized("extensionNA"));
+						this.markAsExtNA(typesList, true);
 						this.su.checkDarkFont(typesList);
 					}
 				}
@@ -431,6 +427,11 @@ var handyClicksEditor = {
 			},
 			this
 		);
+	},
+	markAsExtNA: function(elt, mark) {
+		this.attribute(elt, "hc_extNotAvailable", mark && "true");
+		this.attribute(elt, "tooltip",            mark && "hc-editor-labelTip");
+		this.attribute(elt, "hc_tooltipWarning",  mark && this.getLocalized("extensionNA"));
 	},
 	_allowUndo: false,
 	initUI: function(allowUndo) {
@@ -1045,16 +1046,10 @@ var handyClicksEditor = {
 		var ml = this.typesList;
 		var hasNA = ml.hasAttribute("hc_extNotAvailable");
 		var typeItem = ml.selectedItem;
-		if(!hasNA && typeItem && typeItem.hasAttribute("hc_extNotAvailable")) {
-			ml.setAttribute("hc_extNotAvailable", typeItem.getAttribute("hc_extNotAvailable"));
-			ml.setAttribute("tooltip",            typeItem.getAttribute("tooltip"));
-			ml.setAttribute("hc_tooltipWarning",  typeItem.getAttribute("hc_tooltipWarning"));
-		}
-		else if(hasNA) {
-			ml.removeAttribute("hc_extNotAvailable");
-			ml.removeAttribute("tooltip");
-			ml.removeAttribute("hc_tooltipWarning");
-		}
+		if(!hasNA && typeItem && typeItem.hasAttribute("hc_extNotAvailable"))
+			this.markAsExtNA(ml, true);
+		else if(hasNA)
+			this.markAsExtNA(ml, false);
 	},
 	initAdditionalOptions: function(iType, setsObj) {
 		iType = iType || this.currentType;
