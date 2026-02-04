@@ -269,7 +269,7 @@
 											oncommand="event.stopPropagation();">
 											<button class="hcEditCodeButton hcFloatButton hc-iconic"
 												command="hc-editor-cmd-editCode"
-												hc_key="hc-editor-key-editCode"
+												hc_key="hc-editor-key-editCode,hc-editor-key-editCode2"
 												context="hc-editor-editCodeContext" />
 											<button class="hcCodeToFileButton hcFloatButton hc-iconic"
 												command="hc-editor-cmd-codeToFile"
@@ -348,7 +348,7 @@
 							oncommand="event.stopPropagation();">
 							<button class="hcEditCodeButton hcFloatButton hc-iconic"
 								command="hc-editor-cmd-editCode"
-								hc_key="hc-editor-key-editCode"
+								hc_key="hc-editor-key-editCode,hc-editor-key-editCode2"
 								context="hc-editor-editCodeContext" />
 							<button class="hcCodeToFileButton hcFloatButton hc-iconic"
 								command="hc-editor-cmd-codeToFile"

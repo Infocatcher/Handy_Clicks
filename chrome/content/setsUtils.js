@@ -708,27 +708,34 @@ var handyClicksSetsUtils = {
 
 	setKeysDesc: function() {
 		//~ hack: show fake hidden popup with <menuitem key="keyId" /> to get descriptions
-		var mp = document.createElement("menupopup");
-		mp.style.visibility = "collapse";
-		function addNode(node) {
-			var keyId = node.getAttribute("hc_key");
-			if(!keyId)
-				return;
-			var mi = document.createElement("menuitem");
-			mi.__node = node;
-			mi.setAttribute("key", keyId);
-			mp.appendChild(mi);
-		}
-		var forEach = Array.prototype.forEach;
 		var de = document.documentElement;
-		forEach.call(document.getElementsByAttribute("hc_key", "*"), addNode);
-		forEach.call(de.getButton("cancel").parentNode.childNodes, addNode);
+		var slice = Array.prototype.slice;
+		var nodes = Array.prototype.concat.call(
+			slice.call(document.getElementsByAttribute("hc_key", "*")),
+			slice.call(de.getButton("cancel").parentNode.getElementsByAttribute("hc_key", "*"))
+		);
+		var mp = de.appendChild(document.createElement("menupopup"));
+		mp.style.visibility = "collapse";
+		nodes.forEach(function(node) {
+			node.__keys = [];
+			var keyIds = node.getAttribute("hc_key");
+			keyIds && keyIds.split(/\s*,\s*/).forEach(function(keyId) {
+				var mi = document.createElement("menuitem");
+				mi.__node = node;
+				mi.setAttribute("key", keyId);
+				mp.appendChild(mi);
+			});
+		});
 		mp._onpopupshown = function() {
-			forEach.call(mp.childNodes, function(mi) {
+			Array.prototype.forEach.call(this.childNodes, function(mi) {
 				var keyDesk = mi.getAttribute("acceltext");
+				keyDesk && mi.__node.__keys.push(keyDesk);
+			});
+			nodes.forEach(function(node) {
+				var keyDesk = node.__keys.join(", ");
+				delete node.__keys;
 				if(!keyDesk)
 					return;
-				var node = mi.__node;
 				var ttm = node.getAttribute("hc_tooltipMessage");
 				if(ttm) {
 					node.setAttribute("hc_tooltipMessage", ttm + " (" + keyDesk + ")");
@@ -738,10 +745,9 @@ var handyClicksSetsUtils = {
 					? node.tooltipText + " (" + keyDesk + ")"
 					: keyDesk;
 			});
-			mp.parentNode.removeChild(mp);
+			this.parentNode.removeChild(this);
 		};
 		mp.setAttribute("onpopupshown", "this._onpopupshown();");
-		de.appendChild(mp);
 		mp["openPopup" in mp ? "openPopup" : "showPopup"]();
 	},
 
