@@ -335,7 +335,8 @@ preferences {
 						<menuitem command="hc-sets-cmd-partialExportToFile" key="hc-sets-key-partialExportToFile" />
 						<menuitem command="hc-sets-cmd-partialExportToClipboard" key="hc-sets-key-partialExportToClipboard" />
 						<menuitem command="hc-sets-cmd-exportToHTML" key="hc-sets-key-exportToHTML" />
-						<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
+						<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI"
+							hc_key="hc-sets-key-exportToURI,hc-sets-key-exportToURI2" />
 					</menupopup>
 				</button>
 				<button id="hc-sets-tree-buttonImport" class="hc-iconic" type="menu" label="&hc.sets.import;" accesskey="&hc.sets.importAccesskey;">
@@ -366,7 +367,8 @@ preferences {
 						</menu>
 						<menuseparator />
 						<menuitem command="hc-sets-cmd-importFromFile" key="hc-sets-key-importFromFile" />
-						<menuitem command="hc-sets-cmd-importFromClipboard" key="hc-sets-key-importFromClipboard" />
+						<menuitem command="hc-sets-cmd-importFromClipboard" key="hc-sets-key-importFromClipboard"
+							hc_key="hc-sets-key-importFromClipboard,hc-sets-key-importFromClipboard2,hc-sets-key-importFromClipboard3" />
 					</menupopup>
 				</button>
 			</hbox>
@@ -888,12 +890,14 @@ preferences {
 			<menuitem command="hc-sets-cmd-disable" key="hc-sets-key-disable" class="menuitem-iconic hc-iconic" />
 			<menuitem command="hc-sets-cmd-toggle" key="hc-sets-key-toggle" class="menuitem-iconic hc-iconic" />
 			<menuseparator />
-			<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI" />
+			<menuitem command="hc-sets-cmd-exportToURI" key="hc-sets-key-exportToURI"
+				hc_key="hc-sets-key-exportToURI,hc-sets-key-exportToURI2" />
 			<menuitem command="hc-sets-cmd-exportToHTML" key="hc-sets-key-exportToHTML" />
 			<menuitem command="hc-sets-cmd-partialExportToClipboard" key="hc-sets-key-partialExportToClipboard" />
 			<menuitem command="hc-sets-cmd-partialExportToFile" key="hc-sets-key-partialExportToFile" />
 			<menuseparator />
-			<menuitem command="hc-sets-cmd-importFromClipboard" key="hc-sets-key-importFromClipboard" />
+			<menuitem command="hc-sets-cmd-importFromClipboard" key="hc-sets-key-importFromClipboard"
+				hc_key="hc-sets-key-importFromClipboard,hc-sets-key-importFromClipboard2,hc-sets-key-importFromClipboard3" />
 		</menupopup>
 		<menupopup id="hc-sets-prefsManagementPopup" position="before_start">
 			<menuitem id="hc-sets-prefs-all" class="menuitem-iconic hc-iconic" label="&hc.sets.allPrefs;"
@@ -902,6 +906,7 @@ preferences {
 			<menuitem oncommand="handyClicksSets.resetPrefs();" label="&hc.sets.defaults;" />
 			<menuseparator class="hc-reloadSettings" />
 			<menuitem id="hc-sets-prefs-reload" class="hc-reloadSettings" key="hc-sets-key-reload" label="&hc.sets.reloadAllSettings;"
+				hc_key="hc-sets-key-reload,hc-sets-key-reload2"
 				oncommand="handyClicksSets.reloadSettings();" />
 			<menuitem id="hc-sets-prefs-reloadTree" class="hc-reloadSettings" key="hc-sets-key-reloadTree" label="&hc.sets.reloadTree;"
 				oncommand="handyClicksSets.reloadSettings(handyClicksSets.RELOAD_TREE);" />

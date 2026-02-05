@@ -411,7 +411,8 @@
 					oncommand="this.parentNode.hidePopup(); handyClicksEditor.openShortcutsMenu();"
 					key="hc-editor-key-shortcutsMenu"
 					label="&hc.editor.shortcutsMenu;" />
-				<menuitem command="hc-editor-cmd-reloadSettings" key="hc-editor-key-reload" />
+				<menuitem command="hc-editor-cmd-reloadSettings" key="hc-editor-key-reload"
+					hc_key="hc-editor-key-reload,hc-editor-key-reload2" />
 				<menuseparator />
 				<menuitem type="checkbox" hc_pref="editor.ui.invertWindowTitle"
 					label="&hc.editor.invertWindowTitle;" />
