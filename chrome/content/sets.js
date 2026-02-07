@@ -2730,7 +2730,7 @@ var handyClicksSets = {
 		if(!this.isTreePaneSelected)
 			return;
 		this.filterMode = !this.filterMode;
-		this.searchInSetsTree(true, true);
+		this.searchInSetsTree(true);
 	},
 
 	_searchDelay: 50,
