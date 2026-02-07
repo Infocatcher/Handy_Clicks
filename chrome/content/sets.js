@@ -4921,6 +4921,9 @@ var handyClicksSetsSearcher = {
 	get count() {
 		return this._res.length;
 	},
+	get currentItem() {
+		return this._res[this._current];
+	},
 	reset: function() {
 		this._current = 0;
 	},
@@ -4963,7 +4966,7 @@ var handyClicksSetsSearcher = {
 	select: function() {
 		if(!this.count)
 			return;
-		var tItem = this._res[this._current];
+		var tItem = this.currentItem;
 		this.wrapped = this._wrapped;
 		this._wrapped = false; // Reset flag
 		this.treeBatch(function() {
@@ -4979,7 +4982,7 @@ var handyClicksSetsSearcher = {
 		if(!this.count)
 			return true;
 
-		var tItem = this._res[this._current];
+		var tItem = this.currentItem;
 		var i = this.tView.getIndexOfItem(tItem);
 		if(i != -1 && this.tSel.isSelected(i))
 			return false; // Already selected -> navigate without corrections
@@ -5028,7 +5031,7 @@ var handyClicksSetsSearcher = {
 		return false;
 	},
 	checkVisibility: function() {
-		var tItem = this._res[this._current];
+		var tItem = this.currentItem;
 		if(!this.inCollapsedTreeitem(tItem))
 			return false;
 		this.select();
