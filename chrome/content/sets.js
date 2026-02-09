@@ -2841,7 +2841,10 @@ var handyClicksSets = {
 			return;
 		}
 
+		var filterDisabling = dontSelect && this._hasFilter && !this.filterMode;
 		this.treeBatch(this._searchInSetsTree, this, arguments);
+		if(filterDisabling && this._hasHighlighted)
+			this.searcher.scrollToItem(this.searcher.currentItem);
 	},
 	searchInSetsTreeDelay: function(dontSelect, delay) {
 		if(this._searchTimer)
@@ -5036,6 +5039,9 @@ var handyClicksSetsSearcher = {
 			return false;
 		this.select();
 		return true;
+	},
+	scrollToItem: function(tItem) {
+		this.scrollToRow(this.tView.getIndexOfItem(tItem));
 	},
 	scrollToRow: function(i) {
 		var pos = 0.5;
