@@ -2925,6 +2925,7 @@ var handyClicksSets = {
 			var selectedRows = this.getSelected();
 
 		if(this._hasFilter) {
+			this._hasFilter = false;
 			var hidden = this.tBody.getElementsByAttribute("hidden", "true");
 			for(var i = hidden.length - 1; i >= 0; --i) {
 				var tItem = hidden[i];
