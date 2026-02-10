@@ -545,7 +545,7 @@ var handyClicksSets = {
 		this.ensureTreeSorted();
 
 		this.timer("drawTree()");
-		!dontSearch && this.searchInSetsTree(true);
+		!dontSearch && this.searchInSetsTree(true, true);
 
 		this.delay(function() { // Cleanup, see getSortedInsPos()
 			delete this.tBody.__sortedChildNodes;
@@ -2828,7 +2828,7 @@ var handyClicksSets = {
 		}
 		this.searchInSetsTree(true);
 	},
-	searchInSetsTree: function(dontSelect) {
+	searchInSetsTree: function(dontSelect, loading) {
 		if(this._searchTimer)
 			return;
 
@@ -2841,20 +2841,20 @@ var handyClicksSets = {
 			return;
 		}
 
-		var filterDisabling = dontSelect && this._hasFilter && !this.filterMode;
+		var filterChanging = dontSelect && !loading && (this._hasFilter ^ this.filterMode);
 		this.treeBatch(this._searchInSetsTree, this, arguments);
-		if(filterDisabling && this._hasHighlighted)
+		if(filterChanging && this._hasHighlighted)
 			this.searcher.scrollToItem(this.searcher.currentItem);
 	},
-	searchInSetsTreeDelay: function(dontSelect, delay) {
+	searchInSetsTreeDelay: function(dontSelect, loading, delay) {
 		if(this._searchTimer)
 			return;
 		this._searchTimer = this.delay(function() {
 			this._searchTimer = 0;
-			this.searchInSetsTree(dontSelect);
+			this.searchInSetsTree(dontSelect, loading);
 		}, this, delay || 0);
 	},
-	_searchInSetsTree: function(dontSelect) {
+	_searchInSetsTree: function(dontSelect, loading) {
 		this.timer("searchInSetsTree()");
 		var sf = this.searchField;
 		var filterMode = this.filterMode;
