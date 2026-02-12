@@ -4916,9 +4916,15 @@ var handyClicksSetsSearcher = {
 	_wrapped: false,
 	set results(res) {
 		var items = Array.prototype.slice.call(this.tBody.getElementsByTagName("treeitem"));
-		this._res = res.sort(function(a, b) {
+		var oldRes = this._res;
+		var newRes = this._res = res.sort(function(a, b) {
 			return items.indexOf(a) - items.indexOf(b);
 		});
+		var equal = newRes.length == oldRes.length && newRes.every(function(tItem, i) {
+			return tItem == oldRes[i];
+		});
+		if(equal)
+			return;
 		this._current = 0;
 		this.wrapped = this._wrapped = false;
 	},
