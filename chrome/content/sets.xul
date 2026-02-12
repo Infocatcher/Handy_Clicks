@@ -90,7 +90,7 @@ preferences {
 				<label value="&hc.sets.searchCustomLong.tipNote;" />
 			</tooltip>
 			<hbox id="hc-sets-tree-searchContainer" flex="100">
-				<textbox id="hc-sets-tree-searchField" type="search" flex="1" persist="hc_value"
+				<textbox id="hc-sets-tree-searchField" type="search" flex="1" persist="hc_value hc_index"
 					tooltip="hc-sets-search-tooltip"
 					onkeypress="handyClicksSets.navigateSearchResults(event);"
 					oninput="handyClicksSets.searchInSetsTreeDelay();"

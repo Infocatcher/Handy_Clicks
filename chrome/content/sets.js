@@ -128,13 +128,18 @@ var handyClicksSets = {
 			return;
 		var sf = this.searchField;
 		sf.value = sf.getAttribute("hc_value");
+		this.searcher.initialIndex = +sf.getAttribute("hc_index") || 0;
 	},
 	saveSearchQuery: function() {
 		var sf = this.searchField;
-		if(this.pu.get("sets.rememberSearchQuery"))
+		if(this.pu.get("sets.rememberSearchQuery")) {
 			sf.setAttribute("hc_value", sf.value);
-		else
+			sf.setAttribute("hc_index", this.searcher._current);
+		}
+		else {
 			sf.removeAttribute("hc_value");
+			sf.removeAttribute("hc_index");
+		}
 	},
 	startupUI: function(winId) {
 		this.treeState(false);
@@ -4914,6 +4919,7 @@ var handyClicksSetsSearcher = {
 	_res: [], // treeitems
 	_current: 0,
 	_wrapped: false,
+	initialIndex: 0,
 	set results(res) {
 		var items = Array.prototype.slice.call(this.tBody.getElementsByTagName("treeitem"));
 		var oldRes = this._res;
@@ -4925,7 +4931,13 @@ var handyClicksSetsSearcher = {
 		});
 		if(equal)
 			return;
-		this._current = 0;
+		var indx = this.initialIndex;
+		if(indx) {
+			this.initialIndex = 0;
+			if(indx < 0 || indx >= newRes.length)
+				indx = 0;
+		}
+		this._current = indx;
 		this.wrapped = this._wrapped = false;
 	},
 	get count() {
