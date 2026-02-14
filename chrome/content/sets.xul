@@ -222,7 +222,8 @@ preferences {
 				onmouseout="handyClicksSets.unhoverCheckbox();" />
 		</tree>
 		<vbox id="hc-sets-tree-buttons">
-			<hbox id="hc-sets-tree-importPanel" pack="center" align="end" hidden="true">
+			<hbox id="hc-sets-tree-importPanel" pack="center" align="end" hidden="true"
+				onkeypress="handyClicksSets.handleImportPanelHotkey(event);">
 				<hbox id="hc-sets-tree-importFilesDataBox" align="center"
 					tooltip="_child">
 					<checkbox id="hc-sets-tree-importFilesData"

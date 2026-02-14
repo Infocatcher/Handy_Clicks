@@ -4609,6 +4609,16 @@ var handyClicksSets = {
 		this._importFilesData = importFD;
 		this.updTree();
 	},
+	handleImportPanelHotkey: function(e) {
+		if(e.keyCode == e.DOM_VK_F1) {
+			e.preventDefault();
+			var tt = this.$("hc-sets-tree-importFilesTip");
+			var anchor = this.$("hc-sets-tree-importFilesDataBox");
+			// See chrome://global/content/xul.css: tooltip { margin-top: 21px; }
+			var offset = -21 + this.su.TOOLTIP_OFFSET_DEFAULT;
+			this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_SLOW, offset);
+		}
+	},
 	importDone: function(ok) {
 		if(ok && !this.buggyPrefsConfirm())
 			return;
