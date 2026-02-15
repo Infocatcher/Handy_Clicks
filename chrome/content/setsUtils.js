@@ -651,6 +651,7 @@ var handyClicksSetsUtils = {
 	TOOLTIP_HIDE_DEFAULT: 2600,
 	TOOLTIP_HIDE_QUICK: 800,
 	TOOLTIP_HIDE_SLOW: 5000,
+	TOOLTIP_HIDE_NONE: -1,
 	TOOLTIP_OFFSET_DEFAULT: 2,
 	TOOLTIP_OFFSET_CURSOR: 12,
 	TOOLTIP_OFFSET_ABOVE: -1e5,
@@ -692,7 +693,7 @@ var handyClicksSetsUtils = {
 			};
 		}, 25);
 		_sit.closeTimer && clearTimeout(_sit.closeTimer);
-		_sit.closeTimer = setTimeout(function(tt) {
+		if(hideDelay != this.TOOLTIP_HIDE_NONE) _sit.closeTimer = setTimeout(function(tt) {
 			tt.hidePopup();
 		}, hideDelay || this.TOOLTIP_HIDE_DEFAULT, tt);
 		tt.addEventListener("popuphidden", function onHide(e) {

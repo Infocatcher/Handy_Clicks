@@ -4620,7 +4620,7 @@ var handyClicksSets = {
 			var anchor = this.$("hc-sets-tree-importFilesDataBox");
 			// See chrome://global/content/xul.css: tooltip { margin-top: 21px; }
 			var offset = -21 + this.su.TOOLTIP_OFFSET_DEFAULT;
-			this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_SLOW, offset);
+			this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_NONE, offset);
 		}
 	},
 	importDone: function(ok) {
