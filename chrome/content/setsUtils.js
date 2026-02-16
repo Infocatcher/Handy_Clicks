@@ -655,6 +655,7 @@ var handyClicksSetsUtils = {
 	TOOLTIP_OFFSET_DEFAULT: 2,
 	TOOLTIP_OFFSET_CURSOR: 12,
 	TOOLTIP_OFFSET_ABOVE: -1e5,
+	TOOLTIP_OFFSET_MARGIN: -2e5,
 	get infoTooltip() {
 		var tt = document.createElement("tooltip");
 		tt.id = "handyClicks-infoTooltip";
@@ -678,6 +679,12 @@ var handyClicksSetsUtils = {
 				tt.showPopup(anchor, -1, -1, "tooltip", "topleft", "bottomleft");
 		}
 		else {
+			if(offset == this.TOOLTIP_OFFSET_MARGIN) {
+				// See chrome://global/content/xul.css: tooltip { margin-top: 21px; }
+				var mt = parseInt(tt.ownerDocument.defaultView.getComputedStyle(tt, null).marginTop);
+				offset = -parseInt(mt || 21) // Not available for not yet displayed tooltip
+					+ this.TOOLTIP_OFFSET_DEFAULT;
+			}
 			var bo = anchor.boxObject;
 			var x = bo.screenX;
 			var y = bo.screenY + bo.height + (offset === undefined ? this.TOOLTIP_OFFSET_DEFAULT : offset);

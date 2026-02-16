@@ -2700,9 +2700,7 @@ var handyClicksSets = {
 			e.preventDefault();
 			var tt = this.$("hc-sets-search-tooltip");
 			var anchor = this.$("hc-sets-tree-searchContainer");
-			// See chrome://global/content/xul.css: tooltip { margin-top: 21px; }
-			var offset = -21 + this.su.TOOLTIP_OFFSET_DEFAULT;
-			this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_SLOW, offset);
+			this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_SLOW, this.su.TOOLTIP_OFFSET_MARGIN);
 			return;
 		}
 		this.delay(function() {
@@ -4618,9 +4616,7 @@ var handyClicksSets = {
 				return;
 			}
 			var anchor = this.$("hc-sets-tree-importFilesDataBox");
-			// See chrome://global/content/xul.css: tooltip { margin-top: 21px; }
-			var offset = -21 + this.su.TOOLTIP_OFFSET_DEFAULT;
-			this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_NONE, offset);
+			this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_NONE, this.su.TOOLTIP_OFFSET_MARGIN);
 		}
 	},
 	importDone: function(ok) {
