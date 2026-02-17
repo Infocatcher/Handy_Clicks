@@ -2699,6 +2699,10 @@ var handyClicksSets = {
 		if(code == e.DOM_VK_F1) {
 			e.preventDefault();
 			var tt = this.$("hc-sets-search-tooltip");
+			if(tt.state == "open") {
+				tt.hidePopup();
+				return;
+			}
 			var anchor = this.$("hc-sets-tree-searchContainer");
 			this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_SLOW, this.su.TOOLTIP_OFFSET_MARGIN);
 			return;
