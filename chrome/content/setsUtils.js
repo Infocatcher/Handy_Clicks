@@ -654,8 +654,8 @@ var handyClicksSetsUtils = {
 	TOOLTIP_HIDE_NONE: -1,
 	TOOLTIP_OFFSET_DEFAULT: 2,
 	TOOLTIP_OFFSET_CURSOR: 12,
-	TOOLTIP_OFFSET_ABOVE: -1e5,
-	TOOLTIP_OFFSET_MARGIN: -2e5,
+	TOOLTIP_OFFSET_ABOVE:  -1e12,
+	TOOLTIP_OFFSET_MARGIN: -1e12-1,
 	get infoTooltip() {
 		var tt = document.createElement("tooltip");
 		tt.id = "handyClicks-infoTooltip";
