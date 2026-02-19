@@ -153,6 +153,7 @@
 <!ENTITY hc.sets.importFilesDataN "Файлы:">
 <!ENTITY hc.sets.importFilesDataAccesskey "Ф">
 <!ENTITY hc.sets.importFilesDataTip "Импортировать содержимое связанных файлов">
+<!ENTITY hc.sets.showImportFilesStats "Подробности о связанных файлах…">
 
 <!ENTITY hc.sets.importIncrement "Добавить">
 <!ENTITY hc.sets.importIncrementAccesskey "Д">

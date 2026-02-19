@@ -4475,6 +4475,7 @@ var handyClicksSets = {
 		this._importPartial = isImport && isPartial;
 		var panel = this.$("hc-sets-tree-importPanel");
 		panel.hidden = !isImport;
+		this.$("hc-sets-cmd-importShowFilesStats").setAttribute("disabled", !isImport);
 		if(!isImport) {
 			this.cleanImportSearch() && this.searchInSetsTree(true);
 			this.$("hc-sets-tree-importStatistics").removeAttribute("minwidth");
@@ -4614,14 +4615,19 @@ var handyClicksSets = {
 	handleImportPanelHotkey: function(e) {
 		if(e.keyCode == e.DOM_VK_F1) {
 			e.preventDefault();
-			var tt = this.$("hc-sets-tree-importFilesTip");
-			if(tt.state == "open") {
-				tt.hidePopup();
-				return;
-			}
-			var anchor = this.$("hc-sets-tree-importFilesDataBox");
-			this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_NONE, this.su.TOOLTIP_OFFSET_MARGIN);
+			this.showImportFilesStats();
 		}
+	},
+	showImportFilesStats: function() {
+		if(!this._import)
+			return;
+		var tt = this.$("hc-sets-tree-importFilesTip");
+		if(tt.state == "open") {
+			tt.hidePopup();
+			return;
+		}
+		var anchor = this.$("hc-sets-tree-importFilesDataBox");
+		this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_NONE, this.su.TOOLTIP_OFFSET_MARGIN);
 	},
 	importDone: function(ok) {
 		if(ok && !this.buggyPrefsConfirm())
