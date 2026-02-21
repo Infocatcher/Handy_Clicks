@@ -88,7 +88,7 @@ var handyClicksEditor = {
 		this.setCompactUI();
 		this.pu.oSvc.addObserver(this.prefChanged, this);
 		this.checkForCrashBackups(700);
-		document.addEventListener("keydown", this, true);
+		this.de.addEventListener("keydown", this, true);
 	},
 	delayedInit: function() {
 		this.setTooltip();
@@ -122,7 +122,7 @@ var handyClicksEditor = {
 			}
 		}
 		unwatchLinkedFiles && this.watchLinkedFiles(false); // Will be closed all editors
-		document.removeEventListener("keydown", this, true);
+		this.de.removeEventListener("keydown", this, true);
 	},
 	watchLinkedFile: function(path, file) {
 		this._log("Editor: watchLinkedFile(): " + path);
@@ -1517,6 +1517,8 @@ var handyClicksEditor = {
 			&& !e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey
 			&& this.renameShortcutMode
 		) {
+			if("defaultPrevented" in e ? e.defaultPrevented : e.getPreventDefault())
+				return;
 			this.renameShortcutCancel();
 			e.preventDefault();
 		}
