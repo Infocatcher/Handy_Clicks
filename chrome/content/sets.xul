@@ -234,7 +234,7 @@ preferences {
 					<label id="hc-sets-tree-importFilesStatistics"
 						onclick="if(event.button == 0) handyClicksSets.toggleSearch('%data%');" />
 					<tooltip id="hc-sets-tree-importFilesTip" noautohide="true">
-						<label value="&hc.sets.importFilesDataTip;" />
+						<label value="&hc.sets.importFilesDataTip;" class="hc-keepMargin" />
 						<label value="&hc.sets.importFilesNoDataTip;" class="hc-filesNoData" />
 						<separator class="groove hc-filesData" />
 						<hbox class="hc-filesData" align="center">

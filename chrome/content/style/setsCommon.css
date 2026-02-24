@@ -75,7 +75,7 @@ tab[hc_disabled="true"][hc_canDragSwitch="true"] {
 }
 
 tooltip > description,
-tooltip > label {
+tooltip > label:not(.hc-keepMargin) {
 	margin: 0;
 }
 label.hc-tip {
