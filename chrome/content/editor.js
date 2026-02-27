@@ -1856,27 +1856,29 @@ var handyClicksEditor = {
 	},
 
 	saveSettings: function(applyFlag) {
-		if(!applyFlag) { // ondialogaccept
-			var okSh = this.saveShortcut(applyFlag, false, false, true);
-			var okType = this.saveCustomType(applyFlag, false, false, true);
-			var ok = okSh && okType;
-			this.applySettings(false, false, this.ju.bind(function() {
-				if(ok)
-					return;
-				if(typeof okSh == "function")
-					okSh();
-				if(typeof okType == "function")
-					okType();
-				this.dataSaved();
-				this.setDialogButtons();
-			}, this));
-			return ok;
-		}
+		if(!applyFlag)
+			return this.handleDialogAccept();
 		switch(this.editorTabIndex) {
 			case this.INDEX_SHORTCUT: return this.saveShortcut(applyFlag);
 			case this.INDEX_TYPE:     return this.saveCustomType(applyFlag);
 		}
 		return false;
+	},
+	handleDialogAccept: function() {
+		var okSh = this.saveShortcut(false, false, false, true);
+		var okType = this.saveCustomType(false, false, false, true);
+		var ok = okSh && okType;
+		this.applySettings(false, false, this.ju.bind(function() {
+			if(ok)
+				return;
+			if(typeof okSh == "function")
+				okSh();
+			if(typeof okType == "function")
+				okType();
+			this.dataSaved();
+			this.setDialogButtons();
+		}, this));
+		return ok;
 	},
 	testSettings: function(e) {
 		var invertFocusPref = e && (e.button == 1 || e.button == 0 && this.hasModifier(e));
