@@ -1865,6 +1865,8 @@ var handyClicksEditor = {
 		return false;
 	},
 	handleDialogAccept: function() {
+		if(this.renameShortcutMode) // Enter pressed?
+			return false;
 		var okSh = this.saveShortcut(false, false, false, true);
 		var okType = this.saveCustomType(false, false, false, true);
 		var ok = okSh && okType;
