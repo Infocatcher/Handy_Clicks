@@ -548,6 +548,9 @@ var handyClicksEditor = {
 	get hasUnsaved() {
 		return this.shortcutUnsaved || this.typeUnsaved;
 	},
+	get hasUnsavedRename() {
+		return this.renameShortcutMode && this._shortcutBeforeRename != this.currentShortcut;
+	},
 
 	dataChanged: function(e) {
 		var trg = e.target;
@@ -1950,7 +1953,7 @@ var handyClicksEditor = {
 	},
 	checkSaved: function() {
 		var hasUnsaved = this.hasUnsaved;
-		var hasRename = this.renameShortcutMode && this._shortcutBeforeRename != this.currentShortcut;
+		var hasRename = this.hasUnsavedRename;
 		var res = hasUnsaved ? this.su.notifyUnsaved()
 			: hasRename ? this.notifyUnsavedRename() : undefined;
 		if(res == this.su.PROMPT_CANCEL)
