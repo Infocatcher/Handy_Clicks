@@ -1522,7 +1522,7 @@ var handyClicksEditor = {
 		) {
 			if("defaultPrevented" in e ? e.defaultPrevented : e.getPreventDefault())
 				return;
-			this.renameShortcutCancel();
+			this.checkSavedRename();
 			e.preventDefault();
 		}
 		else if(e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) { // Tab-like navigation
@@ -1965,6 +1965,14 @@ var handyClicksEditor = {
 		this._windowClosing = true;
 		this.cleanupFilesData();
 		return true;
+	},
+	checkSavedRename: function() {
+		var hasRename = this.hasUnsavedRename;
+		var res = hasRename && this.notifyUnsavedRename();
+		if(!hasRename || res == this.su.PROMPT_DONT_SAVE)
+			this.renameShortcutCancel();
+		else if(res == this.su.PROMPT_SAVE)
+			this.renameShortcut();
 	},
 	checkCanEnable: function(cb) {
 		var type = this.currentType;
