@@ -1953,13 +1953,16 @@ var handyClicksEditor = {
 	},
 	checkSaved: function() {
 		var hasUnsaved = this.hasUnsaved;
-		if(!this.checkSavedRename(hasUnsaved, true))
+		var renamed = this.checkSavedRename(hasUnsaved, true);
+		if(renamed == this.su.PROMPT_CANCEL)
 			return false;
 		var res = hasUnsaved ? this.su.notifyUnsaved() : undefined;
 		if(res == this.su.PROMPT_CANCEL)
 			return false;
 		if(res == this.su.PROMPT_SAVE)
 			this.saveSettings();
+		else if(res == this.su.PROMPT_DONT_SAVE && renamed == this.su.PROMPT_SAVE)
+			this.pe.saveSettingsObjects();
 		this._windowClosing = true;
 		this.cleanupFilesData();
 		return true;
@@ -1971,7 +1974,7 @@ var handyClicksEditor = {
 			this.renameShortcutCancel();
 		else if(res == this.su.PROMPT_SAVE)
 			this.renameShortcut(onlyRename, false, syncSave);
-		return res != this.su.PROMPT_CANCEL;
+		return res;
 	},
 	checkCanEnable: function(cb) {
 		var type = this.currentType;
