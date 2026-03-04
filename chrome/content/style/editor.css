@@ -86,12 +86,8 @@ menulist[hc_sets="disabled"] .menulist-label {
 	background: -moz-Dialog;
 	opacity: 0.6;
 }
-:root[hc_renameShortcut="true"] #hc-editor-clickButton,
-:root[hc_renameShortcut="true"] #hc-editor-shortcutBox {
+:root[hc_renameShortcut="true"] [hc_allowInRenameMode="true"] {
 	position: relative;
-	z-index: 10002;
-}
-:root[hc_renameShortcut="true"] #hc-sets-floatToolbar {
 	z-index: 10002;
 }
 :root[hc_renameShortcut="true"] *|*:not([hc_allowInRenameMode]) {

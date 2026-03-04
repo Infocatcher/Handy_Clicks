@@ -393,7 +393,7 @@
 		</tabpanels>
 	</tabbox>
 
-	<hbox id="hc-sets-floatToolbar">
+	<hbox id="hc-sets-floatToolbar" hc_allowInRenameMode="true">
 		<button id="hc-editor-sets" class="hcFloatButton hc-iconic hc-preferences" type="menu"
 			hc_allowInRenameMode="true"
 			label="&hc.editor.settings;" accesskey="&hc.editor.settingsAccesskey;">
