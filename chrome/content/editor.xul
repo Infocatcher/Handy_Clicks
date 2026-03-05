@@ -180,6 +180,16 @@
 					<hbox class="hcTabsToolbarWrapper">
 						<hbox id="hc-editor-funcTabboxToolbar" class="hcTabsToolbar"
 							oncommand="event.stopPropagation();">
+							<hbox id="hc-editor-renameShortcutToolbar" align="center" hc_allowInRenameMode="true">
+								<button id="hc-editor-shortcutRename" label="Rename…" class="hcFloatButton hc-iconic"
+									oncommand="handyClicksEditor.renameShortcut();"
+									hc_allowInRenameMode="true" />
+								<button id="hc-editor-shortcutRenameCancel" label="Cancel" class="hcFloatButton hc-iconic"
+									oncommand="handyClicksEditor.renameShortcutCancel();"
+									hc_allowInRenameMode="true"
+									hc_key="hc-editor-key-esc"
+									collapsed="true" />
+							</hbox>
 							<checkbox id="hc-editor-funcOptsFixed" class="hcFloatControl"
 								oncommand="handyClicksEditor.fixFuncOpts(this.checked);"
 								label="&hc.editor.fixActionOpts;" accesskey="&hc.editor.fixActionOptsAccesskey;"

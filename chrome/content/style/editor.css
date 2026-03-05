@@ -67,14 +67,20 @@ menulist[hc_sets="disabled"] .menulist-label {
 	text-decoration: line-through;
 }
 
-#hc-editor-renameShortcut[hc_rename="start"] {
+#hc-editor-renameShortcut[hc_rename="start"],
+#hc-editor-shortcutRename {
 	-moz-image-region: rect(48px 128px 64px 112px);
 }
-#hc-editor-renameShortcut[hc_rename="done"] {
+#hc-editor-renameShortcut[hc_rename="done"],
+:root[hc_renameShortcut="true"] #hc-editor-shortcutRename {
 	-moz-image-region: rect(64px 112px 80px 96px);
 }
-#hc-editor-renameShortcut-cancel {
+#hc-editor-renameShortcut-cancel,
+#hc-editor-shortcutRenameCancel {
 	-moz-image-region: rect(64px 128px 80px 112px);
+}
+:root[hc_renameShortcut="true"] #hc-editor-shortcutRenameCancel {
+	visibility: visible;
 }
 :root[hc_renameShortcut="true"] #hc-editor-renameShortcutOverlay {
 	position: fixed;

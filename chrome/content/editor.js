@@ -642,9 +642,11 @@ var handyClicksEditor = {
 		sm.setAttribute("default", this.renameShortcutMode);
 	},
 	initShortcutEditor: function() {
-		var so = this.ju.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || {};
+		var na = {};
+		var so = this.ju.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || na;
 		this.initFuncEditor(so, "");
 		this.$("hc-editor-events").value = so.eventType || "click";
+		this.setShortcutRenamer(so == na);
 
 		so = this.ju.getOwnProperty(so, "delayedAction") || {};
 		this.initFuncEditor(so, this.delayId);
@@ -1415,6 +1417,9 @@ var handyClicksEditor = {
 	isPopupOpened: function(mp) {
 		return "open" in mp.parentNode && mp.parentNode.open
 			|| !("state" in mp) || mp.state == "open";
+	},
+	setShortcutRenamer: function(nothingToRename) {
+		this.$("hc-editor-shortcutRename").disabled = nothingToRename;
 	},
 	renameShortcutCancel: function() {
 		this.renameShortcut(false, true);
