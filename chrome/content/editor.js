@@ -1419,7 +1419,8 @@ var handyClicksEditor = {
 			|| !("state" in mp) || mp.state == "open";
 	},
 	setShortcutRenamer: function(nothingToRename) {
-		this.$("hc-editor-shortcutRename").disabled = nothingToRename;
+		this.$("hc-editor-shortcutRename").disabled = nothingToRename
+			|| this.renameShortcutMode && this._shortcutBeforeRename == this.currentShortcut;
 	},
 	renameShortcutCancel: function() {
 		this.renameShortcut(false, true);
@@ -1442,6 +1443,7 @@ var handyClicksEditor = {
 			this.funcOptsFixed && this.fixFuncOpts((this.$("hc-editor-funcOptsFixed").checked = false));
 			this._shortcutBeforeRename = this.currentShortcut;
 			this._typeBeforeRename = this.currentType;
+			this.setShortcutRenamer(true);
 			return;
 		}
 		var sh = this._shortcutBeforeRename;
@@ -1449,7 +1451,9 @@ var handyClicksEditor = {
 		var newSh = this.currentShortcut;
 		this._shortcutBeforeRename = this._typeBeforeRename = null;
 		var p = this.ps.prefs;
-		if(this.ju.getOwnProperty(p, newSh, ct) || forceCancel) {
+		var so = this.ju.getOwnProperty(p, newSh, ct);
+		this.setShortcutRenamer(!so);
+		if(so || forceCancel) {
 			// Don't overwrite: cancel and restore initial shortcut
 			this.currentShortcut = sh;
 			return;
