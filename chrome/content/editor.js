@@ -312,6 +312,13 @@ var handyClicksEditor = {
 		}, this);
 		if(this.pu.get("editor.ui.sortInternalTypes"))
 			this.sortInternalTypes(true);
+		var btnRename = this.$("hc-editor-shortcutRename");
+		var btnCancel = this.$("hc-editor-shortcutRenameCancel");
+		var w = Math.max(
+			parseInt(getComputedStyle(btnRename, null).width),
+			parseInt(getComputedStyle(btnCancel, null).width)
+		);
+		btnRename.style.width = btnCancel.style.width = w + "px";
 	},
 	sortInternalTypes: function(sort) {
 		var sep = this.$("hc-editor-customTypesSep");

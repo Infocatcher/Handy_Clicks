@@ -173,6 +173,9 @@ tabbox[hc_pasted="false"] {
 	-moz-box-align: baseline;
 	-moz-box-pack: end;
 }
+#hc-editor-funcTabboxToolbar {
+	-moz-box-align: baseline;
+}
 .hcTabsToolbar {
 	position: relative;
 }
