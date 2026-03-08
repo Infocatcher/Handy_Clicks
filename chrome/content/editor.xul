@@ -182,10 +182,10 @@
 							oncommand="event.stopPropagation();">
 							<hbox id="hc-editor-renameShortcutToolbar" align="center" hc_allowInRenameMode="true">
 								<button id="hc-editor-shortcutRename" label="Rename…" class="hcFloatButton hc-iconic"
-									oncommand="handyClicksEditor.renameShortcut();"
+									oncommand="handyClicksEditor.renameShortcut(); this.nextSibling.focus();"
 									hc_allowInRenameMode="true" />
 								<button id="hc-editor-shortcutRenameCancel" label="Cancel" class="hcFloatButton hc-iconic"
-									oncommand="handyClicksEditor.renameShortcutCancel();"
+									oncommand="handyClicksEditor.renameShortcutCancel(); this.previousSibling.focus();"
 									hc_allowInRenameMode="true"
 									hc_key="hc-editor-key-esc"
 									collapsed="true" />
