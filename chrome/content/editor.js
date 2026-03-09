@@ -1262,6 +1262,8 @@ var handyClicksEditor = {
 	loadFuncs: function() {
 		if(this.renameShortcutMode) {
 			this.highlightUsedTypes();
+			var alreadyUsed = !!this.ju.getOwnProperty(this.ps.prefs, this.currentShortcut, this.currentType);
+			this.setShortcutRenamer(alreadyUsed);
 			return;
 		}
 		var curShortcut = this.currentShortcut;
