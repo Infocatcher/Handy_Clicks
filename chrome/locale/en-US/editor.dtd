@@ -29,6 +29,9 @@
 <!ENTITY hc.editor.renameShortcutAccesskey "R">
 <!ENTITY hc.editor.renameShortcutCancel "Cancel rename">
 <!ENTITY hc.editor.renameShortcutCancelAccesskey "C">
+<!ENTITY hc.editor.renameShortcutBtn "Rename…">
+<!ENTITY hc.editor.renameShortcutBtnDone "Rename">
+<!ENTITY hc.editor.renameShortcutBtnCancel "Cancel">
 <!ENTITY hc.editor.noSavedSettings "No saved settings">
 <!ENTITY hc.editor.metaKeyNote "Works only in Mac OS">
 <!ENTITY hc.editor.osKeyNote "Works only in Firefox 15+ and SeaMonkey 2.12+">

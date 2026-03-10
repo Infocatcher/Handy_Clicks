@@ -29,6 +29,9 @@
 <!ENTITY hc.editor.renameShortcutAccesskey "П">
 <!ENTITY hc.editor.renameShortcutCancel "Отменить переименование">
 <!ENTITY hc.editor.renameShortcutCancelAccesskey "О">
+<!ENTITY hc.editor.renameShortcutBtn "Переименовать…">
+<!ENTITY hc.editor.renameShortcutBtnDone "Переименовать">
+<!ENTITY hc.editor.renameShortcutBtnCancel "Отмена">
 <!ENTITY hc.editor.noSavedSettings "Нет сохранённых настроек">
 <!ENTITY hc.editor.metaKeyNote "Работает только в Mac OS">
 <!ENTITY hc.editor.osKeyNote "Работает только в Firefox 15+ и SeaMonkey 2.12+">

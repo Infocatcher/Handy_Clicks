@@ -181,10 +181,13 @@
 						<hbox id="hc-editor-funcTabboxToolbar" class="hcTabsToolbar"
 							oncommand="event.stopPropagation();">
 							<hbox id="hc-editor-renameShortcutToolbar" align="center" hc_allowInRenameMode="true">
-								<button id="hc-editor-shortcutRename" label="Rename…" class="hcFloatButton hc-iconic"
+								<button id="hc-editor-shortcutRename" class="hcFloatButton hc-iconic"
+									label="&hc.editor.renameShortcutBtn;"
+									hc_labelRename="&hc.editor.renameShortcutBtn;"
+									hc_labelRenameDone="&hc.editor.renameShortcutBtnDone;"
 									oncommand="handyClicksEditor.renameShortcut(); this.nextSibling.focus();"
 									hc_allowInRenameMode="true" />
-								<button id="hc-editor-shortcutRenameCancel" label="Cancel" class="hcFloatButton hc-iconic"
+								<button id="hc-editor-shortcutRenameCancel" label="&hc.editor.renameShortcutBtnCancel;" class="hcFloatButton hc-iconic"
 									oncommand="handyClicksEditor.renameShortcutCancel(); this.previousSibling.focus();"
 									hc_allowInRenameMode="true"
 									hc_key="hc-editor-key-esc"

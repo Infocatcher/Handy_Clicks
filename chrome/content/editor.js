@@ -1443,6 +1443,8 @@ var handyClicksEditor = {
 		act.call(window, "command", this.preventCommands, true);
 		this.disableTextboxes(rename); // Force prevent focus...
 		this.attribute(this.$("hc-editor-cmd-reloadSettings"), "disabled", rename);
+		var renameBtn = this.$("hc-editor-shortcutRename");
+		renameBtn.label = renameBtn.getAttribute("hc_labelRename" + (rename ? "Done" : ""));
 		if(rename) {
 			var fe = document.commandDispatcher.focusedElement;
 			if(!fe || fe.parentNode.id != "hc-editor-shortcutBox")
