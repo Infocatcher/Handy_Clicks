@@ -315,8 +315,8 @@ var handyClicksEditor = {
 		var btnRename = this.$("hc-editor-shortcutRename");
 		var btnCancel = this.$("hc-editor-shortcutRenameCancel");
 		var w = Math.max(
-			parseInt(getComputedStyle(btnRename, null).width),
-			parseInt(getComputedStyle(btnCancel, null).width)
+			btnRename.boxObject.width,
+			btnCancel.boxObject.width
 		);
 		btnRename.style.width = btnCancel.style.width = w + "px";
 	},
