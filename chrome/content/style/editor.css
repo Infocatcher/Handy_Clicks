@@ -79,6 +79,12 @@ menulist[hc_sets="disabled"] .menulist-label {
 #hc-editor-shortcutRenameCancel {
 	-moz-image-region: rect(64px 128px 80px 112px);
 }
+#hc-editor-lockFuncOpts {
+	-moz-image-region: rect(80px 96px 96px 80px);
+}
+#hc-editor-lockFuncOpts[checked="true"] {
+	-moz-image-region: rect(80px 112px 96px 96px);
+}
 :root[hc_renameShortcut="true"] #hc-editor-shortcutRenameCancel {
 	visibility: visible;
 }

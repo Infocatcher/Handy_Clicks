@@ -193,6 +193,10 @@
 									hc_key="hc-editor-key-esc"
 									collapsed="true" />
 							</hbox>
+							<button id="hc-editor-lockFuncOpts" class="hcFloatButton hc-iconic" type="checkbox" autoCheck="true"
+								oncommand="handyClicksEditor.fixFuncOpts(this.checked);"
+								label="Lock" accesskey="L"
+								tooltip="hc-editor-funcOptsFixed-tooltip" />
 							<checkbox id="hc-editor-funcOptsFixed" class="hcFloatControl"
 								oncommand="handyClicksEditor.fixFuncOpts(this.checked);"
 								label="&hc.editor.fixActionOpts;" accesskey="&hc.editor.fixActionOptsAccesskey;"
