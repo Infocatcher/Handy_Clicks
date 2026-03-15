@@ -1281,7 +1281,8 @@ var handyClicksEditor = {
 			var res = this.su.notifyUnsaved(
 				this.getLocalized("editorUnsavedSwitchWarning")
 					+ this.getLocalized("fixNote")
-					.replace("%b", this.$("hc-editor-funcOptsFixed").label),
+					.replace("%r", this.$("hc-editor-shortcutRename").label)
+					.replace("%l", this.$("hc-editor-lockFuncOpts").label),
 				"editor.unsavedSwitchWarning"
 			);
 			if(res == this.su.PROMPT_CANCEL) {
