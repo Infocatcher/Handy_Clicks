@@ -35,7 +35,7 @@ var handyClicksEditor = {
 		}
 	},
 
-	funcOptsFixed: false,
+	funcOptsLocked: false,
 	testMode: false,
 
 	init: function hce_init(reloadFlag) {
@@ -1272,7 +1272,7 @@ var handyClicksEditor = {
 			return; // Not changed
 
 		if(
-			!this.funcOptsFixed // Nothing to lost with fixed options
+			!this.funcOptsLocked // Nothing to lost with fixed options
 			//~ todo: we can't use this.shortcutUnsaved because shortcut already changed!
 			//~ compare manually? (like in initCustomTypesEditor())
 			//&& this.shortcutUnsaved
@@ -1280,7 +1280,7 @@ var handyClicksEditor = {
 		) {
 			var res = this.su.notifyUnsaved(
 				this.getLocalized("editorUnsavedSwitchWarning")
-					+ this.getLocalized("fixNote")
+					+ this.getLocalized("lockNote")
 					.replace("%r", this.$("hc-editor-shortcutRename").label)
 					.replace("%l", this.$("hc-editor-lockFuncOpts").label),
 				"editor.unsavedSwitchWarning"
@@ -1302,11 +1302,11 @@ var handyClicksEditor = {
 
 		this.shortcut = curShortcut;
 		this.type = curType;
-		if(this.funcOptsFixed) {
+		if(this.funcOptsLocked) {
 			this.initShortcutEditor(); //~ ugly, ugly, ugly...
 
-			this.cantFixFuncOpts = !this.pasteShortcut(false, this._fixedFuncObj);
-			this.pasteShortcut(true, this._fixedFuncObjDelayed);
+			this.cantLockFuncOpts = !this.pasteShortcut(false, this._lockedFuncObj);
+			this.pasteShortcut(true, this._lockedFuncObjDelayed);
 		}
 		else {
 			this.initShortcutEditor();
@@ -1452,7 +1452,7 @@ var handyClicksEditor = {
 				this.$("hc-editor-button").focus();
 			this.$("hc-editor-renameShortcutOverlay").style
 				.backgroundColor = getComputedStyle(this.de, null).backgroundColor;
-			this.funcOptsFixed && this.fixFuncOpts((this.$("hc-editor-funcOptsFixed").checked = false));
+			this.funcOptsLocked && this.lockFuncOpts((this.$("hc-editor-funcOptsFixed").checked = false));
 			this._shortcutBeforeRename = this.currentShortcut;
 			this._typeBeforeRename = this.currentType;
 			this.setShortcutRenamer(true);
@@ -1568,17 +1568,17 @@ var handyClicksEditor = {
 		this.loadFuncs();
 	},
 
-	fixFuncOpts: function(fix) {
-		this.funcOptsFixed = fix;
+	lockFuncOpts: function(lock) {
+		this.funcOptsLocked = lock;
 
-		var so = this._fixedFuncObj = fix && this.copyShortcut(false, true);
-		this._fixedFuncObjDelayed   = fix && this.copyShortcut(true,  true);
+		var so = this._lockedFuncObj = lock && this.copyShortcut(false, true);
+		this._lockedFuncObjDelayed   = lock && this.copyShortcut(true,  true);
 
-		this.$("hc-editor-targetBox").setAttribute("hc_fixedFields", fix);
-		this.cantFixFuncOpts = fix && !so;
+		this.$("hc-editor-targetBox").setAttribute("hc_lockedFields", lock);
+		this.cantLockFuncOpts = lock && !so;
 	},
-	set cantFixFuncOpts(val) {
-		this.$("hc-editor-funcOptsFixed").setAttribute("hc_cantFixFields", val);
+	set cantLockFuncOpts(val) {
+		this.$("hc-editor-funcOptsFixed").setAttribute("hc_cantLockFields", val);
 	},
 
 	editCode: function() {

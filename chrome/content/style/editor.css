@@ -150,7 +150,7 @@ checkbox[hc_notSupported] {
 	opacity: 0.55;
 }
 
-hbox[hc_fixedFields="true"],
+hbox[hc_lockedFields="true"],
 tabbox[hc_copied="true"],
 tabbox[hc_pasted="true"],
 button[hc_attention] {
@@ -164,11 +164,11 @@ tabbox[hc_pasted="false"] {
 	outline-offset: -1px;
 	background-color: #fee;
 }
-#hc-editor-funcOptsFixed[hc_cantFixFields="true"] {
+#hc-editor-funcOptsFixed[hc_cantLockFields="true"] {
 	opacity: 0.5;
 }
 #hc-editor-targetBox {
-	margin-bottom: 1px; /* For better outline from [hc_fixedFields] styles */
+	margin-bottom: 1px; /* For better outline from [hc_lockedFields] styles */
 }
 
 .hcTabsToolbarWrapper {

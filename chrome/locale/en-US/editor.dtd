@@ -59,7 +59,7 @@
 <!ENTITY hc.editor.tabActionDelayDisabledTip "Disabled, configured to zero delay">
 <!ENTITY hc.editor.fixActionOpts "Fix">
 <!ENTITY hc.editor.fixActionOptsAccesskey "x">
-<!ENTITY hc.editor.fixActionOptsTip "Fix action options
+<!ENTITY hc.editor.lockActionOptsTip "Lock action options
 Or use internal buffer:
 Ctrl+Shift+C – copy
 Ctrl+Shift+V – paste">

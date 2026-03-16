@@ -194,15 +194,15 @@
 									collapsed="true" />
 							</hbox>
 							<button id="hc-editor-lockFuncOpts" class="hcFloatButton hc-iconic" type="checkbox" autoCheck="true"
-								oncommand="handyClicksEditor.fixFuncOpts(this.checked);"
+								oncommand="handyClicksEditor.lockFuncOpts(this.checked);"
 								label="Lock" accesskey="L"
-								tooltip="hc-editor-funcOptsFixed-tooltip" />
+								tooltip="hc-editor-lockFuncOpts-tooltip" />
 							<checkbox id="hc-editor-funcOptsFixed" class="hcFloatControl"
-								oncommand="handyClicksEditor.fixFuncOpts(this.checked);"
+								oncommand="handyClicksEditor.lockFuncOpts(this.checked);"
 								label="&hc.editor.fixActionOpts;" accesskey="&hc.editor.fixActionOptsAccesskey;"
-								tooltip="hc-editor-funcOptsFixed-tooltip" />
-							<tooltip id="hc-editor-funcOptsFixed-tooltip">
-								<description>&hc.editor.fixActionOptsTip;</description>
+								tooltip="hc-editor-lockFuncOpts-tooltip" />
+							<tooltip id="hc-editor-lockFuncOpts-tooltip">
+								<description>&hc.editor.lockActionOptsTip;</description>
 							</tooltip>
 						</hbox>
 					</hbox>
