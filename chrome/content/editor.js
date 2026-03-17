@@ -1452,7 +1452,7 @@ var handyClicksEditor = {
 				this.$("hc-editor-button").focus();
 			this.$("hc-editor-renameShortcutOverlay").style
 				.backgroundColor = getComputedStyle(this.de, null).backgroundColor;
-			this.funcOptsLocked && this.lockFuncOpts((this.$("hc-editor-funcOptsFixed").checked = false));
+			this.funcOptsLocked && this.lockFuncOpts();
 			this._shortcutBeforeRename = this.currentShortcut;
 			this._typeBeforeRename = this.currentType;
 			this.setShortcutRenamer(true);
@@ -1569,6 +1569,11 @@ var handyClicksEditor = {
 	},
 
 	lockFuncOpts: function(lock) {
+		if(lock === undefined)
+			lock = this.lockButton.checked = !this.lockButton.checked;
+		if(this.editorTabIndex != this.INDEX_SHORTCUT)
+			this.editorTabIndex = this.INDEX_SHORTCUT;
+
 		this.funcOptsLocked = lock;
 
 		var so = this._lockedFuncObj = lock && this.copyShortcut(false, true);
@@ -1576,6 +1581,10 @@ var handyClicksEditor = {
 
 		this.$("hc-editor-targetBox").setAttribute("hc_lockedFields", lock);
 		this.cantLockFuncOpts = lock && !so;
+	},
+	get lockButton() {
+		delete this.lockButton;
+		return this.lockButton = this.$("hc-editor-lockFuncOpts");
 	},
 	set cantLockFuncOpts(val) {
 		this.$("hc-editor-funcOptsFixed").setAttribute("hc_cantLockFields", val);

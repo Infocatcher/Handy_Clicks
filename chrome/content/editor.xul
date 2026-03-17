@@ -85,6 +85,7 @@
 		<key id="hc-editor-key-saveCode" key="s" modifiers="control,shift" oncommand="handyClicksEditor.doEditorCommand(null, 'saveToFile', true);" />
 		<key id="hc-editor-key-copy" key="c" modifiers="control,shift" oncommand="handyClicksEditor.copySettings();" />
 		<key id="hc-editor-key-paste" key="v" modifiers="control,shift" oncommand="handyClicksEditor.pasteSettings();" />
+		<key id="hc-editor-key-lockFuncOpts" key="l" modifiers="control,shift" oncommand="handyClicksEditor.lockFuncOpts();" />
 
 		<key id="hc-editor-key-openErrorConsole" key="j" modifiers="control,shift" hc_allowInRenameMode="true" oncommand="handyClicksUtils.openErrorConsole();" />
 
@@ -195,7 +196,8 @@
 							</hbox>
 							<button id="hc-editor-lockFuncOpts" class="hcFloatButton hc-iconic" type="checkbox" autoCheck="true"
 								oncommand="handyClicksEditor.lockFuncOpts(this.checked);"
-								label="Lock" accesskey="L"
+								label="Lock"
+								hc_key="hc-editor-key-lockFuncOpts"
 								tooltip="hc-editor-lockFuncOpts-tooltip" />
 							<checkbox id="hc-editor-funcOptsFixed" class="hcFloatControl"
 								oncommand="handyClicksEditor.lockFuncOpts(this.checked);"

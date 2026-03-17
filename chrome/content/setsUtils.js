@@ -734,6 +734,7 @@ var handyClicksSetsUtils = {
 				mp.appendChild(mi);
 			});
 		});
+		var _this = this;
 		mp._onpopupshown = function() {
 			Array.prototype.forEach.call(this.childNodes, function(mi) {
 				var keyDesk = mi.getAttribute("acceltext");
@@ -747,6 +748,16 @@ var handyClicksSetsUtils = {
 				var ttm = node.getAttribute("hc_tooltipMessage");
 				if(ttm) {
 					node.setAttribute("hc_tooltipMessage", ttm + " (" + keyDesk + ")");
+					return;
+				}
+				var ttId = node.getAttribute("tooltip");
+				if(ttId) {
+					if(_this.fxVersion < 3)
+						return;
+					var ttn = document.getElementById(ttId);
+					var desc = ttn.firstChild; // Assumed tooltip > description
+					desc.textContent = desc.textContent
+						.replace(/[\r\n]/, " (" + keyDesk + ")$&");
 					return;
 				}
 				node.tooltipText = node.tooltipText
