@@ -651,9 +651,11 @@ var handyClicksEditor = {
 	initShortcutEditor: function() {
 		var na = {};
 		var so = this.ju.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || na;
+		var isNa = so == na;
 		this.initFuncEditor(so, "");
 		this.$("hc-editor-events").value = so.eventType || "click";
-		this.setShortcutRenamer(so == na);
+		this.setShortcutRenamer(isNa);
+		this.cantLockFuncOpts = isNa;
 
 		so = this.ju.getOwnProperty(so, "delayedAction") || {};
 		this.initFuncEditor(so, this.delayId);
@@ -1574,20 +1576,21 @@ var handyClicksEditor = {
 		if(this.editorTabIndex != this.INDEX_SHORTCUT)
 			this.editorTabIndex = this.INDEX_SHORTCUT;
 
-		this.funcOptsLocked = lock;
-
 		var so = this._lockedFuncObj = lock && this.copyShortcut(false, true);
 		this._lockedFuncObjDelayed   = lock && this.copyShortcut(true,  true);
+		if(lock && !so)
+			lock = this.lockButton.checked = false;
 
+		this.funcOptsLocked = lock;
 		this.$("hc-editor-targetBox").setAttribute("hc_lockedFields", lock);
-		this.cantLockFuncOpts = lock && !so;
+		this.cantLockFuncOpts = so != false ? !so : !this.copyShortcut(false, true, true);
 	},
 	get lockButton() {
 		delete this.lockButton;
 		return this.lockButton = this.$("hc-editor-lockFuncOpts");
 	},
 	set cantLockFuncOpts(val) {
-		this.$("hc-editor-funcOptsFixed").setAttribute("hc_cantLockFields", val);
+		this.lockButton.setAttribute("hc_cantLockFields", val);
 	},
 
 	editCode: function() {
@@ -2214,14 +2217,14 @@ var handyClicksEditor = {
 		this.setDialogButtons();
 		return true;
 	},
-	copyShortcut: function(isDelayed, dontCopy) {
+	copyShortcut: function(isDelayed, dontCopy, silent) {
 		if(isDelayed === undefined)
 			isDelayed = this.funcTabbox.selectedIndex == this.INDEX_SHORTCUT_DELAYED;
 		var delayed = isDelayed ? this.delayId : "";
 		var funcs = this.$("hc-editor-func" + delayed);
 		var si = funcs.selectedItem;
 		if(!si) {
-			this.markAs(this.funcTabbox, "hc_copied", "false");
+			!silent && this.markAs(this.funcTabbox, "hc_copied", "false");
 			return null;
 		}
 		var o = {
