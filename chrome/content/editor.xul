@@ -196,7 +196,7 @@
 							</hbox>
 							<button id="hc-editor-lockFuncOpts" class="hcFloatButton hc-iconic" type="checkbox" autoCheck="true"
 								oncommand="handyClicksEditor.lockFuncOpts(this.checked);"
-								label="Lock"
+								label="&hc.editor.lockActionOpts;"
 								hc_key="hc-editor-key-lockFuncOpts"
 								tooltip="hc-editor-lockFuncOpts-tooltip" />
 							<checkbox id="hc-editor-funcOptsFixed" class="hcFloatControl"
