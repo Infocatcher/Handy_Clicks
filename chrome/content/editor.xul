@@ -199,10 +199,6 @@
 								label="&hc.editor.lockActionOpts;"
 								hc_key="hc-editor-key-lockFuncOpts"
 								tooltip="hc-editor-lockFuncOpts-tooltip" />
-							<checkbox id="hc-editor-funcOptsFixed" class="hcFloatControl"
-								oncommand="handyClicksEditor.lockFuncOpts(this.checked);"
-								label="&hc.editor.fixActionOpts;" accesskey="&hc.editor.fixActionOptsAccesskey;"
-								tooltip="hc-editor-lockFuncOpts-tooltip" />
 							<tooltip id="hc-editor-lockFuncOpts-tooltip">
 								<description>&hc.editor.lockActionOptsTip;</description>
 							</tooltip>

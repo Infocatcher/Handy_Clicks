@@ -57,8 +57,6 @@
 <!ENTITY hc.editor.tabActionDelayAccesskey "л">
 <!ENTITY hc.editor.tabActionDelayTip "Выполняется через $n мс">
 <!ENTITY hc.editor.tabActionDelayDisabledTip "Отключено, установлена нулевая задержка">
-<!ENTITY hc.editor.fixActionOpts "Зафиксировать">
-<!ENTITY hc.editor.fixActionOptsAccesskey "З">
 <!ENTITY hc.editor.lockActionOpts "Зафиксировать">
 <!ENTITY hc.editor.lockActionOptsTip "Зафиксировать настройки действия
 Или используйте внутренний буфер:

@@ -57,8 +57,6 @@
 <!ENTITY hc.editor.tabActionDelayAccesskey "y">
 <!ENTITY hc.editor.tabActionDelayTip "Executes after $n ms delay">
 <!ENTITY hc.editor.tabActionDelayDisabledTip "Disabled, configured to zero delay">
-<!ENTITY hc.editor.fixActionOpts "Fix">
-<!ENTITY hc.editor.fixActionOptsAccesskey "x">
 <!ENTITY hc.editor.lockActionOpts "Lock">
 <!ENTITY hc.editor.lockActionOptsTip "Lock action options
 Or use internal buffer:
