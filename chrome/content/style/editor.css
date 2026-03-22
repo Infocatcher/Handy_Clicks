@@ -159,6 +159,8 @@ button[hc_attention] {
 	background-color: ThreeDFace;
 }
 tabbox[hc_copied="false"],
+#hc-editor-funcTabbox[hc_copied="false"] #hc-editor-funcTabClick:not([selected]),
+#hc-editor-funcTabbox[hc_copied="false"] #hc-editor-func:not([value]),
 tabbox[hc_pasted="false"] {
 	outline: 1px solid #d00;
 	outline-offset: -1px;
