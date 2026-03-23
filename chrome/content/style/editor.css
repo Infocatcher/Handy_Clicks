@@ -96,7 +96,7 @@ menulist[hc_sets="disabled"] .menulist-label {
 	bottom: 0;
 	left: 0;
 	background: -moz-Dialog;
-	opacity: 0.6;
+	opacity: 0.68;
 }
 :root[hc_renameShortcut="true"] [hc_allowInRenameMode="true"] {
 	position: relative;
