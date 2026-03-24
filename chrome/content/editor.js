@@ -1100,6 +1100,8 @@ var handyClicksEditor = {
 			}, this);
 		}
 		this.$("hc-editor-funcArgsBox" + delayed).hidden = !cArgs;
+		if(this.cantLockFuncOpts)
+			this.cantLockFuncOpts = !this.copyShortcut(false, true, true);
 	},
 	addArgControls: function(argName, delayed, so) {
 		var argVal = this.ju.getOwnProperty(so, "arguments", argName);
@@ -1589,8 +1591,11 @@ var handyClicksEditor = {
 		delete this.lockButton;
 		return this.lockButton = this.$("hc-editor-lockFuncOpts");
 	},
+	get cantLockFuncOpts() {
+		return this.lockButton.getAttribute("hc_cantLockFields") == "true";
+	},
 	set cantLockFuncOpts(val) {
-		this.lockButton.setAttribute("hc_cantLockFields", val);
+		this.lockButton.setAttribute("hc_cantLockFields", !!val);
 	},
 
 	editCode: function() {
