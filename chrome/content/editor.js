@@ -651,14 +651,13 @@ var handyClicksEditor = {
 	initShortcutEditor: function() {
 		var na = {};
 		var so = this.ju.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || na;
-		var isNa = so == na;
 		this.initFuncEditor(so, "");
 		this.$("hc-editor-events").value = so.eventType || "click";
-		this.setShortcutRenamer(isNa);
-		this.cantLockFuncOpts = isNa;
+		this.setShortcutRenamer(so == na);
 
 		so = this.ju.getOwnProperty(so, "delayedAction") || {};
 		this.initFuncEditor(so, this.delayId);
+		this.cantLockFuncOpts = this.cantCopyShortcut;
 		this.currentShortcut = this.shortcut;
 		this.shortcutSaved();
 	},
@@ -1101,7 +1100,7 @@ var handyClicksEditor = {
 		}
 		this.$("hc-editor-funcArgsBox" + delayed).hidden = !cArgs;
 		if(this.cantLockFuncOpts)
-			this.cantLockFuncOpts = !this.copyShortcut(false, true, true);
+			this.cantLockFuncOpts = this.cantCopyShortcut;
 	},
 	addArgControls: function(argName, delayed, so) {
 		var argVal = this.ju.getOwnProperty(so, "arguments", argName);
@@ -1585,7 +1584,7 @@ var handyClicksEditor = {
 
 		this.funcOptsLocked = lock;
 		this.$("hc-editor-targetBox").setAttribute("hc_lockedFields", lock);
-		this.cantLockFuncOpts = so != false ? !so : !this.copyShortcut(false, true, true);
+		this.cantLockFuncOpts = so != false ? !so : this.cantCopyShortcut;
 	},
 	get lockButton() {
 		delete this.lockButton;
@@ -2222,14 +2221,17 @@ var handyClicksEditor = {
 		this.setDialogButtons();
 		return true;
 	},
-	copyShortcut: function(isDelayed, dontCopy, silent) {
+	get cantCopyShortcut() {
+		return !this.$("hc-editor-func").selectedItem;
+	},
+	copyShortcut: function(isDelayed, dontCopy) {
 		if(isDelayed === undefined)
 			isDelayed = this.funcTabbox.selectedIndex == this.INDEX_SHORTCUT_DELAYED;
 		var delayed = isDelayed ? this.delayId : "";
 		var funcs = this.$("hc-editor-func" + delayed);
 		var si = funcs.selectedItem;
 		if(!si) {
-			!silent && this.markAs(this.funcTabbox, "hc_copied", "false");
+			this.markAs(this.funcTabbox, "hc_copied", "false");
 			return null;
 		}
 		var o = {
