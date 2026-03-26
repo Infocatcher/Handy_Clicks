@@ -181,7 +181,7 @@
 					<hbox class="hcTabsToolbarWrapper">
 						<hbox id="hc-editor-funcTabboxToolbar" class="hcTabsToolbar"
 							oncommand="event.stopPropagation();">
-							<hbox id="hc-editor-renameShortcutToolbar" align="right" hc_allowInRenameMode="true">
+							<hbox id="hc-editor-renameShortcutToolbar" class="hcTabsToolbar" align="right" hc_allowInRenameMode="true">
 								<button id="hc-editor-shortcutRename" class="hcFloatButton hc-iconic"
 									label="&hc.editor.renameShortcutBtn;"
 									hc_labelRename="&hc.editor.renameShortcutBtn;"
