@@ -1256,10 +1256,10 @@ var handyClicksEditor = {
 			this.checkNotUsedType(type, true);
 	},
 	get renameShortcutMode() {
-		return this.de.getAttribute("hc_renameShortcut") == "true";
+		return this.de.getAttribute("hc_renameShortcutMode") == "true";
 	},
 	set renameShortcutMode(rename) {
-		this.attribute(this.de, "hc_renameShortcut", !!rename);
+		this.attribute(this.de, "hc_renameShortcutMode", !!rename);
 	},
 
 	loadFuncs: function() {
