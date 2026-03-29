@@ -1594,7 +1594,7 @@ var handyClicksEditor = {
 		return this.lockButton.getAttribute("hc_cantLockFields") == "true";
 	},
 	set cantLockFuncOpts(val) {
-		this.lockButton.setAttribute("hc_cantLockFields", !!val);
+		this.attribute(this.lockButton, "hc_cantLockFields", !!val);
 	},
 
 	editCode: function() {

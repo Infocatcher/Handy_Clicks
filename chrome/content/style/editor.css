@@ -166,7 +166,7 @@ tabbox[hc_pasted="false"] {
 	outline-offset: -1px;
 	background-color: #fee;
 }
-#hc-editor-lockFuncOpts[hc_cantLockFields="true"] {
+#hc-editor-lockFuncOpts[hc_cantLockFields] {
 	opacity: 0.5;
 }
 #hc-editor-targetBox {
