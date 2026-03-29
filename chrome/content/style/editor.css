@@ -72,7 +72,7 @@ menulist[hc_sets="disabled"] .menulist-label {
 	-moz-image-region: rect(48px 128px 64px 112px);
 }
 #hc-editor-renameShortcut[hc_rename="done"],
-:root[hc_renameShortcutMode] #hc-editor-shortcutRename {
+:root[hc_renameMode] #hc-editor-shortcutRename {
 	-moz-image-region: rect(64px 112px 80px 96px);
 }
 #hc-editor-renameShortcut-cancel,
@@ -85,10 +85,10 @@ menulist[hc_sets="disabled"] .menulist-label {
 #hc-editor-lockFuncOpts[checked="true"] {
 	-moz-image-region: rect(80px 112px 96px 96px);
 }
-:root[hc_renameShortcutMode] #hc-editor-shortcutRenameCancel {
+:root[hc_renameMode] #hc-editor-shortcutRenameCancel {
 	visibility: visible;
 }
-:root[hc_renameShortcutMode] #hc-editor-renameShortcutOverlay {
+:root[hc_renameMode] #hc-editor-renameShortcutOverlay {
 	position: fixed;
 	z-index: 10001;
 	top: 0;
@@ -98,11 +98,11 @@ menulist[hc_sets="disabled"] .menulist-label {
 	background: -moz-Dialog;
 	opacity: 0.68;
 }
-:root[hc_renameShortcutMode] [hc_allowInRenameMode="true"] {
+:root[hc_renameMode] [hc_allowInRenameMode="true"] {
 	position: relative;
 	z-index: 10002;
 }
-:root[hc_renameShortcutMode] *|*:not([hc_allowInRenameMode]) {
+:root[hc_renameMode] *|*:not([hc_allowInRenameMode]) {
 	-moz-user-focus: ignore !important;
 }
 

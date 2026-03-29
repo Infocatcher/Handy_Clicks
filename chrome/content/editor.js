@@ -556,7 +556,7 @@ var handyClicksEditor = {
 		return this.shortcutUnsaved || this.typeUnsaved;
 	},
 	get hasUnsavedRename() {
-		return this.renameShortcutMode && this._shortcutBeforeRename != this.currentShortcut;
+		return this.renameMode && this._shortcutBeforeRename != this.currentShortcut;
 	},
 
 	dataChanged: function(e) {
@@ -646,7 +646,7 @@ var handyClicksEditor = {
 	initSettingsMenu: function() {
 		var sm = this.$("hc-editor-sets-shortcutsMenu");
 		sm.setAttribute("hidden", this.editorTabIndex != this.INDEX_SHORTCUT);
-		sm.setAttribute("default", this.renameShortcutMode);
+		sm.setAttribute("default", this.renameMode);
 	},
 	initShortcutEditor: function() {
 		var na = {};
@@ -1255,15 +1255,15 @@ var handyClicksEditor = {
 		if(type == this.currentCustomType)
 			this.checkNotUsedType(type, true);
 	},
-	get renameShortcutMode() {
-		return this.de.getAttribute("hc_renameShortcutMode") == "true";
+	get renameMode() {
+		return this.de.getAttribute("hc_renameMode") == "true";
 	},
-	set renameShortcutMode(rename) {
-		this.attribute(this.de, "hc_renameShortcutMode", !!rename);
+	set renameMode(rename) {
+		this.attribute(this.de, "hc_renameMode", !!rename);
 	},
 
 	loadFuncs: function() {
-		if(this.renameShortcutMode) {
+		if(this.renameMode) {
 			this.highlightUsedTypes();
 			var alreadyUsed = !!this.ju.getOwnProperty(this.ps.prefs, this.currentShortcut, this.currentType);
 			this.setShortcutRenamer(alreadyUsed);
@@ -1386,7 +1386,7 @@ var handyClicksEditor = {
 			}));
 		}
 		else {
-			var isRenaming = this.renameShortcutMode;
+			var isRenaming = this.renameMode;
 			var insPos = df.firstChild;
 			df.insertBefore(this.ut.createElement("menuitem", {
 				id: "hc-editor-renameShortcut",
@@ -1433,14 +1433,14 @@ var handyClicksEditor = {
 	},
 	setShortcutRenamer: function(nothingToRename) {
 		this.$("hc-editor-shortcutRename").disabled = nothingToRename
-			|| this.renameShortcutMode && this._shortcutBeforeRename == this.currentShortcut;
+			|| this.renameMode && this._shortcutBeforeRename == this.currentShortcut;
 	},
 	renameShortcutCancel: function() {
 		this.renameShortcut(false, true);
 	},
 	renameShortcut: function(onlyRename, forceCancel, syncSave) {
-		var rename = !this.renameShortcutMode;
-		this.renameShortcutMode = rename;
+		var rename = !this.renameMode;
+		this.renameMode = rename;
 		this.mainTabbox.handleCtrlTab = this.mainTabbox.handleCtrlPageUpDown = !rename;
 		var act = rename ? addEventListener : removeEventListener;
 		act.call(window, "keydown", this.preventAccesskeys, true);
@@ -1542,7 +1542,7 @@ var handyClicksEditor = {
 		if(
 			code == e.DOM_VK_ESCAPE
 			&& !e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey
-			&& this.renameShortcutMode
+			&& this.renameMode
 		) {
 			if("defaultPrevented" in e ? e.defaultPrevented : e.getPreventDefault())
 				return;
@@ -1905,7 +1905,7 @@ var handyClicksEditor = {
 		return false;
 	},
 	handleDialogAccept: function() {
-		if(this.renameShortcutMode) // Enter pressed?
+		if(this.renameMode) // Enter pressed?
 			return false;
 		var okSh = this.saveShortcut(false, false, false, true);
 		var okType = this.saveCustomType(false, false, false, true);
