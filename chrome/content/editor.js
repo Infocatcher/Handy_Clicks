@@ -14,7 +14,7 @@ var handyClicksEditor = {
 	INDEX_SHORTCUT_INIT: 1,
 	// "hc-editor-customTypeTabbox":
 	INDEX_TYPE_DEFINE: 0,
-	INDEX_TYPE_CONTEXT: 0,
+	INDEX_TYPE_CONTEXT: 1,
 
 	types: {
 		checkboxes: {
