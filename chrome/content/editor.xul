@@ -125,12 +125,7 @@
 					hc_ondrop="event.stopPropagation();">
 					<!-- Prevent bubbling of all events from this box (any modifications will not change apply button state) -->
 					<box id="hc-editor-renameShortcutOverlay" />
-					<button id="hc-editor-clickButton" hc_allowInRenameMode="true"
-						onmousedown="handyClicksEditor.showMouseButton(this, event);"
-						onclick="handyClicksEditor.setClickOptions(event);"
-						oncommand="event.stopPropagation();"
-						tooltiptext="&hc.editor.clickHereTip;" />
-					<hbox id="hc-editor-shortcutBox" hc_allowInRenameMode="true" align="center" context="_child">
+					<button id="hc-editor-savedShortcuts" type="menu" hc_allowInRenameMode="true">
 						<menupopup id="hc-editor-shortcutContext"
 							onpopupshowing="if(!('_hcIgnore' in event)) handyClicksEditor.loadSavedShortcuts(event);"
 							onpopupshown="handyClicksSetsUtils.fixAccelWidth(this);"
@@ -142,6 +137,13 @@
 							hc_renameCancel="&hc.editor.renameShortcutCancel;"
 							hc_renameCancelAccesskey="&hc.editor.renameShortcutCancelAccesskey;"
 							hc_noData="&hc.editor.noSavedSettings;" />
+					</button>
+					<button id="hc-editor-clickButton" hc_allowInRenameMode="true"
+						onmousedown="handyClicksEditor.showMouseButton(this, event);"
+						onclick="handyClicksEditor.setClickOptions(event);"
+						oncommand="event.stopPropagation();"
+						tooltiptext="&hc.editor.clickHereTip;" />
+					<hbox id="hc-editor-shortcutBox" hc_allowInRenameMode="true" align="center">
 						<menulist id="hc-editor-button" hc_allowInRenameMode="true" oncommand="handyClicksEditor.updateShortcutContext();">
 							<menupopup>
 								<menuitem value="0" label="button0short" tooltiptext="button0" class="menuitem-iconic" />
