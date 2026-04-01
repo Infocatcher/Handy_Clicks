@@ -14,6 +14,12 @@
 	-moz-image-region: rect(80px 80px 96px 64px);
 }
 
+#hc-editor-savedShortcuts {
+	list-style-image: url("icons16.png");
+	-moz-image-region: rect(80px 128px 96px 112px);
+	min-width: 32px;
+	min-height: 25px;
+}
 #hc-editor-clickButton {
 	-moz-user-focus: ignore;
 	list-style-image: url("icons16.png");
