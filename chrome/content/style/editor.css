@@ -20,6 +20,15 @@
 	min-width: 32px;
 	min-height: 25px;
 }
+#hc-editor-savedShortcuts > .button-box {
+	-moz-padding-start: 2px;
+	-moz-padding-end: 0;
+}
+#hc-editor-savedShortcuts > .button-box > .button-menu-dropmarker {
+	width: auto !important;
+	-moz-padding-start: 2px;
+	-moz-padding-end: 1px;
+}
 #hc-editor-clickButton {
 	-moz-user-focus: ignore;
 	list-style-image: url("icons16.png");
