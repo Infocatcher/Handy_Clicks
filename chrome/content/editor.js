@@ -1341,12 +1341,7 @@ var handyClicksEditor = {
 	openShortcutsMenu: function() {
 		if(this.editorTabIndex != this.INDEX_SHORTCUT)
 			this.editorTabIndex = this.INDEX_SHORTCUT;
-		var shBox = this.$("hc-editor-shortcutBox");
-		var cm = this.$("hc-editor-shortcutContext");
-		if("openPopup" in cm)
-			cm.openPopup(shBox, "after_start", 0, 0);
-		else
-			cm.showPopup(shBox, -1, -1, "popup", "bottomleft", "topleft");
+		this.$("hc-editor-savedShortcuts").open = true;
 	},
 	loadSavedShortcuts: function(e) {
 		var shortcuts = [];
@@ -1378,7 +1373,7 @@ var handyClicksEditor = {
 			df.appendChild(this.ut.createElement("menuitem", attrs));
 		}, this);
 
-		var mp = this.$("hc-editor-shortcutContext");
+		var mp = this.$("hc-editor-savedShortcutsPopup");
 		if(!df.hasChildNodes()) {
 			df.appendChild(this.ut.createElement("menuitem", {
 				label: mp.getAttribute("hc_noData"),
@@ -1424,7 +1419,7 @@ var handyClicksEditor = {
 			this.typeRequired();
 	},
 	updateShortcutContext: function() {
-		if(this.isPopupOpened(this.$("hc-editor-shortcutContext")))
+		if(this.isPopupOpened(this.$("hc-editor-savedShortcutsPopup")))
 			this.loadSavedShortcuts(); // Changed using mouse scroll
 	},
 	isPopupOpened: function(mp) {

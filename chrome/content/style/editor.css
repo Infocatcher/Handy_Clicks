@@ -121,7 +121,7 @@ menulist[hc_sets="disabled"] .menulist-label {
 	-moz-user-focus: ignore !important;
 }
 
-#hc-editor-shortcutContext > menuitem[hc_initialShortcut="true"] {
+#hc-editor-savedShortcutsPopup > menuitem[hc_initialShortcut="true"] {
 	color: grayText;
 }
 

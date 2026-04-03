@@ -126,7 +126,7 @@
 					<!-- Prevent bubbling of all events from this box (any modifications will not change apply button state) -->
 					<box id="hc-editor-renameShortcutOverlay" />
 					<button id="hc-editor-savedShortcuts" type="menu" hc_allowInRenameMode="true">
-						<menupopup id="hc-editor-shortcutContext"
+						<menupopup id="hc-editor-savedShortcutsPopup"
 							onpopupshowing="if(!('_hcIgnore' in event)) handyClicksEditor.loadSavedShortcuts(event);"
 							onpopupshown="handyClicksSetsUtils.fixAccelWidth(this);"
 							oncommand="event.stopPropagation(); handyClicksEditor.loadSavedShortcut(event);"
