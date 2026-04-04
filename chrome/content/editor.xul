@@ -125,7 +125,9 @@
 					hc_ondrop="event.stopPropagation();">
 					<!-- Prevent bubbling of all events from this box (any modifications will not change apply button state) -->
 					<box id="hc-editor-renameShortcutOverlay" />
-					<button id="hc-editor-savedShortcuts" type="menu" hc_allowInRenameMode="true">
+					<button id="hc-editor-savedShortcuts" type="menu" hc_allowInRenameMode="true"
+						tooltiptext="&hc.editor.shortcutsMenu;"
+						hc_key="hc-editor-key-shortcutsMenu">
 						<menupopup id="hc-editor-savedShortcutsPopup"
 							onpopupshowing="if(!('_hcIgnore' in event)) handyClicksEditor.loadSavedShortcuts(event);"
 							onpopupshown="handyClicksSetsUtils.fixAccelWidth(this);"
@@ -415,7 +417,7 @@
 			hc_allowInRenameMode="true"
 			label="&hc.editor.settings;" accesskey="&hc.editor.settingsAccesskey;">
 			<menupopup id="hc-editor-sets-popup"
-				onpopupshowing="handyClicksEditor.initSettingsMenu(); handyClicksSetsUtils.initPrefsMenu(this);"
+				onpopupshowing="handyClicksSetsUtils.initPrefsMenu(this);"
 				oncommand="handyClicksSetsUtils.handlePrefCommand(event.target);">
 				<menuitem oncommand="handyClicksEditor.switchToSettings();"
 					key="hc-editor-key-switchToSettings"
@@ -424,10 +426,6 @@
 				<menuitem oncommand="handyClicksEditor.wu.openSettingsPane('editor');"
 					label="&hc.editor.openEditorSettings;" />
 				<menuseparator />
-				<menuitem id="hc-editor-sets-shortcutsMenu"
-					oncommand="this.parentNode.hidePopup(); handyClicksEditor.openShortcutsMenu();"
-					key="hc-editor-key-shortcutsMenu"
-					label="&hc.editor.shortcutsMenu;" />
 				<menuitem command="hc-editor-cmd-reloadSettings" key="hc-editor-key-reload"
 					hc_key="hc-editor-key-reload,hc-editor-key-reload2" />
 				<menuseparator />

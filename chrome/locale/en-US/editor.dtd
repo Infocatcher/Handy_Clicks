@@ -14,7 +14,6 @@
 <!ENTITY hc.editor.settingsAccesskey "g">
 <!ENTITY hc.editor.switchToSettingsTree "Switch to settings tree">
 <!ENTITY hc.editor.openEditorSettings "Editor settings">
-<!ENTITY hc.editor.shortcutsMenu "Saved shortcuts…">
 <!ENTITY hc.editor.reloadSettings "Reload settings">
 <!ENTITY hc.editor.invertWindowTitle "Invert window title">
 <!ENTITY hc.editor.sortInternalTypes "Sort built-in types">
@@ -22,6 +21,7 @@
 
 <!ENTITY hc.editor.mainTabActions "Actions">
 <!ENTITY hc.editor.mainTabActionsAccesskey "o">
+<!ENTITY hc.editor.shortcutsMenu "Saved shortcuts…">
 <!ENTITY hc.editor.clickHereTip "Click to set mouse button and modifiers">
 <!ENTITY hc.editor.renameShortcut "Rename shortcut…">
 <!ENTITY hc.editor.renameShortcutDoneDisabled "Rename shortcut">

@@ -643,11 +643,6 @@ var handyClicksEditor = {
 		if(newTitle != oldTitle)
 			document.title = newTitle;
 	},
-	initSettingsMenu: function() {
-		var sm = this.$("hc-editor-sets-shortcutsMenu");
-		sm.setAttribute("hidden", this.editorTabIndex != this.INDEX_SHORTCUT);
-		sm.setAttribute("default", this.renameMode);
-	},
 	initShortcutEditor: function() {
 		var na = {};
 		var so = this.ju.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || na;
