@@ -1551,6 +1551,15 @@ var handyClicksEditor = {
 				e.preventDefault();
 			}
 		}
+		else if(
+			code == e.DOM_VK_RETURN // Prevent ondialogaccept
+			&& e.target
+			&& e.target.localName == "button"
+			&& e.target.type == "menu"
+		) {
+			e.preventDefault();
+			e.target.open = true;
+		}
 	},
 	loadSavedShortcut: function(e) {
 		var mi = e.target;
