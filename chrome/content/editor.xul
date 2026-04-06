@@ -125,7 +125,7 @@
 					hc_ondrop="event.stopPropagation();">
 					<!-- Prevent bubbling of all events from this box (any modifications will not change apply button state) -->
 					<box id="hc-editor-renameShortcutOverlay" />
-					<button id="hc-editor-savedShortcuts" type="menu" hc_allowInRenameMode="true"
+					<button id="hc-editor-savedShortcuts" type="menu" hc_allowInRenameMode="true" noinitialfocus="true"
 						tooltiptext="&hc.editor.shortcutsMenu;"
 						hc_key="hc-editor-key-shortcutsMenu">
 						<menupopup id="hc-editor-savedShortcutsPopup"
