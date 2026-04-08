@@ -473,7 +473,7 @@ var handyClicksEditor = {
 		else
 			this.setEditorButtons();
 
-		// Don't focus <textbox class="hcText" readonly="true">
+		// Don't focus <textbox class="hcText" readonly="true"> and <* noinitialfocus="true">
 		// Based on code from chrome://global/content/bindings/tabbox.xml#tabs
 		// advanceSelectedTab() -> _selectNewTab()
 		var tabbox = tabs.tabbox || tabs.parentNode;
@@ -482,7 +482,7 @@ var handyClicksEditor = {
 		cd.advanceFocusIntoSubtree(selectedPanel);
 		for(;;) {
 			var fe = cd.focusedElement;
-			if(!fe || fe.localName != "input" || !fe.readOnly)
+			if(!fe || !(fe.localName == "input" && fe.readOnly || fe.hasAttribute("noinitialfocus")))
 				break;
 			cd.advanceFocus();
 		}
