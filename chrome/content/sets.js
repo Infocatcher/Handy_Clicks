@@ -1241,6 +1241,7 @@ var handyClicksSets = {
 			getActionCode._linkedFile = path;
 			var hasData = getActionCode._hasFileData = this._import
 				&& path in this.ps.files;
+			path = path.replace(/^%hc_ScriptsDir%[\\\/]/, "");
 			return this.getLocalized("customFile" + (hasData ? "WithData" : "")) + " " + path;
 		}
 		var header = this.getLocalized("customFunction") + this.treeNewline;
