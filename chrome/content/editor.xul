@@ -73,6 +73,7 @@
 		<key id="hc-editor-key-reload2" key="r" modifiers="control" command="hc-editor-cmd-reloadSettings" />
 		<key id="hc-editor-key-switchToSettings" keycode="VK_F3" hc_allowInRenameMode="true" oncommand="handyClicksEditor.switchToSettings();" />
 		<key id="hc-editor-key-shortcutsMenu" keycode="VK_F3" modifiers="shift" hc_allowInRenameMode="true" oncommand="handyClicksEditor.openShortcutsMenu();" />
+		<key id="hc-editor-key-renameShortcut" key="r" modifiers="control,shift" hc_allowInRenameMode="true" oncommand="handyClicksEditor.renameShortcut();" />
 		<!-- Only for menu from handyClicksEditor.loadSavedShortcuts(), implemented in handyClicksEditor.handleEvent() -->
 		<key id="hc-editor-key-esc" keycode="VK_ESCAPE" />
 
@@ -191,7 +192,8 @@
 									hc_labelRename="&hc.editor.renameShortcutBtn;"
 									hc_labelRenameDone="&hc.editor.renameShortcutBtnDone;"
 									oncommand="handyClicksEditor.renameShortcut(); this.nextSibling.focus();"
-									hc_allowInRenameMode="true" />
+									hc_allowInRenameMode="true"
+									hc_key="hc-editor-key-renameShortcut" />
 								<button id="hc-editor-shortcutRenameCancel" label="&hc.editor.renameShortcutBtnCancel;" class="hcFloatButton hc-iconic"
 									oncommand="handyClicksEditor.renameShortcutCancel(); this.previousSibling.focus();"
 									hc_allowInRenameMode="true"

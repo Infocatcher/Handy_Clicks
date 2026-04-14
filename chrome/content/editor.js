@@ -1388,6 +1388,7 @@ var handyClicksEditor = {
 				accesskey: mp.getAttribute("hc_renameAccesskey"),
 				hc_rename: isRenaming ? "done" : "start",
 				oncommand: "handyClicksEditor.renameShortcut();",
+				key: "hc-editor-key-renameShortcut",
 				disabled: isRenaming ? canRename : !canRename
 			}), insPos);
 			if(isRenaming) df.insertBefore(this.ut.createElement("menuitem", {
