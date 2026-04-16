@@ -1430,6 +1430,8 @@ var handyClicksEditor = {
 		this.renameShortcut(false, true);
 	},
 	renameShortcut: function(onlyRename, forceCancel, syncSave) {
+		if(this.editorTabIndex != this.INDEX_SHORTCUT)
+			this.editorTabIndex = this.INDEX_SHORTCUT;
 		var rename = !this.renameMode;
 		this.renameMode = rename;
 		this.mainTabbox.handleCtrlTab = this.mainTabbox.handleCtrlPageUpDown = !rename;
