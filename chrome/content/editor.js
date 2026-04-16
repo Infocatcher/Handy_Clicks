@@ -1433,6 +1433,8 @@ var handyClicksEditor = {
 		if(this.editorTabIndex != this.INDEX_SHORTCUT)
 			this.editorTabIndex = this.INDEX_SHORTCUT;
 		var rename = !this.renameMode;
+		if(rename && this.$("hc-editor-shortcutRename").disabled)
+			return;
 		this.renameMode = rename;
 		this.mainTabbox.handleCtrlTab = this.mainTabbox.handleCtrlPageUpDown = !rename;
 		var act = rename ? addEventListener : removeEventListener;
