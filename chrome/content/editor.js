@@ -1433,8 +1433,16 @@ var handyClicksEditor = {
 		if(this.editorTabIndex != this.INDEX_SHORTCUT)
 			this.editorTabIndex = this.INDEX_SHORTCUT;
 		var rename = !this.renameMode;
-		if(rename && this.$("hc-editor-shortcutRename").disabled)
+		if(rename && this.$("hc-editor-shortcutRename").disabled) {
+			if(!this.currentType)
+				this.typeRequired();
+			else {
+				var hl = [this.$("hc-editor-savedShortcuts")];
+				this.highlightRequiredFields(hl, true, false, true);
+				this.highlightRequiredFields(hl, false);
+			}
 			return;
+		}
 		this.renameMode = rename;
 		this.mainTabbox.handleCtrlTab = this.mainTabbox.handleCtrlPageUpDown = !rename;
 		var act = rename ? addEventListener : removeEventListener;
