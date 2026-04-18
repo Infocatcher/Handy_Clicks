@@ -1436,11 +1436,8 @@ var handyClicksEditor = {
 		if(rename && this.$("hc-editor-shortcutRename").disabled) {
 			if(!this.currentType)
 				this.typeRequired();
-			else {
-				var hl = [this.$("hc-editor-savedShortcuts")];
-				this.highlightRequiredFields(hl, true, false, true);
-				this.highlightRequiredFields(hl, false);
-			}
+			else
+				this.notifyRequiredFields([this.$("hc-editor-savedShortcuts")]);
 			return;
 		}
 		this.renameMode = rename;
@@ -2424,10 +2421,12 @@ var handyClicksEditor = {
 			}
 		}, this);
 	},
+	notifyRequiredFields: function(fields) {
+		this.highlightRequiredFields(fields, true, false, true);
+		this.highlightRequiredFields(fields, false);
+	},
 	typeRequired: function() {
-		var nodes = [this.typesList];
-		this.highlightRequiredFields(nodes, true, false, true);
-		this.highlightRequiredFields(nodes, false);
+		this.notifyRequiredFields([this.typesList]);
 	},
 	checkMenulist: function(ml) {
 		//~ note: disabled state isn't checked
