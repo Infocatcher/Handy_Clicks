@@ -1464,12 +1464,13 @@ var handyClicksEditor = {
 		this._shortcutBeforeRename = this._typeBeforeRename = null;
 		var p = this.ps.prefs;
 		var so = this.ju.getOwnProperty(p, newSh, ct);
-		this.setShortcutRenamer(!so);
 		if(so || forceCancel) {
 			// Don't overwrite: cancel and restore initial shortcut
 			this.currentShortcut = sh;
+			this.setShortcutRenamer(!this.ju.getOwnProperty(p, sh, ct));
 			return;
 		}
+		this.setShortcutRenamer(!so);
 		// Rename shortcut
 		var so = this.ju.getOwnProperty(p, sh, ct);
 		if(!so) {
