@@ -1388,7 +1388,7 @@ var handyClicksEditor = {
 				accesskey: mp.getAttribute("hc_renameAccesskey"),
 				hc_rename: isRenaming ? "done" : "start",
 				oncommand: "handyClicksEditor.renameShortcut();",
-				key: "hc-editor-key-renameShortcut",
+				tooltiptext: this.$("hc-editor-shortcutRename").tooltipText,
 				disabled: isRenaming ? canRename : !canRename
 			}), insPos);
 			if(isRenaming) df.insertBefore(this.ut.createElement("menuitem", {
@@ -1399,7 +1399,7 @@ var handyClicksEditor = {
 						? this.getLocalized("alreadyUsed")
 						: ""
 				),
-				key: "hc-editor-key-esc",
+				tooltiptext: this.$("hc-editor-shortcutRenameCancel").tooltipText,
 				accesskey: mp.getAttribute("hc_renameCancelAccesskey"),
 				oncommand: "handyClicksEditor.renameShortcutCancel();"
 			}), insPos);
