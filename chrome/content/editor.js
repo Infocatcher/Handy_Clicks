@@ -1408,9 +1408,6 @@ var handyClicksEditor = {
 		mp.textContent = "";
 		mp.appendChild(df);
 
-		var box = mp.parentNode;
-		if(e && document.popupNode) // Ignore, if called from openShortcutsMenu()
-			mp.moveTo(e.screenX - 32, box.boxObject.screenY + box.boxObject.height);
 		if(!curType)
 			this.typeRequired();
 	},
