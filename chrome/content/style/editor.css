@@ -82,11 +82,11 @@ menulist[hc_sets="disabled"] .menulist-label {
 	text-decoration: line-through;
 }
 
-#hc-editor-renameShortcut[hc_rename="start"],
+#hc-editor-renameShortcut,
 #hc-editor-shortcutRename {
 	-moz-image-region: rect(48px 128px 64px 112px);
 }
-#hc-editor-renameShortcut[hc_rename="done"],
+:root[hc_renameMode] #hc-editor-renameShortcut,
 :root[hc_renameMode] #hc-editor-shortcutRename {
 	-moz-image-region: rect(64px 112px 80px 96px);
 }

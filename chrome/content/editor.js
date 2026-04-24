@@ -1386,7 +1386,6 @@ var handyClicksEditor = {
 						.replace("$s", this.ps.getShortcutStr(curSh, true))
 					: mp.getAttribute("hc_renameStart"),
 				accesskey: mp.getAttribute("hc_renameAccesskey"),
-				hc_rename: isRenaming ? "done" : "start",
 				oncommand: "handyClicksEditor.renameShortcut();",
 				tooltiptext: this.$("hc-editor-shortcutRename").tooltipText,
 				disabled: isRenaming ? canRename : !canRename
