@@ -1333,10 +1333,16 @@ var handyClicksEditor = {
 		this.$("hc-editor-os").checked = e.getModifierState && e.getModifierState("OS");
 		this.loadFuncs();
 	},
-	openShortcutsMenu: function() {
+	openShortcutsMenu: function(e) {
 		if(this.editorTabIndex != this.INDEX_SHORTCUT)
 			this.editorTabIndex = this.INDEX_SHORTCUT;
 		this.$("hc-editor-savedShortcuts").open = true;
+		if(e) {
+			var mp = this.$("hc-editor-savedShortcutsPopup");
+			var anchorBo = this.$("hc-editor-shortcutBox").boxObject;
+			if("openPopup" in mp) // Handle only modern popups (Firefox 4+)
+				mp.moveTo(e.screenX - 32, anchorBo.screenY + anchorBo.height);
+		}
 	},
 	loadSavedShortcuts: function(e) {
 		var shortcuts = [];
