@@ -231,6 +231,14 @@
 `x` Fixed search in settings tree after delayed action deletion: correctly remove link to removed delayed action DOM node.<br>
 `*` Search for full original code, even if displayed string was cropped (<em>extensions.handyclicks.sets.codeLengthLimit.limitSearch</em> preference).<br>
 `+` Added %long% search placeholders for cropped too long code strings (<em>extensions.handyclicks.sets.codeLengthLimit</em> and <em>extensions.handyclicks.sets.codeLengthLimit.preserveLines</em> preferences).<br>
+`x` Settings: don't mark functions from not available extensions as buggy (will be saved correctly).<br>
+`+` Settings, editor: show alternative hotkeys in tooltips.<br>
+`*` Settings: scroll to current search result, if filter mode was changed.<br>
+`+` Settings: restore current search index (for <em>extensions.handyclicks.sets.rememberSearchQuery</em> = true preference).<br>
+`+` Settings: added F1 hotkey (if focused import panel) and Ctrl+Shift+D hotkey (global) to show/hide tooltip for files data.<br>
+`*` Editor: clarified rename and save confirmation: just ask twice.<br>
+`*` Editor: converted “Fix” checkbox into button (and renamed to “Lock”).<br>
+`x` Editor: correctly open error line in context menu detection for custom type.<br>
 `*` Various internal code enhancements.<br>
 
 ##### legacy-0.1.3.x/HEAD
