@@ -89,7 +89,7 @@
 `+` Settings window: added ability to import settings using drag-and-drop (.ini/.js files, settings links or settings in plain text).<br>
 `*` Restore scroll position in tree: workaround to force scroll to last row.<br>
 `*` Editor: sort custom types alphabetically (by label), ability to also sort built-in types (<em>extensions.handyclicks.editor.ui.sortInternalTypes</em> preference, disabled by default).<br>
-`+` Editor: added context menu to open saved shortcut.<br>
+`+` Editor: added menu-button and context menu to open saved shortcut.<br>
 `*` Rewritten and corrected code to select items in tree using mouse move (press mouse button and then drag to select): correctly select from topmost and bottommost visible rows (also don't scroll after inaccurate click with small mouse movement), reduced autoscroll speed, optimized performance.<br>
 `x` Fixed notification window: don't show outside of screen.<br>
 `*` Rewritten notification window to better show very long messages (also introduced <em>extensions.handyclicks.notify.messageMaxWidth</em> and <em>extensions.handyclicks.notify.messageMaxHeight</em> preferences), also now used CSS transitions for closing timer visualization.<br>
@@ -134,7 +134,7 @@
 `*` Edit mode tooltip: show URLs in multiple lines (e.g. for tab bar).<br>
 `*` Improved code length limit to not show too long code in settings tree: <em>extensions.handyclicks.sets.codeLengthLimit</em> = 0 to not crop code, added <em>extensions.handyclicks.sets.codeLengthLimit.preserveLines</em> preference (max additional chars to show entire line).<br>
 `*` Reload image: ignore data:… URIs (nothing to reload) + apply “blink” animation to image.<br>
-`+` Editor: added context menu item to rename shortcut.<br>
+`+` Editor: added button and context menu item to rename shortcut.<br>
 `x` Fixed hotkeys to import from clipboard (Ctrl+V, Ctrl+Shift+V, Shift+Ins): now used separate command, which will never be disabled.<br>
 `+` Import settings: show (and highlight) removed items in replace mode (available only “Edit saved” from context menu), also added %old% search placeholder (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/34">#34</a>).<br>
 `*` Improved appearance of import statistics: aligned using grid, highlight non-zero values, link-like color to highlight hovered clickable rows.<br>
