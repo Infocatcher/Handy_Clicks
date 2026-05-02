@@ -4622,6 +4622,8 @@ var handyClicksSets = {
 	showImportFilesStats: function() {
 		if(!this._import)
 			return;
+		if(!this.isTreePaneSelected)
+			this.selectTreePane();
 		var tt = this.$("hc-sets-tree-importFilesTip");
 		if(tt.state == "open") {
 			tt.hidePopup();
