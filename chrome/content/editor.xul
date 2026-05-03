@@ -128,7 +128,8 @@
 					<box id="hc-editor-renameShortcutOverlay" />
 					<button id="hc-editor-savedShortcuts" type="menu" hc_allowInRenameMode="true" noinitialfocus="true"
 						tooltiptext="&hc.editor.shortcutsMenu;"
-						hc_key="hc-editor-key-shortcutsMenu">
+						hc_key="hc-editor-key-shortcutsMenu"
+						oncontextmenu="if(event.target == this) handyClicksEditor.openShortcutsMenu(event);">
 						<menupopup id="hc-editor-savedShortcutsPopup"
 							onpopupshowing="if(!('_hcIgnore' in event)) handyClicksEditor.loadSavedShortcuts(event);"
 							onpopupshown="handyClicksSetsUtils.fixAccelWidth(this);"
