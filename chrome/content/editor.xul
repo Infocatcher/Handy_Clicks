@@ -134,6 +134,7 @@
 							onpopupshowing="if(!('_hcIgnore' in event)) handyClicksEditor.loadSavedShortcuts(event);"
 							onpopupshown="handyClicksSetsUtils.fixAccelWidth(this);"
 							oncommand="event.stopPropagation(); handyClicksEditor.loadSavedShortcut(event);"
+							oncontextmenu="var trg = event.target; if(trg.localName == 'menuitem') { trg.doCommand(); this.hidePopup(); }"
 							hc_renameStart="&hc.editor.renameShortcut;"
 							hc_renameDone="&hc.editor.renameShortcutDone;"
 							hc_renameDoneDisabled="&hc.editor.renameShortcutDoneDisabled;"
