@@ -113,7 +113,7 @@ menulist[hc_sets="disabled"] .menulist-label {
 	background: -moz-Dialog;
 	opacity: 0.68;
 }
-:root[hc_renameMode] [hc_allowInRenameMode="true"] {
+:root[hc_renameMode] [hc_allowInRenameMode] {
 	position: relative;
 	z-index: 10002;
 }
