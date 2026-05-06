@@ -745,9 +745,15 @@ var handyClicksSetsUtils = {
 				delete node.__keys;
 				if(!keyDesk)
 					return;
-				var ttm = node.getAttribute("hc_tooltipMessage");
-				if(ttm) {
-					node.setAttribute("hc_tooltipMessage", ttm + " (" + keyDesk + ")");
+				if(
+					node.hasAttribute("hc_tooltipMessage")
+					|| node.hasAttribute("hc_tooltipWarning")
+				) {
+					var ttm = node.getAttribute("hc_tooltipMessage");
+					node.setAttribute("hc_tooltipMessage", ttm
+						? ttm + " (" + keyDesk + ")"
+						: keyDesk
+					);
 					return;
 				}
 				var ttId = node.getAttribute("tooltip");
