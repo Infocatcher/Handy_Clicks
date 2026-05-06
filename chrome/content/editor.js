@@ -1452,15 +1452,15 @@ var handyClicksEditor = {
 		var renameBtn = this.$("hc-editor-shortcutRename");
 		renameBtn.label = renameBtn.getAttribute("hc_labelRename" + (rename ? "Done" : ""));
 		if(rename) {
-			var fe = document.commandDispatcher.focusedElement;
-			if(!fe || fe.parentNode.id != "hc-editor-shortcutBox")
-				this.$("hc-editor-button").focus();
 			this.$("hc-editor-renameShortcutOverlay").style
 				.backgroundColor = getComputedStyle(this.de, null).backgroundColor;
 			this.funcOptsLocked && this.lockFuncOpts();
 			this._shortcutBeforeRename = this.currentShortcut;
 			this._typeBeforeRename = this.currentType;
 			this.setShortcutRenamer(true);
+			var fe = document.commandDispatcher.focusedElement;
+			if(!fe || !fe.hasAttribute("hc_allowInRenameMode") || fe.disabled)
+				this.$("hc-editor-shortcutRenameCancel").focus();
 			return;
 		}
 		var sh = this._shortcutBeforeRename;
