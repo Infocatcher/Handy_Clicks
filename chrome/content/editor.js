@@ -1400,8 +1400,10 @@ var handyClicksEditor = {
 				id: "hc-editor-renameShortcut-cancel",
 				class: "menuitem-iconic hc-iconic",
 				label: mp.getAttribute("hc_renameCancel") + (
-					canRename && curSh != this._shortcutBeforeRename
-						? this.getLocalized("alreadyUsed")
+					canRename
+						? curSh == this._shortcutBeforeRename
+							? this.getLocalized("notChanged")
+							: this.getLocalized("alreadyUsed")
 						: ""
 				),
 				tooltiptext: this.$("hc-editor-shortcutRenameCancel").tooltipText,
