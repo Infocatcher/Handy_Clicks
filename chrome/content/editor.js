@@ -877,7 +877,9 @@ var handyClicksEditor = {
 		var tn = document.tooltipNode;
 		if(!tn)
 			return false;
-		var msg = tn.getAttribute("hc_tooltipMessage") || "";
+		var msg  = tn.getAttribute("hc_tooltipMessage") || "";
+		var note = tn.getAttribute("hc_tooltipNote")    || "";
+		var wrn  = tn.getAttribute("hc_tooltipWarning") || "";
 		var editable = tn.localName == "textbox" && tn.getAttribute("readonly") != "true"
 			|| tn.localName == "menulist" && tn.getAttribute("editable") == "true";
 		this.$("hc-editor-labelTip-localize").hidden = !!msg || !editable;
@@ -887,7 +889,7 @@ var handyClicksEditor = {
 			msg = raw && localized == raw ? this.getLocalized("notLocalized") : localized;
 		}
 		this.$("hc-editor-labelTip-message").value = msg;
-		var wrn = tn.getAttribute("hc_tooltipWarning") || "";
+		this.$("hc-editor-labelTip-note")   .value = note;
 		this.$("hc-editor-labelTip-warning").value = wrn;
 		this.su.checkDarkFont(tt);
 		return true;
