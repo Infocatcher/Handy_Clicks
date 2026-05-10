@@ -1848,6 +1848,9 @@ var handyClicksEditor = {
 				editCodeBtn.removeAttribute("hc_fileNotFound");
 			if(!editCodeBtn.hasAttribute("hc_isDarkFont")) // Only once... for better performance
 				this.su.checkDarkFont(editCodeBtn);
+			var note = path ? this.getLocalized("contextForFile") : "";
+			if(editCodeBtn.getAttribute("hc_tooltipNote") != note)
+				editCodeBtn.setAttribute("hc_tooltipNote", note);
 			var wrn = notFound ? this.getLocalized("cantEditFile") : "";
 			if(editCodeBtn.getAttribute("hc_tooltipWarning") != wrn)
 				editCodeBtn.setAttribute("hc_tooltipWarning", wrn);
