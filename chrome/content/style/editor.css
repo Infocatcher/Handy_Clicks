@@ -264,7 +264,8 @@ menulist:not([label]) > .menulist-label-box, menulist[label=""] > .menulist-labe
 #hc-editor-labelTip > label[value=""] {
 	display: none;
 }
-#hc-editor-labelTip-localize {
+#hc-editor-labelTip-localize,
+#hc-editor-labelTip-note {
 	font-style: italic;
 }
 #hc-editor-labelTip-warning {
