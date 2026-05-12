@@ -886,7 +886,13 @@ var handyClicksEditor = {
 		if(!msg && editable) {
 			var raw = tn.value || "";
 			var localized = raw && this.ps.localize(raw) || "";
-			msg = raw && localized == raw ? this.getLocalized("notLocalized") : localized;
+			var notLocalized = localized == raw;
+			msg = raw && notLocalized ? this.getLocalized("notLocalized") : localized;
+			if(!note && raw && !notLocalized && !/^en/.test(this.ps.locale)) {
+				var en = this.ps.localize(raw, "en-US") || "";
+				if(en != raw)
+					note = en;
+			}
 		}
 		this.$("hc-editor-labelTip-message").value = msg;
 		this.$("hc-editor-labelTip-note")   .value = note;

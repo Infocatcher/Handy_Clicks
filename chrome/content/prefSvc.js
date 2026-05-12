@@ -761,12 +761,13 @@ var handyClicksPrefSvc = {
 		delete this.locale;
 		return this.locale = this.pu.get("locale") || this.ut.xcr.getSelectedLocale("global");
 	},
-	localize: function lz(data) {
+	localize: function lz(data, locale) {
 		//lz._localized = false;
 		if(!data)
 			return data;
 		// "String in English @ru: String in Russian @xx: ..."
-		var locale = this.locale;
+		if(!locale)
+			locale = this.locale;
 		var locales = { __proto__: null };
 		var pos = 0;
 		data = data.replace(/ *@([a-z]{2,3}(?:-[A-Z]{2})?): *(?=\S)/g, function(sep, locale) {
