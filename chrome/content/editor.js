@@ -1344,13 +1344,17 @@ var handyClicksEditor = {
 	openShortcutsMenu: function(e) {
 		if(this.editorTabIndex != this.INDEX_SHORTCUT)
 			this.editorTabIndex = this.INDEX_SHORTCUT;
-		this.$("hc-editor-savedShortcuts").open = true;
 		if(e) {
 			var mp = this.$("hc-editor-savedShortcutsPopup");
 			var anchorBo = this.$("hc-editor-shortcutBox").boxObject;
-			if("openPopup" in mp) // Handle only modern popups (Firefox 4+)
-				mp.moveTo(e.screenX - 32, anchorBo.screenY + anchorBo.height);
+			mp.__hcXY = {
+				x: e.screenX - 32,
+				y: anchorBo.screenY + anchorBo.height
+			};
 		}
+		this.$("hc-editor-savedShortcuts").open = true;
+		if(e && mp)
+			delete mp.__hcXY;
 	},
 	loadSavedShortcuts: function(e) {
 		var shortcuts = [];
@@ -1422,6 +1426,13 @@ var handyClicksEditor = {
 		}
 		mp.textContent = "";
 		mp.appendChild(df);
+
+		var xy = mp.__hcXY || null;
+		if(xy) {
+			delete mp.__hcXY;
+			if("openPopup" in mp) // Handle only modern popups (Firefox 4+)
+				mp.moveTo(xy.x, xy.y);
+		}
 
 		if(!curType)
 			this.typeRequired();
