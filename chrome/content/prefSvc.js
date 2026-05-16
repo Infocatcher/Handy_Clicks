@@ -783,9 +783,7 @@ var handyClicksPrefSvc = {
 		lz._localized = true;
 		return localize(locale)
 			|| /^([a-z]+)-/.test(locale) && localize(RegExp.$1)
-			|| localized[0]
-			|| localize("en-US")
-			|| localize("en");
+			|| localized[0];
 	},
 
 	errInfo: function(errMsgId, err, type, isDelayed, fnLabel) {
