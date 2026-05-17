@@ -761,13 +761,12 @@ var handyClicksPrefSvc = {
 		delete this.locale;
 		return this.locale = this.pu.get("locale") || this.ut.xcr.getSelectedLocale("global");
 	},
-	localize: function lz(data, locale) {
+	localize: function lz(data, getDefault) {
 		//lz._localized = false;
 		if(!data)
 			return data;
 		// "String in English @ru: String in Russian @xx: ..."
-		if(!locale)
-			locale = this.locale;
+		var locale = this.locale;
 		var locales = { __proto__: null };
 		var pos = 0;
 		data = data.replace(/ *@([a-z]{2,3}(?:-[A-Z]{2})?): *(?=\S)/g, function(sep, locale) {
@@ -781,6 +780,8 @@ var handyClicksPrefSvc = {
 			return locales[locale] && localized[locales[locale]];
 		};
 		lz._localized = true;
+		if(getDefault)
+			return localized[0];
 		return localize(locale)
 			|| /^([a-z]+)-/.test(locale) && localize(RegExp.$1)
 			|| localized[0];
