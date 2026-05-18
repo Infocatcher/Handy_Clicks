@@ -886,11 +886,12 @@ var handyClicksEditor = {
 		if(!msg && editable) {
 			var raw = tn.value || "";
 			var localized = raw && this.ps.localize(raw) || "";
-			var notLocalized = localized == raw;
-			msg = raw && notLocalized ? this.getLocalized("notLocalized") : localized;
-			if(!note && raw && !/^en/.test(this.ps.locale)) {
+			msg = localized || raw;
+			if(raw && localized == raw)
+				note = this.getLocalized("notLocalized");
+			else if(raw && !/^en/.test(this.ps.locale)) {
 				var en = this.ps.localize(raw, true) || "";
-				if(en != raw || notLocalized)
+				if(en != raw)
 					note = en;
 			}
 		}
