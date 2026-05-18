@@ -882,12 +882,14 @@ var handyClicksEditor = {
 		var wrn  = tn.getAttribute("hc_tooltipWarning") || "";
 		var editable = tn.localName == "textbox" && tn.getAttribute("readonly") != "true"
 			|| tn.localName == "menulist" && tn.getAttribute("editable") == "true";
-		this.$("hc-editor-labelTip-localize").hidden = !!msg || !editable;
+		var localizeNote = this.$("hc-editor-labelTip-localize");
+		localizeNote.hidden = !!msg || !editable;
 		if(!msg && editable) {
 			var raw = tn.value || "";
 			var localized = raw && this.ps.localize(raw) || "";
+			var isLocalized = raw && localized != raw;
 			msg = localized || raw;
-			if(raw && localized == raw)
+			if(raw && !isLocalized)
 				note = this.getLocalized("notLocalized");
 			else if(raw && !/^en/.test(this.ps.locale)) {
 				var en = this.ps.localize(raw, true) || "";
@@ -895,6 +897,7 @@ var handyClicksEditor = {
 					note = en;
 			}
 		}
+		localizeNote.setAttribute("hc_localized", !!isLocalized);
 		this.$("hc-editor-labelTip-message").value = msg;
 		this.$("hc-editor-labelTip-note")   .value = note;
 		this.$("hc-editor-labelTip-warning").value = wrn;
