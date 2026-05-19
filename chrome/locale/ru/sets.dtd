@@ -146,7 +146,7 @@
 <!ENTITY hc.sets.importFromClipboard "Импорт из буфера обмена">
 <!ENTITY hc.sets.importOk "Импортировать">
 <!ENTITY hc.sets.importOkAccesskey "м">
-<!ENTITY hc.sets.importCancel "Отменить">
+<!ENTITY hc.sets.importCancel "Отмена">
 <!ENTITY hc.sets.importCancelAccesskey "О">
 
 <!ENTITY hc.sets.importFilesData "Файлы">
