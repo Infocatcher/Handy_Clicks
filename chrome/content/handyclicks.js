@@ -60,6 +60,7 @@ var handyClicks = {
 			case "mouseup":      this.mouseupHandler(e);      break;
 			case "command":      this.commandHandler(e);      break;
 			case "dblclick":     this.dblclickHandler(e);     break;
+			case "auxclick":     this.auxclickHandler(e);     break;
 			case "contextmenu":  this.contextmenuHandler(e);  break;
 			case "popupshowing": this.popupshowingHandler(e); break;
 			case "mousemove":    this.mousemoveHandler(e);    break;
@@ -100,7 +101,7 @@ var handyClicks = {
 		if(enable == this._hasListeners)
 			return;
 		this._hasListeners = enable;
-		this.setListeners(["mousedown", "click", "command", "mouseup", "dblclick", "contextmenu", "popupshowing"], enable);
+		this.setListeners(["mousedown", "click", "command", "mouseup", "dblclick", "auxclick", "contextmenu", "popupshowing"], enable);
 		if(!enable || this.storage.get("activeLinkedFiles"))
 			this.watchLinkedFiles(enable);
 		this._log("initListeners(" + enable + ")");
@@ -372,10 +373,32 @@ var handyClicks = {
 		var funcObj = this.getFuncObjByEvt(e);
 		funcObj && this.functionEvent(funcObj, e);
 	},
+	_ignoreAuxclick: false,
+	_lastAuxclick: 0,
 	dblclickHandler: function(e) {
 		if(!this.enabled)
 			return;
 		if(this.flags.allowEvents)
+			return;
+		if(e.button > 0)
+			this._ignoreAuxclick = true;
+		var funcObj = this.getFuncObjByEvt(e);
+		funcObj && this.functionEvent(funcObj, e);
+	},
+	auxclickHandler: function(e) {
+		if(!this.enabled)
+			return;
+		if(this.flags.allowEvents)
+			return;
+		if(this._ignoreAuxclick)
+			return;
+		if(e.button == 0)
+			return;
+		if(e.originalTarget != this.origItem)
+			return;
+		var tl = this._lastAuxclick;
+		var tn = this._lastAuxclick = Date.now();
+		if(tn - tl > 300)
 			return;
 		var funcObj = this.getFuncObjByEvt(e);
 		funcObj && this.functionEvent(funcObj, e);
@@ -1285,10 +1308,13 @@ var handyClicks = {
 
 	// Execute function:
 	functionEvent: function(funcObj, e) {
+		var type = e.type;
+		if(type == "auxclick")
+			type = "dblclick";
 		if(
 			this.flags.runned
 			|| this.flags.cancelled
-			|| (!this.editMode && e.type != funcObj.eventType)
+			|| (!this.editMode && type != funcObj.eventType)
 			|| !this.itemType // (!this.editMode && !this.itemType)
 		) {
 			//this.editMode = false;
