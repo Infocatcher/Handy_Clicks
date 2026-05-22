@@ -12,6 +12,7 @@ pref("extensions.handyclicks.blacklist.2", "");
 pref("extensions.handyclicks.focusOnItems", true);
 pref("extensions.handyclicks.disallowMousemoveButtons", "02");
 pref("extensions.handyclicks.disallowMousemoveDist", 12);
+pref("extensions.handyclicks.dblclickDelay", 350);
 pref("extensions.handyclicks.delayedActionTimeout", 500);
 pref("extensions.handyclicks.cacheCustomFunctions", true);
 // true  - call new Function() only once (and cache result), better performance

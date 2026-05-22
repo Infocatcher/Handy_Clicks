@@ -398,7 +398,7 @@ var handyClicks = {
 			return;
 		var tl = this._lastAuxclick;
 		var tn = this._lastAuxclick = Date.now();
-		if(tn - tl > 300)
+		if(tn - tl > this.pu.get("dblclickDelay"))
 			return;
 		var funcObj = this.getFuncObjByEvt(e);
 		funcObj && this.functionEvent(funcObj, e);
