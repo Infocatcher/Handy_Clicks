@@ -1429,9 +1429,12 @@ var handyClicks = {
 		this.focusOnItem();
 
 		if(this._debug) {
+			var et = e.type;
+			if(et == "auxclick")
+				et = "auxclick~>dblclick";
 			var eStr = this.ps.getEvtStr(e || this.event);
 			this._log(
-				(isDeleyed ? "delayedAction" : e.type)
+				(isDeleyed ? "delayedAction" : et)
 				+ " -> " + this.ps.getModifiersStr(eStr) + " + " + this.ps.getButtonStr(eStr, true)
 				+ "\n=> executeFunction()"
 				+ "\nnodeName = " + (this.origItem ? this.origItem.nodeName : "?")
