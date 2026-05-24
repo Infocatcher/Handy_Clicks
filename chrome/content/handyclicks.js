@@ -1308,13 +1308,13 @@ var handyClicks = {
 
 	// Execute function:
 	functionEvent: function(funcObj, e) {
-		var type = e.type;
-		if(type == "auxclick")
-			type = "dblclick";
+		var et = e.type;
+		if(et == "auxclick")
+			et = "dblclick";
 		if(
 			this.flags.runned
 			|| this.flags.cancelled
-			|| (!this.editMode && type != funcObj.eventType)
+			|| (!this.editMode && et != funcObj.eventType)
 			|| !this.itemType // (!this.editMode && !this.itemType)
 		) {
 			//this.editMode = false;
