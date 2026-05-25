@@ -420,8 +420,10 @@ var handyClicks = {
 
 	// Special handlers:
 	contextmenuHandler: function(e) {
-		if(this.enabled && this.flags.stopContextMenu)
+		if(this.enabled && this.flags.stopContextMenu) {
+			this._log("contextmenuHandler() -> stopEvent()");
 			this.ut.stopEvent(e);
+		}
 	},
 	popupshowingHandler: function(e) {
 		// Force prevent any popup
@@ -524,6 +526,7 @@ var handyClicks = {
 				)
 				: stop
 		) {
+			this._log(e.type + " -> checkForStopEvent() -> stopEvent()");
 			if(isMouseup && e.view.top === content) { // Prevent page handlers, but don't stop FireGestures extension
 				var br = gBrowser.selectedBrowser;
 				var _this = this;
@@ -1347,6 +1350,7 @@ var handyClicks = {
 			this.executeFunction(da, e, true);
 		}
 		else {
+			this._log("executeDelayedAction() -> showPopupOnItem()");
 			this.showPopupOnItem();
 			this.handledItem = e.originalTarget;
 		}
