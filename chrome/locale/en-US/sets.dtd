@@ -173,7 +173,7 @@
 
 <!ENTITY hc.sets.clickPrefsTitle "Preferences">
 
-<!ENTITY hc.sets.enabled "Enabled">
+<!ENTITY hc.sets.enabled "Enable click handling">
 
 <!ENTITY hc.sets.delayedActionTimeout "Timeout for delayed action:">
 <!ENTITY hc.sets.zeroForDisable "ms (0 to disable)">

@@ -173,7 +173,7 @@
 
 <!ENTITY hc.sets.clickPrefsTitle "Настройки">
 
-<!ENTITY hc.sets.enabled "Включено">
+<!ENTITY hc.sets.enabled "Включить обработку кликов">
 
 <!ENTITY hc.sets.delayedActionTimeout "Задержка отложенного действия:">
 <!ENTITY hc.sets.zeroForDisable "мс (0 для отключения)">
