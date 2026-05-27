@@ -8,13 +8,13 @@
 
 <!ENTITY hc.sets.exportPrefs "Export about:config preferences to file…">
 <!ENTITY hc.sets.importPrefs "Import about:config preferences from file…">
-<!ENTITY hc.sets.reloadTree "Reload clicks options">
+<!ENTITY hc.sets.reloadTree "Reload click options">
 <!ENTITY hc.sets.reloadPrefs "Reload about:config preferences">
 <!ENTITY hc.sets.reloadAllSettings "Reload all settings">
 <!ENTITY hc.sets.defaults "Reset about:config preferences to defaults…">
 <!ENTITY hc.sets.allPrefs "All about:config preferences">
 
-<!ENTITY hc.sets.clickOptionsTitle "Clicks options">
+<!ENTITY hc.sets.clickOptionsTitle "Click options">
 
 <!ENTITY hc.sets.columnShortcutAndTarget "Shortcut and target">
 <!ENTITY hc.sets.columnEvent "Event">
@@ -186,7 +186,7 @@
 <!ENTITY hc.sets.notifyDontOpenTwice "Don't open the same notification twice">
 
 <!ENTITY hc.sets.disallowMousemoveCaption "Mouse gestures, drag-and-drop">
-<!ENTITY hc.sets.disallowMousemove "Stop clicks handling, if mouse was moved with pressed button:">
+<!ENTITY hc.sets.disallowMousemove "Stop click handling, if mouse was moved with pressed button:">
 <!ENTITY hc.sets.left "Left">
 <!ENTITY hc.sets.middle "Middle">
 <!ENTITY hc.sets.right "Right">
