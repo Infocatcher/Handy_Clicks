@@ -4341,10 +4341,16 @@ var handyClicksSets = {
 		var removeDepth2 = this.pu.get("sets.backupUserRemoveDepth2");
 		var miRemove = this.$("hc-sets-tree-removeUserBackups");
 		var miRemove2 = this.$("hc-sets-tree-removeUserBackups2");
+		var hideRemove = removeDepth < 0;
+		var hideRemove2 = removeDepth2 < 0 || removeDepth2 == removeDepth;
 		miRemove.setAttribute("label", miRemove.getAttribute("hc_label").replace("$n", removeDepth));
 		miRemove2.setAttribute("label", miRemove2.getAttribute("hc_label").replace("$n", removeDepth2));
 		miRemove.setAttribute("disabled", ubCount <= removeDepth);
 		miRemove2.setAttribute("disabled", ubCount <= removeDepth2);
+		miRemove.hidden = hideRemove;
+		miRemove2.hidden = hideRemove2;
+		this.$("hc-sets-tree-removeUserBackups-separator").hidden = hideRemove && hideRemove2;
+
 		this.su.checkDarkFont(this.$("hc-sets-tree-openBackupsDir"), popup);
 	},
 	removeOldUserBackups: function(store) {
