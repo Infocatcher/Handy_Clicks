@@ -101,8 +101,8 @@ pref("extensions.handyclicks.sets.backupAutoDepth", 10);
 pref("extensions.handyclicks.sets.backupAutoInterval", 86400); // 24*60*60
 pref("extensions.handyclicks.sets.backupTestDepth", 5);
 pref("extensions.handyclicks.sets.backupCorruptedDepth", 15);
-pref("extensions.handyclicks.sets.backupUserRemoveDepth", 5);
-pref("extensions.handyclicks.sets.backupUserRemoveDepth2", 10);
+pref("extensions.handyclicks.sets.backupUserRemoveDepth", 5); // -1 to hide menu item
+pref("extensions.handyclicks.sets.backupUserRemoveDepth2", 10); // -1 to hide menu item
 pref("extensions.handyclicks.sets.removeBackupConfirm", true);
 pref("extensions.handyclicks.sets.removeOldBackupsConfirm", true);
 pref("extensions.handyclicks.sets.removeFileConfirm", true);
