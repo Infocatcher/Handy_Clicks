@@ -64,7 +64,7 @@
 `+` Added ability to not ignore clicks on tab close buttons (“Exclude close button” checkbox in editor).<br>
 `*` Improved warning for custom type disabling: show count of enabled related settings, which will be also disabled.<br>
 `+` Added ability to remember tree state (View – Remember tree state, <em>extensions.handyclicks.sets.rememberState</em> preference).<br>
-`*` Make menu items to remove user backups configurable (<em>extensions.handyclicks.sets.backupUserRemoveDepth</em> and <em>extensions.handyclicks.sets.backupUserRemoveDepth2</em> preferences).<br>
+`*` Make menu items to remove user backups configurable (<em>extensions.handyclicks.sets.backupUserRemoveDepth</em> and <em>extensions.handyclicks.sets.backupUserRemoveDepth2</em> preferences, -1 to hide menu item).<br>
 `*` Optimized usage of “properties” attribute in XUL tree (≈1.5x faster tree drawing).<br>
 `+` Added %delay% search placeholder to search for delayed actions.<br>
 `*` Show file description (instead of product name and useless version) in tooltip for icon of external editor, also try show description in MacOS (not tested).<br>
