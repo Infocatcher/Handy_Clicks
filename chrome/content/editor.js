@@ -1350,7 +1350,10 @@ var handyClicksEditor = {
 			this.editorTabIndex = this.INDEX_SHORTCUT;
 		if(e) {
 			var mp = this.$("hc-editor-savedShortcutsPopup");
-			var anchorBo = this.$("hc-editor-shortcutBox").boxObject;
+			var anchor = e.currentTarget.id == "hc-editor-renameShortcutToolbar"
+				? e.currentTarget
+				: this.$("hc-editor-shortcutBox");
+			var anchorBo = anchor.boxObject;
 			mp.__hcXY = {
 				x: e.screenX - 32,
 				y: anchorBo.screenY + anchorBo.height
