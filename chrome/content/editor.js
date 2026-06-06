@@ -1345,6 +1345,9 @@ var handyClicksEditor = {
 		this.$("hc-editor-os").checked = e.getModifierState && e.getModifierState("OS");
 		this.loadFuncs();
 	},
+	openSettingsMenu: function() {
+		this.$("hc-editor-sets").open = true;
+	},
 	openShortcutsMenu: function(e) {
 		if(this.editorTabIndex != this.INDEX_SHORTCUT)
 			this.editorTabIndex = this.INDEX_SHORTCUT;

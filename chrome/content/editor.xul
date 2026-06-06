@@ -71,6 +71,7 @@
 		<key id="hc-editor-key-delete" key="d" modifiers="control" oncommand="handyClicksEditor.deleteSettings();" />
 		<key id="hc-editor-key-reload" keycode="VK_F5" command="hc-editor-cmd-reloadSettings" />
 		<key id="hc-editor-key-reload2" key="r" modifiers="control" command="hc-editor-cmd-reloadSettings" />
+		<key id="hc-editor-key-settingsMenu" keycode="VK_F2" modifiers="shift" hc_allowInRenameMode="true" oncommand="handyClicksEditor.openSettingsMenu();" />
 		<key id="hc-editor-key-switchToSettings" keycode="VK_F3" hc_allowInRenameMode="true" oncommand="handyClicksEditor.switchToSettings();" />
 		<key id="hc-editor-key-shortcutsMenu" keycode="VK_F3" modifiers="shift" hc_allowInRenameMode="true" oncommand="handyClicksEditor.openShortcutsMenu();" />
 		<key id="hc-editor-key-renameShortcut" key="r" modifiers="control,shift" hc_allowInRenameMode="true" oncommand="handyClicksEditor.renameShortcut();" />
@@ -421,6 +422,7 @@
 
 	<hbox id="hc-sets-floatToolbar" hc_allowInRenameMode="true">
 		<button id="hc-editor-sets" class="hcFloatButton hc-iconic hc-preferences" type="menu"
+			hc_key="hc-editor-key-settingsMenu"
 			hc_allowInRenameMode="true"
 			label="&hc.editor.settings;" accesskey="&hc.editor.settingsAccesskey;">
 			<menupopup id="hc-editor-sets-popup"
