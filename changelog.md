@@ -240,6 +240,7 @@
 `*` Editor: converted “Fix” checkbox into button (and renamed to “Lock”).<br>
 `x` Editor: correctly open error line in context menu detection for custom type.<br>
 `x` Workaround for middle- and right-dblclick in Firefox 53+ (now used auxclick event listener and <em>extensions.handyclicks.dblclickDelay</em> preferences).<br>
+`+` Editor: added Shift+F2 hotkey to open settings menu.<br>
 `*` Various internal code enhancements.<br>
 
 ##### legacy-0.1.3.x/HEAD
