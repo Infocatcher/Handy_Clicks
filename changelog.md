@@ -134,7 +134,7 @@
 `*` Edit mode tooltip: show URLs in multiple lines (e.g. for tab bar).<br>
 `*` Improved code length limit to not show too long code in settings tree: <em>extensions.handyclicks.sets.codeLengthLimit</em> = 0 to not crop code, added <em>extensions.handyclicks.sets.codeLengthLimit.preserveLines</em> preference (max additional chars to show entire line).<br>
 `*` Reload image: ignore data:… URIs (nothing to reload) + apply “blink” animation to image.<br>
-`+` Editor: added button and context menu item to rename shortcut.<br>
+`+` Editor: added button and context menu item to rename shortcut (Ctrl+Shift+R/F2 hotkey).<br>
 `x` Fixed hotkeys to import from clipboard (Ctrl+V, Ctrl+Shift+V, Shift+Ins): now used separate command, which will never be disabled.<br>
 `+` Import settings: show (and highlight) removed items in replace mode (available only “Edit saved” from context menu), also added %old% search placeholder (<a href="https://github.com/Infocatcher/Handy_Clicks/issues/34">#34</a>).<br>
 `*` Improved appearance of import statistics: aligned using grid, highlight non-zero values, link-like color to highlight hovered clickable rows.<br>
@@ -240,7 +240,8 @@
 `*` Editor: converted “Fix” checkbox into button (and renamed to “Lock”).<br>
 `x` Editor: correctly open error line in context menu detection for custom type.<br>
 `x` Workaround for middle- and right-dblclick in Firefox 53+ (now used auxclick event listener and <em>extensions.handyclicks.dblclickDelay</em> preferences).<br>
-`+` Editor: added Shift+F2 hotkey to open settings menu.<br>
+`+` Editor: added Shift+F3 hotkey to open settings menu.<br>
+`*` Editor: changed hotkey to open shortcuts menu: Shift+F3 → Shift+F2 (to match F2 hotkey to rename shortcut).<br>
 `*` Various internal code enhancements.<br>
 
 ##### legacy-0.1.3.x/HEAD
