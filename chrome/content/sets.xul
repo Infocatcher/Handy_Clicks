@@ -55,7 +55,7 @@ preferences {
 				<menupopup id="hc-sets-tree-searchPopup"
 					onpopupshowing="if(!('_hcIgnore' in event)) handyClicksSets.initSearchMenu(this);"
 					onpopupshown="handyClicksSetsUtils.fixAccelWidth(this);"
-					oncommand="handyClicksSets.insertSearchPlaceholder(event.target);"
+					oncommand="handyClicksSets.insertSearchPlaceholder(event);"
 					hc_labelTemplate="&hc.sets.searchCounterTemplate;">
 					<menuitem type="checkbox" acceltext="%on%" label="&hc.sets.searchEnabled;" />
 					<menuitem type="checkbox" acceltext="%off%" label="&hc.sets.searchDisabled;" />

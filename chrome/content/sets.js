@@ -2615,7 +2615,9 @@ var handyClicksSets = {
 
 		this.su.checkDarkFont(mp.firstChild, mp);
 	},
-	insertSearchPlaceholder: function(mi) {
+	insertSearchPlaceholder: function(e) {
+		var mi = e.target;
+		var removeOther = this.hasModifier(e);
 		var ph = mi.getAttribute("acceltext");
 		if(!ph)
 			return;
@@ -2658,6 +2660,11 @@ var handyClicksSets = {
 			editor.deleteSelection(0, 0);
 			val = ifi.value;
 			return true;
+		}
+		if(removeOther) {
+			var sm = this.searchMap;
+			for(var p in sm) if(p != ph)
+				removePh(p);
 		}
 		if(!removePh(ph)) {
 			if(ph in this.oppositeSearchPlaceholders)
