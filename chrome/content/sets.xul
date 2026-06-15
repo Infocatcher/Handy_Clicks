@@ -56,6 +56,7 @@ preferences {
 					onpopupshowing="if(!('_hcIgnore' in event)) handyClicksSets.initSearchMenu(this);"
 					onpopupshown="handyClicksSetsUtils.fixAccelWidth(this);"
 					oncommand="handyClicksSets.insertSearchPlaceholder(event);"
+					onclick="if(event.button == 1) { handyClicksSets.insertSearchPlaceholder(event); this.hidePopup(); }"
 					hc_labelTemplate="&hc.sets.searchCounterTemplate;">
 					<menuitem type="checkbox" acceltext="%on%" label="&hc.sets.searchEnabled;" />
 					<menuitem type="checkbox" acceltext="%off%" label="&hc.sets.searchDisabled;" />

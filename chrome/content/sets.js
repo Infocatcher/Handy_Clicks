@@ -2617,7 +2617,7 @@ var handyClicksSets = {
 	},
 	insertSearchPlaceholder: function(e) {
 		var mi = e.target;
-		var removeOther = this.hasModifier(e);
+		var removeOther = e.button == 1 || this.hasModifier(e);
 		var ph = mi.getAttribute("acceltext");
 		if(!ph)
 			return;
