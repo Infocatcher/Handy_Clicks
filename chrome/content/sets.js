@@ -3000,8 +3000,8 @@ var handyClicksSets = {
 		var st = this.$("hc-sets-tree-searchStatistics");
 		st.setAttribute("hc_search", hasTerm);
 		var tt = hasTerm
-			? st.getAttribute("hc_tooltipResults") + " / " + st.getAttribute("hc_tooltipTotal")
-			: st.getAttribute("hc_tooltipResults");
+			? st.getAttribute("hc_tooltipResults")
+			: st.getAttribute("hc_tooltipTotal");
 		if(st.tooltipText != tt) {
 			st.tooltipText = tt;
 			if(this.fxVersion < 3) Array.forEach(st.getElementsByTagName("*"), function(node) {

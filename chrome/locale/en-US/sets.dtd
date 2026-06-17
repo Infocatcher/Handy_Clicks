@@ -54,8 +54,8 @@
 /regular expression/i
 &#37;&#37;on&#37;&#37; = &#37;on&#37; (not treat as search placeholder)">
 <!ENTITY hc.sets.filterTip "Filter">
-<!ENTITY hc.sets.searchResultsTip "Count of items found">
-<!ENTITY hc.sets.searchTotalTip "Total items count">
+<!ENTITY hc.sets.searchTotalTip "Search results: total">
+<!ENTITY hc.sets.searchResultsTip "Search results: found/total">
 
 <!ENTITY hc.sets.editMenu "Edit">
 <!ENTITY hc.sets.editMenuAccesskey "E">
