@@ -88,7 +88,7 @@ preferences {
 				onpopupshowing="handyClicksSets.initSearchTip(this);">
 				<label value="&hc.sets.searchCustomLong.tip;" />
 				<label value="&hc.sets.searchCustomLong.tipNA;" />
-				<label value="&hc.sets.searchCustomLong.tipNote;" />
+				<description>&hc.sets.searchCustomLong.tipNote;</description>
 			</tooltip>
 			<hbox id="hc-sets-tree-searchContainer" flex="100">
 				<textbox id="hc-sets-tree-searchField" type="search" flex="1" persist="hc_value hc_index"

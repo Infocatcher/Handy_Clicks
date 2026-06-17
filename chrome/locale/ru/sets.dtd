@@ -40,8 +40,8 @@
 <!ENTITY hc.sets.searchCustomNotLocalized "Свой код без перевода">
 <!ENTITY hc.sets.searchCustomLong "Свой код большого размера">
 <!ENTITY hc.sets.searchCustomLong.tip "Больше $max…$preserve символов">
-<!ENTITY hc.sets.searchCustomLong.tipNA "Недоступно">
-<!ENTITY hc.sets.searchCustomLong.tipNote "(см. настройки extensions.handyclicks.sets.codeLengthLimit*)">
+<!ENTITY hc.sets.searchCustomLong.tipNA "&lt;Отключено&gt;">
+<!ENTITY hc.sets.searchCustomLong.tipNote "(см. настройки extensions.handyclicks.sets.codeLengthLimit*: код при отображении будет обрезан для увеличения производительности отрисовки дерева, также перенос объемного кода в связанные файлы может улучшить производительность браузера)">
 <!ENTITY hc.sets.searchNA "Недоступные">
 <!ENTITY hc.sets.searchBuggy "Дефектные">
 <!ENTITY hc.sets.searchAdded "Импорт: Добавляемые">
