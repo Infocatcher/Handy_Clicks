@@ -2927,6 +2927,8 @@ var handyClicksSets = {
 				sTerm = sTerm.split(/\s+/);
 				checkFunc = function(rowText) {
 					return sTerm.every(function(s) {
+						if(s.charAt(0) == "-") // -foo -> not contains "foo"
+							return rowText.indexOf(s.slice(1)) == -1;
 						return rowText.indexOf(s) != -1;
 					});
 				};
