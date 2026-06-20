@@ -2634,6 +2634,10 @@ var handyClicksSets = {
 			var posEnd = pos + ph.length;
 			var before = val.substr(0, pos);
 			var after = val.substr(posEnd);
+			if(before.slice(-1) == "-") { // -%ph%
+				pos -= 1;
+				before = before.slice(0, -1);
+			}
 			if(/^\s*$/.test(before)) { // "  %ph%  after"
 				pos = 0;
 				if(/^\s+/.test(after))
