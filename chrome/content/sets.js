@@ -2594,7 +2594,11 @@ var handyClicksSets = {
 			var ph = mi.getAttribute("acceltext");
 			if(!ph)
 				return;
-			mi.setAttribute("checked", val.indexOf(ph) != -1);
+			var indx = val.indexOf(ph);
+			var hasPh = indx != -1;
+			var notPh = hasPh && indx && val.substr(indx - 1, 1) == "-";
+			mi.setAttribute("checked", hasPh);
+			mi.setAttribute("hc_invertedPlaceholder", notPh);
 			if(ph == "%ovr%" || ph == "%new%" || ph == "%data%")
 				mi.setAttribute("disabled", !this._import);
 			else if(ph == "%old%")

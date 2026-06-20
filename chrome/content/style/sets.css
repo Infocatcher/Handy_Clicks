@@ -66,6 +66,9 @@ radio[pane="hc-sets-pane-funcs"] {
 #hc-sets-tree-searchPopup menuitem[hc_notFound="true"]:not([disabled="true"]) {
 	color: grayText;
 }
+#hc-sets-tree-searchPopup menuitem[hc_invertedPlaceholder="true"] .menu-iconic-accel {
+	text-decoration: line-through;
+}
 #hc-sets-tree-searchPopup .hc-buggy:not([hc_notFound="true"]) > label {
 	color: #c00;
 }
