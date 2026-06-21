@@ -2619,8 +2619,10 @@ var handyClicksSets = {
 
 		this.su.checkDarkFont(mp.firstChild, mp);
 	},
-	insertSearchPlaceholder: function(e) {
+	insertSearchPlaceholder: function(e, mp) {
 		var mi = e.target;
+		if(mi.getAttribute("disabled") == "true") // For middle-click
+			return;
 		var removeOther = e.button == 1 || this.hasModifier(e);
 		var ph = mi.getAttribute("acceltext");
 		if(!ph)
@@ -2694,6 +2696,7 @@ var handyClicksSets = {
 		if(this.fxVersion < 3.5)
 			this.searchInSetsTree();
 		ifi.focus();
+		mp && mp.hidePopup();
 	},
 	openCodeLengthLimitConfig: function() {
 		this.pu.openAboutConfig(this.pu.prefNS + "sets.codeLengthLimit");
