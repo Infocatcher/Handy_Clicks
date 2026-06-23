@@ -48,7 +48,7 @@
 <!ENTITY hc.sets.searchChanged "Импорт: Изменяемые">
 <!ENTITY hc.sets.searchRemoved "Импорт: Удаляемые">
 <!ENTITY hc.sets.searchFileData "Импорт: Содержимое файла">
-<!ENTITY hc.sets.searchTip "Пробел = и
+<!ENTITY hc.sets.searchTip "Пробел = И, -слово = НЕ слово
 'строка целиком'
 &quot;Строка целиком с Учётом Регистра&quot;
 /регулярное выражение/i

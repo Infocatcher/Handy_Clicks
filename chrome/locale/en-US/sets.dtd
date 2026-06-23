@@ -48,7 +48,7 @@
 <!ENTITY hc.sets.searchChanged "Import: Changed">
 <!ENTITY hc.sets.searchRemoved "Import: Removed">
 <!ENTITY hc.sets.searchFileData "Import: File data">
-<!ENTITY hc.sets.searchTip "Space = and
+<!ENTITY hc.sets.searchTip "Space = AND, -word = NOT word
 'whole string'
 &quot;Whole string and Match Case&quot;
 /regular expression/i
