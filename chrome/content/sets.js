@@ -2596,7 +2596,7 @@ var handyClicksSets = {
 				return;
 			var indx = val.indexOf(ph);
 			var hasPh = indx != -1;
-			var notPh = hasPh && indx && val.substr(indx - 1, 1) == "-";
+			var notPh = hasPh && indx && /(?:^|\s)-$/.test(val.substring(0, indx)); // -%ph%
 			mi.setAttribute("checked", hasPh);
 			mi.setAttribute("hc_invertedPlaceholder", notPh);
 			if(ph == "%ovr%" || ph == "%new%" || ph == "%data%")
