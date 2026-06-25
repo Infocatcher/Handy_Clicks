@@ -2932,12 +2932,23 @@ var handyClicksSets = {
 				sf.setAttribute("hc_queryType", "wholeString");
 			}
 			else { // Threat spaces as "and" (default)
-				sTerm = this.ut.trim(sTerm).toLowerCase();
+				sTerm = this.ut.trim(sTerm);
 				if(!sTerm)
 					hasTerm = false;
-				sTerm = sTerm.split(/\s+/);
+				var tokens = [];
+				sTerm.replace(/(?:"(?:\\"|[\s\S]+)"|'(?:\\'|[\s\S]+)'|\S+)(?=\s|$)/g, function(token) {
+					var start = token.charAt(0);
+					var end = token.slice(-1);
+					if(start == '"' && end == '"') // "Match Case"
+						token = token.slice(1, -1);
+					else if(start == "'" && end == "'") // 'ignore case'
+						token = token.slice(1, -1).toLocaleLowerCase();
+					else // word_without_spaces
+						token = token.toLocaleLowerCase();
+					tokens.push(token);
+				});
 				checkFunc = function(rowText) {
-					return sTerm.every(function(s) {
+					return tokens.every(function(s) {
 						if(s.charAt(0) == "-") // -foo -> not contains "foo"
 							return rowText.indexOf(s.slice(1)) == -1;
 						return rowText.indexOf(s) != -1;
