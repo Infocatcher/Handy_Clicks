@@ -48,10 +48,11 @@
 <!ENTITY hc.sets.searchChanged "Import: Changed">
 <!ENTITY hc.sets.searchRemoved "Import: Removed">
 <!ENTITY hc.sets.searchFileData "Import: File data">
-<!ENTITY hc.sets.searchTip "Space = AND, -word = NOT word
+<!ENTITY hc.sets.searchTip "Space = AND
+-word = NOT word
 'whole string'
 &quot;Whole string and Match Case&quot;
-/regular expression/i
+/regular expression/i (can't be combined with above operators)
 &#37;&#37;on&#37;&#37; = &#37;on&#37; (not treat as search placeholder)">
 <!ENTITY hc.sets.filterTip "Filter">
 <!ENTITY hc.sets.searchTotalTip "Search results: total">
