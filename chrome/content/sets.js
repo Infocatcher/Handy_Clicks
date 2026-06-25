@@ -2917,45 +2917,31 @@ var handyClicksSets = {
 			}
 		}
 
-		if(!checkFunc) {
-			if(/^('|")(.*)\1$/.test(sTerm)) { // "whole string"
-				sTerm = RegExp.$2;
-				if(!sTerm)
-					hasTerm = false;
-				if(RegExp.$1 == '"')
-					caseSensitive = true;
-				else
-					sTerm = sTerm.toLowerCase();
-				checkFunc = function(rowText) {
-					return rowText.indexOf(sTerm) != -1;
-				};
-				sf.setAttribute("hc_queryType", "wholeString");
-			}
-			else { // Threat spaces as "and" (default)
-				sTerm = this.ut.trim(sTerm);
-				if(!sTerm)
-					hasTerm = false;
-				var tokens = [];
-				sTerm.replace(/(?:"(?:\\"|[\s\S]+)"|'(?:\\'|[\s\S]+)'|\S+)(?=\s|$)/g, function(token) {
-					var start = token.charAt(0);
-					var end = token.slice(-1);
-					if(start == '"' && end == '"') // "Match Case"
-						token = token.slice(1, -1);
-					else if(start == "'" && end == "'") // 'ignore case'
-						token = token.slice(1, -1).toLocaleLowerCase();
-					else // word_without_spaces
-						token = token.toLocaleLowerCase();
-					tokens.push(token);
+		if(!checkFunc) { // Threat spaces as "and" (default)
+			sTerm = this.ut.trim(sTerm);
+			if(!sTerm)
+				hasTerm = false;
+			var tokens = [];
+			var hasQuoted;
+			sTerm.replace(/(?:"(?:\\"|[\s\S]+)"|'(?:\\'|[\s\S]+)'|\S+)(?=\s|$)/g, function(token) {
+				var start = token.charAt(0);
+				var end = token.slice(-1);
+				if(start == '"' && end == '"') // "Match Case"
+					token = token.slice(1, -1), hasQuoted = true;
+				else if(start == "'" && end == "'") // 'ignore case'
+					token = token.slice(1, -1).toLocaleLowerCase(), hasQuoted = true;
+				else // word_without_spaces
+					token = token.toLocaleLowerCase();
+				tokens.push(token);
+			});
+			checkFunc = function(rowText) {
+				return tokens.every(function(s) {
+					if(s.charAt(0) == "-") // -foo -> not contains "foo"
+						return rowText.indexOf(s.slice(1)) == -1;
+					return rowText.indexOf(s) != -1;
 				});
-				checkFunc = function(rowText) {
-					return tokens.every(function(s) {
-						if(s.charAt(0) == "-") // -foo -> not contains "foo"
-							return rowText.indexOf(s.slice(1)) == -1;
-						return rowText.indexOf(s) != -1;
-					});
-				};
-				sf.setAttribute("hc_queryType", "spaceSeparated");
-			}
+			};
+			sf.setAttribute("hc_queryType", hasQuoted ? "wholeString" : "spaceSeparated");
 		}
 
 		if(!hasTerm)
