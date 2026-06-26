@@ -2923,7 +2923,7 @@ var handyClicksSets = {
 				hasTerm = false;
 			var tokens = [];
 			var hasQuoted;
-			sTerm.replace(/(?:"(?:\\"|[\s\S]+)"|'(?:\\'|[\s\S]+)'|\S+)(?=\s|$)/g, function(token) {
+			sTerm.replace(/(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\S+)(?=\s|$)/g, function(token) {
 				var start = token.charAt(0);
 				var end = token.slice(-1);
 				if(start == '"' && end == '"') // "Match Case"
