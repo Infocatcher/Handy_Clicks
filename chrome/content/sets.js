@@ -2907,14 +2907,19 @@ var handyClicksSets = {
 		if(/^\/(.+)\/(im?|mi?)?$/.test(sTerm)) { // /RegExp/flags
 			try {
 				sTerm = new RegExp(RegExp.$1, RegExp.$2);
-				checkFunc = function(rowText) {
-					return sTerm.test(rowText);
+				checkFunc = function(lazyText) {
+					return sTerm.test(lazyText.asIs);
 				};
 				caseSensitive = true;
 				sf.setAttribute("hc_queryType", "RegExp");
 			}
 			catch(e) {
 			}
+		}
+		function matchCaseToken(token) {
+			token = new String(token);
+			token.__hcMatchCase = true;
+			return token;
 		}
 
 		if(!checkFunc) { // Threat spaces as "and" (default)
@@ -2927,15 +2932,16 @@ var handyClicksSets = {
 				var start = token.charAt(0);
 				var end = token.slice(-1);
 				if(start == '"' && end == '"') // "Match Case"
-					token = token.slice(1, -1), hasQuoted = true;
+					token = matchCaseToken(token.slice(1, -1)), hasQuoted = true;
 				else if(start == "'" && end == "'") // 'ignore case'
 					token = token.slice(1, -1).toLocaleLowerCase(), hasQuoted = true;
 				else // word_without_spaces
 					token = token.toLocaleLowerCase();
 				tokens.push(token);
 			});
-			checkFunc = function(rowText) {
+			checkFunc = function(lazyText) {
 				return tokens.every(function(s) {
+					var rowText = s.__hcMatchCase ? lazyText.asIs : lazyText.lower;
 					if(s.charAt(0) == "-") // -foo -> not contains "foo"
 						return rowText.indexOf(s.slice(1)) == -1;
 					return rowText.indexOf(s) != -1;
@@ -2967,7 +2973,19 @@ var handyClicksSets = {
 			if(this._importPartial && tItem.hasAttribute("hc_old"))
 				continue;
 			++rowsCount;
-			var okRow = !hasTerm || checkFunc(this.getRowText(tRow, caseSensitive));
+			var lazyText = {
+				context: this,
+				tRow: tRow,
+				get asIs() {
+					delete this.asIs;
+					return this.asIs = this.context.getRowText(this.tRow, true);
+				},
+				get lower() {
+					delete this.lower;
+					return this.lower = this.context.getRowText(this.tRow, false);
+				}
+			};
+			var okRow = !hasTerm || checkFunc(lazyText);
 			var hl = hasTerm && okRow;
 			if(hl || this._hasHighlighted)
 				this.setChildNodesProperties(tRow, { hc_search: hl }, true);
