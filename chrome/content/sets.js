@@ -3089,7 +3089,7 @@ var handyClicksSets = {
 		}
 		while(tChld != this.tBody);
 		rowText = rowText.join("\n");
-		return caseSensitive ? rowText : rowText.toLowerCase();
+		return caseSensitive ? rowText : rowText.toLocaleLowerCase();
 	},
 
 	/*** Prefs pane ***/
