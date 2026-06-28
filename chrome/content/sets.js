@@ -2936,7 +2936,7 @@ var handyClicksSets = {
 			if(!sTerm)
 				hasTerm = false;
 			var tokens = [];
-			var hasQuoted;
+			var hasQuoted, hasRegExp;
 			sTerm.replace(
 				/(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\/((?:\\\/|[^\/])+)\/(im?|mi?)?|\S+)(?=\s|$)/g,
 				function(token, pattern, flags) {
@@ -2947,7 +2947,7 @@ var handyClicksSets = {
 					else if(start == "'" && end == "'") // 'ignore case'
 						token = token.slice(1, -1).toLocaleLowerCase(), hasQuoted = true;
 					else if(start == "/" && pattern) // /RegExp/i
-						token = toRegExp(pattern, flags);
+						token = toRegExp(pattern, flags), hasRegExp = true;
 					else // word_without_spaces
 						token = token.toLocaleLowerCase();
 					tokens.push(token);
@@ -2963,7 +2963,7 @@ var handyClicksSets = {
 					return rowText.indexOf(s) != -1;
 				});
 			};
-			sf.setAttribute("hc_queryType", hasQuoted ? "wholeString" : "spaceSeparated");
+			sf.setAttribute("hc_queryType", hasRegExp ? "RegExp" : hasQuoted ? "wholeString" : "spaceSeparated");
 		}
 
 		if(!hasTerm)
