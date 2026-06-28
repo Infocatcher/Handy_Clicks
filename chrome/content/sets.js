@@ -2916,8 +2916,17 @@ var handyClicksSets = {
 			catch(e) {
 			}
 		}
+		function toRegExp(pattern, flags) {
+			try {
+				return matchCaseToken(new RegExp(pattern, flags));
+			}
+			catch(e) {
+			}
+			return /^\x00$/; // Assumed to match none
+		}
 		function matchCaseToken(token) {
-			token = new String(token);
+			if(typeof token == "string")
+				token = new String(token);
 			token.__hcMatchCase = true;
 			return token;
 		}
@@ -2928,20 +2937,27 @@ var handyClicksSets = {
 				hasTerm = false;
 			var tokens = [];
 			var hasQuoted;
-			sTerm.replace(/(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\S+)(?=\s|$)/g, function(token) {
-				var start = token.charAt(0);
-				var end = token.slice(-1);
-				if(start == '"' && end == '"') // "Match Case"
-					token = matchCaseToken(token.slice(1, -1)), hasQuoted = true;
-				else if(start == "'" && end == "'") // 'ignore case'
-					token = token.slice(1, -1).toLocaleLowerCase(), hasQuoted = true;
-				else // word_without_spaces
-					token = token.toLocaleLowerCase();
-				tokens.push(token);
-			});
+			sTerm.replace(
+				/(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\/((?:\\\/|[^\/])+)\/(im?|mi?)?|\S+)(?=\s|$)/g,
+				function(token, pattern, flags) {
+					var start = token.charAt(0);
+					var end = token.slice(-1);
+					if(start == '"' && end == '"') // "Match Case"
+						token = matchCaseToken(token.slice(1, -1)), hasQuoted = true;
+					else if(start == "'" && end == "'") // 'ignore case'
+						token = token.slice(1, -1).toLocaleLowerCase(), hasQuoted = true;
+					else if(start == "/" && pattern) // /RegExp/i
+						token = toRegExp(pattern, flags);
+					else // word_without_spaces
+						token = token.toLocaleLowerCase();
+					tokens.push(token);
+				}
+			);
 			checkFunc = function(lazyText) {
 				return tokens.every(function(s) {
 					var rowText = s.__hcMatchCase ? lazyText.asIs : lazyText.lower;
+					if(s instanceof RegExp)
+						return s.test(rowText);
 					if(s.charAt(0) == "-") // -foo -> not contains "foo"
 						return rowText.indexOf(s.slice(1)) == -1;
 					return rowText.indexOf(s) != -1;
