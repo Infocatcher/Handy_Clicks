@@ -2920,9 +2920,9 @@ var handyClicksSets = {
 			try {
 				return matchCaseToken(new RegExp(pattern, flags));
 			}
-			catch(e) {
+			catch(e) { // Assumed to match none
+				return "\x01/" + pattern + "/" + (flags || "") + " <" + e + ">";
 			}
-			return /^\x00$/; // Assumed to match none
 		}
 		function matchCaseToken(token) {
 			if(typeof token == "string")
@@ -2953,6 +2953,12 @@ var handyClicksSets = {
 					tokens.push(token);
 				}
 			);
+			this._debug && this._log("Tokenizer: " + tokens.map(function(token) {
+				return token + (token instanceof RegExp
+					? " <RegExp>"
+					: token.__hcMatchCase ? " <MatchCase>" : ""
+				);
+			}).join(" | "));
 			checkFunc = function(lazyText) {
 				return tokens.every(function(s) {
 					var rowText = s.__hcMatchCase ? lazyText.asIs : lazyText.lower;
