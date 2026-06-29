@@ -2939,6 +2939,7 @@ var handyClicksSets = {
 			var hasQuoted, hasRegExp;
 			sTerm.replace(
 				/(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\/((?:\\\/|[^\/])+)\/(im?|mi?)?|\S+)(?=\s|$)/g,
+				//  "Match Case   " 'ignore case  '  /RegExp            /flags      word space separator
 				function(token, pattern, flags) {
 					var start = token.charAt(0);
 					var end = token.slice(-1);
