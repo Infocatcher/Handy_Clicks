@@ -2975,7 +2975,14 @@ var handyClicksSets = {
 					return rowText.indexOf(s) != -1;
 				});
 			};
-			sf.setAttribute("hc_queryType", hasRegExp ? "RegExp" : hasQuoted ? "wholeString" : "spaceSeparated");
+			var queryType = "spaceSeparated";
+			if(regExpError)
+				queryType = "RegExpError";
+			else if(hasRegExp)
+				queryType = "RegExp";
+			else if(hasQuoted)
+				queryType = "wholeString";
+			sf.setAttribute("hc_queryType", queryType);
 		}
 
 		if(!hasTerm)

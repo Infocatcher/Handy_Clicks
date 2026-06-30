@@ -46,6 +46,11 @@ radio[pane="hc-sets-pane-funcs"] {
 	background-color: #f66;
 	color: #fff;
 }
+#hc-sets-tree-searchField[hc_notFound="true"][hc_queryType="RegExpError"],
+#hc-sets-tree-searchField[hc_notFound="true"][hc_queryType="RegExpError"] > * {
+	background-color: #f6f;
+	color: #00a;
+}
 #hc-sets-tree-searchField[hc_searchWrapped], #hc-sets-tree-searchField[hc_searchWrapped] > * {
 	background-color: #e4ffe4;
 	color: black;
