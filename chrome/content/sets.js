@@ -2916,18 +2916,22 @@ var handyClicksSets = {
 			catch(e) {
 			}
 		}
-		function toRegExp(pattern, flags) {
+		function toRegExp(pattern, flags, source) {
 			try {
 				return matchCaseToken(new RegExp(pattern, flags));
 			}
 			catch(e) { // Assumed to match none
-				return "\x01/" + pattern + "/" + (flags || "") + " <" + e + ">";
+				return matchCaseToken(/^\x00$/, source, e);
 			}
 		}
-		function matchCaseToken(token) {
+		function matchCaseToken(token, source, error) {
 			if(typeof token == "string")
 				token = new String(token);
 			token.__hcMatchCase = true;
+			if(error) {
+				token.__hcSource = source;
+				token.__hcError = error;
+			}
 			return token;
 		}
 
@@ -2936,7 +2940,7 @@ var handyClicksSets = {
 			if(!sTerm)
 				hasTerm = false;
 			var tokens = [];
-			var hasQuoted, hasRegExp;
+			var hasQuoted, hasRegExp, regExpError;
 			sTerm.replace(
 				/(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\/((?:\\\/|[^\/])+)\/(im?|mi?)?|\S+)(?=\s|$)/g,
 				//  "Match Case   " 'ignore case  '  /RegExp            /flags      word space separator
@@ -2948,15 +2952,16 @@ var handyClicksSets = {
 					else if(start == "'" && end == "'") // 'ignore case'
 						token = token.slice(1, -1).toLocaleLowerCase(), hasQuoted = true;
 					else if(start == "/" && pattern) // /RegExp/i
-						token = toRegExp(pattern, flags), hasRegExp = true;
+						token = toRegExp(pattern, flags, token), hasRegExp = true, regExpError = token.__hcError || false;
 					else // word_without_spaces
 						token = token.toLocaleLowerCase();
 					tokens.push(token);
 				}
 			);
 			this._debug && this._log("Tokenizer: " + tokens.map(function(token) {
-				return token + (token instanceof RegExp
-					? " <RegExp>"
+				var source = token.__hcSource || token;
+				return source + (token instanceof RegExp
+					? token.__hcError ? " <RegExp: " + token.__hcError + ">" : " <RegExp>"
 					: token.__hcMatchCase ? " <MatchCase>" : ""
 				);
 			}).join(" | "));
