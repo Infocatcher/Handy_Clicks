@@ -2885,10 +2885,8 @@ var handyClicksSets = {
 		var sf = this.searchField;
 		var filterMode = this.filterMode;
 
-		var sTerm = sf.value;
-		var checkFunc;
-		var caseSensitive = false;
-		var hasTerm = true;
+		var sTerm = this.ut.trim(sf.value);
+		var hasTerm = !!sTerm;
 
 		if(sTerm.indexOf("%") != -1) {
 			var sr = this.searchReplacements;
@@ -2904,18 +2902,6 @@ var handyClicksSets = {
 			});
 		}
 
-		if(/^\/(.+)\/(im?|mi?)?$/.test(sTerm)) { // /RegExp/flags
-			try {
-				sTerm = new RegExp(RegExp.$1, RegExp.$2);
-				checkFunc = function(lazyText) {
-					return sTerm.test(lazyText.asIs);
-				};
-				caseSensitive = true;
-				sf.setAttribute("hc_queryType", "RegExp");
-			}
-			catch(e) {
-			}
-		}
 		function toRegExp(pattern, flags, source) {
 			try {
 				return matchCaseToken(new RegExp(pattern, flags));
@@ -2935,55 +2921,50 @@ var handyClicksSets = {
 			return token;
 		}
 
-		if(!checkFunc) { // Threat spaces as "and" (default)
-			sTerm = this.ut.trim(sTerm);
-			if(!sTerm)
-				hasTerm = false;
-			var tokens = [];
-			var hasQuoted, hasRegExp, regExpError;
-			sTerm.replace(
-				/(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\/((?:\\\/|[^\/])+)\/(im?|mi?)?|\S+)(?=\s|$)/g,
-				//  "Match Case   " 'ignore case  '  /RegExp            /flags      word space separator
-				function(token, pattern, flags) {
-					var start = token.charAt(0);
-					var end = token.slice(-1);
-					if(start == '"' && end == '"') // "Match Case"
-						token = matchCaseToken(token.slice(1, -1)), hasQuoted = true;
-					else if(start == "'" && end == "'") // 'ignore case'
-						token = token.slice(1, -1).toLocaleLowerCase(), hasQuoted = true;
-					else if(start == "/" && pattern) // /RegExp/i
-						token = toRegExp(pattern, flags, token), hasRegExp = true, regExpError = token.__hcError || false;
-					else // word_without_spaces
-						token = token.toLocaleLowerCase();
-					tokens.push(token);
-				}
+		var tokens = [];
+		var hasQuoted, hasRegExp, regExpError;
+		sTerm.replace( // Threat spaces as AND
+			/(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\/((?:\\\/|[^\/])+)\/(im?|mi?)?|\S+)(?=\s|$)/g,
+			//  "Match Case   " 'ignore case  '  /RegExp            /flags      word space separator
+			function(token, pattern, flags) {
+				var start = token.charAt(0);
+				var end = token.slice(-1);
+				if(start == '"' && end == '"') // "Match Case"
+					token = matchCaseToken(token.slice(1, -1)), hasQuoted = true;
+				else if(start == "'" && end == "'") // 'ignore case'
+					token = token.slice(1, -1).toLocaleLowerCase(), hasQuoted = true;
+				else if(start == "/" && pattern) // /RegExp/i
+					token = toRegExp(pattern, flags, token), hasRegExp = true, regExpError = token.__hcError || false;
+				else // word_without_spaces
+					token = token.toLocaleLowerCase();
+				tokens.push(token);
+			}
+		);
+		this._debug && this._log("Tokenizer: " + tokens.map(function(token) {
+			var source = token.__hcSource || token;
+			return source + (token instanceof RegExp
+				? token.__hcError ? " <RegExp: " + token.__hcError + ">" : " <RegExp>"
+				: token.__hcMatchCase ? " <MatchCase>" : ""
 			);
-			this._debug && this._log("Tokenizer: " + tokens.map(function(token) {
-				var source = token.__hcSource || token;
-				return source + (token instanceof RegExp
-					? token.__hcError ? " <RegExp: " + token.__hcError + ">" : " <RegExp>"
-					: token.__hcMatchCase ? " <MatchCase>" : ""
-				);
-			}).join(" | "));
-			checkFunc = function(lazyText) {
-				return tokens.every(function(s) {
-					var rowText = s.__hcMatchCase ? lazyText.asIs : lazyText.lower;
-					if(s instanceof RegExp)
-						return s.test(rowText);
-					if(s.charAt(0) == "-") // -foo -> not contains "foo"
-						return rowText.indexOf(s.slice(1)) == -1;
-					return rowText.indexOf(s) != -1;
-				});
-			};
-			var queryType = "spaceSeparated";
-			if(regExpError)
-				queryType = "RegExpError";
-			else if(hasRegExp)
-				queryType = "RegExp";
-			else if(hasQuoted)
-				queryType = "wholeString";
-			sf.setAttribute("hc_queryType", queryType);
-		}
+		}).join(" | "));
+		var checkFunc = function(lazyText) {
+			return tokens.every(function(s) {
+				var rowText = s.__hcMatchCase ? lazyText.asIs : lazyText.lower;
+				if(s instanceof RegExp)
+					return s.test(rowText);
+				if(s.charAt(0) == "-") // -foo -> not contains "foo"
+					return rowText.indexOf(s.slice(1)) == -1;
+				return rowText.indexOf(s) != -1;
+			});
+		};
+		var queryType = "spaceSeparated";
+		if(regExpError)
+			queryType = "RegExpError";
+		else if(hasRegExp)
+			queryType = "RegExp";
+		else if(hasQuoted)
+			queryType = "wholeString";
+		sf.setAttribute("hc_queryType", queryType);
 
 		if(!hasTerm)
 			dontSelect = true;

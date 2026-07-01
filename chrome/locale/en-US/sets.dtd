@@ -52,7 +52,7 @@
 -word = NOT word
 'whole string'
 &quot;Whole string and Match Case&quot;
-/regular expression/i (can't be combined with above operators)
+/regular expression/i
 &#37;&#37;on&#37;&#37; = &#37;on&#37; (not treat as search placeholder)">
 <!ENTITY hc.sets.filterTip "Filter">
 <!ENTITY hc.sets.searchTotalTip "Search results: total">
