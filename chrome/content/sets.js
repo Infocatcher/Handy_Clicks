@@ -2922,7 +2922,7 @@ var handyClicksSets = {
 		}
 
 		var tokens = [];
-		var hasQuoted, hasRegExp, regExpError;
+		var hasQuoted, hasRegExp, hasRegExpError;
 		sTerm.replace( // Threat spaces as AND
 			/(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\/((?:\\\/|[^\/])+)\/(im?|mi?)?|\S+)(?=\s|$)/g,
 			//  "Match Case   " 'ignore case  '  /RegExp            /flags      word space separator
@@ -2934,7 +2934,7 @@ var handyClicksSets = {
 				else if(start == "'" && end == "'") // 'ignore case'
 					token = token.slice(1, -1).toLocaleLowerCase(), hasQuoted = true;
 				else if(start == "/" && pattern) // /RegExp/i
-					token = toRegExp(pattern, flags, token), hasRegExp = true, regExpError = token.__hcError || false;
+					token = toRegExp(pattern, flags, token), hasRegExp = true, token.__hcError && ((hasRegExpError = true));
 				else // word_without_spaces
 					token = token.toLocaleLowerCase();
 				tokens.push(token);
@@ -2958,7 +2958,7 @@ var handyClicksSets = {
 			});
 		};
 		var queryType = "spaceSeparated";
-		if(regExpError)
+		if(hasRegExpError)
 			queryType = "RegExpError";
 		else if(hasRegExp)
 			queryType = "RegExp";
