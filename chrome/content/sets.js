@@ -2923,7 +2923,7 @@ var handyClicksSets = {
 
 		var tokens = [];
 		var hasQuoted, hasRegExp, hasRegExpError;
-		sTerm.replace( // Threat spaces as AND
+		hasTerm && sTerm.replace( // Threat spaces as AND
 			/(-?)(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\/((?:\\\/|[^\/])+)\/(im?|mi?)?|\S+)(?=\s|$)/g,
 			//NOT   "Match Case   " 'ignore case  '  /RegExp            /flags      word space separator
 			function(token, not, pattern, flags) {
@@ -2943,14 +2943,14 @@ var handyClicksSets = {
 				tokens.push(token);
 			}
 		);
-		this._debug && this._log("Tokenizer: " + tokens.map(function(token) {
+		hasTerm && this._debug && this._log("Tokenizer: " + tokens.map(function(token) {
 			var source = token.__hcSource || token;
 			return (token.__hcNot ? "<NOT> " : "") + source + (token instanceof RegExp
 				? token.__hcError ? " <RegExp: " + token.__hcError + ">" : " <RegExp>"
 				: token.__hcMatchCase ? " <MatchCase>" : ""
 			);
 		}).join(" | "));
-		var checkFunc = function(lazyText) {
+		var matcher = hasTerm && function(lazyText) {
 			return tokens.every(function(token) {
 				var rowText = token.__hcMatchCase ? lazyText.asIs : lazyText.lower;
 				var matched = token instanceof RegExp
@@ -3005,7 +3005,7 @@ var handyClicksSets = {
 					return this.lower = this.context.getRowText(this.tRow, false);
 				}
 			};
-			var okRow = !hasTerm || checkFunc(lazyText);
+			var okRow = !hasTerm || matcher(lazyText);
 			var hl = hasTerm && okRow;
 			if(hl || this._hasHighlighted)
 				this.setChildNodesProperties(tRow, { hc_search: hl }, true);
