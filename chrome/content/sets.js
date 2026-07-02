@@ -2902,18 +2902,18 @@ var handyClicksSets = {
 			});
 		}
 
-		function toRegExp(pattern, flags, source) {
+		function regExpToken(pattern, flags, source) {
 			try {
-				return matchCaseToken(new RegExp(pattern, flags));
+				return matchToken(new RegExp(pattern, flags), true);
 			}
 			catch(e) { // Assumed to match none
-				return matchCaseToken(/^\x00$/, source, e);
+				return matchToken(/^\x00$/, true, source, e);
 			}
 		}
-		function matchCaseToken(token, source, error) {
+		function matchToken(token, matchCase, source, error) {
 			if(typeof token == "string")
 				token = new String(token);
-			token.__hcMatchCase = true;
+			token.__hcMatchCase = !!matchCase;
 			if(error) {
 				token.__hcSource = source;
 				token.__hcError = error;
@@ -2924,37 +2924,41 @@ var handyClicksSets = {
 		var tokens = [];
 		var hasQuoted, hasRegExp, hasRegExpError;
 		sTerm.replace( // Threat spaces as AND
-			/(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\/((?:\\\/|[^\/])+)\/(im?|mi?)?|\S+)(?=\s|$)/g,
-			//  "Match Case   " 'ignore case  '  /RegExp            /flags      word space separator
-			function(token, pattern, flags) {
+			/(-?)(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\/((?:\\\/|[^\/])+)\/(im?|mi?)?|\S+)(?=\s|$)/g,
+			//NOT   "Match Case   " 'ignore case  '  /RegExp            /flags      word space separator
+			function(token, not, pattern, flags) {
+				if(not) // -foo -> NOT foo
+					token = token.slice(1);
 				var start = token.charAt(0);
 				var end = token.slice(-1);
 				if(start == '"' && end == '"') // "Match Case"
-					token = matchCaseToken(token.slice(1, -1)), hasQuoted = true;
+					token = matchToken(token.slice(1, -1), true), hasQuoted = true;
 				else if(start == "'" && end == "'") // 'ignore case'
-					token = token.slice(1, -1).toLocaleLowerCase(), hasQuoted = true;
+					token = matchToken(token.slice(1, -1).toLocaleLowerCase()), hasQuoted = true;
 				else if(start == "/" && pattern) // /RegExp/i
-					token = toRegExp(pattern, flags, token), hasRegExp = true, token.__hcError && ((hasRegExpError = true));
+					token = regExpToken(pattern, flags, token), hasRegExp = true, token.__hcError && ((hasRegExpError = true));
 				else // word_without_spaces
-					token = token.toLocaleLowerCase();
+					token = matchToken(token.toLocaleLowerCase());
+				token.__hcNot = !!not;
 				tokens.push(token);
 			}
 		);
 		this._debug && this._log("Tokenizer: " + tokens.map(function(token) {
 			var source = token.__hcSource || token;
-			return source + (token instanceof RegExp
+			return (token.__hcNot ? "<NOT> " : "") + source + (token instanceof RegExp
 				? token.__hcError ? " <RegExp: " + token.__hcError + ">" : " <RegExp>"
 				: token.__hcMatchCase ? " <MatchCase>" : ""
 			);
 		}).join(" | "));
 		var checkFunc = function(lazyText) {
-			return tokens.every(function(s) {
-				var rowText = s.__hcMatchCase ? lazyText.asIs : lazyText.lower;
-				if(s instanceof RegExp)
-					return s.test(rowText);
-				if(s.charAt(0) == "-") // -foo -> not contains "foo"
-					return rowText.indexOf(s.slice(1)) == -1;
-				return rowText.indexOf(s) != -1;
+			return tokens.every(function(token) {
+				var rowText = token.__hcMatchCase ? lazyText.asIs : lazyText.lower;
+				var matched = token instanceof RegExp
+					? token.test(rowText)
+					: rowText.indexOf(token) != -1
+				return token.__hcNot
+					? !matched
+					: matched;
 			});
 		};
 		var queryType = "spaceSeparated";
