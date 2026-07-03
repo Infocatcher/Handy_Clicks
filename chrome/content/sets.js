@@ -2961,6 +2961,11 @@ var handyClicksSets = {
 					: matched;
 			});
 		};
+
+		setTimeout(function(_this) {
+			_this.showTokenizerErrors(tokens);
+		}, 0, this);
+
 		var queryType = "spaceSeparated";
 		if(hasRegExpError)
 			queryType = "RegExpError";
@@ -3060,6 +3065,32 @@ var handyClicksSets = {
 
 		this._lastSearch = Date.now();
 		this.timer("searchInSetsTree()");
+	},
+	showTokenizerErrors: function(tokens) {
+		var tt = this.$("hc-sets-search-tooltip");
+		Array.prototype.slice.call(tt.getElementsByAttribute("hc_error", "*")).forEach(function(node) {
+			node.parentNode.removeChild(node);
+		});
+		if(!tokens.length)
+			return;
+		var df = document.createDocumentFragment();
+		tokens.forEach(function(token) {
+			if(!token.__hcError)
+				return;
+			var sep = document.createElement("separator");
+			sep.setAttribute("hc_error", "separator");
+			sep.className = "groove";
+			df.appendChild(sep);
+			var src = document.createElement("description");
+			src.textContent = token.__hcSource;
+			src.setAttribute("hc_error", "source");
+			df.appendChild(src);
+			var msg = document.createElement("description");
+			msg.textContent = token.__hcError;
+			msg.setAttribute("hc_error", "message");
+			df.appendChild(msg);
+		});
+		tt.appendChild(df);
 	},
 	getRowText: function(tRow, caseSensitive) {
 		var tChld = tRow, tItem;
