@@ -97,7 +97,7 @@ preferences {
 					oninput="handyClicksSets.searchInSetsTreeDelay();"
 					hc_ondrop="handyClicksSets.searchInSetsTree();"
 					oncut="handyClicksSets.searchInSetsTree();" />
-				<tooltip id="hc-sets-search-tooltip">
+				<tooltip id="hc-sets-search-tooltip" onpopupshowing="handyClicksSets.su.checkDarkFont(this);">
 					<description>&hc.sets.searchTip;</description>
 				</tooltip>
 			</hbox>

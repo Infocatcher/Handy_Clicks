@@ -35,7 +35,7 @@ radio[pane="hc-sets-pane-funcs"] {
 }
 #hc-sets-tree-searchField[hc_queryType="RegExp"], #hc-sets-tree-searchField[hc_queryType="RegExp"] > * {
 	background-color: white;
-	color: blue !important;
+	color: #00f !important;
 }
 #hc-sets-tree-searchField[hc_queryType="wholeString"], #hc-sets-tree-searchField[hc_queryType="wholeString"] > * {
 	background-color: white;
@@ -55,6 +55,20 @@ radio[pane="hc-sets-pane-funcs"] {
 	background-color: #e4ffe4;
 	color: black;
 }
+
+#hc-sets-search-tooltip > description[hc_error="source"] {
+	color: #00a;
+}
+#hc-sets-search-tooltip[hc_isDarkFont="false"] > description[hc_error="source"] {
+	color: #aaf;
+}
+#hc-sets-search-tooltip > description[hc_error="message"] {
+	color: #c00;
+}
+#hc-sets-search-tooltip[hc_isDarkFont="false"] > description[hc_error="message"] {
+	color: #f66;
+}
+
 #hc-sets-tree-searchFilterMode {
 	-moz-user-focus: normal;
 	list-style-image: url("icons16.png");
