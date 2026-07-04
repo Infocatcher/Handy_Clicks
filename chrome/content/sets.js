@@ -3073,10 +3073,11 @@ var handyClicksSets = {
 		});
 		if(!tokens.length)
 			return;
+		var cnt = 0;
 		var df = document.createDocumentFragment();
-		tokens.forEach(function(token) {
+		tokens.every(function(token) {
 			if(!token.__hcError)
-				return;
+				return true;
 			var sep = document.createElement("separator");
 			sep.setAttribute("hc_error", "separator");
 			sep.className = "groove";
@@ -3089,6 +3090,7 @@ var handyClicksSets = {
 			msg.textContent = token.__hcError;
 			msg.setAttribute("hc_error", "message");
 			df.appendChild(msg);
+			return ++cnt < 5;
 		});
 		tt.appendChild(df);
 	},
