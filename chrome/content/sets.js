@@ -2932,9 +2932,9 @@ var handyClicksSets = {
 				var start = token.charAt(0);
 				var end = token.slice(-1);
 				if(start == '"' && end == '"') // "Match Case"
-					token = matchToken(token.slice(1, -1), true), hasQuoted = true;
+					token = matchToken(token.slice(1, -1).replace(/\\"/g, '"'), true), hasQuoted = true;
 				else if(start == "'" && end == "'") // 'ignore case'
-					token = matchToken(token.slice(1, -1).toLocaleLowerCase()), hasQuoted = true;
+					token = matchToken(token.slice(1, -1).replace(/\\'/g, "'").toLocaleLowerCase()), hasQuoted = true;
 				else if(start == "/" && pattern) // /RegExp/i
 					token = regExpToken(pattern, flags, token), hasRegExp = true, token.__hcError && ((hasRegExpError = true));
 				else // word_without_spaces
