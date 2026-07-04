@@ -3003,11 +3003,11 @@ var handyClicksSets = {
 				tRow: tRow,
 				get asIs() {
 					delete this.asIs;
-					return this.asIs = this.context.getRowText(this.tRow, true);
+					return this.asIs = this.context.getRowText(this.tRow);
 				},
 				get lower() {
 					delete this.lower;
-					return this.lower = this.context.getRowText(this.tRow, false);
+					return this.lower = this.asIs.toLocaleLowerCase();
 				}
 			};
 			var okRow = !hasTerm || matcher(lazyText);
@@ -3094,7 +3094,7 @@ var handyClicksSets = {
 		});
 		tt.appendChild(df);
 	},
-	getRowText: function(tRow, caseSensitive) {
+	getRowText: function(tRow) {
 		var tChld = tRow, tItem;
 		var rowText = [];
 		do {
@@ -3125,8 +3125,7 @@ var handyClicksSets = {
 			});
 		}
 		while(tChld != this.tBody);
-		rowText = rowText.join("\n");
-		return caseSensitive ? rowText : rowText.toLocaleLowerCase();
+		return rowText.join("\n");
 	},
 
 	/*** Prefs pane ***/
