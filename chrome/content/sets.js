@@ -2924,8 +2924,8 @@ var handyClicksSets = {
 		var tokens = [];
 		var hasQuoted, hasRegExp, hasRegExpError;
 		hasTerm && sTerm.replace( // Threat spaces as AND
-			/(-?)(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\/((?:\\\/|[^\/])+)\/(im?|mi?)?|\S+)(?=\s|$)/g,
-			//NOT   "Match Case   " 'ignore case  '  /RegExp            /flags      word space separator
+			/(-?)(?:"(?:\\"|[^"])+"|'(?:\\'|[^'])+'|\/((?:\\\/|[^\/])+)\/([imsuv]*)|\S+)(?=\s|$)/g,
+			//NOT   "Match Case   " 'ignore case  '  /RegExp            /  flags    word   space
 			function(token, not, pattern, flags) {
 				if(not) // -foo -> NOT foo
 					token = token.slice(1);
