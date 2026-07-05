@@ -2944,12 +2944,17 @@ var handyClicksSets = {
 			}
 		);
 		hasTerm && this._debug && this._log("Tokenizer: " + tokens.map(function(token) {
-			var source = token.__hcSource || token;
+			var source = "" + (token.__hcSource || token);
+			var sm = this.searchMap;
+			for(var ph in sm) {
+				var sr = sm[ph];
+				source = source.replace(new RegExp(sr, "g"), "{" + ph + "}");
+			}
 			return (token.__hcNot ? "<NOT> " : "") + source + (token instanceof RegExp
 				? token.__hcError ? " <RegExp: " + token.__hcError + ">" : " <RegExp>"
 				: token.__hcMatchCase ? " <MatchCase>" : ""
 			);
-		}).join(" | "));
+		}, this).join(" | "));
 		var matcher = hasTerm && function(lazyText) {
 			return tokens.every(function(token) {
 				var rowText = token.__hcMatchCase ? lazyText.asIs : lazyText.lower;
