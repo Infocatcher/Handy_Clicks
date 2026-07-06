@@ -3113,6 +3113,13 @@ var handyClicksSets = {
 				continue;
 			}
 			var row = this.getRowForItem(tItem);
+			// Add search placeholders first, for faster search
+			var sr = this.searchReplacements;
+			var props = row.getAttribute("properties");
+			props && props.split(/\s+/).forEach(function(prop) {
+				prop in sr && rowText.push(sr[prop]);
+			});
+			// Extract all labels
 			Array.prototype.forEach.call(
 				row.getElementsByAttribute("label", "*"),
 				function(elt) {
@@ -3124,11 +3131,6 @@ var handyClicksSets = {
 					rowText.push(label);
 				}
 			);
-			var sr = this.searchReplacements;
-			var props = row.getAttribute("properties");
-			props && props.split(/\s+/).forEach(function(prop) {
-				prop in sr && rowText.push(sr[prop]);
-			});
 		}
 		while(tChld != this.tBody);
 		return rowText.join("\n");
