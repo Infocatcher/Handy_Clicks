@@ -2717,13 +2717,7 @@ var handyClicksSets = {
 		var code = e.keyCode;
 		if(code == e.DOM_VK_F1) {
 			e.preventDefault();
-			var tt = this.$("hc-sets-search-tooltip");
-			if(tt.state == "open") {
-				tt.hidePopup();
-				return;
-			}
-			var anchor = this.$("hc-sets-tree-searchContainer");
-			this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_SLOW, this.su.TOOLTIP_OFFSET_MARGIN);
+			this.toggleSearchTooltip();
 			return;
 		}
 		this.delay(function() {
@@ -2751,6 +2745,15 @@ var handyClicksSets = {
 		else
 			return;
 		e.preventDefault(); // Don't close dialog window
+	},
+	toggleSearchTooltip: function() {
+		var tt = this.$("hc-sets-search-tooltip");
+		if(tt.state == "open") {
+			tt.hidePopup();
+			return;
+		}
+		var anchor = this.$("hc-sets-tree-searchContainer");
+		this.su.showTooltip(tt, anchor, this.su.TOOLTIP_HIDE_SLOW, this.su.TOOLTIP_OFFSET_MARGIN);
 	},
 	toggleFilterMode: function() {
 		if(!this.isTreePaneSelected)
