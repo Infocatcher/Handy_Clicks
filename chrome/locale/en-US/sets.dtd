@@ -155,7 +155,7 @@
 <!ENTITY hc.sets.importFilesDataAccesskey "F">
 <!ENTITY hc.sets.importFilesDataTip "Import linked files data">
 <!ENTITY hc.sets.importFilesNoDataTip "(files are missing)">
-<!ENTITY hc.sets.showImportFilesStats "Linked files details…">
+<!ENTITY hc.sets.toggleImportFilesStats "Linked files details…">
 
 <!ENTITY hc.sets.importIncrement "Add">
 <!ENTITY hc.sets.importIncrementAccesskey "A">

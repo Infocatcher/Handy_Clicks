@@ -4721,10 +4721,10 @@ var handyClicksSets = {
 	handleImportPanelHotkey: function(e) {
 		if(e.keyCode == e.DOM_VK_F1) {
 			e.preventDefault();
-			this.showImportFilesStats();
+			this.toggleImportFilesStats();
 		}
 	},
-	showImportFilesStats: function() {
+	toggleImportFilesStats: function() {
 		if(!this._import)
 			return;
 		if(!this.isTreePaneSelected)

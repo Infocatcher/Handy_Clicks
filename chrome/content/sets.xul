@@ -792,8 +792,8 @@ preferences {
 			label="&hc.sets.importFromClipboard;" />
 		<command id="hc-sets-cmd-importFromClipboard2" oncommand="handyClicksSets.importSets(true, handyClicksSets.ct.IMPORT_CLIPBOARD);"
 			label="&hc.sets.importFromClipboard;" />
-		<command id="hc-sets-cmd-importShowFilesStats" oncommand="handyClicksSets.showImportFilesStats();" disabled="true"
-			label="&hc.sets.showImportFilesStats;" />
+		<command id="hc-sets-cmd-importShowFilesStats" oncommand="handyClicksSets.toggleImportFilesStats();" disabled="true"
+			label="&hc.sets.toggleImportFilesStats;" />
 	</commandset>
 	<keyset id="hc-sets-keys">
 		<key id="hc-sets-key-add" keycode="VK_INSERT" command="hc-sets-cmd-add" />
