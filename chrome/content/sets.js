@@ -2888,10 +2888,11 @@ var handyClicksSets = {
 		var sTerm = this.ut.trim(sf.value);
 		var hasTerm = !!sTerm;
 
-		if(sTerm.indexOf("%") != -1) {
+		var phPos = sTerm.indexOf("%");
+		if(phPos != -1) {
 			var sr = this.searchReplacements;
 			var sm = this.searchMap;
-			sTerm = sTerm.replace(/%[^%]+%/g, function(ph, offset, sTerm) {
+			sTerm = sTerm.slice(0, phPos) + sTerm.slice(phPos).replace(/%[^%]+%/g, function(ph, offset, sTerm) {
 				if(sTerm.charAt(offset - 1) == "%" && sTerm.charAt(offset + ph.length) == "%")
 					return ph.slice(1, -1); // %%foo%% -> %foo%
 				if(ph in sm)
