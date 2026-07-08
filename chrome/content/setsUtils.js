@@ -695,7 +695,6 @@ var handyClicksSetsUtils = {
 		}
 		setTimeout(function() {
 			tt.onmouseover = function() {
-				_sit.closeTimer && clearTimeout(_sit.closeTimer);
 				this.hidePopup();
 			};
 		}, 25);
@@ -705,6 +704,7 @@ var handyClicksSetsUtils = {
 		}, hideDelay || this.TOOLTIP_HIDE_DEFAULT, tt);
 		tt.addEventListener("popuphidden", function onHide(e) {
 			tt.removeEventListener(e.type, onHide, false);
+			_sit.closeTimer && clearTimeout(_sit.closeTimer);
 			_sit.closeTimer = 0;
 			tt.onmouseover = null;
 			tt.removeAttribute("hc_anchor");
