@@ -2746,9 +2746,9 @@ var handyClicksSets = {
 			return;
 		e.preventDefault(); // Don't close dialog window
 	},
-	toggleSearchTooltip: function() {
+	toggleSearchTooltip: function(forceShow) {
 		var tt = this.$("hc-sets-search-tooltip");
-		if(tt.state == "open") {
+		if(tt.state == "open" && !forceShow) {
 			tt.hidePopup();
 			return;
 		}
@@ -2961,6 +2961,8 @@ var handyClicksSets = {
 
 		setTimeout(function(_this) {
 			_this.showTokenizerErrors(tokens);
+			if(hasRegExpError)
+				_this.toggleSearchTooltip(true);
 		}, 0, this);
 
 		var queryType = "spaceSeparated";
