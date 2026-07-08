@@ -2720,7 +2720,7 @@ var handyClicksSets = {
 			this.toggleSearchTooltip();
 			return;
 		}
-		this.delay(function() {
+		if(!this._hasTokenizerErrors) this.delay(function() {
 			this.$("hc-sets-search-tooltip").hidePopup();
 		}, this);
 		var enter = code == e.DOM_VK_RETURN;
@@ -2883,6 +2883,7 @@ var handyClicksSets = {
 			this.searchInSetsTree(dontSelect, loading);
 		}, this, delay || 0);
 	},
+	_hasTokenizerErrors: false,
 	_searchInSetsTree: function(dontSelect, loading) {
 		this.timer("searchInSetsTree()");
 		var sf = this.searchField;
@@ -2959,6 +2960,7 @@ var handyClicksSets = {
 			});
 		};
 
+		this._hasTokenizerErrors = hasRegExpError;
 		setTimeout(function(_this) {
 			_this.showTokenizerErrors(tokens);
 			if(hasRegExpError)
