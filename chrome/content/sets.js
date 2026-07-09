@@ -4599,6 +4599,10 @@ var handyClicksSets = {
 		this.$("hc-sets-tree-importType").value = isPartial;
 		this.$("hc-sets-tree-importRowRemoved").setAttribute("hc_collapse", isPartial);
 
+		if(/\S/.test(this.searchField.value) && this.filterMode) this.blinkNode(this.$("hc-sets-tree-viewPanel"), function(node, hl) {
+			this.attribute(node, "hc_notifyFilter", hl);
+		}, this);
+
 		for(var fe = document.commandDispatcher.focusedElement; fe; fe = fe.parentNode)
 			if(fe == panel)
 				return;

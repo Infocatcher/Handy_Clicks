@@ -55,6 +55,11 @@ radio[pane="hc-sets-pane-funcs"] {
 	background-color: #e4ffe4;
 	color: black;
 }
+#hc-sets-tree-viewPanel[hc_notifyFilter] > #hc-sets-tree-searchContainer,
+#hc-sets-tree-viewPanel[hc_notifyFilter] > #hc-sets-tree-searchFilterMode {
+	outline: 2px solid ThreeDShadow;
+	outline-offset: -2px;
+}
 
 #hc-sets-search-tooltip > description[hc_error="source"] {
 	color: #00a;
