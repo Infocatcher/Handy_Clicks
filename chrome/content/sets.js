@@ -3068,17 +3068,20 @@ var handyClicksSets = {
 		this.timer("searchInSetsTree()");
 
 		hasTerm && this._debug && this._log("Tokenizer: " + tokens.map(function(token) {
-			var source = "" + (token.__hcSource || token);
-			var sm = this.searchMap;
-			for(var ph in sm) {
-				var sr = sm[ph];
-				source = source.replace(new RegExp(sr, "g"), "{" + ph + "}");
-			}
+			var source = this.restorePlaceholders(token.__hcSource || ("" + token));
 			return (token.__hcNot ? "<NOT> " : "") + source + (token instanceof RegExp
 				? token.__hcError ? " <RegExp: " + token.__hcError + ">" : " <RegExp>"
 				: token.__hcMatchCase ? " <MatchCase>" : ""
 			);
 		}, this).join(" | "));
+	},
+	restorePlaceholders: function(source) { // "internal string" -> "{%foo%}"
+		var sm = this.searchMap;
+		for(var ph in sm) {
+			var sr = sm[ph];
+			source = source.replace(new RegExp(sr, "g"), "{" + ph + "}");
+		}
+		return source;
 	},
 	showTokenizerErrors: function(tokens) {
 		var tt = this.$("hc-sets-search-tooltip");
@@ -3097,7 +3100,7 @@ var handyClicksSets = {
 			sep.className = "groove";
 			df.appendChild(sep);
 			var src = document.createElement("description");
-			src.textContent = token.__hcSource;
+			src.textContent = this.restorePlaceholders(token.__hcSource);
 			src.setAttribute("hc_error", "source");
 			df.appendChild(src);
 			var msg = document.createElement("description");
@@ -3105,7 +3108,7 @@ var handyClicksSets = {
 			msg.setAttribute("hc_error", "message");
 			df.appendChild(msg);
 			return ++cnt < 5;
-		});
+		}, this);
 		tt.appendChild(df);
 	},
 	getRowText: function(tRow) {
