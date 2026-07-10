@@ -1924,11 +1924,12 @@ var handyClicksSets = {
 	blinkNode: function(node, hl, context, count) {
 		if(!count)
 			count = 3;
+		node.__timer && clearTimeout(node.__timer);
 		(function blink() {
 			hl.call(context, node, true);
-			setTimeout(function() {
+			node.__timer = setTimeout(function() {
 				hl.call(context, node, false);
-				--count && setTimeout(blink, 80);
+				--count && (node.__timer = setTimeout(blink, 80)) || (node.__timer = 0);
 			}, 150);
 		})();
 	},
