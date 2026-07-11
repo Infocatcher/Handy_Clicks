@@ -548,6 +548,12 @@ checkbox[id^="hc-sets-disallowMousemove-"] .checkbox-label-box {
 	-moz-image-region: rect(0 80px 16px 64px);
 }
 
+menuitem[hc_fileName] {
+	-moz-image-region: rect(96px 16px 112px 0);
+}
+menuitem[hc_fileName][hc_hasFilesData="true"] {
+	-moz-image-region: rect(96px 32px 112px 16px);
+}
 #hc-sets-tree-openBackupsDir,
 #hc-sets-tree-showBackupFile {
 	-moz-image-region: rect(64px 48px 80px 32px);

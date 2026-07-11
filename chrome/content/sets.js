@@ -4409,6 +4409,7 @@ var handyClicksSets = {
 				label: this.stringifyDate(fo.time) + " \u2013 " + name,
 				acceltext: this.stringifySize(file.fileSize),
 				tooltiptext: file.path,
+				class: "menuitem-iconic hc-iconic",
 				hc_fileName: name,
 				hc_userBackup: this.ju.startsWith(name, userBackup) && !!(++ubCount),
 				hc_oldBackup:  this.ju.startsWith(name, oldBackup),
@@ -4426,6 +4427,7 @@ var handyClicksSets = {
 		popup.insertBefore(df, sep);
 		this.ubRD.hasAttribute("disabled") && this.ubRD.removeAttribute("disabled");
 		this.updRestorePopup(ubCount, isEmpty, true);
+		this.delay(this.checkBackupFiles, this);
 	},
 	get backupItems() {
 		return this.ubPopup.getElementsByAttribute("hc_fileName", "*");
@@ -4459,6 +4461,16 @@ var handyClicksSets = {
 		this.$("hc-sets-tree-removeUserBackups-separator").hidden = hideRemove && hideRemove2;
 
 		this.su.checkDarkFont(this.$("hc-sets-tree-openBackupsDir"), popup);
+	},
+	checkBackupFiles: function() {
+		Array.prototype.forEach.call(this.backupItems, function(mi) {
+			this.delay(function() { // Force split into separate I/O operations to not freeze UI
+				this.io.readFromFileAsync(mi.__file, function(data) {
+					var hasFilesData = /"files"\s*:\s*\{\s*"/.test(data);
+					mi.setAttribute("hc_hasFilesData", hasFilesData);
+				}, this);
+			}, this);
+		}, this);
 	},
 	removeOldUserBackups: function(store) {
 		if(store < 0)
