@@ -4468,7 +4468,7 @@ var handyClicksSets = {
 				this.io.readFromFileAsync(mi.__file, function(data) {
 					var hasFilesData = /"files"\s*:\s*\{\s*"/.test(data);
 					mi.setAttribute("hc_hasFilesData", hasFilesData);
-				}, this);
+				}, this, true);
 			}, this);
 		}, this);
 	},

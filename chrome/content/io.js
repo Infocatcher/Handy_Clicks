@@ -180,13 +180,13 @@ var handyClicksIO = {
 			return this.textDecoder = new TextDecoder();
 		return this.textDecoder = null;
 	},
-	readFromFileAsync: function(file, callback, context) {
+	readFromFileAsync: function(file, callback, context, _silent) {
 		if(!(file instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)))
 			file = this.ut.getLocalFile(file);
 
 		var decoder = this.textDecoder;
 		if(decoder && this.fxVersion >= 20) {
-			this._log("readFromFileAsync(): will use OS.File.read()");
+			!_silent && this._log("readFromFileAsync(): will use OS.File.read()");
 			Components.utils["import"]("resource://gre/modules/osfile.jsm");
 			var onFailure = function(err) {
 				var noSuchFile = err && err instanceof OS.File.Error && err.becauseNoSuchFile;
@@ -222,7 +222,7 @@ var handyClicksIO = {
 				throw "Firefox 3.6";
 		}
 		catch(e) {
-			this._log("readFromFileAsync(): asynchronous API not available");
+			!_silent && this._log("readFromFileAsync(): asynchronous API not available");
 			this.readFromFileAsync = function(file, callback, context) {
 				var err = { value: undefined };
 				var data = this.readFromFile(file, err);
@@ -232,7 +232,7 @@ var handyClicksIO = {
 			};
 			return this.readFromFileAsync.apply(this, arguments);
 		}
-		this._log("readFromFileAsync(): will use NetUtil.asyncFetch()");
+		!_silent && this._log("readFromFileAsync(): will use NetUtil.asyncFetch()");
 		try {
 			// Don't check permissions: this is slow
 			//this.ensureFilePermissions(file, this.PERMS_FILE_OWNER_READ);
