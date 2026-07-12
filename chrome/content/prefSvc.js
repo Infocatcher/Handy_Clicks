@@ -645,12 +645,13 @@ var handyClicksPrefSvc = {
 		__proto__: null
 	},
 	get JSON() { // For Firefox < 3.5
-		delete this.JSON;
+		var o = this.ps; // May be called from handyClicksPrefSvcExt
+		delete o.JSON;
 		if(typeof JSON != "undefined")
-			this.JSON = JSON;
+			o.JSON = JSON;
 		else
-			this.jsLoader.loadSubScript("chrome://handyclicks/content/json.js", this);
-		return this.JSON;
+			this.jsLoader.loadSubScript("chrome://handyclicks/content/json.js", o);
+		return o.JSON;
 	},
 	getHash: function(str, hashFunc) {
 		var data = this.io.utf8Converter.convertToByteArray(str, {});
