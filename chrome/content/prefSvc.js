@@ -648,9 +648,8 @@ var handyClicksPrefSvc = {
 		var o = this.ps; // May be called from handyClicksPrefSvcExt
 		delete o.JSON;
 		if(typeof JSON != "undefined")
-			o.JSON = JSON;
-		else
-			this.jsLoader.loadSubScript("chrome://handyclicks/content/json.js", o);
+			return o.JSON = JSON;
+		this.jsLoader.loadSubScript("chrome://handyclicks/content/json.js", o);
 		return o.JSON;
 	},
 	getHash: function(str, hashFunc) {
