@@ -1463,9 +1463,12 @@ var handyClicksEditor = {
 		this.renameShortcut(false, true);
 	},
 	renameShortcut: function(onlyRename, forceCancel, syncSave) {
+		var renameMode = this.renameMode;
+		if(forceCancel && !renameMode)
+			return;
 		if(this.editorTabIndex != this.INDEX_SHORTCUT)
 			this.editorTabIndex = this.INDEX_SHORTCUT;
-		var rename = !this.renameMode;
+		var rename = !renameMode;
 		if(rename && this.$("hc-editor-shortcutRename").disabled) {
 			if(!this.currentType)
 				this.typeRequired();
