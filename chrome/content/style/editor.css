@@ -252,6 +252,10 @@ tab[hc_empty="true"] label {
 	opacity: 0.6;
 }
 
+#hc-editor-events[value="__undefined__"]:not([hc_requiredField="true"]) {
+	outline: 1px dashed red;
+	outline-offset: -1px;
+}
 [hc_requiredField="true"], tab[hc_requiredFieldParentTab="true"] {
 	outline: 1px solid red;
 	outline-offset: -1px;

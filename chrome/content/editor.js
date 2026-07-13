@@ -647,7 +647,7 @@ var handyClicksEditor = {
 		var na = {};
 		var so = this.ju.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || na;
 		this.initFuncEditor(so, "");
-		this.$("hc-editor-events").value = so.eventType || "click";
+		this.$("hc-editor-events").value = so.eventType || "__undefined__";
 		this.setShortcutRenamer(so == na);
 
 		so = this.ju.getOwnProperty(so, "delayedAction") || {};
@@ -2315,7 +2315,7 @@ var handyClicksEditor = {
 		var delayed = isDelayed ? this.delayId : "";
 		this.initFuncEditor(so, delayed, true);
 		if(!isDelayed)
-			this.$("hc-editor-events").value = so.eventType || "click";
+			this.$("hc-editor-events").value = so.eventType || "__undefined__";
 
 		this.disableUnsupported();
 		this.setDialogButtons();
