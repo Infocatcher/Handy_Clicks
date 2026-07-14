@@ -716,6 +716,17 @@ var handyClicksPrefSvc = {
 			&& fObj.hasOwnProperty("action")
 			&& typeof fObj.action == "string";
 	},
+	isKnownEventType: function(et) {
+		switch(et) {
+			case "mousedown":
+			case "click":
+			case "command":
+			case "dblclick":
+			case "__delayed__":
+				return true;
+		}
+		return false;
+	},
 	isOkCustomType: function(cType, types) {
 		if(!types)
 			types = this.types;

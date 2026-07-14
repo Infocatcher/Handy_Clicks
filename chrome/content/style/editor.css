@@ -256,6 +256,10 @@ tab[hc_empty="true"] label {
 	outline: 1px dashed red;
 	outline-offset: -1px;
 }
+#hc-editor-events[value]:not([value="__undefined__"]):not([label]) .menulist-label { /* Unknown event type */
+	background: red;
+	min-height: 1em;
+}
 [hc_requiredField="true"], tab[hc_requiredFieldParentTab="true"] {
 	outline: 1px solid red;
 	outline-offset: -1px;

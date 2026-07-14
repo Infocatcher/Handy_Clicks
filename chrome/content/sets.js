@@ -936,6 +936,7 @@ var handyClicksSets = {
 		var initCode, daInitCode;
 		var fullCode, fullCodeInit, daFullCode, daFullCodeInit;
 		var extNA = this.extTypeNotAvailable(itemType);
+		var evtTypeNA = !this.ps.isKnownEventType(fo.eventType);
 		var drawRemoved = this._drawRemoved;
 
 		var col = -1;
@@ -999,7 +1000,7 @@ var handyClicksSets = {
 				{ hc_checkbox: true }
 			);
 
-			var daCachedNa = extNA || daHasLinkedFile && (
+			var daCachedNa = extNA || evtTypeNA || daHasLinkedFile && (
 				this.su.linkedFileNotExists(daLinkedFile, true)
 				|| this.su.linkedFileNotExists(daLinkedFileInit, true)
 			);
@@ -1051,7 +1052,7 @@ var handyClicksSets = {
 				|| this.ut.isBuggyStr(typeLabel)
 			);
 
-		var cachedNa = extNA || hasLinkedFile && (
+		var cachedNa = extNA || evtTypeNA || hasLinkedFile && (
 			this.su.linkedFileNotExists(linkedFile, true)
 			|| this.su.linkedFileNotExists(linkedFileInit, true)
 		);
@@ -1115,7 +1116,7 @@ var handyClicksSets = {
 		tItem.__delayed = da && daItem;
 		tItem.__sortLabel = label;
 
-		if(!extNA && (hasLinkedFile || daHasLinkedFile)) this.delay(function() {
+		if(!extNA && !evtTypeNA && (hasLinkedFile || daHasLinkedFile)) this.delay(function() {
 			var na = this.su.linkedFileNotExists(linkedFile)
 				|| this.su.linkedFileNotExists(linkedFileInit);
 			var daNa = this.su.linkedFileNotExists(daLinkedFile)
