@@ -644,7 +644,7 @@ var handyClicksEditor = {
 			document.title = newTitle;
 	},
 	initShortcutEditor: function() {
-		var na = {};
+		var na = { eventType: "click" };
 		var so = this.ju.getOwnProperty(this.ps.prefs, this.shortcut, this.type) || na;
 		this.initFuncEditor(so, "");
 		this.$("hc-editor-events").value = so.eventType || "__undefined__";
