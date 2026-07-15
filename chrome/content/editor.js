@@ -2060,7 +2060,7 @@ var handyClicksEditor = {
 			this.renameShortcutCancel();
 		else if(res == this.su.PROMPT_SAVE)
 			this.renameShortcut(onlyRename, false, syncSave);
-		return res;
+		return hasRename ? res : this.su.PROMPT_DONT_SAVE;
 	},
 	checkCanEnable: function(cb) {
 		var type = this.currentType;
