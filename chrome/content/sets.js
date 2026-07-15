@@ -2963,11 +2963,11 @@ var handyClicksSets = {
 		};
 
 		this._hasTokenizerErrors = hasRegExpError;
-		setTimeout(function(_this) {
-			_this.showTokenizerErrors(tokens);
+		this.delay(function() {
+			this.showTokenizerErrors(tokens);
 			if(hasRegExpError)
-				_this.toggleSearchTooltip(true);
-		}, 0, this);
+				this.toggleSearchTooltip(true);
+		}, this);
 
 		var queryType = "spaceSeparated";
 		if(hasRegExpError)

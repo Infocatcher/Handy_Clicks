@@ -1900,9 +1900,7 @@ var handyClicksEditor = {
 
 	hasCrashBackup: false,
 	checkForCrashBackups: function(delay, silent) {
-		setTimeout(function(_this) {
-			_this._checkForCrashBackups(silent);
-		}, delay || 500, this);
+		this.delay(this._checkForCrashBackups, this, delay || 500, [silent]);
 	},
 	_checkForCrashBackups: function(silent) {
 		var bakFile = this._hasCrashBackup();
