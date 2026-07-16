@@ -941,7 +941,8 @@ var handyClicksSets = {
 
 		var col = -1;
 		this.appendTreeCell(tRow, "label", label, ++col);
-		this.appendTreeCell(tRow, "label", fo.eventType, ++col);
+		var tCellEvtType = this.appendTreeCell(tRow, "label", fo.eventType, ++col);
+		evtTypeNA && this.setNodeProperties(tCellEvtType, { hc_notAvailableEventType: true });
 		var actLabel = this.su.getActionLabel(fo, extNA);
 		var localized = this.ps.localize._localized;
 		this.appendTreeCell(tRow, "label", actLabel, ++col);

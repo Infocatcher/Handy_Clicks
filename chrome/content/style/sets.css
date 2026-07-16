@@ -237,6 +237,12 @@ tree[hc_colored="true"] treechildren::-moz-tree-row(hc_notAvailable, hc_customTy
 tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_notAvailable) {
 	opacity: 0.6;
 }
+tree[hc_colored="true"] treechildren::-moz-tree-cell-text(hc_notAvailableEventType) {
+	color: #c00;
+}
+tree[hc_colored="false"] treechildren::-moz-tree-cell-text(hc_notAvailableEventType) {
+	color: -moz-visitedHyperlinkText;
+}
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy),
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_buggy, hc_customType) {
 	background-color: #faa;
