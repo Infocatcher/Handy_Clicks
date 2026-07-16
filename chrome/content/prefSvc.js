@@ -182,8 +182,7 @@ var handyClicksPrefSvc = {
 		this.files = {};
 		this.otherSrc = false;
 
-		if(this.isMainWnd)
-			this._log(fromPrefs ? "loadSettingsAsync()" : "loadSettings()");
+		this.isMainWnd && this._log((fromPrefs ? "loadSettingsAsync()" : "loadSettings()") + " in " + this.path);
 		pSrc = pSrc || this.prefsFile;
 		if(pSrc instanceof (Components.interfaces.nsILocalFile || Components.interfaces.nsIFile)) {
 			fromPrefs = pSrc.equals(this.prefsFile);
@@ -207,7 +206,7 @@ var handyClicksPrefSvc = {
 
 		var scope;
 		if(typeof pSrc != "string") {
-			this._log("loadSettings(): passed already parsed data");
+			this._log("loadSettings(): passed already parsed data in " + this.path);
 			scope = pSrc;
 		}
 		else {
