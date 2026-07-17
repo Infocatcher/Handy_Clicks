@@ -2043,9 +2043,9 @@ var handyClicksEditor = {
 		var res = hasUnsaved ? this.su.notifyUnsaved() : undefined;
 		if(res == this.su.PROMPT_CANCEL)
 			return false;
-		if(res == this.su.PROMPT_SAVE)
-			this.saveSettings();
-		else if(res == this.su.PROMPT_DONT_SAVE && renamed == this.su.PROMPT_SAVE)
+		if(res == this.su.PROMPT_SAVE && !this.saveSettings())
+			return false;
+		if(res == this.su.PROMPT_DONT_SAVE && renamed == this.su.PROMPT_SAVE)
 			this.pe.saveSettingsObjects();
 		this._windowClosing = true;
 		this.cleanupFilesData();
