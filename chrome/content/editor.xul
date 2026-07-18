@@ -238,7 +238,7 @@
 									<menulist id="hc-editor-events" hc_notDelay="true">
 										<menupopup>
 											<menuitem value="mousedown" label="Mousedown" />
-											<menuitem value="click" label="Click" />
+											<menuitem value="click" default="true" label="Click" />
 											<menuitem id="hc-editor-events-command" value="command" label="Command" />
 											<menuitem value="dblclick" label="Dblclick" />
 										</menupopup>
@@ -249,7 +249,7 @@
 									<menulist id="hc-editor-allowMousedown" hc_notDelay="true">
 										<menupopup>
 											<menuitem value="true" label="&hc.editor.mousedownAllow;" />
-											<menuitem value="undefined" label="&hc.editor.mousedownSmart;" />
+											<menuitem value="undefined" default="true" label="&hc.editor.mousedownSmart;" />
 											<menuitem value="false" label="&hc.editor.mousedownStop;" />
 										</menupopup>
 									</menulist>

@@ -105,7 +105,7 @@
 
 			<menuitem value="$void" label="$void" hc_notDelay="true" />
 			<menuitem value="$ignore" label="$ignore" hc_notDelay="true" />
-			<menuitem value="$auto" label="$auto" hc_notFunc="true" />
+			<menuitem value="$auto" label="$auto" hc_notFunc="true" default="true" />
 
 			<!-- Custom code -->
 			<menuseparator id="hc-editor-funcsSep" />
