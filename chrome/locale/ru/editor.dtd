@@ -41,6 +41,7 @@
 <!ENTITY hc.editor.mousedownEvent "Событие «mousedown»:">
 <!ENTITY hc.editor.mousedownAllow "Не останавливать">
 <!ENTITY hc.editor.mousedownSmart "Авто">
+<!ENTITY hc.editor.mousedownSmartTip "Предотвратить обработку события веб-страницей, но не блокировать жесты мышью">
 <!ENTITY hc.editor.mousedownStop "Всегда останавливать">
 <!ENTITY hc.editor.enabled "Включено">
 <!ENTITY hc.editor.enabledAccesskey "В">

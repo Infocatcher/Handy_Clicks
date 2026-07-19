@@ -41,6 +41,7 @@
 <!ENTITY hc.editor.mousedownEvent "“Mousedown” event:">
 <!ENTITY hc.editor.mousedownAllow "Don't stop">
 <!ENTITY hc.editor.mousedownSmart "Smart">
+<!ENTITY hc.editor.mousedownSmartTip "Prevent event handlers from web-page, but don't block mouse gestures">
 <!ENTITY hc.editor.mousedownStop "Always stop">
 <!ENTITY hc.editor.enabled "Enabled">
 <!ENTITY hc.editor.enabledAccesskey "b">
