@@ -239,7 +239,7 @@
 `*` Editor: clarified rename and save confirmation: just ask twice.<br>
 `*` Editor: converted “Fix” checkbox into button (and renamed to “Lock”).<br>
 `x` Editor: correctly open error line in context menu detection for custom type.<br>
-`x` Workaround for middle- and right-dblclick in Firefox 53+ (now used auxclick event listener and <em>extensions.handyclicks.dblclickDelay</em> preferences).<br>
+`x` Workaround for middle- and right-dblclick in Firefox 53+ (now used auxclick event listener and <em>extensions.handyclicks.dblclickDelay</em> preference).<br>
 `+` Editor: added Shift+F3 hotkey to open settings menu.<br>
 `*` Editor: changed hotkey to open shortcuts menu: Shift+F3 → Shift+F2 (to match F2 hotkey to rename shortcut).<br>
 `*` Various internal code enhancements.<br>
