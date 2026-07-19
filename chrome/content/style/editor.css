@@ -146,6 +146,10 @@ menulist[hc_sets="disabled"] .menulist-label {
 #hc-editor-button[value="2"], #hc-editor-button menuitem[value="2"], #hc-editor-clickButton[hc_button="2"] {
 	-moz-image-region: rect(0 80px 16px 64px);
 }
+#hc-editor-shortcutBox > checkbox[hc_activeKey] {
+	outline: 1px solid Highlight;
+	outline-offset: -1px;
+}
 
 #hc-editor-buttonDelete {
 	-moz-image-region: rect(32px 64px 48px 48px);

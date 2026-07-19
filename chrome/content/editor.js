@@ -1332,9 +1332,55 @@ var handyClicksEditor = {
 	},
 	showMouseButton: function(btn, e) {
 		btn.setAttribute("hc_button", e.button);
+		var keyHandler = {
+			context: this,
+			handleEvent: function(e) {
+				switch(e.keyCode) {
+					case e.DOM_VK_CONTROL:
+						this.showEvent("ctrl", e);
+					break;
+					case e.DOM_VK_SHIFT:
+						this.showEvent("shift", e);
+					break;
+					case e.DOM_VK_ALT:
+					case e.DOM_VK_ALTGR:
+						this.showEvent("alt", e);
+					break;
+					case e.DOM_VK_META:
+						this.showEvent("meta", e);
+					break;
+					case e.DOM_VK_WIN:
+						this.showEvent("os", e);
+				}
+			},
+			showEvent: function(mdf, e) {
+				this.showModifier(mdf, e.type == "keydown");
+			},
+			showModifier: function(mdf, on) {
+				var cb = this.context.$("hc-editor-" + mdf);
+				if(cb.hasAttribute("hc_activeKey") != on)
+					this.context.attribute(cb, "hc_activeKey", on);
+			}
+		};
+		var state = {
+			ctrl:  e.ctrlKey,
+			shift: e.shiftKey,
+			alt:   e.altKey,
+			meta:  e.metaKey,
+			os:    e.getModifierState && e.getModifierState("OS"),
+			__proto__: null
+		};
+		for(var mdf in state)
+			keyHandler.showModifier(mdf, state[mdf]);
+		window.addEventListener("keydown", keyHandler, true);
+		window.addEventListener("keyup", keyHandler, true);
 		window.addEventListener("mouseup", function onMouseUp(e) {
+			window.removeEventListener("keydown", keyHandler, true);
+			window.removeEventListener("keyup", keyHandler, true);
 			window.removeEventListener(e.type, onMouseUp, true);
 			btn.removeAttribute("hc_button");
+			for(var mdf in state)
+				keyHandler.showModifier(mdf, false);
 		}, true);
 	},
 	setClickOptions: function(e) {
