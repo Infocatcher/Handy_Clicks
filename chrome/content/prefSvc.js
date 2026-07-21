@@ -428,9 +428,10 @@ var handyClicksPrefSvc = {
 		return /^\/\/>\s*([^\n\r]+\.\w+)$/.test(code) && RegExp.$1;
 	},
 	_fnCache: { __proto__: null },
-	expandCode: function expandCode(code) {
+	expandCode: function expandCode(code, path) {
 		expandCode._path = undefined;
-		var path = this.getSourcePath(code);
+		if(!path)
+			path = this.getSourcePath(code);
 		if(!path)
 			return code;
 		if(path in this._fnCache)
@@ -444,6 +445,15 @@ var handyClicksPrefSvc = {
 			throw this.getLocalized("fileNotFound").replace("%p", file.path);
 		expandCode._path = path;
 		return data;
+	},
+	expandCodeFromPath: function(path) {
+		try {
+			return this.expandCode("", path);
+		}
+		catch(e) {
+			this.ut._err(e);
+		}
+		return "";
 	},
 
 	_destructors: [],

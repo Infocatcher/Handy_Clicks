@@ -1238,15 +1238,22 @@ var handyClicksSets = {
 		getActionCode._fullLabel = "";
 		if(!isCustom)
 			return action;
-		var path = this.ps.getSourcePath(action);
+		var header, path = this.ps.getSourcePath(action);
 		if(path) {
 			getActionCode._linkedFile = path;
 			var hasData = getActionCode._hasFileData = this._import
 				&& path in this.ps.files;
+			action = this._import
+				? hasData && this.ps.files[path].data || ""
+				: this.ps.expandCodeFromPath(path);
 			path = path.replace(/^%hc_ScriptsDir%[\\\/]/, "");
-			return this.getLocalized("customFile" + (hasData ? "WithData" : "")) + " " + path;
+			header = this.getLocalized("customFile" + (hasData ? "WithData" : "")) + " " + path;
+			if(action)
+				header += this.treeNewline + this.getLocalized("customFileExpanded") + this.treeNewline;
 		}
-		var header = this.getLocalized("customFunction") + this.treeNewline;
+		else {
+			header = this.getLocalized("customFunction") + this.treeNewline;
+		}
 		var cropped = header + this.cropCode(action || "");
 		if(this.cropCode._isCropped)
 			getActionCode._fullLabel = this._limitSearch ? null : header + (action || "");
