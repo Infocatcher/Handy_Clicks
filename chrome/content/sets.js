@@ -3182,6 +3182,8 @@ var handyClicksSets = {
 			|| pName == "sets.codeLengthLimit"
 			|| pName == "sets.codeLengthLimit.preserveLines"
 			|| pName == "sets.codeLengthLimit.limitSearch"
+			|| pName == "sets.treeExpandFileData"
+			|| pName == "sets.treeExpandFileDataImport"
 			|| pName == "delayedActionTimeout"
 		)
 			this.updTree();
