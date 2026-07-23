@@ -113,6 +113,8 @@ pref("extensions.handyclicks.sets.openEditorsLimit", 5);
 pref("extensions.handyclicks.sets.dateFormat", "_%Y-%m-%d_%H-%M"); // String for new Date().toLocaleFormat(), Firefox 54 and older
 pref("extensions.handyclicks.sets.treeDrawMode", 0);
 pref("extensions.handyclicks.sets.treeExpandDelayedAction", true);
+pref("extensions.handyclicks.sets.treeExpandFileData", true);
+pref("extensions.handyclicks.sets.treeExpandFileDataImport", true);
 pref("extensions.handyclicks.sets.treeSortCustomTypes", 1); // -1 - before all, 0 - in sort order, 1 - after all
 pref("extensions.handyclicks.sets.treeSortAutoInlineDrawMode", true);
 pref("extensions.handyclicks.sets.treeSortAutoCollapseDelayedAction", true);

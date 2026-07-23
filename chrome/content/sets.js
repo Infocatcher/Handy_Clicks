@@ -520,6 +520,8 @@ var handyClicksSets = {
 			: this.getLocalized("delayedActionAfter").replace("%t", daTime);
 		this._daExpand = saveClosed // Will restore collapsed/expanded state
 			|| this.daExpandPref;
+		this._expandFiles = this.pu.get("sets.treeExpandFileData");
+		this._expandFilesImport = this.pu.get("sets.treeExpandFileDataImport");
 		this._localizeArgs = this.pu.get("sets.localizeArguments");
 		this._maxCodeLength = Math.max(0, this.pu.get("sets.codeLengthLimit"));
 		this._preserveLines = Math.max(0, this.pu.get("sets.codeLengthLimit.preserveLines"));
@@ -1251,8 +1253,8 @@ var handyClicksSets = {
 			var hasData = getActionCode._hasFileData = this._import
 				&& path in this.ps.files;
 			action = this._import
-				? hasData && this.ps.files[path].data || ""
-				: this.ps.expandCodeFromPath(path);
+				? this._expandFilesImport && hasData && this.ps.files[path].data || ""
+				: this._expandFiles && this.ps.expandCodeFromPath(path) || "";
 			path = path.replace(/^%hc_ScriptsDir%[\\\/]/, "");
 			header = this.getLocalized("customFile" + (hasData ? "WithData" : "")) + " " + path;
 			if(action)
