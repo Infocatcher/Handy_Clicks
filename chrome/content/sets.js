@@ -2256,6 +2256,12 @@ var handyClicksSets = {
 				var pref = mi.getAttribute("hc_pref");
 				if(pref != "sets.closeTreeViewMenu")
 					mi.setAttribute("closemenu", closeMenu);
+
+				if(pref == "sets.treeExpandFileData")
+					mi.setAttribute("hc_notVisible", this._import);
+				else if(pref == "sets.treeExpandFileDataImport")
+					mi.setAttribute("hc_notVisible", !this._import);
+
 				if(pref)
 					mi.setAttribute("checked", this.pu.get(pref));
 				else if(mi.hasAttribute("hc_treeAttr"))
