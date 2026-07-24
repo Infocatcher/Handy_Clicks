@@ -99,6 +99,8 @@
 <!ENTITY hc.sets.customTypesAfter "После настроек">
 
 <!ENTITY hc.sets.expandDa "Разворачивать отложенные действия">
+<!ENTITY hc.sets.expandFileData "Показывать данные связанных файлов">
+<!ENTITY hc.sets.expandFileDataImport "Импорт: Показывать данные связанных файлов">
 <!ENTITY hc.sets.colorizeTree "Раскрашивать дерево">
 <!ENTITY hc.sets.showTreeGrid "Показывать сетку">
 <!ENTITY hc.sets.localizeArgs "Переводить аргументы">

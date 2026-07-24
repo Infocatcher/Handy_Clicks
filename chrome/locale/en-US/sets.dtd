@@ -99,6 +99,8 @@
 <!ENTITY hc.sets.customTypesAfter "After settings">
 
 <!ENTITY hc.sets.expandDa "Expand delayed actions">
+<!ENTITY hc.sets.expandFileData "Show files data">
+<!ENTITY hc.sets.expandFileDataImport "Import: Show files data">
 <!ENTITY hc.sets.colorizeTree "Colorize tree">
 <!ENTITY hc.sets.showTreeGrid "Show grid">
 <!ENTITY hc.sets.localizeArgs "Localize arguments">
