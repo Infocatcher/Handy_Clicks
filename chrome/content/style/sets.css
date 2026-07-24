@@ -137,14 +137,14 @@ radio[pane="hc-sets-pane-funcs"] {
 	visibility: hidden;
 }
 
+#hc-sets-tree-viewPopup menuitem[hc_notVisible="true"] > .menu-iconic-text {
+	color: grayText;
+}
 #hc-sets-tree-sortMenu menuitem[type="radio"] hbox[anonid="accel"] {
 	min-width: 3em;
 	font-size: 0.75em;
 	-moz-margin-start: 3px;
 	opacity: 0.6;
-}
-#hc-sets-tree-sortMenu menuitem[hc_forHidden="true"] > .menu-iconic-text {
-	color: grayText;
 }
 #hc-sets-tree-customTypesMenu[hc_notFound="true"] > .menu-text {
 	color: grayText;
