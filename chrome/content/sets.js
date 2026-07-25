@@ -2258,9 +2258,9 @@ var handyClicksSets = {
 					mi.setAttribute("closemenu", closeMenu);
 
 				if(pref == "sets.treeExpandFileData")
-					mi.setAttribute("hc_notVisible", this._import);
+					mi.setAttribute("hc_notVisible", this._import || !this.hasTreeProperty("hc_customFile"));
 				else if(pref == "sets.treeExpandFileDataImport")
-					mi.setAttribute("hc_notVisible", !this._import);
+					mi.setAttribute("hc_notVisible", !this._import || !this.hasTreeProperty("hc_fileData"));
 
 				if(pref)
 					mi.setAttribute("checked", this.pu.get(pref));
@@ -2643,6 +2643,22 @@ var handyClicksSets = {
 		}, this);
 
 		this.su.checkDarkFont(mp.firstChild, mp);
+	},
+	hasTreeProperty: function(prop) { // Based on .initSearchMenu()
+		prop += " "; // See .setNodeProperties()
+		var hasSearch = /\S/.test(this.searchField.value);
+		return Array.prototype.some.call(
+			this.tree.getElementsByTagName("treerow"),
+			function(tRow) {
+				var tItem = tRow.parentNode;
+				//if(tItem.hidden || tItem.parentNode.parentNode.hidden)
+				//	return;
+				var props = tRow.getAttribute("properties");
+				if(!props || hasSearch && props.indexOf("hc_search ") == -1) // See .setNodeProperties()
+					return false;
+				return props.indexOf(prop) != -1;
+			}
+		);
 	},
 	insertSearchPlaceholder: function(e, mp) {
 		var mi = e.target;
