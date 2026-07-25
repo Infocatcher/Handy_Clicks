@@ -2646,7 +2646,6 @@ var handyClicksSets = {
 	},
 	hasTreeProperty: function(prop) { // Based on .initSearchMenu()
 		prop += " "; // See .setNodeProperties()
-		var hasSearch = /\S/.test(this.searchField.value);
 		return Array.prototype.some.call(
 			this.tree.getElementsByTagName("treerow"),
 			function(tRow) {
@@ -2654,9 +2653,7 @@ var handyClicksSets = {
 				//if(tItem.hidden || tItem.parentNode.parentNode.hidden)
 				//	return;
 				var props = tRow.getAttribute("properties");
-				if(!props || hasSearch && props.indexOf("hc_search ") == -1) // See .setNodeProperties()
-					return false;
-				return props.indexOf(prop) != -1;
+				return props && props.indexOf(prop) != -1;
 			}
 		);
 	},
