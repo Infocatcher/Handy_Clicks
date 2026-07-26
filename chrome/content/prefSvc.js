@@ -449,14 +449,21 @@ var handyClicksPrefSvc = {
 			throw this.getLocalized("fileNotFound").replace("%p", file.path);
 		return data;
 	},
+	_fdCache: { __proto__: null },
 	expandCodeFromPath: function(path) {
+		if(path in this._fdCache)
+			return this._fdCache[path];
 		try {
-			return this.getFileData(path);
+			var data = this.getFileData(path);
+			this._fdCache[path] = data;
 		}
 		catch(e) {
 			this.ut._err(e);
 		}
-		return "";
+		return data || "";
+	},
+	clearFdCache: function() {
+		this._fdCache = { __proto__: null };
 	},
 
 	_destructors: [],

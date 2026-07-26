@@ -553,6 +553,7 @@ var handyClicksSets = {
 
 		this.timer("drawTree()");
 		!dontSearch && this.searchInSetsTree(true, true);
+		this.ps.clearFdCache(); // Simplify reloading
 
 		this.delay(function() { // Cleanup, see getSortedInsPos()
 			delete this.tBody.__sortedChildNodes;
