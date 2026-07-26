@@ -265,6 +265,32 @@ var handyClicksPrefSvc = {
 		}
 		this._loadStatus = this.SETS_LOAD_OK;
 	},
+	checkLinkedFiles: function(alf) {
+		alf = alf || this.storage.get("activeLinkedFiles");
+		if(!alf)
+			return undefined;
+		var changed = false;
+		for(var path in alf) {
+			var fd = alf[path];
+			var file = this.ut.getLocalFileFromPath(fd.path);
+			if(!file.exists()) {
+				this._log(this.path + " -> checkLinkedFiles() -> file was removed " + path);
+				delete alf[path];
+				continue;
+			}
+			var lastModified = file.lastModifiedTime;
+			var size = file.fileSize;
+			this._log(this.path + " -> checkLinkedFiles() -> check file " + path);
+			if(lastModified != fd.lastModified || size != fd.size) {
+				fd.lastModified = lastModified;
+				fd.size = size;
+				changed = true;
+				this.ps.reinitSettingsInBrowsers();
+				break;
+			}
+		}
+		return changed;
+	},
 	reinitSettingsInBrowsers: function() {
 		this._log("reinitSettingsInBrowsers()");
 		const pSvc = "handyClicksPrefSvc";
