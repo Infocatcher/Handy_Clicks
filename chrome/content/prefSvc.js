@@ -428,14 +428,18 @@ var handyClicksPrefSvc = {
 		return /^\/\/>\s*([^\n\r]+\.\w+)$/.test(code) && RegExp.$1;
 	},
 	_fnCache: { __proto__: null },
-	expandCode: function expandCode(code, path) {
+	expandCode: function expandCode(code) {
 		expandCode._path = undefined;
-		if(!path)
-			path = this.getSourcePath(code);
+		var path = this.getSourcePath(code);
 		if(!path)
 			return code;
 		if(path in this._fnCache)
 			return this._fnCache[expandCode._path = path];
+		var data = this.getFileData(path);
+		expandCode._path = path;
+		return data;
+	},
+	getFileData: function(path) {
 		var file = this.ut.getLocalFile(path);
 		if(!file)
 			throw this.getLocalized("fileInvalidPath").replace("%p", path);
@@ -443,12 +447,11 @@ var handyClicksPrefSvc = {
 			.replace(/^\ufeff/, ""); // Older Firefox versions doesn't support BOM mark
 		if(!data)
 			throw this.getLocalized("fileNotFound").replace("%p", file.path);
-		expandCode._path = path;
 		return data;
 	},
 	expandCodeFromPath: function(path) {
 		try {
-			return this.expandCode("", path);
+			return this.getFileData(path);
 		}
 		catch(e) {
 			this.ut._err(e);
