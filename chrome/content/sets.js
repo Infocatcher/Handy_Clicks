@@ -93,6 +93,7 @@ var handyClicksSets = {
 			this.e("hc-sets-overrideInstantApply-box").hidden = true;
 
 		window.addEventListener("mouseover", this, true);
+		window.addEventListener("focus", this, false);
 		document.addEventListener(this.su.dropEvent, this, false);
 		this.$("hc-sets-tree-columns").addEventListener("click", this, true);
 
@@ -120,6 +121,7 @@ var handyClicksSets = {
 		this._typesState = this._filesState = null;
 
 		window.removeEventListener("mouseover", this, true);
+		window.removeEventListener("focus", this, false);
 		document.removeEventListener(this.su.dropEvent, this, false);
 		this.$("hc-sets-tree-columns").removeEventListener("click", this, true);
 	},
@@ -214,6 +216,8 @@ var handyClicksSets = {
 			this.smartSelect(e);
 		else if(e.type == "mouseover")
 			this.openMenu(e);
+		else if(e.type == "focus")
+			this.checkLinkedFiles(e);
 		else if(e.type == this.su.dropEvent)
 			this.dataChanged(e, true);
 		else if(e.type == "click")
@@ -3864,6 +3868,12 @@ var handyClicksSets = {
 		return this.ps.checkUnsaved(pSrc);
 	},
 
+	checkLinkedFiles: function(e) {
+		if(!this.ps.checkLinkedFiles())
+			return;
+		this._log(e.type + " -> checkLinkedFiles() -> updTree()");
+		this.updTree();
+	},
 	dataChanged: function(e, delayed) {
 		if(delayed) {
 			this.delay(this.dataChanged, this, 5, [e]);
