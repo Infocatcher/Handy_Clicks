@@ -496,14 +496,15 @@ var handyClicksEditor = {
 			this.initSettingsMenu(); // Changed using mouse scroll
 	},
 	fireEditorChange: function(node) {
-		var evt = document.createEvent("Events");
-		evt.initEvent("HandyClicks:editor:change", true, false);
-		node.dispatchEvent(evt);
+		this.fireEvent("HandyClicks:editor:change", node);
 	},
 	fireEditorFocus: function() {
+		this.fireEvent("HandyClicks:editor:focus", top);
+	},
+	fireEvent: function(type, node) {
 		var evt = document.createEvent("Events");
-		evt.initEvent("HandyClicks:editor:focus", true, false);
-		top.dispatchEvent(evt);
+		evt.initEvent(type, true, false);
+		node.dispatchEvent(evt);
 	},
 
 	setDialogButtons: function() {
