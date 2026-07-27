@@ -93,9 +93,11 @@ var handyClicksSets = {
 			this.e("hc-sets-overrideInstantApply-box").hidden = true;
 
 		window.addEventListener("mouseover", this, true);
-		window.addEventListener("focus", this, false);
 		document.addEventListener(this.su.dropEvent, this, false);
 		this.$("hc-sets-tree-columns").addEventListener("click", this, true);
+		this.delay(function() { // Ignore initial focus
+			window.addEventListener("focus", this, false);
+		}, this);
 
 		this.checkLinkedFilesDelay = 10;
 	},
@@ -121,9 +123,9 @@ var handyClicksSets = {
 		this._typesState = this._filesState = null;
 
 		window.removeEventListener("mouseover", this, true);
-		window.removeEventListener("focus", this, false);
 		document.removeEventListener(this.su.dropEvent, this, false);
 		this.$("hc-sets-tree-columns").removeEventListener("click", this, true);
+		window.removeEventListener("focus", this, false);
 	},
 	restoreSearchQuery: function() {
 		if(!this.pu.get("sets.rememberSearchQuery"))
