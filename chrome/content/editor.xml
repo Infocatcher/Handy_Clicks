@@ -995,6 +995,7 @@
 					if(!this._hasWatchHandlers) {
 						this._hasWatchHandlers = true;
 						top.addEventListener("focus",  this, false);
+						top.addEventListener("HandyClicks:editor:focus", this, false);
 						top.addEventListener("unload", this, false);
 						top.addEventListener("HandyClicks:editor:change", this, false);
 					}
@@ -1014,6 +1015,7 @@
 					if(this._hasWatchHandlers) {
 						this._hasWatchHandlers = false;
 						top.removeEventListener("focus",  this, false);
+						top.removeEventListener("HandyClicks:editor:focus", this, false);
 						top.removeEventListener("unload", this, false);
 						top.removeEventListener("HandyClicks:editor:change", this, false);
 					}
@@ -1037,7 +1039,7 @@
 				<body>
 				<![CDATA[
 					var type = e.type;
-					if(type == "focus")
+					if(type == "focus" || type == "HandyClicks:editor:focus")
 						this.updateFromFile();
 					else if(type == "unload") {
 						if(e.target.defaultView == e.currentTarget)

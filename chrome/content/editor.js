@@ -500,6 +500,11 @@ var handyClicksEditor = {
 		evt.initEvent("HandyClicks:editor:change", true, false);
 		node.dispatchEvent(evt);
 	},
+	fireEditorFocus: function() {
+		var evt = document.createEvent("Events");
+		evt.initEvent("HandyClicks:editor:focus", true, false);
+		top.dispatchEvent(evt);
+	},
 
 	setDialogButtons: function() {
 		var shModified = this.shortcutUnsaved;
@@ -1850,6 +1855,7 @@ var handyClicksEditor = {
 	_fdChanged: false,
 	_windowClosing: false,
 	changedFileData: function(path) {
+		this._log("Editor: changedFileData()");
 		this.delay(function() {
 			this._fdChanged = true;
 			this.changedFileDataSync(path);

@@ -3871,10 +3871,22 @@ var handyClicksSets = {
 	},
 
 	checkLinkedFiles: function(e) {
+		if(this._import) {
+			this._expandFilesImport && this.pingEditors();
+			return;
+		}
+		if(!this._expandFiles)
+			return;
 		if(!this.ps.checkLinkedFiles())
 			return;
 		this._log(e.type + " -> checkLinkedFiles() -> updTree()");
 		this.updTree();
+	},
+	pingEditors: function() {
+		const pEdt = "handyClicksEditor";
+		this.wu.forEachWindow("handyclicks:editor", function(w) {
+			pEdt in w && w[pEdt].fireEditorFocus();
+		});
 	},
 	dataChanged: function(e, delayed) {
 		if(delayed) {
