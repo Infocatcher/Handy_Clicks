@@ -195,9 +195,22 @@ var handyClicksPrefSvcExt = {
 		var now = Date.now();
 		if(max > 0 && (!bakFiles.length || now >= bakFiles[bakFiles.length - 1].time + minInterval)) {
 			var fName = namePrefix + this.getTimeString(now) + ".js";
-			this.ut.copyFileTo(prefsFile, backupsDir, fName);
+			if(this.pu.get("sets.backupAutoSaveFilesData")) {
+				var pStr = this.ps.stringifySettings({ exportLinkedFiles: true });
+				var file = backupsDir.clone();
+				file.append(fName);
+				this.io.writeToFileAsync(pStr, file, function(status) {
+					if(Components.isSuccessCode(status)) {
+						this._log("checkForBackup(): " + fName + " [+files data]");
+						file.lastModifiedTime = now;
+					}
+				}, this);
+			}
+			else {
+				this.ut.copyFileTo(prefsFile, backupsDir, fName);
+				this._log("checkForBackup(): " + fName);
+			}
 			bakFiles.push(null); // Dummy...
-			this._log("checkForBackup(): " + fName);
 		}
 		else {
 			this._log("checkForBackup(): No backup");
