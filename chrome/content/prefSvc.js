@@ -663,8 +663,15 @@ var handyClicksPrefSvc = {
 			if(key.charAt(0) == "_")
 				return undefined;
 			if(exportLinkedFiles && key in _this.codeKeys) {
-				var err = _this.pe.exportFileData(files, val);
-				err && errors.push(err);
+				if(typeof exportLinkedFiles == "boolean") {
+					var err = _this.pe.exportFileData(files, val);
+					err && errors.push(err);
+				}
+				else {
+					var path = _this.getSourcePath(val);
+					if(path && path in exportLinkedFiles && !(path in files))
+						files[path] = exportLinkedFiles[path];
+				}
 			}
 			return val;
 		}, "\t");

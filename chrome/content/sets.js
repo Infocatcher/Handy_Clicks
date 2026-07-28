@@ -4258,7 +4258,8 @@ var handyClicksSets = {
 			this.setNodesProperties(its, { hc_copied: false });
 		}, this, 200);
 
-		return this.ps.stringifySettings({ types: newTypes, prefs: newPrefs, exportLinkedFiles: true });
+		var files = this._import ? this.ps.files : true;
+		return this.ps.stringifySettings({ types: newTypes, prefs: newPrefs, exportLinkedFiles: files });
 	},
 	extractLabels: function(its) {
 		return its.map(function(it) {
