@@ -2718,10 +2718,12 @@ var handyClicksSets = {
 		}
 		if(removeOther) {
 			var sm = this.searchMap;
+			var removedOther;
 			for(var p in sm) if(p != ph)
-				removePh(p);
+				removePh(p) && (removedOther = true);
+			var leavePh = removedOther && val.indexOf(ph) != -1;
 		}
-		if(!removePh(ph)) {
+		if(!leavePh && !removePh(ph)) {
 			if(ph in this.oppositeSearchPlaceholders)
 				this.oppositeSearchPlaceholders[ph].forEach(removePh);
 
