@@ -16,7 +16,7 @@
 `*` Improved startup performance: load handyclicks.js after small delay, increased delay to preload settings.<br>
 `*` Added special highlighting for custom files (`//> %hc_ScriptsDir%/example.js` in code).<br>
 `*` UI tweaks and improved localization strings.<br>
-`+` Added menu to insert search placeholders (like %custom%).<br>
+`+` Added menu to insert search placeholders like %custom% (use middle-click or hold any modifier to leave only one placeholder).<br>
 `x` Correctly reset filter: fix possible rows disappearance.<br>
 `*` Sort rows alphabetically: types in normal mode and parent rows in inverse mode.<br>
 `x` Fixed XSS in labels for custom types.<br>
@@ -242,6 +242,14 @@
 `x` Workaround for middle- and right-dblclick in Firefox 53+ (now used auxclick event listener and <em>extensions.handyclicks.dblclickDelay</em> preference).<br>
 `+` Editor: added Shift+F3 hotkey to open settings menu.<br>
 `*` Editor: changed hotkey to open shortcuts menu: Shift+F3 → Shift+F2 (to match F2 hotkey to rename shortcut).<br>
+`*` Settings: implemented search tokenizer for complex space-separated requests (Space = AND, -Something = NOT Something):<br>
+wordWithoutSpaces /RegExp/i 'whole string' "Case Sensitive string" -word -/%off%.*RegExp2/s<br>
+`+` Settings: Import - Restore from backup: added special icons for backups with linked files data.<br>
+`*` Settings, editor: highlight unknown event types as not available, for future compatibility.<br>
+`+` Settings: show code from linked files in tree (may be disabled from View menu, <em>extensions.handyclicks.sets.treeExpandFileData</em> and <em>extensions.handyclicks.sets.treeExpandFileDataImport</em> preferences).<br>
+`*` Settings: improved partial export from import: now used imported file data (not from real existing files).<br>
+`*` Auto-backups: now also saves files data (<em>extensions.handyclicks.sets.backupAutoSaveFilesData</em> preference).<br>
+`*` Corrected and updated localizations.<br>
 `*` Various internal code enhancements.<br>
 
 ##### legacy-0.1.3.x/HEAD
