@@ -118,6 +118,9 @@ var handyClicksPrefUtils = {
 		this.prefSvc.savePrefFile(null);
 	},
 
+	openAboutConfigNS: function(filter) {
+		this.openAboutConfig(this.prefNS + filter);
+	},
 	openAboutConfig: function(filter) {
 		filter = filter || this.prefNS;
 		if(this.switchToAboutConfigTab(filter))

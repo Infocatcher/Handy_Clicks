@@ -500,7 +500,7 @@ var handyClicksFuncs = {
 			this.ut.notifyError(err, {
 				buttons: {
 					$openAboutConfig: function() {
-						this.pu.openAboutConfig(this.pu.prefNS + regexpPref);
+						this.pu.openAboutConfigNS(regexpPref);
 					},
 					$openConsole: this.ut.toErrorConsole
 				},
