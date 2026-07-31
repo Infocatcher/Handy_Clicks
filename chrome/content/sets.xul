@@ -363,10 +363,14 @@ preferences {
 									label="&hc.sets.removeDuplicateBackups;" accesskey="&hc.sets.removeDuplicateBackupsAccesskey;" />
 								<menuseparator id="hc-sets-tree-removeUserBackups-separator" />
 								<menuitem id="hc-sets-tree-removeUserBackups2" class="menuitem-iconic hc-iconic"
-									oncommand="handyClicksSets.removeOldUserBackups(handyClicksSets.pu.get('sets.backupUserRemoveDepth2'));" closemenu="none"
+									oncommand="handyClicksSets.removeOldUserBackups(handyClicksSets.pu.get('sets.backupUserRemoveDepth2'));"
+									onclick="if(event.button == 2) handyClicksSets.pu.openAboutConfigNS('sets.backupUserRemoveDepth');"
+									closemenu="none"
 									hc_label="&hc.sets.removeUserBackups;" accesskey="&hc.sets.removeUserBackups2Accesskey;" />
 								<menuitem id="hc-sets-tree-removeUserBackups" class="menuitem-iconic hc-iconic"
-									oncommand="handyClicksSets.removeOldUserBackups(handyClicksSets.pu.get('sets.backupUserRemoveDepth'));" closemenu="none"
+									oncommand="handyClicksSets.removeOldUserBackups(handyClicksSets.pu.get('sets.backupUserRemoveDepth'));"
+									onclick="if(event.button == 2) handyClicksSets.pu.openAboutConfigNS('sets.backupUserRemoveDepth');"
+									closemenu="none"
 									hc_label="&hc.sets.removeUserBackups;" accesskey="&hc.sets.removeUserBackupsAccesskey;" />
 							</menupopup>
 						</menu>
