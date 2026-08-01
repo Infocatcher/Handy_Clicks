@@ -2747,8 +2747,12 @@ var handyClicksSets = {
 		mp && mp.hidePopup();
 	},
 	indexOfSearchPlaceholder: function(val, ph) {
-		return val.replace(/%%([^%]+)%%/g, "%_$1_%") // Will ignore %%ph%%
-			.indexOf(ph);
+		for(var indx, pos = 0; (indx = val.indexOf(ph, pos)) != -1; ++pos) {
+			pos = indx + ph.length;
+			if(val.charAt(indx - 1) != "%" || val.charAt(pos) != "%") // Skip %%ph%%
+				return indx;
+		}
+		return -1;
 	},
 	initSearchTip: function(tt) {
 		var label = tt.firstChild;
