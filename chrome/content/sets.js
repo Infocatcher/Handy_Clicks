@@ -2759,12 +2759,12 @@ var handyClicksSets = {
 		var na = !this._maxCodeLength;
 		label.hidden = na;
 		label.nextSibling.hidden = !na;
-		var tt = label.__baseLabel || (label.__baseLabel = label.value);
+		var tip = label.__baseLabel || (label.__baseLabel = label.value);
 		label.value = this._preserveLines > 0
-			? tt
+			? tip
 				.replace("$max", this._maxCodeLength)
 				.replace("$preserve", this._maxCodeLength + this._preserveLines)
-			: tt.replace(/\$(?:max|preserve).*\$(?:preserve|max)/, this._maxCodeLength);
+			: tip.replace(/\$(?:max|preserve).*\$(?:preserve|max)/, this._maxCodeLength);
 	},
 	navigateSearchResults: function(e) {
 		var code = e.keyCode;
