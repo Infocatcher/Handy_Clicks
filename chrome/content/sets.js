@@ -2626,7 +2626,7 @@ var handyClicksSets = {
 			var ph = mi.getAttribute("acceltext");
 			if(!ph)
 				return;
-			var indx = val.indexOf(ph);
+			var indx = this.indexOfSearchPlaceholder(val, ph);
 			var hasPh = indx != -1;
 			var notPh = hasPh && indx && /(?:^|\s)-$/.test(val.substring(0, indx)); // -%ph%
 			mi.setAttribute("checked", hasPh);
@@ -2678,8 +2678,9 @@ var handyClicksSets = {
 			.QueryInterface(Components.interfaces.nsIDOMNSEditableElement)
 			.editor
 			.QueryInterface(Components.interfaces.nsIPlaintextEditor);
+		var _this = this;
 		function removePh(ph) {
-			var pos = val.indexOf(ph);
+			var pos = _this.indexOfSearchPlaceholder(val, ph);
 			if(pos == -1)
 				return false;
 			var posEnd = pos + ph.length;
@@ -2721,7 +2722,7 @@ var handyClicksSets = {
 			var removedOther;
 			for(var p in sm) if(p != ph)
 				removePh(p) && (removedOther = true);
-			var leavePh = removedOther && val.indexOf(ph) != -1;
+			var leavePh = removedOther && this.indexOfSearchPlaceholder(val, ph) != -1;
 		}
 		if(!leavePh && !removePh(ph)) {
 			if(ph in this.oppositeSearchPlaceholders)
@@ -2744,6 +2745,10 @@ var handyClicksSets = {
 			this.searchInSetsTree();
 		ifi.focus();
 		mp && mp.hidePopup();
+	},
+	indexOfSearchPlaceholder: function(val, ph) {
+		return val.replace(/%%([^%]+)%%/g, "%_$1_%") // Will ignore %%ph%%
+			.indexOf(ph);
 	},
 	initSearchTip: function(tt) {
 		var label = tt.firstChild;
