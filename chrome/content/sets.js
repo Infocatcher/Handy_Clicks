@@ -95,6 +95,10 @@ var handyClicksSets = {
 		window.addEventListener("mouseover", this, true);
 		document.addEventListener(this.su.dropEvent, this, false);
 		this.$("hc-sets-tree-columns").addEventListener("click", this, true);
+		var sp = this.$("hc-sets-tree-searchPopup");
+		sp.addEventListener("DOMMenuItemActive", this, false);
+		sp.addEventListener("DOMMenuItemInactive", this, false);
+
 		this.delay(function() { // Ignore initial focus
 			window.addEventListener("focus", this, false);
 		}, this);
@@ -125,6 +129,9 @@ var handyClicksSets = {
 		window.removeEventListener("mouseover", this, true);
 		document.removeEventListener(this.su.dropEvent, this, false);
 		this.$("hc-sets-tree-columns").removeEventListener("click", this, true);
+		var sp = this.$("hc-sets-tree-searchPopup");
+		sp.removeEventListener("DOMMenuItemActive", this, false);
+		sp.removeEventListener("DOMMenuItemInactive", this, false);
 		window.removeEventListener("focus", this, false);
 	},
 	restoreSearchQuery: function() {
@@ -216,6 +223,10 @@ var handyClicksSets = {
 		}
 		else if(e.type == "DOMMouseScroll")
 			this.smartSelect(e);
+		else if(e.type == "DOMMenuItemActive")
+			this.highlightOppositeSearchPlaceholders(e, true);
+		else if(e.type == "DOMMenuItemInactive")
+			this.highlightOppositeSearchPlaceholders(e, false);
 		else if(e.type == "mouseover")
 			this.openMenu(e);
 		else if(e.type == "focus")
@@ -2663,6 +2674,25 @@ var handyClicksSets = {
 				return props && props.indexOf(prop) != -1;
 			}
 		);
+	},
+	highlightOppositeSearchPlaceholders: function(e, hl) {
+		var mi = e.target;
+		var sp = e.currentTarget;
+		var mis = sp.getElementsByAttribute("hc_opposite", "*");
+		for(var i = mis.length - 1; i >= 0; --i)
+			mis[i].removeAttribute("hc_opposite");
+		var ph = mi.getAttribute("acceltext");
+		if(
+			!hl
+			|| !ph
+			|| !(ph in this.oppositeSearchPlaceholders)
+			|| mi.getAttribute("disabled") == "true"
+		)
+			return;
+		this.oppositeSearchPlaceholders[ph].forEach(function(ph) {
+			var mi = sp.getElementsByAttribute("acceltext", ph)[0] || null;
+			mi && mi.setAttribute("hc_opposite", "true");
+		}, this);
 	},
 	insertSearchPlaceholder: function(e, mp) {
 		var mi = e.target;
