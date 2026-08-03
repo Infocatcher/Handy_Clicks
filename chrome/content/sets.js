@@ -95,7 +95,7 @@ var handyClicksSets = {
 		window.addEventListener("mouseover", this, true);
 		document.addEventListener(this.su.dropEvent, this, false);
 		this.$("hc-sets-tree-columns").addEventListener("click", this, true);
-		var sp = this.$("hc-sets-tree-searchPopup");
+		var sp = this.searchPopup;
 		sp.addEventListener("DOMMenuItemActive", this, false);
 		sp.addEventListener("DOMMenuItemInactive", this, false);
 
@@ -129,7 +129,7 @@ var handyClicksSets = {
 		window.removeEventListener("mouseover", this, true);
 		document.removeEventListener(this.su.dropEvent, this, false);
 		this.$("hc-sets-tree-columns").removeEventListener("click", this, true);
-		var sp = this.$("hc-sets-tree-searchPopup");
+		var sp = this.searchPopup;
 		sp.removeEventListener("DOMMenuItemActive", this, false);
 		sp.removeEventListener("DOMMenuItemInactive", this, false);
 		window.removeEventListener("focus", this, false);
@@ -224,9 +224,9 @@ var handyClicksSets = {
 		else if(e.type == "DOMMouseScroll")
 			this.smartSelect(e);
 		else if(e.type == "DOMMenuItemActive")
-			this.highlightOppositeSearchPlaceholders(e, true);
+			this.highlightOppositeSearchPlaceholders(e.target, true);
 		else if(e.type == "DOMMenuItemInactive")
-			this.unhighlightOppositeSearchPlaceholders(e);
+			this.unhighlightOppositeSearchPlaceholders(e.target);
 		else if(e.type == "mouseover")
 			this.openMenu(e);
 		else if(e.type == "focus")
@@ -2604,6 +2604,10 @@ var handyClicksSets = {
 	set filterMode(fm) {
 		this.attribute(this.$("hc-sets-tree-searchFilterMode"), "checked", fm);
 	},
+	get searchPopup() {
+		delete this.searchPopup;
+		return this.searchPopup = this.e("hc-sets-tree-searchPopup");
+	},
 
 	get searcher() {
 		delete this.searcher;
@@ -2675,13 +2679,12 @@ var handyClicksSets = {
 			}
 		);
 	},
-	highlightOppositeSearchPlaceholders: function(e, hl) {
+	highlightOppositeSearchPlaceholders: function(mi, hl) {
 		if(hl && this._unhlPhTimer) {
 			clearTimeout(this._unhlPhTimer);
 			this._unhlPhTimer = 0;
 		}
-		var mi = e.target;
-		var sp = e.currentTarget;
+		var sp = this.searchPopup;
 		var mis = sp.getElementsByAttribute("hc_opposite", "*");
 		for(var i = mis.length - 1; i >= 0; --i)
 			mis[i].removeAttribute("hc_opposite");
@@ -2699,15 +2702,10 @@ var handyClicksSets = {
 		}, this);
 	},
 	_unhlPhTimer: 0,
-	unhighlightOppositeSearchPlaceholders: function(e) {
-		e = {
-			target: e.target,
-			currentTarget: e.currentTarget,
-			__proto__: e
-		};
+	unhighlightOppositeSearchPlaceholders: function(mi) {
 		this._unhlPhTimer = this.delay(function() { // Wait for next menuitem
 			this._unhlPhTimer = 0;
-			this.highlightOppositeSearchPlaceholders(e, false);
+			this.highlightOppositeSearchPlaceholders(mi, false);
 		}, this);
 	},
 	insertSearchPlaceholder: function(e, mp) {
