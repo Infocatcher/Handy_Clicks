@@ -226,7 +226,7 @@ var handyClicksSets = {
 		else if(e.type == "DOMMenuItemActive")
 			this.highlightOppositeSearchPlaceholders(e, true);
 		else if(e.type == "DOMMenuItemInactive")
-			this.highlightOppositeSearchPlaceholders(e, false);
+			this.unhighlightOppositeSearchPlaceholders(e);
 		else if(e.type == "mouseover")
 			this.openMenu(e);
 		else if(e.type == "focus")
@@ -2676,6 +2676,10 @@ var handyClicksSets = {
 		);
 	},
 	highlightOppositeSearchPlaceholders: function(e, hl) {
+		if(hl && this._unhlPhTimer) {
+			clearTimeout(this._unhlPhTimer);
+			this._unhlPhTimer = 0;
+		}
 		var mi = e.target;
 		var sp = e.currentTarget;
 		var mis = sp.getElementsByAttribute("hc_opposite", "*");
@@ -2692,6 +2696,18 @@ var handyClicksSets = {
 		this.oppositeSearchPlaceholders[ph].forEach(function(ph) {
 			var mi = sp.getElementsByAttribute("acceltext", ph)[0] || null;
 			mi && mi.setAttribute("hc_opposite", "true");
+		}, this);
+	},
+	_unhlPhTimer: 0,
+	unhighlightOppositeSearchPlaceholders: function(e) {
+		e = {
+			target: e.target,
+			currentTarget: e.currentTarget,
+			__proto__: e
+		};
+		this._unhlPhTimer = this.delay(function() { // Wait for next menuitem
+			this._unhlPhTimer = 0;
+			this.highlightOppositeSearchPlaceholders(e, false);
 		}, this);
 	},
 	insertSearchPlaceholder: function(e, mp) {
