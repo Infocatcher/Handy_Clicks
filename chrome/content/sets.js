@@ -2761,6 +2761,7 @@ var handyClicksSets = {
 			val = ifi.value;
 			return true;
 		}
+		editor.beginTransaction();
 		if(removeOther) {
 			var sm = this.searchMap;
 			var removedOther;
@@ -2784,6 +2785,7 @@ var handyClicksSets = {
 				ph += " ";
 			editor.insertText(ph);
 		}
+		editor.endTransaction();
 		this.fireChange(this.searchField, "input");
 		if(this.fxVersion < 3.5)
 			this.searchInSetsTree();
