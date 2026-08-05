@@ -1924,7 +1924,9 @@ var handyClicksEditor = {
 			var editCodeBtn = editor.__editCodeBtn || (
 				editor.__editCodeBtn = this.getFloatButton("hc-editor-cmd-editCode", editor)
 			);
-			var notFound = this.su.linkedFileNotExists(path);
+			var notFound = this.ps.otherSrc
+				? path ? !(path in this.ps.files) : undefined
+				: this.su.linkedFileNotExists(path);
 			if(notFound !== undefined)
 				editCodeBtn.setAttribute("hc_fileNotFound", !!notFound);
 			else
