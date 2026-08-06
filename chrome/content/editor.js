@@ -1834,18 +1834,18 @@ var handyClicksEditor = {
 		}
 
 		var newCode = "//> " + newPath;
-		var oldCode = path.editor.value;
+		var oldCode = this.ps.normalizeSourcePath(path.editor.value);
 		//path.editor.value = newCode;
 		Array.prototype.forEach.call(
 			document.getElementsByTagName("textbox"),
 			function(tb) {
-				if(this.isEditor(tb) && tb.value == oldCode)
+				if(this.isEditor(tb) && this.ps.normalizeSourcePath(tb.value) == oldCode)
 					tb.value = newCode;
 			},
 			this
 		);
 		this.pe.forEachCode(this.ps, function(code, o, key) {
-			if(code == oldCode)
+			if(this.ps.normalizeSourcePath(code) == oldCode)
 				o[key] = newCode;
 		}, this);
 		if(path.file)
