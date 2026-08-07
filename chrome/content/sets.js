@@ -4581,11 +4581,17 @@ var handyClicksSets = {
 
 		this.su.checkDarkFont(this.$("hc-sets-tree-openBackupsDir"), popup);
 	},
+	_hasFileData: { __proto__: null },
 	checkBackupFiles: function() {
+		var fdCache = this._hasFileData;
 		Array.prototype.forEach.call(this.backupItems, function(mi) {
+			var file = mi.__file;
+			var path = file.path;
+			if(path in fdCache)
+				mi.setAttribute("hc_hasFilesData", fdCache[path]);
 			this.delay(function() { // Force split into separate I/O operations to not freeze UI
-				this.io.readFromFileAsync(mi.__file, function(data) {
-					var hasFilesData = /"files"\s*:\s*\{\s*"/.test(data);
+				this.io.readFromFileAsync(file, function(data) {
+					var hasFilesData = fdCache[path] = /"files"\s*:\s*\{\s*"/.test(data);
 					mi.setAttribute("hc_hasFilesData", hasFilesData);
 				}, this, true);
 			}, this);
