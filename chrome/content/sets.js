@@ -4584,9 +4584,11 @@ var handyClicksSets = {
 	_hasFileData: { __proto__: null },
 	checkBackupFiles: function() {
 		var fdCache = this._hasFileData;
+		var paths = { __proto__: null };
 		Array.prototype.forEach.call(this.backupItems, function(mi) {
 			var file = mi.__file;
 			var path = file.path;
+			paths[path] = true;
 			if(path in fdCache)
 				mi.setAttribute("hc_hasFilesData", fdCache[path]);
 			this.delay(function() { // Force split into separate I/O operations to not freeze UI
@@ -4596,6 +4598,9 @@ var handyClicksSets = {
 				}, this, true);
 			}, this);
 		}, this);
+		for(var path in fdCache)
+			if(!(path in paths))
+				delete fdCache[path];
 	},
 	removeOldUserBackups: function(store) {
 		if(store < 0)
