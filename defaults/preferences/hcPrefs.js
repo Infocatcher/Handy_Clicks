@@ -135,6 +135,7 @@ pref("extensions.handyclicks.sets.overrideInstantApply", -1);
 //  1 - override to true
 pref("extensions.handyclicks.sets.scrollLists", true);
 pref("extensions.handyclicks.sets.scrollLists.onlyInActiveWindow", false);
+pref("extensions.handyclicks.sets.dontCalcHashes", false); // Will increase speed with huge settings, but breaks security checks
 
 pref("extensions.handyclicks.editor.tabSize", 4);
 pref("extensions.handyclicks.editor.tabSpaces", false);

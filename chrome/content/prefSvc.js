@@ -38,6 +38,9 @@ var handyClicksPrefSvc = {
 	},
 	okShortcut: /^button=[0-2](?:,(?:ctrl|shift|alt|meta|os)=(?:true|false))*$/,
 	modifiersMask: /(?:(?:^|,)(?:ctrl|shift|alt|meta|os)=(?:true|false))+/,
+	get forceNoHash() {
+		return this.pu.get("sets.dontCalcHashes");
+	},
 
 	otherSrc: false,
 
@@ -643,7 +646,7 @@ var handyClicksPrefSvc = {
 		var prefs             = opts.prefs             || this.prefs;
 		var exportLinkedFiles = opts.exportLinkedFiles || false;
 		var outFiles          = opts.outFiles          || null;
-		var noHash            = opts.noHash            || false;
+		var noHash            = opts.noHash            || this.forceNoHash;
 
 		this.correctSettings(types, prefs);
 		this.sortSettings(types);
@@ -957,7 +960,7 @@ var handyClicksPrefSvc = {
 		var checkCustom = _cps.checkCustomCode || false;
 		this._ioError = null;
 		this._hashError = false;
-		this._hashMissing = true;
+		this._hashMissing = !this.forceNoHash; //= Added: 2026-07-12
 		this._hasCustomCode = checkCustom ? false : undefined;
 
 		if(!this.ju.startsWith(str, this.requiredHeader)) {
@@ -968,7 +971,10 @@ var handyClicksPrefSvc = {
 		str = this.removePrefsDesription(str);
 		var header = RegExp.lastMatch;
 
-		if(this.hashRe.test(header)) { //= Added: 2009-12-18
+		if(
+			!this.forceNoHash //= Added: 2026-07-12
+			&& this.hashRe.test(header) //= Added: 2009-12-18
+		) {
 			this._hashMissing = false;
 			var hashFunc = RegExp.$1;
 			var hash = RegExp.$2;
