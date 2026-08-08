@@ -249,6 +249,7 @@ wordWithoutSpaces /RegExp/i 'whole string' "Case Sensitive string" -word -/%off%
 `+` Settings: show code from linked files in tree (may be disabled from View menu, <em>extensions.handyclicks.sets.treeExpandFileData</em> and <em>extensions.handyclicks.sets.treeExpandFileDataImport</em> preferences).<br>
 `*` Settings: improved partial export from import: now used imported file data (not from real existing files).<br>
 `*` Auto-backups: now also saves files data (<em>extensions.handyclicks.sets.backupAutoSaveFilesData</em> preference).<br>
+`+` Added ability to disable hashes calculations for tests or performance purposes in case of very huge settings files (not recommended to change, use at your own risk, <em>extensions.handyclicks.sets.dontCalcHashes</em> preference).<br>
 `*` Corrected and updated localizations.<br>
 `*` Various internal code enhancements.<br>
 
