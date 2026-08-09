@@ -1337,7 +1337,10 @@ var handyClicksEditor = {
 		this.fireEditorChange(this.$("hc-editor-shortcutPanel"));
 	},
 	showMouseButton: function(btn, e) {
+		var hasMouseUpHandler = btn.hasAttribute("hc_button");
 		btn.setAttribute("hc_button", e.button);
+		if(hasMouseUpHandler)
+			return;
 		var keyHandler = {
 			context: this,
 			handleEvent: function(e) {
