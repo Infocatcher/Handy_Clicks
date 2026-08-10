@@ -133,22 +133,35 @@ menulist[hc_sets="disabled"] .menulist-label {
 #hc-editor-button menuitem.menuitem-iconic > .menu-accel-container {
 	display: none;
 }
-#hc-editor-button, #hc-editor-button menuitem {
+#hc-editor-button,
+#hc-editor-button menuitem {
 	list-style-image: url("icons16.png");
 	-moz-image-region: rect(0 32px 16px 16px); /* Icon for wrong value */
 }
-#hc-editor-button[value="0"], #hc-editor-button menuitem[value="0"], #hc-editor-clickButton[hc_button="0"] {
+#hc-editor-button[value="0"],
+#hc-editor-button[id][hc_previewValue="0"],
+#hc-editor-button menuitem[value="0"],
+#hc-editor-clickButton[hc_button="0"] {
 	-moz-image-region: rect(0 48px 16px 32px);
 }
-#hc-editor-button[value="1"], #hc-editor-button menuitem[value="1"], #hc-editor-clickButton[hc_button="1"] {
+#hc-editor-button[value="1"],
+#hc-editor-button[id][hc_previewValue="1"],
+#hc-editor-button menuitem[value="1"],
+#hc-editor-clickButton[hc_button="1"] {
 	-moz-image-region: rect(0 64px 16px 48px);
 }
-#hc-editor-button[value="2"], #hc-editor-button menuitem[value="2"], #hc-editor-clickButton[hc_button="2"] {
+#hc-editor-button[value="2"],
+#hc-editor-button[id][hc_previewValue="2"],
+#hc-editor-button menuitem[value="2"],
+#hc-editor-clickButton[hc_button="2"] {
 	-moz-image-region: rect(0 80px 16px 64px);
 }
 #hc-editor-shortcutBox > checkbox[hc_activeKey] {
 	outline: 1px solid Highlight;
 	outline-offset: -1px;
+}
+#hc-editor-button[hc_previewValue] .menulist-label-box {
+	outline: 1px solid Highlight;
 }
 
 #hc-editor-buttonDelete {

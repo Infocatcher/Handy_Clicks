@@ -1338,7 +1338,14 @@ var handyClicksEditor = {
 	},
 	showMouseButton: function(btn, e) {
 		var hasMouseUpHandler = btn.hasAttribute("hc_button");
-		btn.setAttribute("hc_button", e.button);
+		var b = e.button;
+		btn.setAttribute("hc_button", b);
+		var ml = this.$("hc-editor-button");
+		ml.setAttribute("hc_previewValue", b);
+		var lb = document.getAnonymousElementByAttribute(ml, "class", "menulist-label");
+		var origLabel = lb.value;
+		var mi = ml.getElementsByAttribute("value", b)[0] || null;
+		lb.value = mi && mi.label || b;
 		if(hasMouseUpHandler)
 			return;
 		var keyHandler = {
@@ -1388,6 +1395,8 @@ var handyClicksEditor = {
 			window.removeEventListener("keyup", keyHandler, true);
 			window.removeEventListener(e.type, onMouseUp, true);
 			btn.removeAttribute("hc_button");
+			ml.removeAttribute("hc_previewValue");
+			lb.value = origLabel;
 			for(var mdf in state)
 				keyHandler.showModifier(mdf, false);
 		}, true);
