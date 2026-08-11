@@ -1313,8 +1313,9 @@ var handyClicks = {
 			this.editMode = false;
 			this.ui.blinkNode();
 			this.closeMenus(e.originalTarget);
+			var evtStr = this.ps.getEvtStr(e); // Should be here to get correct e.button
 			this.delay(function() { // Wait for blinkNode() redraw
-				this.wu.openEditor(null, this.ct.EDITOR_MODE_SHORTCUT, this.ps.getEvtStr(e), this._all ? "$all" : this.itemType);
+				this.wu.openEditor(null, this.ct.EDITOR_MODE_SHORTCUT, evtStr, this._all ? "$all" : this.itemType);
 			}, this);
 			return;
 		}
