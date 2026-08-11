@@ -1337,7 +1337,8 @@ var handyClicksEditor = {
 		this.fireEditorChange(this.$("hc-editor-shortcutPanel"));
 	},
 	showMouseButton: function(btn, e) {
-		var hasMouseUpHandler = btn.hasAttribute("hc_button");
+		var hasHandlers = "__mouseDownCounter" in btn;
+		btn.__mouseDownCounter = (btn.__mouseDownCounter || 0) + 1;
 		var b = e.button;
 		btn.setAttribute("hc_button", b);
 		var ml = this.$("hc-editor-button");
@@ -1346,7 +1347,7 @@ var handyClicksEditor = {
 		var origLabel = lb.value;
 		var mi = ml.getElementsByAttribute("value", b)[0] || null;
 		lb.value = mi && mi.label || b;
-		if(hasMouseUpHandler)
+		if(hasHandlers)
 			return;
 		var keyHandler = {
 			context: this,
@@ -1391,6 +1392,9 @@ var handyClicksEditor = {
 		window.addEventListener("keydown", keyHandler, true);
 		window.addEventListener("keyup", keyHandler, true);
 		window.addEventListener("mouseup", function onMouseUp(e) {
+			if(--btn.__mouseDownCounter != 0)
+				return;
+			delete btn.__mouseDownCounter;
 			window.removeEventListener("keydown", keyHandler, true);
 			window.removeEventListener("keyup", keyHandler, true);
 			window.removeEventListener(e.type, onMouseUp, true);
