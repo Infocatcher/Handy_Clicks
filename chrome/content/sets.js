@@ -1600,6 +1600,12 @@ var handyClicksSets = {
 	closeItemTypeEditors: function(otherSrc, getCanClose) {
 		return this.closeEditors(this.ct.EDITOR_MODE_TYPE, otherSrc, getCanClose);
 	},
+	closeAllEditors: function() {
+		this.closeEditors(this.ct.EDITOR_MODE_SHORTCUT, false);
+		this.closeEditors(this.ct.EDITOR_MODE_SHORTCUT, true);
+		this.closeEditors(this.ct.EDITOR_MODE_TYPE, false);
+		this.closeEditors(this.ct.EDITOR_MODE_TYPE, true);
+	},
 	closeEditors: function(mode, otherSrc, getCanClose) {
 		if(!this.isTreePaneSelected)
 			return 0;
@@ -4066,12 +4072,14 @@ var handyClicksSets = {
 		this.$("hc-sets-cmd-editSavedType").setAttribute("disabled", noTypesAll || noImport);
 		this.$("hc-sets-editSavedType").hidden = noTypesAll || noImport;
 
-		this.$("hc-sets-closeEditors-separator").hidden = (
+		var noEditors = (
 			(this.$("hc-sets-closeEditors").hidden = !this.closeItemEditors(undefined, true))
 			+ (this.$("hc-sets-closeSavedEditors").hidden = noImport || !this.closeItemEditors(false, true))
 			+ (this.$("hc-sets-closeTypeEditors").hidden = noTypes || !this.closeItemTypeEditors(undefined, true))
 			+ (this.$("hc-sets-closeSavedTypeEditors").hidden = noImport || noTypesAll || !this.closeItemTypeEditors(false, true))
-		) == 4;
+		);
+		this.$("hc-sets-closeEditors-separator").hidden = noEditors == 4;
+		this.$("hc-sets-closeAllEditors").hidden = this.$("hc-sets-closeAllEditors-separator").hidden = noEditors >= 3;
 
 		return true;
 	},

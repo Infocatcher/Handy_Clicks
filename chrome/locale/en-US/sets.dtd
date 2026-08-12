@@ -115,6 +115,7 @@
 <!ENTITY hc.sets.cmdCloseSaved "Close editors (for saved)">
 <!ENTITY hc.sets.cmdCloseType "Close custom type editors">
 <!ENTITY hc.sets.cmdCloseTypeSaved "Close custom type editors (for saved)">
+<!ENTITY hc.sets.cmdCloseAll "Close all editors">
 <!ENTITY hc.sets.cmdDel "Delete">
 
 <!ENTITY hc.sets.cmdEnable "Enable">

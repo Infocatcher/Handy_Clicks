@@ -775,6 +775,7 @@ preferences {
 		<command id="hc-sets-cmd-closeSavedEditors" oncommand="handyClicksSets.closeItemEditors(false);" label="&hc.sets.cmdCloseSaved;" />
 		<command id="hc-sets-cmd-closeTypeEditors" oncommand="handyClicksSets.closeItemTypeEditors();" label="&hc.sets.cmdCloseType;" />
 		<command id="hc-sets-cmd-closeSavedTypeEditors" oncommand="handyClicksSets.closeItemTypeEditors(false);" label="&hc.sets.cmdCloseTypeSaved;" />
+		<command id="hc-sets-cmd-closeAllEditors" oncommand="handyClicksSets.closeAllEditors();" label="&hc.sets.cmdCloseAll;" />
 
 		<command id="hc-sets-cmd-enable" oncommand="handyClicksSets.toggleEnabled(null, true);" label="&hc.sets.cmdEnable;" />
 		<command id="hc-sets-cmd-disable" oncommand="handyClicksSets.toggleEnabled(null, false);" label="&hc.sets.cmdDisable;" />
@@ -813,6 +814,7 @@ preferences {
 		<key id="hc-sets-key-closeSavedEditors" keycode="VK_F8" modifiers="control" command="hc-sets-cmd-closeSavedEditors" />
 		<key id="hc-sets-key-closeTypeEditors" keycode="VK_F8" modifiers="shift" command="hc-sets-cmd-closeTypeEditors" />
 		<key id="hc-sets-key-closeSavedTypeEditors" keycode="VK_F8" modifiers="control,shift" command="hc-sets-cmd-closeSavedTypeEditors" />
+		<key id="hc-sets-key-closeAllEditors" keycode="VK_F8" modifiers="alt" command="hc-sets-cmd-closeAllEditors" />
 
 		<key id="hc-sets-key-enable" key="+" modifiers="control" command="hc-sets-cmd-enable" />
 		<key id="hc-sets-key-enable2" key="=" modifiers="control" command="hc-sets-cmd-enable" />
@@ -894,6 +896,8 @@ preferences {
 			<menuitem id="hc-sets-closeSavedEditors" command="hc-sets-cmd-closeSavedEditors" key="hc-sets-key-closeSavedEditors" />
 			<menuitem id="hc-sets-closeTypeEditors" command="hc-sets-cmd-closeTypeEditors" key="hc-sets-key-closeTypeEditors" />
 			<menuitem id="hc-sets-closeSavedTypeEditors" command="hc-sets-cmd-closeSavedTypeEditors" key="hc-sets-key-closeSavedTypeEditors" />
+			<menuseparator id="hc-sets-closeAllEditors-separator" />
+			<menuitem id="hc-sets-closeAllEditors" command="hc-sets-cmd-closeAllEditors" key="hc-sets-key-closeAllEditors" />
 
 			<menuseparator />
 			<menuitem id="hc-sets-delete" command="hc-sets-cmd-delete" key="hc-sets-key-delete" class="menuitem-iconic hc-iconic" />

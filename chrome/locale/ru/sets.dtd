@@ -115,6 +115,7 @@
 <!ENTITY hc.sets.cmdCloseSaved "Закрыть редакторы (для сохранённого)">
 <!ENTITY hc.sets.cmdCloseType "Закрыть редакторы добавленных типов">
 <!ENTITY hc.sets.cmdCloseTypeSaved "Закрыть редакторы добавленных типов (для сохранённого)">
+<!ENTITY hc.sets.cmdCloseAll "Закрыть все редакторы">
 <!ENTITY hc.sets.cmdDel "Удалить">
 
 <!ENTITY hc.sets.cmdEnable "Включить">
