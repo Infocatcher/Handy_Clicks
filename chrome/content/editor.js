@@ -492,8 +492,6 @@ var handyClicksEditor = {
 		this.setWinTitle();
 		this.setDialogButtons();
 		this.setEditorButtons();
-		if(this.isPopupOpened(this.$("hc-editor-sets-popup")))
-			this.initSettingsMenu(); // Changed using mouse scroll
 	},
 	fireEditorChange: function(node) {
 		this.fireEvent("HandyClicks:editor:change", node);
