@@ -2806,6 +2806,12 @@ var handyClicksSets = {
 		}
 		return -1;
 	},
+	removeSearchPlaceholder: function(val, ph) {
+		var indx = this.indexOfSearchPlaceholder(val, ph);
+		if(indx != -1)
+			return val.slice(0, indx) + val.slice(indx + ph.length);
+		return val;
+	},
 	initSearchTip: function(tt) {
 		var label = tt.firstChild;
 		var na = !this._maxCodeLength;
@@ -4848,14 +4854,13 @@ var handyClicksSets = {
 			}, this);
 		}, this, 10);
 	},
-	cleanImportSearch: function(typeChanged) {
+	cleanImportSearch: function(importTypeChanged) {
 		var search = this.searchField.value;
-		var newSearch = search.replace(this.searchPlaceholders.hc_old, "");
-		if(!typeChanged) {
-			newSearch = newSearch
-				.replace(this.searchPlaceholders.hc_override, "")
-				.replace(this.searchPlaceholders.hc_new, "")
-				.replace(this.searchPlaceholders.hc_fileData, "");
+		var newSearch = this.removeSearchPlaceholder(search, this.searchPlaceholders.hc_old);
+		if(!importTypeChanged) {
+			newSearch = this.removeSearchPlaceholder(newSearch, this.searchPlaceholders.hc_override);
+			newSearch = this.removeSearchPlaceholder(newSearch, this.searchPlaceholders.hc_new);
+			newSearch = this.removeSearchPlaceholder(newSearch, this.searchPlaceholders.hc_fileData);
 		}
 		if(newSearch == search)
 			return false;
