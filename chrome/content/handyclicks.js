@@ -30,6 +30,7 @@ var handyClicks = {
 	_cMenu: null,
 	daTimeout: 0, // Delayed Action Timeout
 	evtStrOnMousedown: "",
+	lastEvtStr: "",
 	_hasMoveHandlers: false,
 
 	destroy: function(reloadFlag) {
@@ -562,6 +563,7 @@ var handyClicks = {
 		}
 		var funcObj = this.getFuncObj(sets) || this.editMode && { action: null };
 		if(funcObj) {
+			this.lastEvtStr = evtStr;
 			if(!this.editMode && this.isBlacklisted(e)) {
 				var pref = this.pu.prefNS + "blacklist." + e.button;
 				var url = e.view.location.href.substr(0, 100);

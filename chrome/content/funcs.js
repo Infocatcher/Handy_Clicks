@@ -820,7 +820,7 @@ var handyClicksFuncs = {
 	openEditorForLastEvent: function() {
 		this.wu.openEditorEx(
 			null, "shortcut",
-			this.ps.getEvtStr(this.hc.lastEvent),
+			this.hc.lastEvtStr,
 			this.hc.lastAll ? "$all" : this.hc.lastItemType,
 			this.hc.isDeleyed, "code", null
 		);
