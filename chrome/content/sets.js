@@ -4188,7 +4188,7 @@ var handyClicksSets = {
 			var first = line.charAt(0);
 			if(
 				first == ";" || first == "#"
-				|| first == "[" && line.charAt(line.length - 1) == "]"
+				|| first == "[" && line.slice(-1) == "]"
 			)
 				continue;
 			var indx = line.indexOf("=");
