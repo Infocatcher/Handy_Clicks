@@ -4214,7 +4214,7 @@ var handyClicksSets = {
 				pVal = pVal == "true";
 			else if(pName == this.pu.prefNS + "editor.external.args") { // String
 				// Backward compatible fix for multiline string pref
-				for(; i < l; ) {
+				for(; i + 1 < l; ) {
 					var nextLine = lines[i + 1];
 					if(this.ju.startsWith(nextLine, this.pu.prefNS))
 						break;
