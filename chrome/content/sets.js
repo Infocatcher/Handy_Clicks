@@ -4196,7 +4196,7 @@ var handyClicksSets = {
 				this.ut._warn("[Import INI] Skipped invalid line #" + (i + 1) + ': "' + line + '"');
 				continue;
 			}
-			var pName = line.substr(0, indx);
+			var pName = line.slice(0, indx);
 			if(!this.ju.startsWith(pName, this.pu.prefNS)) {
 				this.ut._warn('[Import INI] Skipped pref with invalid name: "' + pName + '"');
 				continue;
@@ -4207,7 +4207,7 @@ var handyClicksSets = {
 				_oldPrefs.push(pName);
 				this.ut._warn('[Import INI] Old pref: "' + pName + '"');
 			}
-			var pVal = line.substr(indx + 1);
+			var pVal = line.slice(indx + 1);
 			if(pType == ps.PREF_INT || isOld && /^(?:0|-?[1-9]\d*)$/.test(pVal)) // Convert string to number
 				pVal = +pVal;
 			else if(pType == ps.PREF_BOOL || isOld && (pVal == "true" || pVal == "false")) // ...or boolean
