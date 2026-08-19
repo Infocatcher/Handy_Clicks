@@ -4109,7 +4109,6 @@ var handyClicksSets = {
 		if(flags & this.RELOAD_PREFS) {
 			this.reloadPrefpanes();
 			this.initPrefs();
-			this.updateAllDependencies();
 		}
 		this.setDialogButtons();
 	},
@@ -4133,7 +4132,8 @@ var handyClicksSets = {
 		this.pu.prefSvc.getBranch(this.pu.prefNS)
 			.getChildList("", {})
 			.forEach(this.pu.resetPref, this.pu);
-		this.reloadPrefpanes(); // Changed prefs don't reloaded by default
+		this.reloadPrefpanes(); // Changed prefs aren't reloaded by default in old Firefox versions
+		this.initPrefs();
 	},
 	// Export/import:
 	exportPrefsHeader: "[Handy Clicks settings]",
@@ -4229,7 +4229,8 @@ var handyClicksSets = {
 			this.pu.prefSvc.deleteBranch(pName);
 		}, this);
 		this.pu.savePrefFile();
-		this.reloadPrefpanes(); // Changed prefs don't reloaded by default
+		this.reloadPrefpanes(); // Changed prefs aren't reloaded by default in old Firefox versions
+		this.initPrefs();
 		this.ut.notify(this.getLocalized("configSuccessfullyImported"));
 	},
 
