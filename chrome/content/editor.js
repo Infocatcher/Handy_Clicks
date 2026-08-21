@@ -721,9 +721,9 @@ var handyClicksEditor = {
 				"editor.unsavedSwitchWarning"
 			);
 			if(res == this.su.PROMPT_CANCEL)
-				return;
+				return false;
 			if(res == this.su.PROMPT_SAVE && !this.saveCustomType(true))
-				return;
+				return false;
 			cList.value = customTypeLabel;
 			updateUI = true;
 		}
@@ -743,7 +743,7 @@ var handyClicksEditor = {
 		var contextField = this.$("hc-editor-customTypeContext");
 		contextField[val] = ct.contextMenu || "";
 		if(!to && (!type || !types.hasOwnProperty(type)))
-			return;
+			return true;
 		this.highlightEmpty(contextField);
 		if(!to) {
 			cList.value = this.customTypeLabel = ct.label || "";
@@ -755,6 +755,7 @@ var handyClicksEditor = {
 		this.setWinId();
 		this.setWinTitle();
 		updateUI && this.delay(this.setDialogButtons, this);
+		return true;
 	},
 	customTypeLabelChanged: function(it) {
 		var val = it.value;
@@ -2496,8 +2497,9 @@ var handyClicksEditor = {
 		var stored = this.storage.get("type");
 		if(!stored)
 			return;
-		this.initCustomTypesEditor(null, stored);
+		var pasted = this.initCustomTypesEditor(null, stored);
 		this.setDialogButtons();
+		this.markAs(this.$("hc-editor-customTypeTabbox"), "hc_pasted", "" + pasted);
 	},
 
 	highlightRequiredFields: function _hl(fields, addFlag, noDelay, force) {
