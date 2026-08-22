@@ -1851,17 +1851,21 @@ var handyClicksEditor = {
 		var newCode = "//> " + newPath;
 		var oldCode = this.ps.normalizeSourcePath(path.editor.value);
 		//path.editor.value = newCode;
+		var firstLine = /^[^\r\n]+(?=[\r\n]|$)/;
 		Array.prototype.forEach.call(
 			document.getElementsByTagName("textbox"),
 			function(tb) {
-				if(this.isEditor(tb) && this.ps.normalizeSourcePath(tb.value) == oldCode)
-					tb.value = newCode;
+				if(!this.isEditor(tb))
+					return;
+				var code = tb.value;
+				if(this.ps.normalizeSourcePath(code) == oldCode)
+					tb.value = code.replace(firstLine, newCode);
 			},
 			this
 		);
 		this.pe.forEachCode(this.ps, function(code, o, key) {
 			if(this.ps.normalizeSourcePath(code) == oldCode)
-				o[key] = newCode;
+				o[key] = code.replace(firstLine, newCode);
 		}, this);
 		if(path.file)
 			this.saveSettings(true);
