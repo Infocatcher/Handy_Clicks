@@ -305,7 +305,7 @@ var handyClicksPrefSvc = {
 		}, this);
 	},
 	isLegacyJs: function(s) {
-		return s.substr(0, 4) == "var ";
+		return s.slice(0, 4) == "var ";
 	},
 	get setsMigration() { // function(allowSave, vers)
 		var temp = {};

@@ -2000,7 +2000,7 @@ var handyClicksEditor = {
 		while(entries.hasMoreElements()) {
 			var entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
 			var fName = entry.leafName;
-			if(fName.substr(0, 3) == "hc_" && !(entry.path in activeFiles))
+			if(fName.slice(0, 3) == "hc_" && !(entry.path in activeFiles))
 				return entry;
 		}
 		return null;

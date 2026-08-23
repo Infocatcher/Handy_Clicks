@@ -157,14 +157,14 @@
 					}
 
 					var sel = val.substring(ss, se);
-					var lineStart = val.substr(0, ss).match(/[^\r\n]*$/)[0];
+					var lineStart = val.slice(0, ss).match(/[^\r\n]*$/)[0];
 					var lineEnd = val.substr(se).match(/^[^\r\n]*/)[0];
 
 					if(!/\n|\r/.test(sel)) {
 						if(this._isSpaces(indentChar)) {
 							var lenStart = lineStart.length + lineEnd.match(/^ */)[0].length;
 							var maxSpaces = indentChar.length;
-							indentChar = indentChar.substr(0, (maxSpaces - lenStart % maxSpaces) || maxSpaces);
+							indentChar = indentChar.slice(0, (maxSpaces - lenStart % maxSpaces) || maxSpaces);
 						}
 						this.insertText(indentChar);
 						if(removeFlag)
@@ -208,7 +208,7 @@
 						return;
 					var value = this.value;
 					if(event.keyCode == event.DOM_VK_BACK_SPACE) {
-						var line = value.substr(0, ss).match(/[^\r\n]*$/)[0];
+						var line = value.slice(0, ss).match(/[^\r\n]*$/)[0];
 						var availSpaces = line.match(/ *$/)[0].length;
 						if(availSpaces <= 1)
 							return;
@@ -218,7 +218,7 @@
 						var availSpaces = value.substr(ss).match(/^ */)[0].length;
 						if(availSpaces <= 1)
 							return;
-						var line = value.substr(0, ss).match(/[^\r\n]*$/)[0];
+						var line = value.slice(0, ss).match(/[^\r\n]*$/)[0];
 						var maxSpaces = (tab.length - line.length % tab.length) || tab.length;
 					}
 					var removeSpaces = Math.min(availSpaces, maxSpaces);
@@ -249,7 +249,7 @@
 
 					var sel = val.substring(ss, se);
 
-					var lineStart = val.substr(0, ss).match(/[^\r\n]*$/)[0];
+					var lineStart = val.slice(0, ss).match(/[^\r\n]*$/)[0];
 					var lineEnd = val.substr(se).match(/^[^\r\n]*/)[0];
 					var block = lineStart + sel + lineEnd;
 
@@ -300,8 +300,8 @@
 									continue;
 								if(
 									/^[ \t]+$/.test(line) && line.length < spacePrefixLen
-										? spacePrefix.substr(0, line.length) != line
-										: line.substr(0, spacePrefixLen) != spacePrefix
+										? spacePrefix.slice(0, line.length) != line
+										: line.slice(0, spacePrefixLen) != spacePrefix
 								) {
 									spacePrefix = "";
 									spacePrefixLen = 0;
@@ -331,7 +331,7 @@
 			<method name="formatNewLine">
 				<body>
 				<![CDATA[
-					var line = this.value.substr(0, this.inputField.selectionStart).match(/[^\r\n]*$/)[0];
+					var line = this.value.slice(0, this.inputField.selectionStart).match(/[^\r\n]*$/)[0];
 					var indent = /^[ \t]+/.test(line) ? RegExp.lastMatch : "";
 					this.insertText("\n" + indent);
 				]]>
@@ -370,7 +370,7 @@
 			</method>
 			<property name="currentLine" readonly="true">
 				<getter>
-					return this.value.substr(0, this.inputField.selectionStart).split("\n").length;
+					return this.value.slice(0, this.inputField.selectionStart).split("\n").length;
 				</getter>
 			</property>
 			<property name="linesCount" readonly="true">
@@ -380,7 +380,7 @@
 			</property>
 			<property name="currentColumn" readonly="true">
 				<getter>
-					return this.value.substr(0, this.inputField.selectionStart).match(/[^\n\r]*$/)[0].length + 1;
+					return this.value.slice(0, this.inputField.selectionStart).match(/[^\n\r]*$/)[0].length + 1;
 				</getter>
 			</property>
 			<property name="columnsCount" readonly="true">
@@ -389,7 +389,7 @@
 					// For current line
 					var ss = this.inputField.selectionStart;
 					var val = this.value;
-					return val.substr(0, ss).match(/[^\n\r]*$/)[0].length
+					return val.slice(0, ss).match(/[^\n\r]*$/)[0].length
 						+ val.substr(ss).match(/^[^\n\r]*/)[0].length
 						+ 1;
 				]]>
@@ -517,7 +517,7 @@
 					var label;
 					if(allowUnicode) {
 						var tb = document.getElementById(
-							type.substr(0, 4) == "func"
+							type.slice(0, 4) == "func"
 								? "hc-editor-funcLabel" + type.match(/(?:-delay)?$/)[0]
 								: "hc-editor-customType"
 						);
@@ -530,7 +530,7 @@
 							.replace(/[<>:"\/\\|*?^\x00-\x1f]+/g, "_");
 						var maxLabel = 60;
 						if(label.length > maxLabel)
-							label = label.substr(0, maxLabel - 1) + "\u2026";
+							label = label.slice(0, maxLabel - 1) + "\u2026";
 					}
 					return "hc_" + type + (label ? "_[" + label + "]" : "") + "." + (ext || "js");
 				]]>
@@ -687,7 +687,7 @@
 											}
 											else { // We can't get raw CodeMirror instance in Firefox 34+
 												var getAnchor = function(pos) {
-													var lines = val.substr(0, pos).split("\n");
+													var lines = val.slice(0, pos).split("\n");
 													var last = Math.max(0, lines.length - 1);
 													return {
 														line: last,
@@ -1209,7 +1209,7 @@
 					var selText = val.substring(ss, se);
 					if(selText && !/^[\w$-]+['"]?$/.test(selText))
 						return;
-					var startText = val.substr(0, ss);
+					var startText = val.slice(0, ss);
 
 					if(!/(?:(\.)\s*|('|"))?([\w$-]+)$/.test(startText))
 						return;
@@ -1239,7 +1239,7 @@
 					var startsWith = "startsWith" in String.prototype
 						? String.prototype.startsWith.call.bind(String.prototype.startsWith)
 						: function(str, prefix) {
-							return str.substr(0, prefix.length) == prefix;
+							return str.slice(0, prefix.length) == prefix;
 						};
 					var found = false;
 					scopeArr.some(function(p) {
@@ -1291,7 +1291,7 @@
 					var ifi = this.inputField;
 					var ss = ifi.selectionStart;
 					var se = ifi.selectionEnd;
-					var newVal = val.substr(0, ss)
+					var newVal = val.slice(0, ss)
 						+ selMarker + val.substring(ss, se) + selMarker
 						+ val.substr(se);
 					var markerSpaces = "(" + selMarker + ")?[ \t]*";

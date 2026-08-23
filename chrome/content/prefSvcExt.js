@@ -442,7 +442,7 @@ var handyClicksPrefSvcExt = {
 	},
 
 	convertToJSON: function(s, silent) { //= Added: 2012-01-13
-		if(s.substr(0, 4) != "var ")
+		if(s.slice(0, 4) != "var ")
 			return s;
 		if(!silent)
 			this._log("Prefs in old format, try convert to JSON");

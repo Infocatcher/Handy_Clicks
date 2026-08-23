@@ -566,7 +566,7 @@ var handyClicks = {
 			this.lastEvtStr = evtStr;
 			if(!this.editMode && this.isBlacklisted(e)) {
 				var pref = this.pu.prefNS + "blacklist." + e.button;
-				var url = e.view.location.href.substr(0, 100);
+				var url = e.view.location.href.slice(0, 100);
 				this._log("[" + e.type + "] blacklisted site (" + pref + "):\n" + url);
 				return null;
 			}
@@ -755,7 +755,7 @@ var handyClicks = {
 				|| this.pu.get("types.images.SpeedDial")
 			)
 			// InFormEnter https://addons.mozilla.org/addon/informenter/
-			&& (it.src || "").substr(0, 32) != "chrome://informenter/skin/marker"
+			&& (it.src || "").slice(0, 32) != "chrome://informenter/skin/marker"
 		)
 			return it;
 		return null;
@@ -1152,7 +1152,7 @@ var handyClicks = {
 			&& it.classList
 			&& it.classList.contains("webconsole-location")
 			&& it.classList.contains("text-link")
-			&& (it.parentNode.id || "").substr(0, 12) == "console-msg-"
+			&& (it.parentNode.id || "").slice(0, 12) == "console-msg-"
 			&& this.uri(it.getAttribute("title"));
 	},
 	getBookmarkURI:	function(it, e, usePlacesURIs) {
@@ -1427,7 +1427,7 @@ var handyClicks = {
 				+ "\n=> executeFunction()"
 				+ "\nnodeName = " + (this.origItem ? this.origItem.nodeName : "?")
 				+ ", itemType = " + type
-				+ "\n=> " + (funcObj.custom ? (funcObj.label || funcObj.action.substr(0, 100)) : funcObj.action)
+				+ "\n=> " + (funcObj.custom ? (funcObj.label || funcObj.action.slice(0, 100)) : funcObj.action)
 			);
 		}
 	},

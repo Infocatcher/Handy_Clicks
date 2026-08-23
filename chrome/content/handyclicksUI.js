@@ -541,7 +541,7 @@ var handyClicksUI = {
 			url = this.fn.losslessDecodeURI(url);
 			if(url.length > MAX_URI_LENGTH) {
 				var start = Math.floor(MAX_URI_LENGTH*0.65);
-				return url.substr(0, start) + "\u2026" /* "..." */ + url.substr(start - MAX_URI_LENGTH);
+				return url.slice(0, start) + "\u2026" /* "..." */ + url.substr(start - MAX_URI_LENGTH);
 			}
 			return url;
 		}, this)
@@ -561,7 +561,7 @@ var handyClicksUI = {
 			this.setupUIActions();
 		else if(pName == "ui.customizableProgressBar")
 			this.setupProgress();
-		else if(pName.substr(0, 10) == "blacklist.")
+		else if(pName.slice(0, 10) == "blacklist.")
 			this.coreLoaded && (this.hc.blacklists[pName.charAt(10)] = null);
 	},
 	setStatus: function() {
@@ -791,7 +791,7 @@ var handyClicksUI = {
 		var key = tokens.pop() || " ";
 		var modifiers = tokens.join(",");
 		kElt.removeAttribute("disabled");
-		kElt.setAttribute(key.substr(0, 3) == "VK_" ? "keycode" : "key", key);
+		kElt.setAttribute(key.slice(0, 3) == "VK_" ? "keycode" : "key", key);
 		kElt.setAttribute("modifiers", modifiers);
 	}
 };

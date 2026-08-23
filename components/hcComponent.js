@@ -61,7 +61,7 @@ function startsWith(str, prefix) {
 	var f = startsWith = "startsWith" in String.prototype
 		? String.prototype.startsWith.call.bind(String.prototype.startsWith)
 		: function(str, prefix) {
-			return str.substr(0, prefix.length) == prefix;
+			return str.slice(0, prefix.length) == prefix;
 		};
 	return f.apply(this, arguments);
 }

@@ -738,7 +738,7 @@ var handyClicksUtils = {
 			return data.value
 				.QueryInterface(Components.interfaces.nsISupportsString)
 				.data
-				.substr(0, len.value/2);
+				.slice(0, len.value/2);
 		}
 		catch(e) {
 		}

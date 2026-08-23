@@ -1300,7 +1300,7 @@ var handyClicksSets = {
 			return code;
 		if(code.length <= (maxLen + this._preserveLines))
 			return code;
-		var cropped = code.substr(0, maxLen);
+		var cropped = code.slice(0, maxLen);
 		if(
 			!/[\r\n]/.test(code.substr(maxLen - 1, 2)) // Already used entire line?
 			&& /^[^\n\r]+/.test(code.substr(maxLen))
@@ -1375,7 +1375,7 @@ var handyClicksSets = {
 				}
 			}
 			else if(indx != -1) {
-				propsVal = propsVal.substr(0, indx) + propsVal.substr(indx + p.length);
+				propsVal = propsVal.slice(0, indx) + propsVal.substr(indx + p.length);
 				changed = true;
 			}
 		}
@@ -1708,7 +1708,7 @@ var handyClicksSets = {
 	},
 	cropStr: function(str, maxLen) {
 		return str.length > maxLen
-			? str.substr(0, maxLen - 1) + "\u2026" /* "..." */
+			? str.slice(0, maxLen - 1) + "\u2026" /* "..." */
 			: str;
 	},
 	deleteItems: function() {
@@ -2734,7 +2734,7 @@ var handyClicksSets = {
 			if(pos == -1)
 				return false;
 			var posEnd = pos + ph.length;
-			var before = val.substr(0, pos);
+			var before = val.slice(0, pos);
 			var after = val.substr(posEnd);
 			if(before.slice(-1) == "-") { // -%ph%
 				pos -= 1;
@@ -2780,12 +2780,12 @@ var handyClicksSets = {
 				this.oppositeSearchPlaceholders[ph].forEach(removePh);
 
 			// Check for selection inside placeholder
-			var leftPh = /%[a-z+-]*$/.test(val.substr(0, ifi.selectionStart)) && RegExp.lastMatch;
+			var leftPh = /%[a-z+-]*$/.test(val.slice(0, ifi.selectionStart)) && RegExp.lastMatch;
 			var rightPh = /^[a-z+-]*%+/.test(val.substr(ifi.selectionEnd)) && RegExp.lastMatch;
 			if(leftPh && rightPh && /^[a-z+-]*$/.test(val.substring(ifi.selectionStart, ifi.selectionEnd)))
 				ifi.selectionStart = ifi.selectionEnd = ifi.selectionEnd + rightPh.length;
 
-			if(/\S$/.test(val.substr(0, ifi.selectionStart)))
+			if(/\S$/.test(val.slice(0, ifi.selectionStart)))
 				ph = " " + ph;
 			if(/^\S/.test(val.substr(ifi.selectionEnd)))
 				ph += " ";
@@ -3767,7 +3767,7 @@ var handyClicksSets = {
 		else if(app == "Notepad++")
 			args = "-n%L";
 		else if(
-			app.substr(0, 12) == "Sublime Text"
+			app.slice(0, 12) == "Sublime Text"
 			|| app == "CudaText"
 			|| app == "Atom"
 		)

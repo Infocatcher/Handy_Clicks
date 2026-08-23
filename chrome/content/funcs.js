@@ -285,7 +285,7 @@ var handyClicksFuncs = {
 		var win = window;
 		var openAsChild = !moveTo && (
 			!this.ut.isChromeDoc(item.ownerDocument)
-			|| item.ownerDocument.documentURI.substr(0, 34) == "chrome://browser/content/devtools/"
+			|| item.ownerDocument.documentURI.slice(0, 34) == "chrome://browser/content/devtools/"
 		);
 		var relatedToCurrent = openAsChild;
 		if(
