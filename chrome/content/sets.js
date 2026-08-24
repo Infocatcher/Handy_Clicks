@@ -415,7 +415,7 @@ var handyClicksSets = {
 		var dirs = ["", "ascending", "descending", ""];
 		sortCol.setAttribute("sortDirection", dirs[dirs.lastIndexOf(dir) - 1]);
 		this.tView.cycleHeader(this.tree.columns[sortCol.id]);
-		this._log("ensureTreeSorted() -> " + sortCol.id.substr(13) + " -> " + (dir || "(unsorted)"));
+		this._log("ensureTreeSorted() -> " + sortCol.id.slice(13) + " -> " + (dir || "(unsorted)"));
 
 		var tr = this.tree;
 		if(tr.hasAttribute("hc_drawModeInitial")) {
@@ -1303,7 +1303,7 @@ var handyClicksSets = {
 		var cropped = code.slice(0, maxLen);
 		if(
 			!/[\r\n]/.test(code.substr(maxLen - 1, 2)) // Already used entire line?
-			&& /^[^\n\r]+/.test(code.substr(maxLen))
+			&& /^[^\n\r]+/.test(code.slice(maxLen))
 			&& RegExp.lastMatch.length <= this._preserveLines
 		)
 			cropped += RegExp.lastMatch;
@@ -1375,7 +1375,7 @@ var handyClicksSets = {
 				}
 			}
 			else if(indx != -1) {
-				propsVal = propsVal.slice(0, indx) + propsVal.substr(indx + p.length);
+				propsVal = propsVal.slice(0, indx) + propsVal.slice(indx + p.length);
 				changed = true;
 			}
 		}
@@ -2735,7 +2735,7 @@ var handyClicksSets = {
 				return false;
 			var posEnd = pos + ph.length;
 			var before = val.slice(0, pos);
-			var after = val.substr(posEnd);
+			var after = val.slice(posEnd);
 			if(before.slice(-1) == "-") { // -%ph%
 				pos -= 1;
 				before = before.slice(0, -1);
@@ -2781,13 +2781,13 @@ var handyClicksSets = {
 
 			// Check for selection inside placeholder
 			var leftPh = /%[a-z+-]*$/.test(val.slice(0, ifi.selectionStart)) && RegExp.lastMatch;
-			var rightPh = /^[a-z+-]*%+/.test(val.substr(ifi.selectionEnd)) && RegExp.lastMatch;
+			var rightPh = /^[a-z+-]*%+/.test(val.slice(ifi.selectionEnd)) && RegExp.lastMatch;
 			if(leftPh && rightPh && /^[a-z+-]*$/.test(val.substring(ifi.selectionStart, ifi.selectionEnd)))
 				ifi.selectionStart = ifi.selectionEnd = ifi.selectionEnd + rightPh.length;
 
 			if(/\S$/.test(val.slice(0, ifi.selectionStart)))
 				ph = " " + ph;
-			if(/^\S/.test(val.substr(ifi.selectionEnd)))
+			if(/^\S/.test(val.slice(ifi.selectionEnd)))
 				ph += " ";
 			editor.insertText(ph);
 		}
@@ -3670,7 +3670,7 @@ var handyClicksSets = {
 					return "%" + alias + "%"
 						//+ new Array(level + 1).join(dirSep + "..")
 						+ this.ju.repeatString(dirSep + "..", level)
-						+ path.substr(aliasPath.length);
+						+ path.slice(aliasPath.length);
 				}
 				aliasFile = this.ut.getFileParent(aliasFile);
 			}
@@ -5180,7 +5180,7 @@ var handyClicksSets = {
 		var path = dir.path;
 		var curDrv = this.ut.getFileRoot(this.ps.profileDir);
 		if(curDrv.contains(dir, false /* aRecurse, for Firefox 31 and older */))
-			path = "%hc_ProfDrv%" + path.substr(curDrv.path.length);
+			path = "%hc_ProfDrv%" + path.slice(curDrv.path.length);
 		this.pu.set("sets.backupsDir", path);
 	},
 	getFormattedDate: function(date) {

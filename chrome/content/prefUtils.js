@@ -35,7 +35,7 @@ var handyClicksPrefUtils = {
 	observe: function(subject, topic, pName) {
 		if(topic != "nsPref:changed")
 			return;
-		var shortName = pName.substr(this.prefNS.length);
+		var shortName = pName.slice(this.prefNS.length);
 		var val = this._prefs[shortName] = this.getPref(pName);
 		this.oSvc.notifyObservers(shortName, val);
 	},

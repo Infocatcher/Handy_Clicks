@@ -155,7 +155,7 @@ var handyClicksWinUtils = {
 		var args = RegExp.$1;
 		if(args && typeof line != "number" && /(?:^|&)line=(\d+)(?:&|$)/.test(args))
 			line = +RegExp.$1;
-		var tokens = href.substr(ed.length).split("/");
+		var tokens = href.slice(ed.length).split("/");
 		var mode = tokens[0];
 		if(mode == this.ct.EDITOR_MODE_SHORTCUT) {
 			var shortcut = tokens[1];
@@ -236,7 +236,7 @@ var handyClicksWinUtils = {
 		if(this.startsWith(uri, this.ct.PROTOCOL_SETTINGS_ADD))
 			this.openSettingsImport(true, this.ct.IMPORT_STRING, uri);
 		else if(this.startsWith(uri, this.ct.PROTOCOL_SETTINGS_PANE))
-			this.openSettingsPane(uri.substr(this.ct.PROTOCOL_SETTINGS_PANE.length));
+			this.openSettingsPane(uri.slice(this.ct.PROTOCOL_SETTINGS_PANE.length));
 		else if(this.startsWith(uri, this.ct.PROTOCOL_SETTINGS))
 			this.openSettings();
 	},

@@ -87,7 +87,7 @@ var handyClicksJsUtils = {
 	},
 	removePrefix: function(str, prefix, forced) {
 		if(forced || this.startsWith(str, prefix))
-			return str.substr(prefix.length);
+			return str.slice(prefix.length);
 		return str;
 	},
 

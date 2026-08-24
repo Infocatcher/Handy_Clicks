@@ -62,7 +62,7 @@ function prefsMigration(allowSave, vers) {
 			.forEach(function(pName) {
 				const fullId = pns + ns + pName;
 				this.setPref( // We use setPref() to don't cache preferences
-					pns + "editor.external." + pName.charAt(0).toLowerCase() + pName.substr(1),
+					pns + "editor.external." + pName.charAt(0).toLowerCase() + pName.slice(1),
 					this.getPref(fullId)
 				);
 				this.prefSvc.deleteBranch(fullId);
@@ -82,7 +82,7 @@ function prefsMigration(allowSave, vers) {
 					return;
 				const fullId = ns + pName;
 				this.setPref( // We use setPref() to don't cache preferences
-					ns + "." + pName.charAt(0).toLowerCase() + pName.substr(1),
+					ns + "." + pName.charAt(0).toLowerCase() + pName.slice(1),
 					this.getPref(fullId)
 				);
 				this.prefSvc.deleteBranch(fullId);

@@ -49,7 +49,7 @@ var handyClicksUI = {
 		this.loadBlinkStyle = function() {};
 		this._log("loadBlinkStyle()");
 		var priorityHack = (function() {
-			var rnd = Math.random().toFixed(16).substr(2);
+			var rnd = Math.random().toFixed(16).slice(2);
 			var hack = "*|*";
 			for(var i = 0; i < 16; ++i)
 				hack += ":not(#__priorityHack-" + rnd + "-" + i + ")";
@@ -541,7 +541,7 @@ var handyClicksUI = {
 			url = this.fn.losslessDecodeURI(url);
 			if(url.length > MAX_URI_LENGTH) {
 				var start = Math.floor(MAX_URI_LENGTH*0.65);
-				return url.slice(0, start) + "\u2026" /* "..." */ + url.substr(start - MAX_URI_LENGTH);
+				return url.slice(0, start) + "\u2026" /* "..." */ + url.slice(start - MAX_URI_LENGTH);
 			}
 			return url;
 		}, this)

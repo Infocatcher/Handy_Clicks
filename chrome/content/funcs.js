@@ -16,12 +16,12 @@ var handyClicksFuncs = {
 		var loc = doc.location.href.replace(/#.*$/, "");
 		if(!this.ju.startsWith(uri, loc))
 			return false;
-		var _uri = uri.substr(loc.length);
+		var _uri = uri.slice(loc.length);
 		if(_uri == "" && item.getAttribute && item.hasAttribute("href") && !item.getAttribute("href")) // <a href="">
 			return true;
 		if(_uri.charAt(0) != "#")
 			return false;
-		var anchor = _uri.substr(1);
+		var anchor = _uri.slice(1);
 		if(!anchor) // <a href="#">
 			return true;
 		if(anchor.charAt(0) == "!") // site.com/#!... links on JavaScript-based sites like http://twitter.com/

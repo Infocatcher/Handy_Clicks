@@ -158,7 +158,7 @@
 
 					var sel = val.substring(ss, se);
 					var lineStart = val.slice(0, ss).match(/[^\r\n]*$/)[0];
-					var lineEnd = val.substr(se).match(/^[^\r\n]*/)[0];
+					var lineEnd = val.slice(se).match(/^[^\r\n]*/)[0];
 
 					if(!/\n|\r/.test(sel)) {
 						if(this._isSpaces(indentChar)) {
@@ -215,7 +215,7 @@
 						var maxSpaces = line.length % tab.length || tab.length;
 					}
 					else /*if(event.keyCode == event.DOM_VK_DELETE)*/ {
-						var availSpaces = value.substr(ss).match(/^ */)[0].length;
+						var availSpaces = value.slice(ss).match(/^ */)[0].length;
 						if(availSpaces <= 1)
 							return;
 						var line = value.slice(0, ss).match(/[^\r\n]*$/)[0];
@@ -250,7 +250,7 @@
 					var sel = val.substring(ss, se);
 
 					var lineStart = val.slice(0, ss).match(/[^\r\n]*$/)[0];
-					var lineEnd = val.substr(se).match(/^[^\r\n]*/)[0];
+					var lineEnd = val.slice(se).match(/^[^\r\n]*/)[0];
 					var block = lineStart + sel + lineEnd;
 
 					if(onlyInLineStart) {
@@ -311,7 +311,7 @@
 						}
 
 						for(var i = 0; i < linesCnt; ++i)
-							lines[i] = spacePrefix + "//" + lines[i].substr(spacePrefixLen);
+							lines[i] = spacePrefix + "//" + lines[i].slice(spacePrefixLen);
 						block = lines.join("\n");
 					}
 
@@ -390,7 +390,7 @@
 					var ss = this.inputField.selectionStart;
 					var val = this.value;
 					return val.slice(0, ss).match(/[^\n\r]*$/)[0].length
-						+ val.substr(ss).match(/^[^\n\r]*/)[0].length
+						+ val.slice(ss).match(/^[^\n\r]*/)[0].length
 						+ 1;
 				]]>
 				</getter>
@@ -1084,7 +1084,7 @@
 							return;
 						}
 						if(fVal.charAt(0) == "\ufeff") // Older Firefox versions doesn't support BOM mark
-							fVal = fVal.substr(1);
+							fVal = fVal.slice(1);
 						var virtualPath = this._virtualPath;
 						if(virtualPath) {
 							var fo = ut.ps.files[virtualPath];
@@ -1272,7 +1272,7 @@
 					ifi.selectionStart = sPos + lastWord.length;
 					ifi.selectionEnd = sPos + curWordOrig.length;
 
-					this.insertText(newWord.substr(lastWord.length));
+					this.insertText(newWord.slice(lastWord.length));
 
 					var sel = alwaysSelect || cnt > 1;
 					ifi.selectionStart = sPos + (sel ? lastWord.length : newWord.length);
@@ -1286,14 +1286,14 @@
 			<method name="trimEndSpaces">
 				<body>
 				<![CDATA[
-					const selMarker = "\x00" + Math.random().toFixed(16).substr(2) + "\x00";
+					const selMarker = "\x00" + Math.random().toFixed(16).slice(2) + "\x00";
 					var val = this.value;
 					var ifi = this.inputField;
 					var ss = ifi.selectionStart;
 					var se = ifi.selectionEnd;
 					var newVal = val.slice(0, ss)
 						+ selMarker + val.substring(ss, se) + selMarker
-						+ val.substr(se);
+						+ val.slice(se);
 					var markerSpaces = "(" + selMarker + ")?[ \t]*";
 					newVal = newVal.replace(new RegExp("[ \t]*" + markerSpaces + markerSpaces + "$", "mg"), "$1$2");
 					ss = newVal.indexOf(selMarker);

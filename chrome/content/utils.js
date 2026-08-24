@@ -160,7 +160,7 @@ var handyClicksUtils = {
 			opts.localized = opts.localized || {};
 			for(var label in buttons) if(buttons.hasOwnProperty(label))
 				if(label.charAt(0) == "$")
-					opts.localized[label] = this.getLocalized(label.substr(1));
+					opts.localized[label] = this.getLocalized(label.slice(1));
 		}
 		opts = {
 			title:         opts.title         || this.getLocalized("title"),

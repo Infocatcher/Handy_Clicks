@@ -273,7 +273,7 @@ var handyClicksPrefSvcExt = {
 			var fName = entry.leafName;
 			if(!entry.isFile() || !/\.js$/i.test(fName) || !this.ju.startsWith(fName, fPrefix))
 				continue;
-			var checkName = fName.substr(fPrefix.length);
+			var checkName = fName.slice(fPrefix.length);
 			if(prefixes.some(function(prefix) { return this.ju.startsWith(checkName, prefix); }, this))
 				bakFiles.push(entry);
 		}
@@ -455,7 +455,7 @@ var handyClicksPrefSvcExt = {
 					return s
 						.replace(/(\\+)'/g, function(s, bs) {
 							return bs.length & 1
-								? s.substr(1)
+								? s.slice(1)
 								: s;
 						})
 						.replace(/\t/g, "\\t");

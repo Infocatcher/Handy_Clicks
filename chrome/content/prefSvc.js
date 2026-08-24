@@ -942,7 +942,7 @@ var handyClicksPrefSvc = {
 	getPrefsStr: function(str) {
 		const add = this.ct.PROTOCOL_SETTINGS_ADD;
 		if(this.ju.startsWith(str, add))
-			return this.decURI(str.substr(add.length));
+			return this.decURI(str.slice(add.length));
 		return str;
 	},
 	removePrefsDesription: function(str) {
