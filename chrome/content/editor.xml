@@ -1404,7 +1404,10 @@
 				)
 					return;
 				var offset = this.autocompleteMinSymbols - 1; // Symbol from this keypress event not typed yet
-				if(offset > 0 && !/^[\w-]+$/i.test(this.value.substr(this.inputField.selectionStart - offset, offset)))
+				var ss = this.inputField.selectionStart;
+				if(ss < offset)
+					return;
+				if(offset > 0 && !/^[\w-]+$/i.test(this.value.slice(ss - offset, ss)))
 					return;
 				setTimeout(function(_this) {
 					_this.jsAutocomplete(false, true);
