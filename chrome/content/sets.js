@@ -283,7 +283,8 @@ var handyClicksSets = {
 	persistLong: function(node, attr, val) {
 		var maxLen = 4096;
 		for(var i = 0; ; ++i) {
-			var v = val.substr(i*maxLen, maxLen);
+			var pos = i*maxLen;
+			var v = val.slice(pos, pos + maxLen);
 			var a = attr + (i ? i + 1 : "");
 			if(v)
 				node.setAttribute(a, v);
@@ -1302,7 +1303,7 @@ var handyClicksSets = {
 			return code;
 		var cropped = code.slice(0, maxLen);
 		if(
-			!/[\r\n]/.test(code.substr(maxLen - 1, 2)) // Already used entire line?
+			!/[\r\n]/.test(code.slice(maxLen - 1, maxLen + 1)) // Already used entire line?
 			&& /^[^\n\r]+/.test(code.slice(maxLen))
 			&& RegExp.lastMatch.length <= this._preserveLines
 		)
