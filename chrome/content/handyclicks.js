@@ -614,7 +614,7 @@ var handyClicks = {
 				&& this.ps.initCustomType(type)
 			) {
 				var ct = cts[type];
-				this.checkOtherTypes = false;
+				this.checkOtherTypes = undefined;
 				this._currentType = type;
 				try {
 					_it = ct._define.call(this, e, it, type, ct._firstCall);
@@ -628,7 +628,10 @@ var handyClicks = {
 					continue;
 				this.itemType = type;
 				this.item = _it;
-				if(!this.checkOtherTypes)
+				var checkOtherTypes = this.checkOtherTypes !== undefined
+					? this.checkOtherTypes
+					: this.ju.getOwnProperty(sets, type, "checkOtherTypes");
+				if(!checkOtherTypes)
 					return;
 			}
 		}
