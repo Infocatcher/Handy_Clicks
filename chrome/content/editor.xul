@@ -269,6 +269,11 @@
 										control="hc-editor-tabExcludeCloseButton" />
 									<checkbox id="hc-editor-tabExcludeCloseButton" label="&hc.editor.excludeCloseButton;" />
 								</hbox>
+								<hbox id="hc-editor-funcOpts-custom" hc_notDelay="true" align="center">
+									<label value="&hc.editor.funcOptsAdd;" accesskey="&hc.editor.funcOptsAddAccesskey;"
+										control="hc-editor-customCheckOtherTypes" />
+									<checkbox id="hc-editor-customCheckOtherTypes" label="&hc.editor.checkOtherTypes;" />
+								</hbox>
 							</vbox>
 
 							<hbox id="hc-editor-funcName" align="center">

@@ -50,6 +50,7 @@
 <!ENTITY hc.editor.ignoreLinks "Ignore links">
 <!ENTITY hc.editor.ignoreSingle "Ignore separately opened images">
 <!ENTITY hc.editor.excludeCloseButton "Exclude close button">
+<!ENTITY hc.editor.checkOtherTypes "Check other types">
 
 <!ENTITY hc.editor.tabAction "Action">
 <!ENTITY hc.editor.tabActionAccesskey "n">

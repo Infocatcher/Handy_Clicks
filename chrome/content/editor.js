@@ -1080,9 +1080,11 @@ var handyClicksEditor = {
 		iType = iType || this.currentType;
 		var showImg = iType == "img";
 		var showTab = iType == "tab" || iType == "ext_mulipletabs";
+		var showCustom = this.ps.isCustomType(iType);
 		this.$("hc-editor-funcOpts-img").hidden = !showImg;
 		this.$("hc-editor-funcOpts-tab").hidden = !showTab;
-		if(!showImg && !showTab)
+		this.$("hc-editor-funcOpts-custom").hidden = !showCustom;
+		if(!showImg && !showTab && !showCustom)
 			return;
 		setsObj = setsObj || this.ju.getOwnProperty(this.ps.prefs, this.shortcut, iType);
 		if(showImg) {
@@ -1094,6 +1096,10 @@ var handyClicksEditor = {
 		else if(showTab) {
 			var excludeBtn = this.ju.getOwnProperty(setsObj, "excludeCloseButton");
 			this.$("hc-editor-tabExcludeCloseButton").checked = excludeBtn === undefined ? true : excludeBtn;
+		}
+		else if(showCustom) {
+			var checkOtherTypes = this.ju.getOwnProperty(setsObj, "checkOtherTypes") || false;
+			this.$("hc-editor-customCheckOtherTypes").checked = checkOtherTypes;
 		}
 	},
 	addFuncArgs: function(delayed, setsObj) {
@@ -2315,6 +2321,10 @@ var handyClicksEditor = {
 			}
 			else if(type == "tab" || type == "ext_mulipletabs") {
 				so.excludeCloseButton = this.$("hc-editor-tabExcludeCloseButton").checked;
+			}
+			else if(isCustom) {
+				if(this.$("hc-editor-customCheckOtherTypes").checked)
+					so.checkOtherTypes = true;
 			}
 		}
 		return so;
