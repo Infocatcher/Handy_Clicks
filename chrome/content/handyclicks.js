@@ -653,6 +653,7 @@ var handyClicks = {
 				_it && (
 					!this.ju.getOwnProperty(sets, "img", "ignoreSingle")
 					|| _it.ownerDocument.documentURI != _it.src
+					|| this.editMode
 				)
 			) {
 				this.itemType = "img";
