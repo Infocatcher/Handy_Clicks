@@ -671,7 +671,7 @@ var handyClicks = {
 		var mth = all || this.itemTypeInSets(sets, "ext_mulipletabs");
 		var tab = all || this.itemTypeInSets(sets, "tab");
 		if(mth || tab) {
-			if(it.localName == "toolbarbutton") {
+			if(it.localName == "toolbarbutton" && !this.editMode) {
 				var mthExc = mth && this.ju.getOwnProperty(sets, "ext_mulipletabs", "excludeCloseButton");
 				var tabExc = tab && this.ju.getOwnProperty(sets, "tab",             "excludeCloseButton");
 			}
