@@ -51,6 +51,11 @@
 <!ENTITY hc.editor.ignoreSingle "Ignore separately opened images">
 <!ENTITY hc.editor.excludeCloseButton "Exclude close button">
 <!ENTITY hc.editor.checkOtherTypes "Check other types">
+<!ENTITY hc.editor.checkOtherTypesTip "Don't stop item type detection on that custom type.
+Can be overridden in custom type detection code:
+this.hc.checkOtherTypes	= true – force continue checks
+						= false – force stop checks, if type was detected
+						= undefined (not set) – use this option">
 
 <!ENTITY hc.editor.tabAction "Action">
 <!ENTITY hc.editor.tabActionAccesskey "n">

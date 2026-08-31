@@ -51,6 +51,11 @@
 <!ENTITY hc.editor.ignoreSingle "Игнорировать отдельно открытые изображения">
 <!ENTITY hc.editor.excludeCloseButton "Исключить кнопку закрытия">
 <!ENTITY hc.editor.checkOtherTypes "Проверять другие типы">
+<!ENTITY hc.editor.checkOtherTypesTip "Не прекращать определение типа после обнаружения добавленного типа.
+Может быть переопределено в коде определения добавленного типа:
+this.hc.checkOtherTypes	= true – продолжить проверки
+						= false – завершить проверки после обнаружения типа
+						= undefined (не задано) – использовать данную настройку">
 
 <!ENTITY hc.editor.tabAction "Действие">
 <!ENTITY hc.editor.tabActionAccesskey "й">

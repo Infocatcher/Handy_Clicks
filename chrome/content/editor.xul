@@ -272,7 +272,11 @@
 								<hbox id="hc-editor-funcOpts-custom" hc_notDelay="true" align="center">
 									<label value="&hc.editor.funcOptsAdd;" accesskey="&hc.editor.funcOptsAddAccesskey;"
 										control="hc-editor-customCheckOtherTypes" />
-									<checkbox id="hc-editor-customCheckOtherTypes" label="&hc.editor.checkOtherTypes;" />
+									<checkbox id="hc-editor-customCheckOtherTypes" label="&hc.editor.checkOtherTypes;"
+										tooltip="hc-editor-customCheckOtherTypes-tooltip" />
+									<tooltip id="hc-editor-customCheckOtherTypes-tooltip">
+										<description>&hc.editor.checkOtherTypesTip;</description>
+									</tooltip>
 								</hbox>
 							</vbox>
 
