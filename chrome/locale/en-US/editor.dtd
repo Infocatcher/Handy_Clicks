@@ -53,9 +53,9 @@
 <!ENTITY hc.editor.checkOtherTypes "Check other types">
 <!ENTITY hc.editor.checkOtherTypesTip "Don't stop item type detection on that custom type.
 Can be overridden in custom type detection code:
-this.hc.checkOtherTypes	= true – force continue checks
-						= false – force stop checks, if type was detected
-						= undefined (not set) – use this option">
+<code>this.hc.checkOtherTypes = <strong>true</strong>     </code> – <em>continue checks</em>
+<code>                        = <strong>false</strong>    </code> – <em>stop checks, if type was detected</em>
+<code>                        = <strong>undefined</strong></code> – <em>(default) don't override</em>">
 
 <!ENTITY hc.editor.tabAction "Action">
 <!ENTITY hc.editor.tabActionAccesskey "n">

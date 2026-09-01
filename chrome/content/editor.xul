@@ -274,8 +274,8 @@
 										control="hc-editor-customCheckOtherTypes" />
 									<checkbox id="hc-editor-customCheckOtherTypes" label="&hc.editor.checkOtherTypes;"
 										tooltip="hc-editor-customCheckOtherTypes-tooltip" />
-									<tooltip id="hc-editor-customCheckOtherTypes-tooltip">
-										<description>&hc.editor.checkOtherTypesTip;</description>
+									<tooltip id="hc-editor-customCheckOtherTypes-tooltip" noautohide="true" style="max-width: none;">
+										<div xmlns="http://www.w3.org/1999/xhtml" style="white-space: pre;">&hc.editor.checkOtherTypesTip;</div>
 									</tooltip>
 								</hbox>
 							</vbox>
