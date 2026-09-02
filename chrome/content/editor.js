@@ -2315,7 +2315,7 @@ var handyClicksEditor = {
 			: evt;
 		if(!isDelayed) {
 			var type = this.currentType;
-			if(type == "img") { //~ todo: don't save false values?
+			if(type == "img") {
 				so.ignoreLinks  = this.$("hc-editor-imgIgnoreLinks") .checked;
 				so.ignoreSingle = this.$("hc-editor-imgIgnoreSingle").checked;
 			}
@@ -2323,8 +2323,7 @@ var handyClicksEditor = {
 				so.excludeCloseButton = this.$("hc-editor-tabExcludeCloseButton").checked;
 			}
 			else if(isCustom) {
-				if(this.$("hc-editor-customCheckOtherTypes").checked)
-					so.checkOtherTypes = true;
+				so.checkOtherTypes = this.$("hc-editor-customCheckOtherTypes").checked;
 			}
 		}
 		return so;

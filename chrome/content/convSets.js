@@ -192,6 +192,10 @@ function setsMigration(allowSave, vers) {
 		}
 	}
 	if(vers < 0.4) { //= Added: 2018-12-28
+		// Added options:
+		//   img.ignoreLinks
+		//   img.ignoreSingle
+		//   tab.excludeCloseButton + ext_mulipletabs.excludeCloseButton
 		var prefs = this.prefs;
 		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
 			var so = prefs[sh];
@@ -213,6 +217,24 @@ function setsMigration(allowSave, vers) {
 				&& !so.ext_mulipletabs.hasOwnProperty("excludeCloseButton")
 			)
 				so.ext_mulipletabs.excludeCloseButton = true;
+		}
+	}
+	if(vers < 0.41) { //= Added: 2026-07-23
+		// Added option:
+		//   custom_*.checkOtherTypes
+		var prefs = this.prefs;
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
+			var so = prefs[sh];
+			if(!this.ju.isObject(so))
+				continue;
+			for(var type in so) if(so.hasOwnProperty(type) && this.isCustomType(type)) {
+				var to = so[type];
+				if(
+					this.ju.isObject(to)
+					&& !to.hasOwnProperty("checkOtherTypes")
+				)
+					to.checkOtherTypes = false;
+			}
 		}
 	}
 
