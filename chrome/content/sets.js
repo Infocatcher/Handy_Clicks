@@ -874,8 +874,8 @@ var handyClicksSets = {
 
 	setsReloading: function(notifyReason) {
 		if(notifyReason & this.ps.SETS_RELOADED) {
-			this.changedFileData() || this.updTree();
 			this.checkTreeSaved();
+			this.changedFileData() || this.updTree();
 		}
 	},
 	changedFileData: function(path) {

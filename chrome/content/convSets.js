@@ -242,7 +242,7 @@ function setsMigration(allowSave, vers) {
 		this.loadedVersion = this.setsVersion;
 	else {
 		this.pe.moveFiles(this.prefsFile, this.names.version + vers + "-", true, true);
-		this.pe.saveSettingsObjectsAsync();
+		this.pe.saveSettingsObjectsAsync(true);
 	}
 	this._info("Format of prefs file updated: " + vers + " => " + this.setsVersion);
 }
