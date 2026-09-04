@@ -158,6 +158,7 @@ var handyClicksPrefSvc = {
 	get loaded() {
 		return this._loadStatus == this.SETS_LOAD_OK;
 	},
+	saving: false,
 	_restoredFromBackup: false,
 	loadSettingsAsync: function(callback, context) {
 		this._loadStatus = this.SETS_LOAD_UNKNOWN;

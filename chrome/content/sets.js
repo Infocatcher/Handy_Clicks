@@ -189,8 +189,8 @@ var handyClicksSets = {
 		);
 		if(this.instantApply)
 			this.de.setAttribute("hc_instantApply", "true");
-		if(this.ps.loaded && this.treeUnsaved)
-			this.setModifiedState(true);
+		if(this.ps.loaded && !this.ps.saving)
+			this.setDialogButtons();
 	},
 	buildCharsetMenu: function(popup) {
 		Components.classes["@mozilla.org/observer-service;1"]

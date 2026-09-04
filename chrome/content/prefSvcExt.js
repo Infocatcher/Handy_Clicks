@@ -6,8 +6,10 @@ var handyClicksPrefSvcExt = {
 		this.reloadSettings(reloadAll);
 	},
 	saveSettingsObjectsAsync: function(reloadAll, callback, context) {
+		this.ps.saving = true;
 		this.delay(function() {
 			this.saveSettingsAsync(this.ps.stringifySettings(), function(status) {
+				this.ps.saving = false;
 				if(Components.isSuccessCode(status))
 					this.reloadSettings(reloadAll);
 				callback && callback.call(context || this, status);
