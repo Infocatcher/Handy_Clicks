@@ -2322,7 +2322,7 @@ var handyClicksEditor = {
 			else if(type == "tab" || type == "ext_mulipletabs") {
 				so.excludeCloseButton = this.$("hc-editor-tabExcludeCloseButton").checked;
 			}
-			else if(isCustom) {
+			else if(this.ps.isCustomType(type)) {
 				so.checkOtherTypes = this.$("hc-editor-customCheckOtherTypes").checked;
 			}
 		}
