@@ -75,11 +75,13 @@ var hcNotify = {
 		var x, y;
 		var maxX = screen.availLeft + screen.availWidth;
 		var maxY = screen.availTop + screen.availHeight;
-		if(wo.closed) {
+		var isClosed = wo.closed;
+		var xy = !opts.inWindowCorner && !isClosed && "handyClicks" in wo && wo.handyClicks._xy;
+		if(isClosed) {
 			x = maxX - winW;
 			y = maxY - winH;
 		}
-		else if(opts.inWindowCorner || !("handyClicks" in wo) || !wo.handyClicks._xy) { // Show in window corner
+		else if(opts.inWindowCorner || !xy) { // Show in window corner
 			this.inWindowCorner = true;
 			x = wo.screenX + wo.outerWidth - winW;
 			var wod = wo.document;
@@ -91,7 +93,6 @@ var hcNotify = {
 		}
 		else { // Show under cursor
 			var cursorH = 20, addH = 8;
-			var xy = wo.handyClicks._xy;
 			x = xy.screenX - winW/2;
 			y = xy.screenY + cursorH + addH;
 		}
