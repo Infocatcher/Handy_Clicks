@@ -185,6 +185,7 @@
 <!ENTITY hc.sets.notify "Notify">
 <!ENTITY hc.sets.notifyCloseAfter "Close messages after">
 <!ENTITY hc.sets.notifyCloseWarningsAfter "Close warnings after">
+<!ENTITY hc.sets.notifyTest "Preview">
 <!ENTITY hc.sets.notifyInWindowCorner "Show in window corner">
 <!ENTITY hc.sets.notifyDontClose "Don't close under cursor">
 <!ENTITY hc.sets.notifyDontOpenTwice "Don't open the same notification twice">

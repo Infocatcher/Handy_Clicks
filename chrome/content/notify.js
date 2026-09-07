@@ -76,7 +76,10 @@ var hcNotify = {
 		var maxX = screen.availLeft + screen.availWidth;
 		var maxY = screen.availTop + screen.availHeight;
 		var isClosed = wo.closed;
-		var xy = !opts.inWindowCorner && !isClosed && "handyClicks" in wo && wo.handyClicks._xy;
+		var xy = !opts.inWindowCorner && !isClosed && (
+			"handyClicks" in wo && wo.handyClicks._xy
+			|| "handyClicksXY" in wo && wo.handyClicksXY
+		);
 		if(isClosed) {
 			x = maxX - winW;
 			y = maxY - winH;

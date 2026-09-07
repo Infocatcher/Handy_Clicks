@@ -420,13 +420,19 @@ preferences {
 							type="number" min="0" max="1200000" increment="50" size="7"
 							hc_requiredFor="notify notifyMessages" hc_disablePattern="0" />
 						<label value="&hc.sets.zeroForDisable;" />
+						<button label="&hc.sets.notifyTest;" hc_dependsOn="notifyMessages"
+							onmousedown="window.top.handyClicksXY = { screenX: event.screenX, screenY: event.screenY };"
+							oncommand="handyClicksSets.ut.notify(this.label);" />
 					</row>
 					<row align="center">
 						<label value="&hc.sets.notifyCloseWarningsAfter;" control="hc-sets-notifyOpenTimeWarnings" />
 						<textbox id="hc-sets-notifyOpenTimeWarnings" preference="notifyOpenTimeWarnings"
 							type="number" min="0" max="1200000" increment="50" size="7"
-							hc_requiredFor="notify" hc_disablePattern="0" />
+							hc_requiredFor="notify notifyWarnings" hc_disablePattern="0" />
 						<label value="&hc.sets.zeroForDisable;" />
+						<button label="&hc.sets.notifyTest;" hc_dependsOn="notifyWarnings"
+							onmousedown="window.top.handyClicksXY = { screenX: event.screenX, screenY: event.screenY };"
+							oncommand="handyClicksSets.ut.notifyWarning(this.label);" />
 					</row>
 				</rows>
 			</grid>
