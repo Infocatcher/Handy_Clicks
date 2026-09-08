@@ -252,6 +252,11 @@ wordWithoutSpaces /RegExp/i 'whole string' "Case Sensitive string" -word -/%off%
 `+` Added ability to disable hashes calculations for tests or performance purposes in case of very huge settings files (not recommended to change, use at your own risk, <em>extensions.handyclicks.sets.dontCalcHashes</em> preference).<br>
 `+` Settings tree: added context menu item to close all opened editors.<br>
 `x` Settings: correctly update UI after about:config preferences import/reset.<br>
+`*` Now allowed any code after line with linked file header (`//> %hc_ScriptsDir%/example.js`), e.g. for legacy loader.<br>
+`*` Remove deprecated <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr">String.prototype.substr()</a> usage.<br>
+`+` Added .checkOtherTypes option for actions with custom type.<br>
+`x` Settings: fixed “Apply” button state after settings migration to new format.<br>
+`+` Settings: added buttons to test/preview notifications.<br>
 `*` Corrected and updated localizations.<br>
 `*` Various internal code enhancements.<br>
 
