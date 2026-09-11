@@ -96,8 +96,9 @@ Ctrl+Shift+V – paste">
 
 <!ENTITY hc.editor.mainTabCustomTypes "Custom Types">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "T">
-<!ENTITY hc.editor.internalId "Internal id:">
-<!ENTITY hc.editor.internalIdAccesskey "r">
+<!ENTITY hc.editor.internalId "ID:">
+<!ENTITY hc.editor.internalIdAccesskey "I">
+<!ENTITY hc.editor.internalIdTip "Internal identifier, will be stored as custom_{ID}"> <!-- Do not translate "custom_" prefix! -->
 <!ENTITY hc.editor.defineItem "Detection">
 <!ENTITY hc.editor.defineItemAccesskey "n">
 <!ENTITY hc.editor.defineItemTip "Code to get node with desired type after click event">

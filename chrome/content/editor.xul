@@ -368,6 +368,7 @@
 							onpopupshowing="handyClicksEditor.showLocalizedLabels(this);" />
 					</menulist>
 					<label value="&hc.editor.internalId;" accesskey="&hc.editor.internalIdAccesskey;"
+						tooltiptext="&hc.editor.internalIdTip;"
 						control="hc-editor-customTypeExtId" />
 					<textbox id="hc-editor-customTypeExtId" flex="1"
 						onkeypress="return handyClicksEditor.customTypeIdFilter(event);"

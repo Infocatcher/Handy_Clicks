@@ -96,8 +96,9 @@ Ctrl+Shift+V – вставить">
 
 <!ENTITY hc.editor.mainTabCustomTypes "Добавленные типы">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "б">
-<!ENTITY hc.editor.internalId "Внутренний id:">
-<!ENTITY hc.editor.internalIdAccesskey "й">
+<!ENTITY hc.editor.internalId "ID:">
+<!ENTITY hc.editor.internalIdAccesskey "I">
+<!ENTITY hc.editor.internalIdTip "Внутренний идентификатор, будет сохранен в виде custom_{ID}"> <!-- Do not translate "custom_" prefix! -->
 <!ENTITY hc.editor.defineItem "Определение">
 <!ENTITY hc.editor.defineItemAccesskey "п">
 <!ENTITY hc.editor.defineItemTip "Код для получения узла нужного типа после события клика">
