@@ -51,6 +51,7 @@
 <!ENTITY hc.editor.ignoreSingle "Игнорировать отдельно открытые изображения">
 <!ENTITY hc.editor.excludeCloseButton "Исключить кнопку закрытия">
 <!ENTITY hc.editor.checkOtherTypes "Проверять другие типы">
+<!-- Don't translate code inside <code> … </code> -->
 <!ENTITY hc.editor.checkOtherTypesTip "Не прекращать определение типа после обнаружения добавленного типа.
 Может быть переопределено в коде определения добавленного типа:
 <code>this.hc.checkOtherTypes = <strong>true</strong>     </code> – <em>продолжить проверки</em>
@@ -81,6 +82,11 @@ Ctrl+Shift+V – вставить">
 <!ENTITY hc.editor.funcInit "Инициализация">
 <!ENTITY hc.editor.funcInitAccesskey "И">
 <!ENTITY hc.editor.funcInitTip "Выполняется при (пере)загрузке настроек">
+<!--
+Don't translate:
+  "Default string" - assumed label in en-US
+  "@locale:", "@locale2:" - assumed prefixes like @en:/@en-US:/@ru:
+-->
 <!ENTITY hc.editor.labelLocalize "Локализация: Default string @locale:Локализованная строка @locale2:…">
 
 <!ENTITY hc.editor.editCode "Редактировать…">
@@ -98,11 +104,11 @@ Ctrl+Shift+V – вставить">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "б">
 <!ENTITY hc.editor.internalId "ID:">
 <!ENTITY hc.editor.internalIdAccesskey "I">
-<!ENTITY hc.editor.internalIdTip "Внутренний идентификатор, будет сохранен в виде custom_{ID}"> <!-- Do not translate "custom_" prefix! -->
+<!ENTITY hc.editor.internalIdTip "Внутренний идентификатор, будет сохранен в виде custom_{ID}"> <!-- Don't translate "custom_" prefix! -->
 <!ENTITY hc.editor.defineItem "Определение">
 <!ENTITY hc.editor.defineItemAccesskey "п">
 <!ENTITY hc.editor.defineItemTip "Код для получения узла нужного типа после события клика">
-<!ENTITY hc.editor.defineReturnNote "Должно возвращать: элемент или null"> <!-- Do not translate "null"! -->
+<!ENTITY hc.editor.defineReturnNote "Должно возвращать: элемент или null"> <!-- Don't translate "null"! -->
 <!ENTITY hc.editor.defineContext "Контекстное меню">
 <!ENTITY hc.editor.defineContextAccesskey "м">
 <!ENTITY hc.editor.defineContextTip "Оставьте поле пустым для автоопределения (имитация события «contextmenu»)">

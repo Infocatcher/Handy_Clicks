@@ -51,6 +51,7 @@
 <!ENTITY hc.editor.ignoreSingle "Ignore separately opened images">
 <!ENTITY hc.editor.excludeCloseButton "Exclude close button">
 <!ENTITY hc.editor.checkOtherTypes "Check other types">
+<!-- Don't translate code inside <code> … </code> -->
 <!ENTITY hc.editor.checkOtherTypesTip "Don't stop item type detection on that custom type.
 Can be overridden in custom type detection code:
 <code>this.hc.checkOtherTypes = <strong>true</strong>     </code> – <em>continue checks</em>
@@ -81,6 +82,11 @@ Ctrl+Shift+V – paste">
 <!ENTITY hc.editor.funcInit "Initialization">
 <!ENTITY hc.editor.funcInitAccesskey "I">
 <!ENTITY hc.editor.funcInitTip "Executes when settings (re)loading">
+<!--
+Don't translate:
+  "Default string" - assumed label in en-US
+  "@locale:", "@locale2:" - assumed prefixes like @en:/@en-US:/@ru:
+-->
 <!ENTITY hc.editor.labelLocalize "Localization: Default string @locale:Localized string @locale2:…">
 
 <!ENTITY hc.editor.editCode "Edit…">
@@ -98,11 +104,11 @@ Ctrl+Shift+V – paste">
 <!ENTITY hc.editor.mainTabCustomTypesAccesskey "T">
 <!ENTITY hc.editor.internalId "ID:">
 <!ENTITY hc.editor.internalIdAccesskey "I">
-<!ENTITY hc.editor.internalIdTip "Internal identifier, will be stored as custom_{ID}"> <!-- Do not translate "custom_" prefix! -->
+<!ENTITY hc.editor.internalIdTip "Internal identifier, will be stored as custom_{ID}"> <!-- Don't translate "custom_" prefix! -->
 <!ENTITY hc.editor.defineItem "Detection">
 <!ENTITY hc.editor.defineItemAccesskey "n">
 <!ENTITY hc.editor.defineItemTip "Code to get node with desired type after click event">
-<!ENTITY hc.editor.defineReturnNote "Return: node or null"> <!-- Do not translate "null"! -->
+<!ENTITY hc.editor.defineReturnNote "Return: node or null"> <!-- Don't translate "null"! -->
 <!ENTITY hc.editor.defineContext "Context menu">
 <!ENTITY hc.editor.defineContextAccesskey "C">
 <!ENTITY hc.editor.defineContextTip "Leave this field empty for autodetection (“contextmenu” event imitation)">
