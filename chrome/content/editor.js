@@ -812,10 +812,55 @@ var handyClicksEditor = {
 			this.delay(this.setWinId, this);
 		}
 	},
+	customTypeAllowed: "a-z, A-Z, 0-9, $, _",
 	customTypeIdInfo: function(anchor) {
 		var msg = this.getLocalized("allowedChars")
-			.replace("%s", "a-z, A-Z, 0-9, $, _");
+			.replace("%s", this.customTypeAllowed);
 		this.su.showInfoTooltip(anchor, msg);
+	},
+	renameCustomTypeId: function() {
+		var customPrefix = this.ps.customPrefix;
+		var oldVal = this.$("hc-editor-customTypeExtId").value;
+		var oldId = customPrefix + oldVal;
+		var types = this.ps.types;
+		var prefs = this.ps.prefs;
+		if(!(oldId in types)) // Nothing to rename
+			return;
+		var newIdName = this.getLocalized("newId")
+			.replace("%s", this.customTypeAllowed);
+		var msg = "";
+		var re = /[^\w$]/g;
+		var newVal = oldVal;
+		for(;;) {
+			newVal = this.ut.prompt(this.getLocalized("renameId"), msg + newIdName, newVal);
+			if(!newVal || newVal == oldVal)
+				return;
+			if(re.test(newVal)) {
+				newVal = newVal.replace(re, "");
+				continue;
+			}
+			var newId = customPrefix + newVal;
+			if(!(newId in types))
+				break;
+			msg = this.getLocalized("idAlreadyExists").replace("%id", newVal) + "\n";
+		}
+
+		this.$("hc-editor-customTypeExtId").value = newVal;
+
+		types[newId] = types[oldId];
+		delete types[oldId];
+
+		for(var sh in prefs) if(prefs.hasOwnProperty(sh)) {
+			var so = prefs[sh];
+			if(!this.ju.isObject(so))
+				continue;
+			if(!so.hasOwnProperty(oldId))
+				continue;
+			so[newId] = so[oldId];
+			delete so[oldId];
+		}
+
+		this.pe.saveSettingsObjectsAsync(true);
 	},
 	appendTypesList: function(wasReloaded) {
 		var sep = this.$("hc-editor-customTypesSep");
