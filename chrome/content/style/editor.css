@@ -83,7 +83,8 @@ menulist[hc_sets="disabled"] .menulist-label {
 }
 
 #hc-editor-renameShortcut,
-#hc-editor-shortcutRename {
+#hc-editor-shortcutRename,
+#hc-editor-customTypeRenameId {
 	-moz-image-region: rect(48px 128px 64px 112px);
 }
 :root[hc_renameMode] #hc-editor-renameShortcut,

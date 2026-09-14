@@ -105,6 +105,7 @@ Don't translate:
 <!ENTITY hc.editor.internalId "ID:">
 <!ENTITY hc.editor.internalIdAccesskey "I">
 <!ENTITY hc.editor.internalIdTip "Internal identifier, will be stored as custom_{ID}"> <!-- Don't translate "custom_" prefix! -->
+<!ENTITY hc.editor.internalIdRename "Rename ID…">
 <!ENTITY hc.editor.defineItem "Detection">
 <!ENTITY hc.editor.defineItemAccesskey "n">
 <!ENTITY hc.editor.defineItemTip "Code to get node with desired type after click event">
