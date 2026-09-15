@@ -860,7 +860,13 @@ var handyClicksEditor = {
 			delete so[oldId];
 		}
 
-		this.pe.saveSettingsObjectsAsync(true);
+		this.pe.saveSettingsObjectsAsync(true, function(status) {
+			if(this.currentType != oldId)
+				return;
+			this.currentType = newId;
+			this.shortcutSaved();
+			this.setDialogButtons();
+		}, this);
 	},
 	appendTypesList: function(wasReloaded) {
 		var sep = this.$("hc-editor-customTypesSep");
