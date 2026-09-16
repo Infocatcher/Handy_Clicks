@@ -861,11 +861,23 @@ var handyClicksEditor = {
 		}
 
 		this.pe.saveSettingsObjectsAsync(true, function(status) {
-			if(this.currentType != oldId)
-				return;
-			this.currentType = newId;
-			this.shortcutSaved();
-			this.setDialogButtons();
+			const hcEd = "handyClicksEditor";
+			this.wu.forEachWindow("handyclicks:editor", function(w) {
+				if(hcEd in w && "_handyClicksInitialized" in w) (function() {
+					var upd;
+					if(w != window && this.$("hc-editor-customTypeExtId").value == oldVal) {
+						this.$("hc-editor-customTypeExtId").value = newVal;
+						this.typeSaved();
+						upd = true;
+					}
+					if(this.currentType == oldId) {
+						this.currentType = newId;
+						this.shortcutSaved();
+						upd = true;
+					}
+					upd && this.setDialogButtons();
+				}).call(w[hcEd]);
+			}, this);
 		}, this);
 	},
 	appendTypesList: function(wasReloaded) {
