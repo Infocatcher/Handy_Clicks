@@ -630,7 +630,7 @@ var handyClicksEditor = {
 		if(typeItem)
 			shStr += this.ps.spacedSep + typeItem.getAttribute("label");
 		var typeStr = this.ps.localize(this.$("hc-editor-customType").value)
-			|| this.$("hc-editor-customTypeExtId").value;
+			|| this.customTypeTb.value;
 		if(typeStr)
 			typeStr = this.getLocalized("type").replace("%s", typeStr);
 		var sep = typeStr ? " | " : "";
@@ -820,7 +820,7 @@ var handyClicksEditor = {
 	},
 	renameCustomTypeId: function() {
 		var customPrefix = this.ps.customPrefix;
-		var oldVal = this.$("hc-editor-customTypeExtId").value;
+		var oldVal = this.customTypeTb.value;
 		var oldId = customPrefix + oldVal;
 		var types = this.ps.types;
 		var prefs = this.ps.prefs;
@@ -845,7 +845,7 @@ var handyClicksEditor = {
 			msg = this.getLocalized("idAlreadyExists").replace("%id", newVal) + "\n";
 		}
 
-		this.$("hc-editor-customTypeExtId").value = newVal;
+		this.customTypeTb.value = newVal;
 
 		types[newId] = types[oldId];
 		delete types[oldId];
@@ -865,8 +865,8 @@ var handyClicksEditor = {
 			this.wu.forEachWindow("handyclicks:editor", function(w) {
 				if(hcEd in w && "_handyClicksInitialized" in w) (function() {
 					var upd;
-					if(w != window && this.$("hc-editor-customTypeExtId").value == oldVal) {
-						this.$("hc-editor-customTypeExtId").value = newVal;
+					if(w != window && this.customTypeTb.value == oldVal) {
+						this.customTypeTb.value = newVal;
 						this.typeSaved();
 						upd = true;
 					}
@@ -1310,11 +1310,15 @@ var handyClicksEditor = {
 	set currentType(type) {
 		this.typesList.value = type;
 	},
+	get customTypeTb() {
+		delete this.customTypeTb;
+		return this.customTypeTb = this.$("hc-editor-customTypeExtId");
+	},
 	get currentCustomType() {
-		return this.ps.customPrefix + this.$("hc-editor-customTypeExtId").value;
+		return this.ps.customPrefix + this.customTypeTb.value;
 	},
 	set currentCustomType(customType) {
-		this.$("hc-editor-customTypeExtId").value = this.ps.removeCustomPrefix(customType || "");
+		this.customTypeTb.value = this.ps.removeCustomPrefix(customType || "");
 		this.checkNotUsedType(customType);
 	},
 	checkNotUsedType: function(type, updateMenu) {
@@ -2471,14 +2475,14 @@ var handyClicksEditor = {
 	},
 	saveCustomType: function(applyFlag, testFlag, dontUpdate, saveAll) {
 		var label = this.$("hc-editor-customType").value;
-		var type = this.$("hc-editor-customTypeExtId").value;
+		var type = this.customTypeTb.value;
 		var def = this.$("hc-editor-customTypeDefine").value;
 		if(!label || !type || !def) {
 			if(saveAll && this.editorTabIndex != this.INDEX_TYPE)
 				return true;
 			var req = [
 				this.$("hc-editor-customType"),
-				this.$("hc-editor-customTypeExtId"),
+				this.customTypeTb,
 				this.$("hc-editor-customTypeDefine")
 			];
 			this.highlightRequiredFields(req, true);
@@ -2532,7 +2536,7 @@ var handyClicksEditor = {
 			label = this.$("hc-editor-customType").value;
 		var def = this.$("hc-editor-customTypeDefine").value;
 		var cm = this.$("hc-editor-customTypeContext").value;
-		return (label || def || cm || this.$("hc-editor-customTypeExtId").value)
+		return (label || def || cm || this.customTypeTb.value)
 			? this.getTypeObj(label, def, undefined, cm || null)
 			: null;
 	},
