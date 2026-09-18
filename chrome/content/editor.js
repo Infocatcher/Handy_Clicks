@@ -742,7 +742,9 @@ var handyClicksEditor = {
 		this.$("hc-editor-customTypeDefine")[val] = ct.define || "";
 		var contextField = this.$("hc-editor-customTypeContext");
 		contextField[val] = ct.contextMenu || "";
-		if(!to && (!type || !types.hasOwnProperty(type)))
+		var hasType = type && types.hasOwnProperty(type);
+		this.$("hc-editor-customTypeRenameId").disabled = !hasType;
+		if(!to && !hasType)
 			return true;
 		this.highlightEmpty(contextField);
 		if(!to) {
@@ -809,6 +811,7 @@ var handyClicksEditor = {
 		else {
 			ml.selectedItem = null;
 			this.$("hc-editor-customTypeEnabled").checked = true;
+			this.$("hc-editor-customTypeRenameId").disabled = true;
 			this.delay(this.setWinId, this);
 		}
 	},
