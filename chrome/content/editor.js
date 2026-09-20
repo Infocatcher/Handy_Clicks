@@ -863,10 +863,12 @@ var handyClicksEditor = {
 			delete so[oldId];
 		}
 
-		this.pe.saveSettingsObjectsAsync(true, function(status) {
+		function updateTypeEditors(status) {
 			const hcEd = "handyClicksEditor";
 			this.wu.forEachWindow("handyclicks:editor", function(w) {
 				if(hcEd in w && "_handyClicksInitialized" in w) (function() {
+					if(this.ps.otherSrc != otherSrc)
+						return;
 					var upd;
 					if(w != window && this.customTypeTb.value == oldVal) {
 						this.customTypeTb.value = newVal;
@@ -881,7 +883,15 @@ var handyClicksEditor = {
 					upd && this.setDialogButtons();
 				}).call(w[hcEd]);
 			}, this);
-		}, this);
+		}
+		var otherSrc = this.ps.otherSrc;
+		if(otherSrc) {
+			this.pe.reloadSettings(true);
+			updateTypeEditors.call(this, Components.results.NS_OK);
+		}
+		else {
+			this.pe.saveSettingsObjectsAsync(true, updateTypeEditors, this);
+		}
 	},
 	appendTypesList: function(wasReloaded) {
 		var sep = this.$("hc-editor-customTypesSep");
