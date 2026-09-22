@@ -106,6 +106,7 @@ Don't translate:
 <!ENTITY hc.editor.internalIdAccesskey "I">
 <!ENTITY hc.editor.internalIdTip "Внутренний идентификатор, будет сохранен в виде custom_{ID}"> <!-- Don't translate "custom_" prefix! -->
 <!ENTITY hc.editor.internalIdRename "Переименовать ID…">
+<!ENTITY hc.editor.internalIdRenameTip "Переименовать внутренний идентификатор (будьте осторожны, экспортированные ранее настройки и резервные копии станут несовместимыми)">
 <!ENTITY hc.editor.defineItem "Определение">
 <!ENTITY hc.editor.defineItemAccesskey "п">
 <!ENTITY hc.editor.defineItemTip "Код для получения узла нужного типа после события клика">

@@ -400,7 +400,8 @@
 							<toolbarseparator />
 							<button id="hc-editor-customTypeRenameId" class="hcFloatButton hc-iconic"
 								oncommand="handyClicksEditor.renameCustomTypeId();"
-								label="&hc.editor.internalIdRename;" />
+								label="&hc.editor.internalIdRename;"
+								tooltiptext="&hc.editor.internalIdRenameTip;" />
 						</hbox>
 					</hbox>
 					<tabs setfocus="false" onselect="handyClicksEditor.handleTabSelect(event);">
