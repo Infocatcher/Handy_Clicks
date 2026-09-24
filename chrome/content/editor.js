@@ -829,23 +829,26 @@ var handyClicksEditor = {
 		var prefs = this.ps.prefs;
 		if(!(oldId in types)) // Nothing to rename
 			return;
-		var newIdName = this.getLocalized("newId")
-			.replace("%s", this.customTypeAllowed);
+		var newIdMsgBase = this.getLocalized("newId");
+		var newIdMsg = newIdMsgBase;
 		var msg = "";
 		var re = /[^\w$]/g;
 		var newVal = oldVal;
 		for(;;) {
-			newVal = this.ut.prompt(this.getLocalized("renameId"), msg + newIdName, newVal);
+			newVal = this.ut.prompt(this.getLocalized("renameId"), msg + newIdMsg, newVal);
 			if(!newVal || newVal == oldVal)
 				return;
 			if(re.test(newVal)) {
 				newVal = newVal.replace(re, "");
+				newIdMsg = this.getLocalized("newIdMsg")
+					.replace("%s", this.customTypeAllowed);
 				continue;
 			}
 			var newId = customPrefix + newVal;
 			if(!(newId in types))
 				break;
 			msg = this.getLocalized("idAlreadyExists").replace("%id", newVal) + "\n";
+			newIdMsg = newIdMsgBase;
 		}
 
 		this.customTypeTb.value = newVal;
