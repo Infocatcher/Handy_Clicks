@@ -847,7 +847,9 @@ var handyClicksEditor = {
 			var newId = customPrefix + newVal;
 			if(!(newId in types))
 				break;
-			msg = this.getLocalized("idAlreadyExists").replace("%id", newVal) + "\n";
+			var label = this.ps.getCustomTypeLabel(newId, types);
+			msg = this.getLocalized("idAlreadyExists")
+				.replace("%id", label) + "\n";
 			newIdMsg = newIdMsgBase;
 		}
 
