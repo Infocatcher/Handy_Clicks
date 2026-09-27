@@ -888,7 +888,10 @@ var handyClicksEditor = {
 						this.shortcutSaved();
 						upd = true;
 					}
-					upd && this.setDialogButtons();
+					if(upd || w == window) {
+						this.setDialogButtons();
+						this.setWinId();
+					}
 				}).call(w[hcEd]);
 			}, this);
 		}
