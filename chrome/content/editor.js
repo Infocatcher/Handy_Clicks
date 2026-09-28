@@ -815,11 +815,13 @@ var handyClicksEditor = {
 			this.delay(this.setWinId, this);
 		}
 	},
-	customTypeAllowed: "a-z, A-Z, 0-9, $, _",
+	get customTypeAllowedChars() {
+		delete this.customTypeAllowedChars;
+		return this.customTypeAllowedChars = this.getLocalized("allowedChars")
+			.replace("%s", "a-z, A-Z, 0-9, $, _");
+	},
 	customTypeIdInfo: function(anchor) {
-		var msg = this.getLocalized("allowedChars")
-			.replace("%s", this.customTypeAllowed);
-		this.su.showInfoTooltip(anchor, msg);
+		this.su.showInfoTooltip(anchor, this.customTypeAllowedChars);
 	},
 	renameCustomTypeId: function() {
 		var customPrefix = this.ps.customPrefix;
@@ -829,8 +831,7 @@ var handyClicksEditor = {
 		var prefs = this.ps.prefs;
 		if(!(oldId in types)) // Nothing to rename
 			return;
-		var newIdMsgBase = this.getLocalized("newId");
-		var newIdMsg = newIdMsgBase;
+		var newIdMsg = this.getLocalized("newId");
 		var msg = "";
 		var re = /[^\w$]/g;
 		var newVal = oldVal;
@@ -838,19 +839,19 @@ var handyClicksEditor = {
 			newVal = this.ut.prompt(this.getLocalized("renameId"), msg + newIdMsg, newVal);
 			if(!newVal || newVal == oldVal)
 				return;
+			msg = "";
 			if(re.test(newVal)) {
 				newVal = newVal.replace(re, "");
-				newIdMsg = this.getLocalized("newIdMsg")
-					.replace("%s", this.customTypeAllowed);
-				continue;
+				msg += this.customTypeAllowedChars + "\n";
 			}
 			var newId = customPrefix + newVal;
-			if(!(newId in types))
+			if(newId in types) {
+				var label = this.ps.getCustomTypeLabel(newId, types);
+				msg += this.getLocalized("idAlreadyExists")
+					.replace("%id", label) + "\n";
+			}
+			if(!msg)
 				break;
-			var label = this.ps.getCustomTypeLabel(newId, types);
-			msg = this.getLocalized("idAlreadyExists")
-				.replace("%id", label) + "\n";
-			newIdMsg = newIdMsgBase;
 		}
 
 		this.customTypeTb.value = newVal;
