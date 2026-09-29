@@ -829,7 +829,7 @@ var handyClicksEditor = {
 		var oldId = customPrefix + oldVal;
 		var types = this.ps.types;
 		var prefs = this.ps.prefs;
-		if(!(oldId in types)) // Nothing to rename
+		if(!types.hasOwnProperty(oldId)) // Nothing to rename
 			return;
 		var newIdMsg = this.getLocalized("newId");
 		var msg = "";
@@ -845,7 +845,7 @@ var handyClicksEditor = {
 				msg += this.customTypeAllowedChars + "\n";
 			}
 			var newId = customPrefix + newVal;
-			if(newId in types) {
+			if(types.hasOwnProperty(newId)) {
 				var label = this.ps.getCustomTypeLabel(newId, types);
 				msg += this.getLocalized("idAlreadyExists")
 					.replace("%id", label) + "\n";
@@ -1857,7 +1857,7 @@ var handyClicksEditor = {
 		if(!path)
 			return undefined;
 		if(this.ps.otherSrc) {
-			if(!(path in this.ps.files))
+			if(!this.ps.files.hasOwnProperty(path))
 				return "";
 		}
 		else {
@@ -1921,7 +1921,7 @@ var handyClicksEditor = {
 				msg = this.getLocalized("renameNotAllowed").replace("%f", expPath) + "\n";
 				continue;
 			}
-			if(path.file ? !newFile.exists() : !(newPath in files))
+			if(path.file ? !newFile.exists() : !files.hasOwnProperty(newPath))
 				break;
 			msg = this.getLocalized("renameAlreadyExists").replace("%f", newPath) + "\n";
 		}
@@ -2041,7 +2041,7 @@ var handyClicksEditor = {
 				editor.__editCodeBtn = this.getFloatButton("hc-editor-cmd-editCode", editor)
 			);
 			var notFound = this.ps.otherSrc
-				? path ? !(path in this.ps.files) : undefined
+				? path ? !this.ps.files.hasOwnProperty(path) : undefined
 				: this.su.linkedFileNotExists(path);
 			if(notFound !== undefined)
 				editCodeBtn.setAttribute("hc_fileNotFound", !!notFound);
