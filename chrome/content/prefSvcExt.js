@@ -380,7 +380,7 @@ var handyClicksPrefSvcExt = {
 			+ "\n  " + (paths ? paths.replace(/\s*\|\s*/g, "\n  ") : "(not specified)");
 	},
 	filterFilesData: function(files) {
-		if(!files)
+		if(!files || !this.ju.isObject(files))
 			return false;
 		var filtered = false;
 		var linkedPaths = { __proto__: null };
