@@ -1906,24 +1906,30 @@ var handyClicksEditor = {
 		var files = this.ps.files;
 		var newFileName = this.getLocalized("newFileName");
 		var msg = "";
+		var newPath = path;
 		for(;;) {
-			var newPath = this.ut.prompt(this.getLocalized("renameFile"), msg + newFileName, path);
+			newPath = this.ut.prompt(this.getLocalized("renameFile"), msg + newFileName, newPath);
 			if(!newPath || newPath == path)
 				return;
+			msg = "";
 			var newFile = this.ut.getLocalFile(newPath);
 			if(!newFile) {
-				msg = this.getLocalized("fileInvalidPath").replace("%p", newPath) + "\n";
+				msg = this.getLocalized("fileInvalidPath")
+					.replace("%p", newPath) + "\n";
 				continue;
 			}
 			if(!this.pe.importAllowed(newFile)) {
 				var expPath = newPath + "\n=> " + newFile.path;
 				this.ut._warn("Export/import not allowed for " + expPath + this.pe._importPathsInfo);
-				msg = this.getLocalized("renameNotAllowed").replace("%f", expPath) + "\n";
-				continue;
+				msg += this.getLocalized("renameNotAllowed")
+					.replace("%f", expPath) + "\n";
 			}
-			if(path.file ? !newFile.exists() : !files.hasOwnProperty(newPath))
+			if(path.file ? newFile.exists() : files.hasOwnProperty(newPath)) {
+				msg += this.getLocalized("renameAlreadyExists")
+					.replace("%f", newPath) + "\n";
+			}
+			if(!msg)
 				break;
-			msg = this.getLocalized("renameAlreadyExists").replace("%f", newPath) + "\n";
 		}
 
 		if(path.file) {
@@ -1940,9 +1946,8 @@ var handyClicksEditor = {
 			}
 		}
 		else {
-			var fd = files[path];
+			files[newPath] = files[path];
 			delete files[path];
-			files[newPath] = fd;
 		}
 
 		var newCode = "//> " + newPath;
