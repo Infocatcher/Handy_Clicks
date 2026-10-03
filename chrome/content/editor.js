@@ -1899,14 +1899,14 @@ var handyClicksEditor = {
 		this.pe.reloadSettings(true);
 		this.setAllEditorButtons();
 	},
-	renameFileData: function() {
+	renameFileData: function(newPath) {
 		var path = this.getFileDataPath();
 		if(!path)
 			return;
 		var files = this.ps.files;
 		var newFileName = this.getLocalized("newFileName");
 		var msg = "";
-		var newPath = path;
+		newPath = newPath || path;
 		for(;;) {
 			newPath = this.ut.prompt(this.getLocalized("renameFile"), msg + newFileName, newPath);
 			if(!newPath || newPath == path)
@@ -1942,6 +1942,7 @@ var handyClicksEditor = {
 					.replace("%p", newPath)
 					.replace("%err", e);
 				this.ut.notifyError(err);
+				this.renameFileData(newPath);
 				return;
 			}
 		}
