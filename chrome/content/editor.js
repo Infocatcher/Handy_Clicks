@@ -1952,8 +1952,6 @@ var handyClicksEditor = {
 		}
 
 		var newCode = "//> " + newPath;
-		var oldCode = this.ps.normalizeSourcePath(path.editor.value);
-		//path.editor.value = newCode;
 		var firstLine = /^[^\r\n]+(?=[\r\n]|$)/;
 		Array.prototype.forEach.call(
 			document.getElementsByTagName("textbox"),
@@ -1961,13 +1959,13 @@ var handyClicksEditor = {
 				if(!this.isEditor(tb))
 					return;
 				var code = tb.value;
-				if(this.ps.normalizeSourcePath(code) == oldCode)
+				if(this.ps.getSourcePath(code) == path)
 					tb.value = code.replace(firstLine, newCode);
 			},
 			this
 		);
 		this.pe.forEachCode(this.ps, function(code, o, key) {
-			if(this.ps.normalizeSourcePath(code) == oldCode)
+			if(this.ps.getSourcePath(code) == path)
 				o[key] = code.replace(firstLine, newCode);
 		}, this);
 		if(path.file)

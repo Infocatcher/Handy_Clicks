@@ -458,12 +458,6 @@ var handyClicksPrefSvc = {
 		// Usage: "//> path/to/file.js"
 		return /^\/\/>\s*([^\n\r]+\.\w+)(?:[\r\n]|$)/.test(code) && RegExp.$1;
 	},
-	normalizeSourcePath: function(code) {
-		var path = this.getSourcePath(code);
-		if(path)
-			return "//> " + path;
-		return code;
-	},
 	_fnCache: { __proto__: null },
 	expandCode: function expandCode(code) {
 		expandCode._path = undefined;
