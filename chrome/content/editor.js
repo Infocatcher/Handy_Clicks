@@ -1953,21 +1953,29 @@ var handyClicksEditor = {
 
 		var newCode = "//> " + newPath;
 		var firstLine = /^[^\r\n]+(?=[\r\n]|$)/;
-		Array.prototype.forEach.call(
-			document.getElementsByTagName("textbox"),
-			function(tb) {
-				if(!this.isEditor(tb))
-					return;
-				var code = tb.value;
-				if(this.ps.getSourcePath(code) == path)
-					tb.value = code.replace(firstLine, newCode);
-			},
-			this
-		);
+
+		const hcEd = "handyClicksEditor";
+		this.wu.forEachWindow("handyclicks:editor", function(w) {
+			if(hcEd in w && "_handyClicksInitialized" in w) (function() {
+				Array.prototype.forEach.call(
+					w.document.getElementsByTagName("textbox"),
+					function(tb) {
+						if(!this.isEditor(tb))
+							return;
+						var code = tb.value;
+						if(this.ps.getSourcePath(code) == path)
+							tb.value = code.replace(firstLine, newCode);
+					},
+					this
+				);
+			}).call(w[hcEd]);
+		}, this);
+
 		this.pe.forEachCode(this.ps, function(code, o, key) {
 			if(this.ps.getSourcePath(code) == path)
 				o[key] = code.replace(firstLine, newCode);
 		}, this);
+
 		if(path.file)
 			this.saveSettings(true);
 		else
