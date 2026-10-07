@@ -333,10 +333,7 @@ var handyClicksPrefSvcExt = {
 		});
 	},
 
-	exportFileData: function(files, code) {
-		var path = this.getSourcePath(code);
-		if(!path)
-			return "";
+	exportFileData: function(files, path) {
 		var exported = files._exported || (files._exported = { __proto__: null });
 		if(path in exported)
 			return "";

@@ -668,15 +668,18 @@ var handyClicksPrefSvc = {
 		var json = this.JSON.stringify(o, function censor(key, val) {
 			if(key.charAt(0) == "_")
 				return undefined;
-			if(exportLinkedFiles && key in _this.codeKeys) {
-				if(srcFiles) {
-					var path = _this.getSourcePath(val);
-					if(path && path in srcFiles && !(path in files))
-						files[path] = srcFiles[path];
-				}
-				else {
-					var err = _this.pe.exportFileData(files, val);
+			var path;
+			if(
+				exportLinkedFiles
+				&& key in _this.codeKeys
+				&& (path = _this.getSourcePath(val))
+			) {
+				if(!srcFiles) {
+					var err = _this.pe.exportFileData(files, path);
 					err && errors.push(err);
+				}
+				else if(path in srcFiles && !(path in files)) {
+					files[path] = srcFiles[path];
 				}
 			}
 			return val;
