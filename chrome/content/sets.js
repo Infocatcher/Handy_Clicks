@@ -86,8 +86,10 @@ var handyClicksSets = {
 			&& this.appInfo.OS == "WINNT"
 			&& this.osVersion >= 6
 			&& matchMedia("(-moz-windows-default-theme)").matches
-		)
-			this.tree.setAttribute("hc_hasOverlayBackground", "true");
+		) {
+			var bg = fxVersion >= 47 ? "fix" : "true";
+			this.tree.setAttribute("hc_hasOverlayBackground", bg);
+		}
 
 		if(fxVersion <= 2)
 			this.e("hc-sets-overrideInstantApply-box").hidden = true;

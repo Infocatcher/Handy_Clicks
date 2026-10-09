@@ -194,7 +194,7 @@ tree[hc_colored="true"][hc_grid="true"] treechildren::-moz-tree-cell {
 	border-right: 1px solid #e0dfe3;
 }
 
-/* Override system colors for use custom colors for highlighting */
+/* Override system colors to use custom colors for highlighting */
 tree[hc_colored="true"] .tree-bodybox,
 tree[hc_colored="true"] treechildren {
 	color: black;
@@ -215,6 +215,27 @@ tree[hc_colored="true"][hc_hasOverlayBackground="false"] treechildren::-moz-tree
 tree[hc_colored="true"] treechildren::-moz-tree-row(selected, focus),
 tree[hc_colored="true"] treechildren::-moz-tree-cell-text(selected, focus) {
 	color: black !important;
+}
+
+/* Fix overlay background for selected rows, styles from Firefox 29 */
+tree[hc_colored="true"][hc_hasOverlayBackground="fix"] treechildren:not(.autocomplete-treebody)::-moz-tree-row(selected) {
+	background-image: linear-gradient(rgba(190,190,190,.4), rgba(190,190,190,.4));
+}
+tree[hc_colored="true"][hc_hasOverlayBackground="fix"] treechildren:not(.autocomplete-treebody)::-moz-tree-row(selected, focus),
+tree[hc_colored="true"][hc_hasOverlayBackground="fix"] treechildren::-moz-tree-row(dropOn) {
+	background-image: linear-gradient(rgba(131,183,249,.375), rgba(131,183,249,.375));
+}
+tree[hc_colored="true"][hc_hasOverlayBackground="fix"] treechildren:not(.autocomplete-treebody)::-moz-tree-row(selected, current, focus) {
+	background-image: linear-gradient(rgba(131,183,249,.5), rgba(131,183,249,.5));
+}
+tree[hc_colored="true"][hc_hasOverlayBackground="fix"] treechildren:not(.autocomplete-treebody)::-moz-tree-row(hover) {
+	background-image: linear-gradient(rgba(131,183,249,.16), rgba(131,183,249,.16));
+}
+tree[hc_colored="true"][hc_hasOverlayBackground="fix"] treechildren:not(.autocomplete-treebody)::-moz-tree-row(hover, current) {
+	background-image: linear-gradient(rgba(131,183,249,.16), rgba(131,183,249,.16));
+}
+tree[hc_colored="true"][hc_hasOverlayBackground="fix"] treechildren:not(.autocomplete-treebody)::-moz-tree-row(hover, selected) {
+	background-image: linear-gradient(rgba(131,183,249,.5), rgba(131,183,249,.5));
 }
 
 tree[hc_colored="true"] treechildren::-moz-tree-row(hc_custom) {
