@@ -38,7 +38,6 @@ var handyClicksReloader = {
 				rnd = "?" + Date.now();
 			else
 				this.flushCaches();
-			rnd = "";
 			handyClicksRegSvc.destroy(true);
 			for(var f in files) {
 				var p = files[f];
