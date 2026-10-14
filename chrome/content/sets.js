@@ -135,6 +135,15 @@ var handyClicksSets = {
 		sp.removeEventListener("DOMMenuItemActive", this, false);
 		sp.removeEventListener("DOMMenuItemInactive", this, false);
 		window.removeEventListener("focus", this, false);
+
+		if(!reloadFlag) {
+			this.smartSelectStop();
+			this.searcher.destroy();
+			this.cleanupTree();
+		}
+		var getActionCode = this.getActionCode;
+		getActionCode._linkedFile = getActionCode._fullLabel = null;
+		this.tree = this.tView = this.tbo = this.tBody = this.tSel = this.de = null;
 	},
 	restoreSearchQuery: function() {
 		if(!this.pu.get("sets.rememberSearchQuery"))
@@ -776,6 +785,7 @@ var handyClicksSets = {
 		return this.treeBatch(this._redrawTree, this, arguments);
 	},
 	_redrawTree: function(dontSearch, saveClosed) {
+		this.cleanupTree();
 		this.tBody.textContent = "";
 		this._drawTree(dontSearch, saveClosed);
 		this.setDialogButtons();
@@ -1795,6 +1805,7 @@ var handyClicksSets = {
 
 			var tChld = tItem.parentNode;
 			tItem = tChld.parentNode;
+			this.cleanupTree(tChld);
 			tItem.removeChild(tChld);
 			tItem.removeAttribute("container");
 			delete tItem.__delayed;
@@ -1851,6 +1862,7 @@ var handyClicksSets = {
 	removeTreeitem: function(tItem) {
 		for(;; tItem = tChld.parentNode) {
 			var tChld = tItem.parentNode;
+			this.cleanupTree(tItem);
 			tChld.removeChild(tItem);
 
 			this.deleteCachedRow(tItem.__hash);
@@ -1866,6 +1878,16 @@ var handyClicksSets = {
 		if(tRow && /(?:^|\s)hc_buggy(?:\s|$)/.test(tRow.getAttribute("properties")))
 			--this.counters.buggy;
 		delete this.rowsCache[hash];
+	},
+	cleanupTree: function(node) {
+		node = node || this.tBody;
+		var cleanupNode;
+		(cleanupNode = function(node) {
+			for(var p in node) if(node.hasOwnProperty(p))
+				if(p.charAt(0) == "_")
+					delete node[p];
+		})(node);
+		Array.prototype.forEach.call(node.getElementsByTagName("*"), cleanupNode);
 	},
 	hideTreeitem: function(tItem, markAsOld) {
 		for(;; tItem = tChld.parentNode) {
@@ -5250,6 +5272,9 @@ var handyClicksSetsSearcher = {
 	},
 	reset: function() {
 		this._current = 0;
+	},
+	destroy: function() {
+		this._res.length = 0;
 	},
 	next: function(focusTree) {
 		if(!this.isTreePaneSelected)
