@@ -42,7 +42,7 @@ var handyClicksReloader = {
 			for(var f in files) {
 				var p = files[f];
 				if(p in window && !window.__lookupGetter__(p))
-					jsLoader.loadSubScript(path + f + rnd);
+					jsLoader.loadSubScript(path + f + rnd, window, "UTF-8");
 			}
 			handyClicksRegSvc.init(true);
 			this._log("js reloaded (" + (this.now() - t).toFixed(2) + " ms)");
