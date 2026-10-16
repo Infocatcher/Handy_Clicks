@@ -983,14 +983,14 @@ var handyClicksSets = {
 		var localized = this.ps.localize._localized;
 		this.appendTreeCell(tRow, "label", actLabel, ++col);
 		this.appendTreeCell(tRow, "label", this.getActionCode(fo.action, isCustom), ++col)
-			.setAttribute("hc_fullLabel", this.getActionCode._fullLabel);
+			.__fullLabel = this.getActionCode._fullLabel;
 		croppedCode = this.getActionCode._wasCropped;
 		var linkedFile = this.getActionCode._linkedFile;
 		var fileData = this.getActionCode._hasFileData;
 		this.appendTreeCell(tRow, "label", this.getArguments(fo.arguments || null, this._localizeArgs), ++col)
 			.setAttribute("hc_cell", "arguments");
 		this.appendTreeCell(tRow, "label", (initCode = this.getInitCode(fo, true)), ++col)
-			.setAttribute("hc_fullLabel", initCode && this.getActionCode._fullLabel);
+			.__fullLabel = initCode && this.getActionCode._fullLabel;
 		croppedCodeInit = initCode && this.getActionCode._wasCropped;
 		var linkedFileInit = initCode && this.getActionCode._linkedFile;
 		var hasLinkedFile = linkedFile || linkedFileInit;
@@ -1024,13 +1024,13 @@ var handyClicksSets = {
 			var daDis = this._daForceDisable || !fo.enabled || !da.enabled;
 			this.appendTreeCell(daRow, "label", daLabel, ++col);
 			this.appendTreeCell(daRow, "label", this.getActionCode(da.action, daCustom), ++col)
-				.setAttribute("hc_fullLabel", this.getActionCode._fullLabel);
+				.__fullLabel = this.getActionCode._fullLabel;
 			daCroppedCode = this.getActionCode._wasCropped;
 			var daLinkedFile = this.getActionCode._linkedFile;
 			var daFileData = this.getActionCode._hasFileData;
 			this.appendTreeCell(daRow, "label", this.getArguments(da.arguments || null, this._localizeArgs), ++col);
 			this.appendTreeCell(daRow, "label", (daInitCode = this.getInitCode(da, true)), ++col)
-				.setAttribute("hc_fullLabel", daInitCode && this.getActionCode._fullLabel);
+				.__fullLabel = daInitCode && this.getActionCode._fullLabel;
 			daCroppedCodeInit = daInitCode && this.getActionCode._wasCropped;
 			var daLinkedFileInit = daInitCode && this.getActionCode._linkedFile;
 			var daHasLinkedFile = daLinkedFile || daLinkedFileInit;
@@ -1196,7 +1196,7 @@ var handyClicksSets = {
 		this.appendTreeCell(tRow, "label", na, ++col);
 		this.appendTreeCell(tRow, "label", na, ++col);
 		this.appendTreeCell(tRow, "label", this.getActionCode(to.define, true), ++col)
-			.setAttribute("hc_fullLabel", this.getActionCode._fullLabel);
+			.__fullLabel = this.getActionCode._fullLabel;
 		croppedCode = this.getActionCode._wasCropped;
 		var linkedFile = this.getActionCode._linkedFile;
 		var fileData = this.getActionCode._hasFileData;
@@ -1212,7 +1212,7 @@ var handyClicksSets = {
 		}
 		var hasLinkedFile = linkedFile || linkedFileCM;
 		this.appendTreeCell(tRow, "label", cmCode, ++col)
-			.setAttribute("hc_fullLabel", fullCodeCM);
+			.__fullLabel = fullCodeCM;
 		this.setNodeProperties(
 			this.appendTreeCell(tRow, "value", to.enabled, ++col),
 			{ hc_checkbox: true }
@@ -3273,7 +3273,7 @@ var handyClicksSets = {
 			Array.prototype.forEach.call(
 				row.getElementsByAttribute("label", "*"),
 				function(elt) {
-					var label = elt.getAttribute("hc_fullLabel") || elt.getAttribute("label");
+					var label = elt.__fullLabel || elt.getAttribute("label");
 					if(!label)
 						return;
 					if(elt.getAttribute("hc_cell") == "arguments")
