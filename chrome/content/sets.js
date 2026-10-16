@@ -1875,7 +1875,7 @@ var handyClicksSets = {
 	},
 	deleteCachedRow: function(hash) {
 		var tRow = this.rowsCache[hash];
-		if(tRow && /(?:^|\s)hc_buggy(?:\s|$)/.test(tRow.getAttribute("properties")))
+		if(tRow && (tRow.getAttribute("properties") || "").indexOf("hc_buggy ") != -1) // See .setNodeProperties()
 			--this.counters.buggy;
 		delete this.rowsCache[hash];
 	},
