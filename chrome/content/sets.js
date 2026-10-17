@@ -137,6 +137,7 @@ var handyClicksSets = {
 		window.removeEventListener("focus", this, false);
 
 		if(!reloadFlag) {
+			delete this.searchField._clearSearch;
 			this.smartSelectStop();
 			this.searcher.destroy();
 			this.cleanupTree();
