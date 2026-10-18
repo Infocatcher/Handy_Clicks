@@ -79,6 +79,7 @@ var handyClicksSets = {
 				document.getElementsByAttribute("preference", "showInStatusbar")[0].hidden = true;
 				document.getElementsByAttribute("value", "Statusbar")[0].hidden = true;
 			}
+			brWin = null;
 		}
 
 		if(
@@ -136,12 +137,12 @@ var handyClicksSets = {
 		sp.removeEventListener("DOMMenuItemInactive", this, false);
 		window.removeEventListener("focus", this, false);
 
-		if(!reloadFlag) {
-			delete this.searchField._clearSearch;
-			this.smartSelectStop();
-			this.searcher.destroy();
-			this.cleanupTree();
-		}
+		this.smartSelectStop();
+		this.searcher.destroy();
+		if("_origClearSearch" in this)
+			this.searchField._clearSearch = this._origClearSearch;
+		this.cleanupTree(this.tBody, reloadFlag ? "__hash" : "");
+
 		var getActionCode = this.getActionCode;
 		getActionCode._linkedFile = getActionCode._fullLabel = null;
 		this.tree = this.tView = this.tbo = this.tBody = this.tSel = this.de = null;
@@ -1880,12 +1881,12 @@ var handyClicksSets = {
 			--this.counters.buggy;
 		delete this.rowsCache[hash];
 	},
-	cleanupTree: function(node) {
+	cleanupTree: function(node, leave) {
 		node = node || this.tBody;
 		var cleanupNode;
 		(cleanupNode = function(node) {
 			for(var p in node) if(node.hasOwnProperty(p))
-				if(p.charAt(0) == "_")
+				if(p.charAt(0) == "_" && p !== leave)
 					delete node[p];
 		})(node);
 		Array.prototype.forEach.call(node.getElementsByTagName("*"), cleanupNode);
