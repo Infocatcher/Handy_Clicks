@@ -118,11 +118,12 @@ var handyClicksPrefUtils = {
 		this.prefSvc.savePrefFile(null);
 	},
 
-	openAboutConfigNS: function(filter) {
-		this.openAboutConfig(this.prefNS + filter);
+	openAboutConfigNS: function(filter, mi) {
+		this.openAboutConfig(this.prefNS + filter, mi);
 	},
-	openAboutConfig: function(filter) {
+	openAboutConfig: function(filter, mi) {
 		filter = filter || this.prefNS;
+		mi && this.ut.closeMenus(mi);
 		if(this.switchToAboutConfigTab(filter))
 			return;
 		var brWin = this.wu.wm.getMostRecentWindow("navigator:browser");

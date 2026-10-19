@@ -72,7 +72,7 @@ preferences {
 					<menuitem type="checkbox" acceltext="%+lng%" label="&hc.sets.searchCustomLocalized;" />
 					<menuitem type="checkbox" acceltext="%-lng%" label="&hc.sets.searchCustomNotLocalized;" />
 					<menuitem type="checkbox" acceltext="%long%" label="&hc.sets.searchCustomLong;"
-						onclick="if(event.button == 2) handyClicksSets.pu.openAboutConfigNS('sets.codeLengthLimit');"
+						onclick="if(event.button == 2) handyClicksSets.pu.openAboutConfigNS('sets.codeLengthLimit', this);"
 						tooltip="hc-sets-search-customLongTooltip" />
 					<menuseparator />
 					<menuitem type="checkbox" acceltext="%na%" label="&hc.sets.searchNA;" class="hc-buggy" />
@@ -364,12 +364,12 @@ preferences {
 								<menuseparator id="hc-sets-tree-removeUserBackups-separator" />
 								<menuitem id="hc-sets-tree-removeUserBackups2" class="menuitem-iconic hc-iconic"
 									oncommand="handyClicksSets.removeOldUserBackups(handyClicksSets.pu.get('sets.backupUserRemoveDepth2'));"
-									onclick="if(event.button == 2) handyClicksSets.pu.openAboutConfigNS('sets.backupUserRemoveDepth');"
+									onclick="if(event.button == 2) handyClicksSets.pu.openAboutConfigNS('sets.backupUserRemoveDepth', this);"
 									closemenu="none"
 									hc_label="&hc.sets.removeUserBackups;" accesskey="&hc.sets.removeUserBackups2Accesskey;" />
 								<menuitem id="hc-sets-tree-removeUserBackups" class="menuitem-iconic hc-iconic"
 									oncommand="handyClicksSets.removeOldUserBackups(handyClicksSets.pu.get('sets.backupUserRemoveDepth'));"
-									onclick="if(event.button == 2) handyClicksSets.pu.openAboutConfigNS('sets.backupUserRemoveDepth');"
+									onclick="if(event.button == 2) handyClicksSets.pu.openAboutConfigNS('sets.backupUserRemoveDepth', this);"
 									closemenu="none"
 									hc_label="&hc.sets.removeUserBackups;" accesskey="&hc.sets.removeUserBackupsAccesskey;" />
 							</menupopup>
