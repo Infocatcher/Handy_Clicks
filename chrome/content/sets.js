@@ -1886,7 +1886,7 @@ var handyClicksSets = {
 		var cleanupNode;
 		(cleanupNode = function(node) {
 			for(var p in node) if(node.hasOwnProperty(p))
-				if(p.charAt(0) == "_" && p !== leave)
+				if(p.slice(0, 2) == "__" && p !== leave)
 					delete node[p];
 		})(node);
 		Array.prototype.forEach.call(node.getElementsByTagName("*"), cleanupNode);
