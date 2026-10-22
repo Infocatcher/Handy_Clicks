@@ -126,7 +126,7 @@ var handyClicksSets = {
 		this.saveTreeSortOrder();
 		this.saveSearchQuery();
 		reloadFlag && this.setImportStatus(false);
-		this.rowsCache = this._savedPrefs = this._savedTypes = null;
+		this.rowsCache = this._savedPrefs = this._savedTypes = this._delTypes = null;
 		this._typesState = this._filesState = null;
 
 		window.removeEventListener("mouseover", this, true);
