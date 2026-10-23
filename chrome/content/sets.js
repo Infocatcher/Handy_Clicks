@@ -126,8 +126,6 @@ var handyClicksSets = {
 		this.saveTreeSortOrder();
 		this.saveSearchQuery();
 		reloadFlag && this.setImportStatus(false);
-		this.rowsCache = this._savedPrefs = this._savedTypes = this._delTypes = null;
-		this._typesState = this._filesState = null;
 
 		window.removeEventListener("mouseover", this, true);
 		document.removeEventListener(this.su.dropEvent, this, false);
@@ -146,6 +144,8 @@ var handyClicksSets = {
 		var getActionCode = this.getActionCode;
 		getActionCode._linkedFile = getActionCode._fullLabel = null;
 		this.tree = this.tView = this.tbo = this.tBody = this.tSel = this.de = null;
+		this.rowsCache = null;
+		this.cleanupImport();
 	},
 	restoreSearchQuery: function() {
 		if(!this.pu.get("sets.rememberSearchQuery"))
@@ -4959,6 +4959,9 @@ var handyClicksSets = {
 		}
 		this.tree.focus();
 		this.setDialogButtons();
+		this.cleanupImport();
+	},
+	cleanupImport: function() {
 		this._importSrc = this._savedPrefs = this._savedTypes = null;
 		this._typesState = this._filesState = null;
 		this._delTypes = null;
