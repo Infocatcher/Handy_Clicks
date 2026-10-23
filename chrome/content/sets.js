@@ -143,6 +143,7 @@ var handyClicksSets = {
 
 		var getActionCode = this.getActionCode;
 		getActionCode._linkedFile = getActionCode._fullLabel = null;
+		delete this.addItems.__click;
 		this.tree = this.tView = this.tbo = this.tBody = this.tSel = this.de = null;
 		this.rowsCache = null;
 		this.cleanupImport();
