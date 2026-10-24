@@ -4638,7 +4638,9 @@ var handyClicksSets = {
 			if(path in fdCache)
 				mi.setAttribute("hc_hasFilesData", fdCache[path]);
 			this.delay(function() { // Force split into separate I/O operations to not freeze UI
-				this.io.readFromFileAsync(file, function(data) {
+				if(!window.closed) this.io.readFromFileAsync(file, function(data) {
+					if(window.closed)
+						return;
 					var hasFilesData = fdCache[path] = /"files"\s*:\s*\{\s*"/.test(data);
 					mi.setAttribute("hc_hasFilesData", hasFilesData);
 				}, this, true);
