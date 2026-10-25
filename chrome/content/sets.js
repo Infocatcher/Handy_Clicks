@@ -2725,10 +2725,11 @@ var handyClicksSets = {
 		var mis = sp.getElementsByAttribute("hc_opposite", "*");
 		for(var i = mis.length - 1; i >= 0; --i)
 			mis[i].removeAttribute("hc_opposite");
+		if(!hl)
+			return;
 		var ph = mi.getAttribute("acceltext");
 		if(
-			!hl
-			|| !ph
+			!ph
 			|| !(ph in this.oppositeSearchPlaceholders)
 			|| mi.getAttribute("disabled") == "true"
 		)
@@ -2740,7 +2741,7 @@ var handyClicksSets = {
 	},
 	_unhlPhTimer: 0,
 	unhighlightOppositeSearchPlaceholders: function(mi) {
-		this._unhlPhTimer = this.delay(function() { // Wait for next menuitem
+		if(!this._unhlPhTimer) this._unhlPhTimer = this.delay(function() { // Wait for next menuitem
 			this._unhlPhTimer = 0;
 			this.highlightOppositeSearchPlaceholders(mi, false);
 		}, this);
