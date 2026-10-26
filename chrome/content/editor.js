@@ -123,6 +123,7 @@ var handyClicksEditor = {
 		}
 		unwatchLinkedFiles && this.watchLinkedFiles(false); // Will be closed all editors
 		this.de.removeEventListener("keydown", this, true);
+		window.removeEventListener("focus", this, false);
 	},
 	watchLinkedFile: function(path, file) {
 		this._log("Editor: watchLinkedFile(): " + path);
@@ -456,7 +457,7 @@ var handyClicksEditor = {
 		this.setEditorButtons();
 		this.setDialogButtons();
 		this.delay(function() { // Wait to ignore initial focus right after window opening
-			this.de.setAttribute("onfocus", "handyClicksEditor.windowFocused();");
+			window.addEventListener("focus", this, false);
 		}, this, 10);
 	},
 	reloadSettings: function() {
@@ -586,10 +587,6 @@ var handyClicksEditor = {
 			if(editor.getAttribute("hc_highlightEmpty") == "true")
 				this.highlightEmpty(editor);
 		}, this, Date.now() - this._editorLastUpdate > 1000 ? 10 : 100);
-	},
-	windowFocused: function(e) {
-		this._log("windowFocused() -> setEditorButtons()");
-		this.delay(this.setEditorButtons, this);
 	},
 
 	setWinId: function() {
@@ -1737,6 +1734,8 @@ var handyClicksEditor = {
 	handleEvent: function(e) {
 		if(e.type == "keydown")
 			this.keydownHandler(e);
+		else if(e.type == "focus")
+			this.focusHandler(e);
 	},
 	keydownHandler: function(e) {
 		var code = e.keyCode;
@@ -1771,6 +1770,9 @@ var handyClicksEditor = {
 			e.preventDefault();
 			e.target.open = true;
 		}
+	},
+	focusHandler: function(e) {
+		this.delay(this.setEditorButtons, this);
 	},
 	loadSavedShortcut: function(e) {
 		var mi = e.target;

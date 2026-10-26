@@ -102,9 +102,9 @@ var handyClicksSets = {
 		sp.addEventListener("DOMMenuItemActive", this, false);
 		sp.addEventListener("DOMMenuItemInactive", this, false);
 
-		this.delay(function() { // Ignore initial focus
+		this.delay(function() { // Wait to ignore initial focus right after window opening
 			window.addEventListener("focus", this, false);
-		}, this);
+		}, this, 10);
 
 		this.checkLinkedFilesDelay = 10;
 	},
