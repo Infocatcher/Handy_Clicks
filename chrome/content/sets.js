@@ -145,7 +145,7 @@ var handyClicksSets = {
 		getActionCode._linkedFile = getActionCode._fullLabel = null;
 		delete this.addItems.__click;
 		this.tree = this.tView = this.tbo = this.tBody = this.tSel = this.de = null;
-		this.rowsCache = null;
+		this.rowsCache = this._hoveredCheckbox = null;
 		this.cleanupImport();
 	},
 	restoreSearchQuery: function() {
@@ -2008,6 +2008,7 @@ var handyClicksSets = {
 	},
 	_hoveredCheckbox: null,
 	highlightHover: function(e) {
+		// Note: strange memory leak comes from here, looks like it's enough to just call tbo.getCellAt()
 		var tItem = this.getChecboxItem(e);
 		if(!tItem) {
 			this.unhoverCheckbox();
