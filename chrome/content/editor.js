@@ -821,6 +821,8 @@ var handyClicksEditor = {
 		this.su.showInfoTooltip(anchor, this.customTypeAllowedChars);
 	},
 	renameCustomTypeId: function() {
+		if(this.editorTabIndex != this.INDEX_TYPE)
+			this.editorTabIndex = this.INDEX_TYPE;
 		var customPrefix = this.ps.customPrefix;
 		var oldVal = this.customTypeTb.value;
 		var oldId = customPrefix + oldVal;

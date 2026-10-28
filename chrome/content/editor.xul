@@ -78,6 +78,7 @@
 		<key id="hc-editor-key-renameShortcut2" keycode="VK_F2" hc_allowInRenameMode="true" oncommand="handyClicksEditor.renameShortcut();" />
 		<!-- Only for menu from handyClicksEditor.loadSavedShortcuts(), implemented in handyClicksEditor.handleEvent() -->
 		<key id="hc-editor-key-esc" keycode="VK_ESCAPE" />
+		<key id="hc-editor-key-renameCustomTypeId" key="i" modifiers="control,shift" oncommand="handyClicksEditor.renameCustomTypeId();" />
 
 		<key id="hc-editor-key-editCode" key="e" modifiers="control,shift" command="hc-editor-cmd-editCode" />
 		<key id="hc-editor-key-editCode2" keycode="VK_F4" command="hc-editor-cmd-editCode" />
@@ -400,6 +401,7 @@
 							<toolbarseparator />
 							<button id="hc-editor-customTypeRenameId" class="hcFloatButton hc-iconic"
 								oncommand="handyClicksEditor.renameCustomTypeId();"
+								hc_key="hc-editor-key-renameCustomTypeId"
 								label="&hc.editor.internalIdRename;"
 								tooltiptext="&hc.editor.internalIdRenameTip;" />
 						</hbox>
