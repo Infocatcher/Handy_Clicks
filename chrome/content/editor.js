@@ -828,8 +828,10 @@ var handyClicksEditor = {
 		var oldId = customPrefix + oldVal;
 		var types = this.ps.types;
 		var prefs = this.ps.prefs;
-		if(!types.hasOwnProperty(oldId)) // Nothing to rename
+		if(!types.hasOwnProperty(oldId)) { // Nothing to rename
+			this.customTypeRequired();
 			return;
+		}
 		var newIdMsg = this.getLocalized("newId");
 		var msg = "";
 		var re = /[^\w$]/g;
@@ -2656,6 +2658,9 @@ var handyClicksEditor = {
 	},
 	typeRequired: function() {
 		this.notifyRequiredFields([this.typesList]);
+	},
+	customTypeRequired: function() {
+		this.notifyRequiredFields([this.$("hc-editor-customType"), this.customTypeTb]);
 	},
 	checkMenulist: function(ml) {
 		//~ note: disabled state isn't checked
