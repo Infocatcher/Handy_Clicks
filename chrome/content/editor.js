@@ -1620,6 +1620,12 @@ var handyClicksEditor = {
 		return "open" in mp.parentNode && mp.parentNode.open
 			|| !("state" in mp) || mp.state == "open";
 	},
+	renameShortcutOrID: function() {
+		switch(this.editorTabIndex) {
+			case this.INDEX_SHORTCUT: this.renameShortcut();     break;
+			case this.INDEX_TYPE:     this.renameCustomTypeId();
+		}
+	},
 	setShortcutRenamer: function(nothingToRename) {
 		this.$("hc-editor-shortcutRename").disabled = nothingToRename
 			|| this.renameMode && this._shortcutBeforeRename == this.currentShortcut;

@@ -75,7 +75,7 @@
 		<key id="hc-editor-key-switchToSettings" keycode="VK_F3" hc_allowInRenameMode="true" oncommand="handyClicksEditor.switchToSettings();" />
 		<key id="hc-editor-key-shortcutsMenu" keycode="VK_F2" modifiers="shift" hc_allowInRenameMode="true" oncommand="handyClicksEditor.openShortcutsMenu();" />
 		<key id="hc-editor-key-renameShortcut" key="r" modifiers="control,shift" hc_allowInRenameMode="true" oncommand="handyClicksEditor.renameShortcut();" />
-		<key id="hc-editor-key-renameShortcut2" keycode="VK_F2" hc_allowInRenameMode="true" oncommand="handyClicksEditor.renameShortcut();" />
+		<key id="hc-editor-key-renameShortcutOrID" keycode="VK_F2" hc_allowInRenameMode="true" oncommand="handyClicksEditor.renameShortcutOrID();" />
 		<!-- Only for menu from handyClicksEditor.loadSavedShortcuts(), implemented in handyClicksEditor.handleEvent() -->
 		<key id="hc-editor-key-esc" keycode="VK_ESCAPE" />
 		<key id="hc-editor-key-renameCustomTypeId" key="i" modifiers="control,shift" oncommand="handyClicksEditor.renameCustomTypeId();" />
@@ -201,7 +201,7 @@
 									hc_labelRenameDone="&hc.editor.renameShortcutBtnDone;"
 									oncommand="handyClicksEditor.renameShortcut(); this.nextSibling.focus();"
 									hc_allowInRenameMode="true"
-									hc_key="hc-editor-key-renameShortcut,hc-editor-key-renameShortcut2" />
+									hc_key="hc-editor-key-renameShortcut,hc-editor-key-renameShortcutOrID" />
 								<button id="hc-editor-shortcutRenameCancel" label="&hc.editor.renameShortcutBtnCancel;" class="hcFloatButton hc-iconic"
 									oncommand="handyClicksEditor.renameShortcutCancel(); this.previousSibling.focus();"
 									hc_allowInRenameMode="true"
@@ -401,7 +401,7 @@
 							<toolbarseparator />
 							<button id="hc-editor-customTypeRenameId" class="hcFloatButton hc-iconic"
 								oncommand="handyClicksEditor.renameCustomTypeId();"
-								hc_key="hc-editor-key-renameCustomTypeId"
+								hc_key="hc-editor-key-renameCustomTypeId,hc-editor-key-renameShortcutOrID"
 								label="&hc.editor.internalIdRename;"
 								tooltiptext="&hc.editor.internalIdRenameTip;" />
 						</hbox>
