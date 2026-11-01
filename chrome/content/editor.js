@@ -991,9 +991,9 @@ var handyClicksEditor = {
 			}
 		}
 		localizeNote.setAttribute("hc_localized", !!isLocalized);
-		this.$("hc-editor-labelTip-message").value = msg;
-		this.$("hc-editor-labelTip-note")   .value = note;
-		this.$("hc-editor-labelTip-warning").value = wrn;
+		this.$("hc-editor-labelTip-message").value       = msg;
+		this.$("hc-editor-labelTip-note")   .textContent = note;
+		this.$("hc-editor-labelTip-warning").textContent = wrn;
 		this.su.checkDarkFont(tt);
 		return true;
 	},
