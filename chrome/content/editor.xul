@@ -403,7 +403,9 @@
 								oncommand="handyClicksEditor.renameCustomTypeId();"
 								hc_key="hc-editor-key-renameCustomTypeId,hc-editor-key-renameShortcutOrID"
 								label="&hc.editor.internalIdRename;"
-								tooltiptext="&hc.editor.internalIdRenameTip;" />
+								tooltip="hc-editor-labelTip"
+								hc_tooltipMessage="&hc.editor.internalIdRenameTip;"
+								hc_tooltipWarning="&hc.editor.internalIdRenameTipWarning;" />
 						</hbox>
 					</hbox>
 					<tabs setfocus="false" onselect="handyClicksEditor.handleTabSelect(event);">
