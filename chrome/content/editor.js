@@ -994,6 +994,10 @@ var handyClicksEditor = {
 		this.$("hc-editor-labelTip-message").value       = msg;
 		this.$("hc-editor-labelTip-note")   .textContent = note;
 		this.$("hc-editor-labelTip-warning").textContent = wrn;
+		if(this.fxVersion < 3) {
+			this.$("hc-editor-labelTip-note")   .value = note;
+			this.$("hc-editor-labelTip-warning").value = wrn;
+		}
 		this.su.checkDarkFont(tt);
 		return true;
 	},
