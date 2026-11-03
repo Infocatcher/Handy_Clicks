@@ -2651,6 +2651,11 @@ var handyClicksSets = {
 		delete this.searcher;
 		return this.searcher = handyClicksSetsSearcher;
 	},
+	openSearchMenu: function() {
+		if(!this.isTreePaneSelected)
+			this.selectTreePane();
+		this.$("hc-sets-tree-searchMenu").open = true;
+	},
 	initSearchMenu: function(mp) {
 		var val = this.searchField.value;
 		var hasSearch = /\S/.test(val);
