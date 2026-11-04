@@ -143,7 +143,7 @@
 <!ENTITY hc.sets.removeUserBackupsAccesskey "m">
 <!ENTITY hc.sets.removeUserBackups2Accesskey "R">
 <!ENTITY hc.sets.restoreBackup "Restore…">
-<!ENTITY hc.sets.removeBackup "Remove">
+<!ENTITY hc.sets.removeBackup "Remove file">
 <!ENTITY hc.sets.showBackupFile "Show file">
 
 <!ENTITY hc.sets.importFromFile "Import from file…">
