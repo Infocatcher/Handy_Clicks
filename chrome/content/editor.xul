@@ -104,8 +104,8 @@
 			<menuitem id="hc-editor-renameFileData" class="menuitem-iconic hc-iconic" label="&hc.editor.renameFile;"
 				oncommand="handyClicksEditor.renameFileData();" />
 			<menuseparator />
-			<menuitem id="hc-editor-deleteFileData" class="menuitem-iconic hc-iconic" label="&hc.editor.deleteFile;"
-				oncommand="handyClicksEditor.deleteFileData();" />
+			<menuitem id="hc-editor-removeFileData" class="menuitem-iconic hc-iconic" label="&hc.editor.removeFile;"
+				oncommand="handyClicksEditor.removeFileData();" />
 		</menupopup>
 		<tooltip id="hc-editor-labelTip" orient="vertical" onpopupshowing="return handyClicksEditor.initLabelTip(this);">
 			<label id="hc-editor-labelTip-message" value="" />

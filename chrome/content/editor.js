@@ -1861,7 +1861,7 @@ var handyClicksEditor = {
 		if(path == undefined)
 			return false;
 		this.$("hc-editor-renameFileData").setAttribute("disabled", !path);
-		this.$("hc-editor-deleteFileData").setAttribute("disabled", !path);
+		this.$("hc-editor-removeFileData").setAttribute("disabled", !path);
 		return true;
 	},
 	getFileDataPath: function() {
@@ -1886,7 +1886,7 @@ var handyClicksEditor = {
 		fd.file = file;
 		return fd;
 	},
-	deleteFileData: function() {
+	removeFileData: function() {
 		var path = this.getFileDataPath();
 		if(!path)
 			return;
@@ -1896,7 +1896,7 @@ var handyClicksEditor = {
 				this.getLocalized("title"),
 				this.getLocalized("removeFileConfirm").replace("%f", path),
 				window,
-				this.$("hc-editor-deleteFileData")
+				this.$("hc-editor-removeFileData")
 			);
 			if(!confirmed)
 				return;

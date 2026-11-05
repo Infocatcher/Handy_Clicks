@@ -233,7 +233,7 @@ tabbox[hc_pasted="false"] {
 #hc-editor-renameFileData {
 	-moz-image-region: rect(64px 96px 80px 80px);
 }
-#hc-editor-deleteFileData {
+#hc-editor-removeFileData {
 	-moz-image-region: rect(64px 80px 80px 64px);
 }
 .hcEditCodeButton[hc_fileNotFound="true"],

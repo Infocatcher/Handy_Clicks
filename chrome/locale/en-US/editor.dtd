@@ -91,7 +91,7 @@ Don't translate:
 
 <!ENTITY hc.editor.editCode "Edit…">
 <!ENTITY hc.editor.editCodeTip "Edit code in external editor…">
-<!ENTITY hc.editor.deleteFile "Delete file">
+<!ENTITY hc.editor.removeFile "Remove file">
 <!ENTITY hc.editor.renameFile "Rename file…">
 <!ENTITY hc.editor.codeToFile "To file">
 <!ENTITY hc.editor.codeToFileTip "Use linked file to store code">
