@@ -1763,6 +1763,13 @@ var handyClicksEditor = {
 			this.checkSavedRename();
 			e.preventDefault();
 		}
+		else if(
+			code == e.DOM_VK_TAB
+			&& e.ctrlKey
+			&& this.renameMode
+		) {
+			e.preventDefault();
+		}
 		else if(e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) { // Tab-like navigation
 			if("defaultPrevented" in e ? e.defaultPrevented : e.getPreventDefault())
 				return;
