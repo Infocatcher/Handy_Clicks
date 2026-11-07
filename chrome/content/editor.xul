@@ -53,6 +53,10 @@
 			disabled="true" label="&hc.editor.undo;" accesskey="&hc.editor.undoAccesskey;" />
 		<command id="hc-editor-cmd-editCode" oncommand="handyClicksEditor.editCode();"
 			label="&hc.editor.editCode;" tooltip="hc-editor-labelTip" hc_tooltipMessage="&hc.editor.editCodeTip;" />
+		<command id="hc-editor-cmd-renameFileData" oncommand="handyClicksEditor.renameFileData();"
+			label="&hc.editor.renameFile;" />
+		<command id="hc-editor-cmd-removeFileData" oncommand="handyClicksEditor.removeFileData();"
+			label="&hc.editor.removeFile;" />
 		<command id="hc-editor-cmd-codeToFile" oncommand="handyClicksEditor.codeToFile();"
 			label="&hc.editor.codeToFile;" tooltiptext="&hc.editor.codeToFileTip;" />
 		<command id="hc-editor-cmd-openScriptsDir" oncommand="handyClicksEditor.openScriptsDir();"
@@ -101,11 +105,9 @@
 	<popupset id="hc-editor-popups">
 		<menupopup id="hc-editor-editCodeContext"
 			onpopupshowing="return handyClicksEditor.initEditCodeContext();">
-			<menuitem id="hc-editor-renameFileData" class="menuitem-iconic hc-iconic" label="&hc.editor.renameFile;"
-				oncommand="handyClicksEditor.renameFileData();" />
+			<menuitem id="hc-editor-renameFileData" class="menuitem-iconic hc-iconic" command="hc-editor-cmd-renameFileData" />
 			<menuseparator />
-			<menuitem id="hc-editor-removeFileData" class="menuitem-iconic hc-iconic" label="&hc.editor.removeFile;"
-				oncommand="handyClicksEditor.removeFileData();" />
+			<menuitem id="hc-editor-removeFileData" class="menuitem-iconic hc-iconic" command="hc-editor-cmd-removeFileData" />
 		</menupopup>
 		<tooltip id="hc-editor-labelTip" orient="vertical" onpopupshowing="return handyClicksEditor.initLabelTip(this);">
 			<label id="hc-editor-labelTip-message" value="" />

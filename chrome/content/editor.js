@@ -1867,8 +1867,8 @@ var handyClicksEditor = {
 		var path = this.getFileDataPath();
 		if(path == undefined)
 			return false;
-		this.$("hc-editor-renameFileData").setAttribute("disabled", !path);
-		this.$("hc-editor-removeFileData").setAttribute("disabled", !path);
+		this.$("hc-editor-cmd-renameFileData").setAttribute("disabled", !path);
+		this.$("hc-editor-cmd-removeFileData").setAttribute("disabled", !path);
 		return true;
 	},
 	getFileDataPath: function() {
